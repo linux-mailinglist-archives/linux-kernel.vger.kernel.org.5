@@ -2,341 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5FC7EF8E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B118F7EF8E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346175AbjKQUva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        id S1346154AbjKQUyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:54:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjKQUv0 (ORCPT
+        with ESMTP id S232067AbjKQUyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:51:26 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7368FD72
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:22 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-58a0154b4baso1671644eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700254282; x=1700859082; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bN20sgWzr3hvmPnBHj6NtFmr2ao5No2o7Np+nHfNS3Q=;
-        b=POEunZhcNSUDYAzRqThXThXM9GBQSMPdFBj9nSmQ6MTjMJdM1kXLyiK7TRxM+1n5oO
-         QTgnQ+NTIVSYmzhkqA+lv3NqPIQa629nbHqUmwNv/mY9PAheqdV28iLCJtWeN0yNy0NJ
-         IG2OFFPnB0Pkn2AyyxkspJmG5nZrXO7xiJMmJ/EXTG3SzMttTyAZp+kli2fXp7ZcpV8D
-         hsVukl8whAtd44R0+c8KaK7PHysQbsMEIjmvwOdIUHAimC7KI+f0lfBIdLAbQoOP48kd
-         WXfP1iQT9++lheppG+oQeM4QTSsvD1ZbJ75h7iEgw0FnfIMMrhx8m3IX/jXw504EvIKn
-         +7xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700254282; x=1700859082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bN20sgWzr3hvmPnBHj6NtFmr2ao5No2o7Np+nHfNS3Q=;
-        b=MiPzi5F6Eg1y5+AE+Q6rNHH0m0piZUXjxpK2PosfQ965+XX5W9x1f8l28bdhJK1Vb3
-         d9D+bRGb9Sm3WbpKKCuGsTy9AN/r370qOrSunyES8wOrf/SSz4WxJu6ZyOGLWg7VyZVj
-         G01Qav8MFDEmH225K8gx6Er/YqgQSgvx4zYr0L4x5nBy7AZRZcpSl66RhIrfzzjwmfmu
-         bHdzttleRyxXToqL7wYsxM/5IciTfcU27kNU0P/lxsJdmgtPNPBHH6RrGMKdNtCBeTaZ
-         bfTcdI6yqFZaXoZJPwamqZMJMJ5dvO+sTb30uu4cBLYxEgSImW1GeOpQt1/Fea3dta6r
-         pGXQ==
-X-Gm-Message-State: AOJu0Yw5+hkS6FGR1NVipscEiZ8Snm3GjVBGbp3TYHFoYsvlrzamIxuv
-        IknRudXnev4iP+PNP19rMo7YIw==
-X-Google-Smtp-Source: AGHT+IGK/jRGfldsk6YOHG7XE2ESsCPIK1dlHm9uFhqkc36DHTe2kDcn/KF2fRU5N35/HfhbFTtoxw==
-X-Received: by 2002:a05:6870:9d99:b0:1c8:c9ca:7092 with SMTP id pv25-20020a0568709d9900b001c8c9ca7092mr124337oab.11.1700254281705;
-        Fri, 17 Nov 2023 12:51:21 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id pj24-20020a056871d19800b001efa91630f6sm402222oac.6.2023.11.17.12.51.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 12:51:21 -0800 (PST)
-Date:   Fri, 17 Nov 2023 12:51:18 -0800
-From:   Deepak Gupta <debug@rivosinc.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <ZVfSRhQ6vpDfc8Ma@debug.ba.rivosinc.com>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+        Fri, 17 Nov 2023 15:54:20 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE94D51
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/34QMA5NbLub0mKSSuyQnE9R/cq6uYurcKuJplDoBJk=; b=kM+hQgjIMtEx9z00gS72cercDk
+        H675drS6hKWj/m5mPyCEJItg8gt2chcZdf0ikfenmGfNax4CLSlmar4nGLrBKQlEKY9gNc4/S4KTF
+        MOk6LYTfdvfwMzT6FCZV1hFfGRpeU2sm5wz8MGDUKaJCNb5l3EQsAT3ya582AEIZZi2KocZ+Q+35H
+        6iXzYWdic9GvQY2EEDCYsVUeUaHogV5TzQ5ojoXYSKYjBZ40vpMFqQ1eOUox59OiDC7u0DA3OdvUv
+        gXGvO/2SNs13Dji6KxQvIUHfmp4c18kWGAHQlykWbO3jEwL9yDNGonCEBLaaureWjO49VoOg2QlTu
+        18PdQtyw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r45qr-007Gwi-0R;
+        Fri, 17 Nov 2023 20:54:09 +0000
+Date:   Fri, 17 Nov 2023 12:54:09 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Daniel Gomez <da.gomez@samsung.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        "willy@infradead.org" <willy@infradead.org>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 1/2] test_xarray: add tests for advanced multi-index use
+Message-ID: <ZVfS8fiudvHADtoR@bombadil.infradead.org>
+References: <20231104005747.1389762-2-da.gomez@samsung.com>
+ <202311152254.610174ff-oliver.sang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <202311152254.610174ff-oliver.sang@intel.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 08:05:55PM +0000, Mark Brown wrote:
->Unlike with the normal stack there is no API for configuring the the shadow
->stack for a new thread, instead the kernel will dynamically allocate a new
->shadow stack with the same size as the normal stack. This appears to be due
->to the shadow stack series having been in development since before the more
->extensible clone3() was added rather than anything more deliberate.
->
->Add parameters to clone3() specifying the address and size of a shadow
->stack for the newly created process, 
+On Wed, Nov 15, 2023 at 11:02:59PM +0800, kernel test robot wrote:
+> [  304.121213][    T1] WARNING: suspicious RCU usage
+> [  304.122111][    T1] 6.6.0-12894-g68f563aa7e55 #1 Tainted: G                 N
+> [  304.123404][    T1] -----------------------------
+> [  304.124297][    T1] include/linux/xarray.h:1200 suspicious rcu_dereference_check() usage!
+> [  304.125787][    T1]
+> [  304.125787][    T1] other info that might help us debug this:
+> [  304.125787][    T1]
+> [  304.127648][    T1]
+> [  304.127648][    T1] rcu_scheduler_active = 2, debug_locks = 1
+> [  304.129454][    T1] no locks held by swapper/1.
+> [  304.130560][    T1]
+> [  304.130560][    T1] stack backtrace:
+> [  304.131863][    T1] CPU: 0 PID: 1 Comm: swapper Tainted: G                 N 6.6.0-12894-g68f563aa7e55 #1
+> [  304.132791][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  304.132791][    T1] Call Trace:
+> [  304.132791][    T1]  <TASK>
+> [ 304.132791][ T1] dump_stack_lvl (lib/dump_stack.c:107 (discriminator 1)) 
+> [ 304.132791][ T1] lockdep_rcu_suspicious (include/linux/context_tracking.h:153 kernel/locking/lockdep.c:6712) 
+> [ 304.132791][ T1] xas_start (include/linux/xarray.h:1200 include/linux/xarray.h:1198 lib/xarray.c:190) 
+> [ 304.132791][ T1] xas_load (lib/xarray.c:237) 
+> [ 304.132791][ T1] xas_store (lib/xarray.c:789) 
+> [ 304.132791][ T1] ? xa_load (include/linux/rcupdate.h:306 include/linux/rcupdate.h:780 lib/xarray.c:1465) 
+> [ 304.132791][ T1] check_xa_multi_store_adv_delete+0xf0/0x120 
 
-Probably should update commit message in next version. Address is not specified
-anymore.
+Yup... I forgot to lock on deletion. I also decided to polish this up
+some more and also address some soft lockups which can happen on low
+end test machines when we test for order 20, which has 1<<20 entries
+(1,048,576). The patch below fixes all this. I'll spin this series up
+and send a v2.
 
->we validate that the range specified
->is accessible to userspace but do not validate that it has been mapped
->appropriately for use as a shadow stack (normally via map_shadow_stack()).
->If the shadow stack is specified in this way then the caller is responsible
->for freeing the memory as with the main stack. If no shadow stack is
->specified then the existing implicit allocation and freeing behaviour is
->maintained.
->
->If the architecture does not support shadow stacks the shadow stack
->parameters must be zero, architectures that do support the feature are
->expected to have the same requirement on individual systems that lack
->shadow stack support.
->
->Update the existing x86 implementation to pay attention to the newly added
->arguments, in order to maintain compatibility we use the existing behaviour
->if no shadow stack is specified. Minimal validation is done of the supplied
->parameters, detailed enforcement is left to when the thread is executed.
->Since we are now using four fields from the kernel_clone_args we pass that
->into the shadow stack code rather than individual fields.
->
->Signed-off-by: Mark Brown <broonie@kernel.org>
->---
-> arch/x86/include/asm/shstk.h | 11 +++++++----
-> arch/x86/kernel/process.c    |  2 +-
-> arch/x86/kernel/shstk.c      | 30 +++++++++++++++++++++++++-----
-> include/linux/sched/task.h   |  2 ++
-> include/uapi/linux/sched.h   |  4 ++++
-> kernel/fork.c                | 24 ++++++++++++++++++++++--
-> 6 files changed, 61 insertions(+), 12 deletions(-)
->
->diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
->index 42fee8959df7..8be7b0a909c3 100644
->--- a/arch/x86/include/asm/shstk.h
->+++ b/arch/x86/include/asm/shstk.h
->@@ -6,6 +6,7 @@
-> #include <linux/types.h>
->
-> struct task_struct;
->+struct kernel_clone_args;
-> struct ksignal;
->
-> #ifdef CONFIG_X86_USER_SHADOW_STACK
->@@ -16,8 +17,8 @@ struct thread_shstk {
->
-> long shstk_prctl(struct task_struct *task, int option, unsigned long arg2);
-> void reset_thread_features(void);
->-unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clone_flags,
->-				       unsigned long stack_size);
->+unsigned long shstk_alloc_thread_stack(struct task_struct *p,
->+				       const struct kernel_clone_args *args);
-> void shstk_free(struct task_struct *p);
-> int setup_signal_shadow_stack(struct ksignal *ksig);
-> int restore_signal_shadow_stack(void);
->@@ -26,8 +27,10 @@ static inline long shstk_prctl(struct task_struct *task, int option,
-> 			       unsigned long arg2) { return -EINVAL; }
-> static inline void reset_thread_features(void) {}
-> static inline unsigned long shstk_alloc_thread_stack(struct task_struct *p,
->-						     unsigned long clone_flags,
->-						     unsigned long stack_size) { return 0; }
->+						     const struct kernel_clone_args *args)
->+{
->+	return 0;
->+}
-> static inline void shstk_free(struct task_struct *p) {}
-> static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
-> static inline int restore_signal_shadow_stack(void) { return 0; }
->diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
->index b6f4e8399fca..a9ca80ea5056 100644
->--- a/arch/x86/kernel/process.c
->+++ b/arch/x86/kernel/process.c
->@@ -207,7 +207,7 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
-> 	 * is disabled, new_ssp will remain 0, and fpu_clone() will know not to
-> 	 * update it.
-> 	 */
->-	new_ssp = shstk_alloc_thread_stack(p, clone_flags, args->stack_size);
->+	new_ssp = shstk_alloc_thread_stack(p, args);
-> 	if (IS_ERR_VALUE(new_ssp))
-> 		return PTR_ERR((void *)new_ssp);
->
->diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
->index 59e15dd8d0f8..7ffe90010587 100644
->--- a/arch/x86/kernel/shstk.c
->+++ b/arch/x86/kernel/shstk.c
->@@ -191,18 +191,38 @@ void reset_thread_features(void)
-> 	current->thread.features_locked = 0;
-> }
->
->-unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
->-				       unsigned long stack_size)
->+unsigned long shstk_alloc_thread_stack(struct task_struct *tsk,
->+				       const struct kernel_clone_args *args)
-> {
-> 	struct thread_shstk *shstk = &tsk->thread.shstk;
->+	unsigned long clone_flags = args->flags;
-> 	unsigned long addr, size;
->
-> 	/*
-> 	 * If shadow stack is not enabled on the new thread, skip any
->-	 * switch to a new shadow stack.
->+	 * implicit switch to a new shadow stack and reject attempts to
->+	 * explciitly specify one.
-> 	 */
->-	if (!features_enabled(ARCH_SHSTK_SHSTK))
->+	if (!features_enabled(ARCH_SHSTK_SHSTK)) {
->+		if (args->shadow_stack)
->+			return (unsigned long)ERR_PTR(-EINVAL);
->+
-> 		return 0;
->+	}
->+
->+	/*
->+	 * If the user specified a shadow stack then do some basic
->+	 * validation and use it.  The caller is responsible for
->+	 * freeing the shadow stack.
->+	 */
->+	if (args->shadow_stack_size) {
->+		size = args->shadow_stack_size;
->+
->+		if (size < 8)
->+			return (unsigned long)ERR_PTR(-EINVAL);
->+	} else {
->+		size = args->stack_size;
->+	}
->
-> 	/*
-> 	 * For CLONE_VFORK the child will share the parents shadow stack.
->@@ -222,7 +242,7 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long cl
-> 	if (!(clone_flags & CLONE_VM))
-> 		return 0;
->
->-	size = adjust_shstk_size(stack_size);
->+	size = adjust_shstk_size(size);
-> 	addr = alloc_shstk(0, size, 0, false);
-> 	if (IS_ERR_VALUE(addr))
-> 		return addr;
->diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
->index a23af225c898..94e7cf62be51 100644
->--- a/include/linux/sched/task.h
->+++ b/include/linux/sched/task.h
->@@ -41,6 +41,8 @@ struct kernel_clone_args {
-> 	void *fn_arg;
-> 	struct cgroup *cgrp;
-> 	struct css_set *cset;
->+	unsigned long shadow_stack;
->+	unsigned long shadow_stack_size;
-> };
->
-> /*
->diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
->index 3bac0a8ceab2..a998b6d0c897 100644
->--- a/include/uapi/linux/sched.h
->+++ b/include/uapi/linux/sched.h
->@@ -84,6 +84,8 @@
->  *                kernel's limit of nested PID namespaces.
->  * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
->  *                a file descriptor for the cgroup.
->+ * @shadow_stack_size: Specify the size of the shadow stack to allocate
->+ *                     for the child process.
->  *
->  * The structure is versioned by size and thus extensible.
->  * New struct members must go at the end of the struct and
->@@ -101,12 +103,14 @@ struct clone_args {
-> 	__aligned_u64 set_tid;
-> 	__aligned_u64 set_tid_size;
-> 	__aligned_u64 cgroup;
->+	__aligned_u64 shadow_stack_size;
-> };
-> #endif
->
-> #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
-> #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
-> #define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
->+#define CLONE_ARGS_SIZE_VER3 96 /* sizeof fourth published struct */
->
-> /*
->  * Scheduling policies
->diff --git a/kernel/fork.c b/kernel/fork.c
->index 10917c3e1f03..b0df69c8185e 100644
->--- a/kernel/fork.c
->+++ b/kernel/fork.c
->@@ -3067,7 +3067,9 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
-> 		     CLONE_ARGS_SIZE_VER1);
-> 	BUILD_BUG_ON(offsetofend(struct clone_args, cgroup) !=
-> 		     CLONE_ARGS_SIZE_VER2);
->-	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER2);
->+	BUILD_BUG_ON(offsetofend(struct clone_args, shadow_stack_size) !=
->+		     CLONE_ARGS_SIZE_VER3);
->+	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER3);
->
-> 	if (unlikely(usize > PAGE_SIZE))
-> 		return -E2BIG;
->@@ -3110,6 +3112,7 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
-> 		.tls		= args.tls,
-> 		.set_tid_size	= args.set_tid_size,
-> 		.cgroup		= args.cgroup,
->+		.shadow_stack_size	= args.shadow_stack_size,
-> 	};
->
-> 	if (args.set_tid &&
->@@ -3150,6 +3153,23 @@ static inline bool clone3_stack_valid(struct kernel_clone_args *kargs)
-> 	return true;
-> }
->
->+/**
->+ * clone3_shadow_stack_valid - check and prepare shadow stack
->+ * @kargs: kernel clone args
->+ *
->+ * Verify that shadow stacks are only enabled if supported.
->+ */
->+static inline bool clone3_shadow_stack_valid(struct kernel_clone_args *kargs)
->+{
->+#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
->+	/* The architecture must check support on the specific machine */
->+	return true;
->+#else
->+	/* The architecture does not support shadow stacks */
->+	return !kargs->shadow_stack_size;
->+#endif
->+}
->+
-> static bool clone3_args_valid(struct kernel_clone_args *kargs)
-> {
-> 	/* Verify that no unknown flags are passed along. */
->@@ -3172,7 +3192,7 @@ static bool clone3_args_valid(struct kernel_clone_args *kargs)
-> 	    kargs->exit_signal)
-> 		return false;
->
->-	if (!clone3_stack_valid(kargs))
->+	if (!clone3_stack_valid(kargs) || !clone3_shadow_stack_valid(kargs))
-> 		return false;
->
-> 	return true;
->
->-- 
->2.30.2
->
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index 3c19d12c1bf5..ac0e887ccbd6 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -32,6 +32,16 @@ void xa_dump(const struct xarray *xa) { }
+ } while (0)
+ #endif
+ 
++/*
++ * Can be used in contexts which busy loop on large number of entries but can
++ * sleep and timing is if no importance to test correctness.
++ */
++#define XA_BUG_ON_RELAX(xa, x) do {				\
++	if ((tests_run % 1000) == 0)				\
++		schedule();					\
++	XA_BUG_ON(xa, x);					\
++} while (0)
++
+ static void *xa_mk_index(unsigned long index)
+ {
+ 	return xa_mk_value(index & LONG_MAX);
+@@ -728,12 +738,17 @@ static noinline void check_multi_store(struct xarray *xa)
+ }
+ 
+ #ifdef CONFIG_XARRAY_MULTI
++/* mimics page cache __filemap_add_folio() */
+ static noinline void check_xa_multi_store_adv_add(struct xarray *xa,
+ 						  unsigned long index,
+ 						  unsigned int order,
+ 						  void *p)
+ {
+ 	XA_STATE(xas, xa, index);
++	unsigned int nrpages = 1UL << order;
++
++	/* users are responsible for index alignemnt to the order when adding */
++	XA_BUG_ON(xa, index & (nrpages - 1));
+ 
+ 	xas_set_order(&xas, index, order);
+ 
+@@ -750,23 +765,48 @@ static noinline void check_xa_multi_store_adv_add(struct xarray *xa,
+ 	XA_BUG_ON(xa, xas_error(&xas));
+ }
+ 
++/* mimics page_cache_delete() */
++static noinline void check_xa_multi_store_adv_del_entry(struct xarray *xa,
++						        unsigned long index,
++							unsigned int order)
++{
++	XA_STATE(xas, xa, index);
++
++	xas_set_order(&xas, index, order);
++	xas_store(&xas, NULL);
++	xas_init_marks(&xas);
++}
++
+ static noinline void check_xa_multi_store_adv_delete(struct xarray *xa,
+ 						     unsigned long index,
+ 						     unsigned int order)
+ {
+-	unsigned int nrpages = 1UL << order;
+-	unsigned long base = round_down(index, nrpages);
+-	XA_STATE(xas, xa, base);
++	xa_lock_irq(xa);
++	check_xa_multi_store_adv_del_entry(xa, index, order);
++	xa_unlock_irq(xa);
++}
+ 
+-	xas_set_order(&xas, base, order);
+-	xas_store(&xas, NULL);
+-	xas_init_marks(&xas);
++/* mimics page cache filemap_get_entry() */
++static noinline void *test_get_entry(struct xarray *xa, unsigned long index)
++{
++	XA_STATE(xas, xa, index);
++	void *p;
++
++	rcu_read_lock();
++repeat:
++	xas_reset(&xas);
++	p = xas_load(&xas);
++	if (xas_retry(&xas, p))
++		goto repeat;
++	rcu_read_unlock();
++
++	return p;
+ }
+ 
+ static unsigned long some_val = 0xdeadbeef;
+ static unsigned long some_val_2 = 0xdeaddead;
+ 
+-/* mimics the page cache */
++/* mimics the page cache usage */
+ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 					      unsigned long pos,
+ 					      unsigned int order)
+@@ -783,13 +823,13 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	check_xa_multi_store_adv_add(xa, base, order, &some_val);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, base + i) != &some_val);
++		XA_BUG_ON_RELAX(xa, test_get_entry(xa, base + i) != &some_val);
+ 
+-	XA_BUG_ON(xa, xa_load(xa, next_index) != NULL);
++	XA_BUG_ON(xa, test_get_entry(xa, next_index) != NULL);
+ 
+ 	/* Use order 0 for the next item */
+ 	check_xa_multi_store_adv_add(xa, next_index, 0, &some_val_2);
+-	XA_BUG_ON(xa, xa_load(xa, next_index) != &some_val_2);
++	XA_BUG_ON(xa, test_get_entry(xa, next_index) != &some_val_2);
+ 
+ 	/* Remove the next item */
+ 	check_xa_multi_store_adv_delete(xa, next_index, 0);
+@@ -798,7 +838,8 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	check_xa_multi_store_adv_add(xa, next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, next_index + i) != &some_val_2);
++		XA_BUG_ON_RELAX(xa,
++			test_get_entry(xa, next_index + i) != &some_val_2);
+ 
+ 	check_xa_multi_store_adv_delete(xa, next_index, order);
+ 	check_xa_multi_store_adv_delete(xa, base, order);
+@@ -812,13 +853,15 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	check_xa_multi_store_adv_add(xa, next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, base + i) != NULL);
++		XA_BUG_ON_RELAX(xa, test_get_entry(xa, base + i) != NULL);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, next_index + i) != &some_val_2);
++		XA_BUG_ON_RELAX(xa,
++			test_get_entry(xa, next_index + i) != &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, next_next_index + i) != NULL);
++		XA_BUG_ON_RELAX(xa,
++			test_get_entry(xa, next_next_index + i) != NULL);
+ 
+ 	check_xa_multi_store_adv_delete(xa, next_index, order);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
+@@ -828,13 +871,15 @@ static noinline void check_xa_multi_store_adv(struct xarray *xa,
+ 	check_xa_multi_store_adv_add(xa, next_next_index, order, &some_val_2);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, base + i) != NULL);
++		XA_BUG_ON_RELAX(xa,
++			test_get_entry(xa, base + i) != NULL);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, next_index + i) != NULL);
++		XA_BUG_ON_RELAX(xa, test_get_entry(xa, next_index + i) != NULL);
+ 
+ 	for (i = 0; i < nrpages; i++)
+-		XA_BUG_ON(xa, xa_load(xa, next_next_index + i) != &some_val_2);
++		XA_BUG_ON_RELAX(xa,
++			test_get_entry(xa, next_next_index + i) != &some_val_2);
+ 
+ 	check_xa_multi_store_adv_delete(xa, next_next_index, order);
+ 	XA_BUG_ON(xa, !xa_empty(xa));
