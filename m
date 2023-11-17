@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 968767EF5C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 16:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B54D7EF5C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231652AbjKQP5v convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 10:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        id S232912AbjKQQDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQP5u (ORCPT
+        with ESMTP id S230513AbjKQQC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 10:57:50 -0500
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1690A5;
-        Fri, 17 Nov 2023 07:57:46 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso3172775a12.1;
-        Fri, 17 Nov 2023 07:57:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700236665; x=1700841465;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+N8Rkxs1VdZPQNYmn5RsQKxDMuZgXUMJtgtu8KsLn60=;
-        b=epjJ1NHMn5+CoTBPqudJHiWFubTn4inB4G+QKnF4y4jJm6mFcLOVCY7Me8KcournOv
-         Ffmfds7e5+9dWBKoId4URRAv+y2jW6rMA8mdBVWzYH87SjuZ9WpsNrMLKqy7AugEe1iE
-         MKEa2YNhrJFY7oWUStB2xk9sgNnXOiqTpfPSN24Rw097BXAWEDWV/0CLZUxcDlJAG0dk
-         99EgZTo6QvI22fCv1IdJSed55JE11yBh1GLE2Y0t2JZK0Xagrd9CFkH+oe7d3UnjRzS7
-         1E45NbMVmgjVPkeP5hoRbeqSBWSBh13tGh6X5bN6t6gwqVfDpjxfpSsuaUWYh/v2HJPu
-         GzVA==
-X-Gm-Message-State: AOJu0YxQokOk/69P5SLpgZpMKyoeeJRnwOWnwHvcyMHYaBzHrR5hxn5K
-        vflHFSmdrxfaS1/f6npIVlc5D4ad9hwybQ==
-X-Google-Smtp-Source: AGHT+IHzfmp7wsrWkrW7vPT2jmpUi0Nr6N/beJL6XdXEDzanbwn9Hqzrp/FDoP4fBzF+8zONpFc25g==
-X-Received: by 2002:a05:6402:42d0:b0:548:656b:629b with SMTP id i16-20020a05640242d000b00548656b629bmr51755edc.25.1700236664789;
-        Fri, 17 Nov 2023 07:57:44 -0800 (PST)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id m21-20020aa7d355000000b00546dc1b5515sm831507edr.94.2023.11.17.07.57.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 07:57:44 -0800 (PST)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso302832066b.1;
-        Fri, 17 Nov 2023 07:57:44 -0800 (PST)
-X-Received: by 2002:a17:907:7819:b0:9c3:d356:ad0c with SMTP id
- la25-20020a170907781900b009c3d356ad0cmr13299716ejc.24.1700236664516; Fri, 17
- Nov 2023 07:57:44 -0800 (PST)
+        Fri, 17 Nov 2023 11:02:57 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CB1E1;
+        Fri, 17 Nov 2023 08:02:53 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHCv0fl014041;
+        Fri, 17 Nov 2023 16:02:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=x0M3wklGqflq1G+DQ/EFE56suGOIsWSY/I+nLdmUqqo=;
+ b=jOyDALbl6JXQ7g5iwKBUMsdapWtX53GmIZx696gE3wnpWDE+yfLmrmQJsa6YFpeacj2w
+ /arnCpHAh3lfTZXYHVIOBEzRtnvcUOhPC8aMVS3570iAw0uZCz4ydTmsBrAOSM++YUHh
+ ykEstO0jTkVHXOy2DWnFkPGXIVY+wRtw/Dr+ClnN69KqF1+bn7+gJtb5aeuP/ciWRPJJ
+ 3lqCi5RkM0pbJEXLDGEY+pyUGkOuSxooyDf2skpEvaJX4hEsxK9A5Lu6loQCSHSkpqWV
+ RdSoLBPS6Oom3kMD3I6UarqS/X6589JPeOylR2gu77cj5rnJkxJppJiyhhdYnRHvHVyk jg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udkkuu75v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 16:02:25 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHG2OZg001517
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 16:02:24 GMT
+Received: from [10.79.43.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 17 Nov
+ 2023 08:02:17 -0800
+Message-ID: <045261f7-ec6d-7c90-bdbe-3cd1a58143b7@quicinc.com>
+Date:   Fri, 17 Nov 2023 21:32:14 +0530
 MIME-Version: 1.0
-References: <20231116155312.156593-1-dhowells@redhat.com> <20231116155312.156593-2-dhowells@redhat.com>
-In-Reply-To: <20231116155312.156593-2-dhowells@redhat.com>
-From:   Marc Dionne <marc.dionne@auristor.com>
-Date:   Fri, 17 Nov 2023 11:57:33 -0400
-X-Gmail-Original-Message-ID: <CAB9dFdvRa7Z9_zSap721gsTXJziQkuwpu=N3mP+432vxFGj2AA@mail.gmail.com>
-Message-ID: <CAB9dFdvRa7Z9_zSap721gsTXJziQkuwpu=N3mP+432vxFGj2AA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] afs: Fix afs_server_list to be cleaned up with RCU
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V2 4/4] dt-bindings: interrupt-controller: qcom,pdc:
+ document pdc on X1E80100
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <vkoul@kernel.org>, <quic_gurus@quicinc.com>,
+        <conor+dt@kernel.org>, <quic_rjendra@quicinc.com>,
+        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dmaengine@vger.kernel.org>, <iommu@lists.linux.dev>,
+        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
+References: <20231117105635.343-1-quic_sibis@quicinc.com>
+ <20231117105635.343-5-quic_sibis@quicinc.com>
+ <67e7df38-d0a9-4513-9eb8-1114a9ecc3b3@linaro.org>
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <67e7df38-d0a9-4513-9eb8-1114a9ecc3b3@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YYKJT12kYHoQtWKXUVMdTT2tt_zrJJyC
+X-Proofpoint-ORIG-GUID: YYKJT12kYHoQtWKXUVMdTT2tt_zrJJyC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_14,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=498 clxscore=1015 spamscore=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170119
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 11:53 AM David Howells <dhowells@redhat.com> wrote:
->
-> afs_server_list is accessed with the rcu_read_lock() held from
-> volume->servers, so it needs to be cleaned up correctly.
->
-> Fix this by using kfree_rcu() instead of kfree().
->
-> Fixes: 8a070a964877 ("afs: Detect cell aliases 1 - Cells with root volumes")
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Marc Dionne <marc.dionne@auristor.com>
-> cc: linux-afs@lists.infradead.org
-> ---
->  fs/afs/internal.h    | 1 +
->  fs/afs/server_list.c | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-> index c9cef3782b4a..a812952be1c9 100644
-> --- a/fs/afs/internal.h
-> +++ b/fs/afs/internal.h
-> @@ -553,6 +553,7 @@ struct afs_server_entry {
->  };
->
->  struct afs_server_list {
-> +       struct rcu_head         rcu;
->         afs_volid_t             vids[AFS_MAXTYPES]; /* Volume IDs */
->         refcount_t              usage;
->         unsigned char           nr_servers;
-> diff --git a/fs/afs/server_list.c b/fs/afs/server_list.c
-> index ed9056703505..b59896b1de0a 100644
-> --- a/fs/afs/server_list.c
-> +++ b/fs/afs/server_list.c
-> @@ -17,7 +17,7 @@ void afs_put_serverlist(struct afs_net *net, struct afs_server_list *slist)
->                 for (i = 0; i < slist->nr_servers; i++)
->                         afs_unuse_server(net, slist->servers[i].server,
->                                          afs_server_trace_put_slist);
-> -               kfree(slist);
-> +               kfree_rcu(slist, rcu);
->         }
->  }
+On 11/17/23 18:37, Krzysztof Kozlowski wrote:
+> On 17/11/2023 11:56, Sibi Sankar wrote:
+>> The X1E80100 SoC includes a PDC, document it.
+>>
+>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>> ---
+> 
+> Please rebase on next.
 
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
+This series was based on lnext-20231117.
 
-Marc
+-Sibi
+
+> 
+> Best regards,
+> Krzysztof
+> 
