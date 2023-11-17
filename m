@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954577EFB02
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0E47EFB0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbjKQVpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45384 "EHLO
+        id S232139AbjKQVvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbjKQVpj (ORCPT
+        with ESMTP id S229531AbjKQVvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:45:39 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB29AD
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:45:36 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9dd6dc9c00cso351535866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:45:36 -0800 (PST)
+        Fri, 17 Nov 2023 16:51:04 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5173120
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:51:01 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5aa7172bafdso1768044a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700257534; x=1700862334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xGFlEAYvYwVwffh6sLgp4waOfz+LHysgSd3bAAPCd40=;
-        b=LINqJrq3xG9qZ8V1wHbgGFBsicvRtsI2BTZNVl+YktN5FYVbEv6I3AikOqNkUxNzwq
-         e8QPuv7tLpB25kQ8CDbNB3SloplkSBeTZS2Po28kzcKo4sRFh8XOi4FK9iV7/WthVAwW
-         8T1AKd0mIGIVGEh3tWigDBMQZSLW0s7365NCA=
+        d=chromium.org; s=google; t=1700257861; x=1700862661; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=swBF5B7pk8gsTpy7ro1S9ZK9Y1Lu98QqRS2h9Xja/h8=;
+        b=BdoDuYNG2zI7vgZYVPsMyZWujBszO5p77FRxM7C/L7E0cSQCiIE2Tt5ojQ91tdmE6o
+         hZOqvUk5NtRs9CeoeZkAdUMmpvi6DHPNzLV5qHNsFyaY2X01KGK3E1alUSYtgYpfrL2f
+         ljMK4/1hfeR65ep8uJV0UswfGN2f1xwr4fapI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700257534; x=1700862334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xGFlEAYvYwVwffh6sLgp4waOfz+LHysgSd3bAAPCd40=;
-        b=gOSxkvBMjipB+FMR0AckTKXM9v6hrG8QL6GDWlkS5lYcfqFNYjHYJ6yDEdQVBIQonW
-         pFoFKbUNuNo9Y1MKVMSR4caQOy4iC2vY3Q8JStfvwzrNDxk/rfK1v0D3p6T39Uo95TEh
-         YUf8zKyPne2DGMNMT3XVTxoqTuUjGYn5gup9Asp7rxFx8Q0CnepWY4NKsMa1EpaCzAA/
-         5f/edEmpVYbGi2m8w8QaSb96/4emmEPF45VT+eCZHZWYhXsPV9bdzPnY54M0TsFBe68F
-         CxJ5T9PJ80DsT+H5m6G0y5oTRm3PmXQpeH3PQ6lu0enDNF62PVxCFBXtnegI2lIRBGht
-         JwIA==
-X-Gm-Message-State: AOJu0YyQQRjNic9gzzhrtEKmwZ2guEQZar/CcmjJuuIoUqCG0lCytpUf
-        8Ag1Lp2Sw196GaWjgfQb2w+qnONNwwzH61O3MFEGCg==
-X-Google-Smtp-Source: AGHT+IF8k6E8mvCH1/VMYoP86tae0AcJwW69nJyoUr4Xvhd5yuJFIdmU9EQKwOgCxt2ZOydnHHnVvg==
-X-Received: by 2002:a17:907:c78d:b0:9e3:fc27:9356 with SMTP id tz13-20020a170907c78d00b009e3fc279356mr341357ejc.51.1700257534189;
-        Fri, 17 Nov 2023 13:45:34 -0800 (PST)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
-        by smtp.gmail.com with ESMTPSA id jo26-20020a170906f6da00b009ddaa2183d4sm1187872ejb.42.2023.11.17.13.45.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 13:45:33 -0800 (PST)
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40837124e1cso19995e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:45:33 -0800 (PST)
-X-Received: by 2002:a05:600c:1c83:b0:3fe:eb42:7ec with SMTP id
- k3-20020a05600c1c8300b003feeb4207ecmr55080wms.1.1700257533517; Fri, 17 Nov
- 2023 13:45:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700257861; x=1700862661;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=swBF5B7pk8gsTpy7ro1S9ZK9Y1Lu98QqRS2h9Xja/h8=;
+        b=Es0hrQBw3VJXlBaOTjjd6Sw4ux+gsig3NJI4FITESSprYOWLfkTXmH6YVccyYpiPhd
+         HwqNfhy//lNAS+NCcDtcyY4tEH49jVjUsfOorHMH6uJYfqqlZ7Eu8QzRr15I2aGYx/zM
+         aP825+hVLXOdPnjWw7GFgz+Q0VlHA8cx5hxGnlh23qHkLQuz//0/e1yA+RbUIoa8CP5y
+         a0mU4nQQ5pNcZksAP2oRMZClaf1SQnxw6fQJ1KXotIddHmdd4vw0v1JAimweFYHX5Vig
+         FFUMas8KUpIz9x6qPKqg9DcU1IaHy4xOPEUc2pc9xu7cxyvHTzVMA46gEs91Mtsy5s++
+         xTRw==
+X-Gm-Message-State: AOJu0YyJXYAMu4Kdxxx+7jDYuvKEsv9iHCWi6OgEV/C+gqwj5d0d1ZXp
+        YcGV+nHki/L27xu0HQaahvlqgQ==
+X-Google-Smtp-Source: AGHT+IEUspXo2pTbNwW9zexsuhcFiZyZsalHf5KstkhLjR3XfhaoQzHpDx11A94uCRV3b5EuHixtow==
+X-Received: by 2002:a17:90b:384b:b0:280:8544:42fb with SMTP id nl11-20020a17090b384b00b00280854442fbmr842143pjb.17.1700257861154;
+        Fri, 17 Nov 2023 13:51:01 -0800 (PST)
+Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:7ed:b095:f0ba:5801])
+        by smtp.gmail.com with ESMTPSA id x7-20020a17090aca0700b00256b67208b1sm3639587pjt.56.2023.11.17.13.50.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 13:51:00 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH v7 0/3] Use correct mode for edp panel
+Date:   Fri, 17 Nov 2023 13:46:31 -0800
+Message-ID: <20231117215056.1883314-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
 MIME-Version: 1.0
-References: <20231114021529.1834-1-lizhe.67@bytedance.com>
-In-Reply-To: <20231114021529.1834-1-lizhe.67@bytedance.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 17 Nov 2023 13:45:21 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
-Message-ID: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
-Subject: Re: [RFC] softlockup: serialized softlockup's log
-To:     lizhe.67@bytedance.com
-Cc:     akpm@linux-foundation.org, pmladek@suse.com, kernelfans@gmail.com,
-        lecopzer.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -77,54 +74,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This series contains 2 part to handle mode selection for edp panel:
+1. (patch 1, 2) Add a quirk to override the edid mode for generic edp.
+2. (patch 3) If a panel contains hardcoded mode, skip edid mode.
 
-On Mon, Nov 13, 2023 at 6:16=E2=80=AFPM <lizhe.67@bytedance.com> wrote:
->
-> From: Li Zhe <lizhe.67@bytedance.com>
->
-> If multiple CPUs trigger softlockup at the same time, the softlockup's
-> logs will appear staggeredly in dmesg, which will affect the viewing of
-> the logs for developer. Since the code path for outputting softlockup log=
-s
-> is not a kernel hotspot and the performance requirements for the code
-> are not strict, locks are used to serialize the softlockup log output
-> to improve the readability of the logs.
->
-> Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
-> ---
->  kernel/watchdog.c | 3 +++
->  1 file changed, 3 insertions(+)
+Previous versions:
+v1: https://patchwork.kernel.org/project/dri-devel/cover/20231101212604.1636517-1-hsinyi@chromium.org/
+v2: https://patchwork.kernel.org/project/dri-devel/cover/20231102221309.1971910-1-hsinyi@chromium.org/
+v3: https://patchwork.kernel.org/project/dri-devel/cover/20231106202718.2770821-1-hsinyi@chromium.org/
+v4: https://patchwork.kernel.org/project/dri-devel/cover/20231106210337.2900034-1-hsinyi@chromium.org/
+v5: https://patchwork.kernel.org/project/dri-devel/cover/20231107000023.2928195-1-hsinyi@chromium.org/
+v6: https://lore.kernel.org/lkml/20231107204611.3082200-2-hsinyi@chromium.org/
 
-This seems reasonable to me. It might be interesting to talk about in
-your commit message how this interacts with the various options. From
-code inspection, I believe:
+Hsin-Yi Wang (3):
+  drm/panel-edp: Add override_edid_mode quirk for generic edp
+  drm/panel-edp: Add auo_b116xa3_mode
+  drm/panel-edp: Avoid adding multiple preferred modes
 
-* If `softlockup_all_cpu_backtrace` then this is a no-op since other
-CPUs will be prevented from running the printing code while one is
-already printing.
+ drivers/gpu/drm/panel/panel-edp.c | 79 ++++++++++++++++++++++++++-----
+ 1 file changed, 68 insertions(+), 11 deletions(-)
 
-* I'm not 100% sure what happens if `softlockup_panic` is set and I
-haven't sat down to test this myself. Will one CPUs panic message
-interleave the other CPUs traces. I guess in the end both CPUs will
-call panic()? Maybe you could experiment and describe the behavior in
-your commit message?
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
 
-
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 5cd6d4e26915..8324ac194d0a 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -448,6 +448,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct =
-hrtimer *hrtimer)
->         struct pt_regs *regs =3D get_irq_regs();
->         int duration;
->         int softlockup_all_cpu_backtrace =3D sysctl_softlockup_all_cpu_ba=
-cktrace;
-> +       static DEFINE_SPINLOCK(watchdog_timer_lock);
-
-I'd be tempted to define this outside the scope of this function. I
-need to dig more, but I'm pretty sure I've seen cases where a soft
-lockup could trigger while I was trying to print traces for a
-hardlockup, so it might be useful to grab the same spinlock in both
-places...
