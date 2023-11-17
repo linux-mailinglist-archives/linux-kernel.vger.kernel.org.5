@@ -2,219 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E3B7EFB1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD567EFB25
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjKQV7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
+        id S231947AbjKQWFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 17:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbjKQV7K (ORCPT
+        with ESMTP id S229823AbjKQWFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:59:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43E4D4B
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700258346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oWQdHec7BormnXBVKJnIj7WafCKTmMPkkY3/JChXWjE=;
-        b=d6ap6Gnq/ZBJ3zo7m1DdAfwXDJFpUAuSw+jZByjDXHtqAvRWRcDkzHeCoP2XdUvZ0SswRT
-        x7cU5cnlH+gkog+aBCsRgNhRZ3kivmMn3DFHppwsyJLE92//LmLz5uuiJ4aIDHa0aU5Ewr
-        /Ciw+5daqbyQ76THtP7DVOL9kxTShbw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-685-s81-goMVNeaneGNLbfvoDw-1; Fri, 17 Nov 2023 16:59:04 -0500
-X-MC-Unique: s81-goMVNeaneGNLbfvoDw-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-66d12b547e2so26552466d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:59:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700258343; x=1700863143;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oWQdHec7BormnXBVKJnIj7WafCKTmMPkkY3/JChXWjE=;
-        b=EbN2P0/8AkyIRIs6u30e35Jz6VjzwKvRyO1IW5MgIWhraspkZwi7SydlFdQPHOLpa/
-         gasBLUKy0Vxe1Kd0qU1Sj90WQ9Vj3pe7st+rzYnN1L5Ae/zHooAVuQ9ywjv9SDD43BmF
-         SG3Svu/VIxE7AV2FSF6yiOjIe0Y/l36CLw7qTo1RT58gyH48YfLC8rX+e1voLTocXR2s
-         CC33VZi3YY8EtnZ/vylkJMx846giZncfzphr+54twTLKCFlrAoNxX4/VyXy+9j5jtiWg
-         GpYlqrQBx/NIUeVWbSXScQwx7lfh2EF2ZwkDxW14+ib5go3T6d4AjMtdRLKSn4OpYfpT
-         ZQ4Q==
-X-Gm-Message-State: AOJu0Yyyuuoj9bHvMhYW8eh2qJy2Kg1ktZCyMMlC/oreQuRQF7LVqpzw
-        A0fwJ1uy3wUdSiQ4s/bD++nHAgTmL8EYAs8kjuti8xMwWhI2F9zfL6n4p7duN8Ku2/8q4KoXFlI
-        WmVfrIlLGLR9+Wd3yH9htXWbo0z7H5Ss=
-X-Received: by 2002:ad4:5bcf:0:b0:672:20c0:ac08 with SMTP id t15-20020ad45bcf000000b0067220c0ac08mr382705qvt.48.1700258343634;
-        Fri, 17 Nov 2023 13:59:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG3i/vi2BN8Bs9Flb2+IX7GpzCmet/+Sa5Cf35ReQiHv571j6tdd0vItptAAYPoJcT6mxZEHQ==
-X-Received: by 2002:ad4:5bcf:0:b0:672:20c0:ac08 with SMTP id t15-20020ad45bcf000000b0067220c0ac08mr382693qvt.48.1700258343350;
-        Fri, 17 Nov 2023 13:59:03 -0800 (PST)
-Received: from [192.168.9.34] (net-2-34-24-178.cust.vodafonedsl.it. [2.34.24.178])
-        by smtp.gmail.com with ESMTPSA id y18-20020ad45312000000b0065aff6b49afsm926467qvr.110.2023.11.17.13.59.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 13:59:02 -0800 (PST)
-Message-ID: <2b26d45d-7577-4824-bad9-d5c85f5a098a@redhat.com>
-Date:   Fri, 17 Nov 2023 22:58:59 +0100
+        Fri, 17 Nov 2023 17:05:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6808B8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700258731; x=1731794731;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1IVjDq3G/P6Y2vbUx/l6WBUETHMRvGam3Dp/Q4hnVV4=;
+  b=C5b2NEORnpYiek9/af5aUWGb8ZLDimSngLvstuOz9eG8gl7y4K1M2/oz
+   yMG1eEwPKmPZdGPo3uoYQWZGcLYIHYrdl7ejFJMTmfrcOI9pGosI4GrMf
+   I1YVHJ3hvA1HyIyZzbjHOPAcYIQ+/ypKzmV+ertjM4/tECV4c7spR6Vzf
+   dNAaKQLHniDpfcBmaZ5xFiDOI24jMsLLZF0XxRL+Lec7P88UxBMPlOFht
+   l39SzslwW1ADg5iaxYK+BVqjiWXITmaHop49FP/EwOAW8Ces+WG8V5anD
+   0eoqrYl86sMekO2sGkPLj8wFiGCECnOAiUZ0WqyF28dOOOHkF9ZBZH938
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="422470019"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="422470019"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 14:05:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="765728309"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="765728309"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 17 Nov 2023 14:05:29 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r46xp-0003CD-26;
+        Fri, 17 Nov 2023 22:05:26 +0000
+Date:   Sat, 18 Nov 2023 06:04:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: kernel/locking/locktorture.c:127:23: sparse: sparse: symbol
+ 'call_rcu_chain' was not declared. Should it be static?
+Message-ID: <202311180505.EMP8W0WO-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Marco Pagani <marpagan@redhat.com>
-Subject: Re: [RFC PATCH] fpga: remove module reference counting from core
- components
-To:     Xu Yilun <yilun.xu@linux.intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Alan Tull <atull@opensource.altera.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231027152928.184012-1-marpagan@redhat.com>
- <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
- <ae202b70-b106-4805-9ce0-ffbb2738bb04@redhat.com>
- <ZUuu1CgVd4h3Qqu7@yilunxu-OptiPlex-7050>
- <5c3c3905-67c2-4cc2-8477-c6fc74676fc9@redhat.com>
- <ZVMZZNyLE0+YtKYz@yilunxu-OptiPlex-7050>
-Content-Language: en-US
-In-Reply-To: <ZVMZZNyLE0+YtKYz@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6bc40e44f1ddef16a787f3501b97f1fff909177c
+commit: 7f993623e9ebcd633c0f760991e5078b95a37db3 locktorture: Add call_rcu_chains module parameter
+date:   8 weeks ago
+config: sparc-randconfig-r021-20230427 (https://download.01.org/0day-ci/archive/20231118/202311180505.EMP8W0WO-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231118/202311180505.EMP8W0WO-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311180505.EMP8W0WO-lkp@intel.com/
 
-On 2023-11-14 07:53, Xu Yilun wrote:
-> On Fri, Nov 10, 2023 at 11:58:37PM +0100, Marco Pagani wrote:
->>
->>
->> On 2023-11-08 16:52, Xu Yilun wrote:
->>> On Fri, Nov 03, 2023 at 09:31:02PM +0100, Marco Pagani wrote:
->>>>
->>>>
->>>> On 2023-10-30 09:32, Xu Yilun wrote:
->>>>> On Fri, Oct 27, 2023 at 05:29:27PM +0200, Marco Pagani wrote:
->>>>>> Remove unnecessary module reference counting from the core components
->>>>>> of the subsystem. Low-level driver modules cannot be removed before
->>>>>> core modules since they use their exported symbols.
->>>>>
->>>>> Could you help show the code for this conclusion?
->>>>>
->>>>> This is different from what I remember, a module cannot be removed when
->>>>> its exported symbols are being used by other modules. IOW, the core
->>>>> modules cannot be removed when there exist related low-level driver
->>>>> modules. But the low-level driver modules could be removed freely
->>>>> without other protecting mechanism.
->>>>>
->>>>
->>>> My understanding was that we wanted to remove module reference counting
->>>> from the fpga core and ease it from the responsibility of preventing
->>>> low-level driver modules from being unloaded. 
->>>
->>> FPGA core needs to prevent low-level driver module unloading sometimes,
->>> e.g. when region reprograming is in progress. That's why we get fpga
->>> region driver modules & bridge modules in fpga_region_program_fpga().
->>>
->>> But we try best to get them only necessary. Blindly geting them all the
->>> time results in no way to unload all modules (core & low level modules).
->>>
->>>>
->>>> If we want to keep reference counting in the fpga core, we could add a
->>>> struct module *owner field in the struct fpga_manager_ops (and others
->>>> core *_ops) so that the low-level driver can set it to THIS_MODULE.
->>>> In this way, we can later use it in fpga_mgr_register() to bump up the
->>>
->>> Yes, we should pass the module owner in fpga_mgr_register(), but could
->>> not bump up its refcount at once.
->>>
->>>> refcount of the low-level driver module by calling
->>>> try_module_get(mgr->mops->owner) directly when it registers the manager.
->>>> Finally, fpga_mgr_unregister() would call module_put(mgr->mops->owner)
->>>> to allow unloading the low-level driver module.
->>>
->>> As mentioned above, that makes problem. Most of the low level driver
->>> modules call fpga_mgr_unregister() on module_exit(), but bumping up
->>> their module refcount prevents module_exit() been executed. That came
->>> out to be a dead lock.
->>>
->>
->> Initially, I considered calling try_module_get(mgr->mops->owner)
->> in fpga_mgr_get(). But then, the new kernel-doc description of
->> try_module_get() (1) made me question the safety of that approach.
->> My concern is that the low-level driver could be removed right when
->> someone is calling fpga_mgr_get() and hasn't yet reached
->> try_module_get(mgr->mops->owner). In that case, the struct mops
->> (along with the entire low-level driver module) and the manager dev
->> would "disappear" under the feet of fpga_mgr_get().
-> 
-> I don't get what's the problem. fpga_mgr_get() would first of all
-> look for mgr_dev via class_find_device(), if low-level module is
-> unloaded, then you cannot find the mgr_dev and gracefully error out.
-> 
-> If class_find_device() succeed, mgr_dev got a reference and won't
-> disappear. Finally we may still found module removed when
-> try_module_get(), but should be another graceful error out.
-> 
-> Am I missing anything?
-> 
+sparse warnings: (new ones prefixed by >>)
+>> kernel/locking/locktorture.c:127:23: sparse: sparse: symbol 'call_rcu_chain' was not declared. Should it be static?
+   kernel/locking/locktorture.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+   kernel/locking/locktorture.c:496:12: sparse: sparse: context imbalance in 'torture_mutex_lock' - wrong count at exit
+   kernel/locking/locktorture.c:512:13: sparse: sparse: context imbalance in 'torture_mutex_unlock' - wrong count at exit
+   kernel/locking/locktorture.c:570:12: sparse: sparse: context imbalance in 'torture_ww_mutex_lock' - wrong count at exit
+   kernel/locking/locktorture.c:614:13: sparse: sparse: context imbalance in 'torture_ww_mutex_unlock' - wrong count at exit
+   kernel/locking/locktorture.c:665:12: sparse: sparse: context imbalance in 'torture_rtmutex_lock' - wrong count at exit
+   kernel/locking/locktorture.c:689:13: sparse: sparse: context imbalance in 'torture_rtmutex_unlock' - wrong count at exit
+   kernel/locking/locktorture.c:729:12: sparse: sparse: context imbalance in 'torture_rwsem_down_write' - wrong count at exit
+   kernel/locking/locktorture.c:745:13: sparse: sparse: context imbalance in 'torture_rwsem_up_write' - wrong count at exit
+   kernel/locking/locktorture.c:751:12: sparse: sparse: context imbalance in 'torture_rwsem_down_read' - wrong count at exit
+   kernel/locking/locktorture.c:769:13: sparse: sparse: context imbalance in 'torture_rwsem_up_read' - wrong count at exit
+   kernel/locking/locktorture.c:799:12: sparse: sparse: context imbalance in 'torture_percpu_rwsem_down_write' - wrong count at exit
+   kernel/locking/locktorture.c:806:13: sparse: sparse: context imbalance in 'torture_percpu_rwsem_up_write' - wrong count at exit
+   kernel/locking/locktorture.c: note: in included file (through include/linux/fs.h, include/linux/proc_fs.h, arch/sparc/include/asm/prom.h, ...):
+   include/linux/percpu-rwsem.h:70:9: sparse: sparse: context imbalance in 'torture_percpu_rwsem_down_read' - wrong count at exit
+   include/linux/percpu-rwsem.h:121:9: sparse: sparse: context imbalance in 'torture_percpu_rwsem_up_read' - wrong count at exit
 
-My concern is: suppose that you successfully got the mgr dev from
-class_find_device(), and now you are in __fpga_mgr_get(), right before
-try_module_get(mgr->mops->owner). At that point, you get descheduled,
-and while you are not running, someone unloads the low-level driver
-module that ends its life by calling fpga_mgr_unregister(). When you
-wake up, you find yourself with a reference to a device that does not
-exist anymore, trying to get a module that does not exist anymore
-through one of its symbols (module *owner in mops).
+vim +/call_rcu_chain +127 kernel/locking/locktorture.c
 
-Greg suggested checking if this can really happen and eventually
-protecting fpga_mgr_get() and fpga_mgr_unregister() with a lock for
-mops (if I understood correctly). In that case, considering the same
-scenario described above:
+   122	
+   123	struct call_rcu_chain {
+   124		struct rcu_head crc_rh;
+   125		bool crc_stop;
+   126	};
+ > 127	struct call_rcu_chain *call_rcu_chain;
+   128	
 
-fpga_mgr_get() gets the mops lock and the mgr dev but is suspended
-before calling try_module_get().
-
-Someone unloads the low-level driver, delete_modules progresses
-(the module's recount hasn't yet been incremented) but blocks while
-calling fpga_mgr_unregister() since fpga_mgr_get() is holding the lock.
-
-fpga_mgr_get() resumes and tries to get the module through one of its
-symbols (mgr->mops->owner). The module's memory hasn't yet been freed
-(delete_modules is blocked), and the refcount is zero, so
-try_module_get() fails safely, and we can put the mgr dev that is
-still present since fpga_mgr_unregister() is blocked.
-
-fpga_mgr_unregister() resumes and unregisters the mgr dev.
-
-I'm still thinking about the possible implications. On the one hand,
-it looks safe in this case, but on the other hand, it feels brittle.
-In my understanding, the root problem is that there will always be a
-critical window (when you have taken a reference to the device but
-not yet to the low-level driver module) when unloading the module
-could be potentially unsafe depending on the current implementation
-and the preemption model.
-
-I still feel that it would be simpler and safer if we could bump
-up the refcount during fpga_mgr_register() and maybe have a sysfs
-attribute to unlock the low-level driver (if no one has taken the
-mgr dev refcount). That way, it would be safer by design since the
-refcount will be bumped up right during the module load procedure,
-and we could guarantee that the lifetime of the mgr device is
-entirely contained in the lifetime of the low-level driver module.
-
->>
->> (1) 557aafac1153 ("kernel/module: add documentation for try_module_get()")
->>  
- 
-Thanks,
-Marco
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
