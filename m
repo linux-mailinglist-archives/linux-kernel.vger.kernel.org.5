@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D670B7EF62E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4FE7EF62F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346073AbjKQQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:28:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S1346091AbjKQQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235725AbjKQQ2b (ORCPT
+        with ESMTP id S232906AbjKQQ2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Nov 2023 11:28:31 -0500
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F07D50;
-        Fri, 17 Nov 2023 08:28:24 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AHGSB7Z03225394, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AHGSB7Z03225394
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777C5171A;
+        Fri, 17 Nov 2023 08:28:27 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AHGSFEu83225397, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AHGSFEu83225397
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 18 Nov 2023 00:28:11 +0800
+        Sat, 18 Nov 2023 00:28:15 +0800
 Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Sat, 18 Nov 2023 00:28:12 +0800
+ 15.1.2375.32; Sat, 18 Nov 2023 00:28:16 +0800
 Received: from james-bs01.realtek.com.tw (172.21.190.247) by
  RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Sat, 18 Nov 2023 00:28:11 +0800
+ 15.1.2375.7; Sat, 18 Nov 2023 00:28:15 +0800
 From:   James Tai <james.tai@realtek.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -36,9 +36,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Conor Dooley <conor+dt@kernel.org>,
         James Tai <james.tai@realtek.com>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH v2 2/6] irqchip: Add interrupt controller support for Realtek DHC SoCs
-Date:   Sat, 18 Nov 2023 00:27:05 +0800
-Message-ID: <20231117162709.1096585-3-james.tai@realtek.com>
+Subject: [PATCH v2 3/6] irqchip: Introduce RTD1319 support using the Realtek common interrupt controller driver
+Date:   Sat, 18 Nov 2023 00:27:06 +0800
+Message-ID: <20231117162709.1096585-4-james.tai@realtek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231117162709.1096585-1-james.tai@realtek.com>
 References: <20231117162709.1096585-1-james.tai@realtek.com>
@@ -52,6 +52,10 @@ X-KSE-ServerInfo: RTEXMBS03.realtek.com.tw, 9
 X-KSE-AntiSpam-Interceptor-Info: fallback
 X-KSE-Antivirus-Interceptor-Info: fallback
 X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -61,340 +65,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Realtek DHC (Digital Home Center) SoCs share a common interrupt controller
-design. This universal interrupt controller driver provides support for
-various variants within the Realtek DHC SoC family.
+Add support for the RTD1319 platform.
 
-Each DHC SoC features two sets of extended interrupt controllers, each
-capable of handling up to 32 interrupts. These expansion controllers are
-connected to the GIC (Generic Interrupt Controller).
-
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311061208.hJmxGqym-lkp@intel.com/
 CC: Thomas Gleixner <tglx@linutronix.de>
 CC: Marc Zyngier <maz@kernel.org>
 CC: linux-kernel@vger.kernel.org
 Signed-off-by: James Tai <james.tai@realtek.com>
 ---
 v1 to v2 change:
+- Resolved kernel test robot build warnings
+- Replaced magic number with macro
 - Fixed code style issues
-- Removed the realtek_intc_set_affinity funcation
-- Replaced spin_lock_irqsave with raw_spin_lock
 
- drivers/irqchip/Kconfig                   |   4 +
- drivers/irqchip/Makefile                  |   1 +
- drivers/irqchip/irq-realtek-intc-common.c | 192 ++++++++++++++++++++++
- drivers/irqchip/irq-realtek-intc-common.h |  77 +++++++++
- 4 files changed, 274 insertions(+)
- create mode 100644 drivers/irqchip/irq-realtek-intc-common.c
- create mode 100644 drivers/irqchip/irq-realtek-intc-common.h
+ drivers/irqchip/Kconfig               |   6 +
+ drivers/irqchip/Makefile              |   1 +
+ drivers/irqchip/irq-realtek-rtd1319.c | 218 ++++++++++++++++++++++++++
+ 3 files changed, 225 insertions(+)
+ create mode 100644 drivers/irqchip/irq-realtek-rtd1319.c
 
 diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index f7149d0f3d45..267c3429b48d 100644
+index 267c3429b48d..05856ce885fa 100644
 --- a/drivers/irqchip/Kconfig
 +++ b/drivers/irqchip/Kconfig
-@@ -218,6 +218,10 @@ config RDA_INTC
- 	bool
+@@ -222,6 +222,12 @@ config REALTEK_DHC_INTC
+ 	tristate
  	select IRQ_DOMAIN
  
-+config REALTEK_DHC_INTC
-+	tristate
-+	select IRQ_DOMAIN
++config REALTEK_RTD1319_INTC
++	tristate "Realtek RTD1319 interrupt controller"
++	select REALTEK_DHC_INTC
++	help
++	  Support for Realtek RTD1319 Interrupt Controller.
 +
  config RENESAS_INTC_IRQPIN
  	bool "Renesas INTC External IRQ Pin Support" if COMPILE_TEST
  	select IRQ_DOMAIN
 diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index ffd945fe71aa..f6774af7fde2 100644
+index f6774af7fde2..6a2650b0a924 100644
 --- a/drivers/irqchip/Makefile
 +++ b/drivers/irqchip/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_IRQ_MIPS_CPU)		+= irq-mips-cpu.o
- obj-$(CONFIG_IXP4XX_IRQ)		+= irq-ixp4xx.o
+@@ -48,6 +48,7 @@ obj-$(CONFIG_IXP4XX_IRQ)		+= irq-ixp4xx.o
  obj-$(CONFIG_JCORE_AIC)			+= irq-jcore-aic.o
  obj-$(CONFIG_RDA_INTC)			+= irq-rda-intc.o
-+obj-$(CONFIG_REALTEK_DHC_INTC)		+= irq-realtek-intc-common.o
+ obj-$(CONFIG_REALTEK_DHC_INTC)		+= irq-realtek-intc-common.o
++obj-$(CONFIG_REALTEK_RTD1319_INTC)	+= irq-realtek-rtd1319.o
  obj-$(CONFIG_RENESAS_INTC_IRQPIN)	+= irq-renesas-intc-irqpin.o
  obj-$(CONFIG_RENESAS_IRQC)		+= irq-renesas-irqc.o
  obj-$(CONFIG_RENESAS_RZA1_IRQC)		+= irq-renesas-rza1.o
-diff --git a/drivers/irqchip/irq-realtek-intc-common.c b/drivers/irqchip/irq-realtek-intc-common.c
+diff --git a/drivers/irqchip/irq-realtek-rtd1319.c b/drivers/irqchip/irq-realtek-rtd1319.c
 new file mode 100644
-index 000000000000..f701d9e7d141
+index 000000000000..23c13c218b04
 --- /dev/null
-+++ b/drivers/irqchip/irq-realtek-intc-common.c
-@@ -0,0 +1,192 @@
++++ b/drivers/irqchip/irq-realtek-rtd1319.c
+@@ -0,0 +1,218 @@
 +// SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
 +/*
-+ * Realtek DHC SoCs interrupt controller driver
++ * Realtek RTD1319 interrupt controller driver
 + *
 + * Copyright (c) 2023 Realtek Semiconductor Corporation
 + */
 +
++#include <linux/init.h>
++#include <linux/io.h>
 +#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
 +
 +#include "irq-realtek-intc-common.h"
 +
-+struct realtek_intc_data;
++#define ISO_NORMAL_MASK      0xffffcffe
++#define ISO_RTC_MASK         0x00003001
++#define MISC_NMI_WDT_MASK    0x00000004
++#define MISC_NORMAL_MASK     0xffffc0d2
++#define MISC_UART1_MASK      0x00000028
++#define MISC_UART2_MASK      0x00002100
 +
-+static inline unsigned int realtek_intc_get_ints(struct realtek_intc_data *data)
-+{
-+	return readl(data->base + data->info->isr_offset);
-+}
++#define ISO_ISR_EN_OFFSET    0x40
++#define ISO_ISR_OFFSET       0
++#define ISO_ISR_UMSK_OFFSET  0x4
++#define MISC_ISR_EN_OFFSET   0x80
++#define MISC_ISR_OFFSET      0xc
++#define MISC_ISR_UMSK_OFFSET 0x8
 +
-+static inline void realtek_intc_clear_ints_bit(struct realtek_intc_data *data, int bit)
-+{
-+	writel(BIT(bit) & ~1, data->base + data->info->isr_offset);
-+}
-+
-+static inline unsigned int realtek_intc_get_inte(struct realtek_intc_data *data)
-+{
-+	unsigned int val;
-+
-+	raw_spin_lock(&data->lock);
-+	val = readl(data->base + data->info->scpu_int_en_offset);
-+	raw_spin_unlock(&data->lock);
-+
-+	return val;
-+}
-+
-+static void realtek_intc_handler(struct irq_desc *desc)
-+{
-+	struct realtek_intc_subset_data *subset_data = irq_desc_get_handler_data(desc);
-+	struct realtek_intc_data *data = subset_data->common;
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	u32 ints, inte, mask;
-+	int irq;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	ints = realtek_intc_get_ints(data) & subset_data->cfg->ints_mask;
-+	inte = realtek_intc_get_inte(data);
-+
-+	while (ints) {
-+		irq = __ffs(ints);
-+		ints &= ~BIT(irq);
-+
-+		mask = data->info->isr_to_scpu_int_en_mask[irq];
-+		if (mask != IRQ_ALWAYS_ENABLED && !(inte & mask))
-+			continue;
-+
-+		generic_handle_irq(irq_find_mapping(data->domain, irq));
-+		realtek_intc_clear_ints_bit(data, irq);
-+	}
-+
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static void realtek_intc_mask_irq(struct irq_data *data)
-+{
-+	struct realtek_intc_data *intc_data = irq_data_get_irq_chip_data(data);
-+
-+	writel(BIT(data->hwirq), intc_data->base + intc_data->info->isr_offset);
-+}
-+
-+static void realtek_intc_unmask_irq(struct irq_data *data)
-+{
-+	struct realtek_intc_data *intc_data = irq_data_get_irq_chip_data(data);
-+
-+	writel(BIT(data->hwirq), intc_data->base + intc_data->info->umsk_isr_offset);
-+}
-+
-+static void realtek_intc_enable_irq(struct irq_data *data)
-+{
-+	struct realtek_intc_data *intc_data = irq_data_get_irq_chip_data(data);
-+	u32 scpu_int_en, mask;
-+
-+	mask = intc_data->info->isr_to_scpu_int_en_mask[data->hwirq];
-+	if (!mask)
-+		return;
-+
-+	raw_spin_lock(&intc_data->lock);
-+	scpu_int_en = readl(intc_data->base + intc_data->info->scpu_int_en_offset);
-+	scpu_int_en |= mask;
-+	writel(scpu_int_en, intc_data->base + intc_data->info->umsk_isr_offset);
-+	raw_spin_unlock(&intc_data->lock);
-+}
-+
-+static void realtek_intc_disable_irq(struct irq_data *data)
-+{
-+	struct realtek_intc_data *intc_data = irq_data_get_irq_chip_data(data);
-+	u32 scpu_int_en, mask;
-+
-+	mask = intc_data->info->isr_to_scpu_int_en_mask[data->hwirq];
-+	if (!mask)
-+		return;
-+
-+	raw_spin_lock(&intc_data->lock);
-+	scpu_int_en = readl(intc_data->base + intc_data->info->scpu_int_en_offset);
-+	scpu_int_en &= ~mask;
-+	writel(scpu_int_en, intc_data->base + intc_data->info->umsk_isr_offset);
-+	raw_spin_unlock(&intc_data->lock);
-+}
-+
-+static struct irq_chip realtek_intc_chip = {
-+	.name		  = "realtek-intc",
-+	.irq_mask	  = realtek_intc_mask_irq,
-+	.irq_unmask	  = realtek_intc_unmask_irq,
-+	.irq_enable	  = realtek_intc_enable_irq,
-+	.irq_disable	  = realtek_intc_disable_irq,
++enum rtd1319_iso_isr_bits {
++	RTD1319_ISO_ISR_TC3_SHIFT	 = 1,
++	RTD1319_ISO_ISR_UR0_SHIFT	 = 2,
++	RTD1319_ISO_ISR_LSADC0_SHIFT	 = 3,
++	RTD1319_ISO_ISR_IRDA_SHIFT	 = 5,
++	RTD1319_ISO_ISR_SPI1_SHIFT	 = 6,
++	RTD1319_ISO_ISR_WDOG_NMI_SHIFT	 = 7,
++	RTD1319_ISO_ISR_I2C0_SHIFT	 = 8,
++	RTD1319_ISO_ISR_TC4_SHIFT	 = 9,
++	RTD1319_ISO_ISR_TC7_SHIFT	 = 10,
++	RTD1319_ISO_ISR_I2C1_SHIFT	 = 11,
++	RTD1319_ISO_ISR_RTC_HSEC_SHIFT	 = 12,
++	RTD1319_ISO_ISR_RTC_ALARM_SHIFT	 = 13,
++	RTD1319_ISO_ISR_GPIOA_SHIFT	 = 19,
++	RTD1319_ISO_ISR_GPIODA_SHIFT	 = 20,
++	RTD1319_ISO_ISR_ISO_MISC_SHIFT	 = 21,
++	RTD1319_ISO_ISR_CBUS_SHIFT	 = 22,
++	RTD1319_ISO_ISR_ETN_SHIFT	 = 23,
++	RTD1319_ISO_ISR_USB_HOST_SHIFT	 = 24,
++	RTD1319_ISO_ISR_USB_U3_DRD_SHIFT = 25,
++	RTD1319_ISO_ISR_USB_U2_DRD_SHIFT = 26,
++	RTD1319_ISO_ISR_PORB_HV_SHIFT	 = 28,
++	RTD1319_ISO_ISR_PORB_DV_SHIFT	 = 29,
++	RTD1319_ISO_ISR_PORB_AV_SHIFT	 = 30,
++	RTD1319_ISO_ISR_I2C1_REQ_SHIFT	 = 31,
 +};
 +
-+static int realtek_intc_domain_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
-+{
-+	struct realtek_intc_data *data = d->host_data;
-+
-+	irq_set_chip_and_handler(irq, &realtek_intc_chip, handle_level_irq);
-+	irq_set_chip_data(irq, data);
-+	irq_set_probe(irq);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops realtek_intc_domain_ops = {
-+	.xlate = irq_domain_xlate_onecell,
-+	.map = realtek_intc_domain_map,
++static const u32 rtd1319_iso_isr_to_scpu_int_en_mask[32] = {
++	[RTD1319_ISO_ISR_SPI1_SHIFT]	  = BIT(1),
++	[RTD1319_ISO_ISR_UR0_SHIFT]	  = BIT(2),
++	[RTD1319_ISO_ISR_LSADC0_SHIFT]	  = BIT(3),
++	[RTD1319_ISO_ISR_IRDA_SHIFT]	  = BIT(5),
++	[RTD1319_ISO_ISR_I2C0_SHIFT]	  = BIT(8),
++	[RTD1319_ISO_ISR_I2C1_SHIFT]	  = BIT(11),
++	[RTD1319_ISO_ISR_RTC_HSEC_SHIFT]  = BIT(12),
++	[RTD1319_ISO_ISR_RTC_ALARM_SHIFT] = BIT(13),
++	[RTD1319_ISO_ISR_GPIOA_SHIFT]	  = BIT(19),
++	[RTD1319_ISO_ISR_GPIODA_SHIFT]	  = BIT(20),
++	[RTD1319_ISO_ISR_PORB_HV_SHIFT]	  = BIT(28),
++	[RTD1319_ISO_ISR_PORB_DV_SHIFT]	  = BIT(29),
++	[RTD1319_ISO_ISR_PORB_AV_SHIFT]	  = BIT(30),
++	[RTD1319_ISO_ISR_I2C1_REQ_SHIFT]  = BIT(31),
 +};
 +
-+static int realtek_intc_subset(struct device_node *node, struct realtek_intc_data *data, int index)
++enum rtd1319_misc_isr_bits {
++	RTD1319_ISR_WDOG_NMI_SHIFT = 2,
++	RTD1319_ISR_UR1_SHIFT	   = 3,
++	RTD1319_ISR_TC5_SHIFT	   = 4,
++	RTD1319_ISR_UR1_TO_SHIFT   = 5,
++	RTD1319_ISR_TC0_SHIFT	   = 6,
++	RTD1319_ISR_TC1_SHIFT	   = 7,
++	RTD1319_ISR_UR2_SHIFT	   = 8,
++	RTD1319_ISR_RTC_HSEC_SHIFT = 9,
++	RTD1319_ISR_RTC_MIN_SHIFT  = 10,
++	RTD1319_ISR_RTC_HOUR_SHIFT = 11,
++	RTD1319_ISR_RTC_DATE_SHIFT = 12,
++	RTD1319_ISR_UR2_TO_SHIFT   = 13,
++	RTD1319_ISR_I2C5_SHIFT	   = 14,
++	RTD1319_ISR_I2C3_SHIFT	   = 23,
++	RTD1319_ISR_SC0_SHIFT	   = 24,
++	RTD1319_ISR_SC1_SHIFT	   = 25,
++	RTD1319_ISR_SPI_SHIFT	   = 27,
++	RTD1319_ISR_FAN_SHIFT	   = 29,
++};
++
++static const u32 rtd1319_misc_isr_to_scpu_int_en_mask[32] = {
++	[RTD1319_ISR_UR1_SHIFT]	     = BIT(3),
++	[RTD1319_ISR_UR1_TO_SHIFT]   = BIT(5),
++	[RTD1319_ISR_UR2_TO_SHIFT]   = BIT(6),
++	[RTD1319_ISR_UR2_SHIFT]	     = BIT(7),
++	[RTD1319_ISR_RTC_MIN_SHIFT]  = BIT(10),
++	[RTD1319_ISR_RTC_HOUR_SHIFT] = BIT(11),
++	[RTD1319_ISR_RTC_DATE_SHIFT] = BIT(12),
++	[RTD1319_ISR_I2C5_SHIFT]     = BIT(14),
++	[RTD1319_ISR_SC0_SHIFT]	     = BIT(24),
++	[RTD1319_ISR_SC1_SHIFT]	     = BIT(25),
++	[RTD1319_ISR_SPI_SHIFT]	     = BIT(27),
++	[RTD1319_ISR_I2C3_SHIFT]     = BIT(28),
++	[RTD1319_ISR_FAN_SHIFT]	     = BIT(29),
++	[RTD1319_ISR_WDOG_NMI_SHIFT] = IRQ_ALWAYS_ENABLED,
++};
++
++static struct realtek_intc_subset_cfg rtd1319_intc_iso_cfgs[] = {
++	{ ISO_NORMAL_MASK, },
++	{ ISO_RTC_MASK, },
++};
++
++static const struct realtek_intc_info rtd1319_intc_iso_info = {
++	.isr_offset		 = ISO_ISR_OFFSET,
++	.umsk_isr_offset	 = ISO_ISR_UMSK_OFFSET,
++	.scpu_int_en_offset	 = ISO_ISR_EN_OFFSET,
++	.isr_to_scpu_int_en_mask = rtd1319_iso_isr_to_scpu_int_en_mask,
++	.cfg			 = rtd1319_intc_iso_cfgs,
++	.cfg_num		 = ARRAY_SIZE(rtd1319_intc_iso_cfgs),
++};
++
++static struct realtek_intc_subset_cfg rtd1319_intc_misc_cfgs[] = {
++	{ MISC_NORMAL_MASK, },
++	{ MISC_NMI_WDT_MASK, },
++	{ MISC_UART1_MASK, },
++	{ MISC_UART2_MASK, },
++};
++
++static const struct realtek_intc_info rtd1319_intc_misc_info = {
++	.isr_offset		 = MISC_ISR_OFFSET,
++	.umsk_isr_offset	 = MISC_ISR_UMSK_OFFSET,
++	.scpu_int_en_offset	 = MISC_ISR_EN_OFFSET,
++	.isr_to_scpu_int_en_mask = rtd1319_misc_isr_to_scpu_int_en_mask,
++	.cfg			 = rtd1319_intc_misc_cfgs,
++	.cfg_num		 = ARRAY_SIZE(rtd1319_intc_misc_cfgs),
++};
++
++static const struct of_device_id realtek_intc_rtd1319_dt_matches[] = {
++	{
++		.compatible = "realtek,rtd1319-intc-iso",
++		.data = &rtd1319_intc_iso_info,
++	}, {
++		.compatible = "realtek,rtd1319-intc-misc",
++		.data = &rtd1319_intc_misc_info,
++	},
++	{ /* sentinel */ }
++};
++
++static int realtek_intc_rtd1319_suspend(struct device *dev)
 +{
-+	struct realtek_intc_subset_data *subset_data = &data->subset_data[index];
-+	const struct realtek_intc_subset_cfg *cfg = &data->info->cfg[index];
-+	int irq;
++	struct realtek_intc_data *data = dev_get_drvdata(dev);
++	const struct realtek_intc_info *info = data->info;
 +
-+	irq = irq_of_parse_and_map(node, index);
-+	if (irq <= 0)
-+		return irq;
++	data->saved_en = readl(data->base + info->scpu_int_en_offset);
 +
-+	subset_data->common = data;
-+	subset_data->cfg = cfg;
-+	subset_data->parent_irq = irq;
-+	irq_set_chained_handler_and_data(irq, realtek_intc_handler, subset_data);
++	writel(DISABLE_INTC, data->base + info->scpu_int_en_offset);
++	writel(CLEAN_INTC_STATUS, data->base + info->umsk_isr_offset);
++	writel(CLEAN_INTC_STATUS, data->base + info->isr_offset);
 +
 +	return 0;
 +}
 +
-+int realtek_intc_probe(struct platform_device *pdev, const struct realtek_intc_info *info)
++static int realtek_intc_rtd1319_resume(struct device *dev)
 +{
-+	struct realtek_intc_data *data;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
-+	int ret, i;
++	struct realtek_intc_data *data = dev_get_drvdata(dev);
++	const struct realtek_intc_info *info = data->info;
 +
-+	data = devm_kzalloc(dev, struct_size(data, subset_data, info->cfg_num), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->base = of_iomap(node, 0);
-+	if (!data->base)
-+		return -ENOMEM;
-+
-+	data->info = info;
-+
-+	raw_spin_lock_init(&data->lock);
-+
-+	data->domain = irq_domain_add_linear(node, 32, &realtek_intc_domain_ops, data);
-+	if (!data->domain)
-+		return -ENOMEM;
-+
-+	data->subset_data_num = info->cfg_num;
-+	for (i = 0; i < info->cfg_num; i++) {
-+		ret = realtek_intc_subset(node, data, i);
-+		WARN(ret, "failed to init subset %d: %d", i, ret);
-+		return -ENOMEM;
-+	}
-+
-+	platform_set_drvdata(pdev, data);
++	writel(CLEAN_INTC_STATUS, data->base + info->umsk_isr_offset);
++	writel(CLEAN_INTC_STATUS, data->base + info->isr_offset);
++	writel(data->saved_en, data->base + info->scpu_int_en_offset);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL(realtek_intc_probe);
++
++static const struct dev_pm_ops realtek_intc_rtd1319_pm_ops = {
++	.suspend_noirq = realtek_intc_rtd1319_suspend,
++	.resume_noirq  = realtek_intc_rtd1319_resume,
++};
++
++static int rtd1319_intc_probe(struct platform_device *pdev)
++{
++	const struct realtek_intc_info *info;
++
++	info = of_device_get_match_data(&pdev->dev);
++	if (!info)
++		return -EINVAL;
++
++	return realtek_intc_probe(pdev, info);
++}
++
++static struct platform_driver realtek_intc_rtd1319_driver = {
++	.probe = rtd1319_intc_probe,
++	.driver = {
++		.name = "realtek_intc_rtd1319",
++		.of_match_table = realtek_intc_rtd1319_dt_matches,
++		.suppress_bind_attrs = true,
++		.pm = &realtek_intc_rtd1319_pm_ops,
++	},
++};
++
++static int __init realtek_intc_rtd1319_init(void)
++{
++	return platform_driver_register(&realtek_intc_rtd1319_driver);
++}
++core_initcall(realtek_intc_rtd1319_init);
++
++static void __exit realtek_intc_rtd1319_exit(void)
++{
++	platform_driver_unregister(&realtek_intc_rtd1319_driver);
++}
++module_exit(realtek_intc_rtd1319_exit);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("Realtek DHC SoC Interrupt Controller Driver");
-diff --git a/drivers/irqchip/irq-realtek-intc-common.h b/drivers/irqchip/irq-realtek-intc-common.h
-new file mode 100644
-index 000000000000..38be116dba60
---- /dev/null
-+++ b/drivers/irqchip/irq-realtek-intc-common.h
-@@ -0,0 +1,77 @@
-+/* SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2023 Realtek Semiconductor Corporation
-+ */
-+
-+#ifndef _IRQ_REALTEK_COMMON_H
-+#define _IRQ_REALTEK_COMMON_H
-+
-+#include <linux/bits.h>
-+#include <linux/limits.h>
-+#include <linux/hwspinlock.h>
-+
-+/**
-+ * realtek_intc_subset_cfg - subset interrupt mask
-+ * @ints_mask: inetrrupt mask
-+ */
-+struct realtek_intc_subset_cfg {
-+	unsigned int	ints_mask;
-+};
-+
-+/**
-+ * realtek_intc_info - interrupt controller data.
-+ * @isr_offset: interrupt status register offset.
-+ * @umsk_isr_offset: unmask interrupt status register offset.
-+ * @scpu_int_en_offset: interrupt enable register offset.
-+ * @cfg: cfg of the subset.
-+ * @cfg_num: number of cfg.
-+ */
-+struct realtek_intc_info {
-+	const struct realtek_intc_subset_cfg *cfg;
-+	unsigned int			     isr_offset;
-+	unsigned int			     umsk_isr_offset;
-+	unsigned int			     scpu_int_en_offset;
-+	const u32			     *isr_to_scpu_int_en_mask;
-+	int				     cfg_num;
-+};
-+
-+/**
-+ * realtek_intc_subset_data - handler of a interrupt source only handles ints
-+ *                            bits in the mask.
-+ * @cfg: cfg of the subset.
-+ * @common: common data.
-+ * @parent_irq: interrupt source.
-+ */
-+struct realtek_intc_subset_data {
-+	const struct realtek_intc_subset_cfg *cfg;
-+	struct realtek_intc_data	     *common;
-+	int				     parent_irq;
-+};
-+
-+/**
-+ * realtek_intc_data - configuration data for realtek interrupt controller driver.
-+ * @base: base of interrupt register
-+ * @info: info of intc
-+ * @domain: interrupt domain
-+ * @lock: lock
-+ * @saved_en: status of interrupt enable
-+ * @subset_data_num: number of subset data
-+ * @subset_data: subset data
-+ */
-+struct realtek_intc_data {
-+	void __iomem			*base;
-+	const struct realtek_intc_info	*info;
-+	struct irq_domain		*domain;
-+	struct raw_spinlock		lock;
-+	unsigned int			saved_en;
-+	int				subset_data_num;
-+	struct realtek_intc_subset_data subset_data[];
-+};
-+
-+#define IRQ_ALWAYS_ENABLED U32_MAX
-+#define DISABLE_INTC (0)
-+#define CLEAN_INTC_STATUS GENMASK(31, 1)
-+
-+int realtek_intc_probe(struct platform_device *pdev, const struct realtek_intc_info *info);
-+
-+#endif /* _IRQ_REALTEK_COMMON_H */
++MODULE_DESCRIPTION("Realtek RTD1319 Interrupt Controller Driver");
 -- 
 2.25.1
 
