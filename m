@@ -2,223 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD34D7EF393
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38367EF395
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345851AbjKQNP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46844 "EHLO
+        id S231360AbjKQNQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:16:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQNPx (ORCPT
+        with ESMTP id S230383AbjKQNQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:15:53 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E27D52
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:15:49 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ce28faa92dso17638845ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1700226949; x=1700831749; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7jhoipxjw/PNUwMnP1oDAJ149BYrwgFddqUX2ryqFIg=;
-        b=bHuTbt9MH9ukCXoSraHcBbDarQ2f31HVL+OoV22YgHyF3E6pdfBYe/zBZQSCEBg0rg
-         hnclT8JXzTRZrCZFxrsxdfBShCuOnDf0W3ajJ7rjb9RO3ysy3PiziLEwm/p4YFZwnl6z
-         XPt205sUR/EMwo1ENRtev6FCjHFO/ChcscurkxmhVYsIKQMfr5wSk4M6Ax6HkGYciUIt
-         9xK0iKJ3Z3L1f90BhWwkxw+UWIxXfwWjuZE8EKJyM4Jtib2nNmSud9gOtib+fZX58IgI
-         lcJF1ilQdcS1Q8QLU2cdn3I1HoyPhgKhcR86puoclL+gkRryqFYNVIkvPQlIMlUfLQyF
-         4moA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700226949; x=1700831749;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7jhoipxjw/PNUwMnP1oDAJ149BYrwgFddqUX2ryqFIg=;
-        b=KbE5aYpkCPBPpz8pb6i+2mGEU6EEUzhu/psgkqhyJ4JsGKM+JeLjmpYjQtCt915I6D
-         QR1OLP2O9P3ivhk/Csv9Nun1hjnFUsH8W9l+VrhcjDc4wbra4UrFhjsGAeeKeYNoDUEv
-         55B5EiIFh14uDk+T7dqwoZa1OdAm5qe2lPfCXNeY2g/kExF9SbYeG2//4uVzI3nX1ZE+
-         YlSa8uIpjCOtY9V1zOx7Vhu/Sh/agWkYhcEIWaZ6geh1LvumU584ax9vlp8zycyMZDN9
-         f5wLnMflLr1cEXEHSpt4kt50R7irgnAa8yffWWhcyEAH9dz+5xal93ZFNmFM4PkpJgiJ
-         btTg==
-X-Gm-Message-State: AOJu0Yw+cT33LUgbJ8DUWucs7cKNVBkdftaZMzq3pRMqjcNqD2aQdJxH
-        lqqufw4xbI5p8UJvZwIb53RtIQ==
-X-Google-Smtp-Source: AGHT+IH7b2Noxcl7pieA0zocSiCHi0vhjtI0eduElXiMO/gPtxJolybhfxmfxADL8d1FEbNbEXYGdA==
-X-Received: by 2002:a17:903:110c:b0:1c7:755d:ccc8 with SMTP id n12-20020a170903110c00b001c7755dccc8mr12173214plh.29.1700226949217;
-        Fri, 17 Nov 2023 05:15:49 -0800 (PST)
-Received: from [10.54.24.52] ([143.92.118.3])
-        by smtp.gmail.com with ESMTPSA id s12-20020a170902ea0c00b001c9b384731esm1337445plg.270.2023.11.17.05.15.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 05:15:48 -0800 (PST)
-Message-ID: <76411980-e06d-43d8-8f63-b9a032e21b43@shopee.com>
-Date:   Fri, 17 Nov 2023 21:15:44 +0800
+        Fri, 17 Nov 2023 08:16:17 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B370D56
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:16:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700226962; x=1700831762; i=deller@gmx.de;
+        bh=d41I09Of2YlpgB5uKQmlEG1iefIIC8G5swjr11flPyo=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=GJk4W7B/O63ROlPHsvyZOSwZhK54Vnq8sHJrbntTrRfPeHa2nJ7usEdEN+htuPqX
+         x2PCTNO04TIdWkNNcoQskLqYQwaejTKMoEWoqOSyLVr6uGYCBMRNt1muxFOp1iAVd
+         0Erz1AbBjjLp6Hu+A22rBy3dNJsBN52W7c84eDys2wIUL1h9oBeuYv1yZqjncS93y
+         eif23/doi8HDInR0o1sPokjwbNN2ME3piFHN91GuhWwLeMTbKhP4sVZLCFHwtF8+3
+         jNp2JA/KGxSIv4ToDn9VgYpTr5b1SO9KU4PJPabbIf3++ivsMqbvwQbyMK4O4EQPQ
+         LOI5RGSk3e/ZEP1glg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.147.146]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MPXhA-1qhNND3qRG-00MY58; Fri, 17
+ Nov 2023 14:16:01 +0100
+Message-ID: <a13df827-cd2c-481f-87ed-719936b96c41@gmx.de>
+Date:   Fri, 17 Nov 2023 14:16:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bonding: use a read-write lock in bonding_show_bonds()
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CANn89iJnjp8YYYLqtfAGg6PU9iiSrKbMU43wgDkuEVqX8kSCmA@mail.gmail.com>
- <20231117104311.1273-1-haifeng.xu@shopee.com>
- <CANn89iKsirkSvxK4L9KQqD7Q7r0MaxOx71VBk73RCi8b1NkiZw@mail.gmail.com>
-From:   Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <CANn89iKsirkSvxK4L9KQqD7Q7r0MaxOx71VBk73RCi8b1NkiZw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: missing
+ identifier in declaration
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <202311172127.5PEz8XzL-lkp@intel.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
+In-Reply-To: <202311172127.5PEz8XzL-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2MP6qMlCT/3DOVaYbo8+pNmyqfSBpXdNqAW4coAnpeI5F2VA8Pw
+ +f6/xLpivG46BLMnilf5MPmFUgCCbHYWZoNAuierL1QsHYD9TaSf2//EMs9byWAcdJeIuV6
+ 4E6jpv8ZzFBADu9ciXSHI4m3Uq4u8xV7hHNff9gy3MCjBxmoAN8haJAssF64NF4m8X6AFeH
+ 9PcpQvnS64bmyLrh5LOHQ==
+UI-OutboundReport: notjunk:1;M01:P0:O3WHSLZvOek=;tR9F4A/2IlCFkWUzqGuRl+tEWCX
+ In71UCJTwCeeyLuW7yWIMc9Px/0TvNUSClHcVv+yeo5FRl3wtP9wUPHYGG8jIjem63mYlwAZ0
+ yPhWtuD7IiMPJG7uoy5d4Ryo8A9hIhrWZrDuOO8993ajI32nKGKNoIGfmlomvF5rA858l8OFD
+ bm35VE0ajKAUdLCiwpfZuOno80Rud4KF4UCzidaPbnLbOQiO3kNmuzylr6KwOnmZXrszNt+Nw
+ Z2o+N40DrmD3LcKW1C7HeJvwvcwbc7FKI32XHBVwrBugONF2ba2Cr8Qp0H6f/mmJQjti8SHkJ
+ PEtJtfDqPkCxWo7F1YI96GwZENO4Nrn6O+1UiMK44VTj64penSiW0a/Ci5OT/TWHr18SBUR+W
+ E5mRbGcJ6fg5KDbGa0DPTX6UNG5elIOYFsAAZFg3Yvo9Omdz1SECSQWisGy+1JcXMvfbIrtif
+ wck/P5XTQYS/VayJLf5pyPK7zWso7aj01cj3KLiFSBeFXMjQPzgwpaiXUF3W1hVx6dyxcE9G7
+ AiYTXbj8p4ZzQ2W7lJ0Y7US99LchCCMw4jf8tlNSKlDzlIvTjsJRfT1ijQmvc8ljzGi5K4WZW
+ V5hW4zC+dVGBP8HA7hSttRWoudZFA+REf4S3rV7CI+y6L2iM7JIuk4GqNLXchLSEG/1s6lRek
+ bsHguDA9EaNw3c9OrFecmOX34EZ+UZt04vEiJi0OeDc3IcvnmlSfGxjjHzUOPeqEw07DS4wkD
+ jy1Z3XHlA2YOsBHBzVySHVOSUMYzmIFU83Vbmka36bo3Pp40EZCk8S5DQBWhVHZhXr31TWwOR
+ Y+nf8BGM9atKA1n47I5h06JcmnrsgsqqRx4YnxRvsYB3LiXhVKf/byDP6fiJvD4zTX0XUi2We
+ OFxcY9hUV00yeTFw5+QPQFy3AAwUGvx72fRoUfXfxNtpc7FybMwhgHtDA82k/zUdFYJq0nl7J
+ mEdWrHhKplgTRg2mUOOARf0VQMI=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/17/23 14:07, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
+it master
+> head:   7475e51b87969e01a6812eac713a1c8310372e8a
+> commit: 4800a6215e335c6dade05e10c8fdbf919c04a3a7 parisc: Wire up eBPF JI=
+T compiler
+> date:   3 months ago
+> config: parisc-randconfig-r113-20231115 (https://download.01.org/0day-ci=
+/archive/20231117/202311172127.5PEz8XzL-lkp@intel.com/config)
+> compiler: hppa-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20231117/20231117212=
+7.5PEz8XzL-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new ver=
+sion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311172127.5PEz8XzL-lk=
+p@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+>>> arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: missing ident=
+ifier in declaration
+>     arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: Expected ; =
+at the end of type declaration
+>     arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: got $
+>     arch/parisc/net/bpf_jit_comp32.c:322:13: sparse: sparse: Expected ; =
+at the end of type declaration
+>     arch/parisc/net/bpf_jit_comp32.c:322:13: sparse: sparse: got $
+>     arch/parisc/net/bpf_jit_comp32.c:323:13: sparse: sparse: Expected ; =
+at the end of type declaration
+>     arch/parisc/net/bpf_jit_comp32.c:323:13: sparse: sparse: got $
+>     arch/parisc/net/bpf_jit_comp32.c:666:37: sparse: sparse: Expected ) =
+in function call
+>     arch/parisc/net/bpf_jit_comp32.c:666:37: sparse: sparse: got $
+>     arch/parisc/net/bpf_jit_comp32.c:669:37: sparse: sparse: Expected ) =
+in function call
+>     arch/parisc/net/bpf_jit_comp32.c:669:37: sparse: sparse: got $
+>     arch/parisc/net/bpf_jit_comp32.c:672:37: sparse: sparse: Expected ) =
+in function call
+>     arch/parisc/net/bpf_jit_comp32.c:672:37: sparse: sparse: got $
+>>> arch/parisc/net/bpf_jit_comp32.c:666:36: sparse: sparse: not enough ar=
+guments for function emit_call_millicode
+>     arch/parisc/net/bpf_jit_comp32.c:669:36: sparse: sparse: not enough =
+arguments for function emit_call_millicode
+>     arch/parisc/net/bpf_jit_comp32.c:672:36: sparse: sparse: not enough =
+arguments for function emit_call_millicode
+>
+> vim +321 arch/parisc/net/bpf_jit_comp32.c
+>
+> ceb0e7267693d3 Helge Deller 2023-08-17  319
+> ceb0e7267693d3 Helge Deller 2023-08-17  320  /* extern hppa millicode fu=
+nctions */
+> ceb0e7267693d3 Helge Deller 2023-08-17 @321  extern void $$mulI(void);
+> ceb0e7267693d3 Helge Deller 2023-08-17  322  extern void $$divU(void);
+> ceb0e7267693d3 Helge Deller 2023-08-17  323  extern void $$remU(void);
 
+This is actually a sparse bug.... "$" is a valid character with which func=
+tion
+names may start with (at least on parisc).
 
-On 2023/11/17 18:59, Eric Dumazet wrote:
-> On Fri, Nov 17, 2023 at 11:43 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
->>
->> Problem description:
->>
->> Call stack:
->> ......
->> PID: 210933  TASK: ffff92424e5ec080  CPU: 13  COMMAND: "kworker/u96:2"
->> [ffffa7a8e96bbac0] __schedule at ffffffffb0719898
->> [ffffa7a8e96bbb48] schedule at ffffffffb0719e9e
->> [ffffa7a8e96bbb68] rwsem_down_write_slowpath at ffffffffafb3167a
->> [ffffa7a8e96bbc00] down_write at ffffffffb071bfc1
->> [ffffa7a8e96bbc18] kernfs_remove_by_name_ns at ffffffffafe3593e
->> [ffffa7a8e96bbc48] sysfs_unmerge_group at ffffffffafe38922
->> [ffffa7a8e96bbc68] dpm_sysfs_remove at ffffffffb021c96a
->> [ffffa7a8e96bbc80] device_del at ffffffffb0209af8
->> [ffffa7a8e96bbcd0] netdev_unregister_kobject at ffffffffb04a6b0e
->> [ffffa7a8e96bbcf8] unregister_netdevice_many at ffffffffb046d3d9
->> [ffffa7a8e96bbd60] default_device_exit_batch at ffffffffb046d8d1
->> [ffffa7a8e96bbdd0] ops_exit_list at ffffffffb045e21d
->> [ffffa7a8e96bbe00] cleanup_net at ffffffffb045ea46
->> [ffffa7a8e96bbe60] process_one_work at ffffffffafad94bb
->> [ffffa7a8e96bbeb0] worker_thread at ffffffffafad96ad
->> [ffffa7a8e96bbf10] kthread at ffffffffafae132a
->> [ffffa7a8e96bbf50] ret_from_fork at ffffffffafa04b92
->>
->> 290858 PID: 278176  TASK: ffff925deb39a040  CPU: 32  COMMAND: "node-exporter"
->> [ffffa7a8d14dbb80] __schedule at ffffffffb0719898
->> [ffffa7a8d14dbc08] schedule at ffffffffb0719e9e
->> [ffffa7a8d14dbc28] schedule_preempt_disabled at ffffffffb071a24e
->> [ffffa7a8d14dbc38] __mutex_lock at ffffffffb071af28
->> [ffffa7a8d14dbcb8] __mutex_lock_slowpath at ffffffffb071b1a3
->> [ffffa7a8d14dbcc8] mutex_lock at ffffffffb071b1e2
->> [ffffa7a8d14dbce0] rtnl_lock at ffffffffb047f4b5
->> [ffffa7a8d14dbcf0] bonding_show_bonds at ffffffffc079b1a1 [bonding]
->> [ffffa7a8d14dbd20] class_attr_show at ffffffffb02117ce
->> [ffffa7a8d14dbd30] sysfs_kf_seq_show at ffffffffafe37ba1
->> [ffffa7a8d14dbd50] kernfs_seq_show at ffffffffafe35c07
->> [ffffa7a8d14dbd60] seq_read_iter at ffffffffafd9fce0
->> [ffffa7a8d14dbdc0] kernfs_fop_read_iter at ffffffffafe36a10
->> [ffffa7a8d14dbe00] new_sync_read at ffffffffafd6de23
->> [ffffa7a8d14dbe90] vfs_read at ffffffffafd6e64e
->> [ffffa7a8d14dbed0] ksys_read at ffffffffafd70977
->> [ffffa7a8d14dbf10] __x64_sys_read at ffffffffafd70a0a
->> [ffffa7a8d14dbf20] do_syscall_64 at ffffffffb070bf1c
->> [ffffa7a8d14dbf50] entry_SYSCALL_64_after_hwframe at ffffffffb080007c
->> ......
->>
->> Thread 210933 holds the rtnl_mutex and tries to acquire the kernfs_rwsem,
->> but there are many readers which hold the kernfs_rwsem, so it has to sleep
->> for a long time to wait the readers release the lock. Thread 278176 and any
->> other threads which call bonding_show_bonds() also need to wait because
->> they try to acquire the rtnl_mutex.
->>
->> bonding_show_bonds() uses rtnl_mutex to protect the bond_list traversal.
->> However, the addition and deletion of bond_list are only performed in
->> bond_init()/bond_uninit(), so we can introduce a separate read-write lock
->> to synchronize bond list mutation.
->>
->> What are the benefits of this change?
->>
->> 1) All threads which call bonding_show_bonds() only wait when the
->> registration or unregistration of bond device happens.
->>
->> 2) There are many other users of rtnl_mutex, so bonding_show_bonds()
->> won't compete with them.
->>
->> In a word, this change reduces the lock contention of rtnl_mutex.
->>
->> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
->> ---
->> v2:
->> - move the call stack after the description
->> - fix typos in the changelog
->> ---
->>  drivers/net/bonding/bond_main.c  | 4 ++++
->>  drivers/net/bonding/bond_sysfs.c | 6 ++++--
->>  include/net/bonding.h            | 3 +++
->>  3 files changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
->> index 8e6cc0e133b7..db8f1efaab78 100644
->> --- a/drivers/net/bonding/bond_main.c
->> +++ b/drivers/net/bonding/bond_main.c
->> @@ -5957,7 +5957,9 @@ static void bond_uninit(struct net_device *bond_dev)
->>
->>         bond_set_slave_arr(bond, NULL, NULL);
->>
->> +       write_lock(&bonding_dev_lock);
->>         list_del(&bond->bond_list);
->> +       write_unlock(&bonding_dev_lock);
->>
->>         bond_debug_unregister(bond);
->>  }
->> @@ -6370,7 +6372,9 @@ static int bond_init(struct net_device *bond_dev)
->>         spin_lock_init(&bond->stats_lock);
->>         netdev_lockdep_set_classes(bond_dev);
->>
->> +       write_lock(&bonding_dev_lock);
->>         list_add_tail(&bond->bond_list, &bn->dev_list);
->> +       write_unlock(&bonding_dev_lock);
->>
->>         bond_prepare_sysfs_group(bond);
->>
->> diff --git a/drivers/net/bonding/bond_sysfs.c b/drivers/net/bonding/bond_sysfs.c
->> index 2805135a7205..e107c1d7a6bf 100644
->> --- a/drivers/net/bonding/bond_sysfs.c
->> +++ b/drivers/net/bonding/bond_sysfs.c
->> @@ -28,6 +28,8 @@
->>
->>  #define to_bond(cd)    ((struct bonding *)(netdev_priv(to_net_dev(cd))))
->>
->> +DEFINE_RWLOCK(bonding_dev_lock);
->> +
->>  /* "show" function for the bond_masters attribute.
->>   * The class parameter is ignored.
->>   */
->> @@ -40,7 +42,7 @@ static ssize_t bonding_show_bonds(const struct class *cls,
->>         int res = 0;
->>         struct bonding *bond;
->>
->> -       rtnl_lock();
->> +       read_lock(&bonding_dev_lock);
->>
->>         list_for_each_entry(bond, &bn->dev_list, bond_list) {
->>                 if (res > (PAGE_SIZE - IFNAMSIZ)) {
->> @@ -55,7 +57,7 @@ static ssize_t bonding_show_bonds(const struct class *cls,
->>         if (res)
->>                 buf[res-1] = '\n'; /* eat the leftover space */
->>
->> -       rtnl_unlock();
->> +       read_unlock(&bonding_dev_lock);
->>         return res;
->>  }
-> 
-> This unfortunately would race with dev_change_name()
-
-dev_change_name（）is either used in  dev_ifsioc(case: SIOCSIFNAME) or used in do_setlink(), so 
-could these net devices which need to change name be related to bond？ I am not quite sure.
-
-> 
-> You probably need to read_lock(&devnet_rename_sem); before copying dev->name,
-> or use netdev_get_name(net, temp_buffer, bond->dev->ifindex)
+Helge
 
