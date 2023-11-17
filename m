@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A9F7EF48D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0957EF484
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbjKQOec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 09:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
+        id S231744AbjKQOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbjKQOe3 (ORCPT
+        with ESMTP id S230383AbjKQOeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:34:29 -0500
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47999D4B;
-        Fri, 17 Nov 2023 06:34:21 -0800 (PST)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHBUdKT007319;
-        Fri, 17 Nov 2023 15:34:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=OldM9nSyGvxquN5zF8rDqdrgCIgxRf4RySMadaUT0cM=; b=br
-        5Zbs9KuAVSVJHup9dJNV02jTCaNz/+XrwTMkIc8X6HPaM6LnHzFGdYqs13TgcQ/M
-        HiMY6rPtY0eNJh4mzfVOEwO/GtDIDEhoIrhObNUnQsi0rSgxS3Hs398fR2HVjZhq
-        F7hhRyb8CngCxNOaoRb5QmCUbnFRCdsZyib3m/vu0rtzD6Z7ul66KvMYqJZku633
-        lFlmbawbi2j7ATxWJwsgCsFiflKtXYtbSeeAK72dCABjkZJNNd7mqwwd0Wh4DSBf
-        i1b62y5oV39HtR6KDIjMeacCFOB3ayw+baHTbN6kbExDhWXyZhJHeqMjOZV36L6I
-        aJ/Fo+6tuwAlVIxN2X5g==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u9ym943d3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 15:34:08 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 83FC610004D;
-        Fri, 17 Nov 2023 15:33:51 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7B7AC231509;
-        Fri, 17 Nov 2023 15:33:51 +0100 (CET)
-Received: from localhost (10.201.22.165) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 17 Nov
- 2023 15:33:51 +0100
-From:   Patrick Delaunay <patrick.delaunay@foss.st.com>
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     Patrick Delaunay <patrick.delaunay@foss.st.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH 4/4] nvmem: add bsec support to stm32mp25
-Date:   Fri, 17 Nov 2023 15:33:37 +0100
-Message-ID: <20231117153310.4.I8fa60abf176f777721ee5beb2bad216f833ed31a@changeid>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231117143338.1173475-1-patrick.delaunay@foss.st.com>
-References: <20231117143338.1173475-1-patrick.delaunay@foss.st.com>
+        Fri, 17 Nov 2023 09:34:07 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BBCC4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:34:03 -0800 (PST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc274dbbc6so26137495ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:34:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700231643; x=1700836443;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PdnjU7sTdz8hvsnyQk5JqfOcDigpFfNJS9tc47Xufc=;
+        b=ngh4i6cqP/dBzItNX7LwH+HO5cXYqk3zbVX/wDyyaXy+r7POh1W8WfWYSQoHtbPyy9
+         NGK/sN7RbfzgxewT2KRcj7L1M6J+IXkp0+u23hUtLYuOJngHOFAyCw2OPLdqGm9F6ugb
+         l4vysyHKgL19vyU2gCw1lIEYtrrHD4SI2XBDYA4p5MAzyq0uMpasiRvV1RLOdARgpo0q
+         Zb/fkx3DS9jtvaTh9QxlL9LeuIJZ8cIHPcBX06GxRvLXfgwruPLRW0fKaXwlu316arOZ
+         Bu1CuBNh87kI6QWlz3cUD49u+7udextUXfGmiIVmNufqLRmoIYadOeSIDixnCYYcLUb0
+         e9wg==
+X-Gm-Message-State: AOJu0YzO4Hzn7PDljvLMVMFJgiBhIhwekDo/VMa7ewmXow6n3LSFn4pc
+        g4qmpwRh7s/hKVlZ4xTtbq1OLtvK/LIIW5TuCCqzpIIoXuimTOk=
+X-Google-Smtp-Source: AGHT+IEXuywtPuh+tfPiLrI/aXnKJhFm8vZyeUazcYie77TLcgtzLvxzo5jCvX5EbxBlx2mxtfrJ/lbRM0Cc0hEI0BCAHN2duodn
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.22.165]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_13,2023-11-17_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:903:181:b0:1cc:5db8:7ea5 with SMTP id
+ z1-20020a170903018100b001cc5db87ea5mr3477370plg.3.1700231643396; Fri, 17 Nov
+ 2023 06:34:03 -0800 (PST)
+Date:   Fri, 17 Nov 2023 06:34:03 -0800
+In-Reply-To: <CAJjsb4qDbsdAo0_o9tVLpiu=EsqYM1qQ5EB+hQ1O02Ve_7U3fw@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002406b8060a5a07cb@google.com>
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_discard_allocated_blocks
+From:   syzbot <syzbot+628e71e1cb809306030f@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tintinm2017@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add BSEC support to STM32MP25 SoC family with SoC information:
-- RPN = Device part number (BSEC_OTP_DATA9)
-- PKG = package data register (Bits 2:0 of BSEC_OTP_DATA122)
+Hello,
 
-Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
----
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in ext4_discard_allocated_blocks
 
- arch/arm64/boot/dts/st/stm32mp251.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+EXT4-fs error (device loop0): ext4_read_block_bitmap_nowait:483: comm syz-executor.0: Invalid block bitmap block 0 in block_group 0
+EXT4-fs error (device loop0): ext4_read_block_bitmap_nowait:483: comm syz-executor.0: Invalid block bitmap block 0 in block_group 0
+------------[ cut here ]------------
+ext4: mb_load_buddy failed (-117)
+WARNING: CPU: 0 PID: 5495 at fs/ext4/mballoc.c:4608 ext4_discard_allocated_blocks+0x5d4/0x750 fs/ext4/mballoc.c:4607
+Modules linked in:
+CPU: 0 PID: 5495 Comm: syz-executor.0 Not tainted 6.7.0-rc1-syzkaller-00125-g7475e51b8796 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:ext4_discard_allocated_blocks+0x5d4/0x750 fs/ext4/mballoc.c:4607
+Code: 00 0f 85 9a 01 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 0b 94 45 ff 48 c7 c7 a0 67 3d 8b 44 89 fe e8 3c 48 0b ff <0f> 0b 49 bf 00 00 00 00 00 fc ff df eb 98 e8 e9 93 45 ff e9 19 fe
+RSP: 0018:ffffc90004d1ecc0 EFLAGS: 00010246
+RAX: a3755e8be44c1900 RBX: 0000000000000001 RCX: ffff88801dd8bb80
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc90004d1edd0 R08: ffffffff81547c82 R09: 1ffff11017305172
+R10: dffffc0000000000 R11: ffffed1017305173 R12: ffff88807ea2070c
+R13: 1ffff920009a3da0 R14: ffff88807ea206c0 R15: 00000000ffffff8b
+FS:  00007f9b08e776c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9b08e35d58 CR3: 0000000025e06000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_mb_new_blocks+0x148f/0x4b30 fs/ext4/mballoc.c:6207
+ ext4_ext_map_blocks+0x1e13/0x7150 fs/ext4/extents.c:4285
+ ext4_map_blocks+0xa2f/0x1cb0 fs/ext4/inode.c:621
+ _ext4_get_block+0x238/0x6a0 fs/ext4/inode.c:763
+ ext4_block_write_begin+0x537/0x1840 fs/ext4/inode.c:1053
+ ext4_write_begin+0x619/0x10b0
+ ext4_da_write_begin+0x300/0xa40 fs/ext4/inode.c:2875
+ generic_perform_write+0x31b/0x630 mm/filemap.c:3918
+ ext4_buffered_write_iter+0xc6/0x350 fs/ext4/file.c:299
+ ext4_file_write_iter+0x1dc/0x19b0
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x792/0xb20 fs/read_write.c:584
+ ksys_write+0x1a0/0x2c0 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f9b0807cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9b08e770c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f9b0819bf80 RCX: 00007f9b0807cae9
+RDX: 000000000000a000 RSI: 0000000020000780 RDI: 0000000000000005
+RBP: 00007f9b080c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f9b0819bf80 R15: 00007ffedf6eb3a8
+ </TASK>
 
-diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-index 124403f5f1f4..96859d098ef8 100644
---- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
-+++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
-@@ -140,6 +140,22 @@ sdmmc1: mmc@48220000 {
- 			};
- 		};
- 
-+		bsec: efuse@44000000 {
-+			compatible = "st,stm32mp25-bsec";
-+			reg = <0x44000000 0x1000>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			part_number_otp@24 {
-+				reg = <0x24 0x4>;
-+			};
-+
-+			package_otp@1e8 {
-+				reg = <0x1e8 0x1>;
-+				bits = <0 3>;
-+			};
-+		};
-+
- 		syscfg: syscon@44230000 {
- 			compatible = "st,stm32mp25-syscfg", "syscon";
- 			reg = <0x44230000 0x10000>;
--- 
-2.25.1
 
+Tested on:
+
+commit:         7475e51b Merge tag 'net-6.7-rc2' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=166ceb84e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed401e778850d03c
+dashboard link: https://syzkaller.appspot.com/bug?extid=628e71e1cb809306030f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
