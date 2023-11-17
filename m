@@ -2,151 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A49457EEB8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 05:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DF67EEB93
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 05:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345687AbjKQEJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 23:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S229946AbjKQEKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 23:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345676AbjKQEJr (ORCPT
+        with ESMTP id S229437AbjKQEKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 23:09:47 -0500
-Received: from out203-205-221-210.mail.qq.com (out203-205-221-210.mail.qq.com [203.205.221.210])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0A41A5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 20:09:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1700194181;
-        bh=At520qKDeX3E1KIIClRLx//A2/xcILPB3gnDlw8ZE08=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=XnS3s2tB46u8ds19DN1mFA7F9oJDpJT8FkQaexibm0OWrikkRylgktBHiTtnjUYmO
-         zrpEfD2+5uuncvtxW7SoQh1bBlYxHUlh87HvqiDok4CR2J3YbWQ8Nh2jOaNXfUhLFN
-         dOfUODhb5J/gtkLWQCmDmqeFvvsSpcJkyWwEy8/Y=
-Received: from [192.168.31.137] ([116.128.244.171])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id 265B9673; Fri, 17 Nov 2023 12:09:37 +0800
-X-QQ-mid: xmsmtpt1700194177t86eil4p2
-Message-ID: <tencent_F89651CE8E1BFCEC42C4BFEDD0CA77F82609@qq.com>
-X-QQ-XMAILINFO: ObFHHlrAm440315lOe38z+J5oFMziPtveeFGLU4JO6UI+h6J+5+9Z5cJ7VyZvS
-         B9Un2LhVR5Mrg0CngHtiRKUVkncFNCQtMqZ7DGfLFZ7hJNfMugz9j7vLBZDLDI2t/MQjzoo8yQXX
-         1TGkcO0cfiKJGxor6bGsknrXcIAGWlFKxwMpsklZGuE2VkDhGBaaNUISCPh3aDIDiDel21u8lrln
-         swagzSLrNc5wb/ttRAbPjEmN7qBwXa0GVbxnufbzOirTTWT0tTHLYHfXqc0twvHf0djQ1jm70ZVf
-         Ehhrkjj4whBDYigT6WyHhPxQ9LDZOHtHrewsqDl4gW3aEIVZ0i8DyaU3MVkjjbe+UITyfTjkucxN
-         HhVns2OF2EhlxT3xeqO7QOCCqThE0AbBIHmAR9pk2uE/wZjy+uvjgYAeFtKqK+VKqTIqSroTyxUZ
-         +uDkrGDr7iy10NYFAzLtbanIDtfAbridyk/xfULMq4wtF3qFcWv/6Qf0qsPluaBgEuXuL4jpd3oJ
-         a+yOryWdWb4IxwtpQVqwx8y/nl/XRcxraHju1Vv8fit0HCOvtuDELTyJcBE5S+hYNXbbkRYU0EFV
-         pouQVo5FGy6mNP47vRGtJPmlH/PmV6rNjFd5NZKOibWwZ/g+vOmFhJd+dmwyvHYuW4WmR06NjUrX
-         EB50gJALYlxZ8gEnXxyLbYkUyw3Y/cUVUFno/lq6e/+QvsEqvVKadXxifTaAACUxTBROuAjF+k0U
-         194aapbdGHSfgnWyssSgsEpAOEBmMLpP1BIrFL9TriBJT3m/1WJFE/8IReTfa4zwkyIIqKWc2vph
-         wmBGA/YkIlIBTERSwmvE1WqlPZOrWA5B1TY7d0mvvDLQOrJkHVfG+Jd1gL6kZSjM+FGdtNSJyw9j
-         2rAf2QaTHVQjalLzjH7OyTFaRN/AqiZtvefe0+TDFDhI0EQt0rLRXO9zWfuF2Hfh+Fo8OJvvBdzZ
-         maNcVKbPNNkS0nstAjVljRzlO6rKZ7
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-X-OQ-MSGID: <22e31dd3-6557-4019-b46f-32ac56cffa48@foxmail.com>
-Date:   Fri, 17 Nov 2023 12:09:37 +0800
+        Thu, 16 Nov 2023 23:10:52 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A223F1A5;
+        Thu, 16 Nov 2023 20:10:49 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc131e52f1so20591955ad.0;
+        Thu, 16 Nov 2023 20:10:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700194249; x=1700799049; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ioK9Z+g0T7j8X5f/Qosoe0HfJXCOJDxZK8IrkzbXDwI=;
+        b=ePstFDTyLbHsWvTtrtJv8vDP1K/K2SfX1m5gXc36venCRLQEE9RpOWXxvZZViisV/a
+         qHGNCZJyhSsGpAf1xHH1ihW4Ez9IERZOEnqegX5mqAmlFlYU2L7Q+5EtOJBA32Vv+sWP
+         BE9tppluZaZ3VaJQY/k93v41luAj/6HnRNyxrGU/wnLur9WxXU0ftA+zHkBd+fn/svbc
+         uAkIncxqKnHtfKv8c1KU9iR3iv0ojxpxyWKbos/zcYyj4G9U02wpCpm4yLikyw/RDo4S
+         g/WzUfwd39J6Qmid0BTqDTKVJ7TFUVeW2grJmN/QYkOB/ukOtZLt35xHDLhaHWfUvDHz
+         R+Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700194249; x=1700799049;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ioK9Z+g0T7j8X5f/Qosoe0HfJXCOJDxZK8IrkzbXDwI=;
+        b=UDHsOJAvXpeLcp4hNfsMIWVWNTEkAmn8NIn5P8fhDufl7mgVeJLrHE9dZmhVLCzDt1
+         0miLIRPCnagM/nZrrKEUj05DMHup8NJCWRgqr7NMBmn1PwXx6r9fboSSj2jdiRHaPcgs
+         O9VHRGpQw7v8D68/I8MqaZ4cHPOgQVExYMCb5jdzaJ3i3Thcwhnak1/UmpjvvoJ60VwJ
+         vqGpF1j1ChqtxxMjZInNikxEn/z6qm4hXHVue5/569zg/biXjBx2lpgUuClcqNuQmiTS
+         2KgUVn8XtVjCmoGoF2NfLzNgIfdJqVfJf9/HG16Ho9o1O5Bgbu3xsmmLfuCf5mCx8qqB
+         Knng==
+X-Gm-Message-State: AOJu0YzO/QH1HAOP9os3yMzCh6ulbG61IWYFfLYIJhKzd/j/dBXexG7J
+        KYg4y9gn5prjsn+fkuRFHyw=
+X-Google-Smtp-Source: AGHT+IFPMxQxpgxcza1SIflNw8Mz3NRxAN9tnlKTEBJkKgQ938ZosXPDKQNiJgFDTX/rNDgVbK5bCg==
+X-Received: by 2002:a17:902:ea0b:b0:1ce:5d00:6a05 with SMTP id s11-20020a170902ea0b00b001ce5d006a05mr1049387plg.13.1700194249029;
+        Thu, 16 Nov 2023 20:10:49 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f21-20020a170902e99500b001bf6ea340b3sm445229plb.116.2023.11.16.20.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 20:10:48 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 16 Nov 2023 20:10:46 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 4.14 00/45] 4.14.330-rc1 review
+Message-ID: <16b96c58-30dc-46d0-89a8-b86be647078c@roeck-us.net>
+References: <20231115191419.641552204@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question about LTS 4.19 patch "89047634f5ce NFS: Don't interrupt
- file writeout due to fatal errors"
-Content-Language: en-US
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "chenxiaosong@kylinos.cn" <chenxiaosong@kylinos.cn>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "huangjinhui@kylinos.cn" <huangjinhui@kylinos.cn>,
-        "liuzhengyuan@kylinos.cn" <liuzhengyuan@kylinos.cn>,
-        "liuyun01@kylinos.cn" <liuyun01@kylinos.cn>,
-        "huhai@kylinos.cn" <huhai@kylinos.cn>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Anna.Schumaker@netapp.com" <Anna.Schumaker@netapp.com>
-References: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
- <2023103055-anaerobic-childhood-c1f1@gregkh>
- <tencent_4CA081DD6E435CDA2EAB9C826F7899F78C05@qq.com>
- <2023103055-saddled-payer-bd26@gregkh>
- <tencent_21E20176E2E5AB7C33CB5E67F10D02763508@qq.com>
- <3b8caab5918d06f436a889bc1dba09686fc0fad5.camel@hammerspace.com>
-From:   ChenXiaoSong <chenxiaosongemail@foxmail.com>
-In-Reply-To: <3b8caab5918d06f436a889bc1dba09686fc0fad5.camel@hammerspace.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115191419.641552204@linuxfoundation.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/10/30 22:56, Trond Myklebust wrote:
-> A refactoring is by definition a change that does not affect code
-> behaviour. It is obvious that this was never intended to be such a
-> patch.
->
-> The reason that the bug is occurring in 4.19.x, and not in the latest
-> kernels, is because the former is missing another bugfix (one which
-> actually is missing a "Fixes:" tag).
->
-> Can you therefore please check if applying commit 22876f540bdf ("NFS:
-> Don't call generic_error_remove_page() while holding locks") fixes the
-> issue.
->
-> Note that the latter patch is needed in any case in order to fix a read
-> deadlock (as indicated on the label).
->
-> Thanks,
->    Trond
+On Wed, Nov 15, 2023 at 02:32:37PM -0500, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.330 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
+> 
 
-Sorry, the previous email had formatting issues. I'll resend it.
+Build results:
+	total: 139 pass: 139 fail: 0
+Qemu test results:
+	total: 440 pass: 440 fail: 0
 
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-After applying commit 22876f540bdf ("NFS: Don't call 
-generic_error_remove_page() while holding locks"), I encountered an 
-issue of infinite loop:
-
-write
-   ...
-   nfs_updatepage
-     nfs_writepage_setup
-       nfs_setup_write_request
-         nfs_try_to_update_request
-           nfs_wb_page
-             if (clear_page_dirty_for_io(page)) // true
-             nfs_writepage_locked // return 0
-               nfs_do_writepage // return 0
-                 nfs_page_async_flush // return 0
-                   nfs_error_is_fatal_on_server
-                   nfs_write_error_remove_page
-                     SetPageError // instead of generic_error_remove_page
-             // loop begin
-             if (clear_page_dirty_for_io(page)) // false
-             if (!PagePrivate(page)) // false
-             ret = nfs_commit_inode = 0
-             // loop again, never quit
-
-
-before applying commit 22876f540bdf ("NFS: Don't call 
-generic_error_remove_page() while holding locks"), 
-generic_error_remove_page() will clear PG_private, and infinite loop 
-will never happen:
-
-generic_error_remove_page
-   truncate_inode_page
-     truncate_cleanup_page
-       do_invalidatepage
-         nfs_invalidate_page
-           nfs_wb_page_cancel
-             nfs_inode_remove_request
-               ClearPagePrivate(head->wb_page)
-
-
-If applying this patch, are other patches required? And I cannot 
-reproducethe read deadlock bug that the patch want to fix, are there 
-specific conditions required to reproduce this read deadlock bug?
-
-
+Guenter
