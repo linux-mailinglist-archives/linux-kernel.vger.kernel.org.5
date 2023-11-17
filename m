@@ -2,668 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B607EF34C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC4C7EF353
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345930AbjKQNEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S1345851AbjKQNEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQNEf (ORCPT
+        with ESMTP id S235722AbjKQNEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:04:35 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BADD52;
-        Fri, 17 Nov 2023 05:04:27 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id E572E24E26B;
-        Fri, 17 Nov 2023 21:04:24 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 17 Nov
- 2023 21:04:24 +0800
-Received: from yang-virtual-machine.localdomain (183.27.97.246) by
- EXMBX171.cuchost.com (172.16.6.91) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 17 Nov 2023 21:04:24 +0800
-From:   Shengyang Chen <shengyang.chen@starfivetech.com>
-To:     <devicetree@vger.kernel.org>, <linux-phy@lists.infradead.org>
-CC:     <vkoul@kernel.org>, <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <p.zabel@pengutronix.de>, <minda.chen@starfivetech.com>,
-        <changhuang.liang@starfivetech.com>, <rogerq@kernel.org>,
-        <geert+renesas@glider.be>, <keith.zhao@starfivetech.com>,
-        <shengyang.chen@starfivetech.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/2] phy: starfive: Add mipi dphy tx support
-Date:   Fri, 17 Nov 2023 21:04:21 +0800
-Message-ID: <20231117130421.79261-3-shengyang.chen@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231117130421.79261-1-shengyang.chen@starfivetech.com>
-References: <20231117130421.79261-1-shengyang.chen@starfivetech.com>
+        Fri, 17 Nov 2023 08:04:45 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3349D6A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:04:39 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5be30d543c4so1457830a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1700226279; x=1700831079; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6/F1OxU0rX7/2Awza+ieBvlQ9jwzfprHoNUntAoYQeA=;
+        b=kq4p4qNsyI5PD1CWUJKQNHfxMljXlGi3/T9UBSLCkuM4zPv8MVAw/NlBJ86UtAbPBo
+         jLyYmHJbetcKRIedfu1eoG28XPQwPt7G0qRGKp4JtlDfsW5zFFU5dfPmWPlzqzAATUcK
+         bbhw3j+IFpZzcuoGv8tp9B/qGu4UFwLiOEht/UxsYfPqPWPDZXRoMN21XLsDmwFaxfNv
+         Dddk78IkA44IqMLir3JJQLNEUjpGh4Za80ylBnwTF7LdEM4Oympco+oDWQvqrDSHGBDf
+         xs07FhYP+9hrZE9d++y7sJ2gpmjdtp5UQvOrNspWF5kzMIehciWTqYX2vPs7gQZBw5SA
+         Rjpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700226279; x=1700831079;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6/F1OxU0rX7/2Awza+ieBvlQ9jwzfprHoNUntAoYQeA=;
+        b=eJPzD+2xmHiVZB4rK5TK44ippg48fytrRzPYIg4nzr95XQPyFYzkl9Thz7A7qAGkqw
+         P7IWOiFNp0+LupIOEhpTQII6QgKhuuekfLPYC6CAP422PjhEkna3dacF8c5IRnssFKFf
+         0oIy19pB184ep4Uv/SeIXKG5ErnR0hJ6KyM2CEblzWKh4QlC8MnrHi9kTeYaNTt1yD4j
+         8WkYo3ZXnMFZTarV2dnIPOaYikQyM/4pDBsA03QVbdMIxOI79//eY4LCNZJR3cZPpLs5
+         82QnH0MSjHjVuQK20wCSBdWAGMf2j8kAfy6ivcC6cReMKDgr99j+KY99K7tsquuAnm5L
+         qohA==
+X-Gm-Message-State: AOJu0Yzj1vVWM3QuTCQFLCqLt3l1wLsWwH8ZRf5pxP4bzieiBty0J7en
+        /smWsP6Qx/yge5APwkINIFGiYO3WagXHhscdnm9r8Q==
+X-Google-Smtp-Source: AGHT+IEtPzE7lEOx2d7Ysp4LwrL/GBmShcmNUU9lJo3FtmpAf6sriMDVi9emlG1mMx8Yan2mKYsw1q3eMsjqCt3Pm70=
+X-Received: by 2002:a17:90b:3904:b0:274:8949:d834 with SMTP id
+ ob4-20020a17090b390400b002748949d834mr13014202pjb.49.1700226278671; Fri, 17
+ Nov 2023 05:04:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.97.246]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231020072140.900967-1-apatel@ventanamicro.com>
+ <20231020072140.900967-7-apatel@ventanamicro.com> <2023102113-harsh-trout-be8f@gregkh>
+In-Reply-To: <2023102113-harsh-trout-be8f@gregkh>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 17 Nov 2023 18:34:27 +0530
+Message-ID: <CAAhSdy1Beq-Qnio3E+Am0jVQ7ECaWa1HH2A1JkWRPN5y8tsgAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 6/9] RISC-V: Add stubs for sbi_console_putchar/getchar()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Anup Patel <apatel@ventanamicro.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mipi dphy tx support for the StarFive JH7110 SoC.
-It is used to transfer DSI data.
+On Sat, Oct 21, 2023 at 10:05=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Oct 20, 2023 at 12:51:37PM +0530, Anup Patel wrote:
+> > The functions sbi_console_putchar() and sbi_console_getchar() are
+> > not defined when CONFIG_RISCV_SBI_V01 is disabled so let us add
+> > stub of these functions to avoid "#ifdef" on user side.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > ---
+> >  arch/riscv/include/asm/sbi.h | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.=
+h
+> > index 12dfda6bb924..cbcefa344417 100644
+> > --- a/arch/riscv/include/asm/sbi.h
+> > +++ b/arch/riscv/include/asm/sbi.h
+> > @@ -271,8 +271,13 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned=
+ long arg0,
+> >                       unsigned long arg3, unsigned long arg4,
+> >                       unsigned long arg5);
+> >
+> > +#ifdef CONFIG_RISCV_SBI_V01
+> >  void sbi_console_putchar(int ch);
+> >  int sbi_console_getchar(void);
+> > +#else
+> > +static inline void sbi_console_putchar(int ch) { }
+> > +static inline int sbi_console_getchar(void) { return -1; }
+>
+> Why not return a real error, "-1" isn't that :)
 
-Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
----
- MAINTAINERS                               |   7 +
- drivers/phy/starfive/Kconfig              |  10 +
- drivers/phy/starfive/Makefile             |   1 +
- drivers/phy/starfive/phy-jh7110-dphy-tx.c | 542 ++++++++++++++++++++++
- 4 files changed, 560 insertions(+)
- create mode 100644 drivers/phy/starfive/phy-jh7110-dphy-tx.c
+As-per SBI spec, the legacy sbi_console_getchar() returns
+-1 upon failure hence the code.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cfb533ec89e8..255c577afa49 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20677,6 +20677,13 @@ S:	Supported
- F:	Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-rx.yaml
- F:	drivers/phy/starfive/phy-jh7110-dphy-rx.c
- 
-+STARFIVE JH7110 DPHY TX DRIVER
-+M:	Keith Zhao <keith.zhao@starfivetech.com>
-+M:	Shengyang Chen <shengyang.chen@starfivetech.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/phy/starfive,jh7110-dphy-tx.yaml
-+F:	drivers/phy/starfive/phy-jh7110-dphy-tx.c
-+
- STARFIVE JH7110 MMC/SD/SDIO DRIVER
- M:	William Qiu <william.qiu@starfivetech.com>
- S:	Supported
-diff --git a/drivers/phy/starfive/Kconfig b/drivers/phy/starfive/Kconfig
-index 9508e2143011..d0cdd7cb4a13 100644
---- a/drivers/phy/starfive/Kconfig
-+++ b/drivers/phy/starfive/Kconfig
-@@ -15,6 +15,16 @@ config PHY_STARFIVE_JH7110_DPHY_RX
- 	  system. If M is selected, the module will be called
- 	  phy-jh7110-dphy-rx.ko.
- 
-+config PHY_STARFIVE_JH7110_DPHY_TX
-+	tristate "StarFive JH7110 D-PHY TX Support"
-+	depends on HAS_IOMEM
-+	select GENERIC_PHY
-+	select GENERIC_PHY_MIPI_DPHY
-+	help
-+	  Choose this option if you have a StarFive D-PHY TX in your
-+	  system. If M is selected, the module will be called
-+	  phy-jh7110-dphy-tx.ko.
-+
- config PHY_STARFIVE_JH7110_PCIE
- 	tristate "Starfive JH7110 PCIE 2.0/USB 3.0 PHY support"
- 	depends on HAS_IOMEM
-diff --git a/drivers/phy/starfive/Makefile b/drivers/phy/starfive/Makefile
-index b391018b7c47..eedc4a6fec15 100644
---- a/drivers/phy/starfive/Makefile
-+++ b/drivers/phy/starfive/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_PHY_STARFIVE_JH7110_DPHY_RX)	+= phy-jh7110-dphy-rx.o
-+obj-$(CONFIG_PHY_STARFIVE_JH7110_DPHY_TX)	+= phy-jh7110-dphy-tx.o
- obj-$(CONFIG_PHY_STARFIVE_JH7110_PCIE)		+= phy-jh7110-pcie.o
- obj-$(CONFIG_PHY_STARFIVE_JH7110_USB)		+= phy-jh7110-usb.o
-diff --git a/drivers/phy/starfive/phy-jh7110-dphy-tx.c b/drivers/phy/starfive/phy-jh7110-dphy-tx.c
-new file mode 100644
-index 000000000000..69aa172563e4
---- /dev/null
-+++ b/drivers/phy/starfive/phy-jh7110-dphy-tx.c
-@@ -0,0 +1,542 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * DPHY TX driver for the StarFive JH7110 SoC
-+ *
-+ * Copyright (C) 2023 StarFive Technology Co., Ltd.
-+ * Author: Keith Zhao <keith.zhao@starfivetech.com>
-+ * Author: Shengyang Chen <shengyang.chen@starfivetech.com>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_device.h>
-+#include <linux/phy/phy.h>
-+#include <linux/phy/phy-mipi-dphy.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
-+
-+#define STF_DPHY_APBIFSAIF_SYSCFG(x)			(x)
-+
-+#define  STF_DPHY_AON_POWER_READY_N_SHIFT		0x0U
-+#define  STF_DPHY_AON_POWER_READY_N_MASK		BIT(0)
-+#define  STF_DPHY_CFG_L0_SWAP_SEL_SHIFT			0xCU
-+#define  STF_DPHY_CFG_L0_SWAP_SEL_MASK			GENMASK(14, 12)
-+#define  STF_DPHY_CFG_L1_SWAP_SEL_SHIFT			0xFU
-+#define  STF_DPHY_CFG_L1_SWAP_SEL_MASK			GENMASK(17, 15)
-+#define  STF_DPHY_CFG_L2_SWAP_SEL_SHIFT			0x12U
-+#define  STF_DPHY_CFG_L2_SWAP_SEL_MASK			GENMASK(20, 18)
-+#define  STF_DPHY_CFG_L3_SWAP_SEL_SHIFT			0x15U
-+#define  STF_DPHY_CFG_L3_SWAP_SEL_MASK			GENMASK(23, 21)
-+#define  STF_DPHY_CFG_L4_SWAP_SEL_SHIFT			0x18U
-+#define  STF_DPHY_CFG_L4_SWAP_SEL_MASK			GENMASK(26, 24)
-+#define  STF_DPHY_RGS_CDTX_PLL_UNLOCK_SHIFT		0x12U
-+#define  STF_DPHY_RGS_CDTX_PLL_UNLOCK_MASK		BIT(18)
-+#define  STF_DPHY_RG_CDTX_L0N_HSTX_RES_SHIFT		0x13U
-+#define  STF_DPHY_RG_CDTX_L0N_HSTX_RES_MASK		GENMASK(23, 19)
-+#define  STF_DPHY_RG_CDTX_L0P_HSTX_RES_SHIFT		0x18U
-+#define  STF_DPHY_RG_CDTX_L0P_HSTX_RES_MASK		GENMASK(28, 24)
-+
-+#define  STF_DPHY_RG_CDTX_L1P_HSTX_RES_SHIFT		0x5U
-+#define  STF_DPHY_RG_CDTX_L1P_HSTX_RES_MASK		GENMASK(9, 5)
-+#define  STF_DPHY_RG_CDTX_L2N_HSTX_RES_SHIFT		0xAU
-+#define  STF_DPHY_RG_CDTX_L2N_HSTX_RES_MASK		GENMASK(14, 10)
-+#define  STF_DPHY_RG_CDTX_L2P_HSTX_RES_SHIFT		0xFU
-+#define  STF_DPHY_RG_CDTX_L2P_HSTX_RES_MASK		GENMASK(19, 15)
-+#define  STF_DPHY_RG_CDTX_L3N_HSTX_RES_SHIFT		0x14U
-+#define  STF_DPHY_RG_CDTX_L3N_HSTX_RES_MASK		GENMASK(24, 20)
-+#define  STF_DPHY_RG_CDTX_L3P_HSTX_RES_SHIFT		0x19U
-+#define  STF_DPHY_RG_CDTX_L3P_HSTX_RES_MASK		GENMASK(29, 25)
-+
-+#define  STF_DPHY_RG_CDTX_L4N_HSTX_RES_SHIFT		0x0U
-+#define  STF_DPHY_RG_CDTX_L4N_HSTX_RES_MASK		GENMASK(4, 0)
-+#define  STF_DPHY_RG_CDTX_L4P_HSTX_RES_SHIFT		0x5U
-+#define  STF_DPHY_RG_CDTX_L4P_HSTX_RES_MASK		GENMASK(9, 5)
-+#define  STF_DPHY_RG_CDTX_PLL_FBK_FRA_SHIFT		0x0U
-+#define  STF_DPHY_RG_CDTX_PLL_FBK_FRA_MASK		GENMASK(23, 0)
-+
-+#define  STF_DPHY_RG_CDTX_PLL_FBK_INT_SHIFT		0x0U
-+#define  STF_DPHY_RG_CDTX_PLL_FBK_INT_MASK		GENMASK(8, 0)
-+#define  STF_DPHY_RG_CDTX_PLL_FM_EN_SHIFT		0x9U
-+#define  STF_DPHY_RG_CDTX_PLL_FM_EN_MASK		BIT(9)
-+#define  STF_DPHY_RG_CDTX_PLL_LDO_STB_X2_EN_SHIFT	0xAU
-+#define  STF_DPHY_RG_CDTX_PLL_LDO_STB_X2_EN_MASK	BIT(10)
-+#define  STF_DPHY_RG_CDTX_PLL_PRE_DIV_SHIFT		0xBU
-+#define  STF_DPHY_RG_CDTX_PLL_PRE_DIV_MASK		GENMASK(12, 11)
-+
-+#define  STF_DPHY_RG_CDTX_PLL_SSC_EN_SHIFT		0x12U
-+#define  STF_DPHY_RG_CDTX_PLL_SSC_EN_MASK		0x40000U
-+
-+#define  STF_DPHY_RG_CLANE_HS_CLK_POST_TIME_SHIFT	0x0U
-+#define  STF_DPHY_RG_CLANE_HS_CLK_POST_TIME_MASK	GENMASK(7, 0)
-+#define  STF_DPHY_RG_CLANE_HS_CLK_PRE_TIME_SHIFT	0x8U
-+#define  STF_DPHY_RG_CLANE_HS_CLK_PRE_TIME_MASK		GENMASK(15, 8)
-+#define  STF_DPHY_RG_CLANE_HS_PRE_TIME_SHIFT		0x10U
-+#define  STF_DPHY_RG_CLANE_HS_PRE_TIME_MASK		GENMASK(23, 16)
-+#define  STF_DPHY_RG_CLANE_HS_TRAIL_TIME_SHIFT		0x18U
-+#define  STF_DPHY_RG_CLANE_HS_TRAIL_TIME_MASK		GENMASK(31, 24)
-+
-+#define  STF_DPHY_RG_CLANE_HS_ZERO_TIME_SHIFT		0x0U
-+#define  STF_DPHY_RG_CLANE_HS_ZERO_TIME_MASK		GENMASK(7, 0)
-+#define  STF_DPHY_RG_DLANE_HS_PRE_TIME_SHIFT		0x8U
-+#define  STF_DPHY_RG_DLANE_HS_PRE_TIME_MASK		GENMASK(15, 8)
-+#define  STF_DPHY_RG_DLANE_HS_TRAIL_TIME_SHIFT		0x10U
-+#define  STF_DPHY_RG_DLANE_HS_TRAIL_TIME_MASK		GENMASK(23, 16)
-+#define  STF_DPHY_RG_DLANE_HS_ZERO_TIME_SHIFT		0x18U
-+#define  STF_DPHY_RG_DLANE_HS_ZERO_TIME_MASK		GENMASK(31, 24)
-+
-+#define  STF_DPHY_RG_EXTD_CYCLE_SEL_SHIFT		0x0U
-+#define  STF_DPHY_RG_EXTD_CYCLE_SEL_MASK		GENMASK(2, 0)
-+#define  STF_DPHY_SCFG_C_HS_PRE_ZERO_TIME_SHIFT		0x0U
-+#define  STF_DPHY_SCFG_C_HS_PRE_ZERO_TIME_MASK		GENMASK(31, 0)
-+
-+#define  STF_DPHY_SCFG_DSI_TXREADY_ESC_SEL_SHIFT	0x1U
-+#define  STF_DPHY_SCFG_DSI_TXREADY_ESC_SEL_MASK		GENMASK(2, 1)
-+#define  STF_DPHY_SCFG_PPI_C_READY_SEL_SHIFT		0x3U
-+#define  STF_DPHY_SCFG_PPI_C_READY_SEL_MASK		GENMASK(4, 3)
-+
-+#define  STF_DPHY_REFCLK_IN_SEL_SHIFT			0x1AU
-+#define  STF_DPHY_REFCLK_IN_SEL_MASK			GENMASK(28, 26)
-+#define  STF_DPHY_RESETB_SHIFT				0x1DU
-+#define  STF_DPHY_RESETB_MASK				BIT(29)
-+
-+#define STF_DPHY_REFCLK_12M				1
-+#define STF_DPHY_BITRATE_ALIGN				10000000
-+
-+#define STF_MAP_LANES_NUM				5
-+
-+struct m31_dphy_config {
-+	int ref_clk;
-+	unsigned long bitrate;
-+	u32 pll_prev_div;
-+	u32 pll_fbk_int;
-+	u32 pll_fbk_fra;
-+	u32 extd_cycle_sel;
-+	u32 dlane_hs_pre_time;
-+	u32 dlane_hs_zero_time;
-+	u32 dlane_hs_trail_time;
-+	u32 clane_hs_pre_time;
-+	u32 clane_hs_zero_time;
-+	u32 clane_hs_trail_time;
-+	u32 clane_hs_clk_pre_time;
-+	u32 clane_hs_clk_post_time;
-+};
-+
-+static const struct m31_dphy_config m31_dphy_configs[] = {
-+	{12000000, 490000000, 0x0, 0xa3, 0x55 << 16 | 0x55 << 8 | 0x55,
-+	 0x2, 0xc, 0x1d, 0x14, 0x8, 0x42, 0x12, 0x3, 0x28},
-+	{12000000, 680000000, 0x0, 0x71, 0x55 << 16 | 0x55 << 8 | 0x55,
-+	 0x1, 0x8, 0x13, 0xe, 0x5, 0x2e, 0xd, 0x1, 0x16},
-+	{12000000, 750000000, 0x0, 0x7d, 0x0 << 16 | 0x0 << 8 | 0x0,
-+	 0x1, 0x8, 0x16, 0xf, 0x6, 0x32, 0xe, 0x1, 0x17},
-+	{12000000, 900000000, 0x0, 0x96, 0x0 << 16 | 0x0 << 8 | 0x0,
-+	 0x1, 0xa, 0x19, 0x12, 0x8, 0x3c, 0x10, 0x1, 0x19},
-+};
-+
-+struct stf_dphy_info {
-+	/**
-+	 * @maps:
-+	 *
-+	 * Physical lanes and logic lanes mapping table.
-+	 *
-+	 * The default order is:
-+	 * [data lane 0, data lane 1, data lane 2, date lane 3, clk lane]
-+	 */
-+	u8 maps[STF_MAP_LANES_NUM];
-+};
-+
-+struct stf_dphy {
-+	struct device *dev;
-+	void __iomem *topsys;
-+	struct clk *txesc_clk;
-+	struct reset_control *sys_rst;
-+	struct reset_control *txbytehs_rst;
-+
-+	struct phy_configure_opts_mipi_dphy config;
-+
-+	struct regulator *mipitx_1p8;
-+	struct regulator *mipitx_0p9;
-+
-+	struct phy *phy;
-+	const struct stf_dphy_info *info;
-+};
-+
-+static inline u32 stf_dphy_get_reg(void *io_addr, u32 addr, u32 shift, u32 mask)
-+{
-+	u32 tmp;
-+
-+	tmp = readl(io_addr);
-+	tmp = (tmp & mask) >> shift;
-+	return tmp;
-+}
-+
-+static inline void stf_dphy_set_reg(void *io_addr, u32 addr, u32 data, u32 shift, u32 mask)
-+{
-+	u32 tmp;
-+
-+	tmp = readl(io_addr + addr);
-+	tmp &= ~mask;
-+	tmp |= (data << shift) & mask;
-+	writel(tmp, (io_addr + addr));
-+}
-+
-+static int is_pll_locked(struct stf_dphy *dphy)
-+{
-+	int tmp = stf_dphy_get_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(8),
-+				  STF_DPHY_RGS_CDTX_PLL_UNLOCK_SHIFT,
-+				  STF_DPHY_RGS_CDTX_PLL_UNLOCK_MASK);
-+	return !tmp;
-+}
-+
-+static void stf_dphy_hw_reset(struct stf_dphy *dphy, int assert)
-+{
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(100),
-+			 !assert, STF_DPHY_RESETB_SHIFT, STF_DPHY_RESETB_MASK);
-+
-+	if (!assert) {
-+		/*the lock-in time of pll of M31 is 20us-50ms*/
-+		while ((!is_pll_locked(dphy)) && msecs_to_jiffies(50))
-+			;
-+		dev_err(dphy->dev, "MIPI dphy-tx # PLL Locked\n");
-+	}
-+}
-+
-+static int stf_dphy_configure(struct phy *phy, union phy_configure_opts *opts)
-+{
-+	struct stf_dphy *dphy;
-+	u32 bitrate;
-+	unsigned long alignment;
-+	int i;
-+	const struct m31_dphy_config *p;
-+	const u32 STF_DPHY_AON_POWER_READY_N_active = 0;
-+	const struct stf_dphy_info *info;
-+
-+	dphy = phy_get_drvdata(phy);
-+	info = dphy->info;
-+	bitrate = opts->mipi_dphy.hs_clk_rate;
-+
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(8), 0x10,
-+			 STF_DPHY_RG_CDTX_L0N_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L0N_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L0N_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L0N_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L2N_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L2N_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L3N_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L3N_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(16), 0x10,
-+			 STF_DPHY_RG_CDTX_L4N_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L4N_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(8), 0x10,
-+			 STF_DPHY_RG_CDTX_L0P_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L0P_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L1P_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L1P_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L2P_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L2P_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(12), 0x10,
-+			 STF_DPHY_RG_CDTX_L3P_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L3P_HSTX_RES_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(16), 0x10,
-+			 STF_DPHY_RG_CDTX_L4P_HSTX_RES_SHIFT, STF_DPHY_RG_CDTX_L4P_HSTX_RES_MASK);
-+
-+	alignment = STF_DPHY_BITRATE_ALIGN;
-+	if (bitrate % alignment)
-+		bitrate += alignment - (bitrate % alignment);
-+
-+	p = m31_dphy_configs;
-+	for (i = 0; i < ARRAY_SIZE(m31_dphy_configs); i++, p++) {
-+		if (p->bitrate == bitrate) {
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(100),
-+					 STF_DPHY_REFCLK_12M, STF_DPHY_REFCLK_IN_SEL_SHIFT,
-+					 STF_DPHY_REFCLK_IN_SEL_MASK);
-+
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0),
-+					 STF_DPHY_AON_POWER_READY_N_active,
-+					 STF_DPHY_AON_POWER_READY_N_SHIFT,
-+					 STF_DPHY_AON_POWER_READY_N_MASK);
-+
-+			/*Lane setting*/
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0), info->maps[0],
-+					 STF_DPHY_CFG_L0_SWAP_SEL_SHIFT,
-+					 STF_DPHY_CFG_L0_SWAP_SEL_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0), info->maps[1],
-+					 STF_DPHY_CFG_L1_SWAP_SEL_SHIFT,
-+					 STF_DPHY_CFG_L1_SWAP_SEL_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0), info->maps[2],
-+					 STF_DPHY_CFG_L2_SWAP_SEL_SHIFT,
-+					 STF_DPHY_CFG_L2_SWAP_SEL_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0), info->maps[3],
-+					 STF_DPHY_CFG_L3_SWAP_SEL_SHIFT,
-+					 STF_DPHY_CFG_L3_SWAP_SEL_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(0), info->maps[4],
-+					 STF_DPHY_CFG_L4_SWAP_SEL_SHIFT,
-+					 STF_DPHY_CFG_L4_SWAP_SEL_MASK);
-+			/*PLL setting*/
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(28), 0x0,
-+					 STF_DPHY_RG_CDTX_PLL_SSC_EN_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_SSC_EN_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(24), 0x1,
-+					 STF_DPHY_RG_CDTX_PLL_LDO_STB_X2_EN_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_LDO_STB_X2_EN_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(24), 0x1,
-+					 STF_DPHY_RG_CDTX_PLL_FM_EN_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_FM_EN_MASK);
-+
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(24),
-+					 p->pll_prev_div, STF_DPHY_RG_CDTX_PLL_PRE_DIV_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_PRE_DIV_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(24),
-+					 p->pll_fbk_int, STF_DPHY_RG_CDTX_PLL_FBK_INT_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_FBK_INT_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(20),
-+					 p->pll_fbk_fra, STF_DPHY_RG_CDTX_PLL_FBK_FRA_SHIFT,
-+					 STF_DPHY_RG_CDTX_PLL_FBK_FRA_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(40),
-+					 p->extd_cycle_sel, STF_DPHY_RG_EXTD_CYCLE_SEL_SHIFT,
-+					 STF_DPHY_RG_EXTD_CYCLE_SEL_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(36),
-+					 p->dlane_hs_pre_time,
-+					 STF_DPHY_RG_DLANE_HS_PRE_TIME_SHIFT,
-+					 STF_DPHY_RG_DLANE_HS_PRE_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(36),
-+					 p->dlane_hs_pre_time,
-+					 STF_DPHY_RG_DLANE_HS_PRE_TIME_SHIFT,
-+					 STF_DPHY_RG_DLANE_HS_PRE_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(36),
-+					 p->dlane_hs_zero_time,
-+					 STF_DPHY_RG_DLANE_HS_ZERO_TIME_SHIFT,
-+					 STF_DPHY_RG_DLANE_HS_ZERO_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(36),
-+					 p->dlane_hs_trail_time,
-+					 STF_DPHY_RG_DLANE_HS_TRAIL_TIME_SHIFT,
-+					 STF_DPHY_RG_DLANE_HS_TRAIL_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(32),
-+					 p->clane_hs_pre_time,
-+					 STF_DPHY_RG_CLANE_HS_PRE_TIME_SHIFT,
-+					 STF_DPHY_RG_CLANE_HS_PRE_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(36),
-+					 p->clane_hs_zero_time,
-+					 STF_DPHY_RG_CLANE_HS_ZERO_TIME_SHIFT,
-+					 STF_DPHY_RG_CLANE_HS_ZERO_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(32),
-+					 p->clane_hs_trail_time,
-+					 STF_DPHY_RG_CLANE_HS_TRAIL_TIME_SHIFT,
-+					 STF_DPHY_RG_CLANE_HS_TRAIL_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(32),
-+					 p->clane_hs_clk_pre_time,
-+					 STF_DPHY_RG_CLANE_HS_CLK_PRE_TIME_SHIFT,
-+					 STF_DPHY_RG_CLANE_HS_CLK_PRE_TIME_MASK);
-+			stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(32),
-+					 p->clane_hs_clk_post_time,
-+					 STF_DPHY_RG_CLANE_HS_CLK_POST_TIME_SHIFT,
-+					 STF_DPHY_RG_CLANE_HS_CLK_POST_TIME_MASK);
-+
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int stf_dphy_init(struct phy *phy)
-+{
-+	struct stf_dphy *dphy = phy_get_drvdata(phy);
-+	int ret;
-+
-+	stf_dphy_hw_reset(dphy, 0);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(48), 0,
-+			 STF_DPHY_SCFG_PPI_C_READY_SEL_SHIFT, STF_DPHY_SCFG_PPI_C_READY_SEL_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(48), 0,
-+			 STF_DPHY_SCFG_DSI_TXREADY_ESC_SEL_SHIFT,
-+			 STF_DPHY_SCFG_DSI_TXREADY_ESC_SEL_MASK);
-+	stf_dphy_set_reg(dphy->topsys, STF_DPHY_APBIFSAIF_SYSCFG(44), 0x30,
-+			 STF_DPHY_SCFG_C_HS_PRE_ZERO_TIME_SHIFT,
-+			 STF_DPHY_SCFG_C_HS_PRE_ZERO_TIME_MASK);
-+
-+	ret = clk_prepare_enable(dphy->txesc_clk);
-+	if (ret) {
-+		dev_err(dphy->dev, "Failed to prepare/enable txesc_clk\n");
-+		return ret;
-+	}
-+
-+	ret = reset_control_deassert(dphy->sys_rst);
-+	if (ret) {
-+		dev_err(dphy->dev, "Failed to deassert sys_rst\n");
-+		return ret;
-+	}
-+
-+	ret = reset_control_deassert(dphy->txbytehs_rst);
-+	if (ret < 0) {
-+		dev_err(dphy->dev, "Failed to deassert txbytehs_rst\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int stf_dphy_exit(struct phy *phy)
-+{
-+	struct stf_dphy *dphy = phy_get_drvdata(phy);
-+	int ret;
-+
-+	ret = reset_control_assert(dphy->txbytehs_rst);
-+	if (ret < 0) {
-+		dev_err(dphy->dev, "Failed to assert txbytehs_rst\n");
-+		return ret;
-+	}
-+
-+	ret = reset_control_assert(dphy->sys_rst);
-+	if (ret) {
-+		dev_err(dphy->dev, "Failed to assert sys_rst\n");
-+		return ret;
-+	}
-+
-+	clk_disable_unprepare(dphy->txesc_clk);
-+
-+	stf_dphy_hw_reset(dphy, 1);
-+
-+	return 0;
-+}
-+
-+static int stf_dphy_power_on(struct phy *phy)
-+{
-+	struct stf_dphy *dphy = phy_get_drvdata(phy);
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(dphy->dev);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regulator_enable(dphy->mipitx_0p9);
-+	if (ret) {
-+		dev_err(dphy->dev, "Cannot enable mipitx_0p9 regulator\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int stf_dphy_validate(struct phy *phy, enum phy_mode mode, int submode,
-+			     union phy_configure_opts *opts)
-+{
-+	if (mode != PHY_MODE_MIPI_DPHY)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static int stf_dphy_power_off(struct phy *phy)
-+{
-+	struct stf_dphy *dphy = phy_get_drvdata(phy);
-+
-+	regulator_disable(dphy->mipitx_0p9);
-+
-+	pm_runtime_put_sync(dphy->dev);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops stf_dphy_ops = {
-+	.power_on	= stf_dphy_power_on,
-+	.power_off	= stf_dphy_power_off,
-+	.init		= stf_dphy_init,
-+	.exit		= stf_dphy_exit,
-+	.configure	= stf_dphy_configure,
-+	.validate	= stf_dphy_validate,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int stf_dphy_probe(struct platform_device *pdev)
-+{
-+	struct phy_provider *phy_provider;
-+	struct stf_dphy *dphy;
-+	int ret;
-+
-+	dphy = devm_kzalloc(&pdev->dev, sizeof(*dphy), GFP_KERNEL);
-+	if (!dphy)
-+		return -ENOMEM;
-+
-+	dphy->info = of_device_get_match_data(&pdev->dev);
-+
-+	dphy->dev = &pdev->dev;
-+	dev_set_drvdata(&pdev->dev, dphy);
-+
-+	dphy->topsys = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(dphy->topsys)) {
-+		ret = PTR_ERR(dphy->topsys);
-+		return ret;
-+	}
-+
-+	pm_runtime_enable(&pdev->dev);
-+
-+	dphy->mipitx_0p9 = devm_regulator_get(&pdev->dev, "mipi_0p9");
-+	if (IS_ERR(dphy->mipitx_0p9)) {
-+		ret = PTR_ERR(dphy->mipitx_0p9);
-+		return ret;
-+	}
-+
-+	dphy->txesc_clk = devm_clk_get(&pdev->dev, "dphy_txesc");
-+	if (IS_ERR(dphy->txesc_clk)) {
-+		ret = PTR_ERR(dphy->txesc_clk);
-+		dev_err(&pdev->dev, "txesc_clk get error\n");
-+		return ret;
-+	}
-+
-+	dphy->sys_rst = reset_control_get_exclusive(&pdev->dev, "dphy_sys");
-+	if (IS_ERR(dphy->sys_rst)) {
-+		ret = PTR_ERR(dphy->sys_rst);
-+		dev_err(&pdev->dev, "sys_rst get error\n");
-+		return ret;
-+	}
-+
-+	dphy->txbytehs_rst = reset_control_get_exclusive(&pdev->dev, "dsi_txbytehs");
-+	if (IS_ERR(dphy->txbytehs_rst)) {
-+		dev_err(&pdev->dev, "Failed to get txbytehs_rst\n");
-+		return PTR_ERR(dphy->txbytehs_rst);
-+	}
-+
-+	dphy->phy = devm_phy_create(&pdev->dev, NULL, &stf_dphy_ops);
-+	if (IS_ERR(dphy->phy)) {
-+		ret = PTR_ERR(dphy->phy);
-+		dev_err(&pdev->dev, "Failed to create phy\n");
-+		return ret;
-+	}
-+	phy_set_drvdata(dphy->phy, dphy);
-+
-+	phy_provider = devm_of_phy_provider_register(&pdev->dev, of_phy_simple_xlate);
-+	if (IS_ERR(phy_provider)) {
-+		ret = PTR_ERR(phy_provider);
-+		dev_err(&pdev->dev, "Failed to create phy\n");
-+		return ret;
-+	}
-+
-+	return PTR_ERR_OR_ZERO(phy_provider);
-+}
-+
-+static const struct stf_dphy_info starfive_dphy_info = {
-+	.maps = {0, 1, 2, 3, 4},
-+};
-+
-+static const struct of_device_id stf_dphy_dt_ids[] = {
-+	{
-+		.compatible = "starfive,jh7110-dphy-tx",
-+		.data = &starfive_dphy_info,
-+	},
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, stf_dphy_dt_ids);
-+
-+static struct platform_driver stf_dphy_driver = {
-+	.driver = {
-+		.name	= "starfive-dphy-tx",
-+		.of_match_table = stf_dphy_dt_ids,
-+	},
-+	.probe = stf_dphy_probe,
-+};
-+module_platform_driver(stf_dphy_driver);
-+
-+MODULE_AUTHOR("Keith Zhao <keith.zhao@starfivetech.com>");
-+MODULE_AUTHOR("Shengyang Chen <shengyang.chen@starfivetech.com>");
-+MODULE_DESCRIPTION("StarFive JH7110 DPHY TX driver");
-+MODULE_LICENSE("GPL");
--- 
-2.17.1
+Refer, section 5.3 of the latest SBI spec
+https://github.com/riscv-non-isa/riscv-sbi-doc/releases/download/commit-fe4=
+562532a9cc57e5743b6466946c5e5c98c73ca/riscv-sbi.pdf
 
+Although, the users of this function only expect a negative
+value upon failure so better to return proper error code here.
+
+I will update.
+
+>
+> thanks,
+>
+> greg k-h
+>
+> --
+> kvm-riscv mailing list
+> kvm-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kvm-riscv
+
+Regards,
+Anup
