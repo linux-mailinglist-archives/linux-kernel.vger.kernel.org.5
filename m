@@ -2,221 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C24497EF6A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8547EF6A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346124AbjKQQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:53:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        id S1346140AbjKQQy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:54:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjKQQxr (ORCPT
+        with ESMTP id S231580AbjKQQy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:53:47 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37534D5E;
-        Fri, 17 Nov 2023 08:53:44 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGrWY7075143;
-        Fri, 17 Nov 2023 10:53:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700240012;
-        bh=B4uEcE8nmP9Kr7C1JDhY6eEscZlT28hCsgsusWjKREw=;
-        h=From:To:CC:Subject:Date;
-        b=WRlzRdCIO13qEQ2/PzVpDaDdB+voootjJaJffRtTVy+A/iVEtxOCLIr68yuRfH6eB
-         KJHhhZ727YQJetPWhA8ZwF07ztsP90NdMnjLXkS/oWNtR/WFI6Xq9EocmIBjjL3a/6
-         HpXi4kwjnp4rJs9FRIztV+1HSiW7IwVrdbtXtFPo=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHGrW8k050268
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 10:53:32 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 10:53:32 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 10:53:32 -0600
-Received: from fllv0040.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGrVx9047560;
-        Fri, 17 Nov 2023 10:53:31 -0600
-From:   Andrew Davis <afd@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Davis <afd@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-am65: Add AM652 DTSI file
-Date:   Fri, 17 Nov 2023 10:53:30 -0600
-Message-ID: <20231117165330.98472-1-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 17 Nov 2023 11:54:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674F9D56
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 08:54:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CF55C433C8;
+        Fri, 17 Nov 2023 16:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700240063;
+        bh=wh3NvNk23iL8SMdrodhQJkLhcTt2jhyxZcQ1LppkWUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RlgKWZo7VeYmcpzS93u1HzDIjxgc2fg/CGnYjJ9z5Rei42XGsmyyWPKk8F4v7L4A0
+         1MxLhHl7fnZDBWSH2f0wWzCAIyNn4nkKavs9gKyOyySy4LKvewOz23THJrmRuSYEXr
+         qQ4x+q3/3pygX7+PVt/0RiU/ZYZsEQHUTTfoEbhHlfQP6kfBv8/J+wK5iX3qXjLpRI
+         T+sdWyPzQaMVLQpQt32uV+CbGCSIY/rtcAm5Esa1nqNYp7fNmy81k6QY4lXQ5GdBZZ
+         KEJ8w91zNBpEYH1m7W8GMs0vXYZijDdwpmARFvsU7jKd4h8/v+zs7+/8WM2056/IHN
+         SdaBN0F1gFNig==
+Date:   Fri, 17 Nov 2023 16:54:19 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v4 1/1] ptp: clockmatrix: support 32-bit address
+ space
+Message-ID: <20231117165419.GO164483@vergenet.net>
+References: <MW5PR03MB693280FDB441C89906BE044BA0B1A@MW5PR03MB6932.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR03MB693280FDB441C89906BE044BA0B1A@MW5PR03MB6932.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AM652 is basically a AM654 but with 2 cores instead of 4. Add
-a DTSI file for AM652 matching AM654 except this core difference.
+On Wed, Nov 15, 2023 at 10:10:53AM -0500, Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> We used to assume 0x2010xxxx address. Now that
+> we need to access 0x2011xxxx address, we need
+> to support read/write the whole 32-bit address space.
 
-This removes the need to remove the extra cores from AM654 manually
-in DT files for boards that use the AM652 variant. Do that for
-the IOT2050 boards here.
+Hi Min Li,
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- .../boot/dts/ti/k3-am65-iot2050-common.dtsi   |  1 -
- arch/arm64/boot/dts/ti/k3-am652.dtsi          | 74 +++++++++++++++++++
- .../ti/k3-am6528-iot2050-basic-common.dtsi    | 11 +--
- .../ti/k3-am6548-iot2050-advanced-common.dtsi |  1 +
- 4 files changed, 76 insertions(+), 11 deletions(-)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am652.dtsi
+I think it would be appropriate to include a patch in this series
+that makes use of 0x2011xxxx addresses.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index ba1c14a54acf4..bd5273a37b095 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -9,7 +9,6 @@
-  * Common bits of the IOT2050 Basic and Advanced variants, PG1 and PG2
-  */
- 
--#include "k3-am654.dtsi"
- #include <dt-bindings/phy/phy.h>
- 
- / {
-diff --git a/arch/arm64/boot/dts/ti/k3-am652.dtsi b/arch/arm64/boot/dts/ti/k3-am652.dtsi
-new file mode 100644
-index 0000000000000..0f22e00faa903
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am652.dtsi
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for AM65 SoC family in Dual core configuration
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+#include "k3-am65.dtsi"
-+
-+/ {
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu-map {
-+			cluster0: cluster0 {
-+				core0 {
-+					cpu = <&cpu0>;
-+				};
-+
-+				core1 {
-+					cpu = <&cpu1>;
-+				};
-+			};
-+		};
-+
-+		cpu0: cpu@0 {
-+			compatible = "arm,cortex-a53";
-+			reg = <0x000>;
-+			device_type = "cpu";
-+			enable-method = "psci";
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&L2_0>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			compatible = "arm,cortex-a53";
-+			reg = <0x001>;
-+			device_type = "cpu";
-+			enable-method = "psci";
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&L2_0>;
-+		};
-+	};
-+
-+	L2_0: l2-cache0 {
-+		compatible = "cache";
-+		cache-level = <2>;
-+		cache-unified;
-+		cache-size = <0x80000>;
-+		cache-line-size = <64>;
-+		cache-sets = <512>;
-+		next-level-cache = <&msmc_l3>;
-+	};
-+
-+	msmc_l3: l3-cache0 {
-+		compatible = "cache";
-+		cache-level = <3>;
-+		cache-unified;
-+	};
-+
-+	thermal_zones: thermal-zones {
-+		#include "k3-am654-industrial-thermal.dtsi"
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-index 5ab434c02ab6b..feb0eae4e6df4 100644
---- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
-@@ -9,6 +9,7 @@
-  * Common bits of the IOT2050 Basic variant, PG1 and PG2
-  */
- 
-+#include "k3-am652.dtsi"
- #include "k3-am65-iot2050-common.dtsi"
- 
- / {
-@@ -17,16 +18,6 @@ memory@80000000 {
- 		/* 1G RAM */
- 		reg = <0x00000000 0x80000000 0x00000000 0x40000000>;
- 	};
--
--	cpus {
--		cpu-map {
--			/delete-node/ cluster1;
--		};
--		/delete-node/ cpu@100;
--		/delete-node/ cpu@101;
--	};
--
--	/delete-node/ l2-cache1;
- };
- 
- /* eMMC */
-diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-index be55494b1f3fc..ff2fdc2e12e3c 100644
---- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
-@@ -11,6 +11,7 @@
- 
- /dts-v1/;
- 
-+#include "k3-am654.dtsi"
- #include "k3-am65-iot2050-common.dtsi"
- 
- / {
--- 
-2.39.2
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> ---
+> - Drop MAX_ABS_WRITE_PHASE_PICOSECONDS advised by Rahul
+> - Apply SCSR_ADDR to scrach register in idtcm_load_firmware advised by Simon
+> - Apply u32 to base in idtcm_output_enable advised by Simon
+> - Correct sync_ctrl0/1 parameter position for idtcm_write advised by Simon
+
+Thanks for the updates.
+
+>  drivers/ptp/ptp_clockmatrix.c    |  71 ++--
+>  drivers/ptp/ptp_clockmatrix.h    |  32 +-
+>  include/linux/mfd/idt8a340_reg.h | 542 ++++++++++++++++---------------
+>  3 files changed, 331 insertions(+), 314 deletions(-)
+> 
+> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+> index f6f9d4adce04..1d5da77502e6 100644
+> --- a/drivers/ptp/ptp_clockmatrix.c
+> +++ b/drivers/ptp/ptp_clockmatrix.c
+> @@ -41,7 +41,7 @@ module_param(firmware, charp, 0);
+>  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm);
+>  
+>  static inline int idtcm_read(struct idtcm *idtcm,
+> -			     u16 module,
+> +			     u32 module,
+>  			     u16 regaddr,
+>  			     u8 *buf,
+>  			     u16 count)
+
+...
+
+> @@ -570,27 +571,27 @@ static int _sync_pll_output(struct idtcm *idtcm,
+>  	if (qn_plus_1)
+>  		val |= SYNCTRL1_Q1_DIV_SYNC_TRIG;
+>  
+> -	err = idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
+> +	err = idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
+>  	if (err)
+>  		return err;
+>  
+>  	/* PLL5 can have OUT8 as second additional output. */
+>  	if (pll == 5 && qn_plus_1 != 0) {
+> -		err = idtcm_read(idtcm, 0, HW_Q8_CTRL_SPARE,
+> +		err = idtcm_read(idtcm, HW_Q8_CTRL_SPARE, 0,
+>  				 &temp, sizeof(temp));
+
+I feel that I am missing something obvious, but I have a question which I
+would like to ask by way of an example.
+
+Both before and after this patch idtcm_read() looks like this:
+
+static inline int idtcm_read(struct idtcm *idtcm,
+			     u16 module,
+			     u16 regaddr,
+			     u8 *buf,
+			     u16 count) {
+        return regmap_bulk_read(idtcm->regmap, module + regaddr, buf, count);
+}
+
+And so before this patch the above call to idtcm_read() ends up as
+a call to regmap_bulk_read:
+
+	regmap_bulk_read(idtcm->regmap, 0 + 0xa7d4, buf, count);
+
+In particular, the 2nd argument is 0 + 0xa7d4 = 0xa7d4.
+
+But after this patch the call to idtcm_read() becomes:
+
+	regmap_bulk_read(idtcm->regmap,  0x2010a7d4 + 0, buf, count);
+
+In particular, the 2nd argument is now 0x2010a7d4 + 0 = 0x2010a7d4.
+
+My question is, how does this patch take into account the
+change in this value from 0xa7d4 to 0x2010a7d4?
+
+Or to the point, does the call to regmap_bulk_read() still
+work with the new value?
 
