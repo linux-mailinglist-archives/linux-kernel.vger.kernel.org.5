@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089117EF16E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 12:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA667EF172
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 12:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345719AbjKQLJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 06:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
+        id S230383AbjKQLKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 06:10:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQLJX (ORCPT
+        with ESMTP id S229436AbjKQLKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 06:09:23 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDFA11F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 03:09:20 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d267605ceeso250900866b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 03:09:19 -0800 (PST)
+        Fri, 17 Nov 2023 06:10:50 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665DEB3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 03:10:46 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9f924e0481aso23850366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 03:10:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700219358; x=1700824158; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700219445; x=1700824245; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0n3u9fRI60jjBFdxE1f7jCXBiQGJhq1ggpW/mHJyVwM=;
-        b=SZlz11YxqBBKGjqfs7P5wHWf6FOeLRtVXeoAPYYL0F6Y8qU7J6uptppf28wLdZC0Om
-         aRnDSnmaBXHb2+EARQZyxZGvG5ZpcNzq37Zattx83t3rRWc6obqk/k3ZS83k0McoSVyi
-         B7BDzasClHlV2RR28vuSfDEseq4au9CmLKeB9249z09E0FDe9m1Ku0hQB9+aD0OLHfBe
-         x4u5iWnUbO36aS7IJvRWCHLbxu5A3bFdIcXzNbb7DV6Q8PkPmixmbtoFhvajQtSkW0P1
-         Xe7VzhS+37y+IJwQu8nAFPFf9qA/CcxdtPtgSNHlPvMgeAdB2g2+ArsyN0xDd9brczcJ
-         sZDQ==
+        bh=kSVZ0BwaEMY2G+/CVS02+y1cCYZlKbzeu69SNky1VE0=;
+        b=SzV0bzWiIVK117HV7SZfNxmGLA7GD4aC+jxUCP6AsV+kLC58zCjs59tBzDeMzcJTev
+         gfcLZDwjwRwhHO6MGsHzq3mSH1b/+OZoi+fF+GMurdJM286f8vij5wvonMBkv7P1Bh3o
+         CCiGlLvOBPvlCrX3DtW+hEAGtIKjvKyoF82j178obM8oprXAp7oRyr282DaDk/LSfoRt
+         MR9174aIGICYfWaxNinGX7Rfd1TrLAC8dst1XEjFESSe0EpDdm6lVzks5Qgad4n3U+MR
+         wD6Yu9gUBB3wEo4mIiOM8NP35sl2Hx3Jir/FWebnRqQ5C43BE0xxFKE0961caUJ6pOKc
+         hdkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700219358; x=1700824158;
+        d=1e100.net; s=20230601; t=1700219445; x=1700824245;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0n3u9fRI60jjBFdxE1f7jCXBiQGJhq1ggpW/mHJyVwM=;
-        b=CyvV1cd1Qdo9g5l9o7330qUSg37pXsrdVeNLDmS1kWBC/uUz6mo4h5UlhDVfOIv9YS
-         LRUKfVMlTepiJ5FIdLHywDlckmF8kA/W30TzwAcTAFXoKvPYvEekqYZ+/bVGan8Hbzc+
-         WWKC8/27vyznkHmuqJ+NO5/U3aKhtsq17Goqo848bpjZe8qCdBA+UiMtvQZBlj2EAcZN
-         wf+cvvrbtFNlc0r/LiVYHRqEUFlN/8EzLKPfPaPzxmGOggf10y47ImU/IwWW6DuB/R45
-         VEdzZcnW02iE4rK6LHAKafOFqhcbg403B0UJj4CA5Pc6PVaQyVY6hNdRaLm56NB5eyqY
-         MpOg==
-X-Gm-Message-State: AOJu0YxRkA1fkMboXZE07VRlSoY1h1vPUQVMqn8b8LxVxQQbCxdE05xJ
-        sQG+uVXwTznlhBzwpECTL7iIkQ==
-X-Google-Smtp-Source: AGHT+IEv1uOhvk9siILV7ti9nbf4vN9fKcaNHPiVIalZIiAJAa8rlZPjTC+gurs4WzQOmQaH/nh7Gg==
-X-Received: by 2002:a17:907:98e:b0:9ba:fe6:225 with SMTP id bf14-20020a170907098e00b009ba0fe60225mr17358830ejc.55.1700219357850;
-        Fri, 17 Nov 2023 03:09:17 -0800 (PST)
+        bh=kSVZ0BwaEMY2G+/CVS02+y1cCYZlKbzeu69SNky1VE0=;
+        b=mXlc6xdJx0u+bKnEbEqfEEnjCc9EftMeyMtRA0Egf0XYawuhRp7sjIsSPjOh9u/5jH
+         ZLohZkua8+k85eXyuDFTAZUjZKjZseCjHuaU3IPh5nmDrW5Fn210QozEM5sUFGK7R6+W
+         Mip51o5qiaTmj+UcVBYm44XDscySgfilV8ckvUEejrnBFpZmS8pq3dZDA3VY5hvG8zl8
+         TNijaBPhZfLB2rvODR8pCR9Xgdw/7QasWCF+5LyIfT0xnjoZ57YyEhTFWBdiQjB5RIXx
+         Vb1r1KObQE1EwmmQf0oKmLDeBE1ubaSBVvFeTb1TjdbjmVINQ4prkTI05klB0LhEEQ4s
+         wg0w==
+X-Gm-Message-State: AOJu0YyYiGAFDarTSj4T+LoT8Uf3IiwVu0msrgl1/DWp8/yzZIG8iYHO
+        t9vrmERPgdZgd880uRTCZCaGvg==
+X-Google-Smtp-Source: AGHT+IFf0uZryuh3+iz3ug7AauIgXXvheS3Pgjh+ojjtYkfe9m/RCzGtfr5iOiJc5BNArz5pEINYPg==
+X-Received: by 2002:a17:906:2457:b0:9ba:8ed:ea58 with SMTP id a23-20020a170906245700b009ba08edea58mr3697337ejb.30.1700219444155;
+        Fri, 17 Nov 2023 03:10:44 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b009ddcfbac9e7sm671379ejh.84.2023.11.17.03.09.14
+        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b009ddcfbac9e7sm671379ejh.84.2023.11.17.03.10.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 03:09:16 -0800 (PST)
-Message-ID: <1878f651-e444-43a1-b077-d63e8ee4cdbe@linaro.org>
-Date:   Fri, 17 Nov 2023 12:09:13 +0100
+        Fri, 17 Nov 2023 03:10:43 -0800 (PST)
+Message-ID: <184ab92d-9246-43e4-a40d-465d51208585@linaro.org>
+Date:   Fri, 17 Nov 2023 12:10:42 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: light: add ltr390
+Subject: Re: [PATCH v3 1/2] dt-bindings: timer: thead,c900-aclint-mtimer:
+ separate mtime and mtimecmp regs
 Content-Language: en-US
-To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231117074554.700970-1-anshulusr@gmail.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen Wang <unicorn_wang@outlook.com>
+Cc:     Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <IA1PR20MB49533488308F7317C28AA6BDBBB7A@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953B8AC5CB8F8165A09D118BBB7A@IA1PR20MB4953.namprd20.prod.outlook.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,30 +117,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231117074554.700970-1-anshulusr@gmail.com>
+In-Reply-To: <IA1PR20MB4953B8AC5CB8F8165A09D118BBB7A@IA1PR20MB4953.namprd20.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2023 08:45, Anshul Dalal wrote:
-> Add binding for Lite-On LTR390 which is an Ambient/UV light sensor that
-> communicates over i2c with an address of 0x53.
+On 17/11/2023 06:07, Inochi Amaoto wrote:
+> The timer registers of aclint don't follow the clint layout and can
+> be mapped on any different offset. As sg2042 uses separated timer
+> and mswi for its clint, it should follow the aclint spec and have
+> separated registers.
 > 
-> Datasheet:
->   https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
+> The previous patch introduced a new type of T-HEAD aclint timer which
+> has clint timer layout. Although it has the clint timer layout, it
+> should follow the aclint spec and uses the separated mtime and mtimecmp
+> regs. So a ABI change is needed to make the timer fit the aclint spec.
 > 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> ---
+> To make T-HEAD aclint timer more closer to the aclint spec, use
+> regs-names to represent the mtimecmp register, which can avoid hack
+> for unsupport mtime register of T-HEAD aclint timer.
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+I don't understand this reasoning. You had one entry, you still have one
+entry. Adding reg-names (not regs-names) does not change it.
 
 Best regards,
 Krzysztof
