@@ -2,98 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 788E17EF806
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CE77EF80B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbjKQTsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S232705AbjKQTvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbjKQTsi (ORCPT
+        with ESMTP id S231757AbjKQTve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:48:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A751D5C
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:48:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5718C433C8;
-        Fri, 17 Nov 2023 19:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700250515;
-        bh=X7JZz+ON7qSHlA37jt4TpJnFpH56zWbengdGSXs0b9Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZY+8uqWgJilAslNYbhHRu3b8/mWuvqc21zHQ1flxkaFfL2/4HqnaRvX8m/Bonwhgz
-         PoJkrKPLwpS3MQ8InlyKUNZ/IxISURrNYJTLuUEeaf7/Vxza3vSl/LKcD4kY9cdZTb
-         KhVohOBGaaijinUxkd8GOHHrSn2FrVB/uLTyRJb4=
-Date:   Fri, 17 Nov 2023 14:48:32 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Kory Maincent <kory.maincent@bootlin.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>
-Subject: Re: [PATCH] firmware_loader: Expand Firmware upload error codes with
- firmware invalid error
-Message-ID: <2023111727-exert-dab-b940@gregkh>
-References: <20231117-feature_firmware_error_code-v1-1-92c973a50847@bootlin.com>
- <2023111720-slicer-exes-7d9f@gregkh>
- <548c3b60-60ce-4166-9943-224e03152cc5@lunn.ch>
+        Fri, 17 Nov 2023 14:51:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F2FD68;
+        Fri, 17 Nov 2023 11:51:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700250690; x=1731786690;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zKdyI8VrTxA4IvbpNNIgKVi2kEP1Fa0rMuHNhxW8lII=;
+  b=bCUZK9aY3FFvAUeVYu+FqidNmgYQAtOMxwoBVD08GMfy48Ef4U89B4Mx
+   PGHPzMwKS3PpOBY60l9MzQkdskwr2LRIcMS3MyWgo47spx9Gc8d2NJFo/
+   0iA9qoU0QayYjijDVc8/PfRdiaG6se/Uvl3piQDXej3m3CO8JsnwTEEfB
+   Q6ZMtxoCmE/EOJmc+M+z89x9X4jk4us2INtIvX4WHy08+mabHZjrjvys6
+   qnctTJfAJwPjCWUM0B5Xs57Oh0LI1hveHOHzO/pHEfJBHp+BdjlgzZPn0
+   ib2Y+YokVqgLsPYEmQcUaAfYV/Rvn4jaaF/C1vhLOG9nlznZVpEbCdodL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="457859775"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="457859775"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 11:51:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="13586974"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 17 Nov 2023 11:51:25 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r44s6-00035f-13;
+        Fri, 17 Nov 2023 19:51:22 +0000
+Date:   Sat, 18 Nov 2023 03:50:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>, vkoul@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
+        dmaengine@vger.kernel.org, imx@lists.linux.dev, joy.zou@nxp.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com
+Subject: Re: [PATCH v2 1/5] dmaengine: fsl-edma: involve help macro
+ fsl_edma_set(get)_tcd()
+Message-ID: <202311180346.xzja9J4E-lkp@intel.com>
+References: <20231116222743.2984776-2-Frank.Li@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <548c3b60-60ce-4166-9943-224e03152cc5@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231116222743.2984776-2-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 03:06:44PM +0100, Andrew Lunn wrote:
-> On Fri, Nov 17, 2023 at 08:45:59AM -0500, Greg Kroah-Hartman wrote:
-> > On Fri, Nov 17, 2023 at 11:27:53AM +0100, Kory Maincent wrote:
-> > > No error code are available to signal an invalid firmware content.
-> > > Drivers that can check the firmware content validity can not return this
-> > > specific failure to the user-space
-> > > 
-> > > Expand the firmware error code with an additional code:
-> > > - "firmware invalid" code which can be used when the provided firmware
-> > >   is invalid
-> > > 
-> > > Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > > ---
-> > > 
-> > > This patch was initially submitted as part of a net patch series.
-> > > Conor expressed interest in using it in a different subsystem.
-> > > Consequently, I extracted it from the series and submitted it separately
-> > > to the main tree, driver-core.
-> > > https://lore.kernel.org/netdev/20231116-feature_poe-v1-7-be48044bf249@bootlin.com/
-> > 
-> > So you want me to take it through my tree?  Sure, but if you are relying
-> > on this for any other code, it will be a while before it gets into
-> > Linus's tree, not until 6.8-rc1, is that ok?
-> 
-> My idea was that you could create a stable branch, which can then be
-> pulled into netdev and arm-soc.
+Hi Frank,
 
-I'll be glad to do so, you just need to ask me to do that, I don't see
-that request here :)
+kernel test robot noticed the following build warnings:
 
-> If you don't want to do that, we can ask Arnd to take it, and he can
-> create a stable branch which we pull into netdev.
+[auto build test WARNING on vkoul-dmaengine/next]
+[also build test WARNING on linus/master v6.7-rc1 next-20231117]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-You want a stable tag to pull from, right?
+url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-edma-involve-help-macro-fsl_edma_set-get-_tcd/20231117-062946
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
+patch link:    https://lore.kernel.org/r/20231116222743.2984776-2-Frank.Li%40nxp.com
+patch subject: [PATCH v2 1/5] dmaengine: fsl-edma: involve help macro fsl_edma_set(get)_tcd()
+config: x86_64-randconfig-r113-20231117 (https://download.01.org/0day-ci/archive/20231118/202311180346.xzja9J4E-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311180346.xzja9J4E-lkp@intel.com/reproduce)
 
-But really, why not just take this through netdev?  It's just one
-commit, I have no problem with it going that way at all.  If the odd
-chance there's a merge conflict in the future, I can handle it.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311180346.xzja9J4E-lkp@intel.com/
 
-thanks,
+sparse warnings: (new ones prefixed by >>)
+   drivers/dma/fsl-edma-common.c:76:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:93:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:100:22: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:101:25: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:104:15: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:106:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:131:19: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:137:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:140:9: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/dma/fsl-edma-common.c:361:26: sparse: sparse: cast to restricted __le16
+   drivers/dma/fsl-edma-common.c:361:26: sparse: sparse: cast from restricted __le32
+>> drivers/dma/fsl-edma-common.c:364:33: sparse: sparse: cast to restricted __le32
+   drivers/dma/fsl-edma-common.c:364:33: sparse: sparse: cast from restricted __le16
+   drivers/dma/fsl-edma-common.c:377:26: sparse: sparse: cast to restricted __le16
+   drivers/dma/fsl-edma-common.c:377:26: sparse: sparse: cast from restricted __le32
+   drivers/dma/fsl-edma-common.c:381:33: sparse: sparse: cast to restricted __le32
+   drivers/dma/fsl-edma-common.c:381:33: sparse: sparse: cast from restricted __le16
+   drivers/dma/fsl-edma-common.c:384:36: sparse: sparse: cast to restricted __le16
+   drivers/dma/fsl-edma-common.c:384:36: sparse: sparse: cast from restricted __le32
+   drivers/dma/fsl-edma-common.c:386:36: sparse: sparse: cast to restricted __le16
+   drivers/dma/fsl-edma-common.c:386:36: sparse: sparse: cast from restricted __le32
+   drivers/dma/fsl-edma-common.c:457:15: sparse: sparse: cast to restricted __le32
+   drivers/dma/fsl-edma-common.c:457:15: sparse: sparse: cast from restricted __le16
+   drivers/dma/fsl-edma-common.c:461:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] csr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:461:17: sparse:     expected restricted __le16 [usertype] csr
+   drivers/dma/fsl-edma-common.c:461:17: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:473:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:473:17: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/dma/fsl-edma-common.c:496:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] saddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     expected restricted __le32 [usertype] saddr
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:497:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] daddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     expected restricted __le32 [usertype] daddr
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:499:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] attr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     expected restricted __le16 [usertype] attr
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:501:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] soff @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     expected restricted __le16 [usertype] soff
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:518:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] nbytes @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     expected restricted __le32 [usertype] nbytes
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:519:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] slast @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     expected restricted __le32 [usertype] slast
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:521:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] citer @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:521:9: sparse:     expected restricted __le16 [usertype] citer
+   drivers/dma/fsl-edma-common.c:521:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:522:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] doff @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:522:9: sparse:     expected restricted __le16 [usertype] doff
+   drivers/dma/fsl-edma-common.c:522:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:524:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] dlast_sga @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:524:9: sparse:     expected restricted __le32 [usertype] dlast_sga
+   drivers/dma/fsl-edma-common.c:524:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:526:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] biter @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:526:9: sparse:     expected restricted __le16 [usertype] biter
+   drivers/dma/fsl-edma-common.c:526:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:543:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] csr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:543:9: sparse:     expected restricted __le16 [usertype] csr
+   drivers/dma/fsl-edma-common.c:543:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:496:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] saddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     expected restricted __le32 [usertype] saddr
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:497:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] daddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     expected restricted __le32 [usertype] daddr
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:499:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] attr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     expected restricted __le16 [usertype] attr
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:501:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] soff @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     expected restricted __le16 [usertype] soff
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:518:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] nbytes @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     expected restricted __le32 [usertype] nbytes
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:519:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] slast @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     expected restricted __le32 [usertype] slast
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:521:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] citer @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:521:9: sparse:     expected restricted __le16 [usertype] citer
+   drivers/dma/fsl-edma-common.c:521:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:522:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] doff @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:522:9: sparse:     expected restricted __le16 [usertype] doff
+   drivers/dma/fsl-edma-common.c:522:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:524:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] dlast_sga @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:524:9: sparse:     expected restricted __le32 [usertype] dlast_sga
+   drivers/dma/fsl-edma-common.c:524:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:526:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] biter @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:526:9: sparse:     expected restricted __le16 [usertype] biter
+   drivers/dma/fsl-edma-common.c:526:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:543:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] csr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:543:9: sparse:     expected restricted __le16 [usertype] csr
+   drivers/dma/fsl-edma-common.c:543:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:496:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] saddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     expected restricted __le32 [usertype] saddr
+   drivers/dma/fsl-edma-common.c:496:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:497:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] daddr @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     expected restricted __le32 [usertype] daddr
+   drivers/dma/fsl-edma-common.c:497:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:499:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] attr @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     expected restricted __le16 [usertype] attr
+   drivers/dma/fsl-edma-common.c:499:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:501:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le16 [usertype] soff @@     got restricted __le32 [usertype] @@
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     expected restricted __le16 [usertype] soff
+   drivers/dma/fsl-edma-common.c:501:9: sparse:     got restricted __le32 [usertype]
+   drivers/dma/fsl-edma-common.c:518:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] nbytes @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     expected restricted __le32 [usertype] nbytes
+   drivers/dma/fsl-edma-common.c:518:9: sparse:     got restricted __le16 [usertype]
+   drivers/dma/fsl-edma-common.c:519:9: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __le32 [usertype] slast @@     got restricted __le16 [usertype] @@
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     expected restricted __le32 [usertype] slast
+   drivers/dma/fsl-edma-common.c:519:9: sparse:     got restricted __le16 [usertype]
 
-greg k-h
+vim +361 drivers/dma/fsl-edma-common.c
+
+   348	
+   349	static size_t fsl_edma_desc_residue(struct fsl_edma_chan *fsl_chan,
+   350			struct virt_dma_desc *vdesc, bool in_progress)
+   351	{
+   352		struct fsl_edma_desc *edesc = fsl_chan->edesc;
+   353		enum dma_transfer_direction dir = edesc->dirn;
+   354		dma_addr_t cur_addr, dma_addr;
+   355		size_t len, size;
+   356		u32 nbytes = 0;
+   357		int i;
+   358	
+   359		/* calculate the total size in this desc */
+   360		for (len = i = 0; i < fsl_chan->edesc->n_tcds; i++) {
+ > 361			nbytes = fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, nbytes);
+   362			if (nbytes & (EDMA_V3_TCD_NBYTES_DMLOE | EDMA_V3_TCD_NBYTES_SMLOE))
+   363				nbytes = EDMA_V3_TCD_NBYTES_MLOFF_NBYTES(nbytes);
+ > 364			len += nbytes * fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, biter);
+   365		}
+   366	
+   367		if (!in_progress)
+   368			return len;
+   369	
+   370		if (dir == DMA_MEM_TO_DEV)
+   371			cur_addr = edma_read_tcdreg(fsl_chan, saddr);
+   372		else
+   373			cur_addr = edma_read_tcdreg(fsl_chan, daddr);
+   374	
+   375		/* figure out the finished and calculate the residue */
+   376		for (i = 0; i < fsl_chan->edesc->n_tcds; i++) {
+   377			nbytes = fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, nbytes);
+   378			if (nbytes & (EDMA_V3_TCD_NBYTES_DMLOE | EDMA_V3_TCD_NBYTES_SMLOE))
+   379				nbytes = EDMA_V3_TCD_NBYTES_MLOFF_NBYTES(nbytes);
+   380	
+   381			size = nbytes * fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, biter);
+   382	
+   383			if (dir == DMA_MEM_TO_DEV)
+   384				dma_addr = fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, saddr);
+   385			else
+   386				dma_addr = fsl_edma_get_tcd_to_cpu(fsl_chan, edesc->tcd[i].vtcd, daddr);
+   387	
+   388			len -= size;
+   389			if (cur_addr >= dma_addr && cur_addr < dma_addr + size) {
+   390				len += dma_addr + size - cur_addr;
+   391				break;
+   392			}
+   393		}
+   394	
+   395		return len;
+   396	}
+   397	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
