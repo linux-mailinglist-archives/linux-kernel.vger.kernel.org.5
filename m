@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374AE7EF93F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89BF7EF92B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346238AbjKQVKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S232339AbjKQVJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:09:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235563AbjKQVKX (ORCPT
+        with ESMTP id S229535AbjKQVJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:10:23 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EE91735
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:09:59 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b20577ef7bso2241588b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:09:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700255399; x=1700860199; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DL5piRnOOgGpwdkxQbi83S5rjEjfPe4DjTzZgACvY58=;
-        b=EIyHVlKiSNhvyjB29Mm9SC2Cksbkw8cRh8ped9kyLt/tn60jK6yxzAb2qdMZtQdb1G
-         51IIH5TP0BVhDyAqHpBM6rPpMeXP3vUF8fDSc1FaRS9BnrfWDm95Rvvqu9qbD7y3X/+o
-         hKacmxm77F7aStYWW/MvaHgM6GYgYNZbIt2Pw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700255399; x=1700860199;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DL5piRnOOgGpwdkxQbi83S5rjEjfPe4DjTzZgACvY58=;
-        b=HdZFsIHwCpIdiB7erP4uTyXrwSnZORJaA/hyYWMYVD68fA4+eY5W4ca2/egMX4JYaI
-         AMoccZIeOgB18Si+H7SY0jSYdVFmNHdkEXkiJxO4WJWY7ZulaJvNjNiqDwgVRFJ+ar/q
-         FnKR9kDpqUKqFgWRkMWiQgy8JDZArYfviNuHBRNvdNwH2fDDVPvVJ/2T4oDLqaiXuKjf
-         vKGNx4nJ1dK/COKQk0Re65OmbFWZOAYqVLTtbJvqJBXnBwGbNPx69k+OQUeLhhdFokA8
-         kbsrWPJQStq3JAA9DtcJ4SNTX4UhZvnApFHub+onmt1qlSkvlLKea+h1Zffo9LQVBcmh
-         CXUw==
-X-Gm-Message-State: AOJu0YyuAufDmg1Mq55iBq5MYksuwhMdBbKUug77VDG99LtrODjnP+Yl
-        r4cKCs+DVA3zY1UP/Yj9ztDyCQ==
-X-Google-Smtp-Source: AGHT+IGHWMC8lpH06rvyXJMANK059TL4Qd9yND7/duFlglKPEMZcUlex5YYsClh3kZ/YlBoNHES+4A==
-X-Received: by 2002:a05:6a20:bea5:b0:187:652d:95b5 with SMTP id gf37-20020a056a20bea500b00187652d95b5mr289192pzb.62.1700255398792;
-        Fri, 17 Nov 2023 13:09:58 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:b953:95f4:4240:7018])
-        by smtp.gmail.com with ESMTPSA id h20-20020a056a00219400b006c624e8e7e8sm1780587pfi.83.2023.11.17.13.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 13:09:58 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Grant Grundler <grundler@chromium.org>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>, linux-usb@vger.kernel.org,
-        Laura Nao <laura.nao@collabora.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Douglas Anderson <dianders@chromium.org>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 2/2] r8152: Add RTL8152_INACCESSIBLE checks to more loops
-Date:   Fri, 17 Nov 2023 13:08:42 -0800
-Message-ID: <20231117130836.2.I79c8a6c8cafd89979af5407d77a6eda589833dca@changeid>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-In-Reply-To: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
-References: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
+        Fri, 17 Nov 2023 16:09:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6678EB6;
+        Fri, 17 Nov 2023 13:09:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700255372; x=1731791372;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rKwAssx08c4/5C0TL9gY4TGgIHx3ODz3n6cVa2c/Dkk=;
+  b=FSlFl9NFnzTBDcmI0k+GAANt6oXw81j96y1OLxwAzCYWoJH4JUIZELMF
+   m7CC+8fJ1IT1ci+KBaOUfn2x5of3j/90vWUiXbcmkUcFO6FI6MTrwdPDv
+   +91ACUQnwsC2fa9guDtOe2r+qptk2FHnOdDBS/DPUxWAwRbV8MH82B+N4
+   jfJvKXlSY80VHZRBJPaeN8SG87cVa2A0kzFD5pqLuba0hstroCIlmPv1/
+   v8KcyHSqC5E7BliUzZgXnABjw2oXKSFpvOF6wHD3wmCJzAeo1fDEs3Gob
+   cL+6bEj2u8IN5QuoVCWg2LphHq6qYJHGaidkbe5i7y/8eH/WXEPFBhpjV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="477584003"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="477584003"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 13:09:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="759262393"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="759262393"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 13:09:30 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r465f-0000000Eu4i-3sxx;
+        Fri, 17 Nov 2023 23:09:27 +0200
+Date:   Fri, 17 Nov 2023 23:09:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 3/3] pinctrl: don't include GPIOLIB private header
+Message-ID: <ZVfWh-LNnBLyQJwo@smile.fi.intel.com>
+References: <20231115165001.2932350-1-brgl@bgdev.pl>
+ <20231115165001.2932350-4-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115165001.2932350-4-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous commits added checks for RTL8152_INACCESSIBLE in the loops in
-the driver. There are still a few more that keep tripping the driver
-up in error cases and make things take longer than they should. Add
-those in.
+On Wed, Nov 15, 2023 at 05:50:01PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> gpio_to_desc() is declared in linux/gpio.h so there's no need to include
+> gpiolib.h directly.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Oh, this is unfortunate we need it...
 
- drivers/net/usb/r8152.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index d6edf0254599..aca7dd7b4090 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -3000,6 +3000,8 @@ static void rtl8152_nic_reset(struct r8152 *tp)
- 		ocp_write_byte(tp, MCU_TYPE_PLA, PLA_CR, CR_RST);
- 
- 		for (i = 0; i < 1000; i++) {
-+			if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+				return;
- 			if (!(ocp_read_byte(tp, MCU_TYPE_PLA, PLA_CR) & CR_RST))
- 				break;
- 			usleep_range(100, 400);
-@@ -3329,6 +3331,8 @@ static void rtl_disable(struct r8152 *tp)
- 	rxdy_gated_en(tp, true);
- 
- 	for (i = 0; i < 1000; i++) {
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return;
- 		ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
- 		if ((ocp_data & FIFO_EMPTY) == FIFO_EMPTY)
- 			break;
-@@ -3336,6 +3340,8 @@ static void rtl_disable(struct r8152 *tp)
- 	}
- 
- 	for (i = 0; i < 1000; i++) {
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return;
- 		if (ocp_read_word(tp, MCU_TYPE_PLA, PLA_TCR0) & TCR0_TX_EMPTY)
- 			break;
- 		usleep_range(1000, 2000);
-@@ -5499,6 +5505,8 @@ static void wait_oob_link_list_ready(struct r8152 *tp)
- 	int i;
- 
- 	for (i = 0; i < 1000; i++) {
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return;
- 		ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
- 		if (ocp_data & LINK_LIST_READY)
- 			break;
-@@ -5513,6 +5521,8 @@ static void r8156b_wait_loading_flash(struct r8152 *tp)
- 		int i;
- 
- 		for (i = 0; i < 100; i++) {
-+			if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+				return;
- 			if (ocp_read_word(tp, MCU_TYPE_USB, USB_GPHY_CTRL) & GPHY_PATCH_DONE)
- 				break;
- 			usleep_range(1000, 2000);
-@@ -5635,6 +5645,8 @@ static int r8153_pre_firmware_1(struct r8152 *tp)
- 	for (i = 0; i < 104; i++) {
- 		u32 ocp_data = ocp_read_byte(tp, MCU_TYPE_USB, USB_WDT1_CTRL);
- 
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return -ENODEV;
- 		if (!(ocp_data & WTD1_EN))
- 			break;
- 		usleep_range(1000, 2000);
-@@ -5791,6 +5803,8 @@ static void r8153_aldps_en(struct r8152 *tp, bool enable)
- 		data &= ~EN_ALDPS;
- 		ocp_reg_write(tp, OCP_POWER_CFG, data);
- 		for (i = 0; i < 20; i++) {
-+			if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+				return;
- 			usleep_range(1000, 2000);
- 			if (ocp_read_word(tp, MCU_TYPE_PLA, 0xe000) & 0x0100)
- 				break;
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+With Best Regards,
+Andy Shevchenko
+
 
