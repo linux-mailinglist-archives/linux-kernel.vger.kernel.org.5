@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDAC7EF44F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE567EF450
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbjKQOTz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 09:19:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
+        id S232477AbjKQOUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQOTy (ORCPT
+        with ESMTP id S231634AbjKQOUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:19:54 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF14D4B
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:19:49 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 68975FF811;
-        Fri, 17 Nov 2023 14:19:45 +0000 (UTC)
-From:   Quentin Schulz <foss+kernel@0leil.net>
-To:     Sandy Huang <hjc@rock-chips.com>,
-        =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Yao <markyao0591@gmail.com>
-Cc:     Quentin Schulz <foss+kernel@0leil.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Quentin Schulz <quentin.schulz@theobroma-systems.com>
-Subject: [PATCH] drm/rockchip: lvds: do not print error message when deferring probe
-Date:   Fri, 17 Nov 2023 15:19:32 +0100
-Message-ID: <20231117-rk-lvds-defer-msg-v1-1-1e6894cf9a74@theobroma-systems.com>
-X-Mailer: git-send-email 2.42.0
+        Fri, 17 Nov 2023 09:20:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7899BD5C;
+        Fri, 17 Nov 2023 06:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700230797; x=1731766797;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oB/0lrFLvbXhsCuvYVt03j/KY8IZrsteq/mpUnJIAis=;
+  b=PVaw95sp806U6GgaIRv8LzRwNYjDtoxliRFObnVWGCXDypt52KTUV87M
+   cFi6o3/S1vQ+xx+2Qo/f70ddL2BBcHYyHztRHrHFHGgTaDh8nxBIGSeyM
+   MtukkL4uDgU1Z8R6+cm2hVfAJlLpys4LXRZD3Kp1V568rR+O9V6dqKQmL
+   jiwIhBtiCucTRzK6bB++AIDojVvxTOP+C23BPjZas5vLaRCQYK7OnIZfx
+   ScNZC+uwFk2T8+8bxukJH6AkjkYO3Sbxr3uGKzdl6+9xOgnmXh2rtkQgX
+   ujUMBFpxOV1oBsFYXJxVFmaZjF3lSuflw9119aHTvwenSBQlWnm+UBicU
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="394154947"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="394154947"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 06:19:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="939160431"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="939160431"
+Received: from unknown (HELO [10.237.72.75]) ([10.237.72.75])
+  by orsmga005.jf.intel.com with ESMTP; 17 Nov 2023 06:19:53 -0800
+Message-ID: <95bd788a-cb10-4f1d-b238-4422bba4d8cf@linux.intel.com>
+Date:   Fri, 17 Nov 2023 16:19:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8BIT
-X-GND-Sasl: foss@0leil.net
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 13/25] i2c: designware: Drop return value from
+ dw_i2c_of_configure()
+Content-Language: en-US
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
+ <20231110182304.3894319-14-andriy.shevchenko@linux.intel.com>
+ <839ed9c8-f58e-495e-97a1-0734b8fa6fb8@amd.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <839ed9c8-f58e-495e-97a1-0734b8fa6fb8@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
-
-This scary message may happen if the panel or bridge is not probed
-before the LVDS controller is, resulting in some head scratching because
-the LVDS panel is actually working, since a later try will eventually
-find the panel or bridge.
-
-Therefore let's demote this error message into a debug message to not
-scare users unnecessarily.
-
-Fixes: 34cc0aa25456 ("drm/rockchip: Add support for Rockchip Soc LVDS")
-Cc: Quentin Schulz <foss+kernel@0leil.net>
-Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
----
- drivers/gpu/drm/rockchip/rockchip_lvds.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_lvds.c b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-index f0f47e9abf5a..52e2ce2a61a8 100644
---- a/drivers/gpu/drm/rockchip/rockchip_lvds.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_lvds.c
-@@ -577,7 +577,7 @@ static int rockchip_lvds_bind(struct device *dev, struct device *master,
- 		ret = -EINVAL;
- 		goto err_put_port;
- 	} else if (ret) {
--		DRM_DEV_ERROR(dev, "failed to find panel and bridge node\n");
-+		DRM_DEV_DEBUG(dev, "failed to find panel and bridge node\n");
- 		ret = -EPROBE_DEFER;
- 		goto err_put_port;
- 	}
-
----
-base-commit: 7475e51b87969e01a6812eac713a1c8310372e8a
-change-id: 20231117-rk-lvds-defer-msg-b2944b73d791
-
-Best regards,
--- 
-Quentin Schulz <quentin.schulz@theobroma-systems.com>
-
+On 11/10/23 21:41, Mario Limonciello wrote:
+> On 11/10/2023 12:11, Andy Shevchenko wrote:
+>> dw_i2c_of_configure() is called without checking of the returned
+>> value, hence just drop it by converting to void.
+>>
+>> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>>   drivers/i2c/busses/i2c-designware-platdrv.c | 7 ++-----
+>>   1 file changed, 2 insertions(+), 5 deletions(-)
+>>
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
