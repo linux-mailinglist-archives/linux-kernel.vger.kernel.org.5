@@ -2,125 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B797EF836
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38467EF867
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbjKQUNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:13:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        id S232450AbjKQUQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:16:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjKQUNa (ORCPT
+        with ESMTP id S235757AbjKQUP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:13:30 -0500
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A980D57;
-        Fri, 17 Nov 2023 12:13:27 -0800 (PST)
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6ce2fc858feso1334823a34.3;
-        Fri, 17 Nov 2023 12:13:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700252007; x=1700856807;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+hVLnbBDJs+6torBM/p75g604JUq4A+G/Ls9v0K+P5I=;
-        b=UHaKspiZpBl9sPjfbS2ENrHKPvaoZ8zxd2AasjmpcdkpUt1w6RX5ekLjzYcdmllEEU
-         18ebf5TaZ3EZtDfO7oVkm4n3fm2a7XLgevmyclF3AHZszAMEU/Oml3W0KOb4yuMBoH1N
-         nc0JnivNTnVudx3SRZkkGlh3Gy1HQyywATzAfN4vY4wm/onXHBKwGGYYbeiHg9LBaGgv
-         FLJOvL1q/kfnea5MtGvpFg6ygGDOXg2N8j5B/O7B72PT43OsUWfniab1iRooaqcziSbj
-         qsx+Ky+lXojtF+aHUfAsYByRx3JLJoWJbM05efFw3GE/cShHK8JRZY8E7k4fhx1eitoq
-         IUpQ==
-X-Gm-Message-State: AOJu0YyszEc1rLMqhr1rMwWAF+7pcln7VV+rAPxGhgpAlPT+NWeo7d8r
-        lx8sf5MeYFgcyWZbxB1Sv2olLUBlAQ==
-X-Google-Smtp-Source: AGHT+IFtA5MrrAiQ6iEA5nTMGhfyGWN106xJFraoP9Hdk74eeJqU7aJM7iyK+BWvVZAbsDexqYa0kg==
-X-Received: by 2002:a9d:6295:0:b0:6d6:4635:3e0c with SMTP id x21-20020a9d6295000000b006d646353e0cmr257511otk.30.1700252006657;
-        Fri, 17 Nov 2023 12:13:26 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id c3-20020a9d67c3000000b006ce28044207sm342475otn.58.2023.11.17.12.13.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 12:13:25 -0800 (PST)
-Received: (nullmailer pid 2136441 invoked by uid 1000);
-        Fri, 17 Nov 2023 20:13:23 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 17 Nov 2023 15:15:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44651FEF;
+        Fri, 17 Nov 2023 12:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700252125; x=1731788125;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/7+LjIS9p9ecKNObclU4C94lj+TYiKtZZXlq7W+6+hI=;
+  b=b2gHz9tE426xGyctT2ig1NQjHnP1fFZvCzN6Cg/NoFFlCuHsuOTxcPhK
+   wqSQ1Fflee65O9dCt2zoMDu74QNvRtZ2tNvzn+B9izYF+VHB1uSsYfZrD
+   7jWR+0Z/w/v+7jKN5r4ihCCI3ZmQ4hgoJoybSmMtaPyTI0eVqYsY+bclM
+   AH8k5VV6yijaFZCXgvievajxUT+pXgdsXaRegvtGzXpkYipdJ5sAOcqKz
+   3GHs9x5sBKnDRMJRVjTllI15dj/6/e6WNpeP2HsdUboBXiKQbqet+QSCk
+   C9wekRKHNyvz+LSqcvV9Hl/jde/DWQZm2iXJGi7YQFr9rpQDULxifwMLj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="12913558"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="12913558"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 12:15:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="6951003"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 12:15:23 -0800
+Date:   Fri, 17 Nov 2023 12:15:23 -0800
+From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To:     "Wang, Wei W" <wei.w.wang@intel.com>
+Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Aktas, Erdem" <erdemaktas@google.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "Shahar, Sagi" <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>,
+        "Chen, Bo2" <chen.bo@intel.com>,
+        "Yuan, Hang" <hang.yuan@intel.com>,
+        "Zhang, Tina" <tina.zhang@intel.com>,
+        "gkirkpatrick@google.com" <gkirkpatrick@google.com>,
+        isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v16 059/116] KVM: TDX: Create initial guest memory
+Message-ID: <20231117201523.GD1109547@ls.amr.corp.intel.com>
+References: <cover.1697471314.git.isaku.yamahata@intel.com>
+ <edccd3a8ee2ca8d96baca097546bc131f1ef3b79.1697471314.git.isaku.yamahata@intel.com>
+ <DS0PR11MB6373EC1033F88008D3B71568DCB7A@DS0PR11MB6373.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20231117192305.17612-1-petre.rodan@subdimension.ro>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117192305.17612-1-petre.rodan@subdimension.ro>
-Message-Id: <170025200302.2136421.1756945077263166791.robh@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add
- honeywell,hsc030
-Date:   Fri, 17 Nov 2023 14:13:23 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DS0PR11MB6373EC1033F88008D3B71568DCB7A@DS0PR11MB6373.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 17, 2023 at 12:56:32PM +0000,
+"Wang, Wei W" <wei.w.wang@intel.com> wrote:
 
-On Fri, 17 Nov 2023 21:22:57 +0200, Petre Rodan wrote:
-> Adds binding for digital Honeywell TruStability HSC and SSC series pressure
-> and temperature sensors.
+> On Tuesday, October 17, 2023 12:14 AM, isaku.yamahata@intel.com wrote:
+> > Because the guest memory is protected in TDX, the creation of the initial guest
+> > memory requires a dedicated TDX module API, tdh_mem_page_add, instead of
+> > directly copying the memory contents into the guest memory in the case of
+> > the default VM type.  KVM MMU page fault handler callback, private_page_add,
+> > handles it.
+> > 
+> > Define new subcommand, KVM_TDX_INIT_MEM_REGION, of VM-scoped
+> > KVM_MEMORY_ENCRYPT_OP.  It assigns the guest page, copies the initial
+> > memory contents into the guest memory, encrypts the guest memory.  At the
+> > same time, optionally it extends memory measurement of the TDX guest.  It
+> > calls the KVM MMU page fault(EPT-violation) handler to trigger the callbacks
+> > for it.
+> > 
+> > Reported-by: gkirkpatrick@google.com
+> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > ---
+> > v15 -> v16:
+> > - add check if nr_pages isn't large with
+> >   (nr_page << PAGE_SHIFT) >> PAGE_SHIFT
+> > 
+> > v14 -> v15:
+> > - add a check if TD is finalized or not to tdx_init_mem_region()
+> > - return -EAGAIN when partial population
+> > ---
+> >  arch/x86/include/uapi/asm/kvm.h       |   9 ++
+> >  arch/x86/kvm/mmu/mmu.c                |   1 +
+> >  arch/x86/kvm/vmx/tdx.c                | 167 +++++++++++++++++++++++++-
+> >  arch/x86/kvm/vmx/tdx.h                |   2 +
+> >  tools/arch/x86/include/uapi/asm/kvm.h |   9 ++
+> >  5 files changed, 185 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/uapi/asm/kvm.h
+> > b/arch/x86/include/uapi/asm/kvm.h index 311a7894b712..a1815fcbb0be
+> > 100644
+> > --- a/arch/x86/include/uapi/asm/kvm.h
+> > +++ b/arch/x86/include/uapi/asm/kvm.h
+> > @@ -572,6 +572,7 @@ enum kvm_tdx_cmd_id {
+> >  	KVM_TDX_CAPABILITIES = 0,
+> >  	KVM_TDX_INIT_VM,
+> >  	KVM_TDX_INIT_VCPU,
+> > +	KVM_TDX_INIT_MEM_REGION,
+> > 
+> >  	KVM_TDX_CMD_NR_MAX,
+> >  };
+> > @@ -645,4 +646,12 @@ struct kvm_tdx_init_vm {
+> >  	struct kvm_cpuid2 cpuid;
+> >  };
+> > 
+> > +#define KVM_TDX_MEASURE_MEMORY_REGION	(1UL << 0)
+> > +
+> > +struct kvm_tdx_init_mem_region {
+> > +	__u64 source_addr;
+> > +	__u64 gpa;
+> > +	__u64 nr_pages;
+> > +};
+> > +
+> >  #endif /* _ASM_X86_KVM_H */
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c index
+> > 107cf27505fe..63a4efd1e40a 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -5652,6 +5652,7 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
+> >  out:
+> >  	return r;
+> >  }
+> > +EXPORT_SYMBOL(kvm_mmu_load);
+> > 
+> >  void kvm_mmu_unload(struct kvm_vcpu *vcpu)  { diff --git
+> > a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c index
+> > a5f1b3e75764..dc17c212cb38 100644
+> > --- a/arch/x86/kvm/vmx/tdx.c
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+> > @@ -470,6 +470,21 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu,
+> > hpa_t root_hpa, int pgd_level)
+> >  	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa &
+> > PAGE_MASK);  }
+> > 
+> > +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa) {
+> > +	struct tdx_module_args out;
+> > +	u64 err;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
+> > +		err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
+> > +		if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
+> > +			pr_tdx_error(TDH_MR_EXTEND, err, &out);
+> > +			break;
+> > +		}
+> > +	}
+> > +}
+> > +
+> >  static void tdx_unpin(struct kvm *kvm, kvm_pfn_t pfn)  {
+> >  	struct page *page = pfn_to_page(pfn);
+> > @@ -533,6 +548,61 @@ static int tdx_sept_page_aug(struct kvm *kvm, gfn_t
+> > gfn,
+> >  	return 0;
+> >  }
+> > 
+> > +static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
+> > +			     enum pg_level level, kvm_pfn_t pfn) {
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	hpa_t hpa = pfn_to_hpa(pfn);
+> > +	gpa_t gpa = gfn_to_gpa(gfn);
+> > +	struct tdx_module_args out;
+> > +	hpa_t source_pa;
+> > +	bool measure;
+> > +	u64 err;
+> > +
+> > +	/*
+> > +	 * KVM_INIT_MEM_REGION, tdx_init_mem_region(), supports only 4K
+> > page
+> > +	 * because tdh_mem_page_add() supports only 4K page.
+> > +	 */
+> > +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * In case of TDP MMU, fault handler can run concurrently.  Note
+> > +	 * 'source_pa' is a TD scope variable, meaning if there are multiple
+> > +	 * threads reaching here with all needing to access 'source_pa', it
+> > +	 * will break.  However fortunately this won't happen, because below
+> > +	 * TDH_MEM_PAGE_ADD code path is only used when VM is being
+> > created
+> > +	 * before it is running, using KVM_TDX_INIT_MEM_REGION ioctl
+> > (which
+> > +	 * always uses vcpu 0's page table and protected by vcpu->mutex).
+> > +	 */
+> > +	if (KVM_BUG_ON(kvm_tdx->source_pa == INVALID_PAGE, kvm)) {
+> > +		tdx_unpin(kvm, pfn);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	source_pa = kvm_tdx->source_pa &
+> > ~KVM_TDX_MEASURE_MEMORY_REGION;
+> > +	measure = kvm_tdx->source_pa &
+> > KVM_TDX_MEASURE_MEMORY_REGION;
+> > +	kvm_tdx->source_pa = INVALID_PAGE;
+> > +
+> > +	do {
+> > +		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa,
+> > source_pa,
+> > +				       &out);
+> > +		/*
+> > +		 * This path is executed during populating initial guest memory
+> > +		 * image. i.e. before running any vcpu.  Race is rare.
+> > +		 */
+> > +	} while (unlikely(err == TDX_ERROR_SEPT_BUSY));
+> > +	if (KVM_BUG_ON(err, kvm)) {
+> > +		pr_tdx_error(TDH_MEM_PAGE_ADD, err, &out);
+> > +		tdx_unpin(kvm, pfn);
+> > +		return -EIO;
+> > +	} else if (measure)
+> > +		tdx_measure_page(kvm_tdx, gpa);
+> > +
+> > +	return 0;
+> > +
+> > +}
+> > +
+> >  static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t gfn,
+> >  				     enum pg_level level, kvm_pfn_t pfn)  { @@
+> > -555,9 +625,7 @@ static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t
+> > gfn,
+> >  	if (likely(is_td_finalized(kvm_tdx)))
+> >  		return tdx_sept_page_aug(kvm, gfn, level, pfn);
+> > 
+> > -	/* TODO: tdh_mem_page_add() comes here for the initial memory. */
+> > -
+> > -	return 0;
+> > +	return tdx_sept_page_add(kvm, gfn, level, pfn);
+> >  }
+> > 
+> >  static int tdx_sept_drop_private_spte(struct kvm *kvm, gfn_t gfn, @@ -1265,6
+> > +1333,96 @@ void tdx_flush_tlb_current(struct kvm_vcpu *vcpu)
+> >  	tdx_track(vcpu->kvm);
+> >  }
+> > 
+> > +#define TDX_SEPT_PFERR	(PFERR_WRITE_MASK |
+> > PFERR_GUEST_ENC_MASK)
+> > +
+> > +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd
+> > +*cmd) {
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	struct kvm_tdx_init_mem_region region;
+> > +	struct kvm_vcpu *vcpu;
+> > +	struct page *page;
+> > +	int idx, ret = 0;
+> > +	bool added = false;
+> > +
+> > +	/* Once TD is finalized, the initial guest memory is fixed. */
+> > +	if (is_td_finalized(kvm_tdx))
+> > +		return -EINVAL;
+> > +
+> > +	/* The BSP vCPU must be created before initializing memory regions.
+> > */
+> > +	if (!atomic_read(&kvm->online_vcpus))
+> > +		return -EINVAL;
+> > +
+> > +	if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
+> > +		return -EINVAL;
+> > +
+> > +	if (copy_from_user(&region, (void __user *)cmd->data, sizeof(region)))
+> > +		return -EFAULT;
+> > +
+> > +	/* Sanity check */
+> > +	if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
+> > +	    !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
+> > +	    !region.nr_pages ||
+> > +	    region.nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT) ||
+> > +	    region.gpa + (region.nr_pages << PAGE_SHIFT) <= region.gpa ||
+> > +	    !kvm_is_private_gpa(kvm, region.gpa) ||
+> > +	    !kvm_is_private_gpa(kvm, region.gpa + (region.nr_pages <<
+> > PAGE_SHIFT)))
+> > +		return -EINVAL;
+> > +
+> > +	vcpu = kvm_get_vcpu(kvm, 0);
+> > +	if (mutex_lock_killable(&vcpu->mutex))
+> > +		return -EINTR;
+> > +
+> > +	vcpu_load(vcpu);
+> > +	idx = srcu_read_lock(&kvm->srcu);
+> > +
+> > +	kvm_mmu_reload(vcpu);
+> > +
+> > +	while (region.nr_pages) {
+> > +		if (signal_pending(current)) {
+> > +			ret = -ERESTARTSYS;
+> > +			break;
+> > +		}
+> > +
+> > +		if (need_resched())
+> > +			cond_resched();
+> > +
+> > +		/* Pin the source page. */
+> > +		ret = get_user_pages_fast(region.source_addr, 1, 0, &page);
+> > +		if (ret < 0)
+> > +			break;
+> > +		if (ret != 1) {
+> > +			ret = -ENOMEM;
+> > +			break;
+> > +		}
+> > +
+> > +		kvm_tdx->source_pa = pfn_to_hpa(page_to_pfn(page)) |
+> > +				     (cmd->flags &
+> > KVM_TDX_MEASURE_MEMORY_REGION);
+> > +
 > 
-> Datasheet:
->  [HSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
->  [SSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
-> 
-> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
-> ---
-> 
-> Changes for v2:
-> - Removed redundant quotations reported by robh's bot
-> - Fixed yamllint warnings
-> 
-> I'm failing to run 'make DT_CHECKER_FLAGS=-m dt_binding_check' due to
-> python errors and exceptions
-> ---
->  .../iio/pressure/honeywell,hsc030pa.yaml      | 156 ++++++++++++++++++
->  1 file changed, 156 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> 
+> Is it fundamentally correct to take a userspace mapped page to add as a TD private page?
+> Maybe take the corresponding page from gmem and do a copy to it?
+> For example:
+> ret = get_user_pages_fast(region.source_addr, 1, 0, &user_page);
+> ...
+> kvm_gmem_get_pfn(kvm, gfn_to_memslot(kvm, gfn), gfn, &gmem_pfn, NULL);
+> memcpy(__va(gmem_pfn << PAGE_SHIFT), page_to_virt(user_page), PAGE_SIZE);
+> kvm_tdx->source_pa = pfn_to_hpa(gmem_pfn) |
+>                                      (cmd->flags & KVM_TDX_MEASURE_MEMORY_REGION);
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Please refer to
+static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t gfn,
+                                     enum pg_level level, kvm_pfn_t pfn)
 
-yamllint warnings/errors:
+The guest memfd provides the page of gfn which is different from
+kvm_tdx->source_pa. The function calls tdh_mem_page_add().
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.example.dts:36.15-16 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, source_pa, &out);
+gpa: corresponds to the page from guest memfd
+source_pa: corresopnds to the page tdx_init_mem_region() pinned down.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231117192305.17612-1-petre.rodan@subdimension.ro
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+tdh_mem_page_add() copies the page contents from source_pa to gpa and
+gives gpa to the TD guest. not source_pa.
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
