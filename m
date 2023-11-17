@@ -2,162 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 984C67EF4BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6BA7EF4BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbjKQOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 09:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S231891AbjKQOuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjKQOse (ORCPT
+        with ESMTP id S230513AbjKQOuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:48:34 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A31A93;
-        Fri, 17 Nov 2023 06:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700232504; x=1700837304; i=deller@gmx.de;
-        bh=Rhzr/tXislpaEcjUqBvx/o590da//8yYsjL1uA8Urh0=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=QuXEvFwSt4rzdi/fXlKMesz96+8DL21zBrJu8qBlX2z1772pZa5h9U1OXeClaVBF
-         qjZetUZogJ/RW5CNY46WEzR2kWJWakcXZ5zeGWlKHr8CldNQX8k7cm/YG8TxcAWY8
-         1MUkRkhfK6N1xWbYsb9R5NsCDspW4DnMyzKegYqd+DwVDMapMf0dCmWsPCTSo3tBn
-         dyCI+8fSzzak47OBQhIMc+sm5AMABTmSTNEUFMai8+ozmFrWFciX2w7fMEFReWoQp
-         gKmx9R0GjE9PaW89j8/5nkNKzrf2gy9YIRRtujr5RS5yLukHuHPuFdt/2MTzvOM5h
-         tFdGOcdu67ArpIUFGA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.147.146]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ykW-1qxvri2BfC-0068y0; Fri, 17
- Nov 2023 15:48:24 +0100
-Message-ID: <cbfda101-9ba6-4130-88e8-be49e15df642@gmx.de>
-Date:   Fri, 17 Nov 2023 15:48:21 +0100
+        Fri, 17 Nov 2023 09:50:08 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0568493;
+        Fri, 17 Nov 2023 06:50:04 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHDm1IZ002145;
+        Fri, 17 Nov 2023 14:49:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=tiWhCPKBY8KcVMe9xaTROqbLzzUZTgRw9sA0EjTq5A8=;
+ b=AAqhxSgtA8AU0jKhqXAieBG4FFMiWCEgv6PL3lIBfWb/dAzAGjvSAQjK+ReQcTwg/HLE
+ HzcdKT0lgTUiidZm0H3GduafJL9n/rbz7m/qS2AtUG5rb6Wm3A1BOMfmoYWoG2uqa7/g
+ Syaaf/mkwYgPHES84YXsAuitr6b7kvy92+K5D9xbjdktqqEbT8fknVmbo3oayhEJMRTc
+ FVkzGH1qXehT0sMwohP0F21KMn+DhniC7AMWTIpIgU01y6soM0zVecHivbWynRmKmDVX
+ 5rDR3L3NLfoyZsFCbOnT+fybP4dHrEGQxNczSYv/y90g+A9nRdsldUd7BtLC8pI9i1ND zA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue5exrkkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 14:49:57 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHEnuFo020315
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 14:49:56 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 17 Nov 2023 06:49:54 -0800
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     <johannes@sipsolutions.net>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>, <stable@vger.kernel.org>
+Subject: [PATCH v3] devcoredump: Send uevent once devcd is ready
+Date:   Fri, 17 Nov 2023 20:19:32 +0530
+Message-ID: <1700232572-25823-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] parisc: Replace strlcpy() with strscpy()
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <20231116191336.work.986-kees@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20231116191336.work.986-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:r3Rwf/595U6LU+stnCdyFJu9RcB2mdBe2iKZMzKmyliSUm2uqVl
- meG/8Q5gWsvKQaayqV2ZZIDJj40x5i/wq4aHy/0vpG89QvJ7vLT9XvsKYNYh4Ohtzv93iOV
- OTpWcJlv7reBLBQ23k9CxVj4Tl1bln27eqg8ko6I0rghoETc4tN1cEQviKdcG9KO6moesQO
- +J38gTi4FvC8sAypm2goQ==
-UI-OutboundReport: notjunk:1;M01:P0:cbNoU/VWvvE=;xqXuioAPBeoc5hSy71OfIm6IQ2Q
- o6ZMvUCKs/4BYoZuVa1ju8E5EIhKL1ztUOfYJVBPPEaB53hDFirgkrLyS3+BvE9iHdJAmnSh3
- Rdb6Xi+9BkeFrONpzHmACUUpdruccX52msOa7UNlm64nem6My0wMeJGr1lLE7Ybn77CX7l8bg
- gxzamyammX8udf1nGy9jCjpzkrSQKq1yCaX3lEI+ZYJ3UuMLjIHzM2ynNyySR3MorNj1aRJRg
- WxjzHY4a8EnAXdwtK7verWVgyC64N2yjAlKQSUfDbNmAi+6uT5SOO3Uem7Q24APxilKSt1tvD
- wLOyB/yGMOPib1UgvPTia5Xpb5IT+Z80SH5DKq1axEHafTF7ou2OapjGzukUZ7i6tw6hG8JTf
- j46qq3vfhvifzzMioBzfKpZZQCY9f+ZwWBGmiwk6fxHkQoFWQavZ1lxeJVCwWn2KvV2T3Nt1U
- F0ZLZuJ0ZqSdTi09P/c5GjZAP4K0dMZFdSKyxaXVG21m5IDpfkG8BVkT5xA6EwbC2gzXkmURJ
- sg4/Pka06LrAaNEFCr6VzB72jkqeAsxeHKlZkRJih/wQbPMxQGSivq1/rgcMao6RQ/T3lSyE8
- OlwtMTNREb3ikqQYFZDKizWr05ojc/9G3nP+kbOlpYYYDi/oavqb4UORGDYDnxfpePKDmeIfo
- fIAiEl1XtUbnJAvRXRR5aabQf9gGRsxNgherpcElLIfqYZmAVHJYkcMAm0OV2r1b75RflGOFy
- Q/XTsw8E+qp/3PD+rzHOhJWDz8WGEaVKFPG3piEcVaFf49uIahc9toGLf3X2myTTKJ4ydNa3a
- Yvy8QdZnRK85u6SpLqB7EtF2go+lQmTdsrk/dpBYstAXnTT8PU+c0X/3kPn/ciJrUktmtelCV
- /n20uFGuDmL4URtcvOyMJkdUAdp60vF3ajEoXSIBggo1Vmq3R9xGUUkQV9ULOzhuMRxBc9vJq
- hS8rcQ==
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: v7dCXa4ntkORvh4rGS-3Bq9COYS1Gh-N
+X-Proofpoint-ORIG-GUID: v7dCXa4ntkORvh4rGS-3Bq9COYS1Gh-N
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_13,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 malwarescore=0 adultscore=0
+ priorityscore=1501 clxscore=1011 lowpriorityscore=0 spamscore=0
+ mlxlogscore=986 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170110
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/23 20:13, Kees Cook wrote:
-> strlcpy() reads the entire source buffer first. This read may exceed
-> the destination size limit. This is both inefficient and can lead
-> to linear read overflows if a source string is not NUL-terminated[1].
-> Additionally, it returns the size of the source string, not the
-> resulting size of the destination string. In an effort to remove strlcpy=
-()
-> completely[2], replace strlcpy() here with strscpy().
->
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#str=
-lcpy [1]
-> Link: https://github.com/KSPP/linux/issues/89 [2]
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
-> Cc: linux-parisc@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+dev_coredumpm() creates a devcoredump device and adds it
+to the core kernel framework which eventually end up
+sending uevent to the user space and later creates a
+symbolic link to the failed device. An application
+running in userspace may be interested in this symbolic
+link to get the name of the failed device.
 
-applied.
+In a issue scenario, once uevent sent to the user space
+it start reading '/sys/class/devcoredump/devcdX/failing_device'
+to get the actual name of the device which might not been
+created and it is in its path of creation.
 
-Thanks!
-Helge
+To fix this, suppress sending uevent till the failing device
+symbolic link gets created and send uevent once symbolic
+link is created successfully.
 
-> ---
->   arch/parisc/kernel/processor.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/parisc/kernel/processor.c b/arch/parisc/kernel/process=
-or.c
-> index 29e2750f86a4..e95a977ba5f3 100644
-> --- a/arch/parisc/kernel/processor.c
-> +++ b/arch/parisc/kernel/processor.c
-> @@ -383,7 +383,7 @@ show_cpuinfo (struct seq_file *m, void *v)
->   	char cpu_name[60], *p;
->
->   	/* strip PA path from CPU name to not confuse lscpu */
-> -	strlcpy(cpu_name, per_cpu(cpu_data, 0).dev->name, sizeof(cpu_name));
-> +	strscpy(cpu_name, per_cpu(cpu_data, 0).dev->name, sizeof(cpu_name));
->   	p =3D strrchr(cpu_name, '[');
->   	if (p)
->   		*(--p) =3D 0;
+Fixes: 833c95456a70 ("device coredump: add new device coredump class")
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: stable@vger.kernel.org
+---
+Change in v3:
+ - Cced stable.
+
+Change in v2:
+ - Added Fixes tag as per suggestion from [Johannes]
+
+ drivers/base/devcoredump.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+index 91536ee05f14..7e2d1f0d903a 100644
+--- a/drivers/base/devcoredump.c
++++ b/drivers/base/devcoredump.c
+@@ -362,6 +362,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+ 	devcd->devcd_dev.class = &devcd_class;
+ 
+ 	mutex_lock(&devcd->mutex);
++	dev_set_uevent_suppress(&devcd->devcd_dev, true);
+ 	if (device_add(&devcd->devcd_dev))
+ 		goto put_device;
+ 
+@@ -376,6 +377,8 @@ void dev_coredumpm(struct device *dev, struct module *owner,
+ 		              "devcoredump"))
+ 		dev_warn(dev, "devcoredump create_link failed\n");
+ 
++	dev_set_uevent_suppress(&devcd->devcd_dev, false);
++	kobject_uevent(&devcd->devcd_dev.kobj, KOBJ_ADD);
+ 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
+ 	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
+ 	mutex_unlock(&devcd->mutex);
+-- 
+2.7.4
 
