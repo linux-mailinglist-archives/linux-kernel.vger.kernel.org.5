@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5D47EEA64
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 01:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287EA7EEA66
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 01:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345604AbjKQAg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 19:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S1345598AbjKQAhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 19:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbjKQAgy (ORCPT
+        with ESMTP id S229437AbjKQAhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 19:36:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ACE84;
-        Thu, 16 Nov 2023 16:36:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700181411; x=1731717411;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NyaWUSiuZWIT4oMhTPN14kt5/T3qigWrUT/3PxoD7Uk=;
-  b=mXwyctlT197jUHAWmiey7MFuL3DlKUlRv5aCVd0YnaX9Ij1jPe8Dc04P
-   j6VJZqfWme5dtY1EeLk54QUPcCLXfjkj2/Pd2/Wuf5fy2YRWqiLNCPGeQ
-   +EurMgGygCZ77fcQbkFj/T3mGAsP8xi191BC6Tll/R5x8/isbxtlPhAlW
-   kz+GWOu5HMfFwswivQxI5Qj/0jRVYd6sclFsPlvQbj7MZmnnaPKZwza9K
-   K71M983f4dtgdi7wgpFVb09wj+863DA56x3aNV+j4EYOTE/OVWGJ/1rdC
-   3T8KpZd+399FRKSab53FuVTYcWpLf1suY5go0r70USsrtwlvKDCMr1J8U
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="371388770"
-X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
-   d="scan'208";a="371388770"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 16:36:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
-   d="scan'208";a="6696756"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 16:36:50 -0800
-Date:   Thu, 16 Nov 2023 16:36:49 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v6 04/16] KVM: TDX: Pass size to tdx_measure_page()
-Message-ID: <20231117003649.GD1277973@ls.amr.corp.intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <7b024367db5909ffc22e6762acd0569c3a82ccd3.1699368363.git.isaku.yamahata@intel.com>
- <00b167fa-6635-47a4-a219-1f4117fe6c97@linux.intel.com>
+        Thu, 16 Nov 2023 19:37:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C001AD
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 16:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700181439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gLq9QND6ayr1x65UPXkRh82Mu4Sx1+2cD2sZ+Ae8qnc=;
+        b=LV/jzk7XPLukx1wWFELwh2yiZ/p/CI0YSY5ytm9beQqSSu0AeAxRtpBOGkkDue6PPd43hA
+        RBcnOiR1XugoFS6Fr5UOjhwN/6dh5JliHkTI/+nXRaA/P2oV/1ySenKO4UjVaQVm2khSdz
+        IdYVfSbg/t4pp45Kdv//NIOTq9h+t/U=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-Ozoe3NZhOr-xyr9bW4hygQ-1; Thu, 16 Nov 2023 19:37:18 -0500
+X-MC-Unique: Ozoe3NZhOr-xyr9bW4hygQ-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1ce5d31e709so2940295ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 16:37:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700181437; x=1700786237;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gLq9QND6ayr1x65UPXkRh82Mu4Sx1+2cD2sZ+Ae8qnc=;
+        b=fLseR2p2HKouZ7EL/J4dqQMpH61Dt0luiydCjuP9G0szUAVdh72OKjOmGa/6kemkw9
+         p1tjHHYBWpXspOn4ebISa2DfSWo9LftdEVxCgspINThcKJ0znlNmGO7u4buCN8BZkyQW
+         sJz/AiWekRg7mLJt9XYnR1y4BMmxVgYf5KiOXHN9IIuJ8bLKn7WxGeRQke6DHuPdRWCG
+         DoXJpz3CX+QeM4tbwkkLcFmi3A3Ln54pW7i19OUoewdYHGeuqwxs6SBJ4Whbr03iXyPq
+         /jPDJS1EmkUK6ROmKdCwrWzcpCXiTGnwtBMEA8Pp324PFqZ5aWUJQCaB6knK8U36lBrd
+         XAFg==
+X-Gm-Message-State: AOJu0YxRV/Z86PCxm/UXJylKJvo8sGMSjDOZ4uxBH0P6UxI1/zpkqnN1
+        EMkaNwUrWrJBljlcAuOPGWWkIQO9VrAN0cWuOvnQAnhKavRQ5NIy/eS03n/CTM3zLOPOr6dUK5D
+        1G8oqlabtKSy2qX94Qao5laqO
+X-Received: by 2002:a17:902:ab47:b0:1c9:dfb8:a5a0 with SMTP id ij7-20020a170902ab4700b001c9dfb8a5a0mr9979182plb.10.1700181437143;
+        Thu, 16 Nov 2023 16:37:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFwhqCMmksgqBhmIr37nfnk0at0x9kkOfJxVQwaXdZidniXfUab2Rhk+ksUDMtc+ZNY8tJiIA==
+X-Received: by 2002:a17:902:ab47:b0:1c9:dfb8:a5a0 with SMTP id ij7-20020a170902ab4700b001c9dfb8a5a0mr9979170plb.10.1700181436840;
+        Thu, 16 Nov 2023 16:37:16 -0800 (PST)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id p7-20020a170902a40700b001ca4cc783b6sm256213plq.36.2023.11.16.16.37.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 16:37:16 -0800 (PST)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Shigeru Yoshida <syoshida@redhat.com>
+Subject: [PATCH net-next v2] tipc: Remove redundant call to TLV_SPACE()
+Date:   Fri, 17 Nov 2023 09:37:04 +0900
+Message-ID: <20231117003704.1738094-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00b167fa-6635-47a4-a219-1f4117fe6c97@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 04:57:26PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+The purpose of TLV_SPACE() is to add the TLV descriptor size to the size of
+the TLV value passed as argument and align the resulting size to
+TLV_ALIGNTO.
 
-> 
-> 
-> On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> > From: Xiaoyao Li <xiaoyao.li@intel.com>
-> > 
-> > Extend tdx_measure_page() to pass size info so that it can measure
-> > large page as well.
-> > 
-> > Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > ---
-> >   arch/x86/kvm/vmx/tdx.c | 8 +++++---
-> >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index 2d5c86e06c5f..a728175c4a6d 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -1434,13 +1434,15 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
-> >   	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE_MASK);
-> >   }
-> > -static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa)
-> > +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa, int size)
-> IMHO, it's better to pass kvm page level instead of size here to align with
-> other APIs.
-> 
-> >   {
-> >   	struct tdx_module_args out;
-> >   	u64 err;
-> >   	int i;
-> > -	for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
-> > +	WARN_ON_ONCE(size % TDX_EXTENDMR_CHUNKSIZE);
-> 
-> If passed level instead of size, then no need to check KVM_HPAGE_SIZE(level)
-> against TDX_EXTENDMR_CHUNKSIZE
-> 
-> But same qeustion, tdx_measure_page() is only for tdh_mem_page_add(), is
-> this
-> change necessary?
+tipc_tlv_alloc() calls TLV_SPACE() on its argument. In other words,
+tipc_tlv_alloc() takes its argument as the size of the TLV value. So the
+call to TLV_SPACE() in tipc_get_err_tlv() is redundant. Let's remove this
+redundancy.
 
-You're right. As tdx_mem_page_add() is the only caller of tdx_measure_page(),
-open-code it into tdx_mem_page_add() and drop this patch.
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+v1->v2:
+- Re-submit to net-next
+https://lore.kernel.org/all/20231114144336.1714364-1-syoshida@redhat.com/
+---
+ net/tipc/netlink_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+index 5bc076f2fa74..db0365c9b8bd 100644
+--- a/net/tipc/netlink_compat.c
++++ b/net/tipc/netlink_compat.c
+@@ -167,7 +167,7 @@ static struct sk_buff *tipc_get_err_tlv(char *str)
+ 	int str_len = strlen(str) + 1;
+ 	struct sk_buff *buf;
+ 
+-	buf = tipc_tlv_alloc(TLV_SPACE(str_len));
++	buf = tipc_tlv_alloc(str_len);
+ 	if (buf)
+ 		tipc_add_tlv(buf, TIPC_TLV_ERROR_STRING, str, str_len);
+ 
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.41.0
+
