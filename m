@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D997EEDE9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 159787EEDEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345727AbjKQIyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
+        id S230316AbjKQI5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjKQIyi (ORCPT
+        with ESMTP id S229952AbjKQI5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:54:38 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9B9D68;
-        Fri, 17 Nov 2023 00:54:35 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-28398d6c9f3so404582a91.0;
-        Fri, 17 Nov 2023 00:54:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700211275; x=1700816075; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DvDuSF1H8xZtYo/FFdoMBT6Yb7qFROSx7X15RtrWD0o=;
-        b=E3anzLOX3u4CzpZN6OfXwbcGTcX6Trrx3lstia2F6IXkzl24gnQe9mGmvROgdiKuB6
-         gSMMj22Ll0ybUoPrvXURmBkqQlDd6fEa8gYtmMGaMTD84AeYyBTUQYejfE52dFFwo8f/
-         IDsDbmebETHdNN1VbbaxtLHdvGKMkS954zV/i7pZLCsvy/5vZM6SWgOYYuS9bOYEgFds
-         M/AV24fenEdK36xn8j8r/d1vks/vvbq2AmN6zJj2GlunoODh5sPAn0cys78jyNEN/0dl
-         J0UFB736VvCYIdrXGJtUxCFykjjdr3j6W3gVU0rWW+r2lg66DC5kE9kU2VXIRH6Gh+UD
-         3tJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700211275; x=1700816075;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DvDuSF1H8xZtYo/FFdoMBT6Yb7qFROSx7X15RtrWD0o=;
-        b=qS2TCdjmJm9JBnTLdTe9TIvKQcXk7NPKH9Md06BTzDrUb2X01VHBMMhY9C3DXFGWWK
-         PQZumua9COxwt2sw5FIe3cTpe2g5lj2InDE0Xp3TlAYt3ZR8is4XNW52YfrHZsj/zQdq
-         JZp546HQpOrr5Dpytr/DhyUxSH4Vzo08VNL5huzXZMbLcWDmeg52lBvF2BoyweRjRgcd
-         uLNr7Rov3sR1RsvTdvO9n7ZkwYQT9SOgNTur2nzGUyhRhvZ/3GYBxfnvLIDhPRoI0TG0
-         rrwXtCQ1csjeKARb0u7gwdlkiesirLo0t280prDWve3Bj9RpmmYW7Jx0Bf6M7r/660ZQ
-         p1zw==
-X-Gm-Message-State: AOJu0YxgPtLirMFaBdvejnbOxDGMtYwrCKD9wxjnjpAnMEjPmzbhXnIB
-        TBIV4hbxjsdcs4mZ0sge3B6vT3x7ZizApV1akHU=
-X-Google-Smtp-Source: AGHT+IGZkeY9JpRXzUxqS+r7e+83Il9eK6QHRQNw6bLNB+IwqFM8fII8MIkkQSTppU0RF54P4afXbXweBod8Rnzi3cU=
-X-Received: by 2002:a17:90b:4d89:b0:280:c0:9d3f with SMTP id
- oj9-20020a17090b4d8900b0028000c09d3fmr20935210pjb.34.1700211274979; Fri, 17
- Nov 2023 00:54:34 -0800 (PST)
+        Fri, 17 Nov 2023 03:57:00 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67141A5;
+        Fri, 17 Nov 2023 00:56:55 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C5CD61BF208;
+        Fri, 17 Nov 2023 08:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700211414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=leBuYmiuIsLgv0yNkP9hLoHkOgcVyrVhTX124DlAon4=;
+        b=n/XiA9A5RLzOYcQ7AabAP58e6appuXIZiPT/cIAikp3A8eCCxbWFxXufGk8si2vkHTDy77
+        fVAPmaAC2hXZCnqNQvBbxnLqK3yCCQkG7XitU4tyQp+iewHV264WrTZQeRAQo1J9+PBKmk
+        sqoABxYhaJ5zD9zQ9ql5h4zRviGWkQGfciH0TEZup0N0PHksnYHqVHJog0mImow3J0IjCV
+        kYR7me680jK9tlMgeW+2D7X7SBy2vilCeKqDlZtC4aPvVNXbYzos347SyC1l5UNgyvadqz
+        XQrmgOpOIi+9x24KtDBmcXmRW8cx3OlEQTS6jUHmU0iMb0ae5lCx/5/KKN9Z9g==
+Date:   Fri, 17 Nov 2023 09:56:51 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Conor Dooley <conor@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 7/9] firmware_loader: Expand Firmware upload
+ error codes
+Message-ID: <20231117095651.5f569fcb@kmaincent-XPS-13-7390>
+In-Reply-To: <014c6bb7-178f-44cf-872f-eb4d59a80756@lunn.ch>
+References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+        <20231116-feature_poe-v1-7-be48044bf249@bootlin.com>
+        <20231116-t-shirt-supreme-581c8882d5cc@squawk>
+        <014c6bb7-178f-44cf-872f-eb4d59a80756@lunn.ch>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231107202002.667900-1-aghulati@google.com> <20231107202002.667900-10-aghulati@google.com>
-In-Reply-To: <20231107202002.667900-10-aghulati@google.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Fri, 17 Nov 2023 16:54:23 +0800
-Message-ID: <CAJhGHyAiYxyiC+oepgqHofBpKVXLyqOUS=PjXppesx4AS3++-w@mail.gmail.com>
-Subject: Re: [RFC PATCH 09/14] KVM: x86: Move shared KVM state into VAC
-To:     Anish Ghulati <aghulati@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        peterz@infradead.org, paulmck@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 4:21=E2=80=AFAM Anish Ghulati <aghulati@google.com> =
-wrote:
->
-> From: Venkatesh Srinivas <venkateshs@chromium.org>
->
-> Move kcpu_kick_mask and vm_running_vcpu* from arch neutral KVM code into
-> VAC.
+On Thu, 16 Nov 2023 22:56:10 +0100
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Hello, Venkatesh, Anish
+> > This would be rather helpful to me for some stuff that I am currently
+> > working on and was hoping to send to Arnd for inclusion in 6.8:
+> > https://lore.kernel.org/all/20231020-series-uncooked-077b107af3ae@spud/
+> >=20
+> > I'm currently returning a "HW_ERROR" for something that this would fit
+> > the bill for (in mpfs_auto_update_write()). What would the ETA for this
+> > stuff landing via the net tree be?
+> > Since I am not a netdev contributor its hard to tell how controversial
+> > these patches are! =20
+>=20
+> It already has the needed ACKs, so it could be merged
+> anytime. However, it seems like two different subsystems are
+> interested in it. So rather than merge it via netdev, it might make
+> sense to merge it via its normal tree, driver-core. Then ask for a
+> stable branch which can be pulled into netdev and arm-soc.
 
-IMO, the allocation code for cpu_kick_mask has to be moved too.
+Ok, I will remove this patch from this series in v2 and send it through nor=
+mal
+tree.
 
-Thanks
-
-Lai
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
