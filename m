@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B58C7F00B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD3B7F00BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbjKRPy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:54:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
+        id S231559AbjKRPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbjKRPxG (ORCPT
+        with ESMTP id S231197AbjKRPxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:53:06 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF76A1FD9;
-        Sat, 18 Nov 2023 07:51:48 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5c516f92759so32038617b3.2;
-        Sat, 18 Nov 2023 07:51:48 -0800 (PST)
+        Sat, 18 Nov 2023 10:53:09 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA111FE5;
+        Sat, 18 Nov 2023 07:51:50 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5b499b18b28so32751827b3.0;
+        Sat, 18 Nov 2023 07:51:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322708; x=1700927508; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322709; x=1700927509; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fm1bHPEyELp3MiPjOSu0bHDojYqM84986duNSStQHBY=;
-        b=S4GwRONQN6Sg7Bq0l5QNXv2PN7PtyWj4PbeIQm1D0PgHld0Aue9+G9wJIa3+VR6r4N
-         69fckYz3ZFtTSrTmp3wBm9HgI4AFnN9oP8kq2NFoUF7zI5qMGuq0QfN8uWOwRlPcugwb
-         SgsXAzhcRoKLyTeBcAykIkmKaVsdwZTdnJ5oMwlTmUIrFNm6hE7uIZwbfaRavFTiFbSN
-         vgLIi9Doss0CR/kd4xoJudiEEg0LxDUQSmpsoAPa9Rmil3o3cEkzZkK+0SN5LNZQnmG0
-         AT8q/gLHLLhO5bFeMeduSD7QNmlMQ2PI9YysiarzIbxyaKqkuWP1uhYJj7ntZbz/adua
-         lqdQ==
+        bh=q0DdBJNYkBobnoLbuVdpfFwfkBXRkkwlqArhSXd28Ns=;
+        b=h85wGB4uDaCRaOlOiipFKIhfT6uht+Bl+Tl8v7GH6vA18ehtjHt6ia+qyyd2qF82b4
+         BlwOMtt/hLHgeDnRymeeBW6olQA+DKhBpK5Ah/S063zZWYRrkhad6iOQueZwZw8/EpXQ
+         1l7EWkKEcpiSnNIg3eHYj2n74NoG6P2vlDg2/CI3ty1mhuGWyegQBINphlEkjHeSHCCc
+         CROPr/XXZaDg+nW0qCIWwGnvBYRA7hRvYKkA4e1wRa/cOvVn/7iNN5eUy77scPYSWHeG
+         LICzIKT46NXe3LyehwIrnOAHIgPaeoLhzVGr0j4xNFptnsqn51ddM5nQWajRx4Q7MNPb
+         MnTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322708; x=1700927508;
+        d=1e100.net; s=20230601; t=1700322709; x=1700927509;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fm1bHPEyELp3MiPjOSu0bHDojYqM84986duNSStQHBY=;
-        b=GvT1qHTA1uEw494ni2VTjuK/ejdoxx2W4wC6b86eetyhkRQcvwqLVuPHZqngQNHWE9
-         dH4nYSxgs41Au6dTRF9+wxsmX1DMAdGL7VCzEidM3cTZGwg1rs/eU/bEz0zTRhR/U9Cv
-         4+s+twvmyjJy2dfHPNz27sxaCqP7cz7hoyB0d8Z8tZ+36nFIJD2LMr98ongzkb7HAhpm
-         mQUe43NT0Q9kPYAErdfb28epsXkRnD2REq0gxnuFzu5G+q9qlahmAT24manx57LN1lPJ
-         OrJhi7ujbDrip45E/9MuE9on4tDNZSIDVWJ11mMeaERVCsriDnS1kjXNYTS+PA6WFcoX
-         Phkw==
-X-Gm-Message-State: AOJu0YxMJB6d2rNmyaG7G7trBdICttbdfXUClSnpYrs9S3nhXHKBdK0e
-        ZNaImNiBiHR4RDMbCI7KngBlwAnUSXF289po
-X-Google-Smtp-Source: AGHT+IEr9EXnIrnz3KfJlWeIhC3M3/FUV0iAGcHYIcYOW9tXgSnWoyx3lY1GC4qxv/GhgpzHagmIGw==
-X-Received: by 2002:a81:ef0d:0:b0:59b:5696:c33 with SMTP id o13-20020a81ef0d000000b0059b56960c33mr2780375ywm.46.1700322707666;
-        Sat, 18 Nov 2023 07:51:47 -0800 (PST)
+        bh=q0DdBJNYkBobnoLbuVdpfFwfkBXRkkwlqArhSXd28Ns=;
+        b=SBHnHTG2TU3yX+A+q9zRJnjGH9J99pAljaSW1/lskIvLJOVLJ03xVH3Db1zdOpR45g
+         AAGWS/n3dipL2HgpuJlRdd3idwXDYm1F2Rp//Ymr4hhK3+hcsb2wJQdcc0kVhW43kF8g
+         6/VMYME1fsT+LuO+2ussn2Owi2dNAgFYMmsKAU9PdlEMzaK2JwcCTr5HKjgPPsbZJPSH
+         MakhXNp1nxbQFvWaymWJMrEy9XZTpzM7CdIZuMgFU6AIA+wp1czKBNokdzapaLjX3TOk
+         U6JynVgkJwbFC7z5wUoXu4dmOTuMCSOBcBtvnF8TlF/wqXGjsOsrXpxkvWwNr6PLLdo6
+         y1gg==
+X-Gm-Message-State: AOJu0YwEUcGyoKjR7IoNapoe5tMfBd62W1kjelnHvdY1R3ZNsbDG7bFl
+        PCR4HGhc6BnH0oJLiYqBthuASZuOcSaokAdo
+X-Google-Smtp-Source: AGHT+IHf/y6t164pMjc17343PBLUYFLD9XOP4hlMacNZfcaCxBOFO6cO3hN3hjM1cdowPx+3vJjRHQ==
+X-Received: by 2002:a81:4fcf:0:b0:5a7:c906:14f with SMTP id d198-20020a814fcf000000b005a7c906014fmr2498604ywb.11.1700322708779;
+        Sat, 18 Nov 2023 07:51:48 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id b65-20020a0dd944000000b005a8c392f498sm1167821ywe.82.2023.11.18.07.51.46
+        by smtp.gmail.com with ESMTPSA id y200-20020a81a1d1000000b005af5ef0687bsm1177615ywg.13.2023.11.18.07.51.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:46 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:48 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Hui Wang <hui.wang@canonical.com>,
+        Isaac True <isaac.true@canonical.com>,
+        Yury Norov <yury.norov@gmail.com>, linux-serial@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 26/34] ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
-Date:   Sat, 18 Nov 2023 07:50:57 -0800
-Message-Id: <20231118155105.25678-27-yury.norov@gmail.com>
+Subject: [PATCH 27/34] serial: sc12is7xx: optimize sc16is7xx_alloc_line()
+Date:   Sat, 18 Nov 2023 07:50:58 -0800
+Message-Id: <20231118155105.25678-28-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -81,37 +89,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optimize ofdpa_port_internal_vlan_id_get() by using find_and_set_bit(),
-instead of polling every bit from bitmap in a for-loop.
+Instead of polling every bit in sc16is7xx_lines, switch it to using a
+dedicated find_and_set_bit(), and make the function a simple one-liner.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/net/ethernet/rocker/rocker_ofdpa.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ drivers/tty/serial/sc16is7xx.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/rocker/rocker_ofdpa.c b/drivers/net/ethernet/rocker/rocker_ofdpa.c
-index 826990459fa4..449be8af7ffc 100644
---- a/drivers/net/ethernet/rocker/rocker_ofdpa.c
-+++ b/drivers/net/ethernet/rocker/rocker_ofdpa.c
-@@ -2249,14 +2249,11 @@ static __be16 ofdpa_port_internal_vlan_id_get(struct ofdpa_port *ofdpa_port,
- 	found = entry;
- 	hash_add(ofdpa->internal_vlan_tbl, &found->entry, found->ifindex);
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index db2bb1c0d36c..6a463988d5e0 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -427,15 +427,9 @@ static void sc16is7xx_port_update(struct uart_port *port, u8 reg,
  
--	for (i = 0; i < OFDPA_N_INTERNAL_VLANS; i++) {
--		if (test_and_set_bit(i, ofdpa->internal_vlan_bitmap))
--			continue;
-+	i = find_and_set_bit(ofdpa->internal_vlan_bitmap, OFDPA_N_INTERNAL_VLANS);
-+	if (i < OFDPA_N_INTERNAL_VLANS)
- 		found->vlan_id = htons(OFDPA_INTERNAL_VLAN_ID_BASE + i);
--		goto found;
--	}
+ static int sc16is7xx_alloc_line(void)
+ {
+-	int i;
 -
--	netdev_err(ofdpa_port->dev, "Out of internal VLAN IDs\n");
-+	else
-+		netdev_err(ofdpa_port->dev, "Out of internal VLAN IDs\n");
+ 	BUILD_BUG_ON(SC16IS7XX_MAX_DEVS > BITS_PER_LONG);
  
- found:
- 	found->ref_count++;
+-	for (i = 0; i < SC16IS7XX_MAX_DEVS; i++)
+-		if (!test_and_set_bit(i, &sc16is7xx_lines))
+-			break;
+-
+-	return i;
++	return find_and_set_bit(&sc16is7xx_lines, SC16IS7XX_MAX_DEVS);
+ }
+ 
+ static void sc16is7xx_power(struct uart_port *port, int on)
 -- 
 2.39.2
 
