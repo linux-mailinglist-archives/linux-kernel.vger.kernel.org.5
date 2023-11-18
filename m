@@ -2,269 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041077F0209
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513867F020C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjKRSn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
+        id S230028AbjKRSoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:44:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjKRSnZ (ORCPT
+        with ESMTP id S229866AbjKRSoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 13:43:25 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2068.outbound.protection.outlook.com [40.92.74.68])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CB4F2;
-        Sat, 18 Nov 2023 10:43:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jI/jcdACzTjkQtltq661NmWCu8MNaitrDEeO0Asa1cO5y1wrl7BIY6nz2hOJkc1g00xJNRQRBWJtu4yyBWUy6hYho4ryjsXnOb7NVb4XWXTG7qNpeDtuH+ctOYKAUcxen/LSF5sz0Ll+679YOsllHkzSHvzT520d0X4B9+xNRd439Fcat2Ill2fhFZsfWjNWpRT472xsH+PKi7RNx4dkKwybO/MFhmGf1/1VLGY+dCtZFlWUUwINLWn+/dU1D8Plhh9bR8KX9cTHXnKcyODdaAcfKtkAolkd6BGy5YTnnfllXEruScYw78qQ4SjVo0HdU1COVKGMT0j13xiom+pk8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tu9nlo/CAK/qj9SXaN5q97RBCgbUgYNs+wCjj5orNOs=;
- b=g3nrVV7jaw4Y372BAFe+5vlKqkv+da7w2CiKX7M7U4v0W6hekLKuDl9UyhzibiMAompf2AsGzK+KRX7IwwnLQfXuzHySbbcWj5ANm2JPAi36Ig20E24vlAlONDnkzJwNSrFzak7izRRaNH7hn/cBDapFPjYgmbJPOb7+sDNfKaX2NHjcFgGhJRopUJZYkArLrrO9CciCkeF8gQ7ZzZnx6y3q+tGnRoSHlG4lCj1M6kOD8ybut8kly+Bxa6XY8I6BUDwYi5tCdKRoQWeQzLOEkyzgEdUR0UWCak/LdfoCK3pV6PwUsvaJA8bIUrp5SH8y3l/fXJEa33RD8zc46Htkxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tu9nlo/CAK/qj9SXaN5q97RBCgbUgYNs+wCjj5orNOs=;
- b=Zh5ZnvND8DkNsUWsRmx9S//nShuO+mIhd5VjWRYn/hKDhM50r8x6MInR2X7Gfu9pQ74SIFfztUWy95T3Fd0zK/zPs2Ce+Tt+khFRurB6b1dR9o9YvvxVtgCVUXR4Rx99uTmvAC1xNRQnGnJ4rs8cH6ITqwFz8rHSYLOFeTkIEH06Zl84ZBRHrqCSN4bqZYcGdm8c+oSo4BANHPRoYFd9JfoorCGJ92cvHcu6z/Qqj5wg7dg6FtKDopythucF49nlregXXfRj7KL/+WlkKcOz/LAI0o03tE5O2X0ZX2LuMEZwuC3TprBg945xRbAdIYgIFfow35hkElI1VHgFjMl57g==
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
- by AM0PR10MB3713.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:159::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Sat, 18 Nov
- 2023 18:43:19 +0000
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
- 18:43:19 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
-        andrii.nakryiko@gmail.com, mykolal@fb.com, ast@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH bpf-next v2 1/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
-Date:   Sun, 19 Nov 2023 00:12:54 +0530
-Message-ID: <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [vHV8bWmR9XMpg0MEYeI00aZAKc8gQx8a]
-X-ClientProxiedBy: JNAP275CA0020.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::20)
- To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
-X-Microsoft-Original-Message-ID: <20231118184254.231352-1-yuran.pereira@hotmail.com>
+        Sat, 18 Nov 2023 13:44:10 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A077EB7
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 10:44:06 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-35af2b4242eso3078765ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 10:44:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700333046; x=1700937846; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Rqm8c2mzVlSTmByITnlTNyQf2tve+K1Yem5CIyuqsE=;
+        b=BSzTUHlM7Vc1IWWIlshukayDw658gjpFV1Dq3wNHd/f6/ioFImq7oNYm9bMtU4hxUx
+         XIqH4HkPR9TrhTb90dnRuvXqRIrXhjklZ+pvZMCmHtewqajFV1KQbMxY85I+jdW1qtmR
+         1m1Ziq6J2jiuNTvDeP7jImAJDHbBErl8wvJ/XTG6hqnVFoIczZMkoW3lGb0yyVK2JLIR
+         QJ6QRlN1ntAjIHsRhDh2mRla69J/P5buDfjMTEMPu3uNgiQeo5EAjqMhGlTrSgvPEQlA
+         IuoosWhQKt2faXfSm9c6NpBepBW0S7k5rWRKdw19lKXfyK9PEaKq1nX67JAugJQm6fy1
+         in4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700333046; x=1700937846;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Rqm8c2mzVlSTmByITnlTNyQf2tve+K1Yem5CIyuqsE=;
+        b=V/YRjtXVycr23VXKLAmSHz0X37d6znl5BB+lv2ZkZ7VK4TbdwfQy6TgdKafyWNd9Rk
+         Ft/Urssgm4rlBkTnzUD318t5Cm3B8LN/hK4fyhyaqM58mJoB5VHy/F6QAmBbN1hlv51b
+         u1UvvuT8mFyzBGyzBCdnwBfaDTPNQMvvsXnwAFytPlNmuGNWc42UaBFx1kkB/RR4dkH2
+         ZrNhc1wkySeEwqgONdvmmz+Zq580Ctlf9h/GR1CCLluG/uPt7BcFHPeTYNoeh2Zt0XQi
+         HqB7aBjMU2dIyzk6lx9m8WpKLCbgF3jHpk8DlK/uobm15EUfzza7keob1Tup/HBwcwuB
+         jpBw==
+X-Gm-Message-State: AOJu0YxaHACLnMzyOoCwh66UyJCgu9Ynko41qarsHS2rPAwH8Cf983zo
+        YINCGQVyE+aYfyr6WY/O/5QOYGNeYQ94N3GWU7I=
+X-Google-Smtp-Source: AGHT+IF7/hs76dDRD4AQ6K8kq8hrcgN/GH2w2K664VsS4PmHylTT4IBWCsmfWelXzq4uTSxvrKl2LNwom7FJ1o0rgBM=
+X-Received: by 2002:a92:bf10:0:b0:359:3b36:9abf with SMTP id
+ z16-20020a92bf10000000b003593b369abfmr3070557ilh.4.1700333045868; Sat, 18 Nov
+ 2023 10:44:05 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AM0PR10MB3713:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4bff77f-cca0-443c-7c61-08dbe8663bb5
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ndlgn65m29HHe9ahiKKBLsm1fLWpFgqTCfqg5MSQdI5FjlFiFfkXnf+Yu0IweVoPdeX2c/7/iGTNrUTyB7vKpYrfvMtxZdZzfhCT+qlT9eRgI9ko5FOFoY7CcBLiJLqDRrQ29J4FSNQe4kLZYKxb6cufb+t/+KeBKoGT9qDYixXlNHSrS83N1U7FAjgNSUiLMCqW1Lckl7kIlozYpgIgN5PkjxD3vCvXUGjgSn15XyYyYIaeeelclMV3qc10ZJk3rlVNC3I1CeCcPiQqlTqQPb09jLqYW9wDmqiIkjfdIacRap58qiZP+gVwBjhF8SolRnKZCmxZqHOv/X+jjyJYlmKAqwicxC9ZOH7WnxSLphwr2tNTXjeyeOeEaj0JZVPvS3Uf3Nt1C7HH/q11E/eGdCQDVeUa3UR9uJOY6lZP8YPz+R1A39STEWZqoeKl3jxwwEWWHykc8P1RukInguDTVFyh2J0Xo/QmkpNvk+90z8aSb4rgFpsLbMINiz1DfMZgHZh2NqZ37MP7sChx+hpJ2fkY8pmD8PZkRJ71I0+k7D8EZd77IXDPnNnM7IKIb9B9ZZiIihnXAKhyd2myv5bvT+psHAAbGy4Q/2xsL3TQ++w=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ec0eJkj4wFfuN+0Q6SEVbkVj7TY4fRmki+IKoXNvrvMVNDLoSG3BtjOekaXu?=
- =?us-ascii?Q?EY1wFq3Fj53nDA8yOKPC3Ai2gUY3Rcdvzut1fWM13q7bxUueQQkzCYi9VkEw?=
- =?us-ascii?Q?9fAT5eEpWzkQEtxe8R5muUcA+QLGZgUonX9831p4eBV0YZ25wj0zOWEBvStu?=
- =?us-ascii?Q?uO+1ICIIiwq1rrcO7YCvMNEe9gZ11IXgmCvl6F/uMJ3EqrCFvd7NEc6Te6uw?=
- =?us-ascii?Q?4mlrqRcfminSGiB/9MCav4e9MAzWnQvjnBhOyeP/CoYU5CCqOIb6b+9fxjwV?=
- =?us-ascii?Q?U4/GlSgNoYR+IHmhg5qyfqpEPjJjq5m1RQyc6ZJKe8Ig4Jvoga5UrxfTUYZO?=
- =?us-ascii?Q?deObZiIWUERLXfH3lahsM8obFKQks1hka4Lox0WYnMcPnE7rDw1QqTJy009X?=
- =?us-ascii?Q?sH8EFmy24eyoHhNBjlQr0aCym74MXfQL1/9JhpzT9jbeuD73kZCBcC3xZFPH?=
- =?us-ascii?Q?dOCwvb6e6gfVnh/UmkWSZT7guVdFxECWcAlrSvnUIl+ze9seqGBusg/R3thI?=
- =?us-ascii?Q?j20qdflheFvpXA6taxtCTOJUMxbNGfqEVGnoM2e9+1wrZqueiKHgYLQX5qeX?=
- =?us-ascii?Q?llbhxrGDPH+8VgswjQFS6C6zKxksS2qfPKTPD9dmIz/+jx6pw3CVIMYORcv8?=
- =?us-ascii?Q?ydu6qsn5P6H43leJPb9b49zJfGlP2APMOVqGAtsPYpX/l3qonGQt4DRX1obX?=
- =?us-ascii?Q?hfrYS1oklHmQFASFHSHCQJxOdkP6aNiUAA4WagY+VF/cRiE+7tP3i9WsWfhd?=
- =?us-ascii?Q?oMxFol/OVbyC0EwoIMongHM7rLFHO3UZ3M55qUbUQZNWdCjvc1FbYk4YwaAn?=
- =?us-ascii?Q?E8Zy4llbOwYO+Hs8wp/zNHDUZRtrAOALUca/Ex/SNC3rDBs+ZJc/8kWDQJkK?=
- =?us-ascii?Q?R3G+9tuNG1IkGq5HxPyFJbxeEFuKlzVEsIlKjgEGPfG9ta8c8+mOEfWr3kcX?=
- =?us-ascii?Q?R5G3mxCfgmsBD1GAE6FeWhzQcL0PGFf0tnvDlGtOmrqvxkadvbb49W/RaAXv?=
- =?us-ascii?Q?HR3oLPlvK26BNxCM6kMhBWZXMxka7FYjbERki0GH2VylmaXfRuuLzz0Rp+St?=
- =?us-ascii?Q?FssE/mLSWslu6ZCQY2HOEqYCCiQmDRMtBYwy4mj5kXObpj9AxsLGFwtiB7je?=
- =?us-ascii?Q?YzOQFWkEE5OlMRFjR5Ti5kP0CsiyulwcXIa57wW3rVndNMW1vh5k2opzenGb?=
- =?us-ascii?Q?QBotKTPx9ebZ6ytRK5eglRXlL0iPyoABhAOcI+zXM8iAuLu3ZkPeojj8noQ?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4bff77f-cca0-443c-7c61-08dbe8663bb5
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 18:43:19.2563
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3713
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+ <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
+ <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
+ <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
+ <CACSyD1NJ4ycr74pXHNus3ZjA=LvZP+aMNyz=iWyHuDODpx7aww@mail.gmail.com>
+ <CAF8kJuPymUX+DwouwgH6og0BO6ZYheGXsk=GYqYuMjKMz-Xqbw@mail.gmail.com> <CACSyD1P-6mQ7n+ghsZQ0Gp4AxyTTi6=UZHz2DnXWuCWke2fkPw@mail.gmail.com>
+In-Reply-To: <CACSyD1P-6mQ7n+ghsZQ0Gp4AxyTTi6=UZHz2DnXWuCWke2fkPw@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Sat, 18 Nov 2023 13:43:52 -0500
+Message-ID: <CAKEwX=O0eNmoFRsnRXpkY55UGHBOiGL2aQW6um8Kq5hgGH=c_A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
+ failure in two scenarios
+To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc:     Chris Li <chrisl@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf_tcp_ca uses the `CHECK` calls even though the use of
-ASSERT_ series of macros is preferred in the bpf selftests.
+On Fri, Nov 17, 2023 at 8:46=E2=80=AFPM Zhongkun He
+<hezhongkun.hzk@bytedance.com> wrote:
+>
+> Hi Chris, thanks for your time.
+>
+> >
+> > On Fri, Nov 17, 2023 at 1:56=E2=80=AFAM Zhongkun He
+> > <hezhongkun.hzk@bytedance.com> wrote:
+> > > Hi Chris, thanks for your feedback.  I have the same concerns,
+> > > maybe we should just move the zswap_invalidate() out of batches,
+> > > as Yosry mentioned above.
+> >
+> > As I replied in the previous email, I just want to understand the
+> > other side effects of the change better.
+> >
+> > To me, this patching is actually freeing the memory that does not
+> > require actual page IO write from zswap. Which means the memory is
+> > from some kind of cache. It would be interesting if we can not
+> > complicate the write back path further. Instead, we can drop those
+> > memories from the different cache if needed. I assume those caches are
+> > doing something useful in the common case. If not, we should have a
+> > patch to remove these caches instead.  Not sure how big a mess it will
+> > be to implement separate the write and drop caches.
+> >
+> > While you are here, I have some questions for you.
+> >
+> > Can you help me understand how much memory you can free from this
+> > patch? For example, are we talking about a few pages or a few GB?
+> >
+> > Where does the freed memory come from?
+> > If the memory comes from zswap entry struct. Due to the slab allocator
+> > fragmentation. It would take a lot of zswap entries to have meaningful
+> > memory reclaimed from the slab allocator.
+> >
+> > If the memory comes from the swap cached pages, that would be much
+> > more meaningful. But that is not what this patch is doing, right?
+> >
+> > Chris
+>
+> It's my bad for putting two cases together. The memory released in both
+> cases comes from zswap entry struct and zswap compressed page.
+>
+> The original intention of this patch is to solve the problem that
+> shrink_work() fails to reclaim memory in two situations.
+>
+> For case (1),  the zswap_writeback_entry() will failed for the
+> __read_swap_cache_async return NULL because the swap has been
+> freed but cached in swap_slots_cache, so the memory come from
+> the zswap entry struct and compressed page.
+> Count =3D SWAP_BATCH * ncpu.
+> Solution: move the zswap_invalidate() out of batches, free it once the sw=
+ap
+> count equal to 0.
+>
+> For case (2),  the zswap_writeback_entry() will failed for !page_was_allo=
+cated
+> because zswap_load will have two copies of the same page in memory
+>   (compressed and uncompressed) after faulting in a page from zswap when
+> zswap_exclusive_loads disabled. The amount of memory is greater but depen=
+ds
+> on the usage.
+>
+> Why do we need  to release them?
+> Consider this scenario,there is a lot of data cached in memory and zswap,
+> hit the limit=EF=BC=8Cand shrink_worker will fail. The new coming data wi=
+ll be written
+> directly to swap due to zswap_store failure. Should we free the last one
+> to store the latest one in zswap.
 
-This patch replaces all `CHECK` calls for equivalent `ASSERT_`
-macro calls.
+Shameless plug: zswap will much less likely hit the limit (global or
+cgroup) with the shrinker enabled ;) It will proactively reclaim the
+objects way ahead of the limit.
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 50 +++++++++----------
- 1 file changed, 23 insertions(+), 27 deletions(-)
+It comes with its own can of worms, of course - it's unlikely to work
+for all workloads in its current form, but perhaps worth experimenting
+with/improved upon?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 4aabeaa525d4..6d610b66ec38 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -20,15 +20,14 @@
- 
- static const unsigned int total_bytes = 10 * 1024 * 1024;
- static int expected_stg = 0xeB9F;
--static int stop, duration;
-+static int stop;
- 
- static int settcpca(int fd, const char *tcp_ca)
- {
- 	int err;
- 
- 	err = setsockopt(fd, IPPROTO_TCP, TCP_CONGESTION, tcp_ca, strlen(tcp_ca));
--	if (CHECK(err == -1, "setsockopt(fd, TCP_CONGESTION)", "errno:%d\n",
--		  errno))
-+	if (!ASSERT_NEQ(err, -1, "setsockopt"))
- 		return -1;
- 
- 	return 0;
-@@ -65,8 +64,7 @@ static void *server(void *arg)
- 		bytes += nr_sent;
- 	}
- 
--	CHECK(bytes != total_bytes, "send", "%zd != %u nr_sent:%zd errno:%d\n",
--	      bytes, total_bytes, nr_sent, errno);
-+	ASSERT_EQ(bytes, total_bytes, "send");
- 
- done:
- 	if (fd >= 0)
-@@ -92,10 +90,11 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- 	WRITE_ONCE(stop, 0);
- 
- 	lfd = socket(AF_INET6, SOCK_STREAM, 0);
--	if (CHECK(lfd == -1, "socket", "errno:%d\n", errno))
-+	if (!ASSERT_NEQ(lfd, -1, "socket"))
- 		return;
-+
- 	fd = socket(AF_INET6, SOCK_STREAM, 0);
--	if (CHECK(fd == -1, "socket", "errno:%d\n", errno)) {
-+	if (!ASSERT_NEQ(fd, -1, "socket")) {
- 		close(lfd);
- 		return;
- 	}
-@@ -108,26 +107,27 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- 	sa6.sin6_family = AF_INET6;
- 	sa6.sin6_addr = in6addr_loopback;
- 	err = bind(lfd, (struct sockaddr *)&sa6, addrlen);
--	if (CHECK(err == -1, "bind", "errno:%d\n", errno))
-+	if (!ASSERT_NEQ(err, -1, "bind"))
- 		goto done;
-+
- 	err = getsockname(lfd, (struct sockaddr *)&sa6, &addrlen);
--	if (CHECK(err == -1, "getsockname", "errno:%d\n", errno))
-+	if (!ASSERT_NEQ(err, -1, "getsockname"))
- 		goto done;
-+
- 	err = listen(lfd, 1);
--	if (CHECK(err == -1, "listen", "errno:%d\n", errno))
-+	if (!ASSERT_NEQ(err, -1, "listen"))
- 		goto done;
- 
- 	if (sk_stg_map) {
- 		err = bpf_map_update_elem(bpf_map__fd(sk_stg_map), &fd,
- 					  &expected_stg, BPF_NOEXIST);
--		if (CHECK(err, "bpf_map_update_elem(sk_stg_map)",
--			  "err:%d errno:%d\n", err, errno))
-+		if (!ASSERT_OK(err, "bpf_map_update_elem(sk_stg_map)"))
- 			goto done;
- 	}
- 
- 	/* connect to server */
- 	err = connect(fd, (struct sockaddr *)&sa6, addrlen);
--	if (CHECK(err == -1, "connect", "errno:%d\n", errno))
-+	if (!ASSERT_NEQ(err, -1, "connect"))
- 		goto done;
- 
- 	if (sk_stg_map) {
-@@ -135,14 +135,13 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- 
- 		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
- 					  &tmp_stg);
--		if (CHECK(!err || errno != ENOENT,
--			  "bpf_map_lookup_elem(sk_stg_map)",
--			  "err:%d errno:%d\n", err, errno))
-+		if (!ASSERT_NEQ(err, 0, "bpf_map_lookup_elem(sk_stg_map)") ||
-+				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
- 			goto done;
- 	}
- 
- 	err = pthread_create(&srv_thread, NULL, server, (void *)(long)lfd);
--	if (CHECK(err != 0, "pthread_create", "err:%d errno:%d\n", err, errno))
-+	if (!ASSERT_OK(err, "pthread_create"))
- 		goto done;
- 
- 	/* recv total_bytes */
-@@ -156,13 +155,12 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
- 		bytes += nr_recv;
- 	}
- 
--	CHECK(bytes != total_bytes, "recv", "%zd != %u nr_recv:%zd errno:%d\n",
--	      bytes, total_bytes, nr_recv, errno);
-+	ASSERT_EQ(bytes, total_bytes, "recv");
- 
- 	WRITE_ONCE(stop, 1);
--	pthread_join(srv_thread, &thread_ret);
--	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
--	      PTR_ERR(thread_ret));
-+	err = pthread_join(srv_thread, &thread_ret);
-+	ASSERT_OK(err, "pthread_join");
-+
- done:
- 	close(lfd);
- 	close(fd);
-@@ -174,7 +172,7 @@ static void test_cubic(void)
- 	struct bpf_link *link;
- 
- 	cubic_skel = bpf_cubic__open_and_load();
--	if (CHECK(!cubic_skel, "bpf_cubic__open_and_load", "failed\n"))
-+	if (!ASSERT_OK_PTR(cubic_skel, "bpf_cubic__open_and_load"))
- 		return;
- 
- 	link = bpf_map__attach_struct_ops(cubic_skel->maps.cubic);
-@@ -197,7 +195,7 @@ static void test_dctcp(void)
- 	struct bpf_link *link;
- 
- 	dctcp_skel = bpf_dctcp__open_and_load();
--	if (CHECK(!dctcp_skel, "bpf_dctcp__open_and_load", "failed\n"))
-+	if (!ASSERT_OK_PTR(dctcp_skel, "bpf_dctcp__open_and_load"))
- 		return;
- 
- 	link = bpf_map__attach_struct_ops(dctcp_skel->maps.dctcp);
-@@ -207,9 +205,7 @@ static void test_dctcp(void)
- 	}
- 
- 	do_test("bpf_dctcp", dctcp_skel->maps.sk_stg_map);
--	CHECK(dctcp_skel->bss->stg_result != expected_stg,
--	      "Unexpected stg_result", "stg_result (%x) != expected_stg (%x)\n",
--	      dctcp_skel->bss->stg_result, expected_stg);
-+	ASSERT_EQ(dctcp_skel->bss->stg_result, expected_stg, "stg_result");
- 
- 	bpf_link__destroy(link);
- 	bpf_dctcp__destroy(dctcp_skel);
--- 
-2.25.1
 
+>
+> According to the previous discussion, the writeback is inevitable.
+> So I want to make zswap_exclusive_loads_enabled the default behavior
+> or make it the only way to do zswap loads. It only makes sense when
+> the page is read and no longer dirty. If the page is read frequently, it
+> should stay in cache rather than zswap. The benefit of doing this is
+> very small, i.e. two copies of the same page in memory.
+>
+> Thanks again.
