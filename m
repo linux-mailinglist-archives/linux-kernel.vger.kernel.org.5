@@ -2,147 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226FB7F0463
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 05:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AB27F0483
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 06:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjKSE6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 23:58:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S229776AbjKSFoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 00:44:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbjKSE6T (ORCPT
+        with ESMTP id S229454AbjKSFoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 23:58:19 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FE011D;
-        Sat, 18 Nov 2023 20:58:16 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9e1021dbd28so456097566b.3;
-        Sat, 18 Nov 2023 20:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700369895; x=1700974695; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fplaLSYQTnlodH8FfQYQ5jvqJcl6qluHMzbsHoMOv78=;
-        b=DzI4BCEI6T9zet0NYyJeqS3snfNZJtfE4HUbZqztVByg2Oncxg62hrQd0oFW1jcDGX
-         RugmSVyBsgkfOlLb+f5YN6iVw8HRt0dyBNh2acHyKOOs90fRbKGDiZ8SzamEOUKynTk/
-         qGLFhNFgivcngQ8KUN9oliDLrvDvQPqjjX3HCbk5uWGloFo3rJyP/u4NT9t7olATM2Gj
-         oMcJKUo5GW2rIIgDMQ8DpSmkDw4UnKKAl7CDLb+lNj3xdQoz9R3UA3LSTUo6ophE8ca0
-         tCRP1LM2sLEAqvzCxO/U4hev/U6fDkvIjZuW4dgy9gmY40W27l8CXPWzvlwqcVVti1PZ
-         ESEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700369895; x=1700974695;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fplaLSYQTnlodH8FfQYQ5jvqJcl6qluHMzbsHoMOv78=;
-        b=kdGBH3zGG78WUxcn/UeI9BBpA05v97zsHnejghq9fwpwlskkLgkmujhW/Dt3xrdz55
-         Rhjh9IQoWXSzm8cyuyn+6oWKuS3TDyy5X2xOvQT0/pcS3n0XpHCVjw1Dt4PnhUN+eCvn
-         VyZRDftoBDEcjZq2B6FJs+2l6RoovHb/FrBd1OlIubjf4oYQd/URyAI41QqyCBo2qdyb
-         X9YkEk2+c/LoSg/2i3xVKX8bFD1aC8aoV64P2jHrqD1clJwxI9cU4q7z4vBp/ZHBJusS
-         VjucRJuFnjWSVORRO3xUJOANe5iq2XP3vIBC2JgswuSYQ62vvPFsFtwJOoyDO6WWEoBH
-         i7Wg==
-X-Gm-Message-State: AOJu0Yza1YENzrWWJdOSMH3zyDIplvvWj+9RlOenNguVwaWxC6FSXcbB
-        jOvVabKVyVQ3HgdmS6TySlI=
-X-Google-Smtp-Source: AGHT+IHWDETWIINVAMoAfeD0sI4G7Z1GlcBzH8XX50y1rsq0701rmOy5UvWKW5dbBNBGFL6SWkXQrw==
-X-Received: by 2002:a17:906:3652:b0:9fc:fd2a:55d with SMTP id r18-20020a170906365200b009fcfd2a055dmr441623ejb.34.1700369894773;
-        Sat, 18 Nov 2023 20:58:14 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-9fcd-7897-f205-6e36.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:9fcd:7897:f205:6e36])
-        by smtp.gmail.com with ESMTPSA id q18-20020a1709060e5200b009f5b7b6f3c8sm2504220eji.56.2023.11.18.20.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 20:58:14 -0800 (PST)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sun, 19 Nov 2023 05:58:04 +0100
-Subject: [PATCH 2/2] dt-bindings: iio: light: add support for Vishay
- VEML6075
+        Sun, 19 Nov 2023 00:44:37 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABC5E0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:44:31 -0800 (PST)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231119054427epoutp02df8e6e3551a7520a262da8e006b3461c~Y7_6UXGP12034520345epoutp02k
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:44:27 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231119054427epoutp02df8e6e3551a7520a262da8e006b3461c~Y7_6UXGP12034520345epoutp02k
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700372667;
+        bh=acisFztUKpjeKMKioP89uYReNJaDW+C6LZ8gdfib14g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mtA7JnCPRutWsbCfRE3KFGXIiLcTPq6WX0Nh6pYqIIIq21lzwp/vb7a4YDrva7u1M
+         VjcSaj7iswepOGuBoXT6Ipk3pVFs63mkv+gsY4wp9vblFq51uHtXUbMvW2Zy2H7zJE
+         0QEHbz3FnZK9vtaynmltV2jUuF2Qj/vjt1o6imp0=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20231119054426epcas5p3e6d458615f54d4b2dd71249773656510~Y7_5vxSGt1479714797epcas5p3g;
+        Sun, 19 Nov 2023 05:44:26 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.178]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4SY02K05mRz4x9Pq; Sun, 19 Nov
+        2023 05:44:25 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0A.5A.10009.8B0A9556; Sun, 19 Nov 2023 14:44:24 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231118032740epcas5p20b6aad6264323376fa024bc2a56f0990~YmeMh0elz2208922089epcas5p25;
+        Sat, 18 Nov 2023 03:27:40 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231118032740epsmtrp2a136bf86f3267b036f187156306d1c0d~YmeMg3Pug0866708667epsmtrp2d;
+        Sat, 18 Nov 2023 03:27:40 +0000 (GMT)
+X-AuditID: b6c32a4a-261fd70000002719-1c-6559a0b8e667
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        68.BA.08755.B2F28556; Sat, 18 Nov 2023 12:27:39 +0900 (KST)
+Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231118032738epsmtip22d14803f98dafe47a22a79304adc65de~YmeLQZepw2926129261epsmtip2t;
+        Sat, 18 Nov 2023 03:27:38 +0000 (GMT)
+From:   Xiaobing Li <xiaobing.li@samsung.com>
+To:     axboe@kernel.dk
+Cc:     asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, kun.dou@samsung.com,
+        peiwei.li@samsung.com, joshi.k@samsung.com,
+        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+        ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: [PATCH v3] io_uring/fdinfo: remove need for sqpoll lock for
+ thread/pid retrieval
+Date:   Sat, 18 Nov 2023 11:19:51 +0800
+Message-Id: <20231118031951.21764-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <605eac76-ec47-436b-872a-f6e8b4094293@kernel.dk>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmpu6OBZGpBgsem1vMWbWN0WL13X42
+        i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLaZu2cFk0dFymdGB22PnrLvs
+        HpfPlnr0bVnF6PF5k1wAS1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5i
+        bqqtkotPgK5bZg7QTUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScApMCveLE3OLS
+        vHS9vNQSK0MDAyNToMKE7IxrDcdYCxaIVBzqNG5gbBToYuTkkBAwkWi5O5e1i5GLQ0hgN6PE
+        rD39bBDOJ0aJ88+2sEM43xglpjx5ygjT0vr2LFTVXkaJyT83sEA4Lxklvj65yAZSxSagLXF9
+        XRcriC0iICyxv6MVrIhZ4C+jxISXv5lBEsIC8RLH5hwDKuLgYBFQlbj7qg4kzCtgI3Hj3ilm
+        iG3yEvsPngWzOQVsJf7tWMUMUSMocXLmExYQmxmopnnrbGaQ+RICX9klPk7awwrR7CKxc8Yl
+        NghbWOLVcZB/QGwpic/v9kLFiyWO9HxnhWhuYJSYfvsqVJG1xL8re1hAjmMW0JRYv0sfIiwr
+        MfXUOiaIxXwSvb+fMEHEeSV2zIOxVSVWX3rIAmFLS7xu+A0V95D4tHA1G8hIIYEJjBKPdSYw
+        KsxC8s4sJO/MQli8gJF5FaNkakFxbnpqsWmBUV5qOTySk/NzNzGCk6mW1w7Ghw8+6B1iZOJg
+        PMQowcGsJML7TSgiVYg3JbGyKrUoP76oNCe1+BCjKTC4JzJLiSbnA9N5Xkm8oYmlgYmZmZmJ
+        pbGZoZI47+vWuSlCAumJJanZqakFqUUwfUwcnFINTMHTLzDdTey4+/XRqXLV+68XBFm8Fv3i
+        E6zeoi2cZjYha1HRundKfJN42yTWcvc8/OBx0D/Bq3n258+6d6d6T2X66D2XN759Qud1phSj
+        /+Fsl8Oy+tbNLWI+Idm4+WdHws5395b+X9z0Zz/rxAWH1Q8883ow91T1XsZLnsbticLGr05N
+        SgoWUMrk59rvKb52ydH7r3sLLvuvLNnQ9ix1+qal/9fcVAhuXmC9T5E/SjdJNUDW6RuLPnOP
+        gKjz05A1Ph2TMjJWTnROTbXaoSeiU3J++dwU21W2fKrhehwSiUtmzuKL2TDLcXXqpvaOd/Ob
+        bNa0LX1afSBsRtXVHQsO5lh2ssVUdnuydp9+Y/w3RImlOCPRUIu5qDgRAE8MW8kvBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPLMWRmVeSWpSXmKPExsWy7bCSvK62fkSqwZVZVhZzVm1jtFh9t5/N
+        4l3rORaLo//fsln86r7LaLH1y1dWi8u75rBZPNvLafHl8Hd2i6lbdjBZdLRcZnTg9tg56y67
+        x+WzpR59W1YxenzeJBfAEsVlk5Kak1mWWqRvl8CVca3hGGvBApGKQ53GDYyNAl2MnBwSAiYS
+        rW/PsnUxcnEICexmlNg+7x5jFyMHUEJa4s+fcogaYYmV/56zQ9Q8Z5R4e+Y8E0iCTUBb4vq6
+        LlYQWwSoaH9HKwuIzSzQySTx+rMeyBxhgViJyz9KQUwWAVWJu6/qQCp4BWwkbtw7xQwxXl5i
+        /8GzYDangK3Evx2rmEHKhYBqLqxVgSgXlDg58wnUcHmJ5q2zmScwCsxCkpqFJLWAkWkVo2Rq
+        QXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwmGtp7mDcvuqD3iFGJg7GQ4wSHMxKIrzfhCJS
+        hXhTEiurUovy44tKc1KLDzFKc7AoifOKv+hNERJITyxJzU5NLUgtgskycXBKNTAd+Tkh2uxt
+        v/RsY+v5l2L5eVsfajX+v/g/2DUlKVmeKUXk2+dIM2bL5V/mK6kx7t5hrnm2t1VMMGfqxAuN
+        r547fur6omodf/4kY/ONiz9+nJ6fWsNaJBdcNGcel967k9eybR8FTO2YovPx0eKdxfHubU1t
+        PeuSWNgOxU3VPOOixO0Yo7148VmHlm3WRYxM/byMj/52PzO6zVQaZMztv2bdNrmouUnJEZWP
+        ztauWmndsPT7H3WX1AO3mnOzW3S9FH3X/K7WfPB1hruFqf//iHX+vjMmz2A9sXXaTlNdfz+x
+        C/5cLnn+BbqL9wetUqzMinGfGLpemc1Ip/N++lZLUyG+ibL+12I11x7jet9spsRSnJFoqMVc
+        VJwIACCkQsniAgAA
+X-CMS-MailID: 20231118032740epcas5p20b6aad6264323376fa024bc2a56f0990
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231110-veml6075-v1-2-354b3245e14a@gmail.com>
-References: <20231110-veml6075-v1-0-354b3245e14a@gmail.com>
-In-Reply-To: <20231110-veml6075-v1-0-354b3245e14a@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700369889; l=1487;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=OUGiCOAJxrWsDYARNYQq1T/CNh7W00rLbeJhW/Ev090=;
- b=3jeclC1PoYN1EtHlmytVuJaSl8lMjl2m/geBDnnv7YQl+jhAkk5ueXOXD10PXGe5+ATul3Yu2
- FVW2e+4yFlqDzDe2n7WTca/rGDDjeJZlBWtU/HvFoy2gEFyTa0HcuEE
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231118032740epcas5p20b6aad6264323376fa024bc2a56f0990
+References: <605eac76-ec47-436b-872a-f6e8b4094293@kernel.dk>
+        <CGME20231118032740epcas5p20b6aad6264323376fa024bc2a56f0990@epcas5p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Vishay VEML6075 is a 16-bit digital UVA and UVB sensor with I2C
-interface.
+On 11/15/23 6:42 AM, Jens Axboe wrote:
+> 	 */
+> 	has_lock = mutex_trylock(&ctx->uring_lock);
+> 
+>-	if (has_lock && (ctx->flags & IORING_SETUP_SQPOLL)) {
+>-		struct io_sq_data *sq = ctx->sq_data;
+>-
+>-		sq_pid = sq->task_pid;
+>-		sq_cpu = sq->sq_cpu;
+>+	if (ctx->flags & IORING_SETUP_SQPOLL) {
+>+		struct io_sq_data *sq;
+>+
+>+		rcu_read_lock();
+>+		sq = READ_ONCE(ctx->sq_data);
+>+		if (sq) {
+>+			sq_pid = sq->task_pid;
+>+			sq_cpu = sq->sq_cpu;
+>+		}
+>+		rcu_read_unlock();
+> 	}
+> 
+> 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
+>diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
+>index 65b5dbe3c850..583c76945cdf 100644
+>--- a/io_uring/sqpoll.c
+>+++ b/io_uring/sqpoll.c
+>@@ -70,7 +70,7 @@ void io_put_sq_data(struct io_sq_data *sqd)
+> 		WARN_ON_ONCE(atomic_read(&sqd->park_pending));
+> 
+> 		io_sq_thread_stop(sqd);
+>-		kfree(sqd);
+>+		kfree_rcu(sqd, rcu);
+> 	}
+> }
+> 
+>@@ -313,7 +313,7 @@ static int io_sq_thread(void *data)
+> 	}
+> 
+> 	io_uring_cancel_generic(true, sqd);
+>-	sqd->thread = NULL;
+>+	WRITE_ONCE(sqd->thread, NULL);
+> 	list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+> 		atomic_or(IORING_SQ_NEED_WAKEUP, &ctx->rings->sq_flags);
+> 	io_run_task_work();
+>@@ -411,7 +411,7 @@ __cold int io_sq_offload_create(struct io_ring_ctx *ctx,
+> 			goto err_sqpoll;
+> 		}
+> 
+>-		sqd->thread = tsk;
+>+		WRITE_ONCE(sqd->thread, tsk);
+> 		ret = io_uring_alloc_task_context(tsk, ctx);
+> 		wake_up_new_task(tsk);
+> 		if (ret)
+>diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+>index 8df37e8c9149..0cf0c5833a27 100644
+>--- a/io_uring/sqpoll.h
+>+++ b/io_uring/sqpoll.h
+>@@ -18,6 +18,8 @@ struct io_sq_data {
+> 
+> 	unsigned long		state;
+> 	struct completion	exited;
+>+
+>+	struct rcu_head		rcu;
+> };
+> 
+> int io_sq_offload_create(struct io_ring_ctx *ctx, struct io_uring_params *p);
 
-Add bindings and an example for the Vishay VEML6075.
+I tested this and it worked after adding RCU lock.
+It consistently outputs correct results.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../bindings/iio/light/vishay,veml6075.yaml        | 40 ++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/iio/light/vishay,veml6075.yaml b/Documentation/devicetree/bindings/iio/light/vishay,veml6075.yaml
-new file mode 100644
-index 000000000000..f8e2db29af42
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/light/vishay,veml6075.yaml
-@@ -0,0 +1,40 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/light/vishay,veml6075.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Vishay VEML6075 UVA and UVB sensor
-+
-+maintainers:
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: vishay,veml6075
-+
-+  reg:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Regulator that provides power to the sensor
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        uv-sensor@10 {
-+            compatible = "vishay,veml6075";
-+            reg = <0x10>;
-+            vdd-supply = <&vdd_reg>;
-+        };
-+    };
-+...
-
--- 
-2.39.2
-
+The results of a simple test are as follows:
+Every 0.5s: cat /proc/10212/fdinfo/6 | grep Sq
+SqMask: 0x3
+SqHead: 17422716
+SqTail: 17422716
+CachedSqHead:   17422716
+SqThread:       10212
+SqThreadCpu:    73
+SqBusy: 97%
+-------------------------------------------------------------
+But the name of the sq thread is "iou-sqp-" + "the PID of its parent process":
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  10211 root      20   0  184408   8192      0 R  99.9   0.0   4:01.42 fio
+  10212 root      20   0  184408   8192      0 R  99.9   0.0   4:01.48 iou-sqp-10211
+Is this the originally desired effect?
