@@ -2,57 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AE87F00C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D197F00C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:55:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbjKRPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        id S230519AbjKRPzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:55:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbjKRPxl (ORCPT
+        with ESMTP id S231334AbjKRPxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:53:41 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E867B2107
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 07:51:58 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5b383b4184fso33543527b3.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 07:51:58 -0800 (PST)
+        Sat, 18 Nov 2023 10:53:40 -0500
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC87D210B;
+        Sat, 18 Nov 2023 07:52:00 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5c739c80e29so18512357b3.3;
+        Sat, 18 Nov 2023 07:52:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322717; x=1700927517; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322719; x=1700927519; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+JD5ffTGpk93tg8AkoESy4I0f3LaG6FeAVUaBjQtKP0=;
-        b=X7pc2AVj+gHCUODSfMJQ1CCULuF++OsKUTMOHebHVYuvR+MvRn6nhotkGpU/kxXh/2
-         aZJ3Xya7gtFHfEbh4wBKK0E/UATRnEdwk80UWlQdUgJazARP+qCKUetQ5aLNkNquEdcU
-         0+XCzfzH74i9o5L9kDnBssrtP3Z3QSykWlwJv0oi9MEexSkaGku06cELfiogK2kISFeB
-         DuU23LUY58LkVlgdEc4+13umvrYG9zK7eaxlAvKs39+PjzuGM0qRPU5HZ7r14rXMnNac
-         jZx9whY3yYAx9Ru1flPMZll5kbS4rTK5kiGUHblS+MtLtbMveV4r67k+cMg8tSvbGln7
-         Yz0A==
+        bh=uLtIilfR7gLFqagyYs+6NDG1iSmOOH2SMP2aNmrlvmc=;
+        b=GW216KwSCWFh4PSi9cZrFkFhSYyawbd/ImFwY7t+jv0HJKOv88GRK3GQ27YRh6i1H8
+         PRFBNg+087O7RyBwPj11KKG5KncOXTAafBFpaebdyWn/iiGrk5oDZXaDn8Gd1kLa3+jK
+         4HdAqXiuISk8PTv5tR4HtIMAgaD4KVF1+SB4tnyVxZ/mjk9voCpT8U7aZif0zXCyohWq
+         pwVk/l+C1HMfZFBkERtFg+FgyjoDNQym8a2Ij3uTjkHKikfc2oo1Y93VPw1v/TaRGCkY
+         ngWt5mZBoMBivDE/5F03cQM93f1YteDre75FIRo12N6ZGd9+2YNhGqEPaL4g7mv/MzV3
+         R1Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322717; x=1700927517;
+        d=1e100.net; s=20230601; t=1700322719; x=1700927519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+JD5ffTGpk93tg8AkoESy4I0f3LaG6FeAVUaBjQtKP0=;
-        b=WST0Rg6KKynh3QjteS6LJaCH11OKgfkcb125CGWp061Y4E2TV+j6oB79BVeX3Ddhe/
-         x+1uiKYQ2cRnCV5tmoELwONiJIU2WANGAMS4xkIghywK50SiwB4bS1gITbwtj3m1a439
-         yccK5hAcnpfiuwmGdi4G/MqWIiLNTobxGMS3fOdchG2tHLG1I4CV7pwAaXJd4kbhbb48
-         HQNUYPsJHFX0V4lmps1hEvxKX/mRFMZhzgU0W6yrq55jIWdWNZ5Fahy7TUg8kgCl59co
-         MKNOo7q8an0yMA6Z51Dn7asgJpkfF2VJKz6I+WFT0pEv+6Ijhe8b84azH8xQJfCCzum5
-         1SQg==
-X-Gm-Message-State: AOJu0YwvB03sE9aRrwBoasc808s53Yf/KPxM0quuxhEdVP4LIfARlAxW
-        JC0u/SJ+2zerM/83M2RxaT206N4UTO6an+TO
-X-Google-Smtp-Source: AGHT+IG7wPFpUNycKY+N0nEw19mU/BEjuia4iH+Rsm+r8LMcRL1GjjYZzQ/va5FVyE428m6U7tDiNQ==
-X-Received: by 2002:a81:4f13:0:b0:5a5:65e:b847 with SMTP id d19-20020a814f13000000b005a5065eb847mr2911182ywb.34.1700322717124;
-        Sat, 18 Nov 2023 07:51:57 -0800 (PST)
+        bh=uLtIilfR7gLFqagyYs+6NDG1iSmOOH2SMP2aNmrlvmc=;
+        b=LAPhpyjy7P8OqRrlRDPQqLZMl6YYnwBTNszwK1jVahcD4o4dyft/GpsB9KxEE29CM5
+         f/uUyLtSpUNAmG80ICybjKN33nZhuIbQi/7gs97/C1j7RX45WisJARhj3+PKQ7XkrOYa
+         TRuujqPjjGU1s4iPB3aEXnw00dxO2cocaDcY4vSqHFkQjGEHavNcx5cQ6S6pGKTfFKio
+         i91ae6HCMFmmKmP8AilzO42DmvUzHRsx2a5zQWUNzuxSVzV/A8dRTJ22iDZLApL3pxLQ
+         nBdcLHGxzEz2+SJTiTQ3uHgTtQAO+LUT+Z3afpJ1S6CfUIvUyDbtIdGhvsyeEj5QVnn3
+         93lA==
+X-Gm-Message-State: AOJu0YytblmIcL4NLe/7l0s+b4ZK7WwucJ7Ta5AjmGYst2gUcIFhYS7p
+        7qPx2c4lV1EzgF9+VK76SkRenmbzuDIlYmp1
+X-Google-Smtp-Source: AGHT+IHzm0/pMsA84butgw//kfAU4Z52dcxRoxcpd4wkUYIvA5AU7oytHGlrX6abNYyb17yO7KbvWw==
+X-Received: by 2002:a05:690c:13:b0:5c9:7f0a:e2fb with SMTP id bc19-20020a05690c001300b005c97f0ae2fbmr835696ywb.12.1700322718902;
+        Sat, 18 Nov 2023 07:51:58 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id w184-20020a0dd4c1000000b0059f650f46b2sm1172057ywd.7.2023.11.18.07.51.56
+        by smtp.gmail.com with ESMTPSA id i9-20020a0ddf09000000b005a7a92a62besm1174746ywe.8.2023.11.18.07.51.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:56 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:57 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Yury Norov <yury.norov@gmail.com>, linux-sh@vger.kernel.org
 Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -60,9 +63,9 @@ Cc:     Jan Kara <jack@suse.cz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 33/34] microblaze: rework get_mmu_context()
-Date:   Sat, 18 Nov 2023 07:51:04 -0800
-Message-Id: <20231118155105.25678-34-yury.norov@gmail.com>
+Subject: [PATCH 34/34] sh: rework ilsel_enable()
+Date:   Sat, 18 Nov 2023 07:51:05 -0800
+Message-Id: <20231118155105.25678-35-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -70,7 +73,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,36 +81,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix opencoded find_and_set_bit_wrap(), which also suppresses potential
+Fix opencoded find_and_set_bit(), which also suppresses potential
 KCSAN warning.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- arch/microblaze/include/asm/mmu_context_mm.h | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/sh/boards/mach-x3proto/ilsel.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/microblaze/include/asm/mmu_context_mm.h b/arch/microblaze/include/asm/mmu_context_mm.h
-index c2c77f708455..209c3a62353a 100644
---- a/arch/microblaze/include/asm/mmu_context_mm.h
-+++ b/arch/microblaze/include/asm/mmu_context_mm.h
-@@ -82,12 +82,11 @@ static inline void get_mmu_context(struct mm_struct *mm)
- 		return;
- 	while (atomic_dec_if_positive(&nr_free_contexts) < 0)
- 		steal_context();
--	ctx = next_mmu_context;
--	while (test_and_set_bit(ctx, context_map)) {
--		ctx = find_next_zero_bit(context_map, LAST_CONTEXT+1, ctx);
--		if (ctx > LAST_CONTEXT)
--			ctx = 0;
--	}
-+
-+	do {
-+		ctx = find_and_set_bit_wrap(context_map, LAST_CONTEXT + 1, next_mmu_context);
-+	} while (ctx > LAST_CONTEXT);
-+
- 	next_mmu_context = (ctx + 1) & LAST_CONTEXT;
- 	mm->context = ctx;
- 	context_mm[ctx] = mm;
+diff --git a/arch/sh/boards/mach-x3proto/ilsel.c b/arch/sh/boards/mach-x3proto/ilsel.c
+index f0d5eb41521a..7fadc479a80b 100644
+--- a/arch/sh/boards/mach-x3proto/ilsel.c
++++ b/arch/sh/boards/mach-x3proto/ilsel.c
+@@ -99,8 +99,8 @@ int ilsel_enable(ilsel_source_t set)
+ 	}
+ 
+ 	do {
+-		bit = find_first_zero_bit(&ilsel_level_map, ILSEL_LEVELS);
+-	} while (test_and_set_bit(bit, &ilsel_level_map));
++		bit = find_and_set_bit(&ilsel_level_map, ILSEL_LEVELS);
++	} while (bit >= ILSEL_LEVELS);
+ 
+ 	__ilsel_enable(set, bit);
+ 
 -- 
 2.39.2
 
