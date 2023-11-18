@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3150C7EFFC9
+	by mail.lfdr.de (Postfix) with ESMTP id 98EA67EFFCA
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjKRNPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 08:15:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
+        id S229916AbjKRNPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 08:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjKRNO6 (ORCPT
+        with ESMTP id S229731AbjKRNPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 08:14:58 -0500
+        Sat, 18 Nov 2023 08:15:04 -0500
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2258127;
-        Sat, 18 Nov 2023 05:14:54 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 308CF20002;
-        Sat, 18 Nov 2023 13:14:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7051ED76;
+        Sat, 18 Nov 2023 05:14:59 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D183920004;
+        Sat, 18 Nov 2023 13:14:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1700313293;
+        t=1700313298;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h1wtPYbuvCrxzK3zVYcy+dqMNAt++iVN9XJT5RdrMlU=;
-        b=huj0uA40EXpEj+N00n8DwlkjzblQ5eqh2gaex0fcBiOFYukZHxlO0s1TA72cAdJUn0vwQS
-        LA22YLgypbPSsoJvecdpGX99+sYre9Bvs71sT2F6U0qO/qjE2fu3mSj5ryE6DzAjpasRrT
-        1DdzjOLP0qnbbiYjgMgDgbgI2eMHmglslDiD0la2xmw9+6Ci5+SO4C8bfTc1bAZgWhDnN0
-        pnMNuNgKJutl30lPWa/QyCTSCDv0jUH+XMvxFK0G7cTkq3O2qe7h73rzy7FV0BU62wWORW
-        uCvYETEfp9Oj4l/B1ZdJa5PXuJdxzVm74M8X5cXVWnizKYxwcf6gmzBwiWx6jw==
+        bh=QHMSEER/SBEH4IqK5yT4ZrjQxH8VpFrbj9NbOVlG2+g=;
+        b=WaKbZMD90W3n3aSXSb3a0ZAU/mvWWrOzYmu/OX+FjY2U++BzndNh1VYokHs8s9NcqXZBQO
+        HjEAkUBwmEAut1Au+7mXn76E7pg4Fvyc9hZYocLl8hf7ondvoS0S/SKOtlHiUzcdSmNQkX
+        wLJNarbKsxYgD8Pod5XGAnzQ6QJ8YK3mRXIe/gI/LxOzODeOHgLAJ0FJ3/4EsT/dY+5pnw
+        0ank40KApmUlWos2qsif/6/gW7SE8P7aW/Co7YVTgZY5baXpE1j3a5NAH8O+yqto4/L3iY
+        jdYgq6gdqTWVF+RkZF7NRQtgANtLpKvumYvDotECsgxItT2b9J+RS+EAKAVOWQ==
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         Daniel Golle <daniel@makrotopia.org>,
@@ -52,9 +52,9 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Frank Wunderlich <frank-w@public-files.de>,
         Bartel Eerdekens <bartel.eerdekens@constell8.be>,
         mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-Subject: [PATCH net-next 14/15] net: dsa: mt7530: correct port capabilities of MT7988
-Date:   Sat, 18 Nov 2023 16:13:16 +0300
-Message-Id: <20231118131317.295591-4-arinc.unal@arinc9.com>
+Subject: [PATCH net-next 15/15] net: dsa: mt7530: do not clear config->supported_interfaces
+Date:   Sat, 18 Nov 2023 16:13:17 +0300
+Message-Id: <20231118131317.295591-5-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118123205.266819-1-arinc.unal@arinc9.com>
 References: <20231118123205.266819-1-arinc.unal@arinc9.com>
@@ -72,28 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the switch on the MT7988 SoC, there are only 4 PHYs. That's port 0 to 3.
-Set the internal phy cases to '0 ... 3'.
+There's no need to clear the config->supported_interfaces bitmap before
+reporting the supported interfaces as all bits in the bitmap will already
+be initialized to zero when the phylink_config structure is allocated.
+There's no code that would change the bitmap beforehand. Remove it.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 Acked-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/net/dsa/mt7530.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/dsa/mt7530.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index f36f240231b5..ca42005ff3a9 100644
+index ca42005ff3a9..20ae147b823e 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -2562,7 +2562,7 @@ static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
- 
+@@ -2558,8 +2558,6 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
+ static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
+ 				     struct phylink_config *config)
+ {
+-	phy_interface_zero(config->supported_interfaces);
+-
  	switch (port) {
  	/* Internal PHY */
--	case 0 ... 4:
-+	case 0 ... 3:
- 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
- 			  config->supported_interfaces);
- 		break;
+ 	case 0 ... 3:
 -- 
 2.40.1
 
