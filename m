@@ -2,76 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4381D7F00AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0784D7F00AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbjKRPxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:53:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S231574AbjKRPxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjKRPwj (ORCPT
+        with ESMTP id S230358AbjKRPwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:52:39 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA5819A8;
-        Sat, 18 Nov 2023 07:51:34 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a87ac9d245so33494857b3.3;
-        Sat, 18 Nov 2023 07:51:34 -0800 (PST)
+        Sat, 18 Nov 2023 10:52:40 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8269119B4
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 07:51:35 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-dafe04717baso2735378276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 07:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322692; x=1700927492; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322694; x=1700927494; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JOfyysznONox9DaU39l3AImWR8KMLBN7ng9G0tjKefQ=;
-        b=nSDKSRA5Nur2rNbS9UT+M3DyFOxmz1yxHC/uujqsK+JEEQO6nCgLIS/DkxQ7RMZ+en
-         GmG/bsf5W0rcQrHLcawcv3wDa4Cq6rAcx0EBXARYqxfP/8RN2vm7Vylr1WMDUYzXdRWO
-         cc9pijrEBkuVK86d8TVo4pKVFkKiVzl4HRjF572qbIGyBJDb6LqDAtQKx1ts2r5LuKiq
-         QTSt4ESFs5M8V5UFWixhZq3/DEsQoOQUwFqaXiBsLGhYzvHuy680AEjYuec/Dpwl4Cgy
-         NemOO+7rWdsDeAKBqIQuNJZe1Hc0IIXB7YOHgOeYRFIXrlJ48Fk/igBkerDajrCtuwC+
-         H0pg==
+        bh=2sgPttQUTNTuJ1Gv7B+hCylz5123eQWSPdiwCHEz6H8=;
+        b=PoNIotFYnRO1vakd/M6VycSkD3A4sX/1tLnMXtRJOaid3l8nMRfWklAhxIiJcPKWWR
+         +/VSe19s7rJwBZ7K8p04nY28F1C3gs2X6WtZxvKnFg5+eBNFe9oB/9L2ramKlhqDK9JS
+         Caxb/ExO62CG+9lULE455pTIgthCmBJ8Pa/BzsVG3p2Y7irAjFjTO379nGv+zARdCM2q
+         AtsvsaP7b/FbxTOfE3slsJ3yH11bI0qKWOreP8NP/RmgNCXUROVZLMbhrE889LLqmMJf
+         LeAijksAPm6a5qJ3UT87Hzyi6xIlEez5TuMBG+wJMevNlpWHyHjRxS3xW1l10kNzKPyy
+         kc6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322692; x=1700927492;
+        d=1e100.net; s=20230601; t=1700322694; x=1700927494;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JOfyysznONox9DaU39l3AImWR8KMLBN7ng9G0tjKefQ=;
-        b=P+D8cf4pgVfNYcYom3qvU61hBuZsTBjehYXRSKr9RO3AfiYcVKULZhfHtCtlGMwNRy
-         J5DYzLg+d6133ZSv+nvOc7TOsRf3b5miqHfg0LuF/4PEHu442rtMfabsR9rVySZNeYo/
-         zcjb5hLdsiEDvA8UBR7yJ8gGxMgXNpv2rI3JftZNB74U3/81HLbTRS1h6nGGi2HLeUYk
-         iJKTOcnH1BKiiQZAPHKH7iVZCOJL2nLpVBYxYQiG2mVMBbkgSFfGtBJy0izuFlwi/gYA
-         iTRx8V1VbIGAWVTIgCTRRzZNfC73B08zmsO3d7rCjDhxRFBfIRsPZJfE29X34XP4eqMu
-         JpYw==
-X-Gm-Message-State: AOJu0Yw+8A9bV6lhNzHW7/hlokXO71YbmrcNAqBBC/UWmHlSU/QfnSX+
-        uZR5xmMSsHxkhISHL0ywAf4xQwbdgWooF6VD
-X-Google-Smtp-Source: AGHT+IHEZyk9JqihgHS2B3mP9PJ9Q3eYMYqRBgiVhBMf8vRNsVbFtkBfv2fF4WcVswXfbkRy7k1mFg==
-X-Received: by 2002:a05:6902:12:b0:dae:4dfd:f6f5 with SMTP id l18-20020a056902001200b00dae4dfdf6f5mr2240825ybh.27.1700322692315;
-        Sat, 18 Nov 2023 07:51:32 -0800 (PST)
+        bh=2sgPttQUTNTuJ1Gv7B+hCylz5123eQWSPdiwCHEz6H8=;
+        b=eJxp+j/f2xSes4ranWypt0XOVJam0eYhTiHDUQIPNXLzva7/3XtqPbSakKpxQvFINg
+         jpuzlMvmC3yP7A+uMNqlAoZfhBP5PiwamYM35Nl4yeJ1JrnDe64KdCoMVrEjaFp3CJN8
+         hCh+acpINwVxy9e/ASVanpdacvNYqhjzLa3Tla0KFYSHL7sjwpSY5ix5vVH7+9xon1h5
+         PIEPj5cWWV9fM5rnPqBSXtXWPMJLPC2vW4LuKQD3xzHHrDfv1Gmo05/NE73xS9Z0ZpJI
+         0f1acIkLK57qEDMMI4yA9d508EQWEcAO79VMrdd4K8oZZ33BYotuygsYp/IodBTBTc/T
+         SCtQ==
+X-Gm-Message-State: AOJu0Ywv3KI2X5X/k2yYtd1RqZ6mSStc7n4pRYCFC/NBKGx43jdXDitY
+        Q4STSBT77ONNjw05xFVZ9y+Y3B7BcKxLjH3A
+X-Google-Smtp-Source: AGHT+IH3c8eQ4c+uzbxwI+kH3hUCZgJt3MgED5/a9/Dtof5xSXMrcPkxFIL9d3IXLZ+C5ahKbRF/xw==
+X-Received: by 2002:a25:6d44:0:b0:da0:9735:b012 with SMTP id i65-20020a256d44000000b00da09735b012mr2056422ybc.11.1700322693911;
+        Sat, 18 Nov 2023 07:51:33 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id d2-20020a25cd02000000b00d8679407796sm999387ybf.48.2023.11.18.07.51.31
+        by smtp.gmail.com with ESMTPSA id u14-20020a05690201ce00b00d7b8a1074d4sm967654ybh.57.2023.11.18.07.51.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:31 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:33 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
-        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Yury Norov <yury.norov@gmail.com>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 15/34] scsi: use atomic find_bit() API where appropriate
-Date:   Sat, 18 Nov 2023 07:50:46 -0800
-Message-Id: <20231118155105.25678-16-yury.norov@gmail.com>
+Subject: [PATCH 16/34] powerpc: use atomic find_bit() API where appropriate
+Date:   Sat, 18 Nov 2023 07:50:47 -0800
+Message-Id: <20231118155105.25678-17-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -87,97 +83,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCSI code opencodes atomic bit allocation/traversing generic routines.
-Switch it to use dedicated functions.
+Fix opencoded find_and_{set,clear}_bit() by using dedicated functions.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/scsi/mpi3mr/mpi3mr_os.c | 21 ++++++---------------
- drivers/scsi/qedi/qedi_main.c   |  9 +--------
- drivers/scsi/scsi_lib.c         |  5 ++---
- 3 files changed, 9 insertions(+), 26 deletions(-)
+ arch/powerpc/mm/book3s32/mmu_context.c     | 10 ++---
+ arch/powerpc/platforms/pasemi/dma_lib.c    | 45 +++++-----------------
+ arch/powerpc/platforms/powernv/pci-sriov.c | 12 ++----
+ 3 files changed, 17 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/scsi/mpi3mr/mpi3mr_os.c b/drivers/scsi/mpi3mr/mpi3mr_os.c
-index 040031eb0c12..11139a2008fd 100644
---- a/drivers/scsi/mpi3mr/mpi3mr_os.c
-+++ b/drivers/scsi/mpi3mr/mpi3mr_os.c
-@@ -2276,13 +2276,9 @@ static void mpi3mr_dev_rmhs_send_tm(struct mpi3mr_ioc *mrioc, u16 handle,
- 	if (drv_cmd)
- 		goto issue_cmd;
- 	do {
--		cmd_idx = find_first_zero_bit(mrioc->devrem_bitmap,
--		    MPI3MR_NUM_DEVRMCMD);
--		if (cmd_idx < MPI3MR_NUM_DEVRMCMD) {
--			if (!test_and_set_bit(cmd_idx, mrioc->devrem_bitmap))
--				break;
--			cmd_idx = MPI3MR_NUM_DEVRMCMD;
--		}
-+		cmd_idx = find_and_set_bit(mrioc->devrem_bitmap, MPI3MR_NUM_DEVRMCMD);
-+		if (cmd_idx < MPI3MR_NUM_DEVRMCMD)
-+			break;
- 	} while (retrycount--);
+diff --git a/arch/powerpc/mm/book3s32/mmu_context.c b/arch/powerpc/mm/book3s32/mmu_context.c
+index 1922f9a6b058..7db19f173c2e 100644
+--- a/arch/powerpc/mm/book3s32/mmu_context.c
++++ b/arch/powerpc/mm/book3s32/mmu_context.c
+@@ -50,13 +50,11 @@ static unsigned long context_map[LAST_CONTEXT / BITS_PER_LONG + 1];
  
- 	if (cmd_idx >= MPI3MR_NUM_DEVRMCMD) {
-@@ -2417,14 +2413,9 @@ static void mpi3mr_send_event_ack(struct mpi3mr_ioc *mrioc, u8 event,
- 	    "sending event ack in the top half for event(0x%02x), event_ctx(0x%08x)\n",
- 	    event, event_ctx);
- 	do {
--		cmd_idx = find_first_zero_bit(mrioc->evtack_cmds_bitmap,
--		    MPI3MR_NUM_EVTACKCMD);
--		if (cmd_idx < MPI3MR_NUM_EVTACKCMD) {
--			if (!test_and_set_bit(cmd_idx,
--			    mrioc->evtack_cmds_bitmap))
--				break;
--			cmd_idx = MPI3MR_NUM_EVTACKCMD;
--		}
-+		cmd_idx = find_and_set_bit(mrioc->evtack_cmds_bitmap, MPI3MR_NUM_EVTACKCMD);
-+		if (cmd_idx < MPI3MR_NUM_EVTACKCMD)
-+			break;
- 	} while (retrycount--);
- 
- 	if (cmd_idx >= MPI3MR_NUM_EVTACKCMD) {
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index cd0180b1f5b9..2f940c6898ef 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1824,20 +1824,13 @@ int qedi_get_task_idx(struct qedi_ctx *qedi)
+ unsigned long __init_new_context(void)
  {
- 	s16 tmp_idx;
+-	unsigned long ctx = next_mmu_context;
++	unsigned long ctx;
  
--again:
--	tmp_idx = find_first_zero_bit(qedi->task_idx_map,
--				      MAX_ISCSI_TASK_ENTRIES);
-+	tmp_idx = find_and_set_bit(qedi->task_idx_map, MAX_ISCSI_TASK_ENTRIES);
+-	while (test_and_set_bit(ctx, context_map)) {
+-		ctx = find_next_zero_bit(context_map, LAST_CONTEXT+1, ctx);
+-		if (ctx > LAST_CONTEXT)
+-			ctx = 0;
+-	}
++	ctx = find_and_set_next_bit(context_map, LAST_CONTEXT + 1, next_mmu_context);
++	if (ctx > LAST_CONTEXT)
++		ctx = 0;
+ 	next_mmu_context = (ctx + 1) & LAST_CONTEXT;
  
- 	if (tmp_idx >= MAX_ISCSI_TASK_ENTRIES) {
- 		QEDI_ERR(&qedi->dbg_ctx, "FW task context pool is full.\n");
- 		tmp_idx = -1;
--		goto err_idx;
+ 	return ctx;
+diff --git a/arch/powerpc/platforms/pasemi/dma_lib.c b/arch/powerpc/platforms/pasemi/dma_lib.c
+index 1be1f18f6f09..906dabee0132 100644
+--- a/arch/powerpc/platforms/pasemi/dma_lib.c
++++ b/arch/powerpc/platforms/pasemi/dma_lib.c
+@@ -118,14 +118,9 @@ static int pasemi_alloc_tx_chan(enum pasemi_dmachan_type type)
+ 		limit = MAX_TXCH;
+ 		break;
  	}
- 
--	if (test_and_set_bit(tmp_idx, qedi->task_idx_map))
--		goto again;
+-retry:
+-	bit = find_next_bit(txch_free, MAX_TXCH, start);
+-	if (bit >= limit)
+-		return -ENOSPC;
+-	if (!test_and_clear_bit(bit, txch_free))
+-		goto retry;
 -
--err_idx:
- 	return tmp_idx;
+-	return bit;
++
++	bit = find_and_clear_next_bit(txch_free, MAX_TXCH, start);
++	return bit < limit ? bit : -ENOSPC;
  }
  
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index cf3864f72093..4460a37f4864 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -2499,9 +2499,8 @@ void scsi_evt_thread(struct work_struct *work)
+ static void pasemi_free_tx_chan(int chan)
+@@ -136,15 +131,9 @@ static void pasemi_free_tx_chan(int chan)
  
- 	sdev = container_of(work, struct scsi_device, event_work);
+ static int pasemi_alloc_rx_chan(void)
+ {
+-	int bit;
+-retry:
+-	bit = find_first_bit(rxch_free, MAX_RXCH);
+-	if (bit >= MAX_TXCH)
+-		return -ENOSPC;
+-	if (!test_and_clear_bit(bit, rxch_free))
+-		goto retry;
+-
+-	return bit;
++	int bit = find_and_clear_bit(rxch_free, MAX_RXCH);
++
++	return bit < MAX_TXCH ? bit : -ENOSPC;
+ }
  
--	for (evt_type = SDEV_EVT_FIRST; evt_type <= SDEV_EVT_LAST; evt_type++)
--		if (test_and_clear_bit(evt_type, sdev->pending_events))
--			sdev_evt_send_simple(sdev, evt_type, GFP_KERNEL);
-+	for_each_test_and_clear_bit(evt_type, sdev->pending_events, SDEV_EVT_LAST)
-+		sdev_evt_send_simple(sdev, evt_type, GFP_KERNEL);
+ static void pasemi_free_rx_chan(int chan)
+@@ -374,16 +363,9 @@ EXPORT_SYMBOL(pasemi_dma_free_buf);
+  */
+ int pasemi_dma_alloc_flag(void)
+ {
+-	int bit;
++	int bit = find_and_clear_bit(flags_free, MAX_FLAGS);
  
- 	while (1) {
- 		struct scsi_event *evt;
+-retry:
+-	bit = find_first_bit(flags_free, MAX_FLAGS);
+-	if (bit >= MAX_FLAGS)
+-		return -ENOSPC;
+-	if (!test_and_clear_bit(bit, flags_free))
+-		goto retry;
+-
+-	return bit;
++	return bit < MAX_FLAGS ? bit : -ENOSPC;
+ }
+ EXPORT_SYMBOL(pasemi_dma_alloc_flag);
+ 
+@@ -439,16 +421,9 @@ EXPORT_SYMBOL(pasemi_dma_clear_flag);
+  */
+ int pasemi_dma_alloc_fun(void)
+ {
+-	int bit;
+-
+-retry:
+-	bit = find_first_bit(fun_free, MAX_FLAGS);
+-	if (bit >= MAX_FLAGS)
+-		return -ENOSPC;
+-	if (!test_and_clear_bit(bit, fun_free))
+-		goto retry;
++	int bit = find_and_clear_bit(fun_free, MAX_FLAGS);
+ 
+-	return bit;
++	return bit < MAX_FLAGS ? bit : -ENOSPC;
+ }
+ EXPORT_SYMBOL(pasemi_dma_alloc_fun);
+ 
+diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
+index 59882da3e742..640e387e6d83 100644
+--- a/arch/powerpc/platforms/powernv/pci-sriov.c
++++ b/arch/powerpc/platforms/powernv/pci-sriov.c
+@@ -397,18 +397,12 @@ static int64_t pnv_ioda_map_m64_single(struct pnv_phb *phb,
+ 
+ static int pnv_pci_alloc_m64_bar(struct pnv_phb *phb, struct pnv_iov_data *iov)
+ {
+-	int win;
++	int win = find_and_set_bit(&phb->ioda.m64_bar_alloc, phb->ioda.m64_bar_idx + 1);
+ 
+-	do {
+-		win = find_next_zero_bit(&phb->ioda.m64_bar_alloc,
+-				phb->ioda.m64_bar_idx + 1, 0);
+-
+-		if (win >= phb->ioda.m64_bar_idx + 1)
+-			return -1;
+-	} while (test_and_set_bit(win, &phb->ioda.m64_bar_alloc));
++	if (win >= phb->ioda.m64_bar_idx + 1)
++		return -1;
+ 
+ 	set_bit(win, iov->used_m64_bar_mask);
+-
+ 	return win;
+ }
+ 
 -- 
 2.39.2
 
