@@ -2,168 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FF67EFE99
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 09:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D7C7EFEA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 10:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbjKRIwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 03:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
+        id S231782AbjKRJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 04:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbjKRIwP (ORCPT
+        with ESMTP id S229449AbjKRJKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 03:52:15 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8555CD6D
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:52:11 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9bf60bba6f8so75559966b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:52:11 -0800 (PST)
+        Sat, 18 Nov 2023 04:10:22 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0944ED6D;
+        Sat, 18 Nov 2023 01:10:19 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c184b3bbc4so2147112a12.1;
+        Sat, 18 Nov 2023 01:10:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700297530; x=1700902330; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gFd2CKAAw+CngGdGEaZh2Jv1ZJmAu581+YDJTtGJesA=;
-        b=a1G6drh3aeMEAESDM4YcZ7g/UMkp1ow0s0vJbIineGzuwp7FCRa6iasVMABZN7h+b/
-         RDXieB8ORSOUD1ryMHaUSZZOYmIZtNh8S12ACBV4VN7n4HbuJ9m9sa+dIsT7WtaPqbpN
-         M4U58QZwLPpzB9Hkk37lvlA+nJNil/toKRYa6rmFSttpkyq7RisJuVXfLbvnmcd/QR1G
-         wH9nsSwOXd1Ow63agvps4YpcMj40YlRJ4NSgJZFmMtRf60+6aOoMzckY9+RShFjtXhna
-         YcbPO4OduV34mNulh3WcZVmv6ychfY0J1fyP9gDXB4j9dsn21wIrFdYt0luzMDwSZc9D
-         XDug==
+        d=gmail.com; s=20230601; t=1700298618; x=1700903418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DgBxE/ugFyl092H9J0iO9taumdI7C9DtObSl7itfE5Q=;
+        b=BZ2VTDsVVaoTD8MTtz4O55MrJBW8VOsNF2AE4zWu8xofBO/4GTNKVQAHguST46H7tq
+         XbZ+GfkHq1SRHjnL5cPGWcrgUxbEPtrEN2yHVvp+uEpfU2tbuR62fnk8i/11I1xD/eJl
+         F3WafN1K+ky5FzgHY761OueJmqQec2Q6dVoy5sAs5jwG/71OXUnCVXYLPgOsbvYEAb0z
+         4j1RBOJA9Oei5X2JUxsnT7/vYjP/CY9KRwVafEHVDS8l5lhsv843XzJxw1d02BTbK8Fl
+         hZyWE5wa3HhSdmVFPo2NmDUZIodkYwPKXiuQh6ktfDuA4Ccp4WOElUz0Aswhg3izZacO
+         V30w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700297530; x=1700902330;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gFd2CKAAw+CngGdGEaZh2Jv1ZJmAu581+YDJTtGJesA=;
-        b=Q97H2/81e8Hw86aKYqQ/RqsiYU7mApxdtWIV0eXme+cWxUzAH2dVAdFbM3scBNqQMO
-         pqSxoC92zz7+nFzeVUWdrvfUsLuQgf92t6tS349MD+CjIULWsx7ZXJMd6z6ict/ohtpN
-         lI/RJQGNjIfp2wcvnHBjAb9CLPAioRvUK0KKuV3SOafMHU63U4tXqRCVKOIJzc5RIbL3
-         afI4gzV1Uxs9aCkOOktv2T7HCKPlzWxyUMWrNSrk3t+2eQj3nQZu0vmA0mqEQJVaTAqk
-         JuIViwTilv9jhB2+40OwSFYrbeiXHY4RYJAGhWpfwLhcy93L0MUTHghcxf+LP8aX7fqd
-         F8NA==
-X-Gm-Message-State: AOJu0YyV62Q0xwZtHZxm6Ud95hu31iB/x8JZWg51w022V8Xu0HcwmRT8
-        l4l8yEu6GMeRDaTESaOXtyM=
-X-Google-Smtp-Source: AGHT+IGnryVDS7JHAkUlNiTu8DrhaiLJgOXSO9KK2u45C9vEI5TrtF4vuz+BwNel21wX6+3v7eGyCQ==
-X-Received: by 2002:a17:906:10cf:b0:9cb:b737:e469 with SMTP id v15-20020a17090610cf00b009cbb737e469mr1213341ejv.4.1700297529807;
-        Sat, 18 Nov 2023 00:52:09 -0800 (PST)
-Received: from matrix-ESPRIMO-P710 (p57ba2f20.dip0.t-ipconnect.de. [87.186.47.32])
-        by smtp.gmail.com with ESMTPSA id r15-20020a1709067fcf00b00985ed2f1584sm1668337ejs.187.2023.11.18.00.52.09
+        d=1e100.net; s=20230601; t=1700298618; x=1700903418;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DgBxE/ugFyl092H9J0iO9taumdI7C9DtObSl7itfE5Q=;
+        b=BPiyy3NWnFnC2p/zZesR1unB+66h3Nngzbxl+n4Mo5b5YeESOUO3EtPntbokI3K7m0
+         51dfeADVBbodhYyDjZF5OoyoWvM5M/HPTnFTpOtv9+bFugIfdqBZ8lUYWOzYSWWDFN7E
+         AnmwTEP+O3m/K79iuTgz0g541CffNm2k8xRQbYK7kYR0b6HxqvWJpPMtdp7KkObAx1fc
+         9aw3R6JBdjQOqsuYrdQxkXUIQkWRg7q0deGx1NmI3wrTABzH/h3Ydu2Aa06HeRlJeU22
+         t/rYsvi2H7kg+RTndhSjwJm70nTD5+ZyKKxQqPIRASNu0RjET9j3ne4SAYE/fqudDTeu
+         gm0A==
+X-Gm-Message-State: AOJu0YyPDVduaOvcQS74AAzOsxFftpy1+9/qmq5FWOVZxe34DoHjkiXh
+        /RA0OmRlrCPBRnC04EAqB/k=
+X-Google-Smtp-Source: AGHT+IHAjtEOF/rmYOaUe+ODWsp0dqRq+tCEuYpytFyN6PRshL42r7YuuwKybEcC/ACWVjggOp4AOg==
+X-Received: by 2002:a05:6a20:7faa:b0:186:664b:44a6 with SMTP id d42-20020a056a207faa00b00186664b44a6mr2489534pzj.48.1700298618376;
+        Sat, 18 Nov 2023 01:10:18 -0800 (PST)
+Received: from brag-vm.. ([59.182.202.200])
+        by smtp.gmail.com with ESMTPSA id fj17-20020a056a003a1100b006cb4379061esm1112105pfb.205.2023.11.18.01.10.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 00:52:09 -0800 (PST)
-Date:   Sat, 18 Nov 2023 09:52:08 +0100
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] staging: rtl8192e: Remove constant index from
- channel_array[]
-Message-ID: <379293f2b48d176aaafb023d36aac9bb057f67c7.1700296319.git.philipp.g.hortmann@gmail.com>
-References: <cover.1700296319.git.philipp.g.hortmann@gmail.com>
+        Sat, 18 Nov 2023 01:10:18 -0800 (PST)
+From:   Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+Subject: [PATCH v2] btrfs: ref-verify: fix memory leaks
+Date:   Sat, 18 Nov 2023 14:40:12 +0530
+Message-Id: <20231118091012.14818-1-bragathemanick0908@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1700296319.git.philipp.g.hortmann@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Used index of channel_array[] is always COUNTRY_CODE_WORLD_WIDE_13. Remove
-index and store only used entry in channel_array. This shortens the code
-and increases readability.
+In btrfs_ref_tree_mod(), when !parent 're' was allocated
+through kmalloc(). In the following code, if an error occurs,
+the execution will be redirected to 'out' or 'out_unlock' and
+the function will be exited. However, on some of the paths,
+'re' are not deallocated and may lead to memory leaks.
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+For example : lookup_block_entry() for 'be' returns null, the
+out label will be invoked. During that flow ref and ra was
+freed but not re, which can potentially lead to memleak
+
+Reported-and-tested-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
+Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
 ---
- drivers/staging/rtl8192e/dot11d.c            | 31 +++-----------------
- drivers/staging/rtl8192e/dot11d.h            |  2 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  2 +-
- 3 files changed, 6 insertions(+), 29 deletions(-)
+V1 -> V2: 're' shouldn't be freed after it added to rbtree
 
-diff --git a/drivers/staging/rtl8192e/dot11d.c b/drivers/staging/rtl8192e/dot11d.c
-index 37106fd54f00..fdc39e6e7abb 100644
---- a/drivers/staging/rtl8192e/dot11d.c
-+++ b/drivers/staging/rtl8192e/dot11d.c
-@@ -12,28 +12,7 @@ struct channel_list {
- 	u8      len;
- };
+ fs/btrfs/ref-verify.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index 1f62976bee82..6486f0d7e993 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -794,6 +794,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 			dump_ref_action(fs_info, ra);
+ 			kfree(ref);
+ 			kfree(ra);
++			kfree(re);
+ 			goto out_unlock;
+ 		} else if (be->num_refs == 0) {
+ 			btrfs_err(fs_info,
+@@ -803,6 +804,7 @@ int btrfs_ref_tree_mod(struct btrfs_fs_info *fs_info,
+ 			dump_ref_action(fs_info, ra);
+ 			kfree(ref);
+ 			kfree(ra);
++			kfree(re);
+ 			goto out_unlock;
+ 		}
  
--static struct channel_list channel_array[] = {
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 36, 40, 44, 48, 52, 56, 60, 64,
--	  149, 153, 157, 161, 165}, 24},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, 11},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 36, 40, 44, 48, 52, 56,
--	  60, 64}, 21},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52,
--	  56, 60, 64}, 22},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52,
--	  56, 60, 64}, 22},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52,
--	  56, 60, 64}, 22},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 36, 40, 44, 48, 52,
--	 56, 60, 64}, 22},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}, 14},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13},
--	{{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 36, 40, 44, 48, 52,
--	  56, 60, 64}, 21}
--};
-+static struct channel_list channel_array = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13}, 13};
- 
- void dot11d_init(struct rtllib_device *ieee)
- {
-@@ -49,7 +28,7 @@ void dot11d_init(struct rtllib_device *ieee)
- }
- EXPORT_SYMBOL(dot11d_init);
- 
--void dot11d_channel_map(u8 channel_plan, struct rtllib_device *ieee)
-+void dot11d_channel_map(struct rtllib_device *ieee)
- {
- 	int i;
- 
-@@ -57,10 +36,8 @@ void dot11d_channel_map(u8 channel_plan, struct rtllib_device *ieee)
- 
- 	memset(GET_DOT11D_INFO(ieee)->channel_map, 0,
- 	       sizeof(GET_DOT11D_INFO(ieee)->channel_map));
--	for (i = 0; i < channel_array[channel_plan].len; i++) {
--		GET_DOT11D_INFO(ieee)->channel_map[channel_array
--				[channel_plan].channel[i]] = 1;
--	}
-+	for (i = 0; i < channel_array.len; i++)
-+		GET_DOT11D_INFO(ieee)->channel_map[channel_array.channel[i]] = 1;
- 
- 	for (i = 12; i <= 13; i++)
- 		GET_DOT11D_INFO(ieee)->channel_map[i] = 2;
-diff --git a/drivers/staging/rtl8192e/dot11d.h b/drivers/staging/rtl8192e/dot11d.h
-index 6d2b93acfa43..78d1ca1e7743 100644
---- a/drivers/staging/rtl8192e/dot11d.h
-+++ b/drivers/staging/rtl8192e/dot11d.h
-@@ -75,7 +75,7 @@ static inline void RESET_CIE_WATCHDOG(struct rtllib_device *__ieee_dev)
- #define UPDATE_CIE_WATCHDOG(__ieee_dev) (++GET_CIE_WATCHDOG(__ieee_dev))
- 
- void dot11d_init(struct rtllib_device *dev);
--void dot11d_channel_map(u8 channel_plan, struct rtllib_device *ieee);
-+void dot11d_channel_map(struct rtllib_device *ieee);
- void dot11d_reset(struct rtllib_device *dev);
- void dot11d_update_country(struct rtllib_device *dev, u8 *address,
- 			   u16 country_len, u8 *country);
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 68bd03500267..4b842a1789c2 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -796,7 +796,7 @@ static short _rtl92e_get_channel_map(struct net_device *dev)
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 
- 	dot11d_init(priv->rtllib);
--	dot11d_channel_map(COUNTRY_CODE_WORLD_WIDE_13, priv->rtllib);
-+	dot11d_channel_map(priv->rtllib);
- 	for (i = 1; i <= 11; i++)
- 		(priv->rtllib->active_channel_map)[i] = 1;
- 	(priv->rtllib->active_channel_map)[12] = 2;
 -- 
-2.42.0
+2.34.1
 
