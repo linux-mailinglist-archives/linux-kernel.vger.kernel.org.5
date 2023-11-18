@@ -2,124 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 888067EFF56
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10187EFF5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 13:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjKRLqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 06:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
+        id S229779AbjKRMAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 07:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjKRLqD (ORCPT
+        with ESMTP id S229510AbjKRMA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 06:46:03 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2FFD6C;
-        Sat, 18 Nov 2023 03:45:59 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c2139492d9so590808a12.0;
-        Sat, 18 Nov 2023 03:45:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700307959; x=1700912759; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ClOeeApXVOwVcbEnxEFMvGO2pvgQp5Himl1NoA2ock=;
-        b=gi8cPpn1ogc2CqfzBiFS3lO6jHrmrwz6AmnFb7/jFUMc2HSGiemMBKPxyOE1ByDq/w
-         dWx8L3QKmqVe7ORGSSRA5g4x+2+Aw9naeqg2K4Z/ylx+sXRsis/1/Wk6mgXu6RVWVN1G
-         MOp9R35P45B8AZile7CcnWuWlI/KU5PEXmi0mrOMK3+oTSQwYBgNDepCDCgFJPwPZ/W9
-         EDtZQeV9VnkSAnc0zqUAlFvJ7MjDx3gjYOqltCdGcmtOyoR1Khir6Mm6SKWDmDAw2Hkr
-         FYYmsrDUBHgZ+xFTwFga2Nvbt8I4ZLnBZ3JQJnKREV1NgH4cRZ3uouQkdogKKyG2vrxS
-         gV3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700307959; x=1700912759;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ClOeeApXVOwVcbEnxEFMvGO2pvgQp5Himl1NoA2ock=;
-        b=jexigBRDt/+jl3mGGt8Mv8A3oCjgoD4W4/m0cNoG1xyfr9bov6AGi/YIHntwkFJfWD
-         FJcZ4Do4fJkJEh8k10OunB7QhfxBmEaQQs6dgfizeUxKVYCg5td2vnlMVBgCizTfT8Ui
-         bvbomHqMKGGKmt/C3WQW6EMqLazWNNZFhgAn4BpDkHGhRcbqPaUyldGOsSF42gHWbuUJ
-         H3HZoOf12ywsN8PFfUhgRFTsyDc2Oo+C5gI5+XkBymHfYzJSqnTU8FRM1Lu28ALP0qNw
-         /ti51mmywG5NjImY9TR+fEwvKJ8txuhwbifqSdsPxcgBlfjPsnqk10Jo2IGeoW4hi+Ih
-         D4Lg==
-X-Gm-Message-State: AOJu0Ywc+HvhEb/CXVQsdWzgn70yFFi2o209QH0wEmFYTPfJgXVvaV8X
-        DuWbGla0L5328ZZznvshHNH+7ecPm39BtQ==
-X-Google-Smtp-Source: AGHT+IF239EKCsD002yLOVEG0ZDBK9eReb2LpXMCWSV0k3fyn49qURFrQhKuZNxxAIc6N51gNXyM4g==
-X-Received: by 2002:a17:903:50d:b0:1ca:dee1:4d1a with SMTP id jn13-20020a170903050d00b001cadee14d1amr2030846plb.25.1700307958228;
-        Sat, 18 Nov 2023 03:45:58 -0800 (PST)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id x11-20020a1709028ecb00b001cc51680695sm2842304plo.259.2023.11.18.03.45.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Nov 2023 03:45:57 -0800 (PST)
-Message-ID: <06648cde-e8d9-42d0-a8ef-15c9a9b8850a@gmail.com>
-Date:   Sat, 18 Nov 2023 18:45:49 +0700
+        Sat, 18 Nov 2023 07:00:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A51910DC;
+        Sat, 18 Nov 2023 04:00:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700308825; x=1731844825;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fxjGbp6z375T/wv3Ke5q/Sx0xqZd3DeBe7rcNSl2Oqk=;
+  b=SNeQDyEqSCL8rJJUeAXhyIcFGXY7xBeNorhIg3q8uoa0h77zsVQ+BZ7Y
+   h20JR3r7srWOa3/dRkGAvmeF6CwEUmGnnLPPIdBHXfCMAvhrF+kunO0dK
+   qfCoiLCT4SXcRM/wbdV+gzAoXqBTBAG5IHaIHV5PsAjz+zKorMTo969wS
+   rpWIq/W/h++RUNb6p12sQu8wi9bOiGnk4Ha6VQUqZcJh34F/QV/1Z837V
+   KKObKnhWMG5Q7kyqK6ukWMFl6qo0f491QxSW5MRoLtapXI/7oSmnmRstO
+   ji4Wz7/3d7UKXAfrLiJGfU9lw7vXci8NMrp0n0NXVZnICoQtprUGFDTrO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="455719517"
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="455719517"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 04:00:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="883394552"
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="883394552"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Nov 2023 04:00:21 -0800
+Date:   Sat, 18 Nov 2023 19:58:34 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marco Pagani <marpagan@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Alan Tull <atull@opensource.altera.com>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] fpga: remove module reference counting from core
+ components
+Message-ID: <ZVim6pjPjtme+61M@yilunxu-OptiPlex-7050>
+References: <20231027152928.184012-1-marpagan@redhat.com>
+ <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
+ <ae202b70-b106-4805-9ce0-ffbb2738bb04@redhat.com>
+ <ZUuu1CgVd4h3Qqu7@yilunxu-OptiPlex-7050>
+ <5c3c3905-67c2-4cc2-8477-c6fc74676fc9@redhat.com>
+ <ZVMZZNyLE0+YtKYz@yilunxu-OptiPlex-7050>
+ <2b26d45d-7577-4824-bad9-d5c85f5a098a@redhat.com>
+ <2023111756-geometry-amplifier-38ce@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] power: supply: Fix indentation and some other warnings
-Content-Language: en-US
-To:     Charalampos Mitrodimas <charmitro@posteo.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        qinyu <qinyu32@huawei.com>, Nick Alcock <nick.alcock@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Ian Molton <spyro@f2s.com>,
-        Szabolcs Gyurko <szabolcs.gyurko@tlt.hu>,
-        Anton Vorontsov <cbou@mail.ru>
-Cc:     Linux Power Management <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20231117230658.65809-1-charmitro@posteo.net>
- <ZVf48PWBpvKULeXT@archie.me> <CX1VDFVCGNKO.3JX5QY0LZQ51B@beast>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <CX1VDFVCGNKO.3JX5QY0LZQ51B@beast>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023111756-geometry-amplifier-38ce@gregkh>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/23 17:36, Charalampos Mitrodimas wrote:
-> Hi Bagas,
-> 
-> On Sat Nov 18, 2023 at 1:36 AM EET, Bagas Sanjaya wrote:
->> On Fri, Nov 17, 2023 at 11:06:58PM +0000, Charalampos Mitrodimas wrote:
->>> These were mentioned by checkpatch:
->>> 	Errors:
->>> 		(1) code indent should use tabs where possible
->>> 		(2) switch and case should be at the same indent
->>> 	Warnings:
->>> 		(1) quoted string split across lines
->>> 		(2) Missing a blank line after declarations
->>>
->>> Based on this comment from "include/linux/module.h", modules with
->>> multiple authors should use multiple MODULE_AUTHOR() statements.
->>> 	/*
->>> 	 * Author(s), use "Name <email>" or just "Name", for multiple
->>> 	 * authors use multiple MODULE_AUTHOR() statements/lines.
->>> 	 */
->>> 	#define MODULE_AUTHOR(_author) MODULE_INFO(author, _author)
->>
->> Shouldn't MODULE_AUTHOR fix be separate patch?
-> 
-> Sorry, I should have mentioned in the commit that the warnings "quoted
-> string split across lines" pertained to the MODULE_AUTHOR line. 
-> 
-> In the commit message I'm just clarifying why I used multiple
-> MODULE_AUTHOR statements.
-> 
-> Should I send a v2 patch with a revised commit description?
-> 
+On Fri, Nov 17, 2023 at 05:06:16PM -0500, Greg Kroah-Hartman wrote:
+> On Fri, Nov 17, 2023 at 10:58:59PM +0100, Marco Pagani wrote:
+> > 
+> > 
+> > On 2023-11-14 07:53, Xu Yilun wrote:
+> > > On Fri, Nov 10, 2023 at 11:58:37PM +0100, Marco Pagani wrote:
+> > >>
+> > >>
+> > >> On 2023-11-08 16:52, Xu Yilun wrote:
+> > >>> On Fri, Nov 03, 2023 at 09:31:02PM +0100, Marco Pagani wrote:
+> > >>>>
+> > >>>>
+> > >>>> On 2023-10-30 09:32, Xu Yilun wrote:
+> > >>>>> On Fri, Oct 27, 2023 at 05:29:27PM +0200, Marco Pagani wrote:
+> > >>>>>> Remove unnecessary module reference counting from the core components
+> > >>>>>> of the subsystem. Low-level driver modules cannot be removed before
+> > >>>>>> core modules since they use their exported symbols.
+> > >>>>>
+> > >>>>> Could you help show the code for this conclusion?
+> > >>>>>
+> > >>>>> This is different from what I remember, a module cannot be removed when
+> > >>>>> its exported symbols are being used by other modules. IOW, the core
+> > >>>>> modules cannot be removed when there exist related low-level driver
+> > >>>>> modules. But the low-level driver modules could be removed freely
+> > >>>>> without other protecting mechanism.
+> > >>>>>
+> > >>>>
+> > >>>> My understanding was that we wanted to remove module reference counting
+> > >>>> from the fpga core and ease it from the responsibility of preventing
+> > >>>> low-level driver modules from being unloaded. 
+> > >>>
+> > >>> FPGA core needs to prevent low-level driver module unloading sometimes,
+> > >>> e.g. when region reprograming is in progress. That's why we get fpga
+> > >>> region driver modules & bridge modules in fpga_region_program_fpga().
+> > >>>
+> > >>> But we try best to get them only necessary. Blindly geting them all the
+> > >>> time results in no way to unload all modules (core & low level modules).
+> > >>>
+> > >>>>
+> > >>>> If we want to keep reference counting in the fpga core, we could add a
+> > >>>> struct module *owner field in the struct fpga_manager_ops (and others
+> > >>>> core *_ops) so that the low-level driver can set it to THIS_MODULE.
+> > >>>> In this way, we can later use it in fpga_mgr_register() to bump up the
+> > >>>
+> > >>> Yes, we should pass the module owner in fpga_mgr_register(), but could
+> > >>> not bump up its refcount at once.
+> > >>>
+> > >>>> refcount of the low-level driver module by calling
+> > >>>> try_module_get(mgr->mops->owner) directly when it registers the manager.
+> > >>>> Finally, fpga_mgr_unregister() would call module_put(mgr->mops->owner)
+> > >>>> to allow unloading the low-level driver module.
+> > >>>
+> > >>> As mentioned above, that makes problem. Most of the low level driver
+> > >>> modules call fpga_mgr_unregister() on module_exit(), but bumping up
+> > >>> their module refcount prevents module_exit() been executed. That came
+> > >>> out to be a dead lock.
+> > >>>
+> > >>
+> > >> Initially, I considered calling try_module_get(mgr->mops->owner)
+> > >> in fpga_mgr_get(). But then, the new kernel-doc description of
+> > >> try_module_get() (1) made me question the safety of that approach.
+> > >> My concern is that the low-level driver could be removed right when
+> > >> someone is calling fpga_mgr_get() and hasn't yet reached
+> > >> try_module_get(mgr->mops->owner). In that case, the struct mops
+> > >> (along with the entire low-level driver module) and the manager dev
+> > >> would "disappear" under the feet of fpga_mgr_get().
+> > > 
+> > > I don't get what's the problem. fpga_mgr_get() would first of all
+> > > look for mgr_dev via class_find_device(), if low-level module is
+> > > unloaded, then you cannot find the mgr_dev and gracefully error out.
+> > > 
+> > > If class_find_device() succeed, mgr_dev got a reference and won't
+> > > disappear. Finally we may still found module removed when
+> > > try_module_get(), but should be another graceful error out.
+> > > 
+> > > Am I missing anything?
+> > > 
+> > 
+> > My concern is: suppose that you successfully got the mgr dev from
+> > class_find_device(), and now you are in __fpga_mgr_get(), right before
+> > try_module_get(mgr->mops->owner). At that point, you get descheduled,
+> > and while you are not running, someone unloads the low-level driver
+> > module that ends its life by calling fpga_mgr_unregister(). When you
+> > wake up, you find yourself with a reference to a device that does not
+> > exist anymore, trying to get a module that does not exist anymore
 
-OK but as separate patch.
+I may get the problem. The mgr device is still exists, but the module
+is removed, so the mgr->mops & owner pointers are invalid..
 
--- 
-An old man doll... just what I always wanted! - Clara
+> > through one of its symbols (module *owner in mops).
+> 
+> Then the user gets to keep the multiple pieces that their kernel is now
+> in :)
+> 
+> Seriously, as module unload can never happen except by explicit ask,
+> this should only possibly be an issue that a developer who is working on
+> the code would hit, so don't work too hard to resolve something that
+> isn't anything an actual user can hit.
+> 
+> > Greg suggested checking if this can really happen and eventually
+> > protecting fpga_mgr_get() and fpga_mgr_unregister() with a lock for
+> > mops (if I understood correctly). In that case, considering the same
+> > scenario described above:
+> > 
+> > fpga_mgr_get() gets the mops lock and the mgr dev but is suspended
+> > before calling try_module_get().
+> > 
+> > Someone unloads the low-level driver, delete_modules progresses
+> > (the module's recount hasn't yet been incremented) but blocks while
+> > calling fpga_mgr_unregister() since fpga_mgr_get() is holding the lock.
+> > 
+> > fpga_mgr_get() resumes and tries to get the module through one of its
+> > symbols (mgr->mops->owner). The module's memory hasn't yet been freed
+> > (delete_modules is blocked), and the refcount is zero, so
+> > try_module_get() fails safely, and we can put the mgr dev that is
+> > still present since fpga_mgr_unregister() is blocked.
+> > 
+> > fpga_mgr_unregister() resumes and unregisters the mgr dev.
+> 
+> That seems a bit reasonable, try it and see!
 
+It also looks good to me.
+
+Thanks,
+Yilun
+
+> 
+> > I'm still thinking about the possible implications. On the one hand,
+> > it looks safe in this case, but on the other hand, it feels brittle.
+> > In my understanding, the root problem is that there will always be a
+> > critical window (when you have taken a reference to the device but
+> > not yet to the low-level driver module) when unloading the module
+> > could be potentially unsafe depending on the current implementation
+> > and the preemption model.
+> > 
+> > I still feel that it would be simpler and safer if we could bump
+> > up the refcount during fpga_mgr_register() and maybe have a sysfs
+> > attribute to unlock the low-level driver (if no one has taken the
+> > mgr dev refcount).
+> 
+> Ick, no, that shouldn't be needed.
+> 
+> > That way, it would be safer by design since the
+> > refcount will be bumped up right during the module load procedure,
+> > and we could guarantee that the lifetime of the mgr device is
+> > entirely contained in the lifetime of the low-level driver module.
+> 
+> Remember, there are two different things here, code and data.  Trying to
+> tie one ref count to the other is almost always going to cause problems,
+> try to keep them independent if at all possible.
+> 
+> Or better yet, just don't use module reference counts at all and
+> properly drop the device when the specific module is unloaded, like
+> network drivers do.  That might take more work to restructure things,
+> which might be useless work given that again, this is something that no
+> user will ever hit, only developers if at all.
+> 
+> thanks,
+> 
+> greg k-h
