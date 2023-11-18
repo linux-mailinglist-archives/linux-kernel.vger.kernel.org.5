@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E93837F01AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 374D87F01AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbjKRRqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 12:46:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
+        id S230268AbjKRRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 12:46:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjKRRpu (ORCPT
+        with ESMTP id S231397AbjKRRq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 12:45:50 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C805B10C9;
-        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so1666178a34.0;
-        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
+        Sat, 18 Nov 2023 12:46:26 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEC4D69;
+        Sat, 18 Nov 2023 09:46:08 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b56b618217so1989606b6e.0;
+        Sat, 18 Nov 2023 09:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700329504; x=1700934304; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700329567; x=1700934367; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qb1Z5fZ5kEcb/PEat1gO6JLOrll/tbZ6AWENLgKkm2A=;
-        b=Yh1NxnNYzEcSi2R0NDCdJDBC0/YPNNg5ONrh1pE/EIuBr7XpT/voiKo3UBw/X4RimC
-         A3i51x9M9xN6Qp0UeBrDHreIRT0chYkasGNygKB1KOZfFTaYrc4J8L+3ukdZxfW004Ey
-         9g7xywDfrOrDTF/YaTnKWuU/ns72B22E05/cJevKOURSYlaE31Xp8w5bs4WSYmwN1MT7
-         /87kvxbIjJsWxTQm6Yic0yjXDM4RdeXbq2LVDdu582V6PdBusx8GCKlcXeC4yltGRcSB
-         X+/qDsDCsuiOojxnOKmfPPukHQN4g6YznHUeFQv0X59uZDP3I1T4HDl1fuLYnm/XJjhl
-         PXog==
+        bh=6C6ab0X+XpV2EOJr7vcq043ghKAsga+tBo9I2zFE+98=;
+        b=hdOxduut8FJ/eZVOhn+ecw/G/Fi98D6zjKjYjVDoTUnL1A/r+3VN/goKit1GVhIWHL
+         tnpnWIhTXkT6sU/OMNdM3GL6B1WXcTUwnYMF2mjuXEkgSwRMTG1tKnmpam/QcJyB5ar5
+         AIJ+2/v5G6XGM3YVJQkTNMUit4Zcb8cCLNojkaRauA3GvtKs1q9LRIpWEI2atMqD0xX4
+         cfzRXXgohuFIwWNIl4dXngc6pVuMl2MsrpYU9Eym3kaiRgv6UEPxq7i6/SIsYqIKP2Z0
+         VDRzH0Cu7hZXGeUL1uhlIwvV3VP3IwiJNHLdG5mRTbeVLXs8gI8801z6xTI91xSHEmTT
+         wJ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700329504; x=1700934304;
+        d=1e100.net; s=20230601; t=1700329567; x=1700934367;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qb1Z5fZ5kEcb/PEat1gO6JLOrll/tbZ6AWENLgKkm2A=;
-        b=RW2phIyBZPEA7Y8NDz1fycAP0mNud0vGxonlXYNV24wqy9m1xGfRGvnFineI6Qa1UT
-         CLBcisasbnRzhwRf5bOiCVGrZVWwVpfOQgzWGcu2sv8Y1HyjCRTUH8e0xz0ns1wiELhh
-         O2FXIoIVvWmhNzEMmp2dr6DoiHBJzz08fRI8HeqvvOFTpAMb3kfmGkbHNJwCvo3P5UPn
-         joPC+8KS2KwXJ8GBxiTL9hzw6pZJK2FWyDTRcC4igk4zyC0gnQyWmkIw8VPDF01qTrrn
-         c8rilh/jYiZxUtdUeckt8+LLO9l/RDKaxz7RIulX/EcwvKqSn9iUrmfkDZaPLPJpSa3r
-         i/Lw==
-X-Gm-Message-State: AOJu0YxU/OAYbtf2QUZjKUVDRnIEoTDKUFS64IoqleoJFli2wJb36jv5
-        zqaqh+Hd2+YA8C6FxwIHkbeulEMDaEg=
-X-Google-Smtp-Source: AGHT+IEiR/9sgFTTlRNkRw6NamwXS7va62a6Ub4e4Iw5bBfNaQDBna9qOunCFv5pgQu8yH73/xbR9g==
-X-Received: by 2002:a9d:77cf:0:b0:6b7:5687:8a9e with SMTP id w15-20020a9d77cf000000b006b756878a9emr3227871otl.15.1700329504082;
-        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
+        bh=6C6ab0X+XpV2EOJr7vcq043ghKAsga+tBo9I2zFE+98=;
+        b=dt+DegeZBFFNYL2smrQ4AmsqAiqeNH/FZioHNdVIcD5MV6HZ+7P2rvZbxvUGQkR1B1
+         oZbiRyM3DidPqA1qToZXjvSVrjuK0TFcb8nzd3Ci3t4baiFVkn/YRjMw6xfCSSUOQD6z
+         e6zbAvPqMnUd70ht77zI7b4XjvyK7Y3yZCRg8fHe273WRSU69IleCKyw/mcfiwOqBfwo
+         OQFjKX2I7uZqqqX8v0s9bRlr2OdVMCIc7fagX34POuJNVPP09RIFQT4a9BZ7WB3UGFE7
+         U0fLGNdiyDRQeD+ZvrpCHcR+A8zJttDik93EbeJeuxtXf+Dpdalo4OWsh6+rrtULVCAW
+         aLew==
+X-Gm-Message-State: AOJu0YzFaZFr55XPSnao0I/m8uAXdPsQ9mktUC9CU+yyU98xiNBk+Iiq
+        o69L6L6JQwcm/vBDSU8p2WEUO/dCKBo=
+X-Google-Smtp-Source: AGHT+IHPM/wI9Ta8+jdkmo/kwMHvjSkUpqckZFVfD55iwLuTfDHXU4K13mcB7ynDdZAmdvf1kQhyTA==
+X-Received: by 2002:aca:171a:0:b0:3ae:5bf5:4ad1 with SMTP id j26-20020aca171a000000b003ae5bf54ad1mr3561429oii.33.1700329567422;
+        Sat, 18 Nov 2023 09:46:07 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m12-20020a9d6acc000000b006b871010cb1sm657731otq.46.2023.11.18.09.45.02
+        by smtp.gmail.com with ESMTPSA id z21-20020a544595000000b003a9ba396d62sm713645oib.36.2023.11.18.09.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 09:45:03 -0800 (PST)
+        Sat, 18 Nov 2023 09:46:07 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 18 Nov 2023 09:45:01 -0800
+Date:   Sat, 18 Nov 2023 09:46:05 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
 Cc:     Jean Delvare <jdelvare@suse.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] ABI: sysfs-class-hwmon: rearrange humidity
- attributes alphabetically
-Message-ID: <b0176205-adc7-44ba-a55a-c405a8ab1b19@roeck-us.net>
+Subject: Re: [PATCH 2/4] ABI: sysfs-class-hwmon: document missing humidity
+ attributes
+Message-ID: <e237813d-2cf3-459d-8047-4389dfb3cef0@roeck-us.net>
 References: <20231116-hwmon_abi-v1-0-8bfb7f51145a@gmail.com>
- <20231116-hwmon_abi-v1-1-8bfb7f51145a@gmail.com>
+ <20231116-hwmon_abi-v1-2-8bfb7f51145a@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231116-hwmon_abi-v1-1-8bfb7f51145a@gmail.com>
+In-Reply-To: <20231116-hwmon_abi-v1-2-8bfb7f51145a@gmail.com>
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -78,14 +78,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 07:40:34AM +0100, Javier Carrasco wrote:
-> Preliminary step to add the missing humidity attributes in the ABI
-> documentation.
+On Fri, Nov 17, 2023 at 07:40:35AM +0100, Javier Carrasco wrote:
+> All these attributes already exist and are used by the hwmon subsystem,
+> but they still must be documented.
 > 
-> Adding new elements alphabetically is a common practice that has been
-> loosely followed in the sysfs-class-hwmon documentation. Since most of
-> the humidity attributes must be added to the file, a single attribute
-> needs to be rearranged to reinforce alphabetical order.
+> The missing attributes are the following:
+> - humidityY_alarm
+> - humidityY_fault
+> - humidityY_label
+> - humidityY_max
+> - humidityY_max_hyst
+> - humidityY_min
+> - humidityY_min_hyst
+> 
+> Add the missing humidity attributes to the ABI documentation according
+> to their current usage and access rights in the hwmon subsystem.
 > 
 > Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
@@ -93,43 +100,3 @@ Applied.
 
 Thanks,
 Guenter
-
-> ---
->  Documentation/ABI/testing/sysfs-class-hwmon | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-hwmon b/Documentation/ABI/testing/sysfs-class-hwmon
-> index 638f4c6d4ec7..b998a42add95 100644
-> --- a/Documentation/ABI/testing/sysfs-class-hwmon
-> +++ b/Documentation/ABI/testing/sysfs-class-hwmon
-> @@ -887,15 +887,6 @@ Description:
->  
->  		RW
->  
-> -What:		/sys/class/hwmon/hwmonX/humidityY_input
-> -Description:
-> -		Humidity
-> -
-> -		Unit: milli-percent (per cent mille, pcm)
-> -
-> -		RO
-> -
-> -
->  What:		/sys/class/hwmon/hwmonX/humidityY_enable
->  Description:
->  		Enable or disable the sensors
-> @@ -908,6 +899,14 @@ Description:
->  
->  		RW
->  
-> +What:		/sys/class/hwmon/hwmonX/humidityY_input
-> +Description:
-> +		Humidity
-> +
-> +		Unit: milli-percent (per cent mille, pcm)
-> +
-> +		RO
-> +
->  What:		/sys/class/hwmon/hwmonX/humidityY_rated_min
->  Description:
->  		Minimum rated humidity.
