@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 238AD7EFCC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896DA7EFCC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346416AbjKRAtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        id S1346418AbjKRAvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjKRAtE (ORCPT
+        with ESMTP id S1346401AbjKRAvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:49:04 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD43BD7E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:49:00 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-5098e423ba2so3661638e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:49:00 -0800 (PST)
+        Fri, 17 Nov 2023 19:51:17 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9443093
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:51:13 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991c786369cso365002266b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:51:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700268539; x=1700873339; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1700268672; x=1700873472; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yJXzr0OE2tNPiyGJ3aKzCqrkEywUIhP19xPsryf4etM=;
-        b=D2ZhqhFy2k22qdWyPiSYxVPXl16y1F+ceBW0mxtE8bDnXmcVP+N+H8eJ8kMe2ufOpG
-         ZR3Npqf/gPntk6c+4w59EEzkURBD6EsAOsAXI7tqqSZRj1vOokOZKWyzt29W3XeURR2v
-         VQ9qTrSgzLNeYoL/uZjxMJ/KRoM3ekeEdgCgDyqMm5FdpaCQKvAnwoKXu4MsTnN2nKBo
-         oCUN9+GF6tqwq5wQZrQqDYjbStSMhAPckpjolj7PJ+OFDBP2LP5/vVe+PplHYh1r3gCx
-         z/ssPJLwznalHA9sXUGyCpGJ+S2iwbdS32iraaA8aEnk2dCY+qOdmgBi9jbMxOFR+WGi
-         49Og==
+        bh=JkQFDUSjgWW+uNRlfQApC/QxGhsTFKT2t0xTRRH0asM=;
+        b=w3e8d76QGQzdax5gyHXQE1vLWdqK04RC6R9lj26gx8/NikhVxZWANY9ZVcJcr7cOgU
+         x1ZQoHmwawmvVnB786GZytvEwl82SN7CzPJoIxwLSHZyNERmyZp6SJHgTh50ssdXbCBU
+         VGjZLoy/nJ05yw8MlTOz4CAwAMP17jG/2lqw3UR+4fULw1vs2ZmTg5zfTtsJjILCx+ew
+         qt+gDOoc0ATqrC5v1GbMJ2eX/QYU8SYlwpYjYqwI8ffX/fdDm2zkwGMNsJxBzJKlLNTw
+         ARf9zQb/ox3fZG3TZIMIEPemOqL9UkU4YFaDqntTFZ8vxiWMC7ncczRdgb7samolDOl0
+         obpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700268539; x=1700873339;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700268672; x=1700873472;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yJXzr0OE2tNPiyGJ3aKzCqrkEywUIhP19xPsryf4etM=;
-        b=rC4coLwFFhwb5GI3AULWdurzmMF4Bby4mmYsKUn+BF/B89Aqdaje6pBusgEn2nB9OW
-         xvEUc01zHdTSjc432toV2p8eF8P0pid9HKA394DQaTkKH57PKiD0hvQGp3Pfa4vE5321
-         zKg0zmEdvvZe3LxbWfxM6XT9e0eyEMXYRYv5zwEVfxhM0RaX2u3SZ30Fru8vU4+TzUOE
-         ympRUe0N9o3nj5FdxwEg37ulqFij97omQquy0zu4tQPH6cOFpVtp2vkqepqNCVPaq4su
-         oe7+19VRiZ0hdzfAfeFGhQ2dnkrkKXq2aiK9Z3/Q8D9MXJR6QjlF/ecMqlom6qLUSBxm
-         mshA==
-X-Gm-Message-State: AOJu0Yy2FVGbBPq4hCcn66RYpR/cRJtHNv0k+HfBpTm9/TWByrScrIu3
-        /zzJlUn8EpNaIFMTNlcMuYTzfQ==
-X-Google-Smtp-Source: AGHT+IGB4OCk+u4eoWOqFWAYCeveslUtHEDKr++sqaTQ5SRyj4P3pZsb6CsDwkGfGDTQRgYjxxNqBg==
-X-Received: by 2002:a19:7616:0:b0:50a:a2cb:cd72 with SMTP id c22-20020a197616000000b0050aa2cbcd72mr719279lff.68.1700268538923;
-        Fri, 17 Nov 2023 16:48:58 -0800 (PST)
+        bh=JkQFDUSjgWW+uNRlfQApC/QxGhsTFKT2t0xTRRH0asM=;
+        b=VoG9NZjbNLWAt2VCGpAgXF7Ql7xMhqT3+ifq5RcqvopcpIkpP4AjM4QGx64S+VbX5p
+         uNS2GbXv5oF/2c6VBLWAxUkBvpW2iSbrr1qe7gItY+RDbhNqn48njVugoREGxh92WE2E
+         wm+yMaDHxn2bh7mAoumwsB8n22Ruluq9S5gWWXjaQqv1C5oEE3jSdzemuk2Hg2R08lBW
+         ZDkC4c4VK4OtqhJxPTdAGITo5DwRgqoLsNyFLAqCfcrMUHrR2DPt41p32kUfAz2wUNAE
+         DzFmds6JdnN0bwOYmvc9emgI9AULI2C5+UpGHToJ0fUvgNxDhg7N/mnV3gU+FIy09+OD
+         YqNA==
+X-Gm-Message-State: AOJu0Yzv+yNt2JC50rNCmvKsqizesJDPR5aMkbELojFbn0gsbroY6rpt
+        CPYDnhlLTwspXgQ0u0wd+eUXRg==
+X-Google-Smtp-Source: AGHT+IET83DijHTWtN5lzHCglHbTO1pZbQRbcUOVERi7k5OxILFZVKFItJpXx5iOUdN56TkjExvrfg==
+X-Received: by 2002:a17:906:224d:b0:9bf:2f84:5de7 with SMTP id 13-20020a170906224d00b009bf2f845de7mr492003ejr.4.1700268671779;
+        Fri, 17 Nov 2023 16:51:11 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id y2-20020a056402134200b0054873a656d0sm120563edw.45.2023.11.17.16.48.57
+        by smtp.gmail.com with ESMTPSA id bo14-20020a170906d04e00b009c3f8f46c22sm1341061ejb.77.2023.11.17.16.51.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 16:48:58 -0800 (PST)
-Message-ID: <64a9d171-377c-48df-bdcd-1ac6d13c2da6@linaro.org>
-Date:   Sat, 18 Nov 2023 01:48:55 +0100
+        Fri, 17 Nov 2023 16:51:11 -0800 (PST)
+Message-ID: <e59569d3-cb49-4e11-8bd8-f814f369aaa7@linaro.org>
+Date:   Sat, 18 Nov 2023 01:51:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: gcc-msm8953: fix stuck gcc_usb30_master_clk
+Subject: Re: [PATCH v4 0/4] Add sc8280xp CCI and CAMSS core dtsi
 Content-Language: en-US
-To:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
-        =?UTF-8?B?QmFybmFiw6FzIEN6w6ltw6Fu?= <trabarni@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231002170021.192740-1-trabarni@gmail.com>
- <0eebfc14-dbcd-4987-9e94-ea5630b6c268@linaro.org>
- <07937184481af74c65108bae26526605.sboyd@kernel.org>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231012113100.3656480-1-bryan.odonoghue@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -101,12 +101,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <07937184481af74c65108bae26526605.sboyd@kernel.org>
+In-Reply-To: <20231012113100.3656480-1-bryan.odonoghue@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,60 +114,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.10.2023 04:59, Stephen Boyd wrote:
-> Quoting Konrad Dybcio (2023-10-06 16:50:18)
->> On 2.10.2023 19:00, Barnabás Czémán wrote:
->>> According to downstream dwc3-msm source this clock has FSM dependency on
->>> gcc_pcnoc_usb30_clk so enabling it would fail if latter isn't enabled.
->>> This patch add works around this issue by changing parent of
->>> gcc_usb30_master_clk to gcc_pcnoc_usb30_clk. This is acceptable because
->>> both clocks have same parent and are branches/gates.
->>>
->>> Signed-off-by: Barnabás Czémán <trabarni@gmail.com>
->>> ---
->> "meh"
->>
->> There are multiple cases, especially with qcom, where there are some
->> magic "dependencies" without parent-child relationship. The common
->> clock framework doesn't currently have any good way to handle this,
->> other than some mind gymnastics like you had to do here with matching
->> them against a common parent/ancestor..
->>
->> Stephen, what do you say?
->>
-> 
-> You can't change the parent to be not the actual parent. The consumer of
-> the branch probably wants to call clk_set_rate() on the branch and have
-> it propagate up to the parent to set the actual rate. Can the axi clk
-> simply be left enabled all the time? That seems simpler. Otherwise we
-> probably need to leave the axi clk control to the interconnect driver
-> and make sure drivers enable interconnects before enabling this branch.
-Yeah I'm almost inclined to think adding even more ifs to the icc driver
-will consume more power than just leaving the AXI hanging..
-
-> 
-> When things start to get this tangled I tend to think that we need to
-> remove control of the clk from the general drivers and put the logic to
-> control interconnects and clks into some SoC glue driver and expose a
-> single interface, like genpd power_on/power_off so that general drivers
-> can't get the sequence of steps wrong. Instead all they can do is "power
-> on" their device, and the SoC glue driver can do the proper sequence of
-> framework calls to power up the device.
-That too, given the structure of qcom SoCs, it should almost look like:
-
-xyznoc-bus {
-	compatible = "simple-pm-bus";
-	clocks = <&gcc xyznoc_ahb>,
-		 <&gcc xyznoc_axi>;
-	...
-
-	xyznoc-node@abcd {};
-}
-
-etc.
-
-I've actually discussed this with Bjorn, but we came to a conclusion
-that it's not trivial to determine which peripheral lives on which NoC
-+ many of them seem to sorta overlap more than one..
+On 12.10.2023 13:30, Bryan O'Donoghue wrote:
+> V4:
+> - Adds RB - Krzysztof
+> - Drops indicated newline - Krzysztof
+> - Moves "This patch depends-on" below the "---" - Krsysztof
+Just a note for Bjorn, this series is likely on hold as we iron out the
+driver details.. e.g. _src clocks were dropped since this submission.
 
 Konrad
