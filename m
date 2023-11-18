@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534787EFF8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 13:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37017EFF8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 13:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbjKRMdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 07:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33100 "EHLO
+        id S232664AbjKRMdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 07:33:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjKRMdT (ORCPT
+        with ESMTP id S230090AbjKRMd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 07:33:19 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09E610D5;
-        Sat, 18 Nov 2023 04:33:14 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 28A98E0009;
-        Sat, 18 Nov 2023 12:33:08 +0000 (UTC)
+        Sat, 18 Nov 2023 07:33:27 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B16BD6C;
+        Sat, 18 Nov 2023 04:33:19 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B2158E0004;
+        Sat, 18 Nov 2023 12:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1700310793;
+        t=1700310797;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EIhFn78LcUCgsrVrNcFAERW+GWx7gO9OZl4IQGexLgo=;
-        b=N/JVrIRDeCvEFtu/gWZJRnePW+fMp0pDdOQCeSKAzCmxXiRW09IGAYZ+9ykKbvn5CUybnZ
-        hKUZxAJ5otc6OQpOa5kfH9AmxtsYh82vnWOvXVN6nelPu/LThotwP0D0f1NxPsZ1HjB65L
-        DGuaY+vfYiVc11cKR+d3Xwu8XvE4UsU3Dum3K9vxsbRuQIrMY8h+OcJBkdIgbY1eeKYny7
-        Mfr6YkKmXIzkT3riiKZWVAdU6BB22iXNS2nT79q/jg6jxaVdgT7AofTYAiPvvpS10xwTIf
-        4uHRlplfymB2E9jtLmFxwsx0j8N39IItm73ZjyQ88YktiKaYL04awQ+AXMsDRA==
+        bh=npb7Ao9l/CLZkgjFezpnANfonUh9O2A/ZCJPtfUfMnI=;
+        b=U5+l9TZ+IK7Yr4bv4g7PNSGI+PdeW+RAX4GjrUWhyFECmwYBtD3svr2LibDejYXIC2ILmb
+        uHzdGChysXMg0QlAyuejFx6heK9wGeYLx22o5oCNc/lMC/QyG9FCx8BbaA1wJgXfVsWs+B
+        7skVxzBgdlefCDfkhZ/VlC7NTDbcPYNo04UrXmJVqdH8dcNmXewhboEAws8IDhOLWSWsL2
+        9yDTKB2ilnc6GS3t4smTELZ9sq0334//12fMH11bkITtIQFrlpmdVCd9dVUMUKp15lRnuE
+        YozDG4VvK1cgk90RTu9tdjmM+p0M3WAHOpVXI/Vf1WJiWyZfs8aAFQQIkszG7g==
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         Daniel Golle <daniel@makrotopia.org>,
@@ -52,9 +52,9 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Frank Wunderlich <frank-w@public-files.de>,
         Bartel Eerdekens <bartel.eerdekens@constell8.be>,
         mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-Subject: [PATCH net-next 04/15] net: dsa: mt7530: improve comments regarding port 5 and 6
-Date:   Sat, 18 Nov 2023 15:31:54 +0300
-Message-Id: <20231118123205.266819-5-arinc.unal@arinc9.com>
+Subject: [PATCH net-next 05/15] net: dsa: mt7530: improve code path for setting up port 5
+Date:   Sat, 18 Nov 2023 15:31:55 +0300
+Message-Id: <20231118123205.266819-6-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118123205.266819-1-arinc.unal@arinc9.com>
 References: <20231118123205.266819-1-arinc.unal@arinc9.com>
@@ -63,140 +63,102 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: arinc.unal@arinc9.com
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no logic to numerically order the CPU ports. State the port number
-and its capability of being used as a CPU port instead.
+There're two code paths for setting up port 5:
 
-Remove the irrelevant PHY muxing information from
-mt7530_mac_port_get_caps(). Explain the supported MII modes instead.
+mt7530_setup()
+-> mt7530_setup_port5()
 
-Remove the out of place PHY muxing information from
-mt753x_phylink_mac_config(). The function is for MT7530, MT7531, and the
-switch on the MT7988 SoC but there's no PHY muxing on MT7531 or the switch
-on the MT7988 SoC.
+mt753x_phylink_mac_config()
+-> mt753x_mac_config()
+   -> mt7530_mac_config()
+      -> mt7530_setup_port5()
 
-These comments were gradually introduced with the commits below.
-ca366d6c889b ("net: dsa: mt7530: Convert to PHYLINK API")
-38f790a80560 ("net: dsa: mt7530: Add support for port 5")
-88bdef8be9f6 ("net: dsa: mt7530: Extend device data ready for adding a new
-hardware")
-c288575f7810 ("net: dsa: mt7530: Add the support of MT7531 switch")
+Currently mt7530_setup_port5() from mt7530_setup() always runs. If port 5
+is used as a CPU, DSA, or user port, mt7530_setup_port5() from
+mt753x_phylink_mac_config() won't run. That is because priv->p5_interface
+set on mt7530_setup_port5() will match state->interface on
+mt753x_phylink_mac_config() which will stop running mt7530_setup_port5()
+again.
+
+Therefore, mt7530_setup_port5() will never run from
+mt753x_phylink_mac_config().
+
+Address this by not running mt7530_setup_port5() from mt7530_setup() if
+port 5 is used as a CPU, DSA, or user port. This driver isn't in the
+dsa_switches_apply_workarounds[] array so phylink will always be present.
+
+For the cases of PHY muxing or the port being disabled, call
+mt7530_setup_port5() from mt7530_setup(). mt7530_setup_port5() from
+mt753x_phylink_mac_config() won't run when port 5 is disabled or used for
+PHY muxing as port 5 won't be defined on the devicetree.
+
+Do not set priv->p5_intf_sel to P5_DISABLED. It is already set to that when
+"priv" is allocated.
+
+Move setting the interface to a more specific location. It's supposed to be
+overwritten if PHY muxing is detected.
+
+Improve the comment which explains the process.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Daniel Golle <daniel@makrotopia.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
- drivers/net/dsa/mt7530.c | 32 ++++++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 10 deletions(-)
+ drivers/net/dsa/mt7530.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 45c9698ad9dd..8623742b35ee 100644
+index 8623742b35ee..069b3dfca6fa 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -2520,12 +2520,16 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
- 				     struct phylink_config *config)
- {
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Internal PHY */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_GMII,
- 			  config->supported_interfaces);
- 		break;
+@@ -2308,16 +2308,15 @@ mt7530_setup(struct dsa_switch *ds)
+ 		return ret;
  
--	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
-+	/* Port 5 which can be used as a CPU port supports rgmii with delays,
-+	 * mii, and gmii.
-+	 */
-+	case 5:
- 		phy_interface_set_rgmii(config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_MII,
- 			  config->supported_interfaces);
-@@ -2533,7 +2537,8 @@ static void mt7530_mac_port_get_caps(struct dsa_switch *ds, int port,
- 			  config->supported_interfaces);
- 		break;
- 
--	case 6: /* 1st cpu port */
-+	/* Port 6 which can be used as a CPU port supports rgmii and trgmii. */
-+	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_RGMII,
- 			  config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_TRGMII,
-@@ -2548,19 +2553,24 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
- 	struct mt7530_priv *priv = ds->priv;
- 
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Internal PHY */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_GMII,
- 			  config->supported_interfaces);
- 		break;
- 
--	case 5: /* 2nd cpu port supports either rgmii or sgmii/8023z */
-+	/* Port 5 which can be used as a CPU port supports rgmii with delays on
-+	 * MT7531BE, sgmii/802.3z on MT7531AE.
-+	 */
-+	case 5:
- 		if (!priv->p5_sgmii) {
- 			phy_interface_set_rgmii(config->supported_interfaces);
+ 	/* Setup port 5 */
+-	priv->p5_intf_sel = P5_DISABLED;
+-	interface = PHY_INTERFACE_MODE_NA;
+-
+ 	if (!dsa_is_unused_port(ds, 5)) {
+ 		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
+-		ret = of_get_phy_mode(dsa_to_port(ds, 5)->dn, &interface);
+-		if (ret && ret != -ENODEV)
+-			return ret;
+ 	} else {
+-		/* Scan the ethernet nodes. look for GMAC1, lookup used phy */
++		/* Scan the ethernet nodes. Look for GMAC1, lookup the used PHY.
++		 * Set priv->p5_intf_sel to the appropriate value if PHY muxing
++		 * is detected.
++		 */
++		interface = PHY_INTERFACE_MODE_NA;
++
+ 		for_each_child_of_node(dn, mac_np) {
+ 			if (!of_device_is_compatible(mac_np,
+ 						     "mediatek,eth-mac"))
+@@ -2348,6 +2347,8 @@ mt7530_setup(struct dsa_switch *ds)
+ 			of_node_put(phy_node);
  			break;
  		}
- 		fallthrough;
++
++		mt7530_setup_port5(ds, interface);
+ 	}
  
--	case 6: /* 1st cpu port supports sgmii/8023z only */
-+	/* Port 6 which can be used as a CPU port supports sgmii/802.3z. */
-+	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_SGMII,
- 			  config->supported_interfaces);
- 		__set_bit(PHY_INTERFACE_MODE_1000BASEX,
-@@ -2579,11 +2589,13 @@ static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
- 	phy_interface_zero(config->supported_interfaces);
+ #ifdef CONFIG_GPIOLIB
+@@ -2358,8 +2359,6 @@ mt7530_setup(struct dsa_switch *ds)
+ 	}
+ #endif /* CONFIG_GPIOLIB */
  
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	/* Internal PHY */
-+	case 0 ... 4:
- 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
- 			  config->supported_interfaces);
- 		break;
- 
-+	/* Port 6 which can be used as a CPU port is an internal 10G port. */
- 	case 6:
- 		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
- 			  config->supported_interfaces);
-@@ -2747,12 +2759,12 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 	u32 mcr_cur, mcr_new;
- 
- 	switch (port) {
--	case 0 ... 4: /* Internal phy */
-+	case 0 ... 4:
- 		if (state->interface != PHY_INTERFACE_MODE_GMII &&
- 		    state->interface != PHY_INTERFACE_MODE_INTERNAL)
- 			goto unsupported;
- 		break;
--	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
-+	case 5:
- 		if (priv->p5_interface == state->interface)
- 			break;
- 
-@@ -2762,7 +2774,7 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 		if (priv->p5_intf_sel != P5_DISABLED)
- 			priv->p5_interface = state->interface;
- 		break;
--	case 6: /* 1st cpu port */
-+	case 6:
- 		if (priv->p6_interface == state->interface)
- 			break;
- 
+-	mt7530_setup_port5(ds, interface);
+-
+ 	/* Flush the FDB table */
+ 	ret = mt7530_fdb_cmd(priv, MT7530_FDB_FLUSH, NULL);
+ 	if (ret < 0)
 -- 
 2.40.1
 
