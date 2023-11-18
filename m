@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CB67EFFEF
+	by mail.lfdr.de (Postfix) with ESMTP id B84DF7EFFF0
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbjKRNmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 08:42:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        id S229761AbjKRNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 08:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjKRNmp (ORCPT
+        with ESMTP id S229449AbjKRNno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 08:42:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6248F131;
-        Sat, 18 Nov 2023 05:42:42 -0800 (PST)
+        Sat, 18 Nov 2023 08:43:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75239131
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 05:43:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700314962; x=1731850962;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gSMTqvq+4yiOQm6kYsedLkv+Vn7EFGQOlrwRuuC1Mmk=;
-  b=Io8iMvs6qrEgVaOvV6yqFrPfWJ1Qx/v4L/zCw8WEkK7SF9uwD7KZcK9P
-   Wosd258HHc+Tr270YMntrjjRjlHuGOC6hDzBkESRwVjtt8UxUGsUYyjLT
-   OLFbuqtwGzW0Q7NlqsVBJnZHij+Ho8HkeDYK4s7OQDge4LAvftoNW8iqW
-   6e/Hofxp4AN5ewS9HHlujgqdw1F1RW/ORMYqRxnILEeborKQusNRMr4ax
-   aAylOgvkqwpQj1VdZWftpJiE/+LLMbh+3hSNe05GFZnf1TxatCzJP9RY3
-   MSymU2Lm3Fqg5986W46JzbJQVwu8QppU3MKO4HIQIsj+9mPEqN527ERE9
+  t=1700315021; x=1731851021;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DkGHP7LsyjwfgPjr64v0354pMQ654q57fjd1Wt8qASw=;
+  b=bXk+gxi/5V1mnBXBy+7EoOts68XvaBfEmCn8dgdQtSzJSIWaQaHglrHg
+   j9g9im4c1Mn8sEX7ZX+SRyymmfNBAQbkq/28ME+dH/vU8vhy85as6/LLS
+   TWoZCt4LIRUaROtNoB1Aot3Zgr5ZjmDmu5ljqkNUMc0jndGjGV3OZu+eB
+   lp1dFsnBhkb9/uWYLdl+Dg0xzue+tc7tROISkWfpEuBOUe/8Z/fulxIlC
+   yiqracKAt8IqoexFylAh/j3xtCRRmccx0sv7uJINchU8JNohkNA5W5FOo
+   WPSKYMjPltztKaNxUiMA+/XtHpYzIomVS8/DiUrlH7rv3CALUMGdA0oDY
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="388579890"
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="371604272"
 X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="388579890"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 05:42:42 -0800
+   d="scan'208";a="371604272"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 05:43:41 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="909670491"
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="759414038"
 X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="909670491"
+   d="scan'208";a="759414038"
 Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Nov 2023 05:42:38 -0800
+  by orsmga007.jf.intel.com with ESMTP; 18 Nov 2023 05:43:39 -0800
 Received: from kbuild by b8de5498638e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r4Lal-0003wp-39;
-        Sat, 18 Nov 2023 13:42:35 +0000
-Date:   Sat, 18 Nov 2023 21:42:28 +0800
+        id 1r4Lbk-0003x5-1n;
+        Sat, 18 Nov 2023 13:43:36 +0000
+Date:   Sat, 18 Nov 2023 21:42:36 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Matthew Maurer <mmaurer@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>,
-        Matthew Maurer <mmaurer@google.com>
-Subject: Re: [PATCH v2 3/5] modpost: Extended modversion support
-Message-ID: <202311182118.zJqkg301-lkp@intel.com>
-References: <20231118025748.2778044-4-mmaurer@google.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>
+Subject: drivers/misc/pci_endpoint_test.c:38:41: warning: '%d' directive
+ output may be truncated writing between 1 and 10 bytes into a region of size
+ 2
+Message-ID: <202311182130.6duKTiLv-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231118025748.2778044-4-mmaurer@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on mcgrof/modules-next]
-[also build test ERROR on powerpc/next powerpc/fixes masahiroy-kbuild/for-next masahiroy-kbuild/fixes linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Maurer/export_report-Rehabilitate-script/20231118-110040
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git modules-next
-patch link:    https://lore.kernel.org/r/20231118025748.2778044-4-mmaurer%40google.com
-patch subject: [PATCH v2 3/5] modpost: Extended modversion support
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231118/202311182118.zJqkg301-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311182118.zJqkg301-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   791c8ab095f71327899023223940dd52257a4173
+commit: 2c156ac71c6b2518f3d589190f2a8872a8764faf misc: Add host side PCI driver for PCI test function device
+date:   7 years ago
+config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20231118/202311182130.6duKTiLv-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311182130.6duKTiLv-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311182118.zJqkg301-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311182130.6duKTiLv-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
->> arch/powerpc/kernel/module_64.c:25:10: fatal error: string.h: No such file or directory
-      25 | #include <string.h>
-         |          ^~~~~~~~~~
-   compilation terminated.
+   drivers/misc/pci_endpoint_test.c: In function 'pci_endpoint_test_probe':
+>> drivers/misc/pci_endpoint_test.c:38:41: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
+      38 | #define DRV_MODULE_NAME                 "pci-endpoint-test"
+         |                                         ^~~~~~~~~~~~~~~~~~~
+   drivers/misc/pci_endpoint_test.c:463:38: note: in expansion of macro 'DRV_MODULE_NAME'
+     463 |         snprintf(name, sizeof(name), DRV_MODULE_NAME ".%d", id);
+         |                                      ^~~~~~~~~~~~~~~
+   drivers/misc/pci_endpoint_test.c:503:57: note: format string is defined here
+     503 |         if (sscanf(misc_device->name, DRV_MODULE_NAME ".%d", &id) != 1)
+         |                                                         ^~
+   drivers/misc/pci_endpoint_test.c:38:41: note: directive argument in the range [0, 2147483647]
+      38 | #define DRV_MODULE_NAME                 "pci-endpoint-test"
+         |                                         ^~~~~~~~~~~~~~~~~~~
+   drivers/misc/pci_endpoint_test.c:463:38: note: in expansion of macro 'DRV_MODULE_NAME'
+     463 |         snprintf(name, sizeof(name), DRV_MODULE_NAME ".%d", id);
+         |                                      ^~~~~~~~~~~~~~~
+   drivers/misc/pci_endpoint_test.c:463:9: note: 'snprintf' output between 20 and 29 bytes into a destination of size 20
+     463 |         snprintf(name, sizeof(name), DRV_MODULE_NAME ".%d", id);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-vim +25 arch/powerpc/kernel/module_64.c
+vim +38 drivers/misc/pci_endpoint_test.c
 
-     8	
-     9	#include <linux/module.h>
-    10	#include <linux/elf.h>
-    11	#include <linux/moduleloader.h>
-    12	#include <linux/err.h>
-    13	#include <linux/vmalloc.h>
-    14	#include <linux/ftrace.h>
-    15	#include <linux/bug.h>
-    16	#include <linux/uaccess.h>
-    17	#include <linux/kernel.h>
-    18	#include <asm/module.h>
-    19	#include <asm/firmware.h>
-    20	#include <asm/code-patching.h>
-    21	#include <linux/sort.h>
-    22	#include <asm/setup.h>
-    23	#include <asm/sections.h>
-    24	#include <asm/inst.h>
-  > 25	#include <string.h>
-    26	
+    37	
+  > 38	#define DRV_MODULE_NAME			"pci-endpoint-test"
+    39	
 
 -- 
 0-DAY CI Kernel Test Service
