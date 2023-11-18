@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544037EFE8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 09:51:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE3E7EFE8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 09:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbjKRIvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 03:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        id S232862AbjKRIvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 03:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjKRIvM (ORCPT
+        with ESMTP id S232819AbjKRIvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 03:51:12 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3BEB9
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:51:09 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9e28215db77so83272066b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:51:09 -0800 (PST)
+        Sat, 18 Nov 2023 03:51:21 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0535B9
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:51:14 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9dd576116e3so82303166b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:51:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700297467; x=1700902267; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700297473; x=1700902273; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=paSTu0WaDDknunnGESBB1JuMqk8D4OMu6cj43zrhMCg=;
-        b=SSP43ptEtrJeSh45OWa51R3ezZ828u3p6v4H8Isp+brVSw5iKEhPaP7FavYCxOS4df
-         yhoPFbPCsZ7J+DT8FC8z76llOUf+r6J3Wo6dU+F/6PKWaDuLd1DpIT0F+7WbztHrlOy/
-         v4cynCu/E8ZquEFCH1pwgDVVGkdEcH+oX8Whu85b02KSVDtPn3fuX4nEXjcXpm2MDuSB
-         rhFTA3bqZ1vWHL5TudY9bisIziaz4i2ZUefM+bYtboB2ZGyPqOq+WBtHudl+ANAijpN5
-         3MzA/cEvZihOxAYVG3GCKVGb9HIb4+KnZrcE+z9QtNWcW7C6hLn1eXZYU6yBirKTiYGp
-         zPMA==
+        bh=4IeNlXsmBMHoH7xFQOzT7zMDYmFmso5R2YU54hCqJXw=;
+        b=UipGlwvtdH3WYGdkeqIjAr2boFzGZ/Btp/WaPEAWsGFxRyPxQoaCV8gsPERJYzzfbr
+         GaLfKDSFPXnriHi/npZjrVvdjba0ONLg71iMPERsoDj1V11Md2CJvXv/TiT5VHWbuarU
+         Cdxt3JYCk+lxeKNdMgklc9HVcdZFZl4KPytZ+NCc+rLgaWIKk4NFZ/6n7bYyRL2+GfdB
+         Ufl1z26YU69ICOKddRkk9fUUDzCu55j3cBNOF232c9i7xaKIbsUvbA44m8/knAwbqEKG
+         cWUPJiABjNk+CRW792RWpYafuEE1dh/ZsRX0JUr2b9YRTuzC8fw7m10VVRCrwUgEU0l6
+         RTtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700297467; x=1700902267;
+        d=1e100.net; s=20230601; t=1700297473; x=1700902273;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=paSTu0WaDDknunnGESBB1JuMqk8D4OMu6cj43zrhMCg=;
-        b=a4e6fWNa/s9XzmrJIe6HlV1RvSJ/FUsfSwyK/1frs9Sgi2QUVS+PQ4oEfFlLxjjs2/
-         36lLwqFatNWZ6dtxR7L7qkNSF7Y/2oWTiV3KmNuMtwjgtspZIscLrQut5c9/4I0/gHkZ
-         XBL7EHc1dj7ka7dY2BqKStuv4pL/GetEPd5BPV0Lwre7UX7r4UBDCwwLgue8QbDqA7fm
-         XoodE18wI2qYHq79EmJImWRl3kS2yZ3gsTsWgOzzU42/X/k6oxKVeJ5COrJWiYdrNqFk
-         8Q69TRI5KUHkmw49oGH+ooDO4TI27JgSBqZvRyEjOiQHtOgKf4MXd94CROMIxngVY2A2
-         HAwA==
-X-Gm-Message-State: AOJu0Ywh/a/gvoT+VmjUKPBivSxkTZepN+HEc7Z7PJ86LSJ8HSO5WOgx
-        vowha066ym3vseePO5q6qSY=
-X-Google-Smtp-Source: AGHT+IEWpkgxkoy1xOUSJLtY2Vdy5FLz88TbjdaC1hbBUqnyKhSWmglq4dEfcaubqhyNZsM203tWFw==
-X-Received: by 2002:a05:6402:22a2:b0:548:15d1:4ac with SMTP id cx2-20020a05640222a200b0054815d104acmr1154348edb.4.1700297467345;
-        Sat, 18 Nov 2023 00:51:07 -0800 (PST)
+        bh=4IeNlXsmBMHoH7xFQOzT7zMDYmFmso5R2YU54hCqJXw=;
+        b=tdwxdd7iM9fpf6E8PemDxFYP//T1TFWoI0XRMEG3UFmY0Z1JiffU2F/IQLNAKuV2V5
+         aPp7tN9blD0Goum2ibskTK7FFXQ6iv96vaLXsHQQjLEA0pKKL+sJ3qpmFhg4mMXT3OYd
+         GWCyYNd58T2Dl/Bvr9ho1cLgaxIWJHsQr+hj5gC0Qn6bmFUOypFakQvaThU4YCs9DbMa
+         6dWc+r+P8KqixRk0epwZEHskXbtSrY1O+38/19WefibY6meZOt2XS2uvBxEKIMTUS6qN
+         /y8GcTmhTgiZ02g5TbUtbPtVFVy//7m/eNBls02tQOIkJ+k/l+8y1ubfBFBRETxS0y0u
+         VgCA==
+X-Gm-Message-State: AOJu0YwR6tP5ZELTcKWcdWHGAqmY1+dJZLiv9HcFcT17shFfEP8HbURi
+        rUTvRQAEX98WhFpuON99znU=
+X-Google-Smtp-Source: AGHT+IFHwZXi9hQx6GDo7DcH7fcX+4pp9aXtpSY0qesFiSTN77Cf3nH1Vx3COwZRLLVvFj66eHvjOg==
+X-Received: by 2002:a17:906:108f:b0:9dd:5609:55b9 with SMTP id u15-20020a170906108f00b009dd560955b9mr1172060eju.2.1700297473260;
+        Sat, 18 Nov 2023 00:51:13 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p57ba2f20.dip0.t-ipconnect.de. [87.186.47.32])
-        by smtp.gmail.com with ESMTPSA id n6-20020aa7c786000000b005434095b179sm1493207eds.92.2023.11.18.00.51.06
+        by smtp.gmail.com with ESMTPSA id s27-20020a170906169b00b009b29553b648sm1643314ejd.206.2023.11.18.00.51.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 00:51:07 -0800 (PST)
-Date:   Sat, 18 Nov 2023 09:51:05 +0100
+        Sat, 18 Nov 2023 00:51:13 -0800 (PST)
+Date:   Sat, 18 Nov 2023 09:51:11 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/10] staging: rtl8192e: Remove unused return value of
- rtl92e_set_channel()
-Message-ID: <0c0e7c72a10731ae7ed49c8161136b0f0b63d7a0.1700296319.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 02/10] staging: rtl8192e: Change parameter "ch" of set_chan()
+ to u8
+Message-ID: <4a76c0e2384d67410d383fdf860d0e0859555d1e.1700296319.git.philipp.g.hortmann@gmail.com>
 References: <cover.1700296319.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,92 +71,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused return value of rtl92e_set_channel().
+Change parameter "ch" of set_chan() to u8 to combine functions in the
+following patch.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c | 12 ++++++------
- drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h |  2 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h   |  2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 2 +-
+ drivers/staging/rtl8192e/rtllib.h            | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
-index 4d12d7385041..e1bd4d67e862 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.c
-@@ -671,16 +671,16 @@ static void _rtl92e_phy_switch_channel_work_item(struct net_device *dev)
- 	_rtl92e_phy_switch_channel(dev, priv->chan);
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+index 995daab906c9..98b25768f614 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+@@ -226,7 +226,7 @@ static void _rtl92e_tx_timeout(struct net_device *dev, unsigned int txqueue)
+ 	netdev_info(dev, "TXTIMEOUT");
  }
  
--u8 rtl92e_set_channel(struct net_device *dev, u8 channel)
-+void rtl92e_set_channel(struct net_device *dev, u8 channel)
+-static void _rtl92e_set_chan(struct net_device *dev, short ch)
++static void _rtl92e_set_chan(struct net_device *dev, u8 ch)
  {
  	struct r8192_priv *priv = rtllib_priv(dev);
  
- 	if (!priv->up) {
- 		netdev_err(dev, "%s(): Driver is not initialized\n", __func__);
--		return false;
-+		return;
- 	}
- 	if (priv->sw_chnl_in_progress)
--		return false;
-+		return;
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index adaab56a9fb1..1d0878d1f696 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1469,7 +1469,7 @@ struct rtllib_device {
+ 	 * This function can sleep. the driver should ensure
+ 	 * the radio has been switched before return.
+ 	 */
+-	void (*set_chan)(struct net_device *dev, short ch);
++	void (*set_chan)(struct net_device *dev, u8 ch);
  
- 	switch (priv->rtllib->mode) {
- 	case WIRELESS_MODE_B:
-@@ -688,7 +688,7 @@ u8 rtl92e_set_channel(struct net_device *dev, u8 channel)
- 			netdev_warn(dev,
- 				    "Channel %d not available in 802.11b.\n",
- 				    channel);
--			return false;
-+			return;
- 		}
- 		break;
- 	case WIRELESS_MODE_G:
-@@ -697,7 +697,7 @@ u8 rtl92e_set_channel(struct net_device *dev, u8 channel)
- 			netdev_warn(dev,
- 				    "Channel %d not available in 802.11g.\n",
- 				    channel);
--			return false;
-+			return;
- 		}
- 		break;
- 	}
-@@ -714,7 +714,7 @@ u8 rtl92e_set_channel(struct net_device *dev, u8 channel)
- 	if (priv->up)
- 		_rtl92e_phy_switch_channel_work_item(dev);
- 	priv->sw_chnl_in_progress = false;
--	return true;
-+	return;
- }
- 
- static void _rtl92e_cck_tx_power_track_bw_switch_tssi(struct net_device *dev)
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h
-index 6c4c33ded6a9..ff4b4004b0d0 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_phy.h
-@@ -41,7 +41,7 @@ void rtl92e_get_tx_power(struct net_device *dev);
- void rtl92e_set_tx_power(struct net_device *dev, u8 channel);
- u8 rtl92e_config_rf_path(struct net_device *dev, enum rf90_radio_path eRFPath);
- 
--u8 rtl92e_set_channel(struct net_device *dev, u8 channel);
-+void rtl92e_set_channel(struct net_device *dev, u8 channel);
- void rtl92e_set_bw_mode(struct net_device *dev,
- 			enum ht_channel_width bandwidth,
- 			enum ht_extchnl_offset Offset);
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index a4afbf3e934d..9b0be6dff627 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -228,7 +228,7 @@ struct r8192_priv {
- 	struct rt_stats stats;
- 	struct iw_statistics			wstats;
- 
--	u8 (*rf_set_chan)(struct net_device *dev, u8 ch);
-+	void (*rf_set_chan)(struct net_device *dev, u8 ch);
- 
- 	struct rx_desc *rx_ring;
- 	struct sk_buff	*rx_buf[MAX_RX_COUNT];
+ 	/* indicate the driver that the link state is changed
+ 	 * for example it may indicate the card is associated now.
 -- 
 2.42.0
 
