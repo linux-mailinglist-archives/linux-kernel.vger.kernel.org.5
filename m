@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA847EFD0B
+	by mail.lfdr.de (Postfix) with ESMTP id E5DE77EFD0C
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232685AbjKRBpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 20:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        id S232673AbjKRBqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 20:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKRBpG (ORCPT
+        with ESMTP id S229737AbjKRBqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 20:45:06 -0500
-X-Greylist: delayed 239 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Nov 2023 17:45:02 PST
-Received: from lively-olwen.relay-egress.a.mail.umich.edu (relay-egress-host.us-east-2.a.mail.umich.edu [18.216.144.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BFDD79;
-        Fri, 17 Nov 2023 17:45:01 -0800 (PST)
-Received: from mammoth-yacaruna.authn-relay.a.mail.umich.edu (ip-10-0-73-60.us-east-2.compute.internal [10.0.73.60])
-        by lively-olwen.relay-egress.a.mail.umich.edu with ESMTPS
-        id 6558162C.23A596CC.5D730AC5.3305047;
-        Fri, 17 Nov 2023 20:41:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=umich.edu;
-        s=relay-2018-08-29; t=1700271660;
-        bh=Vh/HaZa7HJvFyuyNB0eCPpU6WqUM0OIvSvSE9/ugphQ=;
-        h=From:To:Cc:Subject:Date;
-        b=ljbribNlOeIV8shwVqGZXICcLSBQPNxKk4dzNUHAmgQVoZcblQZ1OJNT9Mq9FgoF2
-         odq54YYb1D/lc2Q2Ww+6GYIx9UkCmxT5PRSj7oC+7BBkz2+pjiE6RHh+1C12SUg3FT
-         dR+p67yKXBpUve03zv847pldxjYbcZTOn5yGm6uhsR9dtUKLi72C2AXD3tdn3Dh3o3
-         8U/NtRlijVneAAXcRhfiITXyGVddmeaGc8t61OVFXNLD4mQpKeBdQk2jiSoMRIoOwZ
-         UL8+mS99Sl1jvImA1v4Yqywo9+m3MoQ2mzcJvGJGyI3YMoTv0wIKxexEM7+eAJVRfx
-         bJXZbkG7YgoPg==
-Authentication-Results: mammoth-yacaruna.authn-relay.a.mail.umich.edu; 
-        iprev=pass policy.iprev=76.141.129.158 (c-76-141-129-158.hsd1.il.comcast.net);
-        auth=pass smtp.auth=tmgross
-Received: from localhost.localdomain (c-76-141-129-158.hsd1.il.comcast.net [76.141.129.158])
-        by mammoth-yacaruna.authn-relay.a.mail.umich.edu with ESMTPSA
-        id 6558162B.22539A90.1E7385F2.2183879;
-        Fri, 17 Nov 2023 20:40:59 -0500
-From:   Trevor Gross <tmgross@umich.edu>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        FUJITA Tomonori <fujita.tomonori@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
-        Trevor Gross <tmgross@umich.edu>
-Subject: [PATCH v2] rust: macros: update 'paste!' macro to accept string literals
-Date:   Fri, 17 Nov 2023 20:39:59 -0500
-Message-Id: <20231118013959.37384-1-tmgross@umich.edu>
-X-Mailer: git-send-email 2.34.1
+        Fri, 17 Nov 2023 20:46:12 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB996D6D
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:46:08 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50970c2115eso3827182e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:46:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1700271967; x=1700876767; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TcVT2LcZer1CThzsGm63Ib3f2fkvyB696jGdmBWhhs=;
+        b=Zyo3bXYtGRUlvfvJt6KlyGDSLrtO+2RCLnazzKHN/SeviiFTENBANW5SHXC3TkVE3K
+         jAxudwY8YCNVKWMnPRGF1vycjM8kX3LV6rDIwRpcfAqZcHVCNLVGitKyLFSA5SpXm/e+
+         LgkLaqn0n5sJrKYe4Itu+6daoX5HKgLm7wDBs9IddQYhlTbDCX6SEQ/doz9n+5gJiUix
+         hggf5rswgP0FCD/6+QXz2TwT2WV/mwpRTKNWXCNJ5E/l/R6XZZHICARembfvUxTJJTzc
+         gncWMrciWvE6NXU59j9GemnACVpHdU/bs4Gv+JJXEnThIHbChM1vKiDJwoue0LOpIrP1
+         U8CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700271967; x=1700876767;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8TcVT2LcZer1CThzsGm63Ib3f2fkvyB696jGdmBWhhs=;
+        b=nlt7YDCV15GfslqVX+pr5rcWR9jiGF0N4lauDuDJljWurkYFOTiAo7NLhWxI5XL3sb
+         HZ0clbBB2Ha77e/IvqAGaSuJEXLMVt5KD35oBweewiwRRAl12jKYeAiQ4UPzGKd22TFz
+         XjWQTYfG9oEf1zgzx/kybfm17ECXeTIvfNXyS7nJQTishwWgOkAKPZCFNvXlBf7GAdCC
+         xhsCU98rByAqBO9hDYWROIJUEBnCgIB32SzkaECpr09M1B0xgXwvFJ/aj+Aglf5GtgKt
+         QOiNwGBHAvrYYlBOrh6kaJvLa7Kq7NTVE3d5Hxm1Vo35Bi3hG4yaHdGLnHU+W6vufKX8
+         Xynw==
+X-Gm-Message-State: AOJu0YwEZOxw1XSbCuYCA5BAUdXjidHx0oeI/fVtO0yMDwi6FQj7B2x0
+        3Gbg6d3fXaT/QMKdLxkwjTdTyKNxfB7ZOw98AYMhpQ==
+X-Google-Smtp-Source: AGHT+IFMnyE/Xetqtbvas5oGxx7sd1g0q/XEH0TVrahotyuGB1lIhpTcC0Pq5TUcWI34cmt+PyAbZBx5V5ZlTtOnmAI=
+X-Received: by 2002:ac2:4c53:0:b0:506:899d:1989 with SMTP id
+ o19-20020ac24c53000000b00506899d1989mr1123882lfk.44.1700271966960; Fri, 17
+ Nov 2023 17:46:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+ <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
+ <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
+ <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
+ <CACSyD1NJ4ycr74pXHNus3ZjA=LvZP+aMNyz=iWyHuDODpx7aww@mail.gmail.com> <CAF8kJuPymUX+DwouwgH6og0BO6ZYheGXsk=GYqYuMjKMz-Xqbw@mail.gmail.com>
+In-Reply-To: <CAF8kJuPymUX+DwouwgH6og0BO6ZYheGXsk=GYqYuMjKMz-Xqbw@mail.gmail.com>
+From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
+Date:   Sat, 18 Nov 2023 09:45:55 +0800
+Message-ID: <CACSyD1P-6mQ7n+ghsZQ0Gp4AxyTTi6=UZHz2DnXWuCWke2fkPw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
+ failure in two scenarios
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,103 +82,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable combining identifiers with literals in the 'paste!' macro. This
-allows combining user-specified strings with affixes to create
-namespaced identifiers.
+Hi Chris, thanks for your time.
 
-This sample code:
+>
+> On Fri, Nov 17, 2023 at 1:56=E2=80=AFAM Zhongkun He
+> <hezhongkun.hzk@bytedance.com> wrote:
+> > Hi Chris, thanks for your feedback.  I have the same concerns,
+> > maybe we should just move the zswap_invalidate() out of batches,
+> > as Yosry mentioned above.
+>
+> As I replied in the previous email, I just want to understand the
+> other side effects of the change better.
+>
+> To me, this patching is actually freeing the memory that does not
+> require actual page IO write from zswap. Which means the memory is
+> from some kind of cache. It would be interesting if we can not
+> complicate the write back path further. Instead, we can drop those
+> memories from the different cache if needed. I assume those caches are
+> doing something useful in the common case. If not, we should have a
+> patch to remove these caches instead.  Not sure how big a mess it will
+> be to implement separate the write and drop caches.
+>
+> While you are here, I have some questions for you.
+>
+> Can you help me understand how much memory you can free from this
+> patch? For example, are we talking about a few pages or a few GB?
+>
+> Where does the freed memory come from?
+> If the memory comes from zswap entry struct. Due to the slab allocator
+> fragmentation. It would take a lot of zswap entries to have meaningful
+> memory reclaimed from the slab allocator.
+>
+> If the memory comes from the swap cached pages, that would be much
+> more meaningful. But that is not what this patch is doing, right?
+>
+> Chris
 
-    macro_rules! m {
-        ($name:lit) => {
-            paste!(struct [<_some_ $name _struct_>] {})
-        }
-    }
+It's my bad for putting two cases together. The memory released in both
+cases comes from zswap entry struct and zswap compressed page.
 
-    m!("foo_bar");
+The original intention of this patch is to solve the problem that
+shrink_work() fails to reclaim memory in two situations.
 
-Would previously cause a compilation error. It will now generate:
+For case (1),  the zswap_writeback_entry() will failed for the
+__read_swap_cache_async return NULL because the swap has been
+freed but cached in swap_slots_cache, so the memory come from
+the zswap entry struct and compressed page.
+Count =3D SWAP_BATCH * ncpu.
+Solution: move the zswap_invalidate() out of batches, free it once the swap
+count equal to 0.
 
-    struct _some_foo_bar_struct_ {}
+For case (2),  the zswap_writeback_entry() will failed for !page_was_alloca=
+ted
+because zswap_load will have two copies of the same page in memory
+  (compressed and uncompressed) after faulting in a page from zswap when
+zswap_exclusive_loads disabled. The amount of memory is greater but depends
+on the usage.
 
-Signed-off-by: Trevor Gross <tmgross@umich.edu>
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-Reviewed-by: Gary Guo <gary@garyguo.net>
----
+Why do we need  to release them?
+Consider this scenario,there is a lot of data cached in memory and zswap,
+hit the limit=EF=BC=8Cand shrink_worker will fail. The new coming data will=
+ be written
+directly to swap due to zswap_store failure. Should we free the last one
+to store the latest one in zswap.
 
-Changes since v1: correct documentation and add an example. I added the
-reviewed-bys since the only change is in documentation, not
-functionality.
+According to the previous discussion, the writeback is inevitable.
+So I want to make zswap_exclusive_loads_enabled the default behavior
+or make it the only way to do zswap loads. It only makes sense when
+the page is read and no longer dirty. If the page is read frequently, it
+should stay in cache rather than zswap. The benefit of doing this is
+very small, i.e. two copies of the same page in memory.
 
-v1: https://lore.kernel.org/rust-for-linux/20231008094816.320424-1-tmgross@umich.edu/
-
- rust/macros/lib.rs   | 22 ++++++++++++++++++++--
- rust/macros/paste.rs | 10 +++++++++-
- 2 files changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
-index c42105c2ff96..51d1f8836667 100644
---- a/rust/macros/lib.rs
-+++ b/rust/macros/lib.rs
-@@ -254,8 +254,8 @@ pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
- /// Within the `paste!` macro, identifiers inside `[<` and `>]` are concatenated together to form a
- /// single identifier.
- ///
--/// This is similar to the [`paste`] crate, but with pasting feature limited to identifiers
--/// (literals, lifetimes and documentation strings are not supported). There is a difference in
-+/// This is similar to the [`paste`] crate, but with pasting feature limited to identifiers and
-+/// literals (lifetimes and documentation strings are not supported). There is a difference in
- /// supported modifiers as well.
- ///
- /// # Example
-@@ -337,6 +337,24 @@ pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
- /// assert_eq!(br_ok(), binder_driver_return_protocol_BR_OK);
- /// ```
- ///
-+/// # Literals
-+///
-+/// Literals can also be concatenated with other identifiers
-+///
-+/// ```ignore
-+/// macro_rules! create_numbered_fn {
-+///     ($name:literal, $val:literal) => {
-+///         kernel::macros::paste! {
-+///             fn [<some_ $name _fn $val>]() -> u32 { $val }
-+///         }
-+///     };
-+/// }
-+///
-+/// create_numbered_fn!("foo", 100);
-+///
-+/// assert_eq!(some_foo_fn100(), 100)
-+/// ```
-+///
- /// [`paste`]: https://docs.rs/paste/
- #[proc_macro]
- pub fn paste(input: TokenStream) -> TokenStream {
-diff --git a/rust/macros/paste.rs b/rust/macros/paste.rs
-index 385a78434224..f40d42b35b58 100644
---- a/rust/macros/paste.rs
-+++ b/rust/macros/paste.rs
-@@ -9,7 +9,15 @@ fn concat(tokens: &[TokenTree], group_span: Span) -> TokenTree {
-     loop {
-         match tokens.next() {
-             None => break,
--            Some(TokenTree::Literal(lit)) => segments.push((lit.to_string(), lit.span())),
-+            Some(TokenTree::Literal(lit)) => {
-+                // Allow us to concat string literals by stripping quotes
-+                let mut value = lit.to_string();
-+                if value.starts_with('"') && value.ends_with('"') {
-+                    value.remove(0);
-+                    value.pop();
-+                }
-+                segments.push((value, lit.span()));
-+            }
-             Some(TokenTree::Ident(ident)) => {
-                 let mut value = ident.to_string();
-                 if value.starts_with("r#") {
--- 
-2.34.1
-
+Thanks again.
