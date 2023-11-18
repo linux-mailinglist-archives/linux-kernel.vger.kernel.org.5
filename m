@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDCF7EFCA8
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37B67EFCAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346389AbjKRAlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        id S1346386AbjKRAoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:44:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbjKRAla (ORCPT
+        with ESMTP id S230036AbjKRAoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:41:30 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A826210CE
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:41:26 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41e58a33ec9so14943931cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:41:26 -0800 (PST)
+        Fri, 17 Nov 2023 19:44:10 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA4F10CE
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:04 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9e2838bcb5eso362418966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700268086; x=1700872886; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700268243; x=1700873043; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=PhAvFW9MLwb/bwSxSlRr+5tAeVfyF+CZ+OfOVamrUmA=;
-        b=xgAUx5phc8dAVF25lX4xvwUHckDjBnbuHTmxbglJAyCKrFGrC4EbT98mKKPcoD7MzJ
-         s9v1bDMh8r/j/yN971H2VqCA6iBGRrcU+ZFWJxxGBN9FKCRkJy9Qj1pGZn0g3mhWJ1U/
-         nOW0XQMh9kiMcSqg+9PSj9qPyfzXTi2hCPmvtqPxRK4deA7K5stl2MeujGzoOBqYNNC8
-         4EU963qbxPDY2YuJp5guVfuujN1g9Au2TyoebtJ2hpk2i6+NlcPv/6VYypGjJBmGiMxH
-         kaMBMrk0dfBXPK/50ol64GBPHtO1AVDStJLntIOBeza1GqUAdYPCogsYjoPsbBy1vCRX
-         5k5w==
+        bh=tXjEHmmJAB20oLy2Jad5Xh5ZRn5wYpaTD3D4J01EQsg=;
+        b=KYb/gMjKY0IKIWFc2N+pEaQUbFXxDwxCmfyGapcPjVE0f30j+LMToC2XLZAHX9mplf
+         E5ysp17lvyWExwIf4ywQfcRv3vyEpte0hDTLZdE90s2UgiZ58ocB8HbrUM9GEPvPtdq5
+         W5H5XY3ScwtqkDGUZvzV1SYZc5GGraxdC3Ymvg9A+u2InYdi8yP8IBRtszHkqy9ABm0S
+         ag53BmGNfOXBmACkGwbWRjElJ/8CFpxB9s53svJhbdsK11GGQuer6iKtm2sMu1T+3E23
+         oZFjHRZ6QerjZqdiPKAbcorKjMoJTtsL/jVoMNYEziKY5FCMgmJfVv/eADqKlI3zyG56
+         SBdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700268086; x=1700872886;
+        d=1e100.net; s=20230601; t=1700268243; x=1700873043;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PhAvFW9MLwb/bwSxSlRr+5tAeVfyF+CZ+OfOVamrUmA=;
-        b=jhr1tjMW42jaHpMQp5Yv8vHwCzRr6d5mM7ZzQv2V4QkHWur0w/WWhW7ccHVXIsqYIA
-         vEVdoMCMdlVIfMkBnxTXwhQoHpE0LCniWm4Hp0oRlj+RofSyV88TuCUF6WPRcS++znk0
-         eMPCrHQMoZfOJN4yA3BRKwJI9HL5Awyw9hPcKff5OOyONKd1BCb45a4G63HcY+J42+7O
-         3rbhWoNBbNeQmD32ZtipA7uWnn0fQiWtjBqkXS5u/mNMZcPdwNz4gM/zdE5HkyIIkr93
-         0u9dmtFO9qbIPqhohJPpHXBvl88nOiveqVglTHpUF6r2e8PHZhSXaGCunr2sXt9WP4V0
-         XCJw==
-X-Gm-Message-State: AOJu0YxdwqumPtIn5JHIgfPfw33yYyZhW1xg03HgbpqSszFzXrFQnWJM
-        XScz/X/kwgVTBxNj5tU8ctkzDg==
-X-Google-Smtp-Source: AGHT+IGsuXREw/LNJDqVvqLfIYXgGHPnSNVvdxho4flsFoPNPeQnpJnGVxjQbxhtSFSpRLKwBc94Ow==
-X-Received: by 2002:a05:622a:104b:b0:410:87a:be98 with SMTP id f11-20020a05622a104b00b00410087abe98mr1584673qte.20.1700268085757;
-        Fri, 17 Nov 2023 16:41:25 -0800 (PST)
+        bh=tXjEHmmJAB20oLy2Jad5Xh5ZRn5wYpaTD3D4J01EQsg=;
+        b=F5HSvYe92h7DhGsEMuZJrXxsamcsnmd/hHc/tByE6WIeq4cvRTuMGX2eno+IWPRgYE
+         GPOII5ry69GC4pgRcMGQRl3ObUO8NyV5ZtQyu5Hr+jgvZiiu8cmZTWZowhTRuCutgBLs
+         Jjl2qwdss+JSwi+lrZiccAJUH9MS2z0C2oma7R6xCfF9dwPKtWNANNjolCbqtX5w+10e
+         P/72s8VtFgm5lBOWb9LNAg9kafAe7T7v1viFH/uvCZgM2UadnllIap6h5covPN/sFFJv
+         KQ3MHMgC3MN+jih5EuifAXsG6SCxjYEgPnnxcoblbKWab6X8sHw2gDys90ZpgpnXcczY
+         F0Jg==
+X-Gm-Message-State: AOJu0Yyobikxj93HgrGgBHiyzoCbBElj4h5ceJ+a/DbfjOfZLXH01rW5
+        lF2/wV5al4HdkBzB63kUeL78fg==
+X-Google-Smtp-Source: AGHT+IFTIxOv6h8yg875uGhLg0NyUGXQ8pCs2+f0qftQYTvhSlAaBEKu92/URelUPXiCtyRgsqJ9dA==
+X-Received: by 2002:a17:906:4b1a:b0:9ad:7890:b4c0 with SMTP id y26-20020a1709064b1a00b009ad7890b4c0mr480653eju.56.1700268242965;
+        Fri, 17 Nov 2023 16:44:02 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id r15-20020ac8794f000000b0041e211c5d0bsm952738qtt.6.2023.11.17.16.41.23
+        by smtp.gmail.com with ESMTPSA id mc16-20020a170906eb5000b009b2c9476726sm1327577ejb.21.2023.11.17.16.44.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 16:41:25 -0800 (PST)
-Message-ID: <d62238aa-5f1a-4afd-97fe-1f2e1c5d98c6@linaro.org>
-Date:   Sat, 18 Nov 2023 01:41:21 +0100
+        Fri, 17 Nov 2023 16:44:02 -0800 (PST)
+Message-ID: <9d323c23-c4d7-48ff-ac61-36acfd19dfd5@linaro.org>
+Date:   Sat, 18 Nov 2023 01:44:00 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] media: qcom: camss: Flag VFE-lites to support more
- VFEs
+Subject: Re: [PATCH v4 7/7] media: qcom: camss: Flag CSID-lites to support
+ more CSIDs
 Content-Language: en-US
 To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
         hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
@@ -68,7 +68,7 @@ To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
 Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
- <20231103-b4-camss-named-power-domains-v4-6-33a905359dbc@linaro.org>
+ <20231103-b4-camss-named-power-domains-v4-7-33a905359dbc@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -105,7 +105,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231103-b4-camss-named-power-domains-v4-6-33a905359dbc@linaro.org>
+In-Reply-To: <20231103-b4-camss-named-power-domains-v4-7-33a905359dbc@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -121,27 +121,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 3.11.2023 13:29, Bryan O'Donoghue wrote:
 > From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 > 
-> Some platforms such as SC7280 have three VFEs and two VFE-lites. Current
-> code has hard-coded two as the maximum number of VFEs. Remove the
-> hard-coded maximum number of VFEs to handle all possible combinations of
-> VFEs and VFE-lites.
+> Some platforms such as SC7280 have 3 CSIDs and 2 CSID-lites but current
+> code has hardcoded 2 as the maximum number of CSIDs. Remove the hardcoded
+> maximum number of VFEs to handle all possible combinations of CSIDs and
+> CSID-lites.
 > 
 > Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 > Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-[...]
+> ---Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-
-> +inline bool vfe_is_lite(struct vfe_device *vfe)
-> +{
-> +	return vfe->camss->res->vfe_res[vfe->id].is_lite;
-0_o
-
-something something vfe could use a direct resource pointer
-
-I hope there are no more hidden (esp. using magic literals) users of
-this IS_LITE <=> idx > 2 logic, but old code never fails to disappoint
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+something something kerneldoc something csid storing a res ptr
 
 Konrad
