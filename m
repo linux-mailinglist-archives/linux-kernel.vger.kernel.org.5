@@ -2,316 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CF07EFEE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 11:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E0F7EFEED
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 11:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjKRKg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 05:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        id S230015AbjKRKjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 05:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjKRKg1 (ORCPT
+        with ESMTP id S229449AbjKRKjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 05:36:27 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F53D75
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 02:36:19 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 7FB44240105
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 11:36:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1700303777; bh=NX9gCi73wwTwdwKip7o7APQwlao0YIT5W8yeNUhkgck=;
-        h=Mime-Version:Content-Transfer-Encoding:Date:From:To:Cc:Subject:
-         Message-Id:From;
-        b=oLWhOnzJU5LxXKLAETBkTbP7vrjooCWKW2qk/pLuBRAPQPhwHzpOAw0JFQujy++0H
-         DtpkIRZqz/Vebs8uPCogAEp1YICgAM0pAs9QbUJFQpqBLGhlWmK0bV4fFVs9cOm7PD
-         n0eVWOR+9bIN9RWNTjHKJncmGhGzYGMAS4kC89z1TLy86VqbAtmTYb/tGAjQvZbtBI
-         8YzN0uSGk16cefMw5hO0KVt37tRgSPdNkXeyFYK+53TziHQw0nvqaOG7sGdFZaZMgK
-         GjvqevLJkTBSuJPo6Kucbjs0lBOOEUpjnSXgoZfEBWRu6iBR4ix6jZqj+oFOVEMiK1
-         G+wkDcdmiYOhw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4SXVYV2hG0z6twV;
-        Sat, 18 Nov 2023 11:36:14 +0100 (CET)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 18 Nov 2023 10:36:16 +0000
-From:   "Charalampos Mitrodimas" <charmitro@posteo.net>
-To:     "Bagas Sanjaya" <bagasdotme@gmail.com>,
-        "Sebastian Reichel" <sre@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Mario Limonciello" <mario.limonciello@amd.com>,
-        "qinyu" <qinyu32@huawei.com>,
-        "Nick Alcock" <nick.alcock@oracle.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Kai-Heng Feng" <kai.heng.feng@canonical.com>,
-        "Andreas Kemnade" <andreas@kemnade.info>,
-        "Ian Molton" <spyro@f2s.com>,
-        "Szabolcs Gyurko" <szabolcs.gyurko@tlt.hu>,
-        "Anton Vorontsov" <cbou@mail.ru>
-Cc:     "Linux Power Management" <linux-pm@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] power: supply: Fix indentation and some other warnings
-Message-Id: <CX1VDFVCGNKO.3JX5QY0LZQ51B@beast>
-References: <20231117230658.65809-1-charmitro@posteo.net>
- <ZVf48PWBpvKULeXT@archie.me>
-In-Reply-To: <ZVf48PWBpvKULeXT@archie.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 18 Nov 2023 05:39:11 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A794710C1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 02:39:06 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ce5e65ba37so10127175ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 02:39:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700303946; x=1700908746; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zy1KCU9oTgYlIGJ1CmWqV4X6k+RLxXAN+NT2CTiEe4g=;
+        b=OgOH+LU+DlnpLwQZuxxGIoOgEifApS1GwUrc/zmItgbKDpwXwQj0hKw2dQ9h8qisGG
+         31MHSx4nUFyYfqUOeC/KsC8vt5SgGRLy/I9zO62oysgiepVdv2LUStmtrQ9X/5xhn3uu
+         lKBuB2opDvL4jmKeuncrj7+HCzmR4QQNcnAJBWNNXWhg/x9ju08cZTqsCXgxtcZell1t
+         QmMgAU2E12RmFuBRC0Wk9Rxi4J/SDQivi2MuNFNb9l1EfpebPy4SaEuk0cONzx78Klwj
+         H7XiyXqGdxFW/TcDXpPSu1+n8Vzv+NGVm8jIv+Mx53l3el4WUk41UdohTbLybQherx48
+         SklA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700303946; x=1700908746;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zy1KCU9oTgYlIGJ1CmWqV4X6k+RLxXAN+NT2CTiEe4g=;
+        b=BCnT6rGX/4/v0Nv+i9Sw8y9FbILmsZrhoRPeaENXSV4/q/NUCDwrUPoCjsr+ycjYik
+         0qaEVyfEjmipniDvgQN+dvwbLPHuoBWikPpM8U4h7JMam+4/6K60vh+Wuf765xzHnglr
+         eHXje3Kr/E8vfy2BKlK5zFfl92wNX1zDPzOt36buBMga8eLEZpWsbuhzGM6TspSW8XAQ
+         BARszw6tep2B5dCGnBfjI4dVIyAKYrplIMHlcio34XsIBfCOa1TN+TxLntu4J9S8Uoz1
+         svHhgugDFYiJtD64cdmiJVnxCiT+U4g8V45ItpWHOdrA0UtEO5nLBj/0qdXAMaeRp1w8
+         /PlA==
+X-Gm-Message-State: AOJu0YyiLQt2NT/Goo3G24RYmHD8RvV4pe+THbQhhU6Ndf1V+twIkIzl
+        HW6ZCjYopzF5vJNrYmViEEZzVw==
+X-Google-Smtp-Source: AGHT+IF5N3QYbHRaegOcdKOfyplWUxrNW29H3jMu8vldA9SOfJqtKJgbzZKkkQCNxUUc0PsWDQo6Hw==
+X-Received: by 2002:a17:902:e88e:b0:1cc:5aef:f2c3 with SMTP id w14-20020a170902e88e00b001cc5aeff2c3mr11314929plg.22.1700303946093;
+        Sat, 18 Nov 2023 02:39:06 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id c11-20020a170902aa4b00b001b896686c78sm2745643plr.66.2023.11.18.02.38.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Nov 2023 02:39:05 -0800 (PST)
+Message-ID: <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+Date:   Sat, 18 Nov 2023 19:38:58 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+Content-Language: en-US
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com>
+ <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
+ <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
+In-Reply-To: <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bagas,
+On 2023/10/18 4:19, Akihiko Odaki wrote:
+> On 2023/10/18 4:03, Alexei Starovoitov wrote:
+>> On Mon, Oct 16, 2023 at 7:38 PM Jason Wang <jasowang@redhat.com> wrote:
+>>>
+>>> On Tue, Oct 17, 2023 at 7:53 AM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>>
+>>>> On Sun, Oct 15, 2023 at 10:10 AM Akihiko Odaki 
+>>>> <akihiko.odaki@daynix.com> wrote:
+>>>>>
+>>>>> On 2023/10/16 1:07, Alexei Starovoitov wrote:
+>>>>>> On Sun, Oct 15, 2023 at 7:17 AM Akihiko Odaki 
+>>>>>> <akihiko.odaki@daynix.com> wrote:
+>>>>>>>
+>>>>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>>>>>> index 0448700890f7..298634556fab 100644
+>>>>>>> --- a/include/uapi/linux/bpf.h
+>>>>>>> +++ b/include/uapi/linux/bpf.h
+>>>>>>> @@ -988,6 +988,7 @@ enum bpf_prog_type {
+>>>>>>>           BPF_PROG_TYPE_SK_LOOKUP,
+>>>>>>>           BPF_PROG_TYPE_SYSCALL, /* a program that can execute 
+>>>>>>> syscalls */
+>>>>>>>           BPF_PROG_TYPE_NETFILTER,
+>>>>>>> +       BPF_PROG_TYPE_VNET_HASH,
+>>>>>>
+>>>>>> Sorry, we do not add new stable program types anymore.
+>>>>>>
+>>>>>>> @@ -6111,6 +6112,10 @@ struct __sk_buff {
+>>>>>>>           __u8  tstamp_type;
+>>>>>>>           __u32 :24;              /* Padding, future use. */
+>>>>>>>           __u64 hwtstamp;
+>>>>>>> +
+>>>>>>> +       __u32 vnet_hash_value;
+>>>>>>> +       __u16 vnet_hash_report;
+>>>>>>> +       __u16 vnet_rss_queue;
+>>>>>>>    };
+>>>>>>
+>>>>>> we also do not add anything to uapi __sk_buff.
+>>>>>>
+>>>>>>> +const struct bpf_verifier_ops vnet_hash_verifier_ops = {
+>>>>>>> +       .get_func_proto         = sk_filter_func_proto,
+>>>>>>> +       .is_valid_access        = sk_filter_is_valid_access,
+>>>>>>> +       .convert_ctx_access     = bpf_convert_ctx_access,
+>>>>>>> +       .gen_ld_abs             = bpf_gen_ld_abs,
+>>>>>>> +};
+>>>>>>
+>>>>>> and we don't do ctx rewrites like this either.
+>>>>>>
+>>>>>> Please see how hid-bpf and cgroup rstat are hooking up bpf
+>>>>>> in _unstable_ way.
+>>>>>
+>>>>> Can you describe what "stable" and "unstable" mean here? I'm new to 
+>>>>> BPF
+>>>>> and I'm worried if it may mean the interface stability.
+>>>>>
+>>>>> Let me describe the context. QEMU bundles an eBPF program that is used
+>>>>> for the "eBPF steering program" feature of tun. Now I'm proposing to
+>>>>> extend the feature to allow to return some values to the userspace and
+>>>>> vhost_net. As such, the extension needs to be done in a way that 
+>>>>> ensures
+>>>>> interface stability.
+>>>>
+>>>> bpf is not an option then.
+>>>> we do not add stable bpf program types or hooks any more.
+>>>
+>>> Does this mean eBPF could not be used for any new use cases other than
+>>> the existing ones?
+>>
+>> It means that any new use of bpf has to be unstable for the time being.
+> 
+> Can you elaborate more about making new use unstable "for the time 
+> being?" Is it a temporary situation? What is the rationale for that? 
+> Such information will help devise a solution that is best for both of 
+> the BPF and network subsystems.
+> 
+> I would also appreciate if you have some documentation or link to 
+> relevant discussions on the mailing list. That will avoid having same 
+> discussion you may already have done in the past.
 
-On Sat Nov 18, 2023 at 1:36 AM EET, Bagas Sanjaya wrote:
-> On Fri, Nov 17, 2023 at 11:06:58PM +0000, Charalampos Mitrodimas wrote:
-> > These were mentioned by checkpatch:
-> > 	Errors:
-> > 		(1) code indent should use tabs where possible
-> > 		(2) switch and case should be at the same indent
-> > 	Warnings:
-> > 		(1) quoted string split across lines
-> > 		(2) Missing a blank line after declarations
-> >=20
-> > Based on this comment from "include/linux/module.h", modules with
-> > multiple authors should use multiple MODULE_AUTHOR() statements.
-> > 	/*
-> > 	 * Author(s), use "Name <email>" or just "Name", for multiple
-> > 	 * authors use multiple MODULE_AUTHOR() statements/lines.
-> > 	 */
-> > 	#define MODULE_AUTHOR(_author) MODULE_INFO(author, _author)
->
-> Shouldn't MODULE_AUTHOR fix be separate patch?
+Hi,
 
-Sorry, I should have mentioned in the commit that the warnings "quoted
-string split across lines" pertained to the MODULE_AUTHOR line.=20
+The discussion has been stuck for a month, but I'd still like to 
+continue figuring out the way best for the whole kernel to implement 
+this feature. I summarize the current situation and question that needs 
+to be answered before push this forward:
 
-In the commit message I'm just clarifying why I used multiple
-MODULE_AUTHOR statements.
+The goal of this RFC is to allow to report hash values calculated with 
+eBPF steering program. It's essentially just to report 4 bytes from the 
+kernel to the userspace.
 
-Should I send a v2 patch with a revised commit description?
+Unfortunately, however, it is not acceptable for the BPF subsystem 
+because the "stable" BPF is completely fixed these days. The 
+"unstable/kfunc" BPF is an alternative, but the eBPF program will be 
+shipped with a portable userspace program (QEMU)[1] so the lack of 
+interface stability is not tolerable.
 
->
-> >=20
-> > Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
-> > ---
-> >  drivers/power/supply/power_supply_core.c | 167 ++++++++++++-----------
-> >  1 file changed, 84 insertions(+), 83 deletions(-)
-> >=20
-> > diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/s=
-upply/power_supply_core.c
-> > index 73265001dd4b..ecef35ac3b7e 100644
-> > --- a/drivers/power/supply/power_supply_core.c
-> > +++ b/drivers/power/supply/power_supply_core.c
-> > @@ -861,44 +861,44 @@ const size_t power_supply_battery_info_properties=
-_size =3D ARRAY_SIZE(power_supply
-> >  EXPORT_SYMBOL_GPL(power_supply_battery_info_properties_size);
-> > =20
-> >  bool power_supply_battery_info_has_prop(struct power_supply_battery_in=
-fo *info,
-> > -				        enum power_supply_property psp)
-> > +					enum power_supply_property psp)
->
-> Looks OK.
->
-> >  {
-> >  	if (!info)
-> >  		return false;
-> > =20
-> >  	switch (psp) {
-> > -		case POWER_SUPPLY_PROP_TECHNOLOGY:
-> > -			return info->technology !=3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
-> > -		case POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN:
-> > -			return info->energy_full_design_uwh >=3D 0;
-> > -		case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-> > -			return info->charge_full_design_uah >=3D 0;
-> > -		case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
-> > -			return info->voltage_min_design_uv >=3D 0;
-> > -		case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
-> > -			return info->voltage_max_design_uv >=3D 0;
-> > -		case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
-> > -			return info->precharge_current_ua >=3D 0;
-> > -		case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-> > -			return info->charge_term_current_ua >=3D 0;
-> > -		case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-> > -			return info->constant_charge_current_max_ua >=3D 0;
-> > -		case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-> > -			return info->constant_charge_voltage_max_uv >=3D 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN:
-> > -			return info->temp_ambient_alert_min > INT_MIN;
-> > -		case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX:
-> > -			return info->temp_ambient_alert_max < INT_MAX;
-> > -		case POWER_SUPPLY_PROP_TEMP_ALERT_MIN:
-> > -			return info->temp_alert_min > INT_MIN;
-> > -		case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
-> > -			return info->temp_alert_max < INT_MAX;
-> > -		case POWER_SUPPLY_PROP_TEMP_MIN:
-> > -			return info->temp_min > INT_MIN;
-> > -		case POWER_SUPPLY_PROP_TEMP_MAX:
-> > -			return info->temp_max < INT_MAX;
-> > -		default:
-> > -			return false;
-> > +	case POWER_SUPPLY_PROP_TECHNOLOGY:
-> > +		return info->technology !=3D POWER_SUPPLY_TECHNOLOGY_UNKNOWN;
-> > +	case POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN:
-> > +		return info->energy_full_design_uwh >=3D 0;
-> > +	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-> > +		return info->charge_full_design_uah >=3D 0;
-> > +	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
-> > +		return info->voltage_min_design_uv >=3D 0;
-> > +	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
-> > +		return info->voltage_max_design_uv >=3D 0;
-> > +	case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
-> > +		return info->precharge_current_ua >=3D 0;
-> > +	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-> > +		return info->charge_term_current_ua >=3D 0;
-> > +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-> > +		return info->constant_charge_current_max_ua >=3D 0;
-> > +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-> > +		return info->constant_charge_voltage_max_uv >=3D 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN:
-> > +		return info->temp_ambient_alert_min > INT_MIN;
-> > +	case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX:
-> > +		return info->temp_ambient_alert_max < INT_MAX;
-> > +	case POWER_SUPPLY_PROP_TEMP_ALERT_MIN:
-> > +		return info->temp_alert_min > INT_MIN;
-> > +	case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
-> > +		return info->temp_alert_max < INT_MAX;
-> > +	case POWER_SUPPLY_PROP_TEMP_MIN:
-> > +		return info->temp_min > INT_MIN;
-> > +	case POWER_SUPPLY_PROP_TEMP_MAX:
-> > +		return info->temp_max < INT_MAX;
-> > +	default:
-> > +		return false;
-> >  	}
->
-> This one LGTM.
->
-> >  }
-> >  EXPORT_SYMBOL_GPL(power_supply_battery_info_has_prop);
-> > @@ -914,53 +914,53 @@ int power_supply_battery_info_get_prop(struct pow=
-er_supply_battery_info *info,
-> >  		return -EINVAL;
-> > =20
-> >  	switch (psp) {
-> > -		case POWER_SUPPLY_PROP_TECHNOLOGY:
-> > -			val->intval =3D info->technology;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN:
-> > -			val->intval =3D info->energy_full_design_uwh;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-> > -			val->intval =3D info->charge_full_design_uah;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
-> > -			val->intval =3D info->voltage_min_design_uv;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
-> > -			val->intval =3D info->voltage_max_design_uv;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
-> > -			val->intval =3D info->precharge_current_ua;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-> > -			val->intval =3D info->charge_term_current_ua;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-> > -			val->intval =3D info->constant_charge_current_max_ua;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-> > -			val->intval =3D info->constant_charge_voltage_max_uv;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN:
-> > -			val->intval =3D info->temp_ambient_alert_min;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX:
-> > -			val->intval =3D info->temp_ambient_alert_max;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_ALERT_MIN:
-> > -			val->intval =3D info->temp_alert_min;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
-> > -			val->intval =3D info->temp_alert_max;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_MIN:
-> > -			val->intval =3D info->temp_min;
-> > -			return 0;
-> > -		case POWER_SUPPLY_PROP_TEMP_MAX:
-> > -			val->intval =3D info->temp_max;
-> > -			return 0;
-> > -		default:
-> > -			return -EINVAL;
-> > +	case POWER_SUPPLY_PROP_TECHNOLOGY:
-> > +		val->intval =3D info->technology;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_ENERGY_FULL_DESIGN:
-> > +		val->intval =3D info->energy_full_design_uwh;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-> > +		val->intval =3D info->charge_full_design_uah;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
-> > +		val->intval =3D info->voltage_min_design_uv;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN:
-> > +		val->intval =3D info->voltage_max_design_uv;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_PRECHARGE_CURRENT:
-> > +		val->intval =3D info->precharge_current_ua;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT:
-> > +		val->intval =3D info->charge_term_current_ua;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
-> > +		val->intval =3D info->constant_charge_current_max_ua;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
-> > +		val->intval =3D info->constant_charge_voltage_max_uv;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MIN:
-> > +		val->intval =3D info->temp_ambient_alert_min;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_AMBIENT_ALERT_MAX:
-> > +		val->intval =3D info->temp_ambient_alert_max;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_ALERT_MIN:
-> > +		val->intval =3D info->temp_alert_min;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_ALERT_MAX:
-> > +		val->intval =3D info->temp_alert_max;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_MIN:
-> > +		val->intval =3D info->temp_min;
-> > +		return 0;
-> > +	case POWER_SUPPLY_PROP_TEMP_MAX:
-> > +		val->intval =3D info->temp_max;
-> > +		return 0;
-> > +	default:
-> > +		return -EINVAL;
->
-> And this one too.
->
-> > @@ -1636,6 +1637,6 @@ subsys_initcall(power_supply_class_init);
-> >  module_exit(power_supply_class_exit);
-> > =20
-> >  MODULE_DESCRIPTION("Universal power supply monitor class");
-> > -MODULE_AUTHOR("Ian Molton <spyro@f2s.com>, "
-> > -	      "Szabolcs Gyurko, "
-> > -	      "Anton Vorontsov <cbou@mail.ru>");
-> > +MODULE_AUTHOR("Ian Molton <spyro@f2s.com>");
-> > +MODULE_AUTHOR("Szabolcs Gyurko");
-> > +MODULE_AUTHOR("Anton Vorontsov <cbou@mail.ru>");
->
-> And also this one.
->
-> Thanks.
->
-> --=20
-> An old man doll... just what I always wanted! - Clara
+Another option is to hardcode the algorithm that was conventionally 
+implemented with eBPF steering program in the kernel[2]. It is possible 
+because the algorithm strictly follows the virtio-net specification[3]. 
+However, there are proposals to add different algorithms to the 
+specification[4], and hardcoding the algorithm to the kernel will 
+require to add more UAPIs and code each time such a specification change 
+happens, which is not good for tuntap.
 
-Thanks
+In short, the proposed feature requires to make either of three compromises:
+
+1. Compromise on the BPF side: Relax the "stable" BPF feature freeze 
+once and allow eBPF steering program to report 4 more bytes to the kernel.
+
+2. Compromise on the tuntap side: Implement the algorithm to the kernel, 
+and abandon the capability to update the algorithm without changing the 
+kernel.
+
+IMHO, I think it's better to make a compromise on the BPF side (option 
+1). We should minimize the total UAPI changes in the whole kernel, and 
+option 1 is much superior in that sense.
+
+Yet I have to note that such a compromise on the BPF side can risk the 
+"stable" BPF feature freeze fragile and let other people complain like 
+"you allowed to change stable BPF for this, why do you reject [some 
+other request to change stable BPF]?" It is bad for BPF maintainers. (I 
+can imagine that introducing and maintaining widely different BPF 
+interfaces is too much burden.) And, of course, this requires an 
+approval from BPF maintainers.
+
+So I'd like to ask you that which of these compromises you think worse. 
+Please also tell me if you have another idea.
+
+Regards,
+Akihiko Odaki
+
+[1] https://qemu.readthedocs.io/en/v8.1.0/devel/ebpf_rss.html
+[2] 
+https://lore.kernel.org/all/20231008052101.144422-1-akihiko.odaki@daynix.com/
+[3] 
+https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.html#x1-2400003
+[4] 
+https://lore.kernel.org/all/CACGkMEuBbGKssxNv5AfpaPpWQfk2BHR83rM5AHXN-YVMf2NvpQ@mail.gmail.com/
