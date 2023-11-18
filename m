@@ -2,203 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 245557F005C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5ED7F0066
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbjKRPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        id S230094AbjKRPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjKRPry (ORCPT
+        with ESMTP id S229892AbjKRPvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:47:54 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2108.outbound.protection.outlook.com [40.107.94.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8250A126;
-        Sat, 18 Nov 2023 07:47:50 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ag3Ojf+4gKe3YhohMwQ1nYrjHMPFAuiHmLXjga8qEjEwAV65oVR7Haa/O69tom593RO1YSfTPJBf/o+PqRgrT6CRoIQhXwC2H9YtyLrURealxVD1I2MfaldFtEnj5g0ycXttIe0cBStX9OqloE7ahVUtYo/Ww2rkF8V697bEwx3C8rtzD1k3z6LtUcePsBAK5NW+DqDV5ToWzxmWwJS7iv4LXYi8PdL3m3owAsbHse/sYjWbDzDO4RTdfXis2ccQgp5bGsStUL55UHHsvyXbqBzOTq7CKETmHasCuUsW5S/tlyFYbPectFun5+ji0zkZ05MqSZYZ0CbJWQDkqawchQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OamWYxVHYSl/8BSwA7S6GjnkHHLCbgyMzNHUNUPpZqU=;
- b=ZNYZ+s3CREpFB7xitKW7gsxpmSMiR/MMYm9ctz+3kq0r8+R/jEWgNEPiUPeKt84WOFhPWY/CG5j0322IlP/IwMJjCQVvfgwx9mxJCaeR4tsEsrnWvejrA3QAe5qn3mSNC5Em/uobimUvrUua4nlt8kSZ/0kaTIwd4s/xQ5fGqUYxy/1beGCIqvQ4OLDbMlYYj7oIaCIvwcFza185HsBhv+AX7+/BjaYtKQ+BEr8hQr75NJPjFU57oYB7qJf6U4V/Z+Fp9QIm1zVq8BzjlhV/um8DtplpTKDj5IlepMgU/fsguFJxA9yfrqb71320L8x0YxB38aottRMaharvr9mviw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Sat, 18 Nov 2023 10:51:14 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CCCD57;
+        Sat, 18 Nov 2023 07:51:09 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-daec4e4c5eeso2803482276.1;
+        Sat, 18 Nov 2023 07:51:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OamWYxVHYSl/8BSwA7S6GjnkHHLCbgyMzNHUNUPpZqU=;
- b=PPS36QHm+hWNUzMfUdg5u6FtvkuNfZBzQlbl3h4bHR1b+6wpzWoGGbEa44tXeiMRp1o0nTNLCAnM5ZQ4apdYHWn28FOTpbj1xXZHflnhsACXw3/FRWn1BBKooUgoeQOijKPDnr+KXLt2M5nQ0Plw0JfJySUagYep7ce/6UhddAQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
- MW4PR01MB6259.prod.exchangelabs.com (2603:10b6:303:78::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.23; Sat, 18 Nov 2023 15:47:46 +0000
-Received: from PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77]) by PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77%7]) with mapi id 15.20.6977.028; Sat, 18 Nov 2023
- 15:47:45 +0000
-From:   Huang Shijie <shijie@os.amperecomputing.com>
-To:     catalin.marinas@arm.com
-Cc:     will@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        arnd@arndb.de, mark.rutland@arm.com, broonie@kernel.org,
-        keescook@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        patches@amperecomputing.com,
-        Huang Shijie <shijie@os.amperecomputing.com>
-Subject: [PATCH v2] arm64: irq: set the correct node for VMAP stack
-Date:   Sat, 18 Nov 2023 23:47:07 +0800
-Message-Id: <20231118154707.3668-1-shijie@os.amperecomputing.com>
+        d=gmail.com; s=20230601; t=1700322668; x=1700927468; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8JQkwQPDN0/NjJdMvrO5YDf2Mt9RQuRmPZfqlcyPOc=;
+        b=GYSJGYNBF2n5sW5UXqCkkhcF3eAK216KQH4YTBhWSPOZ93FAZaF+G0jrldUj74Poj/
+         m8SWsPWSeK7V5vkY/5KsVt1gGmuMsFGhtqsn7RYa7tg/vQ8uU/+1/I5qP9WOld5QnP4Z
+         sWqT2OTR2KlFcBoDQ1N2Bv2sWfvEeBEef+CJhZS0nhOswUQvck9ZhRz/GM5i/A1AD1o3
+         0ny+/PSnoY8i+tvXzpqriUJg10hrCyZWPX3fMmcK0IVIYM5/o5ISoCJWfw3kuueja0Za
+         HFezDhgGMyN+Rq72e86ybWeQbVRtoT6oyiPgJUlNcCYVnx4YEZzqYq9HO9s9YE85H57l
+         tXjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700322668; x=1700927468;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T8JQkwQPDN0/NjJdMvrO5YDf2Mt9RQuRmPZfqlcyPOc=;
+        b=RIC+48dT86rDKj/uBU3beXkCrFN+qo7wiuVQH+Yd190dIeNhJfPwD2eN9K1ROV4/mo
+         WFLjLLfbm34Kn5RgrpUZfdNeQYLhQF7gtrRBH18rOByZhDd3o/y51k7J1Su7/43PwBor
+         ZMfWkJAlnAWVhM3vUNFgC/0Ty2hMidEyx23d5uHgKDTknPPZWfZNGsdZmoVS969bmy7r
+         Qd2AJNrcJ2KSzvcxSwhITLBK/bTEif8DhIUZh1RsmISFKIJyuHnfxh9FHI2Flh0NfcQd
+         5zXIA5SLf7opnEshNmrCaxNiYjBdRdTIV22aJOoYelw9EqUVfk9iaR+ihnznRpDi8Ab9
+         3jKg==
+X-Gm-Message-State: AOJu0YxTAIFecY4pQYWOxJYGsl3VBUzhv/7CSCLwwuUbbXgSaNfRUKGn
+        CKvsfXktUDtqxoCIzoHablVa58Ym9PXcAjAC
+X-Google-Smtp-Source: AGHT+IFJx/lrMq78Aql9lHzoh+xOXvS0ldCsOe1bBN/nC+9100pFEpSDPw9twx0lzyc1pTk6s9pz2Q==
+X-Received: by 2002:a25:5883:0:b0:da3:ab41:31f3 with SMTP id m125-20020a255883000000b00da3ab4131f3mr2199131ybb.8.1700322667764;
+        Sat, 18 Nov 2023 07:51:07 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
+        by smtp.gmail.com with ESMTPSA id 195-20020a2502cc000000b00d7497467d36sm1001026ybc.45.2023.11.18.07.51.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 07:51:07 -0800 (PST)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Disseldorp <ddiss@suse.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: [PATCH 00/34] biops: add atomig find_bit() operations
+Date:   Sat, 18 Nov 2023 07:50:31 -0800
+Message-Id: <20231118155105.25678-1-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ZVZO55IjQSbzWnfG@arm.com>
-References: <ZVZO55IjQSbzWnfG@arm.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH5PR05CA0004.namprd05.prod.outlook.com
- (2603:10b6:610:1f0::9) To PH0PR01MB7975.prod.exchangelabs.com
- (2603:10b6:510:26d::15)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|MW4PR01MB6259:EE_
-X-MS-Office365-Filtering-Correlation-Id: 802dc9b1-52df-46f8-40d1-08dbe84db52e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oaWslfWNQ1KEI79pC/GVu9XJ0Xq9k9rlRwhfqXWXntd8SzBQfXzYDfhR7iWtZ08W8kRTcj2WiUjl1zlhf4TTvFnBncr64ijN9J7PkQ5c96IosnjJuVnXnMS9bADpPf3IneYx2gFp364YuBt4+YU+CpbMae+Id5F3vu/p6pDSpk+xtEZSeTYPOfbqC3efN+XpE9LhktAHHxJ0e2xZUfWgz+efxTqMXPhqXfa/ICT5ihVBxCHdHw5S4RXJy05fPK7rqKQSNZmDJFS871Kgc+ceJoszIlpMnszOQkSXDY8cJFuVHwZen6e9qmi+h/mNYkGwnrEs7/rqEbRopaGXx5LmoGZQ9ktp8JfHuqCWKRm7l3GabKmELQqjEZ9qkTF0rSWGsBOFG4tG6kl4KmnbCW+PDhnCWjKy+WWewZzoP3Sud7CVxQ+qdre80Y+tgGLeQleCRPG1YvI9UJBZXbkaG/Ih1JvvODCXF3QMKMZxmikzHYinkZf+oWJvF3sIEQPG5ixUvVnP1COFyhhz4sk4OP7YqZ+0w5Ir9ah8ZEqQvZSAxk9AuVE7ba98MemsBHTIHutF7VbzwEqjmDMt+er+z1wAPe9dPx4kap6SUEzGEzS+ioZFztTndUbO7uV631CdfPbW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(376002)(39850400004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(316002)(6916009)(26005)(1076003)(66556008)(66476007)(66946007)(86362001)(8936002)(38350700005)(4326008)(38100700002)(8676002)(41300700001)(2906002)(5660300002)(7416002)(6486002)(83380400001)(6506007)(52116002)(478600001)(6512007)(107886003)(6666004)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t2xv7hdzCfBc/6jO2RVgVSUIRvUr6pG7VGZtgdWIMdhLfZJ/NY9Wq8LYVgNy?=
- =?us-ascii?Q?XFRHfOBfkIv3zqXb+BzizmTOOKc+wjfvrChtvl2emmvblxFRgCg+vkuQ6epn?=
- =?us-ascii?Q?FPQoKbyBXN2LI+7Y2Fe2DEeqP5Z/FU3ANYX5Mw6Byd7JYpblqIOdGmvlD/UJ?=
- =?us-ascii?Q?pAVps3V0JnDBXA3AVSp6jfE48Isx+4OsmSzJfBbGH6q4kJ4VY6/0EwDEgHjT?=
- =?us-ascii?Q?95g+WVTGcwDNx4gIvav86WrUfdq65bc8fIbin6rycyjnRte3cfcGxCxGrMj/?=
- =?us-ascii?Q?hlNHJT//9RWULGCyH1gpF002+BlvH6iw1jSDBRu3frjD8tTK7XlslDUPIg5A?=
- =?us-ascii?Q?83LjgtjFQzMHIc3R5W3EFRehhdiA8/9zwCRJ4QtDyn6R3PJDBKFynY4NdrlE?=
- =?us-ascii?Q?LQ9B1ADs7DxGoKUZOLqGQU+vLBSpVGnC8QZkZMIWu7uWGlJ6DpHuX3PT49ja?=
- =?us-ascii?Q?5xUNtZ3GA1cF/xGNxNO0NTeN8ThMoQhFw1qcnj1zTzOB9WVLoWYTGema31ds?=
- =?us-ascii?Q?Wbso6b2WghM51lo6/IB7pZM6CCPAT07AM/xSgagJN/b9CYcFPT8pxIWtbSsE?=
- =?us-ascii?Q?Ip6VmEBOsKpYf1avAb/Pir66DS3uS2du63VfLYYghplXs9QCPsFKWPGQT9Q7?=
- =?us-ascii?Q?ySZ0CJZRclOLLMhyg36q1MQ1kA2FQ1QhNaFLhF7XesvSCr7+5XJOuRjyyMNS?=
- =?us-ascii?Q?BTn+daVFTrvUvrpbVsKI6uYzGBwIGgKZ8kjyDVi7qDiloPI5Tx97w5iDLUGl?=
- =?us-ascii?Q?+PoudgTNPSipgPMkkuoDoYYjUt2fPq8CzfAU+GebYOMOi2o/a0alRmvO6IWT?=
- =?us-ascii?Q?gZQdbj8oIT/TX/OVzOPJ2NRYJ+92IqQoGsnFEYpaH9eC5jvoNgRld0wqWW1Q?=
- =?us-ascii?Q?Fu1rEd5mprKoBbwV8jWPd67kAU2b6bibvdZi9SxGvTD4tttFCH/35Tc0D/kL?=
- =?us-ascii?Q?NqnB2gZdsIMvLsEL93VS+ozp32msiRMmCNZ083BNccv1BkeuW2cEfvxlwh5Q?=
- =?us-ascii?Q?UCkIKBVr1HmPdp7XWWQbSht+YSmvMFPD0Z1mRHhRWYGIPDt6OokadhUm8bio?=
- =?us-ascii?Q?Em+aULtV2lUYrJI0gJKFZ24wiM2qPNoN3lcXkm+FFrv80tj+3wVSF1AoceM6?=
- =?us-ascii?Q?AozqASe0exGKxXMn8rqcl009MnjUv+9f26rAv09SnDieglE0UpIumYSWys46?=
- =?us-ascii?Q?4A/Mr+XsOcNz8oE0uEh0S8O6LyDEW/0m5NDyZz7vRCul8kAb93lxnqah55Ic?=
- =?us-ascii?Q?M+CHZvPsywv6qtJ36ax7AN4303DDnT4qkz1dZD1Kq3onM0pKSvIBup85eeH5?=
- =?us-ascii?Q?vp9prFH7Kcegbk8DFOlUwX3c/jGHkf+9WSPlRUj3xTksy0GUSSgorovC7Sor?=
- =?us-ascii?Q?W0BOhOZL9fK9GAoiFJ1PTvz4e55frv/qCSOlz6R/xVGKcWdbFW7+gRUQb0sX?=
- =?us-ascii?Q?dEKOfsO9a7Z/MgtgLgiVWrqUcQTSzGvWy7GHTnDNIu8gmW2mF/5LyLS7wAcQ?=
- =?us-ascii?Q?6KqEeKhQHFq+rmnHl1Gl+iKDVhDQivGzV53OFV5h8JPOgkedx52qbWdLt7A4?=
- =?us-ascii?Q?89gVe4CiQinLC83H2HDm3e26hk4zyzDhDKPeM8C70FegQS/6Zg3kLcaYfsXi?=
- =?us-ascii?Q?JA=3D=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 802dc9b1-52df-46f8-40d1-08dbe84db52e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 15:47:45.6044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +gTgczTAw3VdkPQgyqJq9wPdkVBB/NJlJ2QzGo/P9BPoJgBs4bR3Wg1LN0T0XKjpIQn12B1lqQq9dF1Sj1lQPxaYpKvW9pDQYQqQVoGZ00+QyYFA9iRr/DKUkOt4JM9L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6259
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current code, init_irq_stacks() will call cpu_to_node().
-The cpu_to_node() depends on percpu "numa_node" which is initialized in:
-     arch_call_rest_init() --> rest_init() -- kernel_init()
-	--> kernel_init_freeable() --> smp_prepare_cpus()
+Add helpers around test_and_{set,clear}_bit() that allow to search for
+clear or set bits and flip them atomically.
 
-But init_irq_stacks() is called in init_IRQ() which is before
-arch_call_rest_init().
+The target patterns may look like this:
 
-So in init_irq_stacks(), the cpu_to_node() does not work, it
-always return 0. In NUMA, it makes the node 1 cpu accesses the IRQ stack which
-is in the node 0.
+	for (idx = 0; idx < nbits; idx++)
+		if (test_and_clear_bit(idx, bitmap))
+			do_something(idx);
 
-This patch fixes it by exporting the early_cpu_to_node(), and use it
-in the init_irq_stacks().
+Or like this:
 
-Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
----
-v1 --> v2:
-	fix the !NUMA compiling error.
+	do {
+		bit = find_first_bit(bitmap, nbits);
+		if (bit >= nbits)
+			return nbits;
+	} while (!test_and_clear_bit(bit, bitmap));
+	return bit;
 
----
- arch/arm64/kernel/irq.c    | 3 ++-
- drivers/base/arch_numa.c   | 2 +-
- include/asm-generic/numa.h | 2 ++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+In both cases, the opencoded loop may be converted to a single function
+or iterator call. Correspondingly:
 
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 6ad5c6ef5329..5226030979ae 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -25,6 +25,7 @@
- #include <asm/softirq_stack.h>
- #include <asm/stacktrace.h>
- #include <asm/vmap_stack.h>
-+#include <asm/numa.h>
- 
- /* Only access this in an NMI enter/exit */
- DEFINE_PER_CPU(struct nmi_ctx, nmi_contexts);
-@@ -57,7 +58,7 @@ static void init_irq_stacks(void)
- 	unsigned long *p;
- 
- 	for_each_possible_cpu(cpu) {
--		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, cpu_to_node(cpu));
-+		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
- 		per_cpu(irq_stack_ptr, cpu) = p;
- 	}
- }
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index eaa31e567d1e..90519d981471 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -144,7 +144,7 @@ void __init early_map_cpu_to_node(unsigned int cpu, int nid)
- unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
- EXPORT_SYMBOL(__per_cpu_offset);
- 
--static int __init early_cpu_to_node(int cpu)
-+int early_cpu_to_node(int cpu)
- {
- 	return cpu_to_node_map[cpu];
- }
-diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
-index 1a3ad6d29833..16073111bffc 100644
---- a/include/asm-generic/numa.h
-+++ b/include/asm-generic/numa.h
-@@ -35,6 +35,7 @@ int __init numa_add_memblk(int nodeid, u64 start, u64 end);
- void __init numa_set_distance(int from, int to, int distance);
- void __init numa_free_distance(void);
- void __init early_map_cpu_to_node(unsigned int cpu, int nid);
-+int early_cpu_to_node(int cpu);
- void numa_store_cpu_info(unsigned int cpu);
- void numa_add_cpu(unsigned int cpu);
- void numa_remove_cpu(unsigned int cpu);
-@@ -46,6 +47,7 @@ static inline void numa_add_cpu(unsigned int cpu) { }
- static inline void numa_remove_cpu(unsigned int cpu) { }
- static inline void arch_numa_init(void) { }
- static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
-+static inline int early_cpu_to_node(int cpu) { return 0; }
- 
- #endif	/* CONFIG_NUMA */
- 
+	for_each_test_and_clear_bit(idx, bitmap, nbits)
+		do_something(idx);
+
+Or:
+	return find_and_clear_bit(bitmap, nbits);
+
+Obviously, the less routine code people have write themself, the less
+probability to make a mistake. Patch #31 of this series fixes one such
+error in perf/m1 codebase.
+
+Those are not only handy helpers but also resolve a non-trivial
+issue of using non-atomic find_bit() together with atomic
+test_and_{set,clear)_bit().
+
+The trick is that find_bit() implies that the bitmap is a regular
+non-volatile piece of memory, and compiler is allowed to use such
+optimization techniques like re-fetching memory instead of caching it.
+
+For example, find_first_bit() is implemented like this:
+
+      for (idx = 0; idx * BITS_PER_LONG < sz; idx++) {
+              val = addr[idx];
+              if (val) {
+                      sz = min(idx * BITS_PER_LONG + __ffs(val), sz);
+                      break;
+              }
+      }
+
+On register-memory architectures, like x86, compiler may decide to
+access memory twice - first time to compare against 0, and second time
+to fetch its value to pass it to __ffs().
+
+When running find_first_bit() on volatile memory, the memory may get
+changed in-between, and for instance, it may lead to passing 0 to
+__ffs(), which is undefined. This is a potentially dangerous call.
+
+find_and_clear_bit() as a wrapper around test_and_clear_bit()
+naturally treats underlying bitmap as a volatile memory and prevents
+compiler from such optimizations.
+
+Now that KCSAN is catching exactly this type of situations and warns on
+undercover memory modifications. We can use it to reveal improper usage
+of find_bit(), and convert it to atomic find_and_*_bit() as appropriate.
+
+The 1st patch of the series adds the following atomic primitives:
+
+	find_and_set_bit(addr, nbits);
+	find_and_set_next_bit(addr, nbits, start);
+	...
+
+Here find_and_{set,clear} part refers to the corresponding
+test_and_{set,clear}_bit function, and suffixes like _wrap or _lock
+derive semantics from corresponding find() or test() functions.
+
+For brevity, the naming omits the fact that we search for zero bit in
+find_and_set, and correspondingly, search for set bit in find_and_clear
+functions.
+
+The patch also adds iterators with atomic semantics, like
+for_each_test_and_set_bit(). Here, the naming rule is to simply prefix
+corresponding atomic operation with 'for_each'.
+
+This series is a result of discussion [1]. All find_bit() functions imply
+exclusive access to the bitmaps. However, KCSAN reports quite a number
+of warnings related to find_bit() API. Some of them are not pointing
+to real bugs because in many situations people intentionally allow
+concurrent bitmap operations.
+
+If so, find_bit() can be annotated such that KCSAN will ignore it:
+
+	bit = data_race(find_first_bit(bitmap, nbits));
+
+This series addresses the other important case where people really need
+atomic find ops. As the following patches show, the resulting code
+looks safer and more verbose comparing to opencoded loops followed by
+atomic bit flips.
+
+In [1] Mirsad reported 2% slowdown in a single-thread search test when
+switching find_bit() function to treat bitmaps as volatile arrays. On
+the other hand, kernel robot in the same thread reported +3.7% to the
+performance of will-it-scale.per_thread_ops test.
+
+Assuming that our compilers are sane and generate better code against
+properly annotated data, the above discrepancy doesn't look weird. When
+running on non-volatile bitmaps, plain find_bit() outperforms atomic
+find_and_bit(), and vice-versa.
+
+So, all users of find_bit() API, where heavy concurrency is expected,
+are encouraged to switch to atomic find_and_bit() as appropriate.
+
+1st patch of this series adds atomic find_and_bit() API, and all the
+following patches spread it over the kernel. They can be applied
+separately from each other on per-subsystems basis, or I can pull them
+in bitmap tree, as appropriate.
+
+[1] https://lore.kernel.org/lkml/634f5fdf-e236-42cf-be8d-48a581c21660@alu.unizg.hr/T/#m3e7341eb3571753f3acf8fe166f3fb5b2c12e615 
+
+Yury Norov (34):
+  lib/find: add atomic find_bit() primitives
+  lib/sbitmap; make __sbitmap_get_word() using find_and_set_bit()
+  watch_queue: use atomic find_bit() in post_one_notification()
+  sched: add cpumask_find_and_set() and use it in __mm_cid_get()
+  mips: sgi-ip30: rework heart_alloc_int()
+  sparc: fix opencoded find_and_set_bit() in alloc_msi()
+  perf/arm: optimize opencoded atomic find_bit() API
+  drivers/perf: optimize ali_drw_get_counter_idx() by using find_bit()
+  dmaengine: idxd: optimize perfmon_assign_event()
+  ath10k: optimize ath10k_snoc_napi_poll() by using find_bit()
+  wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
+  wifi: intel: use atomic find_bit() API where appropriate
+  KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
+  PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
+  scsi: use atomic find_bit() API where appropriate
+  powerpc: use atomic find_bit() API where appropriate
+  iommu: use atomic find_bit() API where appropriate
+  media: radio-shark: use atomic find_bit() API where appropriate
+  sfc: switch to using atomic find_bit() API where appropriate
+  tty: nozomi: optimize interrupt_handler()
+  usb: cdc-acm: optimize acm_softint()
+  block: null_blk: fix opencoded find_and_set_bit() in get_tag()
+  RDMA/rtrs: fix opencoded find_and_set_bit_lock() in
+    __rtrs_get_permit()
+  mISDN: optimize get_free_devid()
+  media: em28xx: cx231xx: fix opencoded find_and_set_bit()
+  ethernet: rocker: optimize ofdpa_port_internal_vlan_id_get()
+  serial: sc12is7xx: optimize sc16is7xx_alloc_line()
+  bluetooth: optimize cmtp_alloc_block_id()
+  net: smc: fix opencoded find_and_set_bit() in
+    smc_wr_tx_get_free_slot_index()
+  ALSA: use atomic find_bit() functions where applicable
+  drivers/perf: optimize m1_pmu_get_event_idx() by using find_bit() API
+  m68k: rework get_mmu_context()
+  microblaze: rework get_mmu_context()
+  sh: rework ilsel_enable()
+
+ arch/m68k/include/asm/mmu_context.h           |  11 +-
+ arch/microblaze/include/asm/mmu_context_mm.h  |  11 +-
+ arch/mips/sgi-ip30/ip30-irq.c                 |  12 +-
+ arch/powerpc/mm/book3s32/mmu_context.c        |  10 +-
+ arch/powerpc/platforms/pasemi/dma_lib.c       |  45 +--
+ arch/powerpc/platforms/powernv/pci-sriov.c    |  12 +-
+ arch/sh/boards/mach-x3proto/ilsel.c           |   4 +-
+ arch/sparc/kernel/pci_msi.c                   |   9 +-
+ arch/x86/kvm/hyperv.c                         |  39 ++-
+ drivers/block/null_blk/main.c                 |  41 +--
+ drivers/dma/idxd/perfmon.c                    |   8 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c        |  15 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |  10 +-
+ drivers/iommu/msm_iommu.c                     |  18 +-
+ drivers/isdn/mISDN/core.c                     |   9 +-
+ drivers/media/radio/radio-shark.c             |   5 +-
+ drivers/media/radio/radio-shark2.c            |   5 +-
+ drivers/media/usb/cx231xx/cx231xx-cards.c     |  16 +-
+ drivers/media/usb/em28xx/em28xx-cards.c       |  37 +--
+ drivers/net/ethernet/rocker/rocker_ofdpa.c    |  11 +-
+ drivers/net/ethernet/sfc/rx_common.c          |   4 +-
+ drivers/net/ethernet/sfc/siena/rx_common.c    |   4 +-
+ drivers/net/ethernet/sfc/siena/siena_sriov.c  |  14 +-
+ drivers/net/wireless/ath/ath10k/snoc.c        |   9 +-
+ .../net/wireless/intel/iwlegacy/4965-mac.c    |   7 +-
+ drivers/net/wireless/intel/iwlegacy/common.c  |   8 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/sta.c  |   8 +-
+ drivers/net/wireless/intel/iwlwifi/dvm/tx.c   |  19 +-
+ drivers/net/wireless/realtek/rtw88/pci.c      |   5 +-
+ drivers/net/wireless/realtek/rtw89/pci.c      |   5 +-
+ drivers/pci/controller/pci-hyperv.c           |   7 +-
+ drivers/perf/alibaba_uncore_drw_pmu.c         |  10 +-
+ drivers/perf/apple_m1_cpu_pmu.c               |   8 +-
+ drivers/perf/arm-cci.c                        |  23 +-
+ drivers/perf/arm-ccn.c                        |  10 +-
+ drivers/perf/arm_dmc620_pmu.c                 |   9 +-
+ drivers/perf/arm_pmuv3.c                      |   8 +-
+ drivers/scsi/mpi3mr/mpi3mr_os.c               |  21 +-
+ drivers/scsi/qedi/qedi_main.c                 |   9 +-
+ drivers/scsi/scsi_lib.c                       |   5 +-
+ drivers/tty/nozomi.c                          |   5 +-
+ drivers/tty/serial/sc16is7xx.c                |   8 +-
+ drivers/usb/class/cdc-acm.c                   |   5 +-
+ include/linux/cpumask.h                       |  12 +
+ include/linux/find.h                          | 289 ++++++++++++++++++
+ kernel/sched/sched.h                          |  52 +---
+ kernel/watch_queue.c                          |   6 +-
+ lib/find_bit.c                                |  85 ++++++
+ lib/sbitmap.c                                 |  46 +--
+ net/bluetooth/cmtp/core.c                     |  10 +-
+ net/smc/smc_wr.c                              |  10 +-
+ sound/pci/hda/hda_codec.c                     |   7 +-
+ sound/usb/caiaq/audio.c                       |  13 +-
+ 53 files changed, 588 insertions(+), 481 deletions(-)
+
 -- 
-2.40.1
+2.39.2
 
