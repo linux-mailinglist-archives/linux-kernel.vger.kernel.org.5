@@ -2,49 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353B77EFC94
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE887EFC9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346406AbjKRAc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:32:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
+        id S1346391AbjKRAhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346405AbjKRAc5 (ORCPT
+        with ESMTP id S1346382AbjKRAhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:32:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E361727;
-        Fri, 17 Nov 2023 16:32:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCAEC433C7;
-        Sat, 18 Nov 2023 00:32:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700267573;
-        bh=J/goLqTyDEI22Ut/pwCL/UNJNymwPHdELhT+G8VnytQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=GPiqFDYAW0CqmUbyqiFkERP5VRvZBQF7q5NignjIU5v0FN4+iof5qOgc05JmE+cl9
-         +b0/ebkAsyeEP+mG//lbtrLx1ima9e8uvV4JTCjJPaWRMBcr9Ma40PfulYWWzmOn+F
-         ypf1cE3rHxNFxJ2Cx4aMTtFDLe6c6ERUFrYUtRVmiea/+XXP4HcpqRGQsKTOifPsR6
-         yVkyTaj4MHY/qQbsa5PdDmjn0657lzyp+mb4prD7g7oDxcTL2xLtkg+IpFlxDiE5ve
-         sjOG1kW9oMOcbwqgNeiTEuCEUPuokojpuug6rlHiLA6TFoRZWiFydSc+voUB14Z5nN
-         THDZFWY+NWsyw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
-References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH 0/7] ASoC: cs43130: Fixes and improvements
-Message-Id: <170026757145.1646674.10200174783594509637.b4-ty@kernel.org>
-Date:   Sat, 18 Nov 2023 00:32:51 +0000
+        Fri, 17 Nov 2023 19:37:33 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACB5B0;
+        Fri, 17 Nov 2023 16:37:29 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50a6ff9881fso3755792e87.1;
+        Fri, 17 Nov 2023 16:37:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700267848; x=1700872648; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CxtVFoV3G/MmorB/F0YD8MQFUJsJvmktt5r+tHpZpZ8=;
+        b=LB5pso34cv04SMV6nGtIjeTrlbF0sg+zwZ+GWScf0a+ms1WuM9RmVGpvodok80hosC
+         87l0NYFPxMDHBuD46eznhlq9KH18vSjzJVO0VdFPPmIZjQH6gG6M2rYR4OpWIO8olym7
+         qXHvWW52aM6OdBVs9w3INjJzIRF0NdhQom82hQTvDh1GKcOXHYdu0t9v43t/8iRvVL2l
+         Wbe1AiMKxEdXrLnyhmOakawMewidfZwScluN2QnzMSKvrzECJbFFSPAmUrHG5uzMEOgk
+         O2NQl1IWQo+pl8QdAyhFLog0D//5MqpWNWwjhSCuXKe7uNhYMUiEL7FaGcqpxfsyAWyv
+         uCrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700267848; x=1700872648;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CxtVFoV3G/MmorB/F0YD8MQFUJsJvmktt5r+tHpZpZ8=;
+        b=WZLgcbdNQrC4fg6zeniGb7LKToyBTBt2pQPTzWWF5hHmMCZfptqvNJ8CfpVGN2QCWg
+         gRa1YkYKwXJpLfNU2DWwu3gI6yoXnm9Q6yy7xQCYRGpi1F5nswobINmwFPHYEZGL6XOt
+         ZtpzoYl4Fz+qUiCGjVqZn6m+jbOuNxbS8H2L9h5ARZFgGoj+aHe2ujqm/tGZouNj2O9+
+         qQbZhfba5X+RqwlyoxhCnsHI0TF0eVdpt3Ib8TawrvgtMJyYaHziQJ89Juo9BmbsxYKl
+         v9ns0X8TDskcHHk2GxKwkbOcsj6cc0DSw5urh6iTDU82X3P4GOTIyTNjtq96mviKQPjQ
+         zyXQ==
+X-Gm-Message-State: AOJu0Yw5vxvI9/7KGRGIwvmA7hSUqQQ8otaEqJ2wDVnPWZ44j2ObLsZz
+        2M+xoEMTpdsGMhVSyNBWQATWwFmV0umitwGGYs1Jvggeiv4=
+X-Google-Smtp-Source: AGHT+IHMVCa5N6+PbZh3LRTxQsaEaet4ICSjDflQIYHwg/nDji7SsWKQUqLoH9Mydml6avg9Xnfgw57zQTUiD5X3N2M=
+X-Received: by 2002:ac2:4203:0:b0:500:acf1:b432 with SMTP id
+ y3-20020ac24203000000b00500acf1b432mr720823lfh.63.1700267847640; Fri, 17 Nov
+ 2023 16:37:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 17 Nov 2023 18:37:16 -0600
+Message-ID: <CAH2r5msETjR-mEd6PUkE-E=OTMFKh-jD2ucuHP=uGyLScZQCLA@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,57 +64,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 14:13:37 +0000, Maciej Strozek wrote:
-> This patchset aims to add minor fixes (first two patches) and
-> introduce general improvements to the driver (rest of the patches)
-> 
-> Maciej Strozek (7):
->   ASoC: cs43130: Fix the position of const qualifier
->   ASoC: cs43130: Fix incorrect frame delay configuration
->   ASoC: cs43130: Allow configuration of bit clock and frame inversion
->   ASoC: cs43130: Store device in private struct and use it more
->     consistently
->   ASoC: cs43130: Add handling of ACPI
->   ASoC: cs43130: Allow driver to work without IRQ thread
->   ASoC:cs43130: Add switch to control normal and alt hp inputs
-> 
-> [...]
+Please pull the following changes since commit
+b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Applied to
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+are available in the Git repository at:
 
-Thanks!
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc1-smb3-client-fixes
 
-[1/7] ASoC: cs43130: Fix the position of const qualifier
-      commit: e7f289a59e76a5890a57bc27b198f69f175f75d9
-[2/7] ASoC: cs43130: Fix incorrect frame delay configuration
-      commit: aa7e8e5e4011571022dc06e4d7a2f108feb53d1a
-[3/7] ASoC: cs43130: Allow configuration of bit clock and frame inversion
-      (no commit info)
-[4/7] ASoC: cs43130: Store device in private struct and use it more consistently
-      commit: 552206add94dd7977bad32c37eba16e23756a0f9
-[5/7] ASoC: cs43130: Add handling of ACPI
-      commit: ce7944b73e7729dc702b6741cff2b26886bb723c
-[7/7] ASoC:cs43130: Add switch to control normal and alt hp inputs
-      commit: 9158221bf2aa5f7bfb916452c079b2fe63ca76e8
+for you to fetch changes up to 5eef12c4e3230f2025dc46ad8c4a3bc19978e5d7:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+  cifs: fix lock ordering while disabling multichannel (2023-11-14
+11:39:35 -0600)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+----------------------------------------------------------------
+Four cifs/smb3 client fixes
+- three multichannel fixes (including a lock ordering fix and an
+important refcounting fix)
+- spnego fix
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+----------------------------------------------------------------
+Anastasia Belova (1):
+      cifs: spnego: add ';' in HOST_KEY_LEN
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Ekaterina Esina (1):
+      cifs: fix check of rc in function generate_smb3signingkey
 
+Shyam Prasad N (2):
+      cifs: fix leak of iface for primary channel
+      cifs: fix lock ordering while disabling multichannel
+
+ fs/smb/client/cifs_spnego.c   |  4 ++--
+ fs/smb/client/connect.c       |  6 ++++++
+ fs/smb/client/sess.c          | 22 +++++++++++++---------
+ fs/smb/client/smb2transport.c |  5 ++---
+ 4 files changed, 23 insertions(+), 14 deletions(-)
+
+
+--
 Thanks,
-Mark
 
+Steve
