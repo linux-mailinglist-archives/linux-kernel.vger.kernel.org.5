@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF697EFD4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE30B7EFD56
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346415AbjKRC6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        id S1346437AbjKRC61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:58:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbjKRC6S (ORCPT
+        with ESMTP id S233020AbjKRC6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 21:58:18 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE4E1723
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:58:14 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b02ed0f886so36381797b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:58:14 -0800 (PST)
+        Fri, 17 Nov 2023 21:58:19 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFAE171A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:58:16 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da07b5e6f75so3291476276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:58:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700276293; x=1700881093; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700276295; x=1700881095; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nvk9Q6fDi4VYvpZBd2dg6YVoVQRX3tnrrY9vqXNqK/Y=;
-        b=cFpJc1uGrK0L9IEqMQ1f7XN8NnqWZD/2zkqP2j9JqCDvFOlV5c90qC0MoFUkNlBATj
-         /hMF2V4bt/rf45dVNejfFaVYgvo38gE882Zv6Pyqg0IMerwFg6bFBkh6aKJUNpSHgKMP
-         qCSolDJ4azR4YU3wUTANt0khbIdLSMJgmhVUCVDGcGWWj5JCBCulIDcj+dYI5YeKz42U
-         Ex2mse2bptK9oWhVPS+XF2g49ipbKQfqSezHOwdNa4ooDxNWq+68hTgAtPAT3apZE33g
-         a1871CLMq7R9B1w+ApX3yO1BTw6xHUWTkOZNgsUuMRMGcw11fKFuAQpoDAFIbYjiYEb/
-         fXEQ==
+        bh=6470cZa62MbyzT9ybBeTXZeWGQJ3Ep0Ies1ZAhH/GQQ=;
+        b=A+K7W2goGY3rCRjchC7VMQq7Xg5AZwcYYzysdc+2u8ff3LvNEE0oRpHfJT18UQp+Tj
+         Vxw/Lz5R2tV0BLDhuOImU1MSL3Eg9uhp71m6ky1ddK6jEsjTzkD5gCBFRfOYPPXMi8tD
+         Vd66AYhHa+2IAEhxWB6Gp5C7k+eWK6MqJYDmh840RN97lJz+JqpDREwsU3HbnR2k/nez
+         EikZnDIXaXE3L4gBVpvI3eGFXzYY/imHZ0LocduIXhhiYQLeOl6cz68zvws80d2rreEo
+         P2lkWaIIOGoQCq8prnhBAGj67Bn4bNAxq4u8hvkakG8K4fXsd5SbazKYGcAstfApcoJe
+         6JEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700276293; x=1700881093;
+        d=1e100.net; s=20230601; t=1700276295; x=1700881095;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nvk9Q6fDi4VYvpZBd2dg6YVoVQRX3tnrrY9vqXNqK/Y=;
-        b=QVPSWDl1Q0tMeL0dVyLSwtgk5yvz1T7StUaXkafGp9sa0mmCaZIFgCxML45Wm4j1hv
-         VPsxDzUO+BQTWvleYbhwG4AtzGDsBMFdu1gbMVMtuMdfrYnFC6EzocFoOGPtg8qkLeQL
-         6l385ntqFMhF3ZAihDiURFQ1VpAa4AKeK6XkgDS53xIFw+c3vk/zTh37KzyUaNCs0MXN
-         p+d7n8A34hDWhykK8mAenv0/EZNEUnHuaM8fnH6uAhuTaN/63lna+TBpsMTpIUE5Hl4G
-         ghyuHjxM2i552Lmm2p3FtUfkwK3QULGseKVP6favMlTybnvwkbNhjEO/6I2niIwjD+JK
-         ZIcQ==
-X-Gm-Message-State: AOJu0YzVFXuLJIovuZwJ49dlHhepjXN64XhBvBd+0ioIs1EaxhYPlW+/
-        4EOg6+/lop95BXzDlG39NloiHO5fdBT8
-X-Google-Smtp-Source: AGHT+IGP3XlXj/5Dcw3hp9Px56ng9u8ZBGdlOpNsgMCWjyW3JuNS4KY9Ymdo28sfT5+B96al0+/x10TRijqM
+        bh=6470cZa62MbyzT9ybBeTXZeWGQJ3Ep0Ies1ZAhH/GQQ=;
+        b=Iv2fdifOKW1t6OgePmyWFMtV/ImdL+rGzmcPD3Wk4pP7ESMqGCmJen7IG2oQSWQQR1
+         /mMyjM2YApjkMP7d99NwD5vt6njyxOUS+PYNZzi5leZL6JerAngmrjycVc5IV/qk5wiF
+         dlR12ETGq4UG6u5CLN1EIWw1vesVD2tjLPzvubZn21eoB+e0iN4Dfkflg/J1KTuY4fwi
+         GFEaHIbPcCCjNgMEy3XSRVA8t9whre7b+dm6UuuiQ42fDCt3qeM5OPUnKUdERHdQqy5L
+         9FZbdInua99sJm5FSt4Cj1fdG3bVQeZ5iqKSzQkvti2LgOZfjwtUcSHV61R3IuqE9Xkx
+         dw2g==
+X-Gm-Message-State: AOJu0YzycjMbEBz4f4eEL0I/xyR1u5wMwI5rb49bPV3WJq5uW6ilMD3x
+        uS3F031sgquLfa/Azb9NgiEQ2XUomsvq
+X-Google-Smtp-Source: AGHT+IE0p+YtnUfNXyViuu9ji/lc0sYzrwa5eOwzdtBv1fKlqv6arjeB7wtV3bdeWily94YGEBFtqUBG97qg
 X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
- (user=mmaurer job=sendgmr) by 2002:a81:d512:0:b0:5a8:d81f:f5e7 with SMTP id
- i18-20020a81d512000000b005a8d81ff5e7mr38384ywj.8.1700276293608; Fri, 17 Nov
- 2023 18:58:13 -0800 (PST)
-Date:   Sat, 18 Nov 2023 02:54:45 +0000
+ (user=mmaurer job=sendgmr) by 2002:a5b:cc9:0:b0:da0:37e1:558e with SMTP id
+ e9-20020a5b0cc9000000b00da037e1558emr26098ybr.6.1700276295405; Fri, 17 Nov
+ 2023 18:58:15 -0800 (PST)
+Date:   Sat, 18 Nov 2023 02:54:46 +0000
 In-Reply-To: <20231118025748.2778044-1-mmaurer@google.com>
 Mime-Version: 1.0
 References: <20231118025748.2778044-1-mmaurer@google.com>
 X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231118025748.2778044-5-mmaurer@google.com>
-Subject: [PATCH v2 4/5] rust: Allow MODVERSIONS
+Message-ID: <20231118025748.2778044-6-mmaurer@google.com>
+Subject: [PATCH v2 5/5] export_report: Use new version info format
 From:   Matthew Maurer <mmaurer@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -75,27 +75,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With variable length symbol names from extended modversions, we can
-enable MODVERSIONS alongside RUST due to support for its longer symbol
-names.
+The new version info format has a superset of symbols in the old format.
+Since this is a tool for in-tree modules, we don't need to parse the old
+one with this tool any longer.
 
 Signed-off-by: Matthew Maurer <mmaurer@google.com>
 ---
- init/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ scripts/export_report.pl | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 9ffb103fc927..6cac5b4db8f6 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1885,7 +1885,6 @@ config RUST
- 	bool "Rust support"
- 	depends on HAVE_RUST
- 	depends on RUST_IS_AVAILABLE
--	depends on !MODVERSIONS
- 	depends on !GCC_PLUGINS
- 	depends on !RANDSTRUCT
- 	depends on !DEBUG_INFO_BTF || PAHOLE_HAS_LANG_EXCLUDE
+diff --git a/scripts/export_report.pl b/scripts/export_report.pl
+index dcef915405f3..6a37df6f947f 100755
+--- a/scripts/export_report.pl
++++ b/scripts/export_report.pl
+@@ -114,31 +114,29 @@ foreach my $thismod (@allcfiles) {
+ 	}
+ 
+ 	my $state=0;
++	# State map:
++	# 0 - Looking for names
++	# 1 - Scanning names
++	# 2 - Done
+ 	while ( <$module> ) {
+ 		chomp;
+ 		if ($state == 0) {
+-			$state = 1 if ($_ =~ /static const struct modversion_info/);
++			$state = 1 if ($_ =~ /__used __section\("__version_ext_names"\)/);
+ 			next;
+ 		}
+ 		if ($state == 1) {
+-			$state = 2 if ($_ =~ /__used __section\("__versions"\)/);
+-			next;
+-		}
+-		if ($state == 2) {
+-			if ( $_ =~ /};/ ) {
+-				$state = 3;
+-				next;
+-			}
+-			if ( $_ !~ /0x[0-9a-f]+,/ ) {
++			if ( $_ =~ /;/ ) {
++				$state = 2;
+ 				next;
+ 			}
+-			my $sym = (split /([,"])/,)[4];
++			$_ =~ /"(.*)\\0"/;
++			my $sym = $1;
+ 			my ($module, $value, $symbol, $gpl) = @{$SYMBOL{$sym}};
+ 			$SYMBOL{ $sym } =  [ $module, $value+1, $symbol, $gpl];
+ 			push(@{$MODULE{$thismod}} , $sym);
+ 		}
+ 	}
+-	if ($state != 3) {
++	if ($state != 2) {
+ 		warn "WARNING:$thismod is not built with CONFIG_MODVERSIONS enabled\n";
+ 		$modversion_warnings++;
+ 	}
 -- 
 2.43.0.rc0.421.g78406f8d94-goog
 
