@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6CF7EFF4E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 888067EFF56
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjKRLiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 06:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S229797AbjKRLqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 06:46:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjKRLiM (ORCPT
+        with ESMTP id S229510AbjKRLqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 06:38:12 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3CFD57
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:38:08 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso4086493a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:38:08 -0800 (PST)
+        Sat, 18 Nov 2023 06:46:03 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2FFD6C;
+        Sat, 18 Nov 2023 03:45:59 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c2139492d9so590808a12.0;
+        Sat, 18 Nov 2023 03:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700307487; x=1700912287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jwfAcLpPBP9/VcLdhWC2YYKbzJ5W2WwAWFFBT48SHb4=;
-        b=DPszGSJv+/tGL68O9MV438e2U1IphyHA0fsDT2uxnwuiwt7B/0DLfpSDpbwkD3NW2P
-         0zeUrhEuLencCLY0QnjWvHmylomF7ke4W5wXDzibQLR9FYuD55VhCIza49bY3kpMdy4q
-         eK1e5XT5utNGsgO5SAPeXL0/rrj+MVCuePNvhHL03ZfDv5pT8l9WKTkcddPFd6MaaVaG
-         D5tfc/OiNFvXaDYz8MoapDsutZAACb3N6em8x645BeuoB/OXb7H7hiN4rGzpkR3j5iEk
-         GYME1/SpaQZXZlGMt5JoLFf1AkK4byirGEfA4vKNwZtWPmei53xP4bZrpXCJjHIboE0X
-         dFSA==
+        d=gmail.com; s=20230601; t=1700307959; x=1700912759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ClOeeApXVOwVcbEnxEFMvGO2pvgQp5Himl1NoA2ock=;
+        b=gi8cPpn1ogc2CqfzBiFS3lO6jHrmrwz6AmnFb7/jFUMc2HSGiemMBKPxyOE1ByDq/w
+         dWx8L3QKmqVe7ORGSSRA5g4x+2+Aw9naeqg2K4Z/ylx+sXRsis/1/Wk6mgXu6RVWVN1G
+         MOp9R35P45B8AZile7CcnWuWlI/KU5PEXmi0mrOMK3+oTSQwYBgNDepCDCgFJPwPZ/W9
+         EDtZQeV9VnkSAnc0zqUAlFvJ7MjDx3gjYOqltCdGcmtOyoR1Khir6Mm6SKWDmDAw2Hkr
+         FYYmsrDUBHgZ+xFTwFga2Nvbt8I4ZLnBZ3JQJnKREV1NgH4cRZ3uouQkdogKKyG2vrxS
+         gV3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700307487; x=1700912287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jwfAcLpPBP9/VcLdhWC2YYKbzJ5W2WwAWFFBT48SHb4=;
-        b=eov6q7TDcTn9OYWlZmCWpyRAdm6qbjYnOtX8cGtHaVH8570IIIeJklT5YLpV5aosrV
-         liFCEuN39kB8tJh/J3sMzghnHRljLZHdEs8zaaZpu2RjhhkNNkMzGA9hWaCib+z3BYH6
-         OrCBNnw6g5ssKeC1sqnTq55h5WH/Ecf5dGFKhw8deNz91wma3B1ufgRiTcHsbDGy9zf4
-         xBZgZnAtMPD7TEIgp+g/3baSBBKMnb60iVTikrEk/AyKbs1jSul7ylWGTBe4cM4Gmx9b
-         SMmOTJyTg/zMdZbN6UMLeRkS6cJsRISu8abnXWTShhMiRpp8ML8zmMzQKCNLlLTa1vGR
-         c9jA==
-X-Gm-Message-State: AOJu0YyrKGXOEfD5dgoYeOVl0hrfTz9qvHJQBFy91oGxCwFLZNJZcFwp
-        D2vfUX5cC0jBLFJQ6qqaALXqhoXriP8allx7I9Q=
-X-Google-Smtp-Source: AGHT+IE+gKa6JOvpcInpH3bQMumK5AwCQgXOXPQVa/fdX7kkkSyuYgD+wsAxlw24m1SQ73zpdAvBhg==
-X-Received: by 2002:a50:9ec3:0:b0:543:4fca:cc91 with SMTP id a61-20020a509ec3000000b005434fcacc91mr1333532edf.20.1700307486789;
-        Sat, 18 Nov 2023 03:38:06 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id c7-20020aa7c747000000b0053dfd3519f4sm1669355eds.22.2023.11.18.03.38.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 03:38:06 -0800 (PST)
-Date:   Sat, 18 Nov 2023 12:38:05 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Sachin Bahadur <sachin.bahadur@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH iwl-net v3] ice: Block PF reinit if attached to bond
-Message-ID: <ZViiHS0sYyoXHK+x@nanopsycho>
-References: <20231117164427.912563-1-sachin.bahadur@intel.com>
+        d=1e100.net; s=20230601; t=1700307959; x=1700912759;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ClOeeApXVOwVcbEnxEFMvGO2pvgQp5Himl1NoA2ock=;
+        b=jexigBRDt/+jl3mGGt8Mv8A3oCjgoD4W4/m0cNoG1xyfr9bov6AGi/YIHntwkFJfWD
+         FJcZ4Do4fJkJEh8k10OunB7QhfxBmEaQQs6dgfizeUxKVYCg5td2vnlMVBgCizTfT8Ui
+         bvbomHqMKGGKmt/C3WQW6EMqLazWNNZFhgAn4BpDkHGhRcbqPaUyldGOsSF42gHWbuUJ
+         H3HZoOf12ywsN8PFfUhgRFTsyDc2Oo+C5gI5+XkBymHfYzJSqnTU8FRM1Lu28ALP0qNw
+         /ti51mmywG5NjImY9TR+fEwvKJ8txuhwbifqSdsPxcgBlfjPsnqk10Jo2IGeoW4hi+Ih
+         D4Lg==
+X-Gm-Message-State: AOJu0Ywc+HvhEb/CXVQsdWzgn70yFFi2o209QH0wEmFYTPfJgXVvaV8X
+        DuWbGla0L5328ZZznvshHNH+7ecPm39BtQ==
+X-Google-Smtp-Source: AGHT+IF239EKCsD002yLOVEG0ZDBK9eReb2LpXMCWSV0k3fyn49qURFrQhKuZNxxAIc6N51gNXyM4g==
+X-Received: by 2002:a17:903:50d:b0:1ca:dee1:4d1a with SMTP id jn13-20020a170903050d00b001cadee14d1amr2030846plb.25.1700307958228;
+        Sat, 18 Nov 2023 03:45:58 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x11-20020a1709028ecb00b001cc51680695sm2842304plo.259.2023.11.18.03.45.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Nov 2023 03:45:57 -0800 (PST)
+Message-ID: <06648cde-e8d9-42d0-a8ef-15c9a9b8850a@gmail.com>
+Date:   Sat, 18 Nov 2023 18:45:49 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117164427.912563-1-sachin.bahadur@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] power: supply: Fix indentation and some other warnings
+Content-Language: en-US
+To:     Charalampos Mitrodimas <charmitro@posteo.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        qinyu <qinyu32@huawei.com>, Nick Alcock <nick.alcock@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Ian Molton <spyro@f2s.com>,
+        Szabolcs Gyurko <szabolcs.gyurko@tlt.hu>,
+        Anton Vorontsov <cbou@mail.ru>
+Cc:     Linux Power Management <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231117230658.65809-1-charmitro@posteo.net>
+ <ZVf48PWBpvKULeXT@archie.me> <CX1VDFVCGNKO.3JX5QY0LZQ51B@beast>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <CX1VDFVCGNKO.3JX5QY0LZQ51B@beast>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Nov 17, 2023 at 05:44:27PM CET, sachin.bahadur@intel.com wrote:
->PF interface part of LAG should not allow driver reinit via devlink. The
->Bond config will be lost due to driver reinit. ice_devlink_reload_down is
+On 11/18/23 17:36, Charalampos Mitrodimas wrote:
+> Hi Bagas,
+> 
+> On Sat Nov 18, 2023 at 1:36 AM EET, Bagas Sanjaya wrote:
+>> On Fri, Nov 17, 2023 at 11:06:58PM +0000, Charalampos Mitrodimas wrote:
+>>> These were mentioned by checkpatch:
+>>> 	Errors:
+>>> 		(1) code indent should use tabs where possible
+>>> 		(2) switch and case should be at the same indent
+>>> 	Warnings:
+>>> 		(1) quoted string split across lines
+>>> 		(2) Missing a blank line after declarations
+>>>
+>>> Based on this comment from "include/linux/module.h", modules with
+>>> multiple authors should use multiple MODULE_AUTHOR() statements.
+>>> 	/*
+>>> 	 * Author(s), use "Name <email>" or just "Name", for multiple
+>>> 	 * authors use multiple MODULE_AUTHOR() statements/lines.
+>>> 	 */
+>>> 	#define MODULE_AUTHOR(_author) MODULE_INFO(author, _author)
+>>
+>> Shouldn't MODULE_AUTHOR fix be separate patch?
+> 
+> Sorry, I should have mentioned in the commit that the warnings "quoted
+> string split across lines" pertained to the MODULE_AUTHOR line. 
+> 
+> In the commit message I'm just clarifying why I used multiple
+> MODULE_AUTHOR statements.
+> 
+> Should I send a v2 patch with a revised commit description?
+> 
 
-Reinit whould remove and re-create netdevices. This patch should not be
-needed.
+OK but as separate patch.
 
+-- 
+An old man doll... just what I always wanted! - Clara
 
->called before PF driver reinit. If PF is attached to bond,
->ice_devlink_reload_down returns error.
->
->Fixes: trailer
->Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
->Signed-off-by: Sachin Bahadur <sachin.bahadur@intel.com>
->---
-> drivers/net/ethernet/intel/ice/ice_devlink.c | 4 ++++
-> 1 file changed, 4 insertions(+)
->
->diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
->index f4e24d11ebd0..5fe88e949b09 100644
->--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
->+++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
->@@ -457,6 +457,10 @@ ice_devlink_reload_down(struct devlink *devlink, bool netns_change,
-> 					   "Remove all VFs before doing reinit\n");
-> 			return -EOPNOTSUPP;
-> 		}
->+		if (pf->lag && pf->lag->bonded) {
->+			NL_SET_ERR_MSG_MOD(extack, "Remove all associated Bonds before doing reinit");
->+			return -EBUSY;
->+		}
-> 		ice_unload(pf);
-> 		return 0;
-> 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
->-- 
->2.25.1
->
->
