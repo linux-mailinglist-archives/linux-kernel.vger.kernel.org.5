@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC797F0111
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6CB7F0120
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjKRQXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 11:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        id S229662AbjKRQaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 11:30:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjKRQXg (ORCPT
+        with ESMTP id S229463AbjKRQaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 11:23:36 -0500
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F46C5;
-        Sat, 18 Nov 2023 08:23:32 -0800 (PST)
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1cf52e5e07eso2356725ad.0;
-        Sat, 18 Nov 2023 08:23:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700324612; x=1700929412;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2erzZFOyxOrSdjM/KpGdx3oacnKwVcss5FA960Pxu5w=;
-        b=fYqqCdMKOD5hcFS+Pcb3HrknnLjiaxbOO5e4YVeP4FvvFzmD68K0T/fVY5rqvkB/z1
-         8K0Ez2Sap8pkqkVUaJhQkP4xz1r4DGnwtXtmM5hVyUI02rapghbUrXG3HdWrVXk3VQNg
-         vN9dcZycZJACeTuGiw9LY/RN74GwRadhRZGRX+feZunbiVY06owKpBy0NDpqh1cvH3sX
-         +dybOGVGL++XVvQ4LS3GPJMBHWbN/Bqi0GjqSZ22idjdggvGVqIsFQPt5k93I2HbTqJR
-         u7lLYaTbIohcO9sSRcALX6J7CTIYxnWZ/QI5zVmJU99Kji/Q4/EHzh3yijGQVY9oiQev
-         WYPQ==
-X-Gm-Message-State: AOJu0YxqrpdyoiEsZK64HSkNuYVjWMly5Z6GlC6YjejWvfM9OnqKsy+l
-        Ca/aK/JyHgxk/FKsDuHdxBY=
-X-Google-Smtp-Source: AGHT+IFxNCOe1hV/UN7ql6AF5ylF4cLl3KjxD1pwBtnSiRvXE7Ae8L1R6+CdLXdA7EoHYLiLeUL3Gw==
-X-Received: by 2002:a17:902:6844:b0:1cf:5197:25ac with SMTP id f4-20020a170902684400b001cf519725acmr2006009pln.12.1700324611982;
-        Sat, 18 Nov 2023 08:23:31 -0800 (PST)
-Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
-        by smtp.gmail.com with ESMTPSA id u18-20020a170902e81200b001ce64bdfa19sm2051042plg.45.2023.11.18.08.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Nov 2023 08:23:31 -0800 (PST)
-Message-ID: <91a32cd2-903a-43df-8067-510c6c431ec7@acm.org>
-Date:   Sat, 18 Nov 2023 08:23:20 -0800
+        Sat, 18 Nov 2023 11:30:08 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FC1C5;
+        Sat, 18 Nov 2023 08:30:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=5SU1XXgi7WRBOVAn6Aiqulu56Tn+Irc2m07dBe4hANo=; b=TtVlAvvk5AMDszBIFke/t/u1Ov
+        BnDW1LxiyKgpeD3KPGILr+ZccSZeFwieAZulYYeIQfrWFNEmxqNt6zhDGkOKwQIK0NM3FOCKIflKo
+        fYTw5zV/FRiyqoHRI8iAIfaAZjmQGqxV/kt3GviiMz6+jhRJ4ljJqzy9GolngEmh8bQ4enSuO8IDC
+        BHeaSfGCIY89dP6oWmWmF3r8evqPwOBddqnfQ7M42bcJRTpACeoF6jlRL7ZgQm+EAxwuLLvix2ZxM
+        VhYOEbw54Kk8++zp16lGo8LuIy2XdVc7mjykVLfDS3tM2IXcFuDgVNYb9WySqkkDqPYhqXj3RNb4A
+        VOjvgRKw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r4OCq-008plr-12;
+        Sat, 18 Nov 2023 16:30:04 +0000
+Message-ID: <3e879452-bda7-46d9-93fa-0cf01e484798@infradead.org>
+Date:   Sat, 18 Nov 2023 08:30:02 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/34] lib/find: add atomic find_bit() primitives
+Subject: Re: [PATCH 5/6] kconfig: require an exact match for "is not set" to
+ disable CONFIG option
 Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Disseldorp <ddiss@suse.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
-        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-2-yury.norov@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231118155105.25678-2-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20231118075912.1303509-1-masahiroy@kernel.org>
+ <20231118075912.1303509-5-masahiroy@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231118075912.1303509-5-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/23 07:50, Yury Norov wrote:
-> Add helpers around test_and_{set,clear}_bit() that allow to search for
-> clear or set bits and flip them atomically.
+Hi,
 
-Has it been considered to add kunit tests for the new functions?
+On 11/17/23 23:59, Masahiro Yamada wrote:
+> Currently, any string starting "is not set" disables a CONFIG option.
+> 
+> For example, "# CONFIG_FOO is not settled down" is accepted as valid
+> input, functioning the same as "# CONFIG_FOO is not set". It is a
+> long-standing oddity.
+> 
+> Check the line against the exact pattern "is not set".
+> 
 
-Thanks,
+Just to confirm (I hope), using:
+CONFIG_FOO=n
 
-Bart.
+will also still work to disable that config option?
 
+Thanks.
+
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  scripts/kconfig/confdata.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> index 795ac6c9378f..958be12cd621 100644
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -454,7 +454,7 @@ int conf_read_simple(const char *name, int def)
+>  			if (!p)
+>  				continue;
+>  			*p++ = 0;
+> -			if (strncmp(p, "is not set", 10))
+> +			if (strcmp(p, "is not set"))
+>  				continue;
+>  
+>  			val = "n";
+
+-- 
+~Randy
