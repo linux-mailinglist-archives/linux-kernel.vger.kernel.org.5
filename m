@@ -2,100 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EA67EFFCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 657E77EFFCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:23:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjKRNPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 08:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
+        id S229730AbjKRNXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 08:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjKRNPE (ORCPT
+        with ESMTP id S229449AbjKRNXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 08:15:04 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7051ED76;
-        Sat, 18 Nov 2023 05:14:59 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D183920004;
-        Sat, 18 Nov 2023 13:14:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1700313298;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHMSEER/SBEH4IqK5yT4ZrjQxH8VpFrbj9NbOVlG2+g=;
-        b=WaKbZMD90W3n3aSXSb3a0ZAU/mvWWrOzYmu/OX+FjY2U++BzndNh1VYokHs8s9NcqXZBQO
-        HjEAkUBwmEAut1Au+7mXn76E7pg4Fvyc9hZYocLl8hf7ondvoS0S/SKOtlHiUzcdSmNQkX
-        wLJNarbKsxYgD8Pod5XGAnzQ6QJ8YK3mRXIe/gI/LxOzODeOHgLAJ0FJ3/4EsT/dY+5pnw
-        0ank40KApmUlWos2qsif/6/gW7SE8P7aW/Co7YVTgZY5baXpE1j3a5NAH8O+yqto4/L3iY
-        jdYgq6gdqTWVF+RkZF7NRQtgANtLpKvumYvDotECsgxItT2b9J+RS+EAKAVOWQ==
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-Subject: [PATCH net-next 15/15] net: dsa: mt7530: do not clear config->supported_interfaces
-Date:   Sat, 18 Nov 2023 16:13:17 +0300
-Message-Id: <20231118131317.295591-5-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231118123205.266819-1-arinc.unal@arinc9.com>
-References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+        Sat, 18 Nov 2023 08:23:12 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61F39C;
+        Sat, 18 Nov 2023 05:23:09 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso2148525b3a.1;
+        Sat, 18 Nov 2023 05:23:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700313789; x=1700918589; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nez5c+yncebw8/1HftCMnbIZdcHhIxUqVzyLpQiwwAg=;
+        b=Nm0MG3RtO8AIMt1mg4+zpsCecfgM/gO0xv91zdfBfDByiVhpzFMzrQrSV6p25/jav/
+         3aQ6V6/jgs9IuoNx83OjXbWbdxGSr2QpGL8hCm8awU4MmcGSCr0Ml2nRnUwBbhCNznxa
+         zRR8UvGSApQKdKrmeSHFepqQSwf1BKUhHUABjWtKZDuz7Rxy6giLLvtUNltfCT8letSr
+         /76i/sv2TGXCr+2CMTn/HBOcaJwWqM28hYJLO8HgW0/or1mKC8wvBUnGY28EY4H0UGd7
+         E/YPiO7lUCZ/aXXTHsDURk/7u/P4VPPDcV4b5nEP73CFdFJNHvDQ1Vu30z2xrOJNhwDa
+         eXog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700313789; x=1700918589;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nez5c+yncebw8/1HftCMnbIZdcHhIxUqVzyLpQiwwAg=;
+        b=dEBXPiajgegZPHXikkQ154rPbrSQqG+OHpwn1nTsxLXL1blNDletw/4Ut52ccwMwvB
+         ztJ2Dnl+Igke1FZ95FhQ20KX0puORFT5J19e5uAO0XqnCuaGLBtIPDLdiaG9H46Y2ljX
+         whEnA1UhW1ywXYlsc7iPxeif5r+nFwe2v79WJJ0DpSpQrBGJPatxsvtA105HP3I8qXv5
+         r9Bz50UQce8h+by6VSsnqtPbZrNj/l1zZzXjbXxgD3VWrUhX8CgRgoowjN5z44cFaiSl
+         2XRvGTWqV9V3x1l9im2cuVzQ2MRUlFWWaxeByzt4x/8lQhcOka2+ipd7nW7E3LA8Y0mC
+         9Q0w==
+X-Gm-Message-State: AOJu0YwubiEyl1SEvsoY+sUQLUrAIZL4dIJ4cl+lSJHUEz6hI5gryife
+        4M1zS93TwcBvdf0ToY6yDTg=
+X-Google-Smtp-Source: AGHT+IFITBKV+zIrqTycaVUInSj0j3i670pPDHtkSbXXun1jFqn6Vr9M2n744LKqw3VErgEkPtn9CQ==
+X-Received: by 2002:a05:6a00:2e88:b0:68b:e29c:b69 with SMTP id fd8-20020a056a002e8800b0068be29c0b69mr2952601pfb.9.1700313789009;
+        Sat, 18 Nov 2023 05:23:09 -0800 (PST)
+Received: from localhost.localdomain ([114.249.31.17])
+        by smtp.gmail.com with ESMTPSA id s21-20020a056a0008d500b00690c52267easm3008644pfu.40.2023.11.18.05.23.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 05:23:08 -0800 (PST)
+From:   YangXin <yx.0xffff@gmail.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: namei: Fix spelling mistake "Retuns" to "Returns"
+Date:   Sat, 18 Nov 2023 21:21:36 +0800
+Message-Id: <20231118132136.3084-1-yx.0xffff@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to clear the config->supported_interfaces bitmap before
-reporting the supported interfaces as all bits in the bitmap will already
-be initialized to zero when the phylink_config structure is allocated.
-There's no code that would change the bitmap beforehand. Remove it.
+There are two spelling mistake in comments. Fix it.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Daniel Golle <daniel@makrotopia.org>
+Signed-off-by: YangXin <yx.0xffff@gmail.com>
 ---
- drivers/net/dsa/mt7530.c | 2 --
- 1 file changed, 2 deletions(-)
+Hi maintainers:
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index ca42005ff3a9..20ae147b823e 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2558,8 +2558,6 @@ static void mt7531_mac_port_get_caps(struct dsa_switch *ds, int port,
- static void mt7988_mac_port_get_caps(struct dsa_switch *ds, int port,
- 				     struct phylink_config *config)
+Sorry for the formatting problems in the last Patch entry, here's my revised version
+
+thanks,
+YangXin
+ fs/namei.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 83dd8b51995a..c422cec576a5 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2468,7 +2468,7 @@ static int handle_lookup_down(struct nameidata *nd)
+ 	return PTR_ERR(step_into(nd, WALK_NOFOLLOW, nd->path.dentry));
+ }
+ 
+-/* Returns 0 and nd will be valid on success; Retuns error, otherwise. */
++/* Returns 0 and nd will be valid on success; Returns error, otherwise. */
+ static int path_lookupat(struct nameidata *nd, unsigned flags, struct path *path)
  {
--	phy_interface_zero(config->supported_interfaces);
--
- 	switch (port) {
- 	/* Internal PHY */
- 	case 0 ... 3:
+ 	const char *s = path_init(nd, flags);
+@@ -2523,7 +2523,7 @@ int filename_lookup(int dfd, struct filename *name, unsigned flags,
+ 	return retval;
+ }
+ 
+-/* Returns 0 and nd will be valid on success; Retuns error, otherwise. */
++/* Returns 0 and nd will be valid on success; Returns error, otherwise. */
+ static int path_parentat(struct nameidata *nd, unsigned flags,
+ 				struct path *parent)
+ {
 -- 
-2.40.1
+2.30.2
 
