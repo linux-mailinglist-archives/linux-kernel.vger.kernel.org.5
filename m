@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7017EFCAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 073F37EFCB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjKRAol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
+        id S1346405AbjKRApX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjKRAoj (ORCPT
+        with ESMTP id S230036AbjKRApV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:44:39 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA2D10D0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:34 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9f27af23443so354692566b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:34 -0800 (PST)
+        Fri, 17 Nov 2023 19:45:21 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98816E1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:45:18 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9e4675c7a5fso354176366b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:45:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700268273; x=1700873073; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700268317; x=1700873117; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=i9rJR16RkZ8dqSqbIrxv13E+dc2kUVSfRUy+BwCEmHU=;
-        b=uxe7LHICRoIvaGJjRnpi8+cN/ArhNGMIqFVVjxVYbKxSaN/wH4NsWsCuLoKihKe58P
-         EDDLWWnsp0e1c0ZD4w5LmX82/yeKzB/NjQE/KDflfwMyyRRYSd3FOnZ6igFoIm/UW35O
-         BMRPpU/KkStuQByDAE7YSAlwUgkXezLDjA/na6UvjZM0bM7Vkpc4a8Bx7FXx8IZG1i11
-         HsVt+aKkFa2CSx/sOkptx6NbZu/F5Ie+m4JMpqCRLFkxN500eC2plFZBaJO3Iblm05IN
-         2sNfgeIvR2fbkEamhanX/L/W649PW99jxFGZPHzto6VUzl1KOG9o6A2wUGjPjsOAG+DY
-         D6ug==
+        bh=m+Yal7n1L1DW4bj3Z0sdG+mTZ83GeTrR4A2Ul6jZ8S8=;
+        b=V7z/TACVT6Facv+NTozs2nEcDxuf5ko+PelBsxF7c+uve10E23JSu3JkDLmZUm3F1K
+         g1ezYk4e26cNJhTEN8yr7APukPJxNn/rLhHdHUffJuFBfHxYeSf5zNdGlc8dIy3toghy
+         HVdj3bvLT6zGz8I6O3z10IdSYKXPbwU0tZcBxqMTLRAV3JDGeoyskPNrFfjGdGWF7tr/
+         CrCyixhsyfT8G2h6Tv2LYprWHsgYsNrwIg9i1s3sy8seDlt94Im26mZVft248z16AsFk
+         2t5DqtwpxOWY6voFeHyx1miEqVcBSDT8q+L2MFl1jviZAW33EXuRVEm7160/QfR7cXGR
+         CmYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700268273; x=1700873073;
+        d=1e100.net; s=20230601; t=1700268317; x=1700873117;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i9rJR16RkZ8dqSqbIrxv13E+dc2kUVSfRUy+BwCEmHU=;
-        b=kf7qmXkUDKuxep6RSVgQL2g3jCgbIB7sMHcsU3nDyPmYgOkb/GrTMJYo6DVXbBEhmF
-         lZ+J4IQFvCv+0/Jc3Cl0wqaXeI9GaJ86g12eTDKPl/YXnPPdBNwPxeP3vyqOU53Ar9o+
-         jLFhRQsba4e9XW+VoXY5auDHoeTIqoJPixTdUCexeMEI00s8xDnmJH3ol2WL4FzT3wqE
-         Eh3IwNmzGcsWGyowoBqMzlvMc0zYRJ22+S/z9YX68mBebYbefcxn+5wAz7I1G5t4qDJ+
-         Yt+lESAAYetjys4ffE+yk+vWp/qZylp6NgkW+VJPsVcVdVGuTTQSn38RpQU33Xsjm+Kc
-         TwOA==
-X-Gm-Message-State: AOJu0YyMrAxlgz+tePUwDrVsYjKdNpiggKfHxgGHZ5iHit/pIrN5t5Ix
-        DK1dM42FzCHoUeoFB7wbchBPxQ==
-X-Google-Smtp-Source: AGHT+IHpIEndtB19v83nxLDCvnS77zFBahMuwPUXSZFx1fF8SNOmyhrc5WBvrWmmWCGZhfYM7gmZ/w==
-X-Received: by 2002:a17:906:d151:b0:9e1:46a2:b827 with SMTP id br17-20020a170906d15100b009e146a2b827mr519042ejb.29.1700268273067;
-        Fri, 17 Nov 2023 16:44:33 -0800 (PST)
+        bh=m+Yal7n1L1DW4bj3Z0sdG+mTZ83GeTrR4A2Ul6jZ8S8=;
+        b=miz1naQZws7wUbWEIDk+fXKRj9I4Uhl/9OnECBWtIR7cmussQzfu5lWubJcyEZu8/g
+         LXeCDHzBT4ulByHOO9A3XsaqKeUu5v1CXQ0igyk2UeyjHaahNMd2gQvJ/rsbbAe2nicI
+         lwUZ94PsI1EyM8G288G+x9TFQxFN9c69QQ80HHWtRnY1IM84hYUiml7tDp/01TUDCkqr
+         22UtOVDqQhToPsFr3GWrojzLN2Q8BDXT7ppMx3BGmcKk9RXpV5SqJj/OkJOB1qaEiCNX
+         JePXKN5/dkJM0kCoT3uTkakETlnswsK+07a1nnFoGo1DpwekGmBkPWoQrAzFdjQDaSSD
+         pMMg==
+X-Gm-Message-State: AOJu0YwpN40st8vvRUjm5gy13iZRX+YV/7YywfXFHxUlD2Q8qGBDFUmt
+        L0JYbvFkW42oTgCFWYYtZTlBqw==
+X-Google-Smtp-Source: AGHT+IG8c9l29Omc6OmtWR7a50pKhBZldQIo4VnBfKDL8KM+pJZK7QT1MVS6xFA20v0oFWqqOPwxwA==
+X-Received: by 2002:a17:906:5345:b0:9b2:6d09:847c with SMTP id j5-20020a170906534500b009b26d09847cmr554768ejo.10.1700268316970;
+        Fri, 17 Nov 2023 16:45:16 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id mc16-20020a170906eb5000b009b2c9476726sm1327577ejb.21.2023.11.17.16.44.30
+        by smtp.gmail.com with ESMTPSA id mc16-20020a170906eb5000b009b2c9476726sm1327577ejb.21.2023.11.17.16.45.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 16:44:32 -0800 (PST)
-Message-ID: <1636bfa0-c2a0-4c1a-bf4d-cad4cdf7b943@linaro.org>
-Date:   Sat, 18 Nov 2023 01:44:30 +0100
+        Fri, 17 Nov 2023 16:45:16 -0800 (PST)
+Message-ID: <6a799fc7-8d7d-4035-8e7e-458f9a61bf4e@linaro.org>
+Date:   Sat, 18 Nov 2023 01:45:13 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/6] arm64: dts: qcom: add uart console support for
- SM4450
+Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm4450-qrd: mark QRD4450
+ reserved gpios
 Content-Language: en-US
 To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, robh+dt@kernel.org,
@@ -70,7 +70,7 @@ Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
         quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
         quic_aiquny@quicinc.com, kernel@quicinc.com
 References: <20231031075004.3850-1-quic_tengfan@quicinc.com>
- <20231031075004.3850-4-quic_tengfan@quicinc.com>
+ <20231031075004.3850-6-quic_tengfan@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -107,12 +107,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231031075004.3850-4-quic_tengfan@quicinc.com>
+In-Reply-To: <20231031075004.3850-6-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,11 +121,29 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 31.10.2023 08:50, Tengfei Fan wrote:
-> Add base description of UART and TLMM nodes which helps SM4450
-> boot to shell with console on boards with this SoC.
+> Some gpios are reserved for other subsystems, so mark these reserved
+> gpios.
 > 
 > Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 > ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>  arch/arm64/boot/dts/qcom/sm4450-qrd.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+> index bb8c58fb4267..e354bad57a9e 100644
+> --- a/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm4450-qrd.dts
+> @@ -23,6 +23,11 @@
+>  	status = "okay";
+>  };
+>  
+> +&tlmm {
+> +	/* Reserved for other subsystems */
+that much we can guess :D
+
+it would be very appreciated if you could do e.g.
+
+<0 4>, /* fingerprint scanner */
+<136 1>; /* coffee machine trigger */
 
 Konrad
