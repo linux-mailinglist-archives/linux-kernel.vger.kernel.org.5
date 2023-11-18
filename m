@@ -2,140 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8E7F0215
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5797F0216
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjKRSrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        id S229887AbjKRSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:48:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKRSrg (ORCPT
+        with ESMTP id S229478AbjKRSsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 13:47:36 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABEFE5;
-        Sat, 18 Nov 2023 10:47:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700333238; x=1700938038; i=deller@gmx.de;
-        bh=qXXytIy5gEGtgg3frHvJjypzDpXdGpZy7WG086Ql6NE=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=L1XQfo4LYl2C7CEpNgwlY3ZZco5pSZ53+zxVMJXeA45qxz8lO87KtwaDsj6+zyzC
-         kweKMnuEkSQFiyVHoa4+BdMnipPWUKHm1ywU6sxy82uUivvF0DbCIiTFZtmr/fZVL
-         pk/a1L7aag/nEiEuontKABFVXdxmyElr7cTeqmoBdJD73FYqlS13HbzJudZ4bCGq1
-         kL5bdtOcTH790enMQdUx4rW6Fctb6iUJoWIH96oL3yBlNNjD1hJU2xWF24IXNwaiB
-         Lkt+N34XNddVxU6cpWS47RYDHRJjr0VTQ5ywQiGBWjFaadE0k/sJT1OqOtzM/9Mww
-         0h3si+udddUG/GWk1w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.151.152]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M89L1-1r0Jbp1QNX-005DyT; Sat, 18
- Nov 2023 19:47:18 +0100
-Message-ID: <5e8aefce-2c74-4d56-b737-fb9f55205f8a@gmx.de>
-Date:   Sat, 18 Nov 2023 19:47:17 +0100
+        Sat, 18 Nov 2023 13:48:33 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2071.outbound.protection.outlook.com [40.92.91.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C1B7;
+        Sat, 18 Nov 2023 10:48:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GvdMaQGm8/Q7uUaRkuFFvj9dWfqyxbMwhqnZqiHuJ8ytC8VAKNShlUMhX3olcUv2BuwPrMgV/F5P6zzcDRqBkktS3Bd4wsIlv5qL96h4Peml37r/ig3To4Fll5dp+jQ2Tt8Mn/N39k+ss8sw1KQ88wcN2/xoZv/FQ7wl+l5ZEugvvpi6Gat/Z63Pxuk7802lutAj43n0wx7oeX42NgmX+RNx35PuRX+gWSSc3inxp8Iwuf22Nc/3NlUPvBumKRcnfm6fu5FkcvAyvCNxLzq06nxPMPNvS7eYbgGdNrj9N03Oxe9Sx7se+fivwA2kEHNlyvT/DnlNORYCEzkfjAvMTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
+ b=BGnyt1Mn9M/mfFfnYVIXducEnji2rcjtq+ojOWA90AiS7MhvR7KHbFdO/hJNoVCk5Lbj7ypUy6FmkWdYNVcgP7gRO7RK6xtoY9ezeSho0PHacNa13dnZSkOuVFLEXhDzKfvi36pGo0wB0VzOLDXk0+n6L+i1FfuF/m1ipgiCzyisQ4s1i3RfK6294IRwICZQjTpTGkxmreAaFJqTAFBVK87aqvfqdn+NbLqb9HBI5KWq4mCUIuYHBaJarbN3kjrk4ZYPcBnPI8oDjWEPswCtjBvNoxmcJj0zsw1yii4+YWVZNCar4wIvzOMC3YcQaWDsLM3RfLbSkyw2CS1STkeP9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
+ b=o+J4Q9A3Ae+1x88XvQR5kDf40CSKA+ZUsvB3TWrt4umMzhU2S05GToomGVADTF2EJbVwv7LBmNZOS08X5y7H19vZ2ZtcZ1TGD6jv2e0Qd2kv3qRcKuZcZ55hq5jWhopPoLGR8R4WehrLFn2thBEMHxs5HoV0w8U+4O+Ni/k96+Scqf10CSKnkgZ/yJVjULSijXsrhovVF/tZ+fg5pKp4lbenqNQ1WCbheUIYhNjZEOWmVfagCZrG4fP7kR8sa+vz8pHWqLTxglrBtw8ljKLQUfJN9sdHYfYLI06Lz5ps5sCm75M5evPaV/nLYDPeqG44rdK3crziGA8kpoj4rAFUpg==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS1PR10MB7936.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:471::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Sat, 18 Nov
+ 2023 18:48:27 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
+ 18:48:27 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
+        andrii.nakryiko@gmail.com, mykolal@fb.com, ast@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in vmlinux
+Date:   Sun, 19 Nov 2023 00:17:57 +0530
+Message-ID: <GV1PR10MB656325F13ABA4DBFD4663C33E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [/8NAesCYMHq/Ig6o3N/ES7xBrt69hz/u]
+X-ClientProxiedBy: JNAP275CA0021.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::12)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231118184757.231739-1-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] parisc architecture fixes for v6.7-rc1
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Kees Cook <keescook@chromium.org>, Sam James <sam@gentoo.org>
-References: <ZVjC9P0h5mw3ZbnD@p100>
- <CAHk-=wgtxsw8hrLNcGz9aJtP17NR3=NSvRdYGfKB52VorhkWzQ@mail.gmail.com>
- <0f492aac-9ba7-4bc6-95b2-6b1104a12244@gmx.de>
- <CAHk-=wgtie=7Z79CssOF10twd1mdQuy1JeiPVgbGFTa9q7JePQ@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <CAHk-=wgtie=7Z79CssOF10twd1mdQuy1JeiPVgbGFTa9q7JePQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/MUCT8CWKRlnSy2Yzz2u7sONG+Z83F6WqVTNxzl4OjWrrorJv1d
- TsDYG3Ms5yEatTykhcQhNwZQpspAQ1kez9nIZbAO+hI5SP48vINaCMpwofeA+5KUWh/aCCL
- ViAxQADoT1WL71FKmM8CnmBzHx4GPBoyZAJlKMaIT9w3O6i01+F/uhur4LVn8FPoWMapeAU
- XOVUnYbM92L7y/BV07biQ==
-UI-OutboundReport: notjunk:1;M01:P0:NhAVDpE41M4=;TCWM0YxhJf7y4q+WzGRPUMxIZmz
- GmOFEnHfLT2BTzwSBKBbu0NYRgDYiKM59R2t7N1TMvpee8dsk5LQ1xg0ZyyKtmNJ8Mt+awkMP
- /dOYTrarVp96nEcUTwBFLsX8EOumyjeWtTbumAWgsg+4QHzSo23G2o5dXU9qvGMT8Y5I4ztgM
- V1CkOhkTzOSH+8R/ZFw5QDLrQT8+7cUBBByme9KrpKxBi8s+6d1a3AGVspAMNs9D9FfSIlCTS
- kLgks/VA6OtlQoLJnzG6OLSFo4Fy+IGgzk1JCI3PF1bm0noGHwLQ2bGxTbilqNrRGi355v6lt
- rJJ1qpmGSVRp3bVoA4yUP1lNHnPjmsovI5hN8i9fGjosw4ZPSR3o/yvopgNFxd7jqOT+bUtqR
- 89TppN3rAmVv/NHeKU0t2cgjmrM9gm77Ub9/p57A8ey/cAWy8fqpiJR0MURGWWCZmZrUL2VeQ
- q3PTsJTdjDeIkxplZo9VIDgeMw7j6kl1LydaJLWoqeOKscRomZIUCKNPSgwgJiglTWf3sYIWW
- SnFoYCJYF6rhrycKzMF/foBFAOQ4/7JHHWQYZfyUNveA7JGDtGrHRwhNNRu5byu2UmlF4SS1c
- hUt8njPiCEGm5Mr9YnoAko1tpFwtuH+4TH1fMPjEiTaUm6npitaM4bI+DuisUttQLfEi20l9H
- kG41yall9R3AK5EazBuoK5CtvXJbiTEsB4z8rrkizzNsFTVPdvY5NQOvkvUkhLd/D9SbffojU
- 64Fhy7NUyLArv+CUoQKIwEWFhT295PLlI4JonnF0TEvMC7oKVfp0m/Ofdm0OD2q4jtkKBzUN/
- u0JvA+qTOTLv330AwKzomVmSaLD5uu7etROfx0RkFpGjsL/NlnQe1fgtITId32OGEmvn1SPbT
- eV1bq6pgzeuHzyBYoFJxxpHrBiRf7nTEFr1IDIglXppMC4A/ENXPldj0+byBcQ2u7DhYy+E5k
- Z+EnHw==
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS1PR10MB7936:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b09d681-79e5-4a25-135f-08dbe866f32c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hfHZTdVuTc/mnt90k23lNrpY+GvXYa6AOxAED39gUgCVuK4mkZ92CdwMmClk3TZ2is2K58n2txuan7g/LU3zsoMyiGriyF5HU9CbFh0nFwfHsRtYVuF0q56/ZyFSIuaMS7Wk4x3tRifw6HRh7HPv1jiWI3snjRv3+s8eBperjlUoqcw8wjxXduVpZ49k22wS2SQc+44O/HfEV8ZtXfFh48grSamNwTKiyhs/00BdXLTUIhKDY1igmiA1b1/Qxr0THIQ7Qt2MJLglKlf7W9Cl/NqEpigop3n7noAHzciiC7PDPmMFC9ytyaMKeJLTJubM00UOCEGsm5Zw6zXr3Uky4mgaY5LoUw1c2ZKU0lCwFeGZ0kIjgLdN7ZdcAKIXJPVk9wkQxCwBuJkHdInzC7D8GPb4vLq0d3dSRTnlpsOuD1AccCiumhmoETj/T8/Nqg1Cc31BXHBTTSeJRvKSkFEu7Eyk6ujEK80A2xf4KQmQbjeeUW9Atf96t0NeXjYadCooHcjx6+edVTnYYS76iFRaWw0UBhOFtfgxwfyWZMnvNyIOo77rv62Oevlf2LnYn6J+Wtl88K4CXtalGo2ioFCpKXWJDnNunAHevGFgRJrheYE=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mI8wYgHAavySXjmsy71P7Fks4gTn3rEuM0zlexguhI2X83L2qHHR4olIEXHv?=
+ =?us-ascii?Q?evXb2kPcqprXnEJ2IrE3e1Wfhs/G1NWkXNmzZg66KmOyT7Iw4Mw+eekHfb7U?=
+ =?us-ascii?Q?YFx69+IFsbYa9enyWjCD+abBsGr6sx0UFaro1xknQfRMiOcgzPx6vhzNO2T1?=
+ =?us-ascii?Q?HTD922Ab0+hhmGaIjVmGRNnlabKsHNW3vo9iNQpUQHcJR8HpsmRuURkbatBq?=
+ =?us-ascii?Q?J9twGb+guJqu4qMBh9wD4IajigWFzxjRkc/3uZK/T/KshKsovp1Vx8Sfb/th?=
+ =?us-ascii?Q?pvTe3KY5nNyn7af/VTiyeJkXPlmOEbZxNxXCNYJg4xYcOyDfJHVzrqG7Jgih?=
+ =?us-ascii?Q?VJDKFmdF11pmJrxtDwxfE8T4zoN3xT3/y3Miwns9Gi61ZL+FbJDGESjSqOYA?=
+ =?us-ascii?Q?mfqmHC0N3g50bkH9axiSK6PETnydWzYtG94Qri+mOhHxXVEpaVmUH652iXUB?=
+ =?us-ascii?Q?oUU4X8clHEA/Xvvgqc+zi3dxoudpZKffuLnXIs9i9Zypf9OjTcsxBnLSc+LF?=
+ =?us-ascii?Q?/3zoog2KNzKt6MSVQJoQSAJ+o9xHWg0LjviVOqyjNDqa+ZJt+6MLpqYrv5nK?=
+ =?us-ascii?Q?DEDz2Patul7ZKToDXa2aNollDWqfxDOxvedk8+V2pWtBKHwgDh0fGtpC308G?=
+ =?us-ascii?Q?e0XZ4zDubmiiJuflDZ5wi2RXYLRHAeG63urN/bpO9p/hz+NfAMAOYplylV+8?=
+ =?us-ascii?Q?6adZL0HJjEGZ7ccLVigq1nyC9LPweftMFVi6uuHNeUiifq5KYsO6k4RxT/lw?=
+ =?us-ascii?Q?S/6ka9z7CMZmRuAB2T6aRT+GV5Tg/mIrGqjbWsCXxoirBK/R3U8vJM11gn9j?=
+ =?us-ascii?Q?0Aa7B/66lA/eIY94sVwxkFolYZka3r8YHZkzJouttXHEcEsS1ipBhaQNuc8m?=
+ =?us-ascii?Q?7v1chpJDZB51m8E00gkVbEzQFDrxVrmG9En26fHt5uSEDh9bm3Cc3RHjX2Bm?=
+ =?us-ascii?Q?Wxz0gvDBzGfxtgliCfaPQ2uTWf+ExlHRQMcDbBgp4l2qZjZki8FY+9g+dMqs?=
+ =?us-ascii?Q?/wVGSlEKHVAe8T1qliXa8aNvEYGKDRZguDHqfUalBiPjd1jxSTtq2bxrZta/?=
+ =?us-ascii?Q?lbitd8yHwZI6z8KF1OEMPPVkAw+SLgFTmTa1Apr9o2iZVjwBFiYSUerQbmeL?=
+ =?us-ascii?Q?lLQPri75doah7b71pf2UqW3KoQiQuUD2iEcN/bCoGxC3pzWAwCWU5eLrtQzj?=
+ =?us-ascii?Q?Nxqd2efJJ4bZ4SnIQcg1nJVgR5wv5arG/09Hfr/sOoou1Jfdsvz5/vPaFJk?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b09d681-79e5-4a25-135f-08dbe866f32c
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 18:48:27.1860
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR10MB7936
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/23 19:42, Linus Torvalds wrote:
-> On Sat, 18 Nov 2023 at 10:40, Helge Deller <deller@gmx.de> wrote:
->>
->> Would the patch below be OK? It's basically yours but with EINVAL.
->> (might be whitespace-scrambled!)
->
-> I don't particularly like EINVAL, but it's not the kind of
-> show-stopper that the other issues were.
+vmlinux.c uses the `CHECK` calls even though the use of ASSERT_ series
+of macros is preferred in the bpf selftests.
 
-Ok, thank you!
-I'll send you a new pull request.
+This patch replaces all `CHECK` calls for equivalent `ASSERT_`
+macro calls.
 
-Btw, we are in the process to get rid of executable stacks, but
-this will take time.
-That said, I hope to remove this check then again.
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/vmlinux.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Helge
+diff --git a/tools/testing/selftests/bpf/prog_tests/vmlinux.c b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
+index 72310cfc6474..6fb2217d940b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/vmlinux.c
++++ b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
+@@ -16,27 +16,27 @@ static void nsleep()
+ 
+ void test_vmlinux(void)
+ {
+-	int duration = 0, err;
++	int err;
+ 	struct test_vmlinux* skel;
+ 	struct test_vmlinux__bss *bss;
+ 
+ 	skel = test_vmlinux__open_and_load();
+-	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
++	if (!ASSERT_OK_PTR(skel, "test_vmlinux__open_and_load"))
+ 		return;
+ 	bss = skel->bss;
+ 
+ 	err = test_vmlinux__attach(skel);
+-	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
++	if (!ASSERT_OK(err, "test_vmlinux__attach"))
+ 		goto cleanup;
+ 
+ 	/* trigger everything */
+ 	nsleep();
+ 
+-	CHECK(!bss->tp_called, "tp", "not called\n");
+-	CHECK(!bss->raw_tp_called, "raw_tp", "not called\n");
+-	CHECK(!bss->tp_btf_called, "tp_btf", "not called\n");
+-	CHECK(!bss->kprobe_called, "kprobe", "not called\n");
+-	CHECK(!bss->fentry_called, "fentry", "not called\n");
++	ASSERT_TRUE(bss->tp_called, "tp");
++	ASSERT_TRUE(bss->raw_tp_called, "raw_tp");
++	ASSERT_TRUE(bss->tp_btf_called, "tp_btf");
++	ASSERT_TRUE(bss->kprobe_called, "kprobe");
++	ASSERT_TRUE(bss->fentry_called, "fentry");
+ 
+ cleanup:
+ 	test_vmlinux__destroy(skel);
+-- 
+2.25.1
+
