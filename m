@@ -2,165 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 014577EFF2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B83DC7EFF2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbjKRLK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 06:10:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S229567AbjKRLNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 06:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjKRLKy (ORCPT
+        with ESMTP id S229469AbjKRLNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 06:10:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593DBD6C
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700305849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zcW40Pm/C2VhC3hYpvH2rN7+M3PaPEN3Ao5G1XKi4yM=;
-        b=OEdsLfjcdDRwEE9Mxl7WQL713jqJ8J1PEqAukqrObtaRViHDxvqZakO2zBdtSq4NHDkDWD
-        pOQKDVIV8s8VrMpcAOncIZPxt2fcF8BIL8yzfoM138+esC+FZ/ZEsSWzQZY2ype6HR/oUW
-        IoXPXCjhaDuOyKt5Z7BXm+S8FDuxrOY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-247-YJxqXrZiM-Sq6Et9oJhhlA-1; Sat, 18 Nov 2023 06:10:47 -0500
-X-MC-Unique: YJxqXrZiM-Sq6Et9oJhhlA-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4083a670d25so2471965e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:10:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700305846; x=1700910646;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zcW40Pm/C2VhC3hYpvH2rN7+M3PaPEN3Ao5G1XKi4yM=;
-        b=lgc1dT0enOcX7aOHZ84E46ariGZzkeHjqwmCkGYHDqZ2ir5uRKvXSv8UDNnHcjog2M
-         5ZCRW31ribUjKQoOCcCpWp0lOSF3pbzXMnCN3F+KyKCUHxkB4x5BxakJEbKmhBCNp2ya
-         bCvK6Q9LiLu3p5Ztrg9zWNTCjNFVFINm2aGPQUXrPputLsrlu3gjzedG4GtYYrx2f6Qh
-         1K5BwSVlAFo4B+duRvXpCjbyjfL8BYm63oHodOsYfSo6gJsgWjLnOvUANzrCrt2AStG7
-         RHpTImV+lSQ8U2Z1TVKZss2WAmklvC6Cq7Z8zF50R4KTgImDtyRtD6admXAcgJ85UTl4
-         Fg/Q==
-X-Gm-Message-State: AOJu0YyXkylzIdCz4eu9R5FlOC6LRIo0HclkDhUmoJgJtDHR0dcUTkK2
-        td5nmr8yI1L9KBTKws1HhvMQlgQhOfaFPKE5buiThvZOzS8mWUKyKUH5FUW+7Sm8f/b3y/xFzba
-        1ffArKSpy+OHn34nrPmopqMLI
-X-Received: by 2002:adf:ef92:0:b0:32d:9cdd:a23 with SMTP id d18-20020adfef92000000b0032d9cdd0a23mr1563667wro.25.1700305846414;
-        Sat, 18 Nov 2023 03:10:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF5Qbad3a6WzEcATGME42HhfaqZx1bG/yleXweOgoccNqiDLr2I5NcRH9p1kx3aG3lak43/aA==
-X-Received: by 2002:adf:ef92:0:b0:32d:9cdd:a23 with SMTP id d18-20020adfef92000000b0032d9cdd0a23mr1563650wro.25.1700305845984;
-        Sat, 18 Nov 2023 03:10:45 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id o6-20020a5d4086000000b003316e684c5esm2950657wrp.79.2023.11.18.03.10.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 03:10:45 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Sergio Lopez <slp@redhat.com>,
-        Sima Vetter <daniel.vetter@ffwll.ch>,
-        Hector Martin <marcan@marcan.st>,
-        Andrew Worsley <amworsley@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer
- node is found
-In-Reply-To: <CAMj1kXG7Xyk0ys9j-XRo7Rr8gYz1qJE8fFSixBOwVbm-pjeX+A@mail.gmail.com>
-References: <20231113085305.1823455-1-javierm@redhat.com>
- <CAL_JsqKHTN5hfd4qpg5RXbmQLKZNVywDkSj9mxvfGmjrcChQQg@mail.gmail.com>
- <87jzqi59bt.fsf@minerva.mail-host-address-is-not-set>
- <CAL_JsqJM9+cbNviwuKGB5+3YbyAP3UH+TxCxsU5nUtX-iRGP2w@mail.gmail.com>
- <CAMj1kXG7Xyk0ys9j-XRo7Rr8gYz1qJE8fFSixBOwVbm-pjeX+A@mail.gmail.com>
-Date:   Sat, 18 Nov 2023 12:10:44 +0100
-Message-ID: <874jhj1fm3.fsf@minerva.mail-host-address-is-not-set>
+        Sat, 18 Nov 2023 06:13:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868BED4B
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:13:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700306010; x=1731842010;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Oy4WM8STg6mHyrvgUdfedhz06G8DR9Lkz2Ullp7dju4=;
+  b=emN+FkuAKjS8JvGCm90mupTznpfKeikqDhL4goomeO26mD9HewzHIt7r
+   wHJssz3Ql2tTN/TxMkusQ3y7CMlJ1AposcJb38eIZobtKYeyCKDWdMK2t
+   APyWGE9noUwBYMiqUJeo5Wjf2/W2SGsF7lmz73T5zZ8fdRjUytAUeBKRo
+   gxroNG5NH/arguUavbgGTcNCE2SfRtUd292va2BGk3B2+vadMq+MZWgGo
+   bQbW4OfbmN7Vp9Cy3ZuMiwzQxomzcjLNh2G6bIinKdRZFCO3QUvvLxtki
+   3oY/ngCS2HFpjc8KT8g0AJ00kUpfUibbmUEq9IkPVBy4uG1mh7EMb335/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="457922963"
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="457922963"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 03:13:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="765835646"
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="765835646"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 18 Nov 2023 03:13:28 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4JGP-0003qN-2z;
+        Sat, 18 Nov 2023 11:13:25 +0000
+Date:   Sat, 18 Nov 2023 19:12:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Teodora Baluta <teodora.baluta@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: drivers/iio/accel/mxc4005.c:328:36: warning: 'mxc4005_acpi_match'
+ defined but not used
+Message-ID: <202311181952.1usxCcup-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ard Biesheuvel <ardb@kernel.org> writes:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   791c8ab095f71327899023223940dd52257a4173
+commit: 077377fc4f74899c58e946e47352216412d0bb3a iio: accel: add support for mxc4005 accelerometer
+date:   8 years ago
+config: x86_64-buildonly-randconfig-004-20230906 (https://download.01.org/0day-ci/archive/20231118/202311181952.1usxCcup-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311181952.1usxCcup-lkp@intel.com/reproduce)
 
-Hello Ard,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311181952.1usxCcup-lkp@intel.com/
 
-> On Fri, 17 Nov 2023 at 00:09, Rob Herring <robh@kernel.org> wrote:
+All warnings (new ones prefixed by >>):
 
-[...]
+   arch/x86/include/asm/paravirt_types.h:545:33: note: in expansion of macro 'BUG_ON'
+     545 | #define PVOP_TEST_NULL(op)      BUG_ON(op == NULL)
+         |                                 ^~~~~~
+   arch/x86/include/asm/paravirt_types.h:555:17: note: in expansion of macro 'PVOP_TEST_NULL'
+     555 |                 PVOP_TEST_NULL(op);                                     \
+         |                 ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:587:9: note: in expansion of macro '____PVOP_CALL'
+     587 |         ____PVOP_CALL(rettype, op.func, CLBR_RET_REG,                   \
+         |         ^~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:624:9: note: in expansion of macro '__PVOP_CALLEESAVE'
+     624 |         __PVOP_CALLEESAVE(rettype, op, "", "")
+         |         ^~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h:831:16: note: in expansion of macro 'PVOP_CALLEE0'
+     831 |         return PVOP_CALLEE0(unsigned long, pv_irq_ops.save_fl);
+         |                ^~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h: In function 'arch_local_irq_restore':
+   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
+         |                                               ^
+   arch/x86/include/asm/paravirt_types.h:545:33: note: in expansion of macro 'BUG_ON'
+     545 | #define PVOP_TEST_NULL(op)      BUG_ON(op == NULL)
+         |                                 ^~~~~~
+   arch/x86/include/asm/paravirt_types.h:595:17: note: in expansion of macro 'PVOP_TEST_NULL'
+     595 |                 PVOP_TEST_NULL(op);                                     \
+         |                 ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:612:9: note: in expansion of macro '____PVOP_VCALL'
+     612 |         ____PVOP_VCALL(op.func, CLBR_RET_REG,                           \
+         |         ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:637:9: note: in expansion of macro '__PVOP_VCALLEESAVE'
+     637 |         __PVOP_VCALLEESAVE(op, "", "", PVOP_CALL_ARG1(arg1))
+         |         ^~~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h:836:9: note: in expansion of macro 'PVOP_VCALLEE1'
+     836 |         PVOP_VCALLEE1(pv_irq_ops.restore_fl, f);
+         |         ^~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h: In function 'arch_local_irq_disable':
+   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
+         |                                               ^
+   arch/x86/include/asm/paravirt_types.h:545:33: note: in expansion of macro 'BUG_ON'
+     545 | #define PVOP_TEST_NULL(op)      BUG_ON(op == NULL)
+         |                                 ^~~~~~
+   arch/x86/include/asm/paravirt_types.h:595:17: note: in expansion of macro 'PVOP_TEST_NULL'
+     595 |                 PVOP_TEST_NULL(op);                                     \
+         |                 ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:612:9: note: in expansion of macro '____PVOP_VCALL'
+     612 |         ____PVOP_VCALL(op.func, CLBR_RET_REG,                           \
+         |         ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:626:9: note: in expansion of macro '__PVOP_VCALLEESAVE'
+     626 |         __PVOP_VCALLEESAVE(op, "", "")
+         |         ^~~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h:841:9: note: in expansion of macro 'PVOP_VCALLEE0'
+     841 |         PVOP_VCALLEE0(pv_irq_ops.irq_disable);
+         |         ^~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h: In function 'arch_local_irq_enable':
+   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
+         |                                               ^
+   arch/x86/include/asm/paravirt_types.h:545:33: note: in expansion of macro 'BUG_ON'
+     545 | #define PVOP_TEST_NULL(op)      BUG_ON(op == NULL)
+         |                                 ^~~~~~
+   arch/x86/include/asm/paravirt_types.h:595:17: note: in expansion of macro 'PVOP_TEST_NULL'
+     595 |                 PVOP_TEST_NULL(op);                                     \
+         |                 ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:612:9: note: in expansion of macro '____PVOP_VCALL'
+     612 |         ____PVOP_VCALL(op.func, CLBR_RET_REG,                           \
+         |         ^~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt_types.h:626:9: note: in expansion of macro '__PVOP_VCALLEESAVE'
+     626 |         __PVOP_VCALLEESAVE(op, "", "")
+         |         ^~~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/paravirt.h:846:9: note: in expansion of macro 'PVOP_VCALLEE0'
+     846 |         PVOP_VCALLEE0(pv_irq_ops.irq_enable);
+         |         ^~~~~~~~~~~~~
+   include/asm-generic/fixmap.h: In function 'virt_to_fix':
+   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
+         |                                               ^
+   include/asm-generic/fixmap.h:37:9: note: in expansion of macro 'BUG_ON'
+      37 |         BUG_ON(vaddr >= FIXADDR_TOP || vaddr < FIXADDR_START);
+         |         ^~~~~~
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/module.h:17:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     496 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/sysfs.h:15:
+   include/linux/kernfs.h:424:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     424 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   drivers/iio/accel/mxc4005.c: At top level:
+   drivers/iio/accel/mxc4005.c:329:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+     329 |         {"MXC4005",     0},
+         |         ^
+   In file included from include/linux/i2c.h:29,
+                    from drivers/iio/accel/mxc4005.c:17:
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+>> drivers/iio/accel/mxc4005.c:328:36: warning: 'mxc4005_acpi_match' defined but not used [-Wunused-const-variable=]
+     328 | static const struct acpi_device_id mxc4005_acpi_match[] = {
+         |                                    ^~~~~~~~~~~~~~~~~~
 
->> > >
->> > > This could also lead to an interesting scenario. As simple-framebuffer
->> > > can define its memory in a /reserved-memory node, but that is ignored
->> > > in EFI boot. Probably would work, but only because EFI probably
->> > > generates its memory map table from the /reserved-memory nodes.
->> > >
->> >
->> > I see. So what would be the solution then? Ignoring creating a platform
->> > device for "simple-framebuffer" if booted using EFI and have an EFI-GOP?
->>
->> Shrug. I don't really know anything more about EFI FB, but I would
->> guess it can't support handling resources like clocks, power domains,
->> regulators, etc. that simple-fb can. So if a platform needs those, do
->> we say they should not setup EFI-GOP? Or is there a use case for
->> having both? Clients that don't muck with resources can use EFI-GOP
->> and those that do use simple-fb. For example, does/can grub use
->> EFI-GOP, but not simple-fb?
->>
->
-> The EFI GOP is just a dumb framebuffer, and it is not even generally
-> possible to cross reference the GOP with a particular device in the
-> device hierarchy unless you e.g., compare the BARs of each device with
-> the region described by the GOP protocol.
->
-> GRUB for EFI will use the GOP and nothing else, but only at boot time
-> (the GOP protocol is more than a magic linear memory region, it also
-> implements a Blt() abstraction that permits the use of framebuffers
-> that are not mapped linearly into the address space at all, and GRUB
-> makes use of this)
->
-> The EFI stub will only expose GOPs to the kernel if they are in fact
-> linear framebuffers, but has zero insight into whether the hardware
-> needs clocks and regulators, and whether or not the framebuffer needs
-> IOMMU pass through (which might be the case if the scanout is using
-> DMA into system memory)
->
-> So calling EFI GOP 'source of truth' is rather generous, and I think
-> it makes sense to prioritize more accurate descriptions of the
-> underlying framebuffer over EFI GOP.
->
 
-That was my opinion as well and the reason why I called the DTB the
-single source of truth.
+vim +/mxc4005_acpi_match +328 drivers/iio/accel/mxc4005.c
 
-> However, making 'simple-framebuffer' magic in this regard doesn't seem
-> like a great approach to me. Is there a better way we could get the
-> resource conflict to be decided in a way where the EFI GOP gets
-> superseded if its resources are claimed by another device?
->
-
-There is an aperture [0] framework that is used by the fbdev and DRM
-subsystems to allow native drivers to remove any conflicting devices
-that share the same framebuffer aperture.
-
-But it only makes sense for native drivers to use that I think, but
-in this case is about two drivers that attempt to use the same frame
-buffer provided by the firmware but getting it from different places.
-
-I don't have a better idea than this patch but maybe Thomas or Sima do?
-
-[0]: https://elixir.bootlin.com/linux/latest/source/drivers/video/aperture.c
+   327	
+ > 328	static const struct acpi_device_id mxc4005_acpi_match[] = {
+ > 329		{"MXC4005",	0},
+   330		{ },
+   331	};
+   332	MODULE_DEVICE_TABLE(acpi, mxc4005_acpi_match);
+   333	
 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
