@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B997F00B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A91D7F00B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjKRPx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:53:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S232139AbjKRPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjKRPwx (ORCPT
+        with ESMTP id S231134AbjKRPwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Nov 2023 10:52:53 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A9310F7;
-        Sat, 18 Nov 2023 07:51:41 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5c9169300caso5651217b3.2;
-        Sat, 18 Nov 2023 07:51:41 -0800 (PST)
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490D81BE7;
+        Sat, 18 Nov 2023 07:51:42 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a87ac9d245so33495957b3.3;
+        Sat, 18 Nov 2023 07:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322699; x=1700927499; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322701; x=1700927501; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KH/C2GbGilv4dEVGrlEtm1neXP6vUXqVIR2w3PMGoMU=;
-        b=l1wglQacW5bOp1InX5DIoQdvtQBnkVSQYzCPO11Q64OYnQnkYSOLykca4riSKSiBkk
-         E0BU9SRbJi+7G8534ABotGg3Mi4jtFnH7arCjWR/tcvS0LpKeEm0ct1F0IpC06WMJgC1
-         24PVVzDzyCB2fwWj+cN2t2tu7ddqB4tf0JH+ArX30sMP+e6A5xoXjQemJnzFZ9DgdeeU
-         e/aOO+iJn/v/eQ2+nBd8kn6ROXq7O95FlDHrwCafcpeevlKZ5pv6h2WHLKra0cEXtHug
-         GwTPHVVre3UOlyXXBJTgPB+eMq0WT++SfG3j3repoa7Z0nH2Hks66sza2TwOuzOhN7VD
-         4+dw==
+        bh=xU0+DezQv+68hocsYMOkgL5EeuD6VUR6bUdseKeBvTQ=;
+        b=dZ2UyIN3A4I+uz+Sprjt0VFFj2X1jLL9nuNKSLztr7npWIr2Wwr9XCrUOUNsY1qTds
+         8rkTbFjknSc3F3dFcBOhd5maeRBv1jYrtfv+w7Frs5L8gaFvgskYcb/P54v5XX/oVTaJ
+         ZG7qKLROTfnDkmDrjNJNThlmazWaAfYEzaIQWmd0F0NOkmc5gpXXb2gke5lcxNMMm/4w
+         7i5nlsgTGGT13TELNRctEnXItDifjQ9UB5GHshV5gb/vX06mZJPXZruDiK548QeTMO/5
+         HPqXXnvTfTmaJO5Lmni60R+eYQv5LvUokaPYhqVYbvjFUPLz0aEEMOZ1yfBZ/rHPERmE
+         qDxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322699; x=1700927499;
+        d=1e100.net; s=20230601; t=1700322701; x=1700927501;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KH/C2GbGilv4dEVGrlEtm1neXP6vUXqVIR2w3PMGoMU=;
-        b=VxEm2Df9RIjMC2a0y94OFs8TXVij0mgoEl7ir/ixFvKMUrF0XzMMtCfeFtzMIUYpRb
-         oFmpjZ2Kk5+r86s5KNBEkN5WRXIVgAvW1QnJkooA19IvhX2MlZdQw8ZPC8fAmdIQKdx1
-         B6oRVTpg31E6h6UHm/0/9g/MSLEcG4ymS+QAehWOCs0qzXQ2aPduhUmWE9lY2/gO+1m8
-         c407Gli2AkKgnBJLb5HLv5cmdjfd0LIJ18Cs5zwVPdTMRs4qJY26IhRn8dtG3Dd/x3Rz
-         bFjOOnzlOfq8vLqRB0EIdm0oTho+JcwoTx+yFMleaRzHnyVgRkvwd/1WwWtTcy5iNEAz
-         vr0w==
-X-Gm-Message-State: AOJu0YzbVYSm83orr5EYTVRziJ757bp+/ifrP4F7NbhoZXmL8M32dy3l
-        JQ465BX+rojqgqkl2hMJUmN+EchTly22GOfN
-X-Google-Smtp-Source: AGHT+IH8iE5pRuee+JQIvG8dc4ZEm5Lvvk2s9b3hTX2Ou24/UpkP0ESpVFcnBMmBTlDyte+avOB5TA==
-X-Received: by 2002:a25:ac89:0:b0:da0:c744:3211 with SMTP id x9-20020a25ac89000000b00da0c7443211mr2333419ybi.2.1700322699285;
-        Sat, 18 Nov 2023 07:51:39 -0800 (PST)
+        bh=xU0+DezQv+68hocsYMOkgL5EeuD6VUR6bUdseKeBvTQ=;
+        b=I7jo1eXBOJcRH97wbiZI+Ts0zwaq0W9hUk4s4hLhYqrpNTCyBR4EmlGt/WYW80yce3
+         1OrctUM1MXyBpR7W+Is9pVVRom40yohTbH0yzZTSzaXKqZGfs13nQPITLFgHf7XzVSiT
+         wgl7EYTlXu/MkLXCVW5vOTs2uhb+PNM9pD1HwW3CPYv1k5I0RfPNKZSqLhI6cn+BscDo
+         t/aiFLdYeJpjNO/visorZ8IpJYV8+nWNB8+yDpoaiAlrRNa3+y4vH2JzNA15Assa3cri
+         XuBKpxEGkyh8om7yv0s315DzvTSoiyQyAZyrVnS/pDGcOAj3SsqHe0GP13GVTfUdpT9I
+         P1wA==
+X-Gm-Message-State: AOJu0Yx+LLJpqYnfAeNVJwbUaW9IEnzim3iiyZlD05ZYoXL1F4W/s8uH
+        YaG37nntgUQXGKqu0SVtugTfuYJURxhTuhKq
+X-Google-Smtp-Source: AGHT+IG6nIXVYrYe/pryLJVqS9YCy2pJ5nYZyS8QkV+6BipP7usnXBp+kFRkjKxXiPygV0miOmYDaA==
+X-Received: by 2002:a81:928f:0:b0:5ad:47ba:fa43 with SMTP id j137-20020a81928f000000b005ad47bafa43mr2864475ywg.35.1700322700888;
+        Sat, 18 Nov 2023 07:51:40 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id l129-20020a257087000000b00d8168e226e6sm1005873ybc.47.2023.11.18.07.51.38
+        by smtp.gmail.com with ESMTPSA id x188-20020a8187c5000000b005af958bb2absm1157374ywf.109.2023.11.18.07.51.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:38 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:40 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org,
+To:     linux-kernel@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+        linux-usb@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -61,9 +61,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 20/34] tty: nozomi: optimize interrupt_handler()
-Date:   Sat, 18 Nov 2023 07:50:51 -0800
-Message-Id: <20231118155105.25678-21-yury.norov@gmail.com>
+Subject: [PATCH 21/34] usb: cdc-acm: optimize acm_softint()
+Date:   Sat, 18 Nov 2023 07:50:52 -0800
+Message-Id: <20231118155105.25678-22-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -79,34 +79,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In exit path of interrupt_handler(), dc->flip map is traversed bit by
-bit to find and clear set bits and call tty_flip_buffer_push() for
-corresponding ports.
+acm_softint(), uses for-loop to traverse urbs_in_error_delay bitmap
+bit by bit to find and clear set bits.
 
 We can do it better by using for_each_test_and_clear_bit(), because it
-skips already clear bits.
+doesn't test already clear bits.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/tty/nozomi.c | 5 ++---
+ drivers/usb/class/cdc-acm.c | 5 ++---
  1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
-index 02cd40147b3a..de0503247391 100644
---- a/drivers/tty/nozomi.c
-+++ b/drivers/tty/nozomi.c
-@@ -1220,9 +1220,8 @@ static irqreturn_t interrupt_handler(int irq, void *dev_id)
- exit_handler:
- 	spin_unlock(&dc->spin_mutex);
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index a1f4e1ead97f..8664b63050b0 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -613,9 +613,8 @@ static void acm_softint(struct work_struct *work)
+ 	}
  
--	for (a = 0; a < NOZOMI_MAX_PORTS; a++)
--		if (test_and_clear_bit(a, &dc->flip))
--			tty_flip_buffer_push(&dc->port[a].port);
-+	for_each_test_and_clear_bit(a, &dc->flip, NOZOMI_MAX_PORTS)
-+		tty_flip_buffer_push(&dc->port[a].port);
+ 	if (test_and_clear_bit(ACM_ERROR_DELAY, &acm->flags)) {
+-		for (i = 0; i < acm->rx_buflimit; i++)
+-			if (test_and_clear_bit(i, &acm->urbs_in_error_delay))
+-				acm_submit_read_urb(acm, i, GFP_KERNEL);
++		for_each_test_and_clear_bit(i, &acm->urbs_in_error_delay, acm->rx_buflimit)
++			acm_submit_read_urb(acm, i, GFP_KERNEL);
+ 	}
  
- 	return IRQ_HANDLED;
- none:
+ 	if (test_and_clear_bit(EVENT_TTY_WAKEUP, &acm->flags))
 -- 
 2.39.2
 
