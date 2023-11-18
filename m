@@ -2,123 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 194B97EFD3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B766E7EFD3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbjKRCnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S230036AbjKRCoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKRCnH (ORCPT
+        with ESMTP id S229737AbjKRCoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 21:43:07 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267FCD5D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:43:04 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SXHzZ3RqtzsR5v;
-        Sat, 18 Nov 2023 10:39:38 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 18 Nov 2023 10:43:01 +0800
-Message-ID: <153d0e8e-c860-4221-bcb0-71b46f17e2d5@huawei.com>
-Date:   Sat, 18 Nov 2023 10:43:01 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] mm: memory: use folio_prealloc() in wp_page_copy()
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>
-References: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
- <20231118023232.1409103-6-wangkefeng.wang@huawei.com>
-Content-Language: en-US
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20231118023232.1409103-6-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 17 Nov 2023 21:44:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F26D5C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:44:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700275453; x=1731811453;
+  h=date:from:to:cc:subject:message-id;
+  bh=/0GxedMcgoedjL9RxWrU3z7LiVUPcVO9qVFmxUDrrpg=;
+  b=DiXwkPx0DiC5X54JXBq+CBxElL4k2f5wjss1XcivZevuRJooMXI9vftY
+   UvufAmv32S5BEq/sVaK9tAvwKkO//H18ZIHYbQZTsqrpVRIGV0CHktvvL
+   6NTMvizqrtDIo+ogItIBLB1AvNfAnsrwBucLhlBPh9DOgvweV3F6yZu52
+   dF6ieeCeVa2iU8VqiNXpWA2EhhwWx5qPFgkbPd+Z1q0xB9WC7T4CnIZRG
+   bRqdYltJkDiOuoubgLsrsEKaHhPQ4zkbq2UeO2XEkMt94EFUkttKwfqFM
+   QFceGFiGK60jT6b10W6rWv9/Z5AJYXMeTx3dfVisYhAw5xYKAXOe0JUns
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="422495408"
+X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
+   d="scan'208";a="422495408"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 18:44:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="939320659"
+X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
+   d="scan'208";a="939320659"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 17 Nov 2023 18:44:11 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4BJZ-0003SF-0a;
+        Sat, 18 Nov 2023 02:44:09 +0000
+Date:   Sat, 18 Nov 2023 10:43:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/misc] BUILD SUCCESS
+ a24d61c609813963aacc9f6ec8343f4fcaac7243
+Message-ID: <202311181037.XKHVkZmm-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/misc
+branch HEAD: a24d61c609813963aacc9f6ec8343f4fcaac7243  x86/lib: Fix overflow when counting digits
 
+elapsed time: 729m
 
-On 2023/11/18 10:32, Kefeng Wang wrote:
-> Use folio_prealloc() helper to simplify code a bit.
-> 
-Forget to add RB of Vishal，adding it
+configs tested: 185
+configs skipped: 138
 
-Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->   mm/memory.c | 22 +++++++---------------
->   1 file changed, 7 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 868a2fc54549..98d9c7094cab 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3112,6 +3112,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->   	int page_copied = 0;
->   	struct mmu_notifier_range range;
->   	vm_fault_t ret;
-> +	bool pfn_is_zero;
->   
->   	delayacct_wpcopy_start();
->   
-> @@ -3121,16 +3122,13 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->   	if (unlikely(ret))
->   		goto out;
->   
-> -	if (is_zero_pfn(pte_pfn(vmf->orig_pte))) {
-> -		new_folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
-> -		if (!new_folio)
-> -			goto oom;
-> -	} else {
-> +	pfn_is_zero = is_zero_pfn(pte_pfn(vmf->orig_pte));
-> +	new_folio = folio_prealloc(mm, vma, vmf->address, pfn_is_zero);
-> +	if (!new_folio)
-> +		goto oom;
-> +
-> +	if (!pfn_is_zero) {
->   		int err;
-> -		new_folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma,
-> -				vmf->address, false);
-> -		if (!new_folio)
-> -			goto oom;
->   
->   		err = __wp_page_copy_user(&new_folio->page, vmf->page, vmf);
->   		if (err) {
-> @@ -3151,10 +3149,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->   		kmsan_copy_page_meta(&new_folio->page, vmf->page);
->   	}
->   
-> -	if (mem_cgroup_charge(new_folio, mm, GFP_KERNEL))
-> -		goto oom_free_new;
-> -	folio_throttle_swaprate(new_folio, GFP_KERNEL);
-> -
->   	__folio_mark_uptodate(new_folio);
->   
->   	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
-> @@ -3253,8 +3247,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->   
->   	delayacct_wpcopy_end();
->   	return 0;
-> -oom_free_new:
-> -	folio_put(new_folio);
->   oom:
->   	ret = VM_FAULT_OOM;
->   out:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+arc                     haps_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20231118   gcc  
+arc                   randconfig-002-20231118   gcc  
+arm                      integrator_defconfig   gcc  
+arm                            mps2_defconfig   gcc  
+arm                   randconfig-001-20231118   gcc  
+arm                   randconfig-002-20231118   gcc  
+arm                   randconfig-003-20231118   gcc  
+arm                   randconfig-004-20231118   gcc  
+arm                           u8500_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                 randconfig-001-20231118   gcc  
+arm64                 randconfig-002-20231118   gcc  
+arm64                 randconfig-003-20231118   gcc  
+arm64                 randconfig-004-20231118   gcc  
+csky                  randconfig-001-20231118   gcc  
+csky                  randconfig-002-20231118   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             alldefconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231117   gcc  
+i386         buildonly-randconfig-001-20231118   gcc  
+i386         buildonly-randconfig-002-20231117   gcc  
+i386         buildonly-randconfig-002-20231118   gcc  
+i386         buildonly-randconfig-003-20231117   gcc  
+i386         buildonly-randconfig-003-20231118   gcc  
+i386         buildonly-randconfig-004-20231117   gcc  
+i386         buildonly-randconfig-004-20231118   gcc  
+i386         buildonly-randconfig-005-20231117   gcc  
+i386         buildonly-randconfig-005-20231118   gcc  
+i386         buildonly-randconfig-006-20231117   gcc  
+i386         buildonly-randconfig-006-20231118   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231117   gcc  
+i386                  randconfig-001-20231118   gcc  
+i386                  randconfig-002-20231117   gcc  
+i386                  randconfig-002-20231118   gcc  
+i386                  randconfig-003-20231117   gcc  
+i386                  randconfig-003-20231118   gcc  
+i386                  randconfig-004-20231117   gcc  
+i386                  randconfig-004-20231118   gcc  
+i386                  randconfig-005-20231117   gcc  
+i386                  randconfig-005-20231118   gcc  
+i386                  randconfig-006-20231117   gcc  
+i386                  randconfig-006-20231118   gcc  
+i386                  randconfig-011-20231117   gcc  
+i386                  randconfig-011-20231118   gcc  
+i386                  randconfig-012-20231117   gcc  
+i386                  randconfig-012-20231118   gcc  
+i386                  randconfig-013-20231117   gcc  
+i386                  randconfig-013-20231118   gcc  
+i386                  randconfig-014-20231117   gcc  
+i386                  randconfig-014-20231118   gcc  
+i386                  randconfig-015-20231117   gcc  
+i386                  randconfig-015-20231118   gcc  
+i386                  randconfig-016-20231117   gcc  
+i386                  randconfig-016-20231118   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231118   gcc  
+loongarch             randconfig-002-20231118   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     loongson1b_defconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231118   gcc  
+nios2                 randconfig-002-20231118   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231118   gcc  
+parisc                randconfig-002-20231118   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                      makalu_defconfig   gcc  
+powerpc                      mgcoge_defconfig   gcc  
+powerpc                      pcm030_defconfig   gcc  
+powerpc               randconfig-001-20231118   gcc  
+powerpc               randconfig-002-20231118   gcc  
+powerpc               randconfig-003-20231118   gcc  
+powerpc64             randconfig-001-20231118   gcc  
+powerpc64             randconfig-002-20231118   gcc  
+powerpc64             randconfig-003-20231118   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231118   gcc  
+riscv                 randconfig-002-20231118   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231118   gcc  
+s390                  randconfig-002-20231118   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                            hp6xx_defconfig   gcc  
+sh                    randconfig-001-20231118   gcc  
+sh                    randconfig-002-20231118   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                           se7780_defconfig   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231118   gcc  
+sparc64               randconfig-002-20231118   gcc  
+um                               allmodconfig   gcc  
+um                                allnoconfig   gcc  
+um                               allyesconfig   gcc  
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231118   gcc  
+um                    randconfig-002-20231118   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231118   gcc  
+x86_64       buildonly-randconfig-002-20231118   gcc  
+x86_64       buildonly-randconfig-003-20231118   gcc  
+x86_64       buildonly-randconfig-004-20231118   gcc  
+x86_64       buildonly-randconfig-005-20231118   gcc  
+x86_64       buildonly-randconfig-006-20231118   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231118   gcc  
+x86_64                randconfig-002-20231118   gcc  
+x86_64                randconfig-003-20231118   gcc  
+x86_64                randconfig-004-20231118   gcc  
+x86_64                randconfig-005-20231118   gcc  
+x86_64                randconfig-006-20231118   gcc  
+x86_64                randconfig-011-20231118   gcc  
+x86_64                randconfig-012-20231118   gcc  
+x86_64                randconfig-013-20231118   gcc  
+x86_64                randconfig-014-20231118   gcc  
+x86_64                randconfig-015-20231118   gcc  
+x86_64                randconfig-016-20231118   gcc  
+x86_64                randconfig-071-20231118   gcc  
+x86_64                randconfig-072-20231118   gcc  
+x86_64                randconfig-073-20231118   gcc  
+x86_64                randconfig-074-20231118   gcc  
+x86_64                randconfig-075-20231118   gcc  
+x86_64                randconfig-076-20231118   gcc  
+x86_64                           rhel-8.3-bpf   clang
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20231118   gcc  
+xtensa                randconfig-002-20231118   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
