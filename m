@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165D87F009D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CED7F00A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:52:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbjKRPwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:52:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
+        id S229658AbjKRPww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbjKRPw1 (ORCPT
+        with ESMTP id S231134AbjKRPw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:52:27 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E751717;
-        Sat, 18 Nov 2023 07:51:28 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-daf7ed42ea6so2930520276.0;
-        Sat, 18 Nov 2023 07:51:28 -0800 (PST)
+        Sat, 18 Nov 2023 10:52:28 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D5381728;
+        Sat, 18 Nov 2023 07:51:29 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da0359751dbso2372606276.1;
+        Sat, 18 Nov 2023 07:51:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322686; x=1700927486; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322688; x=1700927488; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9aggm3BNjkpQF7Koo2HqoELFr7cmqY1seHu1T/WMe7U=;
-        b=YSZU3unXxunBjc0Nwg3LGWUwuVEUIjnWBFaxcuQ9q+Z7ObgNYQN7NrfhdPSPxzbxhk
-         04W07mpNFFNRxri1fG5gJ4sn697UaQVCebHYqn09C4vzO4FDtuZHBqMfM67miN4aHZkQ
-         SopWczZEwqmnakeZUnlT81J9LVUL2nb1Ry718lGzB0ORy7xQtpwHkCea3USCkItcsEBx
-         IwC+QXKKHqu5UWSiSW13C/IeFtrvu5i54A1D9sw2brWvw6ardCzvhP40s4XUjSpJhODB
-         L05cydNJKVLuvG8L6mgODO7HJnCugy9faB2ZCVS8Baf45q+yIYYR4rAFJOaYYp3n6ilW
-         pn0w==
+        bh=/7UbIoFa3HLA+YNouSNyxHd1ANvqTMMe1TaZ6Yb0imk=;
+        b=KAi1o1Lp2NXwdu7Wp2qrYSU1kAU39h4nCxehYxl8oMXiayPkh0Q3w/J9ydhyMErtxH
+         4qcESin55kISPjFb4nD6h7tm8Drs9yk9ITYtfYpqhRTc1ZLLV3Hxy3EzxlpoTAVcnFIF
+         HrF+Cks34FmnTYFTG1GezpcK3MxWcW5vRrrZEiuLZo45H4OImCbrOS4s1vGq81zYoFFA
+         MzPsW+2v3WUuNPg17AqgaNfFqIdsA7bK0GOIRKUkDzRwvtu63GfYqRvQ3XlsnBbMGOCA
+         kuUhkDvJj/MXlAOEHpBRWsCGlE/nhsoGr5rfga4yWUDCOzXSywEmuG3FC2KCoaonDgIJ
+         atxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322686; x=1700927486;
+        d=1e100.net; s=20230601; t=1700322688; x=1700927488;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9aggm3BNjkpQF7Koo2HqoELFr7cmqY1seHu1T/WMe7U=;
-        b=Fvgf4DImL67n1JSfpUjw7oDFeopsi1R4kTRqpID8Rkw8ukteAo6NAFsQojoFsvAE2h
-         YhLranh7PaT0tmQWOVXhPvYEt0Ng+p5E7Miha+TqJUoT8HcOhe6z544DQ9OuyNbFLEuc
-         e2EJJQ6KRbH528fSyMjt1zND1E2XTV3bkHNXFt54zezKMcLDXHo0jmsG8lnaX+lyf95x
-         LMjp+yeeIttagJCjYUUOeL9ehwhSW7KC8vZnWW/YrwTPa/pmYRCdirjnNdvdVdFpoQJI
-         BZLIouQq+3C5PcfSSLhRfCb5+JyttbfdU28DXcrBZ/9Ueq4FDM4Y6+2ab0LuTWK5WdfS
-         /QBA==
-X-Gm-Message-State: AOJu0YxoxW9nVCmObO/zyylhyj3qjvM7e9MS4+B2oBa/Zdk/WerOd+9x
-        1CMHNloY7Q3i2yj0RV8msqx9GyvoT57NN8I+
-X-Google-Smtp-Source: AGHT+IEl/Ly5SGFxHhjFErkw0m69iAcv/uiGWWg8tpAKjYHYXPFvZ4wbYsrNE640IyvZon4rsbzP6w==
-X-Received: by 2002:a25:2bc8:0:b0:d9a:5630:5281 with SMTP id r191-20020a252bc8000000b00d9a56305281mr2127641ybr.62.1700322686501;
-        Sat, 18 Nov 2023 07:51:26 -0800 (PST)
+        bh=/7UbIoFa3HLA+YNouSNyxHd1ANvqTMMe1TaZ6Yb0imk=;
+        b=tByGhZ5Qiz9yPFEuwaCgeDROxQEZA1QwOkU7blb+kM6cfMvG+M7LHn7V9RKwm+lZE9
+         xKONKvwhXDiHhDAs75OwCbhabqiFqykPFvOiIwh/6ZwVg1IFRmPwkC9ceKGrbWGn5xnn
+         lp03mxOPC1d47QbflBbrJeRfDwrB76dw6LDuYWSsM2Mapy8XZ3rjqTe1dqyadqKQto0o
+         nW9GjbJrGkk4Lp85GypdWldfZg2mb5+2IABjwp1rc1RFwLChF4o6rKCU2fFimeTb4hAK
+         CcYtJqwtuuQDVcSpJ1YQZroYSGkkGdr2saseBF6P8wI5f2GEzKOdtX48ZjBkLAyujQV4
+         tKBg==
+X-Gm-Message-State: AOJu0YzYzv4yYTGCKXFCN/v11vwMFj/gIIbxgs96Sz2acUt45KbXES62
+        8bsaVeiCKoKsFuGrhC3mypDrVjfXGtsZXaVp
+X-Google-Smtp-Source: AGHT+IG2fdzu87N53rGqJR9N9gQqCXQKJNf4sG4KZv9s0gbPje53w6L12nPkNTqg8pVr1QpQJBOnQg==
+X-Received: by 2002:a25:ad4f:0:b0:daf:7702:fd60 with SMTP id l15-20020a25ad4f000000b00daf7702fd60mr1666371ybe.1.1700322688428;
+        Sat, 18 Nov 2023 07:51:28 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id w16-20020a05690202d000b00d9abce6acf2sm964670ybh.59.2023.11.18.07.51.25
+        by smtp.gmail.com with ESMTPSA id w4-20020a254904000000b00da3b52e3cf5sm1010714yba.10.2023.11.18.07.51.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:25 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:27 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
+To:     linux-kernel@vger.kernel.org, Stanislaw Gruszka <stf_xl@wp.pl>,
+        Kalle Valo <kvalo@kernel.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Miri Korenblit <miriam.rachel.korenblit@intel.com>,
+        linux-wireless@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 11/34] wifi: rtw88: optimize rtw_pci_tx_kick_off() by using find_bit()
-Date:   Sat, 18 Nov 2023 07:50:42 -0800
-Message-Id: <20231118155105.25678-12-yury.norov@gmail.com>
+Subject: [PATCH 12/34] wifi: intel: use atomic find_bit() API where appropriate
+Date:   Sat, 18 Nov 2023 07:50:43 -0800
+Message-Id: <20231118155105.25678-13-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -78,47 +85,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rtw_pci_tx_kick_off() traverses tx_queued bitmap bit by bit. We can do it
-faster by using atomic for_each_test_and_clear_bit() iterator.
+iwlegacy and iwlwifi code opencodes atomic bit allocation/traversing by
+using loops. Switch it to use dedicated functions.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/net/wireless/realtek/rtw88/pci.c | 5 ++---
- drivers/net/wireless/realtek/rtw89/pci.c | 5 +----
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ .../net/wireless/intel/iwlegacy/4965-mac.c    |  7 ++-----
+ drivers/net/wireless/intel/iwlegacy/common.c  |  8 ++------
+ drivers/net/wireless/intel/iwlwifi/dvm/sta.c  |  8 ++------
+ drivers/net/wireless/intel/iwlwifi/dvm/tx.c   | 19 ++++++++-----------
+ 4 files changed, 14 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
-index 2bfc0e822b8d..a0d69c75a381 100644
---- a/drivers/net/wireless/realtek/rtw88/pci.c
-+++ b/drivers/net/wireless/realtek/rtw88/pci.c
-@@ -789,9 +789,8 @@ static void rtw_pci_tx_kick_off(struct rtw_dev *rtwdev)
- 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
- 	enum rtw_tx_queue_type queue;
+diff --git a/drivers/net/wireless/intel/iwlegacy/4965-mac.c b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
+index 69276266ce6f..8fb738c95cb4 100644
+--- a/drivers/net/wireless/intel/iwlegacy/4965-mac.c
++++ b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
+@@ -2089,12 +2089,9 @@ il4965_txq_ctx_stop(struct il_priv *il)
+ static int
+ il4965_txq_ctx_activate_free(struct il_priv *il)
+ {
+-	int txq_id;
++	int txq_id = find_and_set_bit(&il->txq_ctx_active_msk, il->hw_params.max_txq_num);
  
--	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++)
--		if (test_and_clear_bit(queue, rtwpci->tx_queued))
--			rtw_pci_tx_kick_off_queue(rtwdev, queue);
-+	for_each_test_and_clear_bit(queue, rtwpci->tx_queued, RTK_MAX_TX_QUEUE_NUM)
-+		rtw_pci_tx_kick_off_queue(rtwdev, queue);
+-	for (txq_id = 0; txq_id < il->hw_params.max_txq_num; txq_id++)
+-		if (!test_and_set_bit(txq_id, &il->txq_ctx_active_msk))
+-			return txq_id;
+-	return -1;
++	return txq_id < il->hw_params.max_txq_num ? txq_id : -1;
  }
  
- static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
-diff --git a/drivers/net/wireless/realtek/rtw89/pci.c b/drivers/net/wireless/realtek/rtw89/pci.c
-index 14ddb0d39e63..184d41b774d7 100644
---- a/drivers/net/wireless/realtek/rtw89/pci.c
-+++ b/drivers/net/wireless/realtek/rtw89/pci.c
-@@ -1077,10 +1077,7 @@ static void rtw89_pci_tx_kick_off_pending(struct rtw89_dev *rtwdev)
- 	struct rtw89_pci_tx_ring *tx_ring;
- 	int txch;
- 
--	for (txch = 0; txch < RTW89_TXCH_NUM; txch++) {
--		if (!test_and_clear_bit(txch, rtwpci->kick_map))
--			continue;
+ /*
+diff --git a/drivers/net/wireless/intel/iwlegacy/common.c b/drivers/net/wireless/intel/iwlegacy/common.c
+index 054fef680aba..c6353e17be50 100644
+--- a/drivers/net/wireless/intel/iwlegacy/common.c
++++ b/drivers/net/wireless/intel/iwlegacy/common.c
+@@ -2303,13 +2303,9 @@ EXPORT_SYMBOL(il_restore_stations);
+ int
+ il_get_free_ucode_key_idx(struct il_priv *il)
+ {
+-	int i;
 -
-+	for_each_test_and_clear_bit(txch, rtwpci->kick_map, RTW89_TXCH_NUM) {
- 		tx_ring = &rtwpci->tx_rings[txch];
- 		__rtw89_pci_tx_kick_off(rtwdev, tx_ring);
- 	}
+-	for (i = 0; i < il->sta_key_max_num; i++)
+-		if (!test_and_set_bit(i, &il->ucode_key_table))
+-			return i;
++	int i = find_and_set_bit(&il->ucode_key_table, il->sta_key_max_num);
+ 
+-	return WEP_INVALID_OFFSET;
++	return i < il->sta_key_max_num ? i : WEP_INVALID_OFFSET;
+ }
+ EXPORT_SYMBOL(il_get_free_ucode_key_idx);
+ 
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
+index 8b01ab986cb1..21e663d2bc44 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/sta.c
+@@ -719,13 +719,9 @@ void iwl_restore_stations(struct iwl_priv *priv, struct iwl_rxon_context *ctx)
+ 
+ int iwl_get_free_ucode_key_offset(struct iwl_priv *priv)
+ {
+-	int i;
+-
+-	for (i = 0; i < priv->sta_key_max_num; i++)
+-		if (!test_and_set_bit(i, &priv->ucode_key_table))
+-			return i;
++	int i = find_and_set_bit(&priv->ucode_key_table, priv->sta_key_max_num);
+ 
+-	return WEP_INVALID_OFFSET;
++	return i < priv->sta_key_max_num ? i : WEP_INVALID_OFFSET;
+ }
+ 
+ void iwl_dealloc_bcast_stations(struct iwl_priv *priv)
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+index 111ed1873006..1b3dc99b968c 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/tx.c
+@@ -460,17 +460,14 @@ int iwlagn_tx_skb(struct iwl_priv *priv,
+ 
+ static int iwlagn_alloc_agg_txq(struct iwl_priv *priv, int mq)
+ {
+-	int q;
+-
+-	for (q = IWLAGN_FIRST_AMPDU_QUEUE;
+-	     q < priv->trans->trans_cfg->base_params->num_of_queues; q++) {
+-		if (!test_and_set_bit(q, priv->agg_q_alloc)) {
+-			priv->queue_to_mac80211[q] = mq;
+-			return q;
+-		}
+-	}
+-
+-	return -ENOSPC;
++	int q = find_and_set_next_bit(priv->agg_q_alloc,
++				      priv->trans->trans_cfg->base_params->num_of_queues,
++				      IWLAGN_FIRST_AMPDU_QUEUE);
++	if (q >= priv->trans->trans_cfg->base_params->num_of_queues)
++		return -ENOSPC;
++
++	priv->queue_to_mac80211[q] = mq;
++	return q;
+ }
+ 
+ static void iwlagn_dealloc_agg_txq(struct iwl_priv *priv, int q)
 -- 
 2.39.2
 
