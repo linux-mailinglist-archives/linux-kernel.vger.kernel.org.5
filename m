@@ -2,271 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BF57EFC63
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3387EFC5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346363AbjKRABj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S1346335AbjKRAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjKRABf (ORCPT
+        with ESMTP id S229823AbjKRABZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:01:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880581AD;
-        Fri, 17 Nov 2023 16:01:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700265691; x=1731801691;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=MGvMoTy89iDOVbgyWdLZ/x/XdFIs3cgrj3lH7iWvPls=;
-  b=iF6XDW98oGF2z1b+fr9I8JeFX3SGd3lAdSQbsKCV4UAeNylykanFQcGf
-   GSmfDl2rvAXUZkEXqC775JWYoc5hi2h+sTKsFuYMP6+n3Scm8X5/HaS+w
-   J9Ktrz6DVa7FnNJmyaF5MytVYY1fFjnlLgl9k3ycy21sJTaRluvyedQxf
-   3fbysfpJBysmySnPW4LCsSakj8LF4C7vgsAwpCwLdIejtOeKSncdRHCDJ
-   cBfvfTlqtiWFd9atHiNmduH0/XvFn6RdgMz6u5qcUPd53DKO+da1RpxU1
-   nYCy+Sa3aSnchvgf58FEa2BlnUe3rzkA3bfccOTHtJ0NIgTMO1AEw0a+o
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="371566706"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="371566706"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 16:00:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="889393035"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="889393035"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 16:00:47 -0800
-Received: from [10.54.75.156] (debox1-desk1.jf.intel.com [10.54.75.156])
-        by linux.intel.com (Postfix) with ESMTP id 02D88580DB4;
-        Fri, 17 Nov 2023 16:00:47 -0800 (PST)
-Message-ID: <f2d1476199e974dd1d303b22c25594f066e85de5.camel@linux.intel.com>
-Subject: Re: [PATCH 1/6] PCI/ASPM: Add locked helper for enabling link state
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Fri, 17 Nov 2023 16:00:46 -0800
-In-Reply-To: <20231114135553.32301-2-johan+linaro@kernel.org>
-References: <20231114135553.32301-1-johan+linaro@kernel.org>
-         <20231114135553.32301-2-johan+linaro@kernel.org>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Fri, 17 Nov 2023 19:01:25 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98D510C6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:01:21 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507973f3b65so3656358e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700265680; x=1700870480; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TmdYVnabDczkPmlEpci5lqKCRm4aGlo0N/NrM1uCFSA=;
+        b=cbaxbOvsjKHEFf7v4C3FmwfsSPE3fe7N6eekAqbQVSBl19JlUQ5+hR9GhlCA+WnjdY
+         GInsGTU2V3Lez4O+2sWIZYKJWvQuN6Xo4yVzbfSGBKcqDANV8D99ryHozygDci3Xtz2N
+         JeTg5cn0K5IaDJQJ7GQerJfrEY4pqKSyTDc+vDrp0TIjUkOZPcW8/zJwrUxcYIMl6SJF
+         9c3+Vf31jIj5VquCdMGsIDK5c07tsTDxEoeUIq8OESnStS/Ue5kkQML1CnotE9EaL5NF
+         OBTW4nWOkCW6pWgHl93uItApBIEa7xBbPwRr8jO/r+hkpZalNzUqivTR/9QumNOuoeUY
+         QP4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700265680; x=1700870480;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TmdYVnabDczkPmlEpci5lqKCRm4aGlo0N/NrM1uCFSA=;
+        b=SFmkFUAtqQAs1wKfacfuNB/f5GI5W7kB0EnnNpkLy5YncEe3Z9Pm2e0hPEOnxHQoME
+         fNnTygiCUvVJ9lcLt/vVjzmpuRJaIO9gycXhq63FW+yiZ7bSOgJDcsq8phzkP2UB1svp
+         g8XTY+rqaDLaXSxPShsrXsd7u5UwCufR76vpgwwei33AYB2E/sgs7leBYc4m9HCxxwdw
+         Wd4LQL//VSuOVZb+zjazUIrvP1bPmXaJGJnQ4m9/0KeRRaBefyC6yjxzgDTyOvT65LRT
+         ednE2jTjaIUuozx/zPkMfaANI77isBjVLSSGP+C13WvO0ZlkvfOp9UUnPQK/Nf7D1XzQ
+         eRYA==
+X-Gm-Message-State: AOJu0YwbCoWx8HG/U9jaCztzA9WyrXEPgxGhfHcnTzLzmD6+UwhzYWNC
+        +t6xr4Md84rReL5kbIRvC2Trvw==
+X-Google-Smtp-Source: AGHT+IG/gsUbmvwkJwzl1LYjmIcDG0B+kqiWMJxFy24Yv4JY8EI8QJKCJhTPM7igScF2UPvZaGl4Hw==
+X-Received: by 2002:ac2:532f:0:b0:50a:a337:1f42 with SMTP id f15-20020ac2532f000000b0050aa3371f42mr768384lfh.36.1700265680109;
+        Fri, 17 Nov 2023 16:01:20 -0800 (PST)
+Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
+        by smtp.gmail.com with ESMTPSA id q11-20020ac2514b000000b004fe2f085d5csm390317lfd.299.2023.11.17.16.01.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 16:01:19 -0800 (PST)
+Message-ID: <abf7da98-6213-42d8-a0ef-422ad111c6a9@linaro.org>
+Date:   Sat, 18 Nov 2023 01:01:16 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/4] clk: qcom: Add Global Clock controller (GCC)
+ driver for X1E80100
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
+        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        abel.vesa@linaro.org, quic_tsoni@quicinc.com
+References: <20231117092737.28362-1-quic_sibis@quicinc.com>
+ <20231117092737.28362-3-quic_sibis@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231117092737.28362-3-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-14 at 14:55 +0100, Johan Hovold wrote:
-> Add a helper for enabling link states that can be used in contexts where
-> a pci_bus_sem read lock is already held (e.g. from pci_walk_bus()).
->=20
-> This helper will be used to fix a couple of potential deadlocks where
-> the current helper is called with the lock already held, hence the CC
-> stable tag.
-
-Thanks for sending a patch to address this. It had fallen off my radar.
-
->=20
-> Fixes: f492edb40b54 ("PCI: vmd: Add quirk to configure PCIe ASPM and LTR"=
-)
-> Cc: stable@vger.kernel.org=C2=A0=C2=A0=C2=A0# 6.3
-> Cc: Michael Bottini <michael.a.bottini@linux.intel.com>
-> Cc: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+On 17.11.2023 10:27, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+> 
+> Add support for the global clock controller found on X1E80100
+> based devices.
+> 
+> Co-developed-by: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 > ---
-> =C2=A0drivers/pci/pcie/aspm.c | 53 +++++++++++++++++++++++++++++++-------=
----
-> =C2=A0include/linux/pci.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 +++
-> =C2=A02 files changed, 43 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 50b04ae5c394..8cf8cc2d6bba 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1109,17 +1109,7 @@ int pci_disable_link_state(struct pci_dev *pdev, i=
-nt
-> state)
-> =C2=A0}
-> =C2=A0EXPORT_SYMBOL(pci_disable_link_state);
-> =C2=A0
-> -/**
-> - * pci_enable_link_state - Clear and set the default device link state s=
-o
-> that
-> - * the link may be allowed to enter the specified states. Note that if t=
-he
-> - * BIOS didn't grant ASPM control to the OS, this does nothing because w=
-e
-> can't
-> - * touch the LNKCTL register. Also note that this does not enable states
-> - * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-> - *
-> - * @pdev: PCI device
-> - * @state: Mask of ASPM link states to enable
-> - */
-> -int pci_enable_link_state(struct pci_dev *pdev, int state)
-> +static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool
-> locked)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct pcie_link_state *l=
-ink =3D pcie_aspm_get_link(pdev);
-> =C2=A0
-> @@ -1136,7 +1126,8 @@ int pci_enable_link_state(struct pci_dev *pdev, int
-> state)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return -EPERM;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0down_read(&pci_bus_sem);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!locked)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0down_read(&pci_bus_sem);
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-This solution is similar to the original one I proposed [1]. It just create=
-s a
-separate locked function rather than using a flag. While the API is consist=
-ent
-with pci_disable_link_state_locked(), its usage is not. The vmd driver call=
-s
-pci_enable_link_state() from pci_walk_bus() which was problematic for Bjorn=
- [2].
-I owed an attempt to implement this as a fixup. However, now
-qcom_pcie_enabled_aspm() is also using it from pci_walk_bus(). The fixup co=
-uld
-make sense for VMD since there it's fixing missing BIOS settings, but I'm n=
-ot
-sure about qcom. Bjorn, do you still see issues with the use in pci_bus_wal=
-k()?
-
-[1]
-https://lore.kernel.org/lkml/20230321233849.3408339-1-david.e.box@linux.int=
-el.com/
-
-[2] https://lore.kernel.org/lkml/20230322205702.GA2493123@bhelgaas/
-
-David
-
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&aspm_lock);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->aspm_default =3D 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (state & PCIE_LINK_STA=
-TE_L0S)
-> @@ -1157,12 +1148,48 @@ int pci_enable_link_state(struct pci_dev *pdev, i=
-nt
-> state)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0link->clkpm_default =3D (=
-state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pcie_set_clkpm(link, poli=
-cy_to_clkpm_state(link));
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_unlock(&aspm_lock);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0up_read(&pci_bus_sem);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!locked)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0up_read(&pci_bus_sem);
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> =C2=A0}
-> +
-> +/**
-> + * pci_enable_link_state - Clear and set the default device link state s=
-o
-> that
-> + * the link may be allowed to enter the specified states. Note that if t=
-he
-> + * BIOS didn't grant ASPM control to the OS, this does nothing because w=
-e
-> can't
-> + * touch the LNKCTL register. Also note that this does not enable states
-> + * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-> + *
-> + * @pdev: PCI device
-> + * @state: Mask of ASPM link states to enable
-> + */
-> +int pci_enable_link_state(struct pci_dev *pdev, int state)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return __pci_enable_link_state=
-(pdev, state, false);
-> +}
-> =C2=A0EXPORT_SYMBOL(pci_enable_link_state);
-> =C2=A0
-> +/**
-> + * pci_enable_link_state - Clear and set the default device link state s=
-o
-> that
-> + * the link may be allowed to enter the specified states. Note that if t=
-he
-> + * BIOS didn't grant ASPM control to the OS, this does nothing because w=
-e
-> can't
-> + * touch the LNKCTL register. Also note that this does not enable states
-> + * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-> + *
-> + * @pdev: PCI device
-> + * @state: Mask of ASPM link states to enable
-> + *
-> + * Context: Caller holds pci_bus_sem read lock.
-> + */
-> +int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
-> +{
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0lockdep_assert_held_read(&pci_=
-bus_sem);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return __pci_enable_link_state=
-(pdev, state, true);
-> +}
-> +EXPORT_SYMBOL(pci_enable_link_state_locked);
-> +
-> =C2=A0static int pcie_aspm_set_policy(const char *val,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const struct kernel_param *kp)
-> =C2=A0{
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 60ca768bc867..dea043bc1e38 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1829,6 +1829,7 @@ extern bool pcie_ports_native;
-> =C2=A0int pci_disable_link_state(struct pci_dev *pdev, int state);
-> =C2=A0int pci_disable_link_state_locked(struct pci_dev *pdev, int state);
-> =C2=A0int pci_enable_link_state(struct pci_dev *pdev, int state);
-> +int pci_enable_link_state_locked(struct pci_dev *pdev, int state);
-> =C2=A0void pcie_no_aspm(void);
-> =C2=A0bool pcie_aspm_support_enabled(void);
-> =C2=A0bool pcie_aspm_enabled(struct pci_dev *pdev);
-> @@ -1839,6 +1840,8 @@ static inline int pci_disable_link_state_locked(str=
-uct
-> pci_dev *pdev, int state)
-> =C2=A0{ return 0; }
-> =C2=A0static inline int pci_enable_link_state(struct pci_dev *pdev, int s=
-tate)
-> =C2=A0{ return 0; }
-> +static inline int pci_enable_link_state_locked(struct pci_dev *pdev, int
-> state)
-> +{ return 0; }
-> =C2=A0static inline void pcie_no_aspm(void) { }
-> =C2=A0static inline bool pcie_aspm_support_enabled(void) { return false; =
-}
-> =C2=A0static inline bool pcie_aspm_enabled(struct pci_dev *pdev) { return=
- false; }
-
+Konrad
