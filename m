@@ -2,164 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5797F0216
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62647F0220
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjKRSsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:48:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
+        id S229791AbjKRSyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKRSsd (ORCPT
+        with ESMTP id S229478AbjKRSyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 13:48:33 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2071.outbound.protection.outlook.com [40.92.91.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6C1B7;
-        Sat, 18 Nov 2023 10:48:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GvdMaQGm8/Q7uUaRkuFFvj9dWfqyxbMwhqnZqiHuJ8ytC8VAKNShlUMhX3olcUv2BuwPrMgV/F5P6zzcDRqBkktS3Bd4wsIlv5qL96h4Peml37r/ig3To4Fll5dp+jQ2Tt8Mn/N39k+ss8sw1KQ88wcN2/xoZv/FQ7wl+l5ZEugvvpi6Gat/Z63Pxuk7802lutAj43n0wx7oeX42NgmX+RNx35PuRX+gWSSc3inxp8Iwuf22Nc/3NlUPvBumKRcnfm6fu5FkcvAyvCNxLzq06nxPMPNvS7eYbgGdNrj9N03Oxe9Sx7se+fivwA2kEHNlyvT/DnlNORYCEzkfjAvMTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
- b=BGnyt1Mn9M/mfFfnYVIXducEnji2rcjtq+ojOWA90AiS7MhvR7KHbFdO/hJNoVCk5Lbj7ypUy6FmkWdYNVcgP7gRO7RK6xtoY9ezeSho0PHacNa13dnZSkOuVFLEXhDzKfvi36pGo0wB0VzOLDXk0+n6L+i1FfuF/m1ipgiCzyisQ4s1i3RfK6294IRwICZQjTpTGkxmreAaFJqTAFBVK87aqvfqdn+NbLqb9HBI5KWq4mCUIuYHBaJarbN3kjrk4ZYPcBnPI8oDjWEPswCtjBvNoxmcJj0zsw1yii4+YWVZNCar4wIvzOMC3YcQaWDsLM3RfLbSkyw2CS1STkeP9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
- b=o+J4Q9A3Ae+1x88XvQR5kDf40CSKA+ZUsvB3TWrt4umMzhU2S05GToomGVADTF2EJbVwv7LBmNZOS08X5y7H19vZ2ZtcZ1TGD6jv2e0Qd2kv3qRcKuZcZ55hq5jWhopPoLGR8R4WehrLFn2thBEMHxs5HoV0w8U+4O+Ni/k96+Scqf10CSKnkgZ/yJVjULSijXsrhovVF/tZ+fg5pKp4lbenqNQ1WCbheUIYhNjZEOWmVfagCZrG4fP7kR8sa+vz8pHWqLTxglrBtw8ljKLQUfJN9sdHYfYLI06Lz5ps5sCm75M5evPaV/nLYDPeqG44rdK3crziGA8kpoj4rAFUpg==
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
- by AS1PR10MB7936.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:471::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Sat, 18 Nov
- 2023 18:48:27 +0000
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
- 18:48:27 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
-        andrii.nakryiko@gmail.com, mykolal@fb.com, ast@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in vmlinux
-Date:   Sun, 19 Nov 2023 00:17:57 +0530
-Message-ID: <GV1PR10MB656325F13ABA4DBFD4663C33E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [/8NAesCYMHq/Ig6o3N/ES7xBrt69hz/u]
-X-ClientProxiedBy: JNAP275CA0021.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::12)
- To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
-X-Microsoft-Original-Message-ID: <20231118184757.231739-1-yuran.pereira@hotmail.com>
+        Sat, 18 Nov 2023 13:54:49 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA65F2;
+        Sat, 18 Nov 2023 10:54:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=b5JCReSehGd9vgarmSFVhXVxVGPZtnscv9/0QR9Wvgw=; b=e5wJMpE9Tmh6r68FpqiceA9rhG
+        o8drF/CTrDqcdPP+9WDA8GtTxWn2jrpb8JnvRazj8r2N82ceUDUKs/OAzLaQUKuPN/tJlLWL2rGWE
+        V1FQTBvNdf4pxOm4+l0xWTTIVcLohoIHw8pYw/ObMlE7hadsh2IR/HcoAggBcZryJ9mI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r4QSc-000WY3-Ks; Sat, 18 Nov 2023 19:54:30 +0100
+Date:   Sat, 18 Nov 2023 19:54:30 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
+References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+ <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS1PR10MB7936:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3b09d681-79e5-4a25-135f-08dbe866f32c
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hfHZTdVuTc/mnt90k23lNrpY+GvXYa6AOxAED39gUgCVuK4mkZ92CdwMmClk3TZ2is2K58n2txuan7g/LU3zsoMyiGriyF5HU9CbFh0nFwfHsRtYVuF0q56/ZyFSIuaMS7Wk4x3tRifw6HRh7HPv1jiWI3snjRv3+s8eBperjlUoqcw8wjxXduVpZ49k22wS2SQc+44O/HfEV8ZtXfFh48grSamNwTKiyhs/00BdXLTUIhKDY1igmiA1b1/Qxr0THIQ7Qt2MJLglKlf7W9Cl/NqEpigop3n7noAHzciiC7PDPmMFC9ytyaMKeJLTJubM00UOCEGsm5Zw6zXr3Uky4mgaY5LoUw1c2ZKU0lCwFeGZ0kIjgLdN7ZdcAKIXJPVk9wkQxCwBuJkHdInzC7D8GPb4vLq0d3dSRTnlpsOuD1AccCiumhmoETj/T8/Nqg1Cc31BXHBTTSeJRvKSkFEu7Eyk6ujEK80A2xf4KQmQbjeeUW9Atf96t0NeXjYadCooHcjx6+edVTnYYS76iFRaWw0UBhOFtfgxwfyWZMnvNyIOo77rv62Oevlf2LnYn6J+Wtl88K4CXtalGo2ioFCpKXWJDnNunAHevGFgRJrheYE=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mI8wYgHAavySXjmsy71P7Fks4gTn3rEuM0zlexguhI2X83L2qHHR4olIEXHv?=
- =?us-ascii?Q?evXb2kPcqprXnEJ2IrE3e1Wfhs/G1NWkXNmzZg66KmOyT7Iw4Mw+eekHfb7U?=
- =?us-ascii?Q?YFx69+IFsbYa9enyWjCD+abBsGr6sx0UFaro1xknQfRMiOcgzPx6vhzNO2T1?=
- =?us-ascii?Q?HTD922Ab0+hhmGaIjVmGRNnlabKsHNW3vo9iNQpUQHcJR8HpsmRuURkbatBq?=
- =?us-ascii?Q?J9twGb+guJqu4qMBh9wD4IajigWFzxjRkc/3uZK/T/KshKsovp1Vx8Sfb/th?=
- =?us-ascii?Q?pvTe3KY5nNyn7af/VTiyeJkXPlmOEbZxNxXCNYJg4xYcOyDfJHVzrqG7Jgih?=
- =?us-ascii?Q?VJDKFmdF11pmJrxtDwxfE8T4zoN3xT3/y3Miwns9Gi61ZL+FbJDGESjSqOYA?=
- =?us-ascii?Q?mfqmHC0N3g50bkH9axiSK6PETnydWzYtG94Qri+mOhHxXVEpaVmUH652iXUB?=
- =?us-ascii?Q?oUU4X8clHEA/Xvvgqc+zi3dxoudpZKffuLnXIs9i9Zypf9OjTcsxBnLSc+LF?=
- =?us-ascii?Q?/3zoog2KNzKt6MSVQJoQSAJ+o9xHWg0LjviVOqyjNDqa+ZJt+6MLpqYrv5nK?=
- =?us-ascii?Q?DEDz2Patul7ZKToDXa2aNollDWqfxDOxvedk8+V2pWtBKHwgDh0fGtpC308G?=
- =?us-ascii?Q?e0XZ4zDubmiiJuflDZ5wi2RXYLRHAeG63urN/bpO9p/hz+NfAMAOYplylV+8?=
- =?us-ascii?Q?6adZL0HJjEGZ7ccLVigq1nyC9LPweftMFVi6uuHNeUiifq5KYsO6k4RxT/lw?=
- =?us-ascii?Q?S/6ka9z7CMZmRuAB2T6aRT+GV5Tg/mIrGqjbWsCXxoirBK/R3U8vJM11gn9j?=
- =?us-ascii?Q?0Aa7B/66lA/eIY94sVwxkFolYZka3r8YHZkzJouttXHEcEsS1ipBhaQNuc8m?=
- =?us-ascii?Q?7v1chpJDZB51m8E00gkVbEzQFDrxVrmG9En26fHt5uSEDh9bm3Cc3RHjX2Bm?=
- =?us-ascii?Q?Wxz0gvDBzGfxtgliCfaPQ2uTWf+ExlHRQMcDbBgp4l2qZjZki8FY+9g+dMqs?=
- =?us-ascii?Q?/wVGSlEKHVAe8T1qliXa8aNvEYGKDRZguDHqfUalBiPjd1jxSTtq2bxrZta/?=
- =?us-ascii?Q?lbitd8yHwZI6z8KF1OEMPPVkAw+SLgFTmTa1Apr9o2iZVjwBFiYSUerQbmeL?=
- =?us-ascii?Q?lLQPri75doah7b71pf2UqW3KoQiQuUD2iEcN/bCoGxC3pzWAwCWU5eLrtQzj?=
- =?us-ascii?Q?Nxqd2efJJ4bZ4SnIQcg1nJVgR5wv5arG/09Hfr/sOoou1Jfdsvz5/vPaFJk?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b09d681-79e5-4a25-135f-08dbe866f32c
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 18:48:27.1860
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR10MB7936
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmlinux.c uses the `CHECK` calls even though the use of ASSERT_ series
-of macros is preferred in the bpf selftests.
+> +struct pd692x0_priv {
+> +	struct i2c_client *client;
+> +	struct pse_controller_dev pcdev;
+> +
+> +	enum pd692x0_fw_state fw_state;
+> +	struct fw_upload *fwl;
+> +	bool cancel_request:1;
+> +
+> +	u8 msg_id;
+> +	bool last_cmd_key:1;
 
-This patch replaces all `CHECK` calls for equivalent `ASSERT_`
-macro calls.
+Does a bool bit field of size 1 make any sense?  I would also put the
+two bitfields next to each other, and the compiler might then pack
+them into the same word. The base type of a u8 would allow the compile
+to put it next to the msg_id without any padding.
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- tools/testing/selftests/bpf/prog_tests/vmlinux.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> +	unsigned long last_cmd_key_time;
+> +
+> +	enum ethtool_pse_admin_state admin_state[PD692X0_MAX_LOGICAL_PORTS];
+> +};
+> +
+> +/* Template list of the fixed bytes of the communication messages */
+> +static const struct pd692x0_msg pd692x0_msg_template_list[PD692X0_MSG_CNT] = {
+> +	[PD692X0_MSG_RESET] = {
+> +		.content = {
+> +			.key = PD692X0_KEY_CMD,
+> +			.sub = {0x07, 0x55, 0x00},
+> +			.data = {0x55, 0x00, 0x55, 0x4e,
+> +				 0x4e, 0x4e, 0x4e, 0x4e},
+> +		},
+> +	},
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/vmlinux.c b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
-index 72310cfc6474..6fb2217d940b 100644
---- a/tools/testing/selftests/bpf/prog_tests/vmlinux.c
-+++ b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
-@@ -16,27 +16,27 @@ static void nsleep()
- 
- void test_vmlinux(void)
- {
--	int duration = 0, err;
-+	int err;
- 	struct test_vmlinux* skel;
- 	struct test_vmlinux__bss *bss;
- 
- 	skel = test_vmlinux__open_and_load();
--	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+	if (!ASSERT_OK_PTR(skel, "test_vmlinux__open_and_load"))
- 		return;
- 	bss = skel->bss;
- 
- 	err = test_vmlinux__attach(skel);
--	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+	if (!ASSERT_OK(err, "test_vmlinux__attach"))
- 		goto cleanup;
- 
- 	/* trigger everything */
- 	nsleep();
- 
--	CHECK(!bss->tp_called, "tp", "not called\n");
--	CHECK(!bss->raw_tp_called, "raw_tp", "not called\n");
--	CHECK(!bss->tp_btf_called, "tp_btf", "not called\n");
--	CHECK(!bss->kprobe_called, "kprobe", "not called\n");
--	CHECK(!bss->fentry_called, "fentry", "not called\n");
-+	ASSERT_TRUE(bss->tp_called, "tp");
-+	ASSERT_TRUE(bss->raw_tp_called, "raw_tp");
-+	ASSERT_TRUE(bss->tp_btf_called, "tp_btf");
-+	ASSERT_TRUE(bss->kprobe_called, "kprobe");
-+	ASSERT_TRUE(bss->fentry_called, "fentry");
- 
- cleanup:
- 	test_vmlinux__destroy(skel);
--- 
-2.25.1
+Is there any documentation about what all these magic number mean?
 
+> +/* Implementation of the i2c communication in particular when there is
+> + * a communication loss. See the "Synchronization During Communication Loss"
+> + * paragraph of the Communication Protocol document.
+> + */
+
+Is this document public?
+
+> +static int pd692x0_recv_msg(struct pd692x0_priv *priv,
+> +			    struct pd692x0_msg *msg,
+> +			    struct pd692x0_msg_content *buf)
+> +{
+> +	const struct i2c_client *client = priv->client;
+> +	int ret;
+> +
+> +	memset(buf, 0, sizeof(*buf));
+> +	if (msg->delay_recv)
+> +		msleep(msg->delay_recv);
+> +	else
+> +		msleep(30);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+
+This is the first attempt to receive the message. I assume buf->key
+not being 0 indicates something has been received?
+
+> +
+> +	msleep(100);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+
+So this is a second attempt. Should there be another memset? Could the
+first failed transfer fill the buffer with random junk in the higher
+bytes, and a successful read here could be a partial read and the end
+of the buffer still contains the junk.
+
+> +
+> +	ret = pd692x0_send_msg(priv, msg);
+> +	if (ret)
+> +		return ret;
+
+So now we are re-transmitting the request.
+
+> +
+> +	if (msg->delay_recv)
+> +		msleep(msg->delay_recv);
+> +	else
+> +		msleep(30);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+> +
+> +	msleep(100);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+> +
+> +	msleep(10000);
+
+And two more attemps to receive it.
+
+> +
+> +	ret = pd692x0_send_msg(priv, msg);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (msg->delay_recv)
+> +		msleep(msg->delay_recv);
+> +	else
+> +		msleep(30);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+> +
+> +	msleep(100);
+> +
+> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> +	if (buf->key)
+> +		goto out;
+
+Another resend and two more attempts to receive.
+
+Is there a reason to not uses for loops here? And maybe put
+send/receive/receive into a helper? And maybe make the first send part
+of this, rather then separate? I think the code will be more readable
+when restructured.
+
+> +static int pd692x0_ethtool_set_config(struct pse_controller_dev *pcdev,
+> +				      unsigned long id,
+> +				      struct netlink_ext_ack *extack,
+> +				      const struct pse_control_config *config)
+> +{
+> +	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
+> +	struct pd692x0_msg_content buf = {0};
+> +	struct pd692x0_msg msg;
+> +	int ret;
+> +
+> +	ret = pd692x0_fw_unavailable(priv);
+> +	if (ret)
+> +		return ret;
+
+It seems a bit late to check if the device has any firmware. I would
+of expected probe to check that, and maybe attempt to download
+firmware. If that fails, fail the probe, since the PSE is a brick.
+
+> +static struct pd692x0_msg_ver pd692x0_get_sw_version(struct pd692x0_priv *priv)
+> +{
+> +	struct pd692x0_msg msg = pd692x0_msg_template_list[PD692X0_MSG_GET_SW_VER];
+> +	struct device *dev = &priv->client->dev;
+> +	struct pd692x0_msg_content buf = {0};
+> +	struct pd692x0_msg_ver ver = {0};
+> +	int ret;
+> +
+> +	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to get PSE version (%pe)\n", ERR_PTR(ret));
+> +		return ver;
+
+I _think_ that return is wrong ???
+
+> +static enum fw_upload_err pd692x0_fw_write(struct fw_upload *fwl,
+> +					   const u8 *data, u32 offset,
+> +					   u32 size, u32 *written)
+> +{
+> +	struct pd692x0_priv *priv = fwl->dd_handle;
+> +	char line[PD692X0_FW_LINE_MAX_SZ];
+> +	const struct i2c_client *client;
+> +	int ret, i;
+> +	char cmd;
+> +
+> +	client = priv->client;
+> +	priv->fw_state = PD692X0_FW_WRITE;
+> +
+> +	/* Erase */
+> +	cmd = 'E';
+> +	ret = i2c_master_send(client, &cmd, 1);
+> +	if (ret < 0) {
+> +		dev_err(&client->dev,
+> +			"Failed to boot programming mode (%pe)\n",
+> +			ERR_PTR(ret));
+> +		return FW_UPLOAD_ERR_RW_ERROR;
+> +	}
+> +
+> +	ret = pd692x0_fw_recv_resp(client, 100, "TOE\r\n", sizeof("TOE\r\n") - 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = pd692x0_fw_recv_resp(client, 5000, "TE\r\n", sizeof("TE\r\n") - 1);
+> +	if (ret)
+> +		dev_warn(&client->dev,
+> +			 "Failed to erase internal memory, however still try to write Firmware\n");
+> +
+> +	ret = pd692x0_fw_recv_resp(client, 100, "TPE\r\n", sizeof("TPE\r\n") - 1);
+> +	if (ret)
+> +		dev_warn(&client->dev,
+> +			 "Failed to erase internal memory, however still try to write Firmware\n");
+> +
+> +	if (priv->cancel_request)
+> +		return FW_UPLOAD_ERR_CANCELED;
+> +
+> +	/* Program */
+> +	cmd = 'P';
+> +	ret = i2c_master_send(client, &cmd, sizeof(char));
+> +	if (ret < 0) {
+> +		dev_err(&client->dev,
+> +			"Failed to boot programming mode (%pe)\n",
+> +			ERR_PTR(ret));
+> +		return ret;
+> +	}
+> +
+> +	ret = pd692x0_fw_recv_resp(client, 100, "TOP\r\n", sizeof("TOP\r\n") - 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	i = 0;
+> +	while (i < size) {
+> +		ret = pd692x0_fw_get_next_line(data, line, size - i);
+> +		if (!ret) {
+> +			ret = FW_UPLOAD_ERR_FW_INVALID;
+> +			goto err;
+> +		}
+> +
+> +		i += ret;
+> +		data += ret;
+> +		if (line[0] == 'S' && line[1] == '0') {
+> +			continue;
+> +		} else if (line[0] == 'S' && line[1] == '7') {
+> +			ret = pd692x0_fw_write_line(client, line, true);
+> +			if (ret)
+> +				goto err;
+
+Is the firmware in Motorola SREC format? I thought the kernel had a
+helper for that, but a quick search did not find it. So maybe i'm
+remembering wrongly. But it seems silly for every driver to implement
+an SREC parser.
+
+   Andrew
