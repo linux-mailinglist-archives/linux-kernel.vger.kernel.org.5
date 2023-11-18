@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D39257F01E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D207A7F01E5
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjKRSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S231384AbjKRSFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjKRSF0 (ORCPT
+        with ESMTP id S230518AbjKRSF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 18 Nov 2023 13:05:26 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9371CD6A;
-        Sat, 18 Nov 2023 10:05:19 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9f27af23443so421494466b.0;
-        Sat, 18 Nov 2023 10:05:19 -0800 (PST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BB2D78;
+        Sat, 18 Nov 2023 10:05:20 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54553e4888bso4197136a12.2;
+        Sat, 18 Nov 2023 10:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700330718; x=1700935518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700330719; x=1700935519; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CmI/uIQ6Rz6MtRkEfeCIhTUeSTfDQWhDOaE2Jo1gHkw=;
-        b=HRZmBh7IUYYMa530NGuK8Ff3IHau/Ccrv6Qg+Ttx2kewmlpr4RxilAeum7zeDdsmfL
-         G3xuiCOcqRwiuMYSEYjeqpr6ZPYti1fv2rKdJiuAFevnQwqn4V2z9jah5bcL52rWIY1w
-         r2mB18Zy/Tf9Meqhywbit8Bg+HKZRDxNoDw0bfwKlcn0/Ov6Qc4VmgAHKOW4/fI9QH1i
-         Ak5WJOnxa9rJDa+v7WNCAfY0nPqTWpoFK2niPnDcDXWrHtjr4f65ueZVCIhOom9ikT4K
-         OspZ9PR3v0/ALedf6tPh5cedxXHloW00MVymoleqJxLdsfmko2o1JjP5aRfAK9/CnV/v
-         xWLw==
+        bh=fBFVvNKhAX+OR3ALwztSAgxwFpQwZtLHeEc/T4Eghog=;
+        b=WGOXmJEidN+cDr8AD1D47nzEkMzjYeh3Sob3AwND9W27Ms1Fq4wJ+pzTW7H52X2vV2
+         ludrrpy2nqJmzI7ro9TU08xpFneh8vEXZ0uzyHlVc7Td+TBHQ9iGyX5EvdkshaB9PX8V
+         C36i1v9oHQjxq625z5vl5+xZlmIh0NC4Wftn9bSsktZtlOBXcchHGwJOwUSkBkWe1siW
+         Fa2rTArM+oqJ4byXuRX7RFwjMxB/uy9pnx5nLbGAfY7uPMcGLvOSz+6RUuEfj4oI2+ML
+         TmAIKPNXRWh803g2UoZDeSS37wqWW9grEbFVNmrv/4q79WZP7+RxcpuYsvZH2lBYJUaG
+         3Cbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700330718; x=1700935518;
+        d=1e100.net; s=20230601; t=1700330719; x=1700935519;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CmI/uIQ6Rz6MtRkEfeCIhTUeSTfDQWhDOaE2Jo1gHkw=;
-        b=vkth/Me8vgUthKtt5v2j5BedrF5diESXETKT5zfMKa7lpqmnRWZyrCLp02xBO2ppOW
-         83Q7JpAk30UbB5dh//aZGGq/Iu5skGhdfhaEFdwfkncmkJHlRPmc9hhM3sYlP5pNT/Z3
-         JScvUyvmkehVGbMjqSCsYHT9ac3XVK5A8Nx+rKgkd6uv/kN9/6gsBg040l8IUghvManp
-         kjMs/ulV4N15k0rPR6GYM+c+MTUNB6gMEROrT5ewJOepvt8z9XTlAwC8J9Sugc2hZvXj
-         +gB89WlS3I4hP8Bxx0Vk5kHP+mOZr14fYahVL/oXjnOr5xiSno4Ugr0Mh04FVwb0Ij++
-         xTlQ==
-X-Gm-Message-State: AOJu0Yx7P33G5J+uXFpbWopPz6zn/aE/OULms3AQDBf5KuNteUzIILEY
-        aBlFs3VFIZHg2Rhg7y7Y0FzGeAA3euuCVA==
-X-Google-Smtp-Source: AGHT+IHWPoffzAv/aTUexjLqOB8A0X1efasZC9F5Eke4ED6ToM0RGcj7WBEYnJ8x4ceZNrC/IkyHTA==
-X-Received: by 2002:a17:906:11:b0:9cc:450c:b0d5 with SMTP id 17-20020a170906001100b009cc450cb0d5mr2292468eja.4.1700330717822;
-        Sat, 18 Nov 2023 10:05:17 -0800 (PST)
+        bh=fBFVvNKhAX+OR3ALwztSAgxwFpQwZtLHeEc/T4Eghog=;
+        b=a/zaz3OH4+aY/iIuN1jZ1pqt9P+xk8UpiMJozj75e222ePGzcHtVoUlk6zomWYBO0t
+         x3NTtzvE5Mw06e3caMnUHd5OJyrnfFWumA8/glwB80ElL2v6HKALhYCcPGiH0/Dpvep9
+         6HNAiBjmZwYgJIjLo8SP/UYF3wNoWtzp2qvXIqd+DBKio5QNyyOQqcpTRCR2Kx90MBo7
+         1Nisvr7XCxJ9nHY+iFdKIWLXa9l4gCGawnRvYFqnjz7FXiy22EE/SDwezua4NGwOY1nG
+         zLqxchZY9pmIaBvScAfpAgWjGdkylEGlpXyCUNWTpsondzJtgJX0Y0AOCTO2o8W7f1BI
+         TLzg==
+X-Gm-Message-State: AOJu0YwT+Dm2DNPhjoG8irkxq3QF7H45F6Peb9MJdR/CtQ82ncFIKAHG
+        qOa+w6RmBn62LnVF9sOi8I4=
+X-Google-Smtp-Source: AGHT+IFLsodyE/iGxrAmK8Q8vjZyjsPvFWVlPjnusFENJcGXHtsHvV5fnFXdcbYSztPvp0PMT52eOQ==
+X-Received: by 2002:a17:906:5185:b0:9e6:da40:50bf with SMTP id y5-20020a170906518500b009e6da4050bfmr1970039ejk.8.1700330718903;
+        Sat, 18 Nov 2023 10:05:18 -0800 (PST)
 Received: from zotac.lan. (dynamic-2a01-0c22-77bf-8300-2223-08ff-fe18-0310.c22.pool.telefonica.de. [2a01:c22:77bf:8300:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id m20-20020a1709062b9400b009f2c769b4ebsm2079456ejg.151.2023.11.18.10.05.16
+        by smtp.gmail.com with ESMTPSA id m20-20020a1709062b9400b009f2c769b4ebsm2079456ejg.151.2023.11.18.10.05.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 10:05:17 -0800 (PST)
+        Sat, 18 Nov 2023 10:05:18 -0800 (PST)
 From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>, Jim Cromie <jim.cromie@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, Jean Delvare <jdelvare@suse.com>
 Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Rudolf Marek <r.marek@assembler.cz>,
         Andi Shyti <andi.shyti@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 09/10] drivers/i2c/busses/scx200_acb.c: Don't let i2c adapters declare I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
-Date:   Sat, 18 Nov 2023 19:05:03 +0100
-Message-ID: <20231118180504.1785-10-hkallweit1@gmail.com>
+Subject: [PATCH 10/10] drivers/i2c/busses/i2c-ali1563.c: Don't let i2c adapters declare I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
+Date:   Sat, 18 Nov 2023 19:05:04 +0100
+Message-ID: <20231118180504.1785-11-hkallweit1@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231118180504.1785-1-hkallweit1@gmail.com>
 References: <20231118180504.1785-1-hkallweit1@gmail.com>
@@ -84,20 +85,20 @@ Series was created supported by Coccinelle and its splitpatch.
 Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
 ---
- drivers/i2c/busses/scx200_acb.c |    2 +-
+ drivers/i2c/busses/i2c-ali1563.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/scx200_acb.c b/drivers/i2c/busses/scx200_acb.c
-index 83c1db610..3648382b8 100644
---- a/drivers/i2c/busses/scx200_acb.c
-+++ b/drivers/i2c/busses/scx200_acb.c
-@@ -427,7 +427,7 @@ static struct scx200_acb_iface *scx200_create_iface(const char *text,
- 	snprintf(adapter->name, sizeof(adapter->name), "%s ACB%d", text, index);
- 	adapter->owner = THIS_MODULE;
- 	adapter->algo = &scx200_acb_algorithm;
--	adapter->class = I2C_CLASS_HWMON | I2C_CLASS_SPD;
-+	adapter->class = I2C_CLASS_HWMON;
- 	adapter->dev.parent = dev;
+diff --git a/drivers/i2c/busses/i2c-ali1563.c b/drivers/i2c/busses/i2c-ali1563.c
+index 55a9e93fb..307fb0666 100644
+--- a/drivers/i2c/busses/i2c-ali1563.c
++++ b/drivers/i2c/busses/i2c-ali1563.c
+@@ -390,7 +390,7 @@ static const struct i2c_algorithm ali1563_algorithm = {
  
- 	mutex_init(&iface->mutex);
+ static struct i2c_adapter ali1563_adapter = {
+ 	.owner	= THIS_MODULE,
+-	.class	= I2C_CLASS_HWMON | I2C_CLASS_SPD,
++	.class	= I2C_CLASS_HWMON,
+ 	.algo	= &ali1563_algorithm,
+ };
+ 
 
