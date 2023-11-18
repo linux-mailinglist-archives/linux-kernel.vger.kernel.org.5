@@ -2,54 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8E57F001D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 15:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5A37F001F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 15:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbjKROVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 09:21:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
+        id S229803AbjKROZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 09:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjKROVw (ORCPT
+        with ESMTP id S229469AbjKROZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 09:21:52 -0500
-Received: from pepin.polanet.pl (pepin.polanet.pl [193.34.52.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB488F;
-        Sat, 18 Nov 2023 06:21:47 -0800 (PST)
-Date:   Sat, 18 Nov 2023 15:21:43 +0100
-From:   Tomasz Pala <gotar@polanet.pl>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org,
-        Dan J Williams <dan.j.williams@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        David E Box <david.e.box@intel.com>,
-        Yunying Sun <yunying.sun@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Florent DELAHAYE <linuxkernelml@undead.fr>,
-        Konrad J Hambrick <kjhambrick@gmail.com>,
-        Matt Hansen <2lprbe78@duck.com>,
-        Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
-        Benoit =?iso-8859-2?Q?Gr=E9goire?= <benoitg@coeus.ca>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        mumblingdrunkard@protonmail.com, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sebastian Manciulea <manciuleas@protonmail.com>
-Subject: Re: [PATCH 2/2] x86/pci: Treat EfiMemoryMappedIO as reservation of
- ECAM space
-Message-ID: <20231118142143.GA14101@polanet.pl>
-References: <20231103191858.GA163196@bhelgaas>
- <20231109184405.GA488882@bhelgaas>
+        Sat, 18 Nov 2023 09:25:12 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B2D126
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 06:25:09 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r4MFw-0004iM-8d; Sat, 18 Nov 2023 15:25:08 +0100
+Message-ID: <7f4d0dc4-eba7-4221-a1d6-d815c2f3b967@leemhuis.info>
+Date:   Sat, 18 Nov 2023 15:25:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-In-Reply-To: <20231109184405.GA488882@bhelgaas>
-User-Agent: Mutt/1.5.20 (2009-06-14)
+User-Agent: Mozilla Thunderbird
+Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
+ flashing bar with a picture of the desktop background on white screen
+Content-Language: en-US, de-DE
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
+From:   "Linux regression tracking #adding (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700317509;018d62eb;
+X-HE-SMSGID: 1r4MFw-0004iM-8d
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,50 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 12:44:05 -0600, Bjorn Helgaas wrote:
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
->> https://bugzilla.kernel.org/show_bug.cgi?id=218050
->> 
->> I think the problem is that the MMCONFIG region is at
->> [mem 0x80000000-0x8fffffff], and that is *also* included in one of the
->> host bridge windows reported via _CRS:
->> 
->>   PCI: MMCONFIG for domain 0000 [bus 00-ff] at [mem 0x80000000-0x8fffffff] (base 0x80000000)
->>   pci_bus 0000:00: root bus resource [mem 0x80000000-0xfbffffff window]
->> 
->> I'll try to figure out how to deal with that.  In the meantime, would
->> you mind attaching the contents of /proc/iomem to the bugzilla?  I
+On 14.11.23 11:55, Mikhail Gavrilov wrote:
+> Hi,
+> Yesterday came the 6.7-rc1 kernel.
+> And surprisingly it turned out it is not working with my LG C3.
+> I use this OLED TV as my primary monitor.
+> After login to GNOME I see a horizontal flashing bar with a picture of
+> the desktop background on white screen.
+> Demonstration: https://youtu.be/7F76VfRkrVo
 > 
-> I attached a debug patch to both bugzilla entries.  If you could
-> attach the "acpidump" output and (if practical) boot a kernel with the
-> debug patch and attach the dmesg logs, that would be great.
+> I made a bisection.
+> And bisect said that the first bad commit is:
+> commit ed6e2782e9747508888f671e1101250bb19045be
+> [...]
 
-I've posted the files. There are signs of buggy BIOS, but I don't expect
-any firmware update to be released for this hw anymore.
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-DMI: Supermicro X9DRi-LN4+/X9DR3-LN4+/X9DRi-LN4+/X9DR3-LN4+, BIOS 3.4 11/20/2019
+#regzbot ^introduced ed6e2782e9747508888f671e1101250bb190
+#regzbot title drm/amd/display: horizontal flashing bar with a picture
+of the desktop background on white screen after login
+#regzbot ignore-activity
 
-.text .data .bss are not marked as E820_TYPE_RAM!
-tboot: non-0 tboot_addr but it is not of type E820_TYPE_RESERVED
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-DMAR: [Firmware Bug]: No firmware reserved region can cover this RMRR [0x00000000df243000-0x00000000df251fff], contact BIOS vendor for fixes
-DMAR: [Firmware Bug]: Your BIOS is broken; bad RMRR [0x00000000df243000-0x00000000df251fff]
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
-
-BTW is there a reason for this logging discrepancy?
-
-efi: Remove mem173: MMIO range=[0xe0000000-0xefffffff] (256MB) from e820 map
-efi: Not removing mem71: MMIO range=[0xe0000000-0xefffffff] (262144KB) from e820 map
-
-efi: Not removing mem74: MMIO range=[0xff000000-0xffffffff] (16384KB) from e820 map
-efi: Remove mem176: MMIO range=[0xff000000-0xffffffff] (16MB) from e820 map
-
-This is arch/x86/platform/efi/efi.c:
-static void __init efi_remove_e820_mmio(void)
-
-Remove mem%02u: MMIO range=[0x%08llx-0x%08llx] (%lluMB) ... size >> 20
-Not removing mem%02u: MMIO range=[0x%08llx-0x%08llx] (%lluKB) ... size >> 10
-
--- 
-Tomasz Pala <gotar@pld-linux.org>
