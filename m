@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E957EFDCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 06:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637507EFDDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 06:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjKRFOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 00:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        id S230457AbjKRFWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 00:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKRFOn (ORCPT
+        with ESMTP id S229789AbjKRFV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 00:14:43 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F0F10D0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 21:14:38 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc5b705769so24050595ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 21:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700284478; x=1700889278; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=clpaUzNSF9Y0euKE8HoT2iNeGOFsJJ2CPhGb7WB9NWY=;
-        b=BsTnY1nEzmKWiPCM+jxUY0lWMAwVTwUSBET17EHcLSQzcvzCcOE/2SuxBXwe9N18S0
-         SOTV5DBinDPjhx3Ut2IVhTGxeUlC/sbjKKPOaMON+bqxDZEj8qFr/K/Sp+i8sz/p6CyO
-         ibkKAUWvoagsNN9NaxPDOpO6bPd9H4Hm1ptEtcpxrJc0TnsrzWer0cfNYwSRSrfElqlD
-         /aM5TUadBK76O7fxAjGc+FqvuHNk6yrSXsJMYkuycmdOHxYvItC8fITNlSx7rD1R9r9g
-         4fXT6J0JWDKroENXS4t4VmsuJaOOjweWDO0IOFiwvG4HS+bPGTWN0r5U00tUcISok5G9
-         qu9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700284478; x=1700889278;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=clpaUzNSF9Y0euKE8HoT2iNeGOFsJJ2CPhGb7WB9NWY=;
-        b=kZ3b6tcHXOYXEqd++xRPlaW5oj0VPIJNV88YAOF+jq3mZ0YhNaP/F7FKPVGXwe145r
-         OmoPngTHvmeMzipm8BqW+Kw0IIKKAUlW8zwbMrZT1EHb9Ei+D33dK2Mr1yBn/ODG72xI
-         uAXZMVrRobocuzGuuctQnMnsU0YJ9so4/123pISbQ2UqefhLJuEvaYL0YlSgDTSKUSSB
-         y+Bjyg/7NXL2XsYcxC5ScXDsWqlTtUJn6kuf+8qjqqemHTFwQ0S97qERHbgSG7M2V8cq
-         s0D051hw8cgSlQZD5eCUquai45BunLoyL/z62stRTl3+qi1o/fud6iOvDAVrb92wu6QI
-         kIkQ==
-X-Gm-Message-State: AOJu0YzrKM2S/goIhXd3MD04onvomBiCNt7BHpTzPBaS5Eam5URV+rEN
-        RNJqhHBZRrD3QODfzlousin4iw==
-X-Google-Smtp-Source: AGHT+IH+WryRLNe/R1V4RIlPH4bOFnaXQppN9drDViTVHC5Ye2XTJrkIRTbF7/e5t4ucDzSjgCBwhg==
-X-Received: by 2002:a17:903:41cb:b0:1cc:5691:5113 with SMTP id u11-20020a17090341cb00b001cc56915113mr2229960ple.26.1700284478075;
-        Fri, 17 Nov 2023 21:14:38 -0800 (PST)
-Received: from [10.254.46.51] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id e19-20020a170902ed9300b001c61921d4d2sm2214306plj.302.2023.11.17.21.14.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 21:14:37 -0800 (PST)
-Message-ID: <2c7509e3-6db0-461e-991b-026553157dbe@bytedance.com>
-Date:   Sat, 18 Nov 2023 13:14:32 +0800
+        Sat, 18 Nov 2023 00:21:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007CC10D0;
+        Fri, 17 Nov 2023 21:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700284915; x=1731820915;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yEreUHMKYBFFkEB3u/u/R/cCq3R3tX2VCM4VmFEVxYA=;
+  b=KX/vs6zF1ZNDxhSICsi/JLSz08C3EA6MjqAxLesr2wPFei/k+f9ZnJBK
+   9Vo0Wng5f1V4GgltZpeI6Ovkga6IfKGOEVX4JUyPt6DMoQCE1yXg3gR50
+   XGlfANZAFnxEAf+ILIdgXuC78hZ1BGOGS5bea6L0P65B13ZVtn9ltWi8d
+   cd8SdvTNU8tWfnsnsEFnFark1nWmWMnnsap6dCYEZa+qX64FmdLYHpMf6
+   YmWneRSs099xuCH/m6cVYByq3P7mWI38jwT0s4mpqf8G8El2Y+tZtHFLV
+   rjCKQPXT30iQzhDvRhspTe7hJD/AgaBAVVO49rLgoVvJ0vJdjMOfK/zQt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="395334557"
+X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
+   d="scan'208";a="395334557"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 21:21:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="1097293092"
+X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
+   d="scan'208";a="1097293092"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Nov 2023 21:21:51 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4Dm8-0003YN-2N;
+        Sat, 18 Nov 2023 05:21:48 +0000
+Date:   Sat, 18 Nov 2023 13:21:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Petre Rodan <petre.rodan@subdimension.ro>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: pressure: driver for Honeywell HSC/SSC
+ series pressure sensors
+Message-ID: <202311181316.z2BmTZmP-lkp@intel.com>
+References: <20231117164232.8474-2-petre.rodan@subdimension.ro>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair:
- Add lag based placement)
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Tobias Huschle <huschle@linux.ibm.com>
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org,
-        mst@redhat.com, jasowang@redhat.com
-References: <c7b38bc27cc2c480f0c5383366416455@linux.ibm.com>
- <20231117092318.GJ8262@noisy.programming.kicks-ass.net>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20231117092318.GJ8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117164232.8474-2-petre.rodan@subdimension.ro>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,196 +74,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 5:23 PM, Peter Zijlstra Wrote:
-> 
-> Your email is pretty badly mangled by wrapping, please try and
-> reconfigure your MUA, esp. the trace and debug output is unreadable.
-> 
-> On Thu, Nov 16, 2023 at 07:58:18PM +0100, Tobias Huschle wrote:
-> 
->> The base scenario are two KVM guests running on an s390 LPAR. One guest
->> hosts the uperf server, one the uperf client.
->> With EEVDF we observe a regression of ~50% for a strburst test.
->> For a more detailed description of the setup see the section TEST SUMMARY at
->> the bottom.
-> 
-> Well, that's not good :/
-> 
->> Short summary:
->> The mentioned kworker has been scheduled to CPU 14 before the tracing was
->> enabled.
->> A vhost process is migrated onto CPU 14.
->> The vruntimes of kworker and vhost differ significantly (86642125805 vs
->> 4242563284 -> factor 20)
-> 
-> So bear with me, I know absolutely nothing about virt stuff. I suspect
-> there's cgroups involved because shiny or something.
-> 
-> kworkers are typically not in cgroups and are part of the root cgroup,
-> but what's a vhost and where does it live?
-> 
-> Also, what are their weights / nice values?
-> 
->> The vhost process wants to wake up the kworker, therefore the kworker is
->> placed onto the runqueue again and set to runnable.
->> The vhost process continues to execute, waking up other vhost processes on
->> other CPUs.
->>
->> So far this behavior is not different to what we see on pre-EEVDF kernels.
->>
->> On timestamp 576.162767, the vhost process triggers the last wake up of
->> another vhost on another CPU.
->> Until timestamp 576.171155, we see no other activity. Now, the vhost process
->> ends its time slice.
->> Then, vhost gets re-assigned new time slices 4 times and gets then migrated
->> off to CPU 15.
-> 
-> So why does this vhost stay on the CPU if it doesn't have anything to
-> do? (I've not tried to make sense of the trace, that's just too
-> painful).
-> 
->> This does not occur with older kernels.
->> The kworker has to wait for the migration to happen in order to be able to
->> execute again.
->> This is due to the fact, that the vruntime of the kworker is significantly
->> larger than the one of vhost.
-> 
-> That's, weird. Can you add a trace_printk() to update_entity_lag() and
-> have it print out the lag, limit and vlag (post clamping) values? And
-> also in place_entity() for the reverse process, lag pre and post scaling
-> or something.
-> 
-> After confirming both tasks are indeed in the same cgroup ofcourse,
-> because if they're not, vruntime will be meaningless to compare and we
-> should look elsewhere.
-> 
-> Also, what HZ and what preemption mode are you running? If kworker is
-> somehow vastly over-shooting it's slice -- keeps running way past the
-> avg_vruntime, then it will build up a giant lag and you get what you
-> describe, next time it wakes up it gets placed far to the right (exactly
-> where it was when it 'finally' went to sleep, relatively speaking).
-> 
->> We found some options which sound plausible but we are not sure if they are
->> valid or not:
->>
->> 1. The wake up path has a dependency on the vruntime metrics that now delays
->> the execution of the kworker.
->> 2. The previous commit af4cf40470c2 (sched/fair: Add cfs_rq::avg_vruntime)
->> which updates the way cfs_rq->min_vruntime and
->>      cfs_rq->avg_runtime are set might have introduced an issue which is
->> uncovered with the commit mentioned above.
-> 
-> Suppose you have a few tasks (of equal weight) on you virtual timeline
-> like so:
-> 
->     ---------+---+---+---+---+------
->              ^       ^
-> 	    |       `avg_vruntime
-> 	    `-min_vruntime
-> 
-> Then the above would be more or less the relative placements of these
-> values. avg_vruntime is the weighted average of the various vruntimes
-> and is therefore always in the 'middle' of the tasks, and not somewhere
-> out-there.
-> 
-> min_vruntime is a monotonically increasing 'minimum' that's left-ish on
-> the tree (there's a few cases where a new task can be placed left of
-> min_vruntime and its no longer actuall the minimum, but whatever).
-> 
-> These values should be relatively close to one another, depending
-> ofcourse on the spread of the tasks. So I don't think this is causing
-> trouble.
-> 
-> Anyway, the big difference with lag based placement is that where
-> previously tasks (that do not migrate) retain their old vruntime and on
-> placing they get pulled forward to at least min_vruntime, so a task that
-> wildly overshoots, but then doesn't run for significant time can still
-> be overtaken and then when placed again be 'okay'.
-> 
-> Now OTOH, with lag-based placement,  we strictly preserve their relative
-> offset vs avg_vruntime. So if they were *far* too the right when they go
-> to sleep, they will again be there on placement.
+Hi Petre,
 
-Hi Peter, I'm a little confused here. As we adopt placement strategy #1
-when PLACE_LAG is enabled, the lag of that entity needs to be preserved.
-Given that the weight doesn't change, we have:
+kernel test robot noticed the following build errors:
 
-	vl' = vl
+[auto build test ERROR on jic23-iio/togreg]
+[also build test ERROR on robh/for-next linus/master v6.7-rc1]
+[cannot apply to next-20231117]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-But in fact it is scaled on placement:
+url:    https://github.com/intel-lab-lkp/linux/commits/Petre-Rodan/iio-pressure-driver-for-Honeywell-HSC-SSC-series-pressure-sensors/20231118-072654
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20231117164232.8474-2-petre.rodan%40subdimension.ro
+patch subject: [PATCH v2 2/2] iio: pressure: driver for Honeywell HSC/SSC series pressure sensors
+config: riscv-rv32_defconfig (attached as .config)
+compiler: riscv32-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311181316.z2BmTZmP-lkp@intel.com/reproduce)
 
-	vl' = vl * W/(W + w)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311181316.z2BmTZmP-lkp@intel.com/
 
-Does this intended? And to illustrate my understanding of strategy #1:
+All errors (new ones prefixed by >>):
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 07f555857698..a24ef8b297ed 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5131,7 +5131,7 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-  	 *
-  	 * EEVDF: placement strategy #1 / #2
-  	 */
--	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
-+	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running && se->vlag) {
-  		struct sched_entity *curr = cfs_rq->curr;
-  		unsigned long load;
-  
-@@ -5150,7 +5150,10 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-  		 * To avoid the 'w_i' term all over the place, we only track
-  		 * the virtual lag:
-  		 *
--		 *   vl_i = V - v_i <=> v_i = V - vl_i
-+		 *   vl_i = V' - v_i <=> v_i = V' - vl_i
-+		 *
-+		 * Where V' is the new weighted average after placing this
-+		 * entity, and v_i is its newly assigned vruntime.
-  		 *
-  		 * And we take V to be the weighted average of all v:
-  		 *
-@@ -5162,41 +5165,17 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
-  		 * vl_i is given by:
-  		 *
-  		 *   V' = (\Sum w_j*v_j + w_i*v_i) / (W + w_i)
--		 *      = (W*V + w_i*(V - vl_i)) / (W + w_i)
--		 *      = (W*V + w_i*V - w_i*vl_i) / (W + w_i)
--		 *      = (V*(W + w_i) - w_i*l) / (W + w_i)
--		 *      = V - w_i*vl_i / (W + w_i)
--		 *
--		 * And the actual lag after adding an entity with vl_i is:
--		 *
--		 *   vl'_i = V' - v_i
--		 *         = V - w_i*vl_i / (W + w_i) - (V - vl_i)
--		 *         = vl_i - w_i*vl_i / (W + w_i)
--		 *
--		 * Which is strictly less than vl_i. So in order to preserve lag
--		 * we should inflate the lag before placement such that the
--		 * effective lag after placement comes out right.
--		 *
--		 * As such, invert the above relation for vl'_i to get the vl_i
--		 * we need to use such that the lag after placement is the lag
--		 * we computed before dequeue.
-+		 *      = (W*V + w_i*(V' - vl_i)) / (W + w_i)
-+		 *      = V - w_i*vl_i / W
-  		 *
--		 *   vl'_i = vl_i - w_i*vl_i / (W + w_i)
--		 *         = ((W + w_i)*vl_i - w_i*vl_i) / (W + w_i)
--		 *
--		 *   (W + w_i)*vl'_i = (W + w_i)*vl_i - w_i*vl_i
--		 *                   = W*vl_i
--		 *
--		 *   vl_i = (W + w_i)*vl'_i / W
-  		 */
-  		load = cfs_rq->avg_load;
-  		if (curr && curr->on_rq)
-  			load += scale_load_down(curr->load.weight);
--
--		lag *= load + scale_load_down(se->load.weight);
-  		if (WARN_ON_ONCE(!load))
-  			load = 1;
--		lag = div_s64(lag, load);
-+
-+		vruntime -= div_s64(lag * scale_load_down(se->load.weight), load);
-  	}
-  
-  	se->vruntime = vruntime - lag;
+>> drivers/iio/pressure/Kconfig:120: syntax error
+   drivers/iio/pressure/Kconfig:119:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:119: unknown statement "pressure"
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ','
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ':'
+   drivers/iio/pressure/Kconfig:121: unknown statement "To"
+   drivers/iio/pressure/Kconfig:122:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:122: unknown statement "called"
+   make[3]: *** [scripts/kconfig/Makefile:77: oldconfig] Error 1
+   make[2]: *** [Makefile:685: oldconfig] Error 2
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'oldconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'oldconfig' not remade because of errors.
+--
+>> drivers/iio/pressure/Kconfig:120: syntax error
+   drivers/iio/pressure/Kconfig:119:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:119: unknown statement "pressure"
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ','
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ':'
+   drivers/iio/pressure/Kconfig:121: unknown statement "To"
+   drivers/iio/pressure/Kconfig:122:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:122: unknown statement "called"
+   make[3]: *** [scripts/kconfig/Makefile:77: olddefconfig] Error 1
+   make[2]: *** [Makefile:685: olddefconfig] Error 2
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'olddefconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'olddefconfig' not remade because of errors.
+--
+>> drivers/iio/pressure/Kconfig:120: syntax error
+   drivers/iio/pressure/Kconfig:119:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:119: unknown statement "pressure"
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ','
+   drivers/iio/pressure/Kconfig:121:warning: ignoring unsupported character ':'
+   drivers/iio/pressure/Kconfig:121: unknown statement "To"
+   drivers/iio/pressure/Kconfig:122:warning: ignoring unsupported character '.'
+   drivers/iio/pressure/Kconfig:122: unknown statement "called"
+   make[5]: *** [scripts/kconfig/Makefile:87: defconfig] Error 1
+   make[4]: *** [Makefile:685: defconfig] Error 2
+   make[3]: *** [Makefile:350: __build_one_by_one] Error 2
+   make[3]: Target 'defconfig' not remade because of errors.
+   make[3]: Target '32-bit.config' not remade because of errors.
+   make[2]: *** [arch/riscv/Makefile:190: rv32_defconfig] Error 2
+   make[1]: *** [Makefile:234: __sub-make] Error 2
+   make[1]: Target 'rv32_defconfig' not remade because of errors.
+   make: *** [Makefile:234: __sub-make] Error 2
+   make: Target 'rv32_defconfig' not remade because of errors.
+
+
+vim +120 drivers/iio/pressure/Kconfig
+
+     8	
+     9	config ABP060MG
+    10		tristate "Honeywell ABP pressure sensor driver"
+    11		depends on I2C
+    12		help
+    13		  Say yes here to build support for the Honeywell ABP pressure
+    14		  sensors.
+    15	
+    16		  To compile this driver as a module, choose M here: the module
+    17		  will be called abp060mg.
+    18	
+    19	config ROHM_BM1390
+    20		tristate "ROHM BM1390GLV-Z pressure sensor driver"
+    21		depends on I2C
+    22		help
+    23		  Support for the ROHM BM1390 pressure sensor. The BM1390GLV-Z
+    24		  can measure pressures ranging from 300 hPa to 1300 hPa with
+    25		  configurable measurement averaging and internal FIFO. The
+    26		  sensor does also provide temperature measurements.
+    27	
+    28	config BMP280
+    29		tristate "Bosch Sensortec BMP180/BMP280/BMP380/BMP580 pressure sensor driver"
+    30		depends on (I2C || SPI_MASTER)
+    31		select REGMAP
+    32		select BMP280_I2C if (I2C)
+    33		select BMP280_SPI if (SPI_MASTER)
+    34		help
+    35		  Say yes here to build support for Bosch Sensortec BMP180, BMP280, BMP380
+    36		  and BMP580 pressure and temperature sensors. Also supports the BME280 with
+    37		  an additional humidity sensor channel.
+    38	
+    39		  To compile this driver as a module, choose M here: the core module
+    40		  will be called bmp280 and you will also get bmp280-i2c for I2C
+    41		  and/or bmp280-spi for SPI support.
+    42	
+    43	config BMP280_I2C
+    44		tristate
+    45		depends on BMP280
+    46		depends on I2C
+    47		select REGMAP_I2C
+    48	
+    49	config BMP280_SPI
+    50		tristate
+    51		depends on BMP280
+    52		depends on SPI_MASTER
+    53		select REGMAP
+    54	
+    55	config IIO_CROS_EC_BARO
+    56		tristate "ChromeOS EC Barometer Sensor"
+    57		depends on IIO_CROS_EC_SENSORS_CORE
+    58		help
+    59		  Say yes here to build support for the Barometer sensor when
+    60		  presented by the ChromeOS EC Sensor hub.
+    61	
+    62		  To compile this driver as a module, choose M here: the module
+    63		  will be called cros_ec_baro.
+    64	
+    65	config DLHL60D
+    66		tristate "All Sensors DLHL60D and DLHL60G low voltage digital pressure sensors"
+    67		depends on I2C
+    68		select IIO_BUFFER
+    69		select IIO_TRIGGERED_BUFFER
+    70		help
+    71		  Say yes here to build support for the All Sensors DLH series
+    72		  pressure sensors driver.
+    73	
+    74		  To compile this driver as a module, choose M here: the module
+    75		  will be called dlhl60d.
+    76	
+    77	config DPS310
+    78		tristate "Infineon DPS310 pressure and temperature sensor"
+    79		depends on I2C
+    80		select REGMAP_I2C
+    81		help
+    82		  Support for the Infineon DPS310 digital barometric pressure sensor.
+    83		  It can be accessed over I2C bus.
+    84	
+    85		  This driver can also be built as a module.  If so, the module will be
+    86		  called dps310.
+    87	
+    88	config HID_SENSOR_PRESS
+    89		depends on HID_SENSOR_HUB
+    90		select IIO_BUFFER
+    91		select HID_SENSOR_IIO_COMMON
+    92		select HID_SENSOR_IIO_TRIGGER
+    93		tristate "HID PRESS"
+    94		help
+    95		  Say yes here to build support for the HID SENSOR
+    96		  Pressure driver
+    97	
+    98		  To compile this driver as a module, choose M here: the module
+    99		  will be called hid-sensor-press.
+   100	
+   101	config HP03
+   102		tristate "Hope RF HP03 temperature and pressure sensor driver"
+   103		depends on I2C
+   104		select REGMAP_I2C
+   105		help
+   106		  Say yes here to build support for Hope RF HP03 pressure and
+   107		  temperature sensor.
+   108	
+   109		  To compile this driver as a module, choose M here: the module
+   110		  will be called hp03.
+   111	
+   112	config HSC030PA
+   113		tristate "Honeywell HSC/SSC (TruStability pressure sensors series)"
+   114		depends on (I2C || SPI_MASTER)
+   115		select HSC030PA_I2C if (I2C)
+   116		select HSC030PA_SPI if (SPI_MASTER)
+   117		help
+   118		  Say Y here to build support for the Honeywell HSC and SSC TruStability
+   119	      pressure and temperature sensor series.
+ > 120	
+   121		  To compile this driver as a module, choose M here: the module will be
+   122		  called hsc030pa.
+   123	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
