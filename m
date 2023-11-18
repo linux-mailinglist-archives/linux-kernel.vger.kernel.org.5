@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B4B7F00B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE387F00B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbjKRPyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        id S231213AbjKRPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:54:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjKRPxA (ORCPT
+        with ESMTP id S231185AbjKRPxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:53:00 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD151BF9;
-        Sat, 18 Nov 2023 07:51:43 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d9ac3b4f42cso3362107276.0;
-        Sat, 18 Nov 2023 07:51:43 -0800 (PST)
+        Sat, 18 Nov 2023 10:53:03 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348B71FC3;
+        Sat, 18 Nov 2023 07:51:45 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7dd65052aso33807947b3.0;
+        Sat, 18 Nov 2023 07:51:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322702; x=1700927502; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322703; x=1700927503; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tg2dWT1RhFKme6yZPEIj44E7/nsRkUJhN3arViZI26M=;
-        b=LX0Ty0bL4pMGI7gQ5d7p8EDFQ9rDmYzupxxul3h1v0ChIU2ggm3JZfJqnfaxHnlMH7
-         dMKNUQ+FdJFnmF5e8H4/8nAqVTSbVQOlRuUDrIwHiqXd4sg2OPukdZDT7WeNCa3sOyqI
-         /fo3kQhSmqBcZmgZufy3bEzS8R/LGyjCWczqu6KUYr8Nj3/W9jEjt2Gdx+krsfF0SdUI
-         rXzQKd9bZKzK1aQtcKdJQFLzr2h8crIscLZ+g+H2BZO0netk4WdH/N20fl9aXKZyyd50
-         TbVdX15R2F919pwplLPX9mQUAxaGk9qHABAdAlJw5fZYAXPjqWxVYZXlFUA7WUHP8b6C
-         g9oA==
+        bh=phxxXofFhF+VjGYxpvuhMgjdcfI/PSJyd4/4jUAT2FE=;
+        b=a5eesQm5O5JlmTp25FdxAsMuE7ZxUbyEvxra9wNcgqF4HasdgmMdaBOnyuKe8Lni68
+         BNj7pLsw4KCBvmUmqH1wcclGY+yyp+l/VtGcBlXNwSjchXwTajKqO7GSzUU3sfNyrwi2
+         JDdg1U579Ay14OlS/8DKkiy2vSTY6Hjekkivf6NPU6/NUvzlaFpG5ZgLUUT/rYmH1gIJ
+         dTG2LFgNy3Gp3d77fRodIlGnfSTHji9GUlt5fN0rHSjV1rRQRUhiYSnIeAdNHXyKDSR0
+         hpN8jcPeNdMJhikWMX/zeg/9YGO60YWSIMhLUVwMTSvm/ScIOMF4Uvg3GJYRen/7wT9n
+         Idfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322702; x=1700927502;
+        d=1e100.net; s=20230601; t=1700322703; x=1700927503;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tg2dWT1RhFKme6yZPEIj44E7/nsRkUJhN3arViZI26M=;
-        b=IPF8W04ewcwO6sh9e9zownO9utMV4G+4Rp+V8FnsWAjJjgOkX/MduzvDBqT8VsypF1
-         LwQK+k9i9kQ4WqTC/b4JA4vPSqYnWFOUNZchwrcjug5OGpZ/v4sgAb+z5oV/ovuyj5l6
-         PFULSZ6ZAcUWw70Xt9c0DWPDM2OyCrQ1IxhBOYgXPfN8svR51mZ3Un5YaXD9oQNrzKAV
-         YJV3j5rRmlhW3mkqj2p6TIeIU7K4k6USgM7VORprI9nczBaJXVht7YT/lt52XBNVt8FA
-         NuETR2X3WuXonV5MocpaK9n5Arw42p4jZPPDYnetHniHOR9TkVZLo0vGZ1DFkyQGi073
-         3ajA==
-X-Gm-Message-State: AOJu0Yz2C07TxMPEY/hOyRwClLk8XJH2DDPdQzIhGUiRGtcuOwNNFi3I
-        IpVgxBjnchWtS60v3ruwZH2BA1uz1zw+cBmi
-X-Google-Smtp-Source: AGHT+IGLuAbyQuCwpl0+dEJc+LhpBrFdlR1P42AFwq9mnuU8O7NnAWExHW0iaDQvbV6DL8BBzMuPMg==
-X-Received: by 2002:a25:ad4f:0:b0:daf:7702:fd60 with SMTP id l15-20020a25ad4f000000b00daf7702fd60mr1666669ybe.1.1700322702147;
-        Sat, 18 Nov 2023 07:51:42 -0800 (PST)
+        bh=phxxXofFhF+VjGYxpvuhMgjdcfI/PSJyd4/4jUAT2FE=;
+        b=xBmHlC75oOuWzumRnfFouqx8fPIrKuYJMhVSYBBmkjc9rSepUW/H8jCnmvswPyzjlM
+         Y/cHDc+KOrLHAGUt7utk9Sp5mNO4o8jmdCZqFs/EzFDo5xNKDgayRYLxWJuEZWu7U7OC
+         1NouYGyWN+3KcA+Ihv3FYvJYYumS1UMtxTM9FzH80zGJZ8UAUx/7jlfAq16NkbcU9bnX
+         tmmttx4hn4oc3v1UWBadGahclL8qYWh0GHSwtskcHYG4veSOKeF2BZohEs/cT7hHsVFO
+         9sxUkRqzsYWY9vySqU9IZ3/7c0DET9WpLttwYIw1hh0dgjrWuCcSwUz+RoW8axzLPfKN
+         K9PQ==
+X-Gm-Message-State: AOJu0Yx5NEoS4oSGaUyTvKkRM6W5fKgPnjedPR4JV6sVY1MIu+SpRhrj
+        h6SJa09wHbPDb/d4VJLb4HWMUSAAT0/HJ4Kf
+X-Google-Smtp-Source: AGHT+IG7xraS3i1lSLIwVNn87X3jl4n4U8OES6bJWUTWk+DaM7OZ2mTSeaQ2nJYkbf0r4npTVy6Xaw==
+X-Received: by 2002:a81:920e:0:b0:5a7:b036:360c with SMTP id j14-20020a81920e000000b005a7b036360cmr2839457ywg.23.1700322703364;
+        Sat, 18 Nov 2023 07:51:43 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id i10-20020a05690200ca00b00daf198ef6fbsm964572ybs.21.2023.11.18.07.51.41
+        by smtp.gmail.com with ESMTPSA id t195-20020a8183cc000000b00582b239674esm1172512ywf.129.2023.11.18.07.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:41 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:42 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        "Shin'ichiro Kawasaki" <shinichiro.kawasaki@wdc.com>,
-        Yury Norov <yury.norov@gmail.com>, linux-block@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
+To:     linux-kernel@vger.kernel.org,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 22/34] block: null_blk: fix opencoded find_and_set_bit() in get_tag()
-Date:   Sat, 18 Nov 2023 07:50:53 -0800
-Message-Id: <20231118155105.25678-23-yury.norov@gmail.com>
+Subject: [PATCH 23/34] RDMA/rtrs: fix opencoded find_and_set_bit_lock() in __rtrs_get_permit()
+Date:   Sat, 18 Nov 2023 07:50:54 -0800
+Message-Id: <20231118155105.25678-24-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -86,76 +81,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_tag() opencodes find_and_set_bit(). Switch the code to use the
-dedicated function, and get rid of get_tag entirely.
+The function opencodes find_and_set_bit_lock() with a while-loop polling
+on test_and_set_bit_lock(). Use a dedicated find_and_set_bit_lock()
+instead.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/block/null_blk/main.c | 41 +++++++++++------------------------
- 1 file changed, 13 insertions(+), 28 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index 22a3cf7f32e2..a41d146663e1 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -760,19 +760,6 @@ static void put_tag(struct nullb_queue *nq, unsigned int tag)
- 		wake_up(&nq->wait);
- }
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 07261523c554..2f3b0ad42e8a 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -72,18 +72,9 @@ __rtrs_get_permit(struct rtrs_clt_sess *clt, enum rtrs_clt_con_type con_type)
+ 	struct rtrs_permit *permit;
+ 	int bit;
  
--static unsigned int get_tag(struct nullb_queue *nq)
--{
--	unsigned int tag;
--
+-	/*
+-	 * Adapted from null_blk get_tag(). Callers from different cpus may
+-	 * grab the same bit, since find_first_zero_bit is not atomic.
+-	 * But then the test_and_set_bit_lock will fail for all the
+-	 * callers but one, so that they will loop again.
+-	 * This way an explicit spinlock is not required.
+-	 */
 -	do {
--		tag = find_first_zero_bit(nq->tag_map, nq->queue_depth);
--		if (tag >= nq->queue_depth)
--			return -1U;
--	} while (test_and_set_bit_lock(tag, nq->tag_map));
--
--	return tag;
--}
--
- static void free_cmd(struct nullb_cmd *cmd)
- {
- 	put_tag(cmd->nq, cmd->tag);
-@@ -782,24 +769,22 @@ static enum hrtimer_restart null_cmd_timer_expired(struct hrtimer *timer);
- 
- static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
- {
-+	unsigned int tag = find_and_set_bit_lock(nq->tag_map, nq->queue_depth);
- 	struct nullb_cmd *cmd;
--	unsigned int tag;
--
--	tag = get_tag(nq);
--	if (tag != -1U) {
--		cmd = &nq->cmds[tag];
--		cmd->tag = tag;
--		cmd->error = BLK_STS_OK;
--		cmd->nq = nq;
--		if (nq->dev->irqmode == NULL_IRQ_TIMER) {
--			hrtimer_init(&cmd->timer, CLOCK_MONOTONIC,
--				     HRTIMER_MODE_REL);
--			cmd->timer.function = null_cmd_timer_expired;
--		}
--		return cmd;
-+
-+	if (tag >= nq->queue_depth)
+-		bit = find_first_zero_bit(clt->permits_map, max_depth);
+-		if (bit >= max_depth)
+-			return NULL;
+-	} while (test_and_set_bit_lock(bit, clt->permits_map));
++	bit = find_and_set_bit_lock(clt->permits_map, max_depth);
++	if (bit >= max_depth)
 +		return NULL;
-+
-+	cmd = &nq->cmds[tag];
-+	cmd->tag = tag;
-+	cmd->error = BLK_STS_OK;
-+	cmd->nq = nq;
-+	if (nq->dev->irqmode == NULL_IRQ_TIMER) {
-+		hrtimer_init(&cmd->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		cmd->timer.function = null_cmd_timer_expired;
- 	}
  
--	return NULL;
-+	return cmd;
- }
- 
- static struct nullb_cmd *alloc_cmd(struct nullb_queue *nq, struct bio *bio)
+ 	permit = get_permit(clt, bit);
+ 	WARN_ON(permit->mem_id != bit);
 -- 
 2.39.2
 
