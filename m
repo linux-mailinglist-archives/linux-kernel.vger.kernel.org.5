@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A77CD7EFEF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 11:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB4C7EFF17
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 11:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjKRKlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 05:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S229532AbjKRKpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 05:45:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjKRKlR (ORCPT
+        with ESMTP id S229449AbjKRKpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 05:41:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6934D6D
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 02:41:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55C91C433C8;
-        Sat, 18 Nov 2023 10:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700304074;
-        bh=IbhrKQIHbt867NOmvlXVQQ/KhWWhW4WnEbDhXB0zfMc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=eJpfNqUS/ufprXVU1rWDyuPlonh5+Ts3e9BtwgX66m32maoUHUJu3smuB7zBHdfe1
-         d9SloI8FOsAAlx6nuDUi73c9w5lQSH5lbwYb2HQeFVRkS12sL9y6NyCB/uKm5ERIt2
-         CtgrMt0Zc72Q/veFUMGfYyJGjRACEVOZ/oEWLvLoqhqLIwTZElQ4Uh0SbzeOC06jxA
-         dkjlVqfjXCqwY+YFNgagFDD0YPQ21XbPbtT7/VHOdhCfYsXGOzqS/+HApU0NdB6p5K
-         rqpuoTSxuStU93Vi/lLuW8x3KXfcITBuF3Ii1A1aoD3ALpwRuHKc+mzI3TcOVi/CgY
-         1qVkxjuRGNZKQ==
-Message-ID: <6a8c44e1-d3a3-49ee-bfbc-8a994a6d4ff8@kernel.org>
-Date:   Sat, 18 Nov 2023 12:41:07 +0200
+        Sat, 18 Nov 2023 05:45:33 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396DD10DA;
+        Sat, 18 Nov 2023 02:45:30 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SXVm60rZSz4f3kFd;
+        Sat, 18 Nov 2023 18:45:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 9B9D71A0175;
+        Sat, 18 Nov 2023 18:45:27 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.107])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhDClVhlAjMGBQ--.58652S4;
+        Sat, 18 Nov 2023 18:45:27 +0800 (CST)
+From:   Zhang Xiaoxu <zhangxiaoxu@huawecloud.com>
+To:     zhangxiaoxu5@huawei.com, weiyongjun1@huawei.com,
+        linux-kernel@vger.kernel.org, broonie@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, frowand.list@gmail.com,
+        linux-spi@vger.kernel.org
+Subject: [PATCH v4 -next 0/4] spi: Introduce BPF based SPI mockup controller
+Date:   Sat, 18 Nov 2023 18:44:38 +0800
+Message-Id: <20231118104442.861759-1-zhangxiaoxu@huawecloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] usb: cdns3-ti: add suspend/resume procedures for
- J7200
-Content-Language: en-US
-To:     =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        "Vardhan, Vibhore" <vibhore@ti.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
- <20231113-j7200-usb-suspend-v1-3-ad1ee714835c@bootlin.com>
- <5080372b-1f48-4cbc-a6c4-8689c28983cb@kernel.org>
- <CWZH66HQZNYM.T623ZOEEE0BK@tleb-bootlin-xps13-01>
- <dad980f3-e032-41e4-a1e4-a16a7f45ff95@kernel.org>
- <CX0GOP07I40N.198G7LJ0HYDBG@tleb-bootlin-xps13-01>
- <bdea68ad-7523-4738-8fa1-b670d81a6b93@kernel.org>
- <CX10D9YX1O1C.30PF317AG065N@tleb-bootlin-xps13-01>
- <3e00b2ad-b58f-4b09-9230-683c58d3bb92@kernel.org>
- <CX15J7B8F8HH.1WZ10OOW31X1H@tleb-bootlin-xps13-01>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <CX15J7B8F8HH.1WZ10OOW31X1H@tleb-bootlin-xps13-01>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: cCh0CgBXWhDClVhlAjMGBQ--.58652S4
+X-Coremail-Antispam: 1UD129KBjvJXoWrur45KFW5CryDZF15uryDKFg_yoW8JryUpF
+        1kJF13t3ykJrZI9F1fCa4UGFy3Aa4xurWUKa42qw1Fyr9akFyrAw4DKr1Yy3WfJFs7tFyU
+        Zry2kr95KF1UZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxAIw28IcVAKzI0E
+        Y4vE52x082I5MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMI
+        IF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UG2NtUUUUU=
+Sender: zhangxiaoxu@huaweicloud.com
+X-CM-SenderInfo: x2kd0wp0ld053x6k3tpzhluzxrxghudrp/
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhang Xiaoxu <zhangxiaoxu@huawe.com>
 
+v3->v4:
+  Use configfs to register the controller and target
+  Modify with the comments from Mark Brown
 
-On 17/11/2023 16:20, Théo Lebrun wrote:
-> Hi Roger,
-> 
-> On Fri Nov 17, 2023 at 12:51 PM CET, Roger Quadros wrote:
->> On 17/11/2023 12:17, Théo Lebrun wrote:
->>> On Thu Nov 16, 2023 at 10:44 PM CET, Roger Quadros wrote:
->>>> On 16/11/2023 20:56, Théo Lebrun wrote:
->>>>> On Thu Nov 16, 2023 at 1:40 PM CET, Roger Quadros wrote:
->>>>>> On 15/11/2023 17:02, Théo Lebrun wrote:
->>>>>>> On Wed Nov 15, 2023 at 12:37 PM CET, Roger Quadros wrote:
->>>>>>>> You might want to check suspend/resume ops in cdns3-plat and
->>>>>>>> do something similar here.
->>>>>>>
->>>>>>> I'm unsure what you are referring to specifically in cdns3-plat?
->>>>>>
->>>>>> What I meant is, calling pm_runtime_get/put() from system suspend/resume
->>>>>> hooks doesn't seem right.
->>>>>>
->>>>>> How about using something like pm_runtime_forbid(dev) on devices which
->>>>>> loose USB context on runtime suspend e.g. J7200.
->>>>>> So at probe we can get rid of the pm_runtime_get_sync() call.
->>>>>
->>>>> What is the goal of enabling PM runtime to then block (ie forbid) it in
->>>>> its enabled state until system suspend?
->>>>
->>>> If USB controller retains context on runtime_suspend on some platforms
->>>> then we don't want to forbid PM runtime.
->>>
->>> What's the point of runtime PM if nothing is done based on it? This is
->>> the current behavior of the driver.
->>
->> Even if driver doesn't have runtime_suspend/resume hooks, wouldn't 
->> the USB Power domain turn off if we enable runtime PM and allow runtime
->> autosuspend and all children have runtime suspended?
-> 
-> That cannot be the currently desired behavior as it would require a
-> runtime_resume implementation that restores this wrapper to its desired
-> state.
-> 
-> It could however be something that could be implemented. It would be a
-> matter of enabling PM runtime and that is it in the probe. No need to
-> even init the hardware in the probe. Then the runtime_resume
-> implementation would call the new cdns_ti_init_hw.
-> 
-> This is what the cdns3-imx wrapper is doing in a way, though what they
-> need is clocks rather than some registers to be written.
-> 
-> That all feels like outside the scope of the current patch series
-> though.
-> 
-> My suggestion for V2 would still therefore be to remove all PM runtime
-> as it has no impact. It could be added later down the road if cutting
-> the power-domain is a goal of yours.
+v2->v3:
+  Add configfs to configure and register the device;
+  Fix some misspelling.
 
-OK let's do this.
+v1->v2:
+  Use the new _controller() API
+  P1. Move the license identifier to the entrie comment
+  P2. Inherit tx_nbits/rx_nbits/cs_off/cs_change from the
+      spi_transfer to the tracepoint
+  P3. Removed.
+  P4. Update the Document.
+
+Zhang Xiaoxu (4):
+  spi: mockup: Add SPI controller testing driver
+  spi: mockup: Add register spi device support
+  spi: mockup: Add writeable tracepoint for spi transfer
+  spi: mockup: Add documentation
+
+ Documentation/spi/index.rst       |   1 +
+ Documentation/spi/spi-mockup.rst  | 198 +++++++++++
+ drivers/spi/Kconfig               |  12 +
+ drivers/spi/Makefile              |   1 +
+ drivers/spi/spi-mockup.c          | 562 ++++++++++++++++++++++++++++++
+ include/linux/spi/spi-mockup.h    |  17 +
+ include/trace/events/spi_mockup.h |  31 ++
+ 7 files changed, 822 insertions(+)
+ create mode 100644 Documentation/spi/spi-mockup.rst
+ create mode 100644 drivers/spi/spi-mockup.c
+ create mode 100644 include/linux/spi/spi-mockup.h
+ create mode 100644 include/trace/events/spi_mockup.h
 
 -- 
-cheers,
--roger
+2.34.1
+
