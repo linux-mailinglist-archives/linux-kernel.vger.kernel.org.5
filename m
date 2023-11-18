@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2A97EFCE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B287EFCE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbjKRBLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 20:11:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S232697AbjKRBMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 20:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbjKRBLp (ORCPT
+        with ESMTP id S232685AbjKRBMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 20:11:45 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D87710C6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:11:41 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so344264166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:11:40 -0800 (PST)
+        Fri, 17 Nov 2023 20:12:05 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED2D10EC
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:12:01 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9becde9ea7bso733398166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:12:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700269899; x=1700874699; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700269920; x=1700874720; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BbexD1T/FT/YPW6uGJXfL9w+KF6e3VpkGSJ4SDAyprU=;
-        b=vL3zB8mqDD8UoyHQJ+g3coOzfuJlztyjEMYx/YoY6YZxRiNcbAKyN6aDmrEipQ3X90
-         cASqkv6R1op5gVqVcs6pWGwvpW03fxJixJuFznlY2Ih4cfAq8mJ7tzxXFSPTr+2unnO5
-         KJX/6plaX457rx1JpB8NIgAMtc/JA5c24MkhtkCk0YeuC/jDItS+bGSy7G+1G9KPoaHt
-         3Ekzw0Qq/3MBfsgPBgutdV65Zkupd+nwkswuobmKHSSJPsm1oReI2J1XXNQr6m1NT62Y
-         xfz5ORvu4PF8cCoxnSO/wqtsAg4OhihqXMeSa0a7yTk9UymFXL+7BDa/HqzBy/ulggli
-         NPkA==
+        bh=kznQGdnKp7IkQ8MKOzkfhU/0N5qZreYJJbTGlRYKUQI=;
+        b=iXIx+jGMIYneeDk49eVZKdDH4no1TUnprGpktK/CDtwyZrf17oIL91K4jiAVLyxYZL
+         D6pF+Sa2aHI+VJ/nwz7ClLP6A99heICjAjG7dxjc4AnBFaXR4Br/6PtqQk+V4WJ95Gl8
+         1jdHh46UZGNx+DxUhOJJ6xPw76cGc+0nLgt3bmYXVGjM8xerb3M1A0OXcrfJbxVW3Kus
+         DSdKxDu411K3kzwFBDUBuMH7WYL0pxyx0B8dWsfUcAscm4blfChi5KtKT96V+xdKq+K9
+         VEQrg+zZnwL1ezPo+cSCkcpzdp76QUA1MGjqdqa2/eOxwRKqczrJ0fmuHhsrS+RjPdxO
+         NVHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700269899; x=1700874699;
+        d=1e100.net; s=20230601; t=1700269920; x=1700874720;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BbexD1T/FT/YPW6uGJXfL9w+KF6e3VpkGSJ4SDAyprU=;
-        b=BUIby74kkQf2QbGaCru0oFiblszG1JrDkVDBx8lWz5vUFvC6mMfIOwN1OaWSMfI2hv
-         1IEweNs8C+prJeLGtAvIYR78HnVz1PC/TGcvFlvlzCdY3NrnTrthwMeXpul+PSljN1Oa
-         ab8WxmV/l33hvh5F4qNdI1aemPDwYC/ZfCPiFSuI8AepsfcVjOxngI89O6CyrpsqTw/L
-         +ggf5s714zjIKmms5EvKiP+Zanyej6KLxT40CPQjHSmyF1oxkDdghRzYCaB4ej4c/Cir
-         gUN5Dugz43C8KgZezusEmygLDjDaQP+OOoLTfcdUGOHu6nOxVzD97TTp6FaXwwn2Bo97
-         lbhA==
-X-Gm-Message-State: AOJu0YygMsSI15pFQThwNNUIJxWIqaNFWuNUR0Ty4qudqlx14IPyCo6O
-        kYhCf+lBVjrFz2FDzLNW/wGe9A==
-X-Google-Smtp-Source: AGHT+IEbTsd14CCKxvtEvWhgJLrppyyZ5FGn+Yw8aLmlFjkF2jC5FYxA2FEOmLSkZikSFXQFDvU/3w==
-X-Received: by 2002:a17:907:3e85:b0:9bf:b022:dc7 with SMTP id hs5-20020a1709073e8500b009bfb0220dc7mr825721ejc.48.1700269899558;
-        Fri, 17 Nov 2023 17:11:39 -0800 (PST)
+        bh=kznQGdnKp7IkQ8MKOzkfhU/0N5qZreYJJbTGlRYKUQI=;
+        b=qQKm4Q2XBTiz140VUbSaHHeLu4vOnpIcxHr05qKctbrS8CBKRkk787Q9poWXRh5e1c
+         yjwwz+z9vI8JFnhGZ21/G6B/7S1o7BmRR6Kqo9UTH7ZFqPxX0BWzmDqDbJF/gX60QqlR
+         qoUiFWXoeh3+Mj4p9Xr1niiDNmce0NYu6z7kmaCKCmeh2B9CKemXNCePiCNwRFTYSAHA
+         BGwThU0pfJHfADnX2xuHm3UDDvgjVvuWBH+7CDaVzTLYUtFsgoqnYVfeo51cCqTaBp6M
+         A1beGsT9guiEkj8eA8QeZxKzfT4t+ZbI3oIMdryOjq34fVq0bh/1OPLacGJkjWBXjpy8
+         QJkA==
+X-Gm-Message-State: AOJu0YxFTYP9Jqb4jviaLX8lSEyXOLGCIoigic4vMhyJ6cHU4kJzeF0Z
+        AyCewYcikrz08Xj72b53N0gX/ZIGsKN6NAd3vVI=
+X-Google-Smtp-Source: AGHT+IGUoSVDnk5HoyAi1k9WsQ4XSWw6+gRpaUWTU+8itDXK5E2kpT7IlrP5Kz6pLvuK/IM6lbbkWQ==
+X-Received: by 2002:a17:906:196:b0:9b2:be2f:e31a with SMTP id 22-20020a170906019600b009b2be2fe31amr772091ejb.31.1700269920001;
+        Fri, 17 Nov 2023 17:12:00 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b009ddcfbac9e7sm1344347ejh.84.2023.11.17.17.11.38
+        by smtp.gmail.com with ESMTPSA id f12-20020a1709062c4c00b009ddcfbac9e7sm1344347ejh.84.2023.11.17.17.11.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 17:11:39 -0800 (PST)
-Message-ID: <93c5d2ad-02b2-425b-877b-9576318fe51e@linaro.org>
-Date:   Sat, 18 Nov 2023 02:11:37 +0100
+        Fri, 17 Nov 2023 17:11:59 -0800 (PST)
+Message-ID: <75d5a65f-4ab2-4bc8-a177-688b590f3bb8@linaro.org>
+Date:   Sat, 18 Nov 2023 02:11:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] arm64: dts: qcom: Add base qcm6490 idp board dts
+Subject: Re: [PATCH v4 3/3] arm64: dts: qcom: Add base qcs6490-rb3gen2 board
+ dts
 Content-Language: en-US
 To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
         Andy Gross <agross@kernel.org>,
@@ -63,9 +64,10 @@ To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org,
+        Naina Mehta <quic_nainmeht@quicinc.com>
 References: <20231117125056.32503-1-quic_kbajaj@quicinc.com>
- <20231117125056.32503-3-quic_kbajaj@quicinc.com>
+ <20231117125056.32503-4-quic_kbajaj@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -102,7 +104,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231117125056.32503-3-quic_kbajaj@quicinc.com>
+In-Reply-To: <20231117125056.32503-4-quic_kbajaj@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -116,21 +118,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 17.11.2023 13:50, Komal Bajaj wrote:
-> Add DTS for Qualcomm IDP platform using QCM6490 SoC.
-> This adds debug uart, eMMC and usb support along with
-> regulators found on this board.
+> Add DTS for Qualcomm qcs6490-rb3gen2 board which uses
+> QCS6490 SoC. This adds debug uart and usb support along
+> with regulators found on this board.
 > 
+> Co-developed-by: Naina Mehta <quic_nainmeht@quicinc.com>
+> Signed-off-by: Naina Mehta <quic_nainmeht@quicinc.com>
 > Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
 > ---
-[...]
- 
-> +	gpio-reserved-ranges = <32 2>, <48 4>;
-Please describe what these pins are for, so e.g.:
-
-gpio-reserved-ranges = <32 2>, /* spaghetti cooker */
-		       <48 4>; /* fingerprint scanner */
-
-aside from that, LGTM
+same comment as p2
 
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
