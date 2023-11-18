@@ -2,53 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 643457EFC88
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE46D7EFC8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346376AbjKRA0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        id S1346380AbjKRA2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:28:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbjKRA0m (ORCPT
+        with ESMTP id S232504AbjKRA2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:26:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E472310C6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:26:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F43C433C7;
-        Sat, 18 Nov 2023 00:26:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700267199;
-        bh=GSskpSkb+gqp7Ilh5CwUXkWbfmd9WvqPk0X0bLR5x60=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p1U5NexMi9d6MmNo06+HGgtQWdWWQOYW3+//xMvP1lzjOS1GdyYhkRVH/MSbNcz9V
-         QtuJ2PXISDTfIxjBOlcwzYC5WOyWTR0qEH6Y1gem5Xi/lmkRjFo7pMqJ92RV8TO5Z1
-         Qzl3U9k2b/hvE1G5pNe8VzDTPy9CnIhECBwhx0M8pwxkTY76er2YBGWGAkyn6f/UDU
-         rSuJDtTjfagGUBeQcpyu8XypxSQGcZGSAOKqcQusTdjWwaOna6dOYVG2fZtS/i61R1
-         QC3zy2ETnJdpFAqVjgK5zpc+4weFZq7d2vlwQDKiWvrdNglCYGQC/sllPBIbwpF7RI
-         fiqsujy/KWNhA==
-Date:   Fri, 17 Nov 2023 16:26:38 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v2 0/2] Add MHI Endpoint network driver
-Message-ID: <20231117162638.7cdb3e7d@kernel.org>
-In-Reply-To: <20231117070602.GA10361@thinkpad>
-References: <20230607152427.108607-1-manivannan.sadhasivam@linaro.org>
-        <20230607094922.43106896@kernel.org>
-        <20230607171153.GA109456@thinkpad>
-        <20230607104350.03a51711@kernel.org>
-        <20230608123720.GC5672@thinkpad>
-        <20231117070602.GA10361@thinkpad>
+        Fri, 17 Nov 2023 19:28:10 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5B2D7E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:28:07 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-408c6ec1fd1so11395e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:28:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700267286; x=1700872086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=73Tnq90BIIK+bWzVstEpI62VolU0zG+vjIVvtoSbajE=;
+        b=YjdjuBTLV+yjUtLYAO+4MkPfoKp4+ZmQriAwSPapoPI0BjJiWpyO8/h5Ec3dOzw8OP
+         XgvzfgPksfMJq+SnMfhxTWiMJP87XeisrcLqhhE3eV6PV+nMsQZZTW0YDZ2/gu7tkaZf
+         JpTW72vZZJeZdCFtYhDD9ruoofEWDJaPLbsE/2VXPVI9fIuRBWfsl44oRKH8EJPy+3Ba
+         gHjCtWPH+c3w/PKdlYJjcn2/hFW5A2CI0gcwOH9D97SDLrDM5NjWTtZkstDX76MwdULG
+         atypZBckDasjaWQVjGt2ia13DgeU+CiSNVEuo9yY653MLcYIKiUli7EpCtjv1ocacjiT
+         TKUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700267286; x=1700872086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=73Tnq90BIIK+bWzVstEpI62VolU0zG+vjIVvtoSbajE=;
+        b=jwWenoRYH88jQL5/F0AtZjWorOR2e2Pc1Cjhnu0OBOVINoXgwdBPTk+IfzoY9OCl8N
+         5LxCOrFVI67TLrnl8R7NOMjAc3Iq0gz3mtK59WW3Nm5jEdAoXYnacJ6x8pwUEcmO935Z
+         JK3m6K0wFzRjbtV2KnwaI3DkNvw4PotRV+Orb4kCtkWPZuh+d6KYkMtN7bIFx4Cctg6l
+         CxX0WjFsM6eAaXedMfuftrA9CPty89ETsrOShZM1t86I36GflhKMe9Zngfc8eNw6O/R7
+         FvIzIUxTaCGdGM1h8FeJBwRwZlS7cP6OvGnSZ/Fbcv59dYotd8/cyB6o9jHzD5PcbOan
+         3/NA==
+X-Gm-Message-State: AOJu0YyNrjmCF+ocnqCPnln6UzP5wwMj5Rl4U+5yQGdpv4SWsE7uNG4F
+        d3VilZ5GHiyFnLd197+STr0ttn8vdsEAqkjkvn1l
+X-Google-Smtp-Source: AGHT+IHSq9c3SB879A4Y9X7B/NWEeDJZN+VTUL58zVS4FNEdH+w9beguhDsgVswh9vpjwc0wz4o1URoruZbhe/6DnnU=
+X-Received: by 2002:a05:600c:3c8b:b0:3f7:3e85:36a with SMTP id
+ bg11-20020a05600c3c8b00b003f73e85036amr201414wmb.7.1700267285667; Fri, 17 Nov
+ 2023 16:28:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231106193524.866104-16-jstultz@google.com> <202311081028.yDLmCWgr-lkp@intel.com>
+In-Reply-To: <202311081028.yDLmCWgr-lkp@intel.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Fri, 17 Nov 2023 16:27:52 -0800
+Message-ID: <CANDhNCrT-CRbSZhPtxQ+mD97x6+2C0uE4WsmS-ymPiYewrNviw@mail.gmail.com>
+Subject: Re: [PATCH v6 15/20] sched: Add proxy deactivate helper
+To:     kernel test robot <lkp@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, oe-kbuild-all@lists.linux.dev,
+        Joel Fernandes <joelaf@google.com>,
+        Qais Yousef <qyousef@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        Youssef Esmat <youssefesmat@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,14 +86,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 12:36:02 +0530 Manivannan Sadhasivam wrote:
-> Sorry to revive this old thread, this discussion seems to have fell through the
-> cracks...
+On Tue, Nov 7, 2023 at 6:52=E2=80=AFPM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> kernel test robot noticed the following build warnings:
+>
+...
+> >> kernel/sched/core.c:6616:6: warning: no previous prototype for 'proxy_=
+deactivate' [-Wmissing-prototypes]
+>     6616 | bool proxy_deactivate(struct rq *rq, struct task_struct *next)
+>          |      ^~~~~~~~~~~~~~~~
 
-It did not fall thru the cracks, you got a nack. Here it is in a more
-official form:
 
-Nacked-by: Jakub Kicinski <kuba@kernel.org>
+Thank you! I've fixed this up for v7
 
-Please make sure you keep this tag and CC me if you ever post any form
-of these patches again.
+thanks again
+-john
