@@ -2,61 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B54A7EFE71
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 09:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998377EFE73
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 09:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232006AbjKRIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 03:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        id S232403AbjKRIHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 03:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjKRIGt (ORCPT
+        with ESMTP id S229938AbjKRIHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 03:06:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF44D72
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 00:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700294805; x=1731830805;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=g9JYnQ1ibTk2yvCulow+sCuX/qNP2ikawtulTanKa8E=;
-  b=YuFTzuX8BCIjromcSkFXPklp4yfLanPCbNtdNZ9GeRwCY2T16ZW8d0QM
-   Bu/ky0GDFScfgGZ6fgS5f8ZUmVtseHyozyWRWhE4Hoakfsa07E/iE9ToA
-   EWcOY6pj6GLCUPth3UOZz4qpeAkgfgQ3zPbAXrzEB44XTHASkD5jChecG
-   9SY6LnhvttSdDzcyN+ceNLSXq4FMpVQnvFJLhgj54D25FsCVNXKtRHp6o
-   iSJG5rCiuRTUfsZn4uovka2b8Y5gWKjECeQJ9WWRiOzinVIHhPN+IBZhu
-   GJ7eYCIdo/W+fGhZegzQewxD6r+HYArkyyIjrgy3/M4oxCBOTWuJs7JuV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="370763493"
-X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
-   d="scan'208";a="370763493"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 00:06:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="742291115"
-X-IronPort-AV: E=Sophos;i="6.04,207,1695711600"; 
-   d="scan'208";a="742291115"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 18 Nov 2023 00:06:42 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4GLf-0003ft-27;
-        Sat, 18 Nov 2023 08:06:39 +0000
-Date:   Sat, 18 Nov 2023 16:05:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Calvin Owens <calvinowens@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
-Message-ID: <202311181510.0srSXWMe-lkp@intel.com>
+        Sat, 18 Nov 2023 03:07:36 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9530D5D;
+        Sat, 18 Nov 2023 00:07:31 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI7a4sH024517;
+        Sat, 18 Nov 2023 08:07:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=HCBNS+RoQsIDvjafJAvRjkAYymAZefxDdkPg6CwX7aI=;
+ b=P46aDAL5YtWR4T/uzWOcxnvUjhxajndri1p/msia8MY83BncEeF/U0uzvfbwJVtmo952
+ l+pNPBC1L1xqx5bt500QmpGi1koGHHTWCprKZHntPPS+MsdNOmI67IzaDKO/HCLBMMOT
+ YwngdlqAOasjz57kq4DmYaaNl2B6glm6IOd5LdNsbvtSmYesnndgUZUYQKkiuozYGyet
+ d7+bgtEik39GZq7qrG0wF2ep26Vsq+gc93V2mjlRjVUc7Hle0CpP0A8yFABW7yDhOZ/H
+ 0cJdPlTiDraVvE86fTXjy6BK68kELO5nLY+RDKmq+xpaTMB3DseCF9uHEyDwrAwxBsSU MQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uep1qr7aa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 Nov 2023 08:07:13 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AI87Dnw023484
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 18 Nov 2023 08:07:13 GMT
+Received: from [10.253.8.221] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 18 Nov
+ 2023 00:07:08 -0800
+Message-ID: <de4fa95e-4bc7-438a-94bb-4b31b1b89704@quicinc.com>
+Date:   Sat, 18 Nov 2023 16:07:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>
+CC:     <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-10-quic_luoj@quicinc.com>
+ <834cbb58-3a88-4ba6-8db6-10440a4d0893@linaro.org>
+ <76e081ba-9d5a-41df-9c1b-d782e5656973@quicinc.com>
+ <2a9bb683-da73-47af-8800-f14a833e8ee4@linaro.org>
+ <386fcee0-1eab-4c0b-8866-a67821a487ee@quicinc.com>
+ <77a194cd-d6a4-4c9b-87f5-373ed335528f@linaro.org>
+Content-Language: en-US
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <77a194cd-d6a4-4c9b-87f5-373ed335528f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: S1IxcI4idQDzTWEvoKDYaTWkaAf4VhZK
+X-Proofpoint-ORIG-GUID: S1IxcI4idQDzTWEvoKDYaTWkaAf4VhZK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-18_07,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 lowpriorityscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311180058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,207 +92,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   791c8ab095f71327899023223940dd52257a4173
-commit: bdb4d100afe9818aebd1d98ced575c5ef143456c procfs: always expose /proc/<pid>/map_files/ and make it readable
-date:   8 years ago
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231118/202311181510.0srSXWMe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311181510.0srSXWMe-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311181510.0srSXWMe-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> fs/proc/base.c:1980:25: sparse: sparse: cast to restricted fmode_t
->> fs/proc/base.c:2039:42: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:2138:48: sparse: sparse: cast from restricted fmode_t
-   fs/proc/base.c:1033:24: sparse: sparse: context imbalance in 'oom_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:1136:24: sparse: sparse: context imbalance in 'oom_score_adj_read' - different lock contexts for basic block
-   fs/proc/base.c:2166:13: sparse: sparse: context imbalance in 'timers_start' - wrong count at exit
-   fs/proc/base.c:2192:36: sparse: sparse: context imbalance in 'timers_stop' - unexpected unlock
-   fs/proc/base.c:3290:19: sparse: sparse: self-comparison always evaluates to false
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/node.h:17,
-                    from include/linux/swap.h:10,
-                    from fs/proc/base.c:66:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/cgroup.h:19,
-                    from include/linux/memcontrol.h:22,
-                    from include/linux/swap.h:8:
-   include/linux/kernfs.h:424:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     424 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   In file included from fs/proc/base.c:94:
-   fs/proc/internal.h: In function 'name_to_int':
-   fs/proc/internal.h:117:28: warning: pointer targets in initialization of 'const char *' from 'const unsigned char *' differ in signedness [-Wpointer-sign]
-     117 |         const char *name = qstr->name;
-         |                            ^~~~
-   In file included from include/linux/fs.h:7,
-                    from include/linux/proc_fs.h:8,
-                    from fs/proc/base.c:54:
-   fs/proc/base.c: In function 'proc_fill_cache':
-   fs/proc/base.c:1814:39: warning: pointer targets in initialization of 'const unsigned char *' from 'const char *' differ in signedness [-Wpointer-sign]
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c:1814:39: note: (near initialization for 'qname.name')
-    1814 |         struct qstr qname = QSTR_INIT(name, len);
-         |                                       ^~~~
-   include/linux/dcache.h:54:52: note: in definition of macro 'QSTR_INIT'
-      54 | #define QSTR_INIT(n,l) { { { .len = l } }, .name = n }
-         |                                                    ^
-   fs/proc/base.c: In function 'dname_to_vma_addr':
-   fs/proc/base.c:1846:34: warning: pointer targets in passing argument 1 of 'sscanf' differ in signedness [-Wpointer-sign]
-    1846 |         if (sscanf(dentry->d_name.name, "%lx-%lx", start, end) != 2)
-         |                    ~~~~~~~~~~~~~~^~~~~
-         |                                  |
-         |                                  const unsigned char *
-   In file included from include/asm-generic/bug.h:13,
-                    from arch/x86/include/asm/bug.h:35,
-                    from include/linux/bug.h:4,
-                    from include/linux/thread_info.h:11,
-                    from arch/x86/include/asm/uaccess.h:8,
-                    from fs/proc/base.c:50:
-   include/linux/kernel.h:418:12: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     418 | int sscanf(const char *, const char *, ...);
-         |            ^~~~~~~~~~~~
-   fs/proc/base.c: In function 'proc_map_files_readdir':
-   fs/proc/base.c:2123:49: warning: pointer targets in passing argument 1 of 'snprintf' differ in signedness [-Wpointer-sign]
-    2123 |                         info.len = snprintf(info.name,
-         |                                             ~~~~^~~~~
-         |                                                 |
-         |                                                 unsigned char *
-   include/linux/kernel.h:405:20: note: expected 'char *' but argument is of type 'unsigned char *'
-     405 | int snprintf(char *buf, size_t size, const char *fmt, ...);
-         |              ~~~~~~^~~
-   fs/proc/base.c:2135:40: warning: pointer targets in passing argument 3 of 'proc_fill_cache' differ in signedness [-Wpointer-sign]
-    2135 |                                       p->name, p->len,
-         |                                       ~^~~~~~
-         |                                        |
-         |                                        unsigned char *
-   fs/proc/base.c:1810:21: note: expected 'const char *' but argument is of type 'unsigned char *'
-    1810 |         const char *name, int len,
-         |         ~~~~~~~~~~~~^~~~
-   fs/proc/base.c: In function 'proc_flush_task_mnt':
-   fs/proc/base.c:2876:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2876 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2888:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2888 |         name.name = buf;
-         |                   ^
-   fs/proc/base.c:2894:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
-    2894 |         name.name = "task";
-         |                   ^
-   fs/proc/base.c:2895:31: warning: pointer targets in passing argument 1 of 'strlen' differ in signedness [-Wpointer-sign]
-    2895 |         name.len = strlen(name.name);
-         |                           ~~~~^~~~~
-         |                               |
-         |                               const unsigned char *
-   In file included from arch/x86/include/asm/string.h:4,
-                    from include/linux/string.h:17,
-                    from include/linux/dynamic_debug.h:111,
-                    from include/linux/printk.h:277,
-                    from include/linux/kernel.h:13:
-   arch/x86/include/asm/string_64.h:64:27: note: expected 'const char *' but argument is of type 'const unsigned char *'
-      64 | size_t strlen(const char *s);
-         |               ~~~~~~~~~~~~^
-   fs/proc/base.c:2900:19: warning: pointer targets in assignment from 'char *' to 'const unsigned char *' differ in signedness [-Wpointer-sign]
+On 11/17/2023 8:43 PM, Krzysztof Kozlowski wrote:
+> On 17/11/2023 12:20, Jie Luo wrote:
+>>
+>>
+>> On 11/17/2023 6:40 PM, Krzysztof Kozlowski wrote:
+>>> On 17/11/2023 11:36, Jie Luo wrote:
+>>>>>>       clocks:
+>>>>>> -    items:
+>>>>>> -      - description: MDIO clock source frequency fixed to 100MHZ
+>>>>>> +    minItems: 1
+>>>>>> +    maxItems: 5
+>>>>>> +    description:
+>>>>>
+>>>>> Doesn't this make all other variants with incorrect constraints?
+>>>>
+>>>> There are 5 clock items, the first one is the legacy MDIO clock, the
+>>>> other clocks are new added for ipq5332 platform, will describe it more
+>>>> clearly in the next patch set.
+>>>
+>>> OTHER variants. Not this one.
+>>
+>> The change here is for the clock number added for the ipq5332 platform,
+>> the other platforms still use only legacy MDIO clock.
+> 
+> Then your patch is wrong as I said. You now affect other variants. I
+> don't quite get your responses. Style of them suggests that you
+> disagree, but you are not providing any relevant argument.
 
-vim +1980 fs/proc/base.c
+The clock arguments are provided in the later part as below. i will also
+provide more detail clock names for the new added clocks for the ipq5332
+platform in description.
 
-bdb4d100afe981 Calvin Owens         2015-09-09  1975  
-c52a47ace7ef58 Al Viro              2013-06-15  1976  static int
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1977  proc_map_files_instantiate(struct inode *dir, struct dentry *dentry,
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1978  			   struct task_struct *task, const void *ptr)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1979  {
-7b540d0646ce12 Al Viro              2012-08-27 @1980  	fmode_t mode = (fmode_t)(unsigned long)ptr;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1981  	struct proc_inode *ei;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1982  	struct inode *inode;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1983  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1984  	inode = proc_pid_make_inode(dir->i_sb, task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1985  	if (!inode)
-c52a47ace7ef58 Al Viro              2013-06-15  1986  		return -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1987  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1988  	ei = PROC_I(inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1989  	ei->op.proc_get_link = proc_map_files_get_link;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1990  
-bdb4d100afe981 Calvin Owens         2015-09-09  1991  	inode->i_op = &proc_map_files_link_inode_operations;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1992  	inode->i_size = 64;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1993  	inode->i_mode = S_IFLNK;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1994  
-7b540d0646ce12 Al Viro              2012-08-27  1995  	if (mode & FMODE_READ)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1996  		inode->i_mode |= S_IRUSR;
-7b540d0646ce12 Al Viro              2012-08-27  1997  	if (mode & FMODE_WRITE)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1998  		inode->i_mode |= S_IWUSR;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  1999  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2000  	d_set_d_op(dentry, &tid_map_files_dentry_operations);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2001  	d_add(dentry, inode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2002  
-c52a47ace7ef58 Al Viro              2013-06-15  2003  	return 0;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2004  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2005  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2006  static struct dentry *proc_map_files_lookup(struct inode *dir,
-00cd8dd3bf95f2 Al Viro              2012-06-10  2007  		struct dentry *dentry, unsigned int flags)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2008  {
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2009  	unsigned long vm_start, vm_end;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2010  	struct vm_area_struct *vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2011  	struct task_struct *task;
-c52a47ace7ef58 Al Viro              2013-06-15  2012  	int result;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2013  	struct mm_struct *mm;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2014  
-c52a47ace7ef58 Al Viro              2013-06-15  2015  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2016  	task = get_proc_task(dir);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2017  	if (!task)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2018  		goto out;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2019  
-c52a47ace7ef58 Al Viro              2013-06-15  2020  	result = -EACCES;
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2021  	if (!ptrace_may_access(task, PTRACE_MODE_READ))
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2022  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2023  
-c52a47ace7ef58 Al Viro              2013-06-15  2024  	result = -ENOENT;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2025  	if (dname_to_vma_addr(dentry, &vm_start, &vm_end))
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2026  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2027  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2028  	mm = get_task_mm(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2029  	if (!mm)
-eb94cd96e05d6c Cyrill Gorcunov      2012-05-17  2030  		goto out_put_task;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2031  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2032  	down_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2033  	vma = find_exact_vma(mm, vm_start, vm_end);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2034  	if (!vma)
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2035  		goto out_no_vma;
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2036  
-05f564849d4949 Stanislav Kinsbursky 2012-11-26  2037  	if (vma->vm_file)
-7b540d0646ce12 Al Viro              2012-08-27  2038  		result = proc_map_files_instantiate(dir, dentry, task,
-7b540d0646ce12 Al Viro              2012-08-27 @2039  				(void *)(unsigned long)vma->vm_file->f_mode);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2040  
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2041  out_no_vma:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2042  	up_read(&mm->mmap_sem);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2043  	mmput(mm);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2044  out_put_task:
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2045  	put_task_struct(task);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2046  out:
-c52a47ace7ef58 Al Viro              2013-06-15  2047  	return ERR_PTR(result);
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2048  }
-640708a2cff7f8 Pavel Emelyanov      2012-01-10  2049  
+   - if: 
 
-:::::: The code at line 1980 was first introduced by commit
-:::::: 7b540d0646ce122f0ba4520412be91e530719742 proc_map_files_readdir(): don't bother with grabbing files
+       properties: 
 
-:::::: TO: Al Viro <viro@zeniv.linux.org.uk>
-:::::: CC: Al Viro <viro@zeniv.linux.org.uk>
+         compatible: 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+           contains: 
+
+             enum: 
+
+               - qcom,ipq5332-mdio 
+
+     then: 
+
+       properties: 
+
+         clocks: 
+
+           items: 
+
+             - description: MDIO clock source frequency fixed to 100MHZ 
+
+             - description: UNIPHY0 AHB clock source frequency fixed to 
+100MHZ
+             - description: UNIPHY0 SYS clock source frequency fixed to 
+24MHZ
+             - description: UNIPHY1 AHB clock source frequency fixed to 
+100MHZ
+             - description: UNIPHY1 SYS clock source frequency fixed to 
+24MHZ
+         clock-names: 
+
+           items: 
+
+             - const: gcc_mdio_ahb_clk 
+
+             - const: gcc_uniphy0_ahb_clk 
+
+             - const: gcc_uniphy0_sys_clk 
+
+             - const: gcc_uniphy1_ahb_clk 
+
+             - const: gcc_uniphy1_sys_clk
+> 
+>>
+>> so i add minItems  and maxItems, i will check other .yaml files for the
+>> reference.
+>>
+>>>
+>>>>
+>>>>>
+>>>>>> +      MDIO system clock frequency fixed to 100MHZ, and the GCC uniphy
+>>>>>> +      clocks enabled for resetting ethernet PHY.
+>>>>>>     
+>>>>>>       clock-names:
+>>>>>> -    items:
+>>>>>> -      - const: gcc_mdio_ahb_clk
+>>>>>> +    minItems: 1
+>>>>>> +    maxItems: 5
+>>>>>> +
+>>>>>> +  phy-reset-gpio:
+>>>>>
+>>>>> No, for multiple reasons. It's gpios first of all. Where do you see such
+>>>>> property? Where is the existing definition?
+>>>>
+>>>> will remove this property, and update to use the exited PHY GPIO reset.
+>>>>
+>>>>>
+>>>>> Then it is "reset-gpios" if this is MDIO. Why do you put phy properties
+>>>>> in MDIO?
+>>>>>
+>>>>>> +    minItems: 1
+>>>>>> +    maxItems: 3
+>>>>>> +    description:
+>>>>>> +      GPIO used to reset the PHY, each GPIO is for resetting the connected
+>>>>>> +      ethernet PHY device.
+>>>>>> +
+>>>>>> +  phyaddr-fixup:
+>>>>>> +    description: Register address for programing MDIO address of PHY devices
+>>>>>
+>>>>> You did not test code which you sent.
+>>>>
+>>>> Hi Krzysztof,
+>>>> This patch is passed with the following command in my workspace.
+>>>> i will upgrade and install yamllint to make sure there is no
+>>>> warning reported anymore.
+>>>>
+>>>> make dt_bg_check
+>>>
+>>> No clue what's this, but no, I do not believe you tested it at all. It's
+>>> not about yamllint. It's was not tested. Look at errors reported on
+>>> mailing list.
+>>>
+>>>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>>>
+>>
+>> Hi Krzysztof,
+>> Here is the output when i run the dt check with this patch applied in my
+>> workspace, md64 is the alias for compiling the arm64 platform.
+> 
+> We still do not know your base and dtschema version.
+
+The code base is the commit id:
+5ba73bec5e7b0494da7fdca3e003d8b97fa932cd
+<Add linux-next specific files for 20231114>
+
+The dtschema version is as below.
+dt-doc-validate --version
+2023.9
+
+
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
