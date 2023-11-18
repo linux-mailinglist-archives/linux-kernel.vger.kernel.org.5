@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949567EFCD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27DC7EFCDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbjKRBHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 20:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S232664AbjKRBIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 20:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjKRBHa (ORCPT
+        with ESMTP id S231540AbjKRBIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 20:07:30 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21D8D75
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:07:26 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so32557061fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:07:26 -0800 (PST)
+        Fri, 17 Nov 2023 20:08:06 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A29D7E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:08:02 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9df8d0c2505so490639066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:08:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700269645; x=1700874445; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700269681; x=1700874481; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JdkXxmC3JXgdJWEihy1a5SFP+Yy4fGv9Vmi897q/Gjs=;
-        b=GEd7Nsh+33gCAWnQG93f2Vk5MynHAGhFqBjpSnMUSI/keG5B3BLeRku/K9/h8FSQ4a
-         suDj4OdOwWwfWxO6HHqUGF71TygIdwoQu4gQ6WSSLAg1gisFDUxTgA2RCnn2sZutqGtf
-         8FZxja6RF9QR3voOXeLtOEOTtZHTAnWFkBQW9JzPgenCOtPCI19/K7hl8+BSq7/xoYrY
-         cRKJ4vNOQHF4zMPQw4/GymhYHCtjXoyo2hgN4fR6sXhRzJcToSKzZ5VK6LleDeNvsw6h
-         CFMy/VmcIVsE0RM8fnM00QueYY1qvVPA2/JIIErRVAGGt+uh8RAbFh96aBY2dzb1mOFp
-         D4sw==
+        bh=/w2dNhxptt00UyJYxsmM3CJJF2NzIAk4hqmNz7VaSoY=;
+        b=tTlx+NtZWvNL6PryRt56vFAgy4LpOKNKxcKSEfi7YKfZoUfLZFiH0RGtBzXr9iJQAa
+         cefHEUbzcIofbn1VR3OMmaaLyol/GADv+l7+h4X8NsS+kD3eW8sOCXvCTrxkW4YWXeLm
+         0EMHTpQ+/B7G2+Mc2+r1mZDsrD4vu2bB8ZYbeVgBJvfgEx2U9EU/Ff61NMKher4XniBM
+         kuJqTPLeQ+NFjGvyDquaOEX2jC1ko43tlKBJtHxBYP5wInYOxVpyuWoFmnSJE3v23X8/
+         8+qFHu6G4ttKWDTZG+Pj04xROjCGQskpwabasUfKPEUDeVN2yKZf4PJ/UnXzNcDlEYUm
+         h0WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700269645; x=1700874445;
+        d=1e100.net; s=20230601; t=1700269681; x=1700874481;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JdkXxmC3JXgdJWEihy1a5SFP+Yy4fGv9Vmi897q/Gjs=;
-        b=HzoHKepSvasGUR9L82ER5QA7t0p8m3vuAomFh25epoFf+NlMO9G7UnMcvQoZ7vQjnI
-         iz/M9zgJzjWqS8KtrT+EsFQbMyxsOtHVykwp+eH5empXCUCGexssQG+3HN+vP1HM5PvZ
-         Lk/levfLoMV7nSg7mR39dijQAZ7nm4s2xCIhuquAOT/0hvj4krkBnYlXeBrLCTsUAmcx
-         51oZ/mSf6QGvXERihbT/DUV6jIi/zK3omVqkL1YZgAmNtr0EkAbvFkPXjaMGsrImIWWG
-         EhFkOuyBo8pliPJwbdlGMnyp1IJPF/b4AV6s8w7j2AwAQvMRZWY7C7iSJ8lr25cgMmB6
-         Q7mQ==
-X-Gm-Message-State: AOJu0YyEV9raWHUOpjxupz5RqvAtQPUo0DuUlArdbBPPiLh1TxL/mI26
-        3rDn1tsdcl7eungr69FTg1oQAQ==
-X-Google-Smtp-Source: AGHT+IHWtflvWWJVwwkbO0ydaMdcNZTiyhX4/wiWtw8eOAC2sPUiOzX2HNKEFBH6DoRQTZJe7DfjCQ==
-X-Received: by 2002:a05:651c:32d:b0:2c5:4e95:535a with SMTP id b13-20020a05651c032d00b002c54e95535amr905303ljp.20.1700269645003;
-        Fri, 17 Nov 2023 17:07:25 -0800 (PST)
+        bh=/w2dNhxptt00UyJYxsmM3CJJF2NzIAk4hqmNz7VaSoY=;
+        b=YSR0/uqMYR+7faJng1Q4xcIinLjzm3uwyltvuj4VCAnNv3HCmdRYwLl04oR1ZhN2p2
+         BquW5vVTCKVmzZox4ZSOgigmxTM7PuaJMd3N4yU8FggXMWx6o/1pTv0F6lfYzFf5boyr
+         JOu+8bvvGQy/JaSsoJPjWYh64jRCNyn0oGIXkiFVP+7bWvSQW1DCH3Em9+lwfwm3fTt5
+         2xR1+WerHHQXlt/uneCrQdaF4FNyoDv3LXL/DXXWdVktk5o++ZgNddr2IXFgAIE8NkU7
+         iYaty2EfPOCbs1RFA6kT56MV5qkGqMEIhxkT5RFVg/mYW5aqVbQhb2m+T/npDj7azGMU
+         H4OQ==
+X-Gm-Message-State: AOJu0Yzzw5PQuWBFD/amwGiYwH++vHQU5FbkNhJLjYhMg6krLK+P+iU2
+        6ueN1/ddN8kkTX6Tqizot+tXZw==
+X-Google-Smtp-Source: AGHT+IEbGV6iUJucloKhyrHRBZZEqVWRTg7PQimNFxgwJSyRhld4iR/eGiqHHroxm5v8Cq0QJqMWzQ==
+X-Received: by 2002:a17:906:3009:b0:9c3:97d7:2c67 with SMTP id 9-20020a170906300900b009c397d72c67mr693683ejz.25.1700269681121;
+        Fri, 17 Nov 2023 17:08:01 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id v12-20020a1709060b4c00b009b928eb8dd3sm1327704ejg.163.2023.11.17.17.07.22
+        by smtp.gmail.com with ESMTPSA id v12-20020a1709060b4c00b009b928eb8dd3sm1327704ejg.163.2023.11.17.17.07.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 17:07:24 -0800 (PST)
-Message-ID: <bded087f-6601-48d8-af7e-9120955127df@linaro.org>
-Date:   Sat, 18 Nov 2023 02:07:22 +0100
+        Fri, 17 Nov 2023 17:08:00 -0800 (PST)
+Message-ID: <0c1ba8b7-7253-41d4-a024-5f7618f6485c@linaro.org>
+Date:   Sat, 18 Nov 2023 02:07:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 4/5] arm64: dts: qcom: x1e80100: Add Compute Reference
- Device
+Subject: Re: [PATCH v5 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
 Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        catalin.marinas@arm.com, ulf.hansson@linaro.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
-        j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
-        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
-        lpieralisi@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, quic_tsoni@quicinc.com,
-        neil.armstrong@linaro.org
-References: <20231117113931.26660-1-quic_sibis@quicinc.com>
- <20231117113931.26660-5-quic_sibis@quicinc.com>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231117080737.606687-1-quic_rohiagar@quicinc.com>
+ <20231117080737.606687-2-quic_rohiagar@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -106,7 +99,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231117113931.26660-5-quic_sibis@quicinc.com>
+In-Reply-To: <20231117080737.606687-2-quic_rohiagar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -119,18 +112,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2023 12:39, Sibi Sankar wrote:
-> Add basic support for X1E80100 CRD board dts, which allows it to boot
-> to a shell.
+On 17.11.2023 09:07, Rohit Agarwal wrote:
+> Add interconnect nodes to support interconnects on SDX75.
+> Also parallely add the interconnect property for UART required
+> so that the bootup to shell does not break with interconnects
+> in place.
 > 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 > ---
-pretty much just the same question about pins <34 2> 
-
-otherwise 
-
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
