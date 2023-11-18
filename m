@@ -2,61 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E480C7EFCCC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44237EFCCB
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346411AbjKRAyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
+        id S232457AbjKRAxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbjKRAyl (ORCPT
+        with ESMTP id S230036AbjKRAxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:54:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D76793
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:54:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700268878; x=1731804878;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=TD9IPSJt+oVbK7xCzpj1GFD8kz0ZDvOJokIsJun7kJQ=;
-  b=eoe+QKkQykG5tRiqMtgbrTJDXB9SMwSAHDNk+3SrRVrsd0YUuFF8dxS8
-   TyRa4VagO99PEd+twemFwNISbTCgopSxx1oJKSBk1Mp2kW4M5ubk5s6tC
-   bx8zKmsgYBA4+ve4SE84MARdp3kDo9hDsv2PDQnV8HndURv8cFIdfbhAX
-   2QaE64w7IDzhReFX88dwc0spQH0c8ghzxHHi4ezrX+sTmONuQ2mw+Tgp4
-   cb0SJk3eGkvFnINjLuchJLh79W43vEPPCvM0pNm8AN8sH6KS8gtJwyvS3
-   9CAtNn5UKGO7jmW/Oo2clr04ARiE/Ur1Mc0SI7vOWo54rKiirk8xf5ogT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="390253616"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="390253616"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 16:54:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="889403828"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="889403828"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 17 Nov 2023 16:54:36 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r49bV-0003Mp-2y;
-        Sat, 18 Nov 2023 00:54:33 +0000
-Date:   Sat, 18 Nov 2023 08:52:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>
-Subject: lib/kunit/string-stream-test.c:73:9: sparse: sparse: incorrect type
- in initializer (different base types)
-Message-ID: <202311180846.j5VBD2IH-lkp@intel.com>
+        Fri, 17 Nov 2023 19:53:05 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D8AD7E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:52:58 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2802c41b716so2297512a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:52:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=heitbaum.com; s=google; t=1700268778; x=1700873578; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KbIt0RC8fwx+JBBK19uY6YIBtCeUq3tJXkgbuxVQjvo=;
+        b=e4JtiuCI277J3joHRWVUIMTCQVVe+AeTzuLs+wtgzFyvhsdLmuP5HSM8h4/e1Fjy54
+         YE/o9/m8qg8EMysKxKSZjhVmrHXpRYdCEOdM3VJcAvhGrAfFyI3RyMFF+t2NpH372egK
+         2hsesW76ss/KktOOWSX1HQ+b5+IQ6yESt7BTQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700268778; x=1700873578;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KbIt0RC8fwx+JBBK19uY6YIBtCeUq3tJXkgbuxVQjvo=;
+        b=tivkMUujMrvvtnkrbHMiT/lImSXSjGb4C8Cl22tUkJXkj7QWWh7NNaTugPZlCJpyC7
+         Bu7/fQoCZY6XR5D/nFAWPiHwNOnx0QmFQ8Kzm98CqeCSQi4zwPZK+XzbqqAlxaEfDNSX
+         XTpLvjY+Lss7E/kpxmoNu86O+NGTk44+evaADFwAQ7yPsOTPDSUyaFgjgJtZJs+QlL+k
+         VWY4bmcp4bGqnowWRfTLAv6PRp61e5Ey7JGAaE3whgD4JAH1OeZEJ1xmunozKCeSSpwn
+         xcEroCuyXP0mXVPdc1Xj6sGrJFWMkHeY1X+R5Q+9PYVDkOqvi0gJA7mCKG4/cEj4gbES
+         ycvw==
+X-Gm-Message-State: AOJu0YyIoHlCnCEn+/57uT2V3EOgc2b7Q6iQfCd1IiC2GhUi2BVuq/H/
+        XRwCTaeKe993SiwNCjMitxMRcA==
+X-Google-Smtp-Source: AGHT+IGIkXYGN2lacDFlwicQRn/oQ5YpY77jSOvHRUnSKCFJXI6necgBdoFPjPospalwTJlRyp2uXA==
+X-Received: by 2002:a17:90b:3851:b0:283:21d3:11eb with SMTP id nl17-20020a17090b385100b0028321d311ebmr1191273pjb.3.1700268778202;
+        Fri, 17 Nov 2023 16:52:58 -0800 (PST)
+Received: from a20e1fa70cf1 ([122.199.31.3])
+        by smtp.gmail.com with ESMTPSA id b1-20020a17090a9bc100b0027d219d3ac6sm3734494pjw.47.2023.11.17.16.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 16:52:57 -0800 (PST)
+Date:   Sat, 18 Nov 2023 00:52:50 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
+Message-ID: <ZVgK4g+uTiVQsbF5@a20e1fa70cf1>
+References: <20231115191613.097702445@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,50 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   12ee72fe01e45a9586b9d130c5501763818c8efc
-commit: d1a0d699bfc00ae5b5e74bb640d791a93e825b68 kunit: string-stream: Add tests for freeing resource-managed string_stream
-date:   9 weeks ago
-config: sparc-randconfig-r021-20230427 (https://download.01.org/0day-ci/archive/20231118/202311180846.j5VBD2IH-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231118/202311180846.j5VBD2IH-lkp@intel.com/reproduce)
+On Wed, Nov 15, 2023 at 02:09:05PM -0500, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.2 release.
+> There are 603 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311180846.j5VBD2IH-lkp@intel.com/
+Hi Greg,
 
-sparse warnings: (new ones prefixed by >>)
->> lib/kunit/string-stream-test.c:73:9: sparse: sparse: incorrect type in initializer (different base types) @@     expected long long left_value @@     got restricted gfp_t const __left @@
-   lib/kunit/string-stream-test.c:73:9: sparse:     expected long long left_value
-   lib/kunit/string-stream-test.c:73:9: sparse:     got restricted gfp_t const __left
->> lib/kunit/string-stream-test.c:73:9: sparse: sparse: incorrect type in initializer (different base types) @@     expected long long right_value @@     got restricted gfp_t const __right @@
-   lib/kunit/string-stream-test.c:73:9: sparse:     expected long long right_value
-   lib/kunit/string-stream-test.c:73:9: sparse:     got restricted gfp_t const __right
-   lib/kunit/string-stream-test.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+6.6.2-rc1 tested.
 
-vim +73 lib/kunit/string-stream-test.c
+Run tested on:
+- Intel Alder Lake x86_64 (nuc12 i7-1260P)
 
-    61	
-    62	/* Unmanaged string_stream object is initialized correctly. */
-    63	static void string_stream_unmanaged_init_test(struct kunit *test)
-    64	{
-    65		struct string_stream *stream;
-    66	
-    67		stream = alloc_string_stream(GFP_KERNEL);
-    68		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-    69		kunit_add_action(test, cleanup_raw_stream, stream);
-    70	
-    71		KUNIT_EXPECT_EQ(test, stream->length, 0);
-    72		KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
-  > 73		KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
-    74		KUNIT_EXPECT_FALSE(test, stream->append_newlines);
-    75	
-    76		KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
-    77	}
-    78	
+In addition - build tested for:
+- Allwinner A64
+- Allwinner H3
+- Allwinner H5
+- Allwinner H6
+- NXP iMX6
+- NXP iMX8
+- Qualcomm Dragonboard
+- Rockchip RK3288
+- Rockchip RK3328
+- Rockchip RK3399pro
+- Samsung Exynos
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
+--
+Rudi
