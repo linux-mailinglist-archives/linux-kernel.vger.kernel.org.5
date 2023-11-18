@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0137EFDF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 06:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9017EFDF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 07:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjKRFzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 00:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S230457AbjKRGIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 01:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbjKRFzr (ORCPT
+        with ESMTP id S229737AbjKRGIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 00:55:47 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A8DD72;
-        Fri, 17 Nov 2023 21:55:43 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI5lcPN003736;
-        Sat, 18 Nov 2023 05:55:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=WpenkMsII3qIgZ0PZfsby4fDSZ5GV1+Bx9nV/9DMTp4=;
- b=dYgGWVuBA1fXJ7AaKQwGK0zyYzphwGLlt/kQZECDEG8IDEefW2Pk7dmkKjLDasc17q8V
- lb6tJRPLnkQwhNBr2mBaR7sgbFbKa22ttJjI0t1kWVMSostWos0G4vbFLeedNI7HSe0U
- 6F1hV8/StaDGkpInXT0tP+pMKys336vbbdBTGF8k/M0Lyxnd6WsSNNqDYAfFSBie4dM2
- L803HwIlY+JJYeLO2EyjkkBmDkSoshppD0fcgB1crIzwf4bCi29EpsxlVPIqQtzIsB/V
- D3/zivAeH869438bYD4uOsTHTyZtx461IvN1SY/d31Ceu77zXyZ1tS5khesgUs28UqkW 2g== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uejymraqf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Nov 2023 05:55:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AI5tW4m000340
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 18 Nov 2023 05:55:32 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 17 Nov 2023 21:55:29 -0800
-From:   Prashanth K <quic_prashk@quicinc.com>
-To:     <stable@vger.kernel.org>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Tejas Joglekar <joglekar@synopsys.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usbyy@vger.kernel.org>,
-        Prashanth K <quic_prashk@quicinc.com>
-Subject: [PATCH 2/2] dt-bindings: usb: snps,dwc3: Add 'xhci-sg-trb-cache-size-quirk'
-Date:   Sat, 18 Nov 2023 11:24:55 +0530
-Message-ID: <20231118055455.249088-3-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231118055455.249088-1-quic_prashk@quicinc.com>
-References: <20231118055455.249088-1-quic_prashk@quicinc.com>
+        Sat, 18 Nov 2023 01:08:22 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EADBC
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 22:08:17 -0800 (PST)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SXNXL5WFHzsR6b;
+        Sat, 18 Nov 2023 14:04:50 +0800 (CST)
+Received: from [10.67.109.254] (10.67.109.254) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 18 Nov 2023 14:08:14 +0800
+Message-ID: <c4da0bf4-3058-6ef4-af4e-79c352fccf95@huawei.com>
+Date:   Sat, 18 Nov 2023 14:08:13 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: f5Cn5pj67n52Czh9-uIzmGltFIE_8SbU
-X-Proofpoint-ORIG-GUID: f5Cn5pj67n52Czh9-uIzmGltFIE_8SbU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-18_04,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=509 phishscore=0 spamscore=0
- malwarescore=0 bulkscore=0 impostorscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311180041
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH] arm64: Fix 32-bit compatible userspace write size
+ overflow error
+Content-Language: en-US
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dinh Nguyen <dinguyen@kernel.org>
+References: <20231116074706.3448008-1-ruanjinjie@huawei.com>
+ <ZVYuM8SzVmFflibQ@FVFF77S0Q05N>
+From:   Jinjie Ruan <ruanjinjie@huawei.com>
+In-Reply-To: <ZVYuM8SzVmFflibQ@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.254]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,32 +60,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new 'xhci-sg-trb-cache-size-quirk' DT quirk to dwc3 core
-for preventing xhci hang issue while using SG buffers.
 
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
----
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index ee5af4b..768fdb5 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -459,6 +459,13 @@ properties:
-     description:
-       Enable USB remote wakeup.
- 
-+  xhci-sg-trb-cache-size-quirk:
-+    description:
-+      When set, fixes the SNPS xHC hang issue when the data is scattered across
-+      small buffers which does not make at least MPS size for given controller
-+      TRB cache size.
-+    type: boolean
-+
- unevaluatedProperties: false
- 
- required:
--- 
-2.7.4
+On 2023/11/16 22:58, Mark Rutland wrote:
+> On Thu, Nov 16, 2023 at 03:47:05PM +0800, Jinjie Ruan wrote:
+>> For 32-bit compatible userspace program, write with size = -1 return not
+>> -1 but unexpected other values, which is due to the __access_ok() check is
+>> not right.
+> 
+> Can you please explain why you believe that is unexpected?
+> 
+> e.g. Is that documented somewhere? Do you see a real application depending on
+> that somewhow?
 
+I think access_ok() needs to ensure that the address is not out of
+bounds, which guarantees that address access should not exceed the
+32-bit boundary.
+
+> 
+>> The specified "addr + size" is greater than 32-bit limit and
+>> should return -EFAULT, but TASK_SIZE_MAX still defined as UL(1) << VA_BITS
+>> in U32 mode, which is much greater than "addr + size" and cannot catch the
+>> overflow error.
+> 
+> The check against TASK_SIZE_MAX is not intended to catch 32-bit addr + size
+> overflow; it's intended to check that uaccesses never touch kernel memory. The
+> kernel's uaccess routines use 64-bit (or 65-bit) arithmetic, so these won't
+> wrap and access memory at the start of the user address space.
+
+Thank you! My understanding of TASK_SIZE_MAX is wrong.I seems that
+"MAX_RW_COUNT" is designed to catch the 32-bit addr + size overflow.
+
+> 
+>> Fix above error by checking 32-bit limit if it is 32-bit compatible
+>> userspace program.
+>>
+>> How to reproduce:
+>>
+>> The test program is as below:
+>>
+>> cat test.c
+>> 	#include <unistd.h>
+>> 	#include <fcntl.h>
+>> 	#include <stdio.h>
+>> 	#include <stdint.h>
+>> 	#include <stdlib.h>
+>> 	#include <assert.h>
+>>
+>> 	#define pinfo(fmt, args...) \
+>> 	    fprintf(stderr, "[INFO][%s][%d][%s]:"fmt, \
+>> 	    __FILE__,__LINE__,__func__,##args)
+>>
+>> 	#undef SIZE_MAX
+>> 	#define SIZE_MAX -1
+>>
+>> 	int main()
+>> 	{
+>> 	    char wbuf[3] = { 'x', 'y', 'z' };
+>> 	    char *path = "write.tmp";
+>> 	    int ret;
+>>
+>> 	    int fd = open(path, O_RDWR | O_CREAT);
+>> 	    if (fd<0)
+>> 	    {
+>> 	        pinfo("fd=%d\n", fd);
+>> 	        exit(-1);
+>> 	    }
+>>
+>> 	    assert(write(fd, wbuf, 3) == 3);
+>>
+>> 	    ret = write (fd, wbuf, SIZE_MAX);
+>> 	    pinfo("ret=%d\n", ret);
+>> 	    pinfo("size_max=%d\n",SIZE_MAX);
+>> 	    assert(ret==-1);
+>> 	    close(fd);
+>> 	    pinfo("INFO: end\n");
+>>
+>> 	    return 0;
+>> 	}
+>>
+>> aarch64-linux-gnu-gcc --static test.c -o test
+>> arm-linux-gnueabi-gcc --static test.c -o test32
+>>
+>> Before applying this patch, userspace 32-bit program return 1112 if the
+>> write size = -1 as below:
+>> 	/root # ./test
+>> 	[INFO][test.c][32][main]:ret=-1
+>> 	[INFO][test.c][33][main]:size_max=-1
+>> 	[INFO][test.c][36][main]:INFO: end
+>> 	/root # ./test32
+>> 	[INFO][test.c][32][main]:ret=1112
+>> 	[INFO][test.c][33][main]:size_max=-1
+>> 	test32: test.c:34: main: Assertion `ret==-1' failed.
+>> 	Aborted
+>>
+>> After applying this patch, userspace 32-bit program return -1 if the write
+>> size = -1 as expected as below:
+>> 	/root # ./test
+>> 	[INFO][test.c][32][main]:ret=-1
+>> 	[INFO][test.c][33][main]:size_max=-1
+>> 	[INFO][test.c][36][main]:INFO: end
+>> 	/root # ./test32
+>> 	[INFO][test.c][32][main]:ret=-1
+>> 	[INFO][test.c][33][main]:size_max=-1
+>> 	[INFO][test.c][36][main]:INFO: end
+>>
+>> Fixes: 967747bbc084 ("uaccess: remove CONFIG_SET_FS")
+> 
+> As above, this is *not* a fix. This is the intended behaviour.
+> 
+> AFAICT, the behaviour didn't change on arm64 in that commit either; we were
+> unconditionally using TASK_SIZE_MAX many commits earlier, e.g. in commit:
+> 
+>   3d2403fd10a1dbb3 ("arm64: uaccess: remove set_fs()")
+> 
+> ... so the fixes tag is bogus on both fronts.
+
+Thank you!
+
+> 
+>> Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+>> ---
+>>  arch/arm64/include/asm/processor.h | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
+>> index e5bc54522e71..6a087d58a90a 100644
+>> --- a/arch/arm64/include/asm/processor.h
+>> +++ b/arch/arm64/include/asm/processor.h
+>> @@ -52,7 +52,12 @@
+>>  
+>>  #define DEFAULT_MAP_WINDOW_64	(UL(1) << VA_BITS_MIN)
+>>  #define TASK_SIZE_64		(UL(1) << vabits_actual)
+>> +#ifdef CONFIG_COMPAT
+>> +#define TASK_SIZE_MAX		(test_thread_flag(TIF_32BIT) ? \
+>> +				UL(0x100000000) : (UL(1) << VA_BITS))
+>> +#else
+>>  #define TASK_SIZE_MAX		(UL(1) << VA_BITS)
+>> +#endif
+> 
+> This isn't even the same as on 32-bit. On 32-bit arm, the task size split can
+> be 1G/3G, 2G/2G, or 3G/1G depending on configuration, and 4G/4G isn't currently
+> an option.
+> 
+> I don't believe that userspace is actually dependent upon this for functional
+> reasons, and I don't believe that there's a security issue here. Even if
+> access_ok() allows addr+size to go past 4G, the kernel address calculations are
+> 64-bit and won't wrap.
+> 
+> For all the reasons above, I don't beleive this is correct nor do I believe
+> this is necesssary. Given that, NAK to this patch.
+> 
+> Thanks,
+> Mark.
+> 
+>>  
+>>  #ifdef CONFIG_COMPAT
+>>  #if defined(CONFIG_ARM64_64K_PAGES) && defined(CONFIG_KUSER_HELPERS)
+>> -- 
+>> 2.34.1
+>>
+> 
