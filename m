@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C56C7F030E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 22:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F12067F030F
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 22:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjKRVul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 16:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S230141AbjKRVvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 16:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKRVuk (ORCPT
+        with ESMTP id S229610AbjKRVvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 16:50:40 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D627192
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 13:50:36 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9d10972e63eso431931366b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 13:50:36 -0800 (PST)
+        Sat, 18 Nov 2023 16:51:21 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CDB192
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 13:51:14 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53e07db272cso4509970a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 13:51:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700344235; x=1700949035; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700344272; x=1700949072; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZIuycvwcOtzj5a92tHoVOAi7oenZudHbZIioAcVhUH8=;
-        b=iO43L0XGFqCJlmP21QHBqfH40cSOZFcUBg9fGGAg5H7cCyuuwl3npcmjrVcl+an7/+
-         Og4XXDfGixq5BF8qbBLetM0CzKM3WaHN1oBMVbeus5xbX6Raah4OEAEUvkvLmSDVvqyO
-         gj2TlA/tEp1uClVOk3i67tGBQSET5v5GhTsma42PaNW4pTJfHN3MBx5z8aZ/OoFpFsck
-         LS80uPNujvHWatUEGgaje6aXgV9zAuy7QYBhozDGMgDlvL+ojkKfknRJNVfIOoX9YERN
-         5r+XlzSKvd3R+jw13gss7/rZfBexCI73V00elXPQBGnkFnYdgRPpGe20GLXKrDOPnE/K
-         IJ1g==
+        bh=4Sxr/0cg0TxZRHR6aK8VgbLOF1wZHnjhGaQVl3ixHFI=;
+        b=OQtiBXU8hzG4i2RYby6dKdU4yF/hv3SlvFtVvr0SCJmhDD3vFPf91qPE1JplnrRsYD
+         nyAw25JrPC/CTHuWpF7gD1gxG9ELzlb9OU7/GI4Lqq3vV7spq/WDYuz5LxWEf9142YQn
+         XOOzuICRdBBmTE9BZSm6MVe5a+amP6A+vZouji0Hde3UK1F/2ix1katilukhXvAsj+VI
+         nyCpWdg4UVbc4MWJyNjm2RDFntccTj5F+Ua1PbJD/k+dXPWl0pzB/0jj2Yh+2HXEoAcg
+         gaabWwCHlyyNk5DVUwJCEE2FqbLWbae2ObFDUsCQ6oTYt/xVTF52Z6a4JO4joz841wfd
+         +UUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700344235; x=1700949035;
+        d=1e100.net; s=20230601; t=1700344272; x=1700949072;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZIuycvwcOtzj5a92tHoVOAi7oenZudHbZIioAcVhUH8=;
-        b=fnTHFD9Xytcka0nDltp1hJsrmVJa7pZUQWClv+8+UR53ymsCO0dHXSBUekzWWE23I5
-         B6gtOa2Q525IZ41BTyPobk3u6I7Wdvyw1khC2bemiRMu7s+/V/uO2gm+kNDam4aAGHzY
-         VM/qqifIuka6VPji9bmpMr5oh+QBw+L+WzpUE9HiMbmlbjw+RmR9Edtl5MahI5DS92H5
-         Lk+3oY3yDGfbjV2Z6b1Jl4yU/5N2M5GBHomFv7Dtm04qV3SGJmerZ7BH2Jg24OP+fQdh
-         OgXPZWLinoRl/SWUqHOhDK0tZ+gCSvUoV+dnSe+sOoW8XVAMM3RMjdFeIgwEsJcqd6Bi
-         bAbQ==
-X-Gm-Message-State: AOJu0Yxt+DWR3pZVptOy2vUKKrz3f8e7T9otvHNlev3qFG3Ph6VSiP2O
-        UdMnMQRm2V/FfR+1JkiPwzI=
-X-Google-Smtp-Source: AGHT+IHiK+AbaxW1Wc75IyiNhOW9ArhXV2tF0E1iEFOC758dB4Re3ICn5guoVvHiY5DBe7czrLcFtg==
-X-Received: by 2002:a17:906:4356:b0:9c7:4d3e:1e50 with SMTP id z22-20020a170906435600b009c74d3e1e50mr2139036ejm.76.1700344234769;
-        Sat, 18 Nov 2023 13:50:34 -0800 (PST)
+        bh=4Sxr/0cg0TxZRHR6aK8VgbLOF1wZHnjhGaQVl3ixHFI=;
+        b=bOfPNK6MO+hoDUcTFAq0LFuno1UjQ+y3sRQbeIm67GLzeaV8L8dY6ds+GrEyKHoFsV
+         RFdCid1lrTbN9kNMor2hipMa8sFRBeOd5x/ZPbJ+VJdY4b8GbivrYbVnW2RRpq9l/t+M
+         C+jyfzBPvvDtzT8999f8a87MnhPU+hegiasENhV4Js/pmSg6QGUZBzl6FgPyFBDQmOBp
+         lOzpysuyXu/MccdgAKqpm1HYAPHQaDgjeHM4bGJEyKG4V8/bGf83dwqAWAQaIFpCdfRQ
+         xOVRBCUtSQS8Vc6iZkWzpu8O6WjY4jsj++DHjlvEZyGgOHiyw4R3D1lrEAaceTemVruO
+         VqIg==
+X-Gm-Message-State: AOJu0Yx7Gth7TguYeMjq3dsmFudoxjEcP6+KIr4//ardp+mLZ9gGlyZk
+        gHmYJh4Qck7k4NZTTYGftB8=
+X-Google-Smtp-Source: AGHT+IFBW03ms2SVzWJ0idpdO5YHqO6UUeWsYN0Xb97W07gJzbyMEt21UBvSnXPxGvaMVI6VuPps7Q==
+X-Received: by 2002:aa7:c490:0:b0:541:2476:d23e with SMTP id m16-20020aa7c490000000b005412476d23emr2622831edq.28.1700344272439;
+        Sat, 18 Nov 2023 13:51:12 -0800 (PST)
 Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id m8-20020a170906234800b009bf94de8971sm2250339eja.70.2023.11.18.13.50.33
+        by smtp.gmail.com with ESMTPSA id s16-20020aa7cb10000000b00544f8271b5fsm2012886edt.8.2023.11.18.13.51.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 13:50:34 -0800 (PST)
+        Sat, 18 Nov 2023 13:51:12 -0800 (PST)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Chen-Yu Tsai <wens@csie.org>,
         Samuel Holland <samuel@sholland.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Rob Herring <robh@kernel.org>, Yangtao Li <frank.li@vivo.com>,
+        Yuan Can <yuancan@huawei.com>,
         Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
         <u.kleine-koenig@pengutronix.de>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 06/12] bus: sun50i-de2: Convert to platform remove callback
+Subject: Re: [PATCH 07/12] bus: sunxi-rsb: Convert to platform remove callback
  returning void
-Date:   Sat, 18 Nov 2023 22:50:33 +0100
-Message-ID: <5727528.DvuYhMxLoT@jernej-laptop>
-In-Reply-To: <20231109202830.4124591-7-u.kleine-koenig@pengutronix.de>
+Date:   Sat, 18 Nov 2023 22:51:10 +0100
+Message-ID: <4874510.31r3eYUQgx@jernej-laptop>
+In-Reply-To: <20231109202830.4124591-8-u.kleine-koenig@pengutronix.de>
 References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
- <20231109202830.4124591-7-u.kleine-koenig@pengutronix.de>
+ <20231109202830.4124591-8-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="UTF-8"
@@ -77,7 +82,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne =C4=8Detrtek, 09. november 2023 ob 21:28:36 CET je Uwe Kleine-K=C3=B6ni=
+Dne =C4=8Detrtek, 09. november 2023 ob 21:28:37 CET je Uwe Kleine-K=C3=B6ni=
 g napisal(a):
 > The .remove() callback for a platform driver returns an int which makes
 > many driver authors wrongly assume it's possible to do error handling by
@@ -100,36 +105,40 @@ Best regards,
 Jernej
 
 > ---
->  drivers/bus/sun50i-de2.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  drivers/bus/sunxi-rsb.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 >=20
-> diff --git a/drivers/bus/sun50i-de2.c b/drivers/bus/sun50i-de2.c
-> index 414f29cdedf0..3339311ce068 100644
-> --- a/drivers/bus/sun50i-de2.c
-> +++ b/drivers/bus/sun50i-de2.c
-> @@ -24,10 +24,9 @@ static int sun50i_de2_bus_probe(struct platform_device=
- *pdev)
+> diff --git a/drivers/bus/sunxi-rsb.c b/drivers/bus/sunxi-rsb.c
+> index db0ed4e5d315..fd3e9d82340a 100644
+> --- a/drivers/bus/sunxi-rsb.c
+> +++ b/drivers/bus/sunxi-rsb.c
+> @@ -817,15 +817,13 @@ static int sunxi_rsb_probe(struct platform_device *=
+pdev)
 >  	return 0;
 >  }
 > =20
-> -static int sun50i_de2_bus_remove(struct platform_device *pdev)
-> +static void sun50i_de2_bus_remove(struct platform_device *pdev)
+> -static int sunxi_rsb_remove(struct platform_device *pdev)
+> +static void sunxi_rsb_remove(struct platform_device *pdev)
 >  {
->  	sunxi_sram_release(&pdev->dev);
+>  	struct sunxi_rsb *rsb =3D platform_get_drvdata(pdev);
+> =20
+>  	device_for_each_child(rsb->dev, NULL, sunxi_rsb_remove_devices);
+>  	pm_runtime_disable(&pdev->dev);
+>  	sunxi_rsb_hw_exit(rsb);
+> -
 > -	return 0;
 >  }
 > =20
->  static const struct of_device_id sun50i_de2_bus_of_match[] =3D {
-> @@ -37,7 +36,7 @@ static const struct of_device_id sun50i_de2_bus_of_matc=
-h[] =3D {
+>  static const struct dev_pm_ops sunxi_rsb_dev_pm_ops =3D {
+> @@ -842,7 +840,7 @@ MODULE_DEVICE_TABLE(of, sunxi_rsb_of_match_table);
 > =20
->  static struct platform_driver sun50i_de2_bus_driver =3D {
->  	.probe =3D sun50i_de2_bus_probe,
-> -	.remove =3D sun50i_de2_bus_remove,
-> +	.remove_new =3D sun50i_de2_bus_remove,
->  	.driver =3D {
->  		.name =3D "sun50i-de2-bus",
->  		.of_match_table =3D sun50i_de2_bus_of_match,
+>  static struct platform_driver sunxi_rsb_driver =3D {
+>  	.probe =3D sunxi_rsb_probe,
+> -	.remove	=3D sunxi_rsb_remove,
+> +	.remove_new =3D sunxi_rsb_remove,
+>  	.driver	=3D {
+>  		.name =3D RSB_CTRL_NAME,
+>  		.of_match_table =3D sunxi_rsb_of_match_table,
 >=20
 
 
