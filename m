@@ -2,60 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B62647F0220
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033847F0229
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 20:02:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjKRSyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41410 "EHLO
+        id S229873AbjKRTCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 14:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKRSyt (ORCPT
+        with ESMTP id S229463AbjKRTC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 13:54:49 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA65F2;
-        Sat, 18 Nov 2023 10:54:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=b5JCReSehGd9vgarmSFVhXVxVGPZtnscv9/0QR9Wvgw=; b=e5wJMpE9Tmh6r68FpqiceA9rhG
-        o8drF/CTrDqcdPP+9WDA8GtTxWn2jrpb8JnvRazj8r2N82ceUDUKs/OAzLaQUKuPN/tJlLWL2rGWE
-        V1FQTBvNdf4pxOm4+l0xWTTIVcLohoIHw8pYw/ObMlE7hadsh2IR/HcoAggBcZryJ9mI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r4QSc-000WY3-Ks; Sat, 18 Nov 2023 19:54:30 +0100
-Date:   Sat, 18 Nov 2023 19:54:30 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
- <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
+        Sat, 18 Nov 2023 14:02:28 -0500
+X-Greylist: delayed 398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Nov 2023 11:02:23 PST
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F358EAF
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 11:02:23 -0800 (PST)
+Received: (wp-smtpd smtp.tlen.pl 2779 invoked from network); 18 Nov 2023 19:55:41 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1700333742; bh=ICJuEjj+rlnPwoR+kUuzL2hEkIYBMk+1KVS8REYs3Fc=;
+          h=Subject:To:Cc:From;
+          b=UKYAeQcaj2okswJO34QIekzoo/BcJQD6jwpHbYlVx+Rg36OuPDuhNCd04+FlaYYyO
+           wVqc7GFj8lfCRGlv0vamC5uDySEIXCxcHNsellXkuQFuwgq3WviYZEkmhV89MrA9IA
+           1WgVaKYjWKHyaKN4Wqvqkay5gDAyB68XBeNvnLr8=
+Received: from aafl106.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.141.106])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <mario.limonciello@amd.com>; 18 Nov 2023 19:55:41 +0100
+Message-ID: <2017142e-b4aa-4d4c-9673-17533da86826@o2.pl>
+Date:   Sat, 18 Nov 2023 19:55:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] rtc: Adjust failure return code for cmos_set_alarm()
+Content-Language: en-GB
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, tobrohl@gmail.com, aalsing@gmail.com,
+        Dhaval.Giani@amd.com, xmb8dsv4@gmail.com, x86@kernel.org
+References: <20231117063220.65093-1-mario.limonciello@amd.com>
+ <20231117063220.65093-3-mario.limonciello@amd.com>
+From:   =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
+ 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
+ TANkZ3QqXNX2
+In-Reply-To: <20231117063220.65093-3-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: f596b0cea2f93555199cabd15804961c
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [YeN0]                               
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,240 +104,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +struct pd692x0_priv {
-> +	struct i2c_client *client;
-> +	struct pse_controller_dev pcdev;
-> +
-> +	enum pd692x0_fw_state fw_state;
-> +	struct fw_upload *fwl;
-> +	bool cancel_request:1;
-> +
-> +	u8 msg_id;
-> +	bool last_cmd_key:1;
+W dniu 17.11.2023 o 07:32, Mario Limonciello pisze:
+> When mc146818_avoid_UIP() fails to return a valid value, this is because
+> UIP didn't clear in the timeout period. Adjust the return code in this
+> case to -ETIMEDOUT.
+>
+Hello,
 
-Does a bool bit field of size 1 make any sense?  I would also put the
-two bitfields next to each other, and the compiler might then pack
-them into the same word. The base type of a u8 would allow the compile
-to put it next to the msg_id without any padding.
+Thank you for posting this good patch series.
 
-> +	unsigned long last_cmd_key_time;
-> +
-> +	enum ethtool_pse_admin_state admin_state[PD692X0_MAX_LOGICAL_PORTS];
-> +};
-> +
-> +/* Template list of the fixed bytes of the communication messages */
-> +static const struct pd692x0_msg pd692x0_msg_template_list[PD692X0_MSG_CNT] = {
-> +	[PD692X0_MSG_RESET] = {
-> +		.content = {
-> +			.key = PD692X0_KEY_CMD,
-> +			.sub = {0x07, 0x55, 0x00},
-> +			.data = {0x55, 0x00, 0x55, 0x4e,
-> +				 0x4e, 0x4e, 0x4e, 0x4e},
-> +		},
-> +	},
+Why don't you CC stable it?
 
-Is there any documentation about what all these magic number mean?
+Fixes: cdedc45c579fa ("rtc: cmos: avoid UIP when reading alarm time")
+Fixes: cd17420ebea58 ("rtc: cmos: avoid UIP when writing alarm time")
 
-> +/* Implementation of the i2c communication in particular when there is
-> + * a communication loss. See the "Synchronization During Communication Loss"
-> + * paragraph of the Communication Protocol document.
-> + */
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  drivers/rtc/rtc-cmos.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/rtc/rtc-cmos.c b/drivers/rtc/rtc-cmos.c
+> index 228fb2d11c70..b39890a5531e 100644
+> --- a/drivers/rtc/rtc-cmos.c
+> +++ b/drivers/rtc/rtc-cmos.c
+> @@ -557,7 +557,7 @@ static int cmos_set_alarm(struct device *dev, struct rtc_wkalrm *t)
+>  	 * Use mc146818_avoid_UIP() to avoid this.
+>  	 */
+>  	if (!mc146818_avoid_UIP(cmos_set_alarm_callback, &p))
+> -		return -EIO;
+> +		return -ETIMEDOUT;
+>  
+>  	cmos->alarm_expires = rtc_tm_to_time64(&t->time);
 
-Is this document public?
+This should be changed also in cmos_read_alarm().
 
-> +static int pd692x0_recv_msg(struct pd692x0_priv *priv,
-> +			    struct pd692x0_msg *msg,
-> +			    struct pd692x0_msg_content *buf)
-> +{
-> +	const struct i2c_client *client = priv->client;
-> +	int ret;
-> +
-> +	memset(buf, 0, sizeof(*buf));
-> +	if (msg->delay_recv)
-> +		msleep(msg->delay_recv);
-> +	else
-> +		msleep(30);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
+Greetings,
 
-This is the first attempt to receive the message. I assume buf->key
-not being 0 indicates something has been received?
+Mateusz
 
-> +
-> +	msleep(100);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
-
-So this is a second attempt. Should there be another memset? Could the
-first failed transfer fill the buffer with random junk in the higher
-bytes, and a successful read here could be a partial read and the end
-of the buffer still contains the junk.
-
-> +
-> +	ret = pd692x0_send_msg(priv, msg);
-> +	if (ret)
-> +		return ret;
-
-So now we are re-transmitting the request.
-
-> +
-> +	if (msg->delay_recv)
-> +		msleep(msg->delay_recv);
-> +	else
-> +		msleep(30);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
-> +
-> +	msleep(100);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
-> +
-> +	msleep(10000);
-
-And two more attemps to receive it.
-
-> +
-> +	ret = pd692x0_send_msg(priv, msg);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (msg->delay_recv)
-> +		msleep(msg->delay_recv);
-> +	else
-> +		msleep(30);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
-> +
-> +	msleep(100);
-> +
-> +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> +	if (buf->key)
-> +		goto out;
-
-Another resend and two more attempts to receive.
-
-Is there a reason to not uses for loops here? And maybe put
-send/receive/receive into a helper? And maybe make the first send part
-of this, rather then separate? I think the code will be more readable
-when restructured.
-
-> +static int pd692x0_ethtool_set_config(struct pse_controller_dev *pcdev,
-> +				      unsigned long id,
-> +				      struct netlink_ext_ack *extack,
-> +				      const struct pse_control_config *config)
-> +{
-> +	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
-> +	struct pd692x0_msg_content buf = {0};
-> +	struct pd692x0_msg msg;
-> +	int ret;
-> +
-> +	ret = pd692x0_fw_unavailable(priv);
-> +	if (ret)
-> +		return ret;
-
-It seems a bit late to check if the device has any firmware. I would
-of expected probe to check that, and maybe attempt to download
-firmware. If that fails, fail the probe, since the PSE is a brick.
-
-> +static struct pd692x0_msg_ver pd692x0_get_sw_version(struct pd692x0_priv *priv)
-> +{
-> +	struct pd692x0_msg msg = pd692x0_msg_template_list[PD692X0_MSG_GET_SW_VER];
-> +	struct device *dev = &priv->client->dev;
-> +	struct pd692x0_msg_content buf = {0};
-> +	struct pd692x0_msg_ver ver = {0};
-> +	int ret;
-> +
-> +	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to get PSE version (%pe)\n", ERR_PTR(ret));
-> +		return ver;
-
-I _think_ that return is wrong ???
-
-> +static enum fw_upload_err pd692x0_fw_write(struct fw_upload *fwl,
-> +					   const u8 *data, u32 offset,
-> +					   u32 size, u32 *written)
-> +{
-> +	struct pd692x0_priv *priv = fwl->dd_handle;
-> +	char line[PD692X0_FW_LINE_MAX_SZ];
-> +	const struct i2c_client *client;
-> +	int ret, i;
-> +	char cmd;
-> +
-> +	client = priv->client;
-> +	priv->fw_state = PD692X0_FW_WRITE;
-> +
-> +	/* Erase */
-> +	cmd = 'E';
-> +	ret = i2c_master_send(client, &cmd, 1);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev,
-> +			"Failed to boot programming mode (%pe)\n",
-> +			ERR_PTR(ret));
-> +		return FW_UPLOAD_ERR_RW_ERROR;
-> +	}
-> +
-> +	ret = pd692x0_fw_recv_resp(client, 100, "TOE\r\n", sizeof("TOE\r\n") - 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = pd692x0_fw_recv_resp(client, 5000, "TE\r\n", sizeof("TE\r\n") - 1);
-> +	if (ret)
-> +		dev_warn(&client->dev,
-> +			 "Failed to erase internal memory, however still try to write Firmware\n");
-> +
-> +	ret = pd692x0_fw_recv_resp(client, 100, "TPE\r\n", sizeof("TPE\r\n") - 1);
-> +	if (ret)
-> +		dev_warn(&client->dev,
-> +			 "Failed to erase internal memory, however still try to write Firmware\n");
-> +
-> +	if (priv->cancel_request)
-> +		return FW_UPLOAD_ERR_CANCELED;
-> +
-> +	/* Program */
-> +	cmd = 'P';
-> +	ret = i2c_master_send(client, &cmd, sizeof(char));
-> +	if (ret < 0) {
-> +		dev_err(&client->dev,
-> +			"Failed to boot programming mode (%pe)\n",
-> +			ERR_PTR(ret));
-> +		return ret;
-> +	}
-> +
-> +	ret = pd692x0_fw_recv_resp(client, 100, "TOP\r\n", sizeof("TOP\r\n") - 1);
-> +	if (ret)
-> +		return ret;
-> +
-> +	i = 0;
-> +	while (i < size) {
-> +		ret = pd692x0_fw_get_next_line(data, line, size - i);
-> +		if (!ret) {
-> +			ret = FW_UPLOAD_ERR_FW_INVALID;
-> +			goto err;
-> +		}
-> +
-> +		i += ret;
-> +		data += ret;
-> +		if (line[0] == 'S' && line[1] == '0') {
-> +			continue;
-> +		} else if (line[0] == 'S' && line[1] == '7') {
-> +			ret = pd692x0_fw_write_line(client, line, true);
-> +			if (ret)
-> +				goto err;
-
-Is the firmware in Motorola SREC format? I thought the kernel had a
-helper for that, but a quick search did not find it. So maybe i'm
-remembering wrongly. But it seems silly for every driver to implement
-an SREC parser.
-
-   Andrew
