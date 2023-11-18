@@ -2,228 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDB97F0058
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3517F005D
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbjKRPjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S229791AbjKRPvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjKRPjW (ORCPT
+        with ESMTP id S229469AbjKRPvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:39:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74525131;
-        Sat, 18 Nov 2023 07:39:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700321958; x=1731857958;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SoEaugOlvtLEtzbNvKRSg3fDFOr14Tg3H/Xwo8luSdM=;
-  b=kruzKMwYW2rt6CBsieUnvmY2kPXBvdSwl8QTRMgF/E2g6iDKPtL1XdVB
-   InQfJw/43uW4Uha1POnI69/4b8F826AkoQC6OiWYo21zv7bq5h60ydDKa
-   Hpp4Ex7vnoJ9ZETSAzkg9v8T2NpVbaPQ9g1pmEbOCiYCgh+6U3TYxmdbq
-   GaEy9bqeStH0lbUMaGLKlue55ZsgjGERLtiUIrNfurz/4cVg6iiHAUhr7
-   Kemr8R9Vobr+Qn/xRR/Uw5/Q0ne88j2XLqF2KbkgyRKomjbYwiY7XxgPX
-   auWly2s8RwNKIW167mqeqszXP16qJI3fQ3vuGKmYdGwXO7beTbPAUWvHV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="390297620"
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="390297620"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 07:39:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="7298519"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 18 Nov 2023 07:39:16 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4NPd-000419-0A;
-        Sat, 18 Nov 2023 15:39:13 +0000
-Date:   Sat, 18 Nov 2023 23:38:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Prashanth K <quic_prashk@quicinc.com>, stable@vger.kernel.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Tejas Joglekar <joglekar@synopsys.com>,
-        linux-kernel@vger.kernel.org, linux-usbyy@vger.kernel.org,
-        Prashanth K <quic_prashk@quicinc.com>
-Subject: Re: [PATCH 1/2] usb: dwc3: core: Add support for
- xhci-sg-trb-cache-size-quirk
-Message-ID: <202311182312.lJrwZFwZ-lkp@intel.com>
-References: <20231118055455.249088-2-quic_prashk@quicinc.com>
+        Sat, 18 Nov 2023 10:51:05 -0500
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85766182;
+        Sat, 18 Nov 2023 07:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1700322646;
+        bh=+4tkXT2Y0ZJNldwcYbIGmHyE8OJNqApK4fyYv38niwQ=;
+        h=From:To:Cc:Subject:Date;
+        b=Ph7IJCtdffearbam84VOXcy9Cr4E1x26MWaX/sorrGBpPdDkvUzx2oeVFdE1F+8QW
+         VMmHOxdM/M2+irGIqdplAjEuBi14dLYzChlYnLZLRk22EPxI7VPLmuMxMPj6wZmtkP
+         qa4WgpgxnX/SFY9ebzLdly2c05YGxi7OLRz8jbpU=
+Received: from KernelDevBox.byted.org ([180.184.51.70])
+        by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
+        id A7591AC6; Sat, 18 Nov 2023 23:41:53 +0800
+X-QQ-mid: xmsmtpt1700322113t5fkws5zs
+Message-ID: <tencent_6BA2BE4A64DD6CD5B66D9D8079789829000A@qq.com>
+X-QQ-XMAILINFO: NfADz11w1YkvGFaZejPHtoEFsxSTRk8Iq0ST/4MclPPTXeprz1fCG8iAMPVEp1
+         KE2E8eDpie5P8qZOM6eWcNst1uuqvVq7Sf/q0RUHWJ/dEt/c7xicWKmNcnPmKxXAjbP8vp8qZqyG
+         FPVktayu0ZmNo/oj/41i2AcE+dJRvpch65kHf1xw4TWxpr60hSdp/GidOLQsBqspPOTvIRpf1Vus
+         Az8lnCJc+p9m/MvGp32KJ9nWfoPPln7LvBUIbWl3Izm5pZSCqoAd/bgLwSU4Uwev6G4PyVj/BzpG
+         0HY+67f4Q/KpBtlNwd/6Q6E4NG7617GydjeqSh9EYDhMVkITjPrkICJWaGdGHOhK2kdFIytw/H14
+         7OprbTyPXOkCoXitWTKY91Fpaf8ZFA0JaIQ+ogRuE2IiQW3vSCIbK471H7pfEjzAei6EkTab4JBO
+         LltpLgx27Pbc8jnjOyG0F5qDfN5WhZinuFs5IxJWnaUdSsab93vwn6UT7Cv2c3Cx3M3yYrM0pnJL
+         9j2c+q0O9+H5h91Xo3CMvKyNnKUpT2bSewVAc3B8MedXtJ1lmPXSkHt9pBZ7MQOL4yEA7FEDErB8
+         NhcjnR02GVPka7qmy7JV5bJEicpFQcQcC9GpRn58Doy/O0o4p7OQHOZu+mnFgsTZBrox3GFiUmXk
+         nTZ0S4LwjIU3+6r9ooZ/5hnmilYXW0NbnfT07CdoCPPWoDJQpZy9ZJdMaKZwZOMNPrilvrO/81Xg
+         5EI30fr8BxBSETW+NfeuRH7snQH/tIvFooS7V4eIk2f/kUFcU+wIIJQ+Qf3sjx4h4jH3FUS7Rn5D
+         EZC6xItuOV025OyUAdqqHX/82KT0pk6FYJz7rUUIQGydw7aBws1wBGQ6el+PUCx8H/+pEccNvBHC
+         ApURqEatnWSbgopuN+GZ/ez8Ig7tBvlzgO8PEXQ8X4iMuh/VyilH19LD7GyAJPfUjzALOuJhvdql
+         mbU4Lpj2CyvNmVI8ku6e7halg4cYLYw1m/0dFpCDmnJNAob6mJjT2ivEpVAP/Gj0RJJZXl578=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From:   Zhang Shurong <zhang_shurong@foxmail.com>
+To:     alex.aring@gmail.com
+Cc:     stefan@datenfreihafen.org, miquel.raynal@bootlin.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        harperchen1110@gmail.com, Zhang Shurong <zhang_shurong@foxmail.com>
+Subject: [PATCH] mac802154: Fix uninit-value access in ieee802154_hdr_push_sechdr
+Date:   Sat, 18 Nov 2023 23:41:50 +0800
+X-OQ-MSGID: <20231118154150.1450251-1-zhang_shurong@foxmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118055455.249088-2-quic_prashk@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashanth,
+The syzkaller reported an issue:
 
-kernel test robot noticed the following build errors:
+BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+ ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
+ ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
+ ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
+ wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
+ dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
+ ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+ sock_sendmsg_nosec net/socket.c:725 [inline]
+ sock_sendmsg net/socket.c:748 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2494
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2548
+ __sys_sendmsg+0x225/0x3c0 net/socket.c:2577
+ __compat_sys_sendmsg net/compat.c:346 [inline]
+ __do_compat_sys_sendmsg net/compat.c:353 [inline]
+ __se_compat_sys_sendmsg net/compat.c:350 [inline]
 
-[auto build test ERROR on usb/usb-testing]
-[also build test ERROR on usb/usb-next usb/usb-linus linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+We found hdr->key_id_mode is uninitialized in mac802154_set_header_security()
+which indicates hdr.fc.security_enabled should be 0. However, it is set to be cb->secen before.
+Later, ieee802154_hdr_push_sechdr is invoked, causing KMSAN complains uninit-value issue.
+Since mac802154_set_header_security() sets hdr.fc.security_enabled based on the variables
+ieee802154_sub_if_data *sdata and ieee802154_mac_cb *cb in a collaborative manner.
+Therefore, we should not set security_enabled prior to mac802154_set_header_security().
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Prashanth-K/usb-dwc3-core-Add-support-for-xhci-sg-trb-cache-size-quirk/20231118-135837
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20231118055455.249088-2-quic_prashk%40quicinc.com
-patch subject: [PATCH 1/2] usb: dwc3: core: Add support for xhci-sg-trb-cache-size-quirk
-config: hexagon-randconfig-002-20231118 (https://download.01.org/0day-ci/archive/20231118/202311182312.lJrwZFwZ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311182312.lJrwZFwZ-lkp@intel.com/reproduce)
+Fixed it by removing the line that sets the hdr.fc.security_enabled.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311182312.lJrwZFwZ-lkp@intel.com/
+Syzkaller don't provide repro, and I provide a syz repro like:
+r0 = syz_init_net_socket$802154_dgram(0x24, 0x2, 0x0)
+setsockopt$WPAN_SECURITY(r0, 0x0, 0x1, &(0x7f0000000000)=0x2, 0x4)
+setsockopt$WPAN_SECURITY(r0, 0x0, 0x1, &(0x7f0000000080), 0x4)
+sendmsg$802154_dgram(r0, &(0x7f0000000100)={&(0x7f0000000040)={0x24, @short}, 0x14, &(0x7f00000000c0)={0x0}}, 0x0)
 
-All errors (new ones prefixed by >>):
+Fixes: 32edc40ae65c ("ieee802154: change _cb handling slightly")
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+---
+ net/mac802154/iface.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-   In file included from drivers/usb/dwc3/host.c:10:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/usb/dwc3/host.c:10:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/usb/dwc3/host.c:10:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
->> drivers/usb/dwc3/host.c:66:26: error: variable has incomplete type 'struct xhci_plat_priv'
-      66 |         struct xhci_plat_priv   dwc3_xhci_plat_priv = {0};
-         |                                 ^
-   drivers/usb/dwc3/host.c:66:9: note: forward declaration of 'struct xhci_plat_priv'
-      66 |         struct xhci_plat_priv   dwc3_xhci_plat_priv = {0};
-         |                ^
->> drivers/usb/dwc3/host.c:92:33: error: use of undeclared identifier 'XHCI_SG_TRB_CACHE_SIZE_QUIRK'
-      92 |                 dwc3_xhci_plat_priv.quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
-         |                                               ^
-   6 warnings and 2 errors generated.
-
-
-vim +66 drivers/usb/dwc3/host.c
-
-    61	
-    62	int dwc3_host_init(struct dwc3 *dwc)
-    63	{
-    64		struct property_entry	props[4];
-    65		struct platform_device	*xhci;
-  > 66		struct xhci_plat_priv   dwc3_xhci_plat_priv = {0};
-    67		int			ret, irq;
-    68		int			prop_idx = 0;
-    69	
-    70		irq = dwc3_host_get_irq(dwc);
-    71		if (irq < 0)
-    72			return irq;
-    73	
-    74		xhci = platform_device_alloc("xhci-hcd", PLATFORM_DEVID_AUTO);
-    75		if (!xhci) {
-    76			dev_err(dwc->dev, "couldn't allocate xHCI device\n");
-    77			return -ENOMEM;
-    78		}
-    79	
-    80		xhci->dev.parent	= dwc->dev;
-    81	
-    82		dwc->xhci = xhci;
-    83	
-    84		ret = platform_device_add_resources(xhci, dwc->xhci_resources,
-    85							DWC3_XHCI_RESOURCES_NUM);
-    86		if (ret) {
-    87			dev_err(dwc->dev, "couldn't add resources to xHCI device\n");
-    88			goto err;
-    89		}
-    90	
-    91		if (dwc->xhci_sg_trb_cache_size_quirk)
-  > 92			dwc3_xhci_plat_priv.quirks |= XHCI_SG_TRB_CACHE_SIZE_QUIRK;
-    93	
-    94		ret = platform_device_add_data(xhci, &dwc3_xhci_plat_priv,
-    95						sizeof(dwc3_xhci_plat_priv));
-    96		if (ret)
-    97			goto err;
-    98	
-    99		memset(props, 0, sizeof(struct property_entry) * ARRAY_SIZE(props));
-   100	
-   101		if (dwc->usb3_lpm_capable)
-   102			props[prop_idx++] = PROPERTY_ENTRY_BOOL("usb3-lpm-capable");
-   103	
-   104		if (dwc->usb2_lpm_disable)
-   105			props[prop_idx++] = PROPERTY_ENTRY_BOOL("usb2-lpm-disable");
-   106	
-   107		/**
-   108		 * WORKAROUND: dwc3 revisions <=3.00a have a limitation
-   109		 * where Port Disable command doesn't work.
-   110		 *
-   111		 * The suggested workaround is that we avoid Port Disable
-   112		 * completely.
-   113		 *
-   114		 * This following flag tells XHCI to do just that.
-   115		 */
-   116		if (DWC3_VER_IS_WITHIN(DWC3, ANY, 300A))
-   117			props[prop_idx++] = PROPERTY_ENTRY_BOOL("quirk-broken-port-ped");
-   118	
-   119		if (prop_idx) {
-   120			ret = device_create_managed_software_node(&xhci->dev, props, NULL);
-   121			if (ret) {
-   122				dev_err(dwc->dev, "failed to add properties to xHCI\n");
-   123				goto err;
-   124			}
-   125		}
-   126	
-   127		ret = platform_device_add(xhci);
-   128		if (ret) {
-   129			dev_err(dwc->dev, "failed to register xHCI device\n");
-   130			goto err;
-   131		}
-   132	
-   133		return 0;
-   134	err:
-   135		platform_device_put(xhci);
-   136		return ret;
-   137	}
-   138	
-
+diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
+index c0e2da5072be..c99b6e40a5db 100644
+--- a/net/mac802154/iface.c
++++ b/net/mac802154/iface.c
+@@ -368,7 +368,6 @@ static int ieee802154_header_create(struct sk_buff *skb,
+ 
+ 	memset(&hdr.fc, 0, sizeof(hdr.fc));
+ 	hdr.fc.type = cb->type;
+-	hdr.fc.security_enabled = cb->secen;
+ 	hdr.fc.ack_request = cb->ackreq;
+ 	hdr.seq = atomic_inc_return(&dev->ieee802154_ptr->dsn) & 0xFF;
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.2
+
