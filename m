@@ -2,74 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BDA7EFD19
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036DF7EFD30
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbjKRCHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        id S232802AbjKRC0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjKRCHJ (ORCPT
+        with ESMTP id S229789AbjKRC0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 21:07:09 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003F6D6D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:07:03 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5b7f3f47547so2961666a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:07:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700273223; x=1700878023;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbw9RDTyUifBxomlYchIdc09HUL7QJSk0Z1pya+osvc=;
-        b=hA1m49MftDFj9ltZ1qRMELxP4Xv+Vk/70o8UpWld4Poie/V61MEzkI5A+oiw5fckMj
-         vm5iUGJj6BcWZpLvuCUB0wXLv/4B1EdxBlniTFn/90iDXTO2Apvhn7ybQKM1i1LIB8NH
-         EVTFVLpTwN/oDEAQTqV70ayl1FyYnoXYi20VPPrcbtcIAkupLGZd89AeTotcUHqOukZz
-         YVJLcYbH9ORvvnR5gW/BNagppy3PFsNafYE27PqyNv0xgFrdNpBnkDpidT6smhn9kpcR
-         umzmZo3pQF0dvzwpts6UPBou2xovK7cXn70JjOWFjaUftCnuHvqkCjiVGjhN5KQKu/cP
-         pghw==
-X-Gm-Message-State: AOJu0YxsFO3Z047VwkR44i800xTA0Q9g7Wf61dMr2I0QtS73RHOpinG5
-        jOgOnVFyNv5aH6APhFdNCdCeIvldLjQQa+ry4wqY2fkcPaQS
-X-Google-Smtp-Source: AGHT+IGnJRu5V+gdCR+4yvwKfkAi8U+BKw8TA0A8tvP9QpMh9ISe+Y9h62FRRP4GrnHF1flM5PyIps4AwEiWCt3AQeUpTjmH+pWh
+        Fri, 17 Nov 2023 21:26:42 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5014E10CE
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:26:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Evcwlcp3d2PQmMX2IVCecA5yyDwuGfCMof13YLW0yBQ=; b=2nZYVNITdww6ahOBiRFvw7ZRqL
+        /lW+cK7eJDD0PkR+eqWUi79C2ikO8+Hd4AiZJ6EhEG7qcg0giT/L0Dxzr+rRDJ1/nCoKCOxJ1mtWL
+        HaohPpTlLCCb1Xctuwm0HpV5Mfz2PPajftJnkree3KbX6cVg1RWyY7Y1Vl45HhmO4uz9h5EWne4il
+        +HnK+gWsh8Fiyc0Z61RKSyHzibXrJaRpgsNo8iTmp4ee/jIzRhZzkYHX8B8+FW5qVhs5yj1kl8pfV
+        1fV3tS8vLCHvgymJxOyIHSQUCsBfqDQJTlvL8uqm39NE3xuAHgUtT8I2bi3FXT8g4dzaiwMjTQv9M
+        fVV67VeA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r4B2X-007ijt-17;
+        Sat, 18 Nov 2023 02:26:33 +0000
+Message-ID: <c40ddfd4-5781-4382-a3f1-c18cbfb22b34@infradead.org>
+Date:   Fri, 17 Nov 2023 18:26:32 -0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:62cc:b0:27d:dffa:b374 with SMTP id
- k12-20020a17090a62cc00b0027ddffab374mr295377pjs.6.1700273223477; Fri, 17 Nov
- 2023 18:07:03 -0800 (PST)
-Date:   Fri, 17 Nov 2023 18:07:03 -0800
-In-Reply-To: <20231118012439.1685-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081b046060a63b57f@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_sock_timeout
-From:   syzbot <syzbot+4c0d0c4cde787116d465@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] checkpatch: add judgment condition for Kconfig help test
+Content-Language: en-US
+To:     Cixi Geng <cixi.geng@linux.dev>, apw@canonical.com, joe@perches.co,
+        dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20231116153904.15589-1-cixi.geng@linux.dev>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231116153904.15589-1-cixi.geng@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi--
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+On 11/16/23 07:39, Cixi Geng wrote:
+> From: Cixi Geng <cixi.geng1@unisoc.com>
+> 
+> The has_help only counted the  situation which the patch file add
+> a help line, when the config was renamed and  modify description,
+> the has_help is zero for the "help" line not added.
+> 
+> here is one case:
+>     the modify file: drivers/iio/adc/Kconfig  line(1047)
+> 
+>     -config SC27XX_ADC
+>     +config SPRD_ADC
+>      	tristate "Spreadtrum SC27xx series PMICs ADC"
+>      	depends on MFD_SC27XX_PMIC || COMPILE_TEST
+>     +	depends on ARCH_SPRD
+>      	help
+>     -	  Say yes here to build support for the integrated ADC inside the
+>     -	  Spreadtrum SC27xx series PMICs.
+>     +	  Say yes here to build support for the integrated ADC inside of the
+>     +	  Spreadtrum SC27xx and UMPxx series PMICs.
+> 
+>      	  This driver can also be built as a module. If so, the module
+>      	  will be called sc27xx_adc.
 
-Reported-and-tested-by: syzbot+4c0d0c4cde787116d465@syzkaller.appspotmail.com
+OK, I made those changes to that Kconfig file and ran checkpatch.
+I didn't get any of the following checkpatch results.
 
-Tested on:
+Are you using a current version of checkpatch?
 
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ace3d4e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=4c0d0c4cde787116d465
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15faf610e80000
+> the checkpatch result:
+>     WARNING: please write a help paragraph that fully describes the config symbol
+>     #23: FILE: drivers/iio/adc/Kconfig:1050:
+>     +config SPRD_ADC
+>     +	tristate "Spreadtrum's ADC PMICs driver"
+>      	depends on MFD_SC27XX_PMIC || COMPILE_TEST
+>     +	depends on ARCH_SPRD
+>      	help
+>     +	  Say yes here to build support for the integrated ADC inside of the
+>     +	  Say yes here to build support for the integrated ADC inside of the
+>     +	  Say yes here to build support for the integrated ADC inside of the
+>     +	  Spreadtrum SC27xx and UMPxx series PMICs.
+> 
+>      	  This driver can also be built as a module. If so, the module
+>      	  will be called sc27xx_adc.
+> 
+>     total: 0 errors, 1 warnings, 17 lines checked
+> 
+> Fixes: b8709bce9089 ("checkpatch: improve Kconfig help test")
+> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+> ---
+>  scripts/checkpatch.pl | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 25fdb7fda112..402009d08505 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3616,7 +3616,7 @@ sub process {
+>  					$needs_help = 1;
+>  					next;
+>  				}
+> -				if ($f =~ /^\+\s*help\s*$/) {
+> +				if ($f =~ /^\+\s*help\s*$/ || $f =~ /^\s*help\s*$/) {
+>  					$has_help = 1;
+>  					next;
+>  				}
 
-Note: testing is done by a robot and is best-effort only.
+-- 
+~Randy
