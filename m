@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3917A7EFD34
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3BE7EFD2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbjKRCdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
+        id S234364AbjKRCdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:33:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjKRCdJ (ORCPT
+        with ESMTP id S230036AbjKRCdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Nov 2023 21:33:09 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E612D5C
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D703FD5B
         for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:33:05 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SXHl52VTGzNm7S;
-        Sat, 18 Nov 2023 10:28:49 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SXHqc0G7KzvQDX;
+        Sat, 18 Nov 2023 10:32:44 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 18 Nov 2023 10:33:02 +0800
+ 15.1.2507.31; Sat, 18 Nov 2023 10:33:03 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -30,10 +30,12 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         Sidhartha Kumar <sidhartha.kumar@oracle.com>,
         Vishal Moola <vishal.moola@gmail.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 0/5] mm: cleanup and use more folio in page fault
-Date:   Sat, 18 Nov 2023 10:32:27 +0800
-Message-ID: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 1/5] mm: ksm: use more folio api in ksm_might_need_to_copy()
+Date:   Sat, 18 Nov 2023 10:32:28 +0800
+Message-ID: <20231118023232.1409103-2-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
+References: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -51,31 +53,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename page_copy_prealloc() to folio_prealloc(), which is used by
-more functions, also do more folio conversion in page fault.
+Since ksm only support normal page, no swapout/in for ksm large
+folio too, add large folio check in ksm_might_need_to_copy(),
+also convert page->index to folio->index as page->index is going away.
 
-v3:
-- drop patch6 as Small-sized THP for anon will change anon allocation
-- correct do_cow_page to do_cow_fault in subject and changlog
-- add RB of Vishal
+Then convert ksm_might_need_to_copy() to use more folio api to save
+nine compound_head() calls, short 'address' to reduce max-line-length.
 
-v2:
-- add folio_test_large check in ksm_might_need_to_copy() and
-  replace page->index to folio->index, per David, Matthew
-- add RB of Sidhartha
-
-Kefeng Wang (5):
-  mm: ksm: use more folio api in ksm_might_need_to_copy()
-  mm: memory: use a folio in validate_page_before_insert()
-  mm: memory: rename page_copy_prealloc() to folio_prealloc()
-  mm: memory: use a folio in do_cow_fault()
-  mm: memory: use folio_prealloc() in wp_page_copy()
-
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
  include/linux/ksm.h |  4 ++--
- mm/ksm.c            | 39 ++++++++++++++++--------------
- mm/memory.c         | 58 +++++++++++++++++++++------------------------
- 3 files changed, 50 insertions(+), 51 deletions(-)
+ mm/ksm.c            | 39 +++++++++++++++++++++------------------
+ 2 files changed, 23 insertions(+), 20 deletions(-)
 
+diff --git a/include/linux/ksm.h b/include/linux/ksm.h
+index c2dd786a30e1..4643d5244e77 100644
+--- a/include/linux/ksm.h
++++ b/include/linux/ksm.h
+@@ -77,7 +77,7 @@ static inline void ksm_exit(struct mm_struct *mm)
+  * but what if the vma was unmerged while the page was swapped out?
+  */
+ struct page *ksm_might_need_to_copy(struct page *page,
+-			struct vm_area_struct *vma, unsigned long address);
++			struct vm_area_struct *vma, unsigned long addr);
+ 
+ void rmap_walk_ksm(struct folio *folio, struct rmap_walk_control *rwc);
+ void folio_migrate_ksm(struct folio *newfolio, struct folio *folio);
+@@ -130,7 +130,7 @@ static inline int ksm_madvise(struct vm_area_struct *vma, unsigned long start,
+ }
+ 
+ static inline struct page *ksm_might_need_to_copy(struct page *page,
+-			struct vm_area_struct *vma, unsigned long address)
++			struct vm_area_struct *vma, unsigned long addr)
+ {
+ 	return page;
+ }
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 6a831009b4cb..6d841c22642b 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2876,48 +2876,51 @@ void __ksm_exit(struct mm_struct *mm)
+ }
+ 
+ struct page *ksm_might_need_to_copy(struct page *page,
+-			struct vm_area_struct *vma, unsigned long address)
++			struct vm_area_struct *vma, unsigned long addr)
+ {
+ 	struct folio *folio = page_folio(page);
+ 	struct anon_vma *anon_vma = folio_anon_vma(folio);
+-	struct page *new_page;
++	struct folio *new_folio;
+ 
+-	if (PageKsm(page)) {
+-		if (page_stable_node(page) &&
++	if (folio_test_large(folio))
++		return page;
++
++	if (folio_test_ksm(folio)) {
++		if (folio_stable_node(folio) &&
+ 		    !(ksm_run & KSM_RUN_UNMERGE))
+ 			return page;	/* no need to copy it */
+ 	} else if (!anon_vma) {
+ 		return page;		/* no need to copy it */
+-	} else if (page->index == linear_page_index(vma, address) &&
++	} else if (folio->index == linear_page_index(vma, addr) &&
+ 			anon_vma->root == vma->anon_vma->root) {
+ 		return page;		/* still no need to copy it */
+ 	}
+ 	if (PageHWPoison(page))
+ 		return ERR_PTR(-EHWPOISON);
+-	if (!PageUptodate(page))
++	if (!folio_test_uptodate(folio))
+ 		return page;		/* let do_swap_page report the error */
+ 
+-	new_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, address);
+-	if (new_page &&
+-	    mem_cgroup_charge(page_folio(new_page), vma->vm_mm, GFP_KERNEL)) {
+-		put_page(new_page);
+-		new_page = NULL;
++	new_folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, addr, false);
++	if (new_folio &&
++	    mem_cgroup_charge(new_folio, vma->vm_mm, GFP_KERNEL)) {
++		folio_put(new_folio);
++		new_folio = NULL;
+ 	}
+-	if (new_page) {
+-		if (copy_mc_user_highpage(new_page, page, address, vma)) {
+-			put_page(new_page);
++	if (new_folio) {
++		if (copy_mc_user_highpage(&new_folio->page, page, addr, vma)) {
++			folio_put(new_folio);
+ 			memory_failure_queue(page_to_pfn(page), 0);
+ 			return ERR_PTR(-EHWPOISON);
+ 		}
+-		SetPageDirty(new_page);
+-		__SetPageUptodate(new_page);
+-		__SetPageLocked(new_page);
++		folio_set_dirty(new_folio);
++		__folio_mark_uptodate(new_folio);
++		__folio_set_locked(new_folio);
+ #ifdef CONFIG_SWAP
+ 		count_vm_event(KSM_SWPIN_COPY);
+ #endif
+ 	}
+ 
+-	return new_page;
++	return new_folio ? &new_folio->page : NULL;
+ }
+ 
+ void rmap_walk_ksm(struct folio *folio, struct rmap_walk_control *rwc)
 -- 
 2.27.0
 
