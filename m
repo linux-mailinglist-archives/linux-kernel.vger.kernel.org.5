@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139977EFD41
+	by mail.lfdr.de (Postfix) with ESMTP id 68D377EFD42
 	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjKRCvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:51:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
+        id S232898AbjKRCvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjKRCvu (ORCPT
+        with ESMTP id S232840AbjKRCvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 21:51:50 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058C1D6A;
-        Fri, 17 Nov 2023 18:51:42 -0800 (PST)
-Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SXJ9Y32bmz1P8FM;
+        Fri, 17 Nov 2023 21:51:51 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17A710D0;
+        Fri, 17 Nov 2023 18:51:43 -0800 (PST)
+Received: from kwepemm000003.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SXJ9Y1ChyzsR5m;
         Sat, 18 Nov 2023 10:48:17 +0800 (CST)
 Received: from ubuntu2204.huawei.com (10.67.174.22) by
  kwepemm000003.china.huawei.com (7.193.23.66) with Microsoft SMTP Server
@@ -30,9 +30,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <daniel.diaz@linaro.org>, <linux-perf-users@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <yangjihong1@huawei.com>
-Subject: [PATCH 1/3] perf kwork: Fix a build error on 32-bit
-Date:   Sat, 18 Nov 2023 02:48:56 +0000
-Message-ID: <20231118024858.1567039-2-yangjihong1@huawei.com>
+Subject: [PATCH 2/3] perf lock contention: Fix a build error on 32-bit
+Date:   Sat, 18 Nov 2023 02:48:57 +0000
+Message-ID: <20231118024858.1567039-3-yangjihong1@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231118024858.1567039-1-yangjihong1@huawei.com>
 References: <20231118024858.1567039-1-yangjihong1@huawei.com>
@@ -53,44 +53,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lkft reported a build error for 32-bit system:
+Fix a build error on 32-bit system:
 
-    builtin-kwork.c: In function 'top_print_work':
-    builtin-kwork.c:1646:28: error: format '%ld' expects argument of
-  type 'long int', but argument 3 has type 'u64' {aka 'long long
-  unsigned int'} [-Werror=format=]
-     1646 |         ret += printf(" %*ld ", PRINT_PID_WIDTH, work->id);
-          |                         ~~~^                     ~~~~~~~~
-          |                            |                         |
-          |                            long int                  u64
-  {aka long long unsigned int}
-          |                         %*lld
-    cc1: all warnings being treated as errors
-    make[3]: *** [/builds/linux/tools/build/Makefile.build:106:
-  /home/tuxbuild/.cache/tuxmake/builds/1/build/builtin-kwork.o] Error 1
+  util/bpf_lock_contention.c: In function 'lock_contention_get_name':
+  util/bpf_lock_contention.c:253:50: error: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'u64 {aka long long unsigned int}' [-Werror=format=]
+     snprintf(name_buf, sizeof(name_buf), "cgroup:%lu", cgrp_id);
+                                                  ~~^
+                                                  %llu
+  cc1: all warnings being treated as errors
 
-Fix it.
-
-Fixes: 55c40e505234 ("perf kwork top: Introduce new top utility")
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Fixes: d0c502e46e97 ("perf lock contention: Prepare to handle cgroups")
 Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/builtin-kwork.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/bpf_lock_contention.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-kwork.c b/tools/perf/builtin-kwork.c
-index f007a9b27065..0092b9b39611 100644
---- a/tools/perf/builtin-kwork.c
-+++ b/tools/perf/builtin-kwork.c
-@@ -1643,7 +1643,7 @@ static int top_print_work(struct perf_kwork *kwork __maybe_unused, struct kwork_
- 	/*
- 	 * pid
- 	 */
--	ret += printf(" %*ld ", PRINT_PID_WIDTH, work->id);
-+	ret += printf(" %*" PRIu64 " ", PRINT_PID_WIDTH, work->id);
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index e105245eb905..f1716c089c99 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -12,6 +12,7 @@
+ #include <linux/zalloc.h>
+ #include <linux/string.h>
+ #include <bpf/bpf.h>
++#include <inttypes.h>
  
- 	/*
- 	 * tgid
+ #include "bpf_skel/lock_contention.skel.h"
+ #include "bpf_skel/lock_data.h"
+@@ -250,7 +251,7 @@ static const char *lock_contention_get_name(struct lock_contention *con,
+ 		if (cgrp)
+ 			return cgrp->name;
+ 
+-		snprintf(name_buf, sizeof(name_buf), "cgroup:%lu", cgrp_id);
++		snprintf(name_buf, sizeof(name_buf), "cgroup:%" PRIu64 "", cgrp_id);
+ 		return name_buf;
+ 	}
+ 
 -- 
 2.34.1
 
