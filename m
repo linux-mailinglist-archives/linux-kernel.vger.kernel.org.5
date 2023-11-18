@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CAD7EFD2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD5A7EFD32
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234839AbjKRCdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:33:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
+        id S234781AbjKRCdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:33:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbjKRCdK (ORCPT
+        with ESMTP id S232862AbjKRCdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Nov 2023 21:33:10 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F49110D0
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2D510EC
         for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:33:06 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SXHqT3NS9zQjCv;
-        Sat, 18 Nov 2023 10:32:37 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SXHm50vr9zsR5c;
+        Sat, 18 Nov 2023 10:29:41 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -30,9 +30,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         Sidhartha Kumar <sidhartha.kumar@oracle.com>,
         Vishal Moola <vishal.moola@gmail.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 3/5] mm: memory: rename page_copy_prealloc() to folio_prealloc()
-Date:   Sat, 18 Nov 2023 10:32:30 +0800
-Message-ID: <20231118023232.1409103-4-wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 4/5] mm: memory: use a folio in do_cow_fault()
+Date:   Sat, 18 Nov 2023 10:32:31 +0800
+Message-ID: <20231118023232.1409103-5-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
 References: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
@@ -53,52 +53,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's rename page_copy_prealloc() to folio_prealloc(), which could
-be reused in more functons, as it maybe zero the new page, pass a
-new need_zero to it, and call the vma_alloc_zeroed_movable_folio()
-if need_zero is true.
+Use folio_prealloc() helper and convert to use a folio in
+do_cow_fault(), which save five compound_head() calls.
 
-Reviewed-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ mm/memory.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index dffd39c9b3af..93c9ed01fc86 100644
+index 93c9ed01fc86..868a2fc54549 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -990,12 +990,17 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 	return 0;
+@@ -4739,6 +4739,7 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
+ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
++	struct folio *folio;
+ 	vm_fault_t ret;
+ 
+ 	ret = vmf_can_call_fault(vmf);
+@@ -4747,16 +4748,11 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
+ 	if (ret)
+ 		return ret;
+ 
+-	vmf->cow_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, vmf->address);
+-	if (!vmf->cow_page)
++	folio = folio_prealloc(vma->vm_mm, vma, vmf->address, false);
++	if (!folio)
+ 		return VM_FAULT_OOM;
+ 
+-	if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
+-				GFP_KERNEL)) {
+-		put_page(vmf->cow_page);
+-		return VM_FAULT_OOM;
+-	}
+-	folio_throttle_swaprate(page_folio(vmf->cow_page), GFP_KERNEL);
++	vmf->cow_page = &folio->page;
+ 
+ 	ret = __do_fault(vmf);
+ 	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
+@@ -4765,7 +4761,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
+ 		return ret;
+ 
+ 	copy_user_highpage(vmf->cow_page, vmf->page, vmf->address, vma);
+-	__SetPageUptodate(vmf->cow_page);
++	__folio_mark_uptodate(folio);
+ 
+ 	ret |= finish_fault(vmf);
+ 	unlock_page(vmf->page);
+@@ -4774,7 +4770,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
+ 		goto uncharge_out;
+ 	return ret;
+ uncharge_out:
+-	put_page(vmf->cow_page);
++	folio_put(folio);
+ 	return ret;
  }
  
--static inline struct folio *page_copy_prealloc(struct mm_struct *src_mm,
--		struct vm_area_struct *vma, unsigned long addr)
-+static inline struct folio *folio_prealloc(struct mm_struct *src_mm,
-+		struct vm_area_struct *vma, unsigned long addr, bool need_zero)
- {
- 	struct folio *new_folio;
- 
--	new_folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma, addr, false);
-+	if (need_zero)
-+		new_folio = vma_alloc_zeroed_movable_folio(vma, addr);
-+	else
-+		new_folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma,
-+					    addr, false);
-+
- 	if (!new_folio)
- 		return NULL;
- 
-@@ -1127,7 +1132,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 	} else if (ret == -EBUSY) {
- 		goto out;
- 	} else if (ret ==  -EAGAIN) {
--		prealloc = page_copy_prealloc(src_mm, src_vma, addr);
-+		prealloc = folio_prealloc(src_mm, src_vma, addr, false);
- 		if (!prealloc)
- 			return -ENOMEM;
- 	} else if (ret) {
 -- 
 2.27.0
 
