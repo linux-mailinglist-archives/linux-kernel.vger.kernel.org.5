@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 951B37F00BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42277F00BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbjKRPyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        id S233058AbjKRPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjKRPxc (ORCPT
+        with ESMTP id S231698AbjKRPxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:53:32 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1500D1FEB;
-        Sat, 18 Nov 2023 07:51:52 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5c9adcaf514so407127b3.2;
-        Sat, 18 Nov 2023 07:51:52 -0800 (PST)
+        Sat, 18 Nov 2023 10:53:35 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F821FF3;
+        Sat, 18 Nov 2023 07:51:54 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-da3b4b7c6bdso2917083276.2;
+        Sat, 18 Nov 2023 07:51:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322710; x=1700927510; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322712; x=1700927512; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5/FFRxNdIVmBtGkGik+eY+kvUwCYYAdIhZdGmVH5ny0=;
-        b=XHFM6tKQUtr+ERDMSFScqY8TpsnBRXCGYuutGO0nb1jrhv7VWiCmz8vSZpRl3H4EXu
-         NFFvC0GFb4qTtkyiEroiLv8JYpXsun4dWahd/cWc+aTR+916BWvMI7BLQCQuSJ6Fjx6s
-         090ZZr+pw0FC4Bq1GekOw4/eCTAka5QBvtAP78FJ61Ps42T/bDARzMy98D/iZfaF6UQy
-         a6d+X6NSxvFmKGCYr7Krt+yLnooXahSheZ5psFFQElE+6wVU/Qg4ImNxK3eZUs/xp/2G
-         6wYVpt4CIuhipxn2oo1Jcp08zqJr6C9XjNOupeVlIjjqab8ENkNrALLPhWq33QZFI0FB
-         GFNw==
+        bh=FRJAi9fqLnpZBQBfWveY0fRnarAyBBO44GyImL+GpQw=;
+        b=IT8+IBr/GjwsHiuzp7JbGVGoUMD6y1ZMGmXhJaeFaN9TrOcyttSLuKo4qdu1SmXbcG
+         VgMptIT0UAnXXPkr+htmJdWc8gttbfZJkgEawCYNoL3m1PmHFpTdb/1VYtDUa07e+tWc
+         YjIfSHyIXopdgUYFRwTlxcaaOtQKI762QKvW8zdhLUU+jOHItUV2D9HlB/xKYgi2d27J
+         Tx+DKwf0B/ilLwI6vSXqzgjVkD61+aQRmW9T+9xlfrfdXzy9qxHVkFY/cat075drS2di
+         /foAu1lF96mWe7J41kM2yRloUptbCXY6fjPpShM53bkrQJ+krv3IFOWamSUUxClDXG39
+         4i5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322710; x=1700927510;
+        d=1e100.net; s=20230601; t=1700322712; x=1700927512;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5/FFRxNdIVmBtGkGik+eY+kvUwCYYAdIhZdGmVH5ny0=;
-        b=Ct4nzdt4mx15hxHbv9hsQAhX2ZtgICGYJzYRlqHiHPRHJa6oEGKJrH7qdylsNj3fTL
-         sJJSB0rcQCe5oR1diK6OgnhPWyDBnYIadr+BiR5o2D0ivbOPEBAC8lGnx02/6l+7ltgI
-         2IwAy4Gh1TEPeN9Cw9SejC0a5jb3BGCsPobEwVGuUyYcGKXzHeaBA7s0MBDEp5K3E0NK
-         y6OrDPCOWXEZkU63RC3GSf4EGndtCdoy3sI7N4OS/W3G9blvqoRYkHUwXD9+zoZ52iuQ
-         er4glkaX9oODEHOnf+qZmfVM2+uaDndlXBRNDZHMqxxZAOiaSvAhK/7aG0WEPc3kY2Vm
-         3dqw==
-X-Gm-Message-State: AOJu0YzJqz7WaDwT8PabL6YOTwuYEF3To1B16tJSGFBNFCnd9T2Ywmhw
-        wISDFCj8etrArWmi3LoI2uXtgy5vyjUKZmyU
-X-Google-Smtp-Source: AGHT+IGMZW2BXhTq6urOTFJBRfGUnn7sVaNNC8L1hFUdeATS2oy7Q8NxWcEEhUoAcnJ9H9mWRS92oA==
-X-Received: by 2002:a0d:d951:0:b0:5a7:d412:af32 with SMTP id b78-20020a0dd951000000b005a7d412af32mr2476093ywe.10.1700322710270;
-        Sat, 18 Nov 2023 07:51:50 -0800 (PST)
+        bh=FRJAi9fqLnpZBQBfWveY0fRnarAyBBO44GyImL+GpQw=;
+        b=mDBnc/xl3/t16XUHfApkuAktgGMjkyxeKEp9vBN0+hxNFXHTqEHzokNr9YK+VsAsKF
+         FTOEo88in//BEuOU0B3wE8a0L9+6hYJj6TTNznIDk6yy2RaI95MssBIIKBq3Pd0NqI2z
+         wDmH0xpka0HJQ8tgr3kdtTHoi8X0k4U4itbl1aEUWeTU4MKfRPQx3L6BrlEsMVUilQOE
+         aw9m9jzk/Ciy6b3vDILc+FOIFiXzC2zN4SUIe+v+grOfQSWlrcugQQI22Xikx7qyYfVd
+         L+leu3AqRb6r2KsJ0iU0Hv0PYJOwZQ/KjYo7Cnn9/kSZ+yzld/NPLvH/drU8h4DrTGA+
+         KPSQ==
+X-Gm-Message-State: AOJu0Yy+Fkdbs3cozq22sc2AkHohJpbMBiASZs2x7WLhVxu9P0cdIjUm
+        8J08UJJ4YcruDo/4vry5oWqTLuzICP1NQ/lp
+X-Google-Smtp-Source: AGHT+IElJ0U3CjFZG+s3NnFjnzuVmrFeyc2e4WM5oO3xxPOV5mRPbrBHmRloD2DElouQFvaTAENskA==
+X-Received: by 2002:a05:6902:212:b0:d9a:d7a5:e445 with SMTP id j18-20020a056902021200b00d9ad7a5e445mr2342423ybs.49.1700322711961;
+        Sat, 18 Nov 2023 07:51:51 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id i205-20020a8154d6000000b0059bcadded9dsm1176063ywb.116.2023.11.18.07.51.49
+        by smtp.gmail.com with ESMTPSA id e62-20020a25a3c4000000b00da10d9e96cesm1006690ybi.35.2023.11.18.07.51.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:49 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:51 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
-To:     linux-kernel@vger.kernel.org, Karsten Keil <isdn@linux-pingi.de>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Yury Norov <yury.norov@gmail.com>, netdev@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
+To:     linux-kernel@vger.kernel.org, Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 28/34] bluetooth: optimize cmtp_alloc_block_id()
-Date:   Sat, 18 Nov 2023 07:50:59 -0800
-Message-Id: <20231118155105.25678-29-yury.norov@gmail.com>
+Subject: [PATCH 29/34] net: smc: fix opencoded find_and_set_bit() in smc_wr_tx_get_free_slot_index()
+Date:   Sat, 18 Nov 2023 07:51:00 -0800
+Message-Id: <20231118155105.25678-30-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -82,36 +87,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of polling every bit in blockids, switch it to using a
-dedicated find_and_set_bit(), and make the function a simple one-liner.
+The function opencodes find_and_set_bit() with a for_each() loop. Fix
+it, and make the whole function a simple almost one-liner.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- net/bluetooth/cmtp/core.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ net/smc/smc_wr.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/net/bluetooth/cmtp/core.c b/net/bluetooth/cmtp/core.c
-index 90d130588a3e..b1330acbbff3 100644
---- a/net/bluetooth/cmtp/core.c
-+++ b/net/bluetooth/cmtp/core.c
-@@ -88,15 +88,9 @@ static void __cmtp_copy_session(struct cmtp_session *session, struct cmtp_connin
+diff --git a/net/smc/smc_wr.c b/net/smc/smc_wr.c
+index 0021065a600a..b6f0cfc52788 100644
+--- a/net/smc/smc_wr.c
++++ b/net/smc/smc_wr.c
+@@ -170,15 +170,11 @@ void smc_wr_tx_cq_handler(struct ib_cq *ib_cq, void *cq_context)
  
- static inline int cmtp_alloc_block_id(struct cmtp_session *session)
+ static inline int smc_wr_tx_get_free_slot_index(struct smc_link *link, u32 *idx)
  {
--	int i, id = -1;
-+	int id = find_and_set_bit(&session->blockids, 16);
- 
--	for (i = 0; i < 16; i++)
--		if (!test_and_set_bit(i, &session->blockids)) {
--			id = i;
--			break;
--		}
--
--	return id;
-+	return id < 16 ? id : -1;
+-	*idx = link->wr_tx_cnt;
+ 	if (!smc_link_sendable(link))
+ 		return -ENOLINK;
+-	for_each_clear_bit(*idx, link->wr_tx_mask, link->wr_tx_cnt) {
+-		if (!test_and_set_bit(*idx, link->wr_tx_mask))
+-			return 0;
+-	}
+-	*idx = link->wr_tx_cnt;
+-	return -EBUSY;
++
++	*idx = find_and_set_bit(link->wr_tx_mask, link->wr_tx_cnt);
++	return *idx < link->wr_tx_cnt ? 0 : -EBUSY;
  }
  
- static inline void cmtp_free_block_id(struct cmtp_session *session, int id)
+ /**
 -- 
 2.39.2
 
