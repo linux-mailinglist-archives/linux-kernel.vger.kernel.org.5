@@ -2,115 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856AC7F01BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037F47F01BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjKRR5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 12:57:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
+        id S230016AbjKRR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 12:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKRR5X (ORCPT
+        with ESMTP id S229644AbjKRR7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 12:57:23 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218EAAA
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 09:57:20 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9f26ee4a6e5so422528766b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 09:57:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700330238; x=1700935038; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eduw7ZGLL5eENX3+AcWvHdPEGppFMGVV13Yx0vFVox0=;
-        b=RHTYULPADunx/kNpYRdFn2trk89MqvzIEwy3gxnkQh6r9sollWjeI7XJ7Ca4YySUhI
-         U9pilWNFof+0V8YfwM4WQLhQSrg/6uRqywl+jdR7TcFoCrHsB1XPxokyC/sMPuVxDx81
-         I3hE92342075xFLHifE/lR4cLN/XEpft7lQCk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700330238; x=1700935038;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eduw7ZGLL5eENX3+AcWvHdPEGppFMGVV13Yx0vFVox0=;
-        b=pP9qAqcBA2SFTCkAckytOwese5J1yX6kD1mKLUJx5wzUwN79pDPCPoQjP/eah85NIr
-         rKWH111sxybcI/+fIW8sEizFS87Cea5WaZGyVyLPA5Apfo8TfGbh65H5pDsiQoxmmFby
-         jM9mmF9d21xdkBpKwO0VaVyOwdTo7addiEtFQPVTDYWPi/uyk0AeSoCwgjFwq7iXw7O9
-         /MNKPRNQveAUVKB4vat2RMMKiIm2GR437CxisWNsN4pMS6M+t0jAVbpEdeCWVE17R9B5
-         1lD7pgYul8HKlG9JwFCGe3GZaM5gwKRgqBIorpO7F1oHZl2kE5QJwMVI4DlRt5idiId1
-         iLaA==
-X-Gm-Message-State: AOJu0YzLn8zSw9MZegiNRLLyuPmSOzgCP3Fz+QBDM9cCp/wRq/ucHvbJ
-        LiyfiAxCNdeWimqICWk756fXyuJCcQEiQzrN1PB1wJAk
-X-Google-Smtp-Source: AGHT+IFsPAfMpSafV94LTUdzK2E7qpRSnWLcwwtOqS6gN5Ax66m8tusfAuCDO9Q6kX3u3k0CcEdZHg==
-X-Received: by 2002:a17:906:f54:b0:9d0:2da2:ee64 with SMTP id h20-20020a1709060f5400b009d02da2ee64mr1971745ejj.70.1700330238469;
-        Sat, 18 Nov 2023 09:57:18 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170906410c00b009f293faf75asm2092776ejk.97.2023.11.18.09.57.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 Nov 2023 09:57:17 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-545ed16b137so4191858a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 09:57:16 -0800 (PST)
-X-Received: by 2002:a05:6402:26d4:b0:548:7a3a:ef39 with SMTP id
- x20-20020a05640226d400b005487a3aef39mr1440410edd.35.1700330236507; Sat, 18
- Nov 2023 09:57:16 -0800 (PST)
+        Sat, 18 Nov 2023 12:59:20 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2067.outbound.protection.outlook.com [40.92.45.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CE4D5;
+        Sat, 18 Nov 2023 09:59:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oX68roO08olGFWctPKgemyiL6kisgOKoJk2XYE1VAoSG/r48iPkt1C+DgWC/gOcUIGgIddlTnfOhaY4JUV0xJOkg9FG4CSCNnQ6nSnU7TOGMXaTkeXgFih7KzxYAolUtJubw7QoNmhnTioKM1scsE8mpC++M04UmFuvp739khlhjX8JNkHcgyBBb+O7P6Qwn1Xm9N/tNBVzwY5dEgH1YK0eczZrYq0ZWSu8Yx496W3XBwe3hHxU/g5iRd0u3db722goiZAJVrN3PWHEod/aau3WnaImfv6Jqw/JCr8hsT5YRzBV3zOxUZqowiQRGdyokF8Fa8LEO43eGsv/aCldTMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Ml6pIksZ2sNghy4zG/b29NchMSAFisaopUHKCu7F9A=;
+ b=kZmTP4kV3ajV59txLSRe7qVfrOrr0rJGTCJsPKmLj4oVksAulKlf+ftFuuxZq+Ngf2Nb/2bglKkhQj4U/cLIq3zFY+8WFX8gjSFtGNy4SlN1eaCk4twooRIN1nTh+rfhxjoxDDQsNlBSOdiCom/OCU2chlxddxb0hOC67VaXuSSTvndrzNpzHlTHH3FBdLfwYAzVwmG2grQfVKx1h6F5cox5osrHo9TgVrlXAHVTqGmePYA4WXSOgnYNHDtBzSQgliBOf4I11Q3OTB7y0wTaXzvut937xi9201DDMB+GscxAgTtkTWj7gRfqPaYqvQNkoAbmxPjT3V3MDKkacvypKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2Ml6pIksZ2sNghy4zG/b29NchMSAFisaopUHKCu7F9A=;
+ b=UiwQtlTB5lLZ/MxzFhUV2OiH/RhbF+9jDvT1o0r+5pNo9dRHwrFxTUH/X4NTabURORFXXDCszvmL9Y7j3avpgBwv30NAYzS3qJ6pL+Qykbpd2Gm1f+XB+MazvP1BSgFaaSuSQrIekvwCS50SMgooaD5eRlNAIyleI2etgI2sMgXFFzRy89OrbeRacXZSbGWDs1R88iYfVSxan32UUUNryjw/6HF2VbvhH4RLqxbTrdQ+lqTo3mp2P7jhJFDKvdrZm1TLnydPPPU68ZUT9+F+u2YB3VIF98+k2CLsmbucCeRqwnWKnVXW3GN15LbJ2ujRdhSeObY40XQpcxqaV6F0tw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by PH7PR02MB9991.namprd02.prod.outlook.com (2603:10b6:510:2f8::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.25; Sat, 18 Nov
+ 2023 17:59:13 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
+ 17:59:13 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+CC:     Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: RE: [PATCH 14/34] PCI: hv: switch hv_get_dom_num() to use atomic
+ find_bit()
+Thread-Topic: [PATCH 14/34] PCI: hv: switch hv_get_dom_num() to use atomic
+ find_bit()
+Thread-Index: AQHaGjdbPNpOYvT26E6hoSGCJEBljLCAXSDw
+Date:   Sat, 18 Nov 2023 17:59:13 +0000
+Message-ID: <SN6PR02MB4157D60D59F2461BB595F569D4B6A@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+ <20231118155105.25678-15-yury.norov@gmail.com>
+In-Reply-To: <20231118155105.25678-15-yury.norov@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [cyUizUd5K8hRXmXWaoO1XhzEA97Dn9k+]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH7PR02MB9991:EE_
+x-ms-office365-filtering-correlation-id: b98a79cf-8c45-44a7-458c-08dbe860130a
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7EosM/SG3hQCUzVu54fm0ck8gK6femYgEwh1J97OBI6OZM7IClP9XXR+nZcAR/wtQF9cI+ZqsROSaH2FGUIXcKw0ej2wJpYH2BuwdcMgLdr0NODje9c6NpZQGL7/awqatttd989iGm3dr1npLYogNmpMygggP1AvJiQY+Y3rammSmurlqQWoutRa0EYpZYFJuwmgO0famuhSmnRrfHr/4yI6bd3XrZt81u//PRYL4kZOFrJBbp4uugFVQQGTjryo1/vdVPcG9bSooLptvd7C2jMsw5ys/WmE4ayOEwQ2CJypVE97NW36DbnnTvfraJcAtxprWJuEcIkq4jK62nKBh5lXtFYePshOYAJW4fm2dq9lR9mF0n1E9eqQEuS9qSgdQ8KC93p2D8a6dIDv5YGVh12BQRObRY5D5wKdDldQOM28lsAPUfaqSqWPeLYCkvV4fHwYuQ0YZKa1XANfulVhYKiTlvp+1Ng9yJL8nYrRYjUABsMN7EZnWgTaTTOf+gPlfdXyhodwpZuUfPBJdaMvh8gkyTR7ApcLJIOEApwtJh1dFp2tHWUdhpzztBFk2aA+
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?QJGiquUd9/1XauZ2PQTzpTmcQxQVdiDMr2f0+nsjx4zNVbN6TaLmF0XFLI?=
+ =?iso-8859-2?Q?MF+rsXAHT3DxxnlqeDfqF3gUzrLKlHxEAJUDKY0c0Ueq2uxcskIfat+dlU?=
+ =?iso-8859-2?Q?7YFkjJ9nk8HKE2TmqrUFbSJiaJmokUewe2wf86DO1yq+3UnSE7WcRTU834?=
+ =?iso-8859-2?Q?RbIPG276V4EYcRJnI5zdOFgybF6b8XBGC75+G3dWdZZ3FG9m5Vn/yCaKMf?=
+ =?iso-8859-2?Q?DfaD/b9CRgi9ZK+8js0hTlTKH3Q5/FsjO7qFhpROUcBKKmYI1FyqXjBut2?=
+ =?iso-8859-2?Q?2VKWgKEgmTcucFsIy9CG8J4SsyJVbq5MwYKONXubXZ6V/zHYtD5S5v7dXE?=
+ =?iso-8859-2?Q?lEFxU9sG/8NepXBVSWpasWzTsqgbnkPdlkC0gMtkOD0QVqt6nx06jziITF?=
+ =?iso-8859-2?Q?7Q7B84uUcL7ABwRjAGavADGfxwFJUo5dPJ22c8fbyO9M28TmUEM9sCiLvq?=
+ =?iso-8859-2?Q?aMjrV1fbkVG66og5p7bSRGbFQw1fPM2F3r5BeXk28ffdGfJv7Caf9qOpQX?=
+ =?iso-8859-2?Q?HzSONp0wRrQB9TtvRT/AB8HCUy0prEdzA2o576Sj7KnaIR4Z58Fiq4KN3c?=
+ =?iso-8859-2?Q?L5C0F1V29UsBrJwI522TPdcmEMVnUicWp8g+B0cn0NlLDO12gMKKJmXD4V?=
+ =?iso-8859-2?Q?u3fieIrWpZCvY7qPqhSaYMqDYoWYWYutae2lKWGm3FoeoQ3KvyiP3RqL6W?=
+ =?iso-8859-2?Q?6xsIzi7FIjskkLjZVvi8OREhj28ZcX8JafVSkYtiMzyBoedOQ5DjCN+foB?=
+ =?iso-8859-2?Q?suM9D0/2BRAqJBNFHWNhHRU0EmK3mas3NG2WVV6TMS0khgrIc1FPFzUmUr?=
+ =?iso-8859-2?Q?00Yzx7cJXTBqSvzBizwTKM74xWRGcas1pFh0ncrc5kF3OoRVixwhsb20nL?=
+ =?iso-8859-2?Q?7NHavGmFNjrddcPJ85oKau3j8PPpWsAJOmgu89dHq+VWIMnaXqbk66Nsw/?=
+ =?iso-8859-2?Q?1kvdJhv7kc855/JayCNGZ5Z/49cLrV3JxQ+goY3ZUZJM7JLWtASZYEgcsU?=
+ =?iso-8859-2?Q?c7jbZ+9E5nwKfCfa5x3L0heJn8X5Xnp7vDU/0RjR7M/pvspyW+oOQQTX9t?=
+ =?iso-8859-2?Q?0TyfksyAy1PL5jkW/K7U9X9JbUzYRfvubWAfu4XF93zCMkOs+d6Mik8FT3?=
+ =?iso-8859-2?Q?+ytlRrkSuLAA5neIS+S+Ecj2X2D2LV1AjNTvyaIC+sp2TBAj4Lh0J5qOTM?=
+ =?iso-8859-2?Q?FfhC1ViTkAoLebLcXYfRlH7fynwC4aXnTtC0o4E9oxdC7U/3Sou1nf2nIf?=
+ =?iso-8859-2?Q?A6kepRaMBh66XY0IUhFg=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <ZVf/pqw5YcF7sldg@shikoro>
-In-Reply-To: <ZVf/pqw5YcF7sldg@shikoro>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 18 Nov 2023 09:56:59 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi9a9u+1cAxxHw7KxXsfPvdWCbhatK7enFSjgwjrovCZA@mail.gmail.com>
-Message-ID: <CAHk-=wi9a9u+1cAxxHw7KxXsfPvdWCbhatK7enFSjgwjrovCZA@mail.gmail.com>
-Subject: Re: [PULL REQUEST] i2c-for-6.7-rc2
-To:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: b98a79cf-8c45-44a7-458c-08dbe860130a
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2023 17:59:13.6413
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR02MB9991
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 at 16:05, Wolfram Sang <wsa@kernel.org> wrote:
->
-> Jan Bottorff (1):
->       i2c: designware: Fix corrupted memory seen in the ISR
+From: Yury Norov <yury.norov@gmail.com> Sent: Saturday, November 18, 2023 7=
+:51 AM
+>=20
+> The function traverses bitmap with for_each_clear_bit() just to allocate
+> a bit atomically. We can do it better with a dedicated find_and_set_bit()=
+.
+>=20
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  drivers/pci/controller/pci-hyperv.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller=
+/pci-
+> hyperv.c
+> index 30c7dfeccb16..033b1fb7f4eb 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
+>  	if (test_and_set_bit(dom, hvpci_dom_map) =3D=3D 0)
+>  		return dom;
+>=20
+> -	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
+> -		if (test_and_set_bit(i, hvpci_dom_map) =3D=3D 0)
+> -			return i;
+> -	}
+> +	i =3D find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
+>=20
+> -	return HVPCI_DOM_INVALID;
+> +	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
+>  }
+>=20
+>  /**
+> --
+> 2.39.2
 
-I have pulled this, but honestly, looking at the patch, I really get
-the feeling that there's some deeper problem going on.
-
-Either the designware driver doesn't do the right locking, or the
-relaxed IO accesses improperly are escaping the locks that do exist.
-
-Either way, just changing "writel_relaxed()" to "writel()" seems to be wrong.
-
-Of course, it is entirely possible that those accesses should never
-have been relaxed in the first place, and that the actual access
-ordering between two accesses in the same thread matters. For example,
-the code did
-
-        *val = readw_relaxed(dev->base + reg) |
-                (readw_relaxed(dev->base + reg + 2) << 16);
-
-and if the order of those two readw's mattered, then the "relaxed" was
-always entirely wrong.
-
-But the commit message seems to very much imply a multi-thread issue,
-and for *that* issue, doing "writel_relaxed" -> "writel" is very much
-wrong. The only thing fixing threading issues is proper locks (or
-_working_ locks).
-
-Removing the "relaxed" may *hide* the issue, but doesn't really fix it.
-
-For the arm64 people I brought in: this is now commit f726eaa787e9
-("i2c: designware: Fix corrupted memory seen in the ISR") upstream.
-I've done the pull, because even if this is purely a "hide the
-problem" fix, it's better than what the code did. I'm just asking that
-people look at this a bit more.
-
-                   Linus
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
