@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7AF7F0310
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 22:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5422E7F0322
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 23:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjKRVxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 16:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46596 "EHLO
+        id S229791AbjKRWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 17:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKRVxj (ORCPT
+        with ESMTP id S229610AbjKRWVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 16:53:39 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFC0EA;
-        Sat, 18 Nov 2023 13:53:35 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so4510658a12.2;
-        Sat, 18 Nov 2023 13:53:35 -0800 (PST)
+        Sat, 18 Nov 2023 17:21:22 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB88BE5;
+        Sat, 18 Nov 2023 14:21:18 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9becde9ea7bso845754066b.0;
+        Sat, 18 Nov 2023 14:21:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700344414; x=1700949214; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700346076; x=1700950876; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wtt/oFJ6mp4pvc5MxO64v8GI8P+1Sx5CjrqoYf23NVA=;
-        b=cbBFKT7BmXU4GV/bgV/otEe6mlIKW00Xpzq/9Kfvpsbg6GNKTeB6bchq/K/9YDhnHk
-         OL4dN4PULZYtx40aKcOAAvaVXFOgphjqtXxjUiw3vPeUGI9cLndDSAFi5yq3glP8KLge
-         dIfmyZox6mGBRRu7/TvGfn2rDieZNl+RHHWt9Td2ewtFGw6YlVGDPVEmd8fp3AXHZoHM
-         x4iXA0eJxCGcr0j1i3KLaULqL/wr+PAYNFk6mR+mbMUNgonm04Vo3FXExKQIk2srVxxW
-         JxxlIaYEgMWa2o7lRrbU2E0LClgl8iq/hlbDJJuT1eSQ3ceBwviygECZoJiw/6y0WLGx
-         v2sw==
+        bh=B119josK+jVs2ecxhPEL/ZG53Ca65uQoC2aDhpf/ABs=;
+        b=dmTRORBVfSzQhGzgDY+x2Ja8fTCSstsx2GUW6Tm6hhIu7bgUugai3CCn+sR900WK3M
+         jw1A6sbHqywLfN/Ld1FvZfw+UIhe/MfDG5UoR/5YrlT7i7bvaIYzaIdjozU2gMH1H7/w
+         PmHJkoJdsow1OzoQizdomp2aE+v9Oks8D/EOf3k3WS5GdvRsoT6in1F+xoc8TOMcJPBQ
+         M2MhIQzBFtl+SS7yCvbQfy4BuVzAolhSmW4zQGuK1/en7C0RiFj5fBz8+pMmEf4W0f3b
+         YtDdxzLP1hpvDQBO0CzdUxLDLrXslKl8sXGT7m3iBfL3Z28fRRoUVM+cIXtGucnjM78F
+         99BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700344414; x=1700949214;
+        d=1e100.net; s=20230601; t=1700346076; x=1700950876;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wtt/oFJ6mp4pvc5MxO64v8GI8P+1Sx5CjrqoYf23NVA=;
-        b=C2YWyeG3nhCqM9QqlTj/3YBc6xvjRVvc0uRFOzDtgFb81MqTEFLDZ61MX6eiEC2TtP
-         QPaW+BrfgT/xi0cDYGuq27deL7agPKikC6rWz0n4Ny+a8VBv8YzVOgiMp741IE9RBqQR
-         e6L5M7tHLRlPM04Tila8cMKwGLLJrjDsZ3hVPMnEattFio8eERUOUuJcHhzZMd+jNNqi
-         +p6zAiEBjfzofhLPvS9OLqj7an3J/Ysn6UkIqEjszNeGbF6uPJoFj6+wCFE8j84Mlr3q
-         F/nq+u4aEH+q1TRID/GjKyzfgr3VNA+GxnwvCJM5haoLCPrq7mvq8zJlTjYnqMQRW9XN
-         IwEw==
-X-Gm-Message-State: AOJu0Yz5xiWoR3mbqKEDv2vCQsChbyDaXJRfPCKt4byBVMvfQuPXkvvq
-        i/pp3oujiIUu6jQ/J9ZfY81j2IOVnMk=
-X-Google-Smtp-Source: AGHT+IEsj8NvVPt+C+yDrHzdKUUesSpB0lSD7yp/W/7z0ksNKCl2sWrmAL563BNLNRtvG/DBVkqbfw==
-X-Received: by 2002:a17:907:7401:b0:9bf:60f9:9b7c with SMTP id gj1-20020a170907740100b009bf60f99b7cmr1955872ejc.62.1700344413958;
-        Sat, 18 Nov 2023 13:53:33 -0800 (PST)
+        bh=B119josK+jVs2ecxhPEL/ZG53Ca65uQoC2aDhpf/ABs=;
+        b=mel8Xjk51dE4uWzKuR4iagZBIX4howpnNF40hCKdPnEbN4UeJ6GQNsJ4IKdyDSJxOK
+         Nd1ai+MwFWiSvBaiQ6oVImcOoR4lZ29tiqgX6C3T9qILcSQhl9RYz+P187MiFi/9PdT5
+         SK+Xi+USqFhov2K928K8TiKPJ9pYXUUjUKim4WvR0cXBJdHBg55x2xzrXw5bkaNos6q1
+         WBn7KXZJFgoGnczbw5g1QhcZWSwpQrPtIM4BUgu5nsf2d1XrKVRyCS5OwUxA4Jr3m37T
+         km4PYbM0bY5ztH2//3Hu5tVd80FL99NLiz2KwBFjWF3E+jItS/KqGX7lIB31IDj1eLGm
+         olLg==
+X-Gm-Message-State: AOJu0Yx5BnYL/LCzyIju2AjgA1dFA6+xH6V6DVqjVP++fTEspnfyWTT4
+        TCyO6Z2q55OoaPv3iXfyVAU=
+X-Google-Smtp-Source: AGHT+IHfkQkjALlAHjgb+TbRxpaKzlxrqELSYFI1FqqjNE4iR+HkNWNz19BbiIKxjSub4XKj0ulFtQ==
+X-Received: by 2002:a17:906:10d9:b0:9ef:b466:abe0 with SMTP id v25-20020a17090610d900b009efb466abe0mr3120554ejv.8.1700346076193;
+        Sat, 18 Nov 2023 14:21:16 -0800 (PST)
 Received: from jernej-laptop.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id ca3-20020a170906a3c300b009fc42f37970sm296837ejb.171.2023.11.18.13.53.32
+        by smtp.gmail.com with ESMTPSA id u1-20020a170906b10100b009b9977867fbsm2286388ejy.109.2023.11.18.14.21.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 13:53:33 -0800 (PST)
+        Sat, 18 Nov 2023 14:21:15 -0800 (PST)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Chukun Pan <amadeus@jmu.edu.cn>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chukun Pan <amadeus@jmu.edu.cn>
-Subject: Re: [PATCH v2 1/1] arm64: dts: allwinner: h616: update emac for Orange Pi
- Zero 3
-Date:   Sat, 18 Nov 2023 22:53:32 +0100
-Message-ID: <2303336.ElGaqSPkdT@jernej-laptop>
-In-Reply-To: <20231029074009.7820-2-amadeus@jmu.edu.cn>
-References: <20231029074009.7820-1-amadeus@jmu.edu.cn>
- <20231029074009.7820-2-amadeus@jmu.edu.cn>
+        Colin Ian King <colin.i.king@gmail.com>
+Cc:     kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] clk: sunxi-ng: nkm: remove redundant initialization of
+ tmp_parent
+Date:   Sat, 18 Nov 2023 23:21:14 +0100
+Message-ID: <13391015.uLZWGnKmhe@jernej-laptop>
+In-Reply-To: <20231023133502.666559-1-colin.i.king@gmail.com>
+References: <20231023133502.666559-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,68 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne nedelja, 29. oktober 2023 ob 08:40:09 CET je Chukun Pan napisal(a):
-> The current emac setting is not suitable for Orange Pi Zero 3,
-> move it back to Orange Pi Zero 2 DT. Also update phy mode and
-> delay values for emac on Orange Pi Zero 3.
-> With these changes, Ethernet now looks stable.
+Dne ponedeljek, 23. oktober 2023 ob 15:35:02 CET je Colin Ian King napisal(a):
+> Variable tmp_parent is being ininitialized with a value that is never
+> read, the initialization is redundant and can be removed. Move the
+> initialization and move the variable to the inner loop scope.
 > 
-> Fixes: 322bf103204b ("arm64: dts: allwinner: h616: Split Orange Pi Zero 2 DT")
-> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Applied, thanks!
 
 Best regards,
 Jernej
 
 > ---
->  arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi | 3 ---
->  arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts | 3 +++
->  arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts | 2 ++
->  3 files changed, 5 insertions(+), 3 deletions(-)
+>  drivers/clk/sunxi-ng/ccu_nkm.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi
-> index 15290e6892fc..fc7315b94406 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero.dtsi
-> @@ -68,10 +68,7 @@ &ehci1 {
->  &emac0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&ext_rgmii_pins>;
-> -	phy-mode = "rgmii";
->  	phy-handle = <&ext_rgmii_phy>;
-> -	allwinner,rx-delay-ps = <3100>;
-> -	allwinner,tx-delay-ps = <700>;
->  	status = "okay";
->  };
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nkm.c
+> index eed64547ad42..853f84398e2b 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> @@ -21,17 +21,16 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(struct ccu_common *common
+>  						       unsigned long *parent, unsigned long rate,
+>  						       struct _ccu_nkm *nkm)
+>  {
+> -	unsigned long best_rate = 0, best_parent_rate = *parent, tmp_parent = *parent;
+> +	unsigned long best_rate = 0, best_parent_rate = *parent;
+>  	unsigned long best_n = 0, best_k = 0, best_m = 0;
+>  	unsigned long _n, _k, _m;
 >  
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-> index d83852e72f06..b5d713926a34 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-orangepi-zero2.dts
-> @@ -13,6 +13,9 @@ / {
->  };
+>  	for (_k = nkm->min_k; _k <= nkm->max_k; _k++) {
+>  		for (_n = nkm->min_n; _n <= nkm->max_n; _n++) {
+>  			for (_m = nkm->min_m; _m <= nkm->max_m; _m++) {
+> -				unsigned long tmp_rate;
+> +				unsigned long tmp_rate, tmp_parent;
 >  
->  &emac0 {
-> +	allwinner,rx-delay-ps = <3100>;
-> +	allwinner,tx-delay-ps = <700>;
-> +	phy-mode = "rgmii";
->  	phy-supply = <&reg_dcdce>;
->  };
+>  				tmp_parent = clk_hw_round_rate(parent_hw, rate * _m / (_n * _k));
+> -
+>  				tmp_rate = tmp_parent * _n * _k / _m;
 >  
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> index 00fe28caac93..b3b1b8692125 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h618-orangepi-zero3.dts
-> @@ -13,6 +13,8 @@ / {
->  };
->  
->  &emac0 {
-> +	allwinner,tx-delay-ps = <700>;
-> +	phy-mode = "rgmii-rxid";
->  	phy-supply = <&reg_dldo1>;
->  };
->  
+>  				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate) ||
 > 
 
 
