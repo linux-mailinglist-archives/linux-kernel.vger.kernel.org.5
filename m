@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22D47F015C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A23FD7F0158
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjKRRjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 12:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S230016AbjKRRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 12:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKRRjF (ORCPT
+        with ESMTP id S229463AbjKRRiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 12:39:05 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935FE1AD;
-        Sat, 18 Nov 2023 09:39:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ODf/EeD7TdfM/V4kFavfoqfzEFUPK1joSi1qIu1/vpo=; b=eGCQe3hghc9aC7kqR7Alui+/Y/
-        Wd918gat2/NjcQkpHigcJScHVxcq/DLVNWKzkD+HFQ2J+T2m+AVawujJT/6g6HqDYVLeCdZYXKjVq
-        fSCofpLsEC86sjc2Kmt3dhd7BKkCbqozrCVEHUGaZkmWN5kgWlx50j/BVbDWj0HUXxo0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r4PHH-000WBY-3h; Sat, 18 Nov 2023 18:38:43 +0100
-Date:   Sat, 18 Nov 2023 18:38:43 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        Sat, 18 Nov 2023 12:38:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC03C0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 09:38:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74C23C433C7;
+        Sat, 18 Nov 2023 17:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700329131;
+        bh=losrmXlk+odVwrmRe07GJMSdH6r8vdY76JOEkrAnT8w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dByqGueYLz6b8vlOUGniQt46dHd66x1kFnRLjJoHw1Hsw7ap5Hv0cLdxFq2R12Pt9
+         0v7hy1j2j7i5h3ntlKizusHrv8ilYQyGMH547b5A7PBANk1xTOtFDL+SFPjAWHkkpi
+         hzW/90cbNGqQMOO8zfnR1jjFhklycNUr3v0E/WD+majI3yk4fwhdTk3Ak6fZl3yv/R
+         fUz03ZUmfzLnot7uFZmXs1e+4JeMfjzJ059NIBzIGi1rUYm28QWJBmDPdu3DucQxnz
+         qXGmyxbYnDamT/VZzFGsyCupkhj6eL/Oncyv+CVaUvB1ga36HmLi8frpE19ZsTdErw
+         dYjKI4+y3XU+w==
+Date:   Sat, 18 Nov 2023 09:38:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     Long Li <longli@microsoft.com>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 2/9] ethtool: Expand Ethernet Power Equipment
- with PoE alongside PoDL
-Message-ID: <04cb7d87-bb6b-4997-878d-490c17bfdfd0@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
- <20231116-feature_poe-v1-2-be48044bf249@bootlin.com>
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v4] hv_netvsc: Mark VF as slave before exposing
+ it to user-mode
+Message-ID: <20231118093849.14e36043@kernel.org>
+In-Reply-To: <20231115081406.1bd9a4ed@hermes.local>
+References: <1699484212-24079-1-git-send-email-longli@linuxonhyperv.com>
+        <20231108181318.5360af18@kernel.org>
+        <PH7PR21MB3263EBCF9600EEBD6D962B6ECEAEA@PH7PR21MB3263.namprd21.prod.outlook.com>
+        <20231110120513.45ed505c@kernel.org>
+        <20231115081406.1bd9a4ed@hermes.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231116-feature_poe-v1-2-be48044bf249@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 03:01:34PM +0100, Kory Maincent wrote:
-> In the current PSE interface for Ethernet Power Equipment, support is
-> limited to PoDL. This patch extends the interface to accommodate the
-> objects specified in IEEE 802.3-2022 145.2 for Power sourcing
-> Equipment (PSE).
+On Wed, 15 Nov 2023 08:14:06 -0800 Stephen Hemminger wrote:
+> Jakub is right that in an ideal world, this could all be managed by
+> userspace. But the management of network devices in Linux is a
+> dumpster fire! Every distro invents there own solution, last time
+> I counted there were six different tools claiming to be the
+> "one network device manager to rule them all". And that doesn't
+> include all the custom scripts and vendor appliances.
 
-Sorry for taking a while getting to these patches. Plumbers and other
-patches have been keeping me busy.
-
-I'm trying to get my head around naming... Is there some sort of
-hierarchy? Is PSE the generic concept for putting power down the
-cable? Then you have the sub-type PoDL, and the sub-type PoE?
-
->  struct pse_control_config {
->  	enum ethtool_podl_pse_admin_state podl_admin_control;
-> +	enum ethtool_pse_admin_state admin_control;
-
-When i look at this, it seems to me admin_control should be generic
-across all schemes which put power down the cable, and
-podl_admin_control is specific to how PoDL puts power down the cable.
-
-Since you appear to be adding support for a second way to put power
-down the cable, i would expect something like poe_admin_control being
-added here. But maybe that is in a later patch?
-
-      Andrew
+To be clear, I thought Long Li was saying that the goal is work around
+cases where VF is probed before netvsc. That seems like something that
+can be prevented by the hypervisor.
