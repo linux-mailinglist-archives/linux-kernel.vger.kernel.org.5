@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01357EFD00
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:38:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA847EFD0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbjKRBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 20:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
+        id S232685AbjKRBpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 20:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKRBh5 (ORCPT
+        with ESMTP id S229737AbjKRBpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 20:37:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3F7D6D;
-        Fri, 17 Nov 2023 17:37:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700271472; x=1731807472;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pMYJRearNjtZkenGLNFLuV6YB4UiY53eVk4RlzqHmMA=;
-  b=UQ7jMs4eH7TOnR3JDpljTBRTJKn/FP/3v4XAZDw3kg1YH9YOIBKAhRNr
-   MGN59ibu4jq7sjuFlPjhoJo2WnkiJCvzv0uxYF6lkYZAg4Ww/z4unNvOV
-   RT2mI+iYPP/1PRdj+0OVu6cU1aBAy0yldU894mvhXpl5QLvjj9DMoNyWg
-   ILQ6DWWrnMNq91lxiRLXEjOzSoMH7kzl4TX2aef6xniY0Ier+SR6K+G4U
-   39zZnmUC0ur8Vt44KNqC0vlGhMK9N/PIRcMegDh+sJveO8LGxJ6FSiocn
-   I8ZvLUpbSTYjSSJDulhFLYfiSLyHYVcfcoyGeqjoFe2uQQx17DXueQo/7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="394247003"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="394247003"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 17:37:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="1097265410"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="1097265410"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Nov 2023 17:37:49 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4AHL-0003OZ-1R;
-        Sat, 18 Nov 2023 01:37:47 +0000
-Date:   Sat, 18 Nov 2023 09:37:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     James Tai <james.tai@realtek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
- for Realtek DHC SoCs
-Message-ID: <202311180921.ayKhiFHL-lkp@intel.com>
-References: <20231117162709.1096585-2-james.tai@realtek.com>
+        Fri, 17 Nov 2023 20:45:06 -0500
+X-Greylist: delayed 239 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Nov 2023 17:45:02 PST
+Received: from lively-olwen.relay-egress.a.mail.umich.edu (relay-egress-host.us-east-2.a.mail.umich.edu [18.216.144.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BFDD79;
+        Fri, 17 Nov 2023 17:45:01 -0800 (PST)
+Received: from mammoth-yacaruna.authn-relay.a.mail.umich.edu (ip-10-0-73-60.us-east-2.compute.internal [10.0.73.60])
+        by lively-olwen.relay-egress.a.mail.umich.edu with ESMTPS
+        id 6558162C.23A596CC.5D730AC5.3305047;
+        Fri, 17 Nov 2023 20:41:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=umich.edu;
+        s=relay-2018-08-29; t=1700271660;
+        bh=Vh/HaZa7HJvFyuyNB0eCPpU6WqUM0OIvSvSE9/ugphQ=;
+        h=From:To:Cc:Subject:Date;
+        b=ljbribNlOeIV8shwVqGZXICcLSBQPNxKk4dzNUHAmgQVoZcblQZ1OJNT9Mq9FgoF2
+         odq54YYb1D/lc2Q2Ww+6GYIx9UkCmxT5PRSj7oC+7BBkz2+pjiE6RHh+1C12SUg3FT
+         dR+p67yKXBpUve03zv847pldxjYbcZTOn5yGm6uhsR9dtUKLi72C2AXD3tdn3Dh3o3
+         8U/NtRlijVneAAXcRhfiITXyGVddmeaGc8t61OVFXNLD4mQpKeBdQk2jiSoMRIoOwZ
+         UL8+mS99Sl1jvImA1v4Yqywo9+m3MoQ2mzcJvGJGyI3YMoTv0wIKxexEM7+eAJVRfx
+         bJXZbkG7YgoPg==
+Authentication-Results: mammoth-yacaruna.authn-relay.a.mail.umich.edu; 
+        iprev=pass policy.iprev=76.141.129.158 (c-76-141-129-158.hsd1.il.comcast.net);
+        auth=pass smtp.auth=tmgross
+Received: from localhost.localdomain (c-76-141-129-158.hsd1.il.comcast.net [76.141.129.158])
+        by mammoth-yacaruna.authn-relay.a.mail.umich.edu with ESMTPSA
+        id 6558162B.22539A90.1E7385F2.2183879;
+        Fri, 17 Nov 2023 20:40:59 -0500
+From:   Trevor Gross <tmgross@umich.edu>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        FUJITA Tomonori <fujita.tomonori@gmail.com>,
+        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
+        Trevor Gross <tmgross@umich.edu>
+Subject: [PATCH v2] rust: macros: update 'paste!' macro to accept string literals
+Date:   Fri, 17 Nov 2023 20:39:59 -0500
+Message-Id: <20231118013959.37384-1-tmgross@umich.edu>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117162709.1096585-2-james.tai@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,42 +67,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Enable combining identifiers with literals in the 'paste!' macro. This
+allows combining user-specified strings with affixes to create
+namespaced identifiers.
 
-kernel test robot noticed the following build warnings:
+This sample code:
 
-[auto build test WARNING on tip/irq/core]
-[also build test WARNING on robh/for-next linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+    macro_rules! m {
+        ($name:lit) => {
+            paste!(struct [<_some_ $name _struct_>] {})
+        }
+    }
 
-url:    https://github.com/intel-lab-lkp/linux/commits/James-Tai/dt-bindings-interrupt-controller-Add-support-for-Realtek-DHC-SoCs/20231118-003036
-base:   tip/irq/core
-patch link:    https://lore.kernel.org/r/20231117162709.1096585-2-james.tai%40realtek.com
-patch subject: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231118/202311180921.ayKhiFHL-lkp@intel.com/reproduce)
+    m!("foo_bar");
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311180921.ayKhiFHL-lkp@intel.com/
+Would previously cause a compilation error. It will now generate:
 
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/interrupt-controller/realtek,rtd1619b-intc.yaml: title: 'Realtek DHC RTD1619B Interrupt Controller Device Tree Bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-   	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
-   	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
->> Documentation/devicetree/bindings/interrupt-controller/realtek,rtd1319-intc.yaml: title: 'Realtek DHC RTD1319 Interrupt Controller Device Tree Bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-   	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
-   	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
->> Documentation/devicetree/bindings/interrupt-controller/realtek,rtd1319d-intc.yaml: title: 'Realtek DHC RTD1319D Interrupt Controller Device Tree Bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-   	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
-   	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
->> Documentation/devicetree/bindings/interrupt-controller/realtek,rtd1325-intc.yaml: title: 'Realtek DHC RTD1325 Interrupt Controller Device Tree Bindings' should not be valid under {'pattern': '([Bb]inding| [Ss]chema)'}
-   	hint: Everything is a binding/schema, no need to say it. Describe what hardware the binding is for.
-   	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+    struct _some_foo_bar_struct_ {}
 
+Signed-off-by: Trevor Gross <tmgross@umich.edu>
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Reviewed-by: Gary Guo <gary@garyguo.net>
+---
+
+Changes since v1: correct documentation and add an example. I added the
+reviewed-bys since the only change is in documentation, not
+functionality.
+
+v1: https://lore.kernel.org/rust-for-linux/20231008094816.320424-1-tmgross@umich.edu/
+
+ rust/macros/lib.rs   | 22 ++++++++++++++++++++--
+ rust/macros/paste.rs | 10 +++++++++-
+ 2 files changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
+index c42105c2ff96..51d1f8836667 100644
+--- a/rust/macros/lib.rs
++++ b/rust/macros/lib.rs
+@@ -254,8 +254,8 @@ pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
+ /// Within the `paste!` macro, identifiers inside `[<` and `>]` are concatenated together to form a
+ /// single identifier.
+ ///
+-/// This is similar to the [`paste`] crate, but with pasting feature limited to identifiers
+-/// (literals, lifetimes and documentation strings are not supported). There is a difference in
++/// This is similar to the [`paste`] crate, but with pasting feature limited to identifiers and
++/// literals (lifetimes and documentation strings are not supported). There is a difference in
+ /// supported modifiers as well.
+ ///
+ /// # Example
+@@ -337,6 +337,24 @@ pub fn pinned_drop(args: TokenStream, input: TokenStream) -> TokenStream {
+ /// assert_eq!(br_ok(), binder_driver_return_protocol_BR_OK);
+ /// ```
+ ///
++/// # Literals
++///
++/// Literals can also be concatenated with other identifiers
++///
++/// ```ignore
++/// macro_rules! create_numbered_fn {
++///     ($name:literal, $val:literal) => {
++///         kernel::macros::paste! {
++///             fn [<some_ $name _fn $val>]() -> u32 { $val }
++///         }
++///     };
++/// }
++///
++/// create_numbered_fn!("foo", 100);
++///
++/// assert_eq!(some_foo_fn100(), 100)
++/// ```
++///
+ /// [`paste`]: https://docs.rs/paste/
+ #[proc_macro]
+ pub fn paste(input: TokenStream) -> TokenStream {
+diff --git a/rust/macros/paste.rs b/rust/macros/paste.rs
+index 385a78434224..f40d42b35b58 100644
+--- a/rust/macros/paste.rs
++++ b/rust/macros/paste.rs
+@@ -9,7 +9,15 @@ fn concat(tokens: &[TokenTree], group_span: Span) -> TokenTree {
+     loop {
+         match tokens.next() {
+             None => break,
+-            Some(TokenTree::Literal(lit)) => segments.push((lit.to_string(), lit.span())),
++            Some(TokenTree::Literal(lit)) => {
++                // Allow us to concat string literals by stripping quotes
++                let mut value = lit.to_string();
++                if value.starts_with('"') && value.ends_with('"') {
++                    value.remove(0);
++                    value.pop();
++                }
++                segments.push((value, lit.span()));
++            }
+             Some(TokenTree::Ident(ident)) => {
+                 let mut value = ident.to_string();
+                 if value.starts_with("r#") {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
