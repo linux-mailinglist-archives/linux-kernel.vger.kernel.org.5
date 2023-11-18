@@ -2,99 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 684C17F019F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93837F01AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjKRRnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 12:43:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
+        id S231298AbjKRRqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 12:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbjKRRnL (ORCPT
+        with ESMTP id S231285AbjKRRpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 12:43:11 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C64DD61;
-        Sat, 18 Nov 2023 09:42:48 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40806e4106dso2722565e9.1;
-        Sat, 18 Nov 2023 09:42:48 -0800 (PST)
+        Sat, 18 Nov 2023 12:45:50 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C805B10C9;
+        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6ce37d0f1a9so1666178a34.0;
+        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700329365; x=1700934165; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=S345bEvs9q0MqPOtaAOcFjLkuKJYcZuBe9+JHYMUOJ/aidB/fA8FAwWff0YZn7Vld5
-         DAXfGYN1AL4uDos8ZAOjWGzbccx4ihr+ljiDm71OcTdhbptVH96J6eCudD3bpEBrlSJ0
-         rB+USljCL3nLz9tJ4oVmoo2IHVoy+pTPkjlFqt2MTk+BO2RAlivRgFB7udVuU3GoSCO9
-         Mc5O7zM/M31VxOb3cMOfegY+beqWdx7LnDKCqcG2eMwIOaESYwecQoP5dZm5pICuKDQq
-         ceTznY3dSIV/VeKhfcxD6NXFNVUVlC+VRTnIW6pLfXWF4Qo5xFR4mxYt+FBUHVEZCPZv
-         T2iQ==
+        d=gmail.com; s=20230601; t=1700329504; x=1700934304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qb1Z5fZ5kEcb/PEat1gO6JLOrll/tbZ6AWENLgKkm2A=;
+        b=Yh1NxnNYzEcSi2R0NDCdJDBC0/YPNNg5ONrh1pE/EIuBr7XpT/voiKo3UBw/X4RimC
+         A3i51x9M9xN6Qp0UeBrDHreIRT0chYkasGNygKB1KOZfFTaYrc4J8L+3ukdZxfW004Ey
+         9g7xywDfrOrDTF/YaTnKWuU/ns72B22E05/cJevKOURSYlaE31Xp8w5bs4WSYmwN1MT7
+         /87kvxbIjJsWxTQm6Yic0yjXDM4RdeXbq2LVDdu582V6PdBusx8GCKlcXeC4yltGRcSB
+         X+/qDsDCsuiOojxnOKmfPPukHQN4g6YznHUeFQv0X59uZDP3I1T4HDl1fuLYnm/XJjhl
+         PXog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700329365; x=1700934165;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700329504; x=1700934304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=XUNJdvD0BFcFJ5f7hGSqOserz6eraMqyNXI+7A8r2aotfeMQfuHdWoKpY5yQBTTnK1
-         2zBIU8BwZ0O6xkbR4MLxERYccj0J5jHuZIHb9mO6dZOVPNSuVoL0AJs97rfPqn6rzw9h
-         QgAA7aYPu+gciCNJI1LawmTQLqhfZO1g3wdPqpY+oJX2AuiBkqSONccrMhPHjPgDC1AH
-         W1w3X7GVP2+fJwWu217WLz/3ENV/t7CsH/PXMduov6BdQMFF/5AqCOxVh7RatTtntqod
-         uO/P2vWUyrap+CKepFnl0nQDRjRjCb5+OMJiEUDbNw7PcOZhtzXzZM22zhXbypfqR89u
-         UkOQ==
-X-Gm-Message-State: AOJu0YyZ+MTkA/RnrRk2pBMY9zAV9VumrV6axJ79gNaBEdMmkLti3dd3
-        PIO9S4JVbH1Wr8h5nWQOLNg=
-X-Google-Smtp-Source: AGHT+IEfGC11GbAgY9a3iwog8RZFBCmOzsqpJ0VCuNPTs77rF0/5JKKRTlqJUA+zSfuaII4HOyGD2Q==
-X-Received: by 2002:a05:600c:4f56:b0:3fe:1fd9:bedf with SMTP id m22-20020a05600c4f5600b003fe1fd9bedfmr2222060wmq.11.1700329365491;
-        Sat, 18 Nov 2023 09:42:45 -0800 (PST)
-Received: from zotac.lan. (dynamic-2a01-0c22-77bf-8300-2223-08ff-fe18-0310.c22.pool.telefonica.de. [2a01:c22:77bf:8300:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id y10-20020a05600c340a00b004068de50c64sm6964211wmp.46.2023.11.18.09.42.44
+        bh=qb1Z5fZ5kEcb/PEat1gO6JLOrll/tbZ6AWENLgKkm2A=;
+        b=RW2phIyBZPEA7Y8NDz1fycAP0mNud0vGxonlXYNV24wqy9m1xGfRGvnFineI6Qa1UT
+         CLBcisasbnRzhwRf5bOiCVGrZVWwVpfOQgzWGcu2sv8Y1HyjCRTUH8e0xz0ns1wiELhh
+         O2FXIoIVvWmhNzEMmp2dr6DoiHBJzz08fRI8HeqvvOFTpAMb3kfmGkbHNJwCvo3P5UPn
+         joPC+8KS2KwXJ8GBxiTL9hzw6pZJK2FWyDTRcC4igk4zyC0gnQyWmkIw8VPDF01qTrrn
+         c8rilh/jYiZxUtdUeckt8+LLO9l/RDKaxz7RIulX/EcwvKqSn9iUrmfkDZaPLPJpSa3r
+         i/Lw==
+X-Gm-Message-State: AOJu0YxU/OAYbtf2QUZjKUVDRnIEoTDKUFS64IoqleoJFli2wJb36jv5
+        zqaqh+Hd2+YA8C6FxwIHkbeulEMDaEg=
+X-Google-Smtp-Source: AGHT+IEiR/9sgFTTlRNkRw6NamwXS7va62a6Ub4e4Iw5bBfNaQDBna9qOunCFv5pgQu8yH73/xbR9g==
+X-Received: by 2002:a9d:77cf:0:b0:6b7:5687:8a9e with SMTP id w15-20020a9d77cf000000b006b756878a9emr3227871otl.15.1700329504082;
+        Sat, 18 Nov 2023 09:45:04 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m12-20020a9d6acc000000b006b871010cb1sm657731otq.46.2023.11.18.09.45.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 09:42:45 -0800 (PST)
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 20/20] include/linux/i2c.h: remove I2C_CLASS_DDC support
-Date:   Sat, 18 Nov 2023 18:42:20 +0100
-Message-ID: <20231118174221.851-21-hkallweit1@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231118174221.851-1-hkallweit1@gmail.com>
-References: <20231118174221.851-1-hkallweit1@gmail.com>
+        Sat, 18 Nov 2023 09:45:03 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 18 Nov 2023 09:45:01 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] ABI: sysfs-class-hwmon: rearrange humidity
+ attributes alphabetically
+Message-ID: <b0176205-adc7-44ba-a55a-c405a8ab1b19@roeck-us.net>
+References: <20231116-hwmon_abi-v1-0-8bfb7f51145a@gmail.com>
+ <20231116-hwmon_abi-v1-1-8bfb7f51145a@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116-hwmon_abi-v1-1-8bfb7f51145a@gmail.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
-olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
-Class-based device auto-detection is a legacy mechanism and shouldn't
-be used in new code. So we can remove this class completely now.
+On Fri, Nov 17, 2023 at 07:40:34AM +0100, Javier Carrasco wrote:
+> Preliminary step to add the missing humidity attributes in the ABI
+> documentation.
+> 
+> Adding new elements alphabetically is a common practice that has been
+> loosely followed in the sysfs-class-hwmon documentation. Since most of
+> the humidity attributes must be added to the file, a single attribute
+> needs to be rearranged to reinforce alphabetical order.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-Preferably this series should be applied via the i2c tree.
+Applied.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Thanks,
+Guenter
 
----
- include/linux/i2c.h |    1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-index 0dae9db27..d029aade3 100644
---- a/include/linux/i2c.h
-+++ b/include/linux/i2c.h
-@@ -850,7 +850,6 @@ static inline void i2c_mark_adapter_resumed(struct i2c_adapter *adap)
- 
- /* i2c adapter classes (bitmask) */
- #define I2C_CLASS_HWMON		(1<<0)	/* lm_sensors, ... */
--#define I2C_CLASS_DDC		(1<<3)	/* DDC bus on graphics adapters */
- #define I2C_CLASS_SPD		(1<<7)	/* Memory modules */
- /* Warn users that the adapter doesn't support classes anymore */
- #define I2C_CLASS_DEPRECATED	(1<<8)
-
+> ---
+>  Documentation/ABI/testing/sysfs-class-hwmon | 17 ++++++++---------
+>  1 file changed, 8 insertions(+), 9 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-hwmon b/Documentation/ABI/testing/sysfs-class-hwmon
+> index 638f4c6d4ec7..b998a42add95 100644
+> --- a/Documentation/ABI/testing/sysfs-class-hwmon
+> +++ b/Documentation/ABI/testing/sysfs-class-hwmon
+> @@ -887,15 +887,6 @@ Description:
+>  
+>  		RW
+>  
+> -What:		/sys/class/hwmon/hwmonX/humidityY_input
+> -Description:
+> -		Humidity
+> -
+> -		Unit: milli-percent (per cent mille, pcm)
+> -
+> -		RO
+> -
+> -
+>  What:		/sys/class/hwmon/hwmonX/humidityY_enable
+>  Description:
+>  		Enable or disable the sensors
+> @@ -908,6 +899,14 @@ Description:
+>  
+>  		RW
+>  
+> +What:		/sys/class/hwmon/hwmonX/humidityY_input
+> +Description:
+> +		Humidity
+> +
+> +		Unit: milli-percent (per cent mille, pcm)
+> +
+> +		RO
+> +
+>  What:		/sys/class/hwmon/hwmonX/humidityY_rated_min
+>  Description:
+>  		Minimum rated humidity.
