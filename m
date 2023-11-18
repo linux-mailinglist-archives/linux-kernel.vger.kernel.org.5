@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80627EFD09
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394A77EFD0A
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 02:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbjKRBsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 20:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S232657AbjKRBww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 20:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKRBse (ORCPT
+        with ESMTP id S229737AbjKRBwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 20:48:34 -0500
-Received: from m1316.mail.163.com (m1316.mail.163.com [220.181.13.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0683BD79;
-        Fri, 17 Nov 2023 17:48:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=kQWPGBGA003W+v9st+8v1Kv9E76Ff1X5kUDffYhbGBI=; b=T
-        O+JTLpUzLYRo1dBC0/wba80D8xtLS7ZpUELIy4iQA604J9sGsXmONX+c7j/DtqRo
-        xuBvElWpUVqYfplpfmtNzj3zoLOIGgsx6Z9/ojhNgfo3GWWL8dissbtR3ykq1PCK
-        79z5ZmUtwbuWya3WYXEgUgk+EHqFzQA8CyAEZDoAMA=
-Received: from 00107082$163.com ( [111.35.185.43] ) by ajax-webmail-wmsvr16
- (Coremail) ; Sat, 18 Nov 2023 09:46:42 +0800 (CST)
-X-Originating-IP: [111.35.185.43]
-Date:   Sat, 18 Nov 2023 09:46:42 +0800 (CST)
-From:   "David Wang" <00107082@163.com>
-To:     "Namhyung Kim" <namhyung@kernel.org>
-Cc:     "Peter Zijlstra" <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed
- for aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com>
- <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com>
- <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
- <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
- <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com>
- <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
-X-NTES-SC: AL_Qu2bAv6cvUgr5CeeYekZnEYQheY4XMKyuPkg1YJXOp80oync1S84Y3JdOXXx0/2PKjCsvRWLYQpXyuhjfrl9UJyuyfAn6WnRQ3hZgeYIctXO
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 17 Nov 2023 20:52:51 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28804D7E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:52:47 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id 5b1f17b1804b1-407da05f05aso552425e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 17:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700272365; x=1700877165; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=beQAaUooTYtJIw7OKCSz0TPZiTblJ6rroskHEToeWdg=;
+        b=FzeQoJ3i/UcpE4ovQKbx7nR1OS6WMsQz4ZZ+j415Dm10OACrho7YPOIf4WvTgP7QrD
+         /ZmmkVLcGhA1OYkypcnNnLjOSDj3J2lZSb5NI0CpBVg5YCrhQvX9p4EBD8p/NL2DX4i+
+         sX0Fl8iTBjV1Hs8QDkIqiIHb9s8fGDG9OanaUs5TFjl7IGM4FHa8dGy1U2FfVY4awM6k
+         lY/kQT+/BTUDADxP8kfbsy9PT1ypKdCXkQmGVI9GuuwyXAAu2kh42d17xR4iuCX5Mkmo
+         SnOk9lpJmbeneJ71+4UTuFp5+t9axzAtQ15kH56AA8gWYPdmuQr3755q5+vvCuvmIkyQ
+         +0iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700272365; x=1700877165;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=beQAaUooTYtJIw7OKCSz0TPZiTblJ6rroskHEToeWdg=;
+        b=VmEo/xnunSTO5q5WBvX0z3CNCY92iitPnWa8N5F3soVG71TeH1MSRYmaw2VPjXnlwe
+         0a2wY64JqtY3QahOaotSqnKHTA03xg6ihrB3OyUyVsEup+IdrG4S1uR7jcanXy8KNDyq
+         diBqQAUZjVntRls4Pt40lREkfFN27jRLonb31msOZn33tZEyFm4r2CNwS35AjKeiroIJ
+         IoUwyk0QZKGFdKi2b9z2VHhg5pUaeCpkWzMb1fL5rz3TMXyRcWUMAP2cRrdOGIS+KoYP
+         tWV60DxKIvO6Jn6+cZ4cZANWp8rWnCGwVopzqEYxWx7TzygwubmLItz+Zj0ZR42a1eij
+         nvSA==
+X-Gm-Message-State: AOJu0YxE3v5gm4RJbX1/ITfq6a/J7PiwYhD47NRFhmtTiq3nFj+Y+avz
+        adMJOaFmCS08FJh4z/ryp51I7A==
+X-Google-Smtp-Source: AGHT+IE2hLmsmCPrJJeC6nk/f6XEjguRcjWsG0tCK9xcAuWJh+kn1SuzhRE/UKucZPoHo/JnvZOQzA==
+X-Received: by 2002:a05:600c:354a:b0:401:c338:ab94 with SMTP id i10-20020a05600c354a00b00401c338ab94mr727705wmq.29.1700272365546;
+        Fri, 17 Nov 2023 17:52:45 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id y14-20020a05600c2b0e00b0040644e699a0sm8836386wme.45.2023.11.17.17.52.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 17:52:44 -0800 (PST)
+Message-ID: <c8cf229b-4d15-4eca-bc4b-61dc67d63e91@linaro.org>
+Date:   Sat, 18 Nov 2023 01:52:43 +0000
 MIME-Version: 1.0
-Message-ID: <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: EMGowAD3nwaDF1hlGDUgAA--.24165W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiEBIrql8YMjKeegAGsm
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/4] clk: qcom: Add Global Clock controller (GCC)
+ driver for X1E80100
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
+        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        abel.vesa@linaro.org, quic_tsoni@quicinc.com
+References: <20231117092737.28362-1-quic_sibis@quicinc.com>
+ <20231117092737.28362-3-quic_sibis@quicinc.com>
+ <ec9d03f7-7158-4309-9a04-b08c69b89f39@linaro.org>
+ <2e0d2c55-fb2f-4903-a555-f51019942c6e@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <2e0d2c55-fb2f-4903-a555-f51019942c6e@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMTEtMTggMDU6MTE6MDIsICJOYW1oeXVuZyBLaW0iIDxuYW1oeXVuZ0BrZXJuZWwu
-b3JnPiB3cm90ZToKPk9uIFdlZCwgTm92IDE1LCAyMDIzIGF0IDg6MDnigK9QTSBEYXZpZCBXYW5n
-IDwwMDEwNzA4MkAxNjMuY29tPiB3cm90ZToKPj4KCj4+Cj4+Cj4+IEZyb20gdGhlIGRhdGEgSSBj
-b2xsZWN0ZWQsIEkgdGhpbmsgdHdvIHByb2JsZW0gY291bGQgYmUgb2JzZXJ2ZWQgZm9yIGYwNmNj
-NjY3Zjc5OTA5ZTkxNzU0NjBiMTY3YzI3N2I3YzY0ZDNkZjAKPj4gMS4gc2FtcGxlIG1pc3Npbmcu
-Cj4+IDIuIHNhbXBsZSB1bnN0YWJsZSwgdG90YWwgc2FtcGxlIGNvdW50IGRyaWZ0IGEgbG90IGJl
-dHdlZW4gdGVzdHMuCj4KPkhtbS4uIHNvIHRoZSBmaW8gcHJvY2VzcyB3YXMgcnVubmluZyBpbiB0
-aGUgYmFja2dyb3VuZCBkdXJpbmcKPnRoZSBwcm9maWxpbmcsIHJpZ2h0PyAgQnV0IEknbSBub3Qg
-c3VyZSBob3cgeW91IG1lYXN1cmVkIHRoZSBzYW1lCj5hbW91bnQgb2YgdGltZS4gIFByb2JhYmx5
-IHlvdSBuZWVkIHRvIHJ1biB0aGlzIChmb3IgMTAgc2Vjb25kcyk6Cj4KPiAgc3VkbyBwZXJmIHJl
-Y29yZCAtYSAtRyBteXRlc3QgLS0gc2xlZXAgMTAKPgo+QW5kIEkgZ3Vlc3MgeW91IGRvbid0IHJ1
-biB0aGUgcGVyZiBjb21tYW5kIGluIHRoZSB0YXJnZXQgY2dyb3VwCj53aGljaCBpcyBnb29kLgo+
-CgpZZXMgIHByb2ZpbGluZyBwcm9jZXNzIHdhcyBub3QgaW4gdGhlIHRhcmdldCBjZ3JvdXAuCkkg
-dXNlICBmaW8gd2l0aCBgZmlvIC0tcmFuZHJlcGVhdD0xIC0taW9lbmdpbmU9bGliYWlvIC0tZGly
-ZWN0PTEgLS1uYW1lPXRlc3QgIC0tYnM9NGsgLS1pb2RlcHRoPTY0IC0tc2l6ZT0xRyAtLXJlYWR3
-cml0ZT1yYW5kcncgIC0tcnVudGltZT02MDAgLS1udW1qb2JzPTQgLS10aW1lX2Jhc2VkPTFgIHdo
-aWNoIHdvdWxkIHJ1biA2MDAgc2Vjb25kcy4KVGhlcmUgd291bGQgYmUgZHJpZnRzIGluIHRoZSBw
-cm9maWxpbmcgcmVwb3J0IGJldHdlZW4gcnVucywgIGZyb20gdGhvc2Ugc21hbGwgIHNhbXBsZXMg
-b2YgdGVzdCBkYXRhIEkgY29sbGVjdGVkLCBtYXliZSBub3QgZW5vdWdoIHRvIG1ha2UgYSBmaXJt
-IGNvbmNsdXNpb24sICBJIGZlZWwgd2hlbiB0aGUgY29tbWl0IGlzIHJldmVydGVkLCB0aGUgZXhw
-ZWN0YXRpb24gZm9yIHRvdGFsIHNhbXBsZSBjb3VudCBpcyBoaWdoZXIgYW5kIHRoZSBzdGFuZGFy
-ZCBkZXZpYXRpb24gaXMgc21hbGxlci4KCj5BbmQgaXMgdGhlcmUgYW55IGNoYW5jZSBpZiBpdCdz
-IGltcHJvdmVkIGJlY2F1c2Ugb2YgdGhlIGNoYW5nZT8KPkFyZSB0aGUgbnVtYmVycyBpbiA2Ljcg
-YmV0dGVyIG9yIHdvcnNlPwo+CkkgaGF2ZSBubyBpZGVhIHdoZXRoZXIgdGhlIGNoYW5nZSBvZiBl
-eHBlY3RlZCB0b3RhbCBzYW1wbGUgY291bnQgYSBidWcgb3IgYSBmaXgsICBidXQsICB0aGUgb2Jz
-ZXJ2ZWQgcmVzdWx0IHRoYXQgdG90YWwgc2FtcGxlIGNvdW50IGRyaWZ0IGEgbG90IChiaWdnZXIg
-c3RhbmRhcmQgZGV2aWF0aW9uKSwgSSB0aGluayAsICBpcyBhIGJhZCB0aGluZy4gCiAKClRoYW5r
-cwpEYXZpZCBXYW5nCg==
+On 18/11/2023 00:06, Konrad Dybcio wrote:
+> On 17.11.2023 21:50, Bryan O'Donoghue wrote:
+>> On 17/11/2023 09:27, Sibi Sankar wrote:
+>>> * Use shared ops in the x1e80100 gcc driver [Bryan].
+>>
+>> This looks better to me now / more consistent with what we have in sc8280xp - where we do try to hit suspend and => retention/parking matters.
+> Parking the clock is separate from putting the system to sleep.
+
+Yes but several of our clocks want to be parked, not switched off.. 
+which obviously does matter in suspend.
+
+> IIUC we usually use shared ops on clocks that may have different users
+> (e.g. not only controlled by Linux) and/or that are crucial to the
+> functioning of hardware (like AXI clocks, which if gated would make
+> the system crash on any access attempt, from any subsystem, unless
+> turned on beforehand)
+
+My question here for Sibi, is why sdcc2_apss_clk_src differs here from 
+sc8280xp?
+
+Is it wrong on sc8280xp or if correct sc8280xp then why is it not 
+replicated here ?
+
+https://lore.kernel.org/linux-arm-msm/e857c853-51ef-8314-2a21-fa6fd25162ca@quicinc.com/
+
+Also @Sibi I realise alot of this code is autogenerated - it would be 
+worthwhile finding/fixing the script that does the generation to plug in 
+shared_ops instead of floor_ops if the input material has the necessary 
+flags.
+
+---
+bod
