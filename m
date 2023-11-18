@@ -2,194 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6337F00EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E527F00FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjKRQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 11:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
+        id S230072AbjKRQTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 11:19:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjKRQRW (ORCPT
+        with ESMTP id S229612AbjKRQTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 11:17:22 -0500
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F54194;
-        Sat, 18 Nov 2023 08:17:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1700324238; bh=Sc+cZKZYUYODq7Oxpy2O0guVGUacU69a1vla/2Bix6Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fNZaVnFAARGjhK5ftm01BKJGNTq9C+Qb8/pRfBZNbhdCiIgexuRdq3S1ko0AcQOBG
-         XfET85WQoxGHt7btpCUrRNfPuBRFk2VNkIKiPyH4zmirGTDgnktxVv3VMuPJQwG7mK
-         cerwY7xyZVTQbLvOidoQqpfydilm/plOgIk8Uxbwy56TvJfaI4AQieFKZCM6/W5Dvi
-         VTVkN8krCB2808/xOTSz1pSLWKoOCyQERf75SLRZavyws5I2f18FnxBAVJpHhZ6ac8
-         aNmj99ShiXG2zvYGktcB/pYBkMWX6XrIqj9POk2RyyvYFLSjCX/V04zXfB2TiYJEN4
-         5Bod9cuL2Rigw==
-Received: by gofer.mess.org (Postfix, from userid 501)
-        id 707531002A2; Sat, 18 Nov 2023 16:17:18 +0000 (GMT)
+        Sat, 18 Nov 2023 11:19:05 -0500
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620C9C0;
+        Sat, 18 Nov 2023 08:19:01 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6cb66fbc63dso146030b3a.0;
+        Sat, 18 Nov 2023 08:19:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700324341; x=1700929141;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JpJ9j3Rgf+MmL1x+LnpZ5rIj3NB2ZwiexLJ0+/VPyNs=;
+        b=P6n9omzfO12+8okx3P3bDXbxiVhDTWKX4GGDeFE3W6UixUyNq4IxYXFm65lO/0p3up
+         fMQLJHMPMoJvoGchJN1cj1DTtwp9mJ6Cg4a6KVAPKkIwGsvZQYNshRez39deO5iu1DJE
+         Gj1cSzVdB39fedxcQ4h0bjxjnMXL5maLuciDf0uV2hWW0PFUUYuHHOW6x/sTU4ZzNgw3
+         WN+NmT6RDqx9M8Xmljx5MP/hYNIfqKsJ7REKFUfPk5tl+wSZnz6xcDqkp63SAhuZvm/r
+         VrBsDV/J9Dk0X51Ez5iPq4IgKl9kY/kqsGD7elYhc45thEM4A1nhRxOyrgz+nTMONzGG
+         XWhA==
+X-Gm-Message-State: AOJu0YyaUeMNukiAYy4UIP2R5t53tcvkprlBsRet8zdqVxCkgPQwQSdg
+        D818gJtCelE+SLuJk+O/hXgNu8K6KdnDAg==
+X-Google-Smtp-Source: AGHT+IF6DbzE+IGBVmgkkIXDBMasM05P7fXL7OHqGPwzqI5VVbby0wYg1pwoRaacJDugZHa97idotg==
+X-Received: by 2002:a05:6a20:4326:b0:187:e3a5:b35d with SMTP id h38-20020a056a20432600b00187e3a5b35dmr3138014pzk.13.1700324340672;
+        Sat, 18 Nov 2023 08:19:00 -0800 (PST)
+Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
+        by smtp.gmail.com with ESMTPSA id b9-20020a056a000a8900b006c7c6ae3755sm3179469pfl.80.2023.11.18.08.18.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 18 Nov 2023 08:19:00 -0800 (PST)
+Message-ID: <792fc3d8-6834-48f8-9737-f1531459d245@acm.org>
+Date:   Sat, 18 Nov 2023 08:18:46 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/34] biops: add atomig find_bit() operations
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Disseldorp <ddiss@suse.de>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
+        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Cc:     Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1700324201; bh=Sc+cZKZYUYODq7Oxpy2O0guVGUacU69a1vla/2Bix6Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UrXuVYW2qcBRpWmDgFEdK0qSJbBlMcLLTFlIIzGLgijzwdlmYsQ3xxrtp8uYxMPsV
-         n6gRzEwUj/2864SR3lK+LN/NrOwfptTZ1JpzKpeuWPctvqbv+UeTHoOyPqS4a96wwh
-         thLafx9wOf8R3W9JR0QFOo4fhLmmFbL8/iuSkHqGRAvt+hOZlR1ZWfrFTz7L4lAbDR
-         QXw1pi/MnLfivJvfPLjJlvP/8Y4OOQSECyt6GCTIxrx2ADQN7ib36LsPsYO6fMzOvN
-         GaTjISnoL0HSHeTeRvau9cG/B2ZTjlLS9ricXtXwWpOLcjq4WZGVixz38DVmt+fwYH
-         2BISks382N/5A==
-Received: from bigcore.mess.org (bigcore-239.local [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by gofer.mess.org (Postfix) with ESMTPSA id 5A301100064;
-        Sat, 18 Nov 2023 16:16:41 +0000 (GMT)
-From:   Sean Young <sean@mess.org>
-To:     linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v5 4/4] media: pwm-ir-tx: trigger edges from hrtimer interrupt context
-Date:   Sat, 18 Nov 2023 16:16:20 +0000
-Message-ID: <b49c4e2a8dccbd4a073fb22bab728d1cb2ec159c.1700323916.git.sean@mess.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1700323916.git.sean@mess.org>
-References: <cover.1700323916.git.sean@mess.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes the generated IR much more precise. Before this change, the
-driver is unreliable and many users opted to use gpio-ir-tx instead.
+On 11/18/23 07:50, Yury Norov wrote:
+> Add helpers around test_and_{set,clear}_bit() that allow to search for
+> clear or set bits and flip them atomically.
 
-Signed-off-by: Sean Young <sean@mess.org>
----
- drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 76 insertions(+), 3 deletions(-)
+There is a typo in the subject: shouldn't "atomig" be changed
+into "atomic"?
 
-diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-index ccb86890adcea..5465bd38d9412 100644
---- a/drivers/media/rc/pwm-ir-tx.c
-+++ b/drivers/media/rc/pwm-ir-tx.c
-@@ -10,6 +10,8 @@
- #include <linux/slab.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/hrtimer.h>
-+#include <linux/completion.h>
- #include <media/rc-core.h>
- 
- #define DRIVER_NAME	"pwm-ir-tx"
-@@ -17,8 +19,14 @@
- 
- struct pwm_ir {
- 	struct pwm_device *pwm;
--	unsigned int carrier;
--	unsigned int duty_cycle;
-+	struct hrtimer timer;
-+	struct completion tx_done;
-+	struct pwm_state *state;
-+	u32 carrier;
-+	u32 duty_cycle;
-+	uint *txbuf;
-+	uint txbuf_len;
-+	uint txbuf_index;
- };
- 
- static const struct of_device_id pwm_ir_of_match[] = {
-@@ -82,6 +90,62 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 	return count;
- }
- 
-+static int pwm_ir_tx_atomic(struct rc_dev *dev, unsigned int *txbuf,
-+			    unsigned int count)
-+{
-+	struct pwm_ir *pwm_ir = dev->priv;
-+	struct pwm_device *pwm = pwm_ir->pwm;
-+	struct pwm_state state;
-+
-+	pwm_init_state(pwm, &state);
-+
-+	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
-+	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-+
-+	pwm_ir->txbuf = txbuf;
-+	pwm_ir->txbuf_len = count;
-+	pwm_ir->txbuf_index = 0;
-+	pwm_ir->state = &state;
-+
-+	hrtimer_start(&pwm_ir->timer, 0, HRTIMER_MODE_REL);
-+
-+	wait_for_completion(&pwm_ir->tx_done);
-+
-+	return count;
-+}
-+
-+static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
-+{
-+	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
-+	ktime_t now;
-+
-+	/*
-+	 * If we happen to hit an odd latency spike, loop through the
-+	 * pulses until we catch up.
-+	 */
-+	do {
-+		u64 ns;
-+
-+		pwm_ir->state->enabled = !(pwm_ir->txbuf_index % 2);
-+		pwm_apply_atomic(pwm_ir->pwm, pwm_ir->state);
-+
-+		if (pwm_ir->txbuf_index >= pwm_ir->txbuf_len) {
-+			complete(&pwm_ir->tx_done);
-+
-+			return HRTIMER_NORESTART;
-+		}
-+
-+		ns = US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
-+		hrtimer_add_expires_ns(timer, ns);
-+
-+		pwm_ir->txbuf_index++;
-+
-+		now = timer->base->get_time();
-+	} while (hrtimer_get_expires_tv64(timer) < now);
-+
-+	return HRTIMER_RESTART;
-+}
-+
- static int pwm_ir_probe(struct platform_device *pdev)
- {
- 	struct pwm_ir *pwm_ir;
-@@ -103,10 +167,19 @@ static int pwm_ir_probe(struct platform_device *pdev)
- 	if (!rcdev)
- 		return -ENOMEM;
- 
-+	if (pwm_is_atomic(pwm_ir->pwm)) {
-+		init_completion(&pwm_ir->tx_done);
-+		hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+		pwm_ir->timer.function = pwm_ir_timer;
-+		rcdev->tx_ir = pwm_ir_tx_atomic;
-+	} else {
-+		dev_info(&pdev->dev, "tx will not be accurate as pwm device does not support atomic mode");
-+		rcdev->tx_ir = pwm_ir_tx;
-+	}
-+
- 	rcdev->priv = pwm_ir;
- 	rcdev->driver_name = DRIVER_NAME;
- 	rcdev->device_name = DEVICE_NAME;
--	rcdev->tx_ir = pwm_ir_tx;
- 	rcdev->s_tx_duty_cycle = pwm_ir_set_duty_cycle;
- 	rcdev->s_tx_carrier = pwm_ir_set_carrier;
- 
--- 
-2.42.1
+Thanks,
+
+Bart.
 
