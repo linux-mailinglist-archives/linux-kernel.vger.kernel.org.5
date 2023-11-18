@@ -2,121 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037F47F01BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5907F01E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjKRR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 12:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39132 "EHLO
+        id S230072AbjKRSHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjKRR7U (ORCPT
+        with ESMTP id S231206AbjKRSHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 12:59:20 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2067.outbound.protection.outlook.com [40.92.45.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CE4D5;
-        Sat, 18 Nov 2023 09:59:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oX68roO08olGFWctPKgemyiL6kisgOKoJk2XYE1VAoSG/r48iPkt1C+DgWC/gOcUIGgIddlTnfOhaY4JUV0xJOkg9FG4CSCNnQ6nSnU7TOGMXaTkeXgFih7KzxYAolUtJubw7QoNmhnTioKM1scsE8mpC++M04UmFuvp739khlhjX8JNkHcgyBBb+O7P6Qwn1Xm9N/tNBVzwY5dEgH1YK0eczZrYq0ZWSu8Yx496W3XBwe3hHxU/g5iRd0u3db722goiZAJVrN3PWHEod/aau3WnaImfv6Jqw/JCr8hsT5YRzBV3zOxUZqowiQRGdyokF8Fa8LEO43eGsv/aCldTMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Ml6pIksZ2sNghy4zG/b29NchMSAFisaopUHKCu7F9A=;
- b=kZmTP4kV3ajV59txLSRe7qVfrOrr0rJGTCJsPKmLj4oVksAulKlf+ftFuuxZq+Ngf2Nb/2bglKkhQj4U/cLIq3zFY+8WFX8gjSFtGNy4SlN1eaCk4twooRIN1nTh+rfhxjoxDDQsNlBSOdiCom/OCU2chlxddxb0hOC67VaXuSSTvndrzNpzHlTHH3FBdLfwYAzVwmG2grQfVKx1h6F5cox5osrHo9TgVrlXAHVTqGmePYA4WXSOgnYNHDtBzSQgliBOf4I11Q3OTB7y0wTaXzvut937xi9201DDMB+GscxAgTtkTWj7gRfqPaYqvQNkoAbmxPjT3V3MDKkacvypKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Ml6pIksZ2sNghy4zG/b29NchMSAFisaopUHKCu7F9A=;
- b=UiwQtlTB5lLZ/MxzFhUV2OiH/RhbF+9jDvT1o0r+5pNo9dRHwrFxTUH/X4NTabURORFXXDCszvmL9Y7j3avpgBwv30NAYzS3qJ6pL+Qykbpd2Gm1f+XB+MazvP1BSgFaaSuSQrIekvwCS50SMgooaD5eRlNAIyleI2etgI2sMgXFFzRy89OrbeRacXZSbGWDs1R88iYfVSxan32UUUNryjw/6HF2VbvhH4RLqxbTrdQ+lqTo3mp2P7jhJFDKvdrZm1TLnydPPPU68ZUT9+F+u2YB3VIF98+k2CLsmbucCeRqwnWKnVXW3GN15LbJ2ujRdhSeObY40XQpcxqaV6F0tw==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by PH7PR02MB9991.namprd02.prod.outlook.com (2603:10b6:510:2f8::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.25; Sat, 18 Nov
- 2023 17:59:13 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
- 17:59:13 +0000
-From:   Michael Kelley <mhklinux@outlook.com>
-To:     Yury Norov <yury.norov@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-CC:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: RE: [PATCH 14/34] PCI: hv: switch hv_get_dom_num() to use atomic
- find_bit()
-Thread-Topic: [PATCH 14/34] PCI: hv: switch hv_get_dom_num() to use atomic
- find_bit()
-Thread-Index: AQHaGjdbPNpOYvT26E6hoSGCJEBljLCAXSDw
-Date:   Sat, 18 Nov 2023 17:59:13 +0000
-Message-ID: <SN6PR02MB4157D60D59F2461BB595F569D4B6A@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-15-yury.norov@gmail.com>
-In-Reply-To: <20231118155105.25678-15-yury.norov@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-tmn:  [cyUizUd5K8hRXmXWaoO1XhzEA97Dn9k+]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH7PR02MB9991:EE_
-x-ms-office365-filtering-correlation-id: b98a79cf-8c45-44a7-458c-08dbe860130a
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7EosM/SG3hQCUzVu54fm0ck8gK6femYgEwh1J97OBI6OZM7IClP9XXR+nZcAR/wtQF9cI+ZqsROSaH2FGUIXcKw0ej2wJpYH2BuwdcMgLdr0NODje9c6NpZQGL7/awqatttd989iGm3dr1npLYogNmpMygggP1AvJiQY+Y3rammSmurlqQWoutRa0EYpZYFJuwmgO0famuhSmnRrfHr/4yI6bd3XrZt81u//PRYL4kZOFrJBbp4uugFVQQGTjryo1/vdVPcG9bSooLptvd7C2jMsw5ys/WmE4ayOEwQ2CJypVE97NW36DbnnTvfraJcAtxprWJuEcIkq4jK62nKBh5lXtFYePshOYAJW4fm2dq9lR9mF0n1E9eqQEuS9qSgdQ8KC93p2D8a6dIDv5YGVh12BQRObRY5D5wKdDldQOM28lsAPUfaqSqWPeLYCkvV4fHwYuQ0YZKa1XANfulVhYKiTlvp+1Ng9yJL8nYrRYjUABsMN7EZnWgTaTTOf+gPlfdXyhodwpZuUfPBJdaMvh8gkyTR7ApcLJIOEApwtJh1dFp2tHWUdhpzztBFk2aA+
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?QJGiquUd9/1XauZ2PQTzpTmcQxQVdiDMr2f0+nsjx4zNVbN6TaLmF0XFLI?=
- =?iso-8859-2?Q?MF+rsXAHT3DxxnlqeDfqF3gUzrLKlHxEAJUDKY0c0Ueq2uxcskIfat+dlU?=
- =?iso-8859-2?Q?7YFkjJ9nk8HKE2TmqrUFbSJiaJmokUewe2wf86DO1yq+3UnSE7WcRTU834?=
- =?iso-8859-2?Q?RbIPG276V4EYcRJnI5zdOFgybF6b8XBGC75+G3dWdZZ3FG9m5Vn/yCaKMf?=
- =?iso-8859-2?Q?DfaD/b9CRgi9ZK+8js0hTlTKH3Q5/FsjO7qFhpROUcBKKmYI1FyqXjBut2?=
- =?iso-8859-2?Q?2VKWgKEgmTcucFsIy9CG8J4SsyJVbq5MwYKONXubXZ6V/zHYtD5S5v7dXE?=
- =?iso-8859-2?Q?lEFxU9sG/8NepXBVSWpasWzTsqgbnkPdlkC0gMtkOD0QVqt6nx06jziITF?=
- =?iso-8859-2?Q?7Q7B84uUcL7ABwRjAGavADGfxwFJUo5dPJ22c8fbyO9M28TmUEM9sCiLvq?=
- =?iso-8859-2?Q?aMjrV1fbkVG66og5p7bSRGbFQw1fPM2F3r5BeXk28ffdGfJv7Caf9qOpQX?=
- =?iso-8859-2?Q?HzSONp0wRrQB9TtvRT/AB8HCUy0prEdzA2o576Sj7KnaIR4Z58Fiq4KN3c?=
- =?iso-8859-2?Q?L5C0F1V29UsBrJwI522TPdcmEMVnUicWp8g+B0cn0NlLDO12gMKKJmXD4V?=
- =?iso-8859-2?Q?u3fieIrWpZCvY7qPqhSaYMqDYoWYWYutae2lKWGm3FoeoQ3KvyiP3RqL6W?=
- =?iso-8859-2?Q?6xsIzi7FIjskkLjZVvi8OREhj28ZcX8JafVSkYtiMzyBoedOQ5DjCN+foB?=
- =?iso-8859-2?Q?suM9D0/2BRAqJBNFHWNhHRU0EmK3mas3NG2WVV6TMS0khgrIc1FPFzUmUr?=
- =?iso-8859-2?Q?00Yzx7cJXTBqSvzBizwTKM74xWRGcas1pFh0ncrc5kF3OoRVixwhsb20nL?=
- =?iso-8859-2?Q?7NHavGmFNjrddcPJ85oKau3j8PPpWsAJOmgu89dHq+VWIMnaXqbk66Nsw/?=
- =?iso-8859-2?Q?1kvdJhv7kc855/JayCNGZ5Z/49cLrV3JxQ+goY3ZUZJM7JLWtASZYEgcsU?=
- =?iso-8859-2?Q?c7jbZ+9E5nwKfCfa5x3L0heJn8X5Xnp7vDU/0RjR7M/pvspyW+oOQQTX9t?=
- =?iso-8859-2?Q?0TyfksyAy1PL5jkW/K7U9X9JbUzYRfvubWAfu4XF93zCMkOs+d6Mik8FT3?=
- =?iso-8859-2?Q?+ytlRrkSuLAA5neIS+S+Ecj2X2D2LV1AjNTvyaIC+sp2TBAj4Lh0J5qOTM?=
- =?iso-8859-2?Q?FfhC1ViTkAoLebLcXYfRlH7fynwC4aXnTtC0o4E9oxdC7U/3Sou1nf2nIf?=
- =?iso-8859-2?Q?A6kepRaMBh66XY0IUhFg=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 18 Nov 2023 13:07:03 -0500
+X-Greylist: delayed 13259 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Nov 2023 10:06:53 PST
+Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [84.16.66.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AB8D5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 10:06:53 -0800 (PST)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4SXhP732z6zMq1p3;
+        Sat, 18 Nov 2023 17:59:39 +0000 (UTC)
+Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4SXhP62MGlzMpnPg;
+        Sat, 18 Nov 2023 18:59:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bigler.io;
+        s=20200409; t=1700330379;
+        bh=4ft/Gs2FgEsC8ctTIzR/sKmm2sBGVKXbikEUXVTIiPc=;
+        h=Date:Subject:From:Reply-To:To:Cc:References:In-Reply-To:From;
+        b=4nuwgCBO/krp+w5+vZhS7K3aJCFpShbKMVnbJ0dbF+nuwHGPS0Waxj0k05ivxrkIk
+         QyFRwfrwdICxFdc0LP/bFl2swlIXlshKIjcEU00vf7aW9ntcXqrF5yLCn4bfuKlFu2
+         ggswq1sOw+UPyMDaHN3chcs6S1hiVK/H7JouMzkE=
+Message-ID: <2fcdd99eee9ee4f5d34fa1abab2f51bb@mail.infomaniak.com>
+Date:   Sat, 18 Nov 2023 18:59:38 +0100
+Subject: Re: spi: imx: Increase imx51 ecspi burst length fails on imx6dl and
+ imx8mm
+From:   linux@bigler.io
+Reply-To: linux@bigler.io
+To:     Stefan Moring <stefan.moring@technolution.nl>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: b98a79cf-8c45-44a7-458c-08dbe860130a
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Nov 2023 17:59:13.6413
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR02MB9991
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-WS-User-Origin: eyJpdiI6IjFaRW83ZGpKQWd6MDIwYWM0TWdRSVE9PSIsInZhbHVlIjoiY1NQbnN0Vm1CNmNXMEt0dWRvd3JQUT09IiwibWFjIjoiMGY4YThiNTdjYzNiMTIwNzllODc3YmFkZDgwNWNkNWQ0NTQ5NDdiMjQ5MmQxZDExZjNmYzBjZmY4ZTE5OWY0YSIsInRhZyI6IiJ9
+X-WS-User-Mbox: eyJpdiI6Ikk3WWg0QUlxaExzckl6ZFR4YWN6YWc9PSIsInZhbHVlIjoiT0NUUTM2WDZESG8rK2YyOFVEYjAzdz09IiwibWFjIjoiOGUxMDEwYmYxOWJjNjJkMWE5NTY3MDMxY2FhYTJiNDQyOTdmNTlmOTUwZWQ0MDgzZjE5ODA3ZWJiNGViNDRjOSIsInRhZyI6IiJ9
+X-WS-Location: eJxzKUpMKykGAAfpAmU-
+X-Mailer: Infomaniak Workspace (1.3.595)
+References: <8a415902c751cdbb4b20ce76569216ed@mail.infomaniak.com>
+ <e4f12422-1c47-4877-88b3-dfa9917331a2@leemhuis.info>
+ <f4439fd1-7c2d-4a96-9116-1dbe04fceac0@leemhuis.info>
+ <CAB3BuKA+qOY+UhWR-9Ov3qsz3wQr8q8n38MrEMf3FMCthr04yA@mail.gmail.com>
+In-Reply-To: <CAB3BuKA+qOY+UhWR-9Ov3qsz3wQr8q8n38MrEMf3FMCthr04yA@mail.gmail.com>
+X-Infomaniak-Routing: alpha
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,40 +61,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yury Norov <yury.norov@gmail.com> Sent: Saturday, November 18, 2023 7=
-:51 AM
->=20
-> The function traverses bitmap with for_each_clear_bit() just to allocate
-> a bit atomically. We can do it better with a dedicated find_and_set_bit()=
-.
->=20
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  drivers/pci/controller/pci-hyperv.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller=
-/pci-
-> hyperv.c
-> index 30c7dfeccb16..033b1fb7f4eb 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
->  	if (test_and_set_bit(dom, hvpci_dom_map) =3D=3D 0)
->  		return dom;
->=20
-> -	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
-> -		if (test_and_set_bit(i, hvpci_dom_map) =3D=3D 0)
-> -			return i;
-> -	}
-> +	i =3D find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
->=20
-> -	return HVPCI_DOM_INVALID;
-> +	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
->  }
->=20
->  /**
-> --
-> 2.39.2
+Hi=20
 
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+I checked the code an printed the used parameters, the =E2=80=98bits_per_wo=
+rd=E2=80=99 is set to 8.
+
+Best Regards
+Stefan Bigler
+
+Am 2023-11-18T17:54:26.000+01:00 hat Stefan Moring <stefan.moring@technolut=
+ion.nl> geschrieben:
+>  Hi Thorsten,
+>=20
+> Looking at the data of your test, it appears as if your =E2=80=98bits_per=
+_word=E2=80=99 are
+> set to 32, where you would want 8.
+>=20
+> Can you verify this?
+>=20
+> Kind regards,
+>=20
+> Stefan Moring
+>=20
+> Op za 18 nov. 2023 om 16:15 schreef Thorsten Leemhuis <
+> regressions@leemhuis.info>
+>=20
+>=20
+> >    On 18.11.23 16:13, Linux regression tracking (Thorsten Leemhuis) wro=
+te:
+> >=20
+> > >     [CCing people that worked on the relevant commits as well as the
+> > >   regression list, as it should be in the loop for regressions:
+> > >   https://docs.kernel.org/admin-guide/reporting-regressions.html]
+> > =20
+> >  Sorry for the spam, hit "send" before actually adding Stefan and Mark,
+> >  which now are among the recipients.
+> >=20
+> >=20
+> > >     On 18.11.23 15:25, linux@bigler.io wrote:
+> > >=20
+> > > >     After upgrade from kernel 6.5.11 to 6.6.1 the spi-devices on my=
+ hw
+> > > >   colibri-imx6dl and verdin-imx8mm are not working anymore (TPM2 an=
+d
+> > >   SPI-SRAM).
+> > >=20
+> > > > =20
+> > > > >   =20
+> > > > >   Analyzing the problem showed that the 2 commits introduced the =
+problem:
+> > > > > =20
+> > > > >   spi: Increase imx51 ecspi burst length based on transfer length
+> > > > >   15a6af94a2779d5dfb42ee4bfac858ea8e964a3f
+> > > > > =20
+> > > > >   spi: imx: Take in account bits per word instead of assuming 8-b=
+its
+> > > > >   5f66db08cbd3ca471c66bacb0282902c79db9274
+> > > > > =20
+> > > > >   Reverting the commits solved the problem.
+> > > > > =20
+> > > > >   The analyse with the logic-analyser showed a wrong number of
+> > > >   transmitted
+> > > >=20
+> > > > > =20
+> > > > > >     bytes and wrong data.
+> > > > > >   When I try to send 127 Byte with a incrementing pattern
+> > > > >   (0x01,0x02,0x03,..),
+> > > > >=20
+> > > > > > =20
+> > > > > > >     504 Bytes are sent (0x00,0x00,0x01 0x00,0x00,0x00,0x02,
+> > > > > >   0x00,0x00,0x00,0x03).
+> > > > > >=20
+> > > > > > > =20
+> > > > > > > >     We tested with different sizes and patterns, all are no=
+t ok.
+> > > > > > > >   While analysing the configuration and code I was not able=
+ to see any
+> > > > > > >   obvious
+> > > > > > >=20
+> > > > > > > > =20
+> > > > > > > > >     mistake.
+> > > > > > > > > =20
+> > > > > > > > >   Has someone else discovered such misbehaviour or has an=
+y idea what is
+> > > > > > > >   wrong?
+> > > > > > > >=20
+> > > > > > > > > =20
+> > > > > > > > > >     Best Regards
+> > > > > > > > >  =20
+> > > > > > > > >   Thx for the report!
+> > > > > > > > > =20
+> > > > > > > > >   [TLDR: I'm adding this report to the list of tracked Li=
+nux kernel
+> > > > > > > > >   regressions; the text you find below is based on a few =
+templates
+> > > > > > > > >   paragraphs you might have encountered already in simila=
+r form.
+> > > > > > > > >   See link in footer if these mails annoy you.]
+> > > > > > > > > =20
+> > > > > > > > >   To ensure the issue doesn't fall through the cracks unn=
+oticed, I'm
+> > > > > > > > >   adding it to regzbot, the Linux kernel regression track=
+ing bot:
+> > > > > > > > > =20
+> > > > > > > > >   #regzbot ^introduced 15a6af94a27
+> > > > > > > > >   #regzbot title spi: spi-devices on colibri-imx6dl and v=
+erdin-imx8mm are
+> > > > > > > > >   not working anymore
+> > > > > > > > >   #regzbot ignore-activity
+> > > > > > > > > =20
+> > > > > > > > >   This isn't a regression? This issue or a fix for it are=
+ already
+> > > > > > > > >   discussed somewhere else? It was fixed already? You wan=
+t to clarify when
+> > > > > > > > >   the regression started to happen? Or point out I got th=
+e title or
+> > > > > > > > >   something else totally wrong? Then just reply and tell =
+me -- ideally
+> > > > > > > > >   while also telling regzbot about it, as explained by th=
+e page listed in
+> > > > > > > > >   the footer of this mail.
+> > > > > > > > > =20
+> > > > > > > > >   Developers: When fixing the issue, remember to add 'Lin=
+k:' tags pointing
+> > > > > > > > >   to the report (the parent of this mail). See page linke=
+d in footer for
+> > > > > > > > >   details.
+> > > > > > > > > =20
+> > > > > > > > >   Ciao, Thorsten (wearing his 'the Linux kernel's regress=
+ion tracker' hat)
+> > > > > > > > >   --
+> > > > > > > > >   Everything you wanna know about Linux kernel regression=
+ tracking:
+> > > > > > > > >   https://linux-regtracking.leemhuis.info/about/#tldr
+> > > > > > > > >   That page also explains what to do if mails like this a=
+nnoy you.
+> > > > > > > > =20
+> > > > > > > >=20
+> > > > > > > >
