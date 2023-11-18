@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3387EFC5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AEF7EFC67
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346335AbjKRAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
+        id S1346284AbjKRAFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjKRABZ (ORCPT
+        with ESMTP id S231533AbjKRAFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:01:25 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98D510C6
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:01:21 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507973f3b65so3656358e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:01:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700265680; x=1700870480; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TmdYVnabDczkPmlEpci5lqKCRm4aGlo0N/NrM1uCFSA=;
-        b=cbaxbOvsjKHEFf7v4C3FmwfsSPE3fe7N6eekAqbQVSBl19JlUQ5+hR9GhlCA+WnjdY
-         GInsGTU2V3Lez4O+2sWIZYKJWvQuN6Xo4yVzbfSGBKcqDANV8D99ryHozygDci3Xtz2N
-         JeTg5cn0K5IaDJQJ7GQerJfrEY4pqKSyTDc+vDrp0TIjUkOZPcW8/zJwrUxcYIMl6SJF
-         9c3+Vf31jIj5VquCdMGsIDK5c07tsTDxEoeUIq8OESnStS/Ue5kkQML1CnotE9EaL5NF
-         OBTW4nWOkCW6pWgHl93uItApBIEa7xBbPwRr8jO/r+hkpZalNzUqivTR/9QumNOuoeUY
-         QP4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700265680; x=1700870480;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TmdYVnabDczkPmlEpci5lqKCRm4aGlo0N/NrM1uCFSA=;
-        b=SFmkFUAtqQAs1wKfacfuNB/f5GI5W7kB0EnnNpkLy5YncEe3Z9Pm2e0hPEOnxHQoME
-         fNnTygiCUvVJ9lcLt/vVjzmpuRJaIO9gycXhq63FW+yiZ7bSOgJDcsq8phzkP2UB1svp
-         g8XTY+rqaDLaXSxPShsrXsd7u5UwCufR76vpgwwei33AYB2E/sgs7leBYc4m9HCxxwdw
-         Wd4LQL//VSuOVZb+zjazUIrvP1bPmXaJGJnQ4m9/0KeRRaBefyC6yjxzgDTyOvT65LRT
-         ednE2jTjaIUuozx/zPkMfaANI77isBjVLSSGP+C13WvO0ZlkvfOp9UUnPQK/Nf7D1XzQ
-         eRYA==
-X-Gm-Message-State: AOJu0YwbCoWx8HG/U9jaCztzA9WyrXEPgxGhfHcnTzLzmD6+UwhzYWNC
-        +t6xr4Md84rReL5kbIRvC2Trvw==
-X-Google-Smtp-Source: AGHT+IG/gsUbmvwkJwzl1LYjmIcDG0B+kqiWMJxFy24Yv4JY8EI8QJKCJhTPM7igScF2UPvZaGl4Hw==
-X-Received: by 2002:ac2:532f:0:b0:50a:a337:1f42 with SMTP id f15-20020ac2532f000000b0050aa3371f42mr768384lfh.36.1700265680109;
-        Fri, 17 Nov 2023 16:01:20 -0800 (PST)
-Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id q11-20020ac2514b000000b004fe2f085d5csm390317lfd.299.2023.11.17.16.01.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 16:01:19 -0800 (PST)
-Message-ID: <abf7da98-6213-42d8-a0ef-422ad111c6a9@linaro.org>
-Date:   Sat, 18 Nov 2023 01:01:16 +0100
+        Fri, 17 Nov 2023 19:05:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C74B4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:04:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE40FC433C8;
+        Sat, 18 Nov 2023 00:04:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700265899;
+        bh=eU7pWfXkgBvwAmZrRDoiJ4H3YjL2nwJyHUyzgk2bKag=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GerSS6DN//mPm6zym/8Rkwr8vndxo2+k0YtJP9JCGdlvfCkx+Jp2zhUlE/fd1nJ+s
+         DaVo12Q97IMAxnCC01BnwIbFte2EqCTfdfq1CKrzdWIy3wdUjR6dytaCaRPl0kylrT
+         5mQTVKWSRnExUFU35Clq0IlbqK3b/sMkTJJpjFh9tro3heTrDW68cQjvWImsuNprv/
+         UAEqei/ku4THbf8BDrJrMdzDrviMPxL8pMBxK7dpYwA0eBv7XrUl3ZfYoSQn/DB68c
+         DyiC/Z/Adj9cn4+2NAU2MlL7g5dYctimleqQ88g2XfqGGV03IjC3cydia8piK5RMYL
+         X1xjXWrntJIhw==
+Date:   Fri, 17 Nov 2023 19:04:54 -0500
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.7-rc2
+Message-ID: <ZVf/pqw5YcF7sldg@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/4] clk: qcom: Add Global Clock controller (GCC)
- driver for X1E80100
-Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
-        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
-        abel.vesa@linaro.org, quic_tsoni@quicinc.com
-References: <20231117092737.28362-1-quic_sibis@quicinc.com>
- <20231117092737.28362-3-quic_sibis@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231117092737.28362-3-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7M+Pchu/CDK0TST7"
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2023 10:27, Sibi Sankar wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
-> 
-> Add support for the global clock controller found on X1E80100
-> based devices.
-> 
-> Co-developed-by: Abel Vesa <abel.vesa@linaro.org>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Konrad
+--7M+Pchu/CDK0TST7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.7-rc2
+
+for you to fetch changes up to 382561d16854a747e6df71034da08d20d6013dfe:
+
+  i2c: ocores: Move system PM hooks to the NOIRQ phase (2023-11-13 12:43:42 -0500)
+
+----------------------------------------------------------------
+Revert a not-working conversion to generic recovery for PXA, use proper
+IO accessors for designware, and use proper PM level for ocores to allow
+accessing interrupt providers late.
+
+----------------------------------------------------------------
+Jan Bottorff (1):
+      i2c: designware: Fix corrupted memory seen in the ISR
+
+Robert Marko (1):
+      Revert "i2c: pxa: move to generic GPIO recovery"
+
+Samuel Holland (1):
+      i2c: ocores: Move system PM hooks to the NOIRQ phase
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Andi Shyti (1):
+      (Rev.) i2c: ocores: Move system PM hooks to the NOIRQ phase
+
+Serge Semin (2):
+      (Test) i2c: designware: Fix corrupted memory seen in the ISR
+      (Rev.) i2c: designware: Fix corrupted memory seen in the ISR
+
+ drivers/i2c/busses/i2c-designware-common.c | 16 +++----
+ drivers/i2c/busses/i2c-ocores.c            |  4 +-
+ drivers/i2c/busses/i2c-pxa.c               | 76 ++++++++++++++++++++++++++----
+ 3 files changed, 78 insertions(+), 18 deletions(-)
+
+--7M+Pchu/CDK0TST7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVX/6YACgkQFA3kzBSg
+KbZKRw//RonMaoOG2/FmNtzPbHWDM3vvK+8mOh7K9enoIADkP3jyJZ9PSzT9DJTS
+0j4ensmlFFXEgxp0X1FtBgzLt9Jk9X24YAjxinXbw+o7GeINqf/htFoQEUdVoP6J
+62vlCbXRKuGvnoAwxrlNFYgJquWXiqr7cqX+kX06+Xwd3t2QI9QfoReYtxsfVpyc
+cpQLx+miwKZYILmcxIVQo5E7EzfcsMV/TZLUd9K3hEn0YblUmceHcp8zFn3lHk9a
+2IIvHYCGnsO3IZb8VlDyENL3LkEMzT5EgGfTRrZpF83kgQsh64HFNHuGEER5MZCv
+sK8pz8juTyPNIeQ4KB817JnNO1dofosqfwzX00uaLEIy5NBsMoy+kq4HgEcfWJSG
+lmsZes/O+DyYLxc95LBvik95er7U8Sas/yWvRYyRrwwy+SuMAQz0wgmsbq7G+M71
+dcK+bb7jX6MmtU0X8OLxP9zXdPbmr86eC7d+wPuMGJLEDj7oWx7UdsQ3cQOig0A5
+2twErI5QUaWW42rOGq/0fB9pO0TqAk+oLkzh7rrWXpFo7DzLs+Yqksz4quDJ/grt
+wtj43QUXIlgxtMOHsAgyj1uqz3PuAL0kfAbLc1/iqTXYEDnF4XkbAtHXYcfAn9++
+csWerX7ApeHj+4ZO2VNrFD37VbQ3AulYCHf3o6nIL7PGm+bX68U=
+=uemA
+-----END PGP SIGNATURE-----
+
+--7M+Pchu/CDK0TST7--
