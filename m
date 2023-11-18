@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0F97EFFD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBE17EFFE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 14:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjKRN2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 08:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
+        id S230198AbjKRNaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 08:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjKRN2O (ORCPT
+        with ESMTP id S229480AbjKRNan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 08:28:14 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EF7131;
-        Sat, 18 Nov 2023 05:28:09 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9c2a0725825so406922966b.2;
-        Sat, 18 Nov 2023 05:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700314088; x=1700918888; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DjRg7NGUQPfxOSlfCXCbAcbz7uHVwoni3DCMCnip4wU=;
-        b=m2hTOLBQAQiRbHf2zgNFapeZXHK1pmihkv3SJU53LxkjE05dxWeV1rg6bYa6xUW/JV
-         2bFsgS7fGNhPWweB1yNrfK7K4OqAY9iPxsSECN93GBqSI7QMapJjRz8e5Gru9xDVNLH0
-         ILkZuaLA2gvB8R/Xz2KmEEeWT3ZVZKCBfjnJ4xB+F0xay4d1zGdpyMEhjwPah40YWLRf
-         PzGVMC4fIqthWzyenLlhfxHKbq+uMFJLqijdUwZBpAfXxKkA7A7SoHxXikg/pltqZ48i
-         I1TH0HtuuA+q9aoknek+u5DdemeNtgvqJiCpmyYW73VnOXEee7AOIOgsR5sNfWdN9pr7
-         ushw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700314088; x=1700918888;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DjRg7NGUQPfxOSlfCXCbAcbz7uHVwoni3DCMCnip4wU=;
-        b=jzo8fgrMAuhg9qr5kMpyWzSXcqh6pYRNsP/RI5jHa5Il/Y1sPex678TbAu+Qf/iuYi
-         EUxHJYRXCrA578zENBhlJYAxM4d9DRi3CiWxWTgh4K4ca6vAH9P1EYUhFx32PM+Sa3JY
-         qQDgWq+mXVCl1ZoLWgfhPXRnXaIY0NhbCZlfbM1Qcnat3qoelaUgD+DOEpeOOkxw2Afg
-         5Ni7hvv2OcBGPO7gK3OYRtTjjKNVsE4cvOYrbMOA8t4SPdrNW3wAbtRIYLR0ovxVZYje
-         DrEh0xUH8ExSTF0XtW6dPb930WydXQCnOJu98wBBM8Mv/PecOO+d+oThBwVj/5HzuR85
-         QGRQ==
-X-Gm-Message-State: AOJu0YxAGT1AA848SQvCFUQF7Fi2C8eKZZqhXMp5iHUtN5efW2Crkz4m
-        apCBJWqc6oZ4dx1hyBjslf2WpaJKL3KwmGqwhw4ZbW/F8bN2vA==
-X-Google-Smtp-Source: AGHT+IGZaajQ/24RQ52ADMl3xDdYk/JIWqcHZy898i7FE89b3T6YfDO3QBEory4JWhR14iCnRUWOGKMKMM+vi5qC3FQ=
-X-Received: by 2002:a17:906:f106:b0:9cf:18ce:95e6 with SMTP id
- gv6-20020a170906f10600b009cf18ce95e6mr1550870ejb.62.1700314087783; Sat, 18
- Nov 2023 05:28:07 -0800 (PST)
+        Sat, 18 Nov 2023 08:30:43 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A18127
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 05:30:38 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id E6DAB240101
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 14:30:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1700314235; bh=N10+A2ZxwaYqP7PRqiWkwAN6cRL1G1MlE+LnR6+F4EU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
+         Content-Transfer-Encoding:From;
+        b=jwbAjZX898UQ9VUXDmfn3QgeHj9JEqFRrrTYbGIFD7kREAIHDR+A67Fuyp7kavswU
+         1K48uRm1mfBPf6W28nDOvXskCWbw3sfMNRkxt+tsijwvGqbgAESAWHJTkTyyZfzh4v
+         LggHaVl9IfcJz8FHG1pAAedLLxSYE84Dyg7oOmKkWRlPd0KwmHXwdTOpb9U2x1f+AT
+         ClRhZ8csRu3JQZuDeu2eMyby2lJ2vCa7MYBLi5ea8ivNQhEdqx/BZRWgbxLtwrbtRq
+         xuzw03a22nwCDsmA9U6bBLXLATsQwYHJYI4zwHsAn3rlO0aKpo8mtEJ3U00TxMS7OL
+         o/D00+4OQcAUw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4SXZQg1fv1z6tsB;
+        Sat, 18 Nov 2023 14:30:35 +0100 (CET)
+From:   Charalampos Mitrodimas <charmitro@posteo.net>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Charalampos Mitrodimas <charmitro@posteo.net>
+Subject: [PATCH 0/2] power: supply: checkpatch errors and warnings
+Date:   Sat, 18 Nov 2023 13:29:56 +0000
+Message-Id: <20231118132958.157238-1-charmitro@posteo.net>
 MIME-Version: 1.0
-References: <20231118113357.1999-1-kamil.duljas@gmail.com> <20231118120235.GA30289@breakpoint.cc>
-In-Reply-To: <20231118120235.GA30289@breakpoint.cc>
-From:   Kamil Duljas <kamil.duljas@gmail.com>
-Date:   Sat, 18 Nov 2023 14:27:56 +0100
-Message-ID: <CAFR=A7nkyx_Lf=p0BS-S68_vxQL97rUoLMZpo4kxHjKykAgTRw@mail.gmail.com>
-Subject: Re: [PATCH] genetlink: Prevent memory leak when krealloc fail
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, you're right. I did not think about it. So if we have a static
-pointer that may be resued, should not restore the pointer as at the
-beginning?
-static unsigned long *mc_groups =3D &mc_group_start;
+List of the errors and warnings this patchset address:
+	Errors:
+		(1) code indent should use tabs where possible
+		(2) switch and case should be at the same indent
+	Warnings:
+		(1) quoted string split across lines
+		(2) Missing a blank line after declarations
 
-At this moment we don't know how much memory is allocated. What do you
-think about this?
+Charalampos Mitrodimas (2):
+  power: supply: Fix indentation and some other warnings
+  power: supply: Use multiple MODULE_AUTHOR statements
 
->                               new_groups =3D krealloc(mc_groups, nlen,
->                                                     GFP_KERNEL);
-> -                             if (!new_groups)
-> +                             if (!new_groups) {
-> +                                     kfree(mc_groups);
-> +                                     mc_groups =3D &mc_group_start;
->                                       return -ENOMEM;
-> +                             }
+ drivers/power/supply/power_supply_core.c | 167 ++++++++++++-----------
+ 1 file changed, 84 insertions(+), 83 deletions(-)
 
+-- 
+2.39.2
 
-sob., 18 lis 2023 o 13:02 Florian Westphal <fw@strlen.de> napisa=C5=82(a):
->
-> Kamil Duljas <kamil.duljas@gmail.com> wrote:
-> > genl_allocate_reserve_groups() allocs new memory in while loop
-> > but if krealloc fail, the memory allocated by kzalloc is not freed.
-> > It seems allocated memory is unnecessary when the function
-> > returns -ENOMEM
->
-> Why should it be free'd?  mc_groups is not a local variable.
->
-> >                               new_groups =3D krealloc(mc_groups, nlen,
-> >                                                     GFP_KERNEL);
-> > -                             if (!new_groups)
-> > +                             if (!new_groups) {
-> > +                                     kfree(mc_groups);
-> >                                       return -ENOMEM;
-> > +                             }
->
-> How did you test this?  AFAICS this results in use-after-free for every
-> access to mc_groups after this error path is taken.
->
-> Existing code looks correct, we can't grow mc_groups and return an
-> error.
-
-
-
---=20
-Pozdrawiam,
-Kamil Duljas
