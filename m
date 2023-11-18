@@ -2,250 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3777F0204
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:41:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5FE7F0203
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 19:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjKRSkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 13:40:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        id S229873AbjKRSk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 13:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKRSki (ORCPT
+        with ESMTP id S229887AbjKRSkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 13:40:38 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F60F2;
-        Sat, 18 Nov 2023 10:40:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700332809; x=1700937609; i=deller@gmx.de;
-        bh=H1zbsRn5uAPqCcioQHkyw4K2MGeXASXOklHwGF80Qnc=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=rCkxR6vD5mst3bjYx5rXWLbLnZaKaGzEFA6797pJc+RBsYAfI952EcVmTg2iJfzJ
-         fCY8RPtNVWnsXKRHVyHOih/0ImppqY3FOtnIe6eq9BRl1bUp9HngTznew5aF0tt1y
-         UYyikDC8FBdgKKI0BzATYQAkliRBkJ4YL46TeNVCNPxYdh/GVMSZ0SdfCdh8xDQ/K
-         aqOzxGbb935WphlkGr8D0DJ+FvKICZhrEB1wsaUW+dlGwR3ymX1K7z9vPGL7YCdu+
-         ANQvmS4CF2lCNPa7nSrCrn3Fk2gGWtlDTbWQ5MbFIXCj2YGkm1ZXU5hO/7kex2t7I
-         4LXSaUyEZC5rpb4FNg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.151.152]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MsHnm-1rKaZf32aY-00tmeq; Sat, 18
- Nov 2023 19:40:09 +0100
-Message-ID: <0f492aac-9ba7-4bc6-95b2-6b1104a12244@gmx.de>
-Date:   Sat, 18 Nov 2023 19:40:07 +0100
+        Sat, 18 Nov 2023 13:40:55 -0500
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2054.outbound.protection.outlook.com [40.92.74.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A6212B;
+        Sat, 18 Nov 2023 10:40:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wf/ae3Fx5pq6Wntnj3yyFrWsB4v6SEWprgRU6JMwx5LZIriV7++mgc1rFsn1A/Z+PcvWyHEN1s6IaAU1kWQCZPbbiCP83slIB7XBjaQwS6NW9E3LtXsnNsD335srlJ1YoiYlxfX1O2gWrVHpGRKzFAnASQtoPA9WGY/SwnwFCnt0zfy+oqXogexXQoacuBfMJYtitNJqmmLME1BPZuCl7NnTNUCCJb1SIqtgkw4pwIrjl51o6DaXUa8FxHPghtj4rkIVmzF+6fRpwoc4kWjlo3G3PfmKvohqs22AwPMjLTFoIPjVKQf44x7pNBQUzYQOt8d+7hIZcGtf/dN9/sF2tw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dXXkB5DwbtTzv05pOKpopJ6Dn/SI2aqdy+U9c3GdYd0=;
+ b=gbXsMSFe53F0Mz1ATlmbrWm0BIZ9hAn8uVfj4DhHfonHA3Zd62M/Y1n8MBs9hjFQDtlgYKoiZX4g0hZjU8Hb6guqHju/ZBFlGWXgYXVaaKLZJ5TsPxipQ2sYBOEKw5r+o5Rw99Pl43+1XBnh3SDHSsR6QxlpsJJh8OlYQFKKNnEQwfr0Sze/hM4OR3W0M6C4lRtFEa5FFXZhXLtsAnax+M2WGQyLB2fUS+0eF/uMkJWUAij5pqkpA+/MKgv60Pr/Ff9JDfONrg8rVh1uxlFMIl3YvBbHnndNJDlWJy6AuCQKgHHLCafUM4U9RqBn2/jpB15GdSem2+CPjTVhoGsqtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dXXkB5DwbtTzv05pOKpopJ6Dn/SI2aqdy+U9c3GdYd0=;
+ b=N9d0KafjjE0bnX5goPcTebBnIl4C0yo11McCbBK67DBmF8T5NeY4Phte8fkg0Dzu9/hkbvPdWxgSETalxI1b+63mUuroy1qMX9czNCOYFbz7SN4ceQtZb1CZNoyXq3UbC9N0Ik7WzcRsvyDyX5iNhcHDLP0O1xWFDqPJ4AEy+7YS7aMMiTw57Hc5baqDwCL8/DFoKnbA12oP8/IvBKQJH4ocQtjE/X1fq8DgzCfs0lKOoRNbFj/Z+KiaYeoO0Qs8f6qbbuM604MwXVwuzt5LYASgN5mqsFXpSLMEBIszGW1lKDDUq8ugo9WE3q/kyuTmhjOzBegvv5a4l4lTlU3UTw==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AM0PR10MB3713.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:159::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Sat, 18 Nov
+ 2023 18:40:47 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Sat, 18 Nov 2023
+ 18:40:47 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
+        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH bpf-next v2 0/4] selftests/bpf: Update multiple prog_tests to use ASSERT_ macros
+Date:   Sun, 19 Nov 2023 00:10:23 +0530
+Message-ID: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [WGTjBdcq9taaETagnSlVTKJ3B2vtz9eL]
+X-ClientProxiedBy: JNXP275CA0039.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::27)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231118184023.231166-1-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] parisc architecture fixes for v6.7-rc1
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>,
-        Kees Cook <keescook@chromium.org>, Sam James <sam@gentoo.org>
-References: <ZVjC9P0h5mw3ZbnD@p100>
- <CAHk-=wgtxsw8hrLNcGz9aJtP17NR3=NSvRdYGfKB52VorhkWzQ@mail.gmail.com>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
- HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
- r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
- CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
- 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
- dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
- Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
- GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
- aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
- 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
- ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
- FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
- uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
- uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
- REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
- qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
- iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
- gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
- Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
- qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
- 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
- dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
- rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
- UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
- eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
- ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
- dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
- lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
- 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
- xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
- wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
- fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
- Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
- l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
- RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
- BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
- Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
- XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
- MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
- FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
- 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
- ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
-In-Reply-To: <CAHk-=wgtxsw8hrLNcGz9aJtP17NR3=NSvRdYGfKB52VorhkWzQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Zlr9eDagj1n1tz2yMjrmqAQ79OfSCyoyVC/A0HThCCg9Y7AfXrL
- x+/Wp1kvRHu+T+XyvbdkA6G1ZYRcxA9gmmiriC3zEO4XtRSJ4lkLkOdE0jGoyumS2EkG8XV
- yL32yys3j2Jbd8/jAJsoSjpeh/T+7fy4b6BxZsreYyPNPkjX023+6sFqULQF3jodvbpz5zg
- HkHRs5kHiIZgOv6NqOMWQ==
-UI-OutboundReport: notjunk:1;M01:P0:U4iXvIf+UoU=;6Hf5aGDtaWGrk4kFj25TMcejGTt
- e2R6iOP9sjiUTm2Gm7WsPIf2zi4Y/kG9UcwXy5S2OSwVpdYFhV7gRYyzO1SQ7rPlbwo2/5nd7
- tKmi+kR1RE8Dr6BfWejDXzo53OK5PH656XxT5Toz8SfdaMRUS8FEmolv+dSwlGkaIi8GbvpeZ
- W+dMKQyeAGPNc3kWzw7JxpteM1Z7jOx2x7JJYhymD7nXi9lxMiKe+8EeLM4jiPxwazVPX05f1
- 8UWJML5OmWpkb3t6TGk75bT711EMCs+aHEvaIcxRLz9+5ZE+PPjq4NmtAV8lyfOTp/gryzErC
- ah1ZGYw+BJJb3tCITwk9CGjByqzOVDa6Ki9e76kKrkIGLUKdkb+6jbbRAXO3Wjwvgy/6vBH9k
- wxN3oUfb+SEGrR/vFQrYdxngsWoTjXOKJcX/XZjqMl960X16VPRo2+DIiDTnesaPBR+2xwolE
- 8PptgrFEEHBqZJQnmYF1Zxkrr4c2xv1SiLM6uBwMuG9k9+FWrj3oI6pThK6F/P073Vuz0X1H9
- 8Vb9bzpZouCG5sCbj67p+/pVC+FXSdbzWOJOELo2SwujiqfWnM81fwCD0Yp0WbXGt4lhhvYg9
- 74W0Hm6XUaIrdWMd79xDG7Wv+UyWGSxZa8pNHAnH0LnsG3DOXuylFVsJGpI5F312k0KgjBAsc
- vLxyknAoTrYjsfnfpmyhOU+V09FvmBywQOvzvNpVhEizjNGOZtbF6fAsXLrdZR2sow9zW79zT
- BbswSj/valhCqvwc+pHu5OXjnYKh9z54RipBr+/0wow+OQV1TYkiYhm/QdeG0MrKiJE12edcw
- 4/nuAq9iVHTC6zGgcUeaAgPBDWtdHPFzuQBUKOVqPHrqxnU+ZcaBnzKAYQ8J494VYQ1o8rNH5
- c6RcH/36kYP1LyvEpZlDFnNaVtsLJWPLxhqY5p/5MOmy8Ehv97/ZphHy7t0a8EPx6hQ7Ba14l
- nA30TgeQYxhDwcliYbruZOg+bwo=
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AM0PR10MB3713:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1cb15348-1671-4030-db07-08dbe865e127
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EtPHSsHbVbnQVPfgUD953NYwfPhsT97t2sYNuspb1MOEjPbBuqcgGUZeLC6aIAYc5NpDzD1mXdHT4HlHTs6nw+a9B4R3EWh5xM3iCyMpISKgM9O//unPYtZVRsytTp+ZyjFIvO3r/0HmYJVFGVQhkit4P8DgDDRK2TJCuAPmGCCpurNcN954CktoSuuyvyajZoh+lZznf4Ibe7LV+OmbcWk4UdRkVhMVph7i9lFlZxlFTC9JAL7T31NiHsImhNyZafXJ7xL6aOV/JRVXMXy2Uh0qMkPOo96yNV+BzBUe/rVaJSQIvpS2JSo1ZWra/VpEjSGXLZSL+O30UiQx0i9CdKqoFeOOZVueX4YGJLqpyEsitu8v1yLFTcFMi/v+tqv9wi0mg9D3qsUp3mfcQfv2NLB0+io8sF8rwIhyG3pFYtICWOVuLFuoCtF6jtGTb8QP1RWe5nmroRfslag7/NT79ZggCcp+vDTzY8y8/35hjyx6BtpmqQNaDWtkjSOJ0wPJARPRPdVPm1UvCPWh8s1rflCtANqvfmDK4ggtdQ8xG1332xsi95Br8sjPbqqOYhlBISwxuPZH7fRCa6LqXtCCKUFLNkQZsl1WEdQp19WZ2CwF18Ait/Ns/smNYLQ10jnd
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/oVrnni1+OPDk6vZZhMYw06+MNeIJdR44mXBTezHqf3Iwthza/bdlW62N1+Z?=
+ =?us-ascii?Q?/JlTxzNEcPKHsfneovLwfj/jjZJkTqbPV+NnP+O5LGvC8bJ0bStGBswwgMN5?=
+ =?us-ascii?Q?HpHrB0ZIUELXpJh7B6jwsCJ2GuzS8iDn6GjVww9C0Tt/oDqceIyn3bHQUjJn?=
+ =?us-ascii?Q?K50/kmhPRELkai9nw+QHIOxr4pC0m1l+TpDD3hH4lVGi+6eqS6icytTRRIvG?=
+ =?us-ascii?Q?91PSFu1vzxNMaGg/4RNl3yAo6rSaWAAIZ0UDm7ZfJTGqZO7LVxlmG8iQTlWL?=
+ =?us-ascii?Q?Orz7PIq+bLImocS9G7dTYYpaVmETgRyKU2e7R8M4eukP7/eqCjuNXsCuqDn/?=
+ =?us-ascii?Q?cBmAr9FM4tG4jU9RjbZbypmVgSQ4mUBHuxpcqMtphiymSp7H9W7LTn4TDdDK?=
+ =?us-ascii?Q?AGrJWeEPQ0x/HcgQ+srI8LRlvaJ8ItseTmbA6BSWzWXOvS763TuKDlQpycxQ?=
+ =?us-ascii?Q?+fQi3Ba3WIXInhHmJtKt2gWmTfOESGfnoXovwyUsT7UoUIHEOGZZrEqikhGD?=
+ =?us-ascii?Q?9SWrReOqTDUCRb675rosFgrY6LKSTysHIC/gxaFEi6EtvjES6XD54KXDKyLv?=
+ =?us-ascii?Q?CHMX/0U2pp0CMwOSs4qMgwsn7j46PTej74e5Jx8vNGHklxzVRpsp/9ZNaznb?=
+ =?us-ascii?Q?0tsFg9RNm59WTE5oirq2yK06hwZlBquWo4aHkAl3mTtlJCUnMQuxB1mbzhDd?=
+ =?us-ascii?Q?cpqhyPuuy86trnh7ikquUC24ByW6yd4pf/fHboyGRz3P8d241KTIzFPXGJs/?=
+ =?us-ascii?Q?sCF73iyKR4dUTE4dzjjhSQ8EN8qBrE3os/KP3RTTn+lO7XFTMdVB3hWLpcXR?=
+ =?us-ascii?Q?iDGJ81S/9UId+0/R6q3ANjuf9nqfxYNj2fE8g/bedGIdI9Ayy4VtWbxtdA52?=
+ =?us-ascii?Q?zeDr+xeBpZmLApAAp4KuX+rIjeLRcJGces+r2bU6HizZXu2PlH7lfaU5qAaC?=
+ =?us-ascii?Q?Gj8PGZrSN6oGpYmF7L4XliYhWhgO1srszBdjRU64CTW1DdRqa8oiBICybAsl?=
+ =?us-ascii?Q?4poUZk4+FaoTBQbAqChTpcDJhzTa4XdYqSpu7BUAl/OALsVVYpNnsj7ApDuQ?=
+ =?us-ascii?Q?46gm5kQ1NhubCzUPy9d+/qW0nzGVbZTGm9xoMpGGA8buStJqnblLVKqnHZwr?=
+ =?us-ascii?Q?2kU5mpD8XDdOhabzJbDPLSYEA0Ji66j0QchDFXCCFtjHR4tiyjKK6BiT7H7H?=
+ =?us-ascii?Q?e1+xNQrPRNLHVFh1JhL3qUavnMUmatGjsTFJLRwza1H9flToIYUlLE6EMUQ?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cb15348-1671-4030-db07-08dbe865e127
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 18:40:47.3271
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3713
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/18/23 18:36, Linus Torvalds wrote:
-> On Sat, 18 Nov 2023 at 05:58, Helge Deller <deller@gmx.de> wrote:
->>
->> On parisc we still sometimes need writeable stacks, e.g. if programs ar=
-en't
->> compiled with gcc-14. To avoid issues with the upcoming systemd-254 we
->> therefore have to disable prctl(PR_SET_MDWE) for now (for parisc only).
->
-> Ugh.
->
-> I pulled this, but I *really* cannot live with how ugly that is.
->
-> Seriously, that code is just unacceptable. Doing something like
->
-> +               if (IS_ENABLED(CONFIG_PARISC))
-> +                       error =3D -EINVAL;
-> +               else
-> +                       error =3D prctl_set_mdwe(arg2, arg3, arg4, arg5)=
-;
->
-> in generic code with no comment is just truly crazy. If you have to go
-> and do a "git blame -C" just to understand why the code exists, the
-> code is a problem.
->
-> But it goes beyond that. The code is just *ugly*, and it's done
-> entirely in the wrong place.
->
-> Things like "mdwe is special on parisc" should *NOT* be done in the
-> generic "prctl()" function.  This issue is not specific to prctl() -
-> it's very much specific to mdwe.
->
-> So I think it would have been both much more legible, and *much* more
-> appropriate, to do it in prctl_set_mdwe() itself, where it makes more
-> sense, and where it matches all the *other* mdwe-specific checks the
-> code does wrt arguments and existing state.
->
-> And honestly, why wouldn't 'get_mdwe' work? So the *other* hunk in
-> that patch (which isn't even mentioned in the commit message) that
-> returns -EINVAL for get_mdwe makes no sense at all, and shouldn't have
-> existed.
->
-> End result: I think the code should have been something like this
-> (whitespace-damaged) thing:
->
->    --- a/kernel/sys.c
->    +++ b/kernel/sys.c
->    @@ -2394,6 +2394,10 @@ static inline int prctl_set_mdwe(unsigned
-> long bits,
->         if (bits & PR_MDWE_NO_INHERIT && !(bits & PR_MDWE_REFUSE_EXEC_GA=
-IN))
->             return -EINVAL;
->
->    +    /* PARISC cannot allow mdwe as it needs writable stacks */
->    +    if (IS_ENABLED(CONFIG_PARISC))
->    +        return  -ENOSYS;
->    +
->         current_bits =3D get_current_mdwe();
->         if (current_bits && current_bits !=3D bits)
->             return -EPERM; /* Cannot unset the flags */
+Multiple files/programs in `tools/testing/selftests/bpf/prog_tests/` still
+heavily use the `CHECK` macro, even when better `ASSERT_` alternatives are
+available.
 
-Ok.
-My initial patch was actually doing exatly that, but somehow I finally dec=
-ided
-to add it to the switch() instead. Seems this was the wrong decision :-(
+As it was already pointed out by Yonghong Song [1] in the bpf selftests the use
+of the ASSERT_* series of macros is preferred over the CHECK macro.
 
-> where I also picked another error code, because it's not that the
-> prctl value or the arguments are invalid, I think the error should
-> show that there's something else going on.
->
-> No, I don't think -ENOSYS is necessarily the best possible error
-> value, but I think it at least conceptually matches the "this prctl
-> doesn't exist on PARISC". Maybe
->
-> Maybe ENOSYS should be avoided (prctl() obvious does exist), but I do
-> think this should be a different error than the EINVAL that the
-> generic checks do.
+This patchset replaces the usage of `CHECK(` macros to the equivalent `ASSERT_`
+family of macros in the following prog_tests:
+- bind_perm.c
+- bpf_obj_id.c
+- bpf_tcp_ca.c
+- vmlinux.c
 
-I agree that returning something else than EINVAL would be better.
-I used ENODEV in an earlier patch (I didn't liked it either), but accordin=
-g to
-https://github.com/systemd/systemd/issues/29775#issuecomment-1809563365
-EINVAL seems the best solution currently.
+[1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
 
-Just as a side-note: ENOSYS gives a checkpatch warning:
-WARNING: ENOSYS means 'invalid syscall nr' and nothing else
+Changes in v2:
+- Fixed pthread_join assertion that broke the previous test
 
-Would the patch below be OK? It's basically yours but with EINVAL.
-(might be whitespace-scrambled!)
+Previous version:
+v1 - https://lore.kernel.org/lkml/GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM/
 
-Helge
+Yuran Pereira (4):
+  Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
+  Replaces the usage of CHECK calls for ASSERTs in bind_perm
+  Replaces the usage of CHECK calls for ASSERTs in bpf_obj_id
+  selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in
+    vmlinux
 
-=2D--
+ .../selftests/bpf/prog_tests/bind_perm.c      |   6 +-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     | 204 +++++++-----------
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  50 ++---
+ .../selftests/bpf/prog_tests/vmlinux.c        |  16 +-
+ 4 files changed, 106 insertions(+), 170 deletions(-)
 
-From: Helge Deller <deller@gmx.de>
-Subject: [PATCH] prctl: Disable prctl(PR_SET_MDWE) on parisc
+-- 
+2.25.1
 
-systemd-254 tries to use prctl(PR_SET_MDWE) for it's MemoryDenyWriteExecut=
-e
-functionality, but fails on parisc which still needs executable stacks in
-certain combinations of gcc/glibc/kernel.
-
-Disable prctl(PR_SET_MDWE) by returning -EINVAL for now on parisc, until
-userspace has catched up.
-
-Signed-off-by: Helge Deller <deller@gmx.de>
-Co-developed-by: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Sam James <sam@gentoo.org>
-Closes: https://github.com/systemd/systemd/issues/29775
-Tested-by: Sam James <sam@gentoo.org>
-Link: https://lore.kernel.org/all/875y2jro9a.fsf@gentoo.org/
-Cc: <stable@vger.kernel.org> # v6.3+
-
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 420d9cb9cc8e..e219fcfa112d 100644
-=2D-- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -2394,6 +2394,10 @@ static inline int prctl_set_mdwe(unsigned long bits=
-, unsigned long arg3,
-         if (bits & PR_MDWE_NO_INHERIT && !(bits & PR_MDWE_REFUSE_EXEC_GAI=
-N))
-                 return -EINVAL;
-
-+       /* PARISC cannot allow mdwe as it needs writable stacks */
-+       if (IS_ENABLED(CONFIG_PARISC))
-+               return -EINVAL;
-+
-         current_bits =3D get_current_mdwe();
-         if (current_bits && current_bits !=3D bits)
-                 return -EPERM; /* Cannot unset the flags */
