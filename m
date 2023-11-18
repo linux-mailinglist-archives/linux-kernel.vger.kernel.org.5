@@ -2,139 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8225C7EFF29
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014577EFF2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 12:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjKRLHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 06:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
+        id S229739AbjKRLK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 06:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjKRLHQ (ORCPT
+        with ESMTP id S229469AbjKRLKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 06:07:16 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6BFD6A;
-        Sat, 18 Nov 2023 03:07:12 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SXWF532Tjz4f3lg2;
-        Sat, 18 Nov 2023 19:07:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-        by mail.maildlp.com (Postfix) with ESMTP id 87DF41A0175;
-        Sat, 18 Nov 2023 19:07:09 +0800 (CST)
-Received: from [10.174.176.83] (unknown [10.174.176.83])
-        by APP4 (Coremail) with SMTP id gCh0CgBndUXamlhlYXoxBQ--.553S2;
-        Sat, 18 Nov 2023 19:07:09 +0800 (CST)
-Message-ID: <bfb801e5-3fa9-8bdf-0a00-23dfe8e41dbe@huaweicloud.com>
-Date:   Sat, 18 Nov 2023 19:07:06 +0800
+        Sat, 18 Nov 2023 06:10:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593DBD6C
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700305849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zcW40Pm/C2VhC3hYpvH2rN7+M3PaPEN3Ao5G1XKi4yM=;
+        b=OEdsLfjcdDRwEE9Mxl7WQL713jqJ8J1PEqAukqrObtaRViHDxvqZakO2zBdtSq4NHDkDWD
+        pOQKDVIV8s8VrMpcAOncIZPxt2fcF8BIL8yzfoM138+esC+FZ/ZEsSWzQZY2ype6HR/oUW
+        IoXPXCjhaDuOyKt5Z7BXm+S8FDuxrOY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-247-YJxqXrZiM-Sq6Et9oJhhlA-1; Sat, 18 Nov 2023 06:10:47 -0500
+X-MC-Unique: YJxqXrZiM-Sq6Et9oJhhlA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4083a670d25so2471965e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 03:10:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700305846; x=1700910646;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zcW40Pm/C2VhC3hYpvH2rN7+M3PaPEN3Ao5G1XKi4yM=;
+        b=lgc1dT0enOcX7aOHZ84E46ariGZzkeHjqwmCkGYHDqZ2ir5uRKvXSv8UDNnHcjog2M
+         5ZCRW31ribUjKQoOCcCpWp0lOSF3pbzXMnCN3F+KyKCUHxkB4x5BxakJEbKmhBCNp2ya
+         bCvK6Q9LiLu3p5Ztrg9zWNTCjNFVFINm2aGPQUXrPputLsrlu3gjzedG4GtYYrx2f6Qh
+         1K5BwSVlAFo4B+duRvXpCjbyjfL8BYm63oHodOsYfSo6gJsgWjLnOvUANzrCrt2AStG7
+         RHpTImV+lSQ8U2Z1TVKZss2WAmklvC6Cq7Z8zF50R4KTgImDtyRtD6admXAcgJ85UTl4
+         Fg/Q==
+X-Gm-Message-State: AOJu0YyXkylzIdCz4eu9R5FlOC6LRIo0HclkDhUmoJgJtDHR0dcUTkK2
+        td5nmr8yI1L9KBTKws1HhvMQlgQhOfaFPKE5buiThvZOzS8mWUKyKUH5FUW+7Sm8f/b3y/xFzba
+        1ffArKSpy+OHn34nrPmopqMLI
+X-Received: by 2002:adf:ef92:0:b0:32d:9cdd:a23 with SMTP id d18-20020adfef92000000b0032d9cdd0a23mr1563667wro.25.1700305846414;
+        Sat, 18 Nov 2023 03:10:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5Qbad3a6WzEcATGME42HhfaqZx1bG/yleXweOgoccNqiDLr2I5NcRH9p1kx3aG3lak43/aA==
+X-Received: by 2002:adf:ef92:0:b0:32d:9cdd:a23 with SMTP id d18-20020adfef92000000b0032d9cdd0a23mr1563650wro.25.1700305845984;
+        Sat, 18 Nov 2023 03:10:45 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id o6-20020a5d4086000000b003316e684c5esm2950657wrp.79.2023.11.18.03.10.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 03:10:45 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, Sergio Lopez <slp@redhat.com>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Hector Martin <marcan@marcan.st>,
+        Andrew Worsley <amworsley@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer
+ node is found
+In-Reply-To: <CAMj1kXG7Xyk0ys9j-XRo7Rr8gYz1qJE8fFSixBOwVbm-pjeX+A@mail.gmail.com>
+References: <20231113085305.1823455-1-javierm@redhat.com>
+ <CAL_JsqKHTN5hfd4qpg5RXbmQLKZNVywDkSj9mxvfGmjrcChQQg@mail.gmail.com>
+ <87jzqi59bt.fsf@minerva.mail-host-address-is-not-set>
+ <CAL_JsqJM9+cbNviwuKGB5+3YbyAP3UH+TxCxsU5nUtX-iRGP2w@mail.gmail.com>
+ <CAMj1kXG7Xyk0ys9j-XRo7Rr8gYz1qJE8fFSixBOwVbm-pjeX+A@mail.gmail.com>
+Date:   Sat, 18 Nov 2023 12:10:44 +0100
+Message-ID: <874jhj1fm3.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 -next 1/5] spi: mockup: Add SPI controller testing
- driver
-To:     Mark Brown <broonie@kernel.org>
-Cc:     zhangxiaoxu5@huawei.com, weiyongjun1@huawei.com,
-        rostedt@goodmis.org, mingo@redhat.com, frowand.list@gmail.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231104064650.972687-1-zhangxiaoxu@huaweicloud.com>
- <20231104064650.972687-2-zhangxiaoxu@huaweicloud.com>
- <ZUjVBKuviXwM0aiR@finisterre.sirena.org.uk>
-From:   huaweicloud <zhangxiaoxu@huaweicloud.com>
-In-Reply-To: <ZUjVBKuviXwM0aiR@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBndUXamlhlYXoxBQ--.553S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1DWry8Zr15Zw45Kr4xXrb_yoW8uw1fpF
-        WjkF4UtFZ5JF47W3Wq93W8CF13urnIkF4UJw4vga4Skr93uFyfCry3KrWayFyrurWvq34I
-        vay2vwn8ZFZ0vrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: x2kd0wp0ld053x6k3tpzhluzxrxghudrp/
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Ard Biesheuvel <ardb@kernel.org> writes:
 
-Thanks for your review.
+Hello Ard,
 
-Most of the comments have been modified. and the v4 has been sent
-to the maillist, as has the KDDV (Kernel Device Driver Verfication)
-test framework based on python unittests.
+> On Fri, 17 Nov 2023 at 00:09, Rob Herring <robh@kernel.org> wrote:
 
-Looking forward for your comments.
+[...]
 
-Thanks.
-
-
-在 2023/11/6 19:59, Mark Brown 写道:
-> On Sat, Nov 04, 2023 at 02:46:46PM +0800, Zhang Xiaoxu wrote:
-> 
->> This is accomplished by executing the following command:
+>> > >
+>> > > This could also lead to an interesting scenario. As simple-framebuffer
+>> > > can define its memory in a /reserved-memory node, but that is ignored
+>> > > in EFI boot. Probably would work, but only because EFI probably
+>> > > generates its memory map table from the /reserved-memory nodes.
+>> > >
+>> >
+>> > I see. So what would be the solution then? Ignoring creating a platform
+>> > device for "simple-framebuffer" if booted using EFI and have an EFI-GOP?
 >>
->> $ echo adcxx1s 0 > /sys/class/spi_master/spi0/new_device
-> 
-> That's not a valid sysfs format, sysfs requires one value per file.
-> configfs might be a better fit?
-> 
->> +config SPI_MOCKUP
->> +	tristate "SPI controller Testing Driver"
->> +	depends on OF
-> 
-> Why would this depend on DT?  Given that any test SPI controller is a
-> virtual device it should never appear in DT and we probably shouldn't
-> require providing DT for the created devices even if we implement
-> support for that, only some devices might care.
-> `
->> +++ b/drivers/spi/spi-mockup.c
->> @@ -0,0 +1,211 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * SPI controller Testing Driver
->> + *
->> + * Copyright(c) 2022 Huawei Technologies Co., Ltd.
->> + */
-> 
-> Please keep the entire comment a C++ one so things look more
-> intentional.
-> 
->> +#define MOCKUP_CHIPSELECT_MAX		8
-> 
-> Why would we have a hard coded limit here?
-When register the spi controller, we need to specify the maximun
-number of chips. Modify it to U16_MAX in next version.
-> 
->> +	blank = strchr(buf, ' ');
->> +	if (!blank) {
->> +		dev_err(dev, "%s: Extra parameters\n", "new_device");
->> +		return -EINVAL;
->> +	}
-> 
-> There is no point in using %s to render a constant string.
-> 
->> +static const struct of_device_id spi_mockup_match[] = {
->> +	{ .compatible = "spi-mockup", },
->> +	{ }
->> +};
->> +MODULE_DEVICE_TABLE(of, spi_mockup_match);
-> 
-> If we were going to instantiate this via DT we'd need a binding, but as
-> I indicated above since this is purely virtual and not even something
-> like virtual hardware provided by a VMM but rather just something kernel
-> internal we should probably not be using DT at all.  Providing a device
-> facing DT interface might be useful, but that's a second stage thing.
+>> Shrug. I don't really know anything more about EFI FB, but I would
+>> guess it can't support handling resources like clocks, power domains,
+>> regulators, etc. that simple-fb can. So if a platform needs those, do
+>> we say they should not setup EFI-GOP? Or is there a use case for
+>> having both? Clients that don't muck with resources can use EFI-GOP
+>> and those that do use simple-fb. For example, does/can grub use
+>> EFI-GOP, but not simple-fb?
+>>
+>
+> The EFI GOP is just a dumb framebuffer, and it is not even generally
+> possible to cross reference the GOP with a particular device in the
+> device hierarchy unless you e.g., compare the BARs of each device with
+> the region described by the GOP protocol.
+>
+> GRUB for EFI will use the GOP and nothing else, but only at boot time
+> (the GOP protocol is more than a magic linear memory region, it also
+> implements a Blt() abstraction that permits the use of framebuffers
+> that are not mapped linearly into the address space at all, and GRUB
+> makes use of this)
+>
+> The EFI stub will only expose GOPs to the kernel if they are in fact
+> linear framebuffers, but has zero insight into whether the hardware
+> needs clocks and regulators, and whether or not the framebuffer needs
+> IOMMU pass through (which might be the case if the scanout is using
+> DMA into system memory)
+>
+> So calling EFI GOP 'source of truth' is rather generous, and I think
+> it makes sense to prioritize more accurate descriptions of the
+> underlying framebuffer over EFI GOP.
+>
+
+That was my opinion as well and the reason why I called the DTB the
+single source of truth.
+
+> However, making 'simple-framebuffer' magic in this regard doesn't seem
+> like a great approach to me. Is there a better way we could get the
+> resource conflict to be decided in a way where the EFI GOP gets
+> superseded if its resources are claimed by another device?
+>
+
+There is an aperture [0] framework that is used by the fbdev and DRM
+subsystems to allow native drivers to remove any conflicting devices
+that share the same framebuffer aperture.
+
+But it only makes sense for native drivers to use that I think, but
+in this case is about two drivers that attempt to use the same frame
+buffer provided by the firmware but getting it from different places.
+
+I don't have a better idea than this patch but maybe Thomas or Sima do?
+
+[0]: https://elixir.bootlin.com/linux/latest/source/drivers/video/aperture.c
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
