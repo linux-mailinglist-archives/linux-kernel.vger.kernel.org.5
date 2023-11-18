@@ -2,69 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4887F013E
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:58:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380D27F0146
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 18:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbjKRQ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 11:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
+        id S229986AbjKRRMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 12:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKRQ6f (ORCPT
+        with ESMTP id S229463AbjKRRMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 11:58:35 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E904E5;
-        Sat, 18 Nov 2023 08:58:32 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d9ca471cf3aso2890272276.2;
-        Sat, 18 Nov 2023 08:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700326711; x=1700931511; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s+puumHBwG15d9J6rc0y92l94G1vv6CAlOkN6zqMuV0=;
-        b=OyHHTfN8OWCfVHTs3YJzi+i1odxmjrMdY+RIhzxNdrJwC2V2/qFaYl7GJ2MRXM8w+R
-         8UoUivcBOhVLsG26KadiRR9OF1SRRfJXrLBiIvCR1TnrxD503gRJhVR6BzsA7gl73sLa
-         jCpwYuqT6rjkJuw9wMaE5POFJ/UptMjwxJcGqQzlwGKNAAEZUQQhCZlCVgf4pv1fkJ8o
-         SXQntDUx4t5wOcTCKwHeQqoe3n7+s/m/SZgRcvG3+/9MMb/HHlHUZ1+ObBBWtB5P0vcA
-         /dWEj4vIgQp4crj7nU9N0eViRgLoGz7wPC+j+AYsjUfb65dNLPClcuZ6GBKAtXZTXKZ0
-         7IgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700326711; x=1700931511;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s+puumHBwG15d9J6rc0y92l94G1vv6CAlOkN6zqMuV0=;
-        b=T7pODJQ0eDykD25pVybO8Y23TFgijDqvTHgDTg3Wxyp5anr5LAN6xBLSz/RF9Y7aJT
-         kwIXaMQDR6hoJJ7xeZNVLytWVdaj+PoAjwraM0nJHVEJ51VRoWdR1eaIGzwApGgAxIAQ
-         bSIY+ylZa2kvFwNsTaXOoVrJHjQZKfujExSye20KxgFFcKP56NW5Iqsikisg+32WwmbP
-         loxQOLGeW0Is8p1RYOncThLJbaoaeLAxLZ6tJPsFq9LBMlA72BVF2OgJMj4gLIODsPK9
-         RQOfteANGgaSdhJplMP9s3XASTbEsDC8FEQqaEhrCFsFDLBkeX8Qf3zNoXBOmC46oJ/L
-         vhMQ==
-X-Gm-Message-State: AOJu0YwOU4Y7BqzMhipM/oF7SVHCJHcNjfUPyYxUCfKpGxaQRbIsjMwr
-        nJVeFILekce/HE53IAxgM5VVjU1BcQ/8wrRFFek=
-X-Google-Smtp-Source: AGHT+IEiHHassuObi4T4IbCqGNK6bxkEISXFCSXcgm/rvOZinGs4+1EcvnBaloGDhAB8ee7sFndHInenrYwiqxcNN2M=
-X-Received: by 2002:a25:dbc5:0:b0:db0:2f97:8757 with SMTP id
- g188-20020a25dbc5000000b00db02f978757mr2705194ybf.38.1700326711409; Sat, 18
- Nov 2023 08:58:31 -0800 (PST)
+        Sat, 18 Nov 2023 12:12:45 -0500
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBA0B8
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 09:12:40 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VwclsC7_1700327550;
+Received: from localhost.localdomain(mailfrom:CruzZhao@linux.alibaba.com fp:SMTPD_---0VwclsC7_1700327550)
+          by smtp.aliyun-inc.com;
+          Sun, 19 Nov 2023 01:12:38 +0800
+From:   Cruz Zhao <CruzZhao@linux.alibaba.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, joel@joelfernandes.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3] sched/core: fix incorrect cpustat[CPUTIME_FORCEIDLE] update
+Date:   Sun, 19 Nov 2023 01:12:30 +0800
+Message-Id: <20231118171230.4999-1-CruzZhao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
-In-Reply-To: <20231101142445.8753-1-ddrokosov@salutedevices.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 18 Nov 2023 18:57:55 +0200
-Message-ID: <CAHp75Vffji=WH8_vTwrvhmPqwD=NjqHB2B83dSk0axSWM9vTnA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/11] leds: aw200xx: several driver updates
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kernel@sberdevices.ru, rockosov@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,26 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 4:24=E2=80=AFPM Dmitry Rokosov
-<ddrokosov@salutedevices.com> wrote:
->
-> The following patch series includes several updates for the AW200XX LED
-> driver:
->     - some small fixes and optimizations to the driver implementation:
->       delays, autodimming calculation, disable_locking regmap flag,
->       display_rows calculation in runtime;
->     - fix LED device tree node pattern to accept LED names counting not
->       only from 0 to f;
->     - add missing reg constraints;
->     - support HWEN hardware control, which allows enabling or disabling
->       AW200XX RTL logic from the main SoC using a GPIO pin;
->     - introduce the new AW20108 LED controller, the datasheet for this
->       controller can be found at [1].
+In function __account_forceidle_time(), task_group_account_field()
+is called to update kernel_cpustat.cpustat[CPUTIME_FORCEIDLE].
+However, p may be not running on current cpu, so update cpustat with
+this_cpu_add() is incorrect.
 
-For non device tree binding patches
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-One nit I commented on the individual patch.
+To fix this problem, we get the cpu of p first, and then add delta
+to kcpustat_cpu(cpu).cpustat[CPUTIME_FORCEIDLE].
 
---=20
-With Best Regards,
-Andy Shevchenko
+Fixes: 1fcf54deb767 ("sched/core: add forced idle accounting for cgroups")
+Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
+---
+ kernel/sched/cputime.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index af7952f12e6c..8e6d9bf351c2 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -239,9 +239,12 @@ void account_idle_time(u64 cputime)
+  */
+ void __account_forceidle_time(struct task_struct *p, u64 delta)
+ {
++	unsigned int cpu = task_cpu(p);
++
+ 	__schedstat_add(p->stats.core_forceidle_sum, delta);
+ 
+-	task_group_account_field(p, CPUTIME_FORCEIDLE, delta);
++	kcpustat_cpu(cpu).cpustat[CPUTIME_FORCEIDLE] += delta;
++	cgroup_account_cputime_field(p, CPUTIME_FORCEIDLE, delta);
+ }
+ #endif
+ 
+-- 
+2.39.3
+
