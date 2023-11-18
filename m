@@ -2,116 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4BC7F00CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE56B7F00D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 17:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjKRQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 11:02:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S229662AbjKRQIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 11:08:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKRQCj (ORCPT
+        with ESMTP id S229478AbjKRQIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 11:02:39 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2109.outbound.protection.outlook.com [40.107.92.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE77D182;
-        Sat, 18 Nov 2023 08:02:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QVYE/WkwsmMmJVugsf6lCgeB62pMNDivyRnrFTl8+aT34O41rFiCTPOMVQc+elHTOt23OqIg87GPRV7QTI0ket5S4+XbuN2bctlaM2jeWULyfxgXK0ridkzNbrU2x48Xe2kCaLAiI2ixpD1XnQOcVvBa3nrYGOA6tpXaBdnRz16VV3Uo4Wl0vChaIMdecZ0C/kZ6vzZd8hqi8RLhCPWUtC90rRabH7CYZhUCYftpT5mM7SHX+t67hVPyncKJLhKxJPUiFWdsMZWo0zyIFRTuEixIO8Vw9tgirRS58RgK2km5U6dMxSqGdd1mIKUUcsSfGiiktKHzUC8l+212LFBntQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wv2MhPhz8vX5EVXTcetWaN6ncrvpW3Me+2LRl1lemRQ=;
- b=h1PBNTMcB9nn5Kor+BZk4/4VL1BkF48jpi/oJvVoCXoAi6xKNnasaMuKQPfifii62+o8zMhrCmC/U/43KAr6xK0DyRzxSkWCrjRAImNVCM5AZDREsUoY7kt6vrI5NtveUiGlyhQIWu8g5ganMifVNdq8TbagpJT6YAH1v40dfVMh+2FZDgBunNiFphD2a7Qrp12ETEsI2uE9BSJ3g6Nm2NhbMIgsVuoizbaayb4+Sm1BKqdismj2GkgKVT3hlMmiJgthko5hXcpmEJGX3MYpk7dfhRjRZM4djAv3S1wQBNlzMuihoozuoYwAXJsK7jvL5YXHveo/Fr+EsppgGJ+eIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wv2MhPhz8vX5EVXTcetWaN6ncrvpW3Me+2LRl1lemRQ=;
- b=IUezXz9IBNiQFOeyUY2OP0YRRmdUWbm/Ml6gB+MFFQduRZAiePtreHAewtgmkMqXxYXtbz91Fnv7S/PuWcks5RmrJIuyffc+q7aLUy4BNSm7ItTY6nk8Qb8ggbt41pyP91U3ENfQsdytJgQFcM9dkjmkvz0fFFjMbZAZ+4h1Eh0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
- IA0PR01MB8306.prod.exchangelabs.com (2603:10b6:208:480::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.25; Sat, 18 Nov 2023 16:02:32 +0000
-Received: from PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77]) by PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77%7]) with mapi id 15.20.6977.028; Sat, 18 Nov 2023
- 16:02:32 +0000
-From:   Huang Shijie <shijie@os.amperecomputing.com>
-To:     catalin.marinas@arm.com
-Cc:     will@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
-        arnd@arndb.de, mark.rutland@arm.com, broonie@kernel.org,
-        keescook@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        patches@amperecomputing.com,
-        Huang Shijie <shijie@os.amperecomputing.com>
-Subject: [PATCH v3] arm64: irq: set the correct node for VMAP stack
-Date:   Sun, 19 Nov 2023 00:02:05 +0800
-Message-Id: <20231118160205.3923-1-shijie@os.amperecomputing.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <ZVZO55IjQSbzWnfG@arm.com>
-References: <ZVZO55IjQSbzWnfG@arm.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH5P222CA0013.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:610:1ee::14) To PH0PR01MB7975.prod.exchangelabs.com
- (2603:10b6:510:26d::15)
+        Sat, 18 Nov 2023 11:08:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63160A0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 08:08:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCBF9C433AB;
+        Sat, 18 Nov 2023 16:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700323716;
+        bh=Rsnqi1ib4EvnXINLKabP7yw4uoi1oK5ej3itZD7VvwE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TZbW/M05LVwPMqWrhx9TKrKAmJhZWl5oGZokrp6Yk372oMK1SWeer8oqfOmkHhrWR
+         Pb874z3lvuDQZyHxPY2FY1wz7XLr/nN7jQE5/GtXNhXPnEL13OHtq4LroScNw8G5vO
+         bLDR+6HkW8reckqHCtvI3Pn91dQnI265wfRhp9e7lXQbPrAARLBJ4bfAqpckWpPwWO
+         /0VuVGXKvO9UrKAj9FoErIVwTYmCUzjiygrMSQywP4P5omdSn+aGf5jmw+s9Ht631A
+         OBnb7j4QKGmaaRPJyjREAq0DGcs9gkxdmbTyk+3BT0j3jVKMKWUNzJHErY2T7gQTeS
+         fxws+iP0PAm4g==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso38535361fa.3;
+        Sat, 18 Nov 2023 08:08:36 -0800 (PST)
+X-Gm-Message-State: AOJu0YzwUWut7Z59kc5r581WyDwIwVAzMwFTclmRQtvfZGs97orBpdeX
+        p022IRuHtrQfDQwOWPV8nEH5uMSrnSs4VkBzZkg=
+X-Google-Smtp-Source: AGHT+IG+EcBo0sANe4tTYtYM/fJV1YsiGyWzUxPjCVXnMZoFkdXUA3+0TtwXrE30/Pq6G+Dt5ITe1U4wqTtWliRSTrM=
+X-Received: by 2002:a2e:97c8:0:b0:2c8:6f66:27a7 with SMTP id
+ m8-20020a2e97c8000000b002c86f6627a7mr2087546ljj.23.1700323714932; Sat, 18 Nov
+ 2023 08:08:34 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|IA0PR01MB8306:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6d36c0ee-4d1a-44ad-704d-08dbe84fc578
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nC8TVmGGqpY7I48bdngWs164A5sdGUTuITlZWfudmdiobWnuxrTMKGZiGDWxfxv1+HO5rX1b0qiVZkf9Qw7kq58ZElIxDbmsHxehdJ1ORnui+KWJwQvyPt6Y1xZ4bbwDiNTPQcNakHeQspp3+K4QIVeBhrqedqgTKhJCLTsoHV0HoAnq+hQ/i8BayE5TYUa2zaD53rnQxAe8F4JOYKLWvwvNn7uEpOpEQ5l8xNl66J0HmRcHDoJOI8g+3KZKA+FqjAqbILaO3UMC6nSn/h+UfqkZKSO/tWbv2IOGAU6F+MWX7W0SXL922szIOgCZw1QbGHNl6kYgGxcg37+Guua7ZbZpe5NxA89hZ25H7F6+g2UC9daQfJJ5rfoONQV9YVKwNINk/HPBhZDuwpDbPfCbz4ilpEzlmtVaXqhyY1GGWtMjwOU2CABuONYROilpyABnJJSpz5KDezcVMIff4rTiOMEje/LUGoXOTSCdSdqMfgTJtZYHxJxnNNPGi8uZLjU6v0Lybj4US438k3H/VIYIjJCain9RNb7CDyCrJcxmGy7/MEgl9+vOpRZpz50wfJPzl7SPWSYhsx6Vh8vwV6faw3F5E4Z5RLRCEkb/rCGbBRlnkLF2PudUnr5F9Fsuvava
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(396003)(346002)(376002)(366004)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66556008)(66476007)(66946007)(6916009)(316002)(52116002)(6512007)(6666004)(6506007)(2616005)(26005)(1076003)(107886003)(478600001)(6486002)(38350700005)(38100700002)(83380400001)(86362001)(2906002)(5660300002)(7416002)(4326008)(8676002)(8936002)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Y8NJEKdv7MXmP7KocyeknDxYAavKS/wWC3OR0PZoCYY5tbm6va9dDGkwBrx6?=
- =?us-ascii?Q?bguIp1gzMm5gyMTb/icATkP48/zi9qrq1BZjR6X11rqi5cuQ8vM3O057aXvE?=
- =?us-ascii?Q?DJMTlUeeAoLoIeh3/CcGy/32zsFB/7JHVQUXuwbeU0jElXJKDfT31bWZmemO?=
- =?us-ascii?Q?/fxKoz5n+CG0zmFTaSBhZsmIH/XLgEAgfiGQm5u2dVaVbXiQlNnN7DPUNMW3?=
- =?us-ascii?Q?aJsYeAzq0rwGkHIygyCsHe5lvvasar0Wd8YWHc3C24tKG9TXLzJlr2AKnFql?=
- =?us-ascii?Q?/4tS1KF8QfP2HuHM7DFb00wdTY8SZ9Bzx/wwR9Q/zncjR2Yo5+jUM1EYGMKH?=
- =?us-ascii?Q?WK45fGQD6HnvMEgztnLItcwIFxgJ11tnnifUTHnYU+Z/bssnZeBi67/Lv2oY?=
- =?us-ascii?Q?GbCWD2L5KbaTnOCYUTvwqZ6FYo5SmByLuneRsyioULLwqHjAfg86jGWsOlkh?=
- =?us-ascii?Q?u2HSuHtqH9AhJvT0v122H98qVx8i4Td0qzwjVaGKXrAOscvw8t8oQ4NIFT0O?=
- =?us-ascii?Q?FscxhJ2NrMWIr4npo9KxrMoR6nK/bDCi9BRBM4Gd62Qb8FV/KG9q7WPaIRgq?=
- =?us-ascii?Q?0/xdrMs6svS7xcXQ5ikxxVXeCUEP6kLjGbKJAB8jUKbqROL/6+EEHQ0UzZ9Z?=
- =?us-ascii?Q?CA0Orbwpuze2O9glDMRRm/WJy3cdBu4O9CC00+osHW0lcpD+fOdXajZMV6uH?=
- =?us-ascii?Q?QN+L+6zCbeq4O39QXjEDzPqpoEfDB2IEX5WvZkzc5ItspWHdmuNdfQYoS+Kt?=
- =?us-ascii?Q?1SjWgBF6TqCxxJ2Jos6Rzr3W+jIw94vn6yWrUaqRPeOK9zPKmunshm70FYmW?=
- =?us-ascii?Q?ejUsTEhH6JviA7xaVS1WBCyqdjsQ+FzRyqIq3JK6LHcEALOY3sloIIu5d1zd?=
- =?us-ascii?Q?IL02y8xvU/oDE5O82PX/yc3B7hjdBtPQBlI79r5OZ4sH2fMbNTOBDFVyrh9B?=
- =?us-ascii?Q?DGE5xualowQP+i6UcGJIuLD5uDivSeFc/S77fsPfgtLhJkn8onxd3S7E+Nc9?=
- =?us-ascii?Q?DN4sYFYDBjivFeT92TtMvXpWNLFIblxvUGdh3Eq8+2JEH10HEkLXTN8olDok?=
- =?us-ascii?Q?sphuxRShQRy89D/5FtTataEFdVHlX3h1P1uBHMG2pFNI6b+8bz/4DaGhUjBu?=
- =?us-ascii?Q?aGBYQTgkHHfOzY7znYIQ2kGRcGNxEK0md+tVPuKVrzn+Y82gI6vLZDeZczbP?=
- =?us-ascii?Q?wDchh/sgnIK/mZUk/RbeVIMKcsdRuXfWPSosz/HTGmMSSYHz9J4QNcZ8HH8J?=
- =?us-ascii?Q?AkZCaDbs0OGW5oVLv0CKZna0ElcsEEBy3StFX9EV8FLC/8L9/yMk4CToVlOP?=
- =?us-ascii?Q?dhDACZ8sOGf9hiK1Kf7yswIGZy1x309RkkJYPZxNU0DBem6HKr4BNRO2x8uX?=
- =?us-ascii?Q?x9F9NFS2Va55dtb2VJfF7xwLwOAiqUVfzXejEOkcAY1U3I+dYiLNZRd347MA?=
- =?us-ascii?Q?SWTlyn57sfKSLK7JeDTDbcpW9nyJ7/XsH+QKlXxGkZMijuwePi8Z+Qy07czK?=
- =?us-ascii?Q?JlBy/2T8A/WVwZlO3L+8eX6WyjEhaRITiZKN+skKW0BQPQwWIUZGmLnWJJ6j?=
- =?us-ascii?Q?Fyl/XnSunz2gfGdjU5MJ2mAQM25aGhxYjsu8jkLmVb7ZaFVNFozWsN1ItKZQ?=
- =?us-ascii?Q?yQ=3D=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d36c0ee-4d1a-44ad-704d-08dbe84fc578
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2023 16:02:31.9315
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wlRs/yK7rDRQIWa8tsCRGI5iApSbE90Hdo9ajnOm8+l8i/i3Bo3iIMM1MK6sCjnn3SePn5PDMdOX80TeFHZIy8FGg9vHvyof77bKx8I5XNXucHFnaTV23XnJyWQSYQtm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR01MB8306
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+In-Reply-To: <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sat, 18 Nov 2023 08:08:22 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+Message-ID: <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,85 +90,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current code, init_irq_stacks() will call cpu_to_node().
-The cpu_to_node() depends on percpu "numa_node" which is initialized in:
-     arch_call_rest_init() --> rest_init() -- kernel_init()
-	--> kernel_init_freeable() --> smp_prepare_cpus()
+Hi,
 
-But init_irq_stacks() is called in init_IRQ() which is before
-arch_call_rest_init().
+A few rookie questions below.
 
-So in init_irq_stacks(), the cpu_to_node() does not work, it
-always return 0. In NUMA, it makes the node 1 cpu accesses the IRQ stack which
-is in the node 0.
+On Sat, Nov 18, 2023 at 2:39=E2=80=AFAM Akihiko Odaki <akihiko.odaki@daynix=
+.com> wrote:
+>
+> On 2023/10/18 4:19, Akihiko Odaki wrote:
+> > On 2023/10/18 4:03, Alexei Starovoitov wrote:
+[...]
+> >
+> > I would also appreciate if you have some documentation or link to
+> > relevant discussions on the mailing list. That will avoid having same
+> > discussion you may already have done in the past.
+>
+> Hi,
+>
+> The discussion has been stuck for a month, but I'd still like to
+> continue figuring out the way best for the whole kernel to implement
+> this feature. I summarize the current situation and question that needs
+> to be answered before push this forward:
+>
+> The goal of this RFC is to allow to report hash values calculated with
+> eBPF steering program. It's essentially just to report 4 bytes from the
+> kernel to the userspace.
 
-This patch fixes it by exporting the early_cpu_to_node(), and use it
-in the init_irq_stacks().
+AFAICT, the proposed design is to have BPF generate some data
+(namely hash, but could be anything afaict) and consume it from
+user space. Instead of updating __sk_buff, can we have the user
+space to fetch the data/hash from a bpf map? If this is an option,
+I guess we can implement the same feature with BPF tracing
+programs?
 
-Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
----
-v2 --> v3:
-	move the "numa.h" to the right position.
----
- arch/arm64/kernel/irq.c    | 3 ++-
- drivers/base/arch_numa.c   | 2 +-
- include/asm-generic/numa.h | 2 ++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+>
+> Unfortunately, however, it is not acceptable for the BPF subsystem
+> because the "stable" BPF is completely fixed these days. The
+> "unstable/kfunc" BPF is an alternative, but the eBPF program will be
+> shipped with a portable userspace program (QEMU)[1] so the lack of
+> interface stability is not tolerable.
 
-diff --git a/arch/arm64/kernel/irq.c b/arch/arm64/kernel/irq.c
-index 6ad5c6ef5329..d9ee14723478 100644
---- a/arch/arm64/kernel/irq.c
-+++ b/arch/arm64/kernel/irq.c
-@@ -22,6 +22,7 @@
- #include <linux/vmalloc.h>
- #include <asm/daifflags.h>
- #include <asm/exception.h>
-+#include <asm/numa.h>
- #include <asm/softirq_stack.h>
- #include <asm/stacktrace.h>
- #include <asm/vmap_stack.h>
-@@ -57,7 +58,7 @@ static void init_irq_stacks(void)
- 	unsigned long *p;
- 
- 	for_each_possible_cpu(cpu) {
--		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, cpu_to_node(cpu));
-+		p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
- 		per_cpu(irq_stack_ptr, cpu) = p;
- 	}
- }
-diff --git a/drivers/base/arch_numa.c b/drivers/base/arch_numa.c
-index eaa31e567d1e..90519d981471 100644
---- a/drivers/base/arch_numa.c
-+++ b/drivers/base/arch_numa.c
-@@ -144,7 +144,7 @@ void __init early_map_cpu_to_node(unsigned int cpu, int nid)
- unsigned long __per_cpu_offset[NR_CPUS] __read_mostly;
- EXPORT_SYMBOL(__per_cpu_offset);
- 
--static int __init early_cpu_to_node(int cpu)
-+int early_cpu_to_node(int cpu)
- {
- 	return cpu_to_node_map[cpu];
- }
-diff --git a/include/asm-generic/numa.h b/include/asm-generic/numa.h
-index 1a3ad6d29833..16073111bffc 100644
---- a/include/asm-generic/numa.h
-+++ b/include/asm-generic/numa.h
-@@ -35,6 +35,7 @@ int __init numa_add_memblk(int nodeid, u64 start, u64 end);
- void __init numa_set_distance(int from, int to, int distance);
- void __init numa_free_distance(void);
- void __init early_map_cpu_to_node(unsigned int cpu, int nid);
-+int early_cpu_to_node(int cpu);
- void numa_store_cpu_info(unsigned int cpu);
- void numa_add_cpu(unsigned int cpu);
- void numa_remove_cpu(unsigned int cpu);
-@@ -46,6 +47,7 @@ static inline void numa_add_cpu(unsigned int cpu) { }
- static inline void numa_remove_cpu(unsigned int cpu) { }
- static inline void arch_numa_init(void) { }
- static inline void early_map_cpu_to_node(unsigned int cpu, int nid) { }
-+static inline int early_cpu_to_node(int cpu) { return 0; }
- 
- #endif	/* CONFIG_NUMA */
- 
--- 
-2.40.1
+bpf kfuncs are as stable as exported symbols. Is exported symbols
+like stability enough for the use case? (I would assume yes.)
 
+>
+> Another option is to hardcode the algorithm that was conventionally
+> implemented with eBPF steering program in the kernel[2]. It is possible
+> because the algorithm strictly follows the virtio-net specification[3].
+> However, there are proposals to add different algorithms to the
+> specification[4], and hardcoding the algorithm to the kernel will
+> require to add more UAPIs and code each time such a specification change
+> happens, which is not good for tuntap.
+
+The requirement looks similar to hid-bpf. Could you explain why that
+model is not enough? HID also requires some stability AFAICT.
+
+Thanks,
+Song
+
+>
+> In short, the proposed feature requires to make either of three compromis=
+es:
+>
+> 1. Compromise on the BPF side: Relax the "stable" BPF feature freeze
+> once and allow eBPF steering program to report 4 more bytes to the kernel=
+.
+>
+> 2. Compromise on the tuntap side: Implement the algorithm to the kernel,
+> and abandon the capability to update the algorithm without changing the
+> kernel.
+>
+> IMHO, I think it's better to make a compromise on the BPF side (option
+> 1). We should minimize the total UAPI changes in the whole kernel, and
+> option 1 is much superior in that sense.
+>
+> Yet I have to note that such a compromise on the BPF side can risk the
+> "stable" BPF feature freeze fragile and let other people complain like
+> "you allowed to change stable BPF for this, why do you reject [some
+> other request to change stable BPF]?" It is bad for BPF maintainers. (I
+> can imagine that introducing and maintaining widely different BPF
+> interfaces is too much burden.) And, of course, this requires an
+> approval from BPF maintainers.
+>
+> So I'd like to ask you that which of these compromises you think worse.
+> Please also tell me if you have another idea.
+>
+> Regards,
+> Akihiko Odaki
+>
+> [1] https://qemu.readthedocs.io/en/v8.1.0/devel/ebpf_rss.html
+> [2]
+> https://lore.kernel.org/all/20231008052101.144422-1-akihiko.odaki@daynix.=
+com/
+> [3]
+> https://docs.oasis-open.org/virtio/virtio/v1.2/csd01/virtio-v1.2-csd01.ht=
+ml#x1-2400003
+> [4]
+> https://lore.kernel.org/all/CACGkMEuBbGKssxNv5AfpaPpWQfk2BHR83rM5AHXN-YVM=
+f2NvpQ@mail.gmail.com/
