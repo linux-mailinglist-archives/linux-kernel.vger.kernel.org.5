@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E855F7F0023
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 15:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326657F0027
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 15:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjKROcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 09:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S229761AbjKROfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 09:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjKROcf (ORCPT
+        with ESMTP id S229469AbjKROfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 09:32:35 -0500
-X-Greylist: delayed 399 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 18 Nov 2023 06:32:31 PST
-Received: from smtp-190e.mail.infomaniak.ch (smtp-190e.mail.infomaniak.ch [IPv6:2001:1600:4:17::190e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E82A6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 06:32:31 -0800 (PST)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4SXbfQ4L87zMpy3H;
-        Sat, 18 Nov 2023 14:25:50 +0000 (UTC)
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4SXbfQ1NRXzMppt6;
-        Sat, 18 Nov 2023 15:25:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bigler.io;
-        s=20200409; t=1700317550;
-        bh=H+1zXZpsNczUhfrvwhG7NO2oFhIsltQEiYuOsbFYusE=;
-        h=Date:Subject:From:Reply-To:To:Cc:From;
-        b=u+0Wy3rDOk7Ccf38HwkOLq+WEGFGSOr0cPL92/DHC9HceH5spA0CbnWi5dvgz1ISg
-         NggCA8dihtRH2oHxb7eeAN/Rog+Dr7wX4PWFBoYnm/RlmNXFJEnIibuIkTaqko+8Uo
-         iUEF+3ZZrD+4FWkBZgNHF9AGelrIFkvNzLXwtR3w=
-Message-ID: <8a415902c751cdbb4b20ce76569216ed@mail.infomaniak.com>
-Date:   Sat, 18 Nov 2023 15:25:50 +0100
-Subject: spi: imx: Increase imx51 ecspi burst length fails on imx6dl and
- imx8mm
-From:   linux@bigler.io
-Reply-To: linux@bigler.io
-To:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Cc:     linux@bigler.io
+        Sat, 18 Nov 2023 09:35:21 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A720196;
+        Sat, 18 Nov 2023 06:35:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=WepOBgGYhP2iPHXfLSJdrtcP/KdijGX4DDw5TtExb38=; b=ICT7ys2yuuz5dBBplm5lRh/5RH
+        8DQ/wBrdoRzImt37gHrrXGZbxFIq4nQUYdnoFZ7ub45vgsKXdsFQ3WpPYIwtzRGEaFUSWs9Jl8Cft
+        zV68Vv2CJet2uScBr/EMtq2w1ZSkE0yvexguq2PIPGaq2XB0x9Tap/3aCxuXzAYeukSpt01ru2o4w
+        7MdD2AzqMSjlu0CLptTCpQ3QDLr6gxqWc9v8RdDACx1Rd5uF0R/esxAjX0DldxAaJylPxhg6B5Zrm
+        sIoACMMyxvIad3j1tCTqoAiOBFKVS9XUS8iLiGQBCNMlSfF/nFqmtOvD+TiCYUoVZk0LZZVL0CFUB
+        y0pbCdCQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53404)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r4MPR-0003mC-32;
+        Sat, 18 Nov 2023 14:34:58 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r4MPP-0001Cx-B2; Sat, 18 Nov 2023 14:34:55 +0000
+Date:   Sat, 18 Nov 2023 14:34:55 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 01/15] net: dsa: mt7530: always trap frames to
+ active CPU port on MT7530
+Message-ID: <ZVjLj6/iCL/muzmH@shell.armlinux.org.uk>
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-2-arinc.unal@arinc9.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-WS-User-Origin: eyJpdiI6IlVmUDV4anJ4dUhYY0pOUTBhSDVPWmc9PSIsInZhbHVlIjoiU1o1MGtmTXVRZ0FZQkdqTFRrdEh6QT09IiwibWFjIjoiYzUyOGEyY2IwYThkZmRhNTRiZjA0MjU1ZTA1ZGNiNGEwMzdhYjY0YjgwZjg1ODhkZTE3ZGFiMGRmZGI4ZGQ3ZSIsInRhZyI6IiJ9
-X-WS-User-Mbox: eyJpdiI6IklLSzNBa2lGNlNEcVFQMFZ2eW40K0E9PSIsInZhbHVlIjoid1pOdnhuR3c0NVprbUkvQmdHa1h2dz09IiwibWFjIjoiMmIxMzRiMGExMTJmNGMwOTQ1YjllZmMzN2FkNTU5YTljMmIxZDY3MmZiODljZTI4NjRlZjViMzlmMTRiMjI5NCIsInRhZyI6IiJ9
-X-WS-Location: eJxzKUpMKykGAAfpAmU-
-X-Mailer: Infomaniak Workspace (1.3.595)
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231118123205.266819-2-arinc.unal@arinc9.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,33 +79,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After upgrade from kernel 6.5.11 to 6.6.1 the spi-devices on my hw=20
-colibri-imx6dl and verdin-imx8mm are not working anymore (TPM2 and SPI-SRAM=
-).
+On Sat, Nov 18, 2023 at 03:31:51PM +0300, Arınç ÜNAL wrote:
+> +	/* Set the CPU port to trap frames to for MT7530. Trapped frames will be
+> +	 * forwarded to the numerically smallest CPU port which the DSA conduit
+> +	 * interface its affine to is up.
+> +	 */
+> +	if (priv->id != ID_MT7530 && priv->id != ID_MT7621)
+> +		return;
+> +
+> +	if (operational)
+> +		priv->active_cpu_ports |= BIT(cpu_dp->index);
+> +	else
+> +		priv->active_cpu_ports &= ~BIT(cpu_dp->index);
+> +
+> +	if (priv->active_cpu_ports)
+> +		mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, CPU_EN |
+> +			   CPU_PORT(__ffs(priv->active_cpu_ports)));
 
-Analyzing the problem showed that the 2 commits introduced the problem:
+I would be tempted to write this as:
 
-spi: Increase imx51 ecspi burst length based on transfer length
-15a6af94a2779d5dfb42ee4bfac858ea8e964a3f
+	mask = BIT(cpu_dp->index);
 
-spi: imx: Take in account bits per word instead of assuming 8-bits
-5f66db08cbd3ca471c66bacb0282902c79db9274
+	if (operational)
+		priv->active_cpu_ports |= mask;
+	else
+		priv->active_cpu_ports &= ~mask;
 
-Reverting the commits solved the problem.
+Now, what happens when active_cpu_ports is zero? Doesn't that mean there
+is no active CPU port? In which case, wouldn't disabling the CPU port
+direction be appropriate, such as:
 
-The analyse with the logic-analyser showed a wrong number of transmitted =
-=20
-bytes and wrong data.
-When I try to send 127 Byte with a incrementing pattern (0x01,0x02,0x03,..)=
-,
-504 Bytes are sent (0x00,0x00,0x01 0x00,0x00,0x00,0x02, 0x00,0x00,0x00,0x03=
-).
-We tested with different sizes and patterns, all are not ok.
-While analysing the configuration and code I was not able to see any obviou=
-s
-mistake.
+	if (priv->active_cpu_ports)
+		val = CPU_EN | CPU_PORT(__ffs(priv->active_cpu_ports));
+	else
+		val = 0;
 
-Has someone else discovered such misbehaviour or has any idea what is wrong=
+	mt7530_rmw(priv, MT7530_MFC, CPU_EN | CPU_PORT_MASK, val);	
+
 ?
-Best Regards
-Stefan
+
+>  struct mt7530_priv {
+>  	struct device		*dev;
+> @@ -786,6 +787,7 @@ struct mt7530_priv {
+>  	struct irq_domain *irq_domain;
+>  	u32 irq_enable;
+>  	int (*create_sgmii)(struct mt7530_priv *priv, bool dual_sgmii);
+> +	unsigned long active_cpu_ports;
+
+So this will be 32 or 64 bit in size. Presumably you know how many CPU
+ports there can be, which looking at this code must be less than 8 as
+CPU_PORT_MASK is only 3 bits in size. So, maybe use a u8, and check
+that cpu_dp->index <= 7 ?
+
+I would also suggest moving irq_enable after create_sgmii, to avoid
+holes in the struct.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
