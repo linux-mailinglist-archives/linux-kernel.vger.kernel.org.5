@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCA27EFD2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3917A7EFD34
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 03:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbjKRCbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 21:31:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S232856AbjKRCdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 21:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbjKRCbT (ORCPT
+        with ESMTP id S229789AbjKRCdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 21:31:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229B41A1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:31:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700274676; x=1731810676;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=OehhV+d7VO0CSQ4vXI/Vdbgi96ek9dXfotfoBbJcYbo=;
-  b=CTYFMz1i+VRMHfJcV/WccyglVv8A8YOCnaU284sGx7EiR6OI8b68EpWG
-   mNcDwF8pXjvq8aOuJLWrAowACDcSjeYhObMUbA+FQa92HADvB/lu5t9ZT
-   paa36P/++fAqkcbDaucg0/11SSPcsXPuUjYSkummIK8fKHbMbC1jskWGo
-   pPPlR2omAYLP1WjWH5rW3wReTvxGO6WBOaSojytI78UCJtFu0sXg0PDRs
-   SkUiY5XyWT0Df6Yn4nWYSPXbQlUFLTx0NAyxmXeRb7Ug02/HDvbBT5KZ2
-   BZPx7YBnmTVmTNoOlRJIBGnCBUAlGlHkZo0IvHmVai3cHzqUXG4abE7yl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="422494485"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="422494485"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 18:31:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="7023525"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa002.jf.intel.com with ESMTP; 17 Nov 2023 18:31:14 -0800
-Message-ID: <79a1f935-12c1-4e12-92c8-2214bf6b7a73@linux.intel.com>
-Date:   Sat, 18 Nov 2023 10:26:58 +0800
+        Fri, 17 Nov 2023 21:33:09 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E612D5C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 18:33:05 -0800 (PST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SXHl52VTGzNm7S;
+        Sat, 18 Nov 2023 10:28:49 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Sat, 18 Nov 2023 10:33:02 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v3 0/5] mm: cleanup and use more folio in page fault
+Date:   Sat, 18 Nov 2023 10:32:27 +0800
+Message-ID: <20231118023232.1409103-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] iommu/vt-d: Introduce dev_to_iommu()
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231116015048.29675-1-baolu.lu@linux.intel.com>
- <20231116015048.29675-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276CF0833BF362C1BE5F2268CB0A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <053e89dd-8de9-43f3-8530-1f65181efd46@linux.intel.com>
- <20231117130756.GA6501@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231117130756.GA6501@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 9:07 PM, Jason Gunthorpe wrote:
-> On Thu, Nov 16, 2023 at 11:23:56AM +0800, Baolu Lu wrote:
->> On 11/16/23 11:19 AM, Tian, Kevin wrote:
->>>> From: Lu Baolu<baolu.lu@linux.intel.com>
->>>> Sent: Thursday, November 16, 2023 9:51 AM
->>>>
->>>> +static inline struct intel_iommu *dev_to_iommu(struct device *dev)
->>>> +{
->>>> +	/*
->>>> +	 * Assume that valid per-device iommu structure must be installed
->>>> +	 * if iommu_probe_device() has succeeded. This helper could only
->>>> +	 * be used after device is probed.
->>>> +	 */
->>>> +	return ((struct device_domain_info *)dev_iommu_priv_get(dev))-
->>>>> iommu;
->>>> +}
->>> Not sure whether this helper is useful. This is only used by 2 out of 5
->>> post-probe users. Probably just open-coding in all 5 places is clearer.
->> I thought it should get more users in the future development.
-> The pattern in the SMMUv2 driver is like
-> 
->    struct device_domain_info *info = dev_iommu_priv_get(dev);
->    struct intel_iommu *iommu = info->iommu;
-> 
-> Which really isn't worth the helper, unless you have lots of caes
-> where info isn't needed at all?
+Rename page_copy_prealloc() to folio_prealloc(), which is used by
+more functions, also do more folio conversion in page fault.
 
-No. As Kevin pointed out, there are only 2 places.
+v3:
+- drop patch6 as Small-sized THP for anon will change anon allocation
+- correct do_cow_page to do_cow_fault in subject and changlog
+- add RB of Vishal
 
-I will drop this helper.
+v2:
+- add folio_test_large check in ksm_might_need_to_copy() and
+  replace page->index to folio->index, per David, Matthew
+- add RB of Sidhartha
 
-Best regards,
-baolu
+Kefeng Wang (5):
+  mm: ksm: use more folio api in ksm_might_need_to_copy()
+  mm: memory: use a folio in validate_page_before_insert()
+  mm: memory: rename page_copy_prealloc() to folio_prealloc()
+  mm: memory: use a folio in do_cow_fault()
+  mm: memory: use folio_prealloc() in wp_page_copy()
+
+ include/linux/ksm.h |  4 ++--
+ mm/ksm.c            | 39 ++++++++++++++++--------------
+ mm/memory.c         | 58 +++++++++++++++++++++------------------------
+ 3 files changed, 50 insertions(+), 51 deletions(-)
+
+-- 
+2.27.0
+
