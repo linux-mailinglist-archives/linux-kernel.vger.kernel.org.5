@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F737F00A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C9A7F00A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 16:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjKRPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 10:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40800 "EHLO
+        id S231249AbjKRPxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 10:53:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbjKRPw3 (ORCPT
+        with ESMTP id S231197AbjKRPwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 10:52:29 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECA11985;
-        Sat, 18 Nov 2023 07:51:31 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7fb84f6ceso29711467b3.1;
-        Sat, 18 Nov 2023 07:51:31 -0800 (PST)
+        Sat, 18 Nov 2023 10:52:31 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E641992;
+        Sat, 18 Nov 2023 07:51:32 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a877e0f0d8so32646977b3.1;
+        Sat, 18 Nov 2023 07:51:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700322689; x=1700927489; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700322691; x=1700927491; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FWIlOk1FsRTd5Pg1eEMJS0d0MbiyZx68JIVX7B57ps0=;
-        b=mXAB05eHIJUK3SjzKjiL/jMGPGujkItEHsnP4JJFtHV57ZvtkIiEdaTnoDuv1Hs+PV
-         q+RK/R0TZffv6D/9MK8vRCS/tu/WtD0ZU4maYuIQPvmu03BJRHoNnjg5bVNFBtyBBh+F
-         pTjRxP8YTIsxyUnwv8dltoKsA6Hd6DzZbvkrNop+hsS9NicxayHvVTc5wU4w3ZY5oPvb
-         R5Q2Ipe3rm4pvAwQolwXK2TFIKUpkc2zbbaxrRlHFo2m7rPa9Gj9HrS5Cq3/B61TBpMD
-         Du9r4Obt9Cnfgv9N2PfJHRg8uxbiycN2uAbLYN0/uMVaT9EDs1RGmOPO6W79HNKEodfB
-         8Y4Q==
+        bh=an+B6x9GS644FA4Rk778Y0CGpfaOfqQCwN2Xt25DKlo=;
+        b=Rcd/ITOD2m9aVQEloHhk6b5W/g9VVxTP+FPhjUibMHhWW+UyofAYE6E6XaVsJkelaa
+         1FurLJpmQTQYUnOTAh0zWbO9krO0XDjwL4EVEAn3GtQ7yUqdGDDpLETHf8RYSUFv1rKF
+         gqviN3RgiEj1Qp+Uuxmo+9oIPJbBOvRvzGeQQOV9tISy1tjFL0dHiQN0rlpUsDQddOGX
+         EaA6OHurJPnWpPYHuibF2zCJsnHLurNrqzCmIQUEEXlo24TWwJPPFPXCMG9DXzU14Hgt
+         Bullw6uV/qUGM4ONhmO4sCeLyyzIzzpvyQsGMrmObCPErIcy1/uidjFId4F+tlqAZqa5
+         mP9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700322689; x=1700927489;
+        d=1e100.net; s=20230601; t=1700322691; x=1700927491;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FWIlOk1FsRTd5Pg1eEMJS0d0MbiyZx68JIVX7B57ps0=;
-        b=tr5nUVMepAS5806kNAfiJvw17Ug5+cV96trbomLUI6k/U/4tGwSlVYsIRRsgn+Xitt
-         MnCq8qNrMnnavztvIBGQwvwVyD6Wt4XXDnS4WB7KFhPuGAhLEKz3pQzKt855Mc0B4Kdt
-         /CkxHQA7+a/dKliqecawq974HYnGhdYTiuLvE7X08MmoXL//GI7cv/qwhv4s1/O/uPWm
-         vIVwrc9/1ZPu/lgWBO7yWo4BYgNg7oRC+ORkAuLfBc7dqhvKCh8btFn+BykAjY/q3FyR
-         gCGTMb0NYUeNgHGsv5i0e+aLxrcsjUXLlz5c7D5iDjcetI8eWMInfKyS4G543oY0D6EM
-         IRvQ==
-X-Gm-Message-State: AOJu0YyRJRAOANLV/nOITrWhUmxTZRto3nmONas9CLQ74T1GXCB/1jz+
-        oNNTxrPgSKS1Y2jFW9osoLvNrdxtjgRcCiNI
-X-Google-Smtp-Source: AGHT+IGM85S4GNCgRoD8WoDgmR9Ki8qfWYn/7CM5VU5/glkxSq8H/jTUlGTWdHNMh5JLlxbaM2B3cg==
-X-Received: by 2002:a0d:d54e:0:b0:5a7:ba53:be73 with SMTP id x75-20020a0dd54e000000b005a7ba53be73mr2010066ywd.15.1700322689525;
-        Sat, 18 Nov 2023 07:51:29 -0800 (PST)
+        bh=an+B6x9GS644FA4Rk778Y0CGpfaOfqQCwN2Xt25DKlo=;
+        b=VfOJabkPz1FtLH/mZcmCRAioTgckNPotClE7g9dlseGJI+TNgxph7rhwpZEDxWmvP6
+         T+BIGKJqBk2ZdJboGgB3tyHsGMHo4OlD20JU9IK7aDRDmC1dtgBHS2gShAOUbBXl+EVG
+         xl+DVtkryBh4dmpAITxCB29iwidOeQ5YPkZLKR3K9b7pNf7zR71ybI6S5inGwMmiOe3o
+         H3EiSk4ssZ2sle8a+tWbOhzB6fK+I8A/AVeSMwkLQq8Sog7mi03aayGmhqQDgTjkpkny
+         AHeqVDj9WxvPifSCcW530EBRZSEshi3n32RAmzvG7bZAP60h8wMZvjSJ1qQiE4km1fDV
+         9V0Q==
+X-Gm-Message-State: AOJu0YzKs71rDIY0H7+VRnRtu01Yfu5301Eke8Ely9Q6lukNR2F/rqpa
+        Y1/C1875PwYFhZWsH3d7I7OktnglCF/BvlW5
+X-Google-Smtp-Source: AGHT+IHbvXN7lio1g9e2seZANV3yFJAOfMLAbKKE1aiTJhcFrm7juiKH6C+xV9/Loyma/Ox9uC7NIg==
+X-Received: by 2002:a0d:cb45:0:b0:5c9:3442:9c8c with SMTP id n66-20020a0dcb45000000b005c934429c8cmr941390ywd.21.1700322691140;
+        Sat, 18 Nov 2023 07:51:31 -0800 (PST)
 Received: from localhost ([2601:344:8301:57f0:48a9:bd4c:868d:dc97])
-        by smtp.gmail.com with ESMTPSA id k186-20020a0dfac3000000b00559f1cb8444sm1186208ywf.70.2023.11.18.07.51.28
+        by smtp.gmail.com with ESMTPSA id i78-20020a819151000000b005a7bf9749c8sm1173851ywg.4.2023.11.18.07.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Nov 2023 07:51:29 -0800 (PST)
+        Sat, 18 Nov 2023 07:51:30 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
         Matthew Wilcox <willy@infradead.org>,
@@ -66,9 +67,9 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Jan Kara <jack@suse.cz>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
         Alexey Klimov <klimov.linux@gmail.com>
-Subject: [PATCH 13/34] KVM: x86: hyper-v: optimize and cleanup kvm_hv_process_stimers()
-Date:   Sat, 18 Nov 2023 07:50:44 -0800
-Message-Id: <20231118155105.25678-14-yury.norov@gmail.com>
+Subject: [PATCH 14/34] PCI: hv: switch hv_get_dom_num() to use atomic find_bit()
+Date:   Sat, 18 Nov 2023 07:50:45 -0800
+Message-Id: <20231118155105.25678-15-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231118155105.25678-1-yury.norov@gmail.com>
 References: <20231118155105.25678-1-yury.norov@gmail.com>
@@ -84,68 +85,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function traverses stimer_pending_bitmap n a for-loop bit by bit.
-We can do it faster by using atomic find_and_set_bit().
-
-While here, refactor the logic by decreasing indentation level
-and dropping 2nd check for stimer->config.enable.
+The function traverses bitmap with for_each_clear_bit() just to allocate
+a bit atomically. We can do it better with a dedicated find_and_set_bit().
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- arch/x86/kvm/hyperv.c | 39 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ drivers/pci/controller/pci-hyperv.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 238afd7335e4..460e300b558b 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -870,27 +870,26 @@ void kvm_hv_process_stimers(struct kvm_vcpu *vcpu)
- 	if (!hv_vcpu)
- 		return;
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 30c7dfeccb16..033b1fb7f4eb 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
+ 	if (test_and_set_bit(dom, hvpci_dom_map) == 0)
+ 		return dom;
  
--	for (i = 0; i < ARRAY_SIZE(hv_vcpu->stimer); i++)
--		if (test_and_clear_bit(i, hv_vcpu->stimer_pending_bitmap)) {
--			stimer = &hv_vcpu->stimer[i];
--			if (stimer->config.enable) {
--				exp_time = stimer->exp_time;
--
--				if (exp_time) {
--					time_now =
--						get_time_ref_counter(vcpu->kvm);
--					if (time_now >= exp_time)
--						stimer_expiration(stimer);
--				}
--
--				if ((stimer->config.enable) &&
--				    stimer->count) {
--					if (!stimer->msg_pending)
--						stimer_start(stimer);
--				} else
--					stimer_cleanup(stimer);
--			}
-+	for_each_test_and_clear_bit(i, hv_vcpu->stimer_pending_bitmap,
-+					ARRAY_SIZE(hv_vcpu->stimer)) {
-+		stimer = &hv_vcpu->stimer[i];
-+		if (!stimer->config.enable)
-+			continue;
-+
-+		exp_time = stimer->exp_time;
-+
-+		if (exp_time) {
-+			time_now = get_time_ref_counter(vcpu->kvm);
-+			if (time_now >= exp_time)
-+				stimer_expiration(stimer);
- 		}
-+
-+		if (stimer->count) {
-+			if (!stimer->msg_pending)
-+				stimer_start(stimer);
-+		} else
-+			stimer_cleanup(stimer);
-+	}
+-	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
+-		if (test_and_set_bit(i, hvpci_dom_map) == 0)
+-			return i;
+-	}
++	i = find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
+ 
+-	return HVPCI_DOM_INVALID;
++	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
  }
  
- void kvm_hv_vcpu_uninit(struct kvm_vcpu *vcpu)
+ /**
 -- 
 2.39.2
 
