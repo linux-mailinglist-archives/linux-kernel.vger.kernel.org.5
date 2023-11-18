@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B37B67EFCAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7017EFCAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 01:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346386AbjKRAoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 19:44:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S232530AbjKRAol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 19:44:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230036AbjKRAoK (ORCPT
+        with ESMTP id S230036AbjKRAoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 19:44:10 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA4F10CE
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:04 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9e2838bcb5eso362418966b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:04 -0800 (PST)
+        Fri, 17 Nov 2023 19:44:39 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA2D10D0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:34 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9f27af23443so354692566b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 16:44:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700268243; x=1700873043; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700268273; x=1700873073; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tXjEHmmJAB20oLy2Jad5Xh5ZRn5wYpaTD3D4J01EQsg=;
-        b=KYb/gMjKY0IKIWFc2N+pEaQUbFXxDwxCmfyGapcPjVE0f30j+LMToC2XLZAHX9mplf
-         E5ysp17lvyWExwIf4ywQfcRv3vyEpte0hDTLZdE90s2UgiZ58ocB8HbrUM9GEPvPtdq5
-         W5H5XY3ScwtqkDGUZvzV1SYZc5GGraxdC3Ymvg9A+u2InYdi8yP8IBRtszHkqy9ABm0S
-         ag53BmGNfOXBmACkGwbWRjElJ/8CFpxB9s53svJhbdsK11GGQuer6iKtm2sMu1T+3E23
-         oZFjHRZ6QerjZqdiPKAbcorKjMoJTtsL/jVoMNYEziKY5FCMgmJfVv/eADqKlI3zyG56
-         SBdA==
+        bh=i9rJR16RkZ8dqSqbIrxv13E+dc2kUVSfRUy+BwCEmHU=;
+        b=uxe7LHICRoIvaGJjRnpi8+cN/ArhNGMIqFVVjxVYbKxSaN/wH4NsWsCuLoKihKe58P
+         EDDLWWnsp0e1c0ZD4w5LmX82/yeKzB/NjQE/KDflfwMyyRRYSd3FOnZ6igFoIm/UW35O
+         BMRPpU/KkStuQByDAE7YSAlwUgkXezLDjA/na6UvjZM0bM7Vkpc4a8Bx7FXx8IZG1i11
+         HsVt+aKkFa2CSx/sOkptx6NbZu/F5Ie+m4JMpqCRLFkxN500eC2plFZBaJO3Iblm05IN
+         2sNfgeIvR2fbkEamhanX/L/W649PW99jxFGZPHzto6VUzl1KOG9o6A2wUGjPjsOAG+DY
+         D6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700268243; x=1700873043;
+        d=1e100.net; s=20230601; t=1700268273; x=1700873073;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tXjEHmmJAB20oLy2Jad5Xh5ZRn5wYpaTD3D4J01EQsg=;
-        b=F5HSvYe92h7DhGsEMuZJrXxsamcsnmd/hHc/tByE6WIeq4cvRTuMGX2eno+IWPRgYE
-         GPOII5ry69GC4pgRcMGQRl3ObUO8NyV5ZtQyu5Hr+jgvZiiu8cmZTWZowhTRuCutgBLs
-         Jjl2qwdss+JSwi+lrZiccAJUH9MS2z0C2oma7R6xCfF9dwPKtWNANNjolCbqtX5w+10e
-         P/72s8VtFgm5lBOWb9LNAg9kafAe7T7v1viFH/uvCZgM2UadnllIap6h5covPN/sFFJv
-         KQ3MHMgC3MN+jih5EuifAXsG6SCxjYEgPnnxcoblbKWab6X8sHw2gDys90ZpgpnXcczY
-         F0Jg==
-X-Gm-Message-State: AOJu0Yyobikxj93HgrGgBHiyzoCbBElj4h5ceJ+a/DbfjOfZLXH01rW5
-        lF2/wV5al4HdkBzB63kUeL78fg==
-X-Google-Smtp-Source: AGHT+IFTIxOv6h8yg875uGhLg0NyUGXQ8pCs2+f0qftQYTvhSlAaBEKu92/URelUPXiCtyRgsqJ9dA==
-X-Received: by 2002:a17:906:4b1a:b0:9ad:7890:b4c0 with SMTP id y26-20020a1709064b1a00b009ad7890b4c0mr480653eju.56.1700268242965;
-        Fri, 17 Nov 2023 16:44:02 -0800 (PST)
+        bh=i9rJR16RkZ8dqSqbIrxv13E+dc2kUVSfRUy+BwCEmHU=;
+        b=kf7qmXkUDKuxep6RSVgQL2g3jCgbIB7sMHcsU3nDyPmYgOkb/GrTMJYo6DVXbBEhmF
+         lZ+J4IQFvCv+0/Jc3Cl0wqaXeI9GaJ86g12eTDKPl/YXnPPdBNwPxeP3vyqOU53Ar9o+
+         jLFhRQsba4e9XW+VoXY5auDHoeTIqoJPixTdUCexeMEI00s8xDnmJH3ol2WL4FzT3wqE
+         Eh3IwNmzGcsWGyowoBqMzlvMc0zYRJ22+S/z9YX68mBebYbefcxn+5wAz7I1G5t4qDJ+
+         Yt+lESAAYetjys4ffE+yk+vWp/qZylp6NgkW+VJPsVcVdVGuTTQSn38RpQU33Xsjm+Kc
+         TwOA==
+X-Gm-Message-State: AOJu0YyMrAxlgz+tePUwDrVsYjKdNpiggKfHxgGHZ5iHit/pIrN5t5Ix
+        DK1dM42FzCHoUeoFB7wbchBPxQ==
+X-Google-Smtp-Source: AGHT+IHpIEndtB19v83nxLDCvnS77zFBahMuwPUXSZFx1fF8SNOmyhrc5WBvrWmmWCGZhfYM7gmZ/w==
+X-Received: by 2002:a17:906:d151:b0:9e1:46a2:b827 with SMTP id br17-20020a170906d15100b009e146a2b827mr519042ejb.29.1700268273067;
+        Fri, 17 Nov 2023 16:44:33 -0800 (PST)
 Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id mc16-20020a170906eb5000b009b2c9476726sm1327577ejb.21.2023.11.17.16.44.01
+        by smtp.gmail.com with ESMTPSA id mc16-20020a170906eb5000b009b2c9476726sm1327577ejb.21.2023.11.17.16.44.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 16:44:02 -0800 (PST)
-Message-ID: <9d323c23-c4d7-48ff-ac61-36acfd19dfd5@linaro.org>
-Date:   Sat, 18 Nov 2023 01:44:00 +0100
+        Fri, 17 Nov 2023 16:44:32 -0800 (PST)
+Message-ID: <1636bfa0-c2a0-4c1a-bf4d-cad4cdf7b943@linaro.org>
+Date:   Sat, 18 Nov 2023 01:44:30 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/7] media: qcom: camss: Flag CSID-lites to support
- more CSIDs
+Subject: Re: [PATCH v6 3/6] arm64: dts: qcom: add uart console support for
+ SM4450
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
- <20231103-b4-camss-named-power-domains-v4-7-33a905359dbc@linaro.org>
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org
+Cc:     geert+renesas@glider.be, arnd@arndb.de, neil.armstrong@linaro.org,
+        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_tsoni@quicinc.com,
+        quic_shashim@quicinc.com, quic_kaushalk@quicinc.com,
+        quic_tdas@quicinc.com, quic_tingweiz@quicinc.com,
+        quic_aiquny@quicinc.com, kernel@quicinc.com
+References: <20231031075004.3850-1-quic_tengfan@quicinc.com>
+ <20231031075004.3850-4-quic_tengfan@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -105,12 +107,12 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20231103-b4-camss-named-power-domains-v4-7-33a905359dbc@linaro.org>
+In-Reply-To: <20231031075004.3850-4-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,18 +120,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.11.2023 13:29, Bryan O'Donoghue wrote:
-> From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+On 31.10.2023 08:50, Tengfei Fan wrote:
+> Add base description of UART and TLMM nodes which helps SM4450
+> boot to shell with console on boards with this SoC.
 > 
-> Some platforms such as SC7280 have 3 CSIDs and 2 CSID-lites but current
-> code has hardcoded 2 as the maximum number of CSIDs. Remove the hardcoded
-> maximum number of VFEs to handle all possible combinations of CSIDs and
-> CSID-lites.
-> 
-> Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-something something kerneldoc something csid storing a res ptr
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
