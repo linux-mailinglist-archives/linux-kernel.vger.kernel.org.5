@@ -2,162 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A187F082A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAD77F0830
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjKSRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 12:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
+        id S230408AbjKSRxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 12:53:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjKSRkY (ORCPT
+        with ESMTP id S229508AbjKSRx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 12:40:24 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B3511D;
-        Sun, 19 Nov 2023 09:40:20 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so162406366b.1;
-        Sun, 19 Nov 2023 09:40:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700415619; x=1701020419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S9Hteg4XMK0Hthf2Z6YUi6WL0kiCnYnKAdT14d+QRy8=;
-        b=ixQBB7wCZJ8mrDG9P8cX3x5uuAt4larH9Rimg2hTttSG4vzZy2bqWxqds/0FMbve0n
-         PiD6R7NVStGBE0Km2Q89xX0aRMzDjV5v/MJ9aBEk0Gvva/DKySfXDbQh4e3/bhjaeNbW
-         WC+L9UaUxNro9a+K44s7on2q5i9wYGG+QCE9zGJgIS+bWUuroKEusZJxjnrXlC/sV5KL
-         9wTq7udsfybyX3XhvpjYwrzl05WsNrE6wMsrhl0Kd6pRDuJXm7iK/zUQGf5SrZe7ug5O
-         nTtLtAUeBVBija4ExiUaRXH2v5au45TWY6qGQtA+jOdeWeDfRJ6lNsKy/ypc3spu6jLm
-         hZWQ==
+        Sun, 19 Nov 2023 12:53:29 -0500
+Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6183A115
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:53:25 -0800 (PST)
+Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-5be09b7d01fso3964292a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:53:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700415619; x=1701020419;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=S9Hteg4XMK0Hthf2Z6YUi6WL0kiCnYnKAdT14d+QRy8=;
-        b=MNQR7WCo+u5m37/hcqu2sRQ8+w+ikJcAfPgHuA15ITTtCR4DkgyI6Nup9vWOlnRjer
-         A+nM5PETlsxOqFyv2OciHULPpyBX0JTZNG2czguZq7qtwBivE/vBfS7PL+tTKUN6lgZe
-         SW1molhFn8LoGrlKUrpRLyx/eetLmsVGrx1C1VIcmMrukgfc/x1BRyilEBpaETxZ3Hia
-         3+z0H3Ie0in5nKyaCap7mqq4bomwsM2bjsg2l26yqhjm5Vg1KSxoXlw6SnhOHzMYTIL5
-         jGzjahq8TrCo/gNleO/MO5DBNmjRpVFNO6BjKiH3L9lv9dY4BAIy/q9HQdOoHauzDGC/
-         8euQ==
-X-Gm-Message-State: AOJu0YyajKZZQLksz3QgRNDDFR+Hx6h0Z1tf3xKEcb/TrRit5UJEKU1+
-        98Dq3PoALgysIVhztGHTF909973mHPfsaw==
-X-Google-Smtp-Source: AGHT+IHxkCcm1/ToZyIbojFo4fZZpb75XeQ3QjFH14Aghgv4d/B1c/UnXHjMoAal1El4IPtreQhnnQ==
-X-Received: by 2002:a17:907:a683:b0:9e7:3af8:1fcd with SMTP id vv3-20020a170907a68300b009e73af81fcdmr5413082ejc.76.1700415618858;
-        Sun, 19 Nov 2023 09:40:18 -0800 (PST)
-Received: from ?IPV6:2a02:8389:41cf:e200:d0f6:1482:ec53:c448? (2a02-8389-41cf-e200-d0f6-1482-ec53-c448.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:d0f6:1482:ec53:c448])
-        by smtp.gmail.com with ESMTPSA id b19-20020a170906709300b009e5eaf7a9b6sm3045266ejk.139.2023.11.19.09.40.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Nov 2023 09:40:18 -0800 (PST)
-Message-ID: <588dd3f4-bea5-4453-9ef6-f92fb42c7514@gmail.com>
-Date:   Sun, 19 Nov 2023 18:40:16 +0100
+        d=1e100.net; s=20230601; t=1700416405; x=1701021205;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M+W4dYR6p0MuCMx9i/Xtc7RR141me0vHWQgYK7bRbNg=;
+        b=CTEN/J3+GI5Z/uOnC1Ky8Yq9ikPiRyRD3YEiv2MqRMGamw7g9k1+cR6iWhJaFNSrHi
+         GxKRFNcFfqo9AuIUxh+Xm2KNF1DuXzJwmlHjc7zZTl0Qbz51aUSrWoekOXqH0fMm7iRr
+         WaAFxTbcEOiszTzzDLlmvfIRKyIm8gWxBWtxcnTgRY+WR5bjP45qB/vj3KPHDY4/EVP/
+         pX0r7G0ZOeJSDAqO2dchmX4bwSbZBiszVgLwEGx9UYyw9yBrgyhbEd/N+pJZgznkn2MB
+         CHb9pceGZiy0O3ZQqkrzslHqUXxD1ywwaoQo63fDVtBqQDpb9EXKnPvttoIX0z4fQbBY
+         88qg==
+X-Gm-Message-State: AOJu0Yx48kM129bdqCkOTEUaXkTLAkjOl7xST569wSxVUWBqg3uiu75s
+        1twFif0UtmyOe/rUNWODhh4zJ+HyAwipAVEcyNsqRHJTxLgw
+X-Google-Smtp-Source: AGHT+IEqIGz+YeHEMA6P+E8B/HMO3WfmjvdWVyuJwyb3E3y4ggX2Fl8SK/FTmiqdGjMUzrFj9PmZHrMi1IBWIjDDklb5DB96BB/W
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] iio: light: add VEML6075 UVA and UVB light sensor
- driver
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231110-veml6075-v1-0-354b3245e14a@gmail.com>
- <20231110-veml6075-v1-1-354b3245e14a@gmail.com>
- <20231119150233.10fdc66e@jic23-huawei>
-Content-Language: en-US
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20231119150233.10fdc66e@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:e110:0:b0:5bd:a359:7e0a with SMTP id
+ z16-20020a63e110000000b005bda3597e0amr1118829pgh.9.1700416404863; Sun, 19 Nov
+ 2023 09:53:24 -0800 (PST)
+Date:   Sun, 19 Nov 2023 09:53:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c84343060a850bd0@google.com>
+Subject: [syzbot] [mm?] BUG: unable to handle kernel paging request in copy_from_kernel_nofault
+From:   syzbot <syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, bp@suse.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.23 16:02, Jonathan Cameron wrote:
->> +
->> +struct veml6075_data {
->> +	struct i2c_client *client;
->> +	struct regmap *regmap;
->> +	struct mutex lock; /* register access lock */
-> 
-> regmap provides register locking as typically does the bus lock, so good to
-> say exactly what you mean here.  Is there a Read Modify Write cycle you need
-> to protect for instance, or consistency across multiple register accesses?
-> 
-What I want to avoid with this lock is an access to the measurement
-trigger or an integration time modification from different places while
-there is a measurement reading going on. "register access lock" is
-probably not the best name I could have chosen though.
+Hello,
 
-I was not aware of that guard(mutex) mechanism. I guess it is new
-because only one driver uses it in the iio subsystem (up to v6.7-rc1).
-I will have a look at it.
->> +};
-> 
->> +
->> +static const struct iio_chan_spec veml6075_channels[] = {
->> +	{
->> +		.type = IIO_INTENSITY,
->> +		.channel = CH_UVA,
->> +		.modified = 1,
->> +		.channel2 = IIO_MOD_LIGHT_UV,
->> +		.extend_name = "UVA",
->> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> +			BIT(IIO_CHAN_INFO_SCALE),
->> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME),
->> +	},
->> +	{
->> +		.type = IIO_INTENSITY,
->> +		.channel = CH_UVB,
->> +		.modified = 1,
->> +		.channel2 = IIO_MOD_LIGHT_UV,
->> +		.extend_name = "UVB",
-> 
-> Extent name is very rarely used any more.  It's a horrible userspace interface
-> and an old design mistake. 
-> Instead we use the channel label infrastructure.  Provide the read_label()
-> callback to use that instead.
-> 
-> I'm not sure this is a great solution here though.  For some similar cases
-> such as visible light colours we've just added additional modifiers, but that
-> doesn't really scale to lots of sensitive ranges.
-> 
-> One thing we have talked about in the past, but I don't think we have done in
-> a driver yet, is to provide actual characteristics of the sensitivity graph.
-> Perhaps just a wavelength of maximum sensitivity?
-> 
-> Visible light sensors often have hideous sensitivity curves, including sometimes
-> have multiple peaks, but in this case they look pretty good.
-> Do you think such an ABI would be more useful than A, B labelling?
-> 
-My first idea was adding new modifiers because I saw that
-IIO_MOD_LIGHT_UV and IIO_MOD_LIGHT_DUV coexist, but then I thought _UVA
-and _UVB might not be used very often (wrong assumption?) and opted for
-a local solution with extended names. But any cleaner solution would be
-welcome because the label attributes are redundant.
+syzbot found the following issue on:
 
-Maybe adding UV-A, UV-B and UV-C modifiers is not a big deal as these
-are fairly common bands. Actually DUV is pretty much UV-C and could be
-left as it is.
+HEAD commit:    1fda5bb66ad8 bpf: Do not allocate percpu memory at init st..
+git tree:       bpf
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12d99420e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2ae0ccd6bfde5eb0
+dashboard link: https://syzkaller.appspot.com/bug?extid=72aa0161922eba61b50e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16dff22f680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1027dc70e80000
 
-This sensor has a single peak per channel, but I do not know how I would
-provide that information to the core if that is better than adding UVA
-and UVB bands. Would that add attributes to sysfs for the wavelengths or
-extend the channel name? In that case two new modifiers might be a
-better  and more obvious solution.
-> Jonathan
-> 
-> 
-I will work on the other issues you pointed out. Thanks a lot for your
-review.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3e24d257ce8d/disk-1fda5bb6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/eaa9caffb0e4/vmlinux-1fda5bb6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/16182bbed726/bzImage-1fda5bb6.xz
 
-Best regards,
-Javier Carrasco
+The issue was bisected to:
+
+commit ca247283781d754216395a41c5e8be8ec79a5f1c
+Author: Andy Lutomirski <luto@kernel.org>
+Date:   Wed Feb 10 02:33:45 2021 +0000
+
+    x86/fault: Don't run fixups for SMAP violations
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=103d92db680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=123d92db680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=143d92db680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com
+Fixes: ca247283781d ("x86/fault: Don't run fixups for SMAP violations")
+
+BUG: unable to handle page fault for address: ffffffffff600000
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD cd7a067 P4D cd7a067 PUD cd7c067 PMD cd9f067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5071 Comm: syz-executor322 Not tainted 6.6.0-syzkaller-15867-g1fda5bb66ad8 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:copy_from_kernel_nofault mm/maccess.c:36 [inline]
+RIP: 0010:copy_from_kernel_nofault+0x86/0x240 mm/maccess.c:24
+Code: ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ab 01 00 00 41 83 85 6c 17 00 00 01 eb 1e e8 ba 23 cf ff <48> 8b 45 00 49 89 04 24 48 83 c5 08 49 83 c4 08 48 83 eb 08 e8 a1
+RSP: 0018:ffffc900038d7ae8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000008 RCX: ffffffff81b8690c
+RDX: ffff888016ab0000 RSI: ffffffff81b868e6 RDI: 0000000000000007
+RBP: ffffffffff600000 R08: 0000000000000007 R09: 0000000000000007
+R10: 0000000000000008 R11: 0000000000000001 R12: ffffc900038d7b30
+R13: ffff888016ab0000 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffff600000 CR3: 000000000cd77000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_probe_read_kernel_common include/linux/bpf.h:2747 [inline]
+ ____bpf_probe_read_kernel kernel/trace/bpf_trace.c:236 [inline]
+ bpf_probe_read_kernel+0x26/0x70 kernel/trace/bpf_trace.c:233
+ bpf_prog_bd8b22826c103b08+0x42/0x44
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2307 [inline]
+ bpf_trace_run2+0x14e/0x410 kernel/trace/bpf_trace.c:2346
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0xec/0x150 mm/slab_common.c:1043
+ vma_numab_state_free include/linux/mm.h:638 [inline]
+ __vm_area_free+0x3e/0x140 kernel/fork.c:525
+ remove_vma+0x128/0x170 mm/mmap.c:146
+ exit_mmap+0x453/0xa70 mm/mmap.c:3332
+ __mmput+0x12a/0x4d0 kernel/fork.c:1349
+ mmput+0x62/0x70 kernel/fork.c:1371
+ exit_mm kernel/exit.c:567 [inline]
+ do_exit+0x9ad/0x2ae0 kernel/exit.c:858
+ do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
+ __do_sys_exit_group kernel/exit.c:1032 [inline]
+ __se_sys_exit_group kernel/exit.c:1030 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fe1c24c2dc9
+Code: Unable to access opcode bytes at 0x7fe1c24c2d9f.
+RSP: 002b:00007ffd4d4b8dc8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe1c24c2dc9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007fe1c253e290 R08: ffffffffffffffb8 R09: 0000000000000006
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fe1c253e290
+R13: 0000000000000000 R14: 00007fe1c253ece0 R15: 00007fe1c2494030
+ </TASK>
+Modules linked in:
+CR2: ffffffffff600000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:copy_from_kernel_nofault mm/maccess.c:36 [inline]
+RIP: 0010:copy_from_kernel_nofault+0x86/0x240 mm/maccess.c:24
+Code: ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ab 01 00 00 41 83 85 6c 17 00 00 01 eb 1e e8 ba 23 cf ff <48> 8b 45 00 49 89 04 24 48 83 c5 08 49 83 c4 08 48 83 eb 08 e8 a1
+RSP: 0018:ffffc900038d7ae8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000008 RCX: ffffffff81b8690c
+RDX: ffff888016ab0000 RSI: ffffffff81b868e6 RDI: 0000000000000007
+RBP: ffffffffff600000 R08: 0000000000000007 R09: 0000000000000007
+R10: 0000000000000008 R11: 0000000000000001 R12: ffffc900038d7b30
+R13: ffff888016ab0000 R14: dffffc0000000000 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffff600000 CR3: 000000000cd77000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	03 0f                	add    (%rdi),%ecx
+   2:	b6 14                	mov    $0x14,%dh
+   4:	02 48 89             	add    -0x77(%rax),%cl
+   7:	f8                   	clc
+   8:	83 e0 07             	and    $0x7,%eax
+   b:	83 c0 03             	add    $0x3,%eax
+   e:	38 d0                	cmp    %dl,%al
+  10:	7c 08                	jl     0x1a
+  12:	84 d2                	test   %dl,%dl
+  14:	0f 85 ab 01 00 00    	jne    0x1c5
+  1a:	41 83 85 6c 17 00 00 	addl   $0x1,0x176c(%r13)
+  21:	01
+  22:	eb 1e                	jmp    0x42
+  24:	e8 ba 23 cf ff       	call   0xffcf23e3
+* 29:	48 8b 45 00          	mov    0x0(%rbp),%rax <-- trapping instruction
+  2d:	49 89 04 24          	mov    %rax,(%r12)
+  31:	48 83 c5 08          	add    $0x8,%rbp
+  35:	49 83 c4 08          	add    $0x8,%r12
+  39:	48 83 eb 08          	sub    $0x8,%rbx
+  3d:	e8                   	.byte 0xe8
+  3e:	a1                   	.byte 0xa1
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
