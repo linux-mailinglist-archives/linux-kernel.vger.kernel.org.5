@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382847F047F
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0217F0480
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 06:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjKSFcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 00:32:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
+        id S230245AbjKSFfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 00:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSFcq (ORCPT
+        with ESMTP id S229454AbjKSFfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 00:32:46 -0500
+        Sun, 19 Nov 2023 00:35:02 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDAE182
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:32:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 804EAC433C8;
-        Sun, 19 Nov 2023 05:32:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F4FE0
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:34:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4417EC433C8;
+        Sun, 19 Nov 2023 05:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700371962;
-        bh=q2CXtWLrjQSU6v2TX31hrhnxbzzNC8tayyo4CW4QiQ8=;
+        s=k20201202; t=1700372099;
+        bh=08ranJTDZ/V2FeaQz06DOfRs9FrKM8GbfKs8aPV/pJ0=;
         h=From:To:Cc:Subject:Date:From;
-        b=ItDSwe0zoyH4wntxB9RCiIScC/C0hCDFUdKwnxIxYka4Xz4fvaa32WQWrFSIiYIYd
-         vWcE4aAfT9Wgg23v4MfW8VUihBekREtO54dJtkZwFoOXcVszl/+zidshJIwNaBT6gd
-         nki+xx+tneERWHUHySGpex4G5FjcIgrNN5RBEM5nqfP/w1k5aBb1gPzi9Zzl87+wXG
-         ZD03ZNOuXISAzNWzGhGPINirZDCxo0tvKj4ca7bmWAk8uFkCh+Gie3b7s4ABx0v4k9
-         FovgdsxuhzciXu/QpuXG0X36U5oEWS6sLL/o/tj5zvC/EvNuWJBl/fEhH/4FANjgV/
-         aQ5LIUjFHOwqQ==
+        b=T7mlj5GUg5Ir2bPEcJD672ID2zy1JFi6zQqSV/b06D0APxoOpxxRwLqkZJo9U/gho
+         4E91B5jnTQfg0EBCqq1aoHQ0G6MupKhi48gJ9n8a+NUPdQMXzBG4GYyUfsymrpMiTe
+         QsasBKKCtXNl8rpQMWS7/R0Q4OzHmkr0g0hmPJpXeWu7ENeLji/9yYUc91/hGQo7jh
+         OpGS3IipJk87W9vaifTYcSBrnn0q5dvfpkAPg/c4+xqrCHCEWOdJX5jmaDL4eXunKR
+         aGDZVSLbP/6TnwyngJZ80Gl7jXmPNAi4g2GwixD6/udG90dSATaW7GkozapYOMzo8O
+         dzFGWJ6aDxc1w==
 From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
 Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         Ard Biesheuvel <ardb@kernel.org>,
         Simon Glass <sjg@chromium.org>,
         Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] arm64: add dependency between vmlinuz.efi and Image
-Date:   Sun, 19 Nov 2023 14:32:34 +0900
-Message-Id: <20231119053234.2367621-1-masahiroy@kernel.org>
+Subject: [PATCH] loongarch: add dependency between vmlinuz.efi and vmlinux.efi
+Date:   Sun, 19 Nov 2023 14:34:48 +0900
+Message-Id: <20231119053448.2367725-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -61,59 +61,57 @@ generate invalid images") addressed such a bad scenario.
 
 A similar symptom occurs with the following command:
 
-  $ make -j$(nproc) ARCH=arm64 Image vmlinuz.efi
+  $ make -j$(nproc) ARCH=loongarch vmlinux.efi vmlinuz.efi
     [ snip ]
     SORTTAB vmlinux
-    OBJCOPY arch/arm64/boot/Image
-    OBJCOPY arch/arm64/boot/Image
-    AS      arch/arm64/boot/zboot-header.o
-    PAD     arch/arm64/boot/vmlinux.bin
-    GZIP    arch/arm64/boot/vmlinuz
-    OBJCOPY arch/arm64/boot/vmlinuz.o
-    LD      arch/arm64/boot/vmlinuz.efi.elf
-    OBJCOPY arch/arm64/boot/vmlinuz.efi
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    PAD     arch/loongarch/boot/vmlinux.bin
+    GZIP    arch/loongarch/boot/vmlinuz
+    OBJCOPY arch/loongarch/boot/vmlinuz.o
+    LD      arch/loongarch/boot/vmlinuz.efi.elf
+    OBJCOPY arch/loongarch/boot/vmlinuz.efi
 
-The log "OBJCOPY arch/arm64/boot/Image" is displayed twice.
+The log "OBJCOPY arch/loongarch/boot/vmlinux.efi" is displayed twice.
 
-It indicates that two threads simultaneously enter arch/arm64/boot/
-and write to arch/arm64/boot/Image.
+It indicates that two threads simultaneously enter arch/loongarch/boot/
+and write to arch/loongarch/boot/vmlinux.efi.
 
 It occasionally leads to a build failure:
 
-  $ make -j$(nproc) ARCH=arm64 Image vmlinuz.efi
+  $ make -j$(nproc) ARCH=loongarch vmlinux.efi vmlinuz.efi
     [ snip ]
     SORTTAB vmlinux
-    OBJCOPY arch/arm64/boot/Image
-    PAD     arch/arm64/boot/vmlinux.bin
-  truncate: Invalid number: 'arch/arm64/boot/vmlinux.bin'
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    PAD     arch/loongarch/boot/vmlinux.bin
+  truncate: Invalid number: ‘arch/loongarch/boot/vmlinux.bin’
   make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13:
-  arch/arm64/boot/vmlinux.bin] Error 1
-  make[2]: *** Deleting file 'arch/arm64/boot/vmlinux.bin'
-  make[1]: *** [arch/arm64/Makefile:163: vmlinuz.efi] Error 2
+  arch/loongarch/boot/vmlinux.bin] Error 1
+  make[2]: *** Deleting file 'arch/loongarch/boot/vmlinux.bin'
+  make[1]: *** [arch/loongarch/Makefile:146: vmlinuz.efi] Error 2
   make[1]: *** Waiting for unfinished jobs....
   make: *** [Makefile:234: __sub-make] Error 2
 
-vmlinuz.efi depends on Image, but such a dependency is not specified
-in arch/arm64/Makefile.
+vmlinuz.efi depends on vmlinux.efi, but such a dependency is not
+specified in arch/loongarch/Makefile.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/arm64/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/loongarch/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 4a1ad3248c2d..47ecc4cff9d2 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -158,7 +158,7 @@ endif
+diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+index 9eeb0c05f3f4..6022bf3d30c9 100644
+--- a/arch/loongarch/Makefile
++++ b/arch/loongarch/Makefile
+@@ -142,6 +142,7 @@ vdso-install-y += arch/loongarch/vdso/vdso.so.dbg
  
  all:	$(notdir $(KBUILD_IMAGE))
  
--
-+vmlinuz.efi: Image
- Image vmlinuz.efi: vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
++vmlinuz.efi: vmlinux.efi
+ vmlinux.elf vmlinux.efi vmlinuz.efi: vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $(bootvars-y) $(boot)/$@
  
 -- 
 2.40.1
