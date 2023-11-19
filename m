@@ -2,151 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3B17F0599
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 12:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D087F059D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 12:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbjKSLMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 06:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S230027AbjKSL1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 06:27:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSLMr (ORCPT
+        with ESMTP id S229454AbjKSL1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 06:12:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645B3C4;
-        Sun, 19 Nov 2023 03:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700392364; x=1731928364;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=l6MB7KR6Wqu2v79BBJpxIM6CND7+cD3U13FwZlh4YFU=;
-  b=X6m0PWVDLhkbRuM3U2CSB76y42cxK8lwbr1DyEpRryEAIN9xaAQA9kSJ
-   Gj1NzlHWZMyXCu/p7+tB7zOyNzMOUbeGCG8AIILEkRKj8C6c+9u8ua78o
-   7PtrHBA8vHEwO0i3b45kHmbfA8pjQnS0FBrGBLyskoHRSTU3epPEUPOE0
-   DbvayQEByVdeqG23Oul10GyDlguNF8RIPnV/htEwUpswLELJjE122Oq+B
-   OSm8hlVeH2hnrwi7QCD2eyvgQfR/7gJ4aAXly5tWt6K4I6XtdKhdVxgxD
-   O6XU2ASPo9d2YHYDIawfmPcfyDn2ZC4H9IlP3PlJHvLJIUPWlg0YB1/gE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="376523988"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="376523988"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 03:12:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="769628656"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="769628656"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 19 Nov 2023 03:12:39 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4fjB-00051h-08;
-        Sun, 19 Nov 2023 11:12:37 +0000
-Date:   Sun, 19 Nov 2023 19:11:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
-        chao.wei@sophgo.com, conor@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH 4/5] clk: sophgo: Add SG2042 clock generator driver
-Message-ID: <202311191920.5xIUxW5n-lkp@intel.com>
-References: <1000e8d546514973364478271564356352a46ed5.1699879741.git.unicorn_wang@outlook.com>
+        Sun, 19 Nov 2023 06:27:23 -0500
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D00F9
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 03:27:18 -0800 (PST)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-5aaae6f46e1so5475837a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 03:27:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700393238; x=1700998038;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Nt69CUjGl3apCloiHMcXyTW+kC9z4DvpekmWwYK97Pk=;
+        b=bL3pSTXE94Vtqrwbo8O8hVQ0zOTqYC79zWmOO/cpwAyW4rg2YH6FTtrl1vzWY1ODlI
+         vf3sOAHbBTKAsTlKszYFBmv+6C3uGK6qlBdmRP0X7/eQH+eD0/lRpEhE+PyXyFQBjPqB
+         /OAnNE/0qEFmLzPy7tMlVabOJDy8yB+9oT3E603qDM4qVaFRHf79P1hJopCtmFIW13Tb
+         ET0nxzr0VnRyyeItcMZjuCthliOe2vDk4YMFHMHlsV0T/nafNEU7dvuhkZ+OCso3FGRx
+         17ZYdMKfo2K+DBSrsT2hnK31m20DBDkhwitCEoBjHH80+B4tKxXfIT75BD0pss56Bhzm
+         UJhA==
+X-Gm-Message-State: AOJu0YzS6m6Ve8mb1jib3xBDqf6+JRA2OivKrI4pA0dorwfL8egM88rK
+        kNFSIw6601ULoc9ZoMr70vG+IicM/iu72GbyLJhPIm/miRws
+X-Google-Smtp-Source: AGHT+IEKx5ISHE4Qq6ls01G7Mie8unBDBQpl1RKn9ndvWj6gQ+HaGV957QGK6B9YDDS48ZjCZVFmizRyAluMSjqrjyNhwrGWXhcG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1000e8d546514973364478271564356352a46ed5.1699879741.git.unicorn_wang@outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a63:1450:0:b0:5bd:d44c:ca5f with SMTP id
+ 16-20020a631450000000b005bdd44cca5fmr943612pgu.11.1700393237949; Sun, 19 Nov
+ 2023 03:27:17 -0800 (PST)
+Date:   Sun, 19 Nov 2023 03:27:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed34c9060a7fa65a@google.com>
+Subject: [syzbot] [fs?] INFO: task hung in user_get_super (2)
+From:   syzbot <syzbot+ba09f4a317431df6cddf@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
+Hello,
 
-kernel test robot noticed the following build warnings:
+syzbot found the following issue on:
 
-[auto build test WARNING on b85ea95d086471afb4ad062012a4d73cd328fa86]
+HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f3d658e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=ba09f4a317431df6cddf
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138c6fb7680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=170665f4e80000
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Wang/dt-bindings-clock-sophgo-Add-SG2042-clock-definitions/20231113-212401
-base:   b85ea95d086471afb4ad062012a4d73cd328fa86
-patch link:    https://lore.kernel.org/r/1000e8d546514973364478271564356352a46ed5.1699879741.git.unicorn_wang%40outlook.com
-patch subject: [PATCH 4/5] clk: sophgo: Add SG2042 clock generator driver
-config: riscv-rv32_defconfig (https://download.01.org/0day-ci/archive/20231119/202311191920.5xIUxW5n-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231119/202311191920.5xIUxW5n-lkp@intel.com/reproduce)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/d57f36bc56de/mount_2.gz
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311191920.5xIUxW5n-lkp@intel.com/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ba09f4a317431df6cddf@syzkaller.appspotmail.com
 
-All warnings (new ones prefixed by >>):
+INFO: task syz-executor214:6157 blocked for more than 143 seconds.
+      Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor214 state:D stack:0     pid:6157  ppid:6136   flags:0x00000005
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6695
+ schedule+0xc4/0x170 kernel/sched/core.c:6771
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6830
+ rwsem_down_read_slowpath+0x57c/0xe58 kernel/locking/rwsem.c:1086
+ __down_read_common kernel/locking/rwsem.c:1250 [inline]
+ __down_read kernel/locking/rwsem.c:1263 [inline]
+ down_read+0xa0/0x2fc kernel/locking/rwsem.c:1522
+ __super_lock fs/super.c:58 [inline]
+ super_lock+0x160/0x328 fs/super.c:117
+ user_get_super+0xe8/0x1a0 fs/super.c:1059
+ quotactl_block fs/quota/quota.c:890 [inline]
+ __do_sys_quotactl fs/quota/quota.c:955 [inline]
+ __se_sys_quotactl fs/quota/quota.c:917 [inline]
+ __arm64_sys_quotactl+0x508/0xca0 fs/quota/quota.c:917
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
 
->> drivers/clk/sophgo/clk-sophgo-sg2042.c:217:44: warning: overflow in expression; result is -1094967296 with type 'long' [-Winteger-overflow]
-     217 |                         if (foutvco < PLL_FREQ_MIN || foutvco > PLL_FREQ_MAX
-         |                                                                 ^
-   drivers/clk/sophgo/clk-sophgo-sg2042.c:25:28: note: expanded from macro 'PLL_FREQ_MAX'
-      25 | #define PLL_FREQ_MAX (3200 * MHZ)
-         |                            ^
-   1 warning generated.
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffff80008e513840 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:302
+2 locks held by getty/5843:
+ #0: ffff0000d76ba0a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff800094c002f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x414/0x1214 drivers/tty/n_tty.c:2206
+1 lock held by syz-executor214/6156:
+1 lock held by syz-executor214/6157:
+ #0: ffff0000d83500e0 (&type->s_umount_key#44){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
+ #0: ffff0000d83500e0 (&type->s_umount_key#44){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
+
+=============================================
 
 
-vim +/long +217 drivers/clk/sophgo/clk-sophgo-sg2042.c
 
-   201	
-   202	static int __sg2042_get_pll_ctl_setting(
-   203		struct sg2042_pll_ctrl *best,
-   204		unsigned long req_rate,
-   205		unsigned long parent_rate)
-   206	{
-   207		int ret;
-   208		unsigned int fbdiv, refdiv, fref, postdiv1, postdiv2;
-   209		unsigned long tmp = 0, foutvco;
-   210	
-   211		fref = parent_rate;
-   212	
-   213		for (refdiv = REFDIV_MIN; refdiv < REFDIV_MAX + 1; refdiv++) {
-   214			for (fbdiv = FBDIV_MIN; fbdiv < FBDIV_MAX + 1; fbdiv++) {
-   215				foutvco = fref * fbdiv / refdiv;
-   216				/* check fpostdiv pfd */
- > 217				if (foutvco < PLL_FREQ_MIN || foutvco > PLL_FREQ_MAX
-   218						|| (fref / refdiv) < 10)
-   219					continue;
-   220	
-   221				ret = __sg2042_pll_get_postdiv_1_2(req_rate, fref, fbdiv,
-   222						refdiv, &postdiv1, &postdiv2);
-   223				if (ret)
-   224					continue;
-   225	
-   226				tmp = foutvco / (postdiv1 * postdiv2);
-   227				if (abs_diff(tmp, req_rate) < abs_diff(best->freq, req_rate)) {
-   228					best->freq = tmp;
-   229					best->refdiv = refdiv;
-   230					best->fbdiv = fbdiv;
-   231					best->postdiv1 = postdiv1;
-   232					best->postdiv2 = postdiv2;
-   233					if (tmp == req_rate)
-   234						return 0;
-   235				}
-   236				continue;
-   237			}
-   238		}
-   239	
-   240		return 0;
-   241	}
-   242	
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
