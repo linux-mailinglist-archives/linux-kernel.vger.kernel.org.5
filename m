@@ -2,167 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E5E7F07A4
+	by mail.lfdr.de (Postfix) with ESMTP id 886DA7F07A5
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjKSQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 11:41:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
+        id S231432AbjKSQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 11:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKSQlp (ORCPT
+        with ESMTP id S229508AbjKSQrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 11:41:45 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0395F9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:41:41 -0800 (PST)
-Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1r4krc-00034r-Jb; Sun, 19 Nov 2023 17:41:40 +0100
-From:   "Regzbot (on behalf of Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Linux regressions report  for mainline [2023-11-19]
-Date:   Sun, 19 Nov 2023 16:41:39 +0000
-Message-Id: <170041205809.2648289.15922511203232588109@leemhuis.info>
-X-Mailer: git-send-email 2.40.1
-Content-Type: text/plain; charset="utf-8"
+        Sun, 19 Nov 2023 11:47:14 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7D1F9;
+        Sun, 19 Nov 2023 08:47:11 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6ce322b62aeso2040037a34.3;
+        Sun, 19 Nov 2023 08:47:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700412430; x=1701017230; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l/ttRIHKXMZ13uQ7+QQurcFDXbvyi0K7tHJbOIbLlt0=;
+        b=iuAt1wQiZHwWJ/QU32Pq8k3wMjoQI6C4nmSLDYnCEiz3erLad7CDafoWfB9FggfZLS
+         idlczmX2ynU9710DQyi/25tid9tITNfD8AxOfNnA9Oh6KSDlQl0Jq1Eg15V+x/tfGCCE
+         eZvaEtZB1a/LQO6BR5BXT2njXz8jCcMWbO1oWija7rKpU76yHwFv2i5JLgW0iHLxuCQq
+         VxgNPbelsvRESBs4zdToJPzBr7rody+LDTsJZneEXYqp8OHppf0iHUfbQKFtv0ishK1u
+         tmvfAtgAesHAIU/Ny5WNKONcxktVnSzepNYabvcpuNcg5qTdgINEpRKN5+989JNHLxfF
+         EipA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700412430; x=1701017230;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l/ttRIHKXMZ13uQ7+QQurcFDXbvyi0K7tHJbOIbLlt0=;
+        b=ZArgaBfWK4RAIkqCfeDXictQxK/a+lUiC3yCJp2VkvblysEsmUc+Kt9BQdwTn6GpBg
+         ph+5Ue09fxnB68Fu1flZg847PucICmcGLgLg0nS7zMgEsMALvcLu40uMR+BiXTcPd2vD
+         UVjBPLwWao8dh5/5KsZNqXep21Yh0OQ2h4A7bva0cf3ri2O+x20wRWjsKSQ8o03ifCfD
+         0J8UNOzOxzjIaj6s0jcIfBZoeN8+4wpCk5nQB5kMmrLK6ytNBBUARPDU0n2x+iN8Uvhx
+         96kvtQYaawZCbpeD27PHqKjD+QNH1jLRU1Iicjbe1YuaL7KjzgBk2RQedLstd1So6mmk
+         HvvA==
+X-Gm-Message-State: AOJu0Yxp93ltDT+ueKaPrqRl7Yya3f+HmhzWlIhg6J0n9o8W1V5oN4C3
+        qK2VPlu2jHNi4RIB32lagcw=
+X-Google-Smtp-Source: AGHT+IGJf73OXrm2X3fSleXtAO73g8oopu056A8xbRn6X/3Q9OtFJGewP5EZTZjTMactNrEvXv3/2g==
+X-Received: by 2002:a05:6871:152:b0:1f4:ae6e:a4e1 with SMTP id z18-20020a056871015200b001f4ae6ea4e1mr6674088oab.56.1700412430539;
+        Sun, 19 Nov 2023 08:47:10 -0800 (PST)
+Received: from phi.. (bb220-255-254-193.singnet.com.sg. [220.255.254.193])
+        by smtp.gmail.com with ESMTPSA id x4-20020aa79184000000b0068790c41ca2sm4519398pfa.27.2023.11.19.08.47.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 08:47:10 -0800 (PST)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     bongsu.jeon@samsung.com, krzysztof.kozlowski@linaro.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com
+Subject: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is running
+Date:   Mon, 20 Nov 2023 00:47:05 +0800
+Message-Id: <20231119164705.1991375-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700412102;d956a959;
-X-HE-SMSGID: 1r4krc-00034r-Jb
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus. Nothing much to report wrt to regressions in 6.7 cycle. There
-is one drm issue that seems to annoy users of the Thinkpad T13s and some
-others that use the msm driver. A fix exists since Oct 25. Abhinav Kumar
-wanted to queue it "for -fixes rightaway" on Wednesday[1], but it
-nevertheless still hasn't even reached -next afaics. Not sure what
-happened there, but hope that things will clear up in the next few days.
+syzbot reported an memory leak that happens when an skb is add to
+send_buff after virtual nci closed.
+This patch adds a variable to track if the ndev is running before
+handling new skb in send function.
 
-[1] https://lore.kernel.org/dri-devel/a35623df-6a8e-b398-a0b2-7f11b9ec4e5d@quicinc.com/
-
-While at it let me use this opportunity to bring your attention to one
-other regressions from an earlier cycle that IMHO is not handled how you
-expect regressions to be handled:
-
-Quite a few machines with Adaptec controllers seems to hang for a few
-tens of seconds to a few minutes before things start to work normally
-again for a while. That problem is known since late June
-(https://bugzilla.kernel.org/show_bug.cgi?id=217599 ) and apparently
-caused by 9dc704dcc09eae ("scsi: aacraid: Reply queue mapping to CPUs
-based on IRQ affinity") [v6.4-rc7]. Reverting the culprit seems to fix
-the problem, but I have no idea if that would be a wise move, at that
-commit fixes an I/O hang. Which might be why that commit despite a
-warning of mine[1] was picked up by the stable team and added to 6.1.53.
-That way it apparently reached Debian recently and caused more people to
-run into this and show up in the bugzilla ticket. Hannes Reinecke ~four
-weeks ago proposed a fix there, but that didn't work. Apart from it
-there was not much (if any?) involvement from the culprit's author (CCed
-to the ticket) or the scsi maintainers (which were pointed to that
-ticket at least twice mail, among others in [2]).
-
-[2] https://lore.kernel.org/all/4a639fff-445e-455b-9a31-57368d6b7021@leemhuis.info/
-
-Sorry for not bringing this up earlier.
-
-Ciao, Thorsten
-
+Reported-by: syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/00000000000075472b06007df4fb@google.com
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 ---
+ drivers/nfc/virtual_ncidev.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Hi, this is regzbot, the Linux kernel regression tracking bot.
+diff --git a/drivers/nfc/virtual_ncidev.c b/drivers/nfc/virtual_ncidev.c
+index b027be0b0b6f..ac8226db54e2 100644
+--- a/drivers/nfc/virtual_ncidev.c
++++ b/drivers/nfc/virtual_ncidev.c
+@@ -20,26 +20,31 @@
+ 				 NFC_PROTO_ISO14443_MASK | \
+ 				 NFC_PROTO_ISO14443_B_MASK | \
+ 				 NFC_PROTO_ISO15693_MASK)
++#define NCIDEV_RUNNING 0
+ 
+ struct virtual_nci_dev {
+ 	struct nci_dev *ndev;
+ 	struct mutex mtx;
+ 	struct sk_buff *send_buff;
+ 	struct wait_queue_head wq;
++	bool running;
+ };
+ 
+ static int virtual_nci_open(struct nci_dev *ndev)
+ {
++	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
++
++	vdev->running = true;
+ 	return 0;
+ }
+ 
+ static int virtual_nci_close(struct nci_dev *ndev)
+ {
+ 	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+-
+ 	mutex_lock(&vdev->mtx);
+ 	kfree_skb(vdev->send_buff);
+ 	vdev->send_buff = NULL;
++	vdev->running = false;
+ 	mutex_unlock(&vdev->mtx);
+ 
+ 	return 0;
+@@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
+ 	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+ 
+ 	mutex_lock(&vdev->mtx);
+-	if (vdev->send_buff) {
++	if (vdev->send_buff || !vdev->running) {
+ 		mutex_unlock(&vdev->mtx);
+ 		kfree_skb(skb);
+ 		return -1;
+-- 
+2.34.1
 
-Currently I'm aware of 3 regressions in linux-mainline. Find the
-current status below and the latest on the web:
-
-https://linux-regtracking.leemhuis.info/regzbot/mainline/
-
-Bye bye, hope to see you soon for the next report.
-   Regzbot (on behalf of Thorsten Leemhuis)
-
-
-======================================================
-current cycle (v6.6.. aka v6.7-rc), culprit identified
-======================================================
-
-
-[ *NEW* ] drm/amd/display: horizontal flashing bar with a picture of the desktop background on white screen after login
------------------------------------------------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com/
-https://lore.kernel.org/lkml/CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E%2B8p-4QO6FOWa6zp22_A@mail.gmail.com/
-
-By Mikhail Gavrilov; 5 days ago; 8 activities, latest 3 days ago.
-Introduced in ed6e2782e974 (v6.7-rc1)
-
-Recent activities from: Mikhail Gavrilov (5), Christian König (1), Lee,
-  Alvin (1), Hamza Mahfooz (1)
-
-
-[ *NEW* ] drm/msm/dp: boot broken on the Lenovo ThinkPad X13s and some other machines
--------------------------------------------------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ZVR8Flrjxy-wgqgJ@hovoldconsulting.com/
-https://lore.kernel.org/dri-devel/ZVR8Flrjxy-wgqgJ@hovoldconsulting.com/
-
-By Johan Hovold; 4 days ago; 2 activities, latest 3 days ago.
-Introduced in bfcc3d8f94f4 (v6.7-rc1)
-
-Fix incoming:
-* drm/msm/dp: attach the DP subconnector property
-  https://lore.kernel.org/dri-devel/3aa32b39-ee2f-405e-b4fe-983e351c2e20@leemhuis.info/
-
-
-===================================================
-current cycle (v6.6.. aka v6.7-rc), unknown culprit
-===================================================
-
-
-[ *NEW* ] Radeon regression in 6.6 kernel
------------------------------------------
-https://linux-regtracking.leemhuis.info/regzbot/regression/lore/87edgv4x3i.fsf@vps.thesusis.net/
-https://lore.kernel.org/lkml/87edgv4x3i.fsf@vps.thesusis.net/
-
-By Phillip Susi; 7 days ago; 7 activities, latest 0 days ago.
-Introduced in 56e449603f0a..b70438004a14 (v6.6-rc2..v6.7-rc1)
-
-Recent activities from: Bagas Sanjaya (3), Phillip Susi (2), Linux
-  regression tracking (Thorsten Leemhuis) (1), Dave Airlie (1)
-
-
-=============
-End of report
-=============
-
-All regressions marked '[ *NEW* ]' were added since the previous report,
-which can be found here:
-https://lore.kernel.org/r/169858752781.1095326.10615907253726224231@leemhuis.info
-
-Thanks for your attention, have a nice day!
-
-  Regzbot, your hard working Linux kernel regression tracking robot
-
-
-P.S.: Wanna know more about regzbot or how to use it to track regressions
-for your subsystem? Then check out the getting started guide or the
-reference documentation:
-
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The short version: if you see a regression report you want to see
-tracked, just send a reply to the report where you Cc
-regressions@lists.linux.dev with a line like this:
-
-#regzbot introduced: v5.13..v5.14-rc1
-
-If you want to fix a tracked regression, just do what is expected
-anyway: add a 'Link:' tag with the url to the report, e.g.:
-
-Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
