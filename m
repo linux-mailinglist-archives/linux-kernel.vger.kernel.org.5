@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E083D7F0824
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D117F0827
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:38:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbjKSRgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 12:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        id S231575AbjKSRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 12:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbjKSRgv (ORCPT
+        with ESMTP id S231547AbjKSRiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 12:36:51 -0500
+        Sun, 19 Nov 2023 12:38:15 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C74131
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:36:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4170EF2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:38:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700415406;
+        s=mimecast20190719; t=1700415491;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zSZWaEcrttfVUQAUXiV/dZPRnPufWlgpAWqh2E7JRwk=;
-        b=YNrX/hwAEI94nIDHc/Zc5/k63q8000OQjgGGLVFs+O+HZoj6ON+UghOxemtuPFc2X4nyiW
-        lGl9nCLJ2rNiGBhdt1ztYMhZKecPutZYMdXAZAqO5N0aYZSGFMRbE9/v3gNosZ7nyDHrVP
-        8WdYncOLBKHghPrPqusH1JIYw18LKus=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UfEOa4dx8jbARfZI7SJUwpd5ijXfpmv9Ry2k8rEDX50=;
+        b=Ev4ShtAVvqPFfziw2gV208mhc0ncM8rmcGKTJqxBvOVkVwwvEIYuaTxKKFWDUAoQBdEghu
+        Ouck92goEYrrrU51SaBxvkT11rl3jXh8F30v+IXfMXOniOVhGbzxr7wELngHozvO8NjqPD
+        IFbcnw5F2LRfuMC2pmTaf2FWcwdkILs=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-434-XYyHwtvJNw-8Xm2KfD1F8Q-1; Sun, 19 Nov 2023 12:36:45 -0500
-X-MC-Unique: XYyHwtvJNw-8Xm2KfD1F8Q-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5091368e043so4023511e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:36:44 -0800 (PST)
+ us-mta-580-7OK70x7MMGKr5qMNz7AcVw-1; Sun, 19 Nov 2023 12:38:10 -0500
+X-MC-Unique: 7OK70x7MMGKr5qMNz7AcVw-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5082705f6dfso3321390e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:38:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700415403; x=1701020203;
+        d=1e100.net; s=20230601; t=1700415488; x=1701020288;
         h=content-transfer-encoding:mime-version:user-agent:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zSZWaEcrttfVUQAUXiV/dZPRnPufWlgpAWqh2E7JRwk=;
-        b=TVUti1HJvh9UyDCsDbvDQ8fCbLcANc/YtwKGJGjLZIgIxHO7TyWzS+H0l1rJIZA2Fg
-         ELacSxG90YCT+4beau1JP/Gyd6CIkIhMgke4vCFtyi4ra7qlXVyyrU/wovPCNcpI50aw
-         w5XuIvgz7Nywthti7hph88DU+LQHfQXtvQj6CFflsu1OqzjryvfPm5q2gmOnHTvBtHnw
-         KiaUR/3W2ZkC8DIEHTpmXYLln/+1FO/l9v9ihoxnXBuIIsMNH9r1Zb7P4v+kBEOcCACg
-         AEHCSwqM/h67rqhxQCnj81Xkx6Y44MD3KpxgLMtOYBcbWZmhfsJBtV5nqAOhBNm2Tm1A
-         cH7w==
-X-Gm-Message-State: AOJu0YzysrWWfMx8eRD3HF81iD7dfCjLT/m6aGbPbEmrcytx9AzlrByt
-        AL1ODHA+rhPi0bCsH0d0R+3ezUTEMha27KnlQuFVSOAHd1z8NdPSsKSU+iLbSM/G3DSHIXM6aIC
-        XUSAymUwvLVWZ48yVt2YYRfq2
-X-Received: by 2002:a05:6512:11cf:b0:509:cbfa:917d with SMTP id h15-20020a05651211cf00b00509cbfa917dmr3440279lfr.37.1700415403728;
-        Sun, 19 Nov 2023 09:36:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHuRmqU0kDIKtxILH0KaovH9AaYwyddjLh71/hWyKYE45ZzBTjIXARO/xDEA0LFMXYuEZ4+BA==
-X-Received: by 2002:a05:6512:11cf:b0:509:cbfa:917d with SMTP id h15-20020a05651211cf00b00509cbfa917dmr3440274lfr.37.1700415403356;
-        Sun, 19 Nov 2023 09:36:43 -0800 (PST)
+        bh=UfEOa4dx8jbARfZI7SJUwpd5ijXfpmv9Ry2k8rEDX50=;
+        b=gnSSoLWm9W3nGiDfgBoSB94VhtGkvRjQNgUPE/t53Fp9wHNXQH5Di0lQGLBnLZaIWR
+         E9I58f8KPFqtDN2FpAZsxjuIM61ILldiu0j4LOTRYIMtkJU/Bk+x8f4Rxjbr0RMDmyhq
+         w1KklQ98W01jVq2JBRhdmTf9FhTMFaemaSHBqjCVdB11ujiCzeYL1eIFR59O1mBqr3RS
+         g6NgLcvuzFvWzmwEzy+Ku6ylwLJnz9ZuM6zzc6X7kqpnXiZt66zmVuQLuHYWMwziHadL
+         Tr/NUFyGj084hM1qZGW/lDJ5XKAxZyKE+k2gwFEa4vwF0SO5mk2D+lHFCi3OG0ceSZsF
+         lKdw==
+X-Gm-Message-State: AOJu0YyTxMOPjQDxjUmbQL2U3rtVYOvvkRsXX7XOTjuzohGJDxRHOQ2o
+        pIusWrOrhKZ2qVemN5O/dX5qIEOGs4Ab1BuzRArsNLJQs/v/EJSfuum0ozjqA4rZP2bj9QYrHER
+        stPIR9shB8cIFtCorNvZzCwxnf5+wE1iN
+X-Received: by 2002:a19:f80c:0:b0:509:1207:5e9a with SMTP id a12-20020a19f80c000000b0050912075e9amr3951853lff.42.1700415488281;
+        Sun, 19 Nov 2023 09:38:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IExMBjE8+a7PVy5wXI/+thGPI75u5SYcZ3rTZpq032gUJPIYrccoKOVRfTufwtu6HC4wgWZFw==
+X-Received: by 2002:a19:f80c:0:b0:509:1207:5e9a with SMTP id a12-20020a19f80c000000b0050912075e9amr3951842lff.42.1700415487986;
+        Sun, 19 Nov 2023 09:38:07 -0800 (PST)
 Received: from starship ([77.137.131.4])
-        by smtp.gmail.com with ESMTPSA id dm8-20020a0560000bc800b00332c08f828bsm3869295wrb.74.2023.11.19.09.36.42
+        by smtp.gmail.com with ESMTPSA id d19-20020adf9b93000000b003316eb9db40sm6231643wrc.51.2023.11.19.09.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 09:36:43 -0800 (PST)
-Message-ID: <9b6645bbe95ef98327c922822b7a4ff6b0b80bad.camel@redhat.com>
-Subject: Re: [PATCH 9/9] KVM: x86: Restrict XSAVE in cpu_caps based on KVM
- capabilities
+        Sun, 19 Nov 2023 09:38:07 -0800 (PST)
+Message-ID: <c964b29b08854b2779a75584cf2c3bb1e5ccb26a.camel@redhat.com>
+Subject: Re: [PATCH] KVM: selftests: Fix MWAIT error message when guest
+ assertion fails
 From:   Maxim Levitsky <mlevitsk@redhat.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 19 Nov 2023 19:36:41 +0200
-In-Reply-To: <20231110235528.1561679-10-seanjc@google.com>
-References: <20231110235528.1561679-1-seanjc@google.com>
-         <20231110235528.1561679-10-seanjc@google.com>
+Date:   Sun, 19 Nov 2023 19:38:06 +0200
+In-Reply-To: <20231107182159.404770-1-seanjc@google.com>
+References: <20231107182159.404770-1-seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
@@ -82,54 +81,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
-> Restrict XSAVE in guest cpu_caps so that XSAVES dependencies on XSAVE are
-> automatically handled instead of manually checking for host and guest
-> XSAVE support.  Aside from modifying XSAVE in cpu_caps, this should be a
-> glorified nop as KVM doesn't query guest XSAVE support (which is also why
-> it wasn't/isn't a bug to leave XSAVE set in guest CPUID).
+On Tue, 2023-11-07 at 10:21 -0800, Sean Christopherson wrote:
+> Print out the test and vector as intended when a guest assert fails an
+> assertion regarding MONITOR/MWAIT faulting.  Unfortunately, the guest
+> printf support doesn't detect such issues at compile-time, so the bug
+> manifests as a confusing error message, e.g. in the most confusing case,
+> the test complains that it got vector "0" instead of expected vector "0".
 > 
+> Fixes: 0f52e4aaa614 ("KVM: selftests: Convert the MONITOR/MWAIT test to use printf guest asserts")
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  arch/x86/kvm/svm/svm.c | 2 +-
->  arch/x86/kvm/vmx/vmx.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 9e3a9191dac1..6fe2d7bf4959 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4315,8 +4315,8 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
->  	 * the guest read/write access to the host's XSS.
->  	 */
-> +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVE);
->  	guest_cpu_cap_change(vcpu, X86_FEATURE_XSAVES,
-> -			     boot_cpu_has(X86_FEATURE_XSAVE) &&
->  			     boot_cpu_has(X86_FEATURE_XSAVES) &&
->  			     guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE));
+> diff --git a/tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c b/tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c
+> index 80aa3d8b18f8..853802641e1e 100644
+> --- a/tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c
+> @@ -27,10 +27,12 @@ do {									\
+>  									\
+>  	if (fault_wanted)						\
+>  		__GUEST_ASSERT((vector) == UD_VECTOR,			\
+> -			       "Expected #UD on " insn " for testcase '0x%x', got '0x%x'", vector); \
+> +			       "Expected #UD on " insn " for testcase '0x%x', got '0x%x'", \
+> +			       testcase, vector);			\
+>  	else								\
+>  		__GUEST_ASSERT(!(vector),				\
+> -			       "Expected success on " insn " for testcase '0x%x', got '0x%x'", vector); \
+> +			       "Expected success on " insn " for testcase '0x%x', got '0x%x'", \
+> +			       testcase, vector);			\
+>  } while (0)
 >  
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 815692dc0aff..7645945af5c5 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7752,8 +7752,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  	 * to the guest.  XSAVES depends on CR4.OSXSAVE, and CR4.OSXSAVE can be
->  	 * set if and only if XSAVE is supported.
->  	 */
-> -	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
-> -	    guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE))
-> +	guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVE);
-> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVE))
->  		guest_cpu_cap_restrict(vcpu, X86_FEATURE_XSAVES);
->  	else
->  		guest_cpu_cap_clear(vcpu, X86_FEATURE_XSAVES);
+>  static void guest_monitor_wait(int testcase)
+> 
+> base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
+
+I think that these days the gcc (and llvm likely) support printf annotations,
+and usually complain, we should look at adding these to have a warning in such cases.
 
 Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
 Best regards,
 	Maxim Levitsky
-
 
 
 
