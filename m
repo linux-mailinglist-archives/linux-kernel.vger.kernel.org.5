@@ -2,142 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D724A7F047E
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 06:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D27F7F048A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 07:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjKSFh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 00:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S229713AbjKSF5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 00:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSFhz (ORCPT
+        with ESMTP id S229454AbjKSF5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 00:37:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7499C192
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:37:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24BDDC433C7;
-        Sun, 19 Nov 2023 05:37:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700372271;
-        bh=nCPW9jBGTKyH0lUgrulKPDATJP5U30lWuKcxg55VFaY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fPXthR4SMxV1YOulnCEOsajU77bv4NJMJaOkL5W2+lOvh8ay5diPw5thg79i2pgab
-         RJGu1pUHfJSwCN4WAOEGNZh69U6h96xhwQ596fTffX5NgvIOZzKtHAqmkveddFi9ze
-         QI7y8x/xj0TuCyfjuLw57bgkdvtAIQ3kLUO+03GDa07HzvIhKFbQeT1FLcA8Pu2iOv
-         zop247siEZyS6ESBv6ES7nxk3AnjaMugRD/FVjAigmHOkPji63sPG1wpEp0GtJjDVX
-         P0s7ZioSbrbL12twnOBgNFB5zYoYZrc0TpoDaqyk3vO8w90vbmh5Ak00jdAU/ztA2l
-         OGMYPXHw1c2VQ==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Simon Glass <sjg@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH] riscv: add dependency among Image(.gz), loader(.bin), and vmlinuz.efi
-Date:   Sun, 19 Nov 2023 14:37:37 +0900
-Message-Id: <20231119053737.2367955-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Sun, 19 Nov 2023 00:57:08 -0500
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223BA192
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:57:04 -0800 (PST)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-283a0f1dde1so1658437a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 21:57:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700373423; x=1700978223;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v46mbtTnvoDYYvE8oPNqS+RGsR2MLoBplF8u/J0fxA0=;
+        b=d8tBlM2qPLHJPedTrd5h61pWZ6WcB/i2RB1czT6aL75jbPxzMw0TR7IfdmVtB4KZaY
+         Qxr3sklpYLLdlO4BW5XYuK2n9FrpkRlPfB9zgGZbrrwxYpk9Rt/nGZa4Z8ED8nh5GPZk
+         bIgwJLiVa3wkgx9Tvsp2kiX91vXozQawOf35ejfxndgbQ5cbBm8psKTt1R5MMvMVafOn
+         3COF+HNjUcTt3fanFAjbdsW3mVQnoSSeN4hsJS8ggeUQW6a4XCliZc6kHF6pWUQ5W+vt
+         FBlvvnt5CbBCLbnPt2OVLesvuWKgRb7h6eZj9kbixN4VzEhgMmra5l2h4suPiGDzikoR
+         6jcQ==
+X-Gm-Message-State: AOJu0YzG8231G/0GGckEtIagvdDFM64s7ptyKzvTGyG+6+n3FP3OGJ3d
+        cYbQrky01pdL9aE2+qBKEK0rL0RPRGKOHk3sDLYDkSW94LjD7u8=
+X-Google-Smtp-Source: AGHT+IEDMZ4SDjxU4YCw8X4J7kUOMiEjWvjQa29QrdLrgknruK0lC5b6/lb31PVe4IRW3MWkRYjPKqAm03BuGC+CLu8/hPsvfugs
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:ec8e:b0:1cc:38e0:dbab with SMTP id
+ x14-20020a170902ec8e00b001cc38e0dbabmr1311736plg.3.1700373423674; Sat, 18 Nov
+ 2023 21:57:03 -0800 (PST)
+Date:   Sat, 18 Nov 2023 21:57:03 -0800
+In-Reply-To: <20231119050630.124949-1-tintinm2017@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e75e5f060a7b092c@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in drm_gem_object_handle_put_unlocked
+From:   syzbot <syzbot+ef3256a360c02207a4cb@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tintinm2017@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A common issue in Makefile is a race in parallel building.
+Hello,
 
-You need to be careful to prevent multiple threads from writing to the
-same file simultaneously.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Commit 3939f3345050 ("ARM: 8418/1: add boot image dependencies to not
-generate invalid images") addressed such a bad scenario.
+Reported-and-tested-by: syzbot+ef3256a360c02207a4cb@syzkaller.appspotmail.com
 
-A similar symptom occurs with the following command:
+Tested on:
 
-  $ make -j$(nproc) ARCH=riscv Image Image.gz loader loader.bin vmlinuz.efi
-    [ snip ]
-    SORTTAB vmlinux
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    GZIP    arch/riscv/boot/Image.gz
-    AS      arch/riscv/boot/loader.o
-    AS      arch/riscv/boot/loader.o
-    Kernel: arch/riscv/boot/Image is ready
-    PAD     arch/riscv/boot/vmlinux.bin
-    GZIP    arch/riscv/boot/vmlinuz
-    Kernel: arch/riscv/boot/loader is ready
-    OBJCOPY arch/riscv/boot/loader.bin
-    Kernel: arch/riscv/boot/loader.bin is ready
-    Kernel: arch/riscv/boot/Image.gz is ready
-    OBJCOPY arch/riscv/boot/vmlinuz.o
-    LD      arch/riscv/boot/vmlinuz.efi.elf
-    OBJCOPY arch/riscv/boot/vmlinuz.efi
-    Kernel: arch/riscv/boot/vmlinuz.efi is ready
+commit:         037266a5 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fa1a14e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=54e2bd738b08eef2
+dashboard link: https://syzkaller.appspot.com/bug?extid=ef3256a360c02207a4cb
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10c76af0e80000
 
-The log "OBJCOPY arch/arm64/boot/Image" is displayed 5 times.
-(also "AS      arch/riscv/boot/loader.o" twice.)
-
-It indicates that 5 threads simultaneously enter arch/riscv/boot/
-and write to arch/riscv/boot/Image.
-
-It occasionally leads to a build failure:
-
-  $ make -j$(nproc) ARCH=riscv Image Image.gz loader loader.bin vmlinuz.efi
-    [ snip ]
-    SORTTAB vmlinux
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    OBJCOPY arch/riscv/boot/Image
-    PAD     arch/riscv/boot/vmlinux.bin
-  truncate: Invalid number: 'arch/riscv/boot/vmlinux.bin'
-  make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13: arch/riscv/boot/vmlinux.bin] Error 1
-  make[2]: *** Deleting file 'arch/riscv/boot/vmlinux.bin'
-  make[1]: *** [arch/riscv/Makefile:167: vmlinuz.efi] Error 2
-  make[1]: *** Waiting for unfinished jobs....
-    Kernel: arch/riscv/boot/Image is ready
-    GZIP    arch/riscv/boot/Image.gz
-    AS      arch/riscv/boot/loader.o
-    AS      arch/riscv/boot/loader.o
-    Kernel: arch/riscv/boot/loader is ready
-    OBJCOPY arch/riscv/boot/loader.bin
-    Kernel: arch/riscv/boot/loader.bin is ready
-    Kernel: arch/riscv/boot/Image.gz is ready
-  make: *** [Makefile:234: __sub-make] Error 2
-
-Image.gz, loader, vmlinuz.efi depend on Image. loader.bin depends
-on loader. Such dependencies are not specified in arch/riscv/Makefile.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- arch/riscv/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index 5cbe596345c1..1d6ed27e0a2a 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -163,6 +163,8 @@ BOOT_TARGETS := Image Image.gz loader loader.bin xipImage vmlinuz.efi
- 
- all:	$(notdir $(KBUILD_IMAGE))
- 
-+loader.bin: loader
-+Image.gz loader vmlinuz.efi: Image
- $(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 	@$(kecho) '  Kernel: $(boot)/$@ is ready'
--- 
-2.40.1
-
+Note: testing is done by a robot and is best-effort only.
