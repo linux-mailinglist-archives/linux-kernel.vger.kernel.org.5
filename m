@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0B77F03B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 01:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9657B7F03BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 01:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjKRX7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 18:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
+        id S230111AbjKSABk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 19:01:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKRX7m (ORCPT
+        with ESMTP id S229610AbjKSABh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 18:59:42 -0500
+        Sat, 18 Nov 2023 19:01:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A1AE6
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 15:59:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6081CC433C8;
-        Sat, 18 Nov 2023 23:59:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255B4E6
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 16:01:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2D6AC433C8;
+        Sun, 19 Nov 2023 00:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700351979;
-        bh=A5eYIpo9nw6P9JOIqKyEJq1aT2EBOd0qD0hr9BR4N8M=;
+        s=k20201202; t=1700352093;
+        bh=UswlqZPwAXhTVxY1YgDFPc5Vs0O4sCxJ8Ap4WTkwVQQ=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oBUdeo1klbXcTrHTYDEVainAaFMfwsd/6QKTALINg5d7lfMpvydF/V3VfK+nIC/95
-         UiNMKmAY1IoTeL0g0I3IFBpvWBlrWFbCAyoB/0+3SEby7LoVnYQgL26moEI5oUrDzG
-         2PTr9uIePPbTgSwJr4OZEN1bmURc6IBEpOYmfVLI9Y8U/cMYDjApQ7NngEtmkCMCrl
-         L1J8ZU6a3Pihn6Fkj12mx/VsZW1a4YUM5v/OKJVUKn8KOGpSkDgfR5nu3Ngi2PkvFM
-         k9umNY4Q9dL4zJ9vCiehrqCxTIJsI102jxGJxpoy9NzfBUkQXmhSWbNfdcpYUn/ejQ
-         HGpzOsgXeRBDw==
-Date:   Sat, 18 Nov 2023 15:59:37 -0800
+        b=S4Yar2rvVJuDvkoohWoSJKHh/LK0FgcdewDPwXy0WE4R9Q6vN4qfhvuiPPNQIDpGo
+         B23Kimu4pjHY3pADAmNV9MWxa3blPGP4XbdsU+tVfrdx+LfvA97GsCVN4uOZ/sDaFo
+         waSxbqenZaRyqQPibezzgg957pTDQHSYn89yfhbJ7u2DjYASsPjttl/wG14oBWpq9R
+         Jvo1LnlPt0mONssTAOfZT4HrL0XSZ7b4SmbEc4tXtQCImrsvADfQ+w9EqKqxgYl/Z2
+         e+nEnwM8hpQR74QvBjOqMOhsOmjzhj+RLR0yN9IXW5V++4CpiZkGDf+i5Xht1ODn3e
+         Gdilz/nSnwOQQ==
+Date:   Sat, 18 Nov 2023 16:01:31 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Kory Maincent <kory.maincent@bootlin.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -44,11 +44,12 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 0/9] net: Add support for Power over Ethernet
- (PoE)
-Message-ID: <20231118155937.4c297ddb@kernel.org>
-In-Reply-To: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+Subject: Re: [PATCH net-next 6/9] netlink: specs: Expand the pse netlink
+ command with PoE interface
+Message-ID: <20231118160131.207b7e57@kernel.org>
+In-Reply-To: <20231116-feature_poe-v1-6-be48044bf249@bootlin.com>
 References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+        <20231116-feature_poe-v1-6-be48044bf249@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -62,15 +63,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 15:01:32 +0100 Kory Maincent wrote:
-> This patch series aims at adding support for PoE (Power over Ethernet),
-> based on the already existing support for PoDL (Power over Data Line)
-> implementation. In addition, it adds support for one specific PoE
-> controller, the Microchip PD692x0.
-> 
-> In detail:
-> - Patch 1 to 6 prepare net to support PoE devices.
-> - Patch 7 adds a new error code to firmware upload API.
-> - Patch 8 and 9 add PD692x0 PoE PSE controller driver and its binding.
+On Thu, 16 Nov 2023 15:01:38 +0100 Kory Maincent wrote:
+> +        name: pse-admin-state
+> +        type: u32
+> +        name-prefix: ethtool-a-
+> +      -
+> +        name: pse-admin-control
+> +        type: u32
+> +        name-prefix: ethtool-a-
+> +      -
+> +        name: pse-pw-d-status
+> +        type: u32
+> +        name-prefix: ethtool-a-
 
-You haven't CCed Oleksij or am I blind?
+The default prefix is ethtool-a-pse-
+Why don't you leave that be and drop the pse- from the names?
