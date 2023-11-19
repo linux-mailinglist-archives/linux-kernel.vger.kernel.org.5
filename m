@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 903E37F0516
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 11:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82F07F052A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 11:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjKSKCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 05:02:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48994 "EHLO
+        id S230320AbjKSKOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 05:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjKSKCq (ORCPT
+        with ESMTP id S229454AbjKSKOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 05:02:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6ECAB6
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 02:02:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 720D7C433C8;
-        Sun, 19 Nov 2023 10:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700388162;
-        bh=+g+Ckvo3geMgzNSk2JZmLdMj7hMkxJ292tZLHksu7hU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=di5e4jE3S3cum/CclvGiIisRlNa7GYcVkh6RZrFVMs95wuQDswIucHlPWH3aCjFoO
-         DexpEvkJy1kRsOc9HwEtCL5nIsxqrWE4qQxSwkzN8vtnss1O3SJs47swLpdREIta2j
-         fzh8JvCj1nKxTxrdU797r1487p3XszHE1Isjy36cfABDMNReYeCtabP4FZlRFtdOgG
-         KcPEKIBn6BlInuDwM8D9yEFH98Z5NtJz8F6Mf8bPdmWE47fUi6G1tC2xcyqkxWD0Ig
-         fakMa76IOuVTfOGZ4kf8exBmKQq4vDdjZLHmOEHWJ3P3Hx30GXbXGs9Sk73OPcbHVH
-         UalBuqPOBC6iQ==
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6cd0963c61cso1859102a34.0;
-        Sun, 19 Nov 2023 02:02:42 -0800 (PST)
-X-Gm-Message-State: AOJu0YyOeba68IFwOg7K1y+G+sR8JkzFY3jyoFStibfTeSOY54/j2czf
-        ldlr+qXzRsja0xDipAUgOhjS0SxjSNkfeMqwo4Y=
-X-Google-Smtp-Source: AGHT+IFfkyF283gdTQSSFTs7e0LEhVhVaXBt4P15kae1A2LSGv67Rf5RptUnBd6cnwoib8ovwTENLNO5+7QAyZjbbeo=
-X-Received: by 2002:a05:6871:d20d:b0:1f5:ef0c:33ab with SMTP id
- pk13-20020a056871d20d00b001f5ef0c33abmr1177013oac.17.1700388161827; Sun, 19
- Nov 2023 02:02:41 -0800 (PST)
+        Sun, 19 Nov 2023 05:14:55 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A58B6;
+        Sun, 19 Nov 2023 02:14:51 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso4857597a12.1;
+        Sun, 19 Nov 2023 02:14:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700388890; x=1700993690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4/UMvWLGwbB65y4MgNgbTrhLeriroJNqxOaU5RBpd/A=;
+        b=jL7E5l2lX83YvyxCyw+5hnLKm3CSOvLjmhMPaWAzS0ixWMAw/Y6z/bBz5SvCMlFE6B
+         MFrFXQMjjhehSDjAyaxH0dwRMJwtfIxRP9rYnmALAxTzFJDEPCJ1EpY0JoY8dr8AfC0a
+         IYLW7VE7G4Qzz1NYFJ1MSNOueY5eUUSD9pSpP3WMdaIyn99rYOiUQd7/5RrShuuBDUaN
+         TGfx1dvv2rKD12PaJ0lJ4H2tEu6lcnUvGRzUWiJqjVra7hTv+CleFh83zMev9ZeUfGT7
+         wRUu+bWDOG8bgY/mZjxKtZf7NZ5d1W2F6FsSEOFVWJkwBUWDF+Xww5xosAN2OlxVib3q
+         hUDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700388890; x=1700993690;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4/UMvWLGwbB65y4MgNgbTrhLeriroJNqxOaU5RBpd/A=;
+        b=FoqADeoRHiIhdiB6g2lAra6tRrEIzkEo8KWo274kXd7JI6xIjVL1EqSM0JTbUw3VoM
+         g7EVvYhSnDoGAFhbTmjYG/qZUgju3uvQoeKqflM6zSeBZeN0e2XVhrc4CTlYaj0HFn+w
+         1Epu1Z/Bbw9DUVIIgs8jcxDRD2pra36HqojAXcYqO8Ic3gNTJFUQi1058duiO+RgZtIs
+         cZSOjkNP9QvY6fu0dfrZQNQIKKLXvgKNHyns53TianOYb/BQvYWDW4Eq9+L8O+8Cqfo3
+         XKNQZxbfOK5HlUdoCylKoTiEfAEUeG0Ivtwq8TicemjNmrUMCLq61N/K0RgtmXbhcH3a
+         6kkw==
+X-Gm-Message-State: AOJu0Yy8xWQmw4QCUkqGyyK5qtuarAdM7dTbt1pxEZESBzAhyajAywrb
+        wJ5hzKGAWCBDmfGkyxLclnc=
+X-Google-Smtp-Source: AGHT+IHOF+5hNhpCmZw786pHF3YEeb1uoXP2y9dXXmqI2pn0mNpGlk9gn3AwL3Ck7UOdLXgeibJ+dg==
+X-Received: by 2002:a17:906:ae51:b0:9bf:63b2:b6e2 with SMTP id lf17-20020a170906ae5100b009bf63b2b6e2mr3041311ejb.26.1700388889532;
+        Sun, 19 Nov 2023 02:14:49 -0800 (PST)
+Received: from zotac.lan. (dynamic-2a01-0c23-bde4-3e00-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:bde4:3e00:2223:8ff:fe18:310])
+        by smtp.gmail.com with ESMTPSA id p20-20020a17090628d400b009928b4e3b9fsm2743581ejd.114.2023.11.19.02.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 02:14:49 -0800 (PST)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+Subject: [PATCH 00/20] remove I2C_CLASS_DDC support
+Date:   Sun, 19 Nov 2023 11:14:25 +0100
+Message-ID: <20231119101445.4737-1-hkallweit1@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <20231118075912.1303509-1-masahiroy@kernel.org>
- <20231118075912.1303509-5-masahiroy@kernel.org> <3e879452-bda7-46d9-93fa-0cf01e484798@infradead.org>
-In-Reply-To: <3e879452-bda7-46d9-93fa-0cf01e484798@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 19 Nov 2023 19:02:05 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ+zTVNjYQ=BFm1s7R9i6W=mz1Sy3wamvaHwNxPzuWOfw@mail.gmail.com>
-Message-ID: <CAK7LNAQ+zTVNjYQ=BFm1s7R9i6W=mz1Sy3wamvaHwNxPzuWOfw@mail.gmail.com>
-Subject: Re: [PATCH 5/6] kconfig: require an exact match for "is not set" to
- disable CONFIG option
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 1:30=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Hi,
->
-> On 11/17/23 23:59, Masahiro Yamada wrote:
-> > Currently, any string starting "is not set" disables a CONFIG option.
-> >
-> > For example, "# CONFIG_FOO is not settled down" is accepted as valid
-> > input, functioning the same as "# CONFIG_FOO is not set". It is a
-> > long-standing oddity.
-> >
-> > Check the line against the exact pattern "is not set".
-> >
->
-> Just to confirm (I hope), using:
-> CONFIG_FOO=3Dn
->
-> will also still work to disable that config option?
+After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+Class-based device auto-detection is a legacy mechanism and shouldn't
+be used in new code. So we can remove this class completely now.
 
+Preferably this series should be applied via the i2c tree.
 
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-Yes.  =3Dn is still supported.
+---
 
-
-The code diff is
-strncmp() -> strcmp().
-
-
-
-
-
-
-> Thanks.
->
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  scripts/kconfig/confdata.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-> > index 795ac6c9378f..958be12cd621 100644
-> > --- a/scripts/kconfig/confdata.c
-> > +++ b/scripts/kconfig/confdata.c
-> > @@ -454,7 +454,7 @@ int conf_read_simple(const char *name, int def)
-> >                       if (!p)
-> >                               continue;
-> >                       *p++ =3D 0;
-> > -                     if (strncmp(p, "is not set", 10))
-> > +                     if (strcmp(p, "is not set"))
-> >                               continue;
-> >
-> >                       val =3D "n";
->
-> --
-> ~Randy
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+ drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+ drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+ drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+ drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+ drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+ drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+ drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+ drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+ drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+ drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+ drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+ drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+ drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+ drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+ drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+ drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+ drivers/video/fbdev/cyber2000fb.c                 |    1 -
+ drivers/video/fbdev/i740fb.c                      |    1 -
+ drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
+ drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+ drivers/video/fbdev/s3fb.c                        |    1 -
+ drivers/video/fbdev/tdfxfb.c                      |    1 -
+ drivers/video/fbdev/tridentfb.c                   |    1 -
+ drivers/video/fbdev/via/via_i2c.c                 |    1 -
+ include/linux/i2c.h                               |    1 -
+ 31 files changed, 9 insertions(+), 47 deletions(-)
