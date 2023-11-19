@@ -2,47 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6E17F0669
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F8F7F0659
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjKSN0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
+        id S230027AbjKSNN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjKSN0D (ORCPT
+        with ESMTP id S229659AbjKSNN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:26:03 -0500
+        Sun, 19 Nov 2023 08:13:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F075C2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:26:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB94C433C7;
-        Sun, 19 Nov 2023 13:25:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53126B7
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:13:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0829EC433C9;
+        Sun, 19 Nov 2023 13:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700400359;
-        bh=gn56HK2d1OyTTEnjGs+yYxtFyImiBagPEv90zBmniFw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLTZp+OHJtnhUROcIaDB4jhD9RrNHCEhHnfAWQQxyYURjFadduuvoaO3BWrfdFnjY
-         1/fiM4Y3bPBexCvrmCyJ5wg56/23OwBF46k27Q9R0mS0xCMcmqgSiULEWr+8pPJjrq
-         GrUz5kAVVgQKIQzhb/cUzAeZbOEFZqjmI/AkR0i/zCPlVEOx7q8fJVkjwnIId4vBtx
-         H1Bwz7LR097OfmJCam7jext9XkfuSwMkPSWcadp6eSK/V1zp3tuXbtQdOlNQGIvBbb
-         n4fjHW5bQAAtnkzJNjLNK6zIA7MCcsRKrz6P7KljeyrNy13f6bdbYT+26R47W1y4wl
-         6Z/2Kl35JMTUg==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        s=k20201202; t=1700399633;
+        bh=V5DrQvF6t0U/HsWpd5WvEPfjpOcCReCCCj86sAPbP3U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oX/nHFCEfPImk+7retm6wyFAS/q9qe6NpBwcZE5N5hmznsGxkW1sQsABX0CyEQDOt
+         +GxjPJ6h7EipvTIFNKpJc5uD5ktNSiQqtJD7iERW8I7kFIbjJjUxh8pvOQfZIYBgut
+         MjYIQFCOvwloPORwGduT3zMIu4AGqeHTLHSWvPmhbo/wqv9IsHwZP0e4UDPjk8FijL
+         bUw4QEbakMWS8viI2MKACCA6flPp6NiaAThN8RYHO8P7cex6xD1GY8v/1YN+DRG71y
+         oKmfnEm7FFRjrJcExqD9MDcRfqKeosHccc8jriv2Xdn02e31rZuaioKOhWD/pr3gra
+         hQPB4NpiBnstQ==
+Date:   Sun, 19 Nov 2023 13:13:47 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     "yu-chang.lee" <yu-chang.lee@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH 2/2] nvmem: Add Sophgo eFuse driver
-Date:   Sun, 19 Nov 2023 21:13:32 +0800
-Message-Id: <20231119131332.999-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20231119131332.999-1-jszhang@kernel.org>
-References: <20231119131332.999-1-jszhang@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Garmin Chang <garmin.chang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: clock: mediatek: Remove compatible
+ for MT8188 VPPSYS
+Message-ID: <20231119-gem-plus-3217ffee6278@spud>
+References: <20231117053934.10571-1-yu-chang.lee@mediatek.com>
+ <20231117053934.10571-2-yu-chang.lee@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/qVEodwOwNmr9weC"
+Content-Disposition: inline
+In-Reply-To: <20231117053934.10571-2-yu-chang.lee@mediatek.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -53,164 +63,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sophgo SoCs such as CV1800B contain eFuses used to store
-factory-programmed data such as calibration values for the built-in
-ethernet PHY.
 
-As for CV1800B, HW automatically loads the eFuse content into CONTENT
-base registers which are organized as 32bit values exposed as MMIO.
+--/qVEodwOwNmr9weC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Currently, add read support for the eFuse. This is a preparation step
-for supporting the built-in ethernet phy.
+On Fri, Nov 17, 2023 at 01:39:33PM +0800, yu-chang.lee wrote:
+> MT8188 VPPSYS 0/1 should be probed from mtk-mmsys driver to
+> populate device by platform_device_register_data then start
+> its own clock driver.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- drivers/nvmem/Kconfig        | 13 +++++
- drivers/nvmem/Makefile       |  2 +
- drivers/nvmem/sophgo-efuse.c | 97 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 112 insertions(+)
- create mode 100644 drivers/nvmem/sophgo-efuse.c
+How does one operating system's driver probing model render these
+compatibles invalid?
 
-diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
-index 5bc9c4874fe3..f2de7338c6e9 100644
---- a/drivers/nvmem/Kconfig
-+++ b/drivers/nvmem/Kconfig
-@@ -298,6 +298,19 @@ config NVMEM_SNVS_LPGPR
- 	  This driver can also be built as a module. If so, the module
- 	  will be called nvmem-snvs-lpgpr.
- 
-+config NVMEM_SOPHGO_EFUSE
-+	tristate "Sophgo eFuse support"
-+	depends on ARCH_SOPHGO || COMPILE_TEST
-+	default ARCH_SOPHGO
-+	help
-+	  Say y here to enable support for reading eFuses on Sophgo SoCs
-+	  such as the CV1800B. These are e.g. used to store factory programmed
-+	  calibration data required for the builtin ethernet PHY.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called nvmem-sophgo-efuse.
-+
-+
- config NVMEM_SPMI_SDAM
- 	tristate "SPMI SDAM Support"
- 	depends on SPMI
-diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-index 423baf089515..f3602bb16efc 100644
---- a/drivers/nvmem/Makefile
-+++ b/drivers/nvmem/Makefile
-@@ -60,6 +60,8 @@ obj-$(CONFIG_NVMEM_SC27XX_EFUSE)	+= nvmem-sc27xx-efuse.o
- nvmem-sc27xx-efuse-y			:= sc27xx-efuse.o
- obj-$(CONFIG_NVMEM_SNVS_LPGPR)		+= nvmem_snvs_lpgpr.o
- nvmem_snvs_lpgpr-y			:= snvs_lpgpr.o
-+obj-$(CONFIG_NVMEM_SOPHGO_EFUSE)	+= nvmem-sophgo-efuse.o
-+nvmem-sophgo-efuse-y			:= sophgo-efuse.o
- obj-$(CONFIG_NVMEM_SPMI_SDAM)		+= nvmem_qcom-spmi-sdam.o
- nvmem_qcom-spmi-sdam-y			+= qcom-spmi-sdam.o
- obj-$(CONFIG_NVMEM_SPRD_EFUSE)		+= nvmem_sprd_efuse.o
-diff --git a/drivers/nvmem/sophgo-efuse.c b/drivers/nvmem/sophgo-efuse.c
-new file mode 100644
-index 000000000000..3b4eb4d097e3
---- /dev/null
-+++ b/drivers/nvmem/sophgo-efuse.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Sophgo SoC eFuse driver
-+ *
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/nvmem-provider.h>
-+#include <linux/platform_device.h>
-+
-+#define CV1800B_EFUSE_CONTENT_BASE	0x100
-+#define CV1800B_EFUSE_CONTENT_SIZE	0x100
-+
-+struct sophgo_efuses_priv {
-+	void __iomem *base;
-+	struct clk *clk;
-+};
-+
-+static int sophgo_efuses_read(void *context, unsigned int offset, void *val,
-+			     size_t bytes)
-+{
-+	struct sophgo_efuses_priv *priv = context;
-+	u32 *dst = val;
-+	int ret;
-+
-+	ret = clk_prepare_enable(priv->clk);
-+	if (ret < 0)
-+		return ret;
-+
-+	while (bytes >= sizeof(u32)) {
-+		*dst++ = readl_relaxed(priv->base + CV1800B_EFUSE_CONTENT_BASE + offset);
-+		bytes -= sizeof(u32);
-+		offset += sizeof(u32);
-+	}
-+
-+	clk_disable_unprepare(priv->clk);
-+
-+	return 0;
-+}
-+
-+static int sophgo_efuses_probe(struct platform_device *pdev)
-+{
-+	struct sophgo_efuses_priv *priv;
-+	struct resource *res;
-+	struct nvmem_config config = {
-+		.dev = &pdev->dev,
-+		.add_legacy_fixed_of_cells = true,
-+		.read_only = true,
-+		.reg_read = sophgo_efuses_read,
-+		.stride = sizeof(u32),
-+		.word_size = sizeof(u32),
-+		.name = "sophgo_efuse_nvmem",
-+		.id = NVMEM_DEVID_AUTO,
-+		.root_only = true,
-+	};
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	priv->clk = devm_clk_get(&pdev->dev, NULL);
-+	if (IS_ERR(priv->clk))
-+		return PTR_ERR(priv->clk);
-+
-+	config.priv = priv;
-+	config.size = CV1800B_EFUSE_CONTENT_SIZE;
-+
-+	return PTR_ERR_OR_ZERO(devm_nvmem_register(config.dev, &config));
-+}
-+
-+static const struct of_device_id sophgo_efuses_of_match[] = {
-+	{ .compatible = "sophgo,cv1800b-efuse", },
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(of, sophgo_efuses_of_match);
-+
-+static struct platform_driver sophgo_efuses_driver = {
-+	.driver = {
-+		.name = "sophgo_efuse",
-+		.of_match_table = sophgo_efuses_of_match,
-+	},
-+	.probe = sophgo_efuses_probe,
-+};
-+
-+module_platform_driver(sophgo_efuses_driver);
-+
-+MODULE_AUTHOR("Jisheng Zhang <jszhang@kernel.org>");
-+MODULE_LICENSE("GPL");
--- 
-2.42.0
+Cheers,
+Conor.
 
+>=20
+> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
+> ---
+>  .../devicetree/bindings/clock/mediatek,mt8188-clock.yaml        | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt8188-cloc=
+k.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
+> index d7214d97b2ba..860570320545 100644
+> --- a/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
+> +++ b/Documentation/devicetree/bindings/clock/mediatek,mt8188-clock.yaml
+> @@ -43,8 +43,6 @@ properties:
+>        - mediatek,mt8188-vdecsys
+>        - mediatek,mt8188-vdecsys-soc
+>        - mediatek,mt8188-vencsys
+> -      - mediatek,mt8188-vppsys0
+> -      - mediatek,mt8188-vppsys1
+>        - mediatek,mt8188-wpesys
+>        - mediatek,mt8188-wpesys-vpp0
+> =20
+> --=20
+> 2.18.0
+>=20
+>=20
+
+--/qVEodwOwNmr9weC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVoKCwAKCRB4tDGHoIJi
+0mmwAP4xlBMe7KzcRqab0tzLkrFxcEcp+1zazJckesSqDZjnDgEA1RUf5bBcEP+x
+B3LIvAw1RBNkkHCQMJDouIVhi3zTvQM=
+=RCYq
+-----END PGP SIGNATURE-----
+
+--/qVEodwOwNmr9weC--
