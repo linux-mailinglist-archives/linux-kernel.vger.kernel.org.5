@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D1A7F063A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 13:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0EE7F0642
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbjKSM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 07:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S230454AbjKSNEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSM6E (ORCPT
+        with ESMTP id S229454AbjKSNEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 07:58:04 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5C5B9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 04:58:01 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C5DA840E0191;
-        Sun, 19 Nov 2023 12:57:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id IBD6oGHS2qgR; Sun, 19 Nov 2023 12:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700398677; bh=zEHFaZ88zzwqzod2rooBuMwnm2KfigYzVKU+Z5qB6vo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V2uKmPO3SzLp+wYrC0/tbmh/BtssgCTskghJ139ZD750u5tN0EydH4KBNpWFyh3mD
-         /egZyq2BWr5U9CtYwZR0eAWrS9ipIVyKiCp+3AsfON7DzsqT4iTP9UIMoW7auKYGL5
-         QuRC/sbuVQFJAatGPCqGFhjE2QNTo4SGOinZQTjnixUMP6WUlFabP0h1jrxvH5TydE
-         xKBaf3kTuZ2gH1ZOv+lOgEvfXnVD3UumGuxaTvyRYDYcwhwxR3EmnjUXfMH7AyBJDf
-         zorocMcxx4Onvej9aSgIsHRH417AEMTWpU+pXczt90bsj5BE9tWbVkMQyr/Y1MQnOg
-         Da0jmE9MbxQ5iYcsPJJTLR/rK/p75BdwfZJzLB0hZ3ENffgp8KYu8SK3GUDhot0q3i
-         NPZ2iMK2BNBa8CXfG5/6o/JuYUkk/sYpzEOS/x5DtCyHbFoeBd4PTAIpePmuWKH66O
-         XgpUhCoVpuX3bA1JJ79fs056yWse86JOsKgsYxbLblhyr7nnjVWEvY8rQYhaN8ONr/
-         EgRiBGtGzGHXUsrGEGMoWM+B1VBWg26IgzJtkJ8W4DAU2wgtPHsjGyZLgLy3OVxpTr
-         ffBAy2CPflvPnzpjvnJya2gEcgcRFWtNcABje5sUpIGXpCGlSS5UauK4BqDmJV9bLf
-         WOrJXrMTZyB+kHtSlBcUvxOU=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A952940E0031;
-        Sun, 19 Nov 2023 12:57:54 +0000 (UTC)
-Date:   Sun, 19 Nov 2023 13:57:53 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sched/urgent for v6.7-rc2
-Message-ID: <20231119125753.GCZVoGUQHr5N9ILels@fat_crate.local>
+        Sun, 19 Nov 2023 08:04:32 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E61B9;
+        Sun, 19 Nov 2023 05:04:29 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50930f126b1so4474240e87.3;
+        Sun, 19 Nov 2023 05:04:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700399067; x=1701003867; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zP7dCzocUVh4qFf97xC71aXva/0AFLOJoQWQWCRF4fM=;
+        b=e8u/HsDVFl1cABDm+8eJ3OdHmcAgPn22bNKK70jGs7bTfGqWbpyqTkjOqP8Pqvk3H/
+         ZSaPHmH5suoytEZqUXYtGlUIMdX7CdfR68M5l6UQuwn4W3Gx8C36gdL+4f/5fPP4PLoC
+         DysavuWisyzCW8O2m2y+dJqWDhkLuURR1PxwnfIZRO8wYK944+fewJuq8LXhbYunLrE7
+         BhFaRtpn1/ViD99xzJV8ZAWFfC7/j55Bw+HkEZqgvcpA4GHGLtMUP1jp4HQWuF8u6Aqm
+         cAK7sGKKtFRfVxXmTByReTyvuHWGViNZzfbqeW9kl9kHMcYhDgUnaLttTqo1UF18+Ln6
+         c9mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700399067; x=1701003867;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zP7dCzocUVh4qFf97xC71aXva/0AFLOJoQWQWCRF4fM=;
+        b=psGVABLOTE/DMARXEt65Td0vybWhVEJdPZ4aekvTLGgBEh1V453sRF1CdAWzilJZtY
+         U/Xciu3zuK3GvZsYXqgfgBk7z0M2qIMYszHo5j5JZ23nDUacJuo2TizS8fKvW/LkCb0G
+         ZxgpjRPH7+ine98qDcu+2BuGN9wqhlYXyQpGHzseFbK0k/WA5Y3D4rhjsxiQQFZQfKg5
+         pT/9FIkDWj01uOR1iMY/93m81iuMyCAQZk+EfFV9g+veXaeJopKGeWowG5qmIY+QLSQs
+         PLIy89LEPV4n/qiE+gwBGGwfgyy7lVhR4UOg2GNoURlPX17inypotADP4bieoe3Oua/H
+         pPAg==
+X-Gm-Message-State: AOJu0Yza3Wo1GtyBhrz2k0zhrZfJQsJypBjnb8eTVBsbvvC8u+BOSSOh
+        BgpZr7Q0RvVuCNcIQUY9Zw==
+X-Google-Smtp-Source: AGHT+IFFw1D0jjPGC2PZaMsI6F+bUzIABnBmKjG2xRzT2rKj6n+5Zy0g8TK1aiDHb8uH87JEQ+H8Hw==
+X-Received: by 2002:ac2:5316:0:b0:50a:6fbe:fec4 with SMTP id c22-20020ac25316000000b0050a6fbefec4mr3582233lfh.33.1700399066958;
+        Sun, 19 Nov 2023 05:04:26 -0800 (PST)
+Received: from U4.lan ([2a02:810b:f40:4300:7017:f42c:e243:8c57])
+        by smtp.gmail.com with ESMTPSA id n8-20020a1709062bc800b009dd8473559dsm2827866ejg.110.2023.11.19.05.04.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 05:04:26 -0800 (PST)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/3] Add Geniatech XPI-3128 board
+Date:   Sun, 19 Nov 2023 14:03:49 +0100
+Message-ID: <20231119130351.112261-2-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This series adds RK3128 based Geniatech XPI-3128 SBC board.
 
-please pull a bunch of urgent scheduler fixes for 6.7.
+Please see commit messages of the individual patches for details.
 
-Thx.
+These patches have been part of the pretty huge RK3128 bring-up/fix-up
+series [0] which I've splitted-up now, as suggested.
 
----
+[0] https://lore.kernel.org/linux-rockchip/20230829171647.187787-1-knaerzche@gmail.com
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+Changes in v2:
+ - drop nodes from board DT that have been part of the initial series that
+   are not upstream yet
+ - rephrase some board DT comments
+ - refine commit messages
+ - added mmc-ddr-3_3v property for eMMC
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Alex Bee (3):
+  dt-bindings: arm: rockchip: Add Geniatech XPI-3128
+  ARM: dts: rockchip: Add sdmmc_det pinctrl for RK3128
+  ARM: dts: Add Geniatech XPI-3128 RK3128 board
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v6.7_rc2
-
-for you to fetch changes up to 6d7e4782bcf549221b4ccfffec2cf4d1a473f1a3:
-
-  sched/fair: Fix the decision for load balance (2023-11-14 22:27:01 +0100)
-
-----------------------------------------------------------------
-- Fix virtual runtime calculation when recomputing a sched entity's
-  weights
-
-- Fix wrongly rejected unprivileged poll requests to the cgroup psi
-  pressure files
-
-- Make sure the load balancing is done by only one CPU
-
-----------------------------------------------------------------
-Abel Wu (1):
-      sched/eevdf: Fix vruntime adjustment on reweight
-
-Johannes Weiner (1):
-      sched: psi: fix unprivileged polling against cgroups
-
-Keisuke Nishimura (1):
-      sched/fair: Fix the decision for load balance
-
- kernel/cgroup/cgroup.c |  12 ----
- kernel/sched/fair.c    | 161 +++++++++++++++++++++++++++++++++++++++++--------
- 2 files changed, 135 insertions(+), 38 deletions(-)
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ arch/arm/boot/dts/rockchip/Makefile           |   1 +
+ .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts | 397 ++++++++++++++++++
+ arch/arm/boot/dts/rockchip/rk3128.dtsi        |   4 +
+ 4 files changed, 407 insertions(+)
+ create mode 100644 arch/arm/boot/dts/rockchip/rk3128-xpi-3128.dts
 
 -- 
-Regards/Gruss,
-    Boris.
+2.42.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
