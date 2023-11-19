@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA54C7F03E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 02:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7556C7F03FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjKSBb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 20:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
+        id S229940AbjKSB57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 20:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKSBb1 (ORCPT
+        with ESMTP id S229610AbjKSB55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 20:31:27 -0500
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DD6C4
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:31:24 -0800 (PST)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc2a0c7c6cso40004985ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:31:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700357484; x=1700962284;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l+RUiSwPwCAAGr2F68oCXKGMiSPBpBfD2D0zBcrr6mw=;
-        b=jSDD4XubCz8bkbPX9tqdIPKnXDP3+XtPHi/peFkOIzOQoARlcfxkPjZyvOm+98dLiD
-         /QAX3ciPHGXlryY+k0qcbXGo96H/ODYHClIk0Z6ACzcRh4r6KLc1ZfKm08FEXCMsnV27
-         nVFlgso7odvRAEsFwyxomZp512TsBwveDZAP3VXc6zN/NCnhDp6QkHXZSddm4kdKUFJ1
-         9edRRXmHCirbFsjCCFkWkat9mU61r39TirWp/mqC8nyNgO4gCHz1ICY1u0p+HPIjYmYC
-         +Nf65MoiBQ5EY3zgvDKh88ST49csyFwK7spK6UWDrwSq0EJEgsaonRq8C5xjZzg3A4Us
-         K/0g==
-X-Gm-Message-State: AOJu0YzcACSO99e35KMWh+HjZwD2K63ckShDfsHzemIuIY5EUDBIjcC9
-        xSJfw1Z5tf0x+MKLtTd3Rl6pL1ikhLksEBFntfm9WwZMPN1yUC8=
-X-Google-Smtp-Source: AGHT+IH8K4LCdd659AlLs+FBtHaZ/jZSRbPOcTdjGPBn7Xwg+ZyPwguKQe2KjWAMBKxlO/AhcnhiKY9bv+Fk8L4olbGXbvYuzTJU
+        Sat, 18 Nov 2023 20:57:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BCFB9
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700359074; x=1731895074;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qN9skTXVoFZZSlyX+VNOQpfYZIAzaQ+mbVciBNMHxoc=;
+  b=QWcb+hh3FDZnKKlE+Hazdivo3DIBvdQ+oMgDLY3otZlCMQ+E4WZ0Brva
+   yLQavVPdP04Zanmm7atLHRTfn+kMC84Sg01K+fvcqO8KjOa4D+mmbTj4U
+   g0BAcvn+XC28wC558WWQH6ByzhT+SYKVHaArbexhxzhvZUAalVY6QCkrh
+   7lvFjoYYcdgOK3mvtYsvG1PXzqAH1bNcEo5y5KgQiIJE6jj5j/YU04Rvt
+   WQxKFkVZt81cAKC0a9UpXpbpwNsb8eWE/QDkj7kSOCrlZviqEMXZPfGRu
+   X4mSDZzFQfT0I5rW3lJS8HZRM5buLEflT0TV7fCyOLvzdMqK5SxAB9rW3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="457967537"
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="457967537"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 17:57:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
+   d="scan'208";a="7196299"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 18 Nov 2023 17:57:52 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4X4H-0004WY-24;
+        Sun, 19 Nov 2023 01:57:49 +0000
+Date:   Sun, 19 Nov 2023 09:57:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: kismet: WARNING: unmet direct dependencies detected for
+ SND_SOC_WM8731_I2C when selected by SND_SOC_DB1200
+Message-ID: <202311190914.zX7FPiKo-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:b7c3:b0:1cc:70f2:c1d5 with SMTP id
- v3-20020a170902b7c300b001cc70f2c1d5mr963176plz.11.1700357484245; Sat, 18 Nov
- 2023 17:31:24 -0800 (PST)
-Date:   Sat, 18 Nov 2023 17:31:24 -0800
-In-Reply-To: <000000000000bf0b1f060a2d9bea@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6fbd8060a7753e8@google.com>
-Subject: Re: [syzbot] [PATCH] Test divide err in drm
-From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   b8f1fa2419c19c81bc386a6b350879ba54a573e1
+commit: 9dc15f81baf273b5aaaa3302ee8faacd78f361fd ASoC: wm8731: Factor out the I2C and SPI bus code into separate modules
+date:   1 year, 8 months ago
+config: mips-kismet-CONFIG_SND_SOC_WM8731_I2C-CONFIG_SND_SOC_DB1200-0-0 (https://download.01.org/0day-ci/archive/20231119/202311190914.zX7FPiKo-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20231119/202311190914.zX7FPiKo-lkp@intel.com/reproduce)
 
-***
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311190914.zX7FPiKo-lkp@intel.com/
 
-Subject: [PATCH] Test divide err in drm
-Author: eadavis@qq.com
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for SND_SOC_WM8731_I2C when selected by SND_SOC_DB1200
+   
+   WARNING: unmet direct dependencies detected for SND_SOC_WM8731_I2C
+     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
+     Selected by [y]:
+     - SND_SOC_DB1200 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AU1XPSC [=y]
 
-please test divide err in drm
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ac347a0655db
-
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index ac9a406250c5..1a3e8f3c1ece 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -36,6 +36,7 @@
- #include <linux/list.h>
- #include <linux/list_sort.h>
- #include <linux/of.h>
-+#include <linux/log2.h>
- 
- #include <video/of_display_timing.h>
- #include <video/of_videomode.h>
-@@ -1297,8 +1298,12 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
- 		num *= 2;
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		den *= 2;
--	if (mode->vscan > 1)
-+	if (mode->vscan > 1) {
-+		printk("%d, %d, %s\n", ilog2(den), ilog2(mode->vscan), __func__);
-+		if (ilog2(den) + ilog2(mode->vscan) >= 32)
-+			return -EINVAL;
- 		den *= mode->vscan;
-+	}
- 
- 	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
- }
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
