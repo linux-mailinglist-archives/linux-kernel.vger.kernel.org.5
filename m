@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E29CA7F0715
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221997F0719
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjKSPNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 10:13:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        id S231232AbjKSPQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 10:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKSPNN (ORCPT
+        with ESMTP id S229508AbjKSPQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 10:13:13 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205ECB3;
-        Sun, 19 Nov 2023 07:13:10 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32deb2809daso2345978f8f.3;
-        Sun, 19 Nov 2023 07:13:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700406788; x=1701011588; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EDtSNkcu3n6VEBL6cX5/6KUOPyj6eJV5oYhNMI3f5+A=;
-        b=O9uUDLMDJhtz2sX/JQZW1VmB/mLps+faHLhVsh2xBMCpH9AusoOsJgf8ZZKG8XfsEz
-         cdv+SiQBFPUA5Tl7dj0hhtzRA+v3XitkcymeMH+dyqYvhPgQpAbUKGM9dOVmwCtuUnrq
-         sT8OZswoQeOh4DoXXh3VOSXdABdJilvXBkgll4vEfsE2gMosmf/6yMp0NY5FJG9q7EZf
-         GpZttwjc6SViC/oJ2kt7tIWhEt12ySmHoWwQMi1nEuGnSdAa8TY6ymXrp4+RJQErNStN
-         X7Ij9i4UvNzihQ4gdrCDaS/TaIqpfoz0/0Ti2ffDizRXR1+QFFUABxoh7Pq8yX7eShxR
-         3+og==
+        Sun, 19 Nov 2023 10:16:53 -0500
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236C6C2;
+        Sun, 19 Nov 2023 07:16:50 -0800 (PST)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5842a7fdc61so1889551eaf.3;
+        Sun, 19 Nov 2023 07:16:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700406788; x=1701011588;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EDtSNkcu3n6VEBL6cX5/6KUOPyj6eJV5oYhNMI3f5+A=;
-        b=V81Hehkaa4+f4dI6JxhGXs7WKIapPZd1bzC0dywWmHpTL2jjvRG8PaTw6LbggMaG+H
-         fyUC6Kg/wHzEMLQY0wNfhvTKtfMt1y5f8v59zWlvAC20cqbjpa2O3iwtlq1iO3zfkkq9
-         QFVUeh0tKxP7I/KQp56FanasNNz6kXaOAsho0ohZvMRxMOsPR7Tu4rrkjLjQOFAK8ZnB
-         QNAKXVkOTOIKBqeQRpmhWyi4bH+e03+oXoqfTQodUn9+Bf0k00HsUXeIBaXTHwl1+SQ2
-         0+Oxs+4qwXjXEnw1ppsG7nKL/SLBLPuCDZ1oCqK0YCgAXq2xBV8kw/096vUP1JGkvXAh
-         bghA==
-X-Gm-Message-State: AOJu0YzDHlcp1xgaGknPDJg7laM3Vt6DGgMY20MB5MVf4GvLKYYIsSlu
-        1oJHMkNLBtN+ASEgEwxHsg4e03Unk6Q=
-X-Google-Smtp-Source: AGHT+IEVZDPP0CD+D6MdB9oueW18RKXcsXrHKRVyv3oaAVMl1DsvLnOQ59+Ypy1csSNjpl22zR/MDA==
-X-Received: by 2002:a5d:64ab:0:b0:31a:d9bc:47a2 with SMTP id m11-20020a5d64ab000000b0031ad9bc47a2mr3160376wrp.53.1700406788088;
-        Sun, 19 Nov 2023 07:13:08 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id m3-20020adffa03000000b00323293bd023sm8321441wrr.6.2023.11.19.07.13.07
+        d=1e100.net; s=20230601; t=1700407009; x=1701011809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dWEPk/3aAzX0I4fI4cuUC5y57V6oWUlKYqFVGCjXpJ4=;
+        b=jYdkgTQCJNpcIhYxrTjCuVXxg8j7bDaurJU0xschcM427IQCk8a5CGBzwTgHG+vSsJ
+         yyptBjjQJMihbcnTi0hgl9sIOPahzvofD2ZkmYnKCtdySFtWmyUx9InMhPnMtF744uWq
+         0SAtEr+gkYEBq0yG56Rt/61GE9ywlWqfxXdzbzWZ23DoePqulNHbZqe9VG2A794Jp61p
+         OFeX4f9S+V69LIbCVku0o/PW15w2zg9k/LFmPsjJioL7Zd6gxFZ8J7njqP/GnhF8A0DQ
+         432+1/gx8D9DEsqygWJ3AsnPFa7ZtRbzxOtsuvEKRnM9BgZCvUgCEflU+gUEr7RXmDdj
+         OqRw==
+X-Gm-Message-State: AOJu0Yz5Rcr/gEWmrXFGpUyknY38xrNNArWpSn3sh+4Z/4Zw5RWkRGbv
+        4Q83zngXKrpTddJzk2VD8Q==
+X-Google-Smtp-Source: AGHT+IFTumx8nyQQh6n2laOF1YkhSXqTh5bw2xAJK/w4wHOJAQlPpzBcTyUNnWCP6irMM3KxJR5Kug==
+X-Received: by 2002:a05:6820:1c84:b0:56c:cd0c:1d67 with SMTP id ct4-20020a0568201c8400b0056ccd0c1d67mr5808089oob.7.1700407009353;
+        Sun, 19 Nov 2023 07:16:49 -0800 (PST)
+Received: from herring.priv ([2607:fb90:45e3:889f:15b4:1348:6d64:224b])
+        by smtp.gmail.com with ESMTPSA id w18-20020a4ae4d2000000b00581fc1af0a7sm1065154oov.28.2023.11.19.07.16.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:13:07 -0800 (PST)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>, stable@vger.kernel.org
-Subject: [net PATCH] net: phy: correctly check soft_reset ret ONLY if defined for PHY
-Date:   Sun, 19 Nov 2023 16:12:58 +0100
-Message-Id: <20231119151258.20201-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Sun, 19 Nov 2023 07:16:48 -0800 (PST)
+Received: (nullmailer pid 215792 invoked by uid 1000);
+        Sun, 19 Nov 2023 15:16:43 -0000
+Date:   Sun, 19 Nov 2023 09:16:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Yi-De Wu <yi-de.wu@mediatek.com>
+Cc:     Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+        Ze-Yu Wang <ze-yu.wang@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        David Bradil <dbrazdil@google.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Jade Shih <jades.shih@mediatek.com>,
+        Ivan Tseng <ivan.tseng@mediatek.com>,
+        My Chuang <my.chuang@mediatek.com>,
+        Shawn Hsiao <shawn.hsiao@mediatek.com>,
+        PeiLun Suei <peilun.suei@mediatek.com>,
+        Liju Chen <liju-clr.chen@mediatek.com>,
+        Willix Yeh <chi-shen.yeh@mediatek.com>,
+        Kevenny Hsieh <kevenny.hsieh@mediatek.com>
+Subject: Re: [PATCH v7 02/16] dt-bindings: hypervisor: Add MediaTek GenieZone
+ hypervisor
+Message-ID: <20231119151643.GA213170-robh@kernel.org>
+References: <20231116152756.4250-1-yi-de.wu@mediatek.com>
+ <20231116152756.4250-3-yi-de.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116152756.4250-3-yi-de.wu@mediatek.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-soft_reset call for phy_init_hw had multiple revision across the years
-and the implementation goes back to 2014. Originally was a simple call
-to write the generic PHY reset BIT, it was then moved to a dedicated
-function. It was then added the option for PHY driver to define their
-own special way to reset the PHY. Till this change, checking for ret was
-correct as it was always filled by either the generic reset or the
-custom implementation. This changed tho with commit 6e2d85ec0559 ("net:
-phy: Stop with excessive soft reset"), as the generic reset call to PHY
-was dropped but the ret check was never made entirely optional and
-dependent whether soft_reset was defined for the PHY driver or not.
+On Thu, Nov 16, 2023 at 11:27:42PM +0800, Yi-De Wu wrote:
+> From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
+> 
+> Add documentation for GenieZone(gzvm) node. This node informs gzvm
+> driver to start probing if geniezone hypervisor is available and
+> able to do virtual machine operations.
+> 
+> [Detail]
+> The debate of using dt or not remains intact, and gentle ping seems not
+> working on this issue. We'll keep this patch for further discussion and
+> move forward in order to rebase based on the latest rc release. For
+> previous discussion, please kindly refer to the following link.
 
-Luckly nothing was ever added before the soft_reset call so the ret
-check (in the case where a PHY didn't had soft_reset defined) although
-wrong, never caused problems as ret was init 0 at the start of
-phy_init_hw.
+Please explain in the commit message why this needs to be in DT and is 
+not discoverable by some other means?
 
-To prevent any kind of problem and to make the function cleaner and more
-robust, correctly move the ret check if the soft_reset section making it
-optional and needed only with the function defined.
-
-Cc: stable@vger.kernel.org # v5.8+
-Fixes: 6e2d85ec0559 ("net: phy: Stop with excessive soft reset")
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- drivers/net/phy/phy_device.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 2ce74593d6e4..478126f6b5bc 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1235,14 +1235,13 @@ int phy_init_hw(struct phy_device *phydev)
- 
- 	if (phydev->drv->soft_reset) {
- 		ret = phydev->drv->soft_reset(phydev);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* see comment in genphy_soft_reset for an explanation */
--		if (!ret)
--			phydev->suspended = 0;
-+		phydev->suspended = 0;
- 	}
- 
--	if (ret < 0)
--		return ret;
--
- 	ret = phy_scan_fixups(phydev);
- 	if (ret < 0)
- 		return ret;
--- 
-2.40.1
-
+Rob
