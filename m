@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250627F0801
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145E17F0804
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbjKSRBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 12:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S231512AbjKSRDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 12:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbjKSRBN (ORCPT
+        with ESMTP id S231549AbjKSRCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 12:01:13 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07EC7D77;
-        Sun, 19 Nov 2023 09:00:01 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6B171476;
-        Sun, 19 Nov 2023 09:00:47 -0800 (PST)
-Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BFC23F6C4;
-        Sun, 19 Nov 2023 08:59:56 -0800 (PST)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com
-Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, hyesoo.yu@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: [PATCH RFC v2 27/27] arm64: mte: Enable dynamic tag storage reuse
-Date:   Sun, 19 Nov 2023 16:57:21 +0000
-Message-Id: <20231119165721.9849-28-alexandru.elisei@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231119165721.9849-1-alexandru.elisei@arm.com>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+        Sun, 19 Nov 2023 12:02:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E24610C7
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:01:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CEEBC433C8;
+        Sun, 19 Nov 2023 17:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700413312;
+        bh=ru86jZzUfXNFF9k5YMUWNK9FW+jss64vTxKOc0+mVJU=;
+        h=From:Date:Subject:To:Cc:From;
+        b=F9k4pQWn5qkoUreZ0Qs9CZ6ToeOcPPP2m/9V4uFFx27K5EpcBfULGYwkIreFl+0PZ
+         xhWULHTogo6igicxTSXY76dvNBDwVy4ZWU3daSJpaE0xmSbb05k7U/R4qREZdZsMt5
+         JduZ/SzSBrWHRRIqpAzaJlYz0vVGpgjiiCegW38ci5+jYF+ycCfdFD8zV+CDpKj+Pk
+         m1cvIVQBzLo7fMPmEfxcKJh47oh5oJp8RNAHUS6DQOoyxAhE6LU/ygJZXEaXl7116N
+         Vtps5kguZKQMDLALV9MHG1vWPpAb6bn0TS7rytOuEAsGcEpub/WVnmq/UMCGy539m6
+         IRsDf8O0pKkmg==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1f055438492so2126965fac.3;
+        Sun, 19 Nov 2023 09:01:52 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx9muHM9KRnXIQ3BHKqRJy/tTgBKuPb02u1lAjaKdkDUVhtc3tQ
+        4BMmX2zck3VR/htatJxUYehv/k0/Y1j4nMuDNNs=
+X-Google-Smtp-Source: AGHT+IHl601uArgv5Eno1o3AqcocHQg4PeA8sFAei7ec30ZfwnTo+FZre9CdLIKejN84VYTzsUJ7nrvvbms5NnvM7sw=
+X-Received: by 2002:a05:6870:f696:b0:1f5:cf0e:ea04 with SMTP id
+ el22-20020a056870f69600b001f5cf0eea04mr5395796oab.58.1700413311348; Sun, 19
+ Nov 2023 09:01:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 20 Nov 2023 02:01:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATS=c2K7Ttg+Sb6gEmfUkrMbTQ0c62niOFzayzRF-rOdw@mail.gmail.com>
+Message-ID: <CAK7LNATS=c2K7Ttg+Sb6gEmfUkrMbTQ0c62niOFzayzRF-rOdw@mail.gmail.com>
+Subject: [GIT PULL] Kbuild fixes for v6.7-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,27 +55,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everything is in place, enable tag storage management.
+Hello Linus,
 
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
----
- arch/arm64/kernel/mte_tag_storage.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-index 11961587382d..9f60e952a814 100644
---- a/arch/arm64/kernel/mte_tag_storage.c
-+++ b/arch/arm64/kernel/mte_tag_storage.c
-@@ -395,6 +395,9 @@ static int __init mte_tag_storage_activate_regions(void)
- 
- 	reserve_tag_storage(ZERO_PAGE(0), 0, GFP_HIGHUSER_MOVABLE);
- 
-+	static_branch_enable(&tag_storage_enabled_key);
-+	pr_info("MTE tag storage region management enabled");
-+
- 	return 0;
- 
- out_disabled:
--- 
-2.42.1
+Please pull Kbuild fixes for v6.7-rc2.
+Thanks.
 
+
+
+
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-fixes-v6.7
+
+for you to fetch changes up to ae1eff0349f2e908fc083630e8441ea6dc434dc0:
+
+  kconfig: fix memory leak from range properties (2023-11-17 13:24:08 +0900)
+
+----------------------------------------------------------------
+Kbuild fixes for v6.7
+
+ - Fix section mismatch warning messages for riscv and loongarch
+
+ - Remove CONFIG_IA64 left-over from linux/export-internal.h
+
+ - Fix the location of the quotes for UIMAGE_NAME
+
+ - Fix a memory leak bug in Kconfig
+
+----------------------------------------------------------------
+Lukas Bulwahn (1):
+      linux/export: clean up the IA-64 KSYM_FUNC macro
+
+Masahiro Yamada (2):
+      modpost: fix section mismatch message for RELA
+      kconfig: fix memory leak from range properties
+
+Simon Glass (1):
+      kbuild: Move the single quotes for image name
+
+ include/linux/export-internal.h |  4 +---
+ scripts/Makefile.lib            |  4 ++--
+ scripts/kconfig/symbol.c        | 14 ++++++--------
+ scripts/mod/modpost.c           |  6 ++++--
+ 4 files changed, 13 insertions(+), 15 deletions(-)
+
+
+
+--
+Best Regards
+Masahiro Yamada
