@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C44667F0896
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0307F0899
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbjKSTtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
+        id S230027AbjKSTtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbjKSTtO (ORCPT
+        with ESMTP id S231759AbjKSTtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:49:14 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19686198C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:51 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b6ce6fac81so2425834b6e.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:51 -0800 (PST)
+        Sun, 19 Nov 2023 14:49:19 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4722AD56
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:54 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3574297c79eso14110605ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423330; x=1701028130; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700423333; x=1701028133; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=aDkLnQICnVgpq4/orPONBtwFkKKcmzZtjb3XACAs/tw=;
-        b=RXAJrU5+u3NIqZYjCeSgFrmFpHZ/y80OxLUHyDQIEANThnEXlB8Gkpn81diIPTlg0+
-         LNxnLDXmDvmkERe656iIzGP7k3hNqIhB6SSi/J9+OKY6c+KWH8oRWIzOBBMJO6wcwlGi
-         DRcpDg4ti1nvZUwie9yI3HvBJjdwO6VAIZXFGdNan0Gvmhucnm83P8QjnnhNY+YoEcyM
-         Lm9MWaXUevxHsmyQ2IFJUYneVbg48NBUWcJC7amwYWZ7FJPkan8bntgg3v56+ClzdKG0
-         +zYvV0F+r2Ow54NGWaxxFozYP+FGEXgysJ6pe93gP/MKf64MMSRXmz+L5Vh/W3FpuXe/
-         Fk2A==
+        bh=9XjpTi/p1jP45iq6KrQ/NXIY9Wo9hQ4YnGSNNoLyAOA=;
+        b=OV7vKBtM8QcyzCdAPX2k3P2b3HevaAp9wu9iHRuPa4/0gMJrOxaOgeg65Tr1JJe1az
+         6BwJEQF+1Af6fYV3TsevmGa7AH1ExN4MdYI31HH5+ab0NH+IkFs1c7pLpU9XZ9pX3oH3
+         rpkZ8mxpfjHMDLoBM6FMz2uBdiOjmJyWRkYw1aoCarjmAIVDTvh6z4+0ju77seNKv5YG
+         vV5faKNmy6+it8DLlGQLOVFDPo366HXhDSM9+z1FqOcmluCS116AAO8YpiJ72+Co/pVX
+         Yib44qDni3Y9lU6gKm0XMhBsjCQex8HvlnBJvejLCKAD3g5NdTgJVPGG6f8lSRm0fuXX
+         oxjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423330; x=1701028130;
+        d=1e100.net; s=20230601; t=1700423333; x=1701028133;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aDkLnQICnVgpq4/orPONBtwFkKKcmzZtjb3XACAs/tw=;
-        b=Za39uM4eYlCQfBlWgYJXm5pe9euZPGAWvfjMgc/jRVMV+VX7+m2zGCb0YAQxsZOUmg
-         s9EXHErISWWJrZ6fSK7D3RvSnK5pXVEMp5UoQ0ziF+GjMLWb0n9KhnXX73wrf4P89qCv
-         zpQ/lJNch9zGDqRX7xtPwR4cXdFdb+alZ71APkYD6+8tStXiT1KDRzR6toUjWvUr4U1N
-         +xh5f7KrkfAbV8e4GvbhJexiriJDwLRlxFABc83htJZ1P176sW6tRirkn5rWhVe7CiWP
-         brQXhKfpgtCmQOUFe2wATPrX6eg/19ytwhJ9b5yNWwksaXxqUURn/SgIuXeCLz854PY9
-         iBVA==
-X-Gm-Message-State: AOJu0YxtSdU9Kc5gCbMaSsGWeFkMDgGriAUEhTUlb6OOKfhB8eqyMOej
-        i6GdzL0P6gdRYQHSTTpmXd4=
-X-Google-Smtp-Source: AGHT+IHnf4WdU+15DFAUt+1f+EUXMBC9sDjxOomJ4RYRSV1AA/+YKlySoWIJz9+C0DlwqbVhK6dXxQ==
-X-Received: by 2002:a05:6808:1452:b0:3af:983a:8129 with SMTP id x18-20020a056808145200b003af983a8129mr7743023oiv.53.1700423330257;
-        Sun, 19 Nov 2023 11:48:50 -0800 (PST)
+        bh=9XjpTi/p1jP45iq6KrQ/NXIY9Wo9hQ4YnGSNNoLyAOA=;
+        b=w4wKDOuyZVN8Aj4Yv6ZQNVsiuosFV+IQgxpljsh6psSPUU6TzRBYhKDU07+Z9u6+0t
+         URQzsnwB0Mg4hGwbBICrZXAjgAwJDl7S5owrSqrkdKvWgCfEE5htUQn/0BLwKCmc7s/+
+         A/EmIYJQhkTiCNeX6U/lrckFcwo3vsPS3a23szzhe0gGoAH7rpxhbzpIwNdKeoNSIxQA
+         l0pvzAzHanw2YxfN3DKWkP/v62mAuDu5AhklBD+Md1mJHBX5efnu5QPKi1+HFf5a7TiZ
+         hJo2H4jFJJxIVcuRtvrmgsH6V6xtPEX9q3VsfYUWlfMGK9KkF2wt0+i4NOK7ldklE6fw
+         IHIg==
+X-Gm-Message-State: AOJu0YyAZ23s7N/L4ATLeQE0e4DHZ1iN8Lt5mshtLWZIsCt7wRtSNefy
+        +QCdFF2SO1bHJ17c5oPD/ng=
+X-Google-Smtp-Source: AGHT+IFar6VHQuFklPrfy7vOCI8aqHj+K8WskagViLl4BbbPZwTP7uc43B3VnuoR6l/B/N6mqJ6dzw==
+X-Received: by 2002:a92:7a06:0:b0:359:5389:c0dc with SMTP id v6-20020a927a06000000b003595389c0dcmr6674915ilc.7.1700423333536;
+        Sun, 19 Nov 2023 11:48:53 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.47
+        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.50
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:48:49 -0800 (PST)
+        Sun, 19 Nov 2023 11:48:52 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Kairui Song <kasong@tencent.com>
-Subject: [PATCH 15/24] mm/swap: avoid an duplicated swap cache lookup for SYNCHRONOUS_IO device
-Date:   Mon, 20 Nov 2023 03:47:31 +0800
-Message-ID: <20231119194740.94101-16-ryncsn@gmail.com>
+Subject: [PATCH 16/24] mm/swap: reduce scope of get_swap_device in swapin path
+Date:   Mon, 20 Nov 2023 03:47:32 +0800
+Message-ID: <20231119194740.94101-17-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
 References: <20231119194740.94101-1-ryncsn@gmail.com>
@@ -81,65 +81,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-When a xa_value is returned by the cache lookup, keep it to be used
-later for workingset refault check instead of doing the looking up again
-in swapin_no_readahead.
+Move get_swap_device into swapin_readahead, simplify the code
+and prepare for follow up commits.
 
-This does have a side effect of making swapoff also triggers workingset
-check, but should be fine since swapoff does effect the workload in many
-ways already.
+For the later part in do_swap_page, using swp_swap_info directly is fine
+since in that context, the swap device is pinned by swapcache reference.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/swap_state.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ mm/memory.c     | 16 ++++------------
+ mm/swap_state.c |  8 ++++++--
+ mm/swapfile.c   |  4 +++-
+ 3 files changed, 13 insertions(+), 15 deletions(-)
 
+diff --git a/mm/memory.c b/mm/memory.c
+index 22af9f3e8c75..e399b37ef395 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3789,7 +3789,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	struct folio *swapcache = NULL, *folio = NULL;
+ 	enum swap_cache_result cache_result;
+ 	struct page *page;
+-	struct swap_info_struct *si = NULL;
+ 	rmap_t rmap_flags = RMAP_NONE;
+ 	bool exclusive = false;
+ 	swp_entry_t entry;
+@@ -3845,14 +3844,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		goto out;
+ 	}
+ 
+-	/* Prevent swapoff from happening to us. */
+-	si = get_swap_device(entry);
+-	if (unlikely(!si))
+-		goto out;
+-
+ 	page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
+ 				vmf, &cache_result);
+-	if (page) {
++	if (PTR_ERR(page) == -EBUSY) {
++		goto out;
++	} else if (page) {
+ 		folio = page_folio(page);
+ 		if (cache_result != SWAP_CACHE_HIT) {
+ 			/* Had to read the page from swap area: Major fault */
+@@ -3964,7 +3960,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 			 */
+ 			exclusive = true;
+ 		} else if (exclusive && folio_test_writeback(folio) &&
+-			  data_race(si->flags & SWP_STABLE_WRITES)) {
++			   (swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
+ 			/*
+ 			 * This is tricky: not all swap backends support
+ 			 * concurrent page modifications while under writeback.
+@@ -4068,8 +4064,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	if (vmf->pte)
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ out:
+-	if (si)
+-		put_swap_device(si);
+ 	return ret;
+ out_nomap:
+ 	if (vmf->pte)
+@@ -4082,8 +4076,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		folio_unlock(swapcache);
+ 		folio_put(swapcache);
+ 	}
+-	if (si)
+-		put_swap_device(si);
+ 	return ret;
+ }
+ 
 diff --git a/mm/swap_state.c b/mm/swap_state.c
-index e057c79fb06f..51de2a0412df 100644
+index 51de2a0412df..ff8a166603d0 100644
 --- a/mm/swap_state.c
 +++ b/mm/swap_state.c
-@@ -872,7 +872,6 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
- {
- 	struct folio *folio;
- 	struct page *page;
--	void *shadow = NULL;
- 
- 	page = alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id());
- 	folio = (struct folio *)page;
-@@ -888,10 +887,6 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 
- 		mem_cgroup_swapin_uncharge_swap(entry);
- 
--		shadow = get_shadow_from_swap_cache(entry);
--		if (shadow)
--			workingset_refault(folio, shadow);
--
- 		folio_add_lru(folio);
- 
- 		/* To provide entry to swap_readpage() */
-@@ -922,11 +917,12 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	enum swap_cache_result cache_result;
- 	struct swap_info_struct *si;
- 	struct mempolicy *mpol;
-+	void *shadow = NULL;
- 	struct folio *folio;
+@@ -922,6 +922,11 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
  	struct page *page;
  	pgoff_t ilx;
  
--	folio = swap_cache_get_folio(entry, vmf, NULL);
-+	folio = swap_cache_get_folio(entry, vmf, &shadow);
++	/* Prevent swapoff from happening to us */
++	si = get_swap_device(entry);
++	if (unlikely(!si))
++		return ERR_PTR(-EBUSY);
++
+ 	folio = swap_cache_get_folio(entry, vmf, &shadow);
  	if (folio) {
  		page = folio_file_page(folio, swp_offset(entry));
- 		cache_result = SWAP_CACHE_HIT;
-@@ -938,6 +934,8 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+@@ -929,7 +934,6 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+ 		goto done;
+ 	}
+ 
+-	si = swp_swap_info(entry);
+ 	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
  	if (swap_use_no_readahead(si, swp_offset(entry))) {
  		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
- 		cache_result = SWAP_CACHE_BYPASS;
-+		if (shadow)
-+			workingset_refault(page_folio(page), shadow);
- 	} else if (swap_use_vma_readahead(si)) {
- 		page = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
+@@ -944,8 +948,8 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
  		cache_result = SWAP_CACHE_MISS;
+ 	}
+ 	mpol_cond_put(mpol);
+-
+ done:
++	put_swap_device(si);
+ 	if (result)
+ 		*result = cache_result;
+ 
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index b6d57fff5e21..925ad92486a4 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1857,7 +1857,9 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 		pte = NULL;
+ 		page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
+ 					&vmf, NULL);
+-		if (page)
++		if (IS_ERR(page))
++			return PTR_ERR(page);
++		else if (page)
+ 			folio = page_folio(page);
+ 		if (!folio) {
+ 			/*
 -- 
 2.42.0
 
