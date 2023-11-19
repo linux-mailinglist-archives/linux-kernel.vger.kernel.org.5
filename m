@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0307F0899
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3165E7F089A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjKSTtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S231791AbjKSTty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:49:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbjKSTtT (ORCPT
+        with ESMTP id S231794AbjKSTt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:49:19 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4722AD56
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:54 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3574297c79eso14110605ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:54 -0800 (PST)
+        Sun, 19 Nov 2023 14:49:28 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8600D19A2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:57 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6c115026985so3870297b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423333; x=1701028133; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700423337; x=1701028137; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=9XjpTi/p1jP45iq6KrQ/NXIY9Wo9hQ4YnGSNNoLyAOA=;
-        b=OV7vKBtM8QcyzCdAPX2k3P2b3HevaAp9wu9iHRuPa4/0gMJrOxaOgeg65Tr1JJe1az
-         6BwJEQF+1Af6fYV3TsevmGa7AH1ExN4MdYI31HH5+ab0NH+IkFs1c7pLpU9XZ9pX3oH3
-         rpkZ8mxpfjHMDLoBM6FMz2uBdiOjmJyWRkYw1aoCarjmAIVDTvh6z4+0ju77seNKv5YG
-         vV5faKNmy6+it8DLlGQLOVFDPo366HXhDSM9+z1FqOcmluCS116AAO8YpiJ72+Co/pVX
-         Yib44qDni3Y9lU6gKm0XMhBsjCQex8HvlnBJvejLCKAD3g5NdTgJVPGG6f8lSRm0fuXX
-         oxjQ==
+        bh=FCPW0dI33gWre1bmPp4wG3A/kpp2Dtpn+fZQd/yP8/o=;
+        b=kb+kvJTuqgPIZdsg4KJJjy4Vh03F0rOOeZzSaU+peAxitPCQ0MWo9ABfEVs7rZwyfS
+         z31d/fxAwEsdIqbjZigitUmP9kWKcjX+K7kvGXrk+fb5YgU8iRigF+GxYXaKWB9SfiOQ
+         o1TE0qSQmYaTMuuPz62JyWBVG5Lt7KoaU0BiaG0w3fXdqFmbMohiTWl3FQD7v91bOdev
+         F3ujCKuGqWI5jqzdWoXJY6fHyQJlfyOqEP4nTHU21LO6fAwJZxQuzqMnsXdpd3HNCroY
+         W7dC4sMoYYvi+BDePxgluzFC8G5PJ8JxxGPsDNhg14Snar4a8rukXcTwGxz9wwFLh9aM
+         USlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423333; x=1701028133;
+        d=1e100.net; s=20230601; t=1700423337; x=1701028137;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9XjpTi/p1jP45iq6KrQ/NXIY9Wo9hQ4YnGSNNoLyAOA=;
-        b=w4wKDOuyZVN8Aj4Yv6ZQNVsiuosFV+IQgxpljsh6psSPUU6TzRBYhKDU07+Z9u6+0t
-         URQzsnwB0Mg4hGwbBICrZXAjgAwJDl7S5owrSqrkdKvWgCfEE5htUQn/0BLwKCmc7s/+
-         A/EmIYJQhkTiCNeX6U/lrckFcwo3vsPS3a23szzhe0gGoAH7rpxhbzpIwNdKeoNSIxQA
-         l0pvzAzHanw2YxfN3DKWkP/v62mAuDu5AhklBD+Md1mJHBX5efnu5QPKi1+HFf5a7TiZ
-         hJo2H4jFJJxIVcuRtvrmgsH6V6xtPEX9q3VsfYUWlfMGK9KkF2wt0+i4NOK7ldklE6fw
-         IHIg==
-X-Gm-Message-State: AOJu0YyAZ23s7N/L4ATLeQE0e4DHZ1iN8Lt5mshtLWZIsCt7wRtSNefy
-        +QCdFF2SO1bHJ17c5oPD/ng=
-X-Google-Smtp-Source: AGHT+IFar6VHQuFklPrfy7vOCI8aqHj+K8WskagViLl4BbbPZwTP7uc43B3VnuoR6l/B/N6mqJ6dzw==
-X-Received: by 2002:a92:7a06:0:b0:359:5389:c0dc with SMTP id v6-20020a927a06000000b003595389c0dcmr6674915ilc.7.1700423333536;
-        Sun, 19 Nov 2023 11:48:53 -0800 (PST)
+        bh=FCPW0dI33gWre1bmPp4wG3A/kpp2Dtpn+fZQd/yP8/o=;
+        b=ghxlr0cmFUU6IM9BG3A5q1d1ZbEsQ8uQuAWia1HdXcXoZc5CO4csurkVoQc0KuMNJV
+         +I7ok0PGWjwDJCxQilEj2atfxeOrowANrzkvGS7rEnkcfKOnA8aN4zDTcdlB4kG3xTlj
+         o1Qd44hoRUtsnjwAIDxnecYTAWTt8+fYajUXG7u48TM/LOEs7QvghKwPD4JF0f4yBt/L
+         VS4V5hvvkZWBsj0S/6lw0szRhnqJZBDtds5paY2CcJDyA5TL5p26NMq6Bb7AO6zxnXEG
+         oE2UBF0MfSyTtiHK4K+4MhGE4sX1/m2wfEVyjU2EUOnk7Oz1QdHeLYxYBX1gAYWDORLN
+         SPbg==
+X-Gm-Message-State: AOJu0YyCwTVLjsMQOax9N3n0KiqcN4EagWRPhLyxNv+I3WTA4bWHK8Pf
+        SL76K+Zj9t6UHxzVfsO9T7s=
+X-Google-Smtp-Source: AGHT+IF9QoAWouGwWEXuyCQ9NU0AgZDxQWALIyGpxr9BM9RgNBGPUMqyqjGgp7YBTc1CUFiZCcylkA==
+X-Received: by 2002:a05:6a20:244e:b0:187:f23d:f9f2 with SMTP id t14-20020a056a20244e00b00187f23df9f2mr6715469pzc.58.1700423336700;
+        Sun, 19 Nov 2023 11:48:56 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.50
+        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.53
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:48:52 -0800 (PST)
+        Sun, 19 Nov 2023 11:48:56 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Kairui Song <kasong@tencent.com>
-Subject: [PATCH 16/24] mm/swap: reduce scope of get_swap_device in swapin path
-Date:   Mon, 20 Nov 2023 03:47:32 +0800
-Message-ID: <20231119194740.94101-17-ryncsn@gmail.com>
+Subject: [PATCH 17/24] mm/swap: fix false error when swapoff race with swapin
+Date:   Mon, 20 Nov 2023 03:47:33 +0800
+Message-ID: <20231119194740.94101-18-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
 References: <20231119194740.94101-1-ryncsn@gmail.com>
@@ -81,125 +81,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-Move get_swap_device into swapin_readahead, simplify the code
-and prepare for follow up commits.
-
-For the later part in do_swap_page, using swp_swap_info directly is fine
-since in that context, the swap device is pinned by swapcache reference.
+When swapoff race with swapin, get_swap_device may fail and cause
+swapin_readahead to return -EBUSY. In such case check if the page is
+already swapped in by swapoff path.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/memory.c     | 16 ++++------------
- mm/swap_state.c |  8 ++++++--
- mm/swapfile.c   |  4 +++-
- 3 files changed, 13 insertions(+), 15 deletions(-)
+ mm/memory.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index 22af9f3e8c75..e399b37ef395 100644
+index e399b37ef395..620fa87557fd 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -3789,7 +3789,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	struct folio *swapcache = NULL, *folio = NULL;
- 	enum swap_cache_result cache_result;
- 	struct page *page;
--	struct swap_info_struct *si = NULL;
- 	rmap_t rmap_flags = RMAP_NONE;
- 	bool exclusive = false;
- 	swp_entry_t entry;
-@@ -3845,14 +3844,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		goto out;
- 	}
+@@ -3846,9 +3846,21 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
  
--	/* Prevent swapoff from happening to us. */
--	si = get_swap_device(entry);
--	if (unlikely(!si))
--		goto out;
--
  	page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
  				vmf, &cache_result);
--	if (page) {
-+	if (PTR_ERR(page) == -EBUSY) {
-+		goto out;
-+	} else if (page) {
+-	if (PTR_ERR(page) == -EBUSY) {
+-		goto out;
+-	} else if (page) {
++	if (IS_ERR_OR_NULL(page)) {
++		/*
++		 * Back out if somebody else faulted in this pte
++		 * while we released the pte lock.
++		 */
++		vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
++				vmf->address, &vmf->ptl);
++		if (likely(vmf->pte && pte_same(ptep_get(vmf->pte), vmf->orig_pte))) {
++			if (!page)
++				ret = VM_FAULT_OOM;
++			else
++				ret = VM_FAULT_RETRY;
++		}
++		goto unlock;
++	} else {
  		folio = page_folio(page);
  		if (cache_result != SWAP_CACHE_HIT) {
  			/* Had to read the page from swap area: Major fault */
-@@ -3964,7 +3960,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 			 */
- 			exclusive = true;
- 		} else if (exclusive && folio_test_writeback(folio) &&
--			  data_race(si->flags & SWP_STABLE_WRITES)) {
-+			   (swp_swap_info(entry)->flags & SWP_STABLE_WRITES)) {
- 			/*
- 			 * This is tricky: not all swap backends support
- 			 * concurrent page modifications while under writeback.
-@@ -4068,8 +4064,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
- out:
--	if (si)
--		put_swap_device(si);
- 	return ret;
- out_nomap:
- 	if (vmf->pte)
-@@ -4082,8 +4076,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		folio_unlock(swapcache);
- 		folio_put(swapcache);
- 	}
--	if (si)
--		put_swap_device(si);
- 	return ret;
- }
- 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 51de2a0412df..ff8a166603d0 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -922,6 +922,11 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	struct page *page;
- 	pgoff_t ilx;
- 
-+	/* Prevent swapoff from happening to us */
-+	si = get_swap_device(entry);
-+	if (unlikely(!si))
-+		return ERR_PTR(-EBUSY);
-+
- 	folio = swap_cache_get_folio(entry, vmf, &shadow);
- 	if (folio) {
- 		page = folio_file_page(folio, swp_offset(entry));
-@@ -929,7 +934,6 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 		goto done;
+@@ -3866,17 +3878,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 			ret = VM_FAULT_HWPOISON;
+ 			goto out_release;
+ 		}
+-	} else {
+-		/*
+-		 * Back out if somebody else faulted in this pte
+-		 * while we released the pte lock.
+-		 */
+-		vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+-				vmf->address, &vmf->ptl);
+-		if (likely(vmf->pte &&
+-			   pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+-			ret = VM_FAULT_OOM;
+-		goto unlock;
  	}
  
--	si = swp_swap_info(entry);
- 	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
- 	if (swap_use_no_readahead(si, swp_offset(entry))) {
- 		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
-@@ -944,8 +948,8 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 		cache_result = SWAP_CACHE_MISS;
- 	}
- 	mpol_cond_put(mpol);
--
- done:
-+	put_swap_device(si);
- 	if (result)
- 		*result = cache_result;
- 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index b6d57fff5e21..925ad92486a4 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1857,7 +1857,9 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 		pte = NULL;
- 		page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
- 					&vmf, NULL);
--		if (page)
-+		if (IS_ERR(page))
-+			return PTR_ERR(page);
-+		else if (page)
- 			folio = page_folio(page);
- 		if (!folio) {
- 			/*
+ 	ret |= folio_lock_or_retry(folio, vmf);
 -- 
 2.42.0
 
