@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A367F0459
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 05:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14607F0462
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 05:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjKSEq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 23:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        id S229776AbjKSE6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 23:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjKSEqv (ORCPT
+        with ESMTP id S229659AbjKSE6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 23:46:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3895192;
-        Sat, 18 Nov 2023 20:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700369207; x=1731905207;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yjy1hnZoy8EpUYxdS9+3c1qFSR3s+PuC8hjfRrt0Szg=;
-  b=mDfEcYn3BX1g8QyE+2uUcUa0Pk7MMY2TBDQFYTmUay1tLDHvPFfmpezl
-   MRSXevyvSBcyp8EZw+TLJPVHkfWB16Mr9wWjEd2BsR9q6+a9XprM6fPGR
-   FUUxgPFw4+0lYepHYnmPQVpdXMJNIFIoP+wGDt24z0a0tUBbudqCv3pD4
-   mGattaTDTdLNMLOFiCdPbuXGIm8a5p54re7Lr7T6Nv3brTd5m0B2BhGHL
-   bjC5pgkON8j8nRv3T1pHw34fbtR1WmRaKZ1iI52/cLuCXlpXeJW28S53l
-   1pBsFEwAeDBvN4QEB2K8JS91y2ADQyLYfmaF339FRSYBbTfvPbJjRT9V5
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="390331100"
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="390331100"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 20:46:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="889610134"
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="889610134"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 18 Nov 2023 20:46:44 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4Zhi-0004eV-0z;
-        Sun, 19 Nov 2023 04:46:42 +0000
-Date:   Sun, 19 Nov 2023 12:46:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wolfram Sang <wsa-dev@sang-engineering.com>,
-        Helge Deller <deller@gmx.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-i2c@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/20] drivers/video/fbdev: remove I2C_CLASS_DDC
- support
-Message-ID: <202311191235.fdwRQUG6-lkp@intel.com>
-References: <20231118174221.851-6-hkallweit1@gmail.com>
+        Sat, 18 Nov 2023 23:58:17 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DC1AA;
+        Sat, 18 Nov 2023 20:58:12 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40859c464daso7603815e9.1;
+        Sat, 18 Nov 2023 20:58:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700369891; x=1700974691; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U1PTw7o6n++p2pe3+uDNhmt4e6YOBmzSfzozTRbXj6s=;
+        b=DKKICew2MXGcZ49HAdcc6o0ZmVQXzBLAOirik7sbg5J/33uv/h2sZODH2Wt6jwAW2j
+         Nycc/LjSn2RQ7gPOMb2NQkOgN10QELU+GV7X7O5o8CMoCLDjJ/42wscvmftHESMSHyHQ
+         AXUrapM/v/3tE+/dwEysaVjRMK4Yy6k/uVMOVEb9JxExVJIiUfCy9RdMlhSubV+M5rrV
+         CgR7nZhC3cdqgTzAuaOzEkUOdCHu/BgoNOiUmSipuxpoQfPnwYT9ol926A3RKT5B3pdx
+         qOxH7H6bdElH/+uoG0SKu1LEcZ3z78YRM9wdkE3hFoFRkymxmO9JdTTvdu4uben7glo9
+         c9qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700369891; x=1700974691;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U1PTw7o6n++p2pe3+uDNhmt4e6YOBmzSfzozTRbXj6s=;
+        b=TxD4X9WN9ifRXVTLmOydwh7OOx8tXytmiQJh2FThCdW+4DOlfGAXt8/D2uVIoDTnDR
+         hjzqz+67VLI/FSTi57+dJKmR7g00zixRenc19EBXiSxVmiC1EHjOD12+JuyhZdtKtpGQ
+         KcOJVpx0fWjyYFnXat8GX2pu2yPALGiMGrjSerSiEKD9cy21DgQ9tmBx9g2+Nddwjgk3
+         X8huJpD20y9HSIxfBdnudxYVhzapxTI8oNH64FytVzkAo0f+dnTbS42MHODVfkh6/D9a
+         PXGA86rzDoz4UBKLUo1zwpDkiVesYRQ0MzfGIdE03feMiT9Ryi+DJhjrbj2Hgk5PqhKx
+         VgBg==
+X-Gm-Message-State: AOJu0Yxuz1w+TxIFrvQqVIvfNsJq7XuAovxULJxK4pvjM4hU95L/h+gh
+        XVcYsM5Oc9vhPFx7Z3aEcF8=
+X-Google-Smtp-Source: AGHT+IGK2HFD07qQcC5gTuWG6Pz4nHtRACtxN+wG086X5yYjhy3me6IkMfCGn18OkNWuSNFFQjUehQ==
+X-Received: by 2002:a05:6000:186d:b0:32f:80cf:c3cd with SMTP id d13-20020a056000186d00b0032f80cfc3cdmr3150241wri.4.1700369891167;
+        Sat, 18 Nov 2023 20:58:11 -0800 (PST)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-9fcd-7897-f205-6e36.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:9fcd:7897:f205:6e36])
+        by smtp.gmail.com with ESMTPSA id q18-20020a1709060e5200b009f5b7b6f3c8sm2504220eji.56.2023.11.18.20.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 20:58:10 -0800 (PST)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH 0/2] iio: light: add support for VEML6075 UVA and UVB light
+ sensor
+Date:   Sun, 19 Nov 2023 05:58:02 +0100
+Message-Id: <20231110-veml6075-v1-0-354b3245e14a@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118174221.851-6-hkallweit1@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANqVWWUC/x2M0QqDMAxFf0XybKGJ6HC/MnyINc5A7UaLZSD++
+ 4KP53LuOaFIVinwbE7IUrXoJxlg20DYOL3F6WIM5KlDRO+q7HHwj951hD1REA48gukzF3Fz5hQ
+ 2O6QjRhu/WVb93f3XdF1/p1U3hm8AAAA=
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700369889; l=1062;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=V2/ZEhgll+UdHLoD4NiUDtqLeWeoBJkkmnvE6IbaxD8=;
+ b=o8z3uttBzv/qSqpOXKgErKg15ku3NmugreQmly9qW9umCTJi3IeqDq078C34Qp727OJdKDwQI
+ bjSiDVUR7xEAQTZeuyYJiekSBrjNnSpFmgmsmKwcvHlNxvNWcxyopw0
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,103 +86,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiner,
+This series adds support for the Vishay VEML6075 ultraviolet sensor,
+which offers UVA and UVB measurement channels and I2C communication.
 
-kernel test robot noticed the following build errors:
+The device bindings and a simple example are also provided.
 
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on drm-intel/for-linux-next drm-intel/for-linux-next-fixes sunxi/sunxi/for-next wsa/i2c/for-next drm-tip/drm-tip linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This driver has been tested with a Gravity VEML6075 UV Sensor Module in
+open air conditions.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Heiner-Kallweit/drivers-gpu-drm-rockchip-remove-I2C_CLASS_DDC-support/20231119-014549
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231118174221.851-6-hkallweit1%40gmail.com
-patch subject: [PATCH v2 05/20] drivers/video/fbdev: remove I2C_CLASS_DDC support
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231119/202311191235.fdwRQUG6-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231119/202311191235.fdwRQUG6-lkp@intel.com/reproduce)
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Javier Carrasco (2):
+      iio: light: add VEML6075 UVA and UVB light sensor driver
+      dt-bindings: iio: light: add support for Vishay VEML6075
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311191235.fdwRQUG6-lkp@intel.com/
+ .../bindings/iio/light/vishay,veml6075.yaml        |  40 ++
+ MAINTAINERS                                        |   6 +
+ drivers/iio/light/Kconfig                          |  11 +
+ drivers/iio/light/Makefile                         |   1 +
+ drivers/iio/light/veml6075.c                       | 503 +++++++++++++++++++++
+ 5 files changed, 561 insertions(+)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231110-veml6075-321522ceaca9
 
-All errors (new ones prefixed by >>):
-
-   drivers/video/fbdev/matrox/i2c-matroxfb.c: In function 'i2c_matroxfb_probe':
->> drivers/video/fbdev/matrox/i2c-matroxfb.c:178:23: error: too many arguments to function 'i2c_bus_reg'
-     178 |                 err = i2c_bus_reg(&m2info->maven, minfo,
-         |                       ^~~~~~~~~~~
-   drivers/video/fbdev/matrox/i2c-matroxfb.c:102:12: note: declared here
-     102 | static int i2c_bus_reg(struct i2c_bit_adapter* b, struct matrox_fb_info* minfo,
-         |            ^~~~~~~~~~~
-
-
-vim +/i2c_bus_reg +178 drivers/video/fbdev/matrox/i2c-matroxfb.c
-
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  141  
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  142  static void* i2c_matroxfb_probe(struct matrox_fb_info* minfo) {
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  143  	int err;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  144  	unsigned long flags;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  145  	struct matroxfb_dh_maven_info* m2info;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  146  
-2fdbe5cf27aff9 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2007-02-12  147  	m2info = kzalloc(sizeof(*m2info), GFP_KERNEL);
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  148  	if (!m2info)
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  149  		return NULL;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  150  
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  151  	matroxfb_DAC_lock_irqsave(flags);
-316b4d644caceb drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2009-09-22  152  	matroxfb_DAC_out(minfo, DAC_XGENIODATA, 0xFF);
-316b4d644caceb drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2009-09-22  153  	matroxfb_DAC_out(minfo, DAC_XGENIOCTRL, 0x00);
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  154  	matroxfb_DAC_unlock_irqrestore(flags);
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  155  
-fc2d10ddfc8989 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2009-09-22  156  	switch (minfo->chip) {
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  157  		case MGA_2064:
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  158  		case MGA_2164:
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14  159  			err = i2c_bus_reg(&m2info->ddc1, minfo,
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14  160  					  DDC1B_DATA, DDC1B_CLK,
-d0e2994db76d4c drivers/video/fbdev/matrox/i2c-matroxfb.c Heiner Kallweit 2023-11-18  161  					  "DDC:fb%u #0");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  162  			break;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  163  		default:
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14  164  			err = i2c_bus_reg(&m2info->ddc1, minfo,
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14  165  					  DDC1_DATA, DDC1_CLK,
-d0e2994db76d4c drivers/video/fbdev/matrox/i2c-matroxfb.c Heiner Kallweit 2023-11-18  166  					  "DDC:fb%u #0");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  167  			break;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  168  	}
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  169  	if (err)
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  170  		goto fail_ddc1;
-fc2d10ddfc8989 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2009-09-22  171  	if (minfo->devflags.dualhead) {
-d0e2994db76d4c drivers/video/fbdev/matrox/i2c-matroxfb.c Heiner Kallweit 2023-11-18  172  		err = i2c_bus_reg(&m2info->ddc2, minfo, DDC2_DATA, DDC2_CLK, "DDC:fb%u #1");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  173  		if (err == -ENODEV) {
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  174  			printk(KERN_INFO "i2c-matroxfb: VGA->TV plug detected, DDC unavailable.\n");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  175  		} else if (err)
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  176  			printk(KERN_INFO "i2c-matroxfb: Could not register secondary output i2c bus. Continuing anyway.\n");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  177  		/* Register maven bus even on G450/G550 */
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14 @178  		err = i2c_bus_reg(&m2info->maven, minfo,
-c1b6b4f2342d07 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-07-14  179  				  MAT_DATA, MAT_CLK, "MAVEN:fb%u", 0);
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  180  		if (err)
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  181  			printk(KERN_INFO "i2c-matroxfb: Could not register Maven i2c bus. Continuing anyway.\n");
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  182  		else {
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  183  			struct i2c_board_info maven_info = {
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  184  				I2C_BOARD_INFO("maven", 0x1b),
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  185  			};
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  186  			unsigned short const addr_list[2] = {
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  187  				0x1b, I2C_CLIENT_END
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  188  			};
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  189  
-a72e27f7a47069 drivers/video/fbdev/matrox/i2c-matroxfb.c Wolfram Sang    2019-11-06  190  			i2c_new_scanned_device(&m2info->maven.adapter,
-9a94241afcc9a4 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2010-08-11  191  					       &maven_info, addr_list, NULL);
-10546355323e48 drivers/video/matrox/i2c-matroxfb.c       Jean Delvare    2008-08-12  192  		}
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  193  	}
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  194  	return m2info;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  195  fail_ddc1:;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  196  	kfree(m2info);
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  197  	printk(KERN_ERR "i2c-matroxfb: Could not register primary adapter DDC bus.\n");
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  198  	return NULL;
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  199  }
-^1da177e4c3f41 drivers/video/matrox/i2c-matroxfb.c       Linus Torvalds  2005-04-16  200  
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
