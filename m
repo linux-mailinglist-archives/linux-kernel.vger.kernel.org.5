@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F327F0761
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5707F0768
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjKSQNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 11:13:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S231372AbjKSQS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 11:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjKSQM6 (ORCPT
+        with ESMTP id S229441AbjKSQS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 11:12:58 -0500
-Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D433126
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:12:53 -0800 (PST)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id 4kPhraC9JxVPt4kPhrzakJ; Sun, 19 Nov 2023 17:12:51 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1700410371;
-        bh=Cq+Ma44I5rcVPvAOPNh8K0fTdo2ud4VzNDLd8VR7lXI=;
-        h=From:To:Cc:Subject:Date;
-        b=ChbdukErzOOtfglZwCpdHBkaxrzADa93OvyXoTIXUi46MzloHVfMLE9En/DKorGUJ
-         P67PUvUMGM2Tuxtf2ZASz8tK/Ha20efRoGORtHBBZhklDdIUkI80oBd/bEW+BYYg9W
-         PGKQJBdN1GPrDtAaM78QjibbFvlRiI6FX7AWxIHUdDk6UTtvUmhzoOBmHv63yk3rnT
-         Al4Uo4eCuAVvBlyUfbHLrIttdWucFsU0OYo3HETEMaekfESvUW/Ml+7at0b7oqvDk2
-         oR8S8nSLKLLDDddjpWPU3hP3mkp2wWbGxh4pfjCP1WDB7uFgfZWjSfbSrJkY0RQg8w
-         QdkqQ9/u2in5A==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 19 Nov 2023 17:12:51 +0100
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] serial: imx: convert not to use dma_request_slave_channel()
-Date:   Sun, 19 Nov 2023 17:12:48 +0100
-Message-Id: <a46b493c6b5cfa09417e3e138e304fd01b61e748.1700410346.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 19 Nov 2023 11:18:28 -0500
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C670011D;
+        Sun, 19 Nov 2023 08:18:24 -0800 (PST)
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1f03db0a410so2138705fac.1;
+        Sun, 19 Nov 2023 08:18:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700410704; x=1701015504;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HGb1AwQyobcZMxIGXn3W57cOw12ftpO8AsnO8KGAKPg=;
+        b=JiH4+z3MTfCQieM0/2wXgmWm3boDHfUhrcNTdg7EzUdASyPUAMAMpNsImYZ4nhY3Yu
+         OXlT/RXqJTyZHDiNJikyisxTBt+skd3JsquqCxUD4WweGppm5OvDRa6CwsLv8erWSjv2
+         /qBzmpxw794Xe+mtnKKYJuxGzr38XgFHzLPUYBFseyuuYKoUvEgREsEpRQRtF21CF8D+
+         3GmmMtfF7Sp7t8VJpcgjJuLlFXtzA8GC6xzD54DDT8sEYbS1DWf1N4khlP/eBs/tdayQ
+         MHEnQHyzB0BIovLKr2AV9UfrqrJRC+l/V6Aitvhf8qGfqkZYWI32z2/sP72npGj1L8c9
+         /asw==
+X-Gm-Message-State: AOJu0YxQ9kMWUsF0+eIyRHRAUtB4oage+Y8S/jllN3P/eOHa5zlrZNyL
+        R8azr4gkP/l1P4HY5Igh7A==
+X-Google-Smtp-Source: AGHT+IFghP1EK9O8jy+fqpG+hVnAkzGSwK9PHhcG345gLXC/3kk+JW41Fx0547RSwUbL1ITfpSLRJQ==
+X-Received: by 2002:a05:6870:bf0b:b0:1f0:b31:9b7 with SMTP id qh11-20020a056870bf0b00b001f00b3109b7mr6100989oab.43.1700410703980;
+        Sun, 19 Nov 2023 08:18:23 -0800 (PST)
+Received: from herring.priv ([2607:fb90:45e3:889f:15b4:1348:6d64:224b])
+        by smtp.gmail.com with ESMTPSA id y7-20020a9d6347000000b006d64e44566esm917003otk.72.2023.11.19.08.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 08:18:22 -0800 (PST)
+Received: (nullmailer pid 283064 invoked by uid 1000);
+        Sun, 19 Nov 2023 16:18:19 -0000
+Date:   Sun, 19 Nov 2023 10:18:19 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     Michael Hennerich <Michael.Hennerich@analog.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-spi@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        linux-kernel@vger.kernel.org,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>
+Subject: Re: [PATCH 01/14] dt-bindings: spi: axi-spi-engine: convert to yaml
+Message-ID: <170041069911.283011.11782522637402410962.robh@kernel.org>
+References: <20231117-axi-spi-engine-series-1-v1-0-cc59db999b87@baylibre.com>
+ <20231117-axi-spi-engine-series-1-v1-1-cc59db999b87@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117-axi-spi-engine-series-1-v1-1-cc59db999b87@baylibre.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_request_slave_channel() is deprecated. dma_request_chan() should
-be used directly instead.
 
-Switch to the preferred function and update the error handling accordingly.
+On Fri, 17 Nov 2023 14:12:52 -0600, David Lechner wrote:
+> This converts the axi-spi-engine binding to yaml.
+> 
+> There are a few minor fixes in the conversion:
+> * Added maintainers.
+> * Added descriptions for the clocks.
+> * Fixed the double "@" in the example.
+> * Added a comma between the clocks in the example.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+> 
+> Note: This work is being done by BayLibre on behalf of Analog Devices Inc.
+> This is why the maintainers are @analog.com rather than @baylibre.com.
+> 
+>  .../devicetree/bindings/spi/adi,axi-spi-engine.txt | 31 ----------
+>  .../bindings/spi/adi,axi-spi-engine.yaml           | 66 ++++++++++++++++++++++
+>  2 files changed, 66 insertions(+), 31 deletions(-)
+> 
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-I don't think that the:
-   sport->dma_chan_xx = NULL;
-are really needed. I added it just to make sure that the behavior was
-exactly the same as before.
-
-Anyway, it can't hurt.
-
-Changing the returned value from -EINVAL to something else is fine. The
-only caller on check if == 0 or not.
----
- drivers/tty/serial/imx.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 708b9852a575..5cb74d8f9d2a 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -1336,15 +1336,18 @@ static int imx_uart_dma_init(struct imx_port *sport)
- {
- 	struct dma_slave_config slave_config = {};
- 	struct device *dev = sport->port.dev;
-+	struct dma_chan *chan;
- 	int ret;
- 
- 	/* Prepare for RX : */
--	sport->dma_chan_rx = dma_request_slave_channel(dev, "rx");
--	if (!sport->dma_chan_rx) {
-+	chan = dma_request_chan(dev, "rx");
-+	if (IS_ERR(chan)) {
- 		dev_dbg(dev, "cannot get the DMA channel.\n");
--		ret = -EINVAL;
-+		sport->dma_chan_rx = NULL;
-+		ret = PTR_ERR(chan);
- 		goto err;
- 	}
-+	sport->dma_chan_rx = chan;
- 
- 	slave_config.direction = DMA_DEV_TO_MEM;
- 	slave_config.src_addr = sport->port.mapbase + URXD0;
-@@ -1366,12 +1369,14 @@ static int imx_uart_dma_init(struct imx_port *sport)
- 	sport->rx_ring.buf = sport->rx_buf;
- 
- 	/* Prepare for TX : */
--	sport->dma_chan_tx = dma_request_slave_channel(dev, "tx");
--	if (!sport->dma_chan_tx) {
-+	chan = dma_request_chan(dev, "tx");
-+	if (IS_ERR(chan)) {
- 		dev_err(dev, "cannot get the TX DMA channel!\n");
--		ret = -EINVAL;
-+		sport->dma_chan_tx = NULL;
-+		ret = PTR_ERR(chan);
- 		goto err;
- 	}
-+	sport->dma_chan_tx = chan;
- 
- 	slave_config.direction = DMA_MEM_TO_DEV;
- 	slave_config.dst_addr = sport->port.mapbase + URTX0;
--- 
-2.34.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
