@@ -2,212 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F177F09EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 00:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1270A7F09FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 01:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjKSXxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 18:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
+        id S231615AbjKTAMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 19:12:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKSXxK (ORCPT
+        with ESMTP id S229569AbjKTAM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 18:53:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199B313A;
-        Sun, 19 Nov 2023 15:53:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700437986; x=1731973986;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oAZ/UNAUbG1NYGNaNzLfsqB71nZvrBS2LltjNf91pck=;
-  b=LeXjH9lQtqqzRdrf+JeA+C2thmJLBdOrdfcL1k5TLBi003iniiB9xfrB
-   I5DMKd8xjzHyFHfJyD2q+8mSoRsuAd50sW5/4dZhXNIIn+SSaLzdmRDml
-   Rue5TNcC7KWYbE8nl8enpa8fnopb6XvoMQFRXTQuQcZHn7Vlyu4Lr91qa
-   G4iNtldNzAEPyoGr5wiTQFsA+NAsXMLvoo0U8Qb+3Nqzqw0qsGy9TtqN3
-   iAJGAbsrzUzOR2JVEpKvI/NDbfeK3hOvOz4ZJ/EovjS9L11mPDMFiaqeI
-   GpEVE4czVFvkoedUaB9NZwWvVTuqAslaKCl6mMLD83mhJEgpwhm344Y6H
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="371707093"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="371707093"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 15:53:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="939637719"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="939637719"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2023 15:53:02 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4rb1-0005i1-2T;
-        Sun, 19 Nov 2023 23:52:59 +0000
-Date:   Mon, 20 Nov 2023 07:52:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>, vkoul@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, imx@lists.linux.dev, joy.zou@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com
-Subject: Re: [PATCH v2 3/5] dmaengine: mcf-edma: force type conversion for
- TCD pointer
-Message-ID: <202311200733.Dq7bx5cj-lkp@intel.com>
-References: <20231116222743.2984776-4-Frank.Li@nxp.com>
+        Sun, 19 Nov 2023 19:12:29 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2053.outbound.protection.outlook.com [40.107.220.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC502E0;
+        Sun, 19 Nov 2023 16:12:24 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MobNXeuVd8uxO7aiuZs+b/yLEVz1uxRj0I44pYGyb/Yv9glF+YCzSl/+vGjq57LKcBePZt+Dx8BNOWPGrMGlBKB2/JY3AJobFaNCCwNUB0butsz67sxaoxqGCAjiu5bFwjUQ1TBK79AsD2qQH74n5R69xhMgAxZ9N4ZAzcACMPXSCyKNrhZqrba1cKyGdSxnK23KgXmXAIuKhaXiBY7WA/UBDum3Pva6LlEVV2GLSgCPydojlrqAVeXgmIosilW3oH+PMsXRUyliorIhmvDoxkl15dixY4pdeyXChrDWPJMPjorxOx8v7f9kIzZyS7PorVxQ/w5Iku2L7dWrUr0Ptw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wgjNY4NIGEzjsjQHPkywXnozGRT+pkDw7MyB0MXI4ks=;
+ b=KOromIqZ6WjJI57Ra2zZduWXx+NJ8/YpcpmLr1LfLNMPWRl2rWVcsf4e/AhzDt+Okutwzw0Ohz6RNnuJxkEUnShMr6K6VYrMG2re3ch1Q270RbpYcldCklMUi89hLGioMFqsexnCOfC7cnZ7+4Ga214ZHxi7FzaWseowtCt40ZU6QORlPELQEPQZxRwP/biJ5p4m+ACYpu8d8fuy5XVUu5F49uWONyZasWfKFgKyxsDRt0IDaYM7IOIhi2sTl4U/QF5BXYX9UtRo7UDD+xFd30xQG5tveTGNN3Kz3GqDkv4vfrMZ2LOgsdPEAu5FmzOQBYVoibmv136bP5PTESrKSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wgjNY4NIGEzjsjQHPkywXnozGRT+pkDw7MyB0MXI4ks=;
+ b=acsDS7tRS21qxIBlxi1ZkhzTXAsm5uJm5qOAHlIDoUfm83AWS9uIprGIJLY2jBRhw8UGbt7iafkiKObR7TtSZf97aVvO90fhmzLzThba0a7cx9iR6i9IwEJ7Hw5R7JySBrL7m+7KKBbaWsbcOQ7MQg+zYX8nmP9NSe33tVSAfevZYYhiwR3moNUd4108l1e9BzjmKcboWKUU6/owYXWVJoCrAWQ/XWxf0FfWj8yTutbQcvcsKeTIfrhOgnV0sIYFsmJE7eY/TbqqXVwqK6DXJlhlr14EV5RvfeA3Y5WwJHmTGHPVflXS9Qa/ceLzPgk58ThudYmt4bfIC9nBJJL0kQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by IA0PR12MB8930.namprd12.prod.outlook.com (2603:10b6:208:481::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
+ 2023 00:12:21 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::fb09:9679:bd22:6bcb]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::fb09:9679:bd22:6bcb%7]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
+ 00:12:20 +0000
+References: <20231117090933.75267-1-baolu.lu@linux.intel.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Luo Yuzhang <yuzhang.luo@intel.com>,
+        Tony Zhu <tony.zhu@intel.com>
+Subject: Re: [PATCH 1/1] iommu/vt-d: Fix incorrect cache invalidation for mm
+ notification
+Date:   Mon, 20 Nov 2023 10:57:43 +1100
+In-reply-to: <20231117090933.75267-1-baolu.lu@linux.intel.com>
+Message-ID: <87edgll1up.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SY6PR01CA0050.ausprd01.prod.outlook.com
+ (2603:10c6:10:e9::19) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231116222743.2984776-4-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|IA0PR12MB8930:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44db5e48-c6cc-4665-0c2e-08dbe95d5c6c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O5fMrHESOa4OvMynCkRvEB4ryO9Ow/RFiPqoWcLOlMhNGlWb/Bj6oomYL2IcLf5gH5Ls2NsjhnubCYoIr8Nl0/8R+PyWhYwdzKvAjRg6me7uk2/ivIWuG02HkQYvkPDnGpBRHfBmMvFpu4keG2FDm3l4NkSKLDCEaNnAilHJK4lKlsurl+0KQhSBZKBB2jE3NTqOntLKe1WYUpuCKX3bCOO8NwB+qQgYfDXw38WPue9LLuyehH0gkPhMeGDRYq74+dih2n+y3DF99+LbWCwxk0K2PeeOaXj5FlYM+A8jToYWpuxTIPmuZeA/Yqah8evKQ44nAzkCDLMJhHU1l6ryFAd/HeviaVueNwPDlaShZXzv4tnpDqCTAlXTajDswAGQW3wWX84EUXIdF4oMgFkUUp5quDiAD+ZD/ZWKoEe2ZPIKx2mN2CMRxCxH+DX3kSM6dZBGz5Cm3mk3gM2cXontHreOh3HEHu4e/7CrN9xEC+2xq8sBtNsTnKdm+h3ZkpWxixqSn7Y+csjS01vECrERNdlZP3WoM5sUuqPlt7BURfly/Ba5W6uah+nCFgKYyhkq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(376002)(39860400002)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(41300700001)(5660300002)(7416002)(2906002)(86362001)(6486002)(8936002)(83380400001)(6506007)(478600001)(6666004)(26005)(9686003)(6512007)(38100700002)(4326008)(8676002)(54906003)(6916009)(316002)(66946007)(66556008)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oTKPXJJQGucwMaKDVGc8Z7WChF9BwgJK1+GfZ8F38LslhSiHyJ2kCnmuu0Mk?=
+ =?us-ascii?Q?Bp/SSqCjVGJhgAXwgndCEpfgAfdXxMPFVfFOMYs9J3gGpOiKtVbduXf1Y8vJ?=
+ =?us-ascii?Q?WEu53/JUhlIJ9fCcLE2umyHRNd3rNToP7wWE7aHnZqR544XQMSKafFNYwmgS?=
+ =?us-ascii?Q?8iVyBDYdTgOu3FaDdKmZbNX18s7hgjjekjJ7d+QYjNrMD3x7i2nTRNT3hiU0?=
+ =?us-ascii?Q?+PdSoM8J4K2y2ebhr1berDz5/smLXOBxkAnc+Y4ShzxzFOXWgmKG9s3VbGyF?=
+ =?us-ascii?Q?mFN14zaTenHfSkZdyiBL/KQS/FAYu3madXtKX0OVBZMaNkfLXbZ5AnVblbU+?=
+ =?us-ascii?Q?h/twLUDAmS3MDWfdZgxvET0BB98I96U+tDE9TRDK87WrgxJQ+9OXvPbjZ3tO?=
+ =?us-ascii?Q?sCds1Q74seaaUyzWNxk8ZwGN79JdukYRSE873t8HIyrR5VZB6voCiy3juamv?=
+ =?us-ascii?Q?ivVDEafEPzGXwG42gWdzE8zDk8u1cQd+CquiM8vJ0GiCYHTw7VMw5MWereG1?=
+ =?us-ascii?Q?tVspTS1DrImUA3jrl4mBmwU9XuAViAiLtRSUBCf6LvTEmq9rQLmQpnTkySO/?=
+ =?us-ascii?Q?gRAsnA32js7UFgRQnfGCdofMRMR/Ycfr9/5dnHNkv39tZbatfegu9S1GDF93?=
+ =?us-ascii?Q?PU7VVninHv3izMbcXhxkzGyugoZg9DcI+DUxE0qqSoljThzbS39f4zepM4+s?=
+ =?us-ascii?Q?Q6a4Nl6pCmWaJWGzIcMZul9cWYI16ONfHAdbUNadSaloVmemqbcnITDlK+M8?=
+ =?us-ascii?Q?f+ZRMulK9AJR+p+NztPZ66RgLGjooYM9U/ylChoM0eUFXfaLi6XTui1nMoEd?=
+ =?us-ascii?Q?OuEzVFCcB9lksMMXXYmop8/En+lQ9B1pQrwLz8x2fCjbYyNajy0oEFceq0PK?=
+ =?us-ascii?Q?rRNGmWZv8uF2Pgmjn78QHVD8MI1uFjdkgqmXfc6cx+iDQIRbMMDYTdi6H+TL?=
+ =?us-ascii?Q?mHpx4DawB/s0LhpUyiq6PL0qPtBY83UUf0G3wvoDsV7La2nE2tm7FlhXXTbI?=
+ =?us-ascii?Q?8B2LpcLZzUWdXfij9XeZyiBfZ9mOuGIdw7oXOggJucnsf37/Fp8EsEjCL5Vz?=
+ =?us-ascii?Q?b9BAxfIrphbDb4x7QvsqvIvoEAidHwXlW7OZ3JNkXcPU3hPwORvD/r9RTRQR?=
+ =?us-ascii?Q?2HfXSeeKiyjXZ7z1KMH7NabwF0i+M1cispAcEetHCKsc/uktQj9iWtof6JAS?=
+ =?us-ascii?Q?tp37bRx1dHmlB/1nzVH+bgpT9oXBf4VKk6SlNHXszO88bp5noQk9gjLT5ZWK?=
+ =?us-ascii?Q?yeFUuAEFp1lHtY8AvZ3I0ZSMayXSH4WFJwtI3tmYa8KfaYYw6uU3NRrHGxqr?=
+ =?us-ascii?Q?mRBLZwK+8gTfH1GUFpFhL/RAXoMnxwOGHd/c9N9USqSmWnFSxfLV1Q0VPcxx?=
+ =?us-ascii?Q?1G8ep0LNfxJtkP31f1vkPDyNG5hnXkNDlI9m0qI6whs69scz5NMIuSCRNzrg?=
+ =?us-ascii?Q?SFxJJo1VxSuxCk35wuMhbWM3s2jrfoNrdLAaub+94ty90Sduo273LBE4mbiR?=
+ =?us-ascii?Q?OkxEoUC1aDbK8rdWJIxyZXEUXBUkFya+4BUW8oxIsr8QqnL140xoDGVoWJ5N?=
+ =?us-ascii?Q?vvH0Lw3U+JMVxDMlsuF7u/4FQpCXGXmLSZxC/mzJ?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44db5e48-c6cc-4665-0c2e-08dbe95d5c6c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 00:12:19.7941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7aswaJxaiobhrFYvUUUy5EpEtEUiL30lSKvHJnLhKrXTI96QJyQWquRxAdmq7wmdeda6nhs+izIasA+LxRF98Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8930
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
 
-kernel test robot noticed the following build warnings:
+Lu Baolu <baolu.lu@linux.intel.com> writes:
 
-[auto build test WARNING on vkoul-dmaengine/next]
-[also build test WARNING on linus/master v6.7-rc1 next-20231117]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Commit 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
+> invalidating TLBs") moved the secondary TLB invalidations into the TLB
+> invalidation functions to ensure that all secondary TLB invalidations
+> happen at the same time as the CPU invalidation and added a flush-all
+> type of secondary TLB invalidation for the batched mode, where a range
+> of [0, -1UL) is used to indicates that the range extends to the end of
+> the address space.
+>
+> However, using an end address of -1UL caused an overflow in the Intel
+> IOMMU driver, where the end address was rounded up to the next page.
+> As a result, both the IOTLB and device ATC were not invalidated correctly.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/dmaengine-fsl-edma-involve-help-macro-fsl_edma_set-get-_tcd/20231117-062946
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git next
-patch link:    https://lore.kernel.org/r/20231116222743.2984776-4-Frank.Li%40nxp.com
-patch subject: [PATCH v2 3/5] dmaengine: mcf-edma: force type conversion for TCD pointer
-config: hexagon-randconfig-r121-20231119 (https://download.01.org/0day-ci/archive/20231120/202311200733.Dq7bx5cj-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20231120/202311200733.Dq7bx5cj-lkp@intel.com/reproduce)
+Thanks for catching. This fix looks good so:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311200733.Dq7bx5cj-lkp@intel.com/
+Reviewed-by: Alistair Popple <apopple@nvidia.com>
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/dma/mcf-edma-main.c:205:35: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/dma/mcf-edma-main.c:205:35: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got restricted __le16 * @@
-   drivers/dma/mcf-edma-main.c:205:35: sparse:     expected void [noderef] __iomem *
-   drivers/dma/mcf-edma-main.c:205:35: sparse:     got restricted __le16 *
-   drivers/dma/mcf-edma-main.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+However examining the fixes patch again I note that we are calling
+mmu_notifier_invalidate_range(mm, 0, -1UL) from
+arch_tlbbatch_add_pending() in arch/x86/include/asm/tlbflush.h.
 
-vim +205 drivers/dma/mcf-edma-main.c
+That seems suboptimal because we would be doing an invalidate all for
+every page unmap, and as of db6c1f6f236d ("mm/tlbbatch: introduce
+arch_flush_tlb_batched_pending()") arch_flush_tlb_batched_pending()
+calls flush_tlb_mm() anyway. So I think we can probably drop the
+explicit notifier call from arch_flush_tlb_batched_pending().
 
-   152	
-   153	static int mcf_edma_probe(struct platform_device *pdev)
-   154	{
-   155		struct mcf_edma_platform_data *pdata;
-   156		struct fsl_edma_engine *mcf_edma;
-   157		struct edma_regs *regs;
-   158		int ret, i, chans;
-   159	
-   160		pdata = dev_get_platdata(&pdev->dev);
-   161		if (!pdata) {
-   162			dev_err(&pdev->dev, "no platform data supplied\n");
-   163			return -EINVAL;
-   164		}
-   165	
-   166		if (!pdata->dma_channels) {
-   167			dev_info(&pdev->dev, "setting default channel number to 64");
-   168			chans = 64;
-   169		} else {
-   170			chans = pdata->dma_channels;
-   171		}
-   172	
-   173		mcf_edma = devm_kzalloc(&pdev->dev, struct_size(mcf_edma, chans, chans),
-   174					GFP_KERNEL);
-   175		if (!mcf_edma)
-   176			return -ENOMEM;
-   177	
-   178		mcf_edma->n_chans = chans;
-   179	
-   180		/* Set up drvdata for ColdFire edma */
-   181		mcf_edma->drvdata = &mcf_data;
-   182		mcf_edma->big_endian = 1;
-   183	
-   184		mutex_init(&mcf_edma->fsl_edma_mutex);
-   185	
-   186		mcf_edma->membase = devm_platform_ioremap_resource(pdev, 0);
-   187		if (IS_ERR(mcf_edma->membase))
-   188			return PTR_ERR(mcf_edma->membase);
-   189	
-   190		fsl_edma_setup_regs(mcf_edma);
-   191		regs = &mcf_edma->regs;
-   192	
-   193		INIT_LIST_HEAD(&mcf_edma->dma_dev.channels);
-   194		for (i = 0; i < mcf_edma->n_chans; i++) {
-   195			struct fsl_edma_chan *mcf_chan = &mcf_edma->chans[i];
-   196	
-   197			mcf_chan->edma = mcf_edma;
-   198			mcf_chan->slave_id = i;
-   199			mcf_chan->idle = true;
-   200			mcf_chan->dma_dir = DMA_NONE;
-   201			mcf_chan->vchan.desc_free = fsl_edma_free_desc;
-   202			vchan_init(&mcf_chan->vchan, &mcf_edma->dma_dev);
-   203			mcf_chan->tcd = mcf_edma->membase + EDMA_TCD
-   204					+ i * sizeof(struct fsl_edma_hw_tcd);
- > 205			iowrite32(0x0, &((struct fsl_edma_hw_tcd *)mcf_chan->tcd)->csr);
-   206		}
-   207	
-   208		iowrite32(~0, regs->inth);
-   209		iowrite32(~0, regs->intl);
-   210	
-   211		ret = mcf_edma->drvdata->setup_irq(pdev, mcf_edma);
-   212		if (ret)
-   213			return ret;
-   214	
-   215		dma_cap_set(DMA_PRIVATE, mcf_edma->dma_dev.cap_mask);
-   216		dma_cap_set(DMA_SLAVE, mcf_edma->dma_dev.cap_mask);
-   217		dma_cap_set(DMA_CYCLIC, mcf_edma->dma_dev.cap_mask);
-   218	
-   219		mcf_edma->dma_dev.dev = &pdev->dev;
-   220		mcf_edma->dma_dev.device_alloc_chan_resources =
-   221				fsl_edma_alloc_chan_resources;
-   222		mcf_edma->dma_dev.device_free_chan_resources =
-   223				fsl_edma_free_chan_resources;
-   224		mcf_edma->dma_dev.device_config = fsl_edma_slave_config;
-   225		mcf_edma->dma_dev.device_prep_dma_cyclic =
-   226				fsl_edma_prep_dma_cyclic;
-   227		mcf_edma->dma_dev.device_prep_slave_sg = fsl_edma_prep_slave_sg;
-   228		mcf_edma->dma_dev.device_tx_status = fsl_edma_tx_status;
-   229		mcf_edma->dma_dev.device_pause = fsl_edma_pause;
-   230		mcf_edma->dma_dev.device_resume = fsl_edma_resume;
-   231		mcf_edma->dma_dev.device_terminate_all = fsl_edma_terminate_all;
-   232		mcf_edma->dma_dev.device_issue_pending = fsl_edma_issue_pending;
-   233	
-   234		mcf_edma->dma_dev.src_addr_widths = FSL_EDMA_BUSWIDTHS;
-   235		mcf_edma->dma_dev.dst_addr_widths = FSL_EDMA_BUSWIDTHS;
-   236		mcf_edma->dma_dev.directions =
-   237				BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
-   238	
-   239		mcf_edma->dma_dev.filter.fn = mcf_edma_filter_fn;
-   240		mcf_edma->dma_dev.filter.map = pdata->slave_map;
-   241		mcf_edma->dma_dev.filter.mapcnt = pdata->slavecnt;
-   242	
-   243		platform_set_drvdata(pdev, mcf_edma);
-   244	
-   245		ret = dma_async_device_register(&mcf_edma->dma_dev);
-   246		if (ret) {
-   247			dev_err(&pdev->dev,
-   248				"Can't register Freescale eDMA engine. (%d)\n", ret);
-   249			return ret;
-   250		}
-   251	
-   252		/* Enable round robin arbitration */
-   253		iowrite32(EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
-   254	
-   255		return 0;
-   256	}
-   257	
+Will put togeather a patch for that.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ - Alistair
+
+> Add a flush all helper function and call it when the invalidation range
+> is from 0 to -1UL, ensuring that the entire caches are invalidated
+> correctly.
+>
+> Fixes: 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when invalidating TLBs")
+> Cc: stable@vger.kernel.org
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Alistair Popple <apopple@nvidia.com>
+> Tested-by: Luo Yuzhang <yuzhang.luo@intel.com> # QAT
+> Tested-by: Tony Zhu <tony.zhu@intel.com> # DSA
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/svm.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 50a481c895b8..588385050a07 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -216,6 +216,27 @@ static void intel_flush_svm_range(struct intel_svm *svm, unsigned long address,
+>  	rcu_read_unlock();
+>  }
+>  
+> +static void intel_flush_svm_all(struct intel_svm *svm)
+> +{
+> +	struct device_domain_info *info;
+> +	struct intel_svm_dev *sdev;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(sdev, &svm->devs, list) {
+> +		info = dev_iommu_priv_get(sdev->dev);
+> +
+> +		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 1);
+> +		if (info->ats_enabled) {
+> +			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
+> +						 svm->pasid, sdev->qdep,
+> +						 0, 64 - VTD_PAGE_SHIFT);
+> +			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
+> +						  svm->pasid, sdev->qdep);
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +}
+> +
+>  /* Pages have been freed at this point */
+>  static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+>  					struct mm_struct *mm,
+> @@ -223,6 +244,11 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+>  {
+>  	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
+>  
+> +	if (start == 0 && end == -1UL) {
+> +		intel_flush_svm_all(svm);
+> +		return;
+> +	}
+> +
+>  	intel_flush_svm_range(svm, start,
+>  			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT, 0);
+>  }
+
