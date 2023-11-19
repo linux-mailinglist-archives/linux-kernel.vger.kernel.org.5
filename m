@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6345D7F0671
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9DC7F0676
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjKSNex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S230491AbjKSNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:37:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjKSNev (ORCPT
+        with ESMTP id S229441AbjKSNhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:34:51 -0500
+        Sun, 19 Nov 2023 08:37:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2D5138
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:34:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9934FC433C8;
-        Sun, 19 Nov 2023 13:34:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6214ED8
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:37:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C3CC433C7;
+        Sun, 19 Nov 2023 13:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700400880;
-        bh=gRy63m5oP/eWC/wD8dCNRHAQkB1ST3bcQJr/HYdhsh8=;
+        s=k20201202; t=1700401055;
+        bh=2fexIX8Wllal1qs9XQNtQXc+WrSDQ3whn+AUI85d1mc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oz9FhMObmBmJL//1ggZ/WYka61XnaOKnxASiIecv4k2Ck/fiaD+P/ymRKE8ICOeOW
-         FGsejM8suwiVXBkj5t+hY1GLgTzaEF5AZC12Yu53VeXjNZjsI9Tg2UZMO4EbZ+RUKn
-         1V5prOlZxOsG6GI6TZJWbmAMZd8NzJRI0Ja3EDS9eXTzx2Js4AI5FpJ31x373wiBAo
-         ofneWTeA+1rxC2YhaA123MP6BefDoLYozE5MbdYHq7EhKgDyid+Z34wvb3HexQLa/k
-         UbEn+23GI+ZcR9mb4LoBMX3QBJ+G9Zbtmbes+WbhQ8DSgYGyVPrebkreEc2H2yAQZp
-         6KPTouC5iSZSg==
-Date:   Sun, 19 Nov 2023 13:34:35 +0000
+        b=dojdJKck+Y9O7k5rdfKnG08U6mBKW0yzAyatUWilOu1QJjyvkXsuWEupI2hp8nn1d
+         ILSIVbXXXSDURd9yDkvbJ0jpPPfPjIOdO1Z/b4D4TtOxXlmNJMyqpp1CBECnyE9DNk
+         bP2vP8DWGH1UBmdR/uwJ+sIXZ5w/2r5Z4SkHKpot8tiGD4ENOiKvcPU97OXJJEt7MC
+         F9yNEqTW239br5FnQaCc9w5P3fLB9MD8UGRG/QzDoZL2vJv/5hztp0EToBADUcUEF3
+         PUrkZOBbVHyniVmoYuNqJorvnpFZWKS83ynooRCViqs62zkJ/21SAjzik9nHy7BtEc
+         2s7NkQPGEHiNA==
+Date:   Sun, 19 Nov 2023 13:37:28 +0000
 From:   Conor Dooley <conor@kernel.org>
-To:     Elad Nachman <enachman@marvell.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
-Subject: Re: [PATCH v5 2/3] dt-bindings: arm64: add Marvell COM Express boards
-Message-ID: <20231119-avatar-implicate-75cd2f12dff5@spud>
-References: <20231119102638.1041978-1-enachman@marvell.com>
- <20231119102638.1041978-3-enachman@marvell.com>
+To:     Srinivas Goud <srinivas.goud@amd.com>
+Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de, git@amd.com,
+        michal.simek@xilinx.com, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        appana.durga.rao@xilinx.com, naga.sureshkumar.relli@xilinx.com
+Subject: Re: [PATCH v5 1/3] dt-bindings: can: xilinx_can: Add 'xlnx,has-ecc'
+ optional property
+Message-ID: <20231119-dotted-feast-eb01cbebde42@spud>
+References: <1700213336-652-1-git-send-email-srinivas.goud@amd.com>
+ <1700213336-652-2-git-send-email-srinivas.goud@amd.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bpE9nlwIO/xMULOZ"
+        protocol="application/pgp-signature"; boundary="8WwOMIKNYsPT2CWN"
 Content-Disposition: inline
-In-Reply-To: <20231119102638.1041978-3-enachman@marvell.com>
+In-Reply-To: <1700213336-652-2-git-send-email-srinivas.goud@amd.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,71 +59,86 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---bpE9nlwIO/xMULOZ
+--8WwOMIKNYsPT2CWN
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 19, 2023 at 12:26:37PM +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
->=20
-> Add dt bindings for:
-> CN9130 COM Express CPU module
+On Fri, Nov 17, 2023 at 02:58:54PM +0530, Srinivas Goud wrote:
+> ECC feature added to CAN TX_OL, TX_TL and RX FIFOs of
+> Xilinx AXI CAN Controller.
+> Part of this feature configuration and counter registers added in
 
-Did you forget this one? There's only the CN9191 system here.
+"ECC is an IP configuration option where counter registers are added..."
+The sentence is hard to parse for the important bit of information - the
+justification for this being a property rather than based on compatible
+or autodetectable based on some IP version etc.
 
-> CN9131 COM Express CPU module
-> AC5X RD COM Express Type 7 carrier board.
-> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
->=20
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-> ---
->  .../bindings/arm/marvell/armada-7k-8k.yaml           | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.y=
-aml b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> index 52d78521e412..6b19f23bcf63 100644
-> --- a/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> +++ b/Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml
-> @@ -60,4 +60,16 @@ properties:
->            - const: marvell,armada-ap807-quad
->            - const: marvell,armada-ap807
-> =20
-> +      - description:
-> +            Alleycat5X (98DX35xx) Reference Design as COM Express Carrie=
-r plus
-> +            Armada CN9131 COM Express CPU module
-> +        items:
-> +          - enum:
-> +              - marvell,ac5x-car-with-cn9131
-
-Why not just marvell,cn9131-ac5x-carrier or similar? The "with" isn't
-particularly helpful.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Cheers,
 Conor.
 
-> +          - const: marvell,rd-ac5x-carrier
-> +          - const: marvell,cn9131-cpu-module
-> +          - const: marvell,cn9131
-> +          - const: marvell,armada-ap807-quad
-> +          - const: marvell,armada-ap807
+> IP for 1bit/2bit ECC errors.
+>=20
+> 'xlnx,has-ecc' is optional property and added to Xilinx AXI CAN Controller
+> node if ECC block enabled in the HW
+>=20
+> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
+> ---
+> Changes in v5:
+> Update property description
+>=20
+> Changes in v4:
+> Fix binding check warning
+> Update property description
+>=20
+> Changes in v3:
+> Update commit description
+> =20
+> Changes in v2:
+> None
+>=20
+>  Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/=
+Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> index 64d57c3..8d4e5af 100644
+> --- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
+> @@ -49,6 +49,10 @@ properties:
+>    resets:
+>      maxItems: 1
+> =20
+> +  xlnx,has-ecc:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: CAN TX_OL, TX_TL and RX FIFOs have ECC support(AXI CAN)
 > +
->  additionalProperties: true
+>  required:
+>    - compatible
+>    - reg
+> @@ -137,6 +141,7 @@ examples:
+>          interrupts =3D <GIC_SPI 59 IRQ_TYPE_EDGE_RISING>;
+>          tx-fifo-depth =3D <0x40>;
+>          rx-fifo-depth =3D <0x40>;
+> +        xlnx,has-ecc;
+>      };
+> =20
+>    - |
 > --=20
-> 2.25.1
+> 2.1.1
 >=20
 
---bpE9nlwIO/xMULOZ
+--8WwOMIKNYsPT2CWN
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVoO6wAKCRB4tDGHoIJi
-0kxzAQDIfFI+4D2QNGfT6wBPbYpCaJ1MkWDRfkjLXjPko/hmegEAjvIIcJgfVeUr
-PLVO2PiimvxVQH4b9rJT75dpFQOHYwM=
-=7ZHL
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVoPmAAKCRB4tDGHoIJi
+0gIVAQCmItBnILexQiAoXNdAAsHy5rgfRr4rjnM34BOJAlWaNQEA92zmPiiA1wxS
+KxWwYSuiX1hAlANo8CLa5w7qWaHayQY=
+=jE3W
 -----END PGP SIGNATURE-----
 
---bpE9nlwIO/xMULOZ--
+--8WwOMIKNYsPT2CWN--
