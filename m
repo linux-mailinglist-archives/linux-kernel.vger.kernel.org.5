@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E677F0724
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A67F97F0723
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbjKSPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 10:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S230491AbjKSPYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 10:24:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjKSPYD (ORCPT
+        with ESMTP id S229508AbjKSPYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 10:24:03 -0500
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E221B5;
-        Sun, 19 Nov 2023 07:23:58 -0800 (PST)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1efa01323b4so2202768fac.3;
-        Sun, 19 Nov 2023 07:23:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700407437; x=1701012237;
+        Sun, 19 Nov 2023 10:24:02 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146B083;
+        Sun, 19 Nov 2023 07:23:59 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1ce3084c2d1so30669725ad.3;
+        Sun, 19 Nov 2023 07:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700407438; x=1701012238; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JvBH+EWY74pgOdnostfTvFXJoA0rOQwdXiujVZ07pTs=;
-        b=BgtnF7aRHB9UFtp4uF/p/XioDOed/vZySK1FS/I6vRDmgLf1vtMeG1MtWxkLH6Hvhk
-         3T9IDypWc+3A+4/50ZSPzpV++kFdMMfrnJKiuYZu4ED7Shi+bwoOtw9p36PK7nqoqJoQ
-         w/XjeWglXN9qtBrA4vwEOUhCRPDwiyJhO3VsaJehvpYNUA8T7LtG4RgHztgvO9ZK+oWX
-         8SzcvH9mlRV1NAq3e/WZhI+gS+Fk9MWTUm7at7AJfPmaoab/MFWOIglNyiDmAKBgtkiq
-         tCgvDpB0bKHbEBh8kvxUM7ZINcCPGVPlHiAywmR/nhLLBI2asjUtMfV9bpQut9NGi5n/
-         uA3Q==
-X-Gm-Message-State: AOJu0YxsiUUUmhFzon+u7CKbrY7kC2I4lHnOGVNZhsaZlWoDre5pNVkI
-        UGv82bCBDBPQ4MlixMefBOPKFA4S6Q==
-X-Google-Smtp-Source: AGHT+IGDY8KITDzwXPPX6dbv/Syq98ERWXvGlyDk+aFKC8MDHNnswIHQzkscF5GiPJ//Dn3zZ0QfQw==
-X-Received: by 2002:a05:6870:af05:b0:1f4:a48d:d32f with SMTP id ux5-20020a056870af0500b001f4a48dd32fmr5682063oab.25.1700407437363;
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
+        b=XeQbKLfMSUQKK9wlczxl6DD5Tkgv6s1ykn0QpaSI5/D34vtuVtqaZiHRHIs3TtNnF5
+         IJFE7Z+YfM4WyrLl2zlOeldhsxTgJ1RtbZeKyNKdLCe42A//8kAMwOIMJ+K4PHbV+Pzh
+         axuQ4hVTykQax+0kWABv3gs/TxhSiiJD0iwnOLODpJRjZw2yPQVtblteJJ36tRIO97bm
+         MmmIeFHntmtquyFKy165mKLZnVMhXBOZOOI9kvNzpOPLWtNlngG33jgTE7k145wlRfYK
+         IT4mWPSj78gqpqne2TSH4nqEHo4VuvS0AGMKz9R1SswCvV7hEei/55Z6oyMH03ASFEtG
+         XnSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700407438; x=1701012238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tv0VTetN2szhDW0NFHpW4LPgqRp7VF2ULeCrw/emRPA=;
+        b=ODSF1uGkumB1ISUbIZylo6R2SjDQILMJUIpshTQIwYGqy1WkrXlEitkX/JayLLbJ6S
+         RrK8uIMxzzz50+FVhnLWhpdK/YGHFRrm7qnp/2pxQZ5BTsWC3OnpDGpQHvm1BX1MPqsh
+         zDG5v5f5nBZC3ogG5uIvFXe9L7e/fxWZrxgjLxwoiVfNVeXX55VgQDtVae0i5BsP0Sx1
+         +i80alRCqEhzlbZvddD5toLhZH2wjrL1f7dHrUlW1piryW2Xkrw3Q9x2O7oraS/A+hUW
+         WbN0FmkUG4aWzqZCynwOv0OQddmVzZdFBvmT12jwQxCmPKjLcMiorb6sQNQC0NZcBFvF
+         jfLg==
+X-Gm-Message-State: AOJu0YymZtfbnn6DVNxcTx3IIrU+1R0J5gAyfcv1FpoFSw3GzZfwOzG3
+        8Wg3sa1e+lbkAvcRYj9O0+Y=
+X-Google-Smtp-Source: AGHT+IExcv92wwInt1GmYQ8oG/8BC7LdnS0mPL/DN8lWJXybR2jk67h/NQWBkjHlzOO/50DevV90QA==
+X-Received: by 2002:a17:903:1108:b0:1cc:3bd3:73d8 with SMTP id n8-20020a170903110800b001cc3bd373d8mr5563344plh.59.1700407437484;
         Sun, 19 Nov 2023 07:23:57 -0800 (PST)
-Received: from herring.priv ([2607:fb90:45e3:889f:15b4:1348:6d64:224b])
-        by smtp.gmail.com with ESMTPSA id v9-20020a056830090900b006d64f51a94bsm899932ott.34.2023.11.19.07.23.55
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id p7-20020a1709026b8700b001cf57467ad2sm1604403plk.91.2023.11.19.07.23.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:23:56 -0800 (PST)
-Received: (nullmailer pid 223586 invoked by uid 1000);
-        Sun, 19 Nov 2023 15:23:54 -0000
-Date:   Sun, 19 Nov 2023 09:23:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     gabriel.fernandez@foss.st.com
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] dt-bindings: stm32: add clocks and reset binding
- for stm32mp25 platform
-Message-ID: <20231119152354.GA216405-robh@kernel.org>
-References: <20231116154952.1206705-1-gabriel.fernandez@foss.st.com>
- <20231116154952.1206705-4-gabriel.fernandez@foss.st.com>
+        Sun, 19 Nov 2023 07:23:57 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 19 Nov 2023 05:23:56 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v4 0/5] cgroup/cpuset: Improve CPU isolation in isolated
+ partitions
+Message-ID: <ZVoojBi4ZoVR2mOt@slm.duckdns.org>
+References: <20231116033405.185166-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231116154952.1206705-4-gabriel.fernandez@foss.st.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231116033405.185166-1-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 04:49:50PM +0100, gabriel.fernandez@foss.st.com wrote:
-> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
-> 
-> Adds clock and reset binding entries for STM32MP25 SoC family
-> 
-> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
-> ---
->  .../bindings/clock/st,stm32mp25-rcc.yaml      |  72 +++
->  include/dt-bindings/clock/st,stm32mp25-rcc.h  | 492 ++++++++++++++++++
->  include/dt-bindings/reset/st,stm32mp25-rcc.h  | 165 ++++++
->  3 files changed, 729 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
->  create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
->  create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-> new file mode 100644
-> index 000000000000..1bdcfacd62d5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/st,stm32mp25-rcc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STM32MP25 Reset Clock Controller
-> +
-> +maintainers:
-> +  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
-> +
-> +description: |
-> +  The RCC hardware block is both a reset and a clock controller.
-> +  RCC makes also power management (resume/supend).
-> +
-> +  See also::
-> +    include/dt-bindings/clock/st,stm32mp25-rcc.h
-> +    include/dt-bindings/reset/st,stm32mp25-rcc.h
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - st,stm32mp25-rcc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +
-> +  clocks:
-> +    description: Specifies oscillators.
-> +    maxItems: 5
-> +
-> +  clock-names:
-> +    items:
-> +      - const: hse
-> +      - const: hsi
-> +      - const: msi
-> +      - const: lse
-> +      - const: lsi
+On Wed, Nov 15, 2023 at 10:34:00PM -0500, Waiman Long wrote:
+> v4:
+>  - Update patch 1 to move apply_wqattrs_lock() and apply_wqattrs_unlock()
+>    down into CONFIG_SYSFS block to avoid compilation warnings.
 
-No idea what these TLAs are... Define them in clocks:
+I already applied v3 to cgroup/for-6.8. Can you please send the fix up patch
+against that branch?
 
-clocks:
-  items:
-    - description: what hse is
-    - ...
+Thanks.
 
+-- 
+tejun
