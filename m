@@ -2,198 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 801DB7F0684
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF257F0688
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjKSNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45336 "EHLO
+        id S230140AbjKSNne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjKSNnN (ORCPT
+        with ESMTP id S231206AbjKSNnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:43:13 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7109E8F;
-        Sun, 19 Nov 2023 05:43:09 -0800 (PST)
-Received: from [192.168.0.183] (ip5f5af668.dynamic.kabel-deutschland.de [95.90.246.104])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 24A9961E5FE01;
-        Sun, 19 Nov 2023 14:42:59 +0100 (CET)
-Message-ID: <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
-Date:   Sun, 19 Nov 2023 14:42:58 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
-In-Reply-To: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Sun, 19 Nov 2023 08:43:32 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B716E6;
+        Sun, 19 Nov 2023 05:43:29 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ce2cf67be2so2001887a34.2;
+        Sun, 19 Nov 2023 05:43:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700401408; x=1701006208;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eC7R2aDGjcyaZieADea/5qgs9vEV8wCKAKof6xgBBlQ=;
+        b=ISt3yrEuH38JlRpCDCePXXFnhqj6aServYqF/XqY4SXa1grlhfimJFO8AvTudHN2kV
+         LWOY7/nXcZA0H/xVInONtie71NLQLisaiWt08W7mCEUtYKWJgXdBXE1xwO/aRAb/BbXy
+         j5GHoOv24httwwDVo7kuSbmL3VWzreO8yfJbCVOf5/fkYn4K96quS2Mf167grNl38Fyh
+         DSBT39I1osm1YjmD87Pzrlw+pBVkvGvLb4LetpRyUvnZuLzWBPJZIJ3A0G6wi/m/DJ52
+         rtrNv7Nns0mu8JiYpxth+0KddjgZYED6pHM6hcEZ2GdC8mMWQV6IZKPKbLbELCPdg9Jx
+         XboQ==
+X-Gm-Message-State: AOJu0YwmzREAiVN6NH5HgU+hC0JCVCuckAiivuFAFuzS9UF8uILhEFDw
+        P6G+kKJreMw3P6FVoZEdlw==
+X-Google-Smtp-Source: AGHT+IEjmOOgpm/LkHZKFHzuItqSpn8lyCN5G9GVSFuxVx3shNYIX91fj/expeuhfHS2bP+hrV2iNw==
+X-Received: by 2002:a05:6830:1d61:b0:6b7:52ce:ff38 with SMTP id l1-20020a0568301d6100b006b752ceff38mr6204255oti.16.1700401408681;
+        Sun, 19 Nov 2023 05:43:28 -0800 (PST)
+Received: from herring.priv ([2607:fb90:45e3:889f:15b4:1348:6d64:224b])
+        by smtp.gmail.com with ESMTPSA id bg21-20020a056830361500b006ce2cb3b959sm879328otb.52.2023.11.19.05.43.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 05:43:28 -0800 (PST)
+Received: (nullmailer pid 3136 invoked by uid 1000);
+        Sun, 19 Nov 2023 13:43:26 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     conor+dt@kernel.org, gregory.clement@bootlin.com,
+        devicetree@vger.kernel.org, andrew@lunn.ch,
+        krzysztof.kozlowski+dt@linaro.org,
+        chris.packham@alliedtelesis.co.nz, cyuval@marvell.com,
+        pali@kernel.org, sebastian.hesselbarth@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, mrkiko.rs@gmail.com
+In-Reply-To: <20231119102638.1041978-3-enachman@marvell.com>
+References: <20231119102638.1041978-1-enachman@marvell.com>
+ <20231119102638.1041978-3-enachman@marvell.com>
+Message-Id: <170040140652.3109.2493816352448660414.robh@kernel.org>
+Subject: Re: [PATCH v5 2/3] dt-bindings: arm64: add Marvell COM Express
+ boards
+Date:   Sun, 19 Nov 2023 07:43:26 -0600
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Fix typo in subject line]
 
-Dear Linux folks,
+On Sun, 19 Nov 2023 12:26:37 +0200, Elad Nachman wrote:
+> From: Elad Nachman <enachman@marvell.com>
+> 
+> Add dt bindings for:
+> CN9130 COM Express CPU module
+> CN9131 COM Express CPU module
+> AC5X RD COM Express Type 7 carrier board.
+> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
+> 
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> ---
+>  .../bindings/arm/marvell/armada-7k-8k.yaml           | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-On the Dell XPS 13 9360 from 2016, BIOS 2.21.0 06/02/2022, with Debian 
-sid/unstable and Debian’s Linux 6.5.10 kernel, I am trying to extend the 
-run-time with battery, at under 50 % of it’s original capacity, and I am 
-using PowerTOP 2.15.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml:64:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
 
-     [    0.000000] microcode: updated early: 0xf0 -> 0xf4, date = 
-2023-02-22
-     [    0.000000] Linux version 6.5.0-4-amd64 
-(debian-kernel@lists.debian.org) (gcc-13 (Debian 13.2.0-6) 13.2.0, GNU 
-ld (GNU Binutils for Debian) 2.41) #1 SMP PREEMPT_DYNAMIC Debian 
-6.5.10-1 (2023-11-03)
-     […]
-     [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 
-06/02/2022
-     […]
-     [   15.646414] usbcore: registered new interface driver btusb
-     [   15.648188] ath10k_pci 0000:3a:00.0: pci irq msi oper_irq_mode 2 
-irq_mode 0 reset_mode 0
-     [   15.649555] bluetooth hci0: firmware: direct-loading firmware 
-qca/rampatch_usb_00000302.bin
-     [   15.650018] Bluetooth: hci0: using rampatch file: 
-qca/rampatch_usb_00000302.bin
-     [   15.650020] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, 
-firmware rome 0x302 build 0x111
+dtschema/dtc warnings/errors:
 
-Although radio/wireless devices are turned off in GNOME, PowerTOP shows 
-the Bluetooth device drawing 0.85 W of energy:
+doc reference errors (make refcheckdocs):
 
-     848 mW    100.0%   Device         USB device: usb-device-0cf3-e300
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231119102638.1041978-3-enachman@marvell.com
 
-     $ lsusb -d 0cf3:e300
-     Bus 001 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications 
-QCA61x4 Bluetooth 4.0
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-     $ lspci -nn -s 3a:00.0
-     3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 
-802.11ac Wireless Network Adapter [168c:003e] (rev 32)
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-After unloading the module `btusb`, the entry disappears from the 
-PowerTOP list after a while.
+pip3 install dtschema --upgrade
 
-     usbcore: deregistering interface driver btusb
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-Auto-suspend was enabled for the device. (Though it shouldn’t have 
-mattered as it was disabled in GNOME?)
-
-Anyways, have you heard of such an issue? Can I provide more 
-information, to get it to not use any energy while being disable in GNOME?
-
-
-Kind regards,
-
-Paul
-
-
-```
-$ lspci -nn
-00:00.0 Host bridge [0600]: Intel Corporation Xeon E3-1200 v6/7th Gen 
-Core Processor Host Bridge/DRAM Registers [8086:5904] (rev 02)
-00:02.0 VGA compatible controller [0300]: Intel Corporation HD Graphics 
-620 [8086:5916] (rev 02)
-00:04.0 Signal processing controller [1180]: Intel Corporation Xeon 
-E3-1200 v5/E3-1500 v5/6th Gen Core Processor Thermal Subsystem 
-[8086:1903] (rev 02)
-00:14.0 USB controller [0c03]: Intel Corporation Sunrise Point-LP USB 
-3.0 xHCI Controller [8086:9d2f] (rev 21)
-00:14.2 Signal processing controller [1180]: Intel Corporation Sunrise 
-Point-LP Thermal subsystem [8086:9d31] (rev 21)
-00:15.0 Signal processing controller [1180]: Intel Corporation Sunrise 
-Point-LP Serial IO I2C Controller #0 [8086:9d60] (rev 21)
-00:15.1 Signal processing controller [1180]: Intel Corporation Sunrise 
-Point-LP Serial IO I2C Controller #1 [8086:9d61] (rev 21)
-00:16.0 Communication controller [0780]: Intel Corporation Sunrise 
-Point-LP CSME HECI #1 [8086:9d3a] (rev 21)
-00:1c.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI 
-Express Root Port #1 [8086:9d10] (rev f1)
-00:1c.4 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI 
-Express Root Port #5 [8086:9d14] (rev f1)
-00:1c.5 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI 
-Express Root Port #6 [8086:9d15] (rev f1)
-00:1d.0 PCI bridge [0604]: Intel Corporation Sunrise Point-LP PCI 
-Express Root Port #9 [8086:9d18] (rev f1)
-00:1f.0 ISA bridge [0601]: Intel Corporation Sunrise Point-LP LPC 
-Controller [8086:9d58] (rev 21)
-00:1f.2 Memory controller [0580]: Intel Corporation Sunrise Point-LP PMC 
-[8086:9d21] (rev 21)
-00:1f.3 Audio device [0403]: Intel Corporation Sunrise Point-LP HD Audio 
-[8086:9d71] (rev 21)
-00:1f.4 SMBus [0c05]: Intel Corporation Sunrise Point-LP SMBus 
-[8086:9d23] (rev 21)
-01:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3 
-Bridge [Alpine Ridge 2C 2015] [8086:1576]
-02:00.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3 
-Bridge [Alpine Ridge 2C 2015] [8086:1576]
-02:01.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3 
-Bridge [Alpine Ridge 2C 2015] [8086:1576]
-02:02.0 PCI bridge [0604]: Intel Corporation DSL6340 Thunderbolt 3 
-Bridge [Alpine Ridge 2C 2015] [8086:1576]
-39:00.0 USB controller [0c03]: Intel Corporation DSL6340 USB 3.1 
-Controller [Alpine Ridge] [8086:15b5]
-3a:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac 
-Wireless Network Adapter [168c:003e] (rev 32)
-3b:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd. RTS525A 
-PCI Express Card Reader [10ec:525a] (rev 01)
-3c:00.0 Non-Volatile memory controller [0108]: SK hynix PC300 NVMe Solid 
-State Drive 512GB [1c5c:1284]
-$ lspci -t
--[0000:00]-+-00.0
-            +-02.0
-            +-04.0
-            +-14.0
-            +-14.2
-            +-15.0
-            +-15.1
-            +-16.0
-            +-1c.0-[01-39]----00.0-[02-39]--+-00.0-[03]--
-            |                               +-01.0-[04-38]--
-            |                               \-02.0-[39]----00.0
-            +-1c.4-[3a]----00.0
-            +-1c.5-[3b]----00.0
-            +-1d.0-[3c]----00.0
-            +-1f.0
-            +-1f.2
-            +-1f.3
-            \-1f.4
-$ lsusb -t
-/:  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 10000M
-     |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 10000M
-         |__ Port 2: Dev 3, If 0, Class=Vendor Specific Class, 
-Driver=r8152, 5000M
-/:  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/2p, 480M
-     |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/5p, 480M
-         |__ Port 1: Dev 3, If 0, Class=Human Interface Device, 
-Driver=usbhid, 12M
-/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/6p, 5000M
-/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=xhci_hcd/12p, 480M
-     |__ Port 3: Dev 2, If 0, Class=Wireless, Driver=, 12M
-     |__ Port 3: Dev 2, If 1, Class=Wireless, Driver=, 12M
-     |__ Port 4: Dev 3, If 0, Class=Human Interface Device, 
-Driver=usbhid, 12M
-     |__ Port 5: Dev 4, If 0, Class=Video, Driver=uvcvideo, 480M
-     |__ Port 5: Dev 4, If 1, Class=Video, Driver=uvcvideo, 480M
-```
