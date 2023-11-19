@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36187F095A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 23:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866187F095B
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 23:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbjKSWPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 17:15:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S231669AbjKSWPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 17:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231787AbjKSWPX (ORCPT
+        with ESMTP id S231726AbjKSWPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 17:15:23 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CFC12D
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 14:15:14 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-408434ce195so10205325e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 14:15:14 -0800 (PST)
+        Sun, 19 Nov 2023 17:15:30 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F13FD6C
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 14:15:19 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9c6f0530929so95633566b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 14:15:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700432112; x=1701036912; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700432117; x=1701036917; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FBjgqP02grvuhK+DBWx2eCwwUqM0RvQ4/hJhGy33ZEM=;
-        b=M736zl4dlOdlC50+k1J76gPktOl1YCJUrqarqc82756GcXcrvA73zsEViSV2QVqYX5
-         TpNFofVC6qc0k4nUAnkNaXaiqIac2yeDV4qDCq2+wLH9F9C+FFn5sYFz97MkhKBmuiFX
-         J8mtIlWR9sUiF2ToF/2hNSx7WRjCsZiUHA1wwV9N43qNsgrIDaBwJaw3vTXTOWXSmlTT
-         gzPr4eoJ3rv4GRu1VLkAIDhfEzow8Bu5cMBD5El+0gLMZeHQYngUnp3ljXnxjGkAlTHu
-         xUYkthLBJ+7rkTAOjOEYNXBs0KIwkkFw1JvFgv1Y9GqmsaZHtmQoVhAxuyhQfzwD7F9e
-         Xlog==
+        bh=Al0u3qH30iNBj9/dDiymgzw8t9TisYLxCGe0NNyn6Vo=;
+        b=ZNYlXT1trT9YRdAIBHi9V5Khg9Zyfi2hIa4weHxqrkqYnOfGDVh/ffugs0jx9tddT9
+         j/jrMTfp7ffLYddLhVNtXDCTEFy5u1q7tMHjfmHvSF0uB3W25Jjat8GnkhfZMc55Tl1z
+         rwHkOZe2hmNiD6eHjr2YJdIjuGOP/bjcvtCq7ONF2RgWVnuCRWfc6/tA0G2xMq87vTlG
+         DU8a4kbqU4qyj1G6PTwF2bqBuZ1UsFbbtmeKCxFpvth6Rt4maCyjG4XtM8uPUH/ikWke
+         R8pXf7uVmMozBbKM94Zh36PTXpirMylJ7s58D/nVP5uI211Fpb9uKQKzFaAuhHu9B4Rr
+         fgjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700432112; x=1701036912;
+        d=1e100.net; s=20230601; t=1700432117; x=1701036917;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FBjgqP02grvuhK+DBWx2eCwwUqM0RvQ4/hJhGy33ZEM=;
-        b=a6DHStp0gE2wqVTF3pLCrjdEn52GbJRo9f71SuXMu9SjGfxRH4z4GFzA30D/9RAfJj
-         WdjkRzMFfyQ5jUhwXDR9c4gFQCz/8Ln6D1MydWQZGNVSqV5ey/C/IOPPSBDVguim52p/
-         u/SqzeANXyh29HCjBf8qHPImOyMxRSnC5XfC9PH2+rFX9jnyCroNQFL4HkRaBTtNll22
-         yr7cgzlZQhx4zGJHvRWFF3sDOTymjQ+i9t5bjaHu5b0EZeWECVuypCdkN8Ez+/iuYxAg
-         KPKq1nKjR55yleU+8wxNDw6akn37rLNFkjKVdgCHWbIdzJwBmufq28WtOtnW3fLjt+n0
-         qGSw==
-X-Gm-Message-State: AOJu0Yziw2z5lPTPvIVUBiFBr/vdTsb5TXRRAydP6YMxZRbTFs+z3W/C
-        Ol11ffH7qGcn41pmE/lJRfA=
-X-Google-Smtp-Source: AGHT+IE2p6BOd31Q9tTqJcohhMYsWkZHaI6dEiTvJ2SqrnQkH+c3ZKtU4Yx8vMMvQEDSp5zmb4RR2Q==
-X-Received: by 2002:a5d:5588:0:b0:32f:820c:44b0 with SMTP id i8-20020a5d5588000000b0032f820c44b0mr4468016wrv.0.1700432112255;
-        Sun, 19 Nov 2023 14:15:12 -0800 (PST)
+        bh=Al0u3qH30iNBj9/dDiymgzw8t9TisYLxCGe0NNyn6Vo=;
+        b=Y5bYI3Tvuw13ckaQ4whVfkGVEk7oZaXLHME7OSv7xShNHx3HMisnLpUE4jKN/s1T4i
+         Nzd3mNf9QCQagek0t1v36KIQTBk7e/LT4McRrm/c2E2iAwom0qp48NHlnOQc2qAbojp5
+         nsmBhR8MYBRc15BuAlZn4hbARDOHehx05llxLvRB83cNP4EQQcs+TAsJz2Z/1jyn6fnb
+         NDeaqcy17GNiXBJVof2Wf0oYvH1F4L6BBe9QY9v4YmANlTHmV8Vw3Knm084TF5wQNwn5
+         uiAXIlBmXnDpwX+n5yUAMCy5dSe/1bo6OeD5xdKQQZYu3D+MyT1eaQCC5FJwshCbO+Lc
+         nSjQ==
+X-Gm-Message-State: AOJu0YwXYZZ6XdE+ddtx1n1FNcobssYeIGyTFzSedVwTypELGlfFtmW4
+        oju6kh8iGpYm7ouoGQpUcH9+4KSK9q0=
+X-Google-Smtp-Source: AGHT+IECoGGVX3bim/b5hFYAvQ09ui1RZfET09FjgkuCjdk2zBSClznANBlT5U+zi3Kxgo2OfC/hKQ==
+X-Received: by 2002:a17:906:1da:b0:9c9:603c:407e with SMTP id 26-20020a17090601da00b009c9603c407emr4142314ejj.0.1700432117481;
+        Sun, 19 Nov 2023 14:15:17 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id s5-20020adfdb05000000b0032d8eecf901sm9221008wri.3.2023.11.19.14.15.11
+        by smtp.gmail.com with ESMTPSA id lh10-20020a170906f8ca00b009fd2028e62csm926964ejb.71.2023.11.19.14.15.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 14:15:12 -0800 (PST)
-Date:   Sun, 19 Nov 2023 23:15:10 +0100
+        Sun, 19 Nov 2023 14:15:17 -0800 (PST)
+Date:   Sun, 19 Nov 2023 23:15:15 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/14] staging: rtl8192e: Remove unused macros
- IS_EQUAL_CIE_SRC and friends
-Message-ID: <6d514e946983fb8ef4a3d7d3cb2774261a593d2f.1700431464.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 07/14] staging: rtl8192e: Remove unused function
+ copy_mac_addr()
+Message-ID: <d157456121388489784ce34e5f3daf91126f80d7.1700431464.git.philipp.g.hortmann@gmail.com>
 References: <cover.1700431464.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,42 +71,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused macros IS_EQUAL_CIE_SRC, UPDATE_CIE_WATCHDOG,
-UPDATE_CIE_SRC and IS_COUNTRY_IE_VALID.
+Remove unused function copy_mac_addr().
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/dot11d.h | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/staging/rtl8192e/dot11d.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/dot11d.h b/drivers/staging/rtl8192e/dot11d.h
-index 0ca803be3965..fd0a2df189bf 100644
+index fd0a2df189bf..d3da4af4a16b 100644
 --- a/drivers/staging/rtl8192e/dot11d.h
 +++ b/drivers/staging/rtl8192e/dot11d.h
-@@ -52,15 +52,6 @@ static inline void copy_mac_addr(unsigned char *des, unsigned char *src)
+@@ -44,11 +44,6 @@ struct rt_dot11d_info {
+ 	enum dot11d_state state;
+ };
+ 
+-static inline void copy_mac_addr(unsigned char *des, unsigned char *src)
+-{
+-	memcpy(des, src, 6);
+-}
+-
  #define GET_DOT11D_INFO(__ieee_dev)			\
  	 ((struct rt_dot11d_info *)((__ieee_dev)->dot11d_info))
- 
--#define IS_COUNTRY_IE_VALID(__ieee_dev)			\
--	(GET_DOT11D_INFO(__ieee_dev)->country_len > 0)
--
--#define IS_EQUAL_CIE_SRC(__ieee_dev, __address)		\
--	 ether_addr_equal_unaligned( \
--		GET_DOT11D_INFO(__ieee_dev)->country_src_addr, __address)
--#define UPDATE_CIE_SRC(__ieee_dev, __address)		\
--	copy_mac_addr(GET_DOT11D_INFO(__ieee_dev)->country_src_addr, __address)
--
- #define GET_CIE_WATCHDOG(__ieee_dev)				\
- 	 (GET_DOT11D_INFO(__ieee_dev)->country_watchdog)
- static inline void RESET_CIE_WATCHDOG(struct rtllib_device *__ieee_dev)
-@@ -68,8 +59,6 @@ static inline void RESET_CIE_WATCHDOG(struct rtllib_device *__ieee_dev)
- 	GET_CIE_WATCHDOG(__ieee_dev) = 0;
- }
- 
--#define UPDATE_CIE_WATCHDOG(__ieee_dev) (++GET_CIE_WATCHDOG(__ieee_dev))
--
- void dot11d_init(struct rtllib_device *dev);
- void dot11d_channel_map(struct rtllib_device *ieee);
  
 -- 
 2.42.0
