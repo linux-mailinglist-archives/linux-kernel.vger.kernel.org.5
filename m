@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DB57F0408
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE347F0419
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjKSC1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 21:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        id S229791AbjKSCde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 21:33:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKSC07 (ORCPT
+        with ESMTP id S229610AbjKSCdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 21:26:59 -0500
+        Sat, 18 Nov 2023 21:33:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8CF93
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 18:26:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD81CC433C8;
-        Sun, 19 Nov 2023 02:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700360816;
-        bh=VoHoOfSpNaP9qVLMEtcQXPYQyIswkE0mHkAveNm44rw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hxH5lUG3ZKnoTO3Bu6m7TnuVK1fkIPSp+yMLAWtjYf7QgrT9h+xXFetL/xsev9O+R
-         vzjjCyLFmZluckTgeZDmJkpHglkVRznuw14VLPeae0Rh/rh+35lwGGetX/hzGgQDLw
-         odUA935ulOMsiIgLUnuM8IGQ1E+dQZ5Tob10ujEvbmBrfIXYLMRftThz0Amka/idNh
-         pG1R+pZL/8D877iWFsX4gpguLOYcHglA6RLgzGvNqJoE1nyNp3xZpvhiZHOPkbBiat
-         UyBetbn7Fjbd1peWu8cCTwlw4jJi7kxbMtj5aNoY0YWk9uTWaxKCVXsaiQaPQIt6va
-         hNeP4FuFGXWvA==
-Date:   Sat, 18 Nov 2023 18:26:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 10/16] net: ethtool: Add a command to list
- available time stamping layers
-Message-ID: <20231118182653.4b706d99@kernel.org>
-In-Reply-To: <20231114-feature_ptp_netnext-v7-10-472e77951e40@bootlin.com>
-References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
-        <20231114-feature_ptp_netnext-v7-10-472e77951e40@bootlin.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8603CD5
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 18:33:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21CEC433C7;
+        Sun, 19 Nov 2023 02:33:25 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH] LoongArch: Mark {dmw,tlb}_virt_to_page() exports as non-GPL
+Date:   Sun, 19 Nov 2023 10:33:17 +0800
+Message-Id: <20231119023317.3359647-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023 12:28:38 +0100 Kory Maincent wrote:
-> +	ETHTOOL_A_TS_LIST_LAYER,		/* array, u32 */
+Mark {dmw,tlb}_virt_to_page() exports as non-GPL, in order to let
+out-of-tree modules (e.g. OpenZFS) be built without errors. Otherwise
+we get:
 
-multi-attr u32, please
+ERROR: modpost: GPL-incompatible module zfs.ko uses GPL-only symbol 'dmw_virt_to_page'
+ERROR: modpost: GPL-incompatible module zfs.ko uses GPL-only symbol 'tlb_virt_to_page'
+
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ arch/loongarch/mm/pgtable.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/loongarch/mm/pgtable.c b/arch/loongarch/mm/pgtable.c
+index 71d0539e2d0b..2aae72e63871 100644
+--- a/arch/loongarch/mm/pgtable.c
++++ b/arch/loongarch/mm/pgtable.c
+@@ -13,13 +13,13 @@ struct page *dmw_virt_to_page(unsigned long kaddr)
+ {
+ 	return pfn_to_page(virt_to_pfn(kaddr));
+ }
+-EXPORT_SYMBOL_GPL(dmw_virt_to_page);
++EXPORT_SYMBOL(dmw_virt_to_page);
+ 
+ struct page *tlb_virt_to_page(unsigned long kaddr)
+ {
+ 	return pfn_to_page(pte_pfn(*virt_to_kpte(kaddr)));
+ }
+-EXPORT_SYMBOL_GPL(tlb_virt_to_page);
++EXPORT_SYMBOL(tlb_virt_to_page);
+ 
+ pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+-- 
+2.39.3
+
