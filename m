@@ -2,71 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90717F090A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0832D7F090C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbjKSVAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 16:00:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S231493AbjKSVCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 16:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKSVAc (ORCPT
+        with ESMTP id S229508AbjKSVCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 16:00:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D30E0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ewgYBVW+Iax6CqzUrSGGjtpzlAkAA8ZMF03lgMpKaIM=; b=L7I4eUqhsu4ZZE1SCodP+CJCa5
-        lYRdOOhI8LmR0CCIKa3wU5+7oLM/bhCZcjFmXsE2EfXVh5IrKBhX+la7+E9OeSncmFHwfi6/5jrJF
-        M4ayq94GPqv3jN2o6ub8xvP3YV3p/v1N6H6fhVNDsNQvNcwWG++4ngyUKPQtJft61+hp6P4PcZXD/
-        M1r/cPpOU+6yynFEkLk5FXGmolrrwfxMKQssZIULatYKHlIy6oIEY0fgrud9V8vigjqGNTAnQmu91
-        26WPxjLWmrrz99hjnHnjkMe7wAl2aYvKkb/VuGRHZunrgggQMzkBX9EVYZAyeODiVaNNNRBMSxxfL
-        BQasstSw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r4otl-0032p2-JP; Sun, 19 Nov 2023 21:00:09 +0000
-Date:   Sun, 19 Nov 2023 21:00:09 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/24] mm/swap: move no readahead swapin code to a stand
- alone helper
-Message-ID: <ZVp3WR+D4Z/UZEqO@casper.infradead.org>
-References: <20231119194740.94101-1-ryncsn@gmail.com>
- <20231119194740.94101-4-ryncsn@gmail.com>
+        Sun, 19 Nov 2023 16:02:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4E9E0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:02:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57949C433C9;
+        Sun, 19 Nov 2023 21:02:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700427767;
+        bh=LdCcDCVibEq9XtMPBRAazcWyb1lUm4YRH93xkKpOHbM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FZpuU0tdRMVqNc17EPw2Yx+O61k7X2a1HFa5dIdI0JeSJbPg+OayhEf8qOUGAqiy3
+         t65XUeKw8Z935Y5auUU0WejjqnKGgNlEp1OxFv3e2uEtZJlCjgkEV4oIU6FCpC7Ovs
+         QRuW5N2zde8PrWeKWO39XMJLMQysUEvMBI4N3XDwn/odf4AVo7ewp/Cj5zp56782Vv
+         uXEpEyQ8f4mV+dC1VwB33IAfg95hhwshydjYwfaxW2yJAJlvzXqSkLtHWFHq0EA08i
+         vATgFTBKZotJ6LQY5zo+mmwR81AvAOd4c8JUF5epck+DjCpD4r8DMoNr8uQmKeXBP9
+         R07melvoUfkSw==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2c509d5ab43so51544441fa.0;
+        Sun, 19 Nov 2023 13:02:47 -0800 (PST)
+X-Gm-Message-State: AOJu0YwGj2mEpQ+m6A257C8NBKjue25jd2UZAbsg8QKSN2rN22yUTpG2
+        j67ehwwO4XcsCuSfDiuSEysnjYvWqgn36Y8IvOQ=
+X-Google-Smtp-Source: AGHT+IFyYOQHQnx0Par61ni3D+IsRVTlNd6D9SKI0apNaeY6hc8EhMaBYVtDLvZWr7jIRh/7uxjcLeqDv60Mo+HqTn0=
+X-Received: by 2002:a2e:9656:0:b0:2be:54b4:ff90 with SMTP id
+ z22-20020a2e9656000000b002be54b4ff90mr2814616ljh.53.1700427765530; Sun, 19
+ Nov 2023 13:02:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231119194740.94101-4-ryncsn@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+ <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com> <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com>
+In-Reply-To: <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 19 Nov 2023 13:02:33 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Message-ID: <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 03:47:19AM +0800, Kairui Song wrote:
-> +			/* skip swapcache and readahead */
-> +			page = swapin_no_readahead(entry, GFP_HIGHUSER_MOVABLE,
-> +						vmf);
-> +			if (page)
-> +				folio = page_folio(page);
+On Sun, Nov 19, 2023 at 12:03=E2=80=AFAM Akihiko Odaki <akihiko.odaki@dayni=
+x.com> wrote:
+>
+[...]
+>
+> Unfortunately no. The communication with the userspace can be done with
+> two different means:
+> - usual socket read/write
+> - vhost for direct interaction with a KVM guest
+>
+> The BPF map may be a valid option for socket read/write, but it is not
+> for vhost. In-kernel vhost may fetch hash from the BPF map, but I guess
+> it's not a standard way to have an interaction between the kernel code
+> and a BPF program.
 
-I think this should rather be:
+I am very new to areas like vhost and KVM. So I don't really follow.
+Does this mean we have the guest kernel reading data from host eBPF
+programs (loaded by Qemu)?
 
-			folio = swapin_no_readahead(entry,
-					GFP_HIGHUSER_MOVABLE, vma);
-			page = &folio->page;
+> >
+> >>
+> >> Unfortunately, however, it is not acceptable for the BPF subsystem
+> >> because the "stable" BPF is completely fixed these days. The
+> >> "unstable/kfunc" BPF is an alternative, but the eBPF program will be
+> >> shipped with a portable userspace program (QEMU)[1] so the lack of
+> >> interface stability is not tolerable.
+> >
+> > bpf kfuncs are as stable as exported symbols. Is exported symbols
+> > like stability enough for the use case? (I would assume yes.)
+> >
+> >>
+> >> Another option is to hardcode the algorithm that was conventionally
+> >> implemented with eBPF steering program in the kernel[2]. It is possibl=
+e
+> >> because the algorithm strictly follows the virtio-net specification[3]=
+.
+> >> However, there are proposals to add different algorithms to the
+> >> specification[4], and hardcoding the algorithm to the kernel will
+> >> require to add more UAPIs and code each time such a specification chan=
+ge
+> >> happens, which is not good for tuntap.
+> >
+> > The requirement looks similar to hid-bpf. Could you explain why that
+> > model is not enough? HID also requires some stability AFAICT.
+>
+> I have little knowledge with hid-bpf, but I assume it is more like a
+> "safe" kernel module; in my understanding, it affects the system state
+> and is intended to be loaded with some kind of a system daemon. It is
+> fine to have the same lifecycle with the kernel for such a BPF program;
+> whenever the kernel is updated, the distributor can recompile the BPF
+> program with the new kernel headers and ship it along with the kernel
+> just as like a kernel module.
+>
+> In contrast, our intended use case is more like a normal application.
+> So, for example, a user may download a container and run QEMU (including
+> the BPF program) installed in the container. As such, it is nice if the
+> ABI is stable across kernel releases, but it is not guaranteed for
+> kfuncs. Such a use case is already covered with the eBPF steering
+> program so I want to maintain it if possible.
 
-and have swapin_no_readahead() work entirely in terms of folios.
+TBH, I don't think stability should be a concern for kfuncs used by QEMU.
+Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
+bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
+be supported.
 
+Thanks,
+Song
