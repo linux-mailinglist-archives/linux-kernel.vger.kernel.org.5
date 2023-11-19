@@ -2,73 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 062D47F0933
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA1B7F0938
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjKSVu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 16:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44754 "EHLO
+        id S231574AbjKSVvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 16:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKSVuy (ORCPT
+        with ESMTP id S229470AbjKSVvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 16:50:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B56103
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:50:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC1EC433C7
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 21:50:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700430650;
-        bh=zgiu7PKewyccP8U06neS5ipWocpbmMeaRIGLyeoZXWs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cHl3hRuSnpEYQyOt/yDeEBZciZg96QDrijvu1yCxemF6c6mDRz1pXdpdf1kGc6o2f
-         j6H5WG/TAR3kOShK1iTA3LLiObfWUrAuv5SX9wNUEXu+QIVqxtA0W95EwISdhzaciF
-         pZHy1d2WMXb6LFoe9IHi0etunN53faWhl3rWZQUvFwaPifiTO0EcDX+paE8DmMth7Y
-         SuU3njCKzFjO9rXmceBYhhwv8/MoamumbRgdqJF7WpHjbK47YlLqhDcSv9etmpphcp
-         y55KICu5IPaWqR+vDW7opigzs0fQjiLyPAO6ng7rm+VLB80egQcMTEHWDOIzbj/frx
-         SyS4S2MDy8pVw==
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-7788f727dd7so244171485a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:50:50 -0800 (PST)
-X-Gm-Message-State: AOJu0YxMQousj+pp0YaiGloGwTjqXW34pASwbmMocpQ1Su7JFRjP4yQz
-        /l+7KdYRq4o24R5WVhO2R9we5K+xueTcVWpHfWMsjg==
-X-Google-Smtp-Source: AGHT+IGDSa3b6V1ktCcAlvz3eC3dX3eWzMsSdTIQeDuOrw7uz0Sm3h1kayllweq+7zBObq98O0kPxMILbaU8L6e9KgQ=
-X-Received: by 2002:a17:90b:1645:b0:262:f449:4497 with SMTP id
- il5-20020a17090b164500b00262f4494497mr6088865pjb.2.1700430628843; Sun, 19 Nov
- 2023 13:50:28 -0800 (PST)
+        Sun, 19 Nov 2023 16:51:53 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6298A98;
+        Sun, 19 Nov 2023 13:51:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700430664; x=1701035464; i=deller@gmx.de;
+        bh=GZw86HrxI4KNbAsNQxkedUxJj0YIJUQmH1y/U7vq1Ng=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=ZSeJtHhl3OfGnXw/HAjm1kVpm4HeqsKE5+6GhOhb5DVrUqSXAmJNuTd5dq1TQ73u
+         tZd/b1HD7MACqol344m9cjYf0rMr15MvmDGo35N/rsVEitMz/nNA0mkCORSU9zGer
+         cLs6h2TXw55kTO+9ELXD5G6KugSxAVNyzbpsSRXiuYU7r2sMrg1XXGO3/P9t2PnlQ
+         VAh8jxBiPNssFoZEmJqy5C/HzKTnqJwsWdC3uKFS3Zf1ryda3P+2PVi9+uiTU66+l
+         DZZkS+iwjJgqdybWRElOkox2MguC+HkEIEu3pMRdbNjDQnbPukFSzpVAxnicAfUNk
+         sIkHZ+cf33tDRKl0fA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.146.64]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MDhhX-1rEUc30rkl-00AmGw; Sun, 19
+ Nov 2023 22:51:04 +0100
+Message-ID: <106b818d-ad4b-4539-a159-751e2108d77e@gmx.de>
+Date:   Sun, 19 Nov 2023 22:51:01 +0100
 MIME-Version: 1.0
-References: <20231115172344.4155593-1-nphamcs@gmail.com> <CAF8kJuN-4UE0skVHvjUzpGefavkLULMonjgkXUZSBVJrcGFXCA@mail.gmail.com>
- <CAJD7tkZ1U+YuvoBAnrXFxQDiQV2hXdbMG-gbzu64R8GLAtNAPA@mail.gmail.com>
- <CAF8kJuPTNwQM413UdeQTkMQ8HkJFyF4OWVrxJSf7uWbege0CXQ@mail.gmail.com>
- <CAKEwX=O5M-vZE5YhYQ5_CbCmXovS1XECO4ROXKWo06K880M1Mg@mail.gmail.com>
- <CAF8kJuOD6zq2VPcVdoZGvkzYX8iXn1akuYhNDJx-LUdS+Sx3GA@mail.gmail.com> <CAKEwX=NdFjemcmf27PVpgHpVHWQEo19KfApepWJBRYeyVCWvCw@mail.gmail.com>
-In-Reply-To: <CAKEwX=NdFjemcmf27PVpgHpVHWQEo19KfApepWJBRYeyVCWvCw@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Sun, 19 Nov 2023 13:50:17 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuOCyd5r0LQ3m8fQp0GtxxNUKSmwURJH6V9aApefvX8xCA@mail.gmail.com>
-Message-ID: <CAF8kJuOCyd5r0LQ3m8fQp0GtxxNUKSmwURJH6V9aApefvX8xCA@mail.gmail.com>
-Subject: Re: [PATCH v5] zswap: memcontrol: implement zswap writeback disabling
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org,
-        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Hugh Dickins <hughd@google.com>, corbet@lwn.net,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 RESEND 00/20] remove I2C_CLASS_DDC support
+Content-Language: en-US
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231119112826.5115-1-hkallweit1@gmail.com>
+ <e40b913f-379f-4b6e-a0d2-844887a17284@gmx.de>
+ <b336a8e3-44e7-4f56-a950-5155675b5628@gmail.com>
+ <bd4be069-b86d-4a69-aa0f-71257f93691f@gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <bd4be069-b86d-4a69-aa0f-71257f93691f@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:4bo0YQp4nOX04fSlYKU7Ed7/Lx5pYstzA4JPyY4mAXCHdJpljs3
+ yDd16cdeh0gpASf/ZInpwaZcM23Ih+PXc+ledOmLjOwybtxI+dQvoN3Ii81KHFb9+qriDX0
+ u4h7DchrevyaHQ1ae714S54Y7JiqdBj1ZGyD2Ivq+axKYXxVpGJqoQnP7NEaF0sV7o2tumQ
+ /R1hkMAw27qE6kexZk1iw==
+UI-OutboundReport: notjunk:1;M01:P0:XxsjsC6iqXI=;zo2Q6e54K/3B/k62l86hh+pmYGY
+ KMnzvTX+tu7XpRJPpbXKhCHw2e1DsJ5V2ia9DzA7dtCR0buPYjmsSf/iPon4mYf9PA464Z6d1
+ 1we9hnmqqnlkQDwqMr3x+5GHIVgMQpXn7zqaV0mjlx/vUYeTj1xZNoVTpQ0BiMs48ks54j5h6
+ sM7hfA+PeZE7qVtCDQZtFvrZEKF49TGlkqzVfLEcPheAuWHVUuH4LrTQmVu8CWOVTGoGJcudP
+ 14gbah4APu+VwZ7qZcb7HImgGHv9lVYymue7UIWxQafq5QgBeCZSRT4JHpIsdUstBbnkKp3Y7
+ xWymncMYVUqLI6BEI9f8OSQYNeqrsHDAY0IgcL3y7bKeryRzlAFz/o/CwhN2m+g4Z6IC7uFhB
+ oN4lePpA0gAqKU/m99DV65aLUkv/3e2m08QwoaE+cn5xM2+Ni8H+aAkmqNt1g7NrfCYURxZjs
+ krTZSvGkp6LytPwzxQioQdkHbJXtxD6PIwymby3/EwqHLNunOsEI7j7/8XHMT+69odr8YqMjo
+ Vqqvc8/th14RMUGcsPWPyiDJQ4HAC5ffSOYS5VbBRUFpQ8qZ5LNMEdZu0leftxffetHGgrXQK
+ VxEAXRw33BBdW2ft/xH3OCZm37F+zLWJY4O1e06LNjddxQp32ILZ+k1i7A7dwGKLkO65WPZbC
+ lKlUbI5xYQ/xkcoQvHEL75HkZm7kXsrFrR83y9XI23pjt2OjEpYYbMOoCqIJci1hqV+9U2Yj8
+ NnS0h1ve396EAav9Pg9Ftx7mLYtcXwkDeWl2x29ulXKzi4CLQAKHvTzJvbAsy+GVfd8brptCg
+ HZSTpVEVrwJ8B963Pmm3jukO8/0NvjadKafGU2kR3Wthp9IJDOOUnvTl6TER+ZvhpLTAnhN1J
+ bW9AVAaSItQH20UMl5RYIWbp40SUidWRxPCC7Anlj8sza1yhL6j+zbmhXtwaJMYLoGuLrRQe/
+ +kEKcA==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,141 +137,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 11:08=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->
-> On Sun, Nov 19, 2023 at 1:39=E2=80=AFAM Chris Li <chrisl@kernel.org> wrot=
-e:
-> >
-> > On Sat, Nov 18, 2023 at 11:23=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
-wrote:
-> > >
-> > > Hmm how about this - in the future, we support the following
-> > > options:
-> > >
-> > > 1. zswap.writeback =3D=3D 1: no limitation to zswap writeback.
-> > > All backing swap devices (sorted by priorities?) are fair game.
-> > >
-> > > 2. zswap.writeback =3D=3D 0: disable all forms of zswap writeback.
-> > >
-> > > 3. zswap.writeback =3D=3D <tiers description>:  attempt to write to e=
-ach
-> > > tier, one at a time.
-> >
-> > We can merge the zswap.writeback as it is for now to unblock you.
-> >
-> > For the future. I think we should remove zswap.writeback completely.
->
-> I'm a bit weary about API changes, especially changes that affect
-> backward compatibility. Breaking existing userspace programs simply
-> with a kernel upgrade does not sound very nice to me.
->
-> (although I've heard that the eventual plan is to deprecate cgroupv1
-> - not sure how that is gonna proceed).
->
-> Hence my attempt at creating something that can both serve the
-> current use case, while still remaining (fairly) extensible for future
-> ideas.
-
-With that reasoning, the "swap.tiers" would serve better than "zswap.writeb=
-ack",
-do you think so?
-
->
-> >
-> > Instead we have:
-> >
-> > swap.tiers =3D=3D <swap_tier_list_name>
-> > swap.tiers =3D=3D "all" all available swap tiers. "zswap + swap file".
-> > This is the default.
-> > swap.tiers =3D=3D "zswap" zswap only, no other swap file. Internally se=
-t
-> > zswap.writeback =3D 0
-> > swap.tiers =3D=3D "foo" foo is a list of swap devices it can use. You c=
-an
-> > define your town custom swap tier list in
-> > swap.tiers =3D=3D "none" or "disabled" Not allowed to swap.
->
-> swap.tiers =3D=3D "none" or "disabled" means disallowing zswap as
-> well, correct?
-
-Correct, no swap at all.
-
->
-> >
-> > "all", "zswap", "none" are reserved keywords.
-> > "foo", "bar" etc are custom lists of swap tiers. User define custom
-> > tier list in sys/kernel/mm/swap/tiers:
-> > ssd:zswap,/dev/nvme01p4
-> > hdd:/dev/sda4,/dev/sdb4
->
-> I don't have any major argument against this. It just seems a bit
-> heavyweight for what we need at the moment (only disabling
-> swap-to-disk usage).
-
-The first milestone we just implement the reserved keywords without
-the custom swap tier list.
-That should be very similar to "zswap.writeback". Instead of writing 0
-to "zswap.writeback".
-You write "zswap" to "swap.tiers". Writing "none" will disable all
-swap. Writing "all" will allow all swap devices.
-I consider this conceptually cleaner than the "zswap.writeback" =3D=3D 0
-will also disable other swap types behavior. "disabled zswap writeback
-=3D=3D disable all swap" feels less natural.
-
-> I'll let other people weigh in about this of course.
-> Johannes, how do you feel about this proposed API?
->
-> >
-> > That would define two custom tiers. "ssd" can use zswap then /dev/nvme0=
-1p4.
-> > The exact name of the "swap.tiers" and tiers name are open to suggestio=
-ns.
-> >
-> > >
-> > > The first two are basically what we have for this patch.
-> > > The last one will be added in a future patch.
-> > >
-> > > This is from the userspace perspective. Internally, we can modify
-> > > memcg->writeback to be a pointer or a struct instead of this bool.
-> > > (as you suggested).
-> >
-> > Internally I would suggest memcg->swaptiers, the write back name is
-> > somewhat confusing. As your patch indicated. It has two situation:
-> > 1. shrinking from zpool to real swapfile. The write back is appropriate=
- here.
-> >  2. zswap store failed (compression ratio too low, out of memory etc).
-> > The write back is confusing here. It is more like writing through or
-> > skip.
-> >
-> > >
-> > > This way, the API remains intact and backward compatible
-> > > (and FWIW, I think there are still a lot of values in having simple
-> > > options for the users who have simple memory hierarchies).
-> >
-> > swap.tiers can be simple. For example, you can modify your patch to
-> > "swap.tires =3D=3D zswap" to
-> > set zswap.writeback bool to 0 for now. Most of your patch is still re-u=
-sable.
-> >
->
-> I'm less concerned about internals - that is always up to changes.
-> I'm a bit more concerned with the API we're exposing to the users.
-
-Me too. I think we are in agreement here. That is why I think
-"swap.tiers" is more general.
-
->
-> > I think we should discuss if we want to keep zswap.writeback in the
-> > future because that would be some code undeletable and functionally
-> > overlap with swap.tiers
->
-> This is a fair point.
-
-If you think we have the risk of not being able to obsolete
-"zswap.writeback", then it would be much better not to introduce
-"zswap.writeback" in the first place. Just have a minimal
-implementation of "swap.tiers" instead. I believe from the code
-complexity point of view, the complexity should be very similar.
-
-Chris
+T24gMTEvMTkvMjMgMjE6NTEsIEhlaW5lciBLYWxsd2VpdCB3cm90ZToNCj4gT24gMTkuMTEuMjAy
+MyAyMTo0OCwgSGVpbmVyIEthbGx3ZWl0IHdyb3RlOg0KPj4gT24gMTkuMTEuMjAyMyAyMToyOCwg
+SGVsZ2UgRGVsbGVyIHdyb3RlOg0KPj4+IE9uIDExLzE5LzIzIDEyOjI4LCBIZWluZXIgS2FsbHdl
+aXQgd3JvdGU6DQo+Pj4+IEFmdGVyIHJlbW92YWwgb2YgdGhlIGxlZ2FjeSBFRVBST00gZHJpdmVy
+IGFuZCBJMkNfQ0xBU1NfRERDIHN1cHBvcnQgaW4NCj4+Pj4gb2xwY19kY29uIHRoZXJlJ3Mgbm8g
+aTJjIGNsaWVudCBkcml2ZXIgbGVmdCBzdXBwb3J0aW5nIEkyQ19DTEFTU19EREMuDQo+Pj4+IENs
+YXNzLWJhc2VkIGRldmljZSBhdXRvLWRldGVjdGlvbiBpcyBhIGxlZ2FjeSBtZWNoYW5pc20gYW5k
+IHNob3VsZG4ndA0KPj4+PiBiZSB1c2VkIGluIG5ldyBjb2RlLiBTbyB3ZSBjYW4gcmVtb3ZlIHRo
+aXMgY2xhc3MgY29tcGxldGVseSBub3cuDQo+Pj4+DQo+Pj4+IFByZWZlcmFibHkgdGhpcyBzZXJp
+ZXMgc2hvdWxkIGJlIGFwcGxpZWQgdmlhIHRoZSBpMmMgdHJlZS4NCj4+Pg0KPj4+IFRoZSBmYmRl
+diBjaGFuZ2VzIGxvb2sgYXQgbGVhc3Qgb2sgc28gZmFyLCBzbzoNCj4+PiBBY2tlZC1ieTogSGVs
+Z2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPsKgwqAgI2ZiZGV2DQo+Pj4NCj4+IEkgdGhpbmsgdGhp
+cyByZWZlcnMgdG8gcGF0Y2ggNSBvZiB0aGUgc2VyaWVzLiBDb3VsZCB5b3UgcGxlYXNlIHJlcGx5
+DQo+PiB0byBwYXRjaCA1IGluc3RlYWQgb2YgdGhlIGNvdmVyIGxldHRlciB3aXRoIHlvdXIgYWNr
+ZWQtYnkgc28gdGhhdA0KPj4gcGF0Y2h3b3JrIGdldHMgaXQgcmlnaHQ/IFRoYW5rcyENCj4+DQo+
+IFNvcnJ5LCBqdXN0IGxvb2tlZCBhdCB3aGVyZSB5b3UgYXJlIGluIFRvLCBub3QgQ2MuDQo+IFNv
+IHlvdXIgYWNrIGluY2x1ZGVzIHBhdGNoZXMgNiwgOSwgMTAsIDEzPw0KDQpZZXMuDQoNCkhlbGdl
+DQogIA0KPj4+DQo+Pj4+IHYyOg0KPj4+PiAtIGNoYW5nZSB0YWcgaW4gY29tbWl0IHN1YmplY3Qg
+b2YgcGF0Y2ggMDMNCj4+Pj4gLSBhZGQgYWNrIHRhZ3MNCj4+Pj4gdjM6DQo+Pj4+IC0gZml4IGEg
+Y29tcGlsZSBlcnJvciBpbiBwYXRjaCA1DQo+Pj4+DQo+Pj4+IFNpZ25lZC1vZmYtYnk6IEhlaW5l
+ciBLYWxsd2VpdCA8aGthbGx3ZWl0MUBnbWFpbC5jb20+DQo+Pj4+DQo+Pj4+IC0tLQ0KPj4+Pg0K
+Pj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2kyYy5jwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZlcnMvZ3B1L2RybS9hbWQvZGlz
+cGxheS9hbWRncHVfZG0vYW1kZ3B1X2RtLmMgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZlcnMv
+Z3B1L2RybS9hc3QvYXN0X2kyYy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9zeW5vcHN5
+cy9kdy1oZG1pLmPCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBkcml2ZXJz
+L2dwdS9kcm0vZGlzcGxheS9kcm1fZHBfaGVscGVyLmPCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDC
+oMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL2Rpc3BsYXkvZHJtX2RwX21zdF90b3Bv
+bG9neS5jwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZlcnMvZ3B1L2RybS9nbWE1
+MDAvY2R2X2ludGVsX2RwLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+
+Pj4gIMKgIGRyaXZlcnMvZ3B1L2RybS9nbWE1MDAvaW50ZWxfZ21idXMuY8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBkcml2ZXJzL2dwdS9kcm0vZ21hNTAw
+L29ha3RyYWlsX2hkbWlfaTJjLmPCoMKgwqDCoMKgwqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAg
+ZHJpdmVycy9ncHUvZHJtL2dtYTUwMC9wc2JfaW50ZWxfc2R2by5jwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZlcnMvZ3B1L2RybS9oaXNpbGljb24vaGlibWMv
+aGlibWNfZHJtX2kyYy5jwqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy9ncHUvZHJt
+L2k5MTUvZGlzcGxheS9pbnRlbF9nbWJ1cy5jwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+
+Pj4gIMKgIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2Rpc3BsYXkvaW50ZWxfc2R2by5jwqDCoMKgwqDC
+oMKgwqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL2xvb25nc29uL2xz
+ZGNfaTJjLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDC
+oCBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2hkbWlfZGRjLmPCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy9ncHUvZHJtL21nYWcyMDAvbWdhZzIw
+MF9pMmMuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJp
+dmVycy9ncHUvZHJtL21zbS9oZG1pL2hkbWlfaTJjLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBkcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3JhZGVvbl9p
+MmMuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRy
+aXZlcnMvZ3B1L2RybS9yb2NrY2hpcC9pbm5vX2hkbWkuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBkcml2ZXJzL2dwdS9kcm0vcm9ja2NoaXAvcmszMDY2
+X2hkbWkuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZl
+cnMvZ3B1L2RybS9zdW40aS9zdW40aV9oZG1pX2kyYy5jwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8
+wqDCoMKgIDEgLQ0KPj4+PiAgwqAgZHJpdmVycy92aWRlby9mYmRldi9jb3JlL2ZiX2RkYy5jwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZl
+cnMvdmlkZW8vZmJkZXYvY3liZXIyMDAwZmIuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2k3NDBmYi5jwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+
+ICDCoCBkcml2ZXJzL3ZpZGVvL2ZiZGV2L2ludGVsZmIvaW50ZWxmYl9pMmMuY8KgwqDCoMKgwqDC
+oMKgwqAgfMKgwqAgMTUgKysrKystLS0tLS0tLS0tDQo+Pj4+ICDCoCBkcml2ZXJzL3ZpZGVvL2Zi
+ZGV2L21hdHJveC9pMmMtbWF0cm94ZmIuY8KgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMTIgKysrKy0t
+LS0tLS0tDQo+Pj4+ICDCoCBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3MzZmIuY8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRy
+aXZlcnMvdmlkZW8vZmJkZXYvdGRmeGZiLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0NCj4+Pj4gIMKgIGRyaXZlcnMvdmlkZW8vZmJkZXYvdHJp
+ZGVudGZiLmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgwqDCoCAxIC0N
+Cj4+Pj4gIMKgIGRyaXZlcnMvdmlkZW8vZmJkZXYvdmlhL3ZpYV9pMmMuY8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCBpbmNsdWRlL2xpbnV4L2ky
+Yy5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHzCoMKgwqAgMSAtDQo+Pj4+ICDCoCAzMSBmaWxlcyBjaGFuZ2VkLCA5IGluc2VydGlv
+bnMoKyksIDQ3IGRlbGV0aW9ucygtKQ0KPj4+Pg0KPj4+DQo+Pg0KPiANCg0K
