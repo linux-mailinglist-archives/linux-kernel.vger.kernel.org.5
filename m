@@ -2,181 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 290E27F08A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7965A7F08A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbjKSTuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        id S231472AbjKSTwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbjKSTuF (ORCPT
+        with ESMTP id S231625AbjKSTw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:50:05 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB17E171E
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:19 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e4107f47so2778864b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423359; x=1701028159; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ujyhaBmVKqUCILaG0//cQCFqqP/+VsPiP59qcIbNEbE=;
-        b=fX0Qw+daECB1rjTwNoau70a5cC0VHEPhHZPMPF3Y4iA51CSDOJ/i8EPffWP3fHqtDR
-         Ws803bFEgujnXb4Qcmmc5kvfCykRnh8s9YfTLjenNd0xIUC6p3tMyTOIB4NEbu8VvBiM
-         XQk08s+K22SPV6bSTWAry3AhQhVhBtjIPBy5hO0/1z/ixGYD5icy0PoTl73jNlU4bO94
-         wkwhj5UmkiGuyTlq5UcYnWF745ih4oBi7GRSNfHJ3xDJEbBBbcrttCmlFUx4jTV1mYDU
-         rHDpRgtYBZ634H2Bq3IbzKPAC7yq6uvjIaMNUbl0S3tn1X3O2JEAO4aukOQ+52j++IGC
-         8xAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423359; x=1701028159;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ujyhaBmVKqUCILaG0//cQCFqqP/+VsPiP59qcIbNEbE=;
-        b=cxqKx6FtQlbcby+UVIL0PKP9YTvmaAQnrq6zO6ICJ7SST9tOMhFfKl//Mn1H7y0opW
-         Lg6neE4lG80XVbhXOXTPbXmn0RVAvbiM3NAl5uE6IfecXMxoN6DVC6Vq97RibBjuv90k
-         vmR5kGPa8YTkspP2z/jsZevegXmh1K7iqS/8wgqHB8vdR2uXuVH4YdGYJAFRjk0JAx0A
-         LFfC/gkd10oeBMKhVGepO22P5ZfMaE50csm08ETgFq/DcuJJ7m3ydtYTrHyJOA8OX6lY
-         eMWScE2lJyEK1c6OW7gc+iUF7iJ3KvsZIr/Xlt1IA7ZGOfuRKo3LCN0BnlqTINZRv2Sp
-         HciQ==
-X-Gm-Message-State: AOJu0YzH1pIthriCU/JeyE2uX5r0YOGCCOMVj6yxv065ncJakHz1zZou
-        ebZkGmVjz6gjY8FoU2NQuLpSl7WClKC2+01u
-X-Google-Smtp-Source: AGHT+IG9ZMvtFIPRmfdYGQxFIrUp0PVcy1icQvi67iQPNdmmyu8YtKZdvx7dJGBXf+Hyuvvv17Q3Eg==
-X-Received: by 2002:a05:6808:2389:b0:3b5:75d3:14aa with SMTP id bp9-20020a056808238900b003b575d314aamr9092741oib.25.1700423359201;
-        Sun, 19 Nov 2023 11:49:19 -0800 (PST)
-Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.49.16
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:49:18 -0800 (PST)
-From:   Kairui Song <ryncsn@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        Kairui Song <kasong@tencent.com>
-Subject: [PATCH 24/24] mm/swap: change swapin_readahead to swapin_page_fault
-Date:   Mon, 20 Nov 2023 03:47:40 +0800
-Message-ID: <20231119194740.94101-25-ryncsn@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
-References: <20231119194740.94101-1-ryncsn@gmail.com>
-Reply-To: Kairui Song <kasong@tencent.com>
+        Sun, 19 Nov 2023 14:52:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC45F2D73
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7136CC43215;
+        Sun, 19 Nov 2023 19:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700423424;
+        bh=tVeuXGTjXiBVtcnJmX6Q1zvoplSP6zrWO7tX6XrTLrg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bnkx0MQ6uo/+qoOQt9g4OLuU3tLuQDIpn9kTfscLSKBzkq9H9NHqMYD6xkETw7dTN
+         VT2gC++oK4FyycSG0N8KYBV94ieTX78+i4zxN+Sv1iUDCmDl55DfaB78L9NfkSdr9j
+         ngzksPxu48R2kN8TYxkkpQsz1FUvRPY7peF0O6pQhSkMMb2b2FASF1brWcFgQkuy2X
+         jiKMItTSSgBTgjg99hEz6eKCtBCItbKIh8j1l+2iq8bH5s+91NhCen70Wf6QdtmshX
+         7hGrcj0q08rEF0lrQcCHjJAkvs94aVtBB9HA1ZQQzJWzJoo+cco8ct3ujdS0KmDAWw
+         bUeL0SiTZGJfA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5CF00E000A4;
+        Sun, 19 Nov 2023 19:50:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Subject: Re: [PATCH v2 net-next 0/4] net: eth: am65-cpsw: add ethtool MAC stats
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170042342437.11006.17023033767080082631.git-patchwork-notify@kernel.org>
+Date:   Sun, 19 Nov 2023 19:50:24 +0000
+References: <20231117121755.104547-1-rogerq@kernel.org>
+In-Reply-To: <20231117121755.104547-1-rogerq@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, andrew@lunn.ch,
+        u.kleine-koenig@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kairui Song <kasong@tencent.com>
+Hello:
 
-Now swapin_readahead is only called from direct page fault path, so
-rename it and drop the gfp argument, since there is only one caller
-always using the same flag for userspace page fault.
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Signed-off-by: Kairui Song <kasong@tencent.com>
----
- mm/memory.c     |  4 ++--
- mm/swap.h       |  6 +++---
- mm/swap_state.c | 15 +++++++++------
- 3 files changed, 14 insertions(+), 11 deletions(-)
+On Fri, 17 Nov 2023 14:17:51 +0200 you wrote:
+> Hi,
+> 
+> Gets 'ethtool -S eth0 --groups eth-mac' command to work.
+> 
+> Also set default TX channels to maximum available and does
+> cleanup in am65_cpsw_nuss_common_open() error path.
+> 
+> [...]
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 620fa87557fd..4907a5b1b75b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3844,8 +3844,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		goto out;
- 	}
- 
--	page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
--				vmf, &cache_result);
-+	page = swapin_page_fault(entry, GFP_HIGHUSER_MOVABLE,
-+				 vmf, &cache_result);
- 	if (IS_ERR_OR_NULL(page)) {
- 		/*
- 		 * Back out if somebody else faulted in this pte
-diff --git a/mm/swap.h b/mm/swap.h
-index 4374bf11ca41..2f8f8befff89 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -56,8 +56,8 @@ struct page *read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 				     struct mempolicy *mpol, pgoff_t ilx,
- 				     struct mm_struct *mm, bool *new_page_allocated);
--struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
--			      struct vm_fault *vmf, enum swap_cache_result *result);
-+struct page *swapin_page_fault(swp_entry_t entry, gfp_t flag,
-+			       struct vm_fault *vmf, enum swap_cache_result *result);
- struct page *swapin_page_non_fault(swp_entry_t entry, gfp_t gfp_mask,
- 				   struct mempolicy *mpol, pgoff_t ilx,
- 				   struct mm_struct *mm,
-@@ -91,7 +91,7 @@ static inline void show_swap_cache_info(void)
- {
- }
- 
--static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
-+static inline struct page *swapin_page_fault(swp_entry_t swp, gfp_t gfp_mask,
- 			struct vm_fault *vmf, enum swap_cache_result *result)
- {
- 	return NULL;
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 362a6f674b36..2f51d2e64e59 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -899,7 +899,7 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
- }
- 
- /**
-- * swapin_readahead - swap in pages in hope we need them soon
-+ * swapin_page_fault - swap in a page from page fault context
-  * @entry: swap entry of this memory
-  * @gfp_mask: memory allocation flags
-  * @vmf: fault information
-@@ -911,8 +911,8 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
-  * it will read ahead blocks by cluster-based(ie, physical disk based)
-  * or vma-based(ie, virtual address based on faulty address) readahead.
-  */
--struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
--			      struct vm_fault *vmf, enum swap_cache_result *result)
-+struct page *swapin_page_fault(swp_entry_t entry, gfp_t gfp_mask,
-+			       struct vm_fault *vmf, enum swap_cache_result *result)
- {
- 	struct swap_info_struct *si;
- 	struct mempolicy *mpol;
-@@ -936,15 +936,18 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
- 	if (swap_use_no_readahead(si, swp_offset(entry))) {
- 		*result = SWAP_CACHE_BYPASS;
--		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
-+		page = swapin_no_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+					   mpol, ilx, vmf->vma->vm_mm);
- 		if (shadow)
- 			workingset_refault(page_folio(page), shadow);
- 	} else {
- 		*result = SWAP_CACHE_MISS;
- 		if (swap_use_vma_readahead(si))
--			page = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
-+			page = swap_vma_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+						  mpol, ilx, vmf);
- 		else
--			page = swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
-+			page = swap_cluster_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+						      mpol, ilx, vmf->vma->vm_mm);
- 	}
- 	mpol_cond_put(mpol);
- done:
+Here is the summary with links:
+  - [v2,net-next,1/4] net: ethernet: am65-cpsw: Add standard Ethernet MAC stats to ethtool
+    https://git.kernel.org/netdev/net-next/c/67372d7a85fc
+  - [v2,net-next,2/4] net: ethernet: ti: am65-cpsw: Re-arrange functions to avoid forward declaration
+    https://git.kernel.org/netdev/net-next/c/ac099466961b
+  - [v2,net-next,3/4] net: ethernet: am65-cpsw: Set default TX channels to maximum
+    https://git.kernel.org/netdev/net-next/c/be397ea3473d
+  - [v2,net-next,4/4] net: ethernet: ti: am65-cpsw: Fix error handling in am65_cpsw_nuss_common_open()
+    https://git.kernel.org/netdev/net-next/c/ebd7bf60e21c
+
+You are awesome, thank you!
 -- 
-2.42.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
