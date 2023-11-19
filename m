@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8677F08FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8427F08F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjKSU5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 15:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        id S231515AbjKSUwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 15:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKSU51 (ORCPT
+        with ESMTP id S230475AbjKSUwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 15:57:27 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040EDE5;
-        Sun, 19 Nov 2023 12:57:20 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 19D86120010;
-        Sun, 19 Nov 2023 23:57:19 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 19D86120010
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700427439;
-        bh=ErUtZEO4nzLjAgECd2t0uvhP5Xkc3zx0BJJQEkfz/DY=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=ANMQm6JuuouGCQxk9xy4D/pEqaNJKpc7v+piSyK6hdtzimzWH+IOOcZFY0QZVEqQO
-         8SfPS74BBXesOTV/0ugy7BSVuqPBUTWF/4RhngRq4nWHuvSgSYOWZyRFZ58UkhS8O2
-         pKYBW1V9sQZArz765+BbgvxEeRW2+QFVCsrbpx66Noz78Ja+XxK7ikgVV0eCnUgeCp
-         QnmXPf5V3jm+C3/oF0TDCzvGmJig+68zJaIwUwOWPrn2eAxYTWh6LgkJqLul0DjsnY
-         9+wHZKq7rozGYRVK1pYuwj5ZKzl7npVgAFkNhH1En5tEmIExOxs4gp7XkNPyS/7PXW
-         R1cygk5lZ8dKA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sun, 19 Nov 2023 23:57:18 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 19 Nov 2023 23:57:18 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [RFC PATCH v2 3/3] vsock/test: SO_RCVLOWAT + deferred credit update test
-Date:   Sun, 19 Nov 2023 23:49:22 +0300
-Message-ID: <20231119204922.2251912-4-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231119204922.2251912-1-avkrasnov@salutedevices.com>
-References: <20231119204922.2251912-1-avkrasnov@salutedevices.com>
+        Sun, 19 Nov 2023 15:52:03 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B02BA7;
+        Sun, 19 Nov 2023 12:51:59 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507975d34e8so5184222e87.1;
+        Sun, 19 Nov 2023 12:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700427117; x=1701031917; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=uu9XWxOM4gpFfh/NFjHiFzJcxz5jo+VBF/7USM4yGiU=;
+        b=EjlN4HmBDSuas7BxL/48/VFrRThO65+Rq7UAZeOGJHPy9KBe41bjs0T//KRkLcb003
+         V4/3Gwz82MbKkgYREgHivTemImCj0plTc21/8Pxohhxcql5S0IBLhcy5zpIUDg4lZ8Bv
+         KV3+nw6ufXvb4eftfcxoPFSKJcGp0O8QwY7A3e2bPuv/OFQH9Y736DsMD07UGaEQDriP
+         0HsRodAIt+09mUrjYHGQ/dnnJ5dJTuLa6h39cVhddck1YxPxfuzeyuIaHRF7Bvw8q49u
+         S8DyXRr1m5rPDsENOLIYFV73nx3w1KJb7TmaYVQgJT8Q9Tq5BHoTIlUB8PgVin6c5JaG
+         PVsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700427117; x=1701031917;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uu9XWxOM4gpFfh/NFjHiFzJcxz5jo+VBF/7USM4yGiU=;
+        b=JqofeJYOhdWUGPXcygRnuA6Cwn2LOliIQ+hhsbPDpEaSHlUPPvSb6sYxSN9//5aPB9
+         fQv+htp/pxi5PmbjQLpLextQGoCrScHVf5w2QatzBNJMBeHjAe3fqCA159QuY9eV8Z2P
+         OP7j8s3RTsdtmoNJHygIJmQ/G1JWllRCol3ihShPUoHBn7b12PUvKNqlJfXCwsTOCrFC
+         bYEBFqHow8RZlwJAgmGXMCAO8gVAz9pWwp4Q32KY9gNgjBxUKFAo6OlclEhYP4STnp79
+         j04VEaZyQ+oso4s/bFspxqJpzKeTFyGTKCcmVOgpxOmGltOtR9K/tGtscWywcQQEAmw7
+         +jtw==
+X-Gm-Message-State: AOJu0YxGPF7PnNPRtnzfH6XIgeFr8u4qEh6oii93XBWVGU7U5aE4Qbi8
+        8QgAogKqSxwI8cw0avallCU=
+X-Google-Smtp-Source: AGHT+IGkcUNAKJspmSgawNPYtDADP2ghxS0J5OcNfogBhKT1Lxa0wlmDoysvJFNbsGkprNkSEa8XVg==
+X-Received: by 2002:ac2:5312:0:b0:507:9a93:84df with SMTP id c18-20020ac25312000000b005079a9384dfmr4300199lfh.25.1700427116798;
+        Sun, 19 Nov 2023 12:51:56 -0800 (PST)
+Received: from ?IPV6:2a01:c23:bde4:3e00:9589:aeb1:adc4:e0f? (dynamic-2a01-0c23-bde4-3e00-9589-aeb1-adc4-0e0f.c23.pool.telefonica.de. [2a01:c23:bde4:3e00:9589:aeb1:adc4:e0f])
+        by smtp.googlemail.com with ESMTPSA id a16-20020a50e710000000b00532eba07773sm2861341edn.25.2023.11.19.12.51.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Nov 2023 12:51:56 -0800 (PST)
+Message-ID: <bd4be069-b86d-4a69-aa0f-71257f93691f@gmail.com>
+Date:   Sun, 19 Nov 2023 21:51:55 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 RESEND 00/20] remove I2C_CLASS_DDC support
+Content-Language: en-US
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Helge Deller <deller@gmx.de>, Wolfram Sang <wsa@kernel.org>,
+        intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231119112826.5115-1-hkallweit1@gmail.com>
+ <e40b913f-379f-4b6e-a0d2-844887a17284@gmx.de>
+ <b336a8e3-44e7-4f56-a950-5155675b5628@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ xsFNBF/0ZFUBEAC0eZyktSE7ZNO1SFXL6cQ4i4g6Ah3mOUIXSB4pCY5kQ6OLKHh0FlOD5/5/
+ sY7IoIouzOjyFdFPnz4Bl3927ClT567hUJJ+SNaFEiJ9vadI6vZm2gcY4ExdIevYHWe1msJF
+ MVE4yNwdS+UsPeCF/6CQQTzHc+n7DomE7fjJD5J1hOJjqz2XWe71fTvYXzxCFLwXXbBiqDC9
+ dNqOe5odPsa4TsWZ09T33g5n2nzTJs4Zw8fCy8rLqix/raVsqr8fw5qM66MVtdmEljFaJ9N8
+ /W56qGCp+H8Igk/F7CjlbWXiOlKHA25mPTmbVp7VlFsvsmMokr/imQr+0nXtmvYVaKEUwY2g
+ 86IU6RAOuA8E0J5bD/BeyZdMyVEtX1kT404UJZekFytJZrDZetwxM/cAH+1fMx4z751WJmxQ
+ J7mIXSPuDfeJhRDt9sGM6aRVfXbZt+wBogxyXepmnlv9K4A13z9DVLdKLrYUiu9/5QEl6fgI
+ kPaXlAZmJsQfoKbmPqCHVRYj1lpQtDM/2/BO6gHASflWUHzwmBVZbS/XRs64uJO8CB3+V3fa
+ cIivllReueGCMsHh6/8wgPAyopXOWOxbLsZ291fmZqIR0L5Y6b2HvdFN1Xhc+YrQ8TKK+Z4R
+ mJRDh0wNQ8Gm89g92/YkHji4jIWlp2fwzCcx5+lZCQ1XdqAiHQARAQABzSZIZWluZXIgS2Fs
+ bHdlaXQgPGhrYWxsd2VpdDFAZ21haWwuY29tPsLBjgQTAQgAOBYhBGxfqY/yOyXjyjJehXLe
+ ig9U8DoMBQJf9GRVAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHLeig9U8DoMSycQ
+ AJbfg8HZEK0ljV4M8nvdaiNixWAufrcZ+SD8zhbxl8GispK4F3Yo+20Y3UoZ7FcIidJWUUJL
+ axAOkpI/70YNhlqAPMsuudlAieeYZKjIv1WV5ucNZ3VJ7dC+dlVqQdAr1iD869FZXvy91KhJ
+ wYulyCf+s4T9YgmLC6jLMBZghKIf1uhSd0NzjyCqYWbk2ZxByZHgunEShOhHPHswu3Am0ftt
+ ePaYIHgZs+Vzwfjs8I7EuW/5/f5G9w1vibXxtGY/GXwgGGHRDjFM7RSprGOv4F5eMGh+NFUJ
+ TU9N96PQYMwXVxnQfRXl8O6ffSVmFx4H9rovxWPKobLmqQL0WKLLVvA/aOHCcMKgfyKRcLah
+ 57vGC50Ga8oT2K1g0AhKGkyJo7lGXkMu5yEs0m9O+btqAB261/E3DRxfI1P/tvDZpLJKtq35
+ dXsj6sjvhgX7VxXhY1wE54uqLLHY3UZQlmH3QF5t80MS7/KhxB1pO1Cpcmkt9hgyzH8+5org
+ +9wWxGUtJWNP7CppY+qvv3SZtKJMKsxqk5coBGwNkMms56z4qfJm2PUtJQGjA65XWdzQACib
+ 2iaDQoBqGZfXRdPT0tC1H5kUJuOX4ll1hI/HBMEFCcO8++Bl2wcrUsAxLzGvhINVJX2DAQaF
+ aNetToazkCnzubKfBOyiTqFJ0b63c5dqziAgzsFNBF/0ZFUBEADF8UEZmKDl1w/UxvjeyAeX
+ kghYkY3bkK6gcIYXdLRfJw12GbvMioSguvVzASVHG8h7NbNjk1yur6AONfbUpXKSNZ0skV8V
+ fG+ppbaY+zQofsSMoj5gP0amwbwvPzVqZCYJai81VobefTX2MZM2Mg/ThBVtGyzV3NeCpnBa
+ 8AX3s9rrX2XUoCibYotbbxx9afZYUFyflOc7kEpc9uJXIdaxS2Z6MnYLHsyVjiU6tzKCiVOU
+ KJevqvzPXJmy0xaOVf7mhFSNQyJTrZpLa+tvB1DQRS08CqYtIMxRrVtC0t0LFeQGly6bOngr
+ ircurWJiJKbSXVstLHgWYiq3/GmCSx/82ObeLO3PftklpRj8d+kFbrvrqBgjWtMH4WtK5uN5
+ 1WJ71hWJfNchKRlaJ3GWy8KolCAoGsQMovn/ZEXxrGs1ndafu47yXOpuDAozoHTBGvuSXSZo
+ ythk/0EAuz5IkwkhYBT1MGIAvNSn9ivE5aRnBazugy0rTRkVggHvt3/7flFHlGVGpBHxFUwb
+ /a4UjJBPtIwa4tWR8B1Ma36S8Jk456k2n1id7M0LQ+eqstmp6Y+UB+pt9NX6t0Slw1NCdYTW
+ gJezWTVKF7pmTdXszXGxlc9kTrVUz04PqPjnYbv5UWuDd2eyzGjrrFOsJEi8OK2d2j4FfF++
+ AzOMdW09JVqejQARAQABwsF2BBgBCAAgFiEEbF+pj/I7JePKMl6Fct6KD1TwOgwFAl/0ZFUC
+ GwwACgkQct6KD1TwOgxUfg//eAoYc0Vm4NrxymfcY30UjHVD0LgSvU8kUmXxil3qhFPS7KA+
+ y7tgcKLHOkZkXMX5MLFcS9+SmrAjSBBV8omKoHNo+kfFx/dUAtz0lot8wNGmWb+NcHeKM1eb
+ nwUMOEa1uDdfZeKef/U/2uHBceY7Gc6zPZPWgXghEyQMTH2UhLgeam8yglyO+A6RXCh+s6ak
+ Wje7Vo1wGK4eYxp6pwMPJXLMsI0ii/2k3YPEJPv+yJf90MbYyQSbkTwZhrsokjQEaIfjrIk3
+ rQRjTve/J62WIO28IbY/mENuGgWehRlTAbhC4BLTZ5uYS0YMQCR7v9UGMWdNWXFyrOB6PjSu
+ Trn9MsPoUc8qI72mVpxEXQDLlrd2ijEWm7Nrf52YMD7hL6rXXuis7R6zY8WnnBhW0uCfhajx
+ q+KuARXC0sDLztcjaS3ayXonpoCPZep2Bd5xqE4Ln8/COCslP7E92W1uf1EcdXXIrx1acg21
+ H/0Z53okMykVs3a8tECPHIxnre2UxKdTbCEkjkR4V6JyplTS47oWMw3zyI7zkaadfzVFBxk2
+ lo/Tny+FX1Azea3Ce7oOnRUEZtWSsUidtIjmL8YUQFZYm+JUIgfRmSpMFq8JP4VH43GXpB/S
+ OCrl+/xujzvoUBFV/cHKjEQYBxo+MaiQa1U54ykM2W4DnHb1UiEf5xDkFd4=
+In-Reply-To: <b336a8e3-44e7-4f56-a950-5155675b5628@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181465 [Nov 19 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/19 19:33:00 #22482963
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,184 +137,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test which checks, that updating SO_RCVLOWAT value also sends credit
-update message. Otherwise mutual hungup may happen when receiver didn't
-send credit update and then calls 'poll()' with non default SO_RCVLOWAT
-value (e.g. waiting enough bytes to read), while sender waits for free
-space at receiver's side. Important thing is that this test relies on
-kernel's define for maximum packet size for virtio transport and this
-value is not exported to user: VIRTIO_VSOCK_MAX_PKT_BUF_SIZE (this
-define is used to control moment when to send credit update message).
-If this value or its usage will be changed in kernel - this test may
-become useless/broken.
+On 19.11.2023 21:48, Heiner Kallweit wrote:
+> On 19.11.2023 21:28, Helge Deller wrote:
+>> On 11/19/23 12:28, Heiner Kallweit wrote:
+>>> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+>>> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+>>> Class-based device auto-detection is a legacy mechanism and shouldn't
+>>> be used in new code. So we can remove this class completely now.
+>>>
+>>> Preferably this series should be applied via the i2c tree.
+>>
+>> The fbdev changes look at least ok so far, so:
+>> Acked-by: Helge Deller <deller@gmx.de>   #fbdev
+>>
+> I think this refers to patch 5 of the series. Could you please reply
+> to patch 5 instead of the cover letter with your acked-by so that
+> patchwork gets it right? Thanks!
+> 
+Sorry, just looked at where you are in To, not Cc.
+So your ack includes patches 6, 9, 10, 13?
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- Changelog:
- v1 -> v2:
-  * Update commit message by removing 'This patch adds XXX' manner.
-  * Update commit message by adding details about dependency for this
-    test from kernel internal define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE.
-  * Add comment for this dependency in 'vsock_test.c' where this define
-    is duplicated.
-
- tools/testing/vsock/vsock_test.c | 136 +++++++++++++++++++++++++++++++
- 1 file changed, 136 insertions(+)
-
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 5b0e93f9996c..f5623b8d76b7 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -1225,6 +1225,137 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
- 	}
- }
- 
-+#define RCVLOWAT_CREDIT_UPD_BUF_SIZE	(1024 * 128)
-+/* This define is the same as in 'include/linux/virtio_vsock.h':
-+ * it is used to decide when to send credit update message during
-+ * reading from rx queue of a socket. Value and its usage in
-+ * kernel is important for this test.
-+ */
-+#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE	(1024 * 64)
-+
-+static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opts)
-+{
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send 1 byte more than peer's buffer size. */
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE + 1;
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until peer sets needed buffer size. */
-+	control_expectln("SRVREADY");
-+
-+	if (send(fd, buf, buf_size, 0) != buf_size) {
-+		perror("send failed");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
-+static void test_stream_rcvlowat_def_cred_upd_server(const struct test_opts *opts)
-+{
-+	size_t recv_buf_size;
-+	struct pollfd fds;
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE;
-+
-+	if (setsockopt(fd, AF_VSOCK, SO_VM_SOCKETS_BUFFER_SIZE,
-+		       &buf_size, sizeof(buf_size))) {
-+		perror("setsockopt(SO_VM_SOCKETS_BUFFER_SIZE)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	control_writeln("SRVREADY");
-+
-+	/* Wait until there will be 128KB of data in rx queue. */
-+	while (1) {
-+		ssize_t res;
-+
-+		res = recv(fd, buf, buf_size, MSG_PEEK);
-+		if (res == buf_size)
-+			break;
-+
-+		if (res <= 0) {
-+			fprintf(stderr, "unexpected 'recv()' return: %zi\n", res);
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	/* There is 128KB of data in the socket's rx queue,
-+	 * dequeue first 64KB, credit update is not sent.
-+	 */
-+	recv_buf_size = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
-+	recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+	recv_buf_size++;
-+
-+	/* Updating SO_RCVLOWAT will send credit update. */
-+	if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
-+		       &recv_buf_size, sizeof(recv_buf_size))) {
-+		perror("setsockopt(SO_RCVLOWAT)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	memset(&fds, 0, sizeof(fds));
-+	fds.fd = fd;
-+	fds.events = POLLIN | POLLRDNORM | POLLERR |
-+		     POLLRDHUP | POLLHUP;
-+
-+	/* This 'poll()' will return once we receive last byte
-+	 * sent by client.
-+	 */
-+	if (poll(&fds, 1, -1) < 0) {
-+		perror("poll");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & POLLERR) {
-+		fprintf(stderr, "'poll()' error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & (POLLIN | POLLRDNORM)) {
-+		recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+	} else {
-+		/* These flags must be set, as there is at
-+		 * least 64KB of data ready to read.
-+		 */
-+		fprintf(stderr, "POLLIN | POLLRDNORM expected\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
- static struct test_case test_cases[] = {
- 	{
- 		.name = "SOCK_STREAM connection reset",
-@@ -1335,6 +1466,11 @@ static struct test_case test_cases[] = {
- 		.run_client = test_double_bind_connect_client,
- 		.run_server = test_double_bind_connect_server,
- 	},
-+	{
-+		.name = "SOCK_STREAM virtio SO_RCVLOWAT + deferred cred update",
-+		.run_client = test_stream_rcvlowat_def_cred_upd_client,
-+		.run_server = test_stream_rcvlowat_def_cred_upd_server,
-+	},
- 	{},
- };
- 
--- 
-2.25.1
+>>
+>>> v2:
+>>> - change tag in commit subject of patch 03
+>>> - add ack tags
+>>> v3:
+>>> - fix a compile error in patch 5
+>>>
+>>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+>>>
+>>> ---
+>>>
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+>>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+>>>   drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+>>>   drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+>>>   drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+>>>   drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+>>>   drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+>>>   drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+>>>   drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+>>>   drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+>>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+>>>   drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+>>>   drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+>>>   drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+>>>   drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+>>>   drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+>>>   drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+>>>   drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+>>>   drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+>>>   drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+>>>   drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+>>>   drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+>>>   drivers/video/fbdev/cyber2000fb.c                 |    1 -
+>>>   drivers/video/fbdev/i740fb.c                      |    1 -
+>>>   drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
+>>>   drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+>>>   drivers/video/fbdev/s3fb.c                        |    1 -
+>>>   drivers/video/fbdev/tdfxfb.c                      |    1 -
+>>>   drivers/video/fbdev/tridentfb.c                   |    1 -
+>>>   drivers/video/fbdev/via/via_i2c.c                 |    1 -
+>>>   include/linux/i2c.h                               |    1 -
+>>>   31 files changed, 9 insertions(+), 47 deletions(-)
+>>>
+>>
+> 
 
