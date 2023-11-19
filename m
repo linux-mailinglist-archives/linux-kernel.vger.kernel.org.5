@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE8D7F049C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 07:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6325F7F04A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 08:25:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjKSG6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 01:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S230317AbjKSHKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 02:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSG6f (ORCPT
+        with ESMTP id S229454AbjKSHKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 01:58:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51171B9;
-        Sat, 18 Nov 2023 22:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700377112; x=1731913112;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=4aWdhgEHLG1+pCPYPu0Vac7LkPPBWPXoqmf8wWjR+ZE=;
-  b=RZPu/2aRia4RKWKWxOsb/V7Jdztx1y/SS2Eeu1GMK0F8+XozmEBw4tMB
-   SXSJsvd1spLpQg9pZzU8htp3dkk/e0bI6ClekZp8ybl1H7jy5340HXDs2
-   HNkebp7+Dt8P9eNTN0XiVizWxjfAfDX7hI7ZT+7mg0N1Ks2f60tPA4xje
-   ipZSw31SxPwIx+OAQXVt1Lvoc/e25HRy2Sv8ZbklMeDI9PDd/PPTAjJDC
-   IsAjmdPzMiWlJHnDo5XUIerE4Bon0jMfaOikuAZ7EJ4hsdEb09enIWb3m
-   /dyN4XYNGRGG3odWpz/TlhvwZAyJvi3ivQgPqqWDTAkU3Q1rRBmE1lNOy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="376515909"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="376515909"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 22:58:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="765977299"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="765977299"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.180]) ([10.93.8.180])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 22:58:27 -0800
-Message-ID: <e35a14f9-5e82-4dc1-9705-52dc856778b5@linux.intel.com>
-Date:   Sun, 19 Nov 2023 14:58:24 +0800
+        Sun, 19 Nov 2023 02:10:22 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49FB1BB
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 23:10:18 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2ea7cca04so2322907b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 23:10:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700377818; x=1700982618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WHLaUi85HqGEFshr/i8Oa6i6d3yOkcWZkUBdwoWoo+w=;
+        b=SuajwuBmnCoUUrobYy+oz3Tmm7bjt3RYdeZLsuMV+83qa5cs7AcsYAUd93iUCn4fb8
+         tYm7HJPjyk+B3l5o8FsZ1CqsrZAfgH4PgraT1NG1ejKw21DfIYSlQomCzzWyVqab0V8t
+         uDbtrXr3Fr67IsfNCY+ciBkKq/gFB1quvQwsAIJBAMqKKqEKBTJy+vQK/1Yz2zVBu9/R
+         INN7BNDQe4+6JjcNzmrssm9SdZ76XWAdrWhf4ZL08snMMmk3OQGxJMNEN+PVaghHbVQj
+         Hn0f3r/PP6whL5LCJOF2DciWTwSaWh459zPq7vdVGLLO1gEu3t/BB+viOoRnx0gqC2Z5
+         myxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700377818; x=1700982618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WHLaUi85HqGEFshr/i8Oa6i6d3yOkcWZkUBdwoWoo+w=;
+        b=XqPtDaEBPymH9E2u5Sfw0WRs6dQ1bvSz/XmN32QRyc37LxFGD0JWcsUNEoC2fxq0EF
+         yv9Mzq9dP8tB6KuToawoCveAzVJ3nGj1EtPjO13ebXhUTNuY0nETnMbeP7CC+RiVeHvD
+         i5CeFJd2b0dw5v/Dz0oOETGfzuFt8g16Ay0/VwsscJQegscasgHil2lbYwIwagtChyYZ
+         U4O2CPrrgat6vLXrzAU9MdyREgPfUZogCph8wWgVveAkz/eF2MrHYDndv1a11kRY10tb
+         8mN92bvjRi5WPcTYMAbG4DCflZZv23WGLIHoyoxv6OD7oWPTbNla/VPLqL7jrrExNSp7
+         9t6w==
+X-Gm-Message-State: AOJu0Yxe+JHlY4omrljljsnneBlmTSglj6nRd8jzDBJBCkCUgb4GNx9+
+        mdLWSL2kmJZks2tKwy/a/mE=
+X-Google-Smtp-Source: AGHT+IGdI1r69QIT8do+8fs8hBqvSL7czmTd2bbdsTlGPw8CA9NyhwQ+I2advBnHd/u/ZcZE7zfu5g==
+X-Received: by 2002:a05:6808:1812:b0:3a7:c13:c8d1 with SMTP id bh18-20020a056808181200b003a70c13c8d1mr6421607oib.17.1700377817862;
+        Sat, 18 Nov 2023 23:10:17 -0800 (PST)
+Received: from attreyee-HP-Pavilion-Laptop-14-ec0xxx.. ([2405:201:1f:605f:7810:25a6:651c:f965])
+        by smtp.gmail.com with ESMTPSA id c24-20020aa781d8000000b006bde2480806sm3851256pfn.47.2023.11.18.23.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 23:10:17 -0800 (PST)
+From:   attreyee-muk <tintinm2017@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        syzbot+ef3256a360c02207a4cb@syzkaller.appspotmail.com
+Cc:     attreyee-muk <tintinm2017@gmail.com>,
+        syzkaller-bugs@googlegroups.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Tried removing the error
+Date:   Sun, 19 Nov 2023 12:25:54 +0530
+Message-Id: <20231119065553.130111-1-tintinm2017@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/16] KVM: TDX: Pass size to reclaim_page()
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <31552f714f2fd8178f9467e9afaaf28ba3de3c7b.1699368363.git.isaku.yamahata@intel.com>
- <13937cd6-8dfa-493c-932c-71f878f447ef@linux.intel.com>
-In-Reply-To: <13937cd6-8dfa-493c-932c-71f878f447ef@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Respected maintainers, 
 
+Looking at the code and the call trace reported by Syzbot, I understood
+that the issue lies in the drm_gem.c file in
+drm_gem_object_handle_put_unlocked(obj);. As per my understanding, I
+believe that a warning is given out when the DRM GEM object handle gets
+destroyed along with the function getting returned immediately. To take
+care of the warning only, I think that the WARN_ON can be removed with
+only the function getting returned when the object handle gets
+destroyed, without a warning. Or else, we can even have a message
+logging in the place of a direct warning which will give out the
+information that the object handle has been destroyed. I also think that
+the WARN_ON is given for debugging purposes and hence proposing a
+solution if the warning can be replaced with a simple message log.
 
-On 11/19/2023 2:42 PM, Binbin Wu wrote:
->
->
-> On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
->> @@ -1597,7 +1600,7 @@ static int tdx_sept_drop_private_spte(struct 
->> kvm *kvm, gfn_t gfn,
->>            * The HKID assigned to this TD was already freed and cache
->>            * was already flushed. We don't have to flush again.
->>            */
->> -        err = tdx_reclaim_page(hpa);
->> +        err = tdx_reclaim_page(hpa, level);
->>           if (KVM_BUG_ON(err, kvm))
->>               return -EIO;
->>           tdx_unpin(kvm, pfn);
->> @@ -1630,7 +1633,7 @@ static int tdx_sept_drop_private_spte(struct 
->> kvm *kvm, gfn_t gfn,
->>           pr_tdx_error(TDH_PHYMEM_PAGE_WBINVD, err, NULL);
->>           return -EIO;
->>       }
->> -    tdx_clear_page(hpa);
->> +    tdx_clear_page(hpa, PAGE_SIZE);
-> Should here be KVM_HPAGE_SIZE(level) instead of  PAGE_SIZE?
+I am looking forward to getting help in this regard from the respected maintainers. 
 
-OK, please ignore this comment, I see this is handled by the following 
-patch.
+Thank You
+Attreyee Mukherjee
 
->
->>       tdx_unpin(kvm, pfn);
->>       return 0;
->>   }
->> @@ -1742,7 +1745,7 @@ static int tdx_sept_free_private_spt(struct kvm 
->> *kvm, gfn_t gfn,
->>        * already flushed. We don't have to flush again.
->>        */
->>       if (!is_hkid_assigned(kvm_tdx))
->> -        return tdx_reclaim_page(__pa(private_spt));
->> +        return tdx_reclaim_page(__pa(private_spt), PG_LEVEL_4K);
->>         /*
->>        * free_private_spt() is (obviously) called when a shadow page 
->> is being
->
->
+Signed-off-by: attreyee-muk <tintinm2017@gmail.com>
+---
+ drivers/gpu/drm/drm_gem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 44a948b80ee1..b6be9400cd11 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -222,7 +222,7 @@ drm_gem_object_handle_put_unlocked(struct drm_gem_object *obj)
+ 	struct drm_device *dev = obj->dev;
+ 	bool final = false;
+ 
+-	if (WARN_ON(READ_ONCE(obj->handle_count) == 0))
++	if (READ_ONCE(obj->handle_count) == 0)
+ 		return;
+ 
+ 	/*
+-- 
+2.34.1
 
