@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7556C7F03FC
+	by mail.lfdr.de (Postfix) with ESMTP id CB3087F03FD
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbjKSB57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 20:57:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S230111AbjKSB7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 20:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKSB55 (ORCPT
+        with ESMTP id S229610AbjKSB7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 20:57:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BCFB9
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700359074; x=1731895074;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qN9skTXVoFZZSlyX+VNOQpfYZIAzaQ+mbVciBNMHxoc=;
-  b=QWcb+hh3FDZnKKlE+Hazdivo3DIBvdQ+oMgDLY3otZlCMQ+E4WZ0Brva
-   yLQavVPdP04Zanmm7atLHRTfn+kMC84Sg01K+fvcqO8KjOa4D+mmbTj4U
-   g0BAcvn+XC28wC558WWQH6ByzhT+SYKVHaArbexhxzhvZUAalVY6QCkrh
-   7lvFjoYYcdgOK3mvtYsvG1PXzqAH1bNcEo5y5KgQiIJE6jj5j/YU04Rvt
-   WQxKFkVZt81cAKC0a9UpXpbpwNsb8eWE/QDkj7kSOCrlZviqEMXZPfGRu
-   X4mSDZzFQfT0I5rW3lJS8HZRM5buLEflT0TV7fCyOLvzdMqK5SxAB9rW3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="457967537"
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="457967537"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 17:57:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,209,1695711600"; 
-   d="scan'208";a="7196299"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 18 Nov 2023 17:57:52 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4X4H-0004WY-24;
-        Sun, 19 Nov 2023 01:57:49 +0000
-Date:   Sun, 19 Nov 2023 09:57:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: kismet: WARNING: unmet direct dependencies detected for
- SND_SOC_WM8731_I2C when selected by SND_SOC_DB1200
-Message-ID: <202311190914.zX7FPiKo-lkp@intel.com>
+        Sat, 18 Nov 2023 20:59:06 -0500
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD67FA7
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:59:03 -0800 (PST)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6c415e09b2cso3942783b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 17:59:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700359143; x=1700963943;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=toXNAcDFeHNsgcSgCSrOe6MxcfAHmBjKEtuAMrhdkHo=;
+        b=EDS/0btGhRbFvSeZOQUwAZSLvTWDbCqBpys74/qLOqKd1+75BpuTzjsdx3hD2N+OTQ
+         j6mWA1teO26wMNsxn46P8/1D1NwMsBo1xmfW/iWQlQdiHrow1PYJfLmHolLVpWkJ1gaA
+         essLcamCxC/42Z6jM+k4BP/n58InbGDH0f5DTWnwVaYqh4W7LKvTrs5DI9CI4/jRRvL7
+         oLRv94aWJ3sI0LdMWBwgFgbtAY1/Tx5KlE9lDMBsCZSKfS7UA+0jU3rRf0qeXBEFDosM
+         yfxe7/6tuLSO5z3+y6z//86KFYLqgdZ7VzDJc21mjljIQstj1dTE9nAuVEMKz+hbiNhx
+         P8Xg==
+X-Gm-Message-State: AOJu0Yyg1PykwWJZsaPHSL8IKuhw9q7Mqz92y7ROpr+dRZG3fOUaRhDx
+        rCvsPiqD3rnRLm6FvkH0byKVth9yei+toucMZwJNtCUgtZwW
+X-Google-Smtp-Source: AGHT+IG6lM/IvgGMLlPo/hk8nRob/V4Kt4FIr7lLmsSm2084dLAxfxxF6p9RXJijJo26MgEDkLpMLKV2VQRLiPRZIVyxz0GPko6r
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:e07:b0:6bd:2247:d2e5 with SMTP id
+ bq7-20020a056a000e0700b006bd2247d2e5mr1131580pfb.4.1700359143076; Sat, 18 Nov
+ 2023 17:59:03 -0800 (PST)
+Date:   Sat, 18 Nov 2023 17:59:02 -0800
+In-Reply-To: <tencent_85864D49802EF66EDA0CBA67C346E592F406@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b6b739060a77b675@google.com>
+Subject: Re: [syzbot] [dri?] divide error in drm_mode_debug_printmodeline
+From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b8f1fa2419c19c81bc386a6b350879ba54a573e1
-commit: 9dc15f81baf273b5aaaa3302ee8faacd78f361fd ASoC: wm8731: Factor out the I2C and SPI bus code into separate modules
-date:   1 year, 8 months ago
-config: mips-kismet-CONFIG_SND_SOC_WM8731_I2C-CONFIG_SND_SOC_DB1200-0-0 (https://download.01.org/0day-ci/archive/20231119/202311190914.zX7FPiKo-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231119/202311190914.zX7FPiKo-lkp@intel.com/reproduce)
+Hello,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311190914.zX7FPiKo-lkp@intel.com/
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for SND_SOC_WM8731_I2C when selected by SND_SOC_DB1200
-   
-   WARNING: unmet direct dependencies detected for SND_SOC_WM8731_I2C
-     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && I2C [=n]
-     Selected by [y]:
-     - SND_SOC_DB1200 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AU1XPSC [=y]
+Reported-and-tested-by: syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Tested on:
+
+commit:         ac347a06 Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b3cdd4e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88e7ba51eecd9cd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e93e6fb36e6fdc56574
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1529b384e80000
+
+Note: testing is done by a robot and is best-effort only.
