@@ -2,538 +2,535 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F49C7F0702
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E6D7F0704
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbjKSPCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 10:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45514 "EHLO
+        id S231331AbjKSPCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 10:02:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjKSPCm (ORCPT
+        with ESMTP id S231266AbjKSPCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 10:02:42 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1398128
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 07:02:37 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7a93b7fedc8so165977239f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 07:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700406157; x=1701010957; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VsYlVV4infBLaXRyQFMSky8SfKqk8ls8TbVVlfuaoGE=;
-        b=Ld47jyLEMa0mmdsgu9C4Nk26IVF0F+7QPxp36h1AYTqozW+Dn2b5kDXcQD87CdOKYq
-         cvLBZTW52onZ3A1E+UFiEMwloP8iJ2xusRS1ExHj8Bqj8cq16q9w7L3EJhwwj0h+BoPt
-         ZL5s10dwcO8m4okRZgP22ODkhFXSQSJQASpV0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700406157; x=1701010957;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VsYlVV4infBLaXRyQFMSky8SfKqk8ls8TbVVlfuaoGE=;
-        b=MlqKiLupeEnvPweH+UCocmhu2d2OeJygEeQTE0YOMDmA3FUsg9ushV5gvFQbD2kpBH
-         /11tHGS/IZoIrTXhv3aYTvrcDyJLyGKDVsoRg5JSniHV4erqtWne7YWjNimM5C6+QVWy
-         oOjVJlczu/aRWkhMbtIwlXKiHpGSZ6o82qMjZy2fPtufRXidPmZAV2stmbKJkoJV7YwW
-         vEIQcCBQ0UMDD9nca67iRFk9Xv6vRLGXeTVE5g+NS3EzZh/y1HTQl83PToE40gXuKBYn
-         Ixexmhf5KGYGVXfCmDIV72IrMVRQhBcQSaR1mGU6eLEX2SnAbrslJT/MQ5YidAOgGrdE
-         xCUQ==
-X-Gm-Message-State: AOJu0YyNUPExJAgs7RDIyiK/n6M4UHysZjyMv/pBKVuuWE5fahhHdvdT
-        e/+pC7tz1zuJ2p9qMfemxoCvzg==
-X-Google-Smtp-Source: AGHT+IH3qiJhQ/2K9ygTlwlpbgFvtx88jQdSLVXvFgwp2+IYj0gw6p6+4DE14YegBj0SGyaSKPwWqA==
-X-Received: by 2002:a05:6602:2803:b0:7a9:63fd:e277 with SMTP id d3-20020a056602280300b007a963fde277mr5954570ioe.14.1700406157217;
-        Sun, 19 Nov 2023 07:02:37 -0800 (PST)
-Received: from sjg1.lan (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id w24-20020a056638379800b004665bec29d1sm79923jal.128.2023.11.19.07.02.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:02:36 -0800 (PST)
-From:   Simon Glass <sjg@chromium.org>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tom Rini <trini@konsulko.com>, Simon Glass <sjg@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 2/2] arm64: boot: Support Flat Image Tree
-Date:   Sun, 19 Nov 2023 08:01:15 -0700
-Message-ID: <20231119150229.634424-3-sjg@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-In-Reply-To: <20231119150229.634424-1-sjg@chromium.org>
-References: <20231119150229.634424-1-sjg@chromium.org>
+        Sun, 19 Nov 2023 10:02:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883C6126
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 07:02:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 146E5C433CA;
+        Sun, 19 Nov 2023 15:02:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700406160;
+        bh=diJ6YDu9UXGGquL+z5uLmO5HkizQcp+FNce3fqbLgu4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nn7WIHfw2RVFIzlXcY6pmOfeHPqsUu4Vc5a5mhthoAsFlLYnxh4nevODIqBtQSXG5
+         fluj/6mAQYnlVUvazQCMR5N6XVJV2wJw9kl6y8wy+VuZ32GsHcXkYmL5ZAfP3cTtwa
+         xvSTMnFFXegtkQhFyZpC7a23kEzpxUQ0+zW88z17yaFdZ0LP630uU6l22fztIMcFOD
+         usUBauQd1VK8AZcRd8L0MDgg9icFKfYXeiRqW0kdqYx6Jkg3T2kxaEulTu32LGqoa2
+         LXJnjxhRkGI9EWMndJTzezCYXPOt91kf3Eei5w/WMQCrDE1uOs+hx2qhZQfy/XzrTl
+         QfhcZpiT+/jTQ==
+Date:   Sun, 19 Nov 2023 15:02:33 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] iio: light: add VEML6075 UVA and UVB light sensor
+ driver
+Message-ID: <20231119150233.10fdc66e@jic23-huawei>
+In-Reply-To: <20231110-veml6075-v1-1-354b3245e14a@gmail.com>
+References: <20231110-veml6075-v1-0-354b3245e14a@gmail.com>
+        <20231110-veml6075-v1-1-354b3245e14a@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a script which produces a Flat Image Tree (FIT), a single file
-containing the built kernel and associated devicetree files.
-Compression defaults to gzip which gives a good balance of size and
-performance.
+On Sun, 19 Nov 2023 05:58:03 +0100
+Javier Carrasco <javier.carrasco.cruz@gmail.com> wrote:
 
-The files compress from about 86MB to 24MB using this approach.
+> The Vishay VEMl6075 is a low power, 16-bit resolution UVA and UVB
+> light sensor with I2C interface and noise compensation (visible and
+> infrarred).
+> 
+> Every UV channel generates an output measured in counts per integration
+> period. Available integration times are 50 ms, 100 ms, 200 ms, 400 ms
+> and 800 ms,
+> 
+> This driver adds support for both UV channels and the ultraviolet
+> index (UVI) inferred from them according to the device application note
+> with open-air (no teflon) coefficients.
+> 
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-The FIT can be used by bootloaders which support it, such as U-Boot
-and Linuxboot. It permits automatic selection of the correct
-devicetree, matching the compatible string of the running board with
-the closest compatible string in the FIT. There is no need for
-filenames or other workarounds.
+Hi Javier,
 
-Add a 'make image.fit' build target for arm64, as well.
+Various comments inline, but all minor stuff. Looks good in general to me.
 
-The FIT can be examined using 'dumpimage -l'.
+Jonathan
 
-This features requires pylibfdt (use 'pip install libfdt'). It also
-requires compression utilities for the algorithm being used. Supported
-compression options are the same as the Image.xxx files. For now there
-is no way to change the compression other than by editing the rule for
-$(obj)/image.fit
+...
 
-While FIT supports a ramdisk / initrd, no attempt is made to support
-this here, since it must be built separately from the Linux build.
+> diff --git a/drivers/iio/light/Makefile b/drivers/iio/light/Makefile
+> index c0db4c4c36ec..c8289e24e3f6 100644
+> --- a/drivers/iio/light/Makefile
+> +++ b/drivers/iio/light/Makefile
+> @@ -60,5 +60,6 @@ obj-$(CONFIG_VCNL4000)		+= vcnl4000.o
+>  obj-$(CONFIG_VCNL4035)		+= vcnl4035.o
+>  obj-$(CONFIG_VEML6030)		+= veml6030.o
+>  obj-$(CONFIG_VEML6070)		+= veml6070.o
+> +obj-$(CONFIG_VEML6075)		+= veml6075.o
+>  obj-$(CONFIG_VL6180)		+= vl6180.o
+>  obj-$(CONFIG_ZOPT2201)		+= zopt2201.o
+> diff --git a/drivers/iio/light/veml6075.c b/drivers/iio/light/veml6075.c
+> new file mode 100644
+> index 000000000000..b7d9319c3906
+> --- /dev/null
+> +++ b/drivers/iio/light/veml6075.c
+> @@ -0,0 +1,503 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * veml6075.c - Support for Vishay VEML6075 UVA and UVB light sensor
 
-Signed-off-by: Simon Glass <sjg@chromium.org>
----
+Little point in having the filename inside the file comments. Just makes it
+a pain to move if we ever do and adds little of use.
+Arguably "Support for" also a bit pointless.
+Vishay VEML... 
+is what Id' keep.
 
-(no changes since v5)
+> + *
+> + * Copyright 2023 Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> + *
+> + * IIO driver for VEML6075 (7-bit I2C slave address 0x10)
 
-Changes in v5:
-- Drop patch previously applied
-- Correct compression rule which was broken in v4
+The IIO and driver bit is obvious from the file.  Fine to keep the address
+if you like.
 
-Changes in v4:
-- Use single quotes for UIMAGE_NAME
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/regmap.h>
+> +
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
 
-Changes in v3:
-- Drop temporary file image.itk
-- Drop patch 'Use double quotes for image name'
-- Drop double quotes in use of UIMAGE_NAME
-- Drop unnecessary CONFIG_EFI_ZBOOT condition for help
-- Avoid hard-coding "arm64" for the DT architecture
+You won't need sysfs.h after the changes suggested inline.
+Every time it is included, it's a signal to reviewers to take a close
+look at the ABI.  There are still reasons to use it but they normally
+mean there should be additional documentation as well in the patch.
 
-Changes in v2:
-- Drop patch previously applied
-- Add .gitignore file
-- Move fit rule to Makefile.lib using an intermediate file
-- Drop dependency on CONFIG_EFI_ZBOOT
-- Pick up .dtb files separately from the kernel
-- Correct pylint too-many-args warning for write_kernel()
-- Include the kernel image in the file count
-- Add a pointer to the FIT spec and mention of its wide industry usage
-- Mention the kernel version in the FIT description
+> +
+> +#define VEML6075_DRIVER_NAME "veml6075"
 
- MAINTAINERS                |   7 +
- arch/arm64/Makefile        |   3 +-
- arch/arm64/boot/.gitignore |   1 +
- arch/arm64/boot/Makefile   |   6 +-
- scripts/Makefile.lib       |  13 ++
- scripts/make_fit.py        | 289 +++++++++++++++++++++++++++++++++++++
- 6 files changed, 317 insertions(+), 2 deletions(-)
- create mode 100755 scripts/make_fit.py
+As mentioned below, even though there are several uses of this I'd
+rather see the string inline than hidden behind a define.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a17935edfa33..f388f45fcbfe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1585,6 +1585,13 @@ F:	Documentation/process/maintainer-soc*.rst
- F:	arch/arm/boot/dts/Makefile
- F:	arch/arm64/boot/dts/Makefile
- 
-+ARM64 FIT SUPPORT
-+M:	Simon Glass <sjg@chromium.org>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm64/boot/Makefile
-+F:	scripts/make_fit.py
-+
- ARM ARCHITECTED TIMER DRIVER
- M:	Mark Rutland <mark.rutland@arm.com>
- M:	Marc Zyngier <maz@kernel.org>
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index ae0c5ee8c78b..a58599dca07e 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -150,7 +150,7 @@ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
- # Default target when executing plain make
- boot		:= arch/arm64/boot
- 
--BOOT_TARGETS	:= Image vmlinuz.efi
-+BOOT_TARGETS	:= Image vmlinuz.efi image.fit
- 
- PHONY += $(BOOT_TARGETS)
- 
-@@ -215,6 +215,7 @@ virtconfig:
- define archhelp
-   echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Image.gz)'
-   echo  '  Image         - Uncompressed kernel image (arch/$(ARCH)/boot/Image)'
-+  echo  '  image.fit     - Flat Image Tree (arch/$(ARCH)/boot/image.fit)'
-   echo  '  install       - Install uncompressed kernel'
-   echo  '  zinstall      - Install compressed kernel'
-   echo  '                  Install using (your) ~/bin/installkernel or'
-diff --git a/arch/arm64/boot/.gitignore b/arch/arm64/boot/.gitignore
-index af5dc61f8b43..abaae9de1bdd 100644
---- a/arch/arm64/boot/.gitignore
-+++ b/arch/arm64/boot/.gitignore
-@@ -2,3 +2,4 @@
- Image
- Image.gz
- vmlinuz*
-+image.fit
-diff --git a/arch/arm64/boot/Makefile b/arch/arm64/boot/Makefile
-index 1761f5972443..8d591fda078f 100644
---- a/arch/arm64/boot/Makefile
-+++ b/arch/arm64/boot/Makefile
-@@ -16,7 +16,8 @@
- 
- OBJCOPYFLAGS_Image :=-O binary -R .note -R .note.gnu.build-id -R .comment -S
- 
--targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo Image.zst
-+targets := Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo \
-+	Image.zst image.fit
- 
- $(obj)/Image: vmlinux FORCE
- 	$(call if_changed,objcopy)
-@@ -39,6 +40,9 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
- $(obj)/Image.zst: $(obj)/Image FORCE
- 	$(call if_changed,zstd)
- 
-+$(obj)/image.fit: $(obj)/Image FORCE
-+	$(call cmd,fit,gzip)
-+
- EFI_ZBOOT_PAYLOAD	:= Image
- EFI_ZBOOT_BFD_TARGET	:= elf64-littleaarch64
- EFI_ZBOOT_MACH_TYPE	:= ARM64
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1a965fe68e01..ecd8cd358f3e 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -496,6 +496,19 @@ quiet_cmd_uimage = UIMAGE  $@
- 			-a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
- 			-n '$(UIMAGE_NAME)' -d $< $@
- 
-+# Flat Image Tree (FIT)
-+# This allows for packaging of a kernel and all devicetrees files, using
-+# compression.
-+# ---------------------------------------------------------------------------
-+
-+MAKE_FIT := $(srctree)/scripts/make_fit.py
-+
-+quiet_cmd_fit = FIT     $@
-+      cmd_fit = $(MAKE_FIT) -f $@ --arch $(UIMAGE_ARCH) --os linux \
-+			--name '$(UIMAGE_NAME)' \
-+			--compress $(UIMAGE_COMPRESSION) -k $< \
-+			$(dir $<)/dts
-+
- # XZ
- # ---------------------------------------------------------------------------
- # Use xzkern to compress the kernel image and xzmisc to compress other things.
-diff --git a/scripts/make_fit.py b/scripts/make_fit.py
-new file mode 100755
-index 000000000000..e1059825de9c
---- /dev/null
-+++ b/scripts/make_fit.py
-@@ -0,0 +1,289 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Copyright 2023 Google LLC
-+# Written by Simon Glass <sjg@chromium.org>
-+#
-+
-+"""Build a FIT containing a lot of devicetree files
-+
-+Usage:
-+    make_fit.py -A arm64 -n 'Linux-6.6' -O linux
-+        -f arch/arm64/boot/image.fit -k /tmp/kern/arch/arm64/boot/image.itk
-+        /tmp/kern/arch/arm64/boot/dts/ -E -c gzip
-+
-+Creates a FIT containing the supplied kernel and a directory containing the
-+devicetree files.
-+
-+Use -E to generate an external FIT (where the data is placed after the
-+FIT data structure). This allows parsing of the data without loading
-+the entire FIT.
-+
-+Use -c to compress the data, using bzip2, gzip, lz4, lzma, lzo and
-+zstd
-+
-+The resulting FIT can be booted by bootloaders which support FIT, such
-+as U-Boot, Linuxboot, Tianocore, etc.
-+
-+Note that this tool does not yet support adding a ramdisk / initrd.
-+"""
-+
-+import argparse
-+import collections
-+import os
-+import subprocess
-+import sys
-+import tempfile
-+import time
-+
-+import libfdt
-+
-+
-+# Tool extension and the name of the command-line tools
-+CompTool = collections.namedtuple('CompTool', 'ext,tools')
-+
-+COMP_TOOLS = {
-+    'bzip2': CompTool('.bz2', 'bzip2'),
-+    'gzip': CompTool('.gz', 'pigz,gzip'),
-+    'lz4': CompTool('.lz4', 'lz4'),
-+    'lzma': CompTool('.lzma', 'lzma'),
-+    'lzo': CompTool('.lzo', 'lzop'),
-+    'zstd': CompTool('.zstd', 'zstd'),
-+}
-+
-+def parse_args():
-+    """Parse the program ArgumentParser
-+
-+    Returns:
-+        Namespace object containing the arguments
-+    """
-+    epilog = 'Build a FIT from a directory tree containing .dtb files'
-+    parser = argparse.ArgumentParser(epilog=epilog)
-+    parser.add_argument('-A', '--arch', type=str, required=True,
-+          help='Specifies the architecture')
-+    parser.add_argument('-c', '--compress', type=str, default='none',
-+          help='Specifies the compression')
-+    parser.add_argument('-E', '--external', action='store_true',
-+          help='Convert the FIT to use external data')
-+    parser.add_argument('-n', '--name', type=str, required=True,
-+          help='Specifies the name')
-+    parser.add_argument('-O', '--os', type=str, required=True,
-+          help='Specifies the operating system')
-+    parser.add_argument('-f', '--fit', type=str, required=True,
-+          help='Specifies the output file (.fit)')
-+    parser.add_argument('-k', '--kernel', type=str, required=True,
-+          help='Specifies the (uncompressed) kernel input file (.itk)')
-+    parser.add_argument('srcdir', type=str, nargs='*',
-+          help='Specifies the directory tree that contains .dtb files')
-+
-+    return parser.parse_args()
-+
-+def setup_fit(fsw, name):
-+    """Make a start on writing the FIT
-+
-+    Outputs the root properties and the 'images' node
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        name (str): Name of kernel image
-+    """
-+    fsw.INC_SIZE = 65536
-+    fsw.finish_reservemap()
-+    fsw.begin_node('')
-+    fsw.property_string('description', f'{name} with devicetree set')
-+    fsw.property_u32('#address-cells', 1)
-+
-+    fsw.property_u32('timestamp', int(time.time()))
-+    fsw.begin_node('images')
-+
-+
-+def write_kernel(fsw, data, args):
-+    """Write out the kernel image
-+
-+    Writes a kernel node along with the required properties
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        data (bytes): Data to write (possibly compressed)
-+        args (Namespace): Contains necessary strings:
-+            arch: FIT architecture, e.g. 'arm64'
-+            fit_os: Operating Systems, e.g. 'linux'
-+            name: Name of OS, e.g. 'Linux-6.6.0-rc7'
-+            compress: Compression algorithm to use, e.g. 'gzip'
-+    """
-+    with fsw.add_node('kernel'):
-+        fsw.property_string('description', args.name)
-+        fsw.property_string('type', 'kernel_noload')
-+        fsw.property_string('arch', args.arch)
-+        fsw.property_string('os', args.os)
-+        fsw.property_string('compression', args.compress)
-+        fsw.property('data', data)
-+        fsw.property_u32('load', 0)
-+        fsw.property_u32('entry', 0)
-+
-+
-+def finish_fit(fsw, entries):
-+    """Finish the FIT ready for use
-+
-+    Writes the /configurations node and subnodes
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        entries (list of tuple): List of configurations:
-+            str: Description of model
-+            str: Compatible stringlist
-+    """
-+    fsw.end_node()
-+    seq = 0
-+    with fsw.add_node('configurations'):
-+        for model, compat in entries:
-+            seq += 1
-+            with fsw.add_node(f'conf-{seq}'):
-+                fsw.property('compatible', bytes(compat))
-+                fsw.property_string('description', model)
-+                fsw.property_string('fdt', f'fdt-{seq}')
-+                fsw.property_string('kernel', 'kernel')
-+    fsw.end_node()
-+
-+
-+def compress_data(inf, compress):
-+    """Compress data using a selected algorithm
-+
-+    Args:
-+        inf (IOBase): Filename containing the data to compress
-+        compress (str): Compression algorithm, e.g. 'gzip'
-+
-+    Return:
-+        bytes: Compressed data
-+    """
-+    if compress == 'none':
-+        return inf.read()
-+
-+    comp = COMP_TOOLS.get(compress)
-+    if not comp:
-+        raise ValueError(f"Unknown compression algorithm '{compress}'")
-+
-+    with tempfile.NamedTemporaryFile() as comp_fname:
-+        with open(comp_fname.name, 'wb') as outf:
-+            done = False
-+            for tool in comp.tools.split(','):
-+                try:
-+                    subprocess.call([tool, '-c'], stdin=inf, stdout=outf)
-+                    done = True
-+                    break
-+                except FileNotFoundError:
-+                    pass
-+            if not done:
-+                raise ValueError(f'Missing tool(s): {comp.tools}\n')
-+            with open(comp_fname.name, 'rb') as compf:
-+                comp_data = compf.read()
-+    return comp_data
-+
-+
-+def output_dtb(fsw, seq, fname, arch, compress):
-+    """Write out a single devicetree to the FIT
-+
-+    Args:
-+        fsw (libfdt.FdtSw): Object to use for writing
-+        seq (int): Sequence number (1 for first)
-+        fmame (str): Filename containing the DTB
-+        arch: FIT architecture, e.g. 'arm64'
-+        compress (str): Compressed algorithm, e.g. 'gzip'
-+
-+    Returns:
-+        tuple:
-+            str: Model name
-+            bytes: Compatible stringlist
-+    """
-+    with fsw.add_node(f'fdt-{seq}'):
-+        # Get the compatible / model information
-+        with open(fname, 'rb') as inf:
-+            data = inf.read()
-+        fdt = libfdt.FdtRo(data)
-+        model = fdt.getprop(0, 'model').as_str()
-+        compat = fdt.getprop(0, 'compatible')
-+
-+        fsw.property_string('description', model)
-+        fsw.property_string('type', 'flat_dt')
-+        fsw.property_string('arch', arch)
-+        fsw.property_string('compression', compress)
-+        fsw.property('compatible', bytes(compat))
-+
-+        with open(fname, 'rb') as inf:
-+            compressed = compress_data(inf, compress)
-+        fsw.property('data', compressed)
-+    return model, compat
-+
-+
-+def build_fit(args):
-+    """Build the FIT from the provided files and arguments
-+
-+    Args:
-+        args (Namespace): Program arguments
-+
-+    Returns:
-+        tuple:
-+            bytes: FIT data
-+            int: Number of configurations generated
-+            size: Total uncompressed size of data
-+    """
-+    fsw = libfdt.FdtSw()
-+    setup_fit(fsw, args.name)
-+    seq = 0
-+    size = 0
-+    entries = []
-+
-+    # Handle the kernel
-+    with open(args.kernel, 'rb') as inf:
-+        comp_data = compress_data(inf, args.compress)
-+    size += os.path.getsize(args.kernel)
-+    write_kernel(fsw, comp_data, args)
-+
-+    for path in args.srcdir:
-+        # Handle devicetree files
-+        if os.path.isdir(path):
-+            for dirpath, _, fnames in os.walk(path):
-+                for fname in fnames:
-+                    if os.path.splitext(fname)[1] != '.dtb':
-+                        continue
-+                    pathname = os.path.join(dirpath, fname)
-+                    seq += 1
-+                    size += os.path.getsize(pathname)
-+                    model, compat = output_dtb(fsw, seq, pathname,
-+                                               args.arch, args.compress)
-+                    entries.append([model, compat])
-+
-+    finish_fit(fsw, entries)
-+
-+    # Include the kernel itself in the returned file count
-+    return fsw.as_fdt().as_bytearray(), seq + 1, size
-+
-+
-+def run_make_fit():
-+    """Run the tool's main logic"""
-+    args = parse_args()
-+
-+    out_data, count, size = build_fit(args)
-+    with open(args.fit, 'wb') as outf:
-+        outf.write(out_data)
-+
-+    ext_fit_size = None
-+    if args.external:
-+        mkimage = os.environ.get('MKIMAGE', 'mkimage')
-+        subprocess.check_call([mkimage, '-E', '-F', args.fit],
-+                              stdout=subprocess.DEVNULL)
-+
-+        with open(args.fit, 'rb') as inf:
-+            data = inf.read()
-+        ext_fit = libfdt.FdtRo(data)
-+        ext_fit_size = ext_fit.totalsize()
-+
-+    comp_size = len(out_data)
-+    print(f'FIT size {comp_size:#x}/{comp_size / 1024 / 1024:.1f} MB', end='')
-+    if ext_fit_size:
-+        print(f', header {ext_fit_size:#x}/{ext_fit_size / 1024:.1f} KB', end='')
-+    print(f', {count} files, uncompressed {size / 1024 / 1024:.1f} MB')
-+
-+
-+if __name__ == "__main__":
-+    sys.exit(run_make_fit())
--- 
-2.43.0.rc0.421.g78406f8d94-goog
+> +
+> +#define VEML6075_CMD_CONF	0x00 /* configuration register */
+> +#define VEML6075_CMD_UVA	0x07 /* UVA channel */
+> +#define VEML6075_CMD_UVB	0x09 /* UVB channel */
+> +#define VEML6075_CMD_COMP1	0x0A /* visible light compensation */
+> +#define VEML6075_CMD_COMP2	0x0B /* infrarred light compensation */
+> +#define VEML6075_CMD_ID		0x0C /* device ID */
+> +
+> +#define VEML6075_CONF_IT	GENMASK(6, 4) /* intregration time */
+> +#define VEML6075_CONF_HD	BIT(3) /* dynamic setting */
+> +#define VEML6075_CONF_TRIG	BIT(2) /* trigger */
+> +#define VEML6075_CONF_AF	BIT(1) /* active force enable */
+> +#define VEML6075_CONF_SD	BIT(0) /* shutdown */
+> +
+> +#define VEML6075_CONF_IT_50	0x00 /* integration time 50 ms */
+Rename them to _IT_50_MS etc and drop the comments as they only really
+tell us the unit.  The other part is fairly obvious.
+> +#define VEML6075_CONF_IT_100	0x01 /* integration time 100 ms */
+> +#define VEML6075_CONF_IT_200	0x02 /* integration time 200 ms */
+> +#define VEML6075_CONF_IT_400	0x03 /* integration time 400 ms */
+> +#define VEML6075_CONF_IT_800	0x04 /* integration time 800 ms */
+> +
+> +/* Open-air coefficients and responsivity */
+> +#define VEML6075_A_COEF		2220
+> +#define VEML6075_B_COEF		1330
+> +#define VEML6075_C_COEF		2950
+> +#define VEML6075_D_COEF		1740
+> +#define VEML6075_UVA_RESP	1461
+> +#define VEML6075_UVB_RESP	2591
+> +
+> +static const int veml6075_it_ms[] = { 50, 100, 200, 400, 800 };
+> +static const char veml6075_it_ms_avail[] = "50 100 200 400 800";
+
+A strong reason for using read_avail() is that you can just use the
+array of numbers. See below for more on this.
+
+> +
+> +struct veml6075_data {
+> +	struct i2c_client *client;
+> +	struct regmap *regmap;
+> +	struct mutex lock; /* register access lock */
+
+regmap provides register locking as typically does the bus lock, so good to
+say exactly what you mean here.  Is there a Read Modify Write cycle you need
+to protect for instance, or consistency across multiple register accesses?
+
+> +};
+
+> +
+> +static const struct iio_chan_spec veml6075_channels[] = {
+> +	{
+> +		.type = IIO_INTENSITY,
+> +		.channel = CH_UVA,
+> +		.modified = 1,
+> +		.channel2 = IIO_MOD_LIGHT_UV,
+> +		.extend_name = "UVA",
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +			BIT(IIO_CHAN_INFO_SCALE),
+> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME),
+> +	},
+> +	{
+> +		.type = IIO_INTENSITY,
+> +		.channel = CH_UVB,
+> +		.modified = 1,
+> +		.channel2 = IIO_MOD_LIGHT_UV,
+> +		.extend_name = "UVB",
+
+Extent name is very rarely used any more.  It's a horrible userspace interface
+and an old design mistake. 
+Instead we use the channel label infrastructure.  Provide the read_label()
+callback to use that instead.
+
+I'm not sure this is a great solution here though.  For some similar cases
+such as visible light colours we've just added additional modifiers, but that
+doesn't really scale to lots of sensitive ranges.
+
+One thing we have talked about in the past, but I don't think we have done in
+a driver yet, is to provide actual characteristics of the sensitivity graph.
+Perhaps just a wavelength of maximum sensitivity?
+
+Visible light sensors often have hideous sensitivity curves, including sometimes
+have multiple peaks, but in this case they look pretty good.
+Do you think such an ABI would be more useful than A, B labelling?
+
+
+
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> +			BIT(IIO_CHAN_INFO_SCALE),
+> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME),
+> +	},
+> +	{
+> +		.type = IIO_UVINDEX,
+> +		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
+> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME),
+> +	},
+> +};
+> +
+> +static IIO_CONST_ATTR_INT_TIME_AVAIL(veml6075_it_ms_avail);
+> +
+> +static struct attribute *veml6075_attributes[] = {
+> +	&iio_const_attr_integration_time_available.dev_attr.attr,
+Use the core support for handling available callbacks.
+See read_avail() and the matching bit masks.
+
+That makes this info accessible to in kernel consumers + is generally
+cleaner than hand rolling an attribute.  We have a lot of drivers
+that predate that core code existing and haven't yet converted them
+all over so you'll find plenty of code that looks like yours in the tree.
+It's just out of date style wise.
+
+Note you won't need iio/sysfs.h after that change.
+
+> +	NULL,
+> +};
+
+...
+
+> +
+> +static int veml6075_read_uvb_count(struct veml6075_data *data, int *uvb)
+> +{
+> +	return regmap_read(data->regmap, VEML6075_CMD_UVB, uvb);
+
+Up to you, but to my mind wrappers that basically do nothing beyond calling
+regmap_read() don't aid code readability - so you might as well call the regmap_read
+inline.
+
+> +}
+> +
+> +static int veml6075_read_uv_direct(struct veml6075_data *data, int chan,
+> +				   int *val)
+> +{
+> +	int c1, c2, ret;
+> +
+> +	ret = veml6075_request_measurement(data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = veml6075_read_comp(data, &c1, &c2);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	switch (chan) {
+> +	case CH_UVA:
+> +		ret = veml6075_read_uva_count(data, val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		*val = veml6075_uva_comp(*val, c1, c2);
+> +		break;
+> +	case CH_UVB:
+> +		ret = veml6075_read_uvb_count(data, val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		*val = veml6075_uvb_comp(*val, c1, c2);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return IIO_VAL_INT;
+return directly above. Lets us see the type right next to the functions
+filling in val.
+
+> +}
+
+
+> +
+> +static int veml6075_read_responsivity(int chan, int *val, int *val2)
+> +{
+> +	/* scale = 1 / resp */
+> +	switch (chan) {
+> +	case CH_UVA:
+> +		/* resp = 0.93 c/uW/cm2: scale = 1.75268817 */
+> +		*val = 1;
+> +		*val2 = 75268817;
+> +		break;
+> +	case CH_UVB:
+> +		/* resp = 2.1 c/uW/cm2: scale = 0.476190476 */
+> +		*val = 0;
+> +		*val2 = 476190476;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return IIO_VAL_INT_PLUS_NANO;
+return instead of break above, so the formatting is right next to the values.
+
+> +}
+> +
+> +static int veml6075_read_raw(struct iio_dev *indio_dev,
+> +			     struct iio_chan_spec const *chan,
+> +			     int *val, int *val2, long mask)
+> +{
+> +	struct veml6075_data *data = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		mutex_lock(&data->lock);
+> +		ret = veml6075_read_uv_direct(data, chan->channel, val);
+> +		break;
+> +	case IIO_CHAN_INFO_PROCESSED:
+> +		mutex_lock(&data->lock);
+
+Use guard(mutex)(&data->lock); and appropriate scope (add {})
+so you can return directly from each of these.
+Current scheme of unlocking is nasty.
+
+Note that if we didn't have those, just unlocking before break;
+in each of these would be better than what you currently have where
+the lock scope is hard to follow.
+
+> +		ret = veml6075_read_uvi(data, val, val2);
+> +		break;
+> +	case IIO_CHAN_INFO_INT_TIME:
+> +		mutex_lock(&data->lock);
+> +		ret = veml6075_read_int_time_ms(data, val);
+> +		break;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		return veml6075_read_responsivity(chan->channel, val, val2);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_unlock(&data->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int veml6075_write_int_time_ms(struct veml6075_data *data, int val)
+> +{
+
+> +	int conf, i = ARRAY_SIZE(veml6075_it_ms);
+
+Don't combine variable declarations that set values with ones that don't.
+It's just a little bit hard to read, so better to use multiple lines if
+you are setting values.
+
+> +
+> +	while (i-- > 0) {
+> +		if (val == veml6075_it_ms[i])
+> +			break;
+> +	}
+> +	if (i < 0)
+> +		return -EINVAL;
+> +
+> +	conf = FIELD_PREP(VEML6075_CONF_IT, i);
+
+Put this conf inline in the call below.  Saves us a few lines and
+an unnecessary local variable.
+
+> +
+> +	return regmap_update_bits(data->regmap, VEML6075_CMD_CONF,
+> +				  VEML6075_CONF_IT, conf);
+> +}
+> +
+> +static int veml6075_write_raw(struct iio_dev *indio_dev,
+> +			      struct iio_chan_spec const *chan,
+> +			      int val, int val2, long mask)
+> +{
+> +	struct veml6075_data *data = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_INT_TIME:
+> +		mutex_lock(&data->lock);
+
+A nice place to use the new automated guard stuff.
+Cleanest here is probably scoped_guard.
+
+	case IIO_CHAN_INFO_INT_TIME: {
+		guard(mutex)(&data->lock);
+		return veml6075_write_int_time_ms(data, val);
+	}
+> +		ret = veml6075_write_int_time_ms(data, val);
+> +		mutex_unlock(&data->lock);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+
+Then drop this return ret; Which incidentally can return uninitialized values
+in current code.  Also worth noting this would still be needed if you did a
+scoped_guard() above in order to squash a compiler warning.
+
+> +	return ret;
+> +}
+> +
+> +static const struct iio_info veml6075_info = {
+> +	.read_raw = veml6075_read_raw,
+> +	.write_raw = veml6075_write_raw,
+> +	.attrs = &veml6075_attribute_group,
+> +};
+...
+
+> +
+> +static int veml6075_probe(struct i2c_client *client)
+> +{
+> +	struct veml6075_data *data;
+> +	struct iio_dev *indio_dev;
+> +	struct regmap *regmap;
+> +	int config, ret;
+> +
+> +	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*data));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	regmap = devm_regmap_init_i2c(client, &veml6075_regmap_config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	data = iio_priv(indio_dev);
+> +	i2c_set_clientdata(client, indio_dev);
+> +	data->client = client;
+> +	data->regmap = regmap;
+> +
+> +	mutex_init(&data->lock);
+> +
+> +	indio_dev->name = VEML6075_DRIVER_NAME;
+
+As below, I'd rather see the string here.
+
+> +	indio_dev->info = &veml6075_info;
+> +	indio_dev->channels = veml6075_channels;
+> +	indio_dev->num_channels = ARRAY_SIZE(veml6075_channels);
+> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +
+> +	ret = devm_regulator_get_enable_optional(&client->dev, "vdd");
+
+Main power supplies tend not to be optional... They may not have been specified
+if they are always on, but in that case the regulator framework will provide us
+with a fake regulator anyway so that's safe.  Hence just
+devm_regulator_get_enable()
+
+
+
+> +	if (ret < 0 && ret != -ENODEV)
+> +		return ret;
+> +
+> +	/* default: 100ms integration time, active force enable, shutdown */
+> +	config = FIELD_PREP(VEML6075_CONF_IT, VEML6075_CONF_IT_100) |
+> +		VEML6075_CONF_AF | VEML6075_CONF_SD;
+
+For consistency, use FIELD_PREP for all fields, even the single bit ones.
+
+> +	ret = regmap_write(data->regmap, VEML6075_CMD_CONF, config);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return iio_device_register(indio_dev);
+> +}
+> +
+> +static void veml6075_remove(struct i2c_client *client)
+> +{
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +
+> +	iio_device_unregister(indio_dev);
+
+Finding just a device unregister in here is odd...
+If you need to handle this manually as opposed to
+devm_iio_device_register() and automated cleanup, then there would need
+to be something else to do first.
+
+> +}
+> +
+> +static const struct i2c_device_id veml6075_id[] = {
+> +	{ "veml6075", 0 },
+
+The 0 isn't used so I wouldn't set it explicitly - it will be zeroed anyway
+due to how C handles this sort of initializer.
+
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(i2c, veml6075_id);
+> +
+> +static const struct of_device_id veml6075_of_match[] = {
+> +	{ .compatible = "vishay,veml6075" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, veml6075_of_match);
+> +
+> +static struct i2c_driver veml6075_driver = {
+> +	.driver = {
+> +		.name   = VEML6075_DRIVER_NAME,
+I'm not a fan of putting a string used as a device indentifier behind
+a define as I like to be able to quickly check what .name is set to.
+So I'd rather just see the string inline in all the places this is used.
+
+Jonathan
+
 
