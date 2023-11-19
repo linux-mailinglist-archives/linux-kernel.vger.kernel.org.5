@@ -2,176 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5D97F092A
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59EA7F0931
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 22:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbjKSVhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 16:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
+        id S231447AbjKSVpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 16:45:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbjKSVhw (ORCPT
+        with ESMTP id S229470AbjKSVpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 16:37:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7DF103
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:37:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A925FC433C8;
-        Sun, 19 Nov 2023 21:37:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700429868;
-        bh=SOUSzxWFpGvTFg8xsNhCOyw7D4dQ6NcCou4fwO6LN3g=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=egyAyFsF6+WNiGOEYzYL6yiLf3G5YeaGGcMdJwvl4JzxaWfJmnF3TijauX1nA1qIS
-         DgBmeX8a2aicHITiOeKeGR/E1lclFH5HoKJKVbS1yqV2eVOlnYaGcjPZNAaxFulL4z
-         pDeFYViXzjMuDgc85OngtlX2yDXAXY47MslcdBzvR288w07tALyNKIkSuCuGFIRjUO
-         jX/kcbdInI3xRiQT4KDi7ULtz+j7wSRoj57wA6QuuAg1NMoOB2WvyVcz1SRWiZ2Jx+
-         VhK/oA/dC9tUSPZ5tgFB+yfioftM/8aUKhxzlTxQEFvI8eXOlDL8AgNCkrrp9u2Eq+
-         TVb5QiujghUPA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 19 Nov 2023 23:37:45 +0200
-Message-Id: <CX342W32D30U.330BVFC336MA8@kernel.org>
-Cc:     "Lukas Wunner" <lukas@wunner.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: tpm_tis_spi_remove() triggers WARN_ON() in __flushwork (RPi3B+
- and SLB9670)
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     <linux-integrity@vger.kernel.org>,
-        "Lino Sanfilippo" <l.sanfilippo@kunbus.com>
-X-Mailer: aerc 0.15.2
-References: <CX32RFOMJUQ0.3R4YCL9MDCB96@kernel.org>
-In-Reply-To: <CX32RFOMJUQ0.3R4YCL9MDCB96@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 19 Nov 2023 16:45:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF4FE0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 13:45:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700430326; x=1731966326;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=HU0p3CbWSWu0mTEMjJkPI32kfesmO2jT6GSlf+DcvPw=;
+  b=bkTkoz0/ohXakJ+3EdbyY4wvm9bvgzl7TVSbHoYH676VxnjTqtWsLect
+   s2Z5B3WDScvH1MCHWB3mgsz97JWtnit+wsr+jw3OrWVHfyyqV0ftdbWQK
+   4fqsMF3Yw20T4GPYVOELhZ078nDXog8621k+u7SpIeKQTH+IlnK9foUGe
+   LnrOvgPO1uDwn3l1mP9CJdlSE+GfIRN+7XdRi3LTNRYhjdCDjofufhYtC
+   pchdM2WZwaI+ahEDpH96J8vrzO9Z7Paz3EyeLpvciG646FG+kncYS3+Ac
+   QUdNgkS5PNw8LDZp4pFmKlzpjkzuGxYCve3N5ehIT3Q8rFk5VyVrU5hTJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="376558225"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="376558225"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 13:45:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="909921347"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="909921347"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Nov 2023 13:45:24 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4pbW-0005bG-03;
+        Sun, 19 Nov 2023 21:45:22 +0000
+Date:   Mon, 20 Nov 2023 05:44:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/btree_cache.c:456:15: sparse: sparse: Using plain
+ integer as NULL pointer
+Message-ID: <202311200512.l1n53SlO-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun Nov 19, 2023 at 10:35 PM EET, Jarkko Sakkinen wrote:
-> Captured from serial link with Raspberry Pi 3B+ and Infineon SLB9670 TPM2=
- chip, i.e.
-> triggers here:
->
-> static bool __flush_work(struct work_struct *work, bool from_cancel)
-> {
-> 	struct wq_barrier barr;
->
-> 	if (WARN_ON(!wq_online))
-> 		return false;
->
-> 	if (WARN_ON(!work->func)) /* <-- */
-> 		return false;
->
->
-> # uname -a
-> Linux buildroot 6.6.1-v8 #1 SMP PREEMPT Sun Nov 19 21:46:00 EET 2023 aarc=
-h64 GNU/Linux
-> # poweroff
-> # Stopping dropbear sshd: OK
-> Stopping network: [  246.487818] smsc95xx 3-1.1:1.0 eth0: hardware isn't =
-capable of remote wakeup
-> OK
-> Stopping klogd: OK
-> Stopping syslogd: OK
-> Seeding 256 bits and crediting
-> Saving 256 bits of creditable seed for next boot
-> umount: devtmpfs busy - remounted read-only
-> [  246.623163] EXT4-fs (mmcblk0p2): re-mounted c5bb63df-c03e-4e4a-9846-0c=
-df5986edc4 ro. Quota mode: none.
-> The system is going down NOW!
-> Sent SIGTERM to all processes
-> Sent SIGKILL to al[  248.680154] ------------[ cut here ]------------
-> [  248.684825] WARNING: CPU: 1 PID: 298 at kernel/workqueue.c:3400 __flus=
-h_work.isra.0+0x29c/0x2c4
-> [  248.693582] CPU: 1 PID: 298 Comm: init Tainted: G        W          6.=
-6.1-v8 #1
-> [  248.700926] Hardware name: Raspberry Pi 3 Model B Rev 1.2 (DT)
-> [  248.706780] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYP=
-E=3D--)
-> [  248.713774] pc : __flush_work.isra.0+0x29c/0x2c4
-> [  248.718415] lr : __flush_work.isra.0+0x44/0x2c4
-> [  248.722970] sp : ffffffc0812fb910
-> [  248.726299] x29: ffffffc0812fb910 x28: ffffff8003e30e40 x27: 000000000=
-0000000
-> [  248.733481] x26: fffffff0350c9c10 x25: 0000000000000000 x24: fffffff03=
-500c028
-> [  248.740661] x23: fffffff03500d208 x22: 0000000000000001 x21: fffffff03=
-4f37568
-> [  248.747840] x20: ffffff80064d9ac0 x19: ffffff80064d9a80 x18: fffffffff=
-fffffff
-> [  248.755019] x17: 0000000000000000 x16: 0000000000000000 x15: ffffffc08=
-12fb760
-> [  248.762197] x14: 0000000000000004 x13: ffffff8002808410 x12: 000000000=
-0000000
-> [  248.769376] x11: 0000000000000040 x10: fffffff034f35a98 x9 : 000000000=
-0000004
-> [  248.776554] x8 : ffffffc0812fb9a8 x7 : 0000000000000000 x6 : 000000000=
-00003e8
-> [  248.783732] x5 : fffffff034e46000 x4 : 0000000000000000 x3 : 000000000=
-0000000
-> [  248.790909] x2 : 0000000000000008 x1 : 0000000000000000 x0 : 000000000=
-0000000
-> [  248.798087] Call trace:
-> [  248.800546]  __flush_work.isra.0+0x29c/0x2c4
-> [  248.804841]  flush_work+0x10/0x1c
-> [  248.808177]  tpm_tis_remove+0x90/0xc8
-> [  248.811866]  tpm_tis_spi_remove+0x24/0x34
-> [  248.815901]  spi_remove+0x30/0x4c
-> [  248.819238]  device_remove+0x4c/0x80
-> [  248.822836]  device_release_driver_internal+0x1d4/0x228
-> [  248.828088]  device_release_driver+0x18/0x24
-> [  248.832381]  bus_remove_device+0xcc/0x10c
-> [  248.836421]  device_del+0x15c/0x41c
-> [  248.839934]  spi_unregister_device+0x48/0x98
-> [  248.844231]  __unregister+0x10/0x20
-> [  248.847742]  device_for_each_child+0x60/0xb4
-> [  248.852037]  spi_unregister_controller+0x48/0x15c
-> [  248.856768]  bcm2835_spi_remove+0x20/0x60
-> [  248.860804]  platform_shutdown+0x24/0x34
-> [  248.864751]  device_shutdown+0x150/0x258
-> [  248.868701]  kernel_power_off+0x38/0x7c
-> [  248.872563]  __do_sys_reboot+0x200/0x238
-> [  248.876511]  __arm64_sys_reboot+0x24/0x30
-> [  248.880546]  invoke_syscall+0x48/0x114
-> [  248.884324]  el0_svc_common.constprop.0+0x40/0xe0
-> [  248.889057]  do_el0_svc+0x1c/0x28
-> [  248.892397]  el0_svc+0x40/0xe8
-> [  248.895478]  el0t_64_sync_handler+0x100/0x12c
-> [  248.899864]  el0t_64_sync+0x190/0x194
-> [  248.903549] ---[ end trace 0000000000000000 ]---
-> [  248.910555] reboot: Power down
->
-> Just putting out. I was testing https://github.com/jarkkojs/buildroot-tpm=
-dd/tree/linux-6.6.y
-> and this popped up. To build sdcard.img bootable with Raspberry Pi 3:
->
-> make raspberrypi3_tpmdd_64_defconfig && make
->
-> BR, Jarkko
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   037266a5f7239ead1530266f7d7af153d2a867fa
+commit: 1c6fdbd8f2465ddfb73a01ec620cbf3d14044e1a bcachefs: Initial commit
+date:   4 weeks ago
+config: hexagon-randconfig-r121-20231119 (https://download.01.org/0day-ci/archive/20231120/202311200512.l1n53SlO-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20231120/202311200512.l1n53SlO-lkp@intel.com/reproduce)
 
-So I applied [1] and now I get a clean shutdown:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311200512.l1n53SlO-lkp@intel.com/
 
-# poweroff
-# Stopping dropbear sshd: OK
-Stopping network: [   66.189514] smsc95xx 3-1.1:1.0 eth0: hardware isn't ca=
-pable of remote wakeup
-OK
-Stopping klogd: OK
-Stopping syslogd: OK
-Seeding 256 bits and crediting
-Saving 256 bits of creditable seed for next boot
-umount: devtmpfs busy - remounted read-only
-[   66.353850] EXT4-fs (mmcblk0p2): re-mounted 6accf2b0-3291-4e1e-90e0-1c75=
-802d14cd ro. Quota mode: none.
-The system is going down NOW!
-Sent SIGTERM to all processes
-Sent SIGKILL to a[   68.412015] reboot: Power down
+sparse warnings: (new ones prefixed by >>)
+>> fs/bcachefs/btree_cache.c:456:15: sparse: sparse: Using plain integer as NULL pointer
+   fs/bcachefs/btree_cache.c:468:15: sparse: sparse: Using plain integer as NULL pointer
+   fs/bcachefs/btree_cache.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
+   fs/bcachefs/btree_cache.c: note: in included file (through include/linux/backing-dev-defs.h, fs/bcachefs/bcachefs.h):
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
+   include/linux/list.h:83:21: sparse: sparse: self-comparison always evaluates to true
 
-[1] https://github.com/jarkkojs/buildroot-tpmdd/blob/linux-6.6.y/patches/li=
-nux/0001-Revert-tpm-tpm_tis-Disable-interrupts-after-1000-unh.patch
+vim +456 fs/bcachefs/btree_cache.c
 
-BR, Jarkko
+   450	
+   451	int bch2_btree_cache_cannibalize_lock(struct bch_fs *c, struct closure *cl)
+   452	{
+   453		struct btree_cache *bc = &c->btree_cache;
+   454		struct task_struct *old;
+   455	
+ > 456		old = cmpxchg(&bc->alloc_lock, NULL, current);
+   457		if (old == NULL || old == current)
+   458			goto success;
+   459	
+   460		if (!cl) {
+   461			trace_btree_node_cannibalize_lock_fail(c);
+   462			return -ENOMEM;
+   463		}
+   464	
+   465		closure_wait(&bc->alloc_wait, cl);
+   466	
+   467		/* Try again, after adding ourselves to waitlist */
+   468		old = cmpxchg(&bc->alloc_lock, NULL, current);
+   469		if (old == NULL || old == current) {
+   470			/* We raced */
+   471			closure_wake_up(&bc->alloc_wait);
+   472			goto success;
+   473		}
+   474	
+   475		trace_btree_node_cannibalize_lock_fail(c);
+   476		return -EAGAIN;
+   477	
+   478	success:
+   479		trace_btree_node_cannibalize_lock(c);
+   480		return 0;
+   481	}
+   482	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
