@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA827F0893
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE7B7F0894
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbjKSTtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S231854AbjKSTt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231644AbjKSTtB (ORCPT
+        with ESMTP id S231661AbjKSTtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:49:01 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D16D6E
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:41 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6c4cf0aea06so3616039b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:41 -0800 (PST)
+        Sun, 19 Nov 2023 14:49:09 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B842CD49
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:44 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2ec5ee2e4so2610802b6e.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423320; x=1701028120; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700423324; x=1701028124; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ppA1yq5tSXPW7Cplga4R0sTrIzgEEoc6Te1dihtlR90=;
-        b=WSg1wBRpJmuTftOP9HXoBZo5KW4YFAwao7tV1HOTnZUWYybr4Vw5Vtm8iGjBbLHDt2
-         rUKfm49N5LoVnKrQIy5c0pHG3t6wT0gAj7cuP6A6ADVwvDxGXFrj31z5JFGjVIg5U5yo
-         lB6veVIkWScSgwLVHu02G+rK23A3ex5VL95WJ/x9lhj0CJPwp5p6/R6bmTNYvAPsdOki
-         lMK/ho/QlpYtFnndd6ATcsy2Ex/Hprfx77X9Y0zbWKFrWYKJKkSsElGJdJq+yfn+47zO
-         TmGadhtt3i17FSs4vnDZilPH4Dc8nQkdCGU/sJZt3ukcEcnC7rkUckv/PQpbFYYhVcxz
-         OTmQ==
+        bh=5hBTip8l+rVWgXZvgeAFfyX4NMH7GqXDBsHUYVWi3uA=;
+        b=UtyXFX0e8/Ek/UERAhjAlWMzQLzTdg1YsOffvyqWYEG5x7xqYEA9coS/BQHM1Cx7ZG
+         tI/6PmGbi7sUpz5Tq/0QuBh3z0CILn4eD0vrPpcNx2tgfkp1qPipIaWVSPUzQThbLdwN
+         jlhbGQlKII2fg4nKvDsIkcqqfXIOQhJJFHgqSqIaJYIMQVNe6xzCdwWD79+/3KnFxkIN
+         TcDMpUvQHTpDKP4f4GyW630CuWVXw9BO1jMVQajqB0yb+YsXe7WCcRiA0qK1de1MJyg+
+         jkyaB/0+PCZ0ulxvictw8dWMjgSQP2EgMZVMsJwgvOz/9nsdzaal7u+BNGcF6iepH6LW
+         GH3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423320; x=1701028120;
+        d=1e100.net; s=20230601; t=1700423324; x=1701028124;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ppA1yq5tSXPW7Cplga4R0sTrIzgEEoc6Te1dihtlR90=;
-        b=USGLHsPSwhnMNI+myGSlSaTSIYB6Vr2iYkUfedA0UciFpWaoX8AbbbDLeyuuVlu6rp
-         lmdRy6NfKpmDsZHGMc70MBb+UEJLmzRnS+iOjBkGQQavmnY9BxXPON06YC8Q7fdOx037
-         N2ltz6APhtLpqBk9O8tdEFxjui08584qbIY5RoJY6EmVA7zY0T2OGBa9dBO7wT1G1G6c
-         W2B/s1w35CTERmUhdEEqpq5WqNVv4svI6MtedxzSSglXbM5Nz/UJU+9leOBlFc0PFhaC
-         0GHGIKDQ6++RhAYMBvU58v+T8bvmAibgixhJu8Mx9v51hy7DQM6Zfoa9ADoqNVyNl1dk
-         gfQw==
-X-Gm-Message-State: AOJu0Yzj+pwdJRlgqOTS36CH6eTqT4UilA050mB6wrb2aAaXciXwXCDZ
-        uijzgzsFF1dVn1kZcJ8XQQ0=
-X-Google-Smtp-Source: AGHT+IEBKHSE8kWnJJK8rM1dJTQqf5O5zE26MX7FuQ337U8kKzHMmekWO97Hh8Tc9mKAekA3sDGJiw==
-X-Received: by 2002:a05:6a00:1ca9:b0:6cb:a434:b58f with SMTP id y41-20020a056a001ca900b006cba434b58fmr619405pfw.33.1700423320649;
-        Sun, 19 Nov 2023 11:48:40 -0800 (PST)
+        bh=5hBTip8l+rVWgXZvgeAFfyX4NMH7GqXDBsHUYVWi3uA=;
+        b=IocGKSInJPDQxeJAX74SOzPcR/aQYuKSLAwpo10JZhbIWYBsws+Ga83ReVt0EGQtiu
+         +LMju/kXgzw0xd/EVtP+/ExMt5HugZddezpE1JCTS4W5HbGjDC53m+Zna75FrUBhCM3+
+         Z7mBJU203kScmNGpY8x2ZDEQKiK/LN8Z+0TS6oAmmhNrRN/Ld96yCXEoPQmfC8hcxCuT
+         5b4C2bguz/LRuWkYXSUoU+RQZbPKTtiqHUCy38qWGjpvT25FSdot6GMZpSjeLzXYAmz2
+         q2KE9Q/iZZED7lspvd3TFSwdZR6tdD0fSxPNT2ITQcAmUVSk0/ryCF3mS2JXoJXULVcY
+         JbDA==
+X-Gm-Message-State: AOJu0Yzm8pgyUo1gRv9vKc/yrbniJtnpP7BTnHktKfsqhIY4c2ZhVQeE
+        bTU+SJidFmF4h7wdXQui5aw=
+X-Google-Smtp-Source: AGHT+IEailrfhPaQZQEKYeEqmxWit7bC+nmAWDqCtHjGUNXtOgvTTA/qDqxaYEq3DlyE+hI13556Tg==
+X-Received: by 2002:a05:6808:3a10:b0:3ae:bae2:fa76 with SMTP id gr16-20020a0568083a1000b003aebae2fa76mr10473632oib.36.1700423323924;
+        Sun, 19 Nov 2023 11:48:43 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.37
+        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.40
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:48:40 -0800 (PST)
+        Sun, 19 Nov 2023 11:48:43 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Kairui Song <kasong@tencent.com>
-Subject: [PATCH 12/24] mm/swap: simplify arguments for swap_cache_get_folio
-Date:   Mon, 20 Nov 2023 03:47:28 +0800
-Message-ID: <20231119194740.94101-13-ryncsn@gmail.com>
+Subject: [PATCH 13/24] swap: simplify swap_cache_get_folio
+Date:   Mon, 20 Nov 2023 03:47:29 +0800
+Message-ID: <20231119194740.94101-14-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
 References: <20231119194740.94101-1-ryncsn@gmail.com>
@@ -81,92 +81,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-There are only two caller now, simplify the arguments.
+Rearrange the if statement, reduce the code indent, no feature change.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/shmem.c      |  2 +-
- mm/swap.h       |  2 +-
- mm/swap_state.c | 15 +++++++--------
- 3 files changed, 9 insertions(+), 10 deletions(-)
+ mm/swap_state.c | 58 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 28 insertions(+), 30 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 0d1ce70bce38..72239061c655 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1875,7 +1875,7 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
- 	}
- 
- 	/* Look it up and read it in.. */
--	folio = swap_cache_get_folio(swap, NULL, 0);
-+	folio = swap_cache_get_folio(swap, NULL);
- 	if (!folio) {
- 		/* Or update major stats only when swapin succeeds?? */
- 		if (fault_type) {
-diff --git a/mm/swap.h b/mm/swap.h
-index ac9136eee690..e43e965f123f 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -47,7 +47,7 @@ void delete_from_swap_cache(struct folio *folio);
- void clear_shadow_from_swap_cache(int type, unsigned long begin,
- 				  unsigned long end);
- struct folio *swap_cache_get_folio(swp_entry_t entry,
--		struct vm_area_struct *vma, unsigned long addr);
-+				   struct vm_fault *vmf);
- struct folio *filemap_get_incore_folio(struct address_space *mapping,
- 		pgoff_t index);
- 
 diff --git a/mm/swap_state.c b/mm/swap_state.c
-index e96d63bf8a22..91461e26a8cc 100644
+index 91461e26a8cc..3b5a34f47192 100644
 --- a/mm/swap_state.c
 +++ b/mm/swap_state.c
-@@ -334,8 +334,7 @@ static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
-  *
-  * Caller must lock the swap device or hold a reference to keep it valid.
+@@ -336,41 +336,39 @@ static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
   */
--struct folio *swap_cache_get_folio(swp_entry_t entry,
--		struct vm_area_struct *vma, unsigned long addr)
-+struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *vmf)
+ struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *vmf)
  {
++	bool vma_ra, readahead;
  	struct folio *folio;
  
-@@ -352,22 +351,22 @@ struct folio *swap_cache_get_folio(swp_entry_t entry,
- 			return folio;
+ 	folio = filemap_get_folio(swap_address_space(entry), swp_offset(entry));
+-	if (!IS_ERR(folio)) {
+-		bool vma_ra = swap_use_vma_readahead(swp_swap_info(entry));
+-		bool readahead;
++	if (IS_ERR(folio))
++		return NULL;
  
- 		readahead = folio_test_clear_readahead(folio);
--		if (vma && vma_ra) {
-+		if (vmf && vma_ra) {
- 			unsigned long ra_val;
- 			int win, hits;
+-		/*
+-		 * At the moment, we don't support PG_readahead for anon THP
+-		 * so let's bail out rather than confusing the readahead stat.
+-		 */
+-		if (unlikely(folio_test_large(folio)))
+-			return folio;
+-
+-		readahead = folio_test_clear_readahead(folio);
+-		if (vmf && vma_ra) {
+-			unsigned long ra_val;
+-			int win, hits;
+-
+-			ra_val = GET_SWAP_RA_VAL(vmf->vma);
+-			win = SWAP_RA_WIN(ra_val);
+-			hits = SWAP_RA_HITS(ra_val);
+-			if (readahead)
+-				hits = min_t(int, hits + 1, SWAP_RA_HITS_MAX);
+-			atomic_long_set(&vmf->vma->swap_readahead_info,
+-					SWAP_RA_VAL(vmf->address, win, hits));
+-		}
++	/*
++	 * At the moment, we don't support PG_readahead for anon THP
++	 * so let's bail out rather than confusing the readahead stat.
++	 */
++	if (unlikely(folio_test_large(folio)))
++		return folio;
  
--			ra_val = GET_SWAP_RA_VAL(vma);
-+			ra_val = GET_SWAP_RA_VAL(vmf->vma);
- 			win = SWAP_RA_WIN(ra_val);
- 			hits = SWAP_RA_HITS(ra_val);
- 			if (readahead)
- 				hits = min_t(int, hits + 1, SWAP_RA_HITS_MAX);
--			atomic_long_set(&vma->swap_readahead_info,
--					SWAP_RA_VAL(addr, win, hits));
-+			atomic_long_set(&vmf->vma->swap_readahead_info,
-+					SWAP_RA_VAL(vmf->address, win, hits));
- 		}
+-		if (readahead) {
+-			count_vm_event(SWAP_RA_HIT);
+-			if (!vmf || !vma_ra)
+-				atomic_inc(&swapin_readahead_hits);
+-		}
+-	} else {
+-		folio = NULL;
++	vma_ra = swap_use_vma_readahead(swp_swap_info(entry));
++	readahead = folio_test_clear_readahead(folio);
++	if (vmf && vma_ra) {
++		unsigned long ra_val;
++		int win, hits;
++
++		ra_val = GET_SWAP_RA_VAL(vmf->vma);
++		win = SWAP_RA_WIN(ra_val);
++		hits = SWAP_RA_HITS(ra_val);
++		if (readahead)
++			hits = min_t(int, hits + 1, SWAP_RA_HITS_MAX);
++		atomic_long_set(&vmf->vma->swap_readahead_info,
++				SWAP_RA_VAL(vmf->address, win, hits));
++	}
++
++	if (readahead) {
++		count_vm_event(SWAP_RA_HIT);
++		if (!vmf || !vma_ra)
++			atomic_inc(&swapin_readahead_hits);
+ 	}
  
- 		if (readahead) {
- 			count_vm_event(SWAP_RA_HIT);
--			if (!vma || !vma_ra)
-+			if (!vmf || !vma_ra)
- 				atomic_inc(&swapin_readahead_hits);
- 		}
- 	} else {
-@@ -926,7 +925,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
- 	struct page *page;
- 	pgoff_t ilx;
- 
--	folio = swap_cache_get_folio(entry, vmf->vma, vmf->address);
-+	folio = swap_cache_get_folio(entry, vmf);
- 	if (folio) {
- 		page = folio_file_page(folio, swp_offset(entry));
- 		cache_result = SWAP_CACHE_HIT;
+ 	return folio;
 -- 
 2.42.0
 
