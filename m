@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AB17F0645
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD597F0647
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjKSNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:04:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S231208AbjKSNE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjKSNEk (ORCPT
+        with ESMTP id S230434AbjKSNE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:04:40 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE5D1B4;
-        Sun, 19 Nov 2023 05:04:36 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso4963662e87.1;
-        Sun, 19 Nov 2023 05:04:36 -0800 (PST)
+        Sun, 19 Nov 2023 08:04:57 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1210D65;
+        Sun, 19 Nov 2023 05:04:50 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9f27af23441so472318266b.2;
+        Sun, 19 Nov 2023 05:04:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700399075; x=1701003875; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700399089; x=1701003889; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NzT0lRkt7N8UBpPYeMIE5NMpA+DwB2IGbll8lyHIHPQ=;
-        b=isGSUOXyEBJ8AgA47jcK4jRio5s4qVPpu0yCYTrrM6vdwel4vghE4K41Ka3ecrxR39
-         O1fJHZDN75RwQJtdlRfqeKYuzqigYvHtOd43leXK67ieNokUjLd+Xs+bCfMs48Y3hL9E
-         jQrWBafMkNrd6djXZcvCnI3G241aGZBp2yzUY8b287KnwxeEA/vK6N5kYW7pEXdt+64g
-         9AMoS00W0e+TNsHTL1XnjhTQED5hp41Xc9w+uZ0+5Qg2cBovwEV5wQF4iwvFFWhdt5Pk
-         b4tlUavJn4S+lhwaPGCiJVxPxzip1F/OzJEGO5L2NLbK2vsmRAv04CyyZ28SVWU+IPGW
-         CaOg==
+        bh=5D7FwSNbPTp8jaj1UJACdG2GoQE4etSzcaqgDznPLTY=;
+        b=KYOAoj0w0I3g6VwGZAY+lJ7HASeADlWHsd+kBci6BDHhH29Yn33ObPNJOv838N5xye
+         /s9EIN1MYi4oPxeNTRhyKWKgWBz/glUJPWIBNTyMivZIrNdrg3eraIzWdtBtwrfSfikZ
+         GzY0XFxZZfrPhhQaK1gilDq6wunBn4f/em09W3fVcOgEuOxs5P4IpN/XuH/Xd3QT+Vi5
+         jRs/wZkWTWrV9iFhnEwNIFYlLUBbSWgj8IHUO1UUnjXtO5RWbPA8UMXt0SBkjrlw3W/M
+         KKCkjqCc1yfyJubtZ963JQDs3GkUku/EEZOlTas041FrTRqBAXJVPXI8WcevlF6CP0tP
+         nXYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700399075; x=1701003875;
+        d=1e100.net; s=20230601; t=1700399089; x=1701003889;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NzT0lRkt7N8UBpPYeMIE5NMpA+DwB2IGbll8lyHIHPQ=;
-        b=Tsu5tTUSeg7USOr9DDZZP5LYy+OBV7tx4AWIncVGXIXrHtegNSGP92XBcKSqL9nE61
-         pvdipUZ04j2oJC4fVaZEzc5Re6rAOVS+A3DGGVDrAFkY9JDITxwhH6+qZ9r+vvd1MXtu
-         U0SextzsPr7ROQz0OHgCLKX6GQ7kxRzeC5yPCy13dBfW0+LfqJwkQSUWHI8NKCHlyRFQ
-         HX2ZtZ3Tuy6+lcFwUcRr8SmnR3SYEOU63HiwBc4SRH3q1AIDGOiA9kAJdNCzgmfEdoGL
-         0mEwQ8pi96vyawTGqZq1uBGxPXiadLXTNOsjzba/hJI/rjBrGmUehySOFl4PcL/ZFwxS
-         lCuA==
-X-Gm-Message-State: AOJu0YyusofQJg6pd6L8u7zEulJmNDYe58rG21ylHTZHzcCmTaP5ShG7
-        GbBubd4tirYGLQNtQnDsXEWACq6O4g==
-X-Google-Smtp-Source: AGHT+IHKIxJAIXgZQLYbHr6rTD0G7bwgZjyxT5KiMK1hCbcOm03nmnlAG9qhMMglsw+0h+Kf8N32VQ==
-X-Received: by 2002:a05:6512:41d:b0:503:1d46:6f29 with SMTP id u29-20020a056512041d00b005031d466f29mr3342940lfk.37.1700399074597;
-        Sun, 19 Nov 2023 05:04:34 -0800 (PST)
+        bh=5D7FwSNbPTp8jaj1UJACdG2GoQE4etSzcaqgDznPLTY=;
+        b=swASwqRrs1QznNuEH04GjKjE9DYWR5XIwI42svORmZDlNJtueBa/fkOfuzoW66bFu6
+         tzCWeoC0LLb1KxJxH69laz78jyCPsRnhBVFqYWErYrwEVOsdH/5ILGPqZXBP52W1qK/G
+         X7DKFkYrclHcWpLXV70HRtV7XmAqIhTrQHFXB1Iquc7J61cw5fdj73E05p0yiP9nWcwV
+         sFlez+RBBl5kL9AbQIrW21xQl+kq9je22dViqRSHYe8Et0BcGWpNIwUrLpn1VW1yVdh/
+         OhSh4UShoWe36Kld0V/mwvFGvAly7CiOb9fW/DPGFS7neU8myjKZt5PRuQt1fd7S7gLx
+         TSQw==
+X-Gm-Message-State: AOJu0YxKbtajsmIEXiZTyuq3RKiXpMLFH8LgzSx8YRXp7lO1n+OSwR4G
+        gcO+S9z4h0ZBaG3O1nwdJQ==
+X-Google-Smtp-Source: AGHT+IEwNDO4gimoaB9m92VdbE3A3oya64/Ue+tkhBwip4/WPt2BUK2ndGWYskgSHqJLW+J0pcgMkg==
+X-Received: by 2002:a17:906:2d0:b0:9b2:b152:b0f2 with SMTP id 16-20020a17090602d000b009b2b152b0f2mr3379718ejk.10.1700399088899;
+        Sun, 19 Nov 2023 05:04:48 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:7017:f42c:e243:8c57])
-        by smtp.gmail.com with ESMTPSA id n8-20020a1709062bc800b009dd8473559dsm2827866ejg.110.2023.11.19.05.04.33
+        by smtp.gmail.com with ESMTPSA id n8-20020a1709062bc800b009dd8473559dsm2827866ejg.110.2023.11.19.05.04.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 05:04:34 -0800 (PST)
+        Sun, 19 Nov 2023 05:04:48 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 1/3] dt-bindings: arm: rockchip: Add Geniatech XPI-3128
-Date:   Sun, 19 Nov 2023 14:03:51 +0100
-Message-ID: <20231119130351.112261-4-knaerzche@gmail.com>
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 2/3] ARM: dts: rockchip: Add sdmmc_det pinctrl for RK3128
+Date:   Sun, 19 Nov 2023 14:03:53 +0100
+Message-ID: <20231119130351.112261-6-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119130351.112261-2-knaerzche@gmail.com>
 References: <20231119130351.112261-2-knaerzche@gmail.com>
@@ -76,30 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Geniatech XPI-3128, a RK3128 based single board computer.
+The pincontrol for sd card detection is currently missing.
+Add it.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/rockchip/rk3128.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
-index 5f7c6c4aad8f..d3c5b25fc2fd 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -237,6 +237,11 @@ properties:
-           - const: geekbuying,geekbox
-           - const: rockchip,rk3368
+diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+index 7bf557c99561..797906ba321d 100644
+--- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
++++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
+@@ -843,6 +843,10 @@ sdmmc_cmd: sdmmc-cmd {
+ 				rockchip,pins = <1 RK_PB7 1 &pcfg_pull_default>;
+ 			};
  
-+      - description: Geniatech XPI-3128
-+        items:
-+          - const: geniatech,xpi-3128
-+          - const: rockchip,rk3128
++			sdmmc_det: sdmmc-det {
++				rockchip,pins = <1 RK_PC1 1 &pcfg_pull_default>;
++			};
 +
-       - description: Google Bob (Asus Chromebook Flip C101PA)
-         items:
-           - const: google,bob-rev13
+ 			sdmmc_wp: sdmmc-wp {
+ 				rockchip,pins = <1 RK_PA7 1 &pcfg_pull_default>;
+ 			};
 -- 
 2.42.0
 
