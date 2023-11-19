@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D88B7F0877
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655807F0878
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbjKST3i convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 19 Nov 2023 14:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S229677AbjKSTaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKST3h (ORCPT
+        with ESMTP id S229555AbjKSTaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:29:37 -0500
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090ADE5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:29:34 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5caa401f151so238157b3.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:29:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700422173; x=1701026973;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nSuZWXA7VX1qqz2aTwL0m12B4oKVg9yE4zPN8KTIR1o=;
-        b=M7i2QgDVwddSCIXkyHjXwmHtUhoOcFMLXb35aIN3fINi1ONWrIEquOsokPEjKb7GUB
-         0s7eSA6FbDE+ZDNCNZX6PN+uUfHMVKNptlJiQYcdKteMKC9QPE47BSDnwioxkZmbcZXi
-         /252n3mcF0UnL8VPJhyf65lqXAWNJfXYYsUgNlN+OtYgpbe4aNyQ4Zzzckvi18kOOuMh
-         TIu+ld76Cpc1wxym7piNBq7Mi2rNdU8LDusTKk5CDQbX2VUSxFfDTwnzhDtkBlEQHQ+s
-         pKcrF+eScYTxRb3P+dNMnkjBQ/wtCJcKnCW+XPPsp6llT3G+QX6QSAy/reyJhaVkZZAu
-         w78g==
-X-Gm-Message-State: AOJu0YxYBAb+lPgkoGgMZKVOtcH01qCrN9JaxpVQke37ufbRms9ozVmC
-        QpEPzY+axUBH8+oIBZ1D7jhXzM5kCyLAhA==
-X-Google-Smtp-Source: AGHT+IGs4kA1NcS9z39s+dv2OxhR6M6JeQ4dqPugxLQH7Yj3CQ2Qixq/YLzVJatPm9wY+ZcmHE62vQ==
-X-Received: by 2002:a05:690c:2b89:b0:5a7:af97:c787 with SMTP id en9-20020a05690c2b8900b005a7af97c787mr4597330ywb.11.1700422173134;
-        Sun, 19 Nov 2023 11:29:33 -0800 (PST)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id y7-20020a0def07000000b005a247c18403sm1917273ywe.37.2023.11.19.11.29.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Nov 2023 11:29:31 -0800 (PST)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5c5b9c142e8so30589707b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:29:30 -0800 (PST)
-X-Received: by 2002:a81:dd09:0:b0:5a7:fbd5:8c1 with SMTP id
- e9-20020a81dd09000000b005a7fbd508c1mr5935678ywn.17.1700422170381; Sun, 19 Nov
- 2023 11:29:30 -0800 (PST)
+        Sun, 19 Nov 2023 14:30:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A081E5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:30:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700422212; x=1731958212;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qFxr+/4CMEPIRZML3/Xa1WsTsz984n64GblEadV2PaY=;
+  b=f/7YzihdLdLnZty8n7yugpjEj9TfDJ2S0ENWWMhwj4kf1lTHUQOR3PT6
+   cJZGEtTj7WCEGhiwAbNjo6D5SWhUSwiu1PZlzDgRYc2Y3fjNYf+DiBaPx
+   u0+h8wB3q+GDrbHgQnqZr/mPa5GE6tVMKmGVrJyqS4YPIb/rNZrN3YZxd
+   QXLYOvyVPHtxrAloCcVM1Rrd38LA+zzDio8A9zGK/9zPCB6nZAyoR50GW
+   9TAn/fUP6QnmBDRsDmNEJZVXXbOaxYizo97qZ78FIH/Av/l3TFXgzfNZA
+   /8VECm37rmjvy0Er/Mm6xydad3B4TMhAig5M8qoCdh32ejf87eNGpTQRN
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="13071991"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="13071991"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 11:30:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="939608785"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="939608785"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 19 Nov 2023 11:30:10 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4nUd-0005To-2k;
+        Sun, 19 Nov 2023 19:30:07 +0000
+Date:   Mon, 20 Nov 2023 03:29:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/fsck.c:434:12: warning: stack frame size (1040) exceeds
+ limit (1024) in 'reattach_inode'
+Message-ID: <202311200325.hyLM4Sx8-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231118155105.25678-1-yury.norov@gmail.com> <20231118155105.25678-33-yury.norov@gmail.com>
-In-Reply-To: <20231118155105.25678-33-yury.norov@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Sun, 19 Nov 2023 20:29:19 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXXC+DjLOy6xaghjLh2OTaU81BTa1BwCoGfpyyV1XKctw@mail.gmail.com>
-Message-ID: <CAMuHMdXXC+DjLOy6xaghjLh2OTaU81BTa1BwCoGfpyyV1XKctw@mail.gmail.com>
-Subject: Re: [PATCH 32/34] m68k: rework get_mmu_context()
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-m68k@lists.linux-m68k.org, Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yuri,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   037266a5f7239ead1530266f7d7af153d2a867fa
+commit: a8b3a677e786fa869d220a6a78b5532a36dc2f4d bcachefs: Nocow support
+date:   4 weeks ago
+config: arm-randconfig-002-20231120 (https://download.01.org/0day-ci/archive/20231120/202311200325.hyLM4Sx8-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311200325.hyLM4Sx8-lkp@intel.com/reproduce)
 
-Thanks for your patch!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311200325.hyLM4Sx8-lkp@intel.com/
 
-On Sat, Nov 18, 2023 at 4:51 PM Yury Norov <yury.norov@gmail.com> wrote:
-> ALSA code opencodes atomic find_and_set_bit_wrap(). Switch it to
+All warnings (new ones prefixed by >>):
 
-ALSA?
+   In file included from fs/bcachefs/fsck.c:5:
+   In file included from fs/bcachefs/btree_update.h:5:
+   fs/bcachefs/btree_iter.h:248:8: warning: duplicate 'inline' declaration specifier [-Wduplicate-decl-specifier]
+   static inline int btree_trans_restart_nounlock(struct btree_trans *trans, int err)
+          ^
+   include/linux/compiler_types.h:215:16: note: expanded from macro 'inline'
+   #define inline inline __gnu_inline __inline_maybe_unused notrace
+                  ^
+   In file included from fs/bcachefs/fsck.c:5:
+   In file included from fs/bcachefs/btree_update.h:5:
+   fs/bcachefs/btree_iter.h:258:8: warning: duplicate 'inline' declaration specifier [-Wduplicate-decl-specifier]
+   static inline int btree_trans_restart(struct btree_trans *trans, int err)
+          ^
+   include/linux/compiler_types.h:215:16: note: expanded from macro 'inline'
+   #define inline inline __gnu_inline __inline_maybe_unused notrace
+                  ^
+   fs/bcachefs/fsck.c:1001:12: warning: stack frame size (1104) exceeds limit (1024) in 'check_inodes' [-Wframe-larger-than]
+   static int check_inodes(struct bch_fs *c, bool full)
+              ^
+   fs/bcachefs/fsck.c:1672:12: warning: stack frame size (1192) exceeds limit (1024) in 'check_dirents' [-Wframe-larger-than]
+   static int check_dirents(struct bch_fs *c)
+              ^
+>> fs/bcachefs/fsck.c:434:12: warning: stack frame size (1040) exceeds limit (1024) in 'reattach_inode' [-Wframe-larger-than]
+   static int reattach_inode(struct btree_trans *trans,
+              ^
+   5 warnings generated.
 
-> dedicated function.
->
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-The rest LGTM, but as it's Coldfire code, I'd like to defer to Greg.
+vim +/reattach_inode +434 fs/bcachefs/fsck.c
 
-Gr{oetje,eeting}s,
+285b181ad460bb Kent Overstreet 2021-10-28  433  
+285b181ad460bb Kent Overstreet 2021-10-28 @434  static int reattach_inode(struct btree_trans *trans,
+285b181ad460bb Kent Overstreet 2021-10-28  435  			  struct bch_inode_unpacked *inode,
+285b181ad460bb Kent Overstreet 2021-10-28  436  			  u32 inode_snapshot)
+285b181ad460bb Kent Overstreet 2021-10-28  437  {
+e68914ca849fa5 Kent Overstreet 2022-07-13  438  	int ret = commit_do(trans, NULL, NULL,
+285b181ad460bb Kent Overstreet 2021-10-28  439  				  BTREE_INSERT_LAZY_RW|
+285b181ad460bb Kent Overstreet 2021-10-28  440  				  BTREE_INSERT_NOFAIL,
+285b181ad460bb Kent Overstreet 2021-10-28  441  			__reattach_inode(trans, inode, inode_snapshot));
+58686a259ed28f Kent Overstreet 2021-04-19  442  	if (ret) {
+d4bf5eecd78a90 Kent Overstreet 2022-07-18  443  		bch_err(trans->c, "error reattaching inode %llu: %s",
+d4bf5eecd78a90 Kent Overstreet 2022-07-18  444  			inode->bi_inum, bch2_err_str(ret));
+58686a259ed28f Kent Overstreet 2021-04-19  445  		return ret;
+58686a259ed28f Kent Overstreet 2021-04-19  446  	}
+58686a259ed28f Kent Overstreet 2021-04-19  447  
+285b181ad460bb Kent Overstreet 2021-10-28  448  	return ret;
+58686a259ed28f Kent Overstreet 2021-04-19  449  }
+58686a259ed28f Kent Overstreet 2021-04-19  450  
 
-                        Geert
+:::::: The code at line 434 was first introduced by commit
+:::::: 285b181ad460bb240041a9ca7935f9e884040405 bcachefs: Improve transaction restart handling in fsck code
 
+:::::: TO: Kent Overstreet <kent.overstreet@gmail.com>
+:::::: CC: Kent Overstreet <kent.overstreet@linux.dev>
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
