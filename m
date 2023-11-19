@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E5E7F0631
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 13:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5467F0630
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 13:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjKSMjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 07:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S230470AbjKSMjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 07:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSMjO (ORCPT
+        with ESMTP id S229454AbjKSMjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 07:39:14 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF160131
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 04:39:09 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 030DB40E0191;
-        Sun, 19 Nov 2023 12:39:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TNvRTqsYTnbQ; Sun, 19 Nov 2023 12:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700397544; bh=YicfXqtbJsMLRVI3JBK0/NfpA3EkJxvF0Ygurr5QvRM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fzorWOT1/A+XUomUryAhg8ahlTG2ftwu8SbKsUQjZ2xbte54L4aZ29rtMQzdrsBhO
-         jOxcZAwbHX0i45GGD2bOEdu+xavl49CazFAE4L7EFw9KGiXKowQz4wtLPLpFHbmLRc
-         XPOzurbK+AkMUHqdAWJKbEPu+qrpP0vbdnaMdkrTO7w9oV/i/JC8d6OhGaYwcsg+y3
-         2bGq9xYuwvVnBv5SXwYNLE125o7RZRKa/ShO/NPHZJJtAFdQPZ29xAwVidc+Hyo6r6
-         fbpeaLqq6P9HTpY/78QPwbcAEBtRNay0PIG4WpWhVmVb09ZQ1zU4y+qlinGQvxG/Fk
-         a25+nEr9ONR4d0xCYO9qTbweaWCSJZG1VnuZE/79kOirkZDrgCKGoyRf6w0QptzrHn
-         NRIOSMgZS4mAVkFy2EyaQt+wIxQLURnieJ11kyOKzcNdP+OkgxKO1Ig3l1e4n7FNv8
-         xti7pbxuJTGCR1OcmGjniYNE8Ivkdusp8ozT+nBgqBCw9RpY+2ZVW/iM8Axk7kywSR
-         K4Pd+YY1MuIq3U2hwQGfJsw4aq6hAU2utG0bdntY4w6VMYWta0ZYxxXaBAe4qiO/2w
-         6SR7k5GzHT0+bfKoT4VWBRBzj55GTGtMJzLNUUUk/zKD5nFl+f7jDX8Va/cqk7dMiN
-         ydL6Tbj+V5UbO4yMvyM0i3rU=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA70040E0030;
-        Sun, 19 Nov 2023 12:39:01 +0000 (UTC)
-Date:   Sun, 19 Nov 2023 13:38:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] perf/urgent for v6.7-rc2
-Message-ID: <20231119123855.GAZVoB39FG7JDZxDN6@fat_crate.local>
+        Sun, 19 Nov 2023 07:39:12 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0249C12D;
+        Sun, 19 Nov 2023 04:39:06 -0800 (PST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AJAFYSJ027516;
+        Sun, 19 Nov 2023 12:39:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=yOrnK/542Zoh3v/mcdS03rZ1TLbYIVoIRt2JO2cQx5s=;
+ b=adUOiy626HavItD8J1a2aZZyWPKwNOv63ngUtRyDJTGHs9N4++11Iq0tKW6Z8DvBvQlg
+ eM3hrucvled1CXAeXFm+pb0ec+IbkCBnNiWCFWRbI6TeMrMg7TapOTr9TWySDL6WfP4x
+ U5ZRnhJ3TFFRwJbWz+5++nopKRA7KIR5UBrdxzyMEJGwOCvo0F2e8ueaU3E0t50f/T/r
+ nyoapazQyV96+qbWuffjL6ozB+zUs2QA8DaBqf6HNJV9LAaRjUZSWrK8KD09lqkY/Fbd
+ AqyB64HL1nL3fiKMfjVdd3VxJT8PKfpKj3J32NGKAKwuWpc2KJCF8Oikdfq8OWHqbUv3 wQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uf7kh0dyd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 19 Nov 2023 12:39:05 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AJCU5gS010116;
+        Sun, 19 Nov 2023 12:39:05 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uf7kh0dx7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 19 Nov 2023 12:39:04 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AJBJMEn007569;
+        Sun, 19 Nov 2023 12:39:03 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ufaa1jacq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 19 Nov 2023 12:39:03 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AJCd0s514222034
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 19 Nov 2023 12:39:00 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AAB3520043;
+        Sun, 19 Nov 2023 12:39:00 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A53620040;
+        Sun, 19 Nov 2023 12:38:59 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.64.81])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Sun, 19 Nov 2023 12:38:59 +0000 (GMT)
+Date:   Sun, 19 Nov 2023 13:38:57 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Steffen Maier <maier@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: zfcp: Replace strlcpy() with strscpy()
+Message-ID: <ZVoB4b2/X3jCPOdG@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20231116191435.work.581-kees@kernel.org>
+ <ZVeuwT1rhMT5UWGB@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZVeuwT1rhMT5UWGB@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: wNX5z6b6QR__cf8Wx-hUwx8zwubhvZl8
+X-Proofpoint-GUID: 4jKpwIDzsMaxjwokS--qpWdF1dfYPime
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-19_11,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 impostorscore=0
+ mlxlogscore=684 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311190095
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Nov 17, 2023 at 07:19:48PM +0100, Alexander Gordeev wrote:
+> > @@ -900,8 +900,15 @@ static void zfcp_fc_rspn(struct zfcp_adapter *adapter,
+> >  	zfcp_fc_ct_ns_init(&rspn_req->ct_hdr, FC_NS_RSPN_ID,
+> >  			   FC_SYMBOLIC_NAME_SIZE);
+> >  	hton24(rspn_req->rspn.fr_fid.fp_fid, fc_host_port_id(shost));
+> > -	len = strlcpy(rspn_req->rspn.fr_name, fc_host_symbolic_name(shost),
+> > -		      FC_SYMBOLIC_NAME_SIZE);
+> > +	len = strscpy(rspn_req->name, fc_host_symbolic_name(shost),
+> > +		      sizeof(rspn_req->name));
+> 
+> Could you please explain why do you copy to rspn_req->name instead
+> of rspn_req->rspn.fr_name?
 
-please pull a single urgent perf fix for 6.7.
+Please, ignore this (stupid Friday evening) quesiton.
 
-Thx.
+Although the use of sizeof() is right thing, FC_SYMBOLIC_NAME_SIZE
+is so ubiquotous in this source that it probably makes sense to
+address in a separate cleanup.
 
----
+@Steffen, @Benjamin, could you please comment in this and below?
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+> > +	/*
+> > +	 * It should be impossible for this to truncate, as
+> > +	 * sizeof(rspn_req->name) is equal to max size of
+> > +	 * fc_host_symbolic_name(shost), but check anyway.
+> > +	 */
+> > +	if (len < 0)
+> > +		len = sizeof(rspn_req->name) - 1;
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Not sure if this check is really needed. It could have been done
+for strlcpy() also, but as you say - should not ever happen.
 
-are available in the Git repository at:
+> >  	rspn_req->rspn.fr_name_len = len;
+> >  
+> >  	sg_init_one(&fc_req->sg_req, rspn_req, sizeof(*rspn_req));
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.7_rc2
-
-for you to fetch changes up to 889c58b3155ff4c8e8671c95daef63d6fabbb6b1:
-
-  perf/core: Fix cpuctx refcounting (2023-11-15 04:18:31 +0100)
-
-----------------------------------------------------------------
-- Make sure the context refcount is transferred too when migrating perf
-  events
-
-----------------------------------------------------------------
-Peter Zijlstra (1):
-      perf/core: Fix cpuctx refcounting
-
- include/linux/perf_event.h | 13 ++++++++-----
- kernel/events/core.c       | 17 +++++++++++++++++
- 2 files changed, 25 insertions(+), 5 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks!
