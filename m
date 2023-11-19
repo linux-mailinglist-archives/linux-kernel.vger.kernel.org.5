@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE667F0560
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 11:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE167F056E
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 11:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjKSKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 05:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        id S230303AbjKSKYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 05:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjKSKQD (ORCPT
+        with ESMTP id S229454AbjKSKYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 05:16:03 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFAA1709;
-        Sun, 19 Nov 2023 02:15:11 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so135161266b.1;
-        Sun, 19 Nov 2023 02:15:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700388908; x=1700993708; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=M6jln9fUkgewdmvnczmulUTV6oqykq0OMoxT/5mcQlCWMGdCV1bhOhS85/pQt+hi7i
-         xqWY+C00R2ZWnz60tmd02dT0Jy5TlAyBjv5JDFjsNBx224Xt+e09anSjNLBLl+1T9tq3
-         zUcfOlVWlUP5YakOVUGW8JKVwY4YHpGVcXttNL3Ep3PVGBpBU26wVSjVtCKMyW7fQ3rq
-         ZCWpQXTV6Ji1re4k7LoHe6hPHI10bVKSwWxYJ5gH/sn8/gDNL/Dg9myx749POv7C6AjB
-         Gyg8SSCgOVvuzHz6rOjgFIANz1inOAG1ArWGm5cRD8JRhPt6EFipuaMNO7W8z9/8U5+X
-         FdBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700388908; x=1700993708;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=E3XYEJq/tbl2RG2gGxKTZI2sCoAYYIg6uuayEurtKvDaqg04kO0uugctjyz3htMVfW
-         7JRoOXySj40UPlm1H9nS0yobS+02RX6Ta0tDP9QSTpwUY6/gOBFOtOI3jgRARQSLO9Or
-         ufenN8ZYjxx/l8ed0OJmpgDBS28P0ZVjC3ixMdwVQBfDZrT/AmfARrHKv0Gn5Ah24B2c
-         FchwlHzzbkveN90ao5KVnScedqMJKSD71QohwdgkbTkkBbXEwtthgSAaPhSyDMiiB9yr
-         S+ng0xUSNzKMOG5sgmu7CbcCMWEtThJoUca7gomzs4/gQ9G3Q5bSB1wXaDWKbCm8tHXv
-         zojw==
-X-Gm-Message-State: AOJu0YyCVIDuyojNsiatJZnlw3LT+PBNPk+3Z5ps1/rnVpc1pE5aVxSj
-        0Pnf1BpcHG1EDb/AuzoTkgY=
-X-Google-Smtp-Source: AGHT+IHBBU4A879yc8p98SGEGVBECKnaRsYvgCBDmx1W96yX6LP1hBiiqPZUfI7tnc+O2wj6VKgHPg==
-X-Received: by 2002:a17:906:9c93:b0:9e3:85c9:11dc with SMTP id fj19-20020a1709069c9300b009e385c911dcmr3533958ejc.32.1700388907938;
-        Sun, 19 Nov 2023 02:15:07 -0800 (PST)
-Received: from zotac.lan. (dynamic-2a01-0c23-bde4-3e00-2223-08ff-fe18-0310.c23.pool.telefonica.de. [2a01:c23:bde4:3e00:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id p20-20020a17090628d400b009928b4e3b9fsm2743581ejd.114.2023.11.19.02.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 02:15:07 -0800 (PST)
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 20/20] include/linux/i2c.h: remove I2C_CLASS_DDC support
-Date:   Sun, 19 Nov 2023 11:14:45 +0100
-Message-ID: <20231119101445.4737-21-hkallweit1@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231119101445.4737-1-hkallweit1@gmail.com>
-References: <20231119101445.4737-1-hkallweit1@gmail.com>
+        Sun, 19 Nov 2023 05:24:00 -0500
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFFCB6;
+        Sun, 19 Nov 2023 02:23:56 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.west.internal (Postfix) with ESMTP id 99DCD320090B;
+        Sun, 19 Nov 2023 05:23:52 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Sun, 19 Nov 2023 05:23:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1700389432; x=1700475832; bh=vLP7CS3hWF8TwbCJyhaj4FZ2G7iGG7Hui2j
+        FMmmwK8g=; b=j4uQs60l0zMpMfS3qEPNTEQqwjJ7ZLq/IAyYtjCvka7C2g1EDq6
+        FZfWAE/VqiZ5x69XI4WxlZNZextAPyYWgWr/XF81q1AQVyjstdcwO4irq67zRQV4
+        /VfEJf6uvLMHUO33ehrYXLMj8sHnde/dELOzElaFLndzhx6++f2+jvuDJJBN4Vr4
+        HcJJa+vPoMF0xtda7xkv1p926FjcVAKmVhtbL8aIYS4Y81ukZHDDIt/e5mYMpgWo
+        g1ApCTnU4+5fl1w9zz0vNLhrOGeVe2vD4ktLkuGxdSLHXaHrb38GgyHOnTB+KobB
+        B8kS3Gmtz+x+TgfH4WTVHqZQB6pvBqQDFoA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1700389432; x=1700475832; bh=vLP7CS3hWF8TwbCJyhaj4FZ2G7iGG7Hui2j
+        FMmmwK8g=; b=LPX2aj4cUM/qmhxv1OgVAJjEXlsnxJPYsDcd9bUo1aGdfcj/nvh
+        1llILe/43VSF5U3UVyQ9lSQemSEWlgvRwzQ3WZdN+kIAwJoTbZnb5vYTTFLC2GwL
+        GzVGCquxE7uPNHLaEMCQaHvQzRY5Ts1Pa3VGG6CwWn0wWp6YCf4ATA3POGiYaZ6K
+        x0MzwDZdx0uMg9/cgUPe/2Y3ZcuLhqEmDLOahRW0tA4lr9LrQ2WldFJYlpW2eTGh
+        MfLH1utxibCUS++vuGy5cSZMMkPt4OXSJbas3LO7D1ohePqCovu0ya6BGHi0bz2U
+        VbceYRdAmLaeCKU8tYfgkMkyBofOY0Dt7UA==
+X-ME-Sender: <xms:N-JZZWSGgrMGtku0KuMGrl9OpCO0kjEwOCeeOPz-zQ7UMogc2v9dzQ>
+    <xme:N-JZZbwsd5eYaxRsnJ5x-_XjVoV5gWXnuYjpaR1OzZQhQbG95hGJDZwCsHgpIFSPR
+    KEqZuuSCieR>
+X-ME-Received: <xmr:N-JZZT1Mn8wej9ahcSUy6NeGk_WinxoWV3aRXYEVHKpAje-HjmmNtEvnuJ3snvr0mu6FEwEk5bbFdROMV7jB_mRtR484L3w9YdySNtnHytygLdiqw1eDlDWt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeggedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfhffuvfevfhgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epvddvudfhkeelheefueefleffgfffffefleejheduvdeutdekleevheekieefteegnecu
+    ffhomhgrihhnpehgihhtqdhstghmrdgtohhmpdhgihhthhhusgdrtghomhdpkhgvrhhnvg
+    hlrdhorhhgpddtuddrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehrrghvvghnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:N-JZZSCwcbExj6Q352Tpfke95PkKQO-pfVFEMqY79O6S_SoSfcAWjA>
+    <xmx:N-JZZfiBaAs-vYc4wgOA07scQBHcbwyxe4AkC3XE5qb2RVBA5tg_-Q>
+    <xmx:N-JZZerCyiHoCRWkiHyFGqSz9UP7pFZe9SzMVJEORkO53418B5RomQ>
+    <xmx:OOJZZfhdNRtWpwvuhiWA9MRrB0z1up52J565-3vJjSvtE7ghi-wVbw>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 19 Nov 2023 05:23:47 -0500 (EST)
+Message-ID: <9ad32b90-b03b-f493-14fb-ce31a1409774@themaw.net>
+Date:   Sun, 19 Nov 2023 18:23:44 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Ian Kent <raven@themaw.net>
+Subject: [PATCH] autofs: add: new_inode check in autofs_fill_super()
+To:     kernel test robot <lkp@intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Bill O'Donnell <billodo@redhat.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com
+References: <20231116000746.7359-1-raven@themaw.net>
+ <202311161909.KHau6jEj-lkp@intel.com>
+Content-Language: en-US
+In-Reply-To: <202311161909.KHau6jEj-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,29 +96,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
-olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
-Class-based device auto-detection is a legacy mechanism and shouldn't
-be used in new code. So we can remove this class completely now.
+On 16/11/23 19:23, kernel test robot wrote:
+> Hi Ian,
+>
+> kernel test robot noticed the following build warnings:
 
-Preferably this series should be applied via the i2c tree.
+Crikey, how did this compile ... I think I need to just send a replacement
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+patch.
 
----
- include/linux/i2c.h |    1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-index 0dae9db27..d029aade3 100644
---- a/include/linux/i2c.h
-+++ b/include/linux/i2c.h
-@@ -850,7 +850,6 @@ static inline void i2c_mark_adapter_resumed(struct i2c_adapter *adap)
- 
- /* i2c adapter classes (bitmask) */
- #define I2C_CLASS_HWMON		(1<<0)	/* lm_sensors, ... */
--#define I2C_CLASS_DDC		(1<<3)	/* DDC bus on graphics adapters */
- #define I2C_CLASS_SPD		(1<<7)	/* Memory modules */
- /* Warn users that the adapter doesn't support classes anymore */
- #define I2C_CLASS_DEPRECATED	(1<<8)
+Ian
 
+> [auto build test WARNING on brauner-vfs/vfs.all]
+> [also build test WARNING on linus/master v6.7-rc1 next-20231116]
+> [cannot apply to vfs-idmapping/for-next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>
+> url:https://github.com/intel-lab-lkp/linux/commits/Ian-Kent/autofs-add-new_inode-check-in-autofs_fill_super/20231116-081017
+> base:https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git  vfs.all
+> patch link:https://lore.kernel.org/r/20231116000746.7359-1-raven%40themaw.net
+> patch subject: [PATCH] autofs: add: new_inode check in autofs_fill_super()
+> config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231116/202311161909.KHau6jEj-lkp@intel.com/config)
+> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git  ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311161909.KHau6jEj-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot<lkp@intel.com>
+> | Closes:https://lore.kernel.org/oe-kbuild-all/202311161909.KHau6jEj-lkp@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>     fs/autofs/inode.c:330:8: error: expected identifier
+>                     goto -ENOMEM;
+>                          ^
+>>> fs/autofs/inode.c:330:8: warning: misleading indentation; statement is not part of the previous 'if' [-Wmisleading-indentation]
+>     fs/autofs/inode.c:329:2: note: previous statement is here
+>             if (!ino)
+>             ^
+>     fs/autofs/inode.c:349:4: error: use of undeclared identifier 'ret'
+>                             ret = invalf(fc, "Could not find process group %d",
+>                             ^
+>     fs/autofs/inode.c:351:11: error: use of undeclared identifier 'ret'
+>                             return ret;
+>                                    ^
+>>> fs/autofs/inode.c:330:8: warning: expression result unused [-Wunused-value]
+>                     goto -ENOMEM;
+>                          ^~~~~~~
+>     2 warnings and 3 errors generated.
+>
+>
+> vim +/if +330 fs/autofs/inode.c
+>
+>     306	
+>     307	static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
+>     308	{
+>     309		struct autofs_fs_context *ctx = fc->fs_private;
+>     310		struct autofs_sb_info *sbi = s->s_fs_info;
+>     311		struct inode *root_inode;
+>     312		struct dentry *root;
+>     313		struct autofs_info *ino;
+>     314	
+>     315		pr_debug("starting up, sbi = %p\n", sbi);
+>     316	
+>     317		sbi->sb = s;
+>     318		s->s_blocksize = 1024;
+>     319		s->s_blocksize_bits = 10;
+>     320		s->s_magic = AUTOFS_SUPER_MAGIC;
+>     321		s->s_op = &autofs_sops;
+>     322		s->s_d_op = &autofs_dentry_operations;
+>     323		s->s_time_gran = 1;
+>     324	
+>     325		/*
+>     326		 * Get the root inode and dentry, but defer checking for errors.
+>     327		 */
+>     328		ino = autofs_new_ino(sbi);
+>     329		if (!ino)
+>   > 330			goto -ENOMEM;
+>     331	
+>     332		root_inode = autofs_get_inode(s, S_IFDIR | 0755);
+>     333		if (root_inode) {
+>     334			root_inode->i_uid = ctx->uid;
+>     335			root_inode->i_gid = ctx->gid;
+>     336			root_inode->i_fop = &autofs_root_operations;
+>     337			root_inode->i_op = &autofs_dir_inode_operations;
+>     338		}
+>     339		s->s_root = d_make_root(root_inode);
+>     340		if (unlikely(!s->s_root)) {
+>     341			autofs_free_ino(ino);
+>     342			return -ENOMEM;
+>     343		}
+>     344		s->s_root->d_fsdata = ino;
+>     345	
+>     346		if (ctx->pgrp_set) {
+>     347			sbi->oz_pgrp = find_get_pid(ctx->pgrp);
+>     348			if (!sbi->oz_pgrp) {
+>     349				ret = invalf(fc, "Could not find process group %d",
+>     350					     ctx->pgrp);
+>     351				return ret;
+>     352			}
+>     353		} else {
+>     354			sbi->oz_pgrp = get_task_pid(current, PIDTYPE_PGID);
+>     355		}
+>     356	
+>     357		if (autofs_type_trigger(sbi->type))
+>     358			/* s->s_root won't be contended so there's little to
+>     359			 * be gained by not taking the d_lock when setting
+>     360			 * d_flags, even when a lot mounts are being done.
+>     361			 */
+>     362			managed_dentry_set_managed(s->s_root);
+>     363	
+>     364		pr_debug("pipe fd = %d, pgrp = %u\n",
+>     365			 sbi->pipefd, pid_nr(sbi->oz_pgrp));
+>     366	
+>     367		sbi->flags &= ~AUTOFS_SBI_CATATONIC;
+>     368		return 0;
+>     369	}
+>     370	
+>
