@@ -2,92 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35307F0417
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9335C7F041A
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 03:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjKSCek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 18 Nov 2023 21:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
+        id S230228AbjKSCfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 18 Nov 2023 21:35:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjKSCej (ORCPT
+        with ESMTP id S229610AbjKSCfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 18 Nov 2023 21:34:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E538DD5
-        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 18:34:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A473C433C7;
-        Sun, 19 Nov 2023 02:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700361275;
-        bh=FAVgax6ky7lNhr5MHl33fP4AwGQUXVpEfHK1wlpTUv8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bEg8ibbjBFn2NnXoJ9zd8AE9hC41myx+Lc5TVW79GVE8GWEoDk+Mkh2tKgqBV/9of
-         DxFA87szlMVAGuvc5SuDhmmPiHlpHJUI8z/Hhak2LCzJYdTWf7ViLEJv2ffiszJEN+
-         tOqWDPWXqLVDYAd8i11Ui0fGthRbr5VUVSHCNzyxgmx+cbpmlJKhEQQ8SnAUP+PWGt
-         da1O3tVnKH5Uh7H+bDhYhkNHRkUXu0WC4zrjg790wt1Wf7nnllmOWXXiwLfiu/j0Mu
-         +KanU8++AcTWORufVzxrbj9gy2jH3MuxTi2D6cHGJSNrdAXMPiu56NDRC994JRI8mC
-         bkvbjqP+SSuDw==
-Date:   Sat, 18 Nov 2023 18:34:33 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231118183433.30ca1d1a@kernel.org>
-In-Reply-To: <20231114-feature_ptp_netnext-v7-15-472e77951e40@bootlin.com>
-References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
-        <20231114-feature_ptp_netnext-v7-15-472e77951e40@bootlin.com>
+        Sat, 18 Nov 2023 21:35:18 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954DBF2;
+        Sat, 18 Nov 2023 18:35:14 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d648679605so1833426a34.1;
+        Sat, 18 Nov 2023 18:35:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700361313; x=1700966113; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RQqBHD1pNFJN4NsX+ra9VnsIZ1CONUZRLDig94ie5kI=;
+        b=JLCe8yfQ+MGAABssCMs/ZsUP3MR51moL78HHM4CWH4LE5pjLN169G4TING3+Ho70Dt
+         brJ4G4e6/l9YE705B0RFF2IXKHBTQYv57tWAwcHlI4yXaTeMHELTMgYfkPjSb5IQxBfv
+         cpkjxIyzL3iByb0B7nLZQ4bmkt3yjqU2IWSHvjvToCT+3iKDdy76LroJWuuf8P6Ax2JG
+         +6Z7SbtteXEzsTsZUHmnfnEqRX3aIxLceKxTXfjwUYJnnY8hLgG16yH0jKCDcVuUdhvB
+         0qjlRva3CMQ1Cq3mzkCvtoeVrgt0nJ5OLmNeCFcK5guNs1VHM4w+xZqnuf8jHKYm99WE
+         vyjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700361313; x=1700966113;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RQqBHD1pNFJN4NsX+ra9VnsIZ1CONUZRLDig94ie5kI=;
+        b=qQpUMoxEQpgoxk8FdLk3pfsIYsD71dpocVdojkzYg7zmv91rXhfaBnPoVPrgi07SMg
+         lHgrhA+ZnFkeawhWY1+s/ZV0vZoqrMlGFX4zrITZgRKg64TPdwJrYw0La76UWAxrrPcl
+         DnYqM0dYkxaqDsk+jA5jETU0oQ7guDVbeDJEKcspCQao8sjrtzZI4fiuGZ1SkJarBXNv
+         WvKV+iuIGhtcTHDVmTJdZ1c2J2LONkbua/Gz8cGT43cZSxlnDyD+2xxYn0TEgwh4zbFq
+         sFNKPC5N9Box5piGuoItU1xr7xW+1ByXx08CD4alpNLebQjJY7aCqUUgDkqrnEbmqpDC
+         v3PA==
+X-Gm-Message-State: AOJu0YyIzP0MPwxnBwH9oNLjGWGlpSc4uRPV7bksnI9OeGjypcIzWCMR
+        uH/tZqUCNTc3d/TgGMU05NkuhlY8x8c=
+X-Google-Smtp-Source: AGHT+IEJ8i+JOsFqn63UFwoWRFq1zD4Nzx/0ylSNAUcM6FtEn829Qx4O/xnvXnH1zA6ouyGrwlh3kw==
+X-Received: by 2002:a9d:6410:0:b0:6c4:a349:4b10 with SMTP id h16-20020a9d6410000000b006c4a3494b10mr4285820otl.28.1700361313033;
+        Sat, 18 Nov 2023 18:35:13 -0800 (PST)
+Received: from localhost.localdomain ([49.205.245.83])
+        by smtp.gmail.com with ESMTPSA id j8-20020a170902da8800b001cf53cd1508sm1526207plx.67.2023.11.18.18.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Nov 2023 18:35:12 -0800 (PST)
+From:   Anand Moon <linux.amoon@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>
+Cc:     Anand Moon <linux.amoon@gmail.com>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] dt-bindings: usb: Add the binding example for the Genesys Logic GL3523 hub
+Date:   Sun, 19 Nov 2023 08:04:50 +0530
+Message-ID: <20231119023454.1591-2-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231119023454.1591-1-linux.amoon@gmail.com>
+References: <20231119023454.1591-1-linux.amoon@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023 12:28:43 +0100 Kory Maincent wrote:
-> +	if (!tb[ETHTOOL_A_TS_LAYER])
-> +		return 0;
+Add the binding example for the USB3.1 Genesys Logic GL3523
+integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+hub.
 
-GENL_REQ_ATTR_CHECK(), not sure why anyone would issue this command
-without any useful attr.
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+---
+V3: fix the dt_binding_check error, added new example for Genesys GL3523
+v2: added Genesys GL3523 binding
+v1: none
+---
+ .../bindings/usb/genesys,gl850g.yaml          | 63 +++++++++++++++++--
+ 1 file changed, 59 insertions(+), 4 deletions(-)
 
-> +	/* Disable time stamping in the current layer. */
-> +	if (netif_device_present(dev) &&
-> +	    (dev->ts_layer == PHY_TIMESTAMPING ||
-> +	    dev->ts_layer == MAC_TIMESTAMPING)) {
-> +		ret = dev_set_hwtstamp_phylib(dev, &config, info->extack);
-> +		if (ret < 0)
-> +			return ret;
+diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+index ee08b9c3721f..f8e88477fa11 100644
+--- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
++++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+@@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+ maintainers:
+   - Icenowy Zheng <uwu@icenowy.me>
+ 
+-allOf:
+-  - $ref: usb-device.yaml#
+-
+ properties:
+   compatible:
+     enum:
+@@ -27,12 +24,44 @@ properties:
+ 
+   vdd-supply:
+     description:
+-      the regulator that provides 3.3V core power to the hub.
++      phandle to the regulator that provides power to the hub.
++
++  peer-hub:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      phandle to the peer hub on the controller.
+ 
+ required:
+   - compatible
+   - reg
+ 
++allOf:
++  - $ref: usb-device.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - usb5e3,608
++    then:
++      properties:
++        peer-hub: false
++        vdd-supply: false
++        reset-gpios: true
++
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - usb5e3,610
++              - usb5e3,620
++    then:
++      properties:
++        peer-hub: true
++        vdd-supply: true
++        reset-gpios: true
++
+ additionalProperties: false
+ 
+ examples:
+@@ -49,3 +78,29 @@ examples:
+             reset-gpios = <&pio 7 2 GPIO_ACTIVE_LOW>;
+         };
+     };
++
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    usb {
++        dr_mode = "host";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        /* 2.0 hub on port 1 */
++        hub_2_0: hub@1 {
++            compatible = "usb5e3,610";
++            reg = <1>;
++            peer-hub = <&hub_3_0>;
++            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&vcc_5v>;
++        };
++
++        /* 3.1 hub on port 4 */
++        hub_3_0: hub@2 {
++            compatible = "usb5e3,620";
++            reg = <2>;
++            peer-hub = <&hub_2_0>;
++            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
++            vdd-supply = <&vcc_5v>;
++        };
++    };
+-- 
+2.42.0
 
-So you only support PHYLIB?
-
-The semantics need to be better documented :(
