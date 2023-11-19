@@ -2,190 +2,494 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343377F0807
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5757F0809
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjKSRFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 12:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S231425AbjKSRJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 12:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbjKSRFu (ORCPT
+        with ESMTP id S230027AbjKSRJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 12:05:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EE9B7;
-        Sun, 19 Nov 2023 09:05:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700413546; x=1731949546;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=E1U/gQflmsw99DNKfasX3Bet2pCG3XvfEbcIg8BGrsc=;
-  b=CLc9otGL5v2HKHFrpcMAw5tlcEvs/ToS3V1tzI6+UMLAWc51hh6QnnXQ
-   4Es8eALjWK9vfbdqCp4MWLWmUYWXEPXb5aeDeF/KpFnAZOxMJc2VCdHT5
-   1h7za5VFzerZv3dn1n3hKWTKsXhnaGC+UiE6y6ucP0BcAWiCToVXCQKfA
-   79YMGh+tJrcZQIbZpFvPhJyFw7q0wJ3BQwnZS1hjiGGsZS1rpz1vSF74K
-   66KVgFH8ckoGPdT968RysYXha7J7kUCdOtcqpxnGLWwCVeZJYvT9+AYCm
-   UzWg4sRLp2mBJJ50xImI2lpQLXqZeQNyYQSI7JQzCaWI8hPBJeTU/KQxH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="391293430"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="391293430"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 09:05:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="7486272"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 19 Nov 2023 09:05:43 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4lEU-0005Kv-1e;
-        Sun, 19 Nov 2023 17:05:22 +0000
-Date:   Mon, 20 Nov 2023 01:04:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhang Xiaoxu <zhangxiaoxu@huawecloud.com>, zhangxiaoxu5@huawei.com,
-        weiyongjun1@huawei.com, linux-kernel@vger.kernel.org,
-        broonie@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        frowand.list@gmail.com, linux-spi@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v4 -next 2/4] spi: mockup: Add register spi device support
-Message-ID: <202311200018.xB4hEnZx-lkp@intel.com>
-References: <20231118104442.861759-3-zhangxiaoxu@huawecloud.com>
+        Sun, 19 Nov 2023 12:09:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33245C0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:08:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700413737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HaT6hl+qvTXuLiCHSyvbrzSYomv57amwYqln/M0ynv8=;
+        b=efqeS4X95abNsZSsAupkJkwP36O/1oPnIMzFLD80DPb7QeM14Dv2R2uVV02FHXI24W4SJt
+        0I2e0cpa/SdtF6035Lq5OxWB2tna1yY4iSrCxmCE6b57eMXzjqnP4sk3ctzO+VbQ+a9kRd
+        suTS8WCQ8fKrhOlraI/eGTUTJDveSNc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-685-x3MYZsjMPaiZFbdIwzCiDA-1; Sun, 19 Nov 2023 12:08:53 -0500
+X-MC-Unique: x3MYZsjMPaiZFbdIwzCiDA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-332c4d48734so192202f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 09:08:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700413732; x=1701018532;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HaT6hl+qvTXuLiCHSyvbrzSYomv57amwYqln/M0ynv8=;
+        b=DBe3ljXrZ0A15y2lfQGXv3j7AKURLJ7n9oVztxz7wDfJtucj9Qa2RrtrKn1Wt9LFlq
+         WBT+5uLavwhz/8hO+2XJ8qk7pGZlywfFxWMr0Ww/YyGnyYCBfM2hAqF4ik9yvrVds4tI
+         KRZ5afY6BMhRiACoyvtfWjndqZYoO4kBvOZQMyCSLpjjtJCBbXd24ayHqS0KWzVaxq3W
+         aDk/3im015RdyUbWFN8PsCbngN3u8k3r7xiZ02AF7qcEja130CW3FnsOUx8I67qHNiF+
+         Q/jUY8npFtEdQMVGL8knVZFyqSDJ+LYxd6WqlR4wcFkNxnZZmYA7YObqF4DOlWAyvOS9
+         RReg==
+X-Gm-Message-State: AOJu0YwLsMcRvQHf9Y+uVm+C59oh3x96qPuqLWmV7Wo1A4tTWrAmFGAg
+        OcTyhpkWrbd3bSIgTfF7PQM8dxMiqj440gePvPswmSk5U8bQB9BCMwmLSa9iV8teiF1/RFP9OH0
+        t30VjxNQcV3qX5Gei4SWNogj1
+X-Received: by 2002:a5d:6c6b:0:b0:332:c3fc:47ab with SMTP id r11-20020a5d6c6b000000b00332c3fc47abmr1527249wrz.9.1700413732123;
+        Sun, 19 Nov 2023 09:08:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFnAgFDxNmT5YzGX1EPKHB5D0Pcd29WG3PKYaqkRrpUHhdnTsq3UNVG3u5N0Ivow1rpJVl/Sg==
+X-Received: by 2002:a5d:6c6b:0:b0:332:c3fc:47ab with SMTP id r11-20020a5d6c6b000000b00332c3fc47abmr1527227wrz.9.1700413731668;
+        Sun, 19 Nov 2023 09:08:51 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id p17-20020a5d48d1000000b003316ad360c1sm7798609wrs.24.2023.11.19.09.08.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 09:08:51 -0800 (PST)
+Message-ID: <397b607fcea1116f6409b5fb9b81a5b594c3ad6d.camel@redhat.com>
+Subject: Re: [PATCH 1/9] KVM: x86: Rename "governed features" helpers to use
+ "guest_cpu_cap"
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 19 Nov 2023 19:08:49 +0200
+In-Reply-To: <20231110235528.1561679-2-seanjc@google.com>
+References: <20231110235528.1561679-1-seanjc@google.com>
+         <20231110235528.1561679-2-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118104442.861759-3-zhangxiaoxu@huawecloud.com>
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhang,
+On Fri, 2023-11-10 at 15:55 -0800, Sean Christopherson wrote:
+> As the first step toward replacing KVM's so-called "governed features"
+> framework with a more comprehensive, less poorly named implementation,
+> replace the "kvm_governed_feature" function prefix with "guest_cpu_cap"
+> and rename guest_can_use() to guest_cpu_cap_has().
+> 
+> The "guest_cpu_cap" naming scheme mirrors that of "kvm_cpu_cap", and
+> provides a more clear distinction between guest capabilities, which are
+> KVM controlled (heh, or one might say "governed"), and guest CPUID, which
+> with few exceptions is fully userspace controlled.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/cpuid.c      |  2 +-
+>  arch/x86/kvm/cpuid.h      | 12 ++++++------
+>  arch/x86/kvm/mmu/mmu.c    |  4 ++--
+>  arch/x86/kvm/svm/nested.c | 22 +++++++++++-----------
+>  arch/x86/kvm/svm/svm.c    | 26 +++++++++++++-------------
+>  arch/x86/kvm/svm/svm.h    |  4 ++--
+>  arch/x86/kvm/vmx/nested.c |  6 +++---
+>  arch/x86/kvm/vmx/vmx.c    | 14 +++++++-------
+>  arch/x86/kvm/x86.c        |  4 ++--
+>  9 files changed, 47 insertions(+), 47 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index dda6fc4cfae8..4f464187b063 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -345,7 +345,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
+>  				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
+>  	if (allow_gbpages)
+> -		kvm_governed_feature_set(vcpu, X86_FEATURE_GBPAGES);
+> +		guest_cpu_cap_set(vcpu, X86_FEATURE_GBPAGES);
+>  
+>  	best = kvm_find_cpuid_entry(vcpu, 1);
+>  	if (best && apic) {
+> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> index 0b90532b6e26..245416ffa34c 100644
+> --- a/arch/x86/kvm/cpuid.h
+> +++ b/arch/x86/kvm/cpuid.h
+> @@ -254,7 +254,7 @@ static __always_inline bool kvm_is_governed_feature(unsigned int x86_feature)
+>  	return kvm_governed_feature_index(x86_feature) >= 0;
+>  }
+>  
+> -static __always_inline void kvm_governed_feature_set(struct kvm_vcpu *vcpu,
+> +static __always_inline void guest_cpu_cap_set(struct kvm_vcpu *vcpu,
+>  						     unsigned int x86_feature)
+>  {
+>  	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
+> @@ -263,15 +263,15 @@ static __always_inline void kvm_governed_feature_set(struct kvm_vcpu *vcpu,
+>  		  vcpu->arch.governed_features.enabled);
+>  }
+>  
+> -static __always_inline void kvm_governed_feature_check_and_set(struct kvm_vcpu *vcpu,
+> -							       unsigned int x86_feature)
+> +static __always_inline void guest_cpu_cap_check_and_set(struct kvm_vcpu *vcpu,
+> +							unsigned int x86_feature)
+>  {
+>  	if (kvm_cpu_cap_has(x86_feature) && guest_cpuid_has(vcpu, x86_feature))
+> -		kvm_governed_feature_set(vcpu, x86_feature);
+> +		guest_cpu_cap_set(vcpu, x86_feature);
+>  }
+>  
+> -static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
+> -					  unsigned int x86_feature)
+> +static __always_inline bool guest_cpu_cap_has(struct kvm_vcpu *vcpu,
+> +					      unsigned int x86_feature)
+>  {
+>  	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
+>  
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index b0f01d605617..cfed824587b9 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4801,7 +4801,7 @@ static void reset_guest_rsvds_bits_mask(struct kvm_vcpu *vcpu,
+>  	__reset_rsvds_bits_mask(&context->guest_rsvd_check,
+>  				vcpu->arch.reserved_gpa_bits,
+>  				context->cpu_role.base.level, is_efer_nx(context),
+> -				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
+> +				guest_cpu_cap_has(vcpu, X86_FEATURE_GBPAGES),
+>  				is_cr4_pse(context),
+>  				guest_cpuid_is_amd_or_hygon(vcpu));
+>  }
+> @@ -4878,7 +4878,7 @@ static void reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
+>  	__reset_rsvds_bits_mask(shadow_zero_check, reserved_hpa_bits(),
+>  				context->root_role.level,
+>  				context->root_role.efer_nx,
+> -				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
+> +				guest_cpu_cap_has(vcpu, X86_FEATURE_GBPAGES),
+>  				is_pse, is_amd);
+>  
+>  	if (!shadow_me_mask)
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 3fea8c47679e..ea0895262b12 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -107,7 +107,7 @@ static void nested_svm_uninit_mmu_context(struct kvm_vcpu *vcpu)
+>  
+>  static bool nested_vmcb_needs_vls_intercept(struct vcpu_svm *svm)
+>  {
+> -	if (!guest_can_use(&svm->vcpu, X86_FEATURE_V_VMSAVE_VMLOAD))
+> +	if (!guest_cpu_cap_has(&svm->vcpu, X86_FEATURE_V_VMSAVE_VMLOAD))
+>  		return true;
+>  
+>  	if (!nested_npt_enabled(svm))
+> @@ -603,7 +603,7 @@ static void nested_vmcb02_prepare_save(struct vcpu_svm *svm, struct vmcb *vmcb12
+>  		vmcb_mark_dirty(vmcb02, VMCB_DR);
+>  	}
+>  
+> -	if (unlikely(guest_can_use(vcpu, X86_FEATURE_LBRV) &&
+> +	if (unlikely(guest_cpu_cap_has(vcpu, X86_FEATURE_LBRV) &&
+>  		     (svm->nested.ctl.virt_ext & LBR_CTL_ENABLE_MASK))) {
+>  		/*
+>  		 * Reserved bits of DEBUGCTL are ignored.  Be consistent with
+> @@ -660,7 +660,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  	 * exit_int_info, exit_int_info_err, next_rip, insn_len, insn_bytes.
+>  	 */
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_VGIF) &&
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_VGIF) &&
+>  	    (svm->nested.ctl.int_ctl & V_GIF_ENABLE_MASK))
+>  		int_ctl_vmcb12_bits |= (V_GIF_MASK | V_GIF_ENABLE_MASK);
+>  	else
+> @@ -698,7 +698,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  
+>  	vmcb02->control.tsc_offset = vcpu->arch.tsc_offset;
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_TSCRATEMSR) &&
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_TSCRATEMSR) &&
+>  	    svm->tsc_ratio_msr != kvm_caps.default_tsc_scaling_ratio)
+>  		nested_svm_update_tsc_ratio_msr(vcpu);
+>  
+> @@ -719,7 +719,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  	 * what a nrips=0 CPU would do (L1 is responsible for advancing RIP
+>  	 * prior to injecting the event).
+>  	 */
+> -	if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_NRIPS))
+>  		vmcb02->control.next_rip    = svm->nested.ctl.next_rip;
+>  	else if (boot_cpu_has(X86_FEATURE_NRIPS))
+>  		vmcb02->control.next_rip    = vmcb12_rip;
+> @@ -729,7 +729,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  		svm->soft_int_injected = true;
+>  		svm->soft_int_csbase = vmcb12_csbase;
+>  		svm->soft_int_old_rip = vmcb12_rip;
+> -		if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+> +		if (guest_cpu_cap_has(vcpu, X86_FEATURE_NRIPS))
+>  			svm->soft_int_next_rip = svm->nested.ctl.next_rip;
+>  		else
+>  			svm->soft_int_next_rip = vmcb12_rip;
+> @@ -737,18 +737,18 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  
+>  	vmcb02->control.virt_ext            = vmcb01->control.virt_ext &
+>  					      LBR_CTL_ENABLE_MASK;
+> -	if (guest_can_use(vcpu, X86_FEATURE_LBRV))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_LBRV))
+>  		vmcb02->control.virt_ext  |=
+>  			(svm->nested.ctl.virt_ext & LBR_CTL_ENABLE_MASK);
+>  
+>  	if (!nested_vmcb_needs_vls_intercept(svm))
+>  		vmcb02->control.virt_ext |= VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK;
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_PAUSEFILTER))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_PAUSEFILTER))
+>  		pause_count12 = svm->nested.ctl.pause_filter_count;
+>  	else
+>  		pause_count12 = 0;
+> -	if (guest_can_use(vcpu, X86_FEATURE_PFTHRESHOLD))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_PFTHRESHOLD))
+>  		pause_thresh12 = svm->nested.ctl.pause_filter_thresh;
+>  	else
+>  		pause_thresh12 = 0;
+> @@ -1035,7 +1035,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	if (vmcb12->control.exit_code != SVM_EXIT_ERR)
+>  		nested_save_pending_event_to_vmcb12(svm, vmcb12);
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_NRIPS))
+>  		vmcb12->control.next_rip  = vmcb02->control.next_rip;
+>  
+>  	vmcb12->control.int_ctl           = svm->nested.ctl.int_ctl;
+> @@ -1074,7 +1074,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	if (!nested_exit_on_intr(svm))
+>  		kvm_make_request(KVM_REQ_EVENT, &svm->vcpu);
+>  
+> -	if (unlikely(guest_can_use(vcpu, X86_FEATURE_LBRV) &&
+> +	if (unlikely(guest_cpu_cap_has(vcpu, X86_FEATURE_LBRV) &&
+>  		     (svm->nested.ctl.virt_ext & LBR_CTL_ENABLE_MASK))) {
+>  		svm_copy_lbrs(vmcb12, vmcb02);
+>  		svm_update_lbrv(vcpu);
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 1855a6d7c976..8a99a73b6ee5 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1046,7 +1046,7 @@ void svm_update_lbrv(struct kvm_vcpu *vcpu)
+>  	struct vcpu_svm *svm = to_svm(vcpu);
+>  	bool current_enable_lbrv = svm->vmcb->control.virt_ext & LBR_CTL_ENABLE_MASK;
+>  	bool enable_lbrv = (svm_get_lbr_vmcb(svm)->save.dbgctl & DEBUGCTLMSR_LBR) ||
+> -			    (is_guest_mode(vcpu) && guest_can_use(vcpu, X86_FEATURE_LBRV) &&
+> +			    (is_guest_mode(vcpu) && guest_cpu_cap_has(vcpu, X86_FEATURE_LBRV) &&
+>  			    (svm->nested.ctl.virt_ext & LBR_CTL_ENABLE_MASK));
+>  
+>  	if (enable_lbrv == current_enable_lbrv)
+> @@ -2835,7 +2835,7 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	switch (msr_info->index) {
+>  	case MSR_AMD64_TSC_RATIO:
+>  		if (!msr_info->host_initiated &&
+> -		    !guest_can_use(vcpu, X86_FEATURE_TSCRATEMSR))
+> +		    !guest_cpu_cap_has(vcpu, X86_FEATURE_TSCRATEMSR))
+>  			return 1;
+>  		msr_info->data = svm->tsc_ratio_msr;
+>  		break;
+> @@ -2985,7 +2985,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+>  	switch (ecx) {
+>  	case MSR_AMD64_TSC_RATIO:
+>  
+> -		if (!guest_can_use(vcpu, X86_FEATURE_TSCRATEMSR)) {
+> +		if (!guest_cpu_cap_has(vcpu, X86_FEATURE_TSCRATEMSR)) {
+>  
+>  			if (!msr->host_initiated)
+>  				return 1;
+> @@ -3007,7 +3007,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+>  
+>  		svm->tsc_ratio_msr = data;
+>  
+> -		if (guest_can_use(vcpu, X86_FEATURE_TSCRATEMSR) &&
+> +		if (guest_cpu_cap_has(vcpu, X86_FEATURE_TSCRATEMSR) &&
+>  		    is_guest_mode(vcpu))
+>  			nested_svm_update_tsc_ratio_msr(vcpu);
+>  
+> @@ -4318,11 +4318,11 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+>  	    boot_cpu_has(X86_FEATURE_XSAVES) &&
+>  	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+> -		kvm_governed_feature_set(vcpu, X86_FEATURE_XSAVES);
+> +		guest_cpu_cap_set(vcpu, X86_FEATURE_XSAVES);
+>  
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_NRIPS);
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_TSCRATEMSR);
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_LBRV);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_NRIPS);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_TSCRATEMSR);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_LBRV);
+>  
+>  	/*
+>  	 * Intercept VMLOAD if the vCPU mode is Intel in order to emulate that
+> @@ -4330,12 +4330,12 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	 * SVM on Intel is bonkers and extremely unlikely to work).
+>  	 */
+>  	if (!guest_cpuid_is_intel(vcpu))
+> -		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_V_VMSAVE_VMLOAD);
+> +		guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_V_VMSAVE_VMLOAD);
+>  
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_PAUSEFILTER);
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_PFTHRESHOLD);
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VGIF);
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VNMI);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_PAUSEFILTER);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_PFTHRESHOLD);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VGIF);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VNMI);
+>  
+>  	svm_recalc_instruction_intercepts(vcpu, svm);
+>  
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index be67ab7fdd10..e49af42b4a33 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -443,7 +443,7 @@ static inline bool svm_is_intercept(struct vcpu_svm *svm, int bit)
+>  
+>  static inline bool nested_vgif_enabled(struct vcpu_svm *svm)
+>  {
+> -	return guest_can_use(&svm->vcpu, X86_FEATURE_VGIF) &&
+> +	return guest_cpu_cap_has(&svm->vcpu, X86_FEATURE_VGIF) &&
+>  	       (svm->nested.ctl.int_ctl & V_GIF_ENABLE_MASK);
+>  }
+>  
+> @@ -495,7 +495,7 @@ static inline bool nested_npt_enabled(struct vcpu_svm *svm)
+>  
+>  static inline bool nested_vnmi_enabled(struct vcpu_svm *svm)
+>  {
+> -	return guest_can_use(&svm->vcpu, X86_FEATURE_VNMI) &&
+> +	return guest_cpu_cap_has(&svm->vcpu, X86_FEATURE_VNMI) &&
+>  	       (svm->nested.ctl.int_ctl & V_NMI_ENABLE_MASK);
+>  }
+>  
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index c5ec0ef51ff7..4750d1696d58 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -6426,7 +6426,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
+>  	vmx = to_vmx(vcpu);
+>  	vmcs12 = get_vmcs12(vcpu);
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_VMX) &&
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_VMX) &&
+>  	    (vmx->nested.vmxon || vmx->nested.smm.vmxon)) {
+>  		kvm_state.hdr.vmx.vmxon_pa = vmx->nested.vmxon_ptr;
+>  		kvm_state.hdr.vmx.vmcs12_pa = vmx->nested.current_vmptr;
+> @@ -6567,7 +6567,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
+>  		if (kvm_state->flags & ~KVM_STATE_NESTED_EVMCS)
+>  			return -EINVAL;
+>  	} else {
+> -		if (!guest_can_use(vcpu, X86_FEATURE_VMX))
+> +		if (!guest_cpu_cap_has(vcpu, X86_FEATURE_VMX))
+>  			return -EINVAL;
+>  
+>  		if (!page_address_valid(vcpu, kvm_state->hdr.vmx.vmxon_pa))
+> @@ -6601,7 +6601,7 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
+>  		return -EINVAL;
+>  
+>  	if ((kvm_state->flags & KVM_STATE_NESTED_EVMCS) &&
+> -	    (!guest_can_use(vcpu, X86_FEATURE_VMX) ||
+> +	    (!guest_cpu_cap_has(vcpu, X86_FEATURE_VMX) ||
+>  	     !vmx->nested.enlightened_vmcs_enabled))
+>  			return -EINVAL;
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index be20a60047b1..6328f0d47c64 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2050,7 +2050,7 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			[msr_info->index - MSR_IA32_SGXLEPUBKEYHASH0];
+>  		break;
+>  	case KVM_FIRST_EMULATED_VMX_MSR ... KVM_LAST_EMULATED_VMX_MSR:
+> -		if (!guest_can_use(vcpu, X86_FEATURE_VMX))
+> +		if (!guest_cpu_cap_has(vcpu, X86_FEATURE_VMX))
+>  			return 1;
+>  		if (vmx_get_vmx_msr(&vmx->nested.msrs, msr_info->index,
+>  				    &msr_info->data))
+> @@ -2358,7 +2358,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case KVM_FIRST_EMULATED_VMX_MSR ... KVM_LAST_EMULATED_VMX_MSR:
+>  		if (!msr_info->host_initiated)
+>  			return 1; /* they are read-only */
+> -		if (!guest_can_use(vcpu, X86_FEATURE_VMX))
+> +		if (!guest_cpu_cap_has(vcpu, X86_FEATURE_VMX))
+>  			return 1;
+>  		return vmx_set_vmx_msr(vcpu, msr_index, data);
+>  	case MSR_IA32_RTIT_CTL:
+> @@ -4567,7 +4567,7 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+>  												\
+>  	if (cpu_has_vmx_##name()) {								\
+>  		if (kvm_is_governed_feature(X86_FEATURE_##feat_name))				\
+> -			__enabled = guest_can_use(__vcpu, X86_FEATURE_##feat_name);		\
+> +			__enabled = guest_cpu_cap_has(__vcpu, X86_FEATURE_##feat_name);		\
+>  		else										\
+>  			__enabled = guest_cpuid_has(__vcpu, X86_FEATURE_##feat_name);		\
+>  		vmx_adjust_secondary_exec_control(vmx, exec_control, SECONDARY_EXEC_##ctrl_name,\
+> @@ -7757,9 +7757,9 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	 */
+>  	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+>  	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+> -		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_XSAVES);
+> +		guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_XSAVES);
+>  
+> -	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VMX);
+> +	guest_cpu_cap_check_and_set(vcpu, X86_FEATURE_VMX);
+>  
+>  	vmx_setup_uret_msrs(vmx);
+>  
+> @@ -7767,7 +7767,7 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  		vmcs_set_secondary_exec_control(vmx,
+>  						vmx_secondary_exec_control(vmx));
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_VMX))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_VMX))
+>  		vmx->msr_ia32_feature_control_valid_bits |=
+>  			FEAT_CTL_VMX_ENABLED_INSIDE_SMX |
+>  			FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX;
+> @@ -7776,7 +7776,7 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  			~(FEAT_CTL_VMX_ENABLED_INSIDE_SMX |
+>  			  FEAT_CTL_VMX_ENABLED_OUTSIDE_SMX);
+>  
+> -	if (guest_can_use(vcpu, X86_FEATURE_VMX))
+> +	if (guest_cpu_cap_has(vcpu, X86_FEATURE_VMX))
+>  		nested_vmx_cr_fixed1_bits_update(vcpu);
+>  
+>  	if (boot_cpu_has(X86_FEATURE_INTEL_PT) &&
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2c924075f6f1..04a77b764a36 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1025,7 +1025,7 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
+>  		if (vcpu->arch.xcr0 != host_xcr0)
+>  			xsetbv(XCR_XFEATURE_ENABLED_MASK, vcpu->arch.xcr0);
+>  
+> -		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
+> +		if (guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVES) &&
+>  		    vcpu->arch.ia32_xss != host_xss)
+>  			wrmsrl(MSR_IA32_XSS, vcpu->arch.ia32_xss);
+>  	}
+> @@ -1056,7 +1056,7 @@ void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
+>  		if (vcpu->arch.xcr0 != host_xcr0)
+>  			xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
+>  
+> -		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
+> +		if (guest_cpu_cap_has(vcpu, X86_FEATURE_XSAVES) &&
+>  		    vcpu->arch.ia32_xss != host_xss)
+>  			wrmsrl(MSR_IA32_XSS, host_xss);
+>  	}
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on next-20231117]
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Xiaoxu/spi-mockup-Add-SPI-controller-testing-driver/20231118-184747
-base:   next-20231117
-patch link:    https://lore.kernel.org/r/20231118104442.861759-3-zhangxiaoxu%40huawecloud.com
-patch subject: [PATCH v4 -next 2/4] spi: mockup: Add register spi device support
-config: openrisc-allmodconfig (https://download.01.org/0day-ci/archive/20231120/202311200018.xB4hEnZx-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311200018.xB4hEnZx-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311200018.xB4hEnZx-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In function '__target_online',
-       inlined from 'spi_mockup_target_live_store' at drivers/spi/spi-mockup.c:161:9:
->> drivers/spi/spi-mockup.c:108:9: warning: 'strncpy' specified bound depends on the length of the source argument [-Wstringop-truncation]
-     108 |         strncpy(info.modalias, target->device_id,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     109 |                 strlen(target->device_id));
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/spi/spi-mockup.c:108:9: note: length computed here
-     108 |         strncpy(info.modalias, target->device_id,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     109 |                 strlen(target->device_id));
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+Best regards,
+	Maxim Levitsky
 
 
-vim +/strncpy +108 drivers/spi/spi-mockup.c
-
-    87	
-    88	static int __target_online(struct spi_mockup_target *target)
-    89	{
-    90		struct spi_board_info info = {0};
-    91		struct device *dev;
-    92	
-    93		if (target->spi)
-    94			return -EBUSY;
-    95	
-    96		if (!target->host->pdev)
-    97			return -ENODEV;
-    98	
-    99		target->chip = find_first_zero_bit(target->host->bitmap,
-   100						   MOCKUP_CHIPSELECT_MAX);
-   101		if (target->chip < 0)
-   102			return target->chip;
-   103	
-   104		if (target->chip > target->host->num_cs)
-   105			return -EBUSY;
-   106	
-   107		info.chip_select = target->chip;
- > 108		strncpy(info.modalias, target->device_id,
-   109			strlen(target->device_id));
-   110	
-   111		target->spi = spi_new_device(target->host->ctrl, &info);
-   112		if (!target->spi)
-   113			return -ENOMEM;
-   114	
-   115		bitmap_set(target->host->bitmap, target->chip, 1);
-   116	
-   117		dev = &target->host->ctrl->dev;
-   118		dev_info(dev, "Instantiated device %s at 0x%02x\n",
-   119			 info.modalias, info.chip_select);
-   120	
-   121		return 0;
-   122	}
-   123	
-   124	static int __target_offline(struct spi_mockup_target *target)
-   125	{
-   126		struct device *dev;
-   127	
-   128		if (!target->spi)
-   129			return -ENODEV;
-   130	
-   131		dev = &target->host->ctrl->dev;
-   132		dev_info(dev, "Deleting device %s at 0x%02hx\n",
-   133			 dev_name(&target->spi->dev), target->chip);
-   134	
-   135		spi_unregister_device(target->spi);
-   136		target->spi = NULL;
-   137	
-   138		bitmap_clear(target->host->bitmap, target->chip, 1);
-   139	
-   140	
-   141		return 0;
-   142	}
-   143	
-   144	static ssize_t
-   145	spi_mockup_target_live_store(struct config_item *item,
-   146				     const char *buf, size_t len)
-   147	{
-   148		struct spi_mockup_target *target = to_spi_mockup_target(item);
-   149		int ret;
-   150		bool res;
-   151	
-   152		ret = kstrtobool(buf, &res);
-   153		if (ret)
-   154			return -EINVAL;
-   155	
-   156		if (!strlen(target->device_id))
-   157			return -EINVAL;
-   158	
-   159		mutex_lock(&target->host->lock);
-   160		if (res)
- > 161			ret = __target_online(target);
-   162		else
-   163			ret = __target_offline(target);
-   164		mutex_unlock(&target->host->lock);
-   165	
-   166		return ret ? ret : len;
-   167	}
-   168	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
