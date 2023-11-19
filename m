@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925E17F0621
+	by mail.lfdr.de (Postfix) with ESMTP id E7B647F0622
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 13:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbjKSMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 07:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S231232AbjKSMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 07:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjKSMNv (ORCPT
+        with ESMTP id S230481AbjKSMNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 07:13:51 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E06182;
-        Sun, 19 Nov 2023 04:13:47 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5437d60fb7aso5072524a12.3;
-        Sun, 19 Nov 2023 04:13:47 -0800 (PST)
+        Sun, 19 Nov 2023 07:13:53 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F4311D;
+        Sun, 19 Nov 2023 04:13:48 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507962561adso5081620e87.0;
+        Sun, 19 Nov 2023 04:13:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700396026; x=1701000826; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700396027; x=1701000827; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wFwnZSi+N4JIV79XXnkhp+/hoZIyLal8XhxbYAVRQ04=;
-        b=dlBumDtI38HjOnrpS+s664RQ6rT0e+59TIOYdPeGhDj13tPrULx3+vAb3lrYkvlj1m
-         OWxSDfVtdJ3U7wDRM+TZyXtYh1ughIUvIg/zz+3g4BX9rlLwFA4bL5jcqsh+4iZnXP9s
-         pl2jk2p4cfAiuNSI7Few+tPKEDaITuwF8rZggOrtZf+LyC0RpSnFmwQ9PhB3TiaydeXf
-         iOIsSNGRCe+8Puw/nXIhvm6lKC7hzyMijq7Hz0lx1NwyJfq/zKymLz7NOrmQR37mLzG5
-         xzWF4Ht1XaXQJt1ikT/1SqQw27x2VCmC62vqyoSrmyzz/Z9qzNu9Q8V91roMUPl7jKsz
-         neaA==
+        bh=IRvQu7v2aw6b3c6XSPxt/GFQ2vthRnfEbysoDl+IjOE=;
+        b=So/Q3q6CX1GQh4TRr/h61jWDX1ugqisPkJ0FBbYplxRBIkCLITqOiKoWNMq1Qw0HLr
+         ejDZ9QEKEAbFFqaCDB6mGxp11wi9wEy8Iq8QZNwUvNQnvvX/F3/DjO2jF3c6OouXCwwR
+         swx8BtWPvOBXlVFtlt3FYhd93NQJkHjula2r8EcsUm69dko1jk7b/OTzURRYEy4t4885
+         T6z21CTkU0WGLv0RsPdPVBX0QMSdjMzXPpL4oY8VeQhpY5ePAgLiPNHAIu/tvdSHtiaH
+         OG3wFSy22QXI6nJ9cwxehvXCNYG7fUIlZ1PildkDRhXtEoGi2IIZoy5ZQuaBJEcQ9C8m
+         grHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700396026; x=1701000826;
+        d=1e100.net; s=20230601; t=1700396027; x=1701000827;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wFwnZSi+N4JIV79XXnkhp+/hoZIyLal8XhxbYAVRQ04=;
-        b=LPI11+CxoVrhdGVT40MlYNm9RXm582ue9CVfAHoJF0yTKklCzr9hKR6erakFdiojRe
-         G8Dy1Qy4Mhr5nhAjHG9qTsGvR1sn8rEz8hWi6+JB+LjVnQz1PQl7PXMgjL3w3qU9ImGw
-         vJWx5fLdt47aoK9woqY7eJMGtUleOJOVP/QRqA6Ht3ij4X1p0WBUKi9OxzLze6+VeP/n
-         eG68sC7Z9/5j99QSLcSHAfyneQv9M6WUNicFMwxlLVHuWGW98vJlP1GpjvWG4Ls4HyB4
-         a5uyUs+DyEAEmpF7bkn5hQn+OrGUFCXY1sTOTZ9GzeOxaXQumhZkxfApH6pvPaFV43m1
-         z1kw==
-X-Gm-Message-State: AOJu0YzzIgoP3K52tsFdKmhSYIV8KEW6z9Uj9EmryHmEFktwSli9WESg
-        zFe+On4PCRqgwUzt/D+GXQ==
-X-Google-Smtp-Source: AGHT+IFa1MdSQwDpFizg9mjE0jro6ti3S0NsdG4dJFDLIacwN3M11znKrlgdju1QRwUDDleLY9D5uA==
-X-Received: by 2002:aa7:c0cd:0:b0:53d:f072:7b0a with SMTP id j13-20020aa7c0cd000000b0053df0727b0amr3531026edp.39.1700396026174;
+        bh=IRvQu7v2aw6b3c6XSPxt/GFQ2vthRnfEbysoDl+IjOE=;
+        b=XliKHWCSZAWKMsFsO6pYnTkYk6/u3TTtul3rGjQxZYnjqrnx3GS5RDEeLdoMtnKoTR
+         qc2TTqYPdhr9pSGI7ewFJ0c4OUJpx3PWSxFir9PL6NFIBYaWb9BsfClDkTt+pH4wQY4i
+         w8rDl4yW3/K6X6aA6ZaQsryULZGZL2Vh9Z9bE21sNVi2Fvs4jGH2jK52nAISav9Fz6bi
+         5pX0Zw9TlZFPGwWaaRZYbaRCYbAJu+sNmcLShaJMZs41ljYvxFmFR5fjbkmMkAghKLVy
+         BrHXbYnFCoILPD1eS5wdNK2UoHxMiI4jY4HQO0/rMRQVBdaAA3v+2Mbc2/6d5u2zTyfk
+         6onA==
+X-Gm-Message-State: AOJu0Yzwws2B4iBPAzInUolCjxFGSEIxZOeHgfcEslJTj9zOBZorY/3k
+        Tcw4uwKHF8NfJNPG4lFySQ==
+X-Google-Smtp-Source: AGHT+IFclIkGd4gUltycd20mO39V01aWQkCtlOGJQGc8SY39GQWh+136ifIDd6KIpOUu229lqj1sxw==
+X-Received: by 2002:a05:6512:485b:b0:4fe:1681:9377 with SMTP id ep27-20020a056512485b00b004fe16819377mr3313345lfb.44.1700396026949;
         Sun, 19 Nov 2023 04:13:46 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:7017:f42c:e243:8c57])
-        by smtp.gmail.com with ESMTPSA id r5-20020a056402018500b0053dec545c8fsm2523634edv.3.2023.11.19.04.13.45
+        by smtp.gmail.com with ESMTPSA id r5-20020a056402018500b0053dec545c8fsm2523634edv.3.2023.11.19.04.13.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 04:13:45 -0800 (PST)
+        Sun, 19 Nov 2023 04:13:46 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>,
@@ -60,9 +60,9 @@ To:     Vinod Koul <vkoul@kernel.org>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-phy@lists.infradead.org, Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v3 4/5] ARM: dts: rockchip: Add dwc2 otg fifo siztes for RK3128
-Date:   Sun, 19 Nov 2023 13:13:39 +0100
-Message-ID: <20231119121340.109025-5-knaerzche@gmail.com>
+Subject: [PATCH v3 5/5] ARM: dts: rockchip: Make usbphy the parent of SCLK_USB480M for RK3128
+Date:   Sun, 19 Nov 2023 13:13:40 +0100
+Message-ID: <20231119121340.109025-6-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119121340.109025-1-knaerzche@gmail.com>
 References: <20231119121340.109025-1-knaerzche@gmail.com>
@@ -78,29 +78,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver currently won't probe correctly if those values are missing.
-They have been taken from dowstream kernel and match those of other
-Rockchip SoCs.
+Without setting the parent for SCLK_USB480M the clock will use xin24m as
+it's default parent.
+While this is generally not an issue for the usb blocks to work, it becomes
+an issue for RK3128 since SCLK_USB480M can be a parent for other HW blocks
+(GPU, VPU, VIO), but they will never chose it, since it is currently always
+running at OSC frequency which is to slow for their needs.
+
+This sets the usb2 phy's output as SCLK_USB480M's parent and it's users
+can chose it if desired.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- arch/arm/boot/dts/rockchip/rk3128.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v3:
+ - moved parent assignment to the phy node
+
+ arch/arm/boot/dts/rockchip/rk3128.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-index 074dffa377cc..c8844e0024dc 100644
+index c8844e0024dc..61b292c7c4c3 100644
 --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
 +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
-@@ -154,6 +154,9 @@ usb_otg: usb@10180000 {
- 		clocks = <&cru HCLK_OTG>;
- 		clock-names = "otg";
- 		dr_mode = "otg";
-+		g-np-tx-fifo-size = <16>;
-+		g-rx-fifo-size = <280>;
-+		g-tx-fifo-size = <256 128 128 64 32 16>;
- 		phys = <&usb2phy_otg>;
- 		phy-names = "usb2-phy";
- 		status = "disabled";
+@@ -266,6 +266,8 @@ usb2phy: usb2phy@17c {
+ 			clocks = <&cru SCLK_OTGPHY0>;
+ 			clock-names = "phyclk";
+ 			clock-output-names = "usb480m_phy";
++			assigned-clocks = <&cru SCLK_USB480M>;
++			assigned-clock-parents = <&usb2phy>;
+ 			#clock-cells = <0>;
+ 			status = "disabled";
+ 
 -- 
 2.42.0
 
