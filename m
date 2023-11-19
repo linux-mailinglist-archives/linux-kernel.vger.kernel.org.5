@@ -2,99 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F437F0852
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 19:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DC77F0858
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 19:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjKSSXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 13:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
+        id S231422AbjKSSdV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 19 Nov 2023 13:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKSSX3 (ORCPT
+        with ESMTP id S229508AbjKSSdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 13:23:29 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D536C2;
-        Sun, 19 Nov 2023 10:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+8uIKvl0kla6HC02nY6mUS9xeIycT+TgAHwRn6pDWYQ=; b=Xbx596MY1btI8UJD6Kdskrd8b+
-        5zDwpCidjJmkyVlQ5kjn5u245gZeUnrn17PU9kWEInz5soKXjaZ1SB07/rgMWQ6gLUp8V0Y5D8Asp
-        j8KGFPc4U3o3Hxf0J7HJuiHVfa3RMXk0O1xLLOW5S4XbWQRli/c6OO9Tv/lBoG0v5SfU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r4mRx-000a50-TY; Sun, 19 Nov 2023 19:23:17 +0100
-Date:   Sun, 19 Nov 2023 19:23:17 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [net PATCH] net: phy: correctly check soft_reset ret ONLY if
- defined for PHY
-Message-ID: <ca2dc1d5-ff3c-49c9-8b83-28d17c2e9138@lunn.ch>
-References: <20231119151258.20201-1-ansuelsmth@gmail.com>
- <5d35be32-58bb-465d-91d9-ca3e8029373e@lunn.ch>
- <655a4c2a.5d0a0220.ead80.bb5d@mx.google.com>
+        Sun, 19 Nov 2023 13:33:19 -0500
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E427103
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 10:33:15 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a7b3d33663so41329117b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 10:33:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700418794; x=1701023594;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4Sgxs19g9ItwMLXCwSaFSmWY+3YFGqlRFFiHfPCTZTc=;
+        b=D3csgkL70qT/IhxcFPUTFE3j9jiZXrYAibcDfE9eb4pdZvmIrfi9WK7KA6zUDFFrs9
+         ceiRmjFcqUzvxEhcrmZk8nOhAMwYSE0LfsQgE3CqGx6La4BWIAl8EMlqRejwiN2Gi9IE
+         edvYxknILWdZP5CXECQiNEzPzUILL8ELXLoAxxi53fHIWB64H2ncSkoYqYhhZvo28CXn
+         NTMxdPdc3OzedjIW44l+OxknWZYSgh7ANbr5x2zqPviZ7koXTfcxSeUsfDTbWmHfMTmT
+         0pegjd/j6haH89k0g+zgbo9jxtKxF988/jfmiYhSWcCi+JFEThJPyFB24/tN9ZZpWB4H
+         fHew==
+X-Gm-Message-State: AOJu0YzPiCYprzwyZlMj/IDlybjfIOt8z/2Fbo+OzVDd/ds11P4jiqPs
+        3xFgSXRNm1EgbxgAbQaJp9MpzEn1HgK+XQ==
+X-Google-Smtp-Source: AGHT+IHjTDYGhGU4Et9WmcwOpz/AAokSx6odJNLLbToZaVq+AlloAlQvtODu+geMt3H0djy1C633qQ==
+X-Received: by 2002:a0d:f701:0:b0:5c8:c9af:3e01 with SMTP id h1-20020a0df701000000b005c8c9af3e01mr5914778ywf.42.1700418794081;
+        Sun, 19 Nov 2023 10:33:14 -0800 (PST)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
+        by smtp.gmail.com with ESMTPSA id c15-20020a81b54f000000b005ca607eb16fsm193934ywk.44.2023.11.19.10.33.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Nov 2023 10:33:13 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5c9d850a0dbso6297027b3.2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 10:33:13 -0800 (PST)
+X-Received: by 2002:a81:cb01:0:b0:5ca:9ca4:f412 with SMTP id
+ q1-20020a81cb01000000b005ca9ca4f412mr97776ywi.43.1700418793512; Sun, 19 Nov
+ 2023 10:33:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <655a4c2a.5d0a0220.ead80.bb5d@mx.google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
+ <77c6gkquzq4sdtmrlko3lkxvcnipm2zfjem3kvhgslcellkefh@man7pbbzud47> <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
+In-Reply-To: <a9ade305-f90e-4250-a795-49ef4e29e0ac@xenosoft.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sun, 19 Nov 2023 19:33:01 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
+Message-ID: <CAMuHMdXtUYJmEharJhBXx7D=fA3mQxg6uMP2=4Qgi==2a+kVQw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/virtio: Add suppport for non-native buffer formats
+To:     Christian Zigotzky <chzigotzky@xenosoft.de>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        linux-m68k@lists.linux-m68k.org, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, "R.T.Dickinson" <rtd2@xtra.co.nz>,
+        mad skateman <madskateman@gmail.com>,
+        Darren Stevens <darren@stevens-zone.net>,
+        Christian Zigotzky <info@xenosoft.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 06:55:47PM +0100, Christian Marangi wrote:
-> On Sun, Nov 19, 2023 at 05:24:00PM +0100, Andrew Lunn wrote:
-> > On Sun, Nov 19, 2023 at 04:12:58PM +0100, Christian Marangi wrote:
-> > > soft_reset call for phy_init_hw had multiple revision across the years
-> > > and the implementation goes back to 2014. Originally was a simple call
-> > > to write the generic PHY reset BIT, it was then moved to a dedicated
-> > > function. It was then added the option for PHY driver to define their
-> > > own special way to reset the PHY. Till this change, checking for ret was
-> > > correct as it was always filled by either the generic reset or the
-> > > custom implementation. This changed tho with commit 6e2d85ec0559 ("net:
-> > > phy: Stop with excessive soft reset"), as the generic reset call to PHY
-> > > was dropped but the ret check was never made entirely optional and
-> > > dependent whether soft_reset was defined for the PHY driver or not.
-> > > 
-> > > Luckly nothing was ever added before the soft_reset call so the ret
-> > > check (in the case where a PHY didn't had soft_reset defined) although
-> > > wrong, never caused problems as ret was init 0 at the start of
-> > > phy_init_hw.
-> > > 
-> > > To prevent any kind of problem and to make the function cleaner and more
-> > > robust, correctly move the ret check if the soft_reset section making it
-> > > optional and needed only with the function defined.
-> > 
-> > I think this should target net-next, not net. It does not appear to be
-> > an problem which actually affects somebody using stable kernels.
-> > 
-> > The change itself looks O.K.
-> >
-> 
-> Ok to resubmit or should I wait 24h? (asking as it's a very simple
-> change)
+Hi Christian,
 
-Please wait 24 hours.
+On Sun, Nov 19, 2023 at 5:28 PM Christian Zigotzky
+<chzigotzky@xenosoft.de> wrote:
+> On 16 November 2023 at 03:44 pm, Gerd Hoffmann wrote:
+> > On Thu, Nov 16, 2023 at 02:16:54PM +0100, Geert Uytterhoeven wrote:
+> >> When using virtgpu on a big-endian machine, e.g. powerpc QEMU:
+> >>
+> >>      virtio-pci 0000:00:02.0: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
+> >>
+> >> or m68k/virt:
+> >>
+> >>      virtio-mmio virtio-mmio.125: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
+> >>
+> >> and the graphical display fails to come up.
+> >>
+> >> Before, the call to drm_mode_addfb() caused a translation from a fourcc
+> >> format (XR24) to a bpp/depth pair (32/24) to a potentially different fourcc
+> >> format (BX24 on big-endian), due to the quirk processing in
+> >> drm_driver_legacy_fb_format().  After, the original fourcc format (XR24)
+> >> is passed unmodified.
+> >>
+> >> However, the virtgpu DRM driver supports only a single format for its
+> >> main plane: DRM_FORMAT_HOST_XRGB8888, which is XR24 on little-endian,
+> >> and BX24 on big-endian.  I.e. on big-endian, virtgpu does not support
+> >> XR24, which is the default DRM format, and must be supported by all
+> >> drivers.  Before, this was reported, but didn't lead to a failure:
+> >>
+> >>      virtio-mmio virtio-mmio.125: [drm] bpp/depth value of 32/24 not supported
+> >>      virtio-mmio virtio-mmio.125: [drm] No compatible format found
+> >>
+> >> As the core virtgpu driver and device support both XR24 and BX24 on both
+> >> little-endian and big-endian just fine, fix this extending the list of
+> >> supported formats for main plane and cursor plane to XR24/BX24 resp.
+> >> AR24/BA24.
+> >>
+> >> Fixes: 6ae2ff23aa43a0c4 ("drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()")
+> >> Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+> >> Closes: https://lore.kernel.org/r/c47fba21-3ae9-4021-9f4a-09c2670ebdbc@xenosoft.de
+> >> Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
+> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Reviewed-by: Gerd Hoffmann <kraxel@redhat.com>
+>
+> The new patch works but I don't see the virtio-mouse-pci pointer
+> anymore. I see the pointer with -device usb-tablet. Please check the
+> second patch. I will use the first patch for the RC2 of kernel 6.7.
 
-> Also is the stable Cc ok?
-> (that was the main reason I added the net tag to this)
+That's probably partially explained by commit 99748ab64fcc8578 ("drm:
+virtio: fix virtio_gpu_cursor_formats"), which forced BA24 for the
+cursor plane on big-endian, but unfortunately linked thread doesn't
+contain the full picture.
 
-No drop the Cc: Stable. Your description of the problem does not fit
-the rules for stable.
+Where is the default cursor format defined?
+I see virtio_gpu_mode_dumb_create() still defaults to
+DRM_FORMAT_HOST_XRGB8888.  However, that can't be the cause, as the
+cursor formats require an alpha channel.
 
-    Andrew
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
