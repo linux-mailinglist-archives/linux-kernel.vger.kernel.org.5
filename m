@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF257F0688
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311117F068C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjKSNne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:43:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S230434AbjKSNro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbjKSNnc (ORCPT
+        with ESMTP id S229441AbjKSNrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:43:32 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B716E6;
-        Sun, 19 Nov 2023 05:43:29 -0800 (PST)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ce2cf67be2so2001887a34.2;
-        Sun, 19 Nov 2023 05:43:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700401408; x=1701006208;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=eC7R2aDGjcyaZieADea/5qgs9vEV8wCKAKof6xgBBlQ=;
-        b=ISt3yrEuH38JlRpCDCePXXFnhqj6aServYqF/XqY4SXa1grlhfimJFO8AvTudHN2kV
-         LWOY7/nXcZA0H/xVInONtie71NLQLisaiWt08W7mCEUtYKWJgXdBXE1xwO/aRAb/BbXy
-         j5GHoOv24httwwDVo7kuSbmL3VWzreO8yfJbCVOf5/fkYn4K96quS2Mf167grNl38Fyh
-         DSBT39I1osm1YjmD87Pzrlw+pBVkvGvLb4LetpRyUvnZuLzWBPJZIJ3A0G6wi/m/DJ52
-         rtrNv7Nns0mu8JiYpxth+0KddjgZYED6pHM6hcEZ2GdC8mMWQV6IZKPKbLbELCPdg9Jx
-         XboQ==
-X-Gm-Message-State: AOJu0YwmzREAiVN6NH5HgU+hC0JCVCuckAiivuFAFuzS9UF8uILhEFDw
-        P6G+kKJreMw3P6FVoZEdlw==
-X-Google-Smtp-Source: AGHT+IEjmOOgpm/LkHZKFHzuItqSpn8lyCN5G9GVSFuxVx3shNYIX91fj/expeuhfHS2bP+hrV2iNw==
-X-Received: by 2002:a05:6830:1d61:b0:6b7:52ce:ff38 with SMTP id l1-20020a0568301d6100b006b752ceff38mr6204255oti.16.1700401408681;
-        Sun, 19 Nov 2023 05:43:28 -0800 (PST)
-Received: from herring.priv ([2607:fb90:45e3:889f:15b4:1348:6d64:224b])
-        by smtp.gmail.com with ESMTPSA id bg21-20020a056830361500b006ce2cb3b959sm879328otb.52.2023.11.19.05.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 05:43:28 -0800 (PST)
-Received: (nullmailer pid 3136 invoked by uid 1000);
-        Sun, 19 Nov 2023 13:43:26 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sun, 19 Nov 2023 08:47:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5EB8F
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:47:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61880C433C7;
+        Sun, 19 Nov 2023 13:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700401658;
+        bh=U1/crVe3cQalV1pEqgbYT0Du0EuyIuAjyAUdOqkkcSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pz/2EA2/Cop43Hoq7PHwPpLlcgrslPh04hOYxhAs11kufyTELWKXFkMo8AvH4cDDH
+         WJPOcsDP7hbVp4OtC8fs4M8W/VC1lw1zEj8pqiaFnn/QCSbX7Fd0rAsAHffXiOMJWN
+         q6AL8FuU3Wr7MacoKEjDIAhVy1ApfwiGvQkcVfImxgRzc4kV8wizDRSypZt1KiAaVh
+         gnb5KZQYrcZkVrHfKvq4Y0BLy6xJcpfO9MnvZo2jtP+a59UHuQEls3MPECpfglat48
+         tlY+BY0v05tiaEn5gvVfdajQWnPuVtMQ0liBXYHezZMJB9QfRQNbI6JC5C44Cd7B0G
+         T7ay90OQDJVmw==
+Date:   Sun, 19 Nov 2023 13:47:34 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Anshul Dalal <anshulusr@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: dac: add MCP4821
+Message-ID: <20231119-surpass-cheer-9dc3838b766f@spud>
+References: <20231117073040.685860-1-anshulusr@gmail.com>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Elad Nachman <enachman@marvell.com>
-Cc:     conor+dt@kernel.org, gregory.clement@bootlin.com,
-        devicetree@vger.kernel.org, andrew@lunn.ch,
-        krzysztof.kozlowski+dt@linaro.org,
-        chris.packham@alliedtelesis.co.nz, cyuval@marvell.com,
-        pali@kernel.org, sebastian.hesselbarth@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, mrkiko.rs@gmail.com
-In-Reply-To: <20231119102638.1041978-3-enachman@marvell.com>
-References: <20231119102638.1041978-1-enachman@marvell.com>
- <20231119102638.1041978-3-enachman@marvell.com>
-Message-Id: <170040140652.3109.2493816352448660414.robh@kernel.org>
-Subject: Re: [PATCH v5 2/3] dt-bindings: arm64: add Marvell COM Express
- boards
-Date:   Sun, 19 Nov 2023 07:43:26 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Xr+UPjWgGaRG4h0+"
+Content-Disposition: inline
+In-Reply-To: <20231117073040.685860-1-anshulusr@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,43 +57,117 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Sun, 19 Nov 2023 12:26:37 +0200, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
-> 
-> Add dt bindings for:
-> CN9130 COM Express CPU module
-> CN9131 COM Express CPU module
-> AC5X RD COM Express Type 7 carrier board.
-> AC5X RD COM Express board with a CN9131 COM Express Type 7 CPU module.
-> 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+--Xr+UPjWgGaRG4h0+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Nov 17, 2023 at 01:00:37PM +0530, Anshul Dalal wrote:
+> Adds support for MCP48xx series of DACs.
+>=20
+> Datasheet:
+>   [MCP48x1] https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
+>   [MCP48x2] https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.pdf
+>=20
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
 > ---
->  .../bindings/arm/marvell/armada-7k-8k.yaml           | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
+>  .../bindings/iio/dac/microchip,mcp4821.yaml   | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,m=
+cp4821.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.=
+yaml b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+> new file mode 100644
+> index 000000000000..904de15300bd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/microchip,mcp4821.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/dac/microchip,mcp4821.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip MCP4821 and similar DACs
+> +
+> +description: |
+> +  Supports MCP48x1 (single channel) and MCP48x2 (dual channel) series of=
+ DACs.
+> +  Device supports simplex communication over SPI in Mode 0,1 and Mode 1,=
+1.
+> +
+> +  +---------+--------------+-------------+
+> +  | Device  |  Resolution  |   Channels  |
+> +  |---------|--------------|-------------|
+> +  | MCP4801 |     8-bit    |      1      |
+> +  | MCP4811 |    10-bit    |      1      |
+> +  | MCP4821 |    12-bit    |      1      |
+> +  | MCP4802 |     8-bit    |      2      |
+> +  | MCP4812 |    10-bit    |      2      |
+> +  | MCP4822 |    12-bit    |      2      |
+> +  +---------+--------------+-------------+
+> +
+> +  Datasheet:
+> +    MCP48x1: https://ww1.microchip.com/downloads/en/DeviceDoc/22244B.pdf
+> +    MCP48x2: https://ww1.microchip.com/downloads/en/DeviceDoc/20002249B.=
+pdf
+> +
+> +maintainers:
+> +  - Anshul Dalal <anshulusr@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - microchip,mcp4801
+> +      - microchip,mcp4811
+> +      - microchip,mcp4821
+> +      - microchip,mcp4802
+> +      - microchip,mcp4812
+> +      - microchip,mcp4822
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vdd-supply: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    spi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        dac@0 {
+> +            compatible =3D "microchip,mcp4821";
+> +            reg =3D <0>;
+> +            vdd-supply =3D <&vdd_regulator>;
+> +        };
+> +    };
+> --=20
+> 2.42.1
+>=20
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+--Xr+UPjWgGaRG4h0+
+Content-Type: application/pgp-signature; name="signature.asc"
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/arm/marvell/armada-7k-8k.yaml:64:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
+-----BEGIN PGP SIGNATURE-----
 
-dtschema/dtc warnings/errors:
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVoR9QAKCRB4tDGHoIJi
+0p8QAQC38yhdhXb1PcvkIA/pVY7NY6OGkiJqdumywpDJyqsDRgD/XP0qyWMwaURl
+9zBPIfcRCjAD7KXqB6d6YTYsZ5L1Jg8=
+=VZnd
+-----END PGP SIGNATURE-----
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231119102638.1041978-3-enachman@marvell.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--Xr+UPjWgGaRG4h0+--
