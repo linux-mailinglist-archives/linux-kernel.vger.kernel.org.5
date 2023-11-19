@@ -2,56 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837CF7F060D
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE7C7F060C
 	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 13:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbjKSL7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 06:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
+        id S230444AbjKSMD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 07:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSL73 (ORCPT
+        with ESMTP id S229454AbjKSMD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 06:59:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20F9D8
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 03:59:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E990C433C9;
-        Sun, 19 Nov 2023 11:59:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700395165;
-        bh=mgjBe9NyXgnGxQbQgYIlmqSGb5CeQDsjaIIrZhyneCw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tNFulk5iOsBbkFYne6Kojs1mmSNu569//aRQSIzuF+M3mgugaM/aTwyHMoLFWS7M8
-         9yttTyEgVqKYN8RewwjlKLcrjaqsuIhUdXJgNvjH1jnbQ8+apTh1ClYl0i2iJFR0WB
-         IVEdVXt8Fafalt918MqPCO90K0WqZ7fCOEmeGvQcURoWjRK/78XQsI9ZMdG1c0tQhG
-         nxGIJUF9Ui8uKxj3hRDcDv9A50JFJaY4C0cyHtFSC8z77qpqa1DPEHw1NS4q3iElkS
-         uokZM/CP6Flfdj3AgZTPOiTOp0qlp0tl67yCHZRP0keh/c+7kuiUR35fSBk1nqlqE6
-         I6fjSUXYu3gAQ==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-53e70b0a218so4943056a12.2;
-        Sun, 19 Nov 2023 03:59:25 -0800 (PST)
-X-Gm-Message-State: AOJu0YyrF3uHg/GAnaB118EsrMzpJy1XfiK63rnt020wttxki0LPOZm0
-        hp5L0wFNirLBH/iOTqy8PrKv8xo6euSm2WLxJtc=
-X-Google-Smtp-Source: AGHT+IEOV0Yphn3EZlTrLENL+ZMt4WbgvODyjNv1KG8aL25BNcVStxecpKUo7uDy0Wrni/U59QS+B0+V5d8IPu8T/Ks=
-X-Received: by 2002:aa7:d454:0:b0:548:4f58:4c98 with SMTP id
- q20-20020aa7d454000000b005484f584c98mr3457877edr.29.1700395163796; Sun, 19
- Nov 2023 03:59:23 -0800 (PST)
+        Sun, 19 Nov 2023 07:03:28 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2438AD8;
+        Sun, 19 Nov 2023 04:03:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1700395373; x=1701000173; i=wahrenst@gmx.net;
+        bh=i+DVUJCspBrn4tDz11etcfalDTdenr3Ez2EXD/Jj8uk=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=lfTakmJw6JhNrb876zXqXlcuvkUZO0yJC/DU0AzZNyO7UXnDpSzhFE4R13S/awcr
+         WBrIPPj/PNpYaGy1sOiCBRSjsMeRP8I3x/XtPoyqW1R88ftGQt36weel/L5Wb48nP
+         12x/ZISaMeHagQFKZPNo6yffwLt39ktTeC8of1NvEPW/cCsjBZ5dUBktksRktghOn
+         4h/xipFOlyGNUq7/JUDzeYvpRmrsajUGaoZ4jk7A3P0zhgLABUOCwsqT/lrSN9AXt
+         RDwH6MgM1Gkdyevv3XB1sToVgUHLRkLir08c/QMbJFN/eLsTa/Y8K5RXZIA71CCdP
+         bF1GgzE9tto2a8DKTg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MlNtP-1rl87t4BJ7-00lnUv; Sun, 19
+ Nov 2023 13:02:53 +0100
+Message-ID: <d9e1c435-3de4-407f-bdc7-d8b2b66042ca@gmx.net>
+Date:   Sun, 19 Nov 2023 13:02:50 +0100
 MIME-Version: 1.0
-References: <20231119053448.2367725-1-masahiroy@kernel.org>
-In-Reply-To: <20231119053448.2367725-1-masahiroy@kernel.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 19 Nov 2023 19:59:11 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6Y4vqc45eaMs+wCN7Quf4e9ogp8aDA8V0sA=TUnMWd-Q@mail.gmail.com>
-Message-ID: <CAAhV-H6Y4vqc45eaMs+wCN7Quf4e9ogp8aDA8V0sA=TUnMWd-Q@mail.gmail.com>
-Subject: Re: [PATCH] loongarch: add dependency between vmlinuz.efi and vmlinux.efi
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Simon Glass <sjg@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/15] staging: vc04_services: bcm2835-isp: Add a more
+ complex ISP processing component
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Umang Jain <umang.jain@ideasonboard.com>,
+        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Naushir Patuck <naush@raspberrypi.com>
+References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+ <20231109210309.638594-11-umang.jain@ideasonboard.com>
+ <414ba478-3a96-48e6-a3a7-88c920a20960@gmx.net>
+ <20231118185638.GJ20846@pendragon.ideasonboard.com>
+Content-Language: en-US
+From:   Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20231118185638.GJ20846@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Provags-ID: V03:K1:Senyw37i4muptiZg26W5eyxJmmzhLTcnCpqutjgx95/ox5WZg/i
+ cBhWemBWCSBkDCcBjMnHj/3rEtvdhJTZbpsqpprQ4GH7lNGedyRsZSxB1VBunM3ZvjDn3ln
+ 5YQALbjrVKSsZwdpagrRtguaX79+yMZLjW0oAv22b8ic39pj3HLnF1VySFUWNlhISxQ/FSG
+ gvm5Dg+zpHfWmAW8l/i8A==
+UI-OutboundReport: notjunk:1;M01:P0:cyVyPz9+kTk=;s1Uomy8IC3+VDOblEDHYCOwXaUj
+ VJlVkECT0gEQvfbraR0SCt11r0uHxj5oKXrrBHhNtB4qeQ1yyLDzgmRh6CusOTSIftAT66PG3
+ GH8vVYaS01z9GT/5GXLNvmUOVaMla374yHryc25OKvRWpexeF1sp+Aoy8u4rVB30YfT9BCNhu
+ HpSEPllJSQ5bciFrIkSNNlkN8kiADDsuSByo7DaSZMl2YgDp8JJOwoHAuxLlcWtg9Ypmgv8eF
+ AKE0XqA6tQvsACe+jkNTJ3mqFiXcejJ5OKUmnB62Ex37rn8F6GBw/b9GJ2tnj1HIg3KKxRGPo
+ wvrZAYrihSPPSxQAWB+ZCQn93zIq0igXnJPq3YC+6lFOJp/6NKisiwHnDP3ycouhL6+/IFlZx
+ +sgwQl42vu23sX3gJx6P59SNL7jmxkcBl2aEFz/QL1ySIEwN24jgKMrPoMBz+m7L5Cd8hu0Ms
+ LX+NO/CMxNFftaZhKp/dq6Oh0qGvpwhi+2cJFqTuFOJaCtqag3GclEoFa6r3Qg+oXhPH03AsP
+ UaWOP+ZU/2bgQD5mK2MDwBvF2EBu96ChDsHE0dUr3tifBxp8kt0N8qnuhWxjyd5bYdFln4Qh7
+ zQpctvBwPyCab/MzNRRYGrmo5kkyAGuik3qI+HTuFgkgLGX8S3Ib8jFbj+Ze+KHv8EMuTItoA
+ LFVRYctyXYsujdTva/mbl7PFhBUjqCA5NnG+JySqQj3/cxRrqGOmzKTqV1V8G9Ae8wBFHoIey
+ oXe3ihJSdszkgJaOh+aq7iMOmde2ztpzl3K24lGlIDV12uhIWZZB69slJVxCP3UqW9lQtGOK7
+ guO97RKWhNEwjfTdV9GkNvcnhPJ/3nnnSZ76vee7Hf0YZcM65ZAjz/i5BPad1jYnEsLfYeotX
+ CVCLwjQL+r55a7N64N1KHc1rpynZKG1UOmKTWd36ld8Kej7oZOTLPH/MsLo/s7njMkS7rtEf3
+ 0eqegd0n49cD1wJyGXx8YFIkm9s=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,89 +86,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Masahiro,
+Am 18.11.23 um 19:56 schrieb Laurent Pinchart:
+> Hi Stefan,
+>
+> On Sat, Nov 18, 2023 at 03:53:41PM +0100, Stefan Wahren wrote:
+>> Am 09.11.23 um 22:03 schrieb Umang Jain:
+>>> From: Naushir Patuck <naush@raspberrypi.com>
+>>>
+>>> Driver for the BCM2835 ISP hardware block.  This driver uses the MMAL
+>>> component to program the ISP hardware through the VC firmware.
+>>>
+>>> The ISP component can produce two video stream outputs, and Bayer
+>>> image statistics. This can't be encompassed in a simple V4L2
+>>> M2M device, so create a new device that registers 4 video nodes.
+>> sorry, i don't have much knowledge about V4L2, so someone else should
+>> review this in depth.
+>>
+>> But from my PoV, patch 11, 12, 13 and 15 should be squash into this one=
+.
+> For 11 and 12, I agree. 13 is a bit of a workaround for a missing
+> feature in V4L2, and while it's acceptable today, having it as a
+> separate commit may make it easier to revert it in the future when the
+> V4L2 API will be extended (that may or may not happen, and I wouldn't
+> count on it happening quickly in any case). I would keep patch 15
+> separate as it's not part of this driver.
 
-On Sun, Nov 19, 2023 at 1:35=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> A common issue in Makefile is a race in parallel building.
->
-> You need to be careful to prevent multiple threads from writing to the
-> same file simultaneously.
->
-> Commit 3939f3345050 ("ARM: 8418/1: add boot image dependencies to not
-> generate invalid images") addressed such a bad scenario.
->
-> A similar symptom occurs with the following command:
->
->   $ make -j$(nproc) ARCH=3Dloongarch vmlinux.efi vmlinuz.efi
->     [ snip ]
->     SORTTAB vmlinux
->     OBJCOPY arch/loongarch/boot/vmlinux.efi
->     OBJCOPY arch/loongarch/boot/vmlinux.efi
->     PAD     arch/loongarch/boot/vmlinux.bin
->     GZIP    arch/loongarch/boot/vmlinuz
->     OBJCOPY arch/loongarch/boot/vmlinuz.o
->     LD      arch/loongarch/boot/vmlinuz.efi.elf
->     OBJCOPY arch/loongarch/boot/vmlinuz.efi
->
-> The log "OBJCOPY arch/loongarch/boot/vmlinux.efi" is displayed twice.
->
-> It indicates that two threads simultaneously enter arch/loongarch/boot/
-> and write to arch/loongarch/boot/vmlinux.efi.
->
-> It occasionally leads to a build failure:
->
->   $ make -j$(nproc) ARCH=3Dloongarch vmlinux.efi vmlinuz.efi
->     [ snip ]
->     SORTTAB vmlinux
->     OBJCOPY arch/loongarch/boot/vmlinux.efi
->     PAD     arch/loongarch/boot/vmlinux.bin
->   truncate: Invalid number: =E2=80=98arch/loongarch/boot/vmlinux.bin=E2=
-=80=99
->   make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13:
->   arch/loongarch/boot/vmlinux.bin] Error 1
->   make[2]: *** Deleting file 'arch/loongarch/boot/vmlinux.bin'
->   make[1]: *** [arch/loongarch/Makefile:146: vmlinuz.efi] Error 2
->   make[1]: *** Waiting for unfinished jobs....
->   make: *** [Makefile:234: __sub-make] Error 2
->
-> vmlinuz.efi depends on vmlinux.efi, but such a dependency is not
-> specified in arch/loongarch/Makefile.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/loongarch/Makefile | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
-> index 9eeb0c05f3f4..6022bf3d30c9 100644
-> --- a/arch/loongarch/Makefile
-> +++ b/arch/loongarch/Makefile
-> @@ -142,6 +142,7 @@ vdso-install-y +=3D arch/loongarch/vdso/vdso.so.dbg
->
->  all:   $(notdir $(KBUILD_IMAGE))
->
-> +vmlinuz.efi: vmlinux.efi
->  vmlinux.elf vmlinux.efi vmlinuz.efi: vmlinux
->         $(Q)$(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/$@
-It is a little strange, because
-
-in drivers/firmware/efi/libstub/Makefile.zboot:
-vmlinuz.efi depends on vmlinuz.efi.elf, vmlinuz.efi.elf depends on
-vmlinuz.o, vmlinuz.o depends on vmlinuz, vmlinuz depends on
-vmlinux.bin, vmlinux.bin depends on $(EFI_ZBOOT_PAYLOAD).
-
-in arch/loongarch/boot/Makefile,
-EFI_ZBOOT_PAYLOAD :=3D vmlinux.efi
-
-So I think vmlinuz.efi has already depend on vmlinux.efi.
-
-Huacai
+Okay, accepted
 
 >
-> --
-> 2.40.1
->
->
+>>> Signed-off-by: Naushir Patuck <naush@raspberrypi.com>
+>>> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+>>> ---
+>>>    MAINTAINERS                                   |    9 +
+>>>    drivers/staging/vc04_services/Kconfig         |    2 +
+>>>    drivers/staging/vc04_services/Makefile        |    1 +
+>>>    .../staging/vc04_services/bcm2835-isp/Kconfig |   14 +
+>>>    .../vc04_services/bcm2835-isp/Makefile        |    4 +
+>>>    .../bcm2835-isp/bcm2835-isp-ctrls.h           |   72 +
+>>>    .../bcm2835-isp/bcm2835-isp-fmts.h            |  482 +++++
+>>>    .../bcm2835-isp/bcm2835-v4l2-isp.c            | 1712 ++++++++++++++=
++++
+>>>    .../vc04_services/vchiq-mmal/mmal-encodings.h |    4 +
+>>>    .../vchiq-mmal/mmal-parameters.h              |  165 +-
+>>>    include/uapi/linux/bcm2835-isp.h              |   27 +
+>>>    11 files changed, 2491 insertions(+), 1 deletion(-)
+>>>    create mode 100644 drivers/staging/vc04_services/bcm2835-isp/Kconfi=
+g
+>>>    create mode 100644 drivers/staging/vc04_services/bcm2835-isp/Makefi=
+le
+>>>    create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm283=
+5-isp-ctrls.h
+>>>    create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm283=
+5-isp-fmts.h
+>>>    create mode 100644 drivers/staging/vc04_services/bcm2835-isp/bcm283=
+5-v4l2-isp.c
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 0748cc15588c..8670a8d95400 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -3976,6 +3976,15 @@ F:	Documentation/devicetree/bindings/mips/brcm/
+>>>    F:	arch/mips/bcm47xx/*
+>>>    F:	arch/mips/include/asm/mach-bcm47xx/*
+>>>
+>>> +BROADCOM BCM2835 ISP DRIVER
+>>> +M:	Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>
+>>> +L:	linux-media@vger.kernel.org
+>>> +S:	Maintained
+>>> +F:	Documentation/media/uapi/v4l/pixfmt-meta-bcm2835-isp-stats.rst
+>>> +F:	Documentation/media/v4l-drivers/bcm2835-isp.rst
+>>> +F:	drivers/staging/vc04_services/bcm2835-isp
+>>> +F:	include/uapi/linux/bcm2835-isp.h
+>>> +
+>>>    BROADCOM BCM4908 ETHERNET DRIVER
+>>>    M:	Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>>>    R:	Broadcom internal kernel review list <bcm-kernel-feedback-list@b=
+roadcom.com>
+>>> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/v=
+c04_services/Kconfig
+>>> index 6c0e77d64376..e71e5a8b820a 100644
+>>> --- a/drivers/staging/vc04_services/Kconfig
+>>> +++ b/drivers/staging/vc04_services/Kconfig
+>>> @@ -44,6 +44,8 @@ source "drivers/staging/vc04_services/bcm2835-audio/=
+Kconfig"
+>>>
+>>>    source "drivers/staging/vc04_services/bcm2835-camera/Kconfig"
+>>>
+>>> +source "drivers/staging/vc04_services/bcm2835-isp/Kconfig"
+>>> +
+>>>    source "drivers/staging/vc04_services/vchiq-mmal/Kconfig"
+>>>
+>>>    source "drivers/staging/vc04_services/vc-sm-cma/Kconfig"
+>>> diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/=
+vc04_services/Makefile
+>>> index 1f61a263f22d..2cebf92525a0 100644
+>>> --- a/drivers/staging/vc04_services/Makefile
+>>> +++ b/drivers/staging/vc04_services/Makefile
+>>> @@ -16,3 +16,4 @@ obj-$(CONFIG_SND_BCM2835)		+=3D bcm2835-audio/
+>>>    obj-$(CONFIG_VIDEO_BCM2835)		+=3D bcm2835-camera/
+>>>    obj-$(CONFIG_BCM2835_VCHIQ_MMAL)	+=3D vchiq-mmal/
+>>>    obj-$(CONFIG_BCM_VC_SM_CMA)		+=3D vc-sm-cma/
+>>> +obj-$(CONFIG_VIDEO_ISP_BCM2835) 	+=3D bcm2835-isp/
+>>> diff --git a/drivers/staging/vc04_services/bcm2835-isp/Kconfig b/drive=
+rs/staging/vc04_services/bcm2835-isp/Kconfig
+>>> new file mode 100644
+>>> index 000000000000..6222799ebe16
+>>> --- /dev/null
+>>> +++ b/drivers/staging/vc04_services/bcm2835-isp/Kconfig
+>>> @@ -0,0 +1,14 @@
+>>> +config VIDEO_ISP_BCM2835
+>>> +	tristate "BCM2835 ISP support"
+>>> +	depends on MEDIA_SUPPORT
+>>> +	depends on VIDEO_DEV && (ARCH_BCM2835 || COMPILE_TEST)
+>>> +	depends on MEDIA_CONTROLLER
+>>> +	select BCM2835_VCHIQ_MMAL
+>>> +	select VIDEOBUF2_DMA_CONTIG
+>>> +	help
+>>> +	  This is the V4L2 driver for the Broadcom BCM2835 ISP hardware.
+>> I think the description is not helpful for all users. Not everybody
+>> knows what ISP is for. Please describe it more for an end user.
+>>
+>>> +	  This operates over the VCHIQ interface to a service running on
+>>> +	  VideoCore.
+>>> +
+>>> +	  To compile this driver as a module, choose M here: the module
+>>> +	  will be called bcm2835-isp.
+
