@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA8C7F04E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 10:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA5A7F04E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 10:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjKSJIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 04:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
+        id S230366AbjKSJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 04:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSJIw (ORCPT
+        with ESMTP id S230337AbjKSJJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 04:08:52 -0500
+        Sun, 19 Nov 2023 04:09:18 -0500
 Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2EBF9;
-        Sun, 19 Nov 2023 01:08:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA55138;
+        Sun, 19 Nov 2023 01:09:13 -0800 (PST)
 Received: from [192.168.192.84] (unknown [50.39.103.33])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 62CC042F25;
-        Sun, 19 Nov 2023 09:08:40 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A145F42F25;
+        Sun, 19 Nov 2023 09:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1700384926;
-        bh=spW5iaPaEhOOfN+DrnpbEnZueODC//5+6nsWpNvSU4I=;
+        s=20210705; t=1700384952;
+        bh=a8GyT1D66QHSgKQrFkA9LbKMbr1vvUzrTDwNgdeefRg=;
         h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
          In-Reply-To:Content-Type;
-        b=KlNjyPhGCXe3KvYcvRksZw/14RWD5E7MU0z24U67tNvt/Cm/un9R2hsqRFNxSzc9B
-         X719BGok71uPLJDcp0CTzJHVZop/llcp9QMOMxBOhDrINunUm5vqCg8DmBBFQ8DR2K
-         J8dOFprPBmVbEcGtPGHV7V+/QTnPNdW6DKEOraTXa+x32DHWNWMdli3tJ6zS7SQb7W
-         RIbmYJXUWNR//asfSTf/0O8ci17IpPUTM+ae4YNuj7k3lY6N3cIwxSHvqvvQmTGwxe
-         M61eKrnB9ZS2ULSpTdpPOHpWId8L0sSMvVTIWy/Pv7palpgC+uQ5qN2IXFDkCJuoMW
-         sN3V1qQUDsTfg==
-Message-ID: <9b443e09-82ac-43ae-9082-49e2e4c5021e@canonical.com>
-Date:   Sun, 19 Nov 2023 01:08:34 -0800
+        b=ndkE4UMEfhrIDH913eTlEPbHjho2x+Z4RSEKZ7vzhStaZTD08843O1FJAu70H5DwL
+         hVFtxzSHHjQ7rA9gGKid4236xfHBN0NdEE7X859bYx8/L8CX7aOHwWx+5awuY29gZg
+         YXV9KN8RgCooKGEvBpDEwG6ev7RmSBcyQC8WaiYZAGPxKBmqEPJ7gTB/rcYnaKYdqT
+         j3iYS4j5tfL7O6tdHndS9cCkxZK6Gq4xL0MbPI5ZA8Jm5z4P+JrxCNq3n6xwdCwvQM
+         PewLVVT6bvx4tEJBFL2UQtEhy47JNbno1Wo7VB6OIhGjHM1eOWv3vb88H20h4M8SAj
+         TxDYfZmmSlEsg==
+Message-ID: <83b3c0ea-6e17-4fec-8887-0691e7d84185@canonical.com>
+Date:   Sun, 19 Nov 2023 01:09:07 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] apparmor: Fix some kernel-doc comments
+Subject: Re: [PATCH -next 1/2] apparmor: Fix one kernel-doc comment
+Content-Language: en-US
 To:     Yang Li <yang.lee@linux.alibaba.com>, paul@paul-moore.com,
         jmorris@namei.org, serge@hallyn.com
 Cc:     apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
         linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
-References: <20231023005517.115318-1-yang.lee@linux.alibaba.com>
-Content-Language: en-US
+References: <20231023011124.19034-1-yang.lee@linux.alibaba.com>
 From:   John Johansen <john.johansen@canonical.com>
 Autocrypt: addr=john.johansen@canonical.com; keydata=
  xsFNBE5mrPoBEADAk19PsgVgBKkImmR2isPQ6o7KJhTTKjJdwVbkWSnNn+o6Up5knKP1f49E
@@ -87,7 +87,7 @@ Autocrypt: addr=john.johansen@canonical.com; keydata=
  +T7sv9+iY+e0Y+SolyJgTxMYeRnDWE6S77g6gzYYHmcQOWP7ZMX+MtD4SKlf0+Q8li/F9GUL
  p0rw8op9f0p1+YAhyAd+dXWNKf7zIfZ2ME+0qKpbQnr1oizLHuJX/Telo8KMmHter28DPJ03 lT9Q
 Organization: Canonical
-In-Reply-To: <20231023005517.115318-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20231023011124.19034-1-yang.lee@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -100,43 +100,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/23 17:55, Yang Li wrote:
-> Fix some kernel-doc comments to silence the warnings:
-> security/apparmor/capability.c:66: warning: Function parameter or member 'ad' not described in 'audit_caps'
-> security/apparmor/capability.c:66: warning: Excess function parameter 'as' description in 'audit_caps'
-> security/apparmor/capability.c:154: warning: Function parameter or member 'subj_cred' not described in 'aa_capable'
-> security/apparmor/capability.c:154: warning: Excess function parameter 'subj_cread' description in 'aa_capable'
+On 10/22/23 18:11, Yang Li wrote:
+> Fix one kernel-doc comment to silence the warnings:
+> security/apparmor/domain.c:46: warning: Function parameter or member 'to_cred' not described in 'may_change_ptraced_domain'
+> security/apparmor/domain.c:46: warning: Excess function parameter 'cred' description in 'may_change_ptraced_domain'
 > 
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7035
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7036
 > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
 sorry I missed replying to this. It was pulled into apparmor-next and merged upstream during the 6.7 merge window
 
+
 > ---
->   security/apparmor/capability.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   security/apparmor/domain.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/security/apparmor/capability.c b/security/apparmor/capability.c
-> index 0b7d2b1086c9..9934df16c843 100644
-> --- a/security/apparmor/capability.c
-> +++ b/security/apparmor/capability.c
-> @@ -51,7 +51,7 @@ static void audit_cb(struct audit_buffer *ab, void *va)
+> diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
+> index ed4a13d44894..89fbeab4b33b 100644
+> --- a/security/apparmor/domain.c
+> +++ b/security/apparmor/domain.c
+> @@ -31,7 +31,7 @@
 >   
 >   /**
->    * audit_caps - audit a capability
-> - * @as: audit data
-> + * @ad: audit data
->    * @profile: profile being tested for confinement (NOT NULL)
->    * @cap: capability tested
->    * @error: error code returned by test
-> @@ -140,7 +140,7 @@ static int profile_capable(struct aa_profile *profile, int cap,
->   
->   /**
->    * aa_capable - test permission to use capability
-> - * @subj_cread: cred we are testing capability against
-> + * @subj_cred: cred we are testing capability against
->    * @label: label being tested for capability (NOT NULL)
->    * @cap: capability to be tested
->    * @opts: CAP_OPT_NOAUDIT bit determines whether audit record is generated
+>    * may_change_ptraced_domain - check if can change profile on ptraced task
+> - * @cred: cred of task changing domain
+> + * @to_cred: cred of task changing domain
+>    * @to_label: profile to change to  (NOT NULL)
+>    * @info: message if there is an error
+>    *
 
