@@ -2,126 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3196E7F08E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97C07F08EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjKSUie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 15:38:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S230393AbjKSUrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 15:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKSUid (ORCPT
+        with ESMTP id S229470AbjKSUrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 15:38:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DC4F9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 12:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700426309; x=1731962309;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=3g/kBa9qBFW72dGUC38j4pWfQ0874xlG4OhFWH/ATow=;
-  b=KtwtRRZPcMtvdvIEfcvCL9q4yQarDXopTAfDP6e4uM9omI67cm3LpfOV
-   UCQlIvQ+LT4kpnLhNMIRE5cj/wgXI3BSTJSpjKJa8XeLDN4p12yzTqLLT
-   lkjIDXMR5PE0G2jFGzzLggFiXrQcJcOAsnHvibjgK3B6+j6zTbDVAUlaZ
-   mp7+GWPnuXT+g/3UxUVmx5rUUzonoOrXyNhCB9WRt6JzH4dp+rD7WEmmR
-   KhHTXIsIqK1OsCE1Apz9Hg1N/ySDUQ8322UQyldj1w2bVezEh0PgEnZJC
-   iAUVqdRWFEjSkLfSSCXMVbTTI786GTuVNXUMrqBqs9SoTDpSBhGUoWTlK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="376555379"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="376555379"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 12:38:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="7511239"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 19 Nov 2023 12:38:27 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r4oYi-0005W1-2Y;
-        Sun, 19 Nov 2023 20:38:24 +0000
-Date:   Mon, 20 Nov 2023 04:37:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: drivers/macintosh/windfarm_lm75_sensor.c:70:21: sparse: sparse: cast
- to restricted __le16
-Message-ID: <202311200432.ia1Xs5Jj-lkp@intel.com>
+        Sun, 19 Nov 2023 15:47:37 -0500
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02olkn2022.outbound.protection.outlook.com [40.92.49.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4F0E5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 12:47:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dZ6TCziyavlHj10hJp3W403mcCfqTNy7a/oRAmRuTjcTCqBlgdPQxqz0r2xzu9CmSveK8D/+Kj/MiIhJuFuWvN7s2WXmYJxPoF6igf0UbhBFIjxgZb3M0JNJ7shhsjXPJHGqi3ZFUX1/DRNkujwQtTNQ3Mn4tjSOBAEEwkuBiMQbgZYPt5JOqzfkgA0CNUNLxzrZGJXE60B05vh9VRFEakZ83fWjht6IFcuaa0PpYLr8IA6biLXwXqERAWWQQ5W6imE/qWqyXA58Hff/NQGCrXWC8J1sPEc9ZtxQclEu5MSjS+17eISuqDYGR12NwkKaymDmxRx+biUOM1ykbN8PLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YsUMSVOnhh1wXQpueuIRtJL4hWzd409vv6M7e5vGF54=;
+ b=nuHGYU23NVh3g1EOwNmddWjVH/BxBIzZROjT8n1gt3kQfuz2K9MVi+WBDuyeP6EbbrsYIt/QN7DFwYHSw+pRp5xw2vNbME00xvTKd81kdmYU78kz8gUAN7BA3j4mbFm6e6bH7X7uEFUXhm9ZFkU6w2P5NOiX8Pkxh1z7nkKVcRnydZOCxYzRDqox/YYIxGJtWeklTqEsM5ochyHPM0Qrs3/Hfjxp9p4mMVyEKVsJfGuR6r6VNDpG9WFFJ7YJCi9G9qy3/g1qhyWGcWqn2qy3jEmR2p45ApMjhp6FV4XkC6egPUQhuxoGYLinIGefSN6S9dG12LE0NQmwgYk1WQGSAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YsUMSVOnhh1wXQpueuIRtJL4hWzd409vv6M7e5vGF54=;
+ b=pz4rspAq5luXpr3p4Q63T+UNhrMMHSEuhSNj8c6Zxv0CTQfAAQYOrVs2vcS4PS/b7r+KOCicCbd0mA6XwRMf8GTmopEZQtjj/TGipxc5qgG7MQ//Kfnfg7UG9QqhDYoMjq+qqRJWHjcKbNASB2IUdp9zgVU+N9UnmqMIQ/b1zB38HoEeYAAnGngRZ/T4wtjJYdUSLO/ZgCPptZEuW6QxPxnAws8FYirqFUIOGBBXg5kDsSvaRZQmAvNq4L1ibkeZ/wrNLE8XF48mQNUlQyVQzMRJo6+6wwHmLgU+i4sDkvEZpYtZ/ATN/FTGAPL91muu/L9Ino2NUSyYJ6UcsBz0tA==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by DB9P193MB1354.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:2a0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Sun, 19 Nov
+ 2023 20:47:31 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::fdd2:7dbf:e16c:f4a4]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::fdd2:7dbf:e16c:f4a4%4]) with mapi id 15.20.7002.027; Sun, 19 Nov 2023
+ 20:47:31 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, vincenzo.frascino@arm.com,
+        akpm@linux-foundation.org
+Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] kasan: Improve free meta storage in Generic KASAN
+Date:   Mon, 20 Nov 2023 04:46:29 +0800
+Message-ID: <VI1P193MB0752DE2CCD9046B5FED0AA8E99B5A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [SDLZg+o5aRh8rljxMKf9GYjanOwFCPPo]
+X-ClientProxiedBy: LO4P123CA0068.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:153::19) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20231119204629.50560-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|DB9P193MB1354:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3cb3973d-d264-4571-b623-08dbe940c005
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ioV3GNxZUGwzbi/BEEUl0gzZWb9LAeS7OutWNDIxlenq3o4+taZRHbmYYqT9lA111nA581bCHKFdi3hJ5jJOcY8VGH+KvPFmgjoz5gN7Qa+pDLY5fPC9iEuhQqgpDgE33Y/eRVYvX1OxV80rjtUbFEuuyq4SBeqPeFbmjiCfB/v5X5LjqhNrr1NBJe8SP9ee+EBM0WXnbkP8zZUMj3Pae9zo8En389hsT7Cv2rjiAixev33SGRet1dqkONR/jDBJH8eAiPdKpl5fO7UqKQmMQ4Tcwkh2lT6ogcb6onhmAWf12M20FeXcrVhEnGahSn4+ylcIshP1ChryAMRmhxSjqP1mg0qzHMErnIxQ6pbzQkGy1MAlwW2R7AM5TjXSlGA5DHeoFapaz677/nxbsvCQnjAjaNJvHzGICk30lI9am/115hXWVAsUvEjVLPah71sGGxX9rWLGb4kIw7S0N1qQ1FlRTEYrXuv0QSD9hzUz5hUAnhOgp5SWN51lURZPlgSK4QNqiExaSV9qGpi5292pjBTIBwPcVBoVE1crzgT5BMxJu19AI0QQWYeBB8/3BC79
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WjmwsBQ18Spe/TmVvGEh0LyWLWl7JE5KdCho1V6eRVQEYgxzcRzHOfLNdUJt?=
+ =?us-ascii?Q?r1xS4KkuybMzQbfcYDZTvxuP3wDETcFdYm4KTHzRTlXDDjFwUMuVSpw3mBJq?=
+ =?us-ascii?Q?WyFAPkRnpq3CHVcK+zOgmj+rlSNlORuCG+8ZrTfL0+mWA6SMtWvOjHG1YVAk?=
+ =?us-ascii?Q?0UKJpgAc0Bg2pNgJOpLq4STi9vWdvxyoTtkaZtE04qdz/W5KhB87DoaHvhcf?=
+ =?us-ascii?Q?DQyovu5ZueTokgf1ZTDMVWJJ8lo7QrUZ3f29WQvU2r6DnMVoXpwruY+z7tDS?=
+ =?us-ascii?Q?zQctzF1NX2/17wdr4/p0tRW48Fgxmh6wArQEFtVTkG+R1gl88jnFNlEp1uvA?=
+ =?us-ascii?Q?VCXc+aCk5hHX8qy//6RPDOXBcQVAqBpivwHM2FMVCroRFlmyEQMCb+nuXFMc?=
+ =?us-ascii?Q?9rnUPlrG29X73ws5CGwzn6GMEugOPuP13LXfSzcMglsoC1a5VF+uKSAedw5U?=
+ =?us-ascii?Q?SMbRuZKpv/Of7r/32eRPuvCyt14c1LQysfafyc4oOW5bfhI5lPlLHN3f82Ak?=
+ =?us-ascii?Q?18C73l+2CJr89GjhhOdOWEIlgHjrFAMXlkPZrmbDzooEIvjULtRH1mS6U2iq?=
+ =?us-ascii?Q?xLYSWI2d8AJQeHJ5krlqf7bbNMAb2E6HB8LH4nvzSQdzOwsMITJ5u0cXHbs0?=
+ =?us-ascii?Q?f4WlNPHebjAC4sIDDCBd1OMcrxXITY+tIyqJn1Ojc0YmAisbNwBF/PpyPvH8?=
+ =?us-ascii?Q?LiafAvn/Y4EAm1qsx10KB8eg0UAy0I8St38raLXXQhin8T4OVXUbYajfVD3/?=
+ =?us-ascii?Q?9+buoiKQiSrv88icdTt6PeIBmLZiO/biNSnt4D01VDIoxYjG4wNkHkRR3hlh?=
+ =?us-ascii?Q?e47nTKsaDSOBFbpRxLevrFwoRKGk8NQsSp5yHSH+z/A9G+h61RufRRmVjbx3?=
+ =?us-ascii?Q?fr91wfWeXKPx6lMBlpoWJuSZk0wIUAEo1evGTJ3tGAryvAlz5r87VwVWxxmF?=
+ =?us-ascii?Q?+WK/RMFj9NK4WLFXdowOK/4/7f/kriC0LZFaBGFzPirHkngrHXQngy90MjvE?=
+ =?us-ascii?Q?MS1BsBu8+2BlVb1iGaD8duWZVgYc9f0ws+SFXaE3FIwlBOUaTOV76lfp5yrM?=
+ =?us-ascii?Q?Fdgdlf+GIkT8uf+g8P2td6LTPlDe6u56MPP6es17rx2P+Gwnf596/SFVWl8k?=
+ =?us-ascii?Q?iAgt0IL1jed095pyu/QQYhe6qz698RlKE0e/eaNHkpdI9BkJg+Ej+wJEdiMp?=
+ =?us-ascii?Q?ix+fxUJ+xUnDf25WxHunaDJaKI9+uiTwILa9ZQuW48q8+xNdNil/CKvMULQ?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cb3973d-d264-4571-b623-08dbe940c005
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Nov 2023 20:47:31.5305
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P193MB1354
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   037266a5f7239ead1530266f7d7af153d2a867fa
-commit: 748ea32d2dbd813d3bd958117bde5191182f909a macintosh: windfarm: Use unsigned type for 1-bit bitfields
-date:   9 months ago
-config: powerpc64-randconfig-r121-20231119 (https://download.01.org/0day-ci/archive/20231120/202311200432.ia1Xs5Jj-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231120/202311200432.ia1Xs5Jj-lkp@intel.com/reproduce)
+Currently free meta can only be stored in object if the object is
+not smaller than free meta.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311200432.ia1Xs5Jj-lkp@intel.com/
+After the improvement, even when the object is smaller than free meta,
+it is still possible to store part of the free meta in the object,
+reducing the increased size of the redzone.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/macintosh/windfarm_lm75_sensor.c:70:21: sparse: sparse: cast to restricted __le16
+Example:
 
-vim +70 drivers/macintosh/windfarm_lm75_sensor.c
+free meta size: 16 bytes
+alloc meta size: 16 bytes
+object size: 8 bytes
+optimal redzone size (object_size <= 64): 16 bytes
 
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  42  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  43  static int wf_lm75_get(struct wf_sensor *sr, s32 *value)
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  44  {
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  45  	struct wf_lm75_sensor *lm = wf_to_lm75(sr);
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  46  	s32 data;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  47  
-351ca3e3119792 Jean Delvare           2009-06-15  48  	if (lm->i2c == NULL)
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  49  		return -ENODEV;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  50  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  51  	/* Init chip if necessary */
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  52  	if (!lm->inited) {
-351ca3e3119792 Jean Delvare           2009-06-15  53  		u8 cfg_new, cfg = (u8)i2c_smbus_read_byte_data(lm->i2c, 1);
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  54  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  55  		DBG("wf_lm75: Initializing %s, cfg was: %02x\n",
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  56  		    sr->name, cfg);
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  57  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  58  		/* clear shutdown bit, keep other settings as left by
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  59  		 * the firmware for now
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  60  		 */
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  61  		cfg_new = cfg & ~0x01;
-351ca3e3119792 Jean Delvare           2009-06-15  62  		i2c_smbus_write_byte_data(lm->i2c, 1, cfg_new);
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  63  		lm->inited = 1;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  64  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  65  		/* If we just powered it up, let's wait 200 ms */
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  66  		msleep(200);
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  67  	}
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  68  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  69  	/* Read temperature register */
-351ca3e3119792 Jean Delvare           2009-06-15 @70  	data = (s32)le16_to_cpu(i2c_smbus_read_word_data(lm->i2c, 0));
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  71  	data <<= 8;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  72  	*value = data;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  73  
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  74  	return 0;
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  75  }
-75722d3992f573 Benjamin Herrenschmidt 2005-11-07  76  
+Before improvement:
+actual redzone size = alloc meta size + free meta size = 32 bytes
 
-:::::: The code at line 70 was first introduced by commit
-:::::: 351ca3e31197929535418f5affc761cd9fb07428 windfarm: Convert to new-style i2c drivers
+After improvement:
+actual redzone size = alloc meta size + (free meta size - object size)
+                    = 24 bytes
 
-:::::: TO: Jean Delvare <khali@linux-fr.org>
-:::::: CC: Jean Delvare <khali@linux-fr.org>
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+---
+ mm/kasan/generic.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 4d837ab83f08..286b80661a80 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -361,6 +361,8 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+ {
+ 	unsigned int ok_size;
+ 	unsigned int optimal_size;
++	unsigned int rem_free_meta_size;
++	unsigned int orig_alloc_meta_offset;
+ 
+ 	if (!kasan_requires_meta())
+ 		return;
+@@ -394,6 +396,9 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+ 		/* Continue, since free meta might still fit. */
+ 	}
+ 
++	ok_size = *size;
++	orig_alloc_meta_offset = cache->kasan_info.alloc_meta_offset;
++
+ 	/*
+ 	 * Add free meta into redzone when it's not possible to store
+ 	 * it in the object. This is the case when:
+@@ -401,21 +406,26 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
+ 	 *    be touched after it was freed, or
+ 	 * 2. Object has a constructor, which means it's expected to
+ 	 *    retain its content until the next allocation, or
+-	 * 3. Object is too small.
+ 	 * Otherwise cache->kasan_info.free_meta_offset = 0 is implied.
++	 * Even if the object is smaller than free meta, it is still
++	 * possible to store part of the free meta in the object.
+ 	 */
+-	if ((cache->flags & SLAB_TYPESAFE_BY_RCU) || cache->ctor ||
+-	    cache->object_size < sizeof(struct kasan_free_meta)) {
+-		ok_size = *size;
+-
++	if ((cache->flags & SLAB_TYPESAFE_BY_RCU) || cache->ctor) {
+ 		cache->kasan_info.free_meta_offset = *size;
+ 		*size += sizeof(struct kasan_free_meta);
++	} else if (cache->object_size < sizeof(struct kasan_free_meta)) {
++		rem_free_meta_size = sizeof(struct kasan_free_meta) -
++								cache->object_size;
++		*size += rem_free_meta_size;
++		if (cache->kasan_info.alloc_meta_offset != 0)
++			cache->kasan_info.alloc_meta_offset += rem_free_meta_size;
++	}
+ 
+-		/* If free meta doesn't fit, don't add it. */
+-		if (*size > KMALLOC_MAX_SIZE) {
+-			cache->kasan_info.free_meta_offset = KASAN_NO_FREE_META;
+-			*size = ok_size;
+-		}
++	/* If free meta doesn't fit, don't add it. */
++	if (*size > KMALLOC_MAX_SIZE) {
++		cache->kasan_info.free_meta_offset = KASAN_NO_FREE_META;
++		cache->kasan_info.alloc_meta_offset = orig_alloc_meta_offset;
++		*size = ok_size;
+ 	}
+ 
+ 	/* Calculate size with optimal redzone. */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
