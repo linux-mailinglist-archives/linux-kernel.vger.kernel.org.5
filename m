@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCFB7F07EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A8D7F07ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 18:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbjKSQ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 11:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
+        id S231742AbjKSQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 11:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbjKSQ7K (ORCPT
+        with ESMTP id S231799AbjKSQ7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 11:59:10 -0500
+        Sun, 19 Nov 2023 11:59:15 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C8C1172D;
-        Sun, 19 Nov 2023 08:58:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2B18139;
+        Sun, 19 Nov 2023 08:58:58 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E171DA7;
-        Sun, 19 Nov 2023 08:59:39 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2E19FEC;
+        Sun, 19 Nov 2023 08:59:44 -0800 (PST)
 Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A3EA3F6C4;
-        Sun, 19 Nov 2023 08:58:48 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9966B3F6C4;
+        Sun, 19 Nov 2023 08:58:53 -0800 (PST)
 From:   Alexandru Elisei <alexandru.elisei@arm.com>
 To:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
         maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
@@ -37,9 +37,9 @@ Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
         kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-mm@kvack.org,
         linux-trace-kernel@vger.kernel.org
-Subject: [PATCH RFC v2 14/27] arm64: mte: Disable dynamic tag storage management if HW KASAN is enabled
-Date:   Sun, 19 Nov 2023 16:57:08 +0000
-Message-Id: <20231119165721.9849-15-alexandru.elisei@arm.com>
+Subject: [PATCH RFC v2 15/27] arm64: mte: Check that tag storage blocks are in the same zone
+Date:   Sun, 19 Nov 2023 16:57:09 +0000
+Message-Id: <20231119165721.9849-16-alexandru.elisei@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231119165721.9849-1-alexandru.elisei@arm.com>
 References: <20231119165721.9849-1-alexandru.elisei@arm.com>
@@ -54,40 +54,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To be able to reserve the tag storage associated with a page requires that
-the tag storage page can be migrated.
-
-When HW KASAN is enabled, the kernel allocates pages, which are now tagged,
-in non-preemptible contexts, which can make reserving the associate tag
-storage impossible.
-
-Keep the tag storage pages reserved if HW KASAN is enabled.
+alloc_contig_range() requires that the requested pages are in the same
+zone. Check that this is indeed the case before initializing the tag
+storage blocks.
 
 Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 ---
- arch/arm64/kernel/mte_tag_storage.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/arm64/kernel/mte_tag_storage.c | 33 +++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
 diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-index 427f4f1909f3..8b9bedf7575d 100644
+index 8b9bedf7575d..fd63430d4dc0 100644
 --- a/arch/arm64/kernel/mte_tag_storage.c
 +++ b/arch/arm64/kernel/mte_tag_storage.c
-@@ -308,6 +308,19 @@ static int __init mte_tag_storage_activate_regions(void)
+@@ -265,6 +265,35 @@ void __init mte_tag_storage_init(void)
+ 	}
+ }
+ 
++/* alloc_contig_range() requires all pages to be in the same zone. */
++static int __init mte_tag_storage_check_zone(void)
++{
++	struct range *tag_range;
++	struct zone *zone;
++	unsigned long pfn;
++	u32 block_size;
++	int i, j;
++
++	for (i = 0; i < num_tag_regions; i++) {
++		block_size = tag_regions[i].block_size;
++		if (block_size == 1)
++			continue;
++
++		tag_range = &tag_regions[i].tag_range;
++		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += block_size) {
++			zone = page_zone(pfn_to_page(pfn));
++			for (j = 1; j < block_size; j++) {
++				if (page_zone(pfn_to_page(pfn + j)) != zone) {
++					pr_err("Tag storage block pages in different zones");
++					return -EINVAL;
++				}
++			}
++		}
++	}
++
++	 return 0;
++}
++
+ static int __init mte_tag_storage_activate_regions(void)
+ {
+ 	phys_addr_t dram_start, dram_end;
+@@ -321,6 +350,10 @@ static int __init mte_tag_storage_activate_regions(void)
  		goto out_disabled;
  	}
  
-+	/*
-+	 * The kernel allocates memory in non-preemptible contexts, which makes
-+	 * migration impossible when reserving the associated tag storage.
-+	 *
-+	 * The check is safe to make because KASAN HW tags are enabled before
-+	 * the rest of the init functions are called, in smp_prepare_boot_cpu().
-+	 */
-+	if (kasan_hw_tags_enabled()) {
-+		pr_info("KASAN HW tags incompatible with MTE tag storage management");
-+		ret = 0;
++	ret = mte_tag_storage_check_zone();
++	if (ret)
 +		goto out_disabled;
-+	}
 +
  	for (i = 0; i < num_tag_regions; i++) {
  		tag_range = &tag_regions[i].tag_range;
