@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7959F7F06F0
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 15:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F19327F06F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 15:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbjKSOk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 09:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
+        id S229642AbjKSOu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 09:50:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbjKSOkr (ORCPT
+        with ESMTP id S229441AbjKSOu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 09:40:47 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B515F2;
-        Sun, 19 Nov 2023 06:40:44 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c79d8b67f3so43499781fa.0;
-        Sun, 19 Nov 2023 06:40:44 -0800 (PST)
+        Sun, 19 Nov 2023 09:50:28 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A248F11D;
+        Sun, 19 Nov 2023 06:50:24 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32fa7d15f4eso2741947f8f.3;
+        Sun, 19 Nov 2023 06:50:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700404842; x=1701009642; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700405423; x=1701010223; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=5ZI6+aQ9+c+bpfwBYIcSU777SeZBaK2MLQMxaHGRpFI=;
-        b=OiEUm9QFSNEg91mUf5F9nvElGp3BqlxbGkMmoFkVZQjSIl3Cc+J6oI+PYFjH1Yktft
-         8cocuDDr8/2JOlz+29xLDOOa+6GFXgui9m9qNzQ4xE6yIj+6kMwtm8pzOIQik5pefzrk
-         jJZMolZ/D5RdutkZGDc83NluZUstx4LSLRHfJmO7w6fSNl6za5wBD6cqsN5vbngXlDy6
-         TvdyhfaTEsZn63URdl8r0MqG7f2g+eSUwiMGctTO+arwKgvYOuXjxj7VEoai0cSAuzEK
-         8KPoynhIVv+iQOfzLbLlnAJkzdtKsq4f6xLPCfpVHpKcRtY8Npc4aQLD6+epgi3lQ41f
-         FTfg==
+        bh=ZBy2FynzJySNwoFbdoLCjlxvv36qfeTMfoj03QNsxyo=;
+        b=N/sTR+mGLrN3YyOkshGHeb7Z4R8mW1Mzq3GPp0oKhmTNwKpsUX+Y0cRrjJYdO5unkB
+         quTHmKrvnPP5nEzxTTPZk1jztZ/hLvcSXXoUmw51VviOh6BuLJK4n+bC96drvemafXJw
+         FrqUYpEzxnNfqFKWssXFB8FHRMjFW7t5b7UfzUQ0lcbPqtQQDSdG25rDbgsirhgvl6nx
+         LMvbKPtdH+QxsScJJyotCqj0gVMxozqB2ESLpSARebhl9gNTpvySTwkW92j1RICLx+4G
+         SXZxV+68w1YAc8W+4I6qgzQTXWdPuwzxAwbSiBtguvDTGrBuXG09CmPEs51bCJBw5lv3
+         xbvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700404842; x=1701009642;
+        d=1e100.net; s=20230601; t=1700405423; x=1701010223;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ZI6+aQ9+c+bpfwBYIcSU777SeZBaK2MLQMxaHGRpFI=;
-        b=bD79H/fpnTiv5p+vtxExhG3uWKzfEk/OQksRjR8/K8nhOOrrpd5Jkc0ORrXy9O27T0
-         rILJwr7T8/gxfEO0mq0jNYWa9b3QrxnKwe3q1SrDQlihDT58SfY9Kpg4uSkuXCum/nLz
-         /NFIy3naX3+By2O5zamkuEywdNVlhR/sQ6Ufa1uGzSnbyCXWo/3cgff9ET1r79kRQ49U
-         0p6LZ1BNZwVFeIfBhd1ekew2no5PRVeZTwjN01CjdVilD0gvIDkGUPcGRdpZTiHZK050
-         Pvi27AaezJKBDbbRzBRyb+4RbIn6idVlEiOPHueIwvvyaM90SmSCo1cxQFKuBpSgTnDN
-         zbqA==
-X-Gm-Message-State: AOJu0Yzb+evu48fuN3kl8OjgVnYZ7uW0Pn0ZdLpQliqJkXPQSeT2dsXg
-        3FYaz9lpaxZ1gINn0+fjK4E=
-X-Google-Smtp-Source: AGHT+IGz3Am6v44VUwMqk25WU74XtddrbbJsFHcdTLt3huXceX43GKRCbBwubtG0I1e4Th/6uBbTrg==
-X-Received: by 2002:a2e:2245:0:b0:2c8:713c:b506 with SMTP id i66-20020a2e2245000000b002c8713cb506mr3263978lji.43.1700404842251;
-        Sun, 19 Nov 2023 06:40:42 -0800 (PST)
+        bh=ZBy2FynzJySNwoFbdoLCjlxvv36qfeTMfoj03QNsxyo=;
+        b=MQLQGd3YE+inesUUUTsPJdDfqDDxkuEBQnxQ1HlG7VIJOf2bqt8I/X8/A1WyFLvAM8
+         RaWMleZYtxIajgw8L/zSAaANZFdAByA3T3XSg46hnVgyhi+21rl26rMSK4xy+MSVo2Pr
+         wj62ts2HH/6jwwBiWZ7+6ZRrC+K6zg7tjTEnDApBZ/kVPV7+/+IgbdhwJ2A8tE1lxCeC
+         couhX88dnidoKTIkWxgT+lcGTvEyHYTdCcoy/Z9nmnKu0flb9WnaYxZedKri4feim0Oi
+         mftbJXY+2Gc1QOfwNJIfP2PUWTwb1ywOWX6tjcUWS07UBMhzR7sDUvRlhPXHsZ6CDQDP
+         je+g==
+X-Gm-Message-State: AOJu0YzUsw47081SzXGmwhUkdku/TJOsxEGsBqGhm05GY1Plua39Bkfp
+        Tpb8dFvEPBpZnxalEaLjfH5dsApDZyg=
+X-Google-Smtp-Source: AGHT+IFhNrGV/AQm0viGUiqf/wW1h6qaQk1NwH4o8i5PU8ncxwa2CSxnIhrNxRFvNQ0LPFzLDJDNnQ==
+X-Received: by 2002:a5d:5f49:0:b0:32f:7d67:baf1 with SMTP id cm9-20020a5d5f49000000b0032f7d67baf1mr3589905wrb.35.1700405422767;
+        Sun, 19 Nov 2023 06:50:22 -0800 (PST)
 Received: from skbuf ([188.26.185.114])
-        by smtp.gmail.com with ESMTPSA id a3-20020a05600c348300b0040a5e69482esm14598744wmq.11.2023.11.19.06.40.40
+        by smtp.gmail.com with ESMTPSA id p2-20020a5d4582000000b003316d1a3b05sm6885022wrq.78.2023.11.19.06.50.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 06:40:42 -0800 (PST)
-Date:   Sun, 19 Nov 2023 16:40:39 +0200
+        Sun, 19 Nov 2023 06:50:22 -0800 (PST)
+Date:   Sun, 19 Nov 2023 16:50:19 +0200
 From:   Vladimir Oltean <olteanv@gmail.com>
 To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
 Cc:     Daniel Golle <daniel@makrotopia.org>,
@@ -72,16 +72,19 @@ Cc:     Daniel Golle <daniel@makrotopia.org>,
         Frank Wunderlich <frank-w@public-files.de>,
         Bartel Eerdekens <bartel.eerdekens@constell8.be>,
         mithat.guner@xeront.com, erkin.bozoglu@xeront.com
-Subject: Re: [PATCH net-next 02/15] net: dsa: mt7530: use p5_interface_select
- as data type for p5_intf_sel
-Message-ID: <20231119144039.gvbima26zhktf6bd@skbuf>
+Subject: Re: [PATCH net-next 03/15] net: dsa: mt7530: store port 5 SGMII
+ capability of MT7531
+Message-ID: <20231119145019.6gz4j4crwgyp46bf@skbuf>
 References: <20231118123205.266819-1-arinc.unal@arinc9.com>
- <20231118123205.266819-3-arinc.unal@arinc9.com>
+ <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <20231118123205.266819-4-arinc.unal@arinc9.com>
+ <20231118123205.266819-4-arinc.unal@arinc9.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231118123205.266819-3-arinc.unal@arinc9.com>
+In-Reply-To: <20231118123205.266819-4-arinc.unal@arinc9.com>
+ <20231118123205.266819-4-arinc.unal@arinc9.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -92,13 +95,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 03:31:52PM +0300, Arınç ÜNAL wrote:
-> Use the p5_interface_select enumeration as the data type for the
-> p5_intf_sel field. This ensures p5_intf_sel can only take the values
-> defined in the p5_interface_select enumeration.
+On Sat, Nov 18, 2023 at 03:31:53PM +0300, Arınç ÜNAL wrote:
+> Introduce the p5_sgmii field to store the information for whether port 5
+> has got SGMII or not. Instead of reading the MT7531_TOP_SIG_SR register
+> multiple times, the register will be read once and the value will be
+> stored on the p5_sgmii field. This saves unnecessary reads of the
+> register.
 > 
-> Remove the explicit assignment of 0 to P5_DISABLED as the first enum item
-> is automatically assigned 0.
+> Move the comment about MT7531AE and MT7531BE to mt7531_setup(), where the
+> switch is identified.
+> 
+> Get rid of mt7531_dual_sgmii_supported() now that priv->p5_sgmii stores the
+> information. Address the code where mt7531_dual_sgmii_supported() is used.
+> 
+> Get rid of mt7531_is_rgmii_port() which just prints the opposite of
+> priv->p5_sgmii.
+> 
+> Instead of calling mt7531_pll_setup() then returning, do not call it if
+> port 5 is SGMII.
+> 
+> Remove P5_INTF_SEL_GMAC5_SGMII. The p5_interface_select enum is supposed to
+> represent the mode that port 5 is being used in, not the hardware
+> information of port 5. Set p5_intf_sel to P5_INTF_SEL_GMAC5 instead, if
+> port 5 is not dsa_is_unused_port().
 > 
 > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 > Acked-by: Daniel Golle <daniel@makrotopia.org>
