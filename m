@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9DC7F0676
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA66D7F0682
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 14:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbjKSNhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 08:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52002 "EHLO
+        id S231249AbjKSNmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 08:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKSNhi (ORCPT
+        with ESMTP id S231260AbjKSNkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 08:37:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6214ED8
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 05:37:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13C3CC433C7;
-        Sun, 19 Nov 2023 13:37:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700401055;
-        bh=2fexIX8Wllal1qs9XQNtQXc+WrSDQ3whn+AUI85d1mc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dojdJKck+Y9O7k5rdfKnG08U6mBKW0yzAyatUWilOu1QJjyvkXsuWEupI2hp8nn1d
-         ILSIVbXXXSDURd9yDkvbJ0jpPPfPjIOdO1Z/b4D4TtOxXlmNJMyqpp1CBECnyE9DNk
-         bP2vP8DWGH1UBmdR/uwJ+sIXZ5w/2r5Z4SkHKpot8tiGD4ENOiKvcPU97OXJJEt7MC
-         F9yNEqTW239br5FnQaCc9w5P3fLB9MD8UGRG/QzDoZL2vJv/5hztp0EToBADUcUEF3
-         PUrkZOBbVHyniVmoYuNqJorvnpFZWKS83ynooRCViqs62zkJ/21SAjzik9nHy7BtEc
-         2s7NkQPGEHiNA==
-Date:   Sun, 19 Nov 2023 13:37:28 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Srinivas Goud <srinivas.goud@amd.com>
-Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, p.zabel@pengutronix.de, git@amd.com,
-        michal.simek@xilinx.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        appana.durga.rao@xilinx.com, naga.sureshkumar.relli@xilinx.com
-Subject: Re: [PATCH v5 1/3] dt-bindings: can: xilinx_can: Add 'xlnx,has-ecc'
- optional property
-Message-ID: <20231119-dotted-feast-eb01cbebde42@spud>
-References: <1700213336-652-1-git-send-email-srinivas.goud@amd.com>
- <1700213336-652-2-git-send-email-srinivas.goud@amd.com>
+        Sun, 19 Nov 2023 08:40:43 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E479E6;
+        Sun, 19 Nov 2023 05:40:37 -0800 (PST)
+X-UUID: acb510e49d924fe2a26b7b2e735369e7-20231119
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:818b19ef-3f45-4b5d-9838-c3dd21cdabbd,IP:15,
+        URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+        TION:release,TS:20
+X-CID-INFO: VERSION:1.1.32,REQID:818b19ef-3f45-4b5d-9838-c3dd21cdabbd,IP:15,UR
+        L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:20
+X-CID-META: VersionHash:5f78ec9,CLOUDID:25298f95-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231119214015QRM3A46K,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+        02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: acb510e49d924fe2a26b7b2e735369e7-20231119
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 141419594; Sun, 19 Nov 2023 21:40:13 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     njavali@marvell.com, mrangankar@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     kunwu.chan@hotmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] scsi: qedi: Fix warning of restricted __le32 degrades to integer in qedi_main.c
+Date:   Sun, 19 Nov 2023 21:40:09 +0800
+Message-Id: <20231119134009.8015-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="8WwOMIKNYsPT2CWN"
-Content-Disposition: inline
-In-Reply-To: <1700213336-652-2-git-send-email-srinivas.goud@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,87 +58,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+drivers/scsi/qedi/qedi_main.c:1867:37: warning: restricted __le32 degrades to integer
 
---8WwOMIKNYsPT2CWN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/scsi/qedi/qedi_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, Nov 17, 2023 at 02:58:54PM +0530, Srinivas Goud wrote:
-> ECC feature added to CAN TX_OL, TX_TL and RX FIFOs of
-> Xilinx AXI CAN Controller.
-> Part of this feature configuration and counter registers added in
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index cd0180b1f5b9..3f5b148347d2 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1864,7 +1864,7 @@ void qedi_get_task_tid(struct qedi_ctx *qedi, u32 itt, s16 *tid)
+ 	u16 i;
+ 
+ 	for (i = 0; i < MAX_ISCSI_TASK_ENTRIES; i++) {
+-		if (qedi->itt_map[i].itt == itt) {
++		if (le32_to_cpu(qedi->itt_map[i].itt) == itt) {
+ 			*tid = i;
+ 			QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_CONN,
+ 				  "Ref itt=0x%x, found at tid=0x%x\n",
+-- 
+2.34.1
 
-"ECC is an IP configuration option where counter registers are added..."
-The sentence is hard to parse for the important bit of information - the
-justification for this being a property rather than based on compatible
-or autodetectable based on some IP version etc.
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> IP for 1bit/2bit ECC errors.
->=20
-> 'xlnx,has-ecc' is optional property and added to Xilinx AXI CAN Controller
-> node if ECC block enabled in the HW
->=20
-> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
-> ---
-> Changes in v5:
-> Update property description
->=20
-> Changes in v4:
-> Fix binding check warning
-> Update property description
->=20
-> Changes in v3:
-> Update commit description
-> =20
-> Changes in v2:
-> None
->=20
->  Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/=
-Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> index 64d57c3..8d4e5af 100644
-> --- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> @@ -49,6 +49,10 @@ properties:
->    resets:
->      maxItems: 1
-> =20
-> +  xlnx,has-ecc:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: CAN TX_OL, TX_TL and RX FIFOs have ECC support(AXI CAN)
-> +
->  required:
->    - compatible
->    - reg
-> @@ -137,6 +141,7 @@ examples:
->          interrupts =3D <GIC_SPI 59 IRQ_TYPE_EDGE_RISING>;
->          tx-fifo-depth =3D <0x40>;
->          rx-fifo-depth =3D <0x40>;
-> +        xlnx,has-ecc;
->      };
-> =20
->    - |
-> --=20
-> 2.1.1
->=20
-
---8WwOMIKNYsPT2CWN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVoPmAAKCRB4tDGHoIJi
-0gIVAQCmItBnILexQiAoXNdAAsHy5rgfRr4rjnM34BOJAlWaNQEA92zmPiiA1wxS
-KxWwYSuiX1hAlANo8CLa5w7qWaHayQY=
-=jE3W
------END PGP SIGNATURE-----
-
---8WwOMIKNYsPT2CWN--
