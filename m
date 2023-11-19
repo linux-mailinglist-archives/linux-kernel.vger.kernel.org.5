@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D32A7F0710
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909CC7F0712
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjKSPML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 10:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
+        id S230140AbjKSPMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 10:12:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230027AbjKSPMK (ORCPT
+        with ESMTP id S230027AbjKSPMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 10:12:10 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD0DE1;
-        Sun, 19 Nov 2023 07:12:07 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso240163b3a.2;
-        Sun, 19 Nov 2023 07:12:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700406726; x=1701011526; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8EfKg+k4QXRL17tUiAU7LC5pyd3fy5K8isFLVnQcD7w=;
-        b=dmtFKq+jZcJpnPfkSe1PXQ0ugDsFqnUZxwQx+4ekEOr1qD3gLZ9Vr9rGbiHGAtVH8X
-         C090A1Cp0HAwNsSh7nAarA2TTsRYGk3F6GJvKdTr/nL06lRngWzZ4Ig+C6z0OP8gGuf2
-         1VphekuV/hZFKyslv1Czd06LDRE7YfqFtG3L+HcqZu+OxI/2UuIEYBUzzgCMvYbB7aov
-         d0n/Y/owHq79zShE/K18fPitRgDR+fOZ44GXuZ/6lWxnmYFqFKV9w/lgZuH/IHhyoH5p
-         qo8pAUbeCdELHbWxBfqka9MQqn5sHCEAo0wCk2bAhYzofwzYcxoBYrL2RoKAeVIFoNen
-         jR/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700406726; x=1701011526;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8EfKg+k4QXRL17tUiAU7LC5pyd3fy5K8isFLVnQcD7w=;
-        b=Zcmge/JaETPw74VQ0OsmlhmqM6D/eq+d82ZW//CdT0sabBd4J7pKEZ/+O/V+GP54ZH
-         oLgsawne6M9JIX84bygsvpynv1DHBwJgqPrYU64H9Q/1Y5bZQODblNS7U+rdvGPbbE80
-         CxeXQmYFPeGggpK43nGMJjZMrfRb2RafZZuLzqOf/xmptEqkTrhVhay7pTj4dinnRaDL
-         ofIueT1QyJGr5HIBUauE3KYv1PKCxDj4P59l3PFoMOZ9RJAk5FbZYuJ41PWG0bkbo7KI
-         5S04a/vuIMEueuzxRuPMcuaWX2cE+cgPrxv020MkKiguT3S4CTWVjPN2LgFbLeu5Bbny
-         yd/Q==
-X-Gm-Message-State: AOJu0Yxe/jacuppVha4cjGQ/GneI6xSC6elEsizYzvL+NsyuuEeGXsHK
-        SO1dw5HaK+QbTl/1Dt7kaP4=
-X-Google-Smtp-Source: AGHT+IGh5ysb2zBhFrgP4U+InFADY6GOsfaeTyqut6gkNtKaowLrmsgaAc4wNSKRcUjW5I0K14W/NA==
-X-Received: by 2002:a05:6a20:6a0b:b0:187:b2a7:c6cd with SMTP id p11-20020a056a206a0b00b00187b2a7c6cdmr3685940pzk.57.1700406726359;
-        Sun, 19 Nov 2023 07:12:06 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id x19-20020a62fb13000000b006870ed427b2sm4532387pfm.94.2023.11.19.07.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 07:12:05 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 19 Nov 2023 05:12:04 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     syzbot <syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com>
-Cc:     boqun.feng@gmail.com, brauner@kernel.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, longman@redhat.com,
-        michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com,
-        oleg@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, wander@redhat.com, will@kernel.org
-Subject: Re: [syzbot] [cgroups?] possible deadlock in cgroup_free
-Message-ID: <ZVolxA8RHsY11CnE@slm.duckdns.org>
-References: <000000000000f5b0d0060a430995@google.com>
- <0000000000009642b4060a4f017f@google.com>
+        Sun, 19 Nov 2023 10:12:30 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D7C138;
+        Sun, 19 Nov 2023 07:12:25 -0800 (PST)
+X-UUID: 6c250ce1d55348c79c4c5818169f97d0-20231119
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:d4da5ac2-ed14-4e38-acb0-0604abae64ca,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.32,REQID:d4da5ac2-ed14-4e38-acb0-0604abae64ca,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:5f78ec9,CLOUDID:1a5a3a60-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:231119230408XYBZ5UP2,BulkQuantity:1,Recheck:0,SF:19|44|64|66|24|17|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 6c250ce1d55348c79c4c5818169f97d0-20231119
+X-User: chentao@kylinos.cn
+Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1611530766; Sun, 19 Nov 2023 23:12:10 +0800
+Message-ID: <4b551600-f1a3-4efe-b3e9-99cb4536f487@kylinos.cn>
+Date:   Sun, 19 Nov 2023 23:12:09 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000009642b4060a4f017f@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next] i40e: Use correct buffer size
+Content-Language: en-US
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     horms@kernel.org, anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, intel-wired-lan@lists.osuosl.org,
+        jeffrey.t.kirsher@intel.com, jesse.brandeburg@intel.com,
+        kuba@kernel.org, kunwu.chan@hotmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, shannon.nelson@amd.com
+References: <20231113093112.GL705326@kernel.org>
+ <20231115031444.33381-1-chentao@kylinos.cn>
+ <55e07c56-da57-41aa-bc96-e446fad24276@intel.com>
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <55e07c56-da57-41aa-bc96-e446fad24276@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,19 +65,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 05:25:05PM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
+Hi Alexander,
+Thank you so much for your reply, I looked at the modification you 
+mentioned, it's really cool. I'll definitely try it next time.
+
+But when using it, will it be easy to forget to free up memory?
+Although 'kmalloc_track_caller' is used, according to my understanding, 
+it is also necessary to release the memory at the end of use.
+
+On 2023/11/15 23:39, Alexander Lobakin wrote:
+> From: Kunwu Chan <chentao@kylinos.cn>
+> Date: Wed, 15 Nov 2023 11:14:44 +0800
 > 
-> commit 2d25a889601d2fbc87ec79b30ea315820f874b78
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Sun Sep 17 11:24:21 2023 +0000
+>> The size of "i40e_dbg_command_buf" is 256, the size of "name"
+>> depends on "IFNAMSIZ", plus a null character and format size,
+>> the total size is more than 256, fix it.
+>>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> Suggested-by: Simon Horman <horms@kernel.org>
+>> ---
+>>   drivers/net/ethernet/intel/i40e/i40e_debugfs.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+>> index 999c9708def5..e3b939c67cfe 100644
+>> --- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+>> +++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+>> @@ -72,7 +72,7 @@ static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
+>>   {
+>>   	struct i40e_pf *pf = filp->private_data;
+>>   	int bytes_not_copied;
+>> -	int buf_size = 256;
+>> +	int buf_size = IFNAMSIZ + sizeof(i40e_dbg_command_buf) + 4;
 > 
->     ptrace: Convert ptrace_attach() to use lock guards
-
-Looks like the tasklist_lock conversion in ptrace_attach() forgot _irq.
-Peter, Oleg?
-
-Thanks.
-
--- 
-tejun
+> Reverse Christmas Tree style? Should be the first one in the declaration
+> list.
+> 
+>>   	char *buf;
+>>   	int len;
+> 
+> You can fix it in a different way. Given that there's a kzalloc() either
+> way, why not allocate the precise required amount of bytes by using
+> kasprintf() instead of kzalloc() + snprintf()? You wouldn't need to
+> calculate any buffer sizes etc. this way.
+> 
+> Thanks,
+> Olek
