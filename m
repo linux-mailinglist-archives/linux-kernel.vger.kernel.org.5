@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6F37F04DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 09:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA8C7F04E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 10:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjKSIyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 03:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S230333AbjKSJIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 04:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSIyx (ORCPT
+        with ESMTP id S229454AbjKSJIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 03:54:53 -0500
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC0BE5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 00:54:48 -0800 (PST)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231119085443epoutp022f23a6f1f3616becbe28c2b1aa5218b6~Y_lCm_Vvm2602726027epoutp02R
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:54:43 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231119085443epoutp022f23a6f1f3616becbe28c2b1aa5218b6~Y_lCm_Vvm2602726027epoutp02R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700384083;
-        bh=aUl24Gac6V4qeYPQFo9QasuwMm4N5iU9VP5YIzb5kFs=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=sCuuYSSydd5RKckJ43Qr6SeMmEBAD4LV1ReXNhDZMAPdyE5GABAxJLsDA8mBvbPiU
-         nXJ9sj8M71m2MM5FLozUfza57FtBjiGW2xAN9wLwh2pqnNj+Tkx8DsOTdTt007AzGU
-         YASC24rqoBy+4IJTV3jF8LwadXitnnaMfvOqcwjI=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20231119085442epcas2p370350440fbfcf488feb10a8e309a2ac4~Y_lBUYAx71040310403epcas2p3y;
-        Sun, 19 Nov 2023 08:54:42 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.89]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SY4Fs6ncwz4x9Pp; Sun, 19 Nov
-        2023 08:54:41 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1A.9C.10022.15DC9556; Sun, 19 Nov 2023 17:54:41 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231119085440epcas2p375fa3b2999e1a3ceeff9949136db7e28~Y_k-zOBqs1033410334epcas2p35;
-        Sun, 19 Nov 2023 08:54:40 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231119085440epsmtrp1dbac461351964514c6477a126c1ee07d~Y_k-yeKgU2939629396epsmtrp1h;
-        Sun, 19 Nov 2023 08:54:40 +0000 (GMT)
-X-AuditID: b6c32a47-9a3ff70000002726-ba-6559cd5151cd
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        63.0A.18939.05DC9556; Sun, 19 Nov 2023 17:54:40 +0900 (KST)
-Received: from perf.dsn.sec.samsung.com (unknown [10.229.95.91]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231119085440epsmtip2c458c7eef622a9fabea8b8d2e7842d12~Y_k-kPdsJ3102631026epsmtip2t;
-        Sun, 19 Nov 2023 08:54:40 +0000 (GMT)
-From:   Youngmin Nam <youngmin.nam@samsung.com>
-To:     tomasz.figa@gmail.com, krzysztof.kozlowski@linaro.org,
-        s.nawrocki@samsung.com, alim.akhtar@samsung.com,
-        linus.walleij@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org,
-        Youngmin Nam <youngmin.nam@samsung.com>
-Subject: [PATCH] pinctrl: samsung: add irq_set_affinity() for non wake up
- external gpio interrupt
-Date:   Sun, 19 Nov 2023 18:29:09 +0900
-Message-Id: <20231119092909.3018578-1-youngmin.nam@samsung.com>
-X-Mailer: git-send-email 2.39.2
+        Sun, 19 Nov 2023 04:08:52 -0500
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2EBF9;
+        Sun, 19 Nov 2023 01:08:48 -0800 (PST)
+Received: from [192.168.192.84] (unknown [50.39.103.33])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 62CC042F25;
+        Sun, 19 Nov 2023 09:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1700384926;
+        bh=spW5iaPaEhOOfN+DrnpbEnZueODC//5+6nsWpNvSU4I=;
+        h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+         In-Reply-To:Content-Type;
+        b=KlNjyPhGCXe3KvYcvRksZw/14RWD5E7MU0z24U67tNvt/Cm/un9R2hsqRFNxSzc9B
+         X719BGok71uPLJDcp0CTzJHVZop/llcp9QMOMxBOhDrINunUm5vqCg8DmBBFQ8DR2K
+         J8dOFprPBmVbEcGtPGHV7V+/QTnPNdW6DKEOraTXa+x32DHWNWMdli3tJ6zS7SQb7W
+         RIbmYJXUWNR//asfSTf/0O8ci17IpPUTM+ae4YNuj7k3lY6N3cIwxSHvqvvQmTGwxe
+         M61eKrnB9ZS2ULSpTdpPOHpWId8L0sSMvVTIWy/Pv7palpgC+uQ5qN2IXFDkCJuoMW
+         sN3V1qQUDsTfg==
+Message-ID: <9b443e09-82ac-43ae-9082-49e2e4c5021e@canonical.com>
+Date:   Sun, 19 Nov 2023 01:08:34 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjk+LIzCtJLcpLzFFi42LZdljTXDfwbGSqwbvXBhYP5m1js9j7eiu7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdQInFBz6xO3B77Jx1l93j
-        zrU9bB6bl9R79G1ZxejxeZNcAGtUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5
-        kkJeYm6qrZKLT4CuW2YO0GVKCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnALzAr3i
-        xNzi0rx0vbzUEitDAwMjU6DChOyM978yC2aJVnTsOc3awHidv4uRk0NCwETiSssixi5GLg4h
-        gR2MEgumHmCDcD4xSizafZEFzln75TlQhgOs5fNmc5BuIYGdjBKvvwpB1HxllFg84yATSIJN
-        QFdi24l/jCC2iEAbo0Tn3gCQImaBc4wS93smMIMkhAWSJT7cf8ECMpRFQFXiwZdskDCvgL3E
-        9pdPWSF2yUssfiABERaUODnzCQuIzQwUbt46mxlkpITAI3aJjp+LWCDecZE4PPcQE4QtLPHq
-        +BZ2CFtK4mV/G5SdLbH61yUou0Ki/V4PM4RtLDHrWTsjyF5mAU2J9bv0IU5QljhyC2otn0TH
-        4b/sEGFeiY42IYhGNYlfUzYwQtgyErsXr4Aa6CHx6PAGdkhIxUpsWnWQdQKj/Cwkz8xC8sws
-        hL0LGJlXMYqlFhTnpqcWGxUYwyM0OT93EyM4YWq572Cc8faD3iFGJg7GQ4wSHMxKIrzfhCJS
-        hXhTEiurUovy44tKc1KLDzGaAgN3IrOUaHI+MGXnlcQbmlgamJiZGZobmRqYK4nz3mudmyIk
-        kJ5YkpqdmlqQWgTTx8TBKdXAVOs5d5VEaYXAEf3z69umi015cPTiv5Q7zpnc1/sEtq1oFDTa
-        7XlQeKJY0o1bJUdj/sQt1y6t/BCS9InB83R7GQv7Ebf1urUOdiuUJBdFfu7sMJS5LaZSkHj+
-        N+P5n3trzIMPOxnmZEe8s2PS9I6offKmUe3Ok7faGyyvfqiq3Oea4XxsdxDn++mlUa0r6m78
-        7Fmxg+0ro0NFrlBJTaFpOWfkJk0BSRP22/pv/U8cWTZXx2LxhUMNq1VuH4iRSe96/u9cd7jr
-        F82b4TKPTXrC1r8Q4U3xU26/oLnFZlWjw+qlXp5WjXttZntevT79bLDkGm9GiV+Tbx89WisX
-        FqM44+fF6Sy749UUP5aq2QcosRRnJBpqMRcVJwIA+8ribyEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDLMWRmVeSWpSXmKPExsWy7bCSvG7A2chUg/57MhYP5m1js9j7eiu7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdQInFBz6xO3B77Jx1l93j
-        zrU9bB6bl9R79G1ZxejxeZNcAGsUl01Kak5mWWqRvl0CV8b7X5kFs0QrOvacZm1gvM7fxcjB
-        ISFgIvF5s3kXIxeHkMB2RonDvy6xdjFyAsVlJG6vvAxlC0vcbznCClH0mVHi0uNNTCAJNgFd
-        iW0n/jGCJEQEehglNr+awALiMAtcYZTYsngpI0iVsECixOst+9lA1rEIqEo8+JINEuYVsJfY
-        /vIpK8QV8hKLH0hAhAUlTs58wgJiMwOFm7fOZp7AyDcLSWoWktQCRqZVjKKpBcW56bnJBYZ6
-        xYm5xaV56XrJ+bmbGMEBrBW0g3HZ+r96hxiZOBgPMUpwMCuJ8H4TikgV4k1JrKxKLcqPLyrN
-        SS0+xCjNwaIkzquc05kiJJCeWJKanZpakFoEk2Xi4JRqYHK/zZ0QoCr89msDU7bvO41PZY9N
-        yxRZ+1LObLNYsKJ9+7XDGk+YjLbGfy4prNGa8/hU+/Gmv0GNue+j/py9bVW8KI1dbOH3lp/3
-        Mg9eCNaX5durMvHLzRrniEingiuKjHVJD7UDV1TxqnQUvDIp+s9U4F59mOePfknwTMZ1DOKZ
-        V5YLvrDNkDrcdUNe2ZSZ53erXvMjyd/PfTLr7qX/b5j8WqRwy83cyV1bxRVPRvDN3XRjY8kr
-        b9a9E6xaFNImXuW8o9S9vj3hf+gzsRt9F5Zb/4t9z+iRnHQh8ZzVn7SlxoeV5HRCPlrwzP3d
-        6MQT4e16ZKVJQOwThp0ajOfYrzjO/fwlsJ7BhOndBv8wJZbijERDLeai4kQAcY1Q7M8CAAA=
-X-CMS-MailID: 20231119085440epcas2p375fa3b2999e1a3ceeff9949136db7e28
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231119085440epcas2p375fa3b2999e1a3ceeff9949136db7e28
-References: <CGME20231119085440epcas2p375fa3b2999e1a3ceeff9949136db7e28@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] apparmor: Fix some kernel-doc comments
+To:     Yang Li <yang.lee@linux.alibaba.com>, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com
+Cc:     apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20231023005517.115318-1-yang.lee@linux.alibaba.com>
+Content-Language: en-US
+From:   John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; keydata=
+ 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 lT9Q
+Organization: Canonical
+In-Reply-To: <20231023005517.115318-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,69 +100,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support affinity setting for non wake up external gpio interrupt,
-we add a new irq_set_affinity callback using irq number which is in pinctrl
-driver data.
+On 10/22/23 17:55, Yang Li wrote:
+> Fix some kernel-doc comments to silence the warnings:
+> security/apparmor/capability.c:66: warning: Function parameter or member 'ad' not described in 'audit_caps'
+> security/apparmor/capability.c:66: warning: Excess function parameter 'as' description in 'audit_caps'
+> security/apparmor/capability.c:154: warning: Function parameter or member 'subj_cred' not described in 'aa_capable'
+> security/apparmor/capability.c:154: warning: Excess function parameter 'subj_cread' description in 'aa_capable'
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7035
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Before applying this patch, we couldn't change irq affinity of gpio interrupt.
-* before
-erd9945:/proc/irq/418 # cat smp_affinity
-3ff
-erd9945:/proc/irq/418 # echo 00f > smp_affinity
-erd9945:/proc/irq/418 # cat smp_affinity
-3ff
-erd9945:/proc/irq/418 # cat /proc/interrupts
-           CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9
-418:       3631          0          0          0          0          0          0          0          0          0      gpg2   0 Edge      19100000.drmdecon
+sorry I missed replying to this. It was pulled into apparmor-next and merged upstream during the 6.7 merge window
 
-After applying this patch, we can change irq affinity of gpio interrupt as below.
-* after
-erd9945:/proc/irq/418 # cat smp_affinity
-3ff
-erd9945:/proc/irq/418 # echo 00f > smp_affinity
-erd9945:/proc/irq/418 # cat smp_affinity
-00f
-erd9945:/proc/irq/418 # cat /proc/interrupts
-           CPU0       CPU1       CPU2       CPU3       CPU4       CPU5       CPU6       CPU7       CPU8       CPU9
-418:       3893        201        181        188          0          0          0          0          0          0      gpg2   0 Edge      19100000.drmdecon
-
-Signed-off-by: Youngmin Nam <youngmin.nam@samsung.com>
----
- drivers/pinctrl/samsung/pinctrl-exynos.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/pinctrl/samsung/pinctrl-exynos.c b/drivers/pinctrl/samsung/pinctrl-exynos.c
-index 6b58ec84e34b..5d7b788282e9 100644
---- a/drivers/pinctrl/samsung/pinctrl-exynos.c
-+++ b/drivers/pinctrl/samsung/pinctrl-exynos.c
-@@ -147,6 +147,19 @@ static int exynos_irq_set_type(struct irq_data *irqd, unsigned int type)
- 	return 0;
- }
- 
-+static int exynos_irq_set_affinity(struct irq_data *irqd,
-+				   const struct cpumask *dest, bool force)
-+{
-+	struct samsung_pin_bank *bank = irq_data_get_irq_chip_data(irqd);
-+	struct samsung_pinctrl_drv_data *d = bank->drvdata;
-+	struct irq_data *parent = irq_get_irq_data(d->irq);
-+
-+	if (parent)
-+		return parent->chip->irq_set_affinity(parent, dest, force);
-+
-+	return -EINVAL;
-+}
-+
- static int exynos_irq_request_resources(struct irq_data *irqd)
- {
- 	struct samsung_pin_bank *bank = irq_data_get_irq_chip_data(irqd);
-@@ -212,6 +225,7 @@ static const struct exynos_irq_chip exynos_gpio_irq_chip __initconst = {
- 		.irq_mask = exynos_irq_mask,
- 		.irq_ack = exynos_irq_ack,
- 		.irq_set_type = exynos_irq_set_type,
-+		.irq_set_affinity = exynos_irq_set_affinity,
- 		.irq_request_resources = exynos_irq_request_resources,
- 		.irq_release_resources = exynos_irq_release_resources,
- 	},
--- 
-2.39.2
+> ---
+>   security/apparmor/capability.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/apparmor/capability.c b/security/apparmor/capability.c
+> index 0b7d2b1086c9..9934df16c843 100644
+> --- a/security/apparmor/capability.c
+> +++ b/security/apparmor/capability.c
+> @@ -51,7 +51,7 @@ static void audit_cb(struct audit_buffer *ab, void *va)
+>   
+>   /**
+>    * audit_caps - audit a capability
+> - * @as: audit data
+> + * @ad: audit data
+>    * @profile: profile being tested for confinement (NOT NULL)
+>    * @cap: capability tested
+>    * @error: error code returned by test
+> @@ -140,7 +140,7 @@ static int profile_capable(struct aa_profile *profile, int cap,
+>   
+>   /**
+>    * aa_capable - test permission to use capability
+> - * @subj_cread: cred we are testing capability against
+> + * @subj_cred: cred we are testing capability against
+>    * @label: label being tested for capability (NOT NULL)
+>    * @cap: capability to be tested
+>    * @opts: CAP_OPT_NOAUDIT bit determines whether audit record is generated
 
