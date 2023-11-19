@@ -2,146 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750D37F0498
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 07:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675257F0495
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 07:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjKSGae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 01:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        id S230012AbjKSGdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 01:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKSGac (ORCPT
+        with ESMTP id S229454AbjKSGdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 01:30:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757AF192;
-        Sat, 18 Nov 2023 22:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700375427; x=1731911427;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fhSYPSwlbRdQhxu9SEMKRyeeuCTTrwd3mBt02oFDXq8=;
-  b=neLJOy/59k1fMHpsDrvyHL58ubIbLSO+X3/IL0uyAHQQJci2LcmYWxGI
-   8gv6Be5Ou+Odv4pNsQgUx4wySh1Ny6Bz2vhyQoxE5CtqqcZ6I8QJiXxuZ
-   Mu0DiKEpaBS6QgsUackE7m1ZsdAcu0Ae/65ZYrpcxcff9xL1D37qutu0u
-   meJHUVvJJqNAhgyBQOBcORSCqelbgSzZA5teOmPDiLbAvtx44RnJDMN5M
-   Yl6ErP8/RioyrxIepchIwKgDSJkoQbB6AVmGiL6hurkHMO/D7stOOG+fw
-   HAI4sTJLUScnztTGDjGDTgY765w/dDR+4FPHC8/ATujLcsbHORMxucW2m
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="390333290"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="390333290"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 22:30:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10898"; a="795180209"
-X-IronPort-AV: E=Sophos;i="6.04,210,1695711600"; 
-   d="scan'208";a="795180209"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.180]) ([10.93.8.180])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2023 22:30:22 -0800
-Message-ID: <2a5a38d9-28e2-4718-b8fc-2b8f27610706@linux.intel.com>
-Date:   Sun, 19 Nov 2023 14:30:19 +0800
+        Sun, 19 Nov 2023 01:33:01 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B50131
+        for <linux-kernel@vger.kernel.org>; Sat, 18 Nov 2023 22:32:56 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r4bMV-0000Gj-3u; Sun, 19 Nov 2023 07:32:55 +0100
+Message-ID: <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+Date:   Sun, 19 Nov 2023 07:32:54 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 020/116] KVM: TDX: create/destroy VM structure
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1699368322.git.isaku.yamahata@intel.com>
- <997a92e4f667b497166ff8cc777ec8025b0f22bc.1699368322.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <997a92e4f667b497166ff8cc777ec8025b0f22bc.1699368322.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Radeon regression in 6.6 kernel
+Content-Language: en-US, de-DE
+To:     Phillip Susi <phill@thesusis.net>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <87edgv4x3i.fsf@vps.thesusis.net>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700375577;88fa1715;
+X-HE-SMSGID: 1r4bMV-0000Gj-3u
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lo!
+
+On 12.11.23 01:46, Phillip Susi wrote:
+> I had been testing some things on a post 6.6-rc5 kernel for a week or
+> two and then when I pulled to a post 6.6 release kernel, I found that
+> system suspend was broken.  It seems that the radeon driver failed to
+> suspend, leaving the display dead, the wayland display server hung, and
+> the system still running.  I have been trying to bisect it for the last
+> few days and have only been able to narrow it down to the following 3
+> commits:
+> 
+> There are only 'skip'ped commits left to test.
+> The first bad commit could be any of:
+> 56e449603f0ac580700621a356d35d5716a62ce5
+> c07bf1636f0005f9eb7956404490672286ea59d3
+> b70438004a14f4d0f9890b3297cd66248728546c
+> We cannot bisect more!
+
+Hmm, not a single reply from the amdgpu folks. Wondering how we can
+encourage them to look into this.
+
+Phillip, reporting issues by mail should still work, but you might have
+more luck here, as that's where the amdgpu afaics prefer to track bugs:
+https://gitlab.freedesktop.org/drm/amd/-/issues
+
+When you file an issue there, please mention it here.
+
+Furthermore it might help if you could verify if 6.7-rc1 (or rc2, which
+comes out later today) or 6.6.2-rc1 improve things.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
 
 
-On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> As the first step to create TDX guest, create/destroy VM struct.  Assign
-> TDX private Host Key ID (HKID) to the TDX guest for memory encryption and
-> allocate extra pages for the TDX guest. On destruction, free allocated
-> pages, and HKID.
->
-> Before tearing down private page tables, TDX requires some resources of the
-> guest TD to be destroyed (i.e. HKID must have been reclaimed, etc).  Add
-> mmu notifier release callback before tearing down private page tables for
-> it.
->
-> Add vm_free() of kvm_x86_ops hook at the end of kvm_arch_destroy_vm()
-> because some per-VM TDX resources, e.g. TDR, need to be freed after other
-> TDX resources, e.g. HKID, were freed.
->
-> Co-developed-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> ---
-[...]
-> +
-> +static int tdx_reclaim_page(hpa_t pa)
-> +{
-> +	int r;
-> +
-> +	r = __tdx_reclaim_page(pa);
-> +	if (!r)
-> +		tdx_clear_page(pa);
-> +	return r;
-> +}
-> +
-> +static void tdx_reclaim_td_page(unsigned long td_page_pa)
-
-This function is used to reclaim td control sturcture pages like TDCX, 
-TDVPX,
-TDVPR. Should this function name be more specific?
-For me, it is a bit confusing.
-
-Or maybe do "td page" have specific meaning referring to these control 
-structures
-pages in TDX?
-
-
-
-> +{
-> +	WARN_ON_ONCE(!td_page_pa);
-> +
-> +	/*
-> +	 * TDCX are being reclaimed.  TDX module maps TDCX with HKID
-> +	 * assigned to the TD.  Here the cache associated to the TD
-> +	 * was already flushed by TDH.PHYMEM.CACHE.WB before here, So
-> +	 * cache doesn't need to be flushed again.
-> +	 */
-> +	if (tdx_reclaim_page(td_page_pa))
-> +		/*
-> +		 * Leak the page on failure:
-> +		 * tdx_reclaim_page() returns an error if and only if there's an
-> +		 * unexpected, fatal error, e.g. a SEAMCALL with bad params,
-> +		 * incorrect concurrency in KVM, a TDX Module bug, etc.
-> +		 * Retrying at a later point is highly unlikely to be
-> +		 * successful.
-> +		 * No log here as tdx_reclaim_page() already did.
-> +		 */
-> +		return;
-> +	free_page((unsigned long)__va(td_page_pa));
-> +}
-> +
-[...]
-
+> It appears that there was a late merge in the 6.6 window that originally
+> forked from the -rc2, as many of the later commits that I bisected had
+> that version number.
+> 
+> I couldn't get it more narrowed down because I had to skip the
+> surrounding commits because they wouldn't even boot up to a gui desktop,
+> let alone try to suspend.
+> 
+> When system suspend fails, I find the following in my syslog after I
+> have to magic-sysrq reboot because the the display is dead:
+> 
+> Nov 11 18:44:39 faldara kernel: PM: suspend entry (deep)
+> Nov 11 18:44:39 faldara kernel: Filesystems sync: 0.035 seconds
+> Nov 11 18:44:40 faldara kernel: Freezing user space processes
+> Nov 11 18:44:40 faldara kernel: Freezing user space processes completed (elapsed 0.001 seconds)
+> Nov 11 18:44:40 faldara kernel: OOM killer disabled.
+> Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks
+> Nov 11 18:44:40 faldara kernel: Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+> Nov 11 18:44:40 faldara kernel: printk: Suspending console(s) (use no_console_suspend to debug)
+> Nov 11 18:44:40 faldara kernel: serial 00:01: disabled
+> Nov 11 18:44:40 faldara kernel: e1000e: EEE TX LPI TIMER: 00000011
+> Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Synchronizing SCSI cache
+> Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Synchronizing SCSI cache
+> Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Synchronizing SCSI cache
+> Nov 11 18:44:40 faldara kernel: sd 4:0:0:0: [sdb] Stopping disk
+> Nov 11 18:44:40 faldara kernel: sd 1:0:0:0: [sda] Stopping disk
+> Nov 11 18:44:40 faldara kernel: sd 5:0:0:0: [sdc] Stopping disk
+> Nov 11 18:44:40 faldara kernel: amdgpu: Move buffer fallback to memcpy unavailable
+> Nov 11 18:44:40 faldara kernel: [TTM] Buffer eviction failed
+> Nov 11 18:44:40 faldara kernel: [drm] evicting device resources failed
+> Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: pci_pm_suspend(): amdgpu_pmops_suspend+0x0/0x80 [amdgpu] returns -19
+> Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: dpm_run_callback(): pci_pm_suspend+0x0/0x170 returns -19
+> Nov 11 18:44:40 faldara kernel: amdgpu 0000:03:00.0: PM: failed to suspend async: error -19
+> Nov 11 18:44:40 faldara kernel: PM: Some devices failed to suspend, or early wake event detected
+> Nov 11 18:44:40 faldara kernel: xhci_hcd 0000:06:00.0: xHC error in resume, USBSTS 0x401, Reinit
+> Nov 11 18:44:40 faldara kernel: usb usb3: root hub lost power or was reset
+> Nov 11 18:44:40 faldara kernel: usb usb4: root hub lost power or was reset
+> Nov 11 18:44:40 faldara kernel: serial 00:01: activated
+> Nov 11 18:44:40 faldara kernel: nvme nvme0: 4/0/0 default/read/poll queues
+> Nov 11 18:44:40 faldara kernel: ata8: SATA link down (SStatus 0 SControl 300)
+> Nov 11 18:44:40 faldara kernel: ata7: SATA link down (SStatus 0 SControl 300)
+> Nov 11 18:44:40 faldara kernel: ata4: SATA link up 1.5 Gbps (SStatus 113 SControl 300)
+> Nov 11 18:44:40 faldara kernel: ata1: SATA link down (SStatus 4 SControl 300)
+> Nov 11 18:44:40 faldara kernel: ata3: SATA link down (SStatus 4 SControl 300)
+> Nov 11 18:44:40 faldara kernel: ata4.00: configured for UDMA/133
+> Nov 11 18:44:40 faldara kernel: OOM killer enabled.
+> Nov 11 18:44:40 faldara kernel: Restarting tasks ... done.
+> Nov 11 18:44:40 faldara kernel: random: crng reseeded on system resumption
+> Nov 11 18:44:40 faldara kernel: PM: suspend exit
+> Nov 11 18:44:40 faldara kernel: PM: suspend entry (s2idle)
+> Nov 11 18:44:40 faldara systemd-networkd[384]: enp0s31f6: Gained IPv6LL
+> Nov 11 18:44:40 faldara avahi-daemon[668]: Joining mDNS multicast group on interface enp0s31f6.IPv6 with address fe80::3ad5:47ff:fe0f:488a.
+> 
+> My video card is this:
+> 
+> 03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 23 (rev c7) (prog-if 00 [VGA controller])
+>         Subsystem: Gigabyte Technology Co., Ltd Navi 23
+>         Flags: bus master, fast devsel, latency 0, IRQ 139
+>         Memory at e0000000 (64-bit, prefetchable) [size=256M]
+>         Memory at f0000000 (64-bit, prefetchable) [size=2M]
+>         I/O ports at e000 [size=256]
+>         Memory at f7900000 (32-bit, non-prefetchable) [size=1M]
+>         Expansion ROM at 000c0000 [disabled] [size=128K]
+>         Capabilities: [48] Vendor Specific Information: Len=08 <?>
+>         Capabilities: [50] Power Management version 3
+>         Capabilities: [64] Express Legacy Endpoint, MSI 00
+>         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>         Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+>         Capabilities: [150] Advanced Error Reporting
+>         Capabilities: [200] Physical Resizable BAR
+>         Capabilities: [240] Power Budgeting <?>
+>         Capabilities: [270] Secondary PCI Express
+>         Capabilities: [2a0] Access Control Services
+>         Capabilities: [2d0] Process Address Space ID (PASID)
+>         Capabilities: [320] Latency Tolerance Reporting
+>         Capabilities: [410] Physical Layer 16.0 GT/s <?>
+>         Capabilities: [440] Lane Margining at the Receiver <?>
+>         Kernel driver in use: amdgpu
+>         Kernel modules: amdgpu
