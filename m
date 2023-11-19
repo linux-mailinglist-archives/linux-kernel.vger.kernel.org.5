@@ -2,52 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE367F08CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3417F08DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 21:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbjKSUPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 15:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S229925AbjKSU3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 15:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKSUPG (ORCPT
+        with ESMTP id S229470AbjKSU3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 15:15:06 -0500
-Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB98C6;
-        Sun, 19 Nov 2023 12:15:02 -0800 (PST)
-Received: from sunspire (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id 707FA28EE6F;
-        Sun, 19 Nov 2023 20:14:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1700424899;
-        bh=lcbaEBamwZZqlpO4yCVGf/omm21hvJhW9yV/X3eU7hQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=dZObmTDMkk46dW92QzIT+tmHmAFhcb+dzo9oMVdXgImWS7Cr2pXTLshWcW1MX3sSm
-         ohbUOUK23nt0DHwKdP7YWgjV+nRzlVzS9bSj13MWR/j/Q1l8dq+G1bbUcMGDG+wsSZ
-         XbHwE4J6lV7jQrSAe9YjGBBzFxhXyP+3Dgsc8r/8=
-Date:   Sun, 19 Nov 2023 22:14:58 +0200
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-Message-ID: <ZVpswo3MSScT43Bo@sunspire>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117192305.17612-1-petre.rodan@subdimension.ro>
- <20231119134939.GA8784-robh@kernel.org>
+        Sun, 19 Nov 2023 15:29:36 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA809BC;
+        Sun, 19 Nov 2023 12:29:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700425726; x=1701030526; i=deller@gmx.de;
+        bh=miLPHMfrxwqmKAd27ektH7WBR0JCMcBObraky+HNbnc=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=E4jYA/oNAE1F4fRLys0rhnfWTR6mbTmPHQKKEJCETWu0LBaCX91aeusBuo8GftgP
+         u5Yf+8CJMYTesutHmhgZPjLc0YIey1P58hytjI3W2oI6cmJD4a66ddUDeMTYL8cPz
+         06sC6LXnnMMug/2n122HJpqwJaCvsitj+wSg4/dgVqWovLl7DbuexVwk5XZQWvs6G
+         qqlc6B7JrjRbgGzZ/67UtE1y7q+aAam2vyubXPuewtivWKGQphESEIF/5ZfjYElhX
+         fJgtaP/GBWiy0Y5u/q27PPZDVcdZ5rJ2M15RPfuUwzZELKSuLF7iMrykojzgG+H2w
+         kueKdwgmN4PFyJii8Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.146.64]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N0oBx-1rJSwN2Ptl-00wmKV; Sun, 19
+ Nov 2023 21:28:46 +0100
+Message-ID: <e40b913f-379f-4b6e-a0d2-844887a17284@gmx.de>
+Date:   Sun, 19 Nov 2023 21:28:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231119134939.GA8784-robh@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 RESEND 00/20] remove I2C_CLASS_DDC support
+Content-Language: en-US
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+References: <20231119112826.5115-1-hkallweit1@gmail.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20231119112826.5115-1-hkallweit1@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AOqyT+NYfpLX8ZR5FyXZkrdchrLDHO79+2/Qu8gOe5asfRsZTI/
+ IriLQSNbku4YQ+qp0/psHOEUtwe2GGW1KQKpfJRDT6tPEzLiP39Yb3jaivbCF34rs3NAAAK
+ P77AvvT/8I3KI1mZu0lQ/gc8VMpyLMtSdecqmqbnSEio473SWbeyQnNtoP5uzUPbcX0IuM2
+ 8iJWd3wafDn6+LxRy4xYg==
+UI-OutboundReport: notjunk:1;M01:P0:3klw1RSna4g=;NZvvWyleiLnoQ8OEiVQyCF0geUn
+ nn/XK+nqayeGU7XpzHB2xZWPxSeQ0TuaqQNo5XKDdkjffQ4mScPbkzxfO9ECE0g2o9LHF/OYT
+ U6yLvwgXnTHZKnDQPgOxFmvtFrIsyfdPS5g97tBjmA97aGXzPaZYZ0iCTkkfSmTwkHbjCg5qd
+ HGUwtFENdTexjJOqcMiN3bYTJx+FtZpl/57KhpOz7lK/o9bNYP3taYD4o8bU/rnqSmhnmkj6C
+ CSHDSv8SP6bMPkGDEZMhOlkARgyENdqiKlopMUrUtLemjT4DN6IF/OixCcBFUOpuhRXs81XP3
+ toMLZAIvkj3RPf7b7eW6PQ91dbAagZCmzWyVg6wKxGORVgHu6JKeIyGyfzNXru9mK4F7RHz+f
+ YU0z97BEViaNubXCd7VOHEUYYNPV6jnXeF3NCaeAb+ZrLcfRFPvpI47xFK8ZmEvs/myvtOVJ7
+ kkrpy2Nnp+Ied0vCKeqT/uKKAhBCp4LmTUpDM7zagtPIlSESuwLdGM7oxTGS4RTWH6tZnRwxs
+ Kcv8ok/g8GBzbylu0F0Mi9MpggjTmTetgZtJ0O1f8Px/1/lV/FtHpHV4ifpjdpI1UKkJgKcps
+ ZbC+C1cJnT9MlPFKGHdZHuBfH1gcz/5Pfuj6/P1s/tgc2CiQKEMAFvFiNFBnL5/aREPKxH13S
+ h/r11uIpW9F9rQoWWzWXa1BtrMFrcycVfOJALbQtU8gilexeWnHUbPnhQqdjMPmbpNcBgBJwO
+ crpbmKctnh3VXv80OG3fJQp+c4fNoJE95P5kZXyAii1keAfTjwzboKsqGEMB4lfhLRYp3z41C
+ xMm21d0Q5JGoWeY0gC/ZaS8A+1Jp79XUHwYUCPOVpa2FLkx0lIYxEycHSXXgrZpzBd0P/pt06
+ D147Z5XdRZHyh9dhBcQGisXZ3gtvbA4nBK1CO1grjhgR66s47R1ONMw52V2yIVEXJIyqAty5v
+ PUXMfmHELDEjshgicEPFWlfBqK8=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,129 +134,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/19/23 12:28, Heiner Kallweit wrote:
+> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> Class-based device auto-detection is a legacy mechanism and shouldn't
+> be used in new code. So we can remove this class completely now.
+>
+> Preferably this series should be applied via the i2c tree.
 
-Good morning!
+The fbdev changes look at least ok so far, so:
+Acked-by: Helge Deller <deller@gmx.de>   #fbdev
 
-On Sun, Nov 19, 2023 at 07:49:39AM -0600, Rob Herring wrote:
-> On Fri, Nov 17, 2023 at 09:22:57PM +0200, Petre Rodan wrote:
-> > Adds binding for digital Honeywell TruStability HSC and SSC series pressure 
-> > and temperature sensors.
-> > 
-[..]
-> > Changes for v2:
-> > - Removed redundant quotations reported by robh's bot
-> > - Fixed yamllint warnings
-> > 
-> > I'm failing to run 'make DT_CHECKER_FLAGS=-m dt_binding_check' due to
-> > python errors and exceptions
-> 
-> What exceptions?
 
-thanks for asking.
+> v2:
+> - change tag in commit subject of patch 03
+> - add ack tags
+> v3:
+> - fix a compile error in patch 5
+>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+>
+> ---
+>
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+>   drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+>   drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+>   drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+>   drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+>   drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+>   drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+>   drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+>   drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+>   drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+>   drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+>   drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+>   drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+>   drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+>   drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+>   drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+>   drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+>   drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+>   drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+>   drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+>   drivers/video/fbdev/cyber2000fb.c                 |    1 -
+>   drivers/video/fbdev/i740fb.c                      |    1 -
+>   drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++--------=
+--
+>   drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+>   drivers/video/fbdev/s3fb.c                        |    1 -
+>   drivers/video/fbdev/tdfxfb.c                      |    1 -
+>   drivers/video/fbdev/tridentfb.c                   |    1 -
+>   drivers/video/fbdev/via/via_i2c.c                 |    1 -
+>   include/linux/i2c.h                               |    1 -
+>   31 files changed, 9 insertions(+), 47 deletions(-)
+>
 
-first off, installed packages. the first 4 are not part of the official Gentoo repo, so I might have prepared them with missing options if any where not included by default.
-I know nothing about python.
-
-$ equery l dtschema pylibfdt ruamel-yaml yamllint jsonschema python 
-[I-O] [  ] dev-python/dtschema-2023.9:0
-[I-O] [  ] dev-python/pylibfdt-1.7.0_p1:0
-[I-O] [  ] dev-python/ruamel-yaml-0.18.5:0
-[I-O] [  ] dev-python/yamllint-1.33.0:0
-[IP-] [  ] dev-python/jsonschema-4.19.1:0
-[IP-] [  ] dev-lang/python-2.7.18_p16-r1:2.7
-[IP-] [  ] dev-lang/python-3.10.13:3.10
-[IP-] [  ] dev-lang/python-3.11.5:3.11
-prodan@sunspire /usr/src/linux-upstream $ python --version
-Python 3.11.5
-
-# binding check
-prodan@sunspire /usr/src/linux-upstream $ make DT_SCHEMA_FILES=Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml  DT_CHECKER_FLAGS=-m dt_binding_check
-Traceback (most recent call last):
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 1152, in resolve_fragment
-    document = document[part]
-               ~~~~~~~~^^^^^^
-KeyError: 'definitions'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/lib/python-exec/python3.11/dt-doc-validate", line 64, in <module>
-    ret |= check_doc(f)
-           ^^^^^^^^^^^^
-  File "/usr/lib/python-exec/python3.11/dt-doc-validate", line 32, in check_doc
-    for error in sorted(dtsch.iter_errors(), key=lambda e: e.linecol):
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/dtschema/schema.py", line 123, in iter_errors
-    for error in self.validator.iter_errors(self):
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 368, in iter_errors
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 335, in allOf
-    yield from validator.descend(instance, subschema, schema_path=index)
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 284, in ref
-    yield from validator._validate_reference(ref=ref, instance=instance)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 465, in _validate_reference
-    return list(self.descend(instance, resolved))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 335, in allOf
-    yield from validator.descend(instance, subschema, schema_path=index)
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 284, in ref
-    yield from validator._validate_reference(ref=ref, instance=instance)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 465, in _validate_reference
-    return list(self.descend(instance, resolved))
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 305, in properties
-    yield from validator.descend(
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 34, in propertyNames
-    yield from validator.descend(instance=property, schema=propertyNames)
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 335, in allOf
-    yield from validator.descend(instance, subschema, schema_path=index)
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 416, in descend
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 378, in not_
-    if validator.evolve(schema=not_schema).is_valid(instance):
-       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 483, in is_valid
-    error = next(self.iter_errors(instance), None)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 368, in iter_errors
-    for error in errors:
-  File "/usr/lib/python3.11/site-packages/jsonschema/_keywords.py", line 284, in ref
-    yield from validator._validate_reference(ref=ref, instance=instance)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 461, in _validate_reference
-    scope, resolved = resolve(ref)
-                      ^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 1086, in resolve
-    return url, self._remote_cache(url)
-                ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 1104, in resolve_from_url
-    return self.resolve_fragment(document, fragment)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.11/site-packages/jsonschema/validators.py", line 1154, in resolve_fragment
-    raise exceptions._RefResolutionError(
-jsonschema.exceptions._RefResolutionError: Unresolvable JSON pointer: 'definitions/json-schema-prop-names'
-Error: Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.example.dts:36.15-16 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.example.dtb] Error 1
-make[1]: *** [/usr/src/linux-upstream/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-best regards,
-peter
-
--- 
-petre rodan
