@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C607D7F06CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 15:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E9E7F06D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 15:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbjKSORb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 09:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
+        id S231249AbjKSOSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 09:18:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjKSOR3 (ORCPT
+        with ESMTP id S229642AbjKSOSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 09:17:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E30BF9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 06:17:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0ED30C433CB;
-        Sun, 19 Nov 2023 14:17:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700403446;
-        bh=7NqbVgFEGfY4te5OX45ttPp1nJ/CKMXIyvt1H9KH6XM=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=OqQHuhfzdyb6alWAFOV5H3faOpoQHYdT998Wq+pFrr7JM8W6HZ6XJYaaLeS3Ds7o6
-         XoJr4j68XyEWX83lYInR0azbEn6Sj74Aw2iLtuAyGy8iu+8BoV7kjnX47gdIu+UNLJ
-         icgTpJgpjuiheenr96VXszcfJtXN8jQuwZfLwNRsudrU0sw0Y1AekIyg+najkuB6LV
-         uDzU2VMoMOXGZuAh+YaFUxg3TKkZ2tLAj0BeV3LDwYopWPfxmvpahAXlmG5i/R/sOY
-         B/pyidSg0y7ladp+YkzLFCOsHDW8lJQp6bRWkKKgEH4kLE5/AgJgc7NAkrnfFW06ZI
-         jpVVld/r3ebaA==
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-589d4033e84so1889536eaf.1;
-        Sun, 19 Nov 2023 06:17:26 -0800 (PST)
-X-Gm-Message-State: AOJu0YwDCb/ByLkj4MmF1M8Bd5WRYpV9r8MxjB6NXlWz4LW08+s3RSFG
-        Toz61Q6+DKKn5Sycryf/8+PX+XKnqLWB1CTLtj0=
-X-Google-Smtp-Source: AGHT+IHnTekgrbUxyqPF0IFPLtTVu0RUZzffYNzvpiICZRXMOqwhkSq7GmUVSqIpqZqw3Bo6UPlp/YyksWua1+u2JA0=
-X-Received: by 2002:a05:6820:1623:b0:58a:1595:c645 with SMTP id
- bb35-20020a056820162300b0058a1595c645mr4943277oob.4.1700403445255; Sun, 19
- Nov 2023 06:17:25 -0800 (PST)
+        Sun, 19 Nov 2023 09:18:15 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A556D8;
+        Sun, 19 Nov 2023 06:18:11 -0800 (PST)
+X-UUID: 8eb5c85fb2714c018d1e8a618d27cac0-20231119
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:661f8516-2c44-4979-83c9-b67b63f7962d,IP:5,U
+        RL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:16
+X-CID-INFO: VERSION:1.1.32,REQID:661f8516-2c44-4979-83c9-b67b63f7962d,IP:5,URL
+        :0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:16
+X-CID-META: VersionHash:5f78ec9,CLOUDID:62273a60-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:23111922180477X7G00C,BulkQuantity:0,Recheck:0,SF:66|24|17|19|45|102,
+        TC:nil,Content:0,EDM:5,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
+        TF_CID_SPAM_ULN
+X-UUID: 8eb5c85fb2714c018d1e8a618d27cac0-20231119
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 941921833; Sun, 19 Nov 2023 22:18:03 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     edumazet@google.com
+Cc:     chentao@kylinos.cn, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, kunwu.chan@hotmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com
+Subject: [PATCH v2] ipv4: Correct/silence an endian warning in __ip_do_redirect
+Date:   Sun, 19 Nov 2023 22:17:59 +0800
+Message-Id: <20231119141759.420477-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <CANn89iLHd9oxO6yXmZMfO5cTsnSzqa==ZBCnNEySKpiH86q54Q@mail.gmail.com>
+References: <CANn89iLHd9oxO6yXmZMfO5cTsnSzqa==ZBCnNEySKpiH86q54Q@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:5847:0:b0:507:5de0:116e with HTTP; Sun, 19 Nov 2023
- 06:17:24 -0800 (PST)
-In-Reply-To: <b503d929-ff3a-4dc3-9de8-aa0eb00d181a@gmail.com>
-References: <CAKYAXd8qZTiSBR3aSUk4YRSo+LG-Z20FRJfGgV1Awf+Lep4kpg@mail.gmail.com>
- <20231109011725.1798784-1-min_halo@163.com> <b503d929-ff3a-4dc3-9de8-aa0eb00d181a@gmail.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Sun, 19 Nov 2023 23:17:24 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-2vR7KF=gwKWmA+a3XkAOG78ntPq__u4P5Kqo35N1D5Q@mail.gmail.com>
-Message-ID: <CAKYAXd-2vR7KF=gwKWmA+a3XkAOG78ntPq__u4P5Kqo35N1D5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] ksmbd: prevent memory leak on error return
-To:     Pierre Mariani <pierre.mariani@gmail.com>
-Cc:     Zongmin Zhou <min_halo@163.com>, linux-cifs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
-        sfrench@samba.org, tom@talpey.com,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Zongmin Zhou <zhouzongmin@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,47 +60,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-11-19 18:14 GMT+09:00, Pierre Mariani <pierre.mariani@gmail.com>:
-> On 11/8/2023 5:17 PM, Zongmin Zhou wrote:
->> When allocated memory for 'new' failed,just return
->> will cause memory leak of 'ar'.
->>
->> v2: rollback iov_alloc_cnt when allocate memory failed.
->>
->> Fixes: 1819a9042999 ("ksmbd: reorganize ksmbd_iov_pin_rsp()")
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <error27@gmail.com>
->> Closes: https://lore.kernel.org/r/202311031837.H3yo7JVl-lkp@intel.com/
->> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
->> ---
->>  fs/smb/server/ksmbd_work.c | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/smb/server/ksmbd_work.c b/fs/smb/server/ksmbd_work.c
->> index a2ed441e837a..44bce4c56daf 100644
->> --- a/fs/smb/server/ksmbd_work.c
->> +++ b/fs/smb/server/ksmbd_work.c
->> @@ -123,8 +123,11 @@ static int __ksmbd_iov_pin_rsp(struct ksmbd_work
->> *work, void *ib, int len,
->>  		new = krealloc(work->iov,
->>  			       sizeof(struct kvec) * work->iov_alloc_cnt,
->>  			       GFP_KERNEL | __GFP_ZERO);
->> -		if (!new)
->> +		if (!new) {
->> +			kfree(ar);
->> +			work->iov_alloc_cnt -= 4;
->>  			return -ENOMEM;
->> +		}
->>  		work->iov = new;
->>  	}
->>
->
-> A few lines above, ar is allocated inside the 'if (aux_size)' block.
-> If aux_size is falsy, isn't it possible that ar will be NULL hence
-> we should have 'if (ar) kfree(ar);'?
-We need to initialize ar to NULL on that case. And Passing a NULL
-pointer to kfree is safe, So NULL check before kfree() is not needed.
+net/ipv4/route.c:783:46: warning: incorrect type in argument 2 (different base types)
+net/ipv4/route.c:783:46:    expected unsigned int [usertype] key
+net/ipv4/route.c:783:46:    got restricted __be32 [usertype] new_gw
 
-Thanks.
->
+Fixes: 969447f226b4 ("ipv4: use new_gw for redirect neigh lookup")
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ net/ipv4/route.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index 3290a4442b4a..16615d107cf0 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -780,7 +780,7 @@ static void __ip_do_redirect(struct rtable *rt, struct sk_buff *skb, struct flow
+ 			goto reject_redirect;
+ 	}
+ 
+-	n = __ipv4_neigh_lookup(rt->dst.dev, new_gw);
++	n = __ipv4_neigh_lookup(rt->dst.dev, (__force u32)new_gw);
+ 	if (!n)
+ 		n = neigh_create(&arp_tbl, &new_gw, rt->dst.dev);
+ 	if (!IS_ERR(n)) {
+-- 
+2.34.1
+
