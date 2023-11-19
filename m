@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE517F076B
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9695A7F0705
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 16:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbjKSQVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 11:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        id S231259AbjKSPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 10:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKSQVN (ORCPT
+        with ESMTP id S229820AbjKSPDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 11:21:13 -0500
-X-Greylist: delayed 5427 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 19 Nov 2023 08:21:09 PST
-Received: from correo.hgj.gob.ec (correo.hgj.gob.ec [181.196.185.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9514CC4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:21:09 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hgj.gob.ec (Postfix) with ESMTP id 2F19640EFC0AF;
-        Sun, 19 Nov 2023 08:59:52 -0500 (-05)
-Received: from correo.hgj.gob.ec ([127.0.0.1])
-        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id a09Q_5oXgsTH; Sun, 19 Nov 2023 08:59:51 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.hgj.gob.ec (Postfix) with ESMTP id B3DFD4093FC8F;
-        Sun, 19 Nov 2023 08:57:06 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hgj.gob.ec B3DFD4093FC8F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hgj.gob.ec;
-        s=AE113AC8-D929-11ED-97A4-E896B0C4411E; t=1700402226;
-        bh=mAhvhhVt0FojqIoI5vUL967LmtKhh/nKngvxnrO5ImE=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=xTRdMVgORjp50vqnsETEIguZnALRt1DbTFIvRauXpyX2EruVgY9jLj6ObrHY3zEmT
-         DeEdbp+sZPwuif7zIheoVdGOpNaQ/hYFpZ864J4gSu9gy69yDeCFg70yL3DRWcsBDN
-         liwlj8U1qKjkV7KFRV2HSnqKZxpLNWP1wCpN7OCWIPRri3Xt82zZkfyepezJmQBgSE
-         A8EPLyC+4klF4TDRivmP4aGDrMz9ASBrm6fxSS3vWY4XifqLCPJsOd64lbvN59c+XR
-         /DFPtF7BCuT7gd2ApLW5b2opa0JTJGwxVXpe1pe18Zan+vBMhn3w0FMc48h1p6Awro
-         ilhhZu4N341Ig==
-X-Virus-Scanned: amavisd-new at correo.hgj.gob.ec
-Received: from correo.hgj.gob.ec ([127.0.0.1])
-        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lZBhThmtGcQc; Sun, 19 Nov 2023 08:57:06 -0500 (-05)
-Received: from [23.146.243.12] (unknown [23.146.243.12])
-        by correo.hgj.gob.ec (Postfix) with ESMTPSA id 7293340D81CCA;
-        Sun, 19 Nov 2023 08:54:28 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        Sun, 19 Nov 2023 10:03:52 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78747129
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 07:03:48 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9d267605ceeso467311866b.2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 07:03:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700406227; x=1701011027; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GhgRPtKLHKyCASHu64uGyNWJNnaZJqXUqiVwYsPYYoU=;
+        b=NZgvpYRW8YZncxiKBMikj8AV7NDU1UQkrq/yFlrg9obMLjl8cPTpyICwk+WJ4o1r2Z
+         J4I69qV7Z+u44pMyq+PdpUH2LdiisV3aEHD+ke8Cra6fWzHeiJiGC0u5Z8cp35rUIgqJ
+         b+kQ31hCbHxVILgScPhO9GmIOyszTAZRJGzyw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700406227; x=1701011027;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GhgRPtKLHKyCASHu64uGyNWJNnaZJqXUqiVwYsPYYoU=;
+        b=SYo/shEx6TNkWTmr5+lgJ23OTns6rfEJLGPTk1fvP5RuJYcTs/HU3B0Kg48gLXwHDE
+         c4H0tIr6SWJCrbNfgNvGI26tW03icU+/eHwlSGvGhILHMhs+lMOmjdLJuxRe5vsaOa7q
+         2tn7FljU7x3GDCzCYPkvXe2p7nQHZSij6Ro0zmzkLY0qwSzephPtPy1bh9ro/V0rQtY4
+         9XVsswpUJ23zQlkUYL7hFIcmOLBjde298gR0jVm7lbAB9+Pl074KhvAA/IYOyp2HHxRG
+         QnvaVELv0X8Ty3tuLurMFiyg+8ZBilDp7YOR1LlxqNvbz2lxY+Qkl9puwq7+wRYPWJ6P
+         HBNQ==
+X-Gm-Message-State: AOJu0YyKbIohCt+aPmckNgKd2h9oNtelgqizZermxKxvWCpRRaNqTbPJ
+        BeYITlmzSv194nQaSn8LnQ3Z323+wba58+zrM7Cx+g==
+X-Google-Smtp-Source: AGHT+IGzFEU8YWTTy6VrQtmHjiot+wlxwXCg5vwgI/KdLmFFd5niB+Mx16ggwlizicPuNRRu/BhQLB81+rZ1kcxVG90=
+X-Received: by 2002:a17:906:2ce:b0:9da:e694:e6a2 with SMTP id
+ 14-20020a17090602ce00b009dae694e6a2mr2846142ejk.4.1700406226754; Sun, 19 Nov
+ 2023 07:03:46 -0800 (PST)
 MIME-Version: 1.0
+References: <20231111002851.1293891-1-sjg@chromium.org> <20231111002851.1293891-3-sjg@chromium.org>
+ <CAK7LNAQN_qGYztWGDmQyfg+eZ5P7RkM47mpgp0dQn_iuhvTSWg@mail.gmail.com>
+In-Reply-To: <CAK7LNAQN_qGYztWGDmQyfg+eZ5P7RkM47mpgp0dQn_iuhvTSWg@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Sun, 19 Nov 2023 08:03:35 -0700
+Message-ID: <CAPnjgZ12nzMmpqJ5-=TzY+Dxu=4keFbJAB+RU99FqxKZfxjNUg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] arm: boot: Move the single quotes for image name
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Tom Rini <trini@konsulko.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Se requiere respuesta urgente.
-To:     Recipients <sully.mera@hgj.gob.ec>
-From:   "ZIMBRA" <sully.mera@hgj.gob.ec>
-Date:   Sun, 19 Nov 2023 05:54:47 -0800
-Reply-To: webmasterzimbra1@gmail.com
-Message-Id: <20231119135428.7293340D81CCA@correo.hgj.gob.ec>
-X-Spam-Status: No, score=3.5 required=5.0 tests=BAYES_50,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Su cuenta no ha pasado por el proceso de verificaci=F3n / actualizaci=F3n. =
-Los titulares de cuentas deben actualizar sus cuentas dentro de los 5 d=EDa=
-s h=E1biles posteriores a la recepci=F3n de este aviso. El incumplimiento d=
-e este aviso dentro de la fecha l=EDmite puede no ser capaz de enviar o rec=
-ibir todos los mensajes y el propietario correr=E1 el riesgo de perder su c=
-uenta.
+Hi Masahiro,
 
-Confirme los detalles de la cuenta a continuaci=F3n.
-_____________________________________
-1. Nombre y apellido:
-2. Correo electr=F3nico completo en:
-3. Nombre de usuario:
-4. Contrase=F1a:
-5. Vuelva a escribir la contrase=F1a:
-_____________________________________
- =
+On Thu, 16 Nov 2023 at 04:19, Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Sat, Nov 11, 2023 at 9:29=E2=80=AFAM Simon Glass <sjg@chromium.org> wr=
+ote:
+> >
+> > Add quotes where UIMAGE_NAME is used, rather than where it is defined.
+> > This allows the UIMAGE_NAME variable to be set by the user.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > ---
+>
+>
+> I applied this to linux-kbuild/fixes.
+>
+> I changed the subject to
+> "kbuild: Move the single quotes for image name"
+> because it is unrelated to arm.
+>
+>
+> Thanks.
 
-NOTA !!! Si no actualiza su cuenta, su cuenta se eliminar=E1 autom=E1ticame=
-nte de nuestro sistema.
- =
+Thank you. I sent a v6 with a fix and without this patch.
 
-Nos disculpamos por cualquier inconveniente causado.
- =
-
-Sinceramente
-Atenci=F3n al cliente
-Equipo de soporte t=E9cnico de Zimbra.
- =
-
-Copyright =A9 2005-2023 Synacor, Inc. Todos los derechos reservados
+Regards,
+Simon
