@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1819C7F089E
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA307F089C
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjKSTuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S231624AbjKSTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231665AbjKSTtv (ORCPT
+        with ESMTP id S231633AbjKSTtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:49:51 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DA91BD9
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:03 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so3606091b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:03 -0800 (PST)
+        Sun, 19 Nov 2023 14:49:47 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3EDD7A
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:07 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b6d88dbaa3so2548183b6e.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:49:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423343; x=1701028143; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700423346; x=1701028146; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=CM+OPz8sAX9/+pckE36Q2lCrK7XvSIfXWi261rZELtQ=;
-        b=Afvt9npRwp95Im/FJLQ4+yLe4XtjOwRQlS5Bcenqfiu6s4zOVDNDC9TnLd2LDWhRkG
-         Lf2Rk1xnJAxJCu05N3e5x7+kA52CyzE4QJvMnOej7jgkD7/TrKSYRxbeOZEiENa+1ffx
-         vaITqRi5dxBNDB6InBBqOjlYYUHzoHuLXQxS3uUm9Mm/TnDtbYFej+7QIU3OEdCuKRKS
-         UQG2QXnrODblRWZXfWxIhATw7KrBUVCu+krtYU7WYC5sGIqFPI8CE/QBuZK7Otg+aMeK
-         w5ww+J45bGxSYsmDtMx2bO7Ot7hUiqUc+FTLPFYeQUCZv/sjEXwEGjoAB6Y3u1k5xelF
-         gCQQ==
+        bh=Ze1Psd2Ie5OovBPk7SmUTsWgEFqDeyPvhXbgqpZhXY8=;
+        b=N1NnsxV11ewog1K925/BlU5b9EhM0d5Pcde3SG+GzZSzkIjxMU7Mw8+uWuK+BkbY84
+         TyBrUGD4XlOXC2ZI6u14MuK/fTa33hbbdjdSLr9Ua+hsipTZgnm0Pb4JHrlW1dhrFv1t
+         cp5cLbIvJto4kuOJ0CDqftFzZfT6vJEOxRq+YMd6So8r8qnK9RSf31fk6LV5USdIp7OY
+         ohyenVI7/+mufGpLAUORUEQF8/sWaX6CZIqrRTTLPXdccE+l8KtO45RuoOPlGvq7fX7D
+         wD7CB628QZWTED2q2ryqxvbVKdm0Qto+MEthPwassMAedVrSec3IOYMF9Do+KcJfzWfu
+         VJCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423343; x=1701028143;
+        d=1e100.net; s=20230601; t=1700423346; x=1701028146;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CM+OPz8sAX9/+pckE36Q2lCrK7XvSIfXWi261rZELtQ=;
-        b=hcr1MX/sniu/lkyTjcNc2ScEKn2CY5CQTz1Ha4oLyM/fySwiB1asq7RWacA4ri1yGq
-         yYWiMt2khDWNXvL7kHkj4a4XQhxLEHFfG3UPhnyEPOw+V5WWmrdv/+TfOI1ABPkIHtjA
-         G4TRwR/O1l6oV1wkAjPvhA9s2gIi539cbYqPDmacaUcRNp3yzLHRSidzj0rl7W6IE5Cl
-         Ik1IsK3XR7L1IJSuNqBsfKqhA9TCX70A05aYe12ZvzQ19bW0gLbWB19K6x4RzwH1RURD
-         dMfR6Gk3wi2LFpJClvYimhmK/8VCpvt/CE/JuCl//8SJgZdmMl8C2wkfK/BGA9CLojbl
-         mhtw==
-X-Gm-Message-State: AOJu0YxMWPGOpR9DEg3WP4XUy3GEhnANX0smxKd1gSjuHkt7Mdc9XQ/G
-        nu7Rxnjvxm3tbMyUpkjapR4=
-X-Google-Smtp-Source: AGHT+IGkCTfkx1rp2FzBZeJz7DuMjH5OX9xB0kVWtfaGQTv9o7aHxqdL3R9OOEYrRIDUL1WVW8rBzw==
-X-Received: by 2002:a05:6a20:748e:b0:186:58d6:ca65 with SMTP id p14-20020a056a20748e00b0018658d6ca65mr7241893pzd.32.1700423343119;
-        Sun, 19 Nov 2023 11:49:03 -0800 (PST)
+        bh=Ze1Psd2Ie5OovBPk7SmUTsWgEFqDeyPvhXbgqpZhXY8=;
+        b=AQ5aDUtZXCbzp+RRnLZdJxiS6PDBSFXcBlFTcwZPqAW5Tk7s/NFkxswD8f9YcQHEvw
+         lONTDkHayQLYyF1IW4cFeCSiPWZ8CQusK4hTRLcgVFVZtnikE3BC+t1FKrzsxZUrBk0K
+         PqerYId5RR/j83evVbmSJYnLSftA/PPYjEZ/VuQ8jK6LFXk/QytbFjmVQBI9Q8yM7tN/
+         1yswGNfjADjUdPtj+WX9Mjfj3/x+urZJnZa3N3hheipMfCKvkNQkVFMbXAYpzduzUvPo
+         VGEMUM641U+cE5I0fZ85NxYvBX9Mt1nbDjLZl0Dm0qfXbmBuH5nZGFFP8ZyIPFRHvPa+
+         jSbg==
+X-Gm-Message-State: AOJu0YzfX7EIrjn4sG/aqytEO53YzLyGm0rp9Js73RdLRUH/mRyF/zhV
+        sVMYRoCfStjyysmADIkKWN8=
+X-Google-Smtp-Source: AGHT+IGTlsOhMDU+nbF9BiKSPMYiu1dnBRu6RvVsGq1/cPrbFHBN7F+llm4LzYDPkkR6tdAEcGAOgQ==
+X-Received: by 2002:a05:6808:1451:b0:3b2:dcff:9e54 with SMTP id x17-20020a056808145100b003b2dcff9e54mr8319167oiv.24.1700423346359;
+        Sun, 19 Nov 2023 11:49:06 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.49.00
+        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.49.03
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:49:02 -0800 (PST)
+        Sun, 19 Nov 2023 11:49:05 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Kairui Song <kasong@tencent.com>
-Subject: [PATCH 19/24] shmem, swap: refactor error check on OOM or race
-Date:   Mon, 20 Nov 2023 03:47:35 +0800
-Message-ID: <20231119194740.94101-20-ryncsn@gmail.com>
+Subject: [PATCH 20/24] swap: simplify and make swap_find_cache static
+Date:   Mon, 20 Nov 2023 03:47:36 +0800
+Message-ID: <20231119194740.94101-21-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
 References: <20231119194740.94101-1-ryncsn@gmail.com>
@@ -81,36 +81,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-It should always check if a swap entry is already swaped in on error,
-fix potential false error issue.
+There are only two callers within the same file now, make it static and
+drop the redundant if check on the shadow variable.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/shmem.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ mm/swap.h       | 2 --
+ mm/swap_state.c | 5 ++---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 81d129aa66d1..6154b5b68b8f 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1857,13 +1857,11 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
- 	page = swapin_page_non_fault(swap, gfp, mpol, ilx, fault_mm, &result);
- 	mpol_cond_put(mpol);
+diff --git a/mm/swap.h b/mm/swap.h
+index b073c29c9790..4402970547e7 100644
+--- a/mm/swap.h
++++ b/mm/swap.h
+@@ -46,8 +46,6 @@ void __delete_from_swap_cache(struct folio *folio,
+ void delete_from_swap_cache(struct folio *folio);
+ void clear_shadow_from_swap_cache(int type, unsigned long begin,
+ 				  unsigned long end);
+-struct folio *swap_cache_get_folio(swp_entry_t entry,
+-				   struct vm_fault *vmf, void **shadowp);
+ struct folio *filemap_get_incore_folio(struct address_space *mapping,
+ 		pgoff_t index);
  
--	if (PTR_ERR(page) == -EBUSY) {
--		if (!shmem_confirm_swap(mapping, index, swap))
--			return -EEXIST;
-+	if (IS_ERR_OR_NULL(page)) {
-+		if (!page)
-+			error = -ENOMEM;
- 		else
--			return -EINVAL;
--	} else if (!page) {
--		error = -ENOMEM;
-+			error = -EINVAL;
- 		goto failed;
- 	} else {
- 		folio = page_folio(page);
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index eef66757c615..6f39aa8394f1 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -334,15 +334,14 @@ static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
+  *
+  * Caller must lock the swap device or hold a reference to keep it valid.
+  */
+-struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *vmf, void **shadowp)
++static struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *vmf, void **shadowp)
+ {
+ 	bool vma_ra, readahead;
+ 	struct folio *folio;
+ 
+ 	folio = filemap_get_entry(swap_address_space(entry), swp_offset(entry));
+ 	if (xa_is_value(folio)) {
+-		if (shadowp)
+-			*shadowp = folio;
++		*shadowp = folio;
+ 		return NULL;
+ 	}
+ 
 -- 
 2.42.0
 
