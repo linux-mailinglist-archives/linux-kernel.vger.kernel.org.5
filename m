@@ -2,99 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6D77F07A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467067F07AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 17:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjKSQyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 11:54:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
+        id S231384AbjKSQ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 11:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbjKSQyB (ORCPT
+        with ESMTP id S229508AbjKSQ5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 11:54:01 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C14128
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:53:56 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3574f99d236so13800015ab.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 08:53:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1700412835; x=1701017635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gUS1v3wNMMoGJxYMVaBxxhfLYqoOUIyNu6oyB8+7CoY=;
-        b=wbzQOQcXZjPccipsqkggz9I7/TGZ7HrYMG6u5StgQPR/7lrAu0oK1CDxNdjYo4dFNM
-         yz1XWPaVCXhAXfPE1QRk8aGqqtYvJXdDpWNvt6l6hRjXt0jEadYcIhFqmRL6t8VsdsJD
-         7uglHbQUC4YRD3y9WUKVp2ePcZIMB5oVH2mNNXegVVj9JRGCXFjO3v5qAlZ+XCI+45a9
-         ZeRAJsEo/YP/l0XJm7xCjt7z0U/8IsYwGvSN0zUMXGnUmXPGR1AANwHwFOrWt0GcJ5LC
-         CInrVPuCDy0PcjfaTcOfVaXtit6hmJl+SBVckbveiuZor29rZfzKAtGLq0FiS/a/VkA7
-         dwwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700412835; x=1701017635;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gUS1v3wNMMoGJxYMVaBxxhfLYqoOUIyNu6oyB8+7CoY=;
-        b=REjS+lVFvOq/gE35NhAj0+hymgopLnBbu9GzKpbFt1DUbT3X6EIyi8Sz0/RfglIavg
-         5FMm36VlpfFhGHtDF6/PBlVFBSRb1T3fjqVgpixa7VmoGaqRHT+VYuCXY0DdevImGXdr
-         x7SWWpeagXjotqlpW/bVGWJnFonFnSy/03tVCWtun34ORx2TEnI8CDT+DexZFEXmb0e6
-         ij9G/DwoPf30PJCec9lpFljameOJ97kTz9W2WYy+6oo/pBndWD2rkC73bwTFwBJREH7J
-         AMvaRuaDEE44r3KHzQQM5dcNbTdhdYpnGLqK0qeaCSUFuG6WVAjOKR88RH0koDzhpwWz
-         ChHQ==
-X-Gm-Message-State: AOJu0Yyq/AFv+kn6c4bg3nkufIUh0ajVrIEYekhaXRG9p7CC5yMeVaYr
-        yaaJzHrdd6Vig4VdZynWhRwrCQ==
-X-Google-Smtp-Source: AGHT+IGZk8yR7OXDxLijh8akMDnL2tiCC7udbApOFmoHTqjULbw6221/2olHGvdVIKe0x5tKMk3c7w==
-X-Received: by 2002:a05:6e02:154f:b0:357:6bd2:b2ad with SMTP id j15-20020a056e02154f00b003576bd2b2admr7366973ilu.22.1700412835617;
-        Sun, 19 Nov 2023 08:53:55 -0800 (PST)
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id fh6-20020a056a00390600b0069343e474bcsm4537415pfb.104.2023.11.19.08.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 08:53:55 -0800 (PST)
-Date:   Sun, 19 Nov 2023 08:53:53 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        kys@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        davem@davemloft.net, linux-kernel@vger.kernel.org,
-        Long Li <longli@microsoft.com>, stable@vger.kernel.org
-Subject: Re: [PATCH net,v5, 3/3] hv_netvsc: Mark VF as slave before exposing
- it to user-mode
-Message-ID: <20231119085353.757792c1@hermes.local>
-In-Reply-To: <1700411023-14317-4-git-send-email-haiyangz@microsoft.com>
-References: <1700411023-14317-1-git-send-email-haiyangz@microsoft.com>
-        <1700411023-14317-4-git-send-email-haiyangz@microsoft.com>
+        Sun, 19 Nov 2023 11:57:44 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E997C2;
+        Sun, 19 Nov 2023 08:57:40 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C605EDA7;
+        Sun, 19 Nov 2023 08:58:25 -0800 (PST)
+Received: from e121798.cable.virginm.net (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C6E83F6C4;
+        Sun, 19 Nov 2023 08:57:34 -0800 (PST)
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com
+Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
+        kcc@google.com, hyesoo.yu@samsung.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: [PATCH RFC v2 00/27] Add support for arm64 MTE dynamic tag storage reuse
+Date:   Sun, 19 Nov 2023 16:56:54 +0000
+Message-Id: <20231119165721.9849-1-alexandru.elisei@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Nov 2023 08:23:43 -0800
-Haiyang Zhang <haiyangz@microsoft.com> wrote:
+The series is based on v6.7-rc1 and can be cloned with:
 
-> From: Long Li <longli@microsoft.com>
-> 
-> When a VF is being exposed form the kernel, it should be marked as "slave"
-> before exposing to the user-mode. The VF is not usable without netvsc
-> running as master. The user-mode should never see a VF without the "slave"
-> flag.
-> 
-> This commit moves the code of setting the slave flag to the time before
-> VF is exposed to user-mode.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 0c195567a8f6 ("netvsc: transparent VF management")
-> Signed-off-by: Long Li <longli@microsoft.com>
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+$ git clone https://gitlab.arm.com/linux-arm/linux-ae.git \
+	-b arm-mte-dynamic-carveout-rfc-v2
 
-Acked-by: Stephen Hemminger <stephen@networkplumber.org>
+Introduction
+============
 
+Memory Tagging Extension (MTE) is implemented currently to have a static
+carve-out of the DRAM to store the allocation tags (a.k.a. memory colour).
+This is what we call the tag storage. Each 16 bytes have 4 bits of tags, so
+this means 1/32 of the DRAM, roughly 3% used for the tag storage.  This is
+done transparently by the hardware/interconnect (with firmware setup) and
+normally hidden from the OS. So a checked memory access to location X
+generates a tag fetch from location Y in the carve-out and this tag is
+compared with the bits 59:56 in the pointer. The correspondence from X to Y
+is linear (subject to a minimum block size to deal with some address
+interleaving). The software doesn't need to know about this correspondence
+as we have specific instructions like STG/LDG to location X that lead to a
+tag store/load to Y.
+
+Now, not all memory used by applications is tagged (mmap(PROT_MTE)).  For
+example, some large allocations may not use PROT_MTE at all or only for the
+first and last page since initialising the tags takes time. The side-effect
+is that of that 3% of DRAM, only part of it, say 1%, is effectively used.
+
+The series aims to take that unused tag storage and release it to the page
+allocator for normal data usage.
+
+The first complication is that a PROT_MTE page allocation at address X will
+need to reserve the tag storage page at location Y (and migrate any data in
+that page if it is in use).
+
+To make things worse, pages in the tag storage/carve-out range cannot use
+PROT_MTE themselves on current hardware, so this adds the second
+complication - a heterogeneous memory layout. The kernel needs to know
+where to allocate a PROT_MTE page from or migrate a current page if it
+becomes PROT_MTE (mprotect()) and the range it is in does not support
+tagging.
+
+Some other complications are arm64-specific like cache coherency between
+tags and data accesses. There is a draft architecture spec which will be
+released soon, detailing how the hardware behaves.
+
+All of this will be entirely transparent to userspace. As with the current
+kernel (without this dynamic tag storage), a user only needs to ask for
+PROT_MTE mappings to get tagged pages.
+
+Implementation
+==============
+
+MTE tag storage reuse is accomplished with the following changes to the
+Linux kernel:
+
+1. The tag storage memory is exposed to the memory allocator as
+MIGRATE_CMA. The arm64 code manages this memory directly instead of using
+cma_declare_contiguous/cma_alloc for performance reasons.
+
+There is a limitation to this approach: MIGRATE_CMA cannot be used for
+tagged allocations, even if not all MIGRATE_CMA memory is tag storage.
+
+2. mprotect(PROT_MTE) is implemented by adding a fault-on-access mechanism
+for existing pages. When a page is next accessed, a fault is taken and the
+corresponding tag storage is reserved.
+
+3. When the code tries to copy tags to a page (when swapping in a newly
+allocated page, or during migration/THP collapse) which doesn't have the
+tag storage reserved, the tags are copied to an xarray and restored when
+tag storage is reserved for the destination page.
+
+KVM support has not been implemented yet, that because a non-MTE enabled
+VMA can back the memory of an MTE-enabled VM. It will be added after there
+is a consensus on the right approach on the memory management support.
+
+Overview of the patches
+=======================
+
+For people not interested in the arm64 details, you probably want to start
+with patches 1-10, which mostly deal with adding the necessary hooks to the
+memory management code, and patches 19 and 20 which add the page
+fault-on-access mechanism for regular pages, respectively huge pages. Patch
+21 is rather invasive, it moves the definition of struct
+migration_target_control out of mm/internal.h to migrate.h, and the arm64
+code also uses isolate_lru_page() and putback_movable_pages() when
+migrating a tag storage page out of a PROT_MTE VMA. And finally patch 26 is
+an optimization for a performance regression that has been reported with
+Chrome and it introduces CONFIG_WANTS_TAKE_PAGE_OFF_BUDDY to allow arm64 to
+use take_page_off_buddy() to fast track reserving tag storage when the page
+is free.
+
+The rest of the patches are mostly arm64 specific.
+
+Patches 11-18 support for detecting the tag storage region and reserving
+tag storage when a tagged page is allocated.
+
+Patches 19-21 add the page fault-on-access on mechanism and use it to
+reserve tag storage when needed.
+
+Patches 22 and 23 handle saving tags temporarily to an xarray if the page
+doesn't have tag storage, and copying the tags over to the tagged page when
+tag storage is reserved.
+
+Changelog
+=========
+
+Changes since RFC v1 [1]:
+
+* The entire series has been reworked to remove MIGRATE_METADATA and put tag
+  storage pages on the MIGRATE_CMA freelists.
+
+* Changed how tags are saved and restored when copying them from one page to
+  another if the destination page doesn't have tag storage - now the tags are
+  restored when tag storage is reserved for the destination page instead of
+  restoring them in set_pte_at() -> mte_sync_tags().
+
+[1] https://lore.kernel.org/lkml/20230823131350.114942-1-alexandru.elisei@arm.com/
+
+Testing
+=======
+
+To enable MTE dynamic tag storage:
+
+- CONFIG_ARM64_MTE_TAG_STORAGE=y
+- system_supports_mte() returns true
+- kasan_hw_tags_enabled() returns false
+- correct DTB node (for the specification, see commit "arm64: mte: Reserve tag
+  storage memory")
+
+Check dmesg for the message "MTE tag storage region management enabled".
+
+I've tested the series using FVP with MTE enabled, but without support for
+dynamic tag storage reuse. To simulate it, I've added two fake tag storage
+regions in the DTB by splitting the upper 2GB memory region into 3: one region
+for normal RAM, followed by the tag storage for the lower 2GB of memory, then
+the tag storage for the normal RAM region. Like below:
+
+diff --git a/arch/arm64/boot/dts/arm/fvp-base-revc.dts b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+index 60472d65a355..8c719825a9b3 100644
+--- a/arch/arm64/boot/dts/arm/fvp-base-revc.dts
++++ b/arch/arm64/boot/dts/arm/fvp-base-revc.dts
+@@ -165,12 +165,30 @@ C1_L2: l2-cache1 {
+                };
+        };
+ 
+-       memory@80000000 {
++       memory0: memory@80000000 {
+                device_type = "memory";
+-               reg = <0x00000000 0x80000000 0 0x80000000>,
+-                     <0x00000008 0x80000000 0 0x80000000>;
++               reg = <0x00000000 0x80000000 0 0x80000000>;
+        };
+ 
++       memory1: memory@880000000 {
++               device_type = "memory";
++               reg = <0x00000008 0x80000000 0 0x78000000>;
++       };
++
++       tags0: tag-storage@8f8000000 {
++                compatible = "arm,mte-tag-storage";
++                reg = <0x00000008 0xf8000000 0 0x4000000>;
++                block-size = <0x1000>;
++                memory = <&memory0>;
++        };
++
++        tags1: tag-storage@8fc000000 {
++                compatible = "arm,mte-tag-storage";
++                reg = <0x00000008 0xfc000000 0 0x3c00000>;
++                block-size = <0x1000>;
++                memory = <&memory1>;
++        };
++
+        reserved-memory {
+                #address-cells = <2>;
+                #size-cells = <2>;
+
+
+
+Alexandru Elisei (27):
+  arm64: mte: Rework naming for tag manipulation functions
+  arm64: mte: Rename __GFP_ZEROTAGS to __GFP_TAGGED
+  mm: cma: Make CMA_ALLOC_SUCCESS/FAIL count the number of pages
+  mm: migrate/mempolicy: Add hook to modify migration target gfp
+  mm: page_alloc: Add an arch hook to allow prep_new_page() to fail
+  mm: page_alloc: Allow an arch to hook early into free_pages_prepare()
+  mm: page_alloc: Add an arch hook to filter MIGRATE_CMA allocations
+  mm: page_alloc: Partially revert "mm: page_alloc: remove stale CMA
+    guard code"
+  mm: Allow an arch to hook into folio allocation when VMA is known
+  mm: Call arch_swap_prepare_to_restore() before arch_swap_restore()
+  arm64: mte: Reserve tag storage memory
+  arm64: mte: Add tag storage pages to the MIGRATE_CMA migratetype
+  arm64: mte: Make tag storage depend on ARCH_KEEP_MEMBLOCK
+  arm64: mte: Disable dynamic tag storage management if HW KASAN is
+    enabled
+  arm64: mte: Check that tag storage blocks are in the same zone
+  arm64: mte: Manage tag storage on page allocation
+  arm64: mte: Perform CMOs for tag blocks on tagged page allocation/free
+  arm64: mte: Reserve tag block for the zero page
+  mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS for mprotect(PROT_MTE)
+  mm: hugepage: Handle huge page fault on access
+  mm: arm64: Handle tag storage pages mapped before mprotect(PROT_MTE)
+  arm64: mte: swap: Handle tag restoring when missing tag storage
+  arm64: mte: copypage: Handle tag restoring when missing tag storage
+  arm64: mte: Handle fatal signal in reserve_tag_storage()
+  KVM: arm64: Disable MTE if tag storage is enabled
+  arm64: mte: Fast track reserving tag storage when the block is free
+  arm64: mte: Enable dynamic tag storage reuse
+
+ arch/arm64/Kconfig                       |  16 +
+ arch/arm64/include/asm/assembler.h       |  10 +
+ arch/arm64/include/asm/mte-def.h         |  16 +-
+ arch/arm64/include/asm/mte.h             |  43 +-
+ arch/arm64/include/asm/mte_tag_storage.h |  75 +++
+ arch/arm64/include/asm/page.h            |   5 +-
+ arch/arm64/include/asm/pgtable-prot.h    |   2 +
+ arch/arm64/include/asm/pgtable.h         |  96 +++-
+ arch/arm64/kernel/Makefile               |   1 +
+ arch/arm64/kernel/elfcore.c              |  14 +-
+ arch/arm64/kernel/hibernate.c            |  46 +-
+ arch/arm64/kernel/mte.c                  |  12 +-
+ arch/arm64/kernel/mte_tag_storage.c      | 686 +++++++++++++++++++++++
+ arch/arm64/kernel/setup.c                |   7 +
+ arch/arm64/kvm/arm.c                     |   6 +-
+ arch/arm64/lib/mte.S                     |  34 +-
+ arch/arm64/mm/copypage.c                 |  59 ++
+ arch/arm64/mm/fault.c                    | 261 ++++++++-
+ arch/arm64/mm/mteswap.c                  | 162 +++++-
+ fs/proc/page.c                           |   1 +
+ include/linux/gfp_types.h                |  14 +-
+ include/linux/huge_mm.h                  |   2 +
+ include/linux/kernel-page-flags.h        |   1 +
+ include/linux/migrate.h                  |  12 +-
+ include/linux/migrate_mode.h             |   1 +
+ include/linux/mmzone.h                   |   5 +
+ include/linux/page-flags.h               |  16 +-
+ include/linux/pgtable.h                  |  54 ++
+ include/trace/events/mmflags.h           |   5 +-
+ mm/Kconfig                               |   7 +
+ mm/cma.c                                 |   4 +-
+ mm/huge_memory.c                         |   5 +-
+ mm/internal.h                            |   9 -
+ mm/memory-failure.c                      |   8 +-
+ mm/memory.c                              |  10 +
+ mm/mempolicy.c                           |   3 +
+ mm/migrate.c                             |   3 +
+ mm/page_alloc.c                          | 118 +++-
+ mm/shmem.c                               |  14 +-
+ mm/swapfile.c                            |   7 +
+ 40 files changed, 1668 insertions(+), 182 deletions(-)
+ create mode 100644 arch/arm64/include/asm/mte_tag_storage.h
+ create mode 100644 arch/arm64/kernel/mte_tag_storage.c
+
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.42.1
 
