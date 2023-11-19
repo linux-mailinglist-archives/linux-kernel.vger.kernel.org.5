@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A0B7F088C
-	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 433097F088D
+	for <lists+linux-kernel@lfdr.de>; Sun, 19 Nov 2023 20:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229665AbjKSTse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 14:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        id S231565AbjKSTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 14:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbjKSTs0 (ORCPT
+        with ESMTP id S231624AbjKSTsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 14:48:26 -0500
+        Sun, 19 Nov 2023 14:48:30 -0500
 Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A59FD4C
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:19 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so2937275b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D08D67
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:22 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6c33ab26dddso3169833b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 11:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700423298; x=1701028098; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700423301; x=1701028101; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ZPY5phyUcHn1HYB2k83NkwocYwAsatgYc16U9qxXR/Y=;
-        b=ThMc3rQjeBc3YRBPY3lazI6ZtrlWg6OFwSUsgJ98uViolM4G9UyMkniVR0nipcv976
-         jpksn9aq2OMWEsUIgW2yl+CLwRVRxrQY3aHDnL+IyOAFATJRTvmKKNCcnHJk/Iwu8Lnc
-         GwILHIAPriFqtgjEMkhyV8Je9zTxiSBqJemUSDYfrYuHbOZBWNrkJfU+pNC4G27o9Jkh
-         oq187xX7M4l7kjHkEKatUul8NPsbCtPlYqo8Lv1OJpebh31lAt0PJrh2RTh5lTcaE2Ia
-         XCWQiNDJK3GOOL9S2pusKxL8g7qPCpZ0sXvBPYA40puwG+u7BLzvn5hbp5Q0Sj8SuL+k
-         eVrw==
+        bh=UpGTVr/h0gRLNFrOGvqL9Asvs1D6zvF8lBMhGssTB0o=;
+        b=XnNMl8Ga2yZtHo/rmlT8dejCkZca0iXOSyw88mV4ZxNzqnt7obnsKqxL67gT9F7mP4
+         stNe9RLFHjpiZPchL4n3ojUiIQaXnbHn2Oo4tcAJPfvaozdUkhcMm5kVseBWYD4PatrX
+         it/4SaVCte/NV+BqH0IOwZECAaDm2sw6al/DdYT7mLNPYv5eavbyWLFIAHD/yv1kIxWd
+         zOmT4ECj5Z9JBfMDdRF4tKdF/ogC6yfZwab4FSsjOp/Ht4cZ3KC9T5CV445o3L0s5sVW
+         0Msu/X32pj7swmQbSUuzeJJeVh9uO1ytJtp/0dcE0k3QMT9q1DJF3xi+0/gnS4R/kATu
+         BbUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700423298; x=1701028098;
+        d=1e100.net; s=20230601; t=1700423301; x=1701028101;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPY5phyUcHn1HYB2k83NkwocYwAsatgYc16U9qxXR/Y=;
-        b=b/TlLi+Clipcox/wIVm4zXDqlhdPf/YQCZza8Gv/8vCLSfsL9O23s/t9Winyoa8wjC
-         kpxtmyMbrJF56tPHEldCfKrIoUgnd7r7cGiOwRFp0IGpGoMjwCDp8w+J2zP+nYAbVg99
-         UndSfCIaHUH9pDG+BxDR4k/zrP9eE2I9mvdyS8SJgEpFkkYLgBxydgc2zbzhdkf7cddU
-         JVaol55SOrImIHp1flHNqpWL6ylRVe9nJtPNMN2u4F3UG79pPSG4zqC3tGIocIKKJBvv
-         JqviRmldK2PpB9unYKiyWSpn1Z93xvQN3d/M9J3rA6G1LT82wNPjEjhbayBllZNfzwM3
-         jt7Q==
-X-Gm-Message-State: AOJu0Yy1cq9vhTUMcAsxELBL8sXZgT+obonFotBxgxrizh9zwMtI7CYX
-        417NIpT/DEuVTv2AyZweBk8=
-X-Google-Smtp-Source: AGHT+IFSrhZjCOK5OLW/ySLi0SEQSRf2Ywf78h0lYs0h5fiCtYrCKswNp0hMG0Figvjc/xBHlwsMUw==
-X-Received: by 2002:aa7:9ddd:0:b0:6c4:dc5b:5b2b with SMTP id g29-20020aa79ddd000000b006c4dc5b5b2bmr3806580pfq.20.1700423298129;
-        Sun, 19 Nov 2023 11:48:18 -0800 (PST)
+        bh=UpGTVr/h0gRLNFrOGvqL9Asvs1D6zvF8lBMhGssTB0o=;
+        b=nuJJ1y1Qm3xvE17ZW5aCs0+rt97ONmOzYjE16hHOrIFHsiubPCdfmSdNmbSrDrnHvT
+         8r4XZocPlYrut1stIvNVCZxzFzuz8m1kdNV8agyFj7dzCLzgk8NtZHY6TwuwNtZPiAcC
+         tamCIWZ0sOoSj8XTOFqdn2VU1c/lo8ubtM/4ptn/t0PuJwUb13wBZmnyMM32SbP41s5q
+         ieYzgz0kesnmxNZiHTqz1lP5XrVaWmEvd09/j6/mxBK1JYe++r7skTiXPA2tMU4ASchE
+         0KUPQyFiIcASeKeAC62AU/hvJJzjUFN8GxnUABMHC37Ke/h3teNcq9s0T12h5plowK06
+         5XsQ==
+X-Gm-Message-State: AOJu0YyzaIzwjM9x3vxbPNNVRFync1bFzFeiCqEMsO+lxFTMWAL4jL8+
+        1LWtc0LCozmpbaehmdu7s1cTjUOUP/3EYKfH
+X-Google-Smtp-Source: AGHT+IHfs1/JMlpqrq4TKTabAC0wuT2f0zXPPKJXJ4FxpJjeabGpgVADWj7Pztf6px1yswvAICZfaA==
+X-Received: by 2002:a05:6a20:b797:b0:187:8eca:8dc6 with SMTP id fh23-20020a056a20b79700b001878eca8dc6mr2490060pzb.34.1700423301416;
+        Sun, 19 Nov 2023 11:48:21 -0800 (PST)
 Received: from KASONG-MB2.tencent.com ([115.171.40.79])
-        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.15
+        by smtp.gmail.com with ESMTPSA id a6-20020aa78646000000b006cb7feae74fsm1237140pfo.164.2023.11.19.11.48.18
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 11:48:17 -0800 (PST)
+        Sun, 19 Nov 2023 11:48:20 -0800 (PST)
 From:   Kairui Song <ryncsn@gmail.com>
 To:     linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -60,9 +60,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
         Kairui Song <kasong@tencent.com>
-Subject: [PATCH 05/24] mm/swap: move readahead policy checking into swapin_readahead
-Date:   Mon, 20 Nov 2023 03:47:21 +0800
-Message-ID: <20231119194740.94101-6-ryncsn@gmail.com>
+Subject: [PATCH 06/24] swap: rework swapin_no_readahead arguments
+Date:   Mon, 20 Nov 2023 03:47:22 +0800
+Message-ID: <20231119194740.94101-7-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
 References: <20231119194740.94101-1-ryncsn@gmail.com>
@@ -81,202 +81,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kairui Song <kasong@tencent.com>
 
-This makes swapin_readahead a main entry for swapin pages,
-prepare for optimizations in later commits.
+Make it use alloc_pages_mpol instead of vma_alloc_folio, and accept
+mm_struct directly as an argument instead of taking a vmf as argument.
+Make its arguments similar to swap_{cluster,vma}_readahead, to
+make the code more aligned.
 
-This also makes swapoff able to make use of readahead checking
-based on entry. Swapping off a 10G ZRAM (lzo-rle) is faster:
-
-Before:
-time swapoff /dev/zram0
-real    0m12.337s
-user    0m0.001s
-sys     0m12.329s
-
-After:
-time swapoff /dev/zram0
-real    0m9.728s
-user    0m0.001s
-sys     0m9.719s
-
-And what's more, because now swapoff will also make use of no-readahead
-swapin helper, this also fixed a bug for no-readahead case (eg. ZRAM):
-when a process that swapped out some memory previously was moved to a new
-cgroup, and the original cgroup is dead, swapoff the swap device will
-make the swapped in pages accounted into the process doing the swapoff
-instead of the new cgroup the process was moved to.
-
-This can be easily reproduced by:
-- Setup a ramdisk (eg. ZRAM) swap.
-- Create memory cgroup A, B and C.
-- Spawn process P1 in cgroup A and make it swap out some pages.
-- Move process P1 to memory cgroup B.
-- Destroy cgroup A.
-- Do a swapoff in cgroup C.
-- Swapped in pages is accounted into cgroup C.
-
-This patch will fix it make the swapped in pages accounted in cgroup B.
-
-The same bug exists for readahead path too, we'll fix it in later
-commits.
+Also prepare for following commits which will skip vmf for certain
+swapin paths.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/memory.c     | 22 +++++++---------------
- mm/swap.h       |  6 ++----
- mm/swap_state.c | 33 ++++++++++++++++++++++++++-------
- mm/swapfile.c   |  2 +-
- 4 files changed, 36 insertions(+), 27 deletions(-)
+ mm/swap_state.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index fba4a5229163..f4237a2e3b93 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3792,6 +3792,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	rmap_t rmap_flags = RMAP_NONE;
- 	bool exclusive = false;
- 	swp_entry_t entry;
-+	bool swapcached;
- 	pte_t pte;
- 	vm_fault_t ret = 0;
- 
-@@ -3855,22 +3856,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	swapcache = folio;
- 
- 	if (!folio) {
--		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
--		    __swap_count(entry) == 1) {
--			/* skip swapcache and readahead */
--			page = swapin_no_readahead(entry, GFP_HIGHUSER_MOVABLE,
--						vmf);
--			if (page)
--				folio = page_folio(page);
-+		page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
-+					vmf, &swapcached);
-+		if (page) {
-+			folio = page_folio(page);
-+			if (swapcached)
-+				swapcache = folio;
- 		} else {
--			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
--						vmf);
--			if (page)
--				folio = page_folio(page);
--			swapcache = folio;
--		}
--
--		if (!folio) {
- 			/*
- 			 * Back out if somebody else faulted in this pte
- 			 * while we released the pte lock.
-diff --git a/mm/swap.h b/mm/swap.h
-index ea4be4791394..f82d43d7b52a 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -55,9 +55,7 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
- 				    struct mempolicy *mpol, pgoff_t ilx);
- struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
--			      struct vm_fault *vmf);
--struct page *swapin_no_readahead(swp_entry_t entry, gfp_t flag,
--				 struct vm_fault *vmf);
-+			      struct vm_fault *vmf, bool *swapcached);
- 
- static inline unsigned int folio_swap_flags(struct folio *folio)
- {
-@@ -89,7 +87,7 @@ static inline struct page *swap_cluster_readahead(swp_entry_t entry,
- }
- 
- static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t gfp_mask,
--			struct vm_fault *vmf)
-+			struct vm_fault *vmf, bool *swapcached)
- {
- 	return NULL;
- }
 diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 45dd8b7c195d..fd0047ae324e 100644
+index fd0047ae324e..ff6756f2e8e4 100644
 --- a/mm/swap_state.c
 +++ b/mm/swap_state.c
-@@ -316,6 +316,11 @@ void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
- 	release_pages(pages, nr);
- }
- 
-+static inline bool swap_use_no_readahead(struct swap_info_struct *si, swp_entry_t entry)
-+{
-+	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(entry) == 1;
-+}
-+
- static inline bool swap_use_vma_readahead(void)
- {
- 	return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_rotate_swap);
-@@ -861,8 +866,8 @@ static struct page *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
-  * Returns the struct page for entry and addr after the swap entry is read
+@@ -867,17 +867,17 @@ static struct page *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
   * in.
   */
--struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
--				 struct vm_fault *vmf)
-+static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
-+					struct vm_fault *vmf)
+ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
+-					struct vm_fault *vmf)
++					struct mempolicy *mpol, pgoff_t ilx,
++					struct mm_struct *mm)
  {
- 	struct vm_area_struct *vma = vmf->vma;
- 	struct page *page = NULL;
-@@ -904,6 +909,8 @@ struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
-  * @entry: swap entry of this memory
-  * @gfp_mask: memory allocation flags
-  * @vmf: fault information
-+ * @swapcached: pointer to a bool used as indicator if the
-+ *              page is swapped in through swapcache.
-  *
-  * Returns the struct page for entry and addr, after queueing swapin.
-  *
-@@ -912,17 +919,29 @@ struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
-  * or vma-based(ie, virtual address based on faulty address) readahead.
-  */
- struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
--				struct vm_fault *vmf)
-+			      struct vm_fault *vmf, bool *swapcached)
- {
- 	struct mempolicy *mpol;
--	pgoff_t ilx;
- 	struct page *page;
-+	pgoff_t ilx;
-+	bool cached;
+-	struct vm_area_struct *vma = vmf->vma;
+-	struct page *page = NULL;
+ 	struct folio *folio;
++	struct page *page;
+ 	void *shadow = NULL;
+ 
+-	folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+-				vma, vmf->address, false);
++	page = alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id());
++	folio = (struct folio *)page;
+ 	if (folio) {
+-		if (mem_cgroup_swapin_charge_folio(folio, vma->vm_mm,
++		if (mem_cgroup_swapin_charge_folio(folio, mm,
+ 						   GFP_KERNEL, entry)) {
+ 			folio_put(folio);
+ 			return NULL;
+@@ -896,7 +896,6 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
+ 
+ 		/* To provide entry to swap_readpage() */
+ 		folio->swap = entry;
+-		page = &folio->page;
+ 		swap_readpage(page, true, NULL);
+ 		folio->private = NULL;
+ 	}
+@@ -928,7 +927,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
  
  	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
--	page = swap_use_vma_readahead() ?
--		swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf) :
--		swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
-+	if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
-+		page = swapin_no_readahead(entry, gfp_mask, vmf);
-+		cached = false;
-+	} else if (swap_use_vma_readahead()) {
-+		page = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
-+		cached = true;
-+	} else {
-+		page = swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
-+		cached = true;
-+	}
- 	mpol_cond_put(mpol);
-+
-+	if (swapcached)
-+		*swapcached = cached;
-+
- 	return page;
- }
- 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 756104ebd585..0142bfc71b81 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1874,7 +1874,7 @@ static int unuse_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
- 			};
- 
- 			page = swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
--						&vmf);
-+						&vmf, NULL);
- 			if (page)
- 				folio = page_folio(page);
- 		}
+ 	if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
+-		page = swapin_no_readahead(entry, gfp_mask, vmf);
++		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
+ 		cached = false;
+ 	} else if (swap_use_vma_readahead()) {
+ 		page = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
 -- 
 2.42.0
 
