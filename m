@@ -2,125 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCD07F1A86
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB05E7F1A95
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbjKTRhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S233840AbjKTRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjKTRhB (ORCPT
+        with ESMTP id S233844AbjKTRhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:37:01 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15741D7B
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:36:50 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b6ccaf0516so2764186b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:36:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700501809; x=1701106609; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6S4PK8WT3cwW+G2GrOmybB1YODe/+PbVzMA49NRihL0=;
-        b=jfWnXtvPi63Cju5W8DokCsYXVKltwu06qExZQhXmrNK805rrNt2syRzhkyHNDFWuSz
-         NvW4sr8gfJTysw4g+oS51ZWOEXTkGSjyD26M7Tn6ZultHte+S0N3Tie+MFMjYYcFBFvD
-         2eHGAjirUmwCgbfu07BZ5kfE4tAyl7J5bjA1x8MpwymukN8OCt6pLS2yytLKu52seIE8
-         ldLBdfR13qsTtw3e7/XZQ09oLtFLi91ARUs/9KWDF6FCXZue3fUgxrCMoPwFm1hfdous
-         HfzfnBX+D7Ast5rqCFMsYE6mBl2zeSq84e/6kZrc8W6GjElPS05Ta1xtE77i4FRGOPjd
-         jzuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700501809; x=1701106609;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6S4PK8WT3cwW+G2GrOmybB1YODe/+PbVzMA49NRihL0=;
-        b=GK/YUSVukeOZrMX3GofYNkTC2DkU5VLpjNLYdb8Z8jN+jhUO4SX9CH8nrUzUpzGV6R
-         nwj30TYS6wBs69V1frKx6Z6zalim2wYLV43IzzpyCrA8WSI+maMBdJxVeM8AX0alGY6S
-         KWy0BMcrkj6uid92YKN9jOWZ8RQ16XEL9bHi1ychPhyxrfp02AGVFuomamE9jZ+GFsPW
-         j8xz9lfqBKxb1vssCupA1VtZxImLQbEsskOhXvt8AXaUjX84Q4Ua8C1MYBGTzGRs6Ke+
-         KEDLJqviHjRvaxMyc7X+5Np12G4xIwQnJRFb/MI5Irqj0HdMHlTZ1HtmgwV9hSKWrMfS
-         jTZw==
-X-Gm-Message-State: AOJu0Yy7aH7VK68Iucm8B9nspV3sJUjevjzCDTZANWWo2VjCfymvnSaY
-        4qbYvJxLhHChnDl65tU+24KwpQ==
-X-Google-Smtp-Source: AGHT+IGl6FR1QPuWw83tR4YZijGxBbFwW2zBDfGjF5hcAg8Pg3Q6u4xrWAUQF0k15hXtsQj+Z3VEbA==
-X-Received: by 2002:a05:6870:d3c3:b0:1f0:4e1f:e09a with SMTP id l3-20020a056870d3c300b001f04e1fe09amr116089oag.4.1700501809323;
-        Mon, 20 Nov 2023 09:36:49 -0800 (PST)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id x55-20020a056830247700b006d64b970519sm1245547otr.2.2023.11.20.09.36.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 09:36:48 -0800 (PST)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Mon, 20 Nov 2023 09:36:39 -0800
-Subject: [PATCH] riscv: Safely remove entries from relocation list
+        Mon, 20 Nov 2023 12:37:20 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2081.outbound.protection.outlook.com [40.107.93.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B81F4;
+        Mon, 20 Nov 2023 09:37:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JUxVIIcHGyS/ivmwPoXjaxf+WDrEN3AL+hGV7cKpI8fsUJKHA7/Dfl72oigaD5CV1mbg8CBkzHcuTsKWNVGDjerGeKB7A3WtWgS6YzaeK07TV5XB5GmtcGHMa1bR5KS4h71qb+EUGla+ZncYdyDErVMK7oq/MTWvVvM0vAeCUWEu1EIAZQby4MXz+hGIuAYK9hodOb4MiYU8RlqMyAnpZXntiQCu4ACzcFFnPaCDgE7Tuu/CxAJvkuPixwgQnRQNl+MVL1gAPRtxpJeKDAzSSfwd8fYIVS2PflHT2X/lR/Vlygwv02m+fgEFDaErSpBI05MCNd0hOfbwTc+NYKYSRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FhZwJ20CqL6sdve2xchAM9rsVw29+8BY5EX0MItUy0w=;
+ b=YjrGyAsOSwDDm5avZD7nfk/vmVf1UJ/FTp8cjqphMC1F9Sjc5BFwUW3cz+1iF0WFo/lhUgA251MIZbEJBKr5t1IWV2YPfvj3otkN1QDYbx8PNiKxGPZHLmDNRrceJ4HKzIDQIzsY3widyoVK21CifoyZ621nwjEgMFULwRGQQIWsc0uEs6CIuyt84WbK0iKsyGd5hJ2t+gEd7oBfCj08IemiAeQZ6qOQTceO+NxoKcnrK+K9fKjIxwIYE+M6Ur6jXcv34pkJjXRaZvPSD1+2kT0l4YL48Gu+CC4c58R2bVo1XoNFGBQhxmfz/C1fznnn2XSVrkrEK63poA7k98d2NA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FhZwJ20CqL6sdve2xchAM9rsVw29+8BY5EX0MItUy0w=;
+ b=lLjb5JXJ8fiEPsGDkVbuuLPr4tMh2dk1kCPUbqcra0xBdhMnEdFAQJ1syU5XRDFwkvBcNPNYGdMcvWfNn3e1tRJyy8Vvm8xiTGCMlGzPSrEc8CrqluW+FGTYI117cqykhAQw6jgz578S2nZvjDbGOrhqeDU9wEyO8TX9jtmARKZ2yB6cdPyY16lgn43cWLE7t4SRTT+GxEePzJnoDZSnu2GXEw6RSOJYuCYw92KP6WBGHZi6uWidXfyeUOSS5LXxe2bMPhKiCQ4aeo6mVSl5FjgdT/aE7v4zBI7ln+ExlJUqgrsVSIhvrZZSrcvwjSeJJLt++Am9sT1IkUuC5fp7BA==
+Received: from CH0P221CA0043.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:11d::23)
+ by SJ2PR12MB7867.namprd12.prod.outlook.com (2603:10b6:a03:4cd::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
+ 2023 17:37:14 +0000
+Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
+ (2603:10b6:610:11d:cafe::dc) by CH0P221CA0043.outlook.office365.com
+ (2603:10b6:610:11d::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27 via Frontend
+ Transport; Mon, 20 Nov 2023 17:37:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.12 via Frontend Transport; Mon, 20 Nov 2023 17:37:13 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 20 Nov
+ 2023 09:37:01 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 20 Nov
+ 2023 09:37:00 -0800
+Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 20 Nov 2023 09:36:59 -0800
+Date:   Mon, 20 Nov 2023 09:36:57 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231117130717.19875-3-yi.l.liu@intel.com>
+ <BN9PR11MB5276D8406BF08B853329288C8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <fa736836-e136-4ed4-a6af-8ea2f0e7c0dd@intel.com>
+ <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-module_linking_freeing-v1-1-fff81d7289fc@rivosinc.com>
-X-B4-Tracking: v=1; b=H4sIACaZW2UC/x2MQQqAIBQFrxJ/naA/3HSViMh61aeyUIogvHvSa
- pjFzEsRQRCpLl4KuCXK4bOYsqBh6f0MJWN2Ys2VMazVfozXhm4Tv4qfuykAmYqd7SvH1joLyvE
- ZMMnzj5s2pQ90t4V7aAAAAA==
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|SJ2PR12MB7867:EE_
+X-MS-Office365-Filtering-Correlation-Id: dec4ebed-d41e-407b-298b-08dbe9ef54d9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0WtQ0b+9HXG6TTj+StAwCjQOfnfLyCCZ8AFc4VMMFwQ7DLwNqcDDeUeqzb7ocIhvkHKen2xkK9muw7u8JAdxRqlhTmYNcG3//znRorVF7QgnyP3NslXSAF32TE2DAju5OzIS0TMXsfoPq7YLu55e/DOdl6nRW1l9r5hLCo0z25hraCNga/vivPZygVRNuWDPj0PSX4HUhNcEVqYOy/rlNprMvCNMf2lszhrXbLSxLbBl1FCSM6tU8l5IAkAuVKj4cEiCeilyImG1y5U1ijDkiLXDqC7gwhM0V0BPMKjef8U0MN+ScasMvmK5M+lr5L6D7VE9Pt4qZIPKf0cMLOw60kPybK/XnrhvhIIggAC8tE0RrMKMQgjT6Zf7BzaBgOKXONlWNt7vOiHF59H2juipoaQWhYhXeO3jtZiV423rc0qUIcgNlmNnCM9CGkg5Ht6EwY0xtgdFZjuyvV1FJ1ssSUPY4/gUGqJ9yInn4xqCLzMnAPtO7wbpbKKdMjML4+gYVLuc/3J2GhMJ7HOEBtvs8GLj7AgecbZVxgCxDbBjh6qzLOSVtCHdaWHr+XXEkop4a/OsLE+BigGlAyxliWwsfLeYm27PSCuDBdA8Jl89iVCcwiUhwoV3EhXjXlC1TfDCm63tpMfbvGXOkDfstCDd77rm5nbJs7aS1tPuBJti32gPHOQmYoN+dV0kZud/Omi91iFX4dm/+/U68GQqj9ViiPOCGxAIpIS7FLgwCGM+u0NIcDpK7BGyDn/QITw1vw9H
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(136003)(346002)(230922051799003)(82310400011)(451199024)(1800799012)(186009)(64100799003)(40470700004)(36840700001)(46966006)(41300700001)(40460700003)(86362001)(7416002)(5660300002)(2906002)(33716001)(82740400003)(7636003)(356005)(40480700001)(83380400001)(9686003)(478600001)(53546011)(26005)(55016003)(336012)(426003)(4326008)(8676002)(8936002)(70206006)(316002)(47076005)(6916009)(70586007)(54906003)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 17:37:13.1468
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: dec4ebed-d41e-407b-298b-08dbe9ef54d9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D3.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7867
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the safe versions of list and hlist iteration to safely remove
-entries from the module relocation lists.
+On Mon, Nov 20, 2023 at 08:34:58AM +0000, Tian, Kevin wrote:
+> > From: Liu, Yi L <yi.l.liu@intel.com>
+> > Sent: Monday, November 20, 2023 4:30 PM
+> >
+> > On 2023/11/20 16:09, Tian, Kevin wrote:
+> > >> From: Liu, Yi L <yi.l.liu@intel.com>
+> > >> Sent: Friday, November 17, 2023 9:07 PM
+> > >> + * @req_len: Length (in bytes) of a request entry in the request array
+> > >> + * @req_num: Input the number of cache invalidation requests in the
+> > array.
+> > >> + *           Output the number of requests successfully handled by kernel.
+> > >> + * @out_driver_error_code: Report a driver speicifc error code upon
+> > failure.
+> > >> + *                         It's optional, driver has a choice to fill it or
+> > >> + *                         not.
+> > >
+> > > Being optional how does the user tell whether the code is filled or not?
 
-Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
- arch/riscv/kernel/module.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+Well, naming it "error_code" indicates zero means no error while
+non-zero means something? An error return from this ioctl could
+also tell the user space to look up for this driver error code,
+if it ever cares.
 
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 56a8c78e9e21..209db949a06e 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -624,18 +624,25 @@ void process_accumulated_relocations(struct module *me)
- 	 *	- Each relocation entry for a location address
- 	 */
- 	struct used_bucket *bucket_iter;
-+	struct used_bucket *bucket_iter_tmp;
- 	struct relocation_head *rel_head_iter;
-+	struct hlist_node *rel_head_iter_tmp;
- 	struct relocation_entry *rel_entry_iter;
-+	struct relocation_entry *rel_entry_iter_tmp;
- 	int curr_type;
- 	void *location;
- 	long buffer;
- 
--	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
--		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
-+	list_for_each_entry_safe(bucket_iter, bucket_iter_tmp,
-+				 &used_buckets_list, head) {
-+		hlist_for_each_entry_safe(rel_head_iter, rel_head_iter_tmp,
-+					  bucket_iter->bucket, node) {
- 			buffer = 0;
- 			location = rel_head_iter->location;
--			list_for_each_entry(rel_entry_iter,
--					    rel_head_iter->rel_entry, head) {
-+			list_for_each_entry_safe(rel_entry_iter,
-+						 rel_entry_iter_tmp,
-+						 rel_head_iter->rel_entry,
-+						 head) {
- 				curr_type = rel_entry_iter->type;
- 				reloc_handlers[curr_type].reloc_handler(
- 					me, &buffer, rel_entry_iter->value);
+> > seems like we need a flag for it. otherwise, a reserved special value is
+> > required. or is it enough to just document it that this field is available
+> > or not per the iommu_hw_info_type?
+> >
+> 
+> No guarantee that a reserved special value applies to all vendors.
+> 
+> I'll just remove the optional part. the viommu driver knows what a valid
+> code is, if the driver fills it.
 
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20231120-module_linking_freeing-2b5a3b255b5e
--- 
-- Charlie
+Hmm, remove out_driver_error_code? Do you mean by reusing ioctl
+error code to tell the user space what driver error code it gets?
 
+Nicolin
