@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 102107F1B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558FA7F1B94
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjKTRu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:50:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        id S229754AbjKTRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjKTRtw (ORCPT
+        with ESMTP id S234261AbjKTRvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:49:52 -0500
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E621708
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:49:42 -0800 (PST)
+        Mon, 20 Nov 2023 12:51:22 -0500
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [IPv6:2001:41d0:203:375::b1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB5E3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:50:44 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700502580;
+        t=1700502642;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=taQhm6+sqq7C99vuNmST7zKoEFBrlbi2ArfSWbY49ok=;
-        b=DLuotPQZ2ya2ze/Uk9qdks6Velp5g/ufNOpAnZ3F0CTG4bBuTmqBJZX+8HrA4Dqfb+h/XH
-        cXG4e43rc7TxqEGmM94O/sylDTL5wKtysxQVD2NH08lAvJQHMJZz91DKB754x+wRKfj68K
-        mQIu1A/BqCWkTls4JakGGQmnxTCxoCg=
+        bh=h9lSbnFVvjj2GZw0LrViVCVgXWgHHPxOTEIrM79fNvQ=;
+        b=altZ3Y/XI4JhIu5hrnCRXA2Lh0EqKL+D8A/MAbLwDHf+SQx3XdzFWHdK500Z2nrgBAdsMJ
+        CIl8i/FRs6CobGUwDDY8obdvF4axa9Jsyq1WLFLLkkvZ3UoyLWEgpJBac7eWWb07xxbTHj
+        /N4UEr5XJVfvRHr9tfyWkhDs5sCw/8o=
 From:   andrey.konovalov@linux.dev
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
@@ -37,9 +37,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v4 17/22] lib/stackdepot: allow users to evict stack traces
-Date:   Mon, 20 Nov 2023 18:47:15 +0100
-Message-Id: <1d1ad5692ee43d4fc2b3fd9d221331d30b36123f.1700502145.git.andreyknvl@google.com>
+Subject: [PATCH v4 18/22] kasan: remove atomic accesses to stack ring entries
+Date:   Mon, 20 Nov 2023 18:47:16 +0100
+Message-Id: <29f59126d9845c5257b6c29cd7ad113b16f19f47.1700502145.git.andreyknvl@google.com>
 In-Reply-To: <cover.1700502145.git.andreyknvl@google.com>
 References: <cover.1700502145.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -57,127 +57,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Add stack_depot_put, a function that decrements the reference counter
-on a stack record and removes it from the stack depot once the counter
-reaches 0.
+Remove the atomic accesses to entry fields in save_stack_info and
+kasan_complete_mode_report_info for tag-based KASAN modes.
 
-Internally, when removing a stack record, the function unlinks it from
-the hash table bucket and returns to the freelist.
+These atomics are not required, as the read/write lock prevents the
+entries from being read (in kasan_complete_mode_report_info) while being
+written (in save_stack_info) and the try_cmpxchg prevents the same entry
+from being rewritten (in save_stack_info) in the unlikely case of wrapping
+during writing.
 
-With this change, the users of stack depot can call stack_depot_put
-when keeping a stack trace in the stack depot is not needed anymore.
-This allows avoiding polluting the stack depot with irrelevant stack
-traces and thus have more space to store the relevant ones before the
-stack depot reaches its capacity.
-
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
 
 Changes v1->v2:
-- Comments fixes as suggested by Marco.
-- Add lockdep_assert annotation.
-- Adapt to using list_head's.
-- Rename stack_depot_evict to stack_depot_put.
+- This is a new patch.
 ---
- include/linux/stackdepot.h | 14 ++++++++++++++
- lib/stackdepot.c           | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 50 insertions(+), 1 deletion(-)
+ mm/kasan/report_tags.c | 25 +++++++------------------
+ mm/kasan/tags.c        | 13 +++++--------
+ 2 files changed, 12 insertions(+), 26 deletions(-)
 
-diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
-index 611716702d73..a6796f178913 100644
---- a/include/linux/stackdepot.h
-+++ b/include/linux/stackdepot.h
-@@ -97,6 +97,8 @@ static inline int stack_depot_early_init(void)	{ return 0; }
-  *
-  * If STACK_DEPOT_FLAG_GET is set in @depot_flags, stack depot will increment
-  * the refcount on the saved stack trace if it already exists in stack depot.
-+ * Users of this flag must also call stack_depot_put() when keeping the stack
-+ * trace is no longer required to avoid overflowing the refcount.
-  *
-  * If the provided stack trace comes from the interrupt context, only the part
-  * up to the interrupt entry is saved.
-@@ -162,6 +164,18 @@ void stack_depot_print(depot_stack_handle_t stack);
- int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
- 		       int spaces);
+diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
+index 8b8bfdb3cfdb..78abdcde5da9 100644
+--- a/mm/kasan/report_tags.c
++++ b/mm/kasan/report_tags.c
+@@ -31,10 +31,6 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
+ 	unsigned long flags;
+ 	u64 pos;
+ 	struct kasan_stack_ring_entry *entry;
+-	void *ptr;
+-	u32 pid;
+-	depot_stack_handle_t stack;
+-	bool is_free;
+ 	bool alloc_found = false, free_found = false;
  
-+/**
-+ * stack_depot_put - Drop a reference to a stack trace from stack depot
-+ *
-+ * @handle:	Stack depot handle returned from stack_depot_save()
-+ *
-+ * The stack trace is evicted from stack depot once all references to it have
-+ * been dropped (once the number of stack_depot_evict() calls matches the
-+ * number of stack_depot_save_flags() calls with STACK_DEPOT_FLAG_GET set for
-+ * this stack trace).
-+ */
-+void stack_depot_put(depot_stack_handle_t handle);
-+
- /**
-  * stack_depot_set_extra_bits - Set extra bits in a stack depot handle
-  *
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 911dee11bf39..c1b31160f4b4 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -394,7 +394,7 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
- 	size_t offset = parts.offset << DEPOT_STACK_ALIGN;
- 	struct stack_record *stack;
+ 	if ((!info->cache || !info->object) && !info->bug_type) {
+@@ -61,18 +57,11 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
  
--	lockdep_assert_held_read(&pool_rwlock);
-+	lockdep_assert_held(&pool_rwlock);
+ 		entry = &stack_ring.entries[i % stack_ring.size];
  
- 	if (parts.pool_index > pools_num) {
- 		WARN(1, "pool index %d out of bounds (%d) for stack id %08x\n",
-@@ -410,6 +410,14 @@ static struct stack_record *depot_fetch_stack(depot_stack_handle_t handle)
- 	return stack;
+-		/* Paired with smp_store_release() in save_stack_info(). */
+-		ptr = (void *)smp_load_acquire(&entry->ptr);
+-
+-		if (kasan_reset_tag(ptr) != info->object ||
+-		    get_tag(ptr) != get_tag(info->access_addr))
++		if (kasan_reset_tag(entry->ptr) != info->object ||
++		    get_tag(entry->ptr) != get_tag(info->access_addr))
+ 			continue;
+ 
+-		pid = READ_ONCE(entry->pid);
+-		stack = READ_ONCE(entry->stack);
+-		is_free = READ_ONCE(entry->is_free);
+-
+-		if (is_free) {
++		if (entry->is_free) {
+ 			/*
+ 			 * Second free of the same object.
+ 			 * Give up on trying to find the alloc entry.
+@@ -80,8 +69,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
+ 			if (free_found)
+ 				break;
+ 
+-			info->free_track.pid = pid;
+-			info->free_track.stack = stack;
++			info->free_track.pid = entry->pid;
++			info->free_track.stack = entry->stack;
+ 			free_found = true;
+ 
+ 			/*
+@@ -95,8 +84,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
+ 			if (alloc_found)
+ 				break;
+ 
+-			info->alloc_track.pid = pid;
+-			info->alloc_track.stack = stack;
++			info->alloc_track.pid = entry->pid;
++			info->alloc_track.stack = entry->stack;
+ 			alloc_found = true;
+ 
+ 			/*
+diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+index 4fd32121b0fd..b6c017e670d8 100644
+--- a/mm/kasan/tags.c
++++ b/mm/kasan/tags.c
+@@ -121,15 +121,12 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
+ 	if (!try_cmpxchg(&entry->ptr, &old_ptr, STACK_RING_BUSY_PTR))
+ 		goto next; /* Busy slot. */
+ 
+-	WRITE_ONCE(entry->size, cache->object_size);
+-	WRITE_ONCE(entry->pid, current->pid);
+-	WRITE_ONCE(entry->stack, stack);
+-	WRITE_ONCE(entry->is_free, is_free);
++	entry->size = cache->object_size;
++	entry->pid = current->pid;
++	entry->stack = stack;
++	entry->is_free = is_free;
+ 
+-	/*
+-	 * Paired with smp_load_acquire() in kasan_complete_mode_report_info().
+-	 */
+-	smp_store_release(&entry->ptr, (s64)object);
++	entry->ptr = object;
+ 
+ 	read_unlock_irqrestore(&stack_ring.lock, flags);
  }
- 
-+/* Links stack into the freelist. */
-+static void depot_free_stack(struct stack_record *stack)
-+{
-+	lockdep_assert_held_write(&pool_rwlock);
-+
-+	list_add(&stack->list, &free_stacks);
-+}
-+
- /* Calculates the hash for a stack. */
- static inline u32 hash_stack(unsigned long *entries, unsigned int size)
- {
-@@ -592,6 +600,33 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- }
- EXPORT_SYMBOL_GPL(stack_depot_fetch);
- 
-+void stack_depot_put(depot_stack_handle_t handle)
-+{
-+	struct stack_record *stack;
-+	unsigned long flags;
-+
-+	if (!handle || stack_depot_disabled)
-+		return;
-+
-+	write_lock_irqsave(&pool_rwlock, flags);
-+
-+	stack = depot_fetch_stack(handle);
-+	if (WARN_ON(!stack))
-+		goto out;
-+
-+	if (refcount_dec_and_test(&stack->count)) {
-+		/* Unlink stack from the hash table. */
-+		list_del(&stack->list);
-+
-+		/* Free stack. */
-+		depot_free_stack(stack);
-+	}
-+
-+out:
-+	write_unlock_irqrestore(&pool_rwlock, flags);
-+}
-+EXPORT_SYMBOL_GPL(stack_depot_put);
-+
- void stack_depot_print(depot_stack_handle_t stack)
- {
- 	unsigned long *entries;
 -- 
 2.25.1
 
