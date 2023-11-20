@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC5E7F1882
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62037F1889
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjKTQVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S232435AbjKTQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjKTQVn (ORCPT
+        with ESMTP id S232176AbjKTQWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:21:43 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAE9ED
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:21:40 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7789923612dso283123885a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:21:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700497300; x=1701102100; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y+cEjF8yivWHKRs1/Mvbzeyp4gbt9nPyK/LY9ULoheM=;
-        b=lXCLjvmP+CHaGpri4tFOQW6WKQONMR0Hlj0xoKc+oBLJmkfw+x7efIkl/qg6tUM5Fk
-         JToiIyL9aubHpv4y4so+Th1PFanvrm/geMUndoVu9oItTH3zc79uGmoSzVGkzZpm+RSO
-         6jcNzG5/VwyLl/U39ovk7sIE/6EsyRknioCytjNN1sOLiLCnA+b/nJlH98aYdMjLBeVa
-         MI89Nj+2MZDwC5r0vKiPozQUfbg/aBafhh1CPrUQ1RRfEC/AUM8gqcaxdnQcWCwbOTWA
-         XLV5rb8CIk51fXDaw1csBzpJemRWLAs0REoM2HISUPc6hrNnIPqxwjGN5cQFX6jV/S1m
-         t0yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700497300; x=1701102100;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y+cEjF8yivWHKRs1/Mvbzeyp4gbt9nPyK/LY9ULoheM=;
-        b=HNnVKSHwzhQhBSV/9K7117i2ACkHFGe3NpKza6Id6++LMrHHTjZcxTDlwhDC9qU1UT
-         7Pm12saa8CnQbyaiAxigfF586kYexqn4ai1lYN3UG/LIiF8XzPcsc99wBxGtpzdKnKzP
-         0ugUVJbADMc051oblNW/YqKZXEDfmpDIZ6MJHWAepuayy9pOGaw2GVQ/zSasCJTBMQNp
-         lIIR2qmsGpDrJ0nROs0+QVYv06WOjlezLxz3WdA/dZmsCKOgwTbaKfTCiNY2pPoW0h4j
-         6KzaEyRYQNm8XPv6TSRezR0gIFC0YNqkZKLxckqaqKaFG0JflfcdtbpYF/kZJiBSr3rh
-         Iy0A==
-X-Gm-Message-State: AOJu0YwyB+MOdHMBiMMrbhQjzbda+WE3UDnw5sdPAC3CJGPk2H++IVV3
-        GhdvjIreg6ELM1Z2l4mBXvTeJ1qSSwvLXz2pWcz/Og==
-X-Google-Smtp-Source: AGHT+IEtPYBbq49KqVNQjGJ/GDDR3Gw4BTcMZhzzT9PPj/JSL5e5Zf0eXOFkX/x3KPc5URlWDs3TZ7+JKzHJiRKIMzs=
-X-Received: by 2002:a05:6214:c49:b0:66d:6afb:ba5d with SMTP id
- r9-20020a0562140c4900b0066d6afbba5dmr9779202qvj.24.1700497299711; Mon, 20 Nov
- 2023 08:21:39 -0800 (PST)
+        Mon, 20 Nov 2023 11:22:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A3EF4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:22:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 682BDC433C7;
+        Mon, 20 Nov 2023 16:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700497352;
+        bh=wo6NE3x3fZnUgjOiXaaB7L0iQnLkmm2WM2aRkkTL/vg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nsEMhJ2LQ/U0o+CSgd3CLLiBEKlB9iXGA7RinYkv0I6rF+nJKEIo7jlPrj0rEe3ST
+         hV1IMWH8nClWwhV/k0fD3IBCg9XdPz9gAnpSynlrZDXnfSFeTvWfn6XpBbxhfnDWUE
+         5sFpsIzxcML4jobVeF4OJ++AR5wqRgufhk/KWW5/5LsZvniJIrRbOslcqgnuC4aBkL
+         iCS96XTx2KvbBbPorGkTgb8GwcC2UAQjsOi7DrE6OjPA3+x/QgBdCT43hcSfonfGGb
+         hx2WFAcSz8reUlAkCqBP95DWWrJh+PsASYVbS+BmSdYy+QIJclprKvMsks0aESqy5i
+         gTp0dSLjZSzbQ==
+Date:   Mon, 20 Nov 2023 17:22:29 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PULL REQUEST] i2c-for-6.7-rc2
+Message-ID: <ZVuHxUZR3A1M8SE1@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <ZVf/pqw5YcF7sldg@shikoro>
+ <CAHk-=wi9a9u+1cAxxHw7KxXsfPvdWCbhatK7enFSjgwjrovCZA@mail.gmail.com>
+ <20231120150515.GA32570@willie-the-truck>
 MIME-Version: 1.0
-References: <20231103061715.196294-1-sumit.garg@linaro.org>
- <CAFA6WYNW_cAFVMTpqPQjwBASKDp_b=CpccCzx23jHn_+qoJrDQ@mail.gmail.com>
- <87y1es5xsd.fsf@meer.lwn.net> <CAFA6WYN7ZB0Sgc0gB1rQhhirjoOEeyp2Uokzpwy-KFQ_aJQEVg@mail.gmail.com>
-In-Reply-To: <CAFA6WYN7ZB0Sgc0gB1rQhhirjoOEeyp2Uokzpwy-KFQ_aJQEVg@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 20 Nov 2023 17:21:28 +0100
-Message-ID: <CAHUa44EqH+_+CbXAAdW=xGpFm8DCB=fhrFZcXgs1OdW7VRJ6-Q@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: Destage TEE subsystem documentation
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, vegard.nossum@oracle.com,
-        Rijo-john.Thomas@amd.com, balint.dobszay@arm.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nhEp5Di/H6AUF6Ik"
+Content-Disposition: inline
+In-Reply-To: <20231120150515.GA32570@willie-the-truck>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 4:35=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org> =
-wrote:
->
-> On Mon, 20 Nov 2023 at 19:31, Jonathan Corbet <corbet@lwn.net> wrote:
-> >
-> > Sumit Garg <sumit.garg@linaro.org> writes:
-> >
-> > > Hi Jonathan,
-> > >
-> > > If you are fine with this destaging TEE documentation patch then will
-> > > you be picking up this patch? Or would you like Jens to pick it up
-> > > with your Ack?
-> >
-> > I'm happy to pick it up.
->
-> Thanks.
->
-> Jens, can we get your ack here for Jonathan to pick it up?
 
-Sure:
-Acked-by: Jens Wiklander <jens.wiklander@linaro.org>
+--nhEp5Di/H6AUF6Ik
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Jens
+Hi Will,
 
->
-> -Sumit
->
-> >
-> > Thanks,
-> >
-> > jon
+thanks a lot for this summary!
+
+> and I think the high-level problem was something like:
+>=20
+> 1. CPU x writes some stuff to memory (I think one example was i2c_dw_xfer=
+()
+>    setting 'dev->msg_read_idx' to 0)
+> 2. CPU x writes to an I/O register on this I2C controller which generates
+>    an IRQ (end of i2c_dw_xfer_init())
+> 3. CPU y takes the IRQ
+> 4. CPU y reads 'dev->msg_read_idx' and doesn't see the write from (1)
+>=20
+> (i2c folks: please chime in if I got this wrong)
+
+I admit that I didn't dive into this specific discussion. But we had
+this kind of re-ordering problem in the past in i2c, so avoiding the
+relaxed_* where possible came to be a good thing in my book. So, I
+recommended removing it for all writes, not only the one causing
+problems here. relaxed_* should only be used when really needed. So,
+this is why I applied the patch, plus I trust the people giving their
+tags after the in-depth discussion. But yeah, if somebody more
+experienced with this driver could double-check against the potential
+locking problem, this would be good.
+
+
+--nhEp5Di/H6AUF6Ik
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVbh8UACgkQFA3kzBSg
+Kbak/A//S2jhodePmuM7u+4PQREH/Nmwbd3Casu+Q+QLWwr3jevovyNhWupdRsYE
+wDROMNs30eq+iYYzUQVKE9Mk3y8Z3m8ntjNAbkhJmrajYVd522PQnO90HLwBEaWO
+XaTAPyJ97uGf0yUEE9zg9U2oW8oqZh2soca2TLu26mTV0PMXFwkqEyqgBV4nf61n
+p92RdjVcDgpqTOjmcuhFvmV8sJ1hlY2+q5f+wY09+ZaOVdmhrA9kYezCoDz+ZX4Q
+MB+dUKzCC22lT9NzEDGyz5/TsVKwOa+MYSH3oHpjxb7ULk9UcC70QUnmJ76UwQZ8
+9CS1uifcXhgkyu7VLahv55jjkP4cHAS3MnhTBewXsl1Rl1bOvvPhIUuPg/r00hBl
+pyUVlxpQWZ12gmWurqqK9cQUGlg+UcKvUZ0+aS5EsuCUwLHhorv1Pehx7M46eRrh
+Crkbqk1gZA15R2w1dp8DXQ+qYjK2WDRMMnU/sPa8Ad6SWiU18LhS+dqyLp4hsUuk
+x8NSeMyugEqaZCJk+i8SmiGCzhPOx9kAp5Gfgjjb4bKjRWlTjuIKOD/32HFqS/rW
+cYUlNmyicQRKsZGacYO+UV+64euw1p/QA+jiwrSkoD3+6apFLRfc9Q4uy9/Cn2r3
+4jFeGVWw5PEukhIs8mYspuM91zzXnlesN/dgEGCtFdAbFfaz71Q=
+=JTwO
+-----END PGP SIGNATURE-----
+
+--nhEp5Di/H6AUF6Ik--
