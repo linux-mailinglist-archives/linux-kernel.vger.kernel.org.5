@@ -2,161 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AED7F1A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A1D7F1A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbjKTRcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47142 "EHLO
+        id S233806AbjKTReL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233576AbjKTRcs (ORCPT
+        with ESMTP id S233820AbjKTReI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:32:48 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D165126
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:32:44 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a013d22effcso12197166b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:32:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700501562; x=1701106362; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PH6N+RwMraA/g7VALKyP1+uYAIpjpf6qJIw3+QWh+3o=;
-        b=mrQ5AwCkLa0tQCoN9MbANvYzG2MDaJRbAVC9nxbECGV+MaBXc0lwLUIkaUxjQQr5aK
-         YmskNC8wZTDV2mMthGk1Ub7nzSSIQ3Zmkvbw/Vf+NxWBS9GBC9H9rGgyOLeEK9ZDq7ix
-         7p095lRcBpDRpsE4hIcWULP0kKN13aIqjfgm+HMDCTxQ+DVStBGkO8bgnvCcCIkPjtqC
-         OTYVacTcGSCB26m/Xkq2m2xcagnhvdE1wDBfdAc5LCNboUfwFtjig8BD0KUfDNhSWa1L
-         cKQZH4Ari69pxK4KPhDZOHUeE9qVFoKVJvXtklFYnQk4yOWcMeBqtdVNbroU/evDJPht
-         SnPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700501562; x=1701106362;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PH6N+RwMraA/g7VALKyP1+uYAIpjpf6qJIw3+QWh+3o=;
-        b=mnIE13TMM7NELUbWZzVQHmHrURh1DIje28NQT4rPMf+nnw7TiabNG1Av53Z8hIIXAA
-         h0KikfJBFcnFgO8h1Sqr5SBOWWjub9JbvkPMSf+gVSyfmwl4ot2zUenw5ADZj/zTHzW2
-         7q2iniDAYuW8bWIJpzB3+5grIu4rTRz8CURRkSCcVgS0j0k6uksh/5q9CD5kpe870VYj
-         t11ju+3nJZs3NHi5f0/OfOhgCuDrZ1sy2DM9gcZzKjYkdiTn9VsvqUCKwwocdHOjGPcb
-         Z7sfARS/BXTc0JUFqxdSCSUrjJFioN7JT7JfyjQCdC3JuvVWS3qfz4TSriAGmJWjt/n7
-         HEmg==
-X-Gm-Message-State: AOJu0YwVw1EsrWnOB1n3Scg20qbeqz9ji6+/mh1flmphOl8sLFE8WoEd
-        HA237ZrK5UWNfI3e353qkSBB/g==
-X-Google-Smtp-Source: AGHT+IHt/twyDntaMruyyo90XFGzYRdZ5yGQkI8Yx/fVxUZQ0cTU/jvXqy4jj8b7Lzwpg6d0RroOpA==
-X-Received: by 2002:a17:906:739d:b0:9c3:8242:e665 with SMTP id f29-20020a170906739d00b009c38242e665mr6269445ejl.8.1700501562561;
-        Mon, 20 Nov 2023 09:32:42 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id lz13-20020a170906fb0d00b009fcbb9162e9sm1965740ejb.174.2023.11.20.09.32.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 09:32:42 -0800 (PST)
-Message-ID: <a930a6c6-897c-4eab-b485-51c4062e13a5@linaro.org>
-Date:   Mon, 20 Nov 2023 18:32:40 +0100
+        Mon, 20 Nov 2023 12:34:08 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B838110;
+        Mon, 20 Nov 2023 09:34:04 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYvMR6LK7z9xvrJ;
+        Tue, 21 Nov 2023 01:17:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwAXU3NimFtlBH8KAQ--.51496S2;
+        Mon, 20 Nov 2023 18:33:36 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v6 00/25] security: Move IMA and EVM to the LSM infrastructure
+Date:   Mon, 20 Nov 2023 18:32:53 +0100
+Message-Id: <20231120173318.1132868-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/7] arm64: dts: ti: k3-j7200: use J7200-specific USB
- compatible
-Content-Language: en-US
-To:     =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>
-References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
- <20231120-j7200-usb-suspend-v2-7-038c7e4a3df4@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231120-j7200-usb-suspend-v2-7-038c7e4a3df4@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwAXU3NimFtlBH8KAQ--.51496S2
+X-Coremail-Antispam: 1UD129KBjvJXoWfGF1ruw1UCFyDJF4kCFWruFg_yoWDWrWxpF
+        saga15J34kAFy2grZ3AF4xuF4SgFZ5WFWUXr9xGry0y3ZIyr1FqFWFyr1rury5GFWrtF18
+        t3W2v398ur1qyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+        n4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
+        ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWxJr0_GcWlIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv
+        67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyT
+        uYvjxUIUUUUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5apawADsk
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 18:06, Théo Lebrun wrote:
-> On our platform, suspend-to-idle or suspend-to-RAM turn the controller
-> off. This compatible triggers reset on resume behavior to reconfigure
-> the hardware.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Fix your addressee list...
+~~~~~
+Note: this version is EXPERIMENTAL, I quickly tried to overcome outstanding
+      issues (use disjoint metadata, enforce LSM ordering), to see if it is
+      possible; tests pass, but a more careful review is still needed.
+~~~~~
 
-> ---
->  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> index 709081cd1e7f..52c4ee0fa334 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-> @@ -788,7 +788,7 @@ pcie1_ep: pcie-ep@2910000 {
->  	};
->  
->  	usbss0: cdns-usb@4104000 {
-> -		compatible = "ti,j721e-usb";
-> +		compatible = "ti,j7200-usb", "ti,j721e-usb";
+IMA and EVM are not effectively LSMs, especially due to the fact that in
+the past they could not provide a security blob while there is another LSM
+active.
 
-It does not match your bindings. Bindings say something entirely else.
+That changed in the recent years, the LSM stacking feature now makes it
+possible to stack together multiple LSMs, and allows them to provide a
+security blob for most kernel objects. While the LSM stacking feature has
+some limitations being worked out, it is already suitable to make IMA and
+EVM as LSMs.
 
-Best regards,
-Krzysztof
+In short, while this patch set is big, it does not make any functional
+change to IMA and EVM. IMA and EVM functions are called by the LSM
+infrastructure in the same places as before (except ima_post_path_mknod()),
+rather being hardcoded calls.
+
+Since IMA and EVM mostly use disjoint metadata, the existing
+integrity_iint_cache structure was split in two. Fields were added to the
+new ima_iint_cache and evm_iint_cache. In case of overlap, such as for the
+path_post_mknod LSM hook, the implementation was duplicated to have the
+same state as before this patch set.
+
+This patch set also enforces the ordering of the newly introduced LSMs
+'ima' and 'evm' at LSM infrastructure level, to make the ordering
+independent on how the LSMs are compiled.
+
+
+The patch set is organized as follows.
+
+Patches 1-9 make IMA and EVM functions suitable to be registered to the LSM
+infrastructure, by aligning function parameters.
+
+Patches 10-18 add new LSM hooks in the same places where IMA and EVM
+functions are called, if there is no LSM hook already.
+
+Patches 19-21 introduce the new standalone LSMs 'ima' and 'evm', and move
+hardcoded calls to IMA, EVM and integrity functions to those LSMs.
+
+Patches 22-23 remove the dependency on the 'integrity' LSM by splitting
+integrity metadata, so that the 'ima' and 'evm' LSMs can use their own.
+They also duplicate iint_lockdep_annotate() in ima_main.c, since the mutex
+field was moved from integrity_iint_cache to ima_iint_cache.
+
+Patch 24 finally removes the 'integrity' LSM, since 'ima' and 'evm' are now
+self-contained and independent. 
+
+Patch 25 enforces the ordering of the 'ima' and 'evm' LSMs at LSM
+infrastructure level.
+
+The patch set applies on top of lsm/dev, commit e246777e2a03 ("MAINTAINERS:
+update the LSM entry"). The linux-integrity/next-integrity-testing at
+commit 6918df3be02a ("ima: Remove EXPERIMENTAL from Kconfig") was merged.
+
+Changelog:
+
+v5:
+ - Rename security_file_pre_free() to security_file_release() and the LSM
+   hook file_pre_free_security to file_release (suggested by Paul)
+ - Move integrity_kernel_module_request() to ima_main.c (renamed to
+   ima_kernel_module_request())
+ - Split the integrity_iint_cache structure into ima_iint_cache and
+   evm_iint_cache, so that IMA and EVM can use disjoint metadata and
+   reserve space with the LSM infrastructure
+ - Reserve space for the entire ima_iint_cache and evm_iint_cache
+   structures, not just the pointer (suggested by Paul)
+ - Introduce ima_inode_get_iint() and evm_inode_get_iint() to retrieve
+   respectively the ima_iint_cache and evm_iint_cache structure from the
+   security blob
+ - Remove the various non-NULL checks for the ima_iint_cache and
+   evm_iint_cache structures, since the LSM infrastructure ensure that they
+   always exist
+ - Remove the iint parameter from evm_verifyxattr() since IMA and EVM
+   use disjoint integrity metaddata
+ - Introduce the evm_post_path_mknod() to set the IMA_NEW_FILE flag
+ - Register the inode_alloc_security LSM hook in IMA and EVM to
+   initialize the respective integrity metadata structures
+ - Remove the 'integrity' LSM completely and instead make 'ima' and 'evm'
+   proper standalone LSMs
+ - Add the inode parameter to ima_get_verity_digest(), since the inode
+   field is not present in ima_iint_cache
+ - Move iint_lockdep_annotate() to ima_main.c (renamed to
+   ima_iint_lockdep_annotate())
+ - Remove ima_get_lsm_id() and evm_get_lsm_id(), since IMA and EVM directly
+   register the needed LSM hooks
+ - Enforce 'ima' and 'evm' LSM ordering at LSM infrastructure level
+
+v4:
+ - Improve short and long description of
+   security_inode_post_create_tmpfile(), security_inode_post_set_acl(),
+   security_inode_post_remove_acl() and security_file_post_open()
+   (suggested by Mimi)
+ - Improve commit message of 'ima: Move to LSM infrastructure' (suggested
+   by Mimi)
+
+v3:
+ - Drop 'ima: Align ima_post_path_mknod() definition with LSM
+   infrastructure' and 'ima: Align ima_post_create_tmpfile() definition
+   with LSM infrastructure', define the new LSM hooks with the same
+   IMA parameters instead (suggested by Mimi)
+ - Do IS_PRIVATE() check in security_path_post_mknod() and
+   security_inode_post_create_tmpfile() on the new inode rather than the
+   parent directory (in the post method it is available)
+ - Don't export ima_file_check() (suggested by Stefan)
+ - Remove redundant check of file mode in ima_post_path_mknod() (suggested
+   by Mimi)
+ - Mention that ima_post_path_mknod() is now conditionally invoked when
+   CONFIG_SECURITY_PATH=y (suggested by Mimi)
+ - Mention when a LSM hook will be introduced in the IMA/EVM alignment
+   patches (suggested by Mimi)
+ - Simplify the commit messages when introducing a new LSM hook
+ - Still keep the 'extern' in the function declaration, until the
+   declaration is removed (suggested by Mimi)
+ - Improve documentation of security_file_pre_free()
+ - Register 'ima' and 'evm' as standalone LSMs (suggested by Paul)
+ - Initialize the 'ima' and 'evm' LSMs from 'integrity', to keep the
+   original ordering of IMA and EVM functions as when they were hardcoded
+ - Return the IMA and EVM LSM IDs to 'integrity' for registration of the
+   integrity-specific hooks
+ - Reserve an xattr slot from the 'evm' LSM instead of 'integrity'
+ - Pass the LSM ID to init_ima_appraise_lsm()
+
+v2:
+ - Add description for newly introduced LSM hooks (suggested by Casey)
+ - Clarify in the description of security_file_pre_free() that actions can
+   be performed while the file is still open
+
+v1:
+ - Drop 'evm: Complete description of evm_inode_setattr()', 'fs: Fix
+   description of vfs_tmpfile()' and 'security: Introduce LSM_ORDER_LAST',
+   they were sent separately (suggested by Christian Brauner)
+ - Replace dentry with file descriptor parameter for
+   security_inode_post_create_tmpfile()
+ - Introduce mode_stripped and pass it as mode argument to
+   security_path_mknod() and security_path_post_mknod()
+ - Use goto in do_mknodat() and __vfs_removexattr_locked() (suggested by
+   Mimi)
+ - Replace __lsm_ro_after_init with __ro_after_init
+ - Modify short description of security_inode_post_create_tmpfile() and
+   security_inode_post_set_acl() (suggested by Stefan)
+ - Move security_inode_post_setattr() just after security_inode_setattr()
+   (suggested by Mimi)
+ - Modify short description of security_key_post_create_or_update()
+   (suggested by Mimi)
+ - Add back exported functions ima_file_check() and
+   evm_inode_init_security() respectively to ima.h and evm.h (reported by
+   kernel robot)
+ - Remove extern from prototype declarations and fix style issues
+ - Remove unnecessary include of linux/lsm_hooks.h in ima_main.c and
+   ima_appraise.c
+
+Roberto Sassu (25):
+  ima: Align ima_inode_post_setattr() definition with LSM infrastructure
+  ima: Align ima_file_mprotect() definition with LSM infrastructure
+  ima: Align ima_inode_setxattr() definition with LSM infrastructure
+  ima: Align ima_inode_removexattr() definition with LSM infrastructure
+  ima: Align ima_post_read_file() definition with LSM infrastructure
+  evm: Align evm_inode_post_setattr() definition with LSM infrastructure
+  evm: Align evm_inode_setxattr() definition with LSM infrastructure
+  evm: Align evm_inode_post_setxattr() definition with LSM
+    infrastructure
+  security: Align inode_setattr hook definition with EVM
+  security: Introduce inode_post_setattr hook
+  security: Introduce inode_post_removexattr hook
+  security: Introduce file_post_open hook
+  security: Introduce file_release hook
+  security: Introduce path_post_mknod hook
+  security: Introduce inode_post_create_tmpfile hook
+  security: Introduce inode_post_set_acl hook
+  security: Introduce inode_post_remove_acl hook
+  security: Introduce key_post_create_or_update hook
+  ima: Move to LSM infrastructure
+  ima: Move IMA-Appraisal to LSM infrastructure
+  evm: Move to LSM infrastructure
+  ima: Remove dependency on 'integrity' LSM
+  evm: Remove dependency on 'integrity' LSM
+  integrity: Remove LSM
+  security: Enforce ordering of 'ima' and 'evm' LSMs
+
+ fs/attr.c                              |   5 +-
+ fs/file_table.c                        |   3 +-
+ fs/namei.c                             |  12 +-
+ fs/nfsd/vfs.c                          |   3 +-
+ fs/open.c                              |   1 -
+ fs/posix_acl.c                         |   5 +-
+ fs/xattr.c                             |   9 +-
+ include/linux/evm.h                    | 111 +---------
+ include/linux/fs.h                     |   2 -
+ include/linux/ima.h                    | 142 ------------
+ include/linux/integrity.h              |  27 ---
+ include/linux/lsm_hook_defs.h          |  20 +-
+ include/linux/security.h               |  59 +++++
+ include/uapi/linux/lsm.h               |   2 +
+ security/integrity/digsig_asymmetric.c |  23 --
+ security/integrity/evm/evm.h           |  17 ++
+ security/integrity/evm/evm_crypto.c    |   5 +-
+ security/integrity/evm/evm_main.c      | 193 +++++++++++++----
+ security/integrity/iint.c              | 197 +----------------
+ security/integrity/ima/ima.h           |  68 ++++--
+ security/integrity/ima/ima_api.c       |  15 +-
+ security/integrity/ima/ima_appraise.c  |  72 ++++---
+ security/integrity/ima/ima_init.c      |   2 +-
+ security/integrity/ima/ima_main.c      | 222 +++++++++++++------
+ security/integrity/ima/ima_policy.c    |   2 +-
+ security/integrity/integrity.h         |  26 +--
+ security/keys/key.c                    |  10 +-
+ security/security.c                    | 286 ++++++++++++++++---------
+ security/selinux/hooks.c               |   3 +-
+ security/smack/smack_lsm.c             |   4 +-
+ 30 files changed, 730 insertions(+), 816 deletions(-)
+
+-- 
+2.34.1
 
