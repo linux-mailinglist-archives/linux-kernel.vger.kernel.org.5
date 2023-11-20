@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B897F1505
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE437F1508
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbjKTOAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:00:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S232859AbjKTOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbjKTOAN (ORCPT
+        with ESMTP id S232148AbjKTOBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:00:13 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6599BEE
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:00:10 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6bcefd3b248so6530220b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:00:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700488810; x=1701093610;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IpI9gFjUfolIFijx5N96axTIOuBS4O5V9zNkug7v1zY=;
-        b=V0am+9ESeSyfeRR+FBpXYV6KkAZxHA8lwC7VxqHu89gd/4IiZPKN2e2B8g2EO94hkB
-         Z+GYnBdTCwyh0kUdV9EMGHUE8fhsbDeN9Lr0B7xoGwlIRMILzwi0QYv1JUPBkR2/BbqA
-         dEiCOpzYfzAfg/lfQsj8TWZ3yCOYayNbLzdSvKjEAyNt4XzNlZVnOuXAKsfJvk9AxiW8
-         l84u8b6TB7pe8pjcgvxZrHrN4UvZRiq2zmr2So2Pc20OAgV7CIVBICJBfViU+1niOtyh
-         tk+erraSx78uWg2kAQN+Ip69lDWKWAV0557agHeS0UO7CFMmoEBojUjTyKs8SAU0G8h3
-         TFWw==
-X-Gm-Message-State: AOJu0Yy7VIVnYe91IyM0ioLK8z81LVPDE91pEsUmQ/XuiNHkSVQPVrcV
-        1HEAl71djLdYUzzZiHfG1iP4cc8YeKTSnVQYOKur55gLDrkV
-X-Google-Smtp-Source: AGHT+IH/v3SRnneOlFeLGXcQhupKdlMALhBheaY/StPMf8JqxYNzQDRVwV1fBlPrChahwsTI+Ew9R2jEWMmR6WUJnPxBhdAo5TqM
+        Mon, 20 Nov 2023 09:01:38 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B508B113;
+        Mon, 20 Nov 2023 06:01:33 -0800 (PST)
+Received: from localhost (unknown [98.53.138.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 4CA05537;
+        Mon, 20 Nov 2023 14:01:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4CA05537
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1700488892; bh=ZXzp3xho3YcWXFR16yxCrIjW/+bZNdVtNTHyia9WmDQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=siMlOYcP0KUqEDXAbCMHBgj3iC+VtsWd0csrPEHuV6DQCsm46yeBpDmoaDw+ztZUY
+         +dZqwLN8qDb/GuFR4QqZgOQ9Eo4e+A8ycqO7826NrPe6bLMSjKOutLTRNC5ZZzC8UP
+         d/dAdGxl/acgIgh+Yecn9kNgVs3RQ0BdfD3b1htVTKtqUYhijdVVsfC25fBnBK9J8g
+         VFV9o9lxYb6dHyAvra+Tuw3M74i8cS3OKxi7vMhV0An7OCdYJhh//wCpy1qBZE6mwc
+         xLa9eQtGrtglXaD8fgIqKFSCUcAXD76S9NUg6/i0omnoDAXhGth3A2z+q7yji/NS5E
+         0T1dpQypu4vow==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     jens.wiklander@linaro.org, vegard.nossum@oracle.com,
+        Rijo-john.Thomas@amd.com, balint.dobszay@arm.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org
+Subject: Re: [PATCH v2] Documentation: Destage TEE subsystem documentation
+In-Reply-To: <CAFA6WYNW_cAFVMTpqPQjwBASKDp_b=CpccCzx23jHn_+qoJrDQ@mail.gmail.com>
+References: <20231103061715.196294-1-sumit.garg@linaro.org>
+ <CAFA6WYNW_cAFVMTpqPQjwBASKDp_b=CpccCzx23jHn_+qoJrDQ@mail.gmail.com>
+Date:   Mon, 20 Nov 2023 07:01:22 -0700
+Message-ID: <87y1es5xsd.fsf@meer.lwn.net>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:6003:b0:6b5:d7cc:4dbd with SMTP id
- fo3-20020a056a00600300b006b5d7cc4dbdmr1767455pfb.4.1700488809352; Mon, 20 Nov
- 2023 06:00:09 -0800 (PST)
-Date:   Mon, 20 Nov 2023 06:00:09 -0800
-In-Reply-To: <tencent_0A6DB773A6D6B36B037E496063AC044D5705@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d12bb060a95e7f8@google.com>
-Subject: Re: [syzbot] [dri?] divide error in drm_mode_debug_printmodeline
-From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sumit Garg <sumit.garg@linaro.org> writes:
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> Hi Jonathan,
+>
+> If you are fine with this destaging TEE documentation patch then will
+> you be picking up this patch? Or would you like Jens to pick it up
+> with your Ack?
 
-Reported-and-tested-by: syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com
+I'm happy to pick it up.
 
-Tested on:
+Thanks,
 
-commit:         ac347a06 Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b7cdd4e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=88e7ba51eecd9cd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=2e93e6fb36e6fdc56574
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1001c400e80000
-
-Note: testing is done by a robot and is best-effort only.
+jon
