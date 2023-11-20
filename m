@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8AD7F0C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFF27F0C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232016AbjKTHKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 02:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42670 "EHLO
+        id S232117AbjKTHKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 02:10:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKTHJ6 (ORCPT
+        with ESMTP id S232062AbjKTHK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 02:09:58 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0CA4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:09:55 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ccbb7f79cdso29128205ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:09:55 -0800 (PST)
+        Mon, 20 Nov 2023 02:10:26 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C0BB7
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:09:58 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cb66f23eddso704931b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700464195; x=1701068995; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1700464198; x=1701068998; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nUE9ZvwZFQu7umd/mVKa2M3eheT6QrVVeWcfJsSgwak=;
-        b=Nb4FDyNwjN+mOaQPz6vPBmzYYcVrzNF5lLIOTo6NJLZKKaYQ5q9G4XxtppDPLL07Gu
-         55YA5qrTr1EpcPIQ5TK8SckyR9o0lYdLfVRPrUhc4zHW5a167XSptvC2YGllJZinWSuU
-         nKoOt3fqhCXgiwow2e7Ylq15hCDyYoTaC2FDpRBEm0vA9u9CxCBiGJ9/AEtTA72TyUjN
-         ZikhEjKhKVhxCjkjkgGAg2tA1RmzQaJEDrKfJnaTHB7YYPps2CuOBQergscCtcw+JkNE
-         cwtiQ9ExMewLMDFrNMZqlubgo5z/KDQq0H+fFdj1CdY/aMYNW/X0s1NKw+zN01tvnV/2
-         LAuw==
+        bh=DVM7PlgIWBr9i9hcZud6b5TfuAYyAUUwXwcxlfzYtaU=;
+        b=DHzDbOAmjE9LKoiXne1B9nDYCMqErMoPy670HrwoV4cb0ittn3rsldSt3EdnIfEdJf
+         ekNumQismDpl9IyGwgzzcCF/hy/lAz9BLTG5/BZUtt5tGYywsVMglyuEfabVUjc5O/qQ
+         tONK0Qf3Mx48nkhpN3EA0pAifEVMUFPs8BvR64gg9zbhr8F9Udz3b/UFsT+Cf4u52tee
+         ihUrQv/cdWrseV9c/ehT3FepUMj2HtHg9k/UejSIJRiqWhenn6Hj8VFs6PpswkJjMY8f
+         6UpgcOKIeevgi0IeUBjBWQ8VzJhum+vYoWEVgDRIOtsiDkkDfcJ8bfFAAo5YmTTVj5ds
+         51BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700464195; x=1701068995;
+        d=1e100.net; s=20230601; t=1700464198; x=1701068998;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nUE9ZvwZFQu7umd/mVKa2M3eheT6QrVVeWcfJsSgwak=;
-        b=YjcNVgSV04kAqK6VRKmWpCBcrFfLcKmghBaEmpwhHeu1HAPqpFl6wyqvVL+a0e7lTp
-         zHc61karxmVchcZiZa72rTSI8bh40vAITP21c6Sv6IJSLowsh1IE2LegHWYwwdlYF1oq
-         oSBedeojA6iThL94DqmEaOh8S7gvRNyodE6U0QOEtDpONzNXAfBeUlAwNQCz7VpeK113
-         1orLNL2p4AaoWK15htp+tjFWvY87j31MWVX2nFND87mqQSEWKhT5uvv7qbZTRpG/WVn4
-         7Cz7aKijeFMegv2oYwWh0XzqB3IPMfVtcZgFcR+7J//QJw4T9U0BkwV6IJyiqCoUdZFs
-         gHdQ==
-X-Gm-Message-State: AOJu0Yx5VXZ+KSifVWp0BtAb8bZ0NE/MF6EDj1vBQ4hBRiYeDVVmTCvT
-        +DXohLnFOZgSvJ1tWuRBgR+Q1Q==
-X-Google-Smtp-Source: AGHT+IHoQx5VP90DjW6z7hmikj/ILZ20irNIme8mby57GLohgMrwLjCqPd9SOayxbZcQ2cOPovcmJg==
-X-Received: by 2002:a17:902:d904:b0:1ce:5c04:fb60 with SMTP id c4-20020a170902d90400b001ce5c04fb60mr4374550plz.8.1700464194899;
-        Sun, 19 Nov 2023 23:09:54 -0800 (PST)
+        bh=DVM7PlgIWBr9i9hcZud6b5TfuAYyAUUwXwcxlfzYtaU=;
+        b=GaUtgG4u6ntg4Zme3hzNzr5fSl+oGwjbV/qdxGEeLFsiILkeJXn7l8J+oHHGpiPy4n
+         iTKepjrRVOf8NkRIpc+cPs+SP8TOE2HJgQWfjpPS/pFsALOd1CRRNg/v5+O5LTNJc6WG
+         Mf3fis9Grhads11rHqY9XzBhriLxE1Ng7becvN190Nk4EyfOr5lRafWmig2d1aoodyYa
+         +4EDAWoyHkq2cGYnw/mXm9ML8ooAS+g3q74aYZZfpiBCdYcDibYYq085ojeU7jYIGZel
+         dbQCjbK5uCSCHdAfNZQ7NLTD9rEQNfaTzHmYeEdaQ2uWeVkLXplUxL4Cx1T7YkFCfYVM
+         UzJw==
+X-Gm-Message-State: AOJu0YxiAqWoEHlIbaD0pcOFzUPx90u8xMptie3nZpX8Cpo80YubEila
+        m7HHfneGHMWqybyQcm2Nt/9UtQ==
+X-Google-Smtp-Source: AGHT+IE2q1NCMNd+w8RbWd7Y6YzdqD5HzLY3jU16q2z24eHxDGMl4yI/3MCaLdN5iu6cGUkG7j/jOA==
+X-Received: by 2002:a05:6a20:430a:b0:187:c2be:77f4 with SMTP id h10-20020a056a20430a00b00187c2be77f4mr4769336pzk.44.1700464197848;
+        Sun, 19 Nov 2023 23:09:57 -0800 (PST)
 Received: from GL4FX4PXWL.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170902cec400b001ce67fab3a2sm3698143plg.261.2023.11.19.23.09.52
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902cec400b001ce67fab3a2sm3698143plg.261.2023.11.19.23.09.55
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Nov 2023 23:09:54 -0800 (PST)
+        Sun, 19 Nov 2023 23:09:57 -0800 (PST)
 From:   Peng Zhang <zhangpeng.00@bytedance.com>
 To:     Liam.Howlett@oracle.com, dan.carpenter@linaro.org,
         akpm@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         maple-tree@lists.infradead.org,
         Peng Zhang <zhangpeng.00@bytedance.com>
-Subject: [PATCH v2 1/5] maple_tree: Move the check forward to avoid static check warning
-Date:   Mon, 20 Nov 2023 15:09:33 +0800
-Message-Id: <20231120070937.35481-2-zhangpeng.00@bytedance.com>
+Subject: [PATCH v2 2/5] maple_tree: Avoid ascending when mas->min is also the parent's minimum
+Date:   Mon, 20 Nov 2023 15:09:34 +0800
+Message-Id: <20231120070937.35481-3-zhangpeng.00@bytedance.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-145)
 In-Reply-To: <20231120070937.35481-1-zhangpeng.00@bytedance.com>
 References: <20231120070937.35481-1-zhangpeng.00@bytedance.com>
@@ -74,39 +74,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put the check for gap before its reference to avoid Smatch static check
-warnings. This is not a bug, it's just a validation program. Even with this
-change, Smatch may still generate warnings because MT_BUG_ON() doesn't
-necessarily stop the program. It may require fixing Smatch itself to avoid
-these warnings.
+When the child node is the first child of its parent node, mas->min does
+not need to be updated. This can reduce the number of ascending times
+in some cases.
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: http://lists.infradead.org/pipermail/maple-tree/2023-November/003046.html
 Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 ---
- lib/maple_tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/maple_tree.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index aaba453b0d30..067b186202d7 100644
+index 067b186202d7..cc928b5f753d 100644
 --- a/lib/maple_tree.c
 +++ b/lib/maple_tree.c
-@@ -7249,6 +7249,7 @@ static void mas_validate_gaps(struct ma_state *mas)
+@@ -1088,14 +1088,16 @@ static int mas_ascend(struct ma_state *mas)
+ 		return 0;
+ 	}
  
- counted:
- 	if (mt == maple_arange_64) {
-+		MT_BUG_ON(mas->tree, !gaps);
- 		offset = ma_meta_gap(node, mt);
- 		if (offset > i) {
- 			pr_err("gap offset %p[%u] is invalid\n", node, offset);
-@@ -7261,7 +7262,6 @@ static void mas_validate_gaps(struct ma_state *mas)
- 			MT_BUG_ON(mas->tree, 1);
- 		}
+-	if (!mas->min)
++	min = 0;
++	max = ULONG_MAX;
++	if (!mas->offset) {
++		min = mas->min;
+ 		set_min = true;
++	}
  
--		MT_BUG_ON(mas->tree, !gaps);
- 		for (i++ ; i < mt_slot_count(mte); i++) {
- 			if (gaps[i] != 0) {
- 				pr_err("gap %p[%u] beyond node limit != 0\n",
+ 	if (mas->max == ULONG_MAX)
+ 		set_max = true;
+ 
+-	min = 0;
+-	max = ULONG_MAX;
+ 	do {
+ 		p_enode = a_enode;
+ 		a_type = mas_parent_type(mas, p_enode);
 -- 
 2.20.1
 
