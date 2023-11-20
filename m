@@ -2,228 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4427F1776
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6337F175F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbjKTPhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S234229AbjKTPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbjKTPhN (ORCPT
+        with ESMTP id S234062AbjKTPde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:37:13 -0500
-Received: from 4.mo560.mail-out.ovh.net (4.mo560.mail-out.ovh.net [87.98.172.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0E8A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:37:08 -0800 (PST)
-Received: from director5.ghost.mail-out.ovh.net (unknown [10.109.156.34])
-        by mo560.mail-out.ovh.net (Postfix) with ESMTP id 8FA3425E44
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:31:55 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-lljcm (unknown [10.110.208.139])
-        by director5.ghost.mail-out.ovh.net (Postfix) with ESMTPS id CE6831FEBC;
-        Mon, 20 Nov 2023 15:31:54 +0000 (UTC)
-Received: from RCM-web2.webmail.mail.ovh.net ([176.31.232.109])
-        by ghost-submission-6684bf9d7b-lljcm with ESMTPSA
-        id Gli7Lup7W2WsAgAAgGBV+g
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Mon, 20 Nov 2023 15:31:54 +0000
+        Mon, 20 Nov 2023 10:33:34 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D73B4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:33:30 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so3570594b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:33:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700494410; x=1701099210; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c/vkPNph5u5OOrRSn6FR5rf84/Y5x7U2iw601QDwn1w=;
+        b=aZdT4nG3nvtH4hK5HbpH/8dFyeH4vzz7mKT3IuUwrCXWFtDxiZq25X/8UNdVxq2ZM1
+         aDTsbkN4J3U00zRJwKv4akimkV6+37zdwvANSSGDyNsjUupOdT9FZyJqqk9C/DNAuC/W
+         7UODD+2NpIS3ifS1e0Qh+tlPENT28R0QXknGwMAx3BbC60M1fBoGKLt5WAOgTK3jPRDx
+         d2Qcpz2zg8EVd/tQR0CO93BtJrqO1laIzOEuxlIs775FzSQ0afBB9hWAEbTyR1p8x8K0
+         nhIaqyybEMNJ+YnF5/kqtJlXxTArpSR7Xaeq4WRyS+jOR05e7+/TL+AlvKIzs8l8vTsC
+         +qLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700494410; x=1701099210;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c/vkPNph5u5OOrRSn6FR5rf84/Y5x7U2iw601QDwn1w=;
+        b=XN97bJxvTEUGl4GsPbFQw6PwHrG3ja4b7aDJp4S3eL6+Ov9HqV+AIcPbReJsz2DYHZ
+         Vvs9XbjIsQWxQ2tssuc3sPB12l9A3GkHlNU1+3kbeZGcYDhBgHDIqQ/0bUpX2KpSMRJ0
+         ocKiPwnCVmkwbGmT03SSn7IcpOkajlzkCRxFpX2XZLHt+EX0+Y69pVA9QKUEEY9e9LVW
+         zkHrWU+BpCRINXjPYNcKs3n7CByx0LY5pSWhuAziGFjV5YG/+oMCd4ogBjDrttfRpd+o
+         oYb5pLfQ5oiApjoAAOk0UJAJCBRycI/rOPPoTOUJWT2gEmTsijzkjHhem98Zjy0d9j4W
+         8gkw==
+X-Gm-Message-State: AOJu0YzppfsIMiCkloZhbbtVRLR7DW4oRKmxDYnFvGNG9HzEDtOcWgr3
+        hjl+MY+xsh2HpSNuCfhgiTe38Q==
+X-Google-Smtp-Source: AGHT+IEaOg3mR+ohRZuseHeSMp/v9lZVJmrM5ClJ/D9paZFo3jQd/TqgotiBGO5yQ4v6OMwgefFCIA==
+X-Received: by 2002:a05:6a20:8e10:b0:187:f6b3:3ca5 with SMTP id y16-20020a056a208e1000b00187f6b33ca5mr6106464pzj.52.1700494407205;
+        Mon, 20 Nov 2023 07:33:27 -0800 (PST)
+Received: from [192.168.50.25] ([201.17.86.134])
+        by smtp.gmail.com with ESMTPSA id p16-20020a056a000b5000b006cbb3512266sm1195791pfo.1.2023.11.20.07.33.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 07:33:26 -0800 (PST)
+Message-ID: <5e9c5ecb-c3c7-4e5f-ae9e-ff688f4c2e2f@mojatatu.com>
+Date:   Mon, 20 Nov 2023 12:33:21 -0300
 MIME-Version: 1.0
-Date:   Mon, 20 Nov 2023 17:31:53 +0200
-From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     viro@zeniv.linux.org.uk, skhan@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev,
-        syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
-Subject: Re: [PATCH] iov_iter: fix memleak in iov_iter_extract_pages
-In-Reply-To: <20231111075323.208181-1-jose.pekkarinen@foxhound.fi>
-References: <20231111075323.208181-1-jose.pekkarinen@foxhound.fi>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <8ab69336548dfe4f556d7be83d90afeb@foxhound.fi>
-X-Sender: jose.pekkarinen@foxhound.fi
-Organization: Foxhound Ltd.
-X-Originating-IP: 192.42.116.182
-X-Webmail-UserID: jose.pekkarinen@foxhound.fi
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 8929230686578320904
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudegjedghedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepvdffhfegtdeuiefgkefhgeefheektdekffeufeehgeeuueehjeeijeelleetjeeinecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecukfhppeduvdejrddtrddtrddupdduledvrdegvddrudduiedrudekvddpudejiedrfedurddvfedvrddutdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedtpdhmohguvgepshhmthhpohhuth
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: sched: Fix an endian bug in tcf_proto_create
+To:     Simon Horman <horms@kernel.org>
+Cc:     Kunwu Chan <chentao@kylinos.cn>, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        kunwu.chan@hotmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231117093110.1842011-1-chentao@kylinos.cn>
+ <16c758c6-479b-4c54-ad51-88c26a56b4c9@mojatatu.com>
+ <20231120100417.GM186930@vergenet.net>
+Content-Language: en-US
+From:   Pedro Tammela <pctammela@mojatatu.com>
+In-Reply-To: <20231120100417.GM186930@vergenet.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-11 09:53, José Pekkarinen wrote:
-> syzbot reports there is a memory leak in iov_iter_extract_pages where 
-> in
-> the unlikely case of having an error in pin_user_pages_fast, the pages
-> aren't free. This patch will free it before returning. Output of mem
-> leak follows:
+On 20/11/2023 07:04, Simon Horman wrote:
+> On Fri, Nov 17, 2023 at 09:06:45AM -0300, Pedro Tammela wrote:
+>> On 17/11/2023 06:31, Kunwu Chan wrote:
+>>> net/sched/cls_api.c:390:22: warning: incorrect type in assignment (different base types)
+>>> net/sched/cls_api.c:390:22:    expected restricted __be16 [usertype] protocol
+>>> net/sched/cls_api.c:390:22:    got unsigned int [usertype] protocol
+>>>
+>>> Fixes: 33a48927c193 ("sched: push TC filter protocol creation into a separate function")
+>>>
+>>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>>> ---
+>>>    net/sched/cls_api.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+>>> index 1976bd163986..f73f39f61f66 100644
+>>> --- a/net/sched/cls_api.c
+>>> +++ b/net/sched/cls_api.c
+>>> @@ -387,7 +387,7 @@ static struct tcf_proto *tcf_proto_create(const char *kind, u32 protocol,
+>>>    		goto errout;
+>>>    	}
+>>>    	tp->classify = tp->ops->classify;
+>>> -	tp->protocol = protocol;
+>>> +	tp->protocol = cpu_to_be16(protocol);
+>>>    	tp->prio = prio;
+>>>    	tp->chain = chain;
+>>>    	spin_lock_init(&tp->lock);
+>> I don't believe there's something to fix here either
 > 
-> BUG: memory leak
-> unreferenced object 0xffff888109d2e400 (size 1024):
->   comm "syz-executor121", pid 5006, jiffies 4294943225 (age 17.760s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
-> [inline]
->     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
->     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
->     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
->     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
->     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
-> [inline]
->     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_user_pages
-> lib/iov_iter.c:1765 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
-> lib/iov_iter.c:1831
->     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
-> block/blk-map.c:297
->     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
-> block/blk-map.c:664
->     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
->     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
-> block/blk-map.c:724
->     [<ffffffff82ca0925>] sg_io+0x285/0x510 
-> drivers/scsi/scsi_ioctl.c:456
->     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
-> drivers/scsi/scsi_ioctl.c:820
->     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
-> drivers/scsi/scsi_ioctl.c:903
->     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
->     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
->     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
->     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
->     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
->     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
-> [inline]
->     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
-> arch/x86/entry/common.c:80
->     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> Hi Pedro and Kunwu,
 > 
-> BUG: memory leak
-> unreferenced object 0xffff888109d2dc00 (size 1024):
->   comm "syz-executor121", pid 5007, jiffies 4294943747 (age 12.540s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
-> [inline]
->     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
->     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
->     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
->     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
->     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
-> [inline]
->     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_user_pages
-> lib/iov_iter.c:1765 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
-> lib/iov_iter.c:1831
->     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
-> block/blk-map.c:297
->     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
-> block/blk-map.c:664
->     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
->     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
-> block/blk-map.c:724
->     [<ffffffff82ca0925>] sg_io+0x285/0x510 
-> drivers/scsi/scsi_ioctl.c:456
->     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
-> drivers/scsi/scsi_ioctl.c:820
->     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
-> drivers/scsi/scsi_ioctl.c:903
->     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
->     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
->     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
->     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
->     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
->     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
-> [inline]
->     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
-> arch/x86/entry/common.c:80
->     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> I suspect that updating the byte order of protocol isn't correct
+> here - else I'd assume we would have seen a user-visible bug on
+> little-endian systems buy now.
 > 
-> BUG: memory leak
-> unreferenced object 0xffff888109d2d800 (size 1024):
->   comm "syz-executor121", pid 5010, jiffies 4294944269 (age 7.320s)
->   hex dump (first 32 bytes):
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
-> [inline]
->     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
->     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
->     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
->     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
->     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
-> [inline]
->     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_user_pages
-> lib/iov_iter.c:1765 [inline]
->     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
-> lib/iov_iter.c:1831
->     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
-> block/blk-map.c:297
->     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
-> block/blk-map.c:664
->     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
->     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
-> block/blk-map.c:724
->     [<ffffffff82ca0925>] sg_io+0x285/0x510 
-> drivers/scsi/scsi_ioctl.c:456
->     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
-> drivers/scsi/scsi_ioctl.c:820
->     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
-> drivers/scsi/scsi_ioctl.c:903
->     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
->     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
->     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
->     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
->     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
->     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
-> [inline]
->     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
-> arch/x86/entry/common.c:80
->     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> Reported-by: syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
-> Closes:
-> https://syzkaller.appspot.com/bug?id=99c8551967f413d108cfdd2950a0cb5652de07b8
-> Fixes: 7d58fe7310281 ("iov_iter: Add a function to extract a page list
-> from an iterator")
-> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
-> ---
->  lib/iov_iter.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index 27234a820eeb..c3fd0448dead 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1780,8 +1780,10 @@ static ssize_t
-> iov_iter_extract_user_pages(struct iov_iter *i,
->  	if (!maxpages)
->  		return -ENOMEM;
->  	res = pin_user_pages_fast(addr, maxpages, gup_flags, *pages);
-> -	if (unlikely(res <= 0))
-> +	if (unlikely(res <= 0)) {
-> +		kvfree(*pages);
->  		return res;
-> +	}
->  	maxsize = min_t(size_t, maxsize, res * PAGE_SIZE - offset);
->  	iov_iter_advance(i, maxsize);
->  	return maxsize;
+> But nonetheless I think there is a problem, which is that the appropriate
+> types aren't being used, which means the tooling isn't helping us wrt any
+> bugs that might subsequently be added or already lurking. So I think an
+> appropriate question is, what is the endien and width of protocol, and how
+> can we use an appropriate type throughout the call-path?
 
-     Ping.
-
-     José.
+Agreed and I'm all in for improving any tooling integration.
+I believe a better patch would be to have protocol as a be16 since it's 
+creation everywhere. I looked quickly and it will be a "viral" change, 
+meaning a couple of places will require a one line change.
