@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC4F7F10C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584FD7F10C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbjKTKsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        id S232582AbjKTKsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbjKTKsf (ORCPT
+        with ESMTP id S232603AbjKTKse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:48:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5C5D2;
-        Mon, 20 Nov 2023 02:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700477311; x=1732013311;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=jJtM6hnWAIrGlxx3Dcd/7KqteeYzgINJiRSY4PIZWrk=;
-  b=Dr+ORlSVMatCCW8qHaxzLrrMQsRpwcpsCRikUalwLUB4FKFpwNMHlVpZ
-   8Kr4jGU0fe5XCpqOCT4NCB5c5+VlUYh5pocTDOsd4RF/h389jhJSSE2Wb
-   8gEb7k5nmxdnEOcGhflbJTvywBwTNSlU5RlX661F/RLRME0alzY/VPv0Z
-   /sY5vEmARbDPo7Epl47hyQFgjgmRwv12ZGoWUDTw2MyiGdi1fcf25tG0Y
-   I/RkgMAwJHqPiYr+NWZSm/dnkqHSOhiU9ZPUyXQcSl/YMOWAz92hcDmjy
-   HFk8bcB1XnngbkQjoq1rw9Utzvkw4QL/W2oQYYCBUYcaTFQrsC1mmUwo2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="458092904"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="458092904"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 02:48:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="889885088"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="889885088"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Nov 2023 02:48:24 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 20 Nov 2023 02:48:23 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 20 Nov 2023 02:48:23 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 20 Nov 2023 02:48:23 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 20 Nov 2023 02:48:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A4mlzWWsbe7ACI2fXBxEH7OkveK4X7+tFRF4XUuv8hU/swHAGs4Inb89NZqZm4rAfmGPuIcHtTMsolqkzFgdA9ufZWFtIwV2eO2FdjrnGoJ9wPFlYMZLRSmoXlq5lpaA0Hpe4HjAq7uCak/jsMzO5O0f6GpZTCpKsSLK2s79dCvsu5m2EtZ9sdLEqL+IKdcMWcjPO8CTOc+BGLCN5qMOnXFVaRtToOUyenU0rkzUi1LGj50FkT2eMOtVutSn7QhAxtQIZL+OtOv1dnfVyTh/fjxqKxwzarxDtUlLnMh4S9I7Ebos6trA0eZSFSdjysh7zVo9LjELUx+D0c/h3ZQc9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rza4Ml80aVJ3B7xi0G88fYvk8/xC202DemvQBnkJ8hE=;
- b=KJMWiIWb3pkxx4HkVZxxATj7LoiW21+SuBqSOegPeIZSNzg6fhoRZNUGthJT6EgjRB4u1BKmEz0S6BtjM3AhBoom+piy3gQvkYUnxnIysv6BusPxq4Vwa7IL2NY5xIy1CFCcWMEyzi4jV0svD3FNyVYHFv+toBa3pBBB015x04V7ikTZm3qK9st/K7lOM8/vipPnH7T7zzXCws5a7ya1B7XBduWm/mS9xZKwsy2d4jGTiRFGSd+U/tDVE1u1p8rEiFy66D5paZ12YfOAr50NEjdxSCq2imXUTKMAMZu9soL1ztBq83BiXErrAZamjnV+MEwJIyPWIetcGBwyJx4xjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by PH8PR11MB6611.namprd11.prod.outlook.com (2603:10b6:510:1ce::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 20 Nov
- 2023 10:48:12 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::f4b7:72ae:86f6:450a%4]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
- 10:48:11 +0000
-Date:   Mon, 20 Nov 2023 11:48:06 +0100
-From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH] selftests/resctrl: Add non-contiguous CBMs CAT test
-Message-ID: <ilacrcz7o6wq2zdl3szb3cpkkboo43t3t2oyk4cmv3iwarstkj@kk34x5q4fpas>
-References: <20231109112847.432687-1-maciej.wieczor-retman@intel.com>
- <879955f-d2d4-017-6694-5a031ec7f2@linux.intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <879955f-d2d4-017-6694-5a031ec7f2@linux.intel.com>
-X-ClientProxiedBy: WA1P291CA0020.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::24) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+        Mon, 20 Nov 2023 05:48:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13D8E3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:48:30 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53d8320f0easo6013109a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700477309; x=1701082109; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pKd0JlXz/CA7YawdIaY+0U6PgSjzMsRMpZKT4ssqCyI=;
+        b=pOmr3z760PAUUMarmXlUkudIyb2/46tJXJpOYjwYX5kBWs3LOP2Mhu0TYUO+Xn68mL
+         0K41jyEahEYNTkdJWq5sBik62l1A3xVdpfxz+g0+8IzwFtv+R9XrgHoGKV4U5Ne3rDi9
+         FCFb2H/GB0eUiIffPLihf6fNQq2dw0IYyvHzn6PHHYImxGt5tvCBebrLMgiAdM/E6FEk
+         YjQidKVt+ZIM9fsGTS/XaS/aNlv0ZLdTzwtfSqly7VBZmixZXNJ3OJVgicwCVtZkI4bg
+         5obsEtFonZzviKpYEYb5XG/Zc9gyi9mCXCWD2fuSwDt96Qr9nFMIMuNvONHi4FZg1bDO
+         LOOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700477309; x=1701082109;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pKd0JlXz/CA7YawdIaY+0U6PgSjzMsRMpZKT4ssqCyI=;
+        b=D5okZh6+49HFGzpBlEzaUpdJUKOfJlFyi86a2JSd/JhbkXycEzGeR47KN4ytQTywSz
+         NV8VK9RrzrRMsSoifQIgH+3C1W+de0Se7es0VFt9o2wg4IrxVI3rXbbebXEC86kHw4C/
+         9n8/TKeCZNe5DvN6J5rSfxvuD5bR2GHN3rqjEu8C90heKU21Y4HEZsOJCh3Ksm7rTWcx
+         VnnKSw95sFe3o5D6dCQKXcqUIVRd/E/a+39blXndgbhOhBwme7thn3Zq9A/migdLlHuY
+         +Sm8AeoXCVxxGkr0OmEO6l2qd4ohRic+TOsbVbhA//Ul4j/S28mPweLxnE1jWRifoj8y
+         s+ag==
+X-Gm-Message-State: AOJu0YysoW+Cf2SEJQwo31uZPFGV1DCo8jp1lFE1mYbAL+9RmYE7Rjqh
+        oW7q10Vw2wljxCY8s4lz4tNkBg==
+X-Google-Smtp-Source: AGHT+IF49ElFD5XKoAFDttYEKeEGOM6MahTXIZAynzWaLV8CQg9FIFMd/T2yV+BJ0X+ZP7wfEVNY8Q==
+X-Received: by 2002:aa7:d594:0:b0:548:89b7:f590 with SMTP id r20-20020aa7d594000000b0054889b7f590mr3888902edq.35.1700477309460;
+        Mon, 20 Nov 2023 02:48:29 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id u3-20020a05640207c300b00548851486d8sm1971782edy.44.2023.11.20.02.48.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:48:28 -0800 (PST)
+Message-ID: <d2e4d7b0-39c9-4443-b0d3-774bdf79404b@linaro.org>
+Date:   Mon, 20 Nov 2023 11:48:25 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|PH8PR11MB6611:EE_
-X-MS-Office365-Filtering-Correlation-Id: d637f5a7-736e-424e-affd-08dbe9b6301a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LlnE++pEYG2Zwhhf9tpZTVWQQgWYrmocQc3Zv6UWILePiHcu+o2v+5EHK4+Lxb87SfuDcQLqFOmXATlcrveRkHlh1ePgp6e6zI+qWOHyI/H7TCW1qEfV8aAG1hXINnpGa4QU8HBme5eujwJmCuJnWAfB3Qux0zORJ4ARNAOkcw70mWXIvEOljQufLrmVzegO9f38B4DfKsZ8/+4eL19vRRLAxqRXRHGgXH/DBJPtswMmCBA+wLKcjm6qxQAwN+0oPeyq/uGIaapFH+Quz8LqjdCoW+LMT+TVkSsZR5u69MBHGF2Ta+bOx3oFCLlSTTp8cPeNH14C25Sov3dc43Eel53P1r4t0K+N3YreA9bGAVYDaHTxsbpx1zpXY3Bl+aoudItFmRSvUs6jYcMeLTpubtlZkh1s84LxGNcb8MKrKVV3DviLKi8O1ZUwpwAhKeR2CrryLzHfNvtH0Pm4CHZimRRACoqNdb7EMBtwKRnSb5SKgAMU6Je/l2yT+2/dqo01Eacpd6DjRBE9mj1Ln3psVcLzMdp4sSrmYFPV/2+RoetYwm1hjVUB9KkerquamWGn0f/ZkZJlIYQqCJiDCVflrw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(346002)(136003)(366004)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(6506007)(9686003)(6512007)(53546011)(26005)(66574015)(33716001)(66946007)(66556008)(316002)(54906003)(6916009)(4326008)(8676002)(8936002)(66476007)(966005)(6486002)(82960400001)(478600001)(83380400001)(38100700002)(6666004)(5660300002)(2906002)(86362001)(4001150100001)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?UbBoHcSNCANt8kPdgRcMX0GI10pNGS1pTEAdmnKq02mNi+R3gAbmZpxDvh?=
- =?iso-8859-1?Q?aEk7Jrz9lNtAnisdaxDYlm8/1cfvxRxq3cOJ9mzRmU0dOgM+xeIHv9BVqi?=
- =?iso-8859-1?Q?7rCYCX5n9ODrUOwpN3XXY8TrORhFfBotcQspQFh0i9qpsD+DsuhO0WfhDB?=
- =?iso-8859-1?Q?apBljolR/LtICwlBIRzp+Hl7pTOvzQcTXU0EusBjqlfKzIo5FA4/qvkjGs?=
- =?iso-8859-1?Q?1kj++OufKCRqhrXe7D8955MTPX0at+JSieKHCHgbCUvjINCJdMy5K+O9L4?=
- =?iso-8859-1?Q?NeGea/sB9NYjjhOrSxYAyTBXGVdHFibCGd42VeCI82z1oZiu3KVE9KSsSs?=
- =?iso-8859-1?Q?LhHl6bxU+IeW8mrvvHFD/FsKsyW9VG1YstnL6gWOmE+/tmA+sjPbDs75x8?=
- =?iso-8859-1?Q?/CyxlZA665GFSXwbjLDbWGMhgM0JfZ1h9GVLD0psDjRy/nHFuz1vBGkfpL?=
- =?iso-8859-1?Q?iqMgvD8Swqh2c7ldN6mN57dBWvzu/JEit7ZCt46eHE4l1oufjeXiqs/xEu?=
- =?iso-8859-1?Q?w1tSjYdqizChd7AIqcuzC5/+rDDRhSwhdBtSnchLGENP5gfe4OqYVBukVK?=
- =?iso-8859-1?Q?QyWUOCRg6uhFvhFnaCdj+7DJttbYzlqGgxntZCSdbCN5/ww4Uz+f2YYp7s?=
- =?iso-8859-1?Q?uemcrgnOlQsZ+kP95hh2+7MfJ0JvPBVzNKMGtA41p08FHwnR0yPvIklAFo?=
- =?iso-8859-1?Q?+F4oQpsweo0OEgL7pV8J9xzVwlqpyD+7xMbmU9jcEqNMbPT0zkkTRIJxxP?=
- =?iso-8859-1?Q?J137kZcX6CkdkAmphOdablz7bseFRFKhHjC3Au9fqRBcVUt/Th1Ldb1j0s?=
- =?iso-8859-1?Q?O9osqUEG9ujYn2OTgoaSeAQu10MwuwMDHCJ/yNLVeDSFNCUgqGEMdLbWU1?=
- =?iso-8859-1?Q?5Dlo1VW/9m2ZXxiX3fhQvtCl8j/4/vTJ5Ft/eUH55DTCHEZhq66djGGT7M?=
- =?iso-8859-1?Q?o4X9h1rK+Qtfp649ySceVwATDHsyy2+8F3r0APhL0eHIWQv1MqR83LPpRN?=
- =?iso-8859-1?Q?gSoPn96/ZgNSduCBcyMpcpgb64eVZmMqrrcPZD+tJ+OIhpcIBYv9tMjfVr?=
- =?iso-8859-1?Q?hNlPzXYsWeIOvYjCFBv2CH87Gvgv1L67zM2YRvjZk2GVaYOXKamIj2Gcb0?=
- =?iso-8859-1?Q?DyAwpmL4pRpdS8pKrKZCTjNPnGceEZQYZMloeB3ZjST3oyq/CocYBmp6d6?=
- =?iso-8859-1?Q?VO07vkn+PeXIYlxHT0akKm9BDEAZVZC6E0Z4VWj8/d8mkSVYh20N4RxwUJ?=
- =?iso-8859-1?Q?NHpNbgcXkaAzWBg4fXd924xEYBn1zGR4Kz2DNN8Y0Q/ANYVGZ7+9p72yy4?=
- =?iso-8859-1?Q?8cNBMdQZZ1tNEMPeCJMfP1CCb5ypsETAN/RfsQ6LXMaHGHZZXIB5CBElPw?=
- =?iso-8859-1?Q?qxkyvlRoVb6JfsnuS2Z9mvyKbInLDAiyziafdqOnbouUkP3UwC6zVNh2Tb?=
- =?iso-8859-1?Q?bjVvxd40wof3A8YdxWKMb8Q1yqwdA3oa3Eezc3GjND23dkZ20fXZHLEKf9?=
- =?iso-8859-1?Q?ABl171cknplNelxeEqvQbGeBbEtDh8SucRXu2961/3G3Y1sOazEEtrdLBW?=
- =?iso-8859-1?Q?1pLFEPd7jtOKp6107L0fZIpV3gPN7T5w36k1mFBeR3W7aiwECX39JCh/9A?=
- =?iso-8859-1?Q?V28Ro0Z4I/7APzcfZv75enxHNMJ1dOQOfM9lRocqAw1C5C0Dj5KqYhXYtD?=
- =?iso-8859-1?Q?V0kcas+fWg60zCxYnfo=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d637f5a7-736e-424e-affd-08dbe9b6301a
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 10:48:10.5201
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IyWZlEzT+v6D0mtammZbnV84DlNQG/exo6abhy7t2t13EQMkhwVTeElnwXx6jzS1PuzccOa0iB3iyaJbAVBA0feDn+dviaUL8fQCWj8KVJU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6611
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: PCI: qcom: correct clocks for SC8180x
+ and SM8150
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+References: <20231120070910.16697-1-krzysztof.kozlowski@linaro.org>
+ <20231120070910.16697-2-krzysztof.kozlowski@linaro.org>
+ <CAA8EJpq6YOYGvxFwreNSoTShrKryqeEy79CTb0dFO-Dv8RNxZA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAA8EJpq6YOYGvxFwreNSoTShrKryqeEy79CTb0dFO-Dv8RNxZA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -156,217 +132,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, thank you for reviewing my patch!
+On 20/11/2023 11:11, Dmitry Baryshkov wrote:
+>> +    then:
+>> +      oneOf:
+>> +        - properties:
+>> +            clocks:
+>> +              minItems: 7
+>> +              maxItems: 7
+>> +            clock-names:
+>> +              items:
+>> +                - const: pipe # PIPE clock
+>> +                - const: aux # Auxiliary clock
+>> +                - const: cfg # Configuration clock
+>> +                - const: bus_master # Master AXI clock
+>> +                - const: bus_slave # Slave AXI clock
+>> +                - const: slave_q2a # Slave Q2A clock
+> 
+> Mani promised to check whether we should use the 'ref' clock for the
+> PCIe hosts or not.
+> I'd ask to delay this patch until we finish that investigation.
 
-On 2023-11-17 at 14:55:54 +0200, Ilpo Järvinen wrote:
->On Thu, 9 Nov 2023, Maciej Wieczor-Retman wrote:
->
->> Non-contiguous CBM support for Intel CAT has been merged into the kernel
->> with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
->> Intel CAT") but there is no selftest that would validate if this feature
->> works correctly.
->> 
->> The selftest needs to verify if writing non-contiguous CBMs to the
->> schemata file behaves as expected in comparison to the information about
->> non-contiguous CBMs support.
->> 
->> Add tests for both L2 and L3 CAT to verify if the return values
->> generated by writing non-contiguous CBMs don't contradict the
->> reported non-contiguous support information.
->
->"if ... don't" sounds weird to me. Perhaps the "if" could just be dropped 
->from it.
+Right. I thought that his Rb-tag solves it, but if not - let's wait.
 
-Thanks, that does sound better.
+Best regards,
+Krzysztof
 
->> Comparing the return value of write_schemata() with non-contiguous CBMs
->> support information can be simplified as a logical XOR operation. In
->> other words if non-contiguous CBMs are supported and if non-contiguous
->> write succeeds the test should succeed and if the write fails the test
->> should also fail. The opposite should happen if non-contiguous CBMs are
->> not supported.
->
->To me this sounds a bit verbose given how basic thing it talks about 
->(but maybe I'm too old already to have actually come across a few xor
->tricks in the past :-)). I'd simplify it to (or simply drop it):
->
->Use a logical XOR to confirm return value of write_schemata() and  
->non-contiguous CBMs support information match.
-
-Your version seems sufficient indeed. I didn't want to leave that XOR in the
-code without any explanation.
-
->> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
->> 
->> ---
->> 
->> This patch is based on a rework of resctrl selftests that's currently in
->> review [1]. The patch also implements a similiar functionality presented
->> in the bash script included in the cover letter to the original
->> non-contiguous CBMs in Intel CAT series [2].
->> 
->> [1] https://lore.kernel.org/all/20231024092634.7122-1-ilpo.jarvinen@linux.intel.com/
->> [2] https://lore.kernel.org/all/cover.1696934091.git.maciej.wieczor-retman@intel.com/
->> 
->>  tools/testing/selftests/resctrl/cat_test.c    | 97 +++++++++++++++++++
->>  tools/testing/selftests/resctrl/resctrl.h     |  2 +
->>  .../testing/selftests/resctrl/resctrl_tests.c |  2 +
->>  3 files changed, 101 insertions(+)
->> 
->> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
->> index bc88eb891f35..6a01a5da30b4 100644
->> --- a/tools/testing/selftests/resctrl/cat_test.c
->> +++ b/tools/testing/selftests/resctrl/cat_test.c
->> @@ -342,6 +342,87 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
->>  	return ret;
->>  }
->>  
->> +static int noncont_cat_run_test(const struct resctrl_test *test,
->> +				const struct user_params *uparams)
->> +{
->> +	unsigned long full_cache_mask, cont_mask, noncont_mask;
->> +	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
->> +	char res_path[PATH_MAX];
->> +	char schemata[64];
->> +	int bit_center;
->> +	FILE *fp;
->> +
->> +	/* Check to compare sparse_masks content to cpuid output. */
->> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
->> +		 test->resource, "sparse_masks");
->> +
->> +	fp = fopen(res_path, "r");
->> +	if (!fp) {
->> +		perror("# Error in opening file\n");
->> +		return errno;
->> +	}
->> +
->> +	if (fscanf(fp, "%u", &sparse_masks) <= 0) {
->> +		perror("Could not get sparse_masks contents\n");
->> +		fclose(fp);
->> +		return -1;
->> +	}
->> +
->> +	fclose(fp);
->
->Add a function to do this conversion into resctrlfs.c.
-
-By conversion do you mean the above calls to fopen, fscanf and fclose? Or did
-you mean the below __cpuid_count? Since you mention making get_cache_level
-non-static I assume the first is the case but just wanted to confirm.
-
->> +
->> +	if (!strcmp(test->resource, "L3"))
->> +		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
->> +	else if (!strcmp(test->resource, "L2"))
->> +		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
->> +	else
->> +		return -EINVAL;
->
->This would be same as (you need to make the func non-static though):
->	level = get_cache_level(test->resource);
->	if (level < 0)
->		return -EINVAL;
->	__cpuid_count(0x10, 4 - level, eax, ebx, ecx, edx);
-
-Thanks, that does look tidier.
-
->> +	if (sparse_masks != ((ecx >> 3) & 1))
->> +		return -1;
->> +
->> +	/* Write checks initialization. */
->> +	ret = get_cbm_mask(test->resource, &full_cache_mask);
->> +	if (ret < 0)
->> +		return ret;
->> +	bit_center = count_bits(full_cache_mask) / 2;
->> +	cont_mask = full_cache_mask >> bit_center;
->> +
->> +	/* Contiguous mask write check. */
->> +	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
->> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
->> +	if (ret)
->> +		return ret;
->> +
->> +	/*
->> +	 * Non-contiguous mask write check. CBM has a 0xf hole approximately in the middle.
->> +	 * Output is compared with support information to catch any edge case errors.
->> +	 */
->> +	noncont_mask = ~(full_cache_mask & (0xf << bit_center)) & full_cache_mask;
->
->Why is the full_cache_mask & part needed here? It's not like the second 
->and can grow bits outside of full_cache_mask even if that would overflow 
->the full_cache_mask (it won't be testing hole then though but that 
->problem happens also at the boundary condition one bit prior to 
->overflowing the mask).
-
-Okay, I see what you mean. Thanks, I'll remove the first operation. While
-testing it also occurred to me that the the 0xf wide hole is offset by two bits
-to the left so I'll adjust that in the next version.
-
->> +	snprintf(schemata, sizeof(schemata), "%lx", noncont_mask);
->> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
->> +	if (ret && sparse_masks)
->> +		ksft_print_msg("Non-contiguous CBMs supported but write failed\n");
->> +	else if (ret && !sparse_masks)
->> +		ksft_print_msg("Non-contiguous CBMs not supported and write failed as expected\n");
->> +	else if (!ret && !sparse_masks)
->> +		ksft_print_msg("Non-contiguous CBMs not supported but write succeeded\n");
->
->Newline.
-
-Sure, will add.
-
->> +	return !ret == !sparse_masks;
->> +}
->> +
->> +static bool noncont_cat_feature_check(const struct resctrl_test *test)
->> +{
->> +	char res_path[PATH_MAX];
->> +	struct stat statbuf;
->> +
->> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
->> +		 test->resource, "sparse_masks");
->> +
->> +	if (stat(res_path, &statbuf))
->> +		return false;
->
->This looks generic enough that validate_resctrl_feature_request() should 
->be somehow adapted to cover also these cases. Perhaps it would be best to 
->just split validate_resctrl_feature_request() into multiple functions.
-
-As in conditionally call a function inside validate_resctrl_feature_request()
-that would check for the existance of a particular file that would indicate if a
-feature is supported or not?
-
-Does implementing it as a new entry in resctrl_test struct that would hold the
-desired filename seem reasonable? Or would it be better to pass it as a new
-function argument (similiar to how "const char *feature" is used now)?
-
->> +	return test_resource_feature_check(test);
->> +}
->> +
->>  struct resctrl_test l3_cat_test = {
->>  	.name = "L3_CAT",
->>  	.group = "CAT",
->> @@ -357,3 +438,19 @@ struct resctrl_test l2_cat_test = {
->>  	.feature_check = test_resource_feature_check,
->>  	.run_test = cat_run_test,
->>  };
->> +
->> +struct resctrl_test l3_noncont_cat_test = {
->> +	.name = "L3_NONCONT_CAT",
->> +	.group = "NONCONT_CAT",
->
->> +struct resctrl_test l2_noncont_cat_test = {
->> +	.name = "L2_NONCONT_CAT",
->> +	.group = "NONCONT_CAT",
->
->I think these should be grouped among "CAT" group because it well, tests 
->CAT functionality. Why you think a separate group for them is needed?
-
-It was convenient for my test purposes and I guess I didn't rethink that part
-later. So you're right, it fits better grouped with CAT, I'll change it.
-
--- 
-Kind regards
-Maciej Wieczór-Retman
