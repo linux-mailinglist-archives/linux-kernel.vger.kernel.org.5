@@ -2,210 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7857F1C71
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0EC7F1C91
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbjKTScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
+        id S232301AbjKTSer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:34:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKTScQ (ORCPT
+        with ESMTP id S231511AbjKTSep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:32:16 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC7FC9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:32:12 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso6739360a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700505131; x=1701109931; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=JQKqeOCNXeZ0nxaIJQRxwCvrWoWO36a0tmBuhjIQhrM=;
-        b=RxKaQ6hmPW7NIsqncNbMiKg/yVLy6SMYcmBsbgVN5ZJEdY5wW6Li6h8RsrJCCxDRD5
-         3kbCpqdD5nuBxspgKl4A5iL1ViBKv1jo4EvLzeBwsYTtCNQ8ltGHS9xMR6zVnr0JBXfh
-         AUoRab0xFrxGrMazo9T/lKXpy1QFhUbMR1xhvHN3zRWBb+lk/EOQ+71whgU9GHKeg2BH
-         issvlpbplbgUgu/0b68U5eTj9g4drFEMi6ZWJo1WLDQ7Djc6xn0+RuOaLv+SJY0O6Vjy
-         CUznriknbpL0vlRM8jsHzqbUFL8sXsZ8kLVZJY6LUK3FsE2FgWspxjr9zEOJQPkGv4qG
-         eNZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700505131; x=1701109931;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JQKqeOCNXeZ0nxaIJQRxwCvrWoWO36a0tmBuhjIQhrM=;
-        b=SBzkJlUN+owLDTo8eG14iVZYE0b611N0Pow2YMvCuMQkWuSzS/sZKpdPAW28gfWvRo
-         jzPDkg1N7KN5YtJiQ4wdJJ5zyUyHlx/sVBD7+ktRa5nrfTNEbMbPymu6Pqnh+tD2UKRO
-         6Rja6HDa37qRTGLj1dOnREteqyOb3/+eACrYuwHUccoLrmU8hNoEVf3Y+0UhPbFtZHia
-         elQr0rlkbO12ePXCa8gGaYSqrbzC5sEq1ydGlojSPdLWZQc2Loj3JtsyH2jAvkDUiRDE
-         CvWAp/0HgaiQMr5lKHTk0UHMJKHP047Ov/oZSCW1WjlhwvzYqSCmRpQT4dvzCssG/IzX
-         /JDg==
-X-Gm-Message-State: AOJu0YxmhjRoXh+1Wi0SySDiWJT9D7cRmzrNSAQWHhG+zfzTrKhc7ORJ
-        zk64KGGBm5Xe390Iu4LLiWGdUg==
-X-Google-Smtp-Source: AGHT+IF/9N6qQKk1HXreVhDLJ17LVXcbfNg8jUXAt55BjVxlC59Oa4uL0fJ22FvoKaCp2qOrp7eMTg==
-X-Received: by 2002:a17:906:5197:b0:9ba:fe6:225 with SMTP id y23-20020a170906519700b009ba0fe60225mr6326061ejk.55.1700505130969;
-        Mon, 20 Nov 2023 10:32:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id kq14-20020a170906abce00b009fcb10eecb2sm1999386ejb.84.2023.11.20.10.32.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 10:32:09 -0800 (PST)
-Message-ID: <0954d66f-a685-4aaa-90a4-3d3492c79cd4@linaro.org>
-Date:   Mon, 20 Nov 2023 19:32:06 +0100
+        Mon, 20 Nov 2023 13:34:45 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E6D92;
+        Mon, 20 Nov 2023 10:34:41 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B0AB1F895;
+        Mon, 20 Nov 2023 18:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700505279; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TE/wmIqY+Mqmq3Uv3qpaJHn4wLurFsze1PiLFKu5tjU=;
+        b=NTA9iWAb7zpjPvHwyg4esMrdJ8vKeanEb3iLWBslYWd3X7vt3x1fcGIctO29bmM8VtZa9y
+        CL8VH2A7xuHHLshh4X9erTFthmcC5Q3DqS2QsInmMww+U7j2YuUn8yabXRectCp9H4NcG2
+        k1NwXPWDXAHMZsjRc6UuPdjyeTq2NFY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700505279;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TE/wmIqY+Mqmq3Uv3qpaJHn4wLurFsze1PiLFKu5tjU=;
+        b=ZZRf0/d+HXx84QJ4iQmfJf8GbYpdCD8NzhSyVn1DAQRsoM9MmArYprkHgd5AgYU02Q3WP1
+        67j1bRCggDslOKAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2D01313499;
+        Mon, 20 Nov 2023 18:34:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id omBJCr+mW2UUMgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:39 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH v2 00/21] remove the SLAB allocator
+Date:   Mon, 20 Nov 2023 19:34:11 +0100
+Message-Id: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is
- running
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Phi Nguyen <phind.uet@gmail.com>, bongsu.jeon@samsung.com
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com" 
-        <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
-References: <20231119164705.1991375-1-phind.uet@gmail.com>
- <CGME20231119164714epcas2p2c0480d014abc4f0f780c714a445881ca@epcms2p4>
- <20231120044706epcms2p48c4579db14cc4f3274031036caac4718@epcms2p4>
- <bafc3707-8eae-4d63-bc64-8d415d32c4b9@linaro.org>
- <20d93e83-66c0-28d9-4426-a0d4c098f303@gmail.com>
- <d82e5a5f-1bbc-455e-b6a7-c636b23591f7@linaro.org>
- <8bce1251-7a6b-4b4c-b700-9d97c664689f@gmail.com>
- <9db5e25f-9fe1-45d9-9a3b-91c45c6cdddf@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <9db5e25f-9fe1-45d9-9a3b-91c45c6cdddf@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAKSmW2UC/03MQQ7CIBCF4as0s5YGhoaiK+9hXACdWqIthlFib
+ Hp3iW7cvW/x/hWYciSGQ7NCphI5pqUCdw2EyS0XEnGoBpSolUIp+Oa8yDSnQr/tekPBGDvYYKD
+ e7pnG+PomT+fqMadZPKZM7i+ktNor3clW9Z1FgSiKd/7qjvxkasMbtu0DXrt6spsAAAA=
+To:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>
+X-Mailer: b4 0.12.4
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 5.30
+X-Spamd-Result: default: False [5.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BAYES_SPAM(5.10)[100.00%];
+         MID_RHS_MATCH_FROM(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[25];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,kernel.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.cz,suse.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 19:29, Krzysztof Kozlowski wrote:
-> On 20/11/2023 19:23, Phi Nguyen wrote:
->> On 11/20/2023 6:45 PM, Krzysztof Kozlowski wrote:
->>> On 20/11/2023 11:39, Nguyen Dinh Phi wrote:
->>>>>>>            mutex_lock(&vdev->mtx);
->>>>>>>            kfree_skb(vdev->send_buff);
->>>>>>>            vdev->send_buff = NULL;
->>>>>>> +        vdev->running = false;
->>>>>>>            mutex_unlock(&vdev->mtx);
->>>>>>>    
->>>>>>>            return 0;
->>>>>>> @@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
->>>>>>>            struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
->>>>>>>    
->>>>>>>            mutex_lock(&vdev->mtx);
->>>>>>> -        if (vdev->send_buff) {
->>>>>>> +        if (vdev->send_buff || !vdev->running) {
->>>>>>
->>>>>> Dear Krzysztof,
->>>>>>
->>>>>> I agree this defensive code.
->>>>>> But i think NFC submodule has to avoid this situation.(calling send function of closed nci_dev)
->>>>>> Could you check this?
->>>>>
->>>>> This code looks not effective. At this point vdev->send_buff is always
->>>>> false, so the additional check would not bring any value.
->>>>>
->>>>> I don't see this fixing anything. Syzbot also does not seem to agree.
->>>>>
->>>>> Nguyen, please test your patches against syzbot *before* sending them.
->>>>> If you claim this fixes the report, please provide me the link to syzbot
->>>>> test results confirming it is fixed.
->>>>>
->>>>> I looked at syzbot dashboard and do not see this issue fixed with this
->>>>> patch.
->>>>>
->>>>> Best regards,
->>>>> Krzysztof
->>>>>
->>>>
->>>> Hi Krzysztof,
->>>>
->>>> I've submitted it to syzbot, it is the test request that created at
->>>> [2023/11/20 09:39] in dashboard link
->>>> https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
->>>
->>> ...and I see there two errors.
->>>
->> These are because I sent email wrongly and syzbot truncates the patch 
->> and can not compile
->>
->>> I don't know, maybe I miss something obvious (our brains like to do it
->>> sometimes), but please explain me how this could fix anything?
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> The issue arises when an skb is added to the send_buff after invoking 
->> ndev->ops->close() but before unregistering the device. In such cases, 
->> the virtual device will generate a copy of skb, but with no consumer 
->> thereafter. Consequently, this object persists indefinitely.
->>
->> This problem seems to stem from the existence of time gaps between 
->> ops->close() and the destruction of the workqueue. During this interval, 
->> incoming requests continue to trigger the send function.
-> 
-> I asked how this could fix anything. Can you respond to my original comment?
-> 
-> Look:
-> 
->>>>> This code looks not effective. At this point vdev->send_buff is always
->>>>> false, so the additional check would not bring any value.
+Changes from v1:
+- Added new Patch 01 to fix up kernel docs build (thanks Marco Elver)
+- Additional changes to Kconfig user visible texts in Patch 02 (thanks Kees
+  Cook)
+- Whitespace fixes and other fixups (thanks Kees)
 
-Uh, now I see, I missed that's the if here is for send_buff != NULL, so
-quite different case than virtual_nci_close().
+The SLAB allocator has been deprecated since 6.5 and nobody has objected
+so far. As we agreed at LSF/MM, we should wait with the removal until
+the next LTS kernel is released. This is now determined to be 6.6, and
+we just missed 6.7, so now we can aim for 6.8 and start exposing the
+removal to linux-next during the 6.7 cycle. If nothing substantial pops
+up, will start including this in slab-next later this week.
+
+To keep the series reasonably sized and not pull in people from other
+subsystems than mm and closely related ones, I didn't attempt to remove
+every trace of unnecessary reference to dead config options in external
+areas, nor in the defconfigs. Such cleanups can be sent to and handled
+by respective maintainers after this is merged.
+
+Instead I have added some patches aimed to reap some immediate benefits
+of the removal, mainly by not having to split some fastpath code between
+slab_common.c and slub.c anymore. But that is also not an exhaustive
+effort and I expect more cleanups and optimizations will follow later.
+
+Patch 09 updates CREDITS for the removed mm/slab.c. Please point out if
+I missed someone not yet credited.
+
+Git version: https://git.kernel.org/vbabka/l/slab-remove-slab-v2r1
+
+---
+Vlastimil Babka (21):
+      mm/slab, docs: switch mm-api docs generation from slab.c to slub.c
+      mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
+      KASAN: remove code paths guarded by CONFIG_SLAB
+      KFENCE: cleanup kfence_guarded_alloc() after CONFIG_SLAB removal
+      mm/memcontrol: remove CONFIG_SLAB #ifdef guards
+      cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
+      mm/slab: remove CONFIG_SLAB code from slab common code
+      mm/mempool/dmapool: remove CONFIG_DEBUG_SLAB ifdefs
+      mm/slab: remove mm/slab.c and slab_def.h
+      mm/slab: move struct kmem_cache_cpu declaration to slub.c
+      mm/slab: move the rest of slub_def.h to mm/slab.h
+      mm/slab: consolidate includes in the internal mm/slab.h
+      mm/slab: move pre/post-alloc hooks from slab.h to slub.c
+      mm/slab: move memcg related functions from slab.h to slub.c
+      mm/slab: move struct kmem_cache_node from slab.h to slub.c
+      mm/slab: move kfree() from slab_common.c to slub.c
+      mm/slab: move kmalloc_slab() to mm/slab.h
+      mm/slab: move kmalloc() functions from slab_common.c to slub.c
+      mm/slub: remove slab_alloc() and __kmem_cache_alloc_lru() wrappers
+      mm/slub: optimize alloc fastpath code layout
+      mm/slub: optimize free fast path code layout
+
+ CREDITS                           |   12 +-
+ Documentation/core-api/mm-api.rst |    2 +-
+ arch/arm64/Kconfig                |    2 +-
+ arch/s390/Kconfig                 |    2 +-
+ arch/x86/Kconfig                  |    2 +-
+ include/linux/cpuhotplug.h        |    1 -
+ include/linux/slab.h              |   22 +-
+ include/linux/slab_def.h          |  124 --
+ include/linux/slub_def.h          |  204 --
+ kernel/cpu.c                      |    5 -
+ lib/Kconfig.debug                 |    1 -
+ lib/Kconfig.kasan                 |   11 +-
+ lib/Kconfig.kfence                |    2 +-
+ lib/Kconfig.kmsan                 |    2 +-
+ mm/Kconfig                        |   68 +-
+ mm/Kconfig.debug                  |   16 +-
+ mm/Makefile                       |    6 +-
+ mm/dmapool.c                      |    2 +-
+ mm/kasan/common.c                 |   13 +-
+ mm/kasan/kasan.h                  |    3 +-
+ mm/kasan/quarantine.c             |    7 -
+ mm/kasan/report.c                 |    1 +
+ mm/kfence/core.c                  |    4 -
+ mm/memcontrol.c                   |    6 +-
+ mm/mempool.c                      |    6 +-
+ mm/slab.c                         | 4026 -------------------------------------
+ mm/slab.h                         |  551 ++---
+ mm/slab_common.c                  |  231 +--
+ mm/slub.c                         |  617 +++++-
+ 29 files changed, 815 insertions(+), 5134 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231120-slab-remove-slab-a76ec668d8c6
 
 Best regards,
-Krzysztof
+-- 
+Vlastimil Babka <vbabka@suse.cz>
 
