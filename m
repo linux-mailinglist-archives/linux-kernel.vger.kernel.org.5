@@ -2,44 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8AB7F0EBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2685E7F0EB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbjKTJPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S232475AbjKTJOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbjKTJPG (ORCPT
+        with ESMTP id S232194AbjKTJOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:15:06 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52071B8;
-        Mon, 20 Nov 2023 01:15:02 -0800 (PST)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SYhYB4rH6z6JBGD;
-        Mon, 20 Nov 2023 17:10:06 +0800 (CST)
-Received: from A2006125610.china.huawei.com (10.202.227.178) by
- lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 20 Nov 2023 09:14:55 +0000
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
-        <yishaih@nvidia.com>, <kevin.tian@intel.com>,
-        <linuxarm@huawei.com>, <liulongfang@huawei.com>
-Subject: [PATCH] hisi_acc_vfio_pci: Update migration data pointer correctly on saving/resume
-Date:   Mon, 20 Nov 2023 09:14:06 +0000
-Message-ID: <20231120091406.780-1-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
+        Mon, 20 Nov 2023 04:14:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8A9A7;
+        Mon, 20 Nov 2023 01:14:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC520C433C7;
+        Mon, 20 Nov 2023 09:14:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700471652;
+        bh=YC2fBnzVsOvUYuHddpl1ZvoG6yqJit5mIfXZybSlNq8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AeODOxsJhBuNNjeY1sIQ2mI5oUhkz9zKF0v4KGKU/l040PVdnpKZPxBsvrSzlIpwA
+         pAXd6xlMDxcbQzGCLJlOuYB6VNCxEgsEJsQPC4fULMQJi9ngzxBOZs6YkshumlTuIY
+         A3KLI2SOYjA528btax1kMACN4ZUvQCCWVyVBBGnCuvvWtge4mpQUlNwjBgt8bZUBUb
+         ml1wOVtRFQ5c9KZgCVjxKsQKLj3nPEPC1FzjbmAlDMY8zaeDeN01s3hRvNn9nDSGoT
+         KE42u9k6G023XMhYBPit7nn6IQp/ChNZhwPPULQU3jYV0rDN3bBmu+W3NdV5Bcw+yW
+         8t5a+kwrh+dyw==
+Message-ID: <caccb6a2-643f-427e-a601-590a1ce88802@kernel.org>
+Date:   Mon, 20 Nov 2023 10:14:06 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.202.227.178]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.6 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: usb: snps,dwc3: Add
+ 'xhci-sg-trb-cache-size-quirk'
+Content-Language: en-US
+To:     Prashanth K <quic_prashk@quicinc.com>, stable@vger.kernel.org,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Tejas Joglekar <joglekar@synopsys.com>,
+        linux-kernel@vger.kernel.org, linux-usbyy@vger.kernel.org
+References: <20231120055803.224634-1-quic_prashk@quicinc.com>
+ <20231120055803.224634-3-quic_prashk@quicinc.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231120055803.224634-3-quic_prashk@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,59 +99,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the optional PRE_COPY support was added to speed up the device
-compatibility check, it failed to update the saving/resuming data
-pointers based on the fd offset. This results in migration data
-corruption and when the device gets started on the destination the
-following error is reported in some cases,
+On 20/11/2023 06:58, Prashanth K wrote:
+> Add a new 'xhci-sg-trb-cache-size-quirk' DT quirk to dwc3 core
+> for preventing xhci hang issue while using SG buffers.
 
-[  478.907684] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
-[  478.913691] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000310200000010
-[  478.919603] arm-smmu-v3 arm-smmu-v3.2.auto:  0x000002088000007f
-[  478.925515] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
-[  478.931425] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
-[  478.947552] hisi_zip 0000:31:00.0: qm_axi_rresp [error status=0x1] found
-[  478.955930] hisi_zip 0000:31:00.0: qm_db_timeout [error status=0x400] found
-[  478.955944] hisi_zip 0000:31:00.0: qm sq doorbell timeout in function 2
+Neither commit msg nor property describes the hardware feature. Please
+describe the hardware, not OS behavior, in the property. Both in the
+property name and in its description.
 
-Fixes: d9a871e4a143 ("hisi_acc_vfio_pci: Introduce support for PRE_COPY state transitions")
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
- drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> Cc: <stable@vger.kernel.org> # 5.11
+> Fixes: bac1ec551434 ("usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK")
+> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+> ---
 
-diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-index b2f9778c8366..4d27465c8f1a 100644
---- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-+++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
-@@ -694,6 +694,7 @@ static ssize_t hisi_acc_vf_resume_write(struct file *filp, const char __user *bu
- 					size_t len, loff_t *pos)
- {
- 	struct hisi_acc_vf_migration_file *migf = filp->private_data;
-+	u8 *vf_data = (u8 *)&migf->vf_data;
- 	loff_t requested_length;
- 	ssize_t done = 0;
- 	int ret;
-@@ -715,7 +716,7 @@ static ssize_t hisi_acc_vf_resume_write(struct file *filp, const char __user *bu
- 		goto out_unlock;
- 	}
- 
--	ret = copy_from_user(&migf->vf_data, buf, len);
-+	ret = copy_from_user(vf_data + *pos, buf, len);
- 	if (ret) {
- 		done = -EFAULT;
- 		goto out_unlock;
-@@ -835,7 +836,9 @@ static ssize_t hisi_acc_vf_save_read(struct file *filp, char __user *buf, size_t
- 
- 	len = min_t(size_t, migf->total_length - *pos, len);
- 	if (len) {
--		ret = copy_to_user(buf, &migf->vf_data, len);
-+		u8 *vf_data = (u8 *)&migf->vf_data;
-+
-+		ret = copy_to_user(buf, vf_data + *pos, len);
- 		if (ret) {
- 			done = -EFAULT;
- 			goto out_unlock;
--- 
-2.34.1
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
+
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
+Also, use proper order of patches - first bindings, then their user.
+
+Best regards,
+Krzysztof
 
