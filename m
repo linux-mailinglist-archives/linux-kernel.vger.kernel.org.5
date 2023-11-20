@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7114D7F0B55
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05987F0B57
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjKTESS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 23:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S231815AbjKTETA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 23:19:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTESQ (ORCPT
+        with ESMTP id S229470AbjKTES6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 23:18:16 -0500
+        Sun, 19 Nov 2023 23:18:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA3313E
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:18:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD15C433CC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:18:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FE2E5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:18:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94046C433CC;
+        Mon, 20 Nov 2023 04:18:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700453891;
-        bh=BluD7GIVPO8PrPVuaW0518p8IU0xm5lBhxJYVGvOByo=;
+        s=k20201202; t=1700453934;
+        bh=eJc3t+vjty0J6ATUE4Rsu1fv8yiYA2QdwTT2oLeeNpc=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=osZUrbBoau/5wiylWuf727gI2yFiwS42NUycYdcMhSsIPZ6zg8UN0qIUwemah4AjV
-         26IplfITNMI4E3CbRY6Pmd2EP75Aiids9S6m+hmJ1wadnTw7EL3Rq1fOY80lcw+RSJ
-         HU8IhCH9TnHssqjPaut1ZbRrsn2mVa33F49gTbLor+J9T6qRcr0j1onTEBgBNOWGl7
-         BqsVWiMa81+EFH7w+u9p90safr3xQgBMRRk3Qo62wq4dlB1fdUP84xMKwaYD1A0DDd
-         V4FXDgwDZh06Q4pC+W2ikhufkdaLlZIki6A9CWw9sMPNnbQWMj//ZEHRu8m5MRbywl
-         u2HaHaXK5CGBQ==
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2851b271e51so536168a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:18:11 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxjc8z5pFr/WrwqoobRtfKWwFmY1MA8U4rStJ9zaO8/hEda4LMB
-        7V8GXEWRi7sCSWjcp3/NL/kBpMmkJkwkrihgwR4Obw==
-X-Google-Smtp-Source: AGHT+IEJodpCm5QEZgAh344L09AH+Jfnh6wGRkUZQu4v/ot9+4ois/EpwLm/GZKydBJyx86vspgRmVNepQfLaKfeRdE=
-X-Received: by 2002:a17:90b:3e85:b0:283:2652:3d20 with SMTP id
- rj5-20020a17090b3e8500b0028326523d20mr9197638pjb.9.1700453890466; Sun, 19 Nov
- 2023 20:18:10 -0800 (PST)
+        b=G/2HIGaIq7151RXjukRJmEbQbVLRf20uMRs4ARHzoBejz0WoIhuw34AJGl7dDmlGQ
+         FT0Lzt+sDylZNbyTpXPvH/ipyE8oa7wyIAmNJvWA08d0hle+bUNW2lv1L8ta1gu/dz
+         VbTqckmIC1eZpHNdxPwebpe1oNTRuS6dMIN7TOs2BgnvvqClE5ffP2UNx9JSTqCRle
+         qNpp9USlyq9Xx35DMG4rngRY/V6iIB2WpwOj/f8hJklD+pOffb73KO5sijsW++Wb0G
+         qZicqxiQWpPnuCgWs2x1Sv7NeLYzPdhIb3/s3Uf3fX7/7LArr10uKbvGTWQyNSdBcx
+         Ck1KGLdk6f7Kg==
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1ef36a04931so2500035fac.2;
+        Sun, 19 Nov 2023 20:18:54 -0800 (PST)
+X-Gm-Message-State: AOJu0YxvF/RqVfDFADUOMVRs3Z08xFsZEip+YJNvzqp+JklNCeR6jOKy
+        m7hmI1r5WlzCnRP7H5DItIDNiu5vHauQQmlelhc=
+X-Google-Smtp-Source: AGHT+IFjUvCUwL9dlENvgBWSAvBVxN2mi2cDv4rqkgfxU4VoW6wZ29EQ2LekMKBcBn1C8Sq7Y6MIhJJPQ/V/mcv6WHM=
+X-Received: by 2002:a05:6870:f69e:b0:1e9:a3e1:c388 with SMTP id
+ el30-20020a056870f69e00b001e9a3e1c388mr6972167oab.41.1700453933986; Sun, 19
+ Nov 2023 20:18:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-5-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-5-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Sun, 19 Nov 2023 20:17:59 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
-Message-ID: <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
-Subject: Re: [PATCH 04/24] mm/swap: avoid setting page lock bit and doing
- extra unlock check
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+References: <20231118081334.1308242-1-masahiroy@kernel.org> <ZVp26K9b8Apuy3FD@fjasle.eu>
+In-Reply-To: <ZVp26K9b8Apuy3FD@fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 20 Nov 2023 13:18:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATj65c0beTb5oXMDskiaFnxp1hoMOF0yG15pGv7cujNEg@mail.gmail.com>
+Message-ID: <CAK7LNATj65c0beTb5oXMDskiaFnxp1hoMOF0yG15pGv7cujNEg@mail.gmail.com>
+Subject: Re: [PATCH] scripts: clean up IA-64 code
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -64,70 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
+On Mon, Nov 20, 2023 at 5:58=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
+wrote:
 >
-> From: Kairui Song <kasong@tencent.com>
+> On Sat, Nov 18, 2023 at 05:13:34PM +0900 Masahiro Yamada wrote:
+> > A little more janitorial work after commit cf8e8658100d ("arch: Remove
+> > Itanium (IA-64) architecture").
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  scripts/checkstack.pl        |  3 ---
+> >  scripts/gdb/linux/tasks.py   | 15 +++------------
+> >  scripts/head-object-list.txt |  1 -
+> >  scripts/kconfig/mconf.c      |  2 +-
+> >  scripts/kconfig/nconf.c      |  2 +-
+> >  scripts/package/kernel.spec  |  6 ------
+> >  scripts/package/mkdebian     |  2 +-
+> >  scripts/recordmcount.pl      |  7 -------
+> >  scripts/xz_wrap.sh           |  1 -
+> >  9 files changed, 6 insertions(+), 33 deletions(-)
+> >
 >
-> When swapping in a page, mem_cgroup_swapin_charge_folio is called for new
-> allocated folio, nothing else is referencing the folio so no need to set
-> the lock bit. This avoided doing unlock check on error path.
+> Thanks, looks good to me.  Might you want to also remove replace the last
+> references in the kbuild files?
 >
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/swap_state.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index ac4fa404eaa7..45dd8b7c195d 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -458,6 +458,8 @@ struct page *__read_swap_cache_async(swp_entry_t entr=
-y, gfp_t gfp_mask,
+> scripts/recordmcount.c  uses cpp symbol EM_IA_64
 
-You move the mem_cgroup_swapin_charge_folio() inside the for loop:
+Thanks, I will remove it too.
+
+> Makefile                contains two comments with examples naming IA64
 
 
-        for (;;) {
-                int err;
-                /*
-                 * First check the swap cache.  Since this is normally
-                 * called after swap_cache_get_folio() failed, re-calling
-                 * that would confuse statistics.
-                 */
-                folio =3D filemap_get_folio(swap_address_space(entry),
-                                                swp_offset(entry));
+Which line?  I could not spot them.
 
 
->                                                 mpol, ilx, numa_node_id()=
-);
->                 if (!folio)
->                          goto fail_put_swap;
-> +               if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask,=
- entry))
-> +                       goto fail_put_folio;
+> scripts/checkstack.pl   still holds credits for its (now removed) IA64 po=
+rt,
+>                         but that might have been left by intention
 
-Wouldn't it cause repeat charging of the folio when it is racing
-against others in the for loop?
+
+I hesitate to touch the credit. So, this is intentional.
+
+
+
 
 >
->                 /*
->                  * Swap entry may have been freed since our caller observ=
-ed it.
-> @@ -483,13 +485,9 @@ struct page *__read_swap_cache_async(swp_entry_t ent=
-ry, gfp_t gfp_mask,
->         /*
->          * The swap entry is ours to swap in. Prepare the new page.
->          */
-> -
->         __folio_set_locked(folio);
->         __folio_set_swapbacked(folio);
+> Nevertheless:
 >
-> -       if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask, entry))
-> -               goto fail_unlock;
-> -
+> Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+>
+> Kind regards,
+> Nicolas
 
-The original code makes the charge outside of the for loop. Only the
-winner can charge once.
 
-Chris
+
+--=20
+Best Regards
+Masahiro Yamada
