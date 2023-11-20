@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB1A7F1B98
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AC77F1B95
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbjKTRv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S233871AbjKTRvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbjKTRvX (ORCPT
+        with ESMTP id S234384AbjKTRvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:51:23 -0500
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EDED45
+        Mon, 20 Nov 2023 12:51:24 -0500
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C69D5F
         for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:50:45 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700502643;
+        t=1700502644;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uhMrVBrzgAoT1gwViC8KxLkH9OMZhix/uhvoEc70W98=;
-        b=lATFUJLNYsof+QZ6G2sBXsnC9Q+wIKDyc8lFVJDjx9RK2nGA9FoeQs6kQO+6hjM8HBefIP
-        eURADnY2Rf+gcAsebe+mW3WuHxDxbtNbYaSjhKQqLHNAk7mVow4Kb9CTZdG5zssygETF+r
-        BwY3IBxnt51rdnlRs7VhwlO0TNcSVR8=
+        bh=Qc2DDhk7eSddbt2Q3kjJLSbCNGbLZWOl9JsGZF81sG4=;
+        b=SjlBdcCRByh5PrG2MOhc8aFxhKI3iaDpNaxTHUEIaJyLo5jT4ZNFXt6Bt3sd9u50OfOKSg
+        CaLcy9JTN+VHkT3VWRZiUR5iYfkV9u6uxcxdsNTqWTVW/b0iVcXorrCGAHL4XcSBww8rJU
+        PD/hyomJcMBAWfjY4j+0VCD4sMN1M4g=
 From:   andrey.konovalov@linux.dev
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
@@ -37,9 +37,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v4 19/22] kasan: check object_size in kasan_complete_mode_report_info
-Date:   Mon, 20 Nov 2023 18:47:17 +0100
-Message-Id: <68c6948175aadd7e7e7deea61725103d64a4528f.1700502145.git.andreyknvl@google.com>
+Subject: [PATCH v4 20/22] kasan: use stack_depot_put for tag-based modes
+Date:   Mon, 20 Nov 2023 18:47:18 +0100
+Message-Id: <b4773e5c1b0b9df6826ec0b65c1923feadfa78e5.1700502145.git.andreyknvl@google.com>
 In-Reply-To: <cover.1700502145.git.andreyknvl@google.com>
 References: <cover.1700502145.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -57,48 +57,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Check the object size when looking up entries in the stack ring.
+Make tag-based KASAN modes evict stack traces from the stack depot once
+they are evicted from the stack ring.
 
-If the size of the object for which a report is being printed does not
-match the size of the object for which a stack trace has been saved in
-the stack ring, the saved stack trace is irrelevant.
+Internally, pass STACK_DEPOT_FLAG_GET to stack_depot_save_flags (via
+kasan_save_stack) to increment the refcount when saving a new entry
+to stack ring and call stack_depot_put when removing an entry from
+stack ring.
 
 Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
 ---
 
-Changes v2->v3:
-- Added missing "../slab.h" include for accessing a kmem_cache field.
-
 Changes v1->v2:
-- This is a new patch.
+- Adapt to the stack depot API change.
+- Drop READ_ONCE when reading entry->stack.
 ---
- mm/kasan/report_tags.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/kasan/tags.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
-index 78abdcde5da9..55154743f915 100644
---- a/mm/kasan/report_tags.c
-+++ b/mm/kasan/report_tags.c
-@@ -7,6 +7,7 @@
- #include <linux/atomic.h>
+diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+index b6c017e670d8..739ae997463d 100644
+--- a/mm/kasan/tags.c
++++ b/mm/kasan/tags.c
+@@ -97,12 +97,13 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
+ 			gfp_t gfp_flags, bool is_free)
+ {
+ 	unsigned long flags;
+-	depot_stack_handle_t stack;
++	depot_stack_handle_t stack, old_stack;
+ 	u64 pos;
+ 	struct kasan_stack_ring_entry *entry;
+ 	void *old_ptr;
  
- #include "kasan.h"
-+#include "../slab.h"
+-	stack = kasan_save_stack(gfp_flags, STACK_DEPOT_FLAG_CAN_ALLOC);
++	stack = kasan_save_stack(gfp_flags,
++			STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
  
- extern struct kasan_stack_ring stack_ring;
+ 	/*
+ 	 * Prevent save_stack_info() from modifying stack ring
+@@ -121,6 +122,8 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
+ 	if (!try_cmpxchg(&entry->ptr, &old_ptr, STACK_RING_BUSY_PTR))
+ 		goto next; /* Busy slot. */
  
-@@ -58,7 +59,8 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
- 		entry = &stack_ring.entries[i % stack_ring.size];
++	old_stack = entry->stack;
++
+ 	entry->size = cache->object_size;
+ 	entry->pid = current->pid;
+ 	entry->stack = stack;
+@@ -129,6 +132,9 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
+ 	entry->ptr = object;
  
- 		if (kasan_reset_tag(entry->ptr) != info->object ||
--		    get_tag(entry->ptr) != get_tag(info->access_addr))
-+		    get_tag(entry->ptr) != get_tag(info->access_addr) ||
-+		    info->cache->object_size != entry->size)
- 			continue;
+ 	read_unlock_irqrestore(&stack_ring.lock, flags);
++
++	if (old_stack)
++		stack_depot_put(old_stack);
+ }
  
- 		if (entry->is_free) {
+ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
 -- 
 2.25.1
 
