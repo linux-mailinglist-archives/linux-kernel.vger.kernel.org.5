@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4817F14CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D677F14D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbjKTNvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 08:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S233488AbjKTNv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbjKTNvi (ORCPT
+        with ESMTP id S233468AbjKTNvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 08:51:38 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D24D65;
-        Mon, 20 Nov 2023 05:51:25 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso13342015e9.3;
-        Mon, 20 Nov 2023 05:51:25 -0800 (PST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC00D78;
+        Mon, 20 Nov 2023 05:51:26 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso1754615e87.0;
+        Mon, 20 Nov 2023 05:51:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700488283; x=1701093083; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700488285; x=1701093085; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BkZZkQ+fhxkG3W91GuOjhKRxuNJAr/jVw9bM/JNE+9s=;
-        b=J1+btUUb5WrurF6QYxTmgcKDcBACAHe7JecqQG9TaU/nGjgjop+jVcw2UQwd8WD/zT
-         qTDGlnckUUg5WW/j0+38PGul3U7gP3YxWTG4fJFwPAsepM5vFu8wwc35hdWldFSFAqRW
-         tX+HHQLCDRv47891OnVmT+Oc424B+olrIast+XdLvX2LmnCL1baWlGZoXc9yzhoAD9zO
-         FWk/zGq3Ukfx7NKJw4Jmq2m3OFAdixqvSAGP4I75A2V9kSverqRZSeB7W34XpF7ogD3l
-         f8M94ws1diEFoAeFvq2i49Gk7/NQF4aK+TnTnvP5zrzdxKBVfQceY1GKCukfSvx4Ku40
-         psIg==
+        bh=RJJcNZQjoxDpL64YJUPbX5zAdxkULtiEGewpt5HLNRQ=;
+        b=lNI38QJY+hLhb05yxNU8aMXdbP1ccm/A0KKezhus2NmfKLnTP4uHCMNTI6LLwd7DSp
+         nn5rlkvXOjpv/CXXgEb66R0q2leOEKyYbOa46FQUPzt3PCgPy9hdQf9RqPlrl+NEKATz
+         o6N9Vetc2vlV3NLSNZv8nTdQAZKRo40kKIcHjuTjU2WOG3mBFf171uDNFSppiSilg7Uw
+         62c/gg+Qje3XFS5+euq2MScISJff7hfxVum1pVEcQ7dgH6ix+LekQ085hs6KiOmEZxmN
+         nMtjN2dcVNekncsvx69VxkfEjz+LE+3l0ci67Wn+AbcUZbinAhBXSqmG0+dWqMU9vzS9
+         pQww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700488283; x=1701093083;
+        d=1e100.net; s=20230601; t=1700488285; x=1701093085;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BkZZkQ+fhxkG3W91GuOjhKRxuNJAr/jVw9bM/JNE+9s=;
-        b=stdnmm8qSa9QElTAyfvX67b42xAa5++eTyBcrTR316hCI3MILRXebDCZ6sq/YKghFo
-         xde2+fUnECCJHqMfeY+My2PmgjRVFnvxDlDR/HX8GjvGwyIGyUBbiO4o4DJTUJwqNSy5
-         Kap7h8jMBRc8wTogYTDB+/sETDg0LhGbBW2SG9H7x0wNXfxJY/oqiRXupxLhttoypcUe
-         fZb+DADfK8SSEujFu4bP6lBrJvnnP2yW0KIvhbDZ+wptQHV+FUvm/lvbPnkX3ePAb/xb
-         zoxhjX0t/sL2mVrVqsiDoWzyOeWiA4kLN8gsabpxZHnpHLPzuJF5M6j8cdhcJjPynWyG
-         kPzQ==
-X-Gm-Message-State: AOJu0YzlDcGdYhlStmYAG2xt6J0BmumwSdCd/pWc0lbI48J/cNZO0QQP
-        vSnepkRDCKGWOf/wkRWm128=
-X-Google-Smtp-Source: AGHT+IHHHmLbo0ls+ZfdjXnfQDFKRg9UMz3ucecEJfw4iq5blHC0EFBdWzjf+AlCouNSkFhaXzhm/Q==
-X-Received: by 2002:a05:600c:3b8c:b0:407:5b54:bb10 with SMTP id n12-20020a05600c3b8c00b004075b54bb10mr5935396wms.8.1700488283168;
-        Mon, 20 Nov 2023 05:51:23 -0800 (PST)
+        bh=RJJcNZQjoxDpL64YJUPbX5zAdxkULtiEGewpt5HLNRQ=;
+        b=lEf3HYlrB5hMDVRormqdUBwGzfCuAbV8zOwui9bPvUyuJpRuczIW9dhgQjtJo4m7Ca
+         L8HE6rc5K6wa/BXF1DEMo4nGtqlY+ppez1GQO1vJkuFrtCP/OifWMIIVCiqzxNM0VK3e
+         zo1Pkmj0AjLe1DcagFzGf0X2rcnHb4rw9JWAzYNZGMB9WqEiXhRf1Y0OPjJrwa1RNGNf
+         u9AZ4ltiOygEb+EWooBDH7MkaaugkV1N/BHCSGH3y0oXOWplJfC+iWW/2IP/6UNetqr0
+         kfk978w+4ujgPHo7Xj5n37D9TjwtpZvwgvOMl+P4dJRzCIdr5dgAx3EiWgzN8M2F5EGD
+         VhmA==
+X-Gm-Message-State: AOJu0Yw8zyQpUBc/5bg1DpHUFE8JYLn47eZ5qvLQKy7Gp/JaiorfiNz+
+        AiLeCqHpO9FQOJaD33+N/Zo=
+X-Google-Smtp-Source: AGHT+IHEV5yAbedHXZPHvi496M5AnmqBvoItl/mLTRfObKuQHz0eqFU2KUnKLxPwW2KQ8CFk9bb54A==
+X-Received: by 2002:a2e:7302:0:b0:2c5:ee7:b322 with SMTP id o2-20020a2e7302000000b002c50ee7b322mr6395660ljc.18.1700488284849;
+        Mon, 20 Nov 2023 05:51:24 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id j33-20020a05600c1c2100b0040772934b12sm18205846wms.7.2023.11.20.05.51.21
+        by smtp.googlemail.com with ESMTPSA id j33-20020a05600c1c2100b0040772934b12sm18205846wms.7.2023.11.20.05.51.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 05:51:22 -0800 (PST)
+        Mon, 20 Nov 2023 05:51:24 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -84,9 +84,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         linux-arm-msm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [net-next RFC PATCH 07/14] net: phy: add support for driver specific PHY package probe/config
-Date:   Mon, 20 Nov 2023 14:50:34 +0100
-Message-Id: <20231120135041.15259-8-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH 08/14] net: phy: add support for PHY package interface mode
+Date:   Mon, 20 Nov 2023 14:50:35 +0100
+Message-Id: <20231120135041.15259-9-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231120135041.15259-1-ansuelsmth@gmail.com>
 References: <20231120135041.15259-1-ansuelsmth@gmail.com>
@@ -102,89 +102,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PHY driver specific function to probe and configure PHY package.
-These function are run only once before the PHY probe and config_init.
+Some PHY in PHY package supports running only at a specific mode for
+each PHY in the package. Add support for enforcing this special thing a
+verify consistency with the requested mode to prevent misconfiguration.
 
-They are used in conjunction with DT PHY package define for basic PHY
-package implementation to setup and probe PHY package with simple
-functions directly defined in the PHY driver struct.
+To set the PHY package mode, simply set "phy-mode" in the phy-package
+node. Each PHY on init will verify if the requested mode match the one
+set for the PHY package and will return -EINVAL if this is not true.
+
+If PHY package doesn't specify any mode, it's assumed that PHY in the
+package doesn't have such limitation.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/phy_device.c | 14 ++++++++++++++
- include/linux/phy.h          | 21 +++++++++++++++++++++
- 2 files changed, 35 insertions(+)
+ drivers/net/phy/phy_device.c | 37 ++++++++++++++++++++++++++++++++++++
+ include/linux/phy.h          |  6 ++++++
+ 2 files changed, 43 insertions(+)
 
 diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 91d17129b774..0b7ba6995929 100644
+index 0b7ba6995929..73af4197a7af 100644
 --- a/drivers/net/phy/phy_device.c
 +++ b/drivers/net/phy/phy_device.c
-@@ -1246,6 +1246,13 @@ int phy_init_hw(struct phy_device *phydev)
- 	if (ret < 0)
- 		return ret;
+@@ -25,6 +25,7 @@
+ #include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_net.h>
+ #include <linux/netdevice.h>
+ #include <linux/phy.h>
+ #include <linux/phylib_stubs.h>
+@@ -1225,8 +1226,17 @@ static int phy_poll_reset(struct phy_device *phydev)
  
-+	if (phydev->drv->phy_package_config_init_once &&
-+	    phy_package_init_once(phydev)) {
-+		ret = phydev->drv->phy_package_config_init_once(phydev);
-+		if (ret < 0)
-+			return ret;
-+	}
+ int phy_init_hw(struct phy_device *phydev)
+ {
++	phy_interface_t package_interface;
+ 	int ret = 0;
+ 
++	/* Validate we are requesting consistent mode if we
++	 * are in a PHY package and the PHY package requires a
++	 * specific mode.
++	 */
++	ret = phy_package_get_mode(phydev, &package_interface);
++	if (!ret && phydev->interface != package_interface)
++		return -EINVAL;
 +
- 	if (phydev->drv->config_init) {
- 		ret = phydev->drv->config_init(phydev);
- 		if (ret < 0)
-@@ -3386,6 +3393,13 @@ static int phy_probe(struct device *dev)
  	/* Deassert the reset signal */
  	phy_device_reset(phydev, 0);
  
-+	if (phydev->drv->phy_package_probe_once &&
-+	    phy_package_probe_once(phydev)) {
-+		err = phydev->drv->phy_package_probe_once(phydev);
-+		if (err)
-+			goto out;
-+	}
+@@ -1776,6 +1786,32 @@ void phy_package_leave(struct phy_device *phydev)
+ }
+ EXPORT_SYMBOL_GPL(phy_package_leave);
+ 
++/**
++ * phy_package_get_mode - get PHY interface mode for PHY package
++ * @phydev: target phy_device struct
++ * @interface: phy_interface_t pointer where to save the PHY package mode
++ *
++ * Gets PHY interface mode for the shared data of the PHY package.
++ * Returns 0 and updates @interface with the PHY package value, or -ENODEV
++ * if PHY is not in PHY package or -EINVAL if a PHY package interface mode
++ * is not set.
++ */
++int phy_package_get_mode(struct phy_device *phydev, phy_interface_t *interface)
++{
++	struct phy_package_shared *shared = phydev->shared;
 +
- 	if (phydev->drv->probe) {
- 		err = phydev->drv->probe(phydev);
- 		if (err)
++	if (!shared)
++		return -ENODEV;
++
++	if (shared->package_interface == PHY_INTERFACE_MODE_NA)
++		return -EINVAL;
++
++	*interface = shared->package_interface;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(phy_package_get_mode);
++
+ static void devm_phy_package_leave(struct device *dev, void *res)
+ {
+ 	phy_package_leave(*(struct phy_device **)res);
+@@ -3270,6 +3306,7 @@ static int of_phy_package(struct phy_device *phydev)
+ 		goto exit;
+ 
+ 	phydev->shared->np = package_node;
++	of_get_phy_mode(package_node, &phydev->shared->package_interface);
+ 
+ exit:
+ 	kfree(global_phy_addrs);
 diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 7c47c12cffa0..1849fc637196 100644
+index 1849fc637196..8af0a8a72b88 100644
 --- a/include/linux/phy.h
 +++ b/include/linux/phy.h
-@@ -924,12 +924,33 @@ struct phy_driver {
- 	 */
- 	int (*soft_reset)(struct phy_device *phydev);
- 
-+	/**
-+	 * @phy_package_config_init_once: Driver specific PHY package
-+	 *   config init call
-+	 * @def: PHY device to use to probe PHY package
-+	 *
-+	 * Called to initialize the PHY package, including after
-+	 * a reset.
-+	 * Called BEFORE PHY config_init.
+@@ -341,6 +341,11 @@ struct mdio_bus_stats {
+ struct phy_package_shared {
+ 	/* With PHY package defined in DT this points to the PHY package node */
+ 	struct device_node *np;
++	/* PHY package interface
++	 * If defined, each PHY of the package MUST have the interface
++	 * set to the PHY package.
 +	 */
-+	int (*phy_package_config_init_once)(struct phy_device *dev);
-+
- 	/**
- 	 * @config_init: Called to initialize the PHY,
- 	 * including after a reset
- 	 */
- 	int (*config_init)(struct phy_device *phydev);
++	phy_interface_t package_interface;
+ 	/* addrs list pointer */
+ 	/* note that this pointer is shared between different phydevs.
+ 	 * It is allocated and freed automatically by phy_package_join() and
+@@ -2014,6 +2019,7 @@ int phy_ethtool_nway_reset(struct net_device *ndev);
+ int phy_package_join(struct phy_device *phydev, int *addrs, size_t addrs_num,
+ 		     size_t priv_size);
+ void phy_package_leave(struct phy_device *phydev);
++int phy_package_get_mode(struct phy_device *phydev, phy_interface_t *interface);
+ int devm_phy_package_join(struct device *dev, struct phy_device *phydev,
+ 			  int *addrs, size_t addrs_num, size_t priv_size);
  
-+	/**
-+	 * @phy_package_probe_once: Driver specific PHY package probe
-+	 * @def: PHY device to use to probe PHY package
-+	 *
-+	 * Called during discovery once per PHY package. Used to set
-+	 * up device-specific PHY package structures, if any.
-+	 * Called BEFORE PHY probe.
-+	 */
-+	int (*phy_package_probe_once)(struct phy_device *dev);
-+
- 	/**
- 	 * @probe: Called during discovery.  Used to set
- 	 * up device-specific structures, if any
 -- 
 2.40.1
 
