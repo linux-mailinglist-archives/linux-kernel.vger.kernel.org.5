@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA32F7F0DE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5A27F0DEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbjKTIqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S232386AbjKTIqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:46:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232332AbjKTIq0 (ORCPT
+        with ESMTP id S232334AbjKTIq2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:46:26 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552E183
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:22 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32f737deedfso2655906f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:22 -0800 (PST)
+        Mon, 20 Nov 2023 03:46:28 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4224CA4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:24 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507962561adso5979874e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1700469981; x=1701074781; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1700469982; x=1701074782; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Cp/UKHVnA714ikdJHZcbqGoPP5UR9IDH6yqWS6ig3mM=;
-        b=pmrFMg4J196kShqfjSh2VBLm0SzHZsKZj+uD7XU4nNdfVg7EJm3DRaouPPq6JE1VV/
-         TFBguly6ExckGVq2Z/Ck6g3mXbNXEbSdFFu2+uh1BKNZxYzvB1/WN2yZwwP0SdW9Go+P
-         /ehFdaz1+kQRhQmQkQpkg4eBy3/2Y8pRecfE2NMezpOfMS4W1CX+xZwEWfxetxAwjFti
-         e4Bz5bwIPGfyCOxJi/9M0rTgU4RjlFdE9Mn/SblEOGyEYinEhWMc9vUhMgePN648KkGn
-         i7/AvH0d4dhl4mjV05fl4C4eQr3MEBi0LG/idtAmANe/kJmKb/a0aMYJmCtZv/Th0H+I
-         IPgA==
+        bh=JaLlJ6X3V1xHNer/E9XxQegzqXLhmCjDZ2XDUDwECf0=;
+        b=hFF9v8vxRv3WzQLLMENRefHc3LQUaAWnQkMYDw1qFjrHNM0+9LgFNwfIp34rX0G1bU
+         Jynegwftr7oKGKrl/gsv5U3Isj19tQHrzyCmmFrO42K36hK9iKYBFfWIvzpovU4OUowl
+         GzLwnBmOGorEbRCaHvAIkNE97Hu1TqX08Sm00Dus7e/fJllQjP/hNe29oc5OLzR4hsSj
+         gRFPXvs6+pBVsbI6tjgyjHio3FC4hy0lBbIkdnT9whjZ9YsKEhogGh1y8uhjtng/NvzP
+         Tf9dtG4SKZyfathYIbTijyIMrWgoU7gjDMUUsIsgDibyoF85lJE45aJdO/glM0undr5J
+         EWDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700469981; x=1701074781;
+        d=1e100.net; s=20230601; t=1700469982; x=1701074782;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Cp/UKHVnA714ikdJHZcbqGoPP5UR9IDH6yqWS6ig3mM=;
-        b=kZCYyRXTzeeOLcKtLIFh851F3WnUXrvYrn3LvAvEipYg4mixd3Jv0l15dW01UJn7kK
-         AqBoj9359si+VBdYd881dkTBpnr/ms327tit+Lq7BEAlPzu/tfYfMvFsGV85cGvKdflk
-         w9CWFpo+VOt++o3FMEYIDzdze+0+moy9R+f/bWYZgIuULAEgfziHacP9vx1l9eWhbQ/n
-         o3H5U1WC900olgqErKqE6/u68bpNFMCZ+jKhITnsIhB2M9d0AlefDaeg3vWPi/EkRxTg
-         u9YunMEcUT7pF8bmA51MhkdzJ+tOF8sLd1mmmX8O8EMvOiIDmd7IQXCv0d9dSkPIilnF
-         5olg==
-X-Gm-Message-State: AOJu0YzXZr0ejCBDf54Y9yabfGDqR+CNAXNPcMlYivKVX6+0vD7hJyLV
-        M1Mnr0jPuq8U3/nbjcFZ8nxKug==
-X-Google-Smtp-Source: AGHT+IFDUtcL/kItW6Ct8wAYuHmG27hXUs5xVSozigyLzY20qpW+SnjNg8LDtQ8uSwnwos1Zsdc1hA==
-X-Received: by 2002:a05:6000:108f:b0:331:6cfd:e2fc with SMTP id y15-20020a056000108f00b003316cfde2fcmr3780250wrw.21.1700469980699;
-        Mon, 20 Nov 2023 00:46:20 -0800 (PST)
+        bh=JaLlJ6X3V1xHNer/E9XxQegzqXLhmCjDZ2XDUDwECf0=;
+        b=Khov6c9s6eSfrT66Xk/gn1ZZfVkWGcFg1wqTg5Cw9KB7K51nrn3ubJQrIb+/fy/vr1
+         ASau8ZHh8G26Jk458DL/ySGH0c/zqqPIdtBTmm5EduIjpeQ/Dpz+4XrlqtfCTW9h9Nud
+         vc8Y+xNs7PBfltYCMSXHQT97JXK536joQXpbFLGRyrE0Pnvb+t/4GtdsrZJc0whynUQI
+         pjEYeX6ovHT+xOAb4T1OGoPgj3pidND9QfaADgE3HxfISblT+XgSwapPPqISwJ5yMNjs
+         N0u7KulBYOGO2qgg+hzBB0lH63ppvlx74k0cNi3NYTCjgu46lnOPIv7+Fupaex/12GVJ
+         Av4w==
+X-Gm-Message-State: AOJu0YwCthdZry3tcpMn4ryapekiPU4imj6MKmBvr2FoctwkEBNhjfLE
+        IKnqHxX/tGwa0tiMO0BVJgv0PA==
+X-Google-Smtp-Source: AGHT+IEf8vUgakOaNbWbAB6YxeQiP2RuYbpQL+g5e2su4/B8sSFdfMT3asP/LNDHBhO+rU+q30rUUQ==
+X-Received: by 2002:ac2:5297:0:b0:507:c871:7888 with SMTP id q23-20020ac25297000000b00507c8717888mr4574449lfm.9.1700469982498;
+        Mon, 20 Nov 2023 00:46:22 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.183])
-        by smtp.gmail.com with ESMTPSA id b8-20020a5d45c8000000b003142e438e8csm10435267wrs.26.2023.11.20.00.46.18
+        by smtp.gmail.com with ESMTPSA id b8-20020a5d45c8000000b003142e438e8csm10435267wrs.26.2023.11.20.00.46.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 00:46:20 -0800 (PST)
+        Mon, 20 Nov 2023 00:46:22 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -62,16 +62,17 @@ To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
 Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 02/13] net: ravb: Use pm_runtime_resume_and_get()
-Date:   Mon, 20 Nov 2023 10:45:55 +0200
-Message-Id: <20231120084606.4083194-3-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 03/13] net: ravb: Make write access to CXR35 first before accessing other EMAC registers
+Date:   Mon, 20 Nov 2023 10:45:56 +0200
+Message-Id: <20231120084606.4083194-4-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,77 +83,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-pm_runtime_get_sync() may return with error. In case it returns with error
-dev->power.usage_count needs to be decremented. pm_runtime_resume_and_get()
-takes care of this. Thus use it.
+Hardware manual of RZ/G3S (and RZ/G2L) specifies the following on the
+description of CXR35 register (chapter "PHY interface select register
+(CXR35)"): "After release reset, make write-access to this register before
+making write-access to other registers (except MDIOMOD). Even if not need
+to change the value of this register, make write-access to this register
+at least one time. Because RGMII/MII MODE is recognized by accessing this
+register".
 
-Along with this pm_runtime_resume_and_get() and reset_control_deassert()
-were moved before alloc_etherdev_mqs() to simplify the error path.
+The setup procedure for EMAC module (chapter "Setup procedure" of RZ/G3S,
+RZ/G2L manuals) specifies the E-MAC.CXR35 register is the first EMAC
+register that is to be configured.
 
-Also, in case pm_runtime_resume_and_get() returns error the reset signal
-is deasserted and runtime PM is disabled (by jumping to the proper
-error handling label).
+Note [A] from chapter "PHY interface select register (CXR35)" specifies
+the following:
+[A] The case which CXR35 SEL_XMII is used for the selection of RGMII/MII
+in APB Clock 100 MHz.
+(1) To use RGMII interface, Set ‘H’03E8_0000’ to this register.
+(2) To use MII interface, Set ‘H’03E8_0002’ to this register.
 
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+Take into account these indication.
+
+Fixes: 1089877ada8d ("ravb: Add RZ/G2L MII interface support")
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- drivers/net/ethernet/renesas/ravb_main.c | 28 +++++++++++++-----------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/renesas/ravb_main.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 342978bdbd7e..0486add302b3 100644
+index 0486add302b3..d798a7109a09 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2635,25 +2635,26 @@ static int ravb_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
- 				     "failed to get cpg reset\n");
+@@ -515,6 +515,15 @@ static void ravb_emac_init_gbeth(struct net_device *ndev)
+ {
+ 	struct ravb_private *priv = netdev_priv(ndev);
  
-+	error = reset_control_deassert(rstc);
-+	if (error)
-+		return error;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	error = pm_runtime_resume_and_get(&pdev->dev);
-+	if (error < 0)
-+		goto pm_runtime_disable;
-+
- 	ndev = alloc_etherdev_mqs(sizeof(struct ravb_private),
- 				  NUM_TX_QUEUE, NUM_RX_QUEUE);
--	if (!ndev)
--		return -ENOMEM;
--
-+	if (!ndev) {
-+		error = -ENOMEM;
-+		goto pm_runtime_put;
++	if (priv->phy_interface == PHY_INTERFACE_MODE_MII) {
++		ravb_write(ndev, (1000 << 16) | CXR35_SEL_XMII_MII, CXR35);
++		ravb_modify(ndev, CXR31, CXR31_SEL_LINK0 | CXR31_SEL_LINK1, 0);
++	} else {
++		ravb_write(ndev, (1000 << 16) | CXR35_SEL_XMII_RGMII, CXR35);
++		ravb_modify(ndev, CXR31, CXR31_SEL_LINK0 | CXR31_SEL_LINK1,
++			    CXR31_SEL_LINK0);
 +	}
- 	info = of_device_get_match_data(&pdev->dev);
++
+ 	/* Receive frame limit set register */
+ 	ravb_write(ndev, GBETH_RX_BUFF_MAX + ETH_FCS_LEN, RFLR);
  
- 	ndev->features = info->net_features;
- 	ndev->hw_features = info->net_hw_features;
+@@ -537,14 +546,6 @@ static void ravb_emac_init_gbeth(struct net_device *ndev)
  
--	error = reset_control_deassert(rstc);
--	if (error) {
--		free_netdev(ndev);
--		return error;
+ 	/* E-MAC interrupt enable register */
+ 	ravb_write(ndev, ECSIPR_ICDIP, ECSIPR);
+-
+-	if (priv->phy_interface == PHY_INTERFACE_MODE_MII) {
+-		ravb_modify(ndev, CXR31, CXR31_SEL_LINK0 | CXR31_SEL_LINK1, 0);
+-		ravb_write(ndev, (1000 << 16) | CXR35_SEL_XMII_MII, CXR35);
+-	} else {
+-		ravb_modify(ndev, CXR31, CXR31_SEL_LINK0 | CXR31_SEL_LINK1,
+-			    CXR31_SEL_LINK0);
 -	}
--
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_get_sync(&pdev->dev);
--
- 	if (info->multi_irqs) {
- 		if (info->err_mgmt_irqs)
- 			irq = platform_get_irq_byname(pdev, "dia");
-@@ -2878,8 +2879,9 @@ static int ravb_probe(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->refclk);
- out_release:
- 	free_netdev(ndev);
--
-+pm_runtime_put:
- 	pm_runtime_put(&pdev->dev);
-+pm_runtime_disable:
- 	pm_runtime_disable(&pdev->dev);
- 	reset_control_assert(rstc);
- 	return error;
+ }
+ 
+ static void ravb_emac_init_rcar(struct net_device *ndev)
 -- 
 2.39.2
 
