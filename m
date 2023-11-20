@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D3E7F11EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59E57F11EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbjKTL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
+        id S233050AbjKTL1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjKTL0r (ORCPT
+        with ESMTP id S232649AbjKTL1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:26:47 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544069C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:26:43 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4084de32db5so17828295e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:26:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700479602; x=1701084402; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=81y0BUjxhYX0m+rbPWqRJ0OIC+UNbPoSMg340RJn51Q=;
-        b=xSYdx8aDPPoFP0KdeeBaXe3zk0Un0+zUveMKx0hhCYgqWEkoUC/pGNG+9Dl1wYdW6U
-         MfhfPrXd51u3HNZ6hbhAe1Ry58B/llAq7xdzeMh6/WUBj7rE8iuF40q6e/Gec5LFcrBF
-         iYy8ElWKCglHB58RmSv41UsHJr878XlC+8hDrPaUDeDEB1KzyY6Q0oZK5Jzc6/g+VwzC
-         OToXYEQrg/JsLh7Vkrvu8klXXe+p91T7vFnhx1X/cLAkhaypILFLvXpisJmQ63eX+eR6
-         QK3dP/b2CQlKH5f66KQWJsi/gmTtSA065KWPgVD78985bnw9zWu0dyOU/AKO2qR6kTop
-         Yvzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700479602; x=1701084402;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=81y0BUjxhYX0m+rbPWqRJ0OIC+UNbPoSMg340RJn51Q=;
-        b=tQVIbXjTlGwX3e4grPnNTYUvPI/vK8B3CyfbJUenhwCCuW+rsCuf1E20DbW6igJZOB
-         Spa2Mol1K9JQ0WMo9J8qggzWuzo9rNS+8FCQXarCEBXdLrSW4fr3cbkug08BBCkoc2me
-         ILpNB4cjCC9swPRWdraSvKq37fJ1cGZts5ZV0Rnp2uLctmu9HEBeKa7zT6Ru5TQKi43D
-         xXxx1K13vnq08Fu40T1ax4eXBey7vkfMAAOYmaHlYPGljJOlP7VKKYn6TaICNZzW9EPf
-         dy4331Iq7QYbwzAQETZEx9GL4O7c57DqNsfztQJUwwQfb44lMKoJJZgfl0vJCvZLfNR6
-         eE4Q==
-X-Gm-Message-State: AOJu0YwpdGHk4ymES9W2XZsrSsDpWExe3ihxdRNMNY5KnHC20ZLz4GeI
-        BO3/C711+QfWnMJU+QB6pGNl9w==
-X-Google-Smtp-Source: AGHT+IH4w9GJxepzA7mbaASTzS/ffTp4zkm3iulaLsADbJXdCuK2ssYTf1uaq15/ecJlepInY14KZQ==
-X-Received: by 2002:a05:600c:1394:b0:409:5d7d:b26d with SMTP id u20-20020a05600c139400b004095d7db26dmr4930617wmf.15.1700479601654;
-        Mon, 20 Nov 2023 03:26:41 -0800 (PST)
-Received: from [10.1.1.118] ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id 1-20020a05600c230100b003fefb94ccc9sm12860464wmo.11.2023.11.20.03.26.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 03:26:40 -0800 (PST)
-Message-ID: <08e0126f8075711e7bd59ca4110c2817c905d5a9.camel@linaro.org>
-Subject: Re: [PATCH] iommu: Avoid more races around device probe
-From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
-        lpieralisi@kernel.org, quic_zhenhuah@quicinc.com, jgg@nvidia.com
-Date:   Mon, 20 Nov 2023 11:26:39 +0000
-In-Reply-To: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
-References: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.49.2-2 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Mon, 20 Nov 2023 06:27:13 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AC89D
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:27:07 -0800 (PST)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231120112705epoutp023eb04f8ba3720f8d3e049c8e7271baff~ZUTWxKwqO0929709297epoutp02M
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:27:05 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231120112705epoutp023eb04f8ba3720f8d3e049c8e7271baff~ZUTWxKwqO0929709297epoutp02M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700479625;
+        bh=bpZOhY/GhpO+l6dOnhYbxV5P4wZ4pF9meKRSZnzf1g8=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=e5vkjpm0LDh/Sa/PxZq0M6Fc5pYJBjtFhs2jRB9V0HVblYBFmbtepLPNVXe54Hy5X
+         4lXT+UV2IAONpn1yNiF68lz4dTUhoZpYrrn3aui+k+S/LIT7aKKwdoGChZZ2PYifHe
+         vPavSzCIuaC/uSLBRD55UD9ISRHrRRKxARjAoil4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20231120112704epcas2p1e17db548167e332f7e692cebafbf6510~ZUTV48jle1130811308epcas2p1T;
+        Mon, 20 Nov 2023 11:27:04 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.100]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4SYlbC6L9lz4x9Px; Mon, 20 Nov
+        2023 11:27:03 +0000 (GMT)
+X-AuditID: b6c32a4d-9f7ff70000004a32-d6-655b4287b49c
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AF.7B.18994.7824B556; Mon, 20 Nov 2023 20:27:03 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE:(2) [f2fs-dev] [PATCH v1] f2fs: New victim selection for GC
+Reply-To: yonggil.song@samsung.com
+Sender: Yonggil Song <yonggil.song@samsung.com>
+From:   Yonggil Song <yonggil.song@samsung.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "chao@kernel.org" <chao@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Seokhwan Kim <sukka.kim@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Siwoo Jung <siu.jung@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <ZVekM0GmX-Jz4T0C@google.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20231120112702epcms2p4e4408fed82d4385624eb32b17880e613@epcms2p4>
+Date:   Mon, 20 Nov 2023 20:27:02 +0900
+X-CMS-MailID: 20231120112702epcms2p4e4408fed82d4385624eb32b17880e613
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmhW67U3SqwZPdOhanp55lsnhyoJ3R
+        YtWDcIsn62cxWyxsW8JicWmRu8XlXXPYLM5PfM1ksapjLqMDp8emVZ1sHrsXfGbyWNw3mdWj
+        b8sqRo/Pm+QCWKOybTJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8
+        AnTdMnOAzlFSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFJgX6BUn5haX5qXr5aWW
+        WBkaGBiZAhUmZGcsfdPKXNAZVdFycwNjA2OTWxcjJ4eEgInEq7uXmboYuTiEBPYwSqxbd5ml
+        i5GDg1dAUOLvDmGQGmEBd4m/befZQGwhASWJawd6WSDi+hKbFy9jB7HZBHQl/m5YDmaLCKhI
+        HFp0mR1kJrPABGaJC12v2SCW8UrMaH/KAmFLS2xfvpURxOYU0JL4+fInVFxD4seyXmYIW1Ti
+        5uq37DD2+2PzGSFsEYnWe2ehagQlHvzcDRWXlFh06DwThJ0v8XfFdai9NRJbG9qg4voS1zo2
+        gu3iFfCVuHFhKth8FgFViQOTu6BqXCS6n88FizMLyEtsfzuHGRQmzAKaEut36YOYEgLKEkdu
+        sUBU8El0HP7LDvPhjnlPoKaoSWzetJkVwpaRuPC4DepKD4npO7czTWBUnIUI6FlIds1C2LWA
+        kXkVo1RqQXFuemqyUYGhbl5qOTx+k/NzNzGCE6eW7w7G1+v/6h1iZOJgPMQowcGsJML7TSgi
+        VYg3JbGyKrUoP76oNCe1+BCjKdCnE5mlRJPzgak7ryTe0MTSwMTMzNDcyNTAXEmc917r3BQh
+        gfTEktTs1NSC1CKYPiYOTqkGJrvNbsm7r0aKJM1f/nHLhbudb0PzFY+82cC+dXtrYmgm+0XP
+        C/MWxryyrrbiP/Bbbm/Njg3NG/ZcvM7F8lD60XrfaO/X7+ezBOmvWrf10g/WTI3tb58/ML/+
+        zLlrw+sG44r4aKULTu9u2k2/5v7hyYfr8wQOcJWfeXD+4e6WyZx3bl9xdbm02PjW0lIm73tB
+        i65yfkxJixJc/TF5yvXIGMfXrZbLFwWqnX+/ne+ExAOFjjnhzpbPHfdWKuxrbGz65SB2atGn
+        KeJaqn1fg3c+Y06asuXY8bgJRgfbIjcz5jN9kCp2XVtVI3/4dL9OdOCN3QnVzs/6ZjuYCsUn
+        VbjvsYo/fXszw9bCE+y9mXMmNp9QYinOSDTUYi4qTgQA21tnviUEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231012100345epcms2p84b95e24ee5e7965858ab8be99fbc3eff
+References: <ZVekM0GmX-Jz4T0C@google.com>
+        <20231012100345epcms2p84b95e24ee5e7965858ab8be99fbc3eff@epcms2p8>
+        <20231026091838epcms2p46f14260fdaf53e27ee6374887ed87f41@epcms2p4>
+        <CGME20231012100345epcms2p84b95e24ee5e7965858ab8be99fbc3eff@epcms2p4>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,222 +103,320 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+>Hi Yonggil,
+>
+>On 10/26, Yonggil Song wrote:
+>> Overview
+>> ========
+>> 
+>> Introduce a new way to select the data section first when selecting a
+>> victim in foreground GC. This victim selection method works when the
+>> prefer_data_victim mount option is enabled. If foreground GC migrates only
+>> data sections and runs out of free sections, it cleans dirty node sections
+>> to get more free sections.
+>> 
+>> Problem
+>> =======
+>> 
+>> If the total amount of nodes is larger than the size of one section, nodes
+>> occupy multiple sections, and node victims are often selected because the
+>> gc cost is lowered by data block migration in foreground gc. Since moving
+>> the data section causes frequent node victim selection, victim threshing
+>> occurs in the node section. This results in an increase in WAF.
+>
+>How does that work w/ ATGC?
+>
 
-On Wed, 2023-11-15 at 18:25 +0000, Robin Murphy wrote:
-> It turns out there are more subtle races beyond just the main part of
-> __iommu_probe_device() itself running in parallel - the
-> dev_iommu_free()
-> on the way out of an unsuccessful probe can still manage to trip up
-> concurrent accesses to a device's fwspec. Thus, extend the scope of
-> iommu_probe_device_lock() to also serialise fwspec creation and
-> initial
-> retrieval.
->=20
-> Reported-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> Link:
-> https://lore.kernel.org/linux-iommu/e2e20e1c-6450-4ac5-9804-b0000acdf7de@=
-quicinc.com/
-> Fixes: 01657bc14a39 ("iommu: Avoid races around device probe")
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Hi jaegeuk.
 
-Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-Tested-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org> (using continuous
-boot test loop)
+I didn't consider ATGC because this feature is only supported by zoned devices(LFS).
+I didn't add ATGC exception handling because I'm only enabling this feature when
+it's a zoned device, but should I?
 
-I like that this is easily back-portable to 6.1, thanks for this patch
-:-)
-
-Cheers,
-Andr=C3=A9
-
-
-> ---
->=20
-> This is my idea of a viable fix, since it does not need a 700-line
-> diffstat to make the code do what it was already *trying* to do
-> anyway.
-> This stuff should fundamentally not be hanging off driver probe in
-> the
-> first place, so I'd rather get on with removing the underlying
-> brokenness than waste time and effort polishing it any further.
->=20
-> =C2=A0drivers/acpi/scan.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 ++++++-
-> =C2=A0drivers/iommu/iommu.c=C2=A0=C2=A0=C2=A0 | 20 ++++++++++----------
-> =C2=A0drivers/iommu/of_iommu.c | 12 +++++++++---
-> =C2=A0include/linux/iommu.h=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
-> =C2=A04 files changed, 26 insertions(+), 14 deletions(-)
->=20
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index fa5dd71a80fa..02bb2cce423f 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1568,17 +1568,22 @@ static const struct iommu_ops
-> *acpi_iommu_configure_id(struct device *dev,
-> =C2=A0	int err;
-> =C2=A0	const struct iommu_ops *ops;
-> =C2=A0
-> +	/* Serialise to make dev->iommu stable under our potential
-> fwspec */
-> +	mutex_lock(&iommu_probe_device_lock);
-> =C2=A0	/*
-> =C2=A0	 * If we already translated the fwspec there is nothing left
-> to do,
-> =C2=A0	 * return the iommu_ops.
-> =C2=A0	 */
-> =C2=A0	ops =3D acpi_iommu_fwspec_ops(dev);
-> -	if (ops)
-> +	if (ops) {
-> +		mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0		return ops;
-> +	}
-> =C2=A0
-> =C2=A0	err =3D iort_iommu_configure_id(dev, id_in);
-> =C2=A0	if (err && err !=3D -EPROBE_DEFER)
-> =C2=A0		err =3D viot_iommu_configure(dev);
-> +	mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0
-> =C2=A0	/*
-> =C2=A0	 * If we have reason to believe the IOMMU driver missed the
-> initial
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index f17a1113f3d6..e0c962648dde 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -485,11 +485,12 @@ static void iommu_deinit_device(struct device
-> *dev)
-> =C2=A0	dev_iommu_free(dev);
-> =C2=A0}
-> =C2=A0
-> +DEFINE_MUTEX(iommu_probe_device_lock);
-> +
-> =C2=A0static int __iommu_probe_device(struct device *dev, struct list_hea=
-d
-> *group_list)
-> =C2=A0{
-> =C2=A0	const struct iommu_ops *ops =3D dev->bus->iommu_ops;
-> =C2=A0	struct iommu_group *group;
-> -	static DEFINE_MUTEX(iommu_probe_device_lock);
-> =C2=A0	struct group_device *gdev;
-> =C2=A0	int ret;
-> =C2=A0
-> @@ -502,17 +503,15 @@ static int __iommu_probe_device(struct device
-> *dev, struct list_head *group_list
-> =C2=A0	 * probably be able to use device_lock() here to minimise
-> the scope,
-> =C2=A0	 * but for now enforcing a simple global ordering is fine.
-> =C2=A0	 */
-> -	mutex_lock(&iommu_probe_device_lock);
-> +	lockdep_assert_held(&iommu_probe_device_lock);
-> =C2=A0
-> =C2=A0	/* Device is probed already if in a group */
-> -	if (dev->iommu_group) {
-> -		ret =3D 0;
-> -		goto out_unlock;
-> -	}
-> +	if (dev->iommu_group)
-> +		return 0;
-> =C2=A0
-> =C2=A0	ret =3D iommu_init_device(dev, ops);
-> =C2=A0	if (ret)
-> -		goto out_unlock;
-> +		return ret;
-> =C2=A0
-> =C2=A0	group =3D dev->iommu_group;
-> =C2=A0	gdev =3D iommu_group_alloc_device(group, dev);
-> @@ -548,7 +547,6 @@ static int __iommu_probe_device(struct device
-> *dev, struct list_head *group_list
-> =C2=A0			list_add_tail(&group->entry, group_list);
-> =C2=A0	}
-> =C2=A0	mutex_unlock(&group->mutex);
-> -	mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0
-> =C2=A0	if (dev_is_pci(dev))
-> =C2=A0		iommu_dma_set_pci_32bit_workaround(dev);
-> @@ -562,8 +560,6 @@ static int __iommu_probe_device(struct device
-> *dev, struct list_head *group_list
-> =C2=A0	iommu_deinit_device(dev);
-> =C2=A0	mutex_unlock(&group->mutex);
-> =C2=A0	iommu_group_put(group);
-> -out_unlock:
-> -	mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0
-> =C2=A0	return ret;
-> =C2=A0}
-> @@ -573,7 +569,9 @@ int iommu_probe_device(struct device *dev)
-> =C2=A0	const struct iommu_ops *ops;
-> =C2=A0	int ret;
-> =C2=A0
-> +	mutex_lock(&iommu_probe_device_lock);
-> =C2=A0	ret =3D __iommu_probe_device(dev, NULL);
-> +	mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0	if (ret)
-> =C2=A0		return ret;
-> =C2=A0
-> @@ -1822,7 +1820,9 @@ static int probe_iommu_group(struct device
-> *dev, void *data)
-> =C2=A0	struct list_head *group_list =3D data;
-> =C2=A0	int ret;
-> =C2=A0
-> +	mutex_lock(&iommu_probe_device_lock);
-> =C2=A0	ret =3D __iommu_probe_device(dev, group_list);
-> +	mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0	if (ret =3D=3D -ENODEV)
-> =C2=A0		ret =3D 0;
-> =C2=A0
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index 157b286e36bf..c25b4ae6aeee 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -112,16 +112,20 @@ const struct iommu_ops
-> *of_iommu_configure(struct device *dev,
-> =C2=A0					=C2=A0=C2=A0 const u32 *id)
-> =C2=A0{
-> =C2=A0	const struct iommu_ops *ops =3D NULL;
-> -	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
-> +	struct iommu_fwspec *fwspec;
-> =C2=A0	int err =3D NO_IOMMU;
-> =C2=A0
-> =C2=A0	if (!master_np)
-> =C2=A0		return NULL;
-> =C2=A0
-> +	/* Serialise to make dev->iommu stable under our potential
-> fwspec */
-> +	mutex_lock(&iommu_probe_device_lock);
-> +	fwspec =3D dev_iommu_fwspec_get(dev);
-> =C2=A0	if (fwspec) {
-> -		if (fwspec->ops)
-> +		if (fwspec->ops) {
-> +			mutex_unlock(&iommu_probe_device_lock);
-> =C2=A0			return fwspec->ops;
-> -
-> +		}
-> =C2=A0		/* In the deferred case, start again from scratch */
-> =C2=A0		iommu_fwspec_free(dev);
-> =C2=A0	}
-> @@ -155,6 +159,8 @@ const struct iommu_ops *of_iommu_configure(struct
-> device *dev,
-> =C2=A0		fwspec =3D dev_iommu_fwspec_get(dev);
-> =C2=A0		ops=C2=A0=C2=A0=C2=A0 =3D fwspec->ops;
-> =C2=A0	}
-> +	mutex_unlock(&iommu_probe_device_lock);
-> +
-> =C2=A0	/*
-> =C2=A0	 * If we have reason to believe the IOMMU driver missed the
-> initial
-> =C2=A0	 * probe for dev, replay it to get things in order.
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index ec289c1016f5..6291aa7b079b 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -845,6 +845,7 @@ static inline void dev_iommu_priv_set(struct
-> device *dev, void *priv)
-> =C2=A0	dev->iommu->priv =3D priv;
-> =C2=A0}
-> =C2=A0
-> +extern struct mutex iommu_probe_device_lock;
-> =C2=A0int iommu_probe_device(struct device *dev);
-> =C2=A0
-> =C2=A0int iommu_dev_enable_feature(struct device *dev, enum
-> iommu_dev_features f);
-
+>> 
+>> Experiment
+>> ==========
+>> 
+>> Test environment is as follows.
+>> 
+>> 	System info
+>> 	  - 3.6GHz, 16 core CPU
+>> 	  - 36GiB Memory
+>> 	Device info
+>> 	  - a conventional null_blk with 228MiB
+>> 	  - a sequential null_blk with 4068 zones of 8MiB
+>> 	Format
+>> 	  - mkfs.f2fs <conv null_blk> -c <seq null_blk> -m -Z 8 -o 3.89
+>> 	Mount
+>> 	  - mount -o prefer_data_victim <conv null_blk> <mount point>
+>> 	Fio script
+>> 	  - fio --rw=randwrite --bs=4k --ba=4k --filesize=31187m --norandommap --overwrite=1 --name=job1 --filename=./mnt/sustain --io_size=128g
+>> 	WAF calculation
+>> 	  - (IOs on conv. null_blk + IOs on seq. null_blk) / random write IOs
+>> 
+>> Conclusion
+>> ==========
+>> 
+>> This experiment showed that the WAF was reduced by 29% (18.75 -> 13.3) when
+>> the data section was selected first when selecting GC victims. This was
+>> achieved by reducing the migration of the node blocks by 69.4%
+>> (253,131,743 blks -> 77,463,278 blks). It is possible to achieve low WAF
+>> performance with the GC victim selection method in environments where the
+>> section size is relatively small.
+>> 
+>> Signed-off-by: Yonggil Song <yonggil.song@samsung.com>
+>> ---
+>>  Documentation/filesystems/f2fs.rst |   3 +
+>>  fs/f2fs/f2fs.h                     |   2 +
+>>  fs/f2fs/gc.c                       | 100 +++++++++++++++++++++++------
+>>  fs/f2fs/segment.h                  |   2 +
+>>  fs/f2fs/super.c                    |   9 +++
+>>  5 files changed, 95 insertions(+), 21 deletions(-)
+>> 
+>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+>> index d32c6209685d..58e6d001d7ab 100644
+>> --- a/Documentation/filesystems/f2fs.rst
+>> +++ b/Documentation/filesystems/f2fs.rst
+>> @@ -367,6 +367,9 @@ errors=%s		 Specify f2fs behavior on critical errors. This supports modes:
+>>  			 pending node write	drop		keep		N/A
+>>  			 pending meta write	keep		keep		N/A
+>>  			 ====================== =============== =============== ========
+>> +prefer_data_victim	 When selecting victims in foreground GC, victims of data type
+>> +			 are prioritized. This option minimizes GC victim threshing
+>> +			 in the node section to reduce WAF.
+>>  ======================== ============================================================
+>>  
+>>  Debugfs Entries
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index 6d688e42d89c..8b31fa2ea09a 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -108,6 +108,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+>>  #define	F2FS_MOUNT_GC_MERGE		0x02000000
+>>  #define F2FS_MOUNT_COMPRESS_CACHE	0x04000000
+>>  #define F2FS_MOUNT_AGE_EXTENT_CACHE	0x08000000
+>> +#define F2FS_MOUNT_PREFER_DATA_VICTIM	0x10000000
+>>  
+>>  #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+>>  #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+>> @@ -1648,6 +1649,7 @@ struct f2fs_sb_info {
+>>  	struct f2fs_mount_info mount_opt;	/* mount options */
+>>  
+>>  	/* for cleaning operations */
+>> +	bool need_node_clean;			/* only used for prefer_data_victim */
+>>  	struct f2fs_rwsem gc_lock;		/*
+>>  						 * semaphore for GC, avoid
+>>  						 * race between GC and GC or CP
+>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+>> index f550cdeaa663..8a2da808a5fb 100644
+>> --- a/fs/f2fs/gc.c
+>> +++ b/fs/f2fs/gc.c
+>> @@ -752,6 +752,8 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+>>  	unsigned int last_segment;
+>>  	unsigned int nsearched;
+>>  	bool is_atgc;
+>> +	bool is_prefer_data_victim =
+>> +		test_opt(sbi, PREFER_DATA_VICTIM) && gc_type == FG_GC;
+>>  	int ret = 0;
+>>  
+>>  	mutex_lock(&dirty_i->seglist_lock);
+>> @@ -767,6 +769,11 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+>>  	p.oldest_age = 0;
+>>  	p.min_cost = get_max_cost(sbi, &p);
+>>  
+>> +	if (is_prefer_data_victim) {
+>> +		p.node_min_cost = p.min_cost;
+>> +		p.node_min_segno = p.min_segno;
+>> +	}
+>> +
+>>  	is_atgc = (p.gc_mode == GC_AT || p.alloc_mode == AT_SSR);
+>>  	nsearched = 0;
+>>  
+>> @@ -884,9 +891,25 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+>>  
+>>  		cost = get_gc_cost(sbi, segno, &p);
+>>  
+>> -		if (p.min_cost > cost) {
+>> -			p.min_segno = segno;
+>> -			p.min_cost = cost;
+>> +		if (is_prefer_data_victim) {
+>> +			if (IS_DATASEG(get_seg_entry(sbi, segno)->type)) {
+>> +				/* update data segments victim */
+>> +				if (p.min_cost > cost) {
+>> +					p.min_segno = segno;
+>> +					p.min_cost = cost;
+>> +				}
+>> +			} else {
+>> +				/* update node segments victim */
+>> +				if (p.node_min_cost > cost) {
+>> +					p.node_min_segno = segno;
+>> +					p.node_min_cost = cost;
+>> +				}
+>> +			}
+>> +		} else {
+>> +			if (p.min_cost > cost) {
+>> +				p.min_segno = segno;
+>> +				p.min_cost = cost;
+>> +			}
+>>  		}
+>>  next:
+>>  		if (nsearched >= p.max_search) {
+>> @@ -901,6 +924,25 @@ int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+>>  		}
+>>  	}
+>>  
+>> +	if (is_prefer_data_victim && sbi->need_node_clean) {
+>> +		/* we need to clean node sections */
+>> +		if (p.min_cost > p.node_min_cost) {
+>> +			p.min_segno = p.node_min_segno;
+>> +			p.min_cost = p.node_min_cost;
+>> +		} else {
+>> +			/*
+>> +			 * data victim cost is the lowest.
+>> +			 * if free sections are enough, stop cleaning node victim.
+>> +			 * if not, it goes on by GCing data victims.
+>> +			 */
+>> +			if (has_enough_free_secs(sbi, prefree_segments(sbi), 0)) {
+>> +				sbi->need_node_clean = false;
+>> +				p.min_segno = NULL_SEGNO;
+>> +				goto out;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>>  	/* get victim for GC_AT/AT_SSR */
+>>  	if (is_atgc) {
+>>  		lookup_victim_by_age(sbi, &p);
+>> @@ -1830,8 +1872,27 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
+>>  		goto stop;
+>>  	}
+>>  
+>> +	__get_secs_required(sbi, NULL, &upper_secs, NULL);
+>> +
+>> +	/*
+>> +	 * Write checkpoint to reclaim prefree segments.
+>> +	 * We need more three extra sections for writer's data/node/dentry.
+>> +	 */
+>> +	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS) {
+>> +		if (test_opt(sbi, PREFER_DATA_VICTIM)) {
+>> +			sbi->need_node_clean = true;
+>> +		}
+>> +		if (prefree_segments(sbi)) {
+>> +			ret = f2fs_write_checkpoint(sbi, &cpc);
+>> +			if (ret)
+>> +				goto stop;
+>> +			/* Reset due to checkpoint */
+>> +			sec_freed = 0;
+>> +		}
+>> +	}
+>> +
+>>  	/* Let's run FG_GC, if we don't have enough space. */
+>> -	if (has_not_enough_free_secs(sbi, 0, 0)) {
+>> +	if (gc_type == BG_GC && has_not_enough_free_secs(sbi, 0, 0)) {
+>>  		gc_type = FG_GC;
+>>  
+>>  		/*
+>> @@ -1882,7 +1943,17 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
+>>  			if (!gc_control->no_bg_gc &&
+>>  			    total_sec_freed < gc_control->nr_free_secs)
+>>  				goto go_gc_more;
+>> -			goto stop;
+>> +			if (test_opt(sbi, PREFER_DATA_VICTIM)) {
+>> +				/*
+>> +				 * If the need_node_clean flag is set
+>> +				 * even though there are enough free
+>> +				 * sections, node cleaning will continue.
+>> +				 */
+>> +				if (!sbi->need_node_clean)
+>> +					goto stop;
+>> +			} else {
+>> +				goto stop;
+>> +			}
+>>  		}
+>>  		if (sbi->skipped_gc_rwsem)
+>>  			skipped_round++;
+>> @@ -1897,21 +1968,6 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
+>>  		goto stop;
+>>  	}
+>>  
+>> -	__get_secs_required(sbi, NULL, &upper_secs, NULL);
+>> -
+>> -	/*
+>> -	 * Write checkpoint to reclaim prefree segments.
+>> -	 * We need more three extra sections for writer's data/node/dentry.
+>> -	 */
+>> -	if (free_sections(sbi) <= upper_secs + NR_GC_CHECKPOINT_SECS &&
+>> -				prefree_segments(sbi)) {
+>> -		stat_inc_cp_call_count(sbi, TOTAL_CALL);
+>> -		ret = f2fs_write_checkpoint(sbi, &cpc);
+>> -		if (ret)
+>> -			goto stop;
+>> -		/* Reset due to checkpoint */
+>> -		sec_freed = 0;
+>> -	}
+>>  go_gc_more:
+>>  	segno = NULL_SEGNO;
+>>  	goto gc_more;
+>> @@ -1920,8 +1976,10 @@ int f2fs_gc(struct f2fs_sb_info *sbi, struct f2fs_gc_control *gc_control)
+>>  	SIT_I(sbi)->last_victim[ALLOC_NEXT] = 0;
+>>  	SIT_I(sbi)->last_victim[FLUSH_DEVICE] = gc_control->victim_segno;
+>>  
+>> -	if (gc_type == FG_GC)
+>> +	if (gc_type == FG_GC) {
+>>  		f2fs_unpin_all_sections(sbi, true);
+>> +		sbi->need_node_clean = false;
+>> +	}
+>>  
+>>  	trace_f2fs_gc_end(sbi->sb, ret, total_freed, total_sec_freed,
+>>  				get_pages(sbi, F2FS_DIRTY_NODES),
+>> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+>> index 2ca8fb5d0dc4..d55fa1fee2e0 100644
+>> --- a/fs/f2fs/segment.h
+>> +++ b/fs/f2fs/segment.h
+>> @@ -197,8 +197,10 @@ struct victim_sel_policy {
+>>  	unsigned int offset;		/* last scanned bitmap offset */
+>>  	unsigned int ofs_unit;		/* bitmap search unit */
+>>  	unsigned int min_cost;		/* minimum cost */
+>> +	unsigned int node_min_cost;	/* minimum cost of node type section */
+>>  	unsigned long long oldest_age;	/* oldest age of segments having the same min cost */
+>>  	unsigned int min_segno;		/* segment # having min. cost */
+>> +	unsigned int node_min_segno;	/* node segment # having min. cost */
+>>  	unsigned long long age;		/* mtime of GCed section*/
+>>  	unsigned long long age_threshold;/* age threshold */
+>>  };
+>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>> index a8c8232852bb..133137dd6fd0 100644
+>> --- a/fs/f2fs/super.c
+>> +++ b/fs/f2fs/super.c
+>> @@ -165,6 +165,7 @@ enum {
+>>  	Opt_memory_mode,
+>>  	Opt_age_extent_cache,
+>>  	Opt_errors,
+>> +	Opt_prefer_data_victim,
+>>  	Opt_err,
+>>  };
+>>  
+>> @@ -245,6 +246,7 @@ static match_table_t f2fs_tokens = {
+>>  	{Opt_memory_mode, "memory=%s"},
+>>  	{Opt_age_extent_cache, "age_extent_cache"},
+>>  	{Opt_errors, "errors=%s"},
+>> +	{Opt_prefer_data_victim, "prefer_data_victim"},
+>>  	{Opt_err, NULL},
+>>  };
+>>  
+>> @@ -1286,6 +1288,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>  			}
+>>  			kfree(name);
+>>  			break;
+>> +		case Opt_prefer_data_victim:
+>> +			if (!f2fs_sb_has_blkzoned(sbi)) {
+>> +				f2fs_err(sbi, "prefer_data_victim is only allowed with zoned block device feature");
+>> +				return -EINVAL;
+>> +			}
+>> +			set_opt(sbi, PREFER_DATA_VICTIM);
+>> +			break;
+>>  		default:
+>>  			f2fs_err(sbi, "Unrecognized mount option \"%s\" or missing value",
+>>  				 p);
+>> -- 
+>> 2.34.1
