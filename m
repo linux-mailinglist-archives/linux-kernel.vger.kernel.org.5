@@ -2,246 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787957F153F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FB97F1541
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjKTOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:04:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
+        id S233423AbjKTOFs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 09:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233730AbjKTOEa (ORCPT
+        with ESMTP id S233532AbjKTOF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:04:30 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C746F3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:04:13 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32fadd4ad09so3320617f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:04:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700489052; x=1701093852; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CBRhAg9oeeIt14xtcuewTxfszmZOswydLjQjk1Y0cQ0=;
-        b=I/4CTUUXrA0t9Eu8PJBURBh0l/+HDiSHr3oIf8GfOmGf5pHjApCNqO8zGGtXf4gQlb
-         6mjJF1VXKY71hyAdCpkfYDFONhEQA+xIZg/P224NwG7HvHzroRrFfkH8d+XCok91F+Vp
-         8OeSxD0a9D6LTw7r01eldr/2BhcoU8CNCpH18xD2M92jh+NAi8GvKZbC6WPWtov9LTgW
-         Bl07FgUMz8nZPoPdP6I1/j/pzmWWRGjUfyrx1eviOkhTOmagGRGv0bVHheyD7cZOaMwl
-         kEeKCrHMiYA3pXBrUlcFQBTyM2r+pdJPdFlsZ3B7YK9a5Lvzptgqtqi4bC/HmAUGDXs+
-         hiJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700489052; x=1701093852;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CBRhAg9oeeIt14xtcuewTxfszmZOswydLjQjk1Y0cQ0=;
-        b=oPBIS3IknKKgrn6UseIruUtxpB9KmFnprWZVrvjJUIZF2KvFthEM5zveA2l3O29S0J
-         JSmRP0Qd1iNFgMt/2pkgSaSKl8CpJoZnw4LeIu7ZlWGZDF7M1CZykDbocnPSRxw3kWQf
-         dNW4QoYNsi3PxlsZd1PAOiq6nEgz37lFl6cM1TiG4v/fNfaRUEyvEWIpR0P1UKLgxrza
-         04Z1NAD9cxDjPWBJO4NssESfk0InBl/wT9aUafsZJZbEp5IIVXHLxpf8ghIZrqwnyKxr
-         pNVaSkBF8LYLF8cX/35bn0orz+krPm6roUb2+mfB2yaizbZ/6vl/bxPaEDrzvjNeJiCq
-         eodg==
-X-Gm-Message-State: AOJu0YzFWww77/6TSzDcWEfGc+/16XoIOli+wsyYzc0ilwelORM4pTxB
-        BA112fee86vk7n70jRMQVrDBuw==
-X-Google-Smtp-Source: AGHT+IFjr1r7yZob1E566V3Mqv9IHQfS0bAjVNf5DoqPd9RJYC+vHUFmf5FMQAWybD9NO4YXYdj2EQ==
-X-Received: by 2002:a5d:46c9:0:b0:32f:acb6:7f6a with SMTP id g9-20020a5d46c9000000b0032facb67f6amr4130963wrs.64.1700489051665;
-        Mon, 20 Nov 2023 06:04:11 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id m10-20020a5d4a0a000000b00331702ab6acsm8620379wrq.7.2023.11.20.06.04.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 06:04:10 -0800 (PST)
-Message-ID: <8aa11758-5eee-427b-adcb-c3578a521daf@linaro.org>
-Date:   Mon, 20 Nov 2023 15:04:07 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117192305.17612-1-petre.rodan@subdimension.ro>
- <5b2e4b05-9408-48ea-92ac-15883e102013@linaro.org> <ZVtiVM2Gm1x1j_G1@sunspire>
+        Mon, 20 Nov 2023 09:05:29 -0500
+Received: from IND01-MAX-obe.outbound.protection.outlook.com (mail-maxind01on2057.outbound.protection.outlook.com [40.107.222.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C394010D0;
+        Mon, 20 Nov 2023 06:05:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OCjtRAJ+K4GMcJkHcX/hSIk4Ey4IM+Ew5qmcMIaUdfWWcYkGnXF6Ozf1QgGsDdH6nsccRDhNZ05RqWtoN4midqHy9VCTY0gZ705R+EeeLnGTVO1WClYEDIWXEGPCIiQ5z6OMdIfBwsWQp+XhKS1LJlNg9RcJ61U+4ZBkqQXzZlK+1UZ6IsSCRx2mjzgEgDjOsNTaj946LTztItOFCZieM4i6r+fsBkJzRi1lXgTXyDKDf/KJDZ79+VbVRkoFRDykHyLb8Oj+w/cS6Lls8dy0xvEh8rAh2EpfZYe8SQt/wsuhiw2JridfaGHc62CpunN1pV20QhXo68EP4QG66VBJJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s9O53FPsRH7vVM5KAECj1cuM9SKQ0JPXmveWlPdv6jM=;
+ b=Iq78ZXQA70x8X3fvUjISS8mnz+bfvh4lFDKOkboN9W0aEvUDT57IL8Ep73naOGnUULoELLqsKeZo3Oj7CxrXvxcK1n8OOys0eJh44cxFlz7Mu46HKjsfqFefAVliMcdbKkrOW20RmRVeljnSoVBuXc82G0p/S4bt45o5spV9nOwmqmxeuVTK/4UHK9kGJkpVfUM1NlbDdLD5tSadE2eVwfjbWrfRvG99ZhHGUiOKe+uDH8kkLPKW34PF9GOEQaF+xmrqg+pBzvrdFxReaj+qKAICePeOSAleXdzqUAly1+xOc6rWevPNHDtqzqI/L0FvCUXeqVN325qFkAbOvAfJqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=siliconsignals.io; dmarc=pass action=none
+ header.from=siliconsignals.io; dkim=pass header.d=siliconsignals.io; arc=none
+Received: from MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:8::12)
+ by PN2PR01MB9864.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:153::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
+ 2023 14:05:07 +0000
+Received: from MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::1848:62aa:1da4:1924]) by MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
+ ([fe80::1848:62aa:1da4:1924%3]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
+ 14:05:07 +0000
+From:   Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+To:     kernel test robot <lkp@intel.com>,
+        "jmaneyrol@invensense.com" <jmaneyrol@invensense.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>
+Subject: Re: [PATCH v2 1/1] Added tilt interrupt support in inv_icm42600
+Thread-Topic: [PATCH v2 1/1] Added tilt interrupt support in inv_icm42600
+Thread-Index: AQHaGJM2NB60QFB4YkeQgZumYPYvxbCDQOaAgAAC2fg=
+Date:   Mon, 20 Nov 2023 14:05:07 +0000
+Message-ID: <MAXPR01MB41180FA9B8B59B63AB488753EAB4A@MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM>
+References: <20231116134528.21467-1-hiten.chauhan@siliconsignals.io>
+ <202311202146.D4gNcBnT-lkp@intel.com>
+In-Reply-To: <202311202146.D4gNcBnT-lkp@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZVtiVM2Gm1x1j_G1@sunspire>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=siliconsignals.io;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MAXPR01MB4118:EE_|PN2PR01MB9864:EE_
+x-ms-office365-filtering-correlation-id: 2257a4d5-13f5-4e00-9707-08dbe9d1b39f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IuQggEFmFVSPGAohrN1a0I70+r2X00cKfOSSeJrDYBV2L1L7fnuAOo75owJ8CqWY3lXxA1e2+lXTBzbXVki0emQuQmA3fCnDDMNI1AtlIT0n9ZIgohn6R6vtSmEKEcnjZnm92q/Rjfe83fvDkgM3ZlRfIwx/U7FpyNn8vcY99BKQOrpRcAR+g8TzIfj6LDdIprYO18NBoNDkclhkEU0LRueqyZ67/HbToIi4foO59k6D601EWSomWsQ7sZ4SiLoe21dKz+L/Dxv1ZpEZHbl6U4KA1Um2zYenjbUe+ETIqWmO+qOPRl83I7ZYk8FvRiXZa6j+4owDnJevyBaRNjlOLYZ2RPNQNbAllSuPLno5AU/lc2BLb3+AYwHFKrGRXD8U5/RcthPtbfrWV3wRElFA/a1v7v5K/S5vO9wSdxoJE4ZliPdux7rP3eHXvnAKxEDTyYFXgozoJEtiiBOGzrteOKGsneZDWq23MCaDvVY8YipmOHP8zz6IdXx6yJqy3kaKSNZk0xfTdLF3dBWGiqzeOOmr9JPE5G8rnY6bxOSNTXcSeDLiD8jvzqpDEwC9X43UguXA3yQkgosMpydPrj7KLIewQDddPs4+zr/MtKLRyDgcp6Ph1KgdwL3u54TBrNev
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(376002)(136003)(39830400003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(7696005)(6506007)(9686003)(53546011)(26005)(122000001)(110136005)(66446008)(66946007)(76116006)(91956017)(66556008)(316002)(4326008)(8676002)(8936002)(64756008)(66476007)(966005)(478600001)(55016003)(83380400001)(38100700002)(71200400001)(5660300002)(41300700001)(33656002)(2906002)(86362001)(44832011)(52536014)(38070700009)(3613699003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?kVLSJNl1E4DrugeZ+CAit4AeZUMkwQtGH8n38vDCq30ahKTYB4PwzPBYjH?=
+ =?iso-8859-1?Q?dAqa+ySlPCtsMhRvOYLtCXKeDnUzzdzbTGk5kpdl1pI2zkPVbbqAK449Yh?=
+ =?iso-8859-1?Q?hDEDAiBul5wtHzJh+yu+dJQ8tp2eievOUhfOoVvsV8alwIIkLCzHvJ6qXP?=
+ =?iso-8859-1?Q?Rh+GPpplVYDmUdHmzCg0EE9FLFdjDoSoeLHB3PrvT4hWLwHYQwse5J8WVQ?=
+ =?iso-8859-1?Q?f89ueJvlOgRVOCjAtPzrKx0/YjvKPpoaTxkweedwxBbuOh8UDOwIdQ7Ylh?=
+ =?iso-8859-1?Q?tgmS+aUYznRcS/zGHjbdbN8c4aE2hzkAGmZnw2E2IWlvJnOP3zd0/E0DuL?=
+ =?iso-8859-1?Q?9ve9JnLeYHUoscyMT8wNNpZF16HFJr/ZYgoyxbgOKcLI5z6pvG6811mw11?=
+ =?iso-8859-1?Q?R+Ebm6cBsKhgBr+58srW3H5cCBSsFfOoCyaE2/mLqXszt2ID+la5oGrGsx?=
+ =?iso-8859-1?Q?v0um8IaEk1yRKEnFgdpVYOBUPEv5A/UjCnKm9X/oOnGxyiCRTJOfjmBK2w?=
+ =?iso-8859-1?Q?/CyL51GHsvYlNLWkqsHJkzQo13g3hnwv9Vupyp9JhmOj+u+eM1Vtzk0E34?=
+ =?iso-8859-1?Q?l1D3EkmikjJ0rBZruWykAndZEYmARjTkqw75dkfCyxsx6Cy4GSt+l6hDAv?=
+ =?iso-8859-1?Q?9eOFL7f6TKlM6lxWAD81NlIhDpakOhWN7qLlELl/0STouyQlfm0cpDo1u9?=
+ =?iso-8859-1?Q?wEHYal0rfQCOn/4zUA2Fw7DKMNLCd8kCaYhz/V1Yk9u1RYTzz0SKhvu+hM?=
+ =?iso-8859-1?Q?HHnqpeuztfjE6jAtKrfOriQ/1Njazf7RDrELYsqDZLbqqhSbRdDan+pboc?=
+ =?iso-8859-1?Q?rcosNV6O9mLyKmuHOZ/+Xs1awv5+mJx925gInySIesxJLYAjiKjA9Uv7tK?=
+ =?iso-8859-1?Q?CARp2gLOb73MTrq9xIVhvRxHlMk+0C+1+JW3x0HOqiilkr94FBuLn54yQs?=
+ =?iso-8859-1?Q?yB6zCIZwGWCkPPVT3cOMm6TOupY9yTKeAeGI2JinUSPEdQDiU48CX027yK?=
+ =?iso-8859-1?Q?xSRv3eb6r7IeAuNCs6wLjwWUYlAI5s8+tQMwwQpW8OJOvy0Ok40RwreeuM?=
+ =?iso-8859-1?Q?PZkVouzgL39rwnBuJbvfdzZjZo/BGDkq6CmgY3oar1lTwvJrxH0Zikml1D?=
+ =?iso-8859-1?Q?8/MPBnC9cpsLJMKrCSIRBcqTyaCvS06qnO/+8nSk66urK2N2grUNj2mdba?=
+ =?iso-8859-1?Q?FzooBo3E/NRTcdwaXBrhZoWa2O300Z2HxXxexxF4HMPMYNIg6f8CM9h2Hg?=
+ =?iso-8859-1?Q?cmx+UBCO92WL2pK55w5O56qZsn8lwWWWUZ1iC1SqQckVGwCTyOleQaPfLD?=
+ =?iso-8859-1?Q?sDnM/XVglMQpnPusdFNiZtaCwgQZRNcX2UP0cO6okmOGxCrB0Nvz8HnBz/?=
+ =?iso-8859-1?Q?GMhzyshfqxc26gDOgVow0dszW9luS/8v/yahnbaIj3qftTSeguekXRigup?=
+ =?iso-8859-1?Q?0TKAUkRQs1XbJFn9ehFClzRgyH9THJG1VxRjxZF2ESSF8t5tFhGP7vkbpk?=
+ =?iso-8859-1?Q?9GfBss3fL6NMekz5X21UinjCe92K9KGPfheg7YyCAZefbdiU/PYLy8L+2i?=
+ =?iso-8859-1?Q?kEercCj21N6JaV01ZNdyKNMc7P4mWa4vOOhLSYC+z628AZTvK8eJqXSLn0?=
+ =?iso-8859-1?Q?NV/NsSLa5K9mN5a3Uyi5FEvLuEhANZnxGFe1xxCcs0k1Y2gYVQTD1m5A?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-OriginatorOrg: siliconsignals.io
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MAXPR01MB4118.INDPRD01.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2257a4d5-13f5-4e00-9707-08dbe9d1b39f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 14:05:07.3916
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 7ec5089e-a433-4bd1-a638-82ee62e21d37
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YZLKTpLwd/vIin/8RGlH4CvTast3R9VqKQ2azse3jDw8XPnouRQSuKJwG7TYnknOO4Ig7vQftuigYizf9FQEkZZBvAt7jlP1EAjgriEwwRI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN2PR01MB9864
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 14:42, Petre Rodan wrote:
+Hi @kernel test robot
 
->>> +properties:
->>> +  compatible:
->>> +    enum:
->>> +      - honeywell,hsc
->>
->> Way too generic
-> 
-> I'm new to this, please excuse my ignorance.
-> my driver covers all Honeywell pressure sensors under the "TruStability board mount HSC/SSC" moniker.
-
-We talk here about bindings, not driver. For the driver you can use
-whatever name is approved by reviewers of your driver.
-
-> that is why my intention was to provide a rather generic name for the driver itself.
-> are you afraid that they will come up with a different device that they will call "hsc" in the future?
-> in this case honeywell,trustability-hsc would be fine?
-> 
-> as I see you prefer to target a particular chip, but I am a bit afraid that the end-user will be confused by needing to set up something like
-> 
-> pressure@28 {
-> 	compatible = "honeywell,hsc030pa";
-
-The compatible should be specific, thus for example match exact model
-number.
-
-If you can guarantee that all devices from given family are the same in
-respect of programming model and hardware requirements (e.g. supplies),
-then you could go with family name. However such guarantees are rarely
-given. Therefore for mprls0025pa I agreed for using one specific model
-for entire family.
-
-https://lore.kernel.org/all/d577bc44-780f-f25d-29c6-ed1d353b540c@linaro.org/
+I have already updated suggestions in my patch v3   "[PATCH v3] Added tilt interrupt support in inv_icm42600"
 
 
-> 	reg = <0x28>;
-> 	honeywell,transfer-function = <0>;
-> 	honeywell,pressure-range = "250MD";
-> };
-> 
-> ie. specifying "hsc030pa" as driver while his chip is not in the 030PA range, but 250MD.
-> 
-> so do you prefer
->  honeywell,trustability-hsc  OR
->  honeywell,hsc030pa
+From: kernel test robot <lkp@intel.com>
+Sent: Monday, November 20, 2023 7:24 PM
+To: Hiten Chauhan <hiten.chauhan@siliconsignals.io>; jmaneyrol@invensense.com <jmaneyrol@invensense.com>; jic23@kernel.org <jic23@kernel.org>; lars@metafoo.de <lars@metafoo.de>; linux-iio@vger.kernel.org <linux-iio@vger.kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev <oe-kbuild-all@lists.linux.dev>; Hiten Chauhan <hiten.chauhan@siliconsignals.io>
+Subject: Re: [PATCH v2 1/1] Added tilt interrupt support in inv_icm42600 
+ 
+Hi Hiten,
 
-I think the latter, just like we did for mprls0025pa. How many devices
-do you have there?
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on jic23-iio/togreg]
+[also build test ERROR on linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Hiten-Chauhan/Added-tilt-interrupt-support-in-inv_icm42600/20231116-214808
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
+patch link:    https://lore.kernel.org/r/20231116134528.21467-1-hiten.chauhan%40siliconsignals.io
+patch subject: [PATCH v2 1/1] Added tilt interrupt support in inv_icm42600
+config: i386-randconfig-062-20231120 (https://download.01.org/0day-ci/archive/20231120/202311202146.D4gNcBnT-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311202146.D4gNcBnT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311202146.D4gNcBnT-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c:116:39: error: too many arguments provided to function-like macro invocation
+   static DEVICE_ATTR_RW(tilt_interrupt, 0644,
+                                         ^
+   include/linux/device.h:179:9: note: macro 'DEVICE_ATTR_RW' defined here
+   #define DEVICE_ATTR_RW(_name) \
+           ^
+>> drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c:116:8: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+   static DEVICE_ATTR_RW(tilt_interrupt, 0644,
+   ~~~~~~ ^
+   int
+>> drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c:120:3: error: use of undeclared identifier 'dev_attr_tilt_interrupt'
+           &dev_attr_tilt_interrupt.attr,
+            ^
+   3 errors generated.
 
 
-> 
->>> +  honeywell,range_str:
->>
->> No underscores in property names.
->>
->> "str" is redundant. Instead say what is it, because "range" is way too
->> vague.
-> 
-> will rename to honeywell,pressure-range if that is ok with you.
+vim +116 drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
 
-Yes
+   115  
+ > 116   static DEVICE_ATTR_RW(tilt_interrupt, 0644,
+   117                     tilt_interrupt_show, tilt_interrupt_store);
+   118  
+   119  static struct attribute *icm42605_attrs[] = {
+ > 120           &dev_attr_tilt_interrupt.attr,
+   121          NULL,
+   122  };
+   123  
 
-> 
->>> +    description: |
->>> +      Five character string that defines "pressure range, unit and type"
->>> +      as part of the device nomenclature. In the unlikely case of a custom
->>> +      chip, set to "NA" and provide honeywell,pmin-pascal honeywell,pmax-pascal
->>> +    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
->>> +           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
->>> +           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
->>> +           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
->>> +           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
->>> +           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
->>> +           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
->>> +           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
->>> +           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
->>> +           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
->>> +           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
->>> +           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
->>> +           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
->>> +           150PG, NA]
->>> +    $ref: /schemas/types.yaml#/definitions/string
->>> +
->>> +  honeywell,pmin-pascal:
->>> +    description: |
->>> +      Minimum pressure value the sensor can measure in pascal.
->>> +      To be specified only if honeywell,range_str is set to "NA".
->>> +    $ref: /schemas/types.yaml#/definitions/int32
->>
->> That's uint32. Why do you need negative values?
-> 
-> signed int32 is intentional. some chips have two physical input ports and measure a pressure differential in which case pmin is negative.
-> see either of the pdfs at page 14, table 8, column 2, row 7+
-
-Then the best would be to change the type in other bindings to have
-int32 everywhere... but dtschema also requires unt32:
-https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/property-units.yaml
-
-I think pressure can be negative (e.g. when device measures pressure in
-relation to atmospheric pressure), thus maybe we need to fix dtschema first.
-
-> 
->>> +  honeywell,pmax-pascal:
->>> +    description: |
->>> +      Maximum pressure value the sensor can measure in pascal.
->>> +      To be specified only if honeywell,range_str is set to "NA".
->>> +    $ref: /schemas/types.yaml#/definitions/int32
->>
->> Ditto
-> 
-> well, since we saw pmin needs to be signed should we have pmax unsigned?
-
-I guess this could stay uint32, although it depends on final units for
-pascal.
-
-Best regards,
-Krzysztof
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
