@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25267F1AE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 264827F1AF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbjKTRjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:39:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
+        id S234327AbjKTRkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbjKTRj2 (ORCPT
+        with ESMTP id S234004AbjKTRju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:39:28 -0500
+        Mon, 20 Nov 2023 12:39:50 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCE310FA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:38:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9E5110
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:39:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700501934;
+        s=mimecast20190719; t=1700501952;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EA+PtELgafBL4lMg/ITaiAmG0etiKFjvCQCjeW2B3vQ=;
-        b=Pe330Hz/xaL4EIFUTd6Ex3Gzak7vsP3vAJeJHUBw5dy0GYbpMzG4y7PUaUz+womKsycIG+
-        gtN+y+X4Bk5C/0ERRjtJJ6bIz9BTJXLPw3EayWVHJEbeOol3lZ5JlNosX5HtqiyDzxiVN2
-        +svMD7cLm+lfveZ0zkWRJr8/gL/WPxA=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=bhXhhVOgQcwszvCir7ZuwIMT/79o9ZyKYko3EUjNwGA=;
+        b=JpFtLpwIqh3H39y0REmRUnnGqQIVT7LSSvKV17Qw0KwPXtFCOUO1IfsIEJ/dl1hY7wRAw5
+        5genqXe9VrHHLWUKQyJpUZPSU5OKSyxU5sEb5NU2ov739gn0Z3HbzColp/RUpiBWFjrmpJ
+        5b4Z4SULWUbPEsnRUOAWDvDIEQef2Hw=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-538-Na6stRs_OgCUBQeGFALXBw-1; Mon, 20 Nov 2023 12:38:51 -0500
-X-MC-Unique: Na6stRs_OgCUBQeGFALXBw-1
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7aff051bed0so510971239f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:38:50 -0800 (PST)
+ us-mta-596-5Q5syEyOMsOlFs7vmUlwwA-1; Mon, 20 Nov 2023 12:39:11 -0500
+X-MC-Unique: 5Q5syEyOMsOlFs7vmUlwwA-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-421af801578so48570791cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:39:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700501930; x=1701106730;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EA+PtELgafBL4lMg/ITaiAmG0etiKFjvCQCjeW2B3vQ=;
-        b=RRmzgzrcP/s40NXzf44dEbixh4MADmmF2XjcwRg+6PDcPil0tWad2VAipujVXlfdkl
-         3Hvl+O/M5Hx8r9sly18rLdS3+BJjtKnvYGIaR2nhgZarFgbrOciQDefYp3lAWYlizjr1
-         3zGbIjjVBO0cpm1yFIYPS0mFeqqhyVA8uREoszD7GndQTBhdvNLy13Tio6WYJ5xzOBvD
-         Lzhy1VbN4QmrKN8cdwgTIbwl0Mz7tEbXzXkoVw4/6BSQL45ejBp2HCtq8+ke8czaavFL
-         4NW8crulTcLLuQ4m28w4AJZTmlLBICOEl5Dp33EjfAiTDk0Q7WspUEnn5DOfeiZ7fyad
-         8M0g==
-X-Gm-Message-State: AOJu0YyyI24aBvU/y8KWLa93SNz8/D/xPTIm/hqD0lGCWZKC5L+9vj9/
-        9IywV+Fk5I4ErS8K7CPC0NBrxsujn/jO2HPr94d23FqohDrMOkxlLj0T7DNsTPxs44jooAwfSgy
-        Wt0YcjC77wGn+HfuwsO/A4qFK
-X-Received: by 2002:a05:6602:b0b:b0:795:183b:1e3 with SMTP id fl11-20020a0566020b0b00b00795183b01e3mr3093006iob.6.1700501930218;
-        Mon, 20 Nov 2023 09:38:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHHT3qhfz3/6ZznnTsb8wnrznUIvtVKE6389r6+Eh6UTrnGUjcgYOv9oE6khUuQ9hoe4DhC0w==
-X-Received: by 2002:a05:6602:b0b:b0:795:183b:1e3 with SMTP id fl11-20020a0566020b0b00b00795183b01e3mr3092992iob.6.1700501929955;
-        Mon, 20 Nov 2023 09:38:49 -0800 (PST)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id y22-20020a5d94d6000000b00790b6b9d14bsm2329827ior.49.2023.11.20.09.38.49
+        d=1e100.net; s=20230601; t=1700501951; x=1701106751;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhXhhVOgQcwszvCir7ZuwIMT/79o9ZyKYko3EUjNwGA=;
+        b=IK8ospyvqln2VyF5QGPxUVIbRLZE9Tnfva6DZ9hyCjPQd46HOxkRokL+ptYUQYRbio
+         +mIkTFpTJ7Zb3LyCjPAvYyMNRx40vSPz4tsDdbp58BbIk07cnA0WQUkjbc451Tkj017w
+         wIi/bLRivQNJ0atkDJM6dtttZJwRlrwTolGrBYWLkb4Vn6/Q9X9xAQ9lpaVOSCVCGQ59
+         6Az52XaZZePplK5txVjQaxpKE9VqyTgx3kofsdpCDtlh/WyJDWoDWyc6XNON9+0SP1+P
+         AXZO19ncJZsz0qfIUdYkPg0Yg9d9V+CqEl/bWXrpepiIsF92kXzgE8qab0CEvqFHsemH
+         DQ/g==
+X-Gm-Message-State: AOJu0YwGMr1FHIykbtQgIErbKDB14KJpm5P3JUsy7yWIEeBKHN7C8WH2
+        /oU9gSN4G7S/7huo3x8PnXN4LEOas7/lSvH9a1EDzvhX2g4xXonWOKPHFxO73G3Nz48axnVuovQ
+        QUQCyY+DxTPiT0XBkEgMGWtGy
+X-Received: by 2002:a05:622a:120f:b0:418:1c96:8ae9 with SMTP id y15-20020a05622a120f00b004181c968ae9mr7303266qtx.11.1700501950855;
+        Mon, 20 Nov 2023 09:39:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGJxvMsSQn+upSlfoe1AebhnWLm6yBcWBZBG02zXFFObgKKN1wx2M0hPEp8Q1VD76pdfOlXbA==
+X-Received: by 2002:a05:622a:120f:b0:418:1c96:8ae9 with SMTP id y15-20020a05622a120f00b004181c968ae9mr7303241qtx.11.1700501950580;
+        Mon, 20 Nov 2023 09:39:10 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id u7-20020ac87507000000b00419b9b1b0b0sm2790034qtq.56.2023.11.20.09.39.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 09:38:49 -0800 (PST)
-Date:   Mon, 20 Nov 2023 10:38:48 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     JianChunfu <chunfu.jian@shingroup.cn>
-Cc:     cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shenghui.qu@shingroup.cn
-Subject: Re: [PATCH] vfio/pci: Separate INTx-enabled vfio_pci_device from
- unenabled to make the code logic clearer.
-Message-ID: <20231120103848.337b6833.alex.williamson@redhat.com>
-In-Reply-To: <20231120031752.522139-1-chunfu.jian@shingroup.cn>
-References: <20231120031752.522139-1-chunfu.jian@shingroup.cn>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 20 Nov 2023 09:39:10 -0800 (PST)
+Date:   Mon, 20 Nov 2023 11:39:07 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Message-ID: <pgmtla6j3dshuq5zdxstszbkkssxcthtzelv2etcbrlstdw4nu@wixz6v5dfpum>
+References: <20231120161607.7405-1-johan+linaro@kernel.org>
+ <20231120161607.7405-3-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120161607.7405-3-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,87 +90,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 11:17:52 +0800
-JianChunfu <chunfu.jian@shingroup.cn> wrote:
-
-> It seems a little unclear when dealing with vfio_intx_set_signal()
-> because of vfio_pci_device which is irq_none,
-> so separate the two situations.
+On Mon, Nov 20, 2023 at 05:16:06PM +0100, Johan Hovold wrote:
+> The Qualcomm glue driver is overriding the interrupt trigger types
+> defined by firmware when requesting the wakeup interrupts during probe.
 > 
-> Signed-off-by: JianChunfu <chunfu.jian@shingroup.cn>
+> This can lead to a failure to map the DP/DM wakeup interrupts after a
+> probe deferral as the firmware defined trigger types do not match the
+> type used for the initial mapping:
+> 
+> 	irq: type mismatch, failed to map hwirq-14 for interrupt-controller@b220000!
+> 	irq: type mismatch, failed to map hwirq-15 for interrupt-controller@b220000!
+> 
+> Fix this by not overriding the firmware provided trigger types when
+> requesting the wakeup interrupts.
+
+This series looks good to me and makes sense except for one point that
+I'm struggling to understand. What exactly is the relationship with this
+failure and probe deferral?
+
+Thanks,
+Andrew
+
+> 
+> Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
+> Cc: stable@vger.kernel.org      # 4.18
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 > ---
->  drivers/vfio/pci/vfio_pci_intrs.c | 31 +++++++++++++++----------------
->  1 file changed, 15 insertions(+), 16 deletions(-)
+>  drivers/usb/dwc3/dwc3-qcom.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-> index 6069a11fb51a..b6d126c48393 100644
-> --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> @@ -468,6 +468,8 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
->  				     unsigned index, unsigned start,
->  				     unsigned count, uint32_t flags, void *data)
->  {
-> +	int32_t fd = *(int32_t *)data;
-
-This is a null pointer dereference if anyone were to use
-VFIO_IRQ_SET_DATA_NONE.  Note this is also invalid for
-VFIO_IRQ_SET_DATA_BOOL.  I think this is largely why the function has
-the current layout.
-
-> +
->  	if (is_intx(vdev) && !count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
->  		vfio_intx_disable(vdev);
->  		return 0;
-> @@ -476,28 +478,25 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
->  	if (!(is_intx(vdev) || is_irq_none(vdev)) || start != 0 || count != 1)
->  		return -EINVAL;
->  
-> -	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-> -		int32_t fd = *(int32_t *)data;
-> +	if (!is_intx(vdev)) {
->  		int ret;
-> +		if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-
-@ret should be scoped within this branch with this layout and there
-should be a blank line after variable declaration.
-
-> +			ret = vfio_intx_enable(vdev);
-> +			if (ret)
-> +				return ret;
->  
-> -		if (is_intx(vdev))
-> -			return vfio_intx_set_signal(vdev, fd);
-> +			ret = vfio_intx_set_signal(vdev, fd);
-> +			if (ret)
-> +				vfio_intx_disable(vdev);
->  
-> -		ret = vfio_intx_enable(vdev);
-> -		if (ret)
->  			return ret;
-> -
-> -		ret = vfio_intx_set_signal(vdev, fd);
-> -		if (ret)
-> -			vfio_intx_disable(vdev);
-> -
-> -		return ret;
-> +		} else
-> +			return -EINVAL;
-
-Single line branches also get braces if the previous branch required
-braces.  Thanks,
-
-Alex
-
->  	}
->  
-> -	if (!is_intx(vdev))
-> -		return -EINVAL;
-> -
-> -	if (flags & VFIO_IRQ_SET_DATA_NONE) {
-> +	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
-> +		return vfio_intx_set_signal(vdev, fd);
-> +	} else if (flags & VFIO_IRQ_SET_DATA_NONE) {
->  		vfio_send_intx_eventfd(vdev, NULL);
->  	} else if (flags & VFIO_IRQ_SET_DATA_BOOL) {
->  		uint8_t trigger = *(uint8_t *)data;
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 10fb481d943b..82544374110b 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -549,7 +549,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>  		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>  		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>  					qcom_dwc3_resume_irq,
+> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> +					IRQF_ONESHOT,
+>  					"qcom_dwc3 HS", qcom);
+>  		if (ret) {
+>  			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
+> @@ -564,7 +564,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>  		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>  		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>  					qcom_dwc3_resume_irq,
+> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> +					IRQF_ONESHOT,
+>  					"qcom_dwc3 DP_HS", qcom);
+>  		if (ret) {
+>  			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
+> @@ -579,7 +579,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>  		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>  		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>  					qcom_dwc3_resume_irq,
+> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> +					IRQF_ONESHOT,
+>  					"qcom_dwc3 DM_HS", qcom);
+>  		if (ret) {
+>  			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
+> @@ -594,7 +594,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+>  		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>  		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>  					qcom_dwc3_resume_irq,
+> -					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> +					IRQF_ONESHOT,
+>  					"qcom_dwc3 SS", qcom);
+>  		if (ret) {
+>  			dev_err(qcom->dev, "ss_phy_irq failed: %d\n", ret);
+> -- 
+> 2.41.0
+> 
+> 
 
