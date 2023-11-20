@@ -2,84 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F357F17BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F2D7F17BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjKTPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:45:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        id S234394AbjKTPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:45:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234307AbjKTPpr (ORCPT
+        with ESMTP id S234424AbjKTPpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 10:45:47 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D89124;
-        Mon, 20 Nov 2023 07:45:43 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKDLsFf004570;
-        Mon, 20 Nov 2023 15:45:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=tMbiJn1665rv9zGgWLRfYM/xK3klBLtoSVU9vhIpy8g=;
- b=o2t7qt5X/ZKoz/wAt3dFEi9hhR3pQfgL3GXT37XnU7NER+iez0OTaMGy1i6KFGJGPD4G
- SuVzFcV9JxvHTtwnLwlTnkuSqBEqQ/TbGr/QIvvUEDH1OFoKG4vkkemMDrQRniBk3Njm
- SQ0zfGsEoGmpa5syhGao6kIAYcb0r3mfSJ6g7cxY7rM43w9nli8fhTzGyMCYrZLVCbIm
- BSJ5A1boic11W91aK1lmy+VKIX1h32BEXSUpeLaCSMZrCepOxLkZaM2/rRwzRB6zPwjU
- pWWMxqmDTaZIHof4oSyDJv+1BLZsUk9B2uOiPMtpjKqzFuu/JFjzNqDfMBKbnSKBD+pU wQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug26ts8uj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 15:45:30 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AKFjTfI026470
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 15:45:29 GMT
-Received: from [10.110.123.216] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 07:45:29 -0800
-Message-ID: <51785de6-2a69-482d-b686-c3694f87e6b7@quicinc.com>
-Date:   Mon, 20 Nov 2023 07:45:28 -0800
+Received: from p3plwbeout26-04.prod.phx3.secureserver.net (p3plsmtp26-04-2.prod.phx3.secureserver.net [216.69.139.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB58B4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:45:42 -0800 (PST)
+X-MW-NODE: 
+X-CMAE-Analysis: v=2.4 cv=PKnKRdmC c=1 sm=1 tr=0 ts=655b7f26
+ a=dFffxkGDbYo3ckkjzRcKYg==:117 a=dFffxkGDbYo3ckkjzRcKYg==:17
+ a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=AUd_NHdVAAAA:8 a=FXvPX3liAAAA:8
+ a=VwQbUJbxAAAA:8 a=0wROvl3FcpXzi9APqyUA:9 a=QEXdDO2ut3YA:10
+ a=EebzJV9D4rpJJoWO5PQE:22 a=UObqyxdv-6Yh2QiB9mM_:22 a=AjGcO6oz07-iQ99wixmX:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+X-SID:  56SwrEXQirdjV
+Date:   Mon, 20 Nov 2023 15:45:38 +0000 (GMT)
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     Ariel Miculas <amiculas@cisco.com>, linux-doc@vger.kernel.org,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Cc:     serge@hallyn.com, Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org
+Message-ID: <1582596779.2062926.1700495138062@eu1.myprofessionalmail.com>
+In-Reply-To: <20231117161215.140282-1-amiculas@cisco.com>
+References: <20231117161215.140282-1-amiculas@cisco.com>
+Subject: Re: [PATCH v3] docs: filesystems: document the squashfs specific
+ mount options
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: arm: Document reboot mode magic
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-References: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
- <20231117-arm-psci-system_reset2-vendor-reboots-v1-2-03c4612153e2@quicinc.com>
- <eb2d0992-4d9a-4f59-8e79-da277f39d2d9@linaro.org>
-From:   Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <eb2d0992-4d9a-4f59-8e79-da277f39d2d9@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4PiT0cZP_0z-TCuA6kMTc_Y1BkXDfpKv
-X-Proofpoint-GUID: 4PiT0cZP_0z-TCuA6kMTc_Y1BkXDfpKv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_15,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 spamscore=0 phishscore=0
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200110
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v8.18.49
+X-Originating-IP: 82.69.79.175
+X-Originating-Client: open-xchange-appsuite
+X-CMAE-Envelope: MS4xfAZiPASMa9f/Vcpg2yN+a6ntu9MU8kCketYebboNEff/9iudapY5Jn5liTRXR99fcAFhJy4IizIy5PDaPQAvsWjKK9i9HDzXCWtv4myqH/Im/THX0b0e
+ 69NVIlpZmQFRX6rUgemXdLmlXXj2FTfZmHwz0tj6vj+fa/uKvf0fBt9w593PIykCjEQvC5lXRCCuW0k36LWotdUFmF32DJlBUtOYzM/2XrrIuHpgs5Uf2dY4
+ t+kUFtp0UO4FAXRPXurLJ5A0ux9pZrt/rTcW6Df2LpyDYlN1iAgqj1D7LBqbK5JXdP0pgs1ki74jRcxPjLjT0CHNjh7JuZTbKdZtP7y2UQQWELGtd5eRPtrR
+ g59BaRPWkPRlWh9j1RfpI1Lv+ND8l9yNpEhTjbeta9n1aaI+GKM=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,31 +57,111 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 11/20/2023 2:56 AM, Krzysztof Kozlowski wrote:
-> On 17/11/2023 22:18, Elliot Berman wrote:
->> -
->> -additionalProperties: false
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: arm,psci-1.0
->> +    then:
->> +      $ref: /schemas/power/reset/reboot-mode.yaml#
->> +      properties:
->> +        # "mode-normal" is just SYSTEM_RESET
->> +        mode-normal: false
->> +      patternProperties:
->> +        "^mode-.*$":
->> +          maxItems: 2
+> On 17/11/2023 16:12 GMT Ariel Miculas <amiculas@cisco.com> wrote:
 > 
-> And if you tested the patch, it would tell you it can be max 1 item.
+>  
+> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
+> can be used to specify the decompression mode: single-threaded,
+> multi-threaded, percpu or the number of threads used for decompression.
+> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, SQUASHFS_DECOMP_MULTI
+> and SQUASHFS_MOUNT_DECOMP_THREADS are both set, the "threads" option can
+> also be used to specify the number of threads used for decompression.
+> This mount option is only mentioned in fs/squashfs/Kconfig, which makes
+> it difficult to find.
+> 
+> Another mount option available is "errors", which can be configured to
+> panic the kernel when squashfs errors are encountered.
+> 
+> Add both these options to the squashfs documentation, making them more
+> noticeable.
+> 
+> Signed-off-by: Ariel Miculas <amiculas@cisco.com>
 
-make dt_binding_check DT_SCHEMA_FILES=arm/psci.yaml
+I'm happy with this.
 
-passes for me. Rob explained why it's working (and why it shouldn't), 
-so I'll fix it according to his recommendation in v2.
+Reviewed-by: Phillip Lougher <phillip@squashfs.org.uk>
 
-Thanks,
-Elliot
+> ---
+> V2 -> V3: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
+> mount option also requires SQUASHFS_MOUNT_DECOMP_THREADS to be set, in
+> addition to SQUASHFS_DECOMP_MULTI
+> 
+> V1 -> V2: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
+> mount option also requires SQUASHFS_DECOMP_MULTI to be set
+> 
+>  Documentation/filesystems/squashfs.rst | 60 ++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
+> diff --git a/Documentation/filesystems/squashfs.rst b/Documentation/filesystems/squashfs.rst
+> index df42106bae71..4af8d6207509 100644
+> --- a/Documentation/filesystems/squashfs.rst
+> +++ b/Documentation/filesystems/squashfs.rst
+> @@ -64,6 +64,66 @@ obtained from this site also.
+>  The squashfs-tools development tree is now located on kernel.org
+>  	git://git.kernel.org/pub/scm/fs/squashfs/squashfs-tools.git
+>  
+> +2.1 Mount options
+> +-----------------
+> +===================    =========================================================
+> +errors=%s              Specify whether squashfs errors trigger a kernel panic
+> +                       or not
+> +
+> +		       ==========  =============================================
+> +                         continue  errors don't trigger a panic (default)
+> +                            panic  trigger a panic when errors are encountered,
+> +                                   similar to several other filesystems (e.g.
+> +                                   btrfs, ext4, f2fs, GFS2, jfs, ntfs, ubifs)
+> +
+> +                                   This allows a kernel dump to be saved,
+> +                                   useful for analyzing and debugging the
+> +                                   corruption.
+> +                       ==========  =============================================
+> +threads=%s             Select the decompression mode or the number of threads
+> +
+> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set:
+> +
+> +		       ==========  =============================================
+> +                           single  use single-threaded decompression (default)
+> +
+> +                                   Only one block (data or metadata) can be
+> +                                   decompressed at any one time. This limits
+> +                                   CPU and memory usage to a minimum, but it
+> +                                   also gives poor performance on parallel I/O
+> +                                   workloads when using multiple CPU machines
+> +                                   due to waiting on decompressor availability.
+> +                            multi  use up to two parallel decompressors per core
+> +
+> +                                   If you have a parallel I/O workload and your
+> +                                   system has enough memory, using this option
+> +                                   may improve overall I/O performance. It
+> +                                   dynamically allocates decompressors on a
+> +                                   demand basis.
+> +                           percpu  use a maximum of one decompressor per core
+> +
+> +                                   It uses percpu variables to ensure
+> +                                   decompression is load-balanced across the
+> +                                   cores.
+> +                        1|2|3|...  configure the number of threads used for
+> +                                   decompression
+> +
+> +                                   The upper limit is num_online_cpus() * 2.
+> +                       ==========  =============================================
+> +
+> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
+> +                       SQUASHFS_DECOMP_MULTI, SQUASHFS_MOUNT_DECOMP_THREADS are
+> +                       both set:
+> +
+> +		       ==========  =============================================
+> +                          2|3|...  configure the number of threads used for
+> +                                   decompression
+> +
+> +                                   The upper limit is num_online_cpus() * 2.
+> +                       ==========  =============================================
+> +
+> +===================    =========================================================
+> +
+>  3. Squashfs Filesystem Design
+>  -----------------------------
+>  
+> -- 
+> 2.42.1
