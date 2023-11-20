@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED937F1E78
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901077F1E80
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjKTVB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
+        id S230429AbjKTVG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjKTVB5 (ORCPT
+        with ESMTP id S230402AbjKTVG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:01:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45BDA2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700514113; x=1732050113;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t+grIEx/OoWq8S+aVx/HW0aGncH3ytPBS0KnbHH97xM=;
-  b=MXB7afFw1McYwAYQRIpZMQedE0qgDp4EGQFCmWlmyCxjnsany7QopEgs
-   VtT4knfkSJ/2/ZyB8UiT8R8i4p1sASqiP2S64r2PAGTOGAgbuBa+ftuyg
-   /UCsS4/s9oWC7wXDrcK5DYkWBL5HLUTElRkaSCr1HcEHU9j1ZTW+09cYL
-   LcddXZxdsz/XKVCqQhdV6ak7NZlJoi9WQYF/+lhmtOTVs8ecXobplDhG5
-   ZUclK6lzyIJpD7Sg6IHHEWZUBSbQ1U816/jkKHui668lNvUBClj/oTf2Q
-   GGCPduaCIejIgb2VRdMl/KMB3ipsQUPzsElxUVBdxnAc5mjrMQPWZO7rb
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="395632414"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="395632414"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:01:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="7837599"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 20 Nov 2023 13:01:46 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5BOq-0006v8-0K;
-        Mon, 20 Nov 2023 21:01:44 +0000
-Date:   Tue, 21 Nov 2023 05:01:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yong He <zhuangel570@gmail.com>, tj@kernel.org,
-        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH] workqueue: fix invalid cpu in kick_pool
-Message-ID: <202311210443.gdbUH0vN-lkp@intel.com>
-References: <20231120121623.119780-1-alexyonghe@tencent.com>
+        Mon, 20 Nov 2023 16:06:26 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A890D9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:06:21 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-db029574f13so4789367276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:06:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1700514380; x=1701119180; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NG2FEhp12pFkNfvVzutmm+LjhzXXRny+ltBXXG6QNR4=;
+        b=YLhyT6RmzMxgdwWF3OzA1dbTAz8GYwlqdzU9jExIzFo7f7lyo2lc/g5s8M1FPVxNVx
+         9xH5Qe/wVsv58MHQpjcvW3LKQcQ5vIb9Aa73yrI/rkqK7MVSaCFxHqne8L13lT5gfTNd
+         jrz2ZdVN1Qe3itctMb74xkKwKI6nJ4cxYD4hmugMHvP5aWDW4emrejI+By1/ZbG0f7JT
+         cFXvDnsb5rYwIE/fidXu7jWV6ZgD3xHcJYQin5mUIyp4H3oCK5n4tdFaaQXQEZFpoH+G
+         SJuLfuXl8Rod2tCYybo07Z13jXhOFKBICD9TAWYrNxzyLdOcfmQ9oJDeTWht/WBRaKY0
+         ufgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700514380; x=1701119180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NG2FEhp12pFkNfvVzutmm+LjhzXXRny+ltBXXG6QNR4=;
+        b=r12fSmsHANqWWi7Hib4Zu3xqNlejov8Ip2GafDXj9CvMTF9JJ4WP2hLEEe1M4ipRCn
+         R1NlogJkvNgP5gSyzN1Rhf0vf2rH/fgTbtrFtf3plgMzhNZFBQnY2hb/FEWLL4fcXDPk
+         jBYYeEcuK3CQZh0OH+91cqKyCWayBdsgR5lYdp3TtzgqpJdbcQUzGxLyryoobTv+FzIU
+         vWQGWoUTFGVtItq2/bfZA03Bv2ezfrjk5dLNFKaY9gWLW7HDY0w0WJN2TBEAWIrz1ry0
+         mAIM6M2PSDP6ShcahbRJUR3nbmQKc6mU+lBGUhSt2V+BCmDGxNgFvtJ/YjdhnMUPq6co
+         W6pg==
+X-Gm-Message-State: AOJu0Yx3mLfienDLC4M5+WczVbf4rmbSZljAnB5Tt3lCYN0GlqiYUxN0
+        MDQXB5qt3bEmnURt+MHSBsxSXPGYwIG84UVqlWKk
+X-Google-Smtp-Source: AGHT+IH9dEFOAePFkBv2PMwl9MhCUaQv6Ntac6yIXsmvUTEQCyAzM8wMPOVAFCDufYnlm3OoAXU+qg91wHL5Jm2H0Ok=
+X-Received: by 2002:a81:ac17:0:b0:5ca:7629:7a9a with SMTP id
+ k23-20020a81ac17000000b005ca76297a9amr4086414ywh.37.1700514380344; Mon, 20
+ Nov 2023 13:06:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120121623.119780-1-alexyonghe@tencent.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+ <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com> <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+In-Reply-To: <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 20 Nov 2023 16:06:09 -0500
+Message-ID: <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,61 +80,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yong,
+On Mon, Nov 20, 2023 at 3:16=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+> > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > >
+> > > Before the security field of kernel objects could be shared among LSM=
+s with
+> > > the LSM stacking feature, IMA and EVM had to rely on an alternative s=
+torage
+> > > of inode metadata. The association between inode metadata and inode i=
+s
+> > > maintained through an rbtree.
+> > >
+> > > Because of this alternative storage mechanism, there was no need to u=
+se
+> > > disjoint inode metadata, so IMA and EVM today still share them.
+> > >
+> > > With the reservation mechanism offered by the LSM infrastructure, the
+> > > rbtree is no longer necessary, as each LSM could reserve a space in t=
+he
+> > > security blob for each inode. However, since IMA and EVM share the
+> > > inode metadata, they cannot directly reserve the space for them.
+> > >
+> > > Instead, request from the 'integrity' LSM a space in the security blo=
+b for
+> > > the pointer of inode metadata (integrity_iint_cache structure). The o=
+ther
+> > > reason for keeping the 'integrity' LSM is to preserve the original or=
+dering
+> > > of IMA and EVM functions as when they were hardcoded.
+> > >
+> > > Prefer reserving space for a pointer to allocating the integrity_iint=
+_cache
+> > > structure directly, as IMA would require it only for a subset of inod=
+es.
+> > > Always allocating it would cause a waste of memory.
+> > >
+> > > Introduce two primitives for getting and setting the pointer of
+> > > integrity_iint_cache in the security blob, respectively
+> > > integrity_inode_get_iint() and integrity_inode_set_iint(). This would=
+ make
+> > > the code more understandable, as they directly replace rbtree operati=
+ons.
+> > >
+> > > Locking is not needed, as access to inode metadata is not shared, it =
+is per
+> > > inode.
+> > >
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > > ---
+> > >  security/integrity/iint.c      | 71 +++++---------------------------=
+--
+> > >  security/integrity/integrity.h | 20 +++++++++-
+> > >  2 files changed, 29 insertions(+), 62 deletions(-)
+> > >
+> > > diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> > > index 882fde2a2607..a5edd3c70784 100644
+> > > --- a/security/integrity/iint.c
+> > > +++ b/security/integrity/iint.c
+> > > @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+> > >     return 0;
+> > >  }
+> > >
+> > > +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init =3D {
+> > > +   .lbs_inode =3D sizeof(struct integrity_iint_cache *),
+> > > +};
+> >
+> > I'll admit that I'm likely missing an important detail, but is there
+> > a reason why you couldn't stash the integrity_iint_cache struct
+> > directly in the inode's security blob instead of the pointer?  For
+> > example:
+> >
+> >   struct lsm_blob_sizes ... =3D {
+> >     .lbs_inode =3D sizeof(struct integrity_iint_cache),
+> >   };
+> >
+> >   struct integrity_iint_cache *integrity_inode_get(inode)
+> >   {
+> >     if (unlikely(!inode->isecurity))
+> >       return NULL;
+> >     return inode->i_security + integrity_blob_sizes.lbs_inode;
+> >   }
+>
+> It would increase memory occupation. Sometimes the IMA policy
+> encompasses a small subset of the inodes. Allocating the full
+> integrity_iint_cache would be a waste of memory, I guess?
 
-kernel test robot noticed the following build warnings:
+Perhaps, but if it allows us to remove another layer of dynamic memory
+I would argue that it may be worth the cost.  It's also worth
+considering the size of integrity_iint_cache, while it isn't small, it
+isn't exactly huge either.
 
-[auto build test WARNING on tj-wq/for-next]
-[also build test WARNING on linus/master v6.7-rc2 next-20231120]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> On the other hand... (did not think fully about that) if we embed the
+> full structure in the security blob, we already have a mutex available
+> to use, and we don't need to take the inode lock (?).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yong-He/workqueue-fix-invalid-cpu-in-kick_pool/20231120-201849
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-next
-patch link:    https://lore.kernel.org/r/20231120121623.119780-1-alexyonghe%40tencent.com
-patch subject: [PATCH] workqueue: fix invalid cpu in kick_pool
-config: arc-randconfig-001-20231121 (https://download.01.org/0day-ci/archive/20231121/202311210443.gdbUH0vN-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311210443.gdbUH0vN-lkp@intel.com/reproduce)
+That would be excellent, getting rid of a layer of locking would be signifi=
+cant.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311210443.gdbUH0vN-lkp@intel.com/
+> I'm fully convinced that we can improve the implementation
+> significantly. I just was really hoping to go step by step and not
+> accumulating improvements as dependency for moving IMA and EVM to the
+> LSM infrastructure.
 
-All warnings (new ones prefixed by >>):
+I understand, and I agree that an iterative approach is a good idea, I
+just want to make sure we keep things tidy from a user perspective,
+i.e. not exposing the "integrity" LSM when it isn't required.
 
-   kernel/workqueue.c: In function 'kick_pool':
->> kernel/workqueue.c:1109:13: warning: unused variable 'cpu' [-Wunused-variable]
-    1109 |         int cpu;
-         |             ^~~
-
-
-vim +/cpu +1109 kernel/workqueue.c
-
-  1097	
-  1098	/**
-  1099	 * kick_pool - wake up an idle worker if necessary
-  1100	 * @pool: pool to kick
-  1101	 *
-  1102	 * @pool may have pending work items. Wake up worker if necessary. Returns
-  1103	 * whether a worker was woken up.
-  1104	 */
-  1105	static bool kick_pool(struct worker_pool *pool)
-  1106	{
-  1107		struct worker *worker = first_idle_worker(pool);
-  1108		struct task_struct *p;
-> 1109		int cpu;
-  1110	
-  1111		lockdep_assert_held(&pool->lock);
-  1112	
-  1113		if (!need_more_worker(pool) || !worker)
-  1114			return false;
-  1115	
-  1116		p = worker->task;
-  1117	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+paul-moore.com
