@@ -2,61 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247757F1158
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AEA7F115B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjKTLH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37888 "EHLO
+        id S233318AbjKTLJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbjKTLHt (ORCPT
+        with ESMTP id S233274AbjKTLHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:07:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54C0713E;
-        Mon, 20 Nov 2023 03:07:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700478452; x=1732014452;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=+ENk/qI3aAhzoQvbdmTZGZGTHTjCD4Wz6VPEXQlwA/w=;
-  b=l4XK5BYnxTgtAXfX1oiLZyqqJ5+g5cRc8YCYACJRU6rG8FGgyKiq9ZYy
-   RZcHfwNUBWRpmT8/iM/AndcXUw13DTfZ5sd93gL1a+afLmknx83B2Bm34
-   jSfMprWOmh09dcNNwiASpq/aCxAip6FV31tQrY7PuZ+t1ACvSOt5ZZHOw
-   PYTvAugqE3W/Nxkixk1TuM1DTZTQfnGJISqFpglTvzHvoaD+4RWDNxjCH
-   q9x3RvDZzBg13vBdJj8XEma0LyK+d7wl5/3KQmYDj4J+vIVByge76a6EM
-   kIWzmX4w6VD+s3dHKRLHqH9lfivVP5h0r6Z41sIOpqEMNdPLpG8MVj/lH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="477807962"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="477807962"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:07:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="766247695"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="766247695"
-Received: from akeren-mobl.ger.corp.intel.com ([10.252.40.26])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:07:29 -0800
-Date:   Mon, 20 Nov 2023 13:07:26 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/resctrl: Add non-contiguous CBMs CAT test
-In-Reply-To: <ilacrcz7o6wq2zdl3szb3cpkkboo43t3t2oyk4cmv3iwarstkj@kk34x5q4fpas>
-Message-ID: <1b7e4a12-f636-4722-a9c7-76f99c723ab@linux.intel.com>
-References: <20231109112847.432687-1-maciej.wieczor-retman@intel.com> <879955f-d2d4-017-6694-5a031ec7f2@linux.intel.com> <ilacrcz7o6wq2zdl3szb3cpkkboo43t3t2oyk4cmv3iwarstkj@kk34x5q4fpas>
+        Mon, 20 Nov 2023 06:07:53 -0500
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A1AD4D;
+        Mon, 20 Nov 2023 03:07:40 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 766F34195A;
+        Mon, 20 Nov 2023 11:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1700478458; bh=StbzyAS5+LLhtN73q/gFPznopbGCKLhwnROcQMkw3Hw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=BZKXe/i2Iu9fxFblxAq/aMYbruLvqE/BYFshIMAmLgr1icRClZBpLOmCVRcVZt+g5
+         JTC2ZsCZGPCBOiJKKMQX7WeGvbRhWgKY7Qv2rxJHTNcUL2Gc357hnq38wwdU0bNqph
+         suSgy0SSE/YK5UWxiz1rH7nwfxy64lAj/Zc/hjkWJYLId0UeE4vfmBRdeGtkgYZwIP
+         IMvqBxg1s9vqRTUGTkxbgEHDZCxV+6vEqoJ5BDuGKQKu/NRWK7Sjp8nJi/P2/gLRdJ
+         1u07INrpu/vgeDgPdF5UBq8J+s/AeeEF7lZvqRWONGtHBLJ9u40eiptteIxz5Rch3X
+         hyC0kJlGOjSbQ==
+Message-ID: <3b5aedb4-da00-4ae2-a60f-685dba949223@marcan.st>
+Date:   Mon, 20 Nov 2023 20:07:32 +0900
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1441281498-1700478451=:2032"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
+ starting from kernel 6.5
+Content-Language: en-US
+To:     Aditya Garg <gargaditya08@live.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Orlando Chamberlain <orlandoch.dev@gmail.com>,
+        Kerem Karabay <kekrby@gmail.com>,
+        Aun-Ali Zaidi <admin@kodeit.net>,
+        Asahi Linux Mailing List <asahi@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        "j@jannau.net" <j@jannau.net>
+References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
+ <ZVKxtD2Mt_eVyttJ@archie.me>
+ <MA0P287MB021794BCCCFB5EA57C1C3B69B8B2A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+ <88fcc70e-9f4b-eeb9-d826-03fa4c40e7c3@marcan.st>
+ <e2909986-34b5-3ae2-cf5c-a1f8c46a1e0a@marcan.st>
+ <6574A65F-3C4D-4E26-8848-F12C38668478@live.com>
+ <03cdd06c-3991-dbf8-6068-e76384db8240@marcan.st>
+ <0900292C-5E74-471A-B789-A1D35D1BBBF7@live.com>
+From:   Hector Martin <marcan@marcan.st>
+In-Reply-To: <0900292C-5E74-471A-B789-A1D35D1BBBF7@live.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,116 +74,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1441281498-1700478451=:2032
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
 
-On Mon, 20 Nov 2023, Maciej Wiecz�r-Retman wrote:
-> On 2023-11-17 at 14:55:54 +0200, Ilpo J�rvinen wrote:
-> >On Thu, 9 Nov 2023, Maciej Wieczor-Retman wrote:
-> >
-> >> Non-contiguous CBM support for Intel CAT has been merged into the kernel
-> >> with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
-> >> Intel CAT") but there is no selftest that would validate if this feature
-> >> works correctly.
-> >> 
-> >> The selftest needs to verify if writing non-contiguous CBMs to the
-> >> schemata file behaves as expected in comparison to the information about
-> >> non-contiguous CBMs support.
-> >> 
-> >> Add tests for both L2 and L3 CAT to verify if the return values
-> >> generated by writing non-contiguous CBMs don't contradict the
-> >> reported non-contiguous support information.
-
-> >> @@ -342,6 +342,87 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
-> >>  	return ret;
-> >>  }
-> >>  
-> >> +static int noncont_cat_run_test(const struct resctrl_test *test,
-> >> +				const struct user_params *uparams)
-> >> +{
-> >> +	unsigned long full_cache_mask, cont_mask, noncont_mask;
-> >> +	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-> >> +	char res_path[PATH_MAX];
-> >> +	char schemata[64];
-> >> +	int bit_center;
-> >> +	FILE *fp;
-> >> +
-> >> +	/* Check to compare sparse_masks content to cpuid output. */
-> >> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-> >> +		 test->resource, "sparse_masks");
-> >> +
-> >> +	fp = fopen(res_path, "r");
-> >> +	if (!fp) {
-> >> +		perror("# Error in opening file\n");
-> >> +		return errno;
-> >> +	}
-> >> +
-> >> +	if (fscanf(fp, "%u", &sparse_masks) <= 0) {
-> >> +		perror("Could not get sparse_masks contents\n");
-> >> +		fclose(fp);
-> >> +		return -1;
-> >> +	}
-> >> +
-> >> +	fclose(fp);
-> >
-> >Add a function to do this conversion into resctrlfs.c.
+On 2023/11/19 4:31, Aditya Garg wrote:
 > 
-> By conversion do you mean the above calls to fopen, fscanf and fclose? Or did
-> you mean the below __cpuid_count? Since you mention making get_cache_level
-> non-static I assume the first is the case but just wanted to confirm.
-
-You convert the 0/1 read from a resctrl related file into (unsigned) int 
-here. Create a helper function for that into resctrlfs.c that returns int 
-(to be able to return also errors) and just call it from here with the 
-feature string you're interested in, the helper should deal with the rest.
-
-> >> +	return !ret == !sparse_masks;
-> >> +}
-> >> +
-> >> +static bool noncont_cat_feature_check(const struct resctrl_test *test)
-> >> +{
-> >> +	char res_path[PATH_MAX];
-> >> +	struct stat statbuf;
-> >> +
-> >> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-> >> +		 test->resource, "sparse_masks");
-> >> +
-> >> +	if (stat(res_path, &statbuf))
-> >> +		return false;
-> >
-> >This looks generic enough that validate_resctrl_feature_request() should 
-> >be somehow adapted to cover also these cases. Perhaps it would be best to 
-> >just split validate_resctrl_feature_request() into multiple functions.
 > 
-> As in conditionally call a function inside validate_resctrl_feature_request()
-> that would check for the existance of a particular file that would indicate if a
-> feature is supported or not?
+>> On 14-Nov-2023, at 3:14 PM, Hector Martin <marcan@marcan.st> wrote:
+>>
+>> On 14/11/2023 18.03, Aditya Garg wrote:
+>>>
+>>>
+>>>> On 14-Nov-2023, at 1:28 PM, Hector Martin <marcan@marcan.st> wrote:
+>>>>
+>>>> On 14/11/2023 15.59, Hector Martin wrote:
+>>>>> On 14/11/2023 15.23, Aditya Garg wrote:
+>>>>>>
+>>>>>>
+>>>>>>> On 14-Nov-2023, at 5:01 AM, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>>>>>>>
+>>>>>>> ﻿On Mon, Nov 13, 2023 at 08:57:35PM +0000, Aditya Garg wrote:
+>>>>>>>> Starting from kernel 6.5, a regression in the kernel is causing Bluetooth to not work on T2 Macs with BCM4377 chip.
+>>>>>>>>
+>>>>>>>> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: https://pastebin.com/u9U3kbFJ
+>>>>>>>>
+>>>>>>>> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: https://pastebin.com/aVHNFMRs
+>>>>>>>>
+>>>>>>>> Also, the bug hasn’t been fixed even in 6.6.1, as reported by users.
+>>>>>>>
+>>>>>>> Can you bisect this regression please?
+>>>>>>
+>>>>>> Since I don't have access to this hardware, it's not possible for me to bisect this regression. Let's hope someone is able to do so though.
+>>>>>
+>>>>> It's not a regression, it was always broken. I'm sending a patch.
+>>>>>
+>>>>> - Hector
+>>>>
+>>>> You are quite likely conflating two problems. The ubsan issue you quoted
+>>>> was always there and the patch I just sent fixes it, but it almost
+>>>> certainly always worked fine in practice without ubsan.
+>>>>
+>>>> The Bluetooth problem you are referring to is likely *specific to
+>>>> Bluetooth LE devices* and the regression was introduced by 288c90224e
+>>>> and fixed by 41e9cdea9c, which is also in 6.5.11 and 6.6.1.
+>>>>
+>>>> If Bluetooth is broken in *some other way* in 6.6.1 then we need a
+>>>> proper report or a bisect. Your logs don't show any issues other than
+>>>> the ubsan noise, which is not a regression.
+>>>>
+>>>> - Hector
+>>>>
+>>>
+>>> UBSAN noise seems to be fixed, Bluetooth not working though
+>>>
+>>> https://pastebin.com/HeVvMVk4
+>>>
+>>> Ill try setting .broken_le_coded = true,
+>>
+>> Now you have a probe timeout, which you didn't have before. That's a
+>> different problem.
+>>
+>> Please try this commit and see if it helps:
+>>
+>> https://github.com/AsahiLinux/linux/commit/8ec770b4f78fc14629705206e2db54d9d6439686
+>>
+>> If it's this then it's still not a regression, it's probably just random
+>> chance since I think the old timeout value was borderline for the older
+>> chips.
+>>
+>> - Hector
+>>
+> 
+> 
+> Hi
+> 
+> I recently got a kernel tested with this patch as well as with .broken_le_coded = true,
+> Here are the logs: https://pastebin.com/BpfJuJKY
+> 
+> Also, without .broken_le_coded = true, the bluetooth doesn't work, as specified in my previous email.
 
-I meant that validate_resctrl_feature_request() should probably be split 
-into 2 or 3 functions, each taking different arguments and one them 
-checks mon_features, another presence of sparse_masks file (any file on 
-the level actually).
+So are you saying everything works now? If not, what doesn't work?
+"Bluetooth doesn't work" isn't useful information, especially in the
+absence of any useful error messages. You can't just dump dmesg logs at
+us, you have to *describe* what the problem is.
 
-> Does implementing it as a new entry in resctrl_test struct that would hold the
-> desired filename seem reasonable?
+If broken_le_coded = true "fixed" it then "bluetooth doesn't work" was a
+terrible bug report. What that quirk does is make *connecting/pairing to
+Bluetooth LE devices* work. Non-BLE devices already worked, the
+controller worked, scanning worked, etc. All that is useful information
+if you want to get support for issues. We can't magically divine what's
+wrong if you just send us a dmesg and say "it's broken". We need
+detailed information about exactly what works and what doesn't (e.g. the
+controller not showing up at all is VERY different from it showing up
+but not finding your device). The only reason we guessed this here is
+that this was a known issue that affected other chips. If we ever run
+into a 4377-specific issue that only you can reproduce, "bluetooth
+doesn't work" and no error logs really isn't going to get it fixed.
 
-I'm not convinced it's useful to put it into the test structure. A simple 
-function that calls into one or more of the functions provided 
-in resctrlfs.c seems enough for me.
-
-> Or would it be better to pass it as a new function argument (similiar to 
-> how "const char *feature" is used now)?
-
-I'd create a separate function in resctrlfs.c instead (IMO, a new function 
-should be also done for those callers which currently use const 
-char *feature).
-
-
--- 
- i.
-
---8323329-1441281498-1700478451=:2032--
+- Hector
