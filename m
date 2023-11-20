@@ -2,203 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5407F1204
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEB97F1206
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjKTLbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:31:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S233106AbjKTLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbjKTLbf (ORCPT
+        with ESMTP id S232649AbjKTLce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:31:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9382BFC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=olTJQwBS3ubhzSRJsqrMCxN3w/D68ONkPCsGWjWzOPk=; b=K/LRxm1ApSLmH2cdXiFaJL9j9g
-        5I28SBHzXKpS+2YfhOTsGo3gqyUetIQpIf8NFFAYQsooV0z3jm30h/ObCzoWgXsIx0h39U/Y4KoMv
-        z6BKZzXOyso4mlzIqCLc9BXJR2KzjzpMBVML5oS1y5pSwKlijsrVfKVMtJ7DqFo1RKB8zepdl7uQY
-        RP5zsv4rfT797d3MMYAMTXjWFSFRQnp5OBpTuu0giXUnGOSbwhBlZ22J03sf+WtHGSX8PoAyujpTo
-        59m+O1TgSARgUM/73zeVWMXJ0UnpEqbhFRM/mJPGQ+mcOfep8jlWJz1Fc2iN56QIQG2oG3ye1x24Q
-        6Y+pC4lg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r52Uc-004Pvj-N8; Mon, 20 Nov 2023 11:31:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7C61B300419; Mon, 20 Nov 2023 12:31:05 +0100 (CET)
-Date:   Mon, 20 Nov 2023 12:31:05 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yury Norov <yury.norov@gmail.com>, mathieu.desnoyers@efficios.com
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
- __mm_cid_get()
-Message-ID: <20231120113105.GR8262@noisy.programming.kicks-ass.net>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-5-yury.norov@gmail.com>
+        Mon, 20 Nov 2023 06:32:34 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5789090
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:32:30 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so9104195e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700479949; x=1701084749; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XXVT32YSTkc9p0bui0nEPJJcsWC+EUsD0PehXkWpJF8=;
+        b=Kmd1eI65vL21JQYNkHAil4vtKomtoJdipx4MGbQsDXY5KReFcsaYXZNoH+wnCydubf
+         h2FMj09plgfaERyrnAAUpmd5UZeYqK8CBGVYdDZQB1VAC8ecXt4MQZf6i413C6DY6oLY
+         AW+Ur6GCv1yhMh9+00AE/9CW/zCDmbg1vkDDdivD4xJHg6Bd2Kx1KiaFuZ2sBn9LxXSj
+         4fli8jfUBYyN3pfGqDd4ESCa7tuNqhGUVf+f00wwmKRgwNFUXkgqCUEbP/5hT9VxapRw
+         uQbgzZm8LGRXK+WeD5w0q7lAQc1byPz0ziV32y1FjT23VYOXIcfx62y2rci4CfqWjM40
+         N2lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700479949; x=1701084749;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XXVT32YSTkc9p0bui0nEPJJcsWC+EUsD0PehXkWpJF8=;
+        b=rbc5fz7EWELSgoavB9YiSk4qHKo0AJa1IkTiUNe/xtX+PYl/y/HS0bBJ+mgqN6on25
+         KK4q1EqXo0KEu0MD0GTP62jibiGiyurfZ8L6/1L60YkEzqPEAqjWvlH7I+p6/FwYuLTK
+         mwAoAQFDr2MVsx/DGnQk4BKgm6EAOntnyo9YV1jiwX9LSIRQhL7zXYkpyBBr8td3QA9s
+         MoACU1Z0O7/2ydyqdlqp1KkFAtuPCj6QTaJggWNB70v3FE7KCBcwkzFUJPeGp1dMDAkh
+         sAevCmFrqWfeDAiD8tux7cRxYKLeuo6bzTUYVgS/Sx0Apb2UlzhxBP5j2k9DnSZtF70v
+         +rDA==
+X-Gm-Message-State: AOJu0Yxi1QNuH6H6s1X/VHi7aRQRRAMLRrDn5RLD3tcUWSS9NCebcodR
+        xx88M7Tn3uYjTffYyantjaMEAQ==
+X-Google-Smtp-Source: AGHT+IHE/r6wa4i0tM4JzmYm5czcbg+D4FtuHA+dE7ZuRPxMuI8ADXhGUe6YuFQfgszzzuXosNOoMw==
+X-Received: by 2002:a05:600c:4e42:b0:407:5de2:ea4d with SMTP id e2-20020a05600c4e4200b004075de2ea4dmr11044499wmq.13.1700479948775;
+        Mon, 20 Nov 2023 03:32:28 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b004083a105f27sm17200901wmc.26.2023.11.20.03.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 03:32:28 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Mon, 20 Nov 2023 06:32:25 -0500
+To:     oe-kbuild@lists.linux.dev, Mehdi Djait <mehdi.djait@bootlin.com>,
+        mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: Re: [PATCH v8 3/3] media: i2c: Introduce a driver for the Techwell
+ TW9900 decoder
+Message-ID: <675bc18e-4a9c-4e3c-8ae5-bdb8a2d2cfbe@suswa.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231118155105.25678-5-yury.norov@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <93354996c95926970684498f08061b60a52bb84c.1699449537.git.mehdi.djait@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 07:50:35AM -0800, Yury Norov wrote:
-> __mm_cid_get() uses a __mm_cid_try_get() helper to atomically acquire a
-> bit in mm cid mask. Now that we have atomic find_and_set_bit(), we can
-> easily extend it to cpumasks and use in the scheduler code.
-> 
-> __mm_cid_try_get() has an infinite loop, which may delay forward
-> progress of __mm_cid_get() when the mask is dense. The
-> cpumask_find_and_set() doesn't poll the mask infinitely, and returns as
-> soon as nothing has found after the first iteration, allowing to acquire
-> the lock, and set use_cid_lock faster, if needed.
+Hi Mehdi,
 
-Methieu, I forgot again, but the comment delete seems to suggest you did
-this on purpose...
+kernel test robot noticed the following build warnings:
 
-> cpumask_find_and_set() considers cid mask as a volatile region of memory,
-> as it actually is in this case. So, if it's changed while search is in
-> progress, KCSAN wouldn't fire warning on it.
-> 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  include/linux/cpumask.h | 12 ++++++++++
->  kernel/sched/sched.h    | 52 ++++++++++++-----------------------------
->  2 files changed, 27 insertions(+), 37 deletions(-)
-> 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index cfb545841a2c..c2acced8be4e 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -271,6 +271,18 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
->  		small_cpumask_bits, n + 1);
->  }
->  
-> +/**
-> + * cpumask_find_and_set - find the first unset cpu in a cpumask and
-> + *			  set it atomically
-> + * @srcp: the cpumask pointer
-> + *
-> + * Return: >= nr_cpu_ids if nothing is found.
-> + */
-> +static inline unsigned int cpumask_find_and_set(volatile struct cpumask *srcp)
-> +{
-> +	return find_and_set_bit(cpumask_bits(srcp), small_cpumask_bits);
-> +}
-> +
->  /**
->   * for_each_cpu - iterate over every cpu in a mask
->   * @cpu: the (optionally unsigned) integer iterator
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 2e5a95486a42..b2f095a9fc40 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -3345,28 +3345,6 @@ static inline void mm_cid_put(struct mm_struct *mm)
->  	__mm_cid_put(mm, mm_cid_clear_lazy_put(cid));
->  }
->  
-> -static inline int __mm_cid_try_get(struct mm_struct *mm)
-> -{
-> -	struct cpumask *cpumask;
-> -	int cid;
-> -
-> -	cpumask = mm_cidmask(mm);
-> -	/*
-> -	 * Retry finding first zero bit if the mask is temporarily
-> -	 * filled. This only happens during concurrent remote-clear
-> -	 * which owns a cid without holding a rq lock.
-> -	 */
-> -	for (;;) {
-> -		cid = cpumask_first_zero(cpumask);
-> -		if (cid < nr_cpu_ids)
-> -			break;
-> -		cpu_relax();
-> -	}
-> -	if (cpumask_test_and_set_cpu(cid, cpumask))
-> -		return -1;
-> -	return cid;
-> -}
-> -
->  /*
->   * Save a snapshot of the current runqueue time of this cpu
->   * with the per-cpu cid value, allowing to estimate how recently it was used.
-> @@ -3381,25 +3359,25 @@ static inline void mm_cid_snapshot_time(struct rq *rq, struct mm_struct *mm)
->  
->  static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
->  {
-> +	struct cpumask *cpumask = mm_cidmask(mm);
->  	int cid;
->  
-> -	/*
-> -	 * All allocations (even those using the cid_lock) are lock-free. If
-> -	 * use_cid_lock is set, hold the cid_lock to perform cid allocation to
-> -	 * guarantee forward progress.
-> -	 */
-> +	/* All allocations (even those using the cid_lock) are lock-free. */
->  	if (!READ_ONCE(use_cid_lock)) {
-> -		cid = __mm_cid_try_get(mm);
-> -		if (cid >= 0)
-> +		cid = cpumask_find_and_set(cpumask);
-> +		if (cid < nr_cpu_ids)
->  			goto end;
-> -		raw_spin_lock(&cid_lock);
-> -	} else {
-> -		raw_spin_lock(&cid_lock);
-> -		cid = __mm_cid_try_get(mm);
-> -		if (cid >= 0)
-> -			goto unlock;
->  	}
->  
-> +	/*
-> +	 * If use_cid_lock is set, hold the cid_lock to perform cid
-> +	 * allocation to guarantee forward progress.
-> +	 */
-> +	raw_spin_lock(&cid_lock);
-> +	cid = cpumask_find_and_set(cpumask);
-> +	if (cid < nr_cpu_ids)
-> +		goto unlock;
-> +
->  	/*
->  	 * cid concurrently allocated. Retry while forcing following
->  	 * allocations to use the cid_lock to ensure forward progress.
-> @@ -3415,9 +3393,9 @@ static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
->  	 * all newcoming allocations observe the use_cid_lock flag set.
->  	 */
->  	do {
-> -		cid = __mm_cid_try_get(mm);
-> +		cid = cpumask_find_and_set(cpumask);
->  		cpu_relax();
-> -	} while (cid < 0);
-> +	} while (cid >= nr_cpu_ids);
->  	/*
->  	 * Allocate before clearing use_cid_lock. Only care about
->  	 * program order because this is for forward progress.
-> -- 
-> 2.39.2
-> 
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Mehdi-Djait/dt-bindings-vendor-prefixes-Add-techwell-vendor-prefix/20231109-042139
+base:   git://linuxtv.org/media_tree.git master
+patch link:    https://lore.kernel.org/r/93354996c95926970684498f08061b60a52bb84c.1699449537.git.mehdi.djait%40bootlin.com
+patch subject: [PATCH v8 3/3] media: i2c: Introduce a driver for the Techwell TW9900 decoder
+config: i386-randconfig-141-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110759.PJpNGc2N-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110759.PJpNGc2N-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311110759.PJpNGc2N-lkp@intel.com/
+
+smatch warnings:
+drivers/media/i2c/tw9900.c:398 tw9900_s_std() error: uninitialized symbol 'mode'.
+
+vim +/mode +398 drivers/media/i2c/tw9900.c
+
+4fa88742527a9a Mehdi Djait 2023-11-08  384  static int tw9900_s_std(struct v4l2_subdev *sd, v4l2_std_id std)
+4fa88742527a9a Mehdi Djait 2023-11-08  385  {
+4fa88742527a9a Mehdi Djait 2023-11-08  386  	struct tw9900 *tw9900 = to_tw9900(sd);
+4fa88742527a9a Mehdi Djait 2023-11-08  387  	const struct tw9900_mode *mode;
+
+This should be "const struct tw9900_mode *mode = NULL;"
+
+4fa88742527a9a Mehdi Djait 2023-11-08  388  	int i, ret = 0;
+4fa88742527a9a Mehdi Djait 2023-11-08  389  
+4fa88742527a9a Mehdi Djait 2023-11-08  390  	if (!(std & (V4L2_STD_NTSC | V4L2_STD_PAL)))
+4fa88742527a9a Mehdi Djait 2023-11-08  391  		return -EINVAL;
+4fa88742527a9a Mehdi Djait 2023-11-08  392  
+4fa88742527a9a Mehdi Djait 2023-11-08  393  	mutex_lock(&tw9900->mutex);
+4fa88742527a9a Mehdi Djait 2023-11-08  394  
+4fa88742527a9a Mehdi Djait 2023-11-08  395  	for (i = 0; i < ARRAY_SIZE(supported_modes); i++)
+4fa88742527a9a Mehdi Djait 2023-11-08  396  		if (supported_modes[i].std & std)
+4fa88742527a9a Mehdi Djait 2023-11-08  397  			mode = &supported_modes[i];
+4fa88742527a9a Mehdi Djait 2023-11-08 @398  	if (!mode) {
+                                                     ^^^^
+Either valid or uninitialized.
+
+4fa88742527a9a Mehdi Djait 2023-11-08  399  		ret = -EINVAL;
+4fa88742527a9a Mehdi Djait 2023-11-08  400  		goto out_unlock;
+4fa88742527a9a Mehdi Djait 2023-11-08  401  	}
+4fa88742527a9a Mehdi Djait 2023-11-08  402  
+4fa88742527a9a Mehdi Djait 2023-11-08  403  	tw9900->cur_mode = mode;
+4fa88742527a9a Mehdi Djait 2023-11-08  404  
+4fa88742527a9a Mehdi Djait 2023-11-08  405  out_unlock:
+4fa88742527a9a Mehdi Djait 2023-11-08  406  	mutex_unlock(&tw9900->mutex);
+4fa88742527a9a Mehdi Djait 2023-11-08  407  
+4fa88742527a9a Mehdi Djait 2023-11-08  408  	return ret;
+4fa88742527a9a Mehdi Djait 2023-11-08  409  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
