@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 716D27F2164
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07DF7F2166
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjKTX0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:26:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S232259AbjKTX2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKTX0b (ORCPT
+        with ESMTP id S229504AbjKTX2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:26:31 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2089.outbound.protection.outlook.com [40.107.22.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695B0A0;
-        Mon, 20 Nov 2023 15:26:27 -0800 (PST)
+        Mon, 20 Nov 2023 18:28:14 -0500
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2050.outbound.protection.outlook.com [40.107.13.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43029C8;
+        Mon, 20 Nov 2023 15:28:09 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gFGtz/Xjw5UvVmW4KUnhGUKZgjAemVBy2dXIFyuB08ikIq5jGsWe/PqShlebna25BqnSrB5JZoXdTEraueEiQRYIn+MokZfGviHKJ3FNhxDaTcTD4OzgxAEQWbUl1QO1YwUNOtZXSWIZTaWFziIA53Btg8B8LxBJNMXGlWVJ3BM5LzXU2zcFXyPYYhWz/TuHOGiCT75gH0cR9+stnlzaSqSXuIBgSC6n55eS2hlbJ9gcwRHhRD+9vuPQQvtY85i6VyGoBN6qMryYi/aHd+ok8vaoKv07FvEMKQxgQ+0aSdIryZ/0tGbCY6mTF14TpnIwZi0cC2FTPP1MLxygbk8bPg==
+ b=oUkgb7hrDrCA9Mi5MkYd2eLIK+fF8CvwWiLc3OTHqqfIkgngbVkTII7Z+zA2ocPeMGqHJqjBTAgfp7kcemW2n8DbBJS7RdlgNx3fdIxgklf9vPq/oM87IJSwloG1p296zbEoAKqWfOPodvy+7FvVq39dD4vav/ztC9Ul6kivbIpJzj3U/6QvwTSuNPCaNQ48haqwANfv7IANk2lR+UIxm5cdPa7FcvtKuOy+9hiDw2K3pOu8y0dRqTDVRk+jvmUkS5zxBZPaTP9uVdKi2oqIsDHr53xS8Sh67EWj7426xEN1rR8KHuyIRQnAVpJHnLAJQByRBO28g/vDZ89J7ggZOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wGjkXEXvwGtbNUKMyir4oDhjSOGzqQJhEsWuKcaXs5Q=;
- b=fG7uV442mpE5jpP8FbHi08aCTN/dIzqQukuzuWFUkH6iGZ4ZHFy5U+2co2LUj3pezEYc4CkemLLxgjBWZvPocHWq6WYA0Uzh7lC5VchOIyvu/ep0wIO/iZK7auDQg/SXWj3sL3kZTXUmqNDyeIf4Dwrv1rKwCOixcNU1HEOpt1r/al0dBq8vMt6yT4iEQok5Csd9MkXn+GTVEQuOLfbdoELduq+S65fZAfr1DOYaFHRPghElFsyeB26SnkYUriMQHoorjB4PFzOxDOzWryr1S98PqttgZTjBmGdiUgHZ+ibwMNEVkJfnNvgtQlQjDRPyjM4m2xf+xugbqSQsGdKvvg==
+ bh=bWXzyFR3inrBgZQhwIySphsu9tQrO21P9EJ3VyxhQnI=;
+ b=hyCuFu0Kx3fFmAfn8UgTPRN5h0MqDeBl44QVN0F/g/nYhsjKkNi697dbQLD7rdifE1Myp/IOtm6+kpTyMP/260FhZYYtpfhnttHesfQuyF/JF2TNVHZ8f7p1pyHfHAo8tHuWnP0KbxNmG8Mw0bhPSzZm+GwVtDFXPgpQnZmFv/ARgvo1GBJuZnNirp4UQrKYA4uHhOWVKNAqW10T7zY/g7DdIV9Whd2bU5Nt+PCRNZ2Th5yAgLYU79BozOZZDH3jBPksvV+Jf8UOecfV0P/5fk1z3nMo2yS89FfuTod7sU6xLew0Er734Bj53KlvXUqZ6pRE6oIPKmyEpn6XuUOXMA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kunbus.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wGjkXEXvwGtbNUKMyir4oDhjSOGzqQJhEsWuKcaXs5Q=;
- b=DIzBGEwqxDFNlFwqrPoI/nJec7jaGflO+m/n2XqbwUxjVBazo5iQmvL8peS83jdNtgCq2JrH72M5P1ueZXI6jqWgb+aV47NfiMy/LIEEkUce1xX/7kvGVqWrhYpfEs8PQF+JQnduZi7ePTjYIY7tn2vnbrrw9BdPr0M/s3rLVn8=
+ bh=bWXzyFR3inrBgZQhwIySphsu9tQrO21P9EJ3VyxhQnI=;
+ b=hsJW9DMMmzAKvfRNPrAHbKEnsPDSjOUaaVToNLAF0Rnk1Q1p8t/uLDPtXGkre4TFLKV7vz6BUmkmb1Nd+tr1NBDQmGjcyHOldVTqLg+EP5ey19v0B9HzFlmo+S1YHFVQ6GN+CpVSHH/AMTolGQcBK3+n82rScj6htxrstRkcxGw=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by VI1PR04MB6831.eurprd04.prod.outlook.com (2603:10a6:803:135::8) with
+ header.d=none;dmarc=none action=none header.from=kunbus.com;
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM (2603:10a6:803:4e::14)
+ by AS8P193MB1174.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:339::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.16; Mon, 20 Nov
- 2023 23:26:24 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7025.017; Mon, 20 Nov 2023
- 23:26:24 +0000
-Date:   Tue, 21 Nov 2023 01:26:20 +0200
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
-        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 net-next 6/7] net: ethernet: ti: am65-cpsw-qos: Add
- Frame Preemption MAC Merge support
-Message-ID: <20231120232620.uciap4bazypzlg3g@skbuf>
-References: <20231120140147.78726-1-rogerq@kernel.org>
- <20231120140147.78726-7-rogerq@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120140147.78726-7-rogerq@kernel.org>
-X-ClientProxiedBy: AM8P190CA0021.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:219::26) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Mon, 20 Nov
+ 2023 23:28:06 +0000
+Received: from VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::653f:d0f3:e7f6:8c06]) by VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ ([fe80::653f:d0f3:e7f6:8c06%5]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
+ 23:28:05 +0000
+Message-ID: <eb1a1667-be1e-454b-aa80-d20b504c28f5@kunbus.com>
+Date:   Tue, 21 Nov 2023 00:28:03 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] serial: core: implement support for rs485-mux-gpios
+Content-Language: en-US
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-3-linux@rasmusvillemoes.dk>
+From:   Lino Sanfilippo <l.sanfilippo@kunbus.com>
+In-Reply-To: <20231120151056.148450-3-linux@rasmusvillemoes.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0414.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:d0::7) To VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:803:4e::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|VI1PR04MB6831:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f36ae2c-a336-4c2b-6635-08dbea201c6a
+X-MS-TrafficTypeDiagnostic: VI1P193MB0413:EE_|AS8P193MB1174:EE_
+X-MS-Office365-Filtering-Correlation-Id: 08242c9d-8d96-4bf9-3719-08dbea2058fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W4gZJduCPVYQO8I+LfZfKvRzXJ9GHIjJu8CbX7dhHg3E6j4w3lEq70QC5fWtKt+xmz2uuKRTvAGe28eDeVJ7s9igfMGA422Qe6JaKqkSh8YHi91zzq+7ShSH71P0jEaf5cRk/pSFLpW1PUjYajGy60fO1enwONCDR8VZovagVGxOddlW1ptME6EfmPyFIQ3Q6psZasVe6abHxEDc5VBnCQAucfXm8GeAgNydaPfQmp1jI898vZBwQ4ZE5MXkpBTvW0WG9OEgsjbMjVMdDKbZCrb7fASSE5phkDbSHMhlHDXT8Ab3JpSicWycFQmqX0u4bggedKzqENWNiTPRVQY9TlTM3i37OEKKtpOqekfj2OIHpbtJdTDJJg/tzWzAnwyVV+cXt2W2dKb0GW5FwlXioQKEkQYBCgEmQXQ1a4FjUlyw9j4ssJpdLuKC1Mc9Q7a/8s18DNF5DE5Bb0OBv2LNqhJB2zHRDU5AJkK5qOfLe3qByhNun4R10mXmaSp/BNDSarRMa/pTmfEh3GZ3vVg0fLo+1j2X8/zD/QqP3ynme4ZBhJKGyRS6kxKYmiES7HKfpfupvHaEKuIpZABi9Z6qxy/V45MgyahpzXwXewDxRq4p6CT8QzI5Pkia5+YYiHxN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(39860400002)(376002)(396003)(366004)(136003)(230173577357003)(230922051799003)(230273577357003)(451199024)(64100799003)(186009)(1800799012)(316002)(6916009)(66946007)(66476007)(66556008)(9686003)(6512007)(6666004)(6506007)(26005)(1076003)(6486002)(478600001)(38100700002)(33716001)(83380400001)(86362001)(44832011)(2906002)(7416002)(5660300002)(8936002)(4326008)(8676002)(41300700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 9u3uLtBCwYrTY2/uxYpmEazwh91gAJTvESSMr1cmxraTNYjM9rafURNQsjjkRZsk4CKYI6coxYRDnNg9Ou3qtcMdJ5N+8vrvVO+W7NbWq26Uh7cLn9htiY0eqtaz2+P5cgMEMxCHcpDGUT/ESDGtAxf2N00dq/CKBnRfjy3IZuOTUv+elZCMkkw4GsZLRg1JQ2KmYaVQUHeoV+eUJpZxgSjC33eZDD9zQJunjxw+ALxtJMzEvcBWQe1ftZ9ZS/1cZfkE7sy/STW916bWzNYBlwz0pOT51D4mFaT+JlDDYYHWsF4g6WW+adRDa/Q0ipisofumIOSKi411XuGhSxy1ZNkfRD4tRMjet4ZvaMjk86QrXxGPPY2tsNwP+MuF3k/2qFa0HzTyJq8JRDstBDWSMjsCDfmG9WoBMn+pMZt4iB0eO44mflfsiv3Beps6MkhvNAMbx9Aj6s4P9FxCF0nVxV+WgizfOehlaBPshOJ29ZVmYoUDM49bqadW7vLsqzg8KVMZB9bHOPAh+AJZWBmoEIfnrmlnysnUdMykkM8Zi4XLCnD6DM64oWEgrp47zX2xauP5Y3xlRPCkydVZ/QQW3tEoJesgxulMFIsKYZIFaCxsVXKozwdEO97+sI4/7m7b/PpnSIEnb+ZlFmuLJn7f9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1P193MB0413.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(136003)(346002)(376002)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(41300700001)(36756003)(86362001)(5660300002)(31696002)(2906002)(83380400001)(6512007)(6506007)(478600001)(52116002)(53546011)(6486002)(2616005)(38100700002)(8676002)(4326008)(8936002)(54906003)(66476007)(66556008)(316002)(110136005)(31686004)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PBE2JUdWrivwjZh9GUz6QubWgHahbln02xxeOJ/JX2aqkhtArXG9ZxvvbxxK?=
- =?us-ascii?Q?Qka3CKKUWs/bkw6whYTohu0UHXSf2CsMrvEciT/2i27WdEe3EE+PphGROPZo?=
- =?us-ascii?Q?NrxceMO4kk8u+N0zikH3EbgdJt39V8wb3kUZf21xAG6tr8r9zJtITeIBDOhT?=
- =?us-ascii?Q?F4x9YsGirnIB4slCqj89DfCmBUqm4SzAZjbjvvITFaFJ53TXfckHeSgKsSqU?=
- =?us-ascii?Q?tZdyZvdYI8f/ojkIMjBkiY7ftovvdbV7LSLAQoYtczcnIb4t8mqsRHsfRZch?=
- =?us-ascii?Q?/XbRxfEoxF96GT4NSO67ewr9C9HiIkHpke376zaRSDy7+9MJU8F/zKQTgEU8?=
- =?us-ascii?Q?Y5/RO4ZeL0mae1tEwhtSOdtfAErtEhycSvQILVU5DZBozlwX1d8NuX5eJ0Qo?=
- =?us-ascii?Q?N+KQOKTgw5BJbVfv73WeTn7PZsQAd+5pMovDtGXifY84C3UqsdgG9vlGCmd3?=
- =?us-ascii?Q?YGGYjlulvbZlLSTWuLbVR6dz80830IRIlOkXGoAzp1sg/2zrlzFZ/T8MmE/b?=
- =?us-ascii?Q?L0EDxgROJGv7mp+SZZzwrrMBFKfuhnMtWEX9LeqBLQ6peK04rgn+jlk79jx9?=
- =?us-ascii?Q?XVjOcIJmdD3YrCo4lkLXqhoQ9fIeg5yHu8EBUbfiNHadbg5lvPKwlLddrDF1?=
- =?us-ascii?Q?1kUzHHSUcUeUmb+1tgQE550qYW35WPE0HVPckQPaxcmJjdlvCsQyn2NxsyCt?=
- =?us-ascii?Q?OQ8m88D7Evq7nyvQrOvgEe1FVNvpdI6ldR8zBy8U03zxhh30gQVs0dqBVgkQ?=
- =?us-ascii?Q?MfdEACvuG4TfXYtTw1H6bak1X1sDUzB16pAOC0kOU/3MeCcNrAZaV3S0VtW0?=
- =?us-ascii?Q?dUd5VidKwm7CDmcDduxJzKCeFux5EKEKaj4XPvoY1pvb2CBLNJAXSZ3fwEU1?=
- =?us-ascii?Q?IzfZgrDQnC2XwFY9jwh1DI+ED8FNdaWuC1xhGIaaf1jkW6LchVb99QIJ53LX?=
- =?us-ascii?Q?42LfGZAlWR1j5ii3pcayBYL+ghC49hsxtFTHzg1TYMgzNqxmxp0wmhXcJHDN?=
- =?us-ascii?Q?+pZH6vdKKuwCO8Ps22R4evO0xMPBqB3bG4avg9qfCn7FHbbSxP32pcyAKHSZ?=
- =?us-ascii?Q?ShvmWXPC9SIXYeHnnv4zGgzWcv5VMhf367IeA/85nu+htk+oFLH6ilzGrh1Z?=
- =?us-ascii?Q?y75rMdHooFT/1qKwvdcs24HIF9V1j7koXUoQDzlbsqX6gVqenG5Fmx5hQ7t3?=
- =?us-ascii?Q?9CdfRESj9JQ1Z73jhhOLAamNOKrqmsModH8abTPoDFcXeKC3L3k65++1rUbC?=
- =?us-ascii?Q?Sbu/A/8hm3/V6xen3jsbo56i0R4++1Yhv8qRL+ax+HPazlhKZXkhiCG7xTbE?=
- =?us-ascii?Q?j498oYiVYXf3uwZMbSmQxCShIvy8BAZGEqYMo3c5QeEE3cRtrvwvDuJgnRRu?=
- =?us-ascii?Q?Pl27Zf4InGOBHfJ/s59GfhWlr8eKGYhxXCAiYfipPhuUvA64RqBy0YA9IJ9q?=
- =?us-ascii?Q?dnAnVUHpIL4URDNszUlr0dcGr8oKWVhAGS7uSxJrhoHjWXS410DkLT7ll08b?=
- =?us-ascii?Q?Sv7yc7i9XkAqvBoT9MKhNpC/Z4Axu4nnSwpSSije6LQXmQc6kcQZsF6Tz3t/?=
- =?us-ascii?Q?MHW+dnzZRWfT0wirjImWu49rByt4BliKHRENeOs/ngxL45hwWFP2wrrDpTfj?=
- =?us-ascii?Q?iw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f36ae2c-a336-4c2b-6635-08dbea201c6a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q3N5eTV3T0t1VXVHWVc0eTBvN2hyYTlUK1NqaTN4TVhZT2owbnBBT1hJYlhu?=
+ =?utf-8?B?aVBXZGtUaGtvMkpNTm4rQzNPOW1LaXIzaHJPb0xsZjd2eW5WbDArVXR3V3kz?=
+ =?utf-8?B?VFZmQUliQ2RQTnNmS0xFbFRuR2ZQMkwxdlRBU0tjNTd1MzY5VnN2Rjd0ZEdl?=
+ =?utf-8?B?dHFHMFIyOEVXUEtlTElpOFZwNHkrNXRHZEpQeXNjNHdZajlIR2JqVEhUbzNJ?=
+ =?utf-8?B?WjloYzNxWkxKYzNnd2Jna3cyTi9RNmZ6NC93aXB1VEZxbmlRMk4yMVV2Zkht?=
+ =?utf-8?B?TzdyNXphRVB3ZUhwYTRmdUpCSXNCT1RBZ0FhZFkxdHNZNTlRcmZyN2lhMWxW?=
+ =?utf-8?B?QXFzNGxsTE1tbVBxMFZZeE54akVtZG1oVXF1cFFpQVp1RGlza0tpdkYzeXB6?=
+ =?utf-8?B?dkZZcXZlWVRtVVRSbDdqN0lYWWJqbVc3NWl1ejF3aHQ0ZmtSa3puckdha2pS?=
+ =?utf-8?B?NnMxS3pNcTIwekpPeTJmdnBZY3k0VEhzSFFxWlp3Z21WbjhYVXBVclBIUmxR?=
+ =?utf-8?B?WUFnTnhFeXR5ZmdZQ1YvbXRsNkNlNmxlNkp6L3Y3aXlDZE9ZT1RuMngzeitI?=
+ =?utf-8?B?Vlo2b2lSRXZ3SFcxRjd6b0diVlpwUWlPbmF4UUZWMi9MaEpZTlVCbmRjZEJj?=
+ =?utf-8?B?L2xSc3d5cmZwempzRUxVeWJUSEVnS3JKT1RROTNSUDlFZk9yRzJjUUpKbjNQ?=
+ =?utf-8?B?Q045MEUyNFRXT05yL3NjdDJNbE1kQTcvZE5FbE1uZVBqTlJwVzc4RHF2YXJw?=
+ =?utf-8?B?bVRuQytLWXA3Y2FoeExncmkxMjlOUTE1UW9nZDBHQjNYcHFwbmd3U0NIR2N6?=
+ =?utf-8?B?RTlrMjdyTEFVaEkydDR0VENrTGplREpaWlB5YWVYb25pem94UzdZS0M5R1RC?=
+ =?utf-8?B?UnRtZU9YdGVzWFNsUFNudCtVYSt3d1B5RWMvaTl5bVczbGNsTXFUbFZGN2Z5?=
+ =?utf-8?B?QzNuc0RBMEN4dXVjQlZDdHQxRlFjU1ZiTXJOazdBT1djTXdNQ0NkK09XRmVy?=
+ =?utf-8?B?Wm1nejVCanVRU3QydzIzSEdKZjN5bUF1cm1sWHo5S0w4WFFwTHRKRXpOYXd0?=
+ =?utf-8?B?Ui80c0FiSzFuRStJaFJSb05USnVkb3FxWHBOSXBCYnBsbUMya3FvaWNXRUE3?=
+ =?utf-8?B?bzdycWVXWUd6TXArZVcwNE1SbzBNK2ZubUl4bnovVXFyQmN0WlphRjFSOG5w?=
+ =?utf-8?B?Y00wbkxScEE4aFd4WHVyaEIrSVFneGZEc05wYmMvNndyZE80WGRWM3h1aU1C?=
+ =?utf-8?B?cFY4eDBzTDdpb25MbnJIeGJ0MS92OTVIRWZ6M2JkUFRHV0YzdG5mMmVGYzBE?=
+ =?utf-8?B?MHJHOThvVHdDd3BnR3R4eWZWSTE1U0hybU9wYVRBK3RqLzJLR2w4SHNhNGpY?=
+ =?utf-8?B?bUNJM2Z3NC91ZU1UWUMvMzk4QjhpeldDUnp4RUlwbE9vc1BxQzV0YktZUzVD?=
+ =?utf-8?B?UFJIR1cwQ1B1a2RFTFptbHhzVEgyaTluaDdIaStlSEp3UXBMMGdNWm5jdHYw?=
+ =?utf-8?B?WlZKRml5RFpFOWpPU0RvNmxVTzhFbWhYemVLTE05eWQwWHZqL3kvMVhGSytM?=
+ =?utf-8?B?aS9IWEVrbWM4dGZ6Nm5RQ1BMSXI5eTZJYmNaZ1BtN2UxNnJ3VUNpYk9BNGlI?=
+ =?utf-8?B?dWVBdWVwZ1prWjdxbkkzQ1M0RDAxQTFPWmVoMi8rQlFGZjZwZHg3aGNkQUZG?=
+ =?utf-8?B?b3Npd2xJUWJ1eXk1TVk4QlVNRDYydiszaDVnTHVGZWNTa0o3a1NmdDVGZ0VW?=
+ =?utf-8?B?REF6ZXVLOW80RjlPb24zb3kyTGl6ZDhaK3Z3TXJGTXllZW50djVvckg2TDg1?=
+ =?utf-8?B?SGR0a2F2cWJaWi9zdXlZTlJ3eG1ac2czTStPbDIrbllwOUNMaGQ2THNwUVBn?=
+ =?utf-8?B?T1dxajJGM0s2MUxVdkRDcHdIUDhpaWJvd3BrcitSSW1NTytOYWErdGRJc0lQ?=
+ =?utf-8?B?NVNVL1pxcjJGR3dBUTZkSElTUUIvRW5pdnkxd2tWSDZyZXpGK1FEU0s3dkZa?=
+ =?utf-8?B?NTFxYmIxSUpzQVFnN2JqajNqcHR5c2hKbHVlSjhNM0ZsZzBlbnhFeE9xaVRX?=
+ =?utf-8?B?Yjl0T1pWR09MVDZTdmY3YmpiUkxGZ1pGTXdXSDhEOFdudGs3UGxIdU05TWNy?=
+ =?utf-8?B?ODluYW8vMWU5M0RnU3hJM3FCRSsydm5nTWZueFJERFJLTUpOQ011cTFnV2ZX?=
+ =?utf-8?Q?QpRKt4eJbj/IapGeW0p7w8gSKxKL6A0zT+mlRSXroWyB?=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08242c9d-8d96-4bf9-3719-08dbea2058fc
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0413.EURP193.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 23:26:24.0663
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 23:28:05.8460
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n/QdBU1tOEzUea+7dJFrNkRFJV1MddCUaKk+X9GugRc19U9dCLbhPjFCx7eUT+uZl8aln78dj3PaGW9rewTO3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6831
+X-MS-Exchange-CrossTenant-UserPrincipalName: NuGAG451MdUGH/1bAZe+tO1q6FLRSmJC2M8mbwPkvS00enfZ/WFw7aPa5VkSHOGpM9MzCYsimJ+Pzps8chrHWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1174
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -117,252 +130,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 04:01:46PM +0200, Roger Quadros wrote:
-> Changelog:
+Hi,
+
+On 20.11.23 16:10, Rasmus Villemoes wrote:
+> Add code for handling a rs485-mux-gpio specified in device tree.
 > 
-> v6:
-> - get mutex around am65_cpsw_iet_commit_preemptible_tcs() in
->   am65_cpsw_iet_change_preemptible_tcs()
-> - use "preemption" instead of "pre-emption"
-> - call am65_cpsw_setup_mqprio() from within am65_cpsw_setup_taprio()
-> - Now works with kselftest except the last test which fails
+> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> ---
+>  drivers/tty/serial/serial_core.c | 35 ++++++++++++++++++++++++++++++--
+>  include/linux/serial_core.h      |  1 +
+>  2 files changed, 34 insertions(+), 2 deletions(-)
 > 
-> root@am62xx:~/kselftest# ./run_kselftest.sh -t net/forwarding:ethtool_mm.sh
-> # TEST: Manual configuration with verification: eth0 to eth1          [ OK ]
-> # TEST: Manual configuration with verification: eth1 to eth0          [ OK ]
-> # TEST: Manual configuration without verification: eth0 to eth1       [ OK ]
-> # TEST: Manual configuration without verification: eth1 to eth0       [ OK ]
-> # TEST: Manual configuration with failed verification: eth0 to eth1   [ OK ]
-> # TEST: Manual configuration with failed verification: eth1 to eth0   [ OK ]
-> # Warning: Stopping lldpad.service, but it can still be activated by:
-> #   lldpad.socket
-> # TEST: LLDP                                                          [FAIL]
-> #       eth0 pMAC TX is not active
-
-Interesting, but why?
-
-Could you disable all tests except the one that fails, then re-run with
-verbose shell output, spawn a child interactive shell right after the
-command that fails, run it by hand without the grep (copying it from the
-verbose output just one line above) and see what output it gives,
-compared to what it should?
-
-diff --git a/tools/testing/selftests/net/forwarding/ethtool_mm.sh b/tools/testing/selftests/net/forwarding/ethtool_mm.sh
-index 39e736f30322..2340051742b6 100755
---- a/tools/testing/selftests/net/forwarding/ethtool_mm.sh
-+++ b/tools/testing/selftests/net/forwarding/ethtool_mm.sh
-@@ -2,12 +2,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- ALL_TESTS="
--	manual_with_verification_h1_to_h2
--	manual_with_verification_h2_to_h1
--	manual_without_verification_h1_to_h2
--	manual_without_verification_h2_to_h1
--	manual_failed_verification_h1_to_h2
--	manual_failed_verification_h2_to_h1
- 	lldp
- "
- 
-@@ -170,6 +164,8 @@ lldp()
- {
- 	RET=0
- 
-+	set -x
-+
- 	systemctl start lldpad
- 
- 	# Configure the interfaces to receive and transmit LLDPDUs
-@@ -185,6 +181,10 @@ lldp()
- 
- 	lldptool -i $h1 -t -n -V addEthCaps | \
- 		grep -q "Preemption capability active"
-+
-+	set +x
-+	bash
-+
- 	check_err "$?" "$h1 pMAC TX is not active"
- 
- 	lldptool -i $h2 -t -n -V addEthCaps | \
-
-You have the openlldp compiled from the master branch so that it has
-preemption/MAC merge support, right? We just "require_command lldptool"
-but we don't probe for this functionality, as opposed to tc and ethtool.
-
-> diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-> index b9e1d568604b..6af00640e99c 100644
-> --- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-> +++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-> @@ -740,6 +741,157 @@ static int am65_cpsw_set_ethtool_priv_flags(struct net_device *ndev, u32 flags)
->  	return 0;
+> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+> index f1348a509552..410b17ea7444 100644
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@ -1402,14 +1402,20 @@ static void uart_set_rs485_termination(struct uart_port *port,
+>  				 !!(rs485->flags & SER_RS485_TERMINATE_BUS));
 >  }
 >  
-> +static int am65_cpsw_set_mm(struct net_device *ndev, struct ethtool_mm_cfg *cfg,
-> +			    struct netlink_ext_ack *extack)
+> +static void uart_set_rs485_mux(struct uart_port *port, const struct serial_rs485 *rs485)
 > +{
-> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> +	struct am65_cpsw_ndev_priv *priv = netdev_priv(ndev);
-> +	struct am65_cpsw_iet *iet = &port->qos.iet;
-> +	u32 val, add_frag_size;
-> +	int err;
-> +
-> +	err = ethtool_mm_frag_size_min_to_add(cfg->tx_min_frag_size, &add_frag_size, extack);
-> +	if (err)
-> +		return err;
-> +
-> +	mutex_lock(&priv->mm_lock);
-> +
-> +	if (cfg->pmac_enabled) {
-> +		/* change TX & RX FIFO MAX_BLKS as per TRM recommendation */
-> +		if (!iet->original_max_blks)
-> +			iet->original_max_blks = readl(port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-> +
-> +		writel(AM65_CPSW_PN_TX_RX_MAX_BLKS_IET,
-> +		       port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-> +	} else {
-> +		/* restore RX & TX FIFO MAX_BLKS */
-> +		if (iet->original_max_blks) {
-
-else {
-	if ()
-}
-
-can be written as
-
-else if () {
-}
-
-> +			writel(iet->original_max_blks,
-> +			       port->port_base + AM65_CPSW_PN_REG_MAX_BLKS);
-> +		}
-> +	}
-> +
-> +	am65_cpsw_port_iet_rx_enable(port, cfg->pmac_enabled);
-> +	am65_cpsw_port_iet_tx_enable(port, cfg->tx_enabled);
-> +
-> +	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-> +	if (cfg->verify_enabled) {
-> +		val &= ~AM65_CPSW_PN_IET_MAC_DISABLEVERIFY;
-> +		/* Reset Verify state machine. Verification won't start here.
-> +		 * Verification will be done once link-up.
-> +		 */
-> +		val |= AM65_CPSW_PN_IET_MAC_LINKFAIL;
-> +	} else {
-> +		val |= AM65_CPSW_PN_IET_MAC_DISABLEVERIFY;
-> +		/* Clear LINKFAIL to allow verify/response packets */
-> +		val &= ~AM65_CPSW_PN_IET_MAC_LINKFAIL;
-> +	}
-> +
-> +	val &= ~AM65_CPSW_PN_IET_MAC_MAC_ADDFRAGSIZE_MASK;
-> +	val |= AM65_CPSW_PN_IET_MAC_SET_ADDFRAGSIZE(add_frag_size);
-> +	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-> +
-> +	/* verify_timeout_count can only be set at valid link */
-> +	if (cfg->verify_time > 0)
-> +		port->qos.iet.verify_time_ms = cfg->verify_time;
-> +	else
-> +		port->qos.iet.verify_time_ms = 10;
-> +
-> +	/* enable/disable preemption based on link status */
-> +	am65_cpsw_iet_commit_preemptible_tcs(port);
-> +
-> +	mutex_unlock(&priv->mm_lock);
-> +
-> +	return 0;
+> +	gpiod_set_value_cansleep(port->rs485_mux_gpio,
+> +				 !!(rs485->flags & SER_RS485_ENABLED));
 > +}
-> diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-> index 60f625e1350b..8443c13c9ff6 100644
-> --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
-> +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-> @@ -4,9 +4,11 @@
->   *
->   * quality of service module includes:
->   * Enhanced Scheduler Traffic (EST - P802.1Qbv/D2.2)
-> + * Interspersed Express Traffic (IET - P802.3br/D2.0)
->   */
+> +
+>  static int uart_rs485_config(struct uart_port *port)
+>  {
+>  	struct serial_rs485 *rs485 = &port->rs485;
+>  	unsigned long flags;
+> -	int ret;
+> +	int ret = 0;
 >  
->  #include <linux/pm_runtime.h>
-> +#include <linux/units.h>
-
-If this was ordered alphabetically, u comes after t.
-
->  #include <linux/time.h>
->  #include <net/pkt_cls.h>
+>  	if (!(rs485->flags & SER_RS485_ENABLED))
+> -		return 0;
+> +		goto out;
 >  
-> @@ -259,6 +266,196 @@ static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
+>  	uart_sanitize_serial_rs485(port, rs485);
+>  	uart_set_rs485_termination(port, rs485);
+> @@ -1420,6 +1426,9 @@ static int uart_rs485_config(struct uart_port *port)
+>  	if (ret)
+>  		memset(rs485, 0, sizeof(*rs485));
+>  
+> +out:
+> +	uart_set_rs485_mux(port, rs485);
+> +
 >  	return ret;
 >  }
 >  
-> +static int am65_cpsw_iet_set_verify_timeout_count(struct am65_cpsw_port *port)
-> +{
-> +	int verify_time_ms = port->qos.iet.verify_time_ms;
-> +	int link_speed = port->qos.link_speed;
-> +	u32 val;
-> +
-> +	if (WARN_ON(link_speed == SPEED_UNKNOWN))
-> +		return -ENODEV;
-> +
-> +	/* The number of wireside clocks contained in the verify
-> +	 * timeout counter. The default is 0x1312d0
-> +	 * (10ms at 125Mhz in 1G mode).
+> @@ -1457,6 +1466,14 @@ static int uart_set_rs485_config(struct tty_struct *tty, struct uart_port *port,
+>  		return ret;
+>  	uart_sanitize_serial_rs485(port, &rs485);
+>  	uart_set_rs485_termination(port, &rs485);
+> +	/*
+> +	 * To avoid glitches on the transmit enable pin, the mux must
+> +	 * be set before calling the driver's ->rs485_config when
+> +	 * disabling rs485 mode, but after when enabling rs485
+> +	 * mode.
 > +	 */
-> +	val = 125 * HZ_PER_MHZ;	/* assuming 125MHz wireside clock */
+> +	if (!(rs485.flags & SER_RS485_ENABLED))
+> +		uart_set_rs485_mux(port, &rs485);
+>  
+>  	uart_port_lock_irqsave(port, &flags);
+>  	ret = port->rs485_config(port, &tty->termios, &rs485);
+> @@ -1468,6 +1485,13 @@ static int uart_set_rs485_config(struct tty_struct *tty, struct uart_port *port,
+>  			port->ops->set_mctrl(port, port->mctrl);
+>  	}
+>  	uart_port_unlock_irqrestore(port, flags);
 > +
-> +	val /= MILLIHZ_PER_HZ;		/* count per ms timeout */
-> +	val *= verify_time_ms;		/* count for timeout ms */
-> +	if (link_speed < SPEED_1000)
-> +		val <<= 1;	/* FIXME: Is this correct? */
+> +	/*
+> +	 * The ->rs485_config might have failed. Regardless, set the
+> +	 * mux according to the port's effective rs485 config.
+> +	 */
+> +	uart_set_rs485_mux(port, &port->rs485);
+> +
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -3621,6 +3645,13 @@ int uart_get_rs485_mode(struct uart_port *port)
+>  		return dev_err_probe(dev, PTR_ERR(desc), "Cannot get rs485-rx-during-tx-gpios\n");
+>  	port->rs485_rx_during_tx_gpio = desc;
+>  
+> +	dflags = (rs485conf->flags & SER_RS485_ENABLED) ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
+> +	desc = devm_gpiod_get_optional(dev, "rs485-mux", dflags);
+> +	if (IS_ERR(desc))
+> +		return dev_err_probe(dev, PTR_ERR(port->rs485_mux_gpio),
+> +				     "Cannot get rs485-mux-gpios\n");
+> +	port->rs485_mux_gpio = desc;
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(uart_get_rs485_mode);
+> diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+> index 89f7b6c63598..943818209c49 100644
+> --- a/include/linux/serial_core.h
+> +++ b/include/linux/serial_core.h
+> @@ -584,6 +584,7 @@ struct uart_port {
+>  	struct serial_rs485	rs485_supported;	/* Supported mask for serial_rs485 */
+>  	struct gpio_desc	*rs485_term_gpio;	/* enable RS485 bus termination */
+>  	struct gpio_desc	*rs485_rx_during_tx_gpio; /* Output GPIO that sets the state of RS485 RX during TX */
+> +	struct gpio_desc	*rs485_mux_gpio;	/* gpio for selecting RS485 mode */
+>  	struct serial_iso7816   iso7816;
+>  	void			*private_data;		/* generic platform data pointer */
+>  };
 
-Is there any way to find out and remove the FIXME? Like running the
-selftest at SPEED_100?
+FWIW
 
-> +
-> +	if (val > AM65_CPSW_PN_MAC_VERIFY_CNT_MASK)
-> +		return -EINVAL;
-> +
-> +	writel(val, port->port_base + AM65_CPSW_PN_REG_IET_VERIFY);
-> +
-> +	return 0;
-> +}
-> +
-> +/* CPSW does not have an IRQ to notify changes to the MAC Merge TX status
-> + * (active/inactive), but the preemptible traffic classes should only be
-> + * committed to hardware once TX is active. Resort to polling.
-> + */
-> +void am65_cpsw_iet_commit_preemptible_tcs(struct am65_cpsw_port *port)
-> +{
-> +	u8 preemptible_tcs = 0;
+Reviewed-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 
-I don't think the zero-initialization helps, since the value is later
-unconditionally overwritten.
-
-> +	int err;
-> +	u32 val;
-> +
-> +	if (port->qos.link_speed == SPEED_UNKNOWN)
-> +		return;
-> +
-> +	val = readl(port->port_base + AM65_CPSW_PN_REG_CTL);
-> +	if (!(val & AM65_CPSW_PN_CTL_IET_PORT_EN))
-> +		return;
-> +
-> +	/* update common IET enable */
-> +	am65_cpsw_iet_common_enable(port->common);
-> +
-> +	/* update verify count */
-> +	err = am65_cpsw_iet_set_verify_timeout_count(port);
-> +	if (err) {
-> +		netdev_err(port->ndev, "couldn't set verify count: %d\n", err);
-> +		return;
-> +	}
-> +
-> +	val = readl(port->port_base + AM65_CPSW_PN_REG_IET_CTRL);
-> +	if (!(val & AM65_CPSW_PN_IET_MAC_DISABLEVERIFY)) {
-> +		err = am65_cpsw_iet_verify_wait(port);
-> +		if (err)
-> +			return;
-> +	}
-> +
-> +	preemptible_tcs = port->qos.iet.preemptible_tcs;
-> +	am65_cpsw_iet_set_preempt_mask(port, preemptible_tcs);
-> +}
+Regards,
+Lino
