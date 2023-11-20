@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92137F0ACB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E2E7F0ACE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbjKTDHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
+        id S231836AbjKTDNO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 19 Nov 2023 22:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjKTDHS (ORCPT
+        with ESMTP id S229596AbjKTDNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:07:18 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367C012D
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:07:15 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cf644b090cso2297845ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:07:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700449634; x=1701054434;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7F7lAGCmRps5BVo1zAwdb2KHRvdZqHojJw6y2FwSktw=;
-        b=T5xkQbLUDWIyS+tXTlifIse3rgix51DWjVqG7EOfjjModMPbCClSL2ipd07REniMx+
-         fhoUOJclgzLjgSMHRwD6G3pQdYGgsuxnelfGqoeGFyqfCcx+aDjtS7M864EzUW41dJs9
-         LqmbLSiITiCiJHbixe8l0WbLADxtahpQUBeOraLd4JI5Vl21oykDUhqZ/T2D/WQpB+X/
-         gyDrpCpr9FOJInKqRXsHoXXniO3k3mYzZ++QcHcSo8w/klpxjisCeAa4/PglTJkulqG8
-         UTy5GwlY6wAcJfb0U3iGhtiHWdTcO7QEwJEVcSP6M21PZUJUsl+oJcd1ycBSfSElaYoI
-         BYrw==
-X-Gm-Message-State: AOJu0YzpekZwRvVI5JacgXgTx3WGrflgtNAj9S/4BV1kxXYIURFjouVp
-        tExwaexJNICkmyLDLkWn+d7F2E3idnQ7+10smVWwtv8O318denI=
-X-Google-Smtp-Source: AGHT+IFY7jW0OFMbwZmdbkRYIzPI8VOuIi5OKYbEoW1MieS3QmHruCTbB392yvPQ4tuF60tngAot8O1DHv3srn/Z5RWijIlQThR4
+        Sun, 19 Nov 2023 22:13:13 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D71129;
+        Sun, 19 Nov 2023 19:13:04 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id E977B24E24C;
+        Mon, 20 Nov 2023 11:12:50 +0800 (CST)
+Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 20 Nov
+ 2023 11:12:50 +0800
+Received: from ubuntu.localdomain (161.142.156.101) by EXMBX168.cuchost.com
+ (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 20 Nov
+ 2023 11:12:46 +0800
+From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] crypto: starfive - Pad adata with zeroes
+Date:   Mon, 20 Nov 2023 11:12:42 +0800
+Message-ID: <20231120031242.25100-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e74a:b0:1cc:274c:20fc with SMTP id
- p10-20020a170902e74a00b001cc274c20fcmr1894044plf.9.1700449634840; Sun, 19 Nov
- 2023 19:07:14 -0800 (PST)
-Date:   Sun, 19 Nov 2023 19:07:14 -0800
-In-Reply-To: <000000000000635bfa0607ed5cdc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000717aaa060a8cc8f5@google.com>
-Subject: Re: [syzbot] [PATCH] Test for 6465e260f487
-From:   syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [161.142.156.101]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX168.cuchost.com
+ (172.16.6.78)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Aad requires padding with zeroes up to 15 bytes in some cases. This
+patch increases the allocated buffer size for aad and prevents the
+driver accessing uninitialized memory region.
 
-***
+v1->v2: Specify reason for alloc size change in descriptions.
 
-Subject: [PATCH] Test for 6465e260f487
-Author: eadavis@sina.com
+Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
+---
+ drivers/crypto/starfive/jh7110-aes.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-please test warn in __nf_unregister_net_hook
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 6465e260f487
-
-diff --git a/net/netfilter/core.c b/net/netfilter/core.c
-index 3126911f5042..bec4aeef6a82 100644
---- a/net/netfilter/core.c
-+++ b/net/netfilter/core.c
-@@ -200,8 +200,10 @@ int nf_hook_entries_insert_raw(struct nf_hook_entries __rcu **pp,
- 	struct nf_hook_entries *new_hooks;
- 	struct nf_hook_entries *p;
+diff --git a/drivers/crypto/starfive/jh7110-aes.c b/drivers/crypto/starfive/jh7110-aes.c
+index 9378e6682f0e..e0fe599f8192 100644
+--- a/drivers/crypto/starfive/jh7110-aes.c
++++ b/drivers/crypto/starfive/jh7110-aes.c
+@@ -500,7 +500,7 @@ static int starfive_aes_prepare_req(struct skcipher_request *req,
+ 	scatterwalk_start(&cryp->out_walk, rctx->out_sg);
  
-+	mutex_lock(&nf_hook_mutex);
- 	p = rcu_dereference_raw(*pp);
- 	new_hooks = nf_hook_entries_grow(p, reg);
-+	mutex_unlock(&nf_hook_mutex);
- 	if (IS_ERR(new_hooks))
- 		return PTR_ERR(new_hooks);
+ 	if (cryp->assoclen) {
+-		rctx->adata = kzalloc(ALIGN(cryp->assoclen, AES_BLOCK_SIZE), GFP_KERNEL);
++		rctx->adata = kzalloc(cryp->assoclen + AES_BLOCK_SIZE, GFP_KERNEL);
+ 		if (!rctx->adata)
+ 			return dev_err_probe(cryp->dev, -ENOMEM,
+ 					     "Failed to alloc memory for adata");
+@@ -569,7 +569,7 @@ static int starfive_aes_aead_do_one_req(struct crypto_engine *engine, void *areq
+ 	struct starfive_cryp_ctx *ctx =
+ 		crypto_aead_ctx(crypto_aead_reqtfm(req));
+ 	struct starfive_cryp_dev *cryp = ctx->cryp;
+-	struct starfive_cryp_request_ctx *rctx = ctx->rctx;
++	struct starfive_cryp_request_ctx *rctx;
+ 	u32 block[AES_BLOCK_32];
+ 	u32 stat;
+ 	int err;
+@@ -579,6 +579,8 @@ static int starfive_aes_aead_do_one_req(struct crypto_engine *engine, void *areq
+ 	if (err)
+ 		return err;
  
-@@ -546,11 +548,13 @@ void nf_hook_entries_delete_raw(struct nf_hook_entries __rcu **pp,
- {
- 	struct nf_hook_entries *p;
++	rctx = ctx->rctx;
++
+ 	if (!cryp->assoclen)
+ 		goto write_text;
  
-+	mutex_lock(&nf_hook_mutex);
- 	p = rcu_dereference_raw(*pp);
- 	if (nf_remove_net_hook(p, reg)) {
- 		p = __nf_hook_entries_try_shrink(p, pp);
- 		nf_hook_entries_free(p);
- 	}
-+	mutex_unlock(&nf_hook_mutex);
- }
- EXPORT_SYMBOL_GPL(nf_hook_entries_delete_raw);
- 
+-- 
+2.34.1
+
