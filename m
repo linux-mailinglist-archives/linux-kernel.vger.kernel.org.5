@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 654367F1290
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C7B7F13CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbjKTL75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S232138AbjKTMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:52:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjKTL7z (ORCPT
+        with ESMTP id S232963AbjKTMAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:59:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0261E8E;
-        Mon, 20 Nov 2023 03:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700481592; x=1732017592;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=hLlgtN7e+i6tZI3bxI8GySjeZu1w9pcdPAelbmCT79A=;
-  b=QG4MuOWwVP+8bUeng02gZgltJNjHZDQMfBq6u1toMHwe0trieqn/jsNa
-   V7eZzusbDLPbjP78BkuMz2pN8uj7GGoy9kFU6wLdBAjeOLdhaZMxWP06b
-   DHOvmcOhLBm+2v4NvuMzI+D0T3qP2W3NkUCLJn6qbKQwHngHhV/XqRt83
-   6Rcxzrv5zeBq+bV+bzTaBcnmtPAAsWdV5Igcs8ppqOZL3x56m2u7t4c9s
-   7p81jNNSe3Whk7ZoLNUTh6T6ZsirKJ+ir4L29y8TCLKmmw9OBhzLA+raP
-   uZv8Og2P4HbjLYmsd3SPskBFJtG3mTBwtqhl3VwEo5yo3uJq9zmQxdZs6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="4723173"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="4723173"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:59:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="766253122"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="766253122"
-Received: from akeren-mobl.ger.corp.intel.com ([10.252.40.26])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:59:46 -0800
-Date:   Mon, 20 Nov 2023 13:59:44 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Ma Jun <Jun.Ma2@amd.com>
-cc:     amd-gfx@lists.freedesktop.org, lenb@kernel.org,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com, Netdev <netdev@vger.kernel.org>,
-        linux-wireless@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, majun@amd.com
-Subject: Re: [Patch v13 1/9] Documentation/driver-api: Add document about
- WBRF mechanism
-In-Reply-To: <20231030071832.2217118-2-Jun.Ma2@amd.com>
-Message-ID: <3e18c716-4c1b-ea3-ede3-5a67555f5e72@linux.intel.com>
-References: <20231030071832.2217118-1-Jun.Ma2@amd.com> <20231030071832.2217118-2-Jun.Ma2@amd.com>
+        Mon, 20 Nov 2023 07:00:15 -0500
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4759F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:00:09 -0800 (PST)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28513ea9e15so1970593a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:00:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700481609; x=1701086409;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mEXXljN3rCCw93/ROnFZECXwdMgPXZVCRul5GFcysIw=;
+        b=W5nwyjvzPTvyzLtnI7ND4rfcRKuQJPM4B88bbwBGnABEZULGKU4gARTBGD7wY71wMo
+         x6t85trbDWCy8H5OxgbT+z8MRH20isNmnco5QsyHO8ln/2gfv1jCeL1Z6Fb+BHYGQPKe
+         r9Mk2cl8PVb9zkuCtvaUqZ5koocBW660DAliN6Pkm3thCqewkmn3Fs3afsOdqBu+45TQ
+         dTyNw6lU2PmOFn4In/1llnG5n/Fv5yhE+cf5Nhf4L8nVzB6QzulffHdqtfcEwsnhiMOR
+         5LKUU6MX7Husk/r9F4o8bqWfmnMTMc5cGS892+047oNfK/6a9QsBDArCA0ROhQu2uod2
+         hO/Q==
+X-Gm-Message-State: AOJu0YypHMR7iWXcd0irDcUR6S4t50UIazBmXK1tKKz8zBjkSJkLfWbK
+        ry+GsBiN6q3P5xiHFp8es5mLpBrtkfxD6WXcylkHe6Dx2Xa0PPM=
+X-Google-Smtp-Source: AGHT+IEsf/hGTEy6LrlvzRq2unbISsjgglmUiuVuQndI7vybE1Agn+kW+JQb0LblrYJccFxSLCzlGcFk/C1sFLIgHflT1h9icG5k
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:8982:b0:280:a5e9:3b61 with SMTP id
+ v2-20020a17090a898200b00280a5e93b61mr1808029pjn.9.1700481609482; Mon, 20 Nov
+ 2023 04:00:09 -0800 (PST)
+Date:   Mon, 20 Nov 2023 04:00:09 -0800
+In-Reply-To: <000000000000bf0b1f060a2d9bea@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000047c963060a943a54@google.com>
+Subject: Re: [syzbot] [PATCH] Test divide err in drm
+From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023, Ma Jun wrote:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-> Add documentation about AMD's Wifi band RFI mitigation (WBRF) mechanism
-> explaining the theory and how it is used.
-> 
-> Signed-off-by: Ma Jun <Jun.Ma2@amd.com>
-> ---
->  Documentation/driver-api/wbrf.rst | 76 +++++++++++++++++++++++++++++++
->  1 file changed, 76 insertions(+)
->  create mode 100644 Documentation/driver-api/wbrf.rst
-> 
-> +Driver programming interface
-> +============================
-> +.. kernel-doc:: drivers/platform/x86/amd/wbrf.c
-> +
-> +Sample Usage
-> +=============
+***
 
-A lot better but you missed adding newlines here for this and previous 
-section title.
+Subject: [PATCH] Test divide err in drm
+Author: eadavis@qq.com
 
-> +The expected flow for the producers:
-> +1). During probe, call `acpi_amd_wbrf_supported_producer` to check if WBRF
-> +    can be enabled for the device.
-> +2). On using some frequency band, call `acpi_amd_wbrf_add_remove` with 'add'
-> +    param to get other consumers properly notified.
-> +3). Or on stopping using some frequency band, call
-> +    `acpi_amd_wbrf_add_remove` with 'remove' param to get other consumers notified.
-> +
-> +The expected flow for the consumers:
-> +1). During probe, call `acpi_amd_wbrf_supported_consumer` to check if WBRF
-> +    can be enabled for the device.
-> +2). Call `amd_wbrf_register_notifier` to register for notification
-> +    of frequency band change(add or remove) from other producers.
-> +3). Call the `amd_wbrf_retrieve_freq_band` intentionally to retrieve
-> +    current active frequency bands considering some producers may broadcast
-> +    such information before the consumer is up.
-> +4). On receiving a notification for frequency band change, run
-> +    `amd_wbrf_retrieve_freq_band` again to retrieve the latest
-> +    active frequency bands.
-> +5). During driver cleanup, call `amd_wbrf_unregister_notifier` to
-> +    unregister the notifier.
+please test divide err in drm
 
-The correct kerneldoc format should be without the closing parenthesis:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ac347a0655db
 
-1. Text here that
-   spills to second line.
-2. Second entry.
-
--- 
- i.
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..117ee4e41c63 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -36,6 +36,7 @@
+ #include <linux/list.h>
+ #include <linux/list_sort.h>
+ #include <linux/of.h>
++#include <linux/overflow.h>
+ 
+ #include <video/of_display_timing.h>
+ #include <video/of_videomode.h>
+@@ -1297,8 +1298,11 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
+ 		num *= 2;
+ 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+ 		den *= 2;
+-	if (mode->vscan > 1)
++	if (mode->vscan > 1) {
++		if (unlikely(check_mul_overflow(den, mode->vscan, &den)))
++			return 0;
+ 		den *= mode->vscan;
++	}
+ 
+ 	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
+ }
 
