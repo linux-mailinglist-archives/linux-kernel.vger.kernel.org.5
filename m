@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AC77F1B95
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137BF7F1B99
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjKTRvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S233848AbjKTRwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:52:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234384AbjKTRvY (ORCPT
+        with ESMTP id S234461AbjKTRv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:51:24 -0500
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C69D5F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:50:45 -0800 (PST)
+        Mon, 20 Nov 2023 12:51:26 -0500
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919A4D70
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:50:46 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
         t=1700502644;
@@ -22,10 +22,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qc2DDhk7eSddbt2Q3kjJLSbCNGbLZWOl9JsGZF81sG4=;
-        b=SjlBdcCRByh5PrG2MOhc8aFxhKI3iaDpNaxTHUEIaJyLo5jT4ZNFXt6Bt3sd9u50OfOKSg
-        CaLcy9JTN+VHkT3VWRZiUR5iYfkV9u6uxcxdsNTqWTVW/b0iVcXorrCGAHL4XcSBww8rJU
-        PD/hyomJcMBAWfjY4j+0VCD4sMN1M4g=
+        bh=RvoTVlNH/9QJKGjG7ts3ES/7xJIaYyT0JIUdEPtk5OM=;
+        b=DNgy9uYyYrfck71UIDDMmeBlP2Bik/eXdRS59wwnt2UBuC9bsjPHLcrxPmB7E98KHzUlfS
+        OnFiyTSIdvZJFlR6bvb819vsoHa3zDRv09EFK0vHzurXdv2QeiuJeuOu21i9cfXyy/okM9
+        r0Wi2UF4LVMIbr0H8VW9kEyPJyGdVBE=
 From:   andrey.konovalov@linux.dev
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
@@ -37,9 +37,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Oscar Salvador <osalvador@suse.de>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v4 20/22] kasan: use stack_depot_put for tag-based modes
-Date:   Mon, 20 Nov 2023 18:47:18 +0100
-Message-Id: <b4773e5c1b0b9df6826ec0b65c1923feadfa78e5.1700502145.git.andreyknvl@google.com>
+Subject: [PATCH v4 21/22] kasan: use stack_depot_put for Generic mode
+Date:   Mon, 20 Nov 2023 18:47:19 +0100
+Message-Id: <5cef104d9b842899489b4054fe8d1339a71acee0.1700502145.git.andreyknvl@google.com>
 In-Reply-To: <cover.1700502145.git.andreyknvl@google.com>
 References: <cover.1700502145.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -57,65 +57,155 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Make tag-based KASAN modes evict stack traces from the stack depot once
-they are evicted from the stack ring.
+Evict alloc/free stack traces from the stack depot for Generic KASAN
+once they are evicted from the quaratine.
 
-Internally, pass STACK_DEPOT_FLAG_GET to stack_depot_save_flags (via
-kasan_save_stack) to increment the refcount when saving a new entry
-to stack ring and call stack_depot_put when removing an entry from
-stack ring.
+For auxiliary stack traces, evict the oldest stack trace once a new one
+is saved (KASAN only keeps references to the last two).
 
-Reviewed-by: Alexander Potapenko <glider@google.com>
+Also evict all saved stack traces on krealloc.
+
+To avoid double-evicting and mis-evicting stack traces (in case KASAN's
+metadata was corrupted), reset KASAN's per-object metadata that stores
+stack depot handles when the object is initialized and when it's evicted
+from the quarantine.
+
+Note that stack_depot_put is no-op if the handle is 0.
+
+Reviewed-by: Marco Elver <elver@google.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
 ---
+ mm/kasan/common.c     |  3 ++-
+ mm/kasan/generic.c    | 22 ++++++++++++++++++----
+ mm/kasan/quarantine.c | 26 ++++++++++++++++++++------
+ 3 files changed, 40 insertions(+), 11 deletions(-)
 
-Changes v1->v2:
-- Adapt to the stack depot API change.
-- Drop READ_ONCE when reading entry->stack.
----
- mm/kasan/tags.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-index b6c017e670d8..739ae997463d 100644
---- a/mm/kasan/tags.c
-+++ b/mm/kasan/tags.c
-@@ -97,12 +97,13 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
- 			gfp_t gfp_flags, bool is_free)
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 825a0240ec02..b5d8bd26fced 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -50,7 +50,8 @@ depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags)
+ void kasan_set_track(struct kasan_track *track, gfp_t flags)
  {
- 	unsigned long flags;
--	depot_stack_handle_t stack;
-+	depot_stack_handle_t stack, old_stack;
- 	u64 pos;
- 	struct kasan_stack_ring_entry *entry;
- 	void *old_ptr;
- 
--	stack = kasan_save_stack(gfp_flags, STACK_DEPOT_FLAG_CAN_ALLOC);
-+	stack = kasan_save_stack(gfp_flags,
+ 	track->pid = current->pid;
+-	track->stack = kasan_save_stack(flags, STACK_DEPOT_FLAG_CAN_ALLOC);
++	track->stack = kasan_save_stack(flags,
 +			STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+ }
  
- 	/*
- 	 * Prevent save_stack_info() from modifying stack ring
-@@ -121,6 +122,8 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
- 	if (!try_cmpxchg(&entry->ptr, &old_ptr, STACK_RING_BUSY_PTR))
- 		goto next; /* Busy slot. */
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 5d168c9afb32..50cc519e23f4 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -449,10 +449,14 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ {
+ 	struct kasan_alloc_meta *alloc_meta;
++	struct kasan_free_meta *free_meta;
  
-+	old_stack = entry->stack;
-+
- 	entry->size = cache->object_size;
- 	entry->pid = current->pid;
- 	entry->stack = stack;
-@@ -129,6 +132,9 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
- 	entry->ptr = object;
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+ 	if (alloc_meta)
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
++	free_meta = kasan_get_free_meta(cache, object);
++	if (free_meta)
++		__memset(free_meta, 0, sizeof(*free_meta));
+ }
  
- 	read_unlock_irqrestore(&stack_ring.lock, flags);
-+
-+	if (old_stack)
-+		stack_depot_put(old_stack);
+ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+@@ -489,18 +493,20 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+ 	if (!alloc_meta)
+ 		return;
+ 
++	stack_depot_put(alloc_meta->aux_stack[1]);
+ 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+ 	alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
+ }
+ 
+ void kasan_record_aux_stack(void *addr)
+ {
+-	return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_CAN_ALLOC);
++	return __kasan_record_aux_stack(addr,
++			STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+ }
+ 
+ void kasan_record_aux_stack_noalloc(void *addr)
+ {
+-	return __kasan_record_aux_stack(addr, 0);
++	return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_GET);
  }
  
  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+@@ -508,8 +514,16 @@ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+ 	struct kasan_alloc_meta *alloc_meta;
+ 
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+-	if (alloc_meta)
+-		kasan_set_track(&alloc_meta->alloc_track, flags);
++	if (!alloc_meta)
++		return;
++
++	/* Evict previous stack traces (might exist for krealloc). */
++	stack_depot_put(alloc_meta->alloc_track.stack);
++	stack_depot_put(alloc_meta->aux_stack[0]);
++	stack_depot_put(alloc_meta->aux_stack[1]);
++	__memset(alloc_meta, 0, sizeof(*alloc_meta));
++
++	kasan_set_track(&alloc_meta->alloc_track, flags);
+ }
+ 
+ void kasan_save_free_info(struct kmem_cache *cache, void *object)
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index ca4529156735..265ca2bbe2dd 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -143,11 +143,22 @@ static void *qlink_to_object(struct qlist_node *qlink, struct kmem_cache *cache)
+ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ {
+ 	void *object = qlink_to_object(qlink, cache);
+-	struct kasan_free_meta *meta = kasan_get_free_meta(cache, object);
++	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
++	struct kasan_free_meta *free_meta = kasan_get_free_meta(cache, object);
+ 	unsigned long flags;
+ 
+-	if (IS_ENABLED(CONFIG_SLAB))
+-		local_irq_save(flags);
++	if (alloc_meta) {
++		stack_depot_put(alloc_meta->alloc_track.stack);
++		stack_depot_put(alloc_meta->aux_stack[0]);
++		stack_depot_put(alloc_meta->aux_stack[1]);
++		__memset(alloc_meta, 0, sizeof(*alloc_meta));
++	}
++
++	if (free_meta &&
++	    *(u8 *)kasan_mem_to_shadow(object) == KASAN_SLAB_FREETRACK) {
++		stack_depot_put(free_meta->free_track.stack);
++		free_meta->free_track.stack = 0;
++	}
+ 
+ 	/*
+ 	 * If init_on_free is enabled and KASAN's free metadata is stored in
+@@ -157,14 +168,17 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ 	 */
+ 	if (slab_want_init_on_free(cache) &&
+ 	    cache->kasan_info.free_meta_offset == 0)
+-		memzero_explicit(meta, sizeof(*meta));
++		memzero_explicit(free_meta, sizeof(*free_meta));
+ 
+ 	/*
+-	 * As the object now gets freed from the quarantine, assume that its
+-	 * free track is no longer valid.
++	 * As the object now gets freed from the quarantine,
++	 * take note that its free track is no longer exists.
+ 	 */
+ 	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
+ 
++	if (IS_ENABLED(CONFIG_SLAB))
++		local_irq_save(flags);
++
+ 	___cache_free(cache, object, _THIS_IP_);
+ 
+ 	if (IS_ENABLED(CONFIG_SLAB))
 -- 
 2.25.1
 
