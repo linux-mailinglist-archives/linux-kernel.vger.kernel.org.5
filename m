@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD23D7F0BBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 06:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D147F0BC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 07:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbjKTF6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 00:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        id S231907AbjKTGHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 01:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbjKTF6e (ORCPT
+        with ESMTP id S229483AbjKTGHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 00:58:34 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC229139;
-        Sun, 19 Nov 2023 21:58:29 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK5AYUW024867;
-        Mon, 20 Nov 2023 05:58:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=nPz7PGc1k5AwEQJOQGJ+pvvjClsR4Vwtp2c3fi5rjcg=;
- b=BlaMwdTZTXIVgq3cbDAZUVzHQUtpnfUXBYYwhmfgph38Gjq7oMkoSSaTDo906FmyjrwM
- 0aIO4+5I36zgKUgz020cGGU3A7W7/zkF5Disr0RZI9+9Z2qV+pW/w/tkJsOya655Dick
- N5PEBK9qPfwz1KjKoDwI9AMPymIgy1omydCI/omy6kZIl9TXrfv8Rqor1gy6c8K3YDe3
- XeE+4OnjuqDn01rL7uUnjM1OtWuPHsEJhQKSv/CYHFIOlRtglRfmbJW6ezM6wj6d9mB3
- etQRu9aCwz0S7GNLNyF0Vvi37ghA+z7YqlLybMrRxqieAPwvTzTwOgHnD801QfrSPQHN oA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uejmuu8nx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 05:58:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AK5wNC1004528
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 05:58:23 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 19 Nov 2023 21:58:20 -0800
-From:   Prashanth K <quic_prashk@quicinc.com>
-To:     <stable@vger.kernel.org>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Tejas Joglekar <joglekar@synopsys.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usbyy@vger.kernel.org>,
-        Prashanth K <quic_prashk@quicinc.com>
-Subject: [PATCH v2 2/2] dt-bindings: usb: snps,dwc3: Add 'xhci-sg-trb-cache-size-quirk'
-Date:   Mon, 20 Nov 2023 11:28:03 +0530
-Message-ID: <20231120055803.224634-3-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231120055803.224634-1-quic_prashk@quicinc.com>
-References: <20231120055803.224634-1-quic_prashk@quicinc.com>
+        Mon, 20 Nov 2023 01:07:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86922D7
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 22:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700460423; x=1731996423;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=ygHbZcM/uvNSieczXuv006I3lAT+cdiJVfm8O+cxdW0=;
+  b=jiwt8Y8kna+t0LCPmBeSsPqZctf/iP3UymKBLwPVClST711wjjBwg09w
+   HgYioxd4QXw7Y00zUbCxlUrDIUxzEH04FE0Em15J01uCrhm2TDv2b8+/4
+   EsZ+RHcC3cVzT7dck4vusyXmLT2ni/Tk5afOvUZaXdfp02cGfaoNloX2X
+   Dpe++BRdQuqQukYk0giPOAxEHhTfUFwk6F5MIUdUY3nf95Zn5PclO8OSf
+   ACRw+Dqprqnbb0BH3ord0QY5eUNL/r7jWhyB1dpuCcLOnmOdAt2Y7ACPJ
+   rcxgIwhst4iuwBtjhR0M7foPClrPfLvVbOd4RgNB5adrGbmKhZxhfNIiV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="388699211"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="388699211"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 22:07:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="769787260"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="769787260"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 22:06:59 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Kairui Song <ryncsn@gmail.com>
+Cc:     linux-mm@kvack.org, Kairui Song <kasong@tencent.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/24] mm/swap: check readahead policy per entry
+In-Reply-To: <20231119194740.94101-9-ryncsn@gmail.com> (Kairui Song's message
+        of "Mon, 20 Nov 2023 03:47:24 +0800")
+References: <20231119194740.94101-1-ryncsn@gmail.com>
+        <20231119194740.94101-9-ryncsn@gmail.com>
+Date:   Mon, 20 Nov 2023 14:04:58 +0800
+Message-ID: <87r0klarjp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: CBXN5eV2pTkjtgRJxFD7or0zSwOvBmpt
-X-Proofpoint-ORIG-GUID: CBXN5eV2pTkjtgRJxFD7or0zSwOvBmpt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_03,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- malwarescore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=483
- impostorscore=0 priorityscore=1501 clxscore=1015 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200036
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new 'xhci-sg-trb-cache-size-quirk' DT quirk to dwc3 core
-for preventing xhci hang issue while using SG buffers.
+Kairui Song <ryncsn@gmail.com> writes:
 
-Cc: <stable@vger.kernel.org> # 5.11
-Fixes: bac1ec551434 ("usb: xhci: Set quirk for XHCI_SG_TRB_CACHE_SIZE_QUIRK")
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
----
- Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+> From: Kairui Song <kasong@tencent.com>
+>
+> Currently VMA readahead is globally disabled when any rotate disk is
+> used as swap backend. So multiple swap devices are enabled, if a slower
+> hard disk is set as a low priority fallback, and a high performance SSD
+> is used and high priority swap device, vma readahead is disabled globally.
+> The SSD swap device performance will drop by a lot.
+>
+> Check readahead policy per entry to avoid such problem.
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> ---
+>  mm/swap_state.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index ff6756f2e8e4..fb78f7f18ed7 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -321,9 +321,9 @@ static inline bool swap_use_no_readahead(struct swap_info_struct *si, swp_entry_
+>  	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(entry) == 1;
+>  }
+>  
+> -static inline bool swap_use_vma_readahead(void)
+> +static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
+>  {
+> -	return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_rotate_swap);
+> +	return data_race(si->flags & SWP_SOLIDSTATE) && READ_ONCE(enable_vma_readahead);
+>  }
+>  
+>  /*
+> @@ -341,7 +341,7 @@ struct folio *swap_cache_get_folio(swp_entry_t entry,
+>  
+>  	folio = filemap_get_folio(swap_address_space(entry), swp_offset(entry));
+>  	if (!IS_ERR(folio)) {
+> -		bool vma_ra = swap_use_vma_readahead();
+> +		bool vma_ra = swap_use_vma_readahead(swp_swap_info(entry));
+>  		bool readahead;
+>  
+>  		/*
+> @@ -920,16 +920,18 @@ static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
+>  struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+>  			      struct vm_fault *vmf, bool *swapcached)
+>  {
+> +	struct swap_info_struct *si;
+>  	struct mempolicy *mpol;
+>  	struct page *page;
+>  	pgoff_t ilx;
+>  	bool cached;
+>  
+> +	si = swp_swap_info(entry);
+>  	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+> -	if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
+> +	if (swap_use_no_readahead(si, entry)) {
+>  		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
+>  		cached = false;
+> -	} else if (swap_use_vma_readahead()) {
+> +	} else if (swap_use_vma_readahead(si)) {
 
-diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-index ee5af4b381b1..768fdb5b1f05 100644
---- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-@@ -459,6 +459,13 @@ properties:
-     description:
-       Enable USB remote wakeup.
- 
-+  xhci-sg-trb-cache-size-quirk:
-+    description:
-+      When set, fixes the SNPS xHC hang issue when the data is scattered across
-+      small buffers which does not make at least MPS size for given controller
-+      TRB cache size.
-+    type: boolean
-+
- unevaluatedProperties: false
- 
- required:
--- 
-2.25.1
+It's possible that some pages are swapped out to SSD while others are
+swapped out to HDD in a readahead window.
 
+I suspect that there are practical requirements to use swap on SSD and
+HDD at the same time.
+
+>  		page = swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf);
+>  		cached = true;
+>  	} else {
+
+--
+Best Regards,
+Huang, Ying
