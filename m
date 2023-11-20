@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A254F7F11FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5407F1204
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjKTLbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:31:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
+        id S233118AbjKTLbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbjKTLbP (ORCPT
+        with ESMTP id S233110AbjKTLbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:31:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A481190
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:31:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700479871; x=1732015871;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=YGbR5p4kQb9i8HmQmSVaXtrNqPcOGMP09hVzD3QkDGY=;
-  b=SNUpXu5qdfJUXOZQocr91sfKAepIiyCNT+JUeEPrZ0+b1YLnYGQa8DIf
-   NLALWVh3x/xVrkr/ow7gpHwrl/Hm6BEyg2ihV2cQEyT84PP5Lbc5bWJB4
-   9Dx9EC/94Cg368q5yVFGZOSbeRxndZfT+d4O7IyHuOlhNbBq1qS0lQCmv
-   e5B4Tz2egwDeAh7q4gUWbBRFE9fDlAvk1h+Tzi2f7tP0vS7DgQIDmGS63
-   22ZGxNWXfsdwKkLc1QmqB9J/0L2QeZ0uoT2V+VHNLaD4LiXiKY2lShzSq
-   0g565pRhijOock1uJv+++ZLLYX+jHeHOgxFX1s/vGgyyoeJVElfMSwO6s
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="388739532"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="388739532"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:31:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="1097725092"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="1097725092"
-Received: from avmoskal-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.40.194])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:31:07 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com
-Cc:     tzimmermann@suse.de, airlied@linux.ie, daniel.vetter@ffwll.ch,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        melissa.srw@gmail.com, mripard@kernel.org, daniel.vetter@intel.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] drm/modes: Fix divide error in
- drm_mode_debug_printmodeline
-In-Reply-To: <tencent_F6C990AEE12ED34C8467CBC6FBD2F4467F06@qq.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <000000000000bf0b1f060a2d9bea@google.com>
- <tencent_F6C990AEE12ED34C8467CBC6FBD2F4467F06@qq.com>
-Date:   Mon, 20 Nov 2023 13:31:04 +0200
-Message-ID: <875y1wpsp3.fsf@intel.com>
+        Mon, 20 Nov 2023 06:31:35 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9382BFC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:31:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=olTJQwBS3ubhzSRJsqrMCxN3w/D68ONkPCsGWjWzOPk=; b=K/LRxm1ApSLmH2cdXiFaJL9j9g
+        5I28SBHzXKpS+2YfhOTsGo3gqyUetIQpIf8NFFAYQsooV0z3jm30h/ObCzoWgXsIx0h39U/Y4KoMv
+        z6BKZzXOyso4mlzIqCLc9BXJR2KzjzpMBVML5oS1y5pSwKlijsrVfKVMtJ7DqFo1RKB8zepdl7uQY
+        RP5zsv4rfT797d3MMYAMTXjWFSFRQnp5OBpTuu0giXUnGOSbwhBlZ22J03sf+WtHGSX8PoAyujpTo
+        59m+O1TgSARgUM/73zeVWMXJ0UnpEqbhFRM/mJPGQ+mcOfep8jlWJz1Fc2iN56QIQG2oG3ye1x24Q
+        6Y+pC4lg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r52Uc-004Pvj-N8; Mon, 20 Nov 2023 11:31:07 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7C61B300419; Mon, 20 Nov 2023 12:31:05 +0100 (CET)
+Date:   Mon, 20 Nov 2023 12:31:05 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yury Norov <yury.norov@gmail.com>, mathieu.desnoyers@efficios.com
+Cc:     linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
+ __mm_cid_get()
+Message-ID: <20231120113105.GR8262@noisy.programming.kicks-ass.net>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+ <20231118155105.25678-5-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231118155105.25678-5-yury.norov@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,94 +68,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Nov 2023, Edward Adam Davis <eadavis@qq.com> wrote:
-> [Syz Log]
-> divide error: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 5068 Comm: syz-executor357 Not tainted 6.6.0-syzkaller-16039-gac347a0655db #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-> RIP: 0010:drm_mode_vrefresh drivers/gpu/drm/drm_modes.c:1303 [inline]
-> RIP: 0010:drm_mode_debug_printmodeline+0x118/0x4e0 drivers/gpu/drm/drm_modes.c:60
-> Code: 00 41 0f b7 07 66 83 f8 02 b9 01 00 00 00 0f 43 c8 0f b7 c1 0f af e8 44 89 f0 48 69 c8 e8 03 00 00 89 e8 d1 e8 48 01 c8 31 d2 <48> f7 f5 49 89 c6 eb 0c e8 fb 07 66 fc eb 05 e8 f4 07 66 fc 48 89
-> RSP: 0018:ffffc9000391f8d0 EFLAGS: 00010246
-> RAX: 000000000001f400 RBX: ffff888025045000 RCX: 000000000001f400
-> RDX: 0000000000000000 RSI: 0000000000008000 RDI: ffff888025045018
-> RBP: 0000000000000000 R08: ffffffff8528b9af R09: 0000000000000000
-> R10: ffffc9000391f8a0 R11: fffff52000723f17 R12: 0000000000000080
-> R13: dffffc0000000000 R14: 0000000000000080 R15: ffff888025045016
-> FS:  0000555556932380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000005fdeb8 CR3: 000000007fcff000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  drm_mode_setcrtc+0x83b/0x1880 drivers/gpu/drm/drm_crtc.c:794
->  drm_ioctl_kernel+0x362/0x500 drivers/gpu/drm/drm_ioctl.c:792
->  drm_ioctl+0x636/0xb00 drivers/gpu/drm/drm_ioctl.c:895
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:871 [inline]
->  __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
->  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
->  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->
-> [Analysis]
-> When calculating den in drm_mode_vrefresh(), if the vscan value is too large, 
-> there is a probability of unsigned integer overflow.
->
-> [Fix]
-> Before multiplying by vscan, first determine their ilog2. When their total 
-> exceeds 32, return -EINVAL and exit the subsequent calculation.
->
-> Reported-and-tested-by: syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com
-> Fixes: ea40d7857d52 ("drm/vkms: fbdev emulation support")
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+On Sat, Nov 18, 2023 at 07:50:35AM -0800, Yury Norov wrote:
+> __mm_cid_get() uses a __mm_cid_try_get() helper to atomically acquire a
+> bit in mm cid mask. Now that we have atomic find_and_set_bit(), we can
+> easily extend it to cpumasks and use in the scheduler code.
+> 
+> __mm_cid_try_get() has an infinite loop, which may delay forward
+> progress of __mm_cid_get() when the mask is dense. The
+> cpumask_find_and_set() doesn't poll the mask infinitely, and returns as
+> soon as nothing has found after the first iteration, allowing to acquire
+> the lock, and set use_cid_lock faster, if needed.
+
+Methieu, I forgot again, but the comment delete seems to suggest you did
+this on purpose...
+
+> cpumask_find_and_set() considers cid mask as a volatile region of memory,
+> as it actually is in this case. So, if it's changed while search is in
+> progress, KCSAN wouldn't fire warning on it.
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 > ---
->  drivers/gpu/drm/drm_modes.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-> index ac9a406250c5..c7ec1ab041f8 100644
-> --- a/drivers/gpu/drm/drm_modes.c
-> +++ b/drivers/gpu/drm/drm_modes.c
-> @@ -36,6 +36,7 @@
->  #include <linux/list.h>
->  #include <linux/list_sort.h>
->  #include <linux/of.h>
-> +#include <linux/log2.h>
->  
->  #include <video/of_display_timing.h>
->  #include <video/of_videomode.h>
-> @@ -1297,8 +1298,11 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
->  		num *= 2;
->  	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
->  		den *= 2;
-> -	if (mode->vscan > 1)
-> +	if (mode->vscan > 1) {
-> +		if (ilog2(den) + ilog2(mode->vscan) >= 32)
-
-For future reference, check_mul_overflow() is the way to handle this.
-
-> +			return -EINVAL;
-
-Just so there's no confusion: NAK.
-
-I'd be surprised if there were even a single place in the kernel where
-someone checks drm_mode_vrefresh() for a negative error return.
-
-This function must succeed.
-
-Please change the types as needed instead.
-
-
-BR,
-Jani.
-
->  		den *= mode->vscan;
-> +	}
->  
->  	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
+>  include/linux/cpumask.h | 12 ++++++++++
+>  kernel/sched/sched.h    | 52 ++++++++++++-----------------------------
+>  2 files changed, 27 insertions(+), 37 deletions(-)
+> 
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index cfb545841a2c..c2acced8be4e 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -271,6 +271,18 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
+>  		small_cpumask_bits, n + 1);
 >  }
-
--- 
-Jani Nikula, Intel
+>  
+> +/**
+> + * cpumask_find_and_set - find the first unset cpu in a cpumask and
+> + *			  set it atomically
+> + * @srcp: the cpumask pointer
+> + *
+> + * Return: >= nr_cpu_ids if nothing is found.
+> + */
+> +static inline unsigned int cpumask_find_and_set(volatile struct cpumask *srcp)
+> +{
+> +	return find_and_set_bit(cpumask_bits(srcp), small_cpumask_bits);
+> +}
+> +
+>  /**
+>   * for_each_cpu - iterate over every cpu in a mask
+>   * @cpu: the (optionally unsigned) integer iterator
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 2e5a95486a42..b2f095a9fc40 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -3345,28 +3345,6 @@ static inline void mm_cid_put(struct mm_struct *mm)
+>  	__mm_cid_put(mm, mm_cid_clear_lazy_put(cid));
+>  }
+>  
+> -static inline int __mm_cid_try_get(struct mm_struct *mm)
+> -{
+> -	struct cpumask *cpumask;
+> -	int cid;
+> -
+> -	cpumask = mm_cidmask(mm);
+> -	/*
+> -	 * Retry finding first zero bit if the mask is temporarily
+> -	 * filled. This only happens during concurrent remote-clear
+> -	 * which owns a cid without holding a rq lock.
+> -	 */
+> -	for (;;) {
+> -		cid = cpumask_first_zero(cpumask);
+> -		if (cid < nr_cpu_ids)
+> -			break;
+> -		cpu_relax();
+> -	}
+> -	if (cpumask_test_and_set_cpu(cid, cpumask))
+> -		return -1;
+> -	return cid;
+> -}
+> -
+>  /*
+>   * Save a snapshot of the current runqueue time of this cpu
+>   * with the per-cpu cid value, allowing to estimate how recently it was used.
+> @@ -3381,25 +3359,25 @@ static inline void mm_cid_snapshot_time(struct rq *rq, struct mm_struct *mm)
+>  
+>  static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
+>  {
+> +	struct cpumask *cpumask = mm_cidmask(mm);
+>  	int cid;
+>  
+> -	/*
+> -	 * All allocations (even those using the cid_lock) are lock-free. If
+> -	 * use_cid_lock is set, hold the cid_lock to perform cid allocation to
+> -	 * guarantee forward progress.
+> -	 */
+> +	/* All allocations (even those using the cid_lock) are lock-free. */
+>  	if (!READ_ONCE(use_cid_lock)) {
+> -		cid = __mm_cid_try_get(mm);
+> -		if (cid >= 0)
+> +		cid = cpumask_find_and_set(cpumask);
+> +		if (cid < nr_cpu_ids)
+>  			goto end;
+> -		raw_spin_lock(&cid_lock);
+> -	} else {
+> -		raw_spin_lock(&cid_lock);
+> -		cid = __mm_cid_try_get(mm);
+> -		if (cid >= 0)
+> -			goto unlock;
+>  	}
+>  
+> +	/*
+> +	 * If use_cid_lock is set, hold the cid_lock to perform cid
+> +	 * allocation to guarantee forward progress.
+> +	 */
+> +	raw_spin_lock(&cid_lock);
+> +	cid = cpumask_find_and_set(cpumask);
+> +	if (cid < nr_cpu_ids)
+> +		goto unlock;
+> +
+>  	/*
+>  	 * cid concurrently allocated. Retry while forcing following
+>  	 * allocations to use the cid_lock to ensure forward progress.
+> @@ -3415,9 +3393,9 @@ static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
+>  	 * all newcoming allocations observe the use_cid_lock flag set.
+>  	 */
+>  	do {
+> -		cid = __mm_cid_try_get(mm);
+> +		cid = cpumask_find_and_set(cpumask);
+>  		cpu_relax();
+> -	} while (cid < 0);
+> +	} while (cid >= nr_cpu_ids);
+>  	/*
+>  	 * Allocate before clearing use_cid_lock. Only care about
+>  	 * program order because this is for forward progress.
+> -- 
+> 2.39.2
+> 
