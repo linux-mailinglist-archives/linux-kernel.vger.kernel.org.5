@@ -2,88 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DC37F1C00
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23007F1C0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbjKTSKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
+        id S233819AbjKTSKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjKTSJ4 (ORCPT
+        with ESMTP id S229754AbjKTSKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:09:56 -0500
-X-Greylist: delayed 16026 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 10:09:53 PST
-Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99AA392;
-        Mon, 20 Nov 2023 10:09:53 -0800 (PST)
-Received: from sunspire (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id D1B3128EE6F;
-        Mon, 20 Nov 2023 18:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1700503792;
-        bh=LAFXLq3/2bPSJVSGrZJXAK3KfpKXjURErrX2KJDn7BQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=ftbWuwQ/1BA0zapxaTXhWOtIhfDasAIA3YZy2Ar/iAlmFXXhrD2C1Te7dwvg4zsxl
-         tNwwDpV6gnCszrwkLBA5jDyFwpLFuCWMjfnKkOFYPh9Nfj1Xl4ifyPDsIdnbmnyOS6
-         DN3v8EHJITfQfDtRq4GburYlV99Kt0vbQefgXMPM=
-Date:   Mon, 20 Nov 2023 20:09:50 +0200
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-Message-ID: <ZVug7k9pJHksjOoz@sunspire>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117192305.17612-1-petre.rodan@subdimension.ro>
- <20231119134939.GA8784-robh@kernel.org>
- <ZVpswo3MSScT43Bo@sunspire>
- <20231120171903.GA2318732-robh@kernel.org>
+        Mon, 20 Nov 2023 13:10:36 -0500
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 220DED8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:10:29 -0800 (PST)
+Received: (qmail 1457695 invoked by uid 1000); 20 Nov 2023 13:10:29 -0500
+Date:   Mon, 20 Nov 2023 13:10:29 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mike Jones <mike@mjones.io>
+Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
+ being disable in GNOME
+Message-ID: <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
+References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
+ <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
+ <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
+ <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
+ <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
+ <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120171903.GA2318732-robh@kernel.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-hello!
-
-On Mon, Nov 20, 2023 at 10:19:03AM -0700, Rob Herring wrote:
-> > first off, installed packages. the first 4 are not part of the 
-> > official Gentoo repo, so I might have prepared them with missing 
-> > options if any where not included by default.
-> > I know nothing about python.
+On Mon, Nov 20, 2023 at 08:52:19AM +0100, Paul Menzel wrote:
+> Dear Alan,
+> 
+> 
+> Than you again for your quick reply.
+> 
+> Am 20.11.23 um 03:26 schrieb Alan Stern:
+> > On Sun, Nov 19, 2023 at 11:09:32PM +0100, Paul Menzel wrote:
+> > > $ sudo modprobe btusb
 > > 
-> > $ equery l dtschema pylibfdt ruamel-yaml yamllint jsonschema python 
-[..]
-> > [IP-] [  ] dev-python/jsonschema-4.19.1:0
+> > > $ grep . /sys/bus/usb/devices/1-3/power/*
+> > > /sys/bus/usb/devices/1-3/power/active_duration:119053224
+> > > /sys/bus/usb/devices/1-3/power/async:enabled
+> > > /sys/bus/usb/devices/1-3/power/autosuspend:2
+> > > /sys/bus/usb/devices/1-3/power/autosuspend_delay_ms:2000
+> > > /sys/bus/usb/devices/1-3/power/connected_duration:148065372
+> > > /sys/bus/usb/devices/1-3/power/control:auto
+> > > /sys/bus/usb/devices/1-3/power/level:auto
+> > > /sys/bus/usb/devices/1-3/power/persist:1
+> > > /sys/bus/usb/devices/1-3/power/runtime_active_kids:0
+> > > /sys/bus/usb/devices/1-3/power/runtime_active_time:119060567
+> > > /sys/bus/usb/devices/1-3/power/runtime_enabled:enabled
+> > > /sys/bus/usb/devices/1-3/power/runtime_status:active
+> > > /sys/bus/usb/devices/1-3/power/runtime_suspended_time:28831453
+> > > /sys/bus/usb/devices/1-3/power/runtime_usage:0
+> > > /sys/bus/usb/devices/1-3/power/wakeup:disabled
+> > > ```
+> > 
+> > Hmmm.  It's not immediately clear why the device isn't being suspended.
+> > The btusb driver does support autosuspend.
+> > 
+> > Can you also post the output from
+> > 
+> > 	grep . /sys/bus/usb/devices/1-3:*/power/*
+> > 
+> > with the driver module loaded?  I should have asked for it before.
 > 
-> 4.18 and later are not supported.
-> 
-> Apparently behavior we relied on in pre-4.18 was "wrong" usage... 4.18 
-> also makes rust a hard dependency. That's a problem for any arch without 
-> LLVM support.
-> 
-> Installing via pip will check this dependency.
+> ```
+> $ sudo modprobe btusb
+> $ sudo dmesg | tail -9
+> [319747.390712] r8152 4-1.2:1.0 enx18dbf22dccf3: carrier on
+> [320256.946094] bluetooth hci0: firmware: direct-loading firmware
+> qca/rampatch_usb_00000302.bin
+> [320256.949333] Bluetooth: hci0: using rampatch file:
+> qca/rampatch_usb_00000302.bin
+> [320256.949349] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, firmware
+> rome 0x302 build 0x111
+> [320256.949643] usbcore: registered new interface driver btusb
+> [320257.308935] bluetooth hci0: firmware: direct-loading firmware
+> qca/nvm_usb_00000302.bin
+> [320257.309043] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
+> [320257.336220] Bluetooth: hci0: HCI Enhanced Setup Synchronous Connection
+> command is advertised, but not supported.
+> [320257.638188] Bluetooth: MGMT ver 1.22
+> $ /sbin/rfkill
+> ID TYPE      DEVICE    SOFT      HARD
+>  1 wlan      phy0   blocked unblocked
+> 28 bluetooth hci0   blocked unblocked
+> $ grep . /sys/bus/usb/devices/1-3:*/power/*
+> /sys/bus/usb/devices/1-3:1.0/power/async:enabled
+> /sys/bus/usb/devices/1-3:1.0/power/runtime_active_kids:0
+> /sys/bus/usb/devices/1-3:1.0/power/runtime_enabled:enabled
+> /sys/bus/usb/devices/1-3:1.0/power/runtime_status:suspended
+> /sys/bus/usb/devices/1-3:1.0/power/runtime_usage:0
+> /sys/bus/usb/devices/1-3:1.1/power/async:enabled
+> /sys/bus/usb/devices/1-3:1.1/power/runtime_active_kids:0
+> /sys/bus/usb/devices/1-3:1.1/power/runtime_enabled:enabled
+> /sys/bus/usb/devices/1-3:1.1/power/runtime_status:suspended
+> /sys/bus/usb/devices/1-3:1.1/power/runtime_usage:0
+> ```
 
-I confirm that installing ver 4.17 of jsonschema fixed all the exceptions.
+Again, nothing out of the ordinary.  Maybe dynamic debugging will give 
+us a clue.  Try doing this:
 
-thanks.
-peter
+	Unload the btusb module.
 
--- 
-petre rodan
+	echo module usbcore +p >/sys/kernel/debug/dynamic_debug/control
+
+	Load the btusb module
+
+	Make sure that Bluetooth is turned off in Gnome
+
+	Wait a few seconds
+
+	echo module usbcore -p >/sys/kernel/debug/dynamic_debug/control
+
+Then let's see what the dmesg log contains for that time period.
+
+Also, please post the output from "lsusb -v" for the Bluetooth device.
+
+Alan Stern
