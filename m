@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8927F0AE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E167F0AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbjKTDUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:20:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S231920AbjKTDUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 22:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231873AbjKTDUq (ORCPT
+        with ESMTP id S231910AbjKTDUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:20:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94CFD52
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700450428; x=1731986428;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=/WwpyBY5Lz5uVgYgV4rkDEvUBBIi7Rj6tYssKEgChWE=;
-  b=A+dHWEslrhAArcYt1awSudttL+wjqH15nfTeCL8PoqJVWiy9crEj/Z0o
-   ld/2mOUq56UMLR7RcMl1DxMmyWZ9TG3rgD50AiNjsl4/rVVcmwFbtF1A9
-   Gy2mHvD3tIXsv4TfVipqgWyfMHajS1TyR2RxOuP6rJ9d6yb7ORRGHH3Ox
-   Z+urGzJKbeXkihzCY7HbZdmV1L9r+sSoU+psaJ5/GGUdE81vhmx0FbAV6
-   W2Of157Y9GXRtMic0vMxk+N9KGDeaJASn7epOYZjLT3Koy9zv8e68z43n
-   rY6TaU/LhqCtBADNXDHsCfDpDyTJTSmqEKGslEboGXGUGNmPAku0I0+rH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="381930739"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="381930739"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 19:20:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="14028926"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 19:20:25 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Chris Li <chriscli@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm:zswap: fix zswap entry reclamation failure in two
- scenarios
-In-Reply-To: <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
-        (Chris Li's message of "Thu, 16 Nov 2023 12:30:20 -0800")
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
-        <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
-        <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
-        <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
-        <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
-Date:   Mon, 20 Nov 2023 11:18:24 +0800
-Message-ID: <8734x1cdtr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Sun, 19 Nov 2023 22:20:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85A0192
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:19:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6AAFC433C7;
+        Mon, 20 Nov 2023 03:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700450399;
+        bh=mS+QScR4CYHjpZgCrte4Dp+KllABBfJ6CY+nMOOQ6Vw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=OwzuYUWnWzmg0N+phG42U8A1maJOLvivlbjsq2EhTqSbt74HLy3NdQmMqozKwZbeM
+         VO6+ZA/xNepf04+rzNo4RaWWxjROm0GOHPsj7u8lFhUujRosj85f/QS6rmuKg9N+78
+         V9u2mbQlfrxUNkmtA+XM2sHi+DMqbGHiqHU8rSHrEf3GIjAjipWSFRsjh6jP6EKD6+
+         MSJwMHrBNxROHwwO8p2QMewM+o03Q6sjznwxs8LDF60uf0qAHIH+U171cmYFfy/MNL
+         xQsCQJ+9sJhNQ/ifBXIfdRJymYvpIZgXstKXu2Cr+0L8QjZ39phM5EPf8rx4Qb8VsP
+         qB+0iBCBqp6dA==
+Message-ID: <5939cb04-071a-9530-32d4-44fe16d23565@kernel.org>
+Date:   Mon, 20 Nov 2023 11:19:53 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [f2fs-dev] [PATCH] f2fs: skip adding a discard command if exists
+Content-Language: en-US
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+References: <20231114212414.3498074-1-jaegeuk@kernel.org>
+ <4a0e1c6f-12c4-f3dd-bb26-4bf0aee6be4b@kernel.org>
+ <ZVQwz5ubx9LojzEf@google.com>
+ <236866a2-41b0-2ad0-db77-4c377367c80e@kernel.org>
+ <ZVel0bHLlg4IizJ_@google.com>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <ZVel0bHLlg4IizJ_@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chriscli@google.com> writes:
+On 2023/11/18 1:41, Jaegeuk Kim wrote:
+> Not sure other cases yet.. let's do one by one, since I hit this in real.
 
-> On Thu, Nov 16, 2023 at 12:19=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
-om> wrote:
->>
->> Not bypassing the swap slot cache, just make the callbacks to
->> invalidate the zswap entry, do memg uncharging, etc when the slot is
->> no longer used and is entering the swap slot cache (i.e. when
->> free_swap_slot() is called), instead of when draining the swap slot
->> cache (i.e. when swap_range_free() is called). For all parts of MM
->> outside of swap, the swap entry is freed when free_swap_slot() is
->> called. We don't free it immediately because of caching, but this
->> should be transparent to other parts of MM (e.g. zswap, memcg, etc).
->
-> That will cancel the batching effect on the swap slot free, making the
-> common case for  swapping  faults take longer to complete, righ?
-> If I recall correctly, the uncharge is the expensive part of the swap
-> slot free operation.
-> I just want to figure out what we are trading off against. This is not
-> one side wins all situations.
+Sure.
 
-Per my understanding, we don't batch memcg uncharging in
-swap_entry_free() now.  Although it's possible and may improve
-performance.
+>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
---
-Best Regards,
-Huang, Ying
+Reviewed-by: Chao Yu <chao@kernel.org>
+
+Thansk,
