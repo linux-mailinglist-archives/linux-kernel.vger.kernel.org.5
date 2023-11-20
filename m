@@ -2,535 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 606737F1FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 238B87F1FEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjKTWFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 17:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
+        id S232336AbjKTWGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 17:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjKTWFg (ORCPT
+        with ESMTP id S229577AbjKTWGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:05:36 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0605D9;
-        Mon, 20 Nov 2023 14:05:30 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 8F02A61E5FE01;
-        Mon, 20 Nov 2023 23:05:05 +0100 (CET)
-Message-ID: <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
-Date:   Mon, 20 Nov 2023 23:05:04 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
-Content-Language: en-US
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mike Jones <mike@mjones.io>,
-        Rocky Liao <quic_rjliao@quicinc.com>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
- <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
- <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
- <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
- <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
- <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
- <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Mon, 20 Nov 2023 17:06:01 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2055.outbound.protection.outlook.com [40.107.8.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C36CB;
+        Mon, 20 Nov 2023 14:05:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ktbpzWWFK+zI7FQFsUBbzTIDCPJfEGMNw5kkI/HgUbWIuh50vhroTOZYPieU2vBOPV+2BzhkPfxoW0pe5n4AnBnoEBoNuX6yQLmNaIYHTdfsf1BOviPtFrBkgywXncI4jKbOgIj+cN8Xj1SF4HLOO3YlG4yLRtinExsEpsSimudFcE/U99ycZlehD00DbIerA2h4w3g0XpwkFlW9QqMf3zrCgqdEIrozgGUkpSBnuJQ8pcTwNdewJWdLg7Jif6zPIHzPR24C+eTHaNXFgBi7Ss82MTXmWPrzZH8Bn6ZUGnTH9ffoR6NTlyWbLJZHf9WdxHFoJoFhy/YVvkaJLXdzpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4vIEiFWDFLgsVdxjBvu41vCGjl9hnaRqyBLV6ov3NO4=;
+ b=S3NPRtsu7JN6HTKFvzn5Abb9WPzOFlZAFhwVZxt+cfmjcgRpKn3hGCEVcFrfbtDInSE5CObe9zZawckQXtexz47n/yOssXQnY9gW42Zd25T9roFo/e9A1MZpBkdMJan2xX05LfnQs2d2GRNmPHj1x13o3gJWe+zuSKaNhmvLGAjerQk84C15Zk3sC4VH8a6ji9tEjAOHxr289G3W/wu/4wrjICHmulOFUTslCEpx8Vpap+TVaGRxB4ZbEFUPkO8QOPigoa3PzLQBJIpsc2XIMwJFInqltGq593SCiOI6fu5Hi/W5jx+YyMFOigO/4dINUDZtZgabHlr3e+MgH8DfZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4vIEiFWDFLgsVdxjBvu41vCGjl9hnaRqyBLV6ov3NO4=;
+ b=GMLg8NFD9B7xWXLuELecJSjJFYgCKLe6HfNh/0dB35ddOVe4ezjPBimMk/ZpvfQYX4nmftNmFW/BlrelcJrWT9upvNf06voGSgG+N3sTB8FP0i+9VydlMVfEGpt9wegJlr8laF+/3K/xqFhKmMiR0IlYra11CYMHKV9JQoksRI8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6459.eurprd04.prod.outlook.com (2603:10a6:10:103::19)
+ by PR3PR04MB7258.eurprd04.prod.outlook.com (2603:10a6:102:80::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.17; Mon, 20 Nov
+ 2023 22:05:55 +0000
+Received: from DB8PR04MB6459.eurprd04.prod.outlook.com
+ ([fe80::4dc0:8e9a:cf2b:137]) by DB8PR04MB6459.eurprd04.prod.outlook.com
+ ([fe80::4dc0:8e9a:cf2b:137%5]) with mapi id 15.20.7025.017; Mon, 20 Nov 2023
+ 22:05:54 +0000
+Date:   Tue, 21 Nov 2023 00:05:49 +0200
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+References: <20231120105255.cgbart5amkg4efaz@skbuf>
+ <20231120121440.3274d44c@kmaincent-XPS-13-7390>
+ <20231120120601.ondrhbkqpnaozl2q@skbuf>
+ <20231120144929.3375317e@kmaincent-XPS-13-7390>
+ <20231120142316.d2emoaqeej2pg4s3@skbuf>
+ <20231120093723.4d88fb2a@kernel.org>
+ <20231120190023.ymog4yb2hcydhmua@skbuf>
+ <20231120115839.74ee5492@kernel.org>
+ <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+ <20231120133737.70dde657@kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231120133737.70dde657@kernel.org>
+X-ClientProxiedBy: AM0PR04CA0060.eurprd04.prod.outlook.com
+ (2603:10a6:208:1::37) To DB8PR04MB6459.eurprd04.prod.outlook.com
+ (2603:10a6:10:103::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6459:EE_|PR3PR04MB7258:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2aec3ddc-c197-4c35-df17-08dbea14dde7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nmsi1x9J7BacTv+U/4xWHPVXleDA71cUiB3EO4wbADb60AlgdENybOl1ESYR6G5ZNZotdjlrRiZ6shRWmGSaKzqI8d0OzWT5URqALZNZxmlOhx0noQ+qlHsjELJm+Fppq84HPDK91JMeFgsF7Lmlwk9YX5dhOAqij8Z/JVH8yO6IGIt/ZWUO6lfNr9Xh5qsMT62TDMDi56iWnxrdA73rhAWuJ4qKYkxDAlhCV+4zA5DO54R9HBFrsC4bijtSKCg1D+MfzBqp/yQbv4WTQaKb5FZ64Eyrsno+dMbGad9FLj+3o9WUrDd/JFTx+L7O6APiyiMMUR+dlxiftzjDjVZCcTVoDS34xQihk1H1dR4yJxcRCiYTBKvL7hUv/mhJlGDbSbZ91+IB0mP7lAD6yRnFyDQUt0FZGk80I2BwmdNOAGSZFbNFqm+qVPte6YVMDZeBEy05FMC4jHXuLW16Nxn3gXQnlu2I1nRVlceIuik7X3YpcWyvQsz7fBKElfvwnpYd0yCpqHGdpyMbzPPxzCREQg9wZsy2y/cGR69CXqSiH/A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6459.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(136003)(39860400002)(346002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(6916009)(316002)(66946007)(54906003)(66556008)(66476007)(26005)(4326008)(8676002)(8936002)(38100700002)(41300700001)(33716001)(44832011)(86362001)(2906002)(4744005)(5660300002)(7416002)(966005)(6486002)(478600001)(9686003)(6512007)(6666004)(6506007)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?FtK9LRRRGBEUMzidq2qT5bmZQAnNXu/co4U8YCR5LzmeDwvx2n1zFwVyKS?=
+ =?iso-8859-1?Q?U5s/ytjCi9JfcttbmN+zQ1ud6gyYyqtui1LBwaWO6PEZiwTXScKF1o14lr?=
+ =?iso-8859-1?Q?TL02ggf5AgdXOntQzI5YFVB+qE/6ItYMxiHbqLN92H5HPuLhm5Z2EDKTGp?=
+ =?iso-8859-1?Q?PTehZXDXIQykEsuYbEJnjyPpQLZOP7s87XaO2/J4VfpBAZFn0FPZqYLwmf?=
+ =?iso-8859-1?Q?MIQScll7+v2uZjRcA7mVZtCKXz6MCndyjhCsykxnJQKU8/F4Yo9nsVoByh?=
+ =?iso-8859-1?Q?6bJ5KotUVEFQhtUvn4Ja6lEe33nhPd7qs65mGrEPAufCT9yJNWKV8c7Dmz?=
+ =?iso-8859-1?Q?MgbZ02BJw4fkTaag9DVj00MCVBIqhIn5rG+twP7X6Jx0tjyLcK2z7iPeLJ?=
+ =?iso-8859-1?Q?Wz9RI/TwKNoRLWLBoqAtiuraATVJmxPc1KbsXdkG6o+zOKrK2Z1byCVMub?=
+ =?iso-8859-1?Q?vArYu9PmlC5VTpzdtKEuDsTb8wU1ub+UPX9qn9MCr8IeVWRoTsyV85snIt?=
+ =?iso-8859-1?Q?TyLHqNNHGrs5I6ehpOb/P6kmFHh0cg7UTuqjHb26pU0XWYhSntdP20wwvm?=
+ =?iso-8859-1?Q?pT5XQk6FW6sN2L9Hczr/xInxsApR6umWqJUEV8KFNq+mizGghL/RaW8gmB?=
+ =?iso-8859-1?Q?wPo2d34sI0JToGEjINx+UDXJER0JcoUqCUFl8Wy7ZX0BXpJEXD1Si+rqiV?=
+ =?iso-8859-1?Q?t4R8DY3IYboOcDJmOEwNFcLkEw/7ES+2czeVgdGd8rBbEcmgM/pOX5p6vI?=
+ =?iso-8859-1?Q?FXGV9UauOLg1F8otM82mkiiE2Nf0UAvceLyQK5cIV3jCqcSl7rMAR4nxGL?=
+ =?iso-8859-1?Q?4Ggi6rCJoANZRO982EO42AOcNF1WJEHdDjs2bsGnm0lZ3fR9rtPzfFNRjn?=
+ =?iso-8859-1?Q?xZYLBqJ9lurQIuoKgLv890BOSIQQU7efsKjGeSMy/gywJW5uaaFZEVWy1M?=
+ =?iso-8859-1?Q?PDxWyvAsvRACv+IgBnOmYghuHul2w/IfvlKmwtqc5Qtumq17CTFvDafPoA?=
+ =?iso-8859-1?Q?lobxHMLrcND5r+fMGC1I2ir23n6/6zMq23fpMHmlmq1dZ9esJeqSnJlI66?=
+ =?iso-8859-1?Q?Z3C2gAA2hXcb6r2hTOwLrjhgdZkp3Oo59rAcIdrX2zk9ZxV9Xs9sWJk4Bx?=
+ =?iso-8859-1?Q?m3DjtfZ8mdWBvxO2NLMijSVGCBKwo2bsNf2PydlsW8OhbiIDMJzlGgVoP7?=
+ =?iso-8859-1?Q?a/duEBLBTAMW6IKBdvY7OZFYSu6BGqGatluLXb5LHlRnmlCHe/eFcjhnKG?=
+ =?iso-8859-1?Q?6ndHXW30kHzz6JVBUHQH5SCPTyTaiKTPlsJwta5nzoCsZF3wub4JlK83+u?=
+ =?iso-8859-1?Q?ZZQQ+C9nDw9PB6d/GgjpImTVSwtJFL4aOkDcz+6GnS/RHhP3Rp9q1s+KCm?=
+ =?iso-8859-1?Q?nIkVD6yNv1WdJBWKbmgkeIHQzYlCYlPHzgAsTTojvqvlb0mqahxyJ0arnL?=
+ =?iso-8859-1?Q?50bjGD1pEbc7oHuSn1vb4K40fc4vsoPeXwEcdtai/QPaQwgTXCj+SKm+HK?=
+ =?iso-8859-1?Q?8KRLlagZDvsTkB7M+uhLssL3NkXvBoNQTRofsnOTUyg955uhtgXuIYU6Wn?=
+ =?iso-8859-1?Q?526G4CKaca/2FrtmaScP292RwSigtSEu9IQ1nDgmTkoF6k0xxkMB8KVDiV?=
+ =?iso-8859-1?Q?a7feedUsxf6er1v19xrVL9LRJnIxI3xzxB/2wuNDrptcx8iDtOugXyeA?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2aec3ddc-c197-4c35-df17-08dbea14dde7
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6459.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 22:05:54.7574
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KRf301wSRCNSRu1jjcSUNCRirsMGduvJu1guWEjD+oA4vWXkTGX1WxpmsFMwzgNpPb8GHvjYe3lkwjSzrRbfBg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7258
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc: +Rocky Liao as Qualcomm developer]
-
-Dear Alan,
-
-
-Thank you so much for continuous support in debugging this issue.
-
-Am 20.11.23 um 19:10 schrieb Alan Stern:
-> On Mon, Nov 20, 2023 at 08:52:19AM +0100, Paul Menzel wrote:
-
->> Am 20.11.23 um 03:26 schrieb Alan Stern:
->>> On Sun, Nov 19, 2023 at 11:09:32PM +0100, Paul Menzel wrote:
->>>> $ sudo modprobe btusb
->>>
->>>> $ grep . /sys/bus/usb/devices/1-3/power/*
->>>> /sys/bus/usb/devices/1-3/power/active_duration:119053224
->>>> /sys/bus/usb/devices/1-3/power/async:enabled
->>>> /sys/bus/usb/devices/1-3/power/autosuspend:2
->>>> /sys/bus/usb/devices/1-3/power/autosuspend_delay_ms:2000
->>>> /sys/bus/usb/devices/1-3/power/connected_duration:148065372
->>>> /sys/bus/usb/devices/1-3/power/control:auto
->>>> /sys/bus/usb/devices/1-3/power/level:auto
->>>> /sys/bus/usb/devices/1-3/power/persist:1
->>>> /sys/bus/usb/devices/1-3/power/runtime_active_kids:0
->>>> /sys/bus/usb/devices/1-3/power/runtime_active_time:119060567
->>>> /sys/bus/usb/devices/1-3/power/runtime_enabled:enabled
->>>> /sys/bus/usb/devices/1-3/power/runtime_status:active
->>>> /sys/bus/usb/devices/1-3/power/runtime_suspended_time:28831453
->>>> /sys/bus/usb/devices/1-3/power/runtime_usage:0
->>>> /sys/bus/usb/devices/1-3/power/wakeup:disabled
->>>> ```
->>>
->>> Hmmm.  It's not immediately clear why the device isn't being suspended.
->>> The btusb driver does support autosuspend.
->>>
->>> Can you also post the output from
->>>
->>> 	grep . /sys/bus/usb/devices/1-3:*/power/*
->>>
->>> with the driver module loaded?  I should have asked for it before.
->>
->> ```
->> $ sudo modprobe btusb
->> $ sudo dmesg | tail -9
->> [319747.390712] r8152 4-1.2:1.0 enx18dbf22dccf3: carrier on
->> [320256.946094] bluetooth hci0: firmware: direct-loading firmware qca/rampatch_usb_00000302.bin
->> [320256.949333] Bluetooth: hci0: using rampatch file: qca/rampatch_usb_00000302.bin
->> [320256.949349] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, firmware rome 0x302 build 0x111
->> [320256.949643] usbcore: registered new interface driver btusb
->> [320257.308935] bluetooth hci0: firmware: direct-loading firmware qca/nvm_usb_00000302.bin
->> [320257.309043] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
->> [320257.336220] Bluetooth: hci0: HCI Enhanced Setup Synchronous Connection command is advertised, but not supported.
->> [320257.638188] Bluetooth: MGMT ver 1.22
->> $ /sbin/rfkill
->> ID TYPE      DEVICE    SOFT      HARD
->>   1 wlan      phy0   blocked unblocked
->>  28 bluetooth hci0   blocked unblocked
->> $ grep . /sys/bus/usb/devices/1-3:*/power/*
->> /sys/bus/usb/devices/1-3:1.0/power/async:enabled
->> /sys/bus/usb/devices/1-3:1.0/power/runtime_active_kids:0
->> /sys/bus/usb/devices/1-3:1.0/power/runtime_enabled:enabled
->> /sys/bus/usb/devices/1-3:1.0/power/runtime_status:suspended
->> /sys/bus/usb/devices/1-3:1.0/power/runtime_usage:0
->> /sys/bus/usb/devices/1-3:1.1/power/async:enabled
->> /sys/bus/usb/devices/1-3:1.1/power/runtime_active_kids:0
->> /sys/bus/usb/devices/1-3:1.1/power/runtime_enabled:enabled
->> /sys/bus/usb/devices/1-3:1.1/power/runtime_status:suspended
->> /sys/bus/usb/devices/1-3:1.1/power/runtime_usage:0
->> ```
+On Mon, Nov 20, 2023 at 01:37:37PM -0800, Jakub Kicinski wrote:
+> > Is it an accurate summary?
 > 
-> Again, nothing out of the ordinary.  Maybe dynamic debugging will give
-> us a clue.  Try doing this:
+> Yes.
 > 
-> 	Unload the btusb module.
-> 
-> 	echo module usbcore +p >/sys/kernel/debug/dynamic_debug/control
-> 
-> 	Load the btusb module
-> 
-> 	Make sure that Bluetooth is turned off in Gnome
-> 
-> 	Wait a few seconds
-> 
-> 	echo module usbcore -p >/sys/kernel/debug/dynamic_debug/control
-> 
-> Then let's see what the dmesg log contains for that time period.
+> For now we can impose the requirement that only one can be active 
+> easily at the kernel level. But the uAPI should allow expressing more.
 
+I see. That's quite something to think about for Köry. In its defense,
+I also agree that this idea seems the most orthogonal to everything else
+that we have or may want to add in the future, and is not likely to
+become obsoleted by some other mechanism that can achieve the same
+thing, but in a more flexible way. It's just that it's quite the task.
 
-```
-$ sudo modprobe -r btusb
-$ sudo dmesg | tail -1
-[340309.272439] usbcore: deregistering interface driver btusb
-$ echo module usbcore +p | sudo tee /sys/kernel/debug/dynamic_debug/control
-module usbcore +p
-$ sudo modprobe btusb
-$ /sbin/rfkill
-ID TYPE      DEVICE      SOFT      HARD
-  1 wlan      phy0   unblocked unblocked
-36 bluetooth hci0     blocked unblocked
-$ echo module usbcore -p | sudo tee /sys/kernel/debug/dynamic_debug/control
-module usbcore -p
-$ sudo modprobe -r btusb
-$ sudo dmesg | tail -1
-[340608.761313] usbcore: deregistering interface driver btusb
-$ sudo dmesg
-[â€¦]
-[340309.272439] usbcore: deregistering interface driver btusb
-[340560.326182] xhci_hcd 0000:00:14.0: hcd_pci_runtime_resume: 0
-[340560.326214] usb usb1: usb auto-resume
-[340560.326258] hub 1-0:1.0: hub_resume
-[340560.326381] usb usb1-port3: status 0107 change 0000
-[340560.326418] usb usb1-port4: status 0107 change 0000
-[340560.326451] usb usb1-port5: status 0507 change 0000
-[340560.326650] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
-[340560.326807] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
-[340560.373988] usb 1-3: usb auto-resume
-[340560.373998] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0008
-[340560.441936] usb 1-3: Waited 0ms for CONNECT
-[340560.441957] usb 1-3: finish reset-resume
-[340560.570940] usb 1-3: reset full-speed USB device number 2 using xhci_hcd
-[340560.721096] btusb 1-3:1.0: usb_probe_interface
-[340560.721126] btusb 1-3:1.0: usb_probe_interface - got id
-[340560.723193] Bluetooth: hci0: HCI Enhanced Setup Synchronous 
-Connection command is advertised, but not supported.
-[340560.728684] usbcore: registered new interface driver btusb
-[340560.902021] Bluetooth: MGMT ver 1.22
-[340608.761313] usbcore: deregistering interface driver btusb
-```
-
-So, unfortunately, nothing seems to be logged in the 48 seconds.
-
-> Also, please post the output from "lsusb -v" for the Bluetooth device.
-
-```
-$ sudo lsusb -d 0cf3:e300 -v
-
-Bus 001 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications QCA61x4 
-Bluetooth 4.0
-Device Descriptor:
-   bLength                18
-   bDescriptorType         1
-   bcdUSB               2.01
-   bDeviceClass          224 Wireless
-   bDeviceSubClass         1 Radio Frequency
-   bDeviceProtocol         1 Bluetooth
-   bMaxPacketSize0        64
-   idVendor           0x0cf3 Qualcomm Atheros Communications
-   idProduct          0xe300 QCA61x4 Bluetooth 4.0
-   bcdDevice            0.01
-   iManufacturer           0
-   iProduct                0
-   iSerial                 0
-   bNumConfigurations      1
-   Configuration Descriptor:
-     bLength                 9
-     bDescriptorType         2
-     wTotalLength       0x00b1
-     bNumInterfaces          2
-     bConfigurationValue     1
-     iConfiguration          0
-     bmAttributes         0xe0
-       Self Powered
-       Remote Wakeup
-     MaxPower              100mA
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        0
-       bAlternateSetting       0
-       bNumEndpoints           3
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x81  EP 1 IN
-         bmAttributes            3
-           Transfer Type            Interrupt
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0010  1x 16 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x82  EP 2 IN
-         bmAttributes            2
-           Transfer Type            Bulk
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0040  1x 64 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x02  EP 2 OUT
-         bmAttributes            2
-           Transfer Type            Bulk
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0040  1x 64 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       0
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0000  1x 0 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0000  1x 0 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       1
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0009  1x 9 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0009  1x 9 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       2
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0011  1x 17 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0011  1x 17 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       3
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0019  1x 25 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0019  1x 25 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       4
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0021  1x 33 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0021  1x 33 bytes
-         bInterval               1
-     Interface Descriptor:
-       bLength                 9
-       bDescriptorType         4
-       bInterfaceNumber        1
-       bAlternateSetting       5
-       bNumEndpoints           2
-       bInterfaceClass       224 Wireless
-       bInterfaceSubClass      1 Radio Frequency
-       bInterfaceProtocol      1 Bluetooth
-       iInterface              0
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x83  EP 3 IN
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0031  1x 49 bytes
-         bInterval               1
-       Endpoint Descriptor:
-         bLength                 7
-         bDescriptorType         5
-         bEndpointAddress     0x03  EP 3 OUT
-         bmAttributes            1
-           Transfer Type            Isochronous
-           Synch Type               None
-           Usage Type               Data
-         wMaxPacketSize     0x0031  1x 49 bytes
-         bInterval               1
-Binary Object Store Descriptor:
-   bLength                 5
-   bDescriptorType        15
-   wTotalLength       0x000c
-   bNumDeviceCaps          1
-   USB 2.0 Extension Device Capability:
-     bLength                 7
-     bDescriptorType        16
-     bDevCapabilityType      2
-     bmAttributes   0x00000002
-       HIRD Link Power Management (LPM) Supported
-Device Status:     0x0001
-   Self Powered
-```
-
-
-
-
-
-
-Kind regards,
-
-Paul
-
-
-PS: Somewhere, I saw somebody post the output of `usb-devices` from 
-usb-utils. So for the record:
-
-```
-$ usb-devices
-
-T:  Bus=01 Lev=00 Prnt=00 Port=00 Cnt=00 Dev#=  1 Spd=480  MxCh=12
-D:  Ver= 2.00 Cls=09(hub  ) Sub=00 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=1d6b ProdID=0002 Rev=06.05
-S:  Manufacturer=Linux 6.5.0-4-amd64 xhci-hcd
-S:  Product=xHCI Host Controller
-S:  SerialNumber=0000:00:14.0
-C:  #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=0mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=00 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   4 Ivl=256ms
-
-T:  Bus=01 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  2 Spd=12   MxCh= 0
-D:  Ver= 2.01 Cls=e0(wlcon) Sub=01 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0cf3 ProdID=e300 Rev=00.01
-C:  #Ifs= 2 Cfg#= 1 Atr=e0 MxPwr=100mA
-I:  If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=02(O) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-E:  Ad=82(I) Atr=02(Bulk) MxPS=  64 Ivl=0ms
-I:  If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-
-T:  Bus=01 Lev=01 Prnt=02 Port=03 Cnt=01 Dev#=  3 Spd=12   MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
-P:  Vendor=04f3 ProdID=2234 Rev=11.11
-S:  Manufacturer=ELAN
-S:  Product=Touchscreen
-C:  #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=100mA
-I:  If#= 0 Alt= 0 #EPs= 2 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
-E:  Ad=02(O) Atr=03(Int.) MxPS=  32 Ivl=2ms
-E:  Ad=81(I) Atr=03(Int.) MxPS=  64 Ivl=1ms
-
-T:  Bus=01 Lev=01 Prnt=03 Port=04 Cnt=01 Dev#=  4 Spd=480  MxCh= 0
-D:  Ver= 2.01 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0c45 ProdID=670c Rev=56.26
-S:  Manufacturer=CN09GTFMLOG008C8B7FWA01
-S:  Product=Integrated_Webcam_HD
-C:  #Ifs= 2 Cfg#= 1 Atr=80 MxPwr=500mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=0e(video) Sub=01 Prot=00 Driver=uvcvideo
-E:  Ad=83(I) Atr=03(Int.) MxPS=  16 Ivl=4ms
-I:  If#= 1 Alt= 0 #EPs= 1 Cls=0e(video) Sub=02 Prot=00 Driver=uvcvideo
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-
-T:  Bus=02 Lev=00 Prnt=00 Port=00 Cnt=00 Dev#=  1 Spd=5000 MxCh= 6
-D:  Ver= 3.00 Cls=09(hub  ) Sub=00 Prot=03 MxPS= 9 #Cfgs=  1
-P:  Vendor=1d6b ProdID=0003 Rev=06.05
-S:  Manufacturer=Linux 6.5.0-4-amd64 xhci-hcd
-S:  Product=xHCI Host Controller
-S:  SerialNumber=0000:00:14.0
-C:  #Ifs= 1 Cfg#= 1 Atr=e0 MxPwr=0mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=09(hub  ) Sub=00 Prot=00 Driver=hub
-E:  Ad=81(I) Atr=03(Int.) MxPS=   4 Ivl=256ms
-```
-
-PPS: Looking through the commit log/history for 
-`drivers/bluetooth/btusb.c`, I found commit 7ecacafc2406 (Bluetooth: 
-btusb: Disable runtime suspend on Realtek devices) [1] authored on 
-December 5th, 2019. This is for Realtek devices though, and not Qualcomm.
-
-[1]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7ecacafc240638148567742cca41aa7144b4fe1e
+I sense it may be time to dust off and submit the rest of my
+ndo_hwtstamp_get()/ ndo_hwtstamp_set() conversions before a netlink
+conversion of SIOCGHWTSTAMP/SIOCSHWTSTAMP could even take place...
+https://github.com/vladimiroltean/linux/commits/ndo-hwtstamp-v9
