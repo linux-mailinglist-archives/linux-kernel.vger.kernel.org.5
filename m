@@ -2,118 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DD17F0EC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12767F0EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjKTJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:16:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S232540AbjKTJQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbjKTJQU (ORCPT
+        with ESMTP id S232426AbjKTJQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:16:20 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D010C9;
-        Mon, 20 Nov 2023 01:16:17 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK9856m028497;
-        Mon, 20 Nov 2023 09:16:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=nFdUQj9AOSWjewm5RoNwJqldd5TNj4Jn1ns4UszwmWo=;
- b=tKA8L0HtOsZTqJUF9W3VdlYvUM7Q//vFm0sTzInVZj30FoPhQv2NOguJ87s9ieoJFoJ6
- OP5Qd3q5p4NQ0IPT9bhDKJnhVkNEvJa7mXTBcvwf8PCYkfXqBfynm5wvzP81/In0BxV/
- 09rJAfg/Sbj8JCc/oB855pWUM59XfLbD8fjqT5ltiLPGFKsyF/STG2TV5GSm19OJbs/A
- oUJ3xG7Jnz/WTg5Y0RknfcEq0gpBPyD8oZUEWSr0k7aUkl6dIuadAVUfKvY5rHw3CJpL
- Wzp/22n/qZKCZ+aE+mCKOEUfPAhMotTgp08FXbudcOV3GArT/ZeE0T8HJi131FBQaRXS Lg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ug4j786v8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 09:16:15 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AK9C3w7009295;
-        Mon, 20 Nov 2023 09:16:15 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ug4j786uq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 09:16:15 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK7KEUt028315;
-        Mon, 20 Nov 2023 09:16:14 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uf7ksregr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 09:16:14 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK9GBpj22414022
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 09:16:11 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72B452004B;
-        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E39620040;
-        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
-Received: from [9.152.224.222] (unknown [9.152.224.222])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
-Message-ID: <f18f6993-17e8-cab4-6a7f-059f669fc890@linux.ibm.com>
-Date:   Mon, 20 Nov 2023 10:16:10 +0100
+        Mon, 20 Nov 2023 04:16:46 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B704FB8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:16:42 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso14202265e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700471801; x=1701076601; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jj/JcJ1w6jMcLWugwriCsGtGF1LS8H53xH/+54K8aDE=;
+        b=gBzXWcIEgBGOKdQjXLAf2xyieH+hH8D8ZHygyUC58emY944uWneG+dqpYgL/0MKlae
+         13zyty7q38MPRxtp0/PcFCIShCXO7kJ/xQiJKfJTrYn1VA6I/SXlguGZzv3f2rDlVNhE
+         Y+4NvwcOjvHbs7tHn0+iQLwdYyJqsMdmz9b/qSKETvXcCeVrZRsCwJA90a3qM8MWUgmh
+         O/uWHVT5E9foH/dicSCxeOQp+Scy04Bun8vGH9mdS4OxGa8NwXfhCGfOMKBWHRiBfsO4
+         x1wLdf6UonAR6E9Jeo11v879u8370eFHnkuhE674VuBFj8FdKAE57/0o+JVIlT4nyrrr
+         P3lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700471801; x=1701076601;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jj/JcJ1w6jMcLWugwriCsGtGF1LS8H53xH/+54K8aDE=;
+        b=cr9HnRmkCSkB55YdLWcdMQch4iejAxAyF3decWVNXq9UyzJRaRXECLo2Iw4cP8Vbk4
+         IwHHBs3NxqvH+kKpFyvZ/E83VKbCX3ab8EDFxQfjwTeGqgk4JIeSvp9vsU9CWHbSyyO7
+         mkMWnijKm2EtegomisOhCPKQNwMc4cUUPFpkAr4A95AxGJwxXXsNkT7bRYE3Mpb0PMpI
+         KJwyRjeyCVCunLXiQM2NRcm4qjZ8xzFwSMpgUGYYZKJxXiAMk0JIQLiLQc8AB/tyt07/
+         uA/utyh6WZQc385vAoCQNUGDimIOJFaA3Kdws+d695xdFG9Ly2vhzDhazA8gsjf8aPDj
+         xAaA==
+X-Gm-Message-State: AOJu0YxGzIRgwUDEOy9g8+s1by5S2D/NkLuK+MSH8SmTf2toOA7gUjfR
+        efoLybLf/tbG0oiVH4++6TpVaA==
+X-Google-Smtp-Source: AGHT+IFmNtoBSEfrBJtehmlEhkIThZNICwsUjDwLzD9OxRFoGO87Aq+aIatfgr+R8+E6/ugqWeowNw==
+X-Received: by 2002:a05:600c:450a:b0:408:386b:1916 with SMTP id t10-20020a05600c450a00b00408386b1916mr5031688wmo.8.1700471801204;
+        Mon, 20 Nov 2023 01:16:41 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.183])
+        by smtp.gmail.com with ESMTPSA id t13-20020a05600c450d00b004094e565e71sm12752063wmo.23.2023.11.20.01.16.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 01:16:40 -0800 (PST)
+Message-ID: <57cb53ea-f49c-475c-9523-9b2b3d4b59e3@tuxon.dev>
+Date:   Mon, 20 Nov 2023 11:16:38 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] s390/vfio-ap: fix sysfs status attribute for AP queue
- devices
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] Add IRQ support for ethernet PHY on SAM9X60 boards
 Content-Language: en-US
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Harald Freudenberger <freude@linux.ibm.com>
-References: <20231108201135.351419-1-akrowiak@linux.ibm.com>
- <17ef8d76-5dec-46a3-84e1-1b92fadd27b0@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <17ef8d76-5dec-46a3-84e1-1b92fadd27b0@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: _2cgNhOm5HEippqYDl7vFdPrSsc1x0a7
-X-Proofpoint-GUID: luzmibklj_XTsQxEiYDY84TR7F4tgQ5o
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_07,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=920 spamscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200061
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Mihai Sain <mihai.sain@microchip.com>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     cristian.birsan@microchip.com
+References: <20231109131149.46397-1-mihai.sain@microchip.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20231109131149.46397-1-mihai.sain@microchip.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.11.23 um 21:21 schrieb Tony Krowiak:
-> Christian,
-> Can this be pushed with the Acks by Halil and Harald?
 
 
-[...]
+On 09.11.2023 15:11, Mihai Sain wrote:
+> Add IRQ support for ethernet PHY on SAM9X60-Curiosity board.
+> Add IRQ support for ethernet PHY on SAM9X60-EK board.
+> 
+> Mihai Sain (2):
+>   ARM: dts: at91: sam9x60_curiosity: Add IRQ support for ethernet PHY
+>   ARM: dts: at91: sam9x60ek: Add IRQ support for ethernet PHY
+> 
+>  arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts | 3 +++
+>  arch/arm/boot/dts/microchip/at91-sam9x60ek.dts         | 3 +++
+>  2 files changed, 6 insertions(+)
+> 
 
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> Acked-by: Halil Pasic <pasic@linux.ibm.com>
->> Acked-by: Harald Freudenberger <freude@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 16 +++++++++++++++-
->>   1 file changed, 15 insertions(+), 1 deletion(-)
->>
+Applied to at91-dt, thanks!
 
-I think this can go via the s390 tree as well. Alexander do you want to take it?
+Please note that I've changed the commits' titles as follows:
+
+s/ARM: dts: at91/ARM: dts: microchip/g
+
+to cope with the new microchip directory for DTSes. Please let me know if
+you consider there are any issues with this.
+
+Thank you,
+Claudiu Beznea
