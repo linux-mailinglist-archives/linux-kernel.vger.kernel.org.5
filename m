@@ -2,210 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7132D7F2127
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0487F2200
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjKTXD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S232556AbjKUANB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKTXDY (ORCPT
+        with ESMTP id S229490AbjKUAM7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:03:24 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2044.outbound.protection.outlook.com [40.107.6.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AECC8;
-        Mon, 20 Nov 2023 15:03:20 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lTnTpIs76L1zWGjDThSFkMwYoGRuxmkfA98qj1t64g5UigoRVUSBKlcptOMfNknUf3fBzWZwiZfQWTjazf6xX+XxBZrh4ZvsU0xicTVQcayp1xdkX1ig4tZnHcGxFNNp1/CYb2e6nfsv/JBHFCQ1mkfnou3ImUQ/XXif9RIlpGx32FtLf29/liSOFUOdUvQTuD5YkRGofdgIB6UvfYv6oAh4gJ+waSeC0IB694EupnaxzYcJ/tQu+XCfFRrQvBSMQbHJVoPU0H8Yn3i/DNZMhiilgX1e+cF3Vk40LNdyi5tTQZL7PcUE0uVExe520V8cgnXjPN/HtYiAcqm8sV4wag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gut9D2+6SA8B7JBbadyk4x6SMBNcBwxzMtKwovI8wyo=;
- b=YYXoWkDZhnch7JIin8XH48eq2aOQE0TEcQywBPrgzOQUX8g+rH6QJWsIBTxI9O/Wa5rv5YSiK1btUOQgEfOrfkVUvxRLB7WYSDQDR6+xVe13NMzAZApSeJghGrT/vZpGJhamlUG6/R+fphnOyNKafHOvZaMpr13y4Pqk7iDatfOqm+J6CL9bjMwANuqvMJrhuYTOUb0bAnBZTx/+xU3L57eRSq3cZNBg+7Lauc3mmTVlX7+lrmbtOM8ixpf2jk9y5WfLvGuhNNgzxv081AEyOc9XiU2sCu+tbb9XL4VPp2wbgPyuNH0jipUGaIuSeEkOXg2uSBI6HQZmnLvbyeT7PA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gut9D2+6SA8B7JBbadyk4x6SMBNcBwxzMtKwovI8wyo=;
- b=Kgtnq+UtWTcOMwCHlIrljJ+o5Q8+kCFdC0thR0tSdpS0srf6T6wLnfQUW6qlThhZ/QcQ0QAeMS9gx7UgZ9IaEyXqmq7msXyVfcboACOcP/jeOUyeGvlcZuQAGoIZnupO12/ZkOQrt8WRfp41U37IZDrhZq7QJJRgv9BrZpYApN8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DB9PR04MB8153.eurprd04.prod.outlook.com (2603:10a6:10:245::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.16; Mon, 20 Nov
- 2023 23:03:18 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7025.017; Mon, 20 Nov 2023
- 23:03:18 +0000
-Date:   Tue, 21 Nov 2023 01:03:14 +0200
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
-        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: Re: [PATCH v6 net-next 5/7] net: ethernet: ti: am65-cpsw: add mqprio
- qdisc offload in channel mode
-Message-ID: <20231120230314.tqozomqbd6jiqbf7@skbuf>
-References: <20231120140147.78726-1-rogerq@kernel.org>
- <20231120140147.78726-6-rogerq@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120140147.78726-6-rogerq@kernel.org>
-X-ClientProxiedBy: AS4P195CA0044.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:20b:65a::7) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Mon, 20 Nov 2023 19:12:59 -0500
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847F4AB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:12:51 -0800 (PST)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231121001249epoutp012c3aa902b691c359d1969be2f80d730d~Zev7H90Ma2309823098epoutp017
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:12:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231121001249epoutp012c3aa902b691c359d1969be2f80d730d~Zev7H90Ma2309823098epoutp017
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700525569;
+        bh=hwUN0LBGQgjYoxdZvX6WbWTi3VzgrIyo9gsyz23f3ks=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=VZ9RcCwUFJlPbdNQI1Ko+NwksJ6gNqWqDSYvNlvhSGT5Yt1LKQwPC+t5+TRFyQk1F
+         +6nrLxvWcJh1Mh+nNE05RIQ4bebu7idVVAdvvjdKfCxxbHHf0j+6utnbu1u4r7tCMk
+         aCqvmtekmpxysDiWd9hSS4wFwYl8YmZPmnpFc3vs=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20231121001248epcas5p21cf892e62fc91f46ac8d19c7f032a811~Zev6YDvi-0911109111epcas5p2o;
+        Tue, 21 Nov 2023 00:12:48 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.178]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4SZ4Zk2sMyz4x9Q6; Tue, 21 Nov
+        2023 00:12:46 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.A3.08567.EF5FB556; Tue, 21 Nov 2023 09:12:46 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231120124855epcas5p3021f603b22f90087efab7d38d66a6bbd~ZVaza0hYA2182521825epcas5p3r;
+        Mon, 20 Nov 2023 12:48:55 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231120124855epsmtrp2d6be864406cc6c0c53d7bda315f71e79~ZVazZk4550658906589epsmtrp2j;
+        Mon, 20 Nov 2023 12:48:55 +0000 (GMT)
+X-AuditID: b6c32a44-617fd70000002177-c2-655bf5fe3ed5
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        98.1B.08755.6B55B556; Mon, 20 Nov 2023 21:48:55 +0900 (KST)
+Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231120124851epsmtip22de3b57739fb9ac52f5f5b48d186fb17~ZVawU94QG0195801958epsmtip2a;
+        Mon, 20 Nov 2023 12:48:51 +0000 (GMT)
+From:   "Aakarsh Jain" <aakarsh.jain@samsung.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Cc:     <m.szyprowski@samsung.com>, <andrzej.hajda@intel.com>,
+        <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>,
+        <krzysztof.kozlowski+dt@linaro.org>, <dillon.minfei@gmail.com>,
+        <david.plowman@raspberrypi.com>, <mark.rutland@arm.com>,
+        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>, <andi@etezian.org>,
+        <gost.dev@samsung.com>, <alim.akhtar@samsung.com>,
+        <aswani.reddy@samsung.com>, <pankaj.dubey@samsung.com>,
+        <ajaykumar.rs@samsung.com>
+In-Reply-To: <20231025102216.50480-1-aakarsh.jain@samsung.com>
+Subject: RE: [Patch v4 00/11] Add MFC V12 support
+Date:   Mon, 20 Nov 2023 18:18:50 +0530
+Message-ID: <0a6801da1baf$ebb47570$c31d6050$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DB9PR04MB8153:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3708e6de-c3e8-423c-51d3-08dbea1ce272
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v3AwAMatBxS1ZXgGac0HWsmdIkbiNggnzxmMV5ZEOTTYmw5njgnSKJJ7QIPJvAXTu3ej+3zReDDbgQXjMhbkigvvZTKDA+LzXQU+TQW68ghV4wL/86SPZIa2wCDqP/rCSwFsbo9r67UouWoDDGRTLV6Max+1AEn54pgRf3h5EDQ2bUlL4LQuj67Fou1RnnIhwUovJhoXLAaAus4DjF1WERsxshxSBXGkcHDEtGhBjHhVLFAqbYP2llagJkN7CFES1fVpJDQfR1jZeb/oeS1voWyBD/3IdsYhTCVfo0PD0pv2EvwKkkpDZ2KxgXrssPbgIF8KxOKYTSZ6W0DmcgKH3NTv1/5alSXklYxq8BM2rvlx+NBgacFDo6JjDdeQtDuMyJ2nfvPqoJzqnvSjQJDhrZ4gbADXW10xYJO9EN52k4eWOVY3nsNQiK+m44i8nz5biQnS51L6hbk6p7jCz2660Uyw4KCw2jxBRk4tHu8AviJ8+tbAuDRrLxtuiqpuROXuukcMpgaR2srFiIUi/qLuW/Ldj2GAXyoc+9ASbu12pXf3zOIVzf4SjgpM9vrCw9FU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(396003)(366004)(136003)(376002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(41300700001)(5660300002)(86362001)(7416002)(44832011)(2906002)(33716001)(9686003)(6506007)(6512007)(1076003)(26005)(83380400001)(6486002)(478600001)(6666004)(4326008)(8676002)(8936002)(38100700002)(66476007)(66556008)(316002)(66946007)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jy/OJEp2X9Huuw4fYcN9X2PP3d1lXlFz3csLOYOGN06x0l7HZK053l7moTv0?=
- =?us-ascii?Q?6Zn2xTP8oLnPY8TV4rSpq33dnwv9UGDKXnyxXvnbnefxoOF9RzpiAm4UbkLb?=
- =?us-ascii?Q?dfQ56l/jORufYLlFWuzlX8U/ZfvWC2dcGRDAypau+5Hcv9gVdedIcjHiHJCI?=
- =?us-ascii?Q?xpslHERH32axQAmUbH38X9C3wcWgAjxbkcWPCB5UF6uILjC66enNO5U4CFb+?=
- =?us-ascii?Q?3ZGxng2aniGN+7PsnHRLSc6cA/bQcQ1T5s2NU1MALOs55YX+fJfwN/moQNEc?=
- =?us-ascii?Q?tTwacHCTlftGjyxbY8+mCbWf0ksPd4NFqpg1KUsB5FP7dT6W9/xJhNjoSRml?=
- =?us-ascii?Q?BZdACHRP0JF/8oRoZjKWcr62JjkS/ziMOFS0ZkXi4/3Uhe8HmwGsdT5PEz8u?=
- =?us-ascii?Q?e+qvp4RJUWSm/6OZpfKNb9xrkf7Bef3FSdQPjOUpQA5OKDs8+SHeUBLJvcnp?=
- =?us-ascii?Q?4Ip51imVNTFNsplorLV3ZGJv5zutAYMW5cdqa9Ue0nziuGQPElIRD91xVQlP?=
- =?us-ascii?Q?oejomV3TFXWyMtmqa+M9W443Hh1zI7kOb/TAhuO+3bdTkF2zl6wNH1VxZTGr?=
- =?us-ascii?Q?39TicDSoHcqp4sqkjO5xyYV554MC13Zqtp1NwrAFkSRWsbld4eEt66vnY7W5?=
- =?us-ascii?Q?Hx5ctNZA+WN2R7lQodCRu1HTUeTiX1TcNHaW5xf0pGmSPUT07ppZd0j0mHWt?=
- =?us-ascii?Q?UQ48bgjwvD5rFvd+VEikZj7rlEdENVPY5aPziDzt6Spz/H7MkW1Wfbo1EF+z?=
- =?us-ascii?Q?6XLuhYIRKAJm8OZwxwclOVaXvwwKgmrYD8Wr90zFpliNRZ1JmvySMqzao7HZ?=
- =?us-ascii?Q?VW5mKFPUqq/v5kAG7xiz9gbJIG7jBTEy/JNH6vNZflVsWoAeoogE+otX9374?=
- =?us-ascii?Q?SpBgoYhcCCu0nCt/CBT6Jcu5nyUa/knE5AyV0wzVqeeVb69aZ+m5UXmTXII1?=
- =?us-ascii?Q?KlLvElfMRS0sF7l9dPt5ExvDkrg1lsBKiNMeFbD0wP8EhpUR0c13fYS6fmba?=
- =?us-ascii?Q?N8ECTKekS9FTeXpfF+gBosscWADOjcpL6mrxDs9YzgMQEGNol3JaLPHMi7f9?=
- =?us-ascii?Q?q8sOdG2MO4rXPEsgwDTsB0IT/QS9wiRmQfgGwKt666D5b93wYmpbbaZOxTaC?=
- =?us-ascii?Q?OAYoLRZAOEt/R3w2qqdJ1uUklCyOrD0V2YFeEFQzVDmNo08tc99kIvjRCdTH?=
- =?us-ascii?Q?EmvEfKnxnW5zIn/ixxuyrue5hKzrBMr8ugIQyldpDiFxZ4yrb4WwZo8FOg6D?=
- =?us-ascii?Q?Q9AH2NjjU/pphsHXAqrFWDHc26rDHGigzQEJkCDJsUFI56f/RvVk5U8Q5Acr?=
- =?us-ascii?Q?Zjf7gOnSgWXi5z/4aMojDJUpudpLRnW1xnVIpLelbsBkVxB/PWlIiM6js6Lr?=
- =?us-ascii?Q?484OiVcK6dKl+h/y1VK6CgX99o6IwdsqFwvwjtvy35EEng2UDwPLP6w5TXd7?=
- =?us-ascii?Q?pNIc8+Io22wJL86QB4RkDEVTMs3WfJ4zw0CjHu+nnwmOc8jVzuy2VxTzrqXT?=
- =?us-ascii?Q?ySYrhHi/BAPzuy6m6v9Ht6v9XeMS14qeI85PkgQr1KYuyt91IyaSgkrLpnkt?=
- =?us-ascii?Q?C/NrvK7TiS7DEH9pOuh4q1QjFOBtJrsZE+uEAbyC7QipnVYKDNyXeH6FTLnO?=
- =?us-ascii?Q?uw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3708e6de-c3e8-423c-51d3-08dbea1ce272
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 23:03:18.3915
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VGM4OYLHL7is2e88q6qtt742MNYlpiJGHJfw5Pfe8guQuJq5XDl8atkQz6DBBJpAv8JElk35ktTcPVC5seEGNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8153
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHi/4TObS/wQJ2DhVZhuaoGqj3O6QLm4twfsFon1FA=
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf1CTdRzHe54927OBk4cJ+ZWUWztHKAEbsPXAgXiB+qSdcnVh2Q96bnuO
+        cYxtbYOEf8JgKQaeQnA6YciPQUcoOH4j83BgBAphGAiOyMCMPIFzuiAMGtso/nt9ft37+/58
+        78OkcbJRP2aKQkupFaScx/BAWnt2BQavPP+QEpzr3Yx3z99A8F8NrQy8avERjE9V2RDc0tSC
+        4vXmIRiv7eum4+W9Q3S87cZvCD7e3QHjdy5MIviZPx7QcNP0KB0f6Sxl4PmNLXT8/I/XYfxy
+        7ySKG8fuwHiN6QWMV7Y8Q3GduRfd60vUG+ohYqz6KY3o0E+iRFXXLEyY6vIYhHW0i0E0VX9B
+        6G7+jRBnmusgwmbyJwae29AEz2Op0TKKlFJqLqWQKKUpiuQY3qF3k+KSRGKBMFgYib/B4yrI
+        NCqGF/92QvD+FLnDKY+bQcrTHakEUqPhhe6JVivTtRRXptRoY3iUSipXRahCNGSaJl2RHKKg
+        tFFCgSBM5Gj8NFV2vuoFpBrcebzz1hA9Gxr2Pw2xmACLAMXf56BrzMGuQeB6TsZpyMPBTyEw
+        p7sCuQI7BJanB5D1iSet7e6CGQIjI5cRV/AIAvMzuc4uBhYKpgby6WsFHywPAnm1bc4uGvaA
+        BhaKZp2KLGwPuGT/0slbMCGwtFUw1hjB+KDplyUns7FI0P9Vn5u9Qf+FGacCDQsCNRWPaa43
+        ccHSwxr6GvtgUaBgcZDm6tkKbi7l09aEAVbFArfLbahrIB4szK3SXbwF/NnX7M77AducmeFi
+        CZiunHULyEFD1zfuBcSC7rulDmY6BHaBhs5QV3oHKB64Art0N4OC5RnYlWeDdsM6B4BS66Jb
+        djvo+c4InYV4+g3W9Bus6TdY0P+vdglC6qBtlEqTlkxJRCqhgvr8vy+XKNNMkPMUdse3Q/fK
+        V0IsEMyELBBg0ng+bDvnfYrDlpKZWZRamaROl1MaCyRy7Psczc9XonTckkKbJIyIFESIxeKI
+        yHCxkLeV/VhXJuVgyaSWSqUoFaVen4OZLL9sWK8ICuOHosvTB4xoYGLipsOe0JsrHx3O6T3C
+        fC2gYbPdyteyibeas/GERMkh37Gy0Czj1P3XM7vC+h8SyMvR9sKh5vlT+ykLP8PrxKw3/8S3
+        oxOC++Fg2P5K0YExloc699nHjaOFTUb+veGCudmd/3xtqBbH3mKj48tJOt+9KQcbZYWZT37f
+        ton7jrVYvmzwXrLG/dXVxvKMLysyXM0dl3VaUZFXMPUSYjLmBPx0t8RgBtsP9szFXbwqGuv/
+        wCs/a8dgyQ/7Kj47VllxMt323lHdUU386knpUsFEB/vn2GtBC/p91sBizu1w39rjq6cuWvyb
+        VVLzBBn5yatkVGl3yREeopGRwt00tYb8F7Oa+NqTBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRjG+c4525mKcZozv8xuS40stUWXr5sUBZ3ALARJGpSjnbxNG1vZ
+        hSIzlBravXAr73kbSrY1l+liHmdm1jRXhnnrZmWWmaa5Eg23Cv/7wfM8P94/Xh7O7yO8ebGJ
+        hxhFokQm5LoSlXXC+YHGCDGz/Gc9hszfagn0OruSiwrGPmKop2CYQKzeQKIykxVDxQ1mDsqx
+        WDnIWPuWQO3mKgw9U3cR6PynNzjSvWvjINv9m1yUXmHgoMzmBxgqt3SRqPDlMwwV6cYxlG/4
+        QaJUk4Xc5EmXZZcB+uWtIZyu0nSRdEFNH0brtOe4dGdbDZfW3zpFp9b/Iujzd7WAHtbNox+P
+        DJO73Pa4bpAystgkRhEcEuUa06Gt4spTfY8WtoyBZJA8TwVceJBaCb9W3gMq4MrjU9UAPh00
+        487AB06mPSSd7AFLJz6SzlIvgHXsCHcq4FLBsOdxOmcqEFAZAPYMZTlUOPUdhx9KRgjn5AKA
+        Kku+w+VChcDc0RQHe1AiyBrzHCqC8oP6bruD3am1sDGt4S/PhI3q98QU49RS2Nve+5+L8vr/
+        3roA2nuLOFMsoNbBjLGnuLPjBevt6fhF4KGZptJMU2mmqTTTJrmA0ILZjFyZEJ2gFMlFicyR
+        IKUkQXk4MTpo/8EEHXB8Q8CSe8CoHQxiAcYDLIA8XChwH+VHMnx3qeTYcUZxcJ/isIxRsmAO
+        jxB6uXt9ypDyqWjJISaeYeSM4l+K8Vy8kzGrX+5w+E75paX5ItHgO2/saFh9pn73jWtRy3bV
+        nIh4dfdza2jYmjf2izkv4ovtkQtl4gm1xsSWxLaftm1/khtS3qr5ou6Xepo26wTl2+JHQ2Oy
+        BmYN7JdXXL8yfjZstWaCkOGPVM9nmPIiAtrutGS//70eaxyftLUmxfq22dJ2Tnb7xPmLR/vc
+        toqMbD+hfpiypio8oGnbKtnn8WBB19wDUf4thSvJMzt8G/iZblb9GcYgK5ojxtnAJtsK2pZF
+        +qu6r8qrfbQzci7NNNxOah64/I1o3hLqOTuyNE6W4rd3MSOxVB/pEHvNLTt3crt1km0fMocG
+        vpBu1ocv2ujt3ykklDESUQCuUEr+AMNx3kR8AwAA
+X-CMS-MailID: 20231120124855epcas5p3021f603b22f90087efab7d38d66a6bbd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231025102230epcas5p1558641a18fbf4f841c82b0ef4cf5a91f
+References: <CGME20231025102230epcas5p1558641a18fbf4f841c82b0ef4cf5a91f@epcas5p1.samsung.com>
+        <20231025102216.50480-1-aakarsh.jain@samsung.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        PDS_BAD_THREAD_QP_64,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 04:01:45PM +0200, Roger Quadros wrote:
-> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
-> +{
-> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
-> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
-> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
-> +	struct am65_cpsw_common *common = port->common;
-> +	struct tc_mqprio_qopt *qopt = &mqprio->qopt;
-> +	int i, tc, offset, count, prio, ret;
-> +	u8 num_tc = qopt->num_tc;
-> +	u32 tx_prio_map = 0;
-> +
-> +	memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
-> +
-> +	ret = pm_runtime_get_sync(common->dev);
-> +	if (ret < 0) {
-> +		pm_runtime_put_noidle(common->dev);
-> +		return ret;
-> +	}
-> +
-> +	if (!num_tc) {
-> +		am65_cpsw_reset_tc_mqprio(ndev);
-> +		ret = -EINVAL;
+Hello,
 
-num_tc == 0 is what signals the deletion of the mqprio qdisc.
-Why return -EINVAL?
+> -----Original Message-----
+> From: Aakarsh Jain <aakarsh.jain=40samsung.com>
+> Sent: 25 October 2023 15:52
+> To: linux-arm-kernel=40lists.infradead.org; linux-media=40vger.kernel.org=
+;
+> linux-kernel=40vger.kernel.org; devicetree=40vger.kernel.org
+> Cc: m.szyprowski=40samsung.com; andrzej.hajda=40intel.com;
+> mchehab=40kernel.org; hverkuil-cisco=40xs4all.nl;
+> krzysztof.kozlowski+dt=40linaro.org; dillon.minfei=40gmail.com;
+> david.plowman=40raspberrypi.com; mark.rutland=40arm.com;
+> robh+dt=40kernel.org; conor+dt=40kernel.org; linux-samsung-
+> soc=40vger.kernel.org; andi=40etezian.org; gost.dev=40samsung.com;
+> alim.akhtar=40samsung.com; aswani.reddy=40samsung.com;
+> pankaj.dubey=40samsung.com; ajaykumar.rs=40samsung.com;
+> aakarsh.jain=40samsung.com
+> Subject: =5BPatch v4 00/11=5D Add MFC V12 support
+>=20
+> This patch series adds MFC v12 support. MFC v12 is used in Tesla FSD SoC.
+>=20
+> This adds support for following:
+>=20
+> -Add support for YV12 and I420 format (3-plane) -Add support for Rate
+> Control, UHD and DMABUF for encoder -Add support for DPB buffers
+> allocation based on MFC requirement
+>=20
+> Changes since v3:
+> -Removed vp9 codec support for now and just keeping MFC v12 base
+> patches with necessary hardware controls, decoder, encoder and structural
+> changes. Also covers luma dbp, chroma dpb and mv sizes for each codec as
+> per the UM for MFCv12, along with appropriate alignment.
+> v3 link: https://patchwork.kernel.org/project/linux-
+> media/cover/20221011122516.32135-1-aakarsh.jain=40samsung.com/
+>=20
+> Changes since v2:
+> -Addressed review comments by Rob Herring.
+> This was regarding the errors found by Rob bot in yaml file. File
+> 'samsung,s5p-mfc.yaml' is already converted into json schema and is
+> merged.
+>=20
+> -Addressed review comments by Krzysztof Kozlowski.
+> This was regarding depricated properties mentioned in s5p-mfc.txt file.
+> Review comment was addressed and 'samsung,s5p-mfc.yaml' is already
+> merged now.
+>=20
+> -Addressed review comments by Andi Shyti.
+> This was regarding addition of 'MFC_V10PLUS_BITS' macro in
+> 's5p_mfc_common.h file.
+> v2 link: https://patchwork.kernel.org/project/linux-
+> media/cover/20220907064715.55778-1-smitha.t=40samsung.com/
+>=20
+> Changes since v1:
+> -Addressed review comments by Krzysztof Kozlowski.
+> Separated bug fixes patches, resent again with fix tag and those are merg=
+ed
+> now.
+> -Added SoC based compatible string.
+>=20
+> -Addressed review comments by Andrzej Hajda Assigned width64 and
+> height32 variable with ALIGN(ctx->img_..) used in the code in
+> 's5p_mfc_opr_v6.c' file.
+> v1 link: https://patchwork.kernel.org/project/linux-
+> media/patch/20220517125548.14746-2-smitha.t=40samsung.com/
+>=20
+> Aakarsh Jain (11):
+>   dt-bindings: media: s5p-mfc: Add mfcv12 variant
+>   media: s5p-mfc: Rename IS_MFCV10 macro
+>   media: s5p-mfc: Add initial support for MFCv12
+>   media: s5p-mfc: Add YV12 and I420 multiplanar format support
+>   media: s5p-mfc: Add support for rate controls in MFCv12
+>   media: s5p-mfc: Add support for UHD encoding.
+>   media: s5p-mfc: Add support for DMABUF for encoder
+>   media: s5p-mfc: Set context for valid case before calling try_run
+>   media: s5p-mfc: Load firmware for each run in MFCv12.
+>   media: s5p-mfc: DPB Count Independent of VIDIOC_REQBUF
+>   arm64: dts: fsd: Add MFC related DT enteries
+>=20
+>  .../bindings/media/samsung,s5p-mfc.yaml       =7C  16 +
+>  arch/arm64/boot/dts/tesla/fsd.dtsi            =7C  21 ++
+>  .../platform/samsung/s5p-mfc/regs-mfc-v12.h   =7C  52 +++
+>  .../platform/samsung/s5p-mfc/regs-mfc-v7.h    =7C   1 +
+>  .../platform/samsung/s5p-mfc/regs-mfc-v8.h    =7C   3 +
+>  .../media/platform/samsung/s5p-mfc/s5p_mfc.c  =7C  36 +-
+> .../platform/samsung/s5p-mfc/s5p_mfc_common.h =7C  29 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_ctrl.c   =7C   9 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_dec.c    =7C  51 ++-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_enc.c    =7C 138 +++++---
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr.h    =7C  14 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c =7C  12 +-
+> .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c =7C 312 +++++++++++++++-
+> --
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h =7C   7 +-
+>  14 files changed, 574 insertions(+), 127 deletions(-)  create mode 10064=
+4
+> drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
+>=20
+> --
+> 2.17.1
 
-> +		goto exit_put;
-> +	}
-> +
-> +	ret = am65_cpsw_mqprio_verify_shaper(port, mqprio);
-> +	if (ret)
-> +		goto exit_put;
-> +
-> +	netdev_set_num_tc(ndev, num_tc);
-> +
-> +	/* Multiple Linux priorities can map to a Traffic Class
-> +	 * A Traffic Class can have multiple contiguous Queues,
-> +	 * Queues get mapped to Channels (thread_id),
-> +	 *	if not VLAN tagged, thread_id is used as packet_priority
-> +	 *	if VLAN tagged. VLAN priority is used as packet_priority
-> +	 * packet_priority gets mapped to header_priority in p0_rx_pri_map,
-> +	 * header_priority gets mapped to switch_priority in pn_tx_pri_map.
-> +	 * As p0_rx_pri_map is left at defaults (0x76543210), we can
-> +	 * assume that Queue_n gets mapped to header_priority_n. We can then
-> +	 * set the switch priority in pn_tx_pri_map.
-> +	 */
-> +
-> +	for (tc = 0; tc < num_tc; tc++) {
-> +		prio = tc;
-> +
-> +		/* For simplicity we assign the same priority (TCn) to
-> +		 * all queues of a Traffic Class.
-> +		 */
-> +		for (i = qopt->offset[tc]; i < qopt->offset[tc] + qopt->count[tc]; i++)
-> +			tx_prio_map |= prio << (4 * i);
-> +
-> +		count = qopt->count[tc];
-> +		offset = qopt->offset[tc];
-> +		netdev_set_tc_queue(ndev, tc, count, offset);
-> +	}
-> +
-> +	writel(tx_prio_map, port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
-> +
-> +	am65_cpsw_tx_pn_shaper_apply(port);
-> +
-> +exit_put:
-> +	pm_runtime_put(common->dev);
-> +
-> +	return ret;
-> +}
-> +
->  static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
->  {
->  	return port->qos.est_oper || port->qos.est_admin;
-> @@ -737,16 +989,6 @@ static int am65_cpsw_qos_setup_tc_block(struct net_device *ndev, struct flow_blo
->  					  port, port, true);
->  }
->  
-> -static u32
-> -am65_cpsw_qos_tx_rate_calc(u32 rate_mbps, unsigned long bus_freq)
-> -{
-> -	u32 ir;
-> -
-> -	bus_freq /= 1000000;
-> -	ir = DIV_ROUND_UP(((u64)rate_mbps * 32768),  bus_freq);
-> -	return ir;
-> -}
-> -
 
-Insufficient code movement in the previous patch?
+Gentle reminder to review MFC v12 patches.
+I see Krzysztof have some comments on dt-schema patch. Waiting for reviewer=
+s to review driver changes as well. Post which I can send v5 changes.
+
+Thanks
+
+
