@@ -2,156 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F31D7F0A43
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 532AC7F0A4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbjKTBNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 20:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S231676AbjKTB20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 20:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTBNG (ORCPT
+        with ESMTP id S229470AbjKTB2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 20:13:06 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473D0115;
-        Sun, 19 Nov 2023 17:13:01 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AJNINxM025177;
-        Mon, 20 Nov 2023 01:12:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=DT0NjgV5bxTqZenYJx9JCksF59hQvQ1XZaCB+iwtkUA=;
- b=eVyOuf3rxoTn8YNF+cZzvSmbbgcMosqKP1zoewRN9gprgpOchxUw6BnIqg6j6X9RaFRQ
- d+x31Jo7WoBxvzIBYG1w0+PDc4AHe5mtYtO1wjXViKhIWp6yVs73B//fwciYRy6gtHXE
- sW8PYsuZ+zbpOJTa1tewYWxYSVDPaoMKwRSaKb3D41w072AERjgYJxfk8Y1U2eGaT6Pd
- Ugpsp0Eq8MzXYcg0nL2wQQrg0jChGYtASN2hgBWi31b4OzL6o2vf54r6nS+cEHhUi6qd
- 69aGI+8iRvtsqy5OLzNX1Fnl34J0uyRZh2EHBIZ0E8FNutCWO1unhJxf28PUnx40dQKS WA== 
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ufuwrseka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 01:12:58 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AJM1s7F026556;
-        Mon, 20 Nov 2023 01:12:58 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf93kdv9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 01:12:58 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK1CvEc26542732
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 01:12:57 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 413FF58057;
-        Mon, 20 Nov 2023 01:12:57 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5D7058058;
-        Mon, 20 Nov 2023 01:12:56 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Nov 2023 01:12:56 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     zohar@linux.ibm.com, gregkh@linuxfoundation.org,
-        initramfs@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
-        stable@vger.kernel.org, Rob Landley <rob@landley.net>
-Subject: [PATCH v3] rootfs: Fix support for rootfstype= when root= is given
-Date:   Sun, 19 Nov 2023 20:12:48 -0500
-Message-ID: <20231120011248.396012-1-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.41.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fLdhSeQwbeQka2ezh3TsY4brwYxLYmKq
-X-Proofpoint-GUID: fLdhSeQwbeQka2ezh3TsY4brwYxLYmKq
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sun, 19 Nov 2023 20:28:25 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8136BA;
+        Sun, 19 Nov 2023 17:28:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1700443700;
+        bh=Csn+rSOlc7hq+c8kVNN3ZRY0a5UgOwfACyTDU+giBM4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GQ5eWlmyF0MfSbdDe8/EDFZ9l/yhyRu23K+EbRZwDdGeXGB6sFWkA4WzWNDq01KsE
+         2OBK9ejg8LiiGnbgxHaOP0oE0qC8se1jctVja3ONLZu8Zi9zhAoVwdwuHOl/+hY3jl
+         e2cJizyF+sOt6oAdJcis+xfag/TJ2pZj155AuphfD0Of0b2aAuRjQ6Sm9TIKGioFna
+         WodTWKADnR54thH/0gpRqk650dUcLz5qcng1ucfMQqy/Tkv0EoZxu2FaiXcV7Ap9h+
+         24AJYfDFw/x2c33gm/pikCUHA9qgwzeJ8uiLGOe/p4J459GYV/lxq61Z/ahHBHreh6
+         Pl2zBHZtz4qWw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SYVJM2FcNz4wnv;
+        Mon, 20 Nov 2023 12:28:18 +1100 (AEDT)
+Date:   Mon, 20 Nov 2023 12:28:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Fangzhi Zuo <jerry.zuo@amd.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Subject: linux-next: manual merge of the drm-intel tree with the amdgpu tree
+Message-ID: <20231120122818.09bb6f35@canb.auug.org.au>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-19_21,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- spamscore=0 clxscore=1015 suspectscore=0 mlxscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200007
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/+H5fErey4cTN8tJv.P0+EJV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
+--Sig_/+H5fErey4cTN8tJv.P0+EJV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-  If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
-  default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
-  line.
+Hi all,
 
-This currently does not work when root= is provided since then
-saved_root_name contains a string and rootfstype= is ignored. Therefore,
-ramfs is currently always chosen when root= is provided.
+Today's linux-next merge of the drm-intel tree got a conflict in:
 
-The current behavior for rootfs's filesystem is:
+  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
 
-   root=       | rootfstype= | chosen rootfs filesystem
-   ------------+-------------+--------------------------
-   unspecified | unspecified | tmpfs
-   unspecified | tmpfs       | tmpfs
-   unspecified | ramfs       | ramfs
-    provided   | ignored     | ramfs
+between commits:
 
-rootfstype= should be respected regardless whether root= is given,
-as shown below:
+  a58555359a9f ("drm/amd/display: Fix DSC not Enabled on Direct MST Sink")
+  c29085d29562 ("drm/amd/display: Enable DSC Flag in MST Mode Validation")
 
-   root=       | rootfstype= | chosen rootfs filesystem
-   ------------+-------------+--------------------------
-   unspecified | unspecified | tmpfs  (as before)
-   unspecified | tmpfs       | tmpfs  (as before)
-   unspecified | ramfs       | ramfs  (as before)
-    provided   | unspecified | ramfs  (compatibility with before)
-    provided   | tmpfs       | tmpfs  (new)
-    provided   | ramfs       | ramfs  (new)
+from the amdgpu tree and commit:
 
-This table represents the new behavior.
+  7707dd602259 ("drm/dp_mst: Fix fractional DSC bpp handling")
 
-Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root=  specified")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Rob Landley <rob@landley.net>
-Link: https://lore.kernel.org/lkml/8244c75f-445e-b15b-9dbf-266e7ca666e2@landley.net/
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+from the drm-intel tree.
 
----
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-v3:
- - Changed initfstype= to rootfstype=
- - Remove my R-b
+--=20
+Cheers,
+Stephen Rothwell
 
-v2:
- - Cc'ing stable mailing list now
----
- init/do_mounts.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+diff --cc drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+index 8d7d4024f285,2afd1bc74978..000000000000
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+@@@ -1650,7 -1636,8 +1650,7 @@@ enum dc_status dm_dp_mst_is_port_suppor
+  	} else {
+  		/* check if mode could be supported within full_pbn */
+  		bpp =3D convert_dc_color_depth_into_bpc(stream->timing.display_color_de=
+pth) * 3;
+- 		pbn =3D drm_dp_calc_pbn_mode(stream->timing.pix_clk_100hz / 10, bpp, fa=
+lse);
++ 		pbn =3D drm_dp_calc_pbn_mode(stream->timing.pix_clk_100hz / 10, bpp << =
+4);
+ -
+  		if (pbn > aconnector->mst_output_port->full_pbn)
+  			return DC_FAIL_BANDWIDTH_VALIDATE;
+  	}
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index 5fdef94f0864..279ad28bf4fb 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -510,7 +510,10 @@ struct file_system_type rootfs_fs_type = {
- 
- void __init init_rootfs(void)
- {
--	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
--		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
--		is_tmpfs = true;
-+	if (IS_ENABLED(CONFIG_TMPFS)) {
-+		if (!saved_root_name[0] && !root_fs_names)
-+			is_tmpfs = true;
-+		else if (root_fs_names && !!strstr(root_fs_names, "tmpfs"))
-+			is_tmpfs = true;
-+	}
- }
--- 
-2.41.0
+--Sig_/+H5fErey4cTN8tJv.P0+EJV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVatjIACgkQAVBC80lX
+0GzERQf/dspWZjht/bOS+ur+0tu/EliDMLpiAw0xVsjlhOfvvseEdYHvEo4ZQazz
+lf+0LAj7yIQcd6hK+sv2xVn731w/pQwQF6wv7YEAsY/+EZhpwLekV6pnB30dEYyk
+H0Cu3eB2QhLvsElHqqzKlq1FTVMpzucS1cfMG07aPFKZJhH8IbfUGBt4JdqFeio2
+dpoGTEhVingpmX4KvvrBZc4jH9ef3XO8EAIq9Nm9eIsy4f46bR5+n94cBF1/A3jT
+q8pqNYa3Z8b6zdxGeJJ4dT7xarfXEBzPU0JoOp6JsXJxdocFcT3i7geFZBtmKlyU
+KD5wQSfN/cqr3IkHAyJdivP/Rx7sZg==
+=YqFo
+-----END PGP SIGNATURE-----
+
+--Sig_/+H5fErey4cTN8tJv.P0+EJV--
