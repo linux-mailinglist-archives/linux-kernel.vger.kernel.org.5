@@ -2,143 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEB97F1206
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 921D87F120A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjKTLcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
+        id S233209AbjKTLcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232649AbjKTLce (ORCPT
+        with ESMTP id S232649AbjKTLcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:32:34 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5789090
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:32:30 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so9104195e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700479949; x=1701084749; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XXVT32YSTkc9p0bui0nEPJJcsWC+EUsD0PehXkWpJF8=;
-        b=Kmd1eI65vL21JQYNkHAil4vtKomtoJdipx4MGbQsDXY5KReFcsaYXZNoH+wnCydubf
-         h2FMj09plgfaERyrnAAUpmd5UZeYqK8CBGVYdDZQB1VAC8ecXt4MQZf6i413C6DY6oLY
-         AW+Ur6GCv1yhMh9+00AE/9CW/zCDmbg1vkDDdivD4xJHg6Bd2Kx1KiaFuZ2sBn9LxXSj
-         4fli8jfUBYyN3pfGqDd4ESCa7tuNqhGUVf+f00wwmKRgwNFUXkgqCUEbP/5hT9VxapRw
-         uQbgzZm8LGRXK+WeD5w0q7lAQc1byPz0ziV32y1FjT23VYOXIcfx62y2rci4CfqWjM40
-         N2lg==
+        Mon, 20 Nov 2023 06:32:46 -0500
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4E7A0;
+        Mon, 20 Nov 2023 03:32:41 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40859c466efso15020045e9.3;
+        Mon, 20 Nov 2023 03:32:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700479949; x=1701084749;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XXVT32YSTkc9p0bui0nEPJJcsWC+EUsD0PehXkWpJF8=;
-        b=rbc5fz7EWELSgoavB9YiSk4qHKo0AJa1IkTiUNe/xtX+PYl/y/HS0bBJ+mgqN6on25
-         KK4q1EqXo0KEu0MD0GTP62jibiGiyurfZ8L6/1L60YkEzqPEAqjWvlH7I+p6/FwYuLTK
-         mwAoAQFDr2MVsx/DGnQk4BKgm6EAOntnyo9YV1jiwX9LSIRQhL7zXYkpyBBr8td3QA9s
-         MoACU1Z0O7/2ydyqdlqp1KkFAtuPCj6QTaJggWNB70v3FE7KCBcwkzFUJPeGp1dMDAkh
-         sAevCmFrqWfeDAiD8tux7cRxYKLeuo6bzTUYVgS/Sx0Apb2UlzhxBP5j2k9DnSZtF70v
-         +rDA==
-X-Gm-Message-State: AOJu0Yxi1QNuH6H6s1X/VHi7aRQRRAMLRrDn5RLD3tcUWSS9NCebcodR
-        xx88M7Tn3uYjTffYyantjaMEAQ==
-X-Google-Smtp-Source: AGHT+IHE/r6wa4i0tM4JzmYm5czcbg+D4FtuHA+dE7ZuRPxMuI8ADXhGUe6YuFQfgszzzuXosNOoMw==
-X-Received: by 2002:a05:600c:4e42:b0:407:5de2:ea4d with SMTP id e2-20020a05600c4e4200b004075de2ea4dmr11044499wmq.13.1700479948775;
-        Mon, 20 Nov 2023 03:32:28 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bce0a000000b004083a105f27sm17200901wmc.26.2023.11.20.03.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 03:32:28 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon, 20 Nov 2023 06:32:25 -0500
-To:     oe-kbuild@lists.linux.dev, Mehdi Djait <mehdi.djait@bootlin.com>,
-        mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
-        paul.kocialkowski@bootlin.com,
-        Mehdi Djait <mehdi.djait@bootlin.com>
-Subject: Re: [PATCH v8 3/3] media: i2c: Introduce a driver for the Techwell
- TW9900 decoder
-Message-ID: <675bc18e-4a9c-4e3c-8ae5-bdb8a2d2cfbe@suswa.mountain>
+        d=1e100.net; s=20230601; t=1700479960; x=1701084760;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vuwKK9zbBGA1j3WJbpa0jMyRPFba9Ryze3r5vf0g4Cs=;
+        b=BPJn4DYFql8OLZ56jlnSiFkCB5U51W4EuHly4FXZWlNhhKP05R4GOaTYs8R5kkYu4U
+         G2NLMalZHAChA1hUSsCABBzOEefGp/1yLb5g7uu5ZY94qevOIFoAMW5G+EJV0aI4XrcD
+         +CIaSNbvgoJqSRxMh2/VTUSQ3zyGM2Dr8PfUNqYhjQLi5teMzxQPLewtJpBwpv4MYMSE
+         0ZCXmK+ZnAcx+/Tmgvub4uifANfi7i9yTRzvyjSbFvUIvrD1/vaZP6JY/UWB8FVEcwdb
+         EbIeaoWa+Iu3rDXa6oIv2GDcX3Ve6Zs3p7a/lWmkGUctoSmrjB8SwNokAM+X8xNmoQUr
+         O0NQ==
+X-Gm-Message-State: AOJu0Yw8YGuCVk0hYsbVAWBpfGBPfMWLtqJZC1+e/FjK3rltVu3FRaQ1
+        YLxdsfdEwSKCh+QFwiqa2pE=
+X-Google-Smtp-Source: AGHT+IHOGZbApI3IGgTIFSL6AeS/rDS2qM+xHSC+L2OP+kJ7Q4lcu0O8TsbevwEw9mUw+FtLFpP++w==
+X-Received: by 2002:a05:600c:4f01:b0:40a:5b3c:403 with SMTP id l1-20020a05600c4f0100b0040a5b3c0403mr5720572wmq.14.1700479959991;
+        Mon, 20 Nov 2023 03:32:39 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id fc16-20020a05600c525000b004054dcbf92asm13067803wmb.20.2023.11.20.03.32.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 03:32:39 -0800 (PST)
+Message-ID: <1974a5bb-cd08-4e8c-b1f5-ea0a4aaf8247@kernel.org>
+Date:   Mon, 20 Nov 2023 12:32:38 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93354996c95926970684498f08061b60a52bb84c.1699449537.git.mehdi.djait@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10] /proc/sysrq-trigger: accept multiple keys at once
+Content-Language: en-US
+To:     Tomas Mudrunka <tomas.mudrunka@gmail.com>
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, rdunlap@infradead.org
+References: <ea2fd8b3-95cf-4d50-8fc7-f1391b23a433@kernel.org>
+ <20231120111451.527952-1-tomas.mudrunka@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231120111451.527952-1-tomas.mudrunka@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mehdi,
+On 20. 11. 23, 12:14, Tomas Mudrunka wrote:
+> This way we can do:
+> `echo _reisub > /proc/sysrq-trigger`
+> Instead of:
+> `for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
+> 
+> This can be very useful when trying to execute sysrq combo remotely
+> or from userspace. When sending keys in multiple separate writes,
+> userspace (eg. bash or ssh) can be killed before whole combo is completed.
+> Therefore putting all keys in single write is more robust approach.
+> 
+> Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
 
-kernel test robot noticed the following build warnings:
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mehdi-Djait/dt-bindings-vendor-prefixes-Add-techwell-vendor-prefix/20231109-042139
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/93354996c95926970684498f08061b60a52bb84c.1699449537.git.mehdi.djait%40bootlin.com
-patch subject: [PATCH v8 3/3] media: i2c: Introduce a driver for the Techwell TW9900 decoder
-config: i386-randconfig-141-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110759.PJpNGc2N-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110759.PJpNGc2N-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311110759.PJpNGc2N-lkp@intel.com/
-
-smatch warnings:
-drivers/media/i2c/tw9900.c:398 tw9900_s_std() error: uninitialized symbol 'mode'.
-
-vim +/mode +398 drivers/media/i2c/tw9900.c
-
-4fa88742527a9a Mehdi Djait 2023-11-08  384  static int tw9900_s_std(struct v4l2_subdev *sd, v4l2_std_id std)
-4fa88742527a9a Mehdi Djait 2023-11-08  385  {
-4fa88742527a9a Mehdi Djait 2023-11-08  386  	struct tw9900 *tw9900 = to_tw9900(sd);
-4fa88742527a9a Mehdi Djait 2023-11-08  387  	const struct tw9900_mode *mode;
-
-This should be "const struct tw9900_mode *mode = NULL;"
-
-4fa88742527a9a Mehdi Djait 2023-11-08  388  	int i, ret = 0;
-4fa88742527a9a Mehdi Djait 2023-11-08  389  
-4fa88742527a9a Mehdi Djait 2023-11-08  390  	if (!(std & (V4L2_STD_NTSC | V4L2_STD_PAL)))
-4fa88742527a9a Mehdi Djait 2023-11-08  391  		return -EINVAL;
-4fa88742527a9a Mehdi Djait 2023-11-08  392  
-4fa88742527a9a Mehdi Djait 2023-11-08  393  	mutex_lock(&tw9900->mutex);
-4fa88742527a9a Mehdi Djait 2023-11-08  394  
-4fa88742527a9a Mehdi Djait 2023-11-08  395  	for (i = 0; i < ARRAY_SIZE(supported_modes); i++)
-4fa88742527a9a Mehdi Djait 2023-11-08  396  		if (supported_modes[i].std & std)
-4fa88742527a9a Mehdi Djait 2023-11-08  397  			mode = &supported_modes[i];
-4fa88742527a9a Mehdi Djait 2023-11-08 @398  	if (!mode) {
-                                                     ^^^^
-Either valid or uninitialized.
-
-4fa88742527a9a Mehdi Djait 2023-11-08  399  		ret = -EINVAL;
-4fa88742527a9a Mehdi Djait 2023-11-08  400  		goto out_unlock;
-4fa88742527a9a Mehdi Djait 2023-11-08  401  	}
-4fa88742527a9a Mehdi Djait 2023-11-08  402  
-4fa88742527a9a Mehdi Djait 2023-11-08  403  	tw9900->cur_mode = mode;
-4fa88742527a9a Mehdi Djait 2023-11-08  404  
-4fa88742527a9a Mehdi Djait 2023-11-08  405  out_unlock:
-4fa88742527a9a Mehdi Djait 2023-11-08  406  	mutex_unlock(&tw9900->mutex);
-4fa88742527a9a Mehdi Djait 2023-11-08  407  
-4fa88742527a9a Mehdi Djait 2023-11-08  408  	return ret;
-4fa88742527a9a Mehdi Djait 2023-11-08  409  }
-
+thanks,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+js
+suse labs
 
