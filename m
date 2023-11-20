@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924767F108A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EDB87F1092
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjKTKkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S233093AbjKTKmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjKTKkg (ORCPT
+        with ESMTP id S232305AbjKTKmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:40:36 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E123A0;
-        Mon, 20 Nov 2023 02:40:32 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 077931C000C;
-        Mon, 20 Nov 2023 10:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700476830;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aFDoD/sf7hb9m2oDJulcbKCtm+j0do0V7EoRgM61mz8=;
-        b=Z2ChnBnCRgpveBlmH6q0kxQZj4TWlnHNku1bMn3gvXiRdAdr4nw9jUBm3X9v8h59YiwTlT
-        1cXbxA4t0+FroaiA4ZCIEujF7pBP4RKzkGNcyEp3jDDn5J8HMvidEAAlWfHUDXYFRHpay9
-        2O2lvIEL55KN9K+13Rvj78ScZDtjBoJgS8+zJ4hMr5/nVl6trktyU3AE3RqZOgG7JAPbwI
-        n2Gywn0BA9BZrGU+36aU78oFEb7tdCem/62vikQM4NsXOvN+eG5m9l+WTb3qecNBQbksTC
-        fL3kYMp8auXKtDvN55Joc5QA6L9NuKiQvkDrQYE/3TnPqsSpriD1pW92QFSaWg==
-Date:   Mon, 20 Nov 2023 11:40:27 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 08/16] net: ethtool: Add a command to expose
- current time stamping layer
-Message-ID: <20231120114027.225442b5@kmaincent-XPS-13-7390>
-In-Reply-To: <20231120101757.7ecf40b2@kmaincent-XPS-13-7390>
-References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
-        <20231114-feature_ptp_netnext-v7-8-472e77951e40@bootlin.com>
-        <20231118182424.2d569940@kernel.org>
-        <20231120101757.7ecf40b2@kmaincent-XPS-13-7390>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 20 Nov 2023 05:42:11 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7C1C5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:42:07 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B352240E0191;
+        Mon, 20 Nov 2023 10:42:05 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+        reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id s3Bk66p57ugy; Mon, 20 Nov 2023 10:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700476921; bh=a498UqCdgqI7n4Pzky75DyfxOL9DOYfatF1tLA69gmE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y2XnooKrIU6CgKkGZl1uH6BTm2yeh0H/V46Py3DiJU7skXypcgxzlD8OtlIn2K/sa
+         BP2RIzuGlHZ4yfl0chrqZ23mzR5LV5dPRN8ZJkql67C5aZKjaJ1xdjB7MUjk4MZT60
+         jWfeK7pMIQraxZe/KKTJo+bcAPHL8obFX5qsCV5zt7rzFBg2mttBegducL7Q7KU73G
+         fHsvZ7zBaqbdmtmHtoGES/0f9Ybk1hc2oHu7P6hmg+Zfkk4PT1cUtFK0iD8ZqrbQ8o
+         yKWyspK8xEzKbTg5PCIphAMSDKIMqW60KO0GDvQ9gR0A8Wpz4R9hMR1Y/rfTFfJbSL
+         g3JWelwH7LyAOsGbAjaxZ8XX45Jp+Ly6zPB7KWL8XqLhUl8YD1985gm8Z3/mYyXqIU
+         v6EuIeCM9EfgvynhqXN1fITsIT2FkCnqLWDe7OshtadImuCWEEpukKXiYsPLiE7Yyc
+         wYvrqFd7A4ReKczogyBCcyAtkw7zPW8JGy4lwWl3ZzJQ/bltjnPrjHb0Y1G76nWRHx
+         wr43nfks35IVL+SeLkrUVREpRvmsWj3u51MQA4pTW4z2/pTckOOhdpgLU4ioYpYMMN
+         lDwad5CXsg5I9dJ9QmUw7Pv4b2bjWy1bbz7VTZF8Roz3c3JA5kJgAe7ncunRpMCOHk
+         DtzcBErIsIh+/yW4HWxAr90c=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77E9C40E0030;
+        Mon, 20 Nov 2023 10:41:59 +0000 (UTC)
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/13] x86/CPU/AMD: Rework Zen family detection and other fun
+Date:   Mon, 20 Nov 2023 11:41:39 +0100
+Message-ID: <20231120104152.13740-1-bp@alien8.de>
+X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 10:17:57 +0100
-K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-> On Sat, 18 Nov 2023 18:24:24 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
->=20
-> > On Tue, 14 Nov 2023 12:28:36 +0100 Kory Maincent wrote: =20
-> > > +		ops->get_ts_info(dev, &ts_info);
-> > > +		if (ts_info.so_timestamping &
-> > > +		    SOF_TIMESTAMPING_HARDWARE_MASK)
-> > > +			data->ts_layer =3D MAC_TIMESTAMPING;
-> > > +
-> > > +		if (ts_info.so_timestamping &
-> > > +		    SOF_TIMESTAMPING_SOFTWARE_MASK)
-> > > +			data->ts_layer =3D SOFTWARE_TIMESTAMPING;   =20
-> >=20
-> > How does this work? so_timestamping is capabilities, not what's
-> > enabled now. So if driver supports SW stamping we always return
-> > SOFTWARE? =20
->=20
-> Yes, the software timestamping comes from the MAC capabilities.
-> I decided to separate software and MAC timestamping. If we select PHY
-> timestamping we can't use software timestamping and for an user, selectin=
-g the
-> MAC as timestamping seems not logical to use software timestamping.
->=20
-> Indeed there is a mistake here I should have used "else if" condition.
-> Mmh in fact, maybe not, because it would breaks the access to software
-> timestamping until patch 13.
-> I will remove the SOFTWARE/MAC timestamping distinction from this patch.
+Add Zen generation flags which will be used to check on what type of Zen
+the kernel runs. Distribute the per-generation init work into the
+respective functions and cleanup amd.c properly.
 
-After thinking again, the "else if" condition works and won't break anythin=
-g as
-we could still access software timestamping within the MAC_TIMESTAMPING lay=
-er.
+As a result, drop the errata checking gunk which is not needed anymore.
 
-Regards,
+There should be no functionality change resulting from these changes.
+
+Borislav Petkov (AMD) (13):
+  x86/CPU/AMD: Add ZenX generations flags
+  x86/CPU/AMD: Carve out the erratum 1386 fix
+  x86/CPU/AMD: Move the Zen3 BTC_NO detection to the Zen3 init function
+  x86/CPU/AMD: Move erratum 1076 fix into the Zen1 init function
+  x86/CPU/AMD: Call the spectral chicken in the Zen2 init function
+  x86/CPU/AMD: Rename init_amd_zn() to init_amd_zen_common()
+  x86/CPU/AMD: Move Zenbleed check to the Zen2 init function
+  x86/CPU/AMD: Move the DIV0 bug detection to the Zen1 init function
+  x86/CPU/AMD: Get rid of amd_erratum_1054[]
+  x86/CPU/AMD: Get rid of amd_erratum_383[]
+  x86/CPU/AMD: Get rid of amd_erratum_400[]
+  x86/CPU/AMD: Get rid of amd_erratum_1485[]
+  x86/CPU/AMD: Drop now unused CPU erratum checking function
+
+ arch/x86/include/asm/cpufeatures.h |   6 +-
+ arch/x86/kernel/cpu/amd.c          | 266 ++++++++++++++---------------
+ 2 files changed, 135 insertions(+), 137 deletions(-)
+
 --=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+2.42.0.rc0.25.ga82fb66fed25
+
