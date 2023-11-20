@@ -2,194 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD457F0F97
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9317F0FB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbjKTJ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S232835AbjKTKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232464AbjKTJ6P (ORCPT
+        with ESMTP id S232176AbjKTKEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:58:15 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB6ECD;
-        Mon, 20 Nov 2023 01:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RRH8ihRwgqqNWiOQXVgz2lSe5cF5QqM2TrvGcFPpVxQ=; b=eAF0KRxgbthRFbPQ6izZC3J3oy
-        NoICC18OIT3Qs7cMSCHEyKdPJVEqlqYYz46JeVVogCAoBWUhXiyxhy9SzyCivvREMDfvxXZSrMpqk
-        BHZ3abqeLK7FySm29lIYiV3szbHsZGZ0MEwL9YBdWcQ/tt0m9Epi+ARclf048DAo9sTRBExtXyU2Y
-        OWqc0bZ0sBPg5y7tECdJwrgrcIV0utpcws+XvnYsepZe+SO7zSvE1M0Dc3TnoMMhyx+qLFfvV/gAy
-        zBVN1YBhtJaSqBUjieLhtAr5Xh4FKBvt+x6MQT63nLwsYbtpT2WmNNA7nk4PLOb78D4oGUQs88/cg
-        AGe8pcpA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43368)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r512Z-0005Gn-2Y;
-        Mon, 20 Nov 2023 09:58:05 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r512Z-00034w-8Z; Mon, 20 Nov 2023 09:58:03 +0000
-Date:   Mon, 20 Nov 2023 09:58:03 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jianyong Wu <Jianyong.Wu@arm.com>
-Cc:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Justin He <Justin.He@arm.com>,
-        James Morse <James.Morse@arm.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: Re: [PATCH 34/39] arm64: psci: Ignore DENIED CPUs
-Message-ID: <ZVstq+vhQSP73Nua@shell.armlinux.org.uk>
-References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
- <E1qvJBQ-00AqS8-8B@rmk-PC.armlinux.org.uk>
- <DB9PR08MB7511B178CA811C412766FDBAF4B0A@DB9PR08MB7511.eurprd08.prod.outlook.com>
- <ZVsl1ZQ9JRXPf4qH@shell.armlinux.org.uk>
- <DB9PR08MB7511C8825028074748FBB967F4B4A@DB9PR08MB7511.eurprd08.prod.outlook.com>
+        Mon, 20 Nov 2023 05:04:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B591B95;
+        Mon, 20 Nov 2023 02:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700474652; x=1732010652;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=Q5vDujUu2jQVmhCwOqd7SDr4yeZ+2NBNFFCi8xPFKlY=;
+  b=bV3q0rqqbbrJyWKTKCN4gB1BcaBkK4a7w895lz4PvF8dalrT0iTcIzJw
+   qPcEhISWJNjScj30pEoyrtyyoMF0vEhS7JEywIMZHsN0gNcDUsY5EJzCg
+   XcI1JYiXCx1ZboofA/L6FnQ2QCBzbXZPk5ouFZspumVcL9Rfelh7RHM8u
+   D8yG2Bb39psp8leC0dlpemtIC9jYfLfBKFn7p0ZC6DaN6hhbeC0CPcqq7
+   WC0AhF27fbkqyOhF53tlu4l41hkJZ/geUrJXhBxXKCpe/54I2SZcVfY5a
+   0ioJTIvC0Vp6Rg0+CL8TKYICPgn/DCc07Muq7P9HsIy5ATXdZgT7AyCcP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="455914983"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="455914983"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:59:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="889872771"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="889872771"
+Received: from akeren-mobl.ger.corp.intel.com ([10.252.40.26])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:59:06 -0800
+Date:   Mon, 20 Nov 2023 11:59:04 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+cc:     "John W. Linville" <linville@tuxdriver.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-wireless@vger.kernel.org, Ping-Ke Shih <pkshih@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/7] rtlwifi: rtl8821ae: Reverse PM capability exists
+ check
+In-Reply-To: <20231117224407.GA95935@bhelgaas>
+Message-ID: <34385eee-b08c-8ff9-db47-75c3d2be681@linux.intel.com>
+References: <20231117224407.GA95935@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB9PR08MB7511C8825028074748FBB967F4B4A@DB9PR08MB7511.eurprd08.prod.outlook.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1927733487-1700473754=:2032"
+Content-ID: <2366eb98-2abd-5792-be3d-ea2e2c2d16fb@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:36:05AM +0000, Jianyong Wu wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Russell King <linux@armlinux.org.uk>
-> > Sent: 2023å¹´11æœˆ20æ—¥ 17:25
-> > To: Jianyong Wu <Jianyong.Wu@arm.com>
-> > Cc: linux-pm@vger.kernel.org; loongarch@lists.linux.dev;
-> > linux-acpi@vger.kernel.org; linux-arch@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> > linux-riscv@lists.infradead.org; kvmarm@lists.linux.dev; x86@kernel.org;
-> > linux-csky@vger.kernel.org; linux-doc@vger.kernel.org;
-> > linux-ia64@vger.kernel.org; linux-parisc@vger.kernel.org; Salil Mehta
-> > <salil.mehta@huawei.com>; Jean-Philippe Brucker <jean-philippe@linaro.org>;
-> > Justin He <Justin.He@arm.com>; James Morse <James.Morse@arm.com>;
-> > Catalin Marinas <Catalin.Marinas@arm.com>; Will Deacon <will@kernel.org>;
-> > Mark Rutland <Mark.Rutland@arm.com>; Lorenzo Pieralisi
-> > <lpieralisi@kernel.org>
-> > Subject: Re: [PATCH 34/39] arm64: psci: Ignore DENIED CPUs
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1927733487-1700473754=:2032
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <9fa8dab0-fcc-f0b0-f269-af6933aa9b6@linux.intel.com>
+
+On Fri, 17 Nov 2023, Bjorn Helgaas wrote:
+
+> On Fri, Nov 17, 2023 at 11:44:22AM +0200, Ilpo Järvinen wrote:
+> > Check if PM capability does not exists and return early which follows
+> > the usual error handling pattern.
 > > 
-> > On Thu, Nov 16, 2023 at 07:45:51AM +0000, Jianyong Wu wrote:
-> > > Hi Russell,
-> > >
-> > > One inline comment.
-> > ...
-> > > > Changes since RFC v2
-> > > >  * Add specification reference
-> > > >  * Use EPERM rather than EPROBE_DEFER
-> > ...
-> > > > @@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)  {
-> > > >  	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
-> > > >  	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
-> > > > -	if (err)
-> > > > +	if (err && err != -EPROBE_DEFER)
-> > >
-> > > Should this be EPERM? As the following psci cpu_on op will return it.
-> > > I think you miss to change this when apply Jean-Philippe's patch.
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  .../wireless/realtek/rtlwifi/rtl8821ae/hw.c   | 45 ++++++++++---------
+> >  1 file changed, 23 insertions(+), 22 deletions(-)
 > > 
-> > It looks like James didn't properly update all places. Also,
-> > 
-> > > > diff --git a/drivers/firmware/psci/psci.c
-> > > > b/drivers/firmware/psci/psci.c index d9629ff87861..ee82e7880d8c
-> > > > 100644
-> > > > --- a/drivers/firmware/psci/psci.c
-> > > > +++ b/drivers/firmware/psci/psci.c
-> > > > @@ -218,6 +218,8 @@ static int __psci_cpu_on(u32 fn, unsigned long
-> > > > cpuid, unsigned long entry_point)
-> > > >  	int err;
-> > > >
-> > > >  	err = invoke_psci_fn(fn, cpuid, entry_point, 0);
-> > > > +	if (err == PSCI_RET_DENIED)
-> > > > +		return -EPERM;
-> > > >  	return psci_to_linux_errno(err);
-> > 
-> > This change is unnecessary - probably comes from when -EPROBE_DEFER was
-> > being used. psci_to_linux_errno() already does:
+> > diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/hw.c
+> > index 6ae37d61a2a2..53cfeed0b030 100644
+> > --- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/hw.c
+> > +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/hw.c
+> > @@ -2305,30 +2305,31 @@ static void _rtl8821ae_clear_pci_pme_status(struct ieee80211_hw *hw)
+> >  		}
+> >  	} while (cnt++ < 200);
+> >  
+> > -	if (cap_id == 0x01) {
+> > -		/* Get the PM CSR (Control/Status Register),
+> > -		 * The PME_Status is located at PM Capatibility offset 5, bit 7
+> > -		 */
+> > -		pci_read_config_byte(rtlpci->pdev, cap_pointer + 5, &pmcs_reg);
+> > -
+> > -		if (pmcs_reg & BIT(7)) {
+> > -			/* Clear PME_Status with write */
+> > -			pci_write_config_byte(rtlpci->pdev, cap_pointer + 5,
+> > -					      pmcs_reg);
+> > -			/* Read it back to check */
+> > -			pci_read_config_byte(rtlpci->pdev, cap_pointer + 5,
+> > -					     &pmcs_reg);
+> > -			rtl_dbg(rtlpriv, COMP_INIT, DBG_DMESG,
+> > -				"Clear PME status 0x%2x to 0x%2x\n",
+> > -				cap_pointer + 5, pmcs_reg);
+> > -		} else {
+> > -			rtl_dbg(rtlpriv, COMP_INIT, DBG_DMESG,
+> > -				"PME status(0x%2x) = 0x%2x\n",
+> > -				cap_pointer + 5, pmcs_reg);
+> > -		}
+> > -	} else {
+> > +	if (cap_id != 0x01) {
+> >  		rtl_dbg(rtlpriv, COMP_INIT, DBG_WARNING,
+> >  			"Cannot find PME Capability\n");
+> > +		return;
+> > +	}
+> > +
+> > +	/* Get the PM CSR (Control/Status Register),
+> > +	 * The PME_Status is located at PM Capatibility offset 5, bit 7
+
+> But this is PCI_PM_CTRL and PCI_PM_CTRL_PME_STATUS (with a word read),
+> right?  No need for a comment then.
 > 
-> But may print lots of noise like:
-> 
-> [    0.008955] smp: Bringing up secondary CPUs ...
-> [    0.009661] psci: failed to boot CPU1 (-1)
-> [    0.010360] psci: failed to boot CPU2 (-1)
-> [    0.011164] psci: failed to boot CPU3 (-1)
-> [    0.011946] psci: failed to boot CPU4 (-1)
-> [    0.012764] psci: failed to boot CPU5 (-1)
-> [    0.013534] psci: failed to boot CPU6 (-1)
-> [    0.014349] psci: failed to boot CPU7 (-1)
-> [    0.014820] smp: Brought up 1 node, 1 CPU
-> 
-> Is this expected?
+> I don't know why the driver needs to do this, but I'm skeptical.  The
+> only other drivers that look at PCI_PM_CTRL_PME_STATUS themselves are
+> bnx2x and ksz884xp (ksz884x.c), so this is highly suspicious.
 
-Please read my email again, and take note of the _context_ above the
-places that I've commented. Context matters.
+I hope you are not asking from me because I'm just the poor guy who tries 
+to cleanup this mess. ;-) ...So all I can do is shrug and say, I 
+unfortunately don't know the answer.
 
-What I'm saying is that this change:
+Hopefully somebody more familiar with the devices could chime in.
 
- 	err = invoke_psci_fn(fn, cpuid, entry_point, 0);
-+	if (err == PSCI_RET_DENIED)
-+		return -EPERM;
- 	return psci_to_linux_errno(err);
-
-Is unnecessary when psci_to_linux_errno() already does:
-
-static __always_inline int psci_to_linux_errno(int errno)
-{
-	switch (errno) {
-	...
-	case PSCI_RET_DENIED:
-		return -EPERM;
-
-So, a return of PSCI_RET_DENIED from invoke_psci_fn() above will
-_already_ be translated to -EPERM (which is -1) by
-psci_to_linux_errno(). There is no need to add that extra if()
-statement in __psci_cpu_on().
-
-I was _not_ saying that the entire patch was unnecessary.
-
-Context matters. That's why we include context in replies.
-
-Standard email etiquette (before Microsoft messed it up) is to quote the
-email that is being replied to, trimming hard irrelevant content, and to
-place the reply comments immediately below the original content to which
-the comments relate, to give the reply comments the context necessary
-for correct interpretation.
-
-Thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+ i.
+--8323329-1927733487-1700473754=:2032--
