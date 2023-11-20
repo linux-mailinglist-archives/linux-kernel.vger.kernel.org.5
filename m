@@ -2,152 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D297F0CA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D207F0CA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjKTHOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 02:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        id S232040AbjKTHPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 02:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKTHOp (ORCPT
+        with ESMTP id S229952AbjKTHO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 02:14:45 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34989F
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:14:41 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32f737deedfso2606096f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700464480; x=1701069280; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xTpzIo3f4o6eoy8MCq5hNlFomP7UrP22WFNPe/vFuOg=;
-        b=AGbkdSDB6vRw9sXilhd2oj8e9Vx9CB9Q4znRHwQGTtwKOk7k+sfE3Vrn3u3hxlX14Y
-         LeV2Gp4cnxl/sEFHLxjdZB5cFWzaS+BYcfppcDHyw/TV4/GOTs/M6oAt0pLmg4uKJq+Z
-         LJuFHqF/xByT8TzfTbe1G2YAn6v/hpo/aSUVDGZ3ZpCT7SunWM49OGsyZlf5eVf60dKW
-         m90TJNB1EwVhn77lYcEf/7m7lvLn9yOvh+YRTLGzU9+BwoIgTNWySQjaaaSCn/1y613h
-         NBzS3wFlKeIm3EJUWy068Wzb2vJzr5Ih12MyNi1FjLDAatSrz2P3AzwX7+q9pJpOYI7r
-         S8Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700464480; x=1701069280;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xTpzIo3f4o6eoy8MCq5hNlFomP7UrP22WFNPe/vFuOg=;
-        b=ABFIkfyUrB7bwrmg2vEiEubCh6GRBhQt8vAGkjQcz5R1WggBBaWbo1AUS4HMkSLrt2
-         ZrC+oSn5GJoY3OXQ/QcUPESMczGNhXPFp+/ENQSs2Vs6V7vkXwR2OoXAx0uXTQAGstEk
-         qcAxf/+7dlREi6CspKiOt1h3USse16k4J0oi8WEavavLxIlslu/+xjJ/M36goq9GBEz2
-         7a0A9uEUH4ieuYM9l7JQQCgvK/E1siVimpduAGDJhLlRmirNTRL5J7Sf5JBTP/nj3FFf
-         IZNXcFtpbSh/vf0DyD5g3zyb17/9GSatUWnuZAYf+4p0shW9OEVo1ZBXgjNocwRd9H1Z
-         87Kg==
-X-Gm-Message-State: AOJu0Yw6NpeQGoniTaAAkqblIbjWygqkp0JWXCng0cAGMlgaFgqXcrMY
-        Etk0C1INcJR1mR5ic2Mz5zWWMA==
-X-Google-Smtp-Source: AGHT+IGx79LnjMCzDDsSivZDPPruw3fTGNkmstT8z4UNLsUc2QXo/Hfngq3GET6wfCFWi0AwKFcAgA==
-X-Received: by 2002:a5d:59a9:0:b0:332:c2a0:c0d0 with SMTP id p9-20020a5d59a9000000b00332c2a0c0d0mr2886332wrr.46.1700464480440;
-        Sun, 19 Nov 2023 23:14:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d48c6000000b0032db8cccd3asm10166457wrs.114.2023.11.19.23.14.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Nov 2023 23:14:39 -0800 (PST)
-Message-ID: <875fbdff-cb89-4431-8e5a-51aefaff0be9@linaro.org>
-Date:   Mon, 20 Nov 2023 08:14:38 +0100
+        Mon, 20 Nov 2023 02:14:58 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112DCAF;
+        Sun, 19 Nov 2023 23:14:51 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SYf043SYPz4f3lDW;
+        Mon, 20 Nov 2023 15:14:44 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id A448F1A0173;
+        Mon, 20 Nov 2023 15:14:48 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgCnqxFmB1tluKyxBQ--.16754S3;
+        Mon, 20 Nov 2023 15:14:48 +0800 (CST)
+Subject: Re: [PATCH 1/2] block: introduce new field flags in block_device
+To:     Ming Lei <ming.lei@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231120093847.2228127-1-yukuai1@huaweicloud.com>
+ <20231120093847.2228127-2-yukuai1@huaweicloud.com> <ZVrLvcIhlnQl7xAb@fedora>
+ <9fc5e82f-9106-e3f9-4f06-d2d79e8e99a8@huaweicloud.com>
+ <ZVsDlcg9cAdIHiV8@fedora>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <293f5dfe-fbd2-da20-bf7e-85550c1813a2@huaweicloud.com>
+Date:   Mon, 20 Nov 2023 15:14:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
-References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
- <20231116-sandblast-groggy-c35eb536c34d@squawk>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231116-sandblast-groggy-c35eb536c34d@squawk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZVsDlcg9cAdIHiV8@fedora>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgCnqxFmB1tluKyxBQ--.16754S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr4kZrWrtr4UKrWkuFWrAFb_yoW3KrWUpF
+        WDGF4YkayUWr1agw4Iq3WaqFs2qw40kr1xG3y7C34IvF90yFn7WF1kGryYkF92yrWxCFW7
+        XF1DCFZxCry2ga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHU
+        DUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 22:27, Conor Dooley wrote:
-> On Thu, Nov 16, 2023 at 07:12:18PM +0100, Krzysztof Kozlowski wrote:
->> Document preferred coding style for Devicetree sources (DTS and DTSI),
->> to bring consistency among all (sub)architectures and ease in reviews.
-> 
-> This is a good idea IMO, thanks for writing it.
-> 
-> Should we also mention in this about the expected breakdown of things
-> between $soc.dtsi and $soc-$board.dtsi? There's commonly confusion about
-> things like oscillators and where they belong - particularly when the
-> SoC mandates that these oscillators be of a single frequency.
-> It may seem obvious to us what goes where, but certainly contributors
-> frequently get this wrong.
+Hi,
 
-Sure, I can add a chapter about DTS/DTSI split.
+在 2023/11/20 14:58, Ming Lei 写道:
+> On Mon, Nov 20, 2023 at 02:37:59PM +0800, Yu Kuai wrote:
+>> Hi,
+>>
+>> 在 2023/11/20 11:00, Ming Lei 写道:
+>>> On Mon, Nov 20, 2023 at 05:38:46PM +0800, Yu Kuai wrote:
+>>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>>
+>>>> There are multiple switches in struct block_device, use seperate bool
+>>>> fields for them is not gracefully. Add a new field flags and replace
+>>>> swithes to a bit, there are no functional changes, and preapre to add
+>>>> a new switch in the next patch.
+>>>>
+>>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>>> ---
+>>>>    block/bdev.c              | 15 ++++++++-------
+>>>>    block/blk-core.c          |  7 ++++---
+>>>>    block/genhd.c             |  8 +++++---
+>>>>    block/ioctl.c             |  2 +-
+>>>>    include/linux/blk_types.h | 12 ++++++------
+>>>>    include/linux/blkdev.h    |  5 +++--
+>>>>    6 files changed, 27 insertions(+), 22 deletions(-)
+>>>>
+>>>> diff --git a/block/bdev.c b/block/bdev.c
+>>>> index fc8d28d77495..cb849bcf61ae 100644
+>>>> --- a/block/bdev.c
+>>>> +++ b/block/bdev.c
+>>>> @@ -408,10 +408,10 @@ struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
+>>>>    	bdev->bd_partno = partno;
+>>>>    	bdev->bd_inode = inode;
+>>>>    	bdev->bd_queue = disk->queue;
+>>>> -	if (partno)
+>>>> -		bdev->bd_has_submit_bio = disk->part0->bd_has_submit_bio;
+>>>> +	if (partno && test_bit(BD_FLAG_HAS_SUBMIT_BIO, &disk->part0->flags))
+>>>> +		set_bit(BD_FLAG_HAS_SUBMIT_BIO, &bdev->flags);
+>>>>    	else
+>>>> -		bdev->bd_has_submit_bio = false;
+>>>> +		clear_bit(BD_FLAG_HAS_SUBMIT_BIO, &bdev->flags);
+>>>>    	bdev->bd_stats = alloc_percpu(struct disk_stats);
+>>>>    	if (!bdev->bd_stats) {
+>>>>    		iput(inode);
+>>>> @@ -612,7 +612,7 @@ static void bd_end_claim(struct block_device *bdev, void *holder)
+>>>>    		bdev->bd_holder = NULL;
+>>>>    		bdev->bd_holder_ops = NULL;
+>>>>    		mutex_unlock(&bdev->bd_holder_lock);
+>>>> -		if (bdev->bd_write_holder)
+>>>> +		if (test_bit(BD_FLAG_WRITE_HOLDER, &bdev->flags))
+>>>>    			unblock = true;
+>>>>    	}
+>>>>    	if (!whole->bd_holders)
+>>>> @@ -625,7 +625,7 @@ static void bd_end_claim(struct block_device *bdev, void *holder)
+>>>>    	 */
+>>>>    	if (unblock) {
+>>>>    		disk_unblock_events(bdev->bd_disk);
+>>>> -		bdev->bd_write_holder = false;
+>>>> +		clear_bit(BD_FLAG_WRITE_HOLDER, &bdev->flags);
+>>>>    	}
+>>>>    }
+>>>> @@ -878,9 +878,10 @@ struct bdev_handle *bdev_open_by_dev(dev_t dev, blk_mode_t mode, void *holder,
+>>>>    		 * writeable reference is too fragile given the way @mode is
+>>>>    		 * used in blkdev_get/put().
+>>>>    		 */
+>>>> -		if ((mode & BLK_OPEN_WRITE) && !bdev->bd_write_holder &&
+>>>> +		if ((mode & BLK_OPEN_WRITE) &&
+>>>> +		    !test_bit(BD_FLAG_WRITE_HOLDER, &bdev->flags) &&
+>>>>    		    (disk->event_flags & DISK_EVENT_FLAG_BLOCK_ON_EXCL_WRITE)) {
+>>>> -			bdev->bd_write_holder = true;
+>>>> +			set_bit(BD_FLAG_WRITE_HOLDER, &bdev->flags);
+>>>>    			unblock_events = false;
+>>>>    		}
+>>>>    	}
+>>>> diff --git a/block/blk-core.c b/block/blk-core.c
+>>>> index fdf25b8d6e78..577a693165d8 100644
+>>>> --- a/block/blk-core.c
+>>>> +++ b/block/blk-core.c
+>>>> @@ -482,7 +482,8 @@ __setup("fail_make_request=", setup_fail_make_request);
+>>>>    bool should_fail_request(struct block_device *part, unsigned int bytes)
+>>>>    {
+>>>> -	return part->bd_make_it_fail && should_fail(&fail_make_request, bytes);
+>>>> +	return test_bit(BD_FLAG_MAKE_IT_FAIL, &part->flags) &&
+>>>> +		should_fail(&fail_make_request, bytes);
+>>>>    }
+>>>>    static int __init fail_make_request_debugfs(void)
+>>>> @@ -595,7 +596,7 @@ static void __submit_bio(struct bio *bio)
+>>>>    	if (unlikely(!blk_crypto_bio_prep(&bio)))
+>>>>    		return;
+>>>> -	if (!bio->bi_bdev->bd_has_submit_bio) {
+>>>> +	if (!test_bit(BD_FLAG_HAS_SUBMIT_BIO, &bio->bi_bdev->flags)) {
+>>>>    		blk_mq_submit_bio(bio);
+>>>>    	} else if (likely(bio_queue_enter(bio) == 0)) {
+>>>>    		struct gendisk *disk = bio->bi_bdev->bd_disk;
+>>>> @@ -703,7 +704,7 @@ void submit_bio_noacct_nocheck(struct bio *bio)
+>>>>    	 */
+>>>>    	if (current->bio_list)
+>>>>    		bio_list_add(&current->bio_list[0], bio);
+>>>> -	else if (!bio->bi_bdev->bd_has_submit_bio)
+>>>> +	else if (!test_bit(BD_FLAG_HAS_SUBMIT_BIO, &bio->bi_bdev->flags))
+>>>>    		__submit_bio_noacct_mq(bio);
+>>>>    	else
+>>>>    		__submit_bio_noacct(bio);
+>>>> diff --git a/block/genhd.c b/block/genhd.c
+>>>> index c9d06f72c587..026f4c6d5b7e 100644
+>>>> --- a/block/genhd.c
+>>>> +++ b/block/genhd.c
+>>>> @@ -413,7 +413,8 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
+>>>>    	elevator_init_mq(disk->queue);
+>>>>    	/* Mark bdev as having a submit_bio, if needed */
+>>>> -	disk->part0->bd_has_submit_bio = disk->fops->submit_bio != NULL;
+>>>> +	if (disk->fops->submit_bio)
+>>>> +		set_bit(BD_FLAG_HAS_SUBMIT_BIO, &disk->part0->flags);
+>>>>    	/*
+>>>>    	 * If the driver provides an explicit major number it also must provide
+>>>> @@ -1062,7 +1063,8 @@ static DEVICE_ATTR(diskseq, 0444, diskseq_show, NULL);
+>>>>    ssize_t part_fail_show(struct device *dev,
+>>>>    		       struct device_attribute *attr, char *buf)
+>>>>    {
+>>>> -	return sprintf(buf, "%d\n", dev_to_bdev(dev)->bd_make_it_fail);
+>>>> +	return sprintf(buf, "%d\n",
+>>>> +		       test_bit(BD_FLAG_MAKE_IT_FAIL, &dev_to_bdev(dev)->flags));
+>>>>    }
+>>>>    ssize_t part_fail_store(struct device *dev,
+>>>> @@ -1072,7 +1074,7 @@ ssize_t part_fail_store(struct device *dev,
+>>>>    	int i;
+>>>>    	if (count > 0 && sscanf(buf, "%d", &i) > 0)
+>>>> -		dev_to_bdev(dev)->bd_make_it_fail = i;
+>>>> +		set_bit(BD_FLAG_MAKE_IT_FAIL, &dev_to_bdev(dev)->flags);
+>>>>    	return count;
+>>>>    }
+>>>> diff --git a/block/ioctl.c b/block/ioctl.c
+>>>> index 4160f4e6bd5b..a548c718a5fb 100644
+>>>> --- a/block/ioctl.c
+>>>> +++ b/block/ioctl.c
+>>>> @@ -394,7 +394,7 @@ static int blkdev_roset(struct block_device *bdev, unsigned cmd,
+>>>>    		if (ret)
+>>>>    			return ret;
+>>>>    	}
+>>>> -	bdev->bd_read_only = n;
+>>>> +	set_bit(BD_FLAG_READ_ONLY, &bdev->flags);
+>>>>    	return 0;
+>>>>    }
+>>>> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+>>>> index 52e264d5a830..95bd26c62655 100644
+>>>> --- a/include/linux/blk_types.h
+>>>> +++ b/include/linux/blk_types.h
+>>>> @@ -37,17 +37,20 @@ struct bio_crypt_ctx;
+>>>>    #define PAGE_SECTORS		(1 << PAGE_SECTORS_SHIFT)
+>>>>    #define SECTOR_MASK		(PAGE_SECTORS - 1)
+>>>> +#define BD_FLAG_READ_ONLY	0 /* read-only-policy */
+>>>> +#define BD_FLAG_WRITE_HOLDER	1
+>>>> +#define BD_FLAG_HAS_SUBMIT_BIO	2
+>>>> +#define BD_FLAG_MAKE_IT_FAIL	3
+>>>> +
+>>>>    struct block_device {
+>>>>    	sector_t		bd_start_sect;
+>>>>    	sector_t		bd_nr_sectors;
+>>>>    	struct gendisk *	bd_disk;
+>>>>    	struct request_queue *	bd_queue;
+>>>>    	struct disk_stats __percpu *bd_stats;
+>>>> +	unsigned long		flags;
+>>>>    	unsigned long		bd_stamp;
+>>>> -	bool			bd_read_only;	/* read-only policy */
+>>>>    	u8			bd_partno;
+>>>> -	bool			bd_write_holder;
+>>>> -	bool			bd_has_submit_bio;
+>>>
+>>> The idea looks good, but not necessary to add new 8 bytes, and you may
+>>> put all these flags and `bd_partno` into single 'unsigned long', and add
+>>> helpers to retrieve part no, since there are not many ->bd_partno
+>>> references.
+>>
+>> Yes, it make sense.
+>>
+>> By the way, take a look at component of block_device, I think they can
+>> be reorganized to save some space, in this case, new 8 bytes won't make
+>> this struct bigger, in fact, total size will be shrinked by 8 types
+>> after following changes:
+>>
+>> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+>> index 95bd26c62655..c94242a9ad92 100644
+>> --- a/include/linux/blk_types.h
+>> +++ b/include/linux/blk_types.h
+>> @@ -50,7 +50,6 @@ struct block_device {
+>>          struct disk_stats __percpu *bd_stats;
+>>          unsigned long           flags;
+>>          unsigned long           bd_stamp;
+>> -       u8                      bd_partno;
+>>          dev_t                   bd_dev;
+>>          atomic_t                bd_openers;
+>>          spinlock_t              bd_size_lock; /* for bd_inode->i_size
+>> updates */
+>> @@ -60,13 +59,14 @@ struct block_device {
+>>          const struct blk_holder_ops *bd_holder_ops;
+>>          struct mutex            bd_holder_lock;
+>>          int                     bd_holders;
+>> +       u8                      bd_partno;
+> 
+> 'bd_partno' needs to be kept in the 1st cacheline, so not good to move
+> it.
+> 
+Got it, and same for bd_dev and bd_openers, I'll send a new version
+based on your first adivce.
 
-Best regards,
-Krzysztof
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Ming
+> 
+> 
+> .
+> 
 
