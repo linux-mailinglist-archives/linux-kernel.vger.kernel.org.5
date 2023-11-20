@@ -2,103 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 840667F1F33
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC7D7F1CF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbjKTVd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        id S232340AbjKTSxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:53:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTVd0 (ORCPT
+        with ESMTP id S232300AbjKTSxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:33:26 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4712CA;
-        Mon, 20 Nov 2023 13:33:22 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3316c6e299eso2042547f8f.1;
-        Mon, 20 Nov 2023 13:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700516001; x=1701120801; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kWNfORC9WXph6KKDiI7YmzeaXM5cXoqqihKDnt/tg2s=;
-        b=Cluwzw5OFtzeiZoa68ubC9KWbv4ROMqa9blzQBwHsvEDrEvN0CU1dd4ICeMSk+XkUH
-         ZlgkJG61pC/3+inc6II4Ogugv9n3VswVti5+Tr0YQ6IyXK1DP1QfI5jQrJ4HBvOWezg4
-         thqAtBl2kvSuIGHtNg2zeyXBF/PrxfUKg8+lj0r5dtZm2KerDwoNpcdy59pftvBXmmF6
-         lDl4ofcqF8UMxEh+42PtZbzJDl97JM7sDo6aEVYzzIwd2PuCLxcFBse4wp4tNpyWGsQs
-         6Ye9SQDAImc9Q37bWqAJdkZeS3nCaew82u3xJYzeZMcZf4dOyTW7V1itijKrL2pt+Lpo
-         WQ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700516001; x=1701120801;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kWNfORC9WXph6KKDiI7YmzeaXM5cXoqqihKDnt/tg2s=;
-        b=aQBzt8l4+ohJT9w3v1jYM0fgz+itU72O783xWfK2X+BqcVH/a6MR5o+l3fT/taeJeU
-         h0No/u8oO1wNCm6H3NOWQOLFBrJMP1H2qHXchpIuD1lTafgDe+KzHaa/VWuHBpfa58LE
-         MBhnQI4IJra1yYRWnztmLKCD4D8JgTqouWl+IT2gM+Mr+//fOCbUWXZ+F1JM7bWjUJ0r
-         z7UcESifa2QWyJtv4NNteigP/EmM49tZlUrLdrQO/t+oGeL+AOZpCyUfecmARg+St+wL
-         y0eBeg1A0jjjnjuauJvAfVSbUwT+xxnoSoXtd3TeBu2a8DNuJoN2WM/rXwl+Tzkc3ijW
-         7p3w==
-X-Gm-Message-State: AOJu0YzZKXbERaY6CR/xA0wmgJc+fprJvU4aXOXtH1tJ4qjvWT8QCvyt
-        HU9X2K+6xSvlFABbi3QSIuE=
-X-Google-Smtp-Source: AGHT+IGWWKqhNx6gXBkuFHcXHhfK1w8N/HKv9y2WoU75JVgzVFjqqAOeK/jHkG5ym9ne0q6hzaMShg==
-X-Received: by 2002:adf:9b89:0:b0:332:c4b0:6a19 with SMTP id d9-20020adf9b89000000b00332c4b06a19mr4949954wrc.59.1700516000813;
-        Mon, 20 Nov 2023 13:33:20 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id c15-20020adfe70f000000b0032da8fb0d05sm12257843wrm.110.2023.11.20.13.33.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 13:33:20 -0800 (PST)
-Message-ID: <655bd0a0.df0a0220.568c3.92d9@mx.google.com>
-X-Google-Original-Message-ID: <ZVupN1rFPGIPryuG@Ansuel-xps.>
-Date:   Mon, 20 Nov 2023 19:45:11 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-References: <20231120135041.15259-1-ansuelsmth@gmail.com>
- <20231120135041.15259-4-ansuelsmth@gmail.com>
- <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
- <655bc8d6.050a0220.d22f2.315f@mx.google.com>
- <45784368-93e0-4d57-bb0c-5730f53f5a08@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45784368-93e0-4d57-bb0c-5730f53f5a08@lunn.ch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Mon, 20 Nov 2023 13:53:31 -0500
+X-Greylist: delayed 306 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 10:53:27 PST
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1A210E;
+        Mon, 20 Nov 2023 10:53:27 -0800 (PST)
+Received: from fedori.lan (51b689b3.dsl.pool.telekom.hu [::ffff:81.182.137.179])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000006FE64.00000000655BA9F1.000F4952; Mon, 20 Nov 2023 19:48:17 +0100
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gergo Koteles <soyer@irl.hu>
+Subject: [PATCH v2 RESEND] media: uvcvideo: uvc_ctrl_get_rel_speed: use 0 as default
+Date:   Mon, 20 Nov 2023 19:47:51 +0100
+Message-ID: <088902f67634fb0931da7b045e05afe5c8197cdc.1700505816.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <eb4f7f29a94231c5fa404f7492dba8e7fd9fbb23.1686746422.git.soyer@irl.hu>
+References: <eb4f7f29a94231c5fa404f7492dba8e7fd9fbb23.1686746422.git.soyer@irl.hu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,51 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 10:25:10PM +0100, Andrew Lunn wrote:
-> > A real DT that use this is (ipq807x):
-> > 
-> > &mdio {
-> > 	status = "okay";
-> > 	pinctrl-0 = <&mdio_pins>;
-> > 	pinctrl-names = "default";
-> > 	reset-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
-> > 
-> > 	ethernet-phy-package {
-> > 		compatible = "ethernet-phy-package";
-> > 		phy-mode = "psgmii";
-> > 
-> > 		global-phys = <&qca8075_4>, <&qca8075_psgmii>;
-> > 		global-phy-names = "combo", "analog_psgmii";
-> > 
-> > 		qca8075_0: ethernet-phy@0 {
-> > 			compatible = "ethernet-phy-ieee802.3-c22";
-> > 			reg = <0>;
-> > 		};
-> 
-> ...
-> 
-> > 	};
-> > 
-> > 	qca8081: ethernet-phy@28 {
-> > 		compatible = "ethernet-phy-id004d.d101";
-> > 		reg = <28>;
-> > 		reset-gpios = <&tlmm 31 GPIO_ACTIVE_LOW>;
-> > 	};
-> 
-> I've no idea if DT allows this. The issue is that reg is the same for
-> both nodes within the ethernet-phy-package container, and
-> ethernet-phy@28. They are all addresses on the same MDIO bus.  We are
-> parsing this bus structure ourselves in __of_mdiobus_register(), so we
-> could make it work, but i don't know if we should make it work.
->
+Devices with pan/tilt controls but without pan/tilt speed controls
+return 1 for the default value of V4L2_CID_PAN_SPEED or
+V4L2_CID_TILT_SPEED. For these controls, the value of 1 means a
+move and that's not a good default.
 
-And that is why I have some reserve on the idea of defining a reg for
-ethernet-phy-package. Adding a reg would create some duplicate. Is it
-really a problem to have a node with no reg in the mdio node?
+Currently, for these controls the UVC_GET_DEF query returns
+bPanSpeed or bTiltSpeed of CT_PANTILT_RELATIVE_CONTROL.
 
-(patch 04 of this series already updates the parsing function to check
-one level deeper in the presence of the ethernet-phy-compatible treating
-any node found as it was defined in the upper mdio node)
+According to the UVC 1.5 specification, the default value of bPanSpeed
+or bTiltSpeed should be 1 if the pan/tilt control doesn't support
+speed control.
 
+"If the control does not support speed control for the Tilt control,
+it will return the value 1 in this field for all these requests."
+
+This patch modifies the uvc_ctrl_get_rel_speed to return hardcoded 0
+for UVC_GET_DEF query, because that's the stop or don't move value
+for these V4L2 controls.
+
+Previous discussion
+Link: https://lore.kernel.org/all/CAP_ceTy6XVmvTTAmvCp1YU2wxHwXqnarm69Yaz8K4FmpJqYxAg@mail.gmail.com/
+
+Signed-off-by: Gergo Koteles <soyer@irl.hu>
+---
+ drivers/media/usb/uvc/uvc_ctrl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index 5e9d3da862dd..e131958c0930 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -444,9 +444,10 @@ static s32 uvc_ctrl_get_rel_speed(struct uvc_control_mapping *mapping,
+ 		return -data[first+1];
+ 	case UVC_GET_MAX:
+ 	case UVC_GET_RES:
++		return data[first+1];
+ 	case UVC_GET_DEF:
+ 	default:
+-		return data[first+1];
++		return 0;
+ 	}
+ }
+ 
+
+base-commit: be9aac187433af6abba5fcc2e73d91d0794ba360
 -- 
-	Ansuel
+2.42.0
+
