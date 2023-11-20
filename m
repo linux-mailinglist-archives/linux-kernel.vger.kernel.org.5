@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6337F175F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534F17F175E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234229AbjKTPdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S234159AbjKTPcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234062AbjKTPde (ORCPT
+        with ESMTP id S234137AbjKTPcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:33:34 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D73B4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:33:30 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so3570594b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:33:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700494410; x=1701099210; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c/vkPNph5u5OOrRSn6FR5rf84/Y5x7U2iw601QDwn1w=;
-        b=aZdT4nG3nvtH4hK5HbpH/8dFyeH4vzz7mKT3IuUwrCXWFtDxiZq25X/8UNdVxq2ZM1
-         aDTsbkN4J3U00zRJwKv4akimkV6+37zdwvANSSGDyNsjUupOdT9FZyJqqk9C/DNAuC/W
-         7UODD+2NpIS3ifS1e0Qh+tlPENT28R0QXknGwMAx3BbC60M1fBoGKLt5WAOgTK3jPRDx
-         d2Qcpz2zg8EVd/tQR0CO93BtJrqO1laIzOEuxlIs775FzSQ0afBB9hWAEbTyR1p8x8K0
-         nhIaqyybEMNJ+YnF5/kqtJlXxTArpSR7Xaeq4WRyS+jOR05e7+/TL+AlvKIzs8l8vTsC
-         +qLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700494410; x=1701099210;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c/vkPNph5u5OOrRSn6FR5rf84/Y5x7U2iw601QDwn1w=;
-        b=XN97bJxvTEUGl4GsPbFQw6PwHrG3ja4b7aDJp4S3eL6+Ov9HqV+AIcPbReJsz2DYHZ
-         Vvs9XbjIsQWxQ2tssuc3sPB12l9A3GkHlNU1+3kbeZGcYDhBgHDIqQ/0bUpX2KpSMRJ0
-         ocKiPwnCVmkwbGmT03SSn7IcpOkajlzkCRxFpX2XZLHt+EX0+Y69pVA9QKUEEY9e9LVW
-         zkHrWU+BpCRINXjPYNcKs3n7CByx0LY5pSWhuAziGFjV5YG/+oMCd4ogBjDrttfRpd+o
-         oYb5pLfQ5oiApjoAAOk0UJAJCBRycI/rOPPoTOUJWT2gEmTsijzkjHhem98Zjy0d9j4W
-         8gkw==
-X-Gm-Message-State: AOJu0YzppfsIMiCkloZhbbtVRLR7DW4oRKmxDYnFvGNG9HzEDtOcWgr3
-        hjl+MY+xsh2HpSNuCfhgiTe38Q==
-X-Google-Smtp-Source: AGHT+IEaOg3mR+ohRZuseHeSMp/v9lZVJmrM5ClJ/D9paZFo3jQd/TqgotiBGO5yQ4v6OMwgefFCIA==
-X-Received: by 2002:a05:6a20:8e10:b0:187:f6b3:3ca5 with SMTP id y16-20020a056a208e1000b00187f6b33ca5mr6106464pzj.52.1700494407205;
-        Mon, 20 Nov 2023 07:33:27 -0800 (PST)
-Received: from [192.168.50.25] ([201.17.86.134])
-        by smtp.gmail.com with ESMTPSA id p16-20020a056a000b5000b006cbb3512266sm1195791pfo.1.2023.11.20.07.33.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 07:33:26 -0800 (PST)
-Message-ID: <5e9c5ecb-c3c7-4e5f-ae9e-ff688f4c2e2f@mojatatu.com>
-Date:   Mon, 20 Nov 2023 12:33:21 -0300
+        Mon, 20 Nov 2023 10:32:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9495DC8;
+        Mon, 20 Nov 2023 07:32:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700494330; x=1732030330;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=yzidrUEMCUcbFArGAxx+rdrshE4gppTFAhlR8SrrLjA=;
+  b=WuYOW1vF4qVKdsSZjGzkvpRblDOvmfnXcqQ+1UkGPpqkyEByuConDx+0
+   TF3oDQmGijhPLKd15tejBVH8cIV7F1LgPmjLZ8rnNkqD5QlkjTD0jvpnI
+   XYMOa8w9jQMf2Jrbuh8NgcgxLcEK56660NY+sL55twSBqgg9tkUoOeua1
+   DjdiSonQV52VCzbpLw1VeNlaUlTNCYujoVnOVk2VG5ETSLHL+fGO4Yjbd
+   pR+aGNxLau5AEKZktP7cbHS1foZMIvPq/ssZZ6BcQW/6/sG9t9I0kZ7Uh
+   q1woaSffJhe4R4x6eEqxmluuWWrub+mXvb8MKuJN+wvJYMzGQPdxhMD8A
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371815232"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="371815232"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 07:32:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="836760404"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="836760404"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2023 07:32:08 -0800
+Message-ID: <a970f296-da67-9a80-ab2f-a94fd16e0fd9@linux.intel.com>
+Date:   Mon, 20 Nov 2023 17:33:23 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: sched: Fix an endian bug in tcf_proto_create
-To:     Simon Horman <horms@kernel.org>
-Cc:     Kunwu Chan <chentao@kylinos.cn>, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        kunwu.chan@hotmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231117093110.1842011-1-chentao@kylinos.cn>
- <16c758c6-479b-4c54-ad51-88c26a56b4c9@mojatatu.com>
- <20231120100417.GM186930@vergenet.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
 Content-Language: en-US
-From:   Pedro Tammela <pctammela@mojatatu.com>
-In-Reply-To: <20231120100417.GM186930@vergenet.net>
+To:     Kuen-Han Tsai <khtsai@google.com>
+Cc:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alan Stern <stern@rowland.harvard.edu>
+References: <20231117072131.2886406-1-khtsai@google.com>
+ <a4a129a3-e271-acbb-949c-534a8e1627ee@linux.intel.com>
+ <CAKzKK0rnx+tSFAj6N-U_vcAZ_5P=Hx_Kb97NFkdPMHs8dR3Ukw@mail.gmail.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] xhci: fix null pointer deref for xhci_urb_enqueue
+In-Reply-To: <CAKzKK0rnx+tSFAj6N-U_vcAZ_5P=Hx_Kb97NFkdPMHs8dR3Ukw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 07:04, Simon Horman wrote:
-> On Fri, Nov 17, 2023 at 09:06:45AM -0300, Pedro Tammela wrote:
->> On 17/11/2023 06:31, Kunwu Chan wrote:
->>> net/sched/cls_api.c:390:22: warning: incorrect type in assignment (different base types)
->>> net/sched/cls_api.c:390:22:    expected restricted __be16 [usertype] protocol
->>> net/sched/cls_api.c:390:22:    got unsigned int [usertype] protocol
->>>
->>> Fixes: 33a48927c193 ("sched: push TC filter protocol creation into a separate function")
->>>
->>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->>> ---
->>>    net/sched/cls_api.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
->>> index 1976bd163986..f73f39f61f66 100644
->>> --- a/net/sched/cls_api.c
->>> +++ b/net/sched/cls_api.c
->>> @@ -387,7 +387,7 @@ static struct tcf_proto *tcf_proto_create(const char *kind, u32 protocol,
->>>    		goto errout;
->>>    	}
->>>    	tp->classify = tp->ops->classify;
->>> -	tp->protocol = protocol;
->>> +	tp->protocol = cpu_to_be16(protocol);
->>>    	tp->prio = prio;
->>>    	tp->chain = chain;
->>>    	spin_lock_init(&tp->lock);
->> I don't believe there's something to fix here either
+On 18.11.2023 12.19, Kuen-Han Tsai wrote:
+> Hi Mathias
 > 
-> Hi Pedro and Kunwu,
+>>>        if (usb_endpoint_xfer_isoc(&urb->ep->desc))
+>>> @@ -1552,8 +1561,10 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
+>>>                num_tds = 1;
+>>>
+>>>        urb_priv = kzalloc(struct_size(urb_priv, td, num_tds), mem_flags);
+>> kzalloc with spinlock held, should preferably be moved outside lock, otherwise should use GFP_ATOMIC
 > 
-> I suspect that updating the byte order of protocol isn't correct
-> here - else I'd assume we would have seen a user-visible bug on
-> little-endian systems buy now.
+> Thanks for pointing this out. I realize this patch is incorrect and it
+> is non-ideal to include many codes unrelated to xhci->devs[slot_id]
+> within the lock.
 > 
-> But nonetheless I think there is a problem, which is that the appropriate
-> types aren't being used, which means the tooling isn't helping us wrt any
-> bugs that might subsequently be added or already lurking. So I think an
-> appropriate question is, what is the endien and width of protocol, and how
-> can we use an appropriate type throughout the call-path?
+>> xhci_check_maxpacket() called here can't be called with spinlock held
+> 
+> It appears that xhci_check_maxpacket() might potentially lead to a
+> deadlock later if a spinlock is held. Is this the concern you were
+> referring to? If not, please let me know if there are any other
+> potential issues that I may have missed, thanks!
 
-Agreed and I'm all in for improving any tooling integration.
-I believe a better patch would be to have protocol as a be16 since it's 
-creation everywhere. I looked quickly and it will be a "viral" change, 
-meaning a couple of places will require a one line change.
+xhci_check_maxpacket() will allocate memory, wait for completion, and use the same lock,
+so there are several issues here.
+
+I actually think we shouldn't call xhci_check_maxpacket() at all while queuing urbs.
+
+usb core knows when there was max packet size mismatch during enumeration.
+I think we should add a hook to the hcd that usb core can call in these cases
+
+Thanks
+Mathias
+
