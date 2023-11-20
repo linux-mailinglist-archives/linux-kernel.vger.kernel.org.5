@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46FC07F0F3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C3F7F0F42
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbjKTJkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
+        id S232464AbjKTJmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTJkP (ORCPT
+        with ESMTP id S231997AbjKTJmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:40:15 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE358A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:40:11 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a00191363c1so29821266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:40:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700473210; x=1701078010; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CV6jnuj0MIJn5B1cSBOWhgza7MPZBJRiYSVUNCCfxoQ=;
-        b=tnKBTdqTH2v5QIK/8edrvzQFZb8apHTEAfY+wELANUcP85EWRU6FKdoInsFm2HiZzc
-         hEelushABY33DtQO5HoRg0ZZX+JwbKmXktlT3f7vYALWMk9An5kIE2MuVfRs0Qw2MugE
-         tKdSBBmfJOVg5MBNV5SB1bqOmaRtqRgxnVgFvGAiIo5bE1lfarRG8ABSybfl7tJ+qp42
-         BiGTMnip3Y0Bc/dZhDoQZzceWcblOysCuYe4/EeltHLTV4RomX7i7BQhXFymP89KP4ES
-         0TnEP6BD7TL9DXRQqy4asHudx6ACdh5UiHwMOLlg4hnTyY456LTD5NmiXbHxCrvntYgX
-         9/2w==
+        Mon, 20 Nov 2023 04:42:07 -0500
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E51CD
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:42:04 -0800 (PST)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c16f262317so4553370a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:42:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700473210; x=1701078010;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CV6jnuj0MIJn5B1cSBOWhgza7MPZBJRiYSVUNCCfxoQ=;
-        b=v4Vo4vww9aji0tKTY2fA+9x1xVPJ9iRk1klfMSxqvwDW5+5JzaqBBXIwSezGmY2qPZ
-         V7P2saWZSOAGvHV/RgylAdnBOmMeicze5WFmu0Yrj8AbNKL6g3qpz+4JLLrGEPfIluUJ
-         +bk+WPilq40yIe4HVUHFMpQHsWm163NJp0GoYGttnNiE1SXbeHpLPvTIDVrwcOKwnS58
-         XN5cntsfo2l11ZmOp69n1jTvI0XVsbMyIMxFuqQDwzxLE2h8+XVJXdZDfD5Rw0fuIkg8
-         NMG0XC8vUtt4/x4FI0oDsXYtJlwhin45Q6xgTFXEsO5drNDqCkT0AiffQGDhYV5WmQYR
-         lrDg==
-X-Gm-Message-State: AOJu0YxBGw5OlS0hpuZYr3sDhSNVTPoORs7NXkPjl3633T/i6rrXCu6V
-        81f8hzM+cfUwQi6VnxvnEtYtg5YYKrAA4mZcFBJchg==
-X-Google-Smtp-Source: AGHT+IHpuPkkpzf6HvIRoyFCjRddB6IaTOcD9D4X7AuwnDGekaJENUnnI2Ieq7XREu67tB5Cf1SPCBLE6vU7Bq9YmRk=
-X-Received: by 2002:a17:906:41:b0:9bf:6200:fe33 with SMTP id
- 1-20020a170906004100b009bf6200fe33mr4386460ejg.16.1700473210292; Mon, 20 Nov
- 2023 01:40:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700473323; x=1701078123;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H08qQxC2xlOFrjQTkA/nZQnXxn3Q/Q9oHV1Av3nms6Q=;
+        b=icLmawD2L+XRYsso83mFFAxfFDxSR2g0JpDjtx7nXhurq3uLS9lCj10GsETUjpGKfX
+         SPPuvdgGz2pE97AcxXvo7n/eXzC/4CJe837ZbsAXd/CzkNYRFTtjjWn5o7ws9Q0SebfF
+         cV8RVSmP57K0F3zW6dUcxbplRrD56kdcEs3yIAZzTbXHYd3Hj4mlR3IlXKCiekWXz/Ha
+         asDnx1IsSSZUxWMlSIBXSw0iCuMUW18B77pjZwhHPw9FP2TqH4/KPuQo1IJgLowBPk8j
+         ybN/DIxjohL+320hG5sTtct3ppgx8AecMgF2+dfx9Atn2CTotCYT2iV+ljQ7n6/GB+5t
+         HFHQ==
+X-Gm-Message-State: AOJu0YygrkchbY133fficPKS3EK0eF6KqNcD39luVMDW7QVT4BInk/Oo
+        Bj7U4k54XMjCItva80LrzTCPVflMhz0CGnfJb0CdzjgTFz9iBks=
+X-Google-Smtp-Source: AGHT+IFkQiwxiMOTToWNHYgrFIYfrYYEZuFQPDUKwVGPcHvPzFi3L0yGFl8O3uscbykFmIQeHAGI8FHqa0+Fpg5tgDSqqCEDnGVg
 MIME-Version: 1.0
-References: <20231117173650.21161-1-johan+linaro@kernel.org> <20231117173650.21161-4-johan+linaro@kernel.org>
-In-Reply-To: <20231117173650.21161-4-johan+linaro@kernel.org>
-From:   Shawn Guo <shawn.guo@linaro.org>
-Date:   Mon, 20 Nov 2023 17:39:59 +0800
-Message-ID: <CAAQ0ZWTbAqnX2te5SEMT+q_FyHY5jopDciqF6sY7a9nr76f0QA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] USB: dwc3: qcom: fix ACPI platform device leak
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a63:d47:0:b0:5c1:ee2c:cd45 with SMTP id
+ 7-20020a630d47000000b005c1ee2ccd45mr2648248pgn.0.1700473323701; Mon, 20 Nov
+ 2023 01:42:03 -0800 (PST)
+Date:   Mon, 20 Nov 2023 01:42:03 -0800
+In-Reply-To: <31a54742-5633-42a1-bb5f-7769703bcd9en@googlegroups.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000068cc2f060a924cec@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] memory leak in skb_copy (2)
+From:   syzbot <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, phind.uet@gmail.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 1:38=E2=80=AFAM Johan Hovold <johan+linaro@kernel.o=
-rg> wrote:
->
-> Make sure to free the "urs" platform device, which is created for some
-> ACPI platforms, on probe errors and on driver unbind.
->
-> Compile-tested only.
->
-> Fixes: c25c210f590e ("usb: dwc3: qcom: add URS Host support for sdm845 AC=
-PI boot")
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Hello,
 
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
+syzbot tried to test the proposed patch but the build/boot failed:
+
+failed to apply patch:
+checking file drivers/nfc/virtual_ncidev.c
+patch: **** unexpected end of file in patch
+
+
+
+Tested on:
+
+commit:         5a82d69d Add linux-next specific files for 20231120
+git tree:       linux-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ecfdf78a410c834
+dashboard link: https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=104ebaf4e80000
+
