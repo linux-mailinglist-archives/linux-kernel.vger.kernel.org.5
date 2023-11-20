@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441097F1196
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF467F119E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbjKTLQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:16:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S232969AbjKTLRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233241AbjKTLP5 (ORCPT
+        with ESMTP id S233110AbjKTLQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:15:57 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C719C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:15:44 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so52115171fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:15:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700478943; x=1701083743; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GCEH2OhSh1wtb14SLQZhMNkQFOWqwz8F0y6cfbziznw=;
-        b=FwiNNWm1RJ4KDnKIyZwNMjqSwyrMTxG8G3YUHCQUK0c5wVehU2GyEJUOLL5xi2tltd
-         cjbEQPnZLM7XX08/R/jocIxDsS0drsIKzeoZ0NHmGBfZ6bn+PWD18rOMTF7gKSgD8Kpk
-         P8RnMUqqXn85VsGQqYKRs8XuNvmFxLtEEIwf3HowSmNUf29wxgUO2hDsiii4vnbyew2a
-         efEQrqDEYVN7gPIdNsNgHSxZ2bPcFd3uNfzlik0GSbrd6BSZ6UI8hqBqj1rSkw6Ohr8D
-         pa0PTV7B0icW2thnsiwZwyDYZ12sBCpz52Z63ZxGyEhrtuaMTe9WTK6s5gWhSbXcmyQ7
-         GDuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700478943; x=1701083743;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GCEH2OhSh1wtb14SLQZhMNkQFOWqwz8F0y6cfbziznw=;
-        b=rO8LhxEZtK2D+7yOIwwdXq6QTK4MgJmCnev0H05CLtek1DKvcXnPlzGYFDoJcKcAg+
-         N0sD0PYap+GfDfPyAmfwSHnwgSUgU+C2By4kHOJJg/BdcV7RIBuzyvaik+QOt82d58FO
-         POMOPR1p76g1yUNjOgApKU1IhxyMZ+s1EP8di5kGQl+P2CtqTPfhIFwKXGQPUqzL+XZS
-         jZzVi0B8dN9DXRPazBZoC4OxYIp+YedfeF6x0YrWbVryQO734+bawXk+diOjd7dKp+3x
-         Zq7Xg9lYadnKIAsUqw1AOKE8r/iKtUbu3LcSp82wIngquWbDyVPWsljz103GPntLF0sP
-         mcIg==
-X-Gm-Message-State: AOJu0YwZ2RqZgzgXpEL7eBjv7J1zgje06e3jrB/ulamFX5JQ2rkdG3Li
-        itzQ9Gn8cR1Ls7yX2Ds78AvCY34T8I6CXW1XkLY=
-X-Google-Smtp-Source: AGHT+IF5n5gAGiAyqw8nx/M9Y9DqsxUXIgsVPKnI6sLOE04ugWRfa1R84lxyi5u8UgH3nbITAeT48406+0Ri6tJ34bc=
-X-Received: by 2002:a2e:9348:0:b0:2c5:2221:614f with SMTP id
- m8-20020a2e9348000000b002c52221614fmr4209856ljh.45.1700478942832; Mon, 20 Nov
- 2023 03:15:42 -0800 (PST)
+        Mon, 20 Nov 2023 06:16:39 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED9F10E4;
+        Mon, 20 Nov 2023 03:16:10 -0800 (PST)
+X-UUID: beef4f8ad89d4ec4931d5c243f55d868-20231120
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:412260c0-b0b1-4902-84f2-0ed738ad25c1,IP:10,
+        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.32,REQID:412260c0-b0b1-4902-84f2-0ed738ad25c1,IP:10,UR
+        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:-5
+X-CID-META: VersionHash:5f78ec9,CLOUDID:e38adb72-1bd3-4f48-b671-ada88705968c,B
+        ulkID:231120180427G1WW4E38,BulkQuantity:4,Recheck:0,SF:24|17|19|44|64|66|3
+        8|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
+        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: beef4f8ad89d4ec4931d5c243f55d868-20231120
+X-User: chentao@kylinos.cn
+Received: from [172.21.13.26] [(116.128.244.171)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 2086711540; Mon, 20 Nov 2023 19:15:59 +0800
+Message-ID: <69a4bc75-d1a7-482d-9848-26fdc1de78b4@kylinos.cn>
+Date:   Mon, 20 Nov 2023 19:15:58 +0800
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-5-ryncsn@gmail.com>
- <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
-In-Reply-To: <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
-From:   Kairui Song <ryncsn@gmail.com>
-Date:   Mon, 20 Nov 2023 19:15:25 +0800
-Message-ID: <CAMgjq7D_OJiaNPWquFqxk5DKZXqoUMrD7Y_CRM7D0RnRnHmW7Q@mail.gmail.com>
-Subject: Re: [PATCH 04/24] mm/swap: avoid setting page lock bit and doing
- extra unlock check
-To:     Chris Li <chrisl@kernel.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: sched: Fix an endian bug in tcf_proto_create
+Content-Language: en-US
+To:     Simon Horman <horms@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kunwu.chan@hotmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231117093110.1842011-1-chentao@kylinos.cn>
+ <16c758c6-479b-4c54-ad51-88c26a56b4c9@mojatatu.com>
+ <20231120100417.GM186930@vergenet.net>
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <20231120100417.GM186930@vergenet.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,83 +64,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8820=E6=97=A5=
-=E5=91=A8=E4=B8=80 12:18=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
-rote:
-> >
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > When swapping in a page, mem_cgroup_swapin_charge_folio is called for n=
-ew
-> > allocated folio, nothing else is referencing the folio so no need to se=
-t
-> > the lock bit. This avoided doing unlock check on error path.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  mm/swap_state.c | 20 +++++++++-----------
-> >  1 file changed, 9 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index ac4fa404eaa7..45dd8b7c195d 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -458,6 +458,8 @@ struct page *__read_swap_cache_async(swp_entry_t en=
-try, gfp_t gfp_mask,
->
-> You move the mem_cgroup_swapin_charge_folio() inside the for loop:
->
->
->         for (;;) {
->                 int err;
->                 /*
->                  * First check the swap cache.  Since this is normally
->                  * called after swap_cache_get_folio() failed, re-calling
->                  * that would confuse statistics.
->                  */
->                 folio =3D filemap_get_folio(swap_address_space(entry),
->                                                 swp_offset(entry));
->
->
-> >                                                 mpol, ilx, numa_node_id=
-());
-> >                 if (!folio)
-> >                          goto fail_put_swap;
-> > +               if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mas=
-k, entry))
-> > +                       goto fail_put_folio;
->
-> Wouldn't it cause repeat charging of the folio when it is racing
-> against others in the for loop?
+Hi Simon,
 
-The race loser will call folio_put and discharge it?
+Thanks for your reply.
+For a lot of newcomers who aren't proficient in this part of the code, 
+like me, it might be confusing what is the  correct endien and width of 
+a protocol.
 
->
-> >
-> >                 /*
-> >                  * Swap entry may have been freed since our caller obse=
-rved it.
-> > @@ -483,13 +485,9 @@ struct page *__read_swap_cache_async(swp_entry_t e=
-ntry, gfp_t gfp_mask,
-> >         /*
-> >          * The swap entry is ours to swap in. Prepare the new page.
-> >          */
-> > -
-> >         __folio_set_locked(folio);
-> >         __folio_set_swapbacked(folio);
-> >
-> > -       if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask, entry=
-))
-> > -               goto fail_unlock;
-> > -
->
-> The original code makes the charge outside of the for loop. Only the
-> winner can charge once.
+In response to your question, I wonder if it is necessary to implement a 
+unified checking mechanism with a strict parameter validation for all 
+invocation parameters?
 
-Right, this patch may make the charge/dis-charge path more complex for
-race swapin, I'll re-check this part.
+For example, add an input parameter to the 'tcf_proto_create' to 
+represent the endien and width of the protocol, and check the validity 
+of the input parameter at the beginning of the function.
 
->
-> Chris
+I don't have a good idea of how to make sure that the right type is used 
+in the call path.
+This is just my personal opinion, welcome to discuss.
+
+On 2023/11/20 18:04, Simon Horman wrote:
+> On Fri, Nov 17, 2023 at 09:06:45AM -0300, Pedro Tammela wrote:
+>> On 17/11/2023 06:31, Kunwu Chan wrote:
+>>> net/sched/cls_api.c:390:22: warning: incorrect type in assignment (different base types)
+>>> net/sched/cls_api.c:390:22:    expected restricted __be16 [usertype] protocol
+>>> net/sched/cls_api.c:390:22:    got unsigned int [usertype] protocol
+>>>
+>>> Fixes: 33a48927c193 ("sched: push TC filter protocol creation into a separate function")
+>>>
+>>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>>> ---
+>>>    net/sched/cls_api.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+>>> index 1976bd163986..f73f39f61f66 100644
+>>> --- a/net/sched/cls_api.c
+>>> +++ b/net/sched/cls_api.c
+>>> @@ -387,7 +387,7 @@ static struct tcf_proto *tcf_proto_create(const char *kind, u32 protocol,
+>>>    		goto errout;
+>>>    	}
+>>>    	tp->classify = tp->ops->classify;
+>>> -	tp->protocol = protocol;
+>>> +	tp->protocol = cpu_to_be16(protocol);
+>>>    	tp->prio = prio;
+>>>    	tp->chain = chain;
+>>>    	spin_lock_init(&tp->lock);
+>> I don't believe there's something to fix here either
+> 
+> Hi Pedro and Kunwu,
+> 
+> I suspect that updating the byte order of protocol isn't correct
+> here - else I'd assume we would have seen a user-visible bug on
+> little-endian systems buy now.
+> 
+> But nonetheless I think there is a problem, which is that the appropriate
+> types aren't being used, which means the tooling isn't helping us wrt any
+> bugs that might subsequently be added or already lurking. So I think an
+> appropriate question is, what is the endien and width of protocol, and how
+> can we use an appropriate type throughout the call-path?
