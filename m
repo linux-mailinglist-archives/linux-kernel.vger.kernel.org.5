@@ -2,163 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1073D7F1D4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C487F1D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjKTT3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:29:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S229627AbjKTT3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTT3F (ORCPT
+        with ESMTP id S229504AbjKTT3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:29:05 -0500
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020003.outbound.protection.outlook.com [52.101.56.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2981BB;
-        Mon, 20 Nov 2023 11:29:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TY0kVeuvbvPqjZJl0aWrgYcI8VZ8YeJJgPUrc+1pJR/qT8qshh2k3PFv0j9JMn/o1QHBWd8Ji9XAzRDBOU5GJvYxMlJL5NjMsDWm0BC9j76g3yxR4+EeUaT4Y6pDXqRmpT5/fQnOpgmxoS+m08DT7grK/qVC1sEn/i+TToETPcJ+RRI0k68xjX4xAHeAu45tu+b000aw7UvBO543uA2sA7DiVQhMhhPoxpOAJh2IdXxSFYd8ESoHmOranu1lTtIOjQjgfoju++s58XDkAZufNRkhy+H98v9XyrcAywwv/vMFXR0/c3A5tLzDBEFUIgquPaR+PaPSvv8fRLAB8Z8p7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v/W1J0RwVLdhjh7g+exSUQ7fiYwaYbqAyLxlIu4Ts7o=;
- b=MKgwEdeb7OAn+UTK/b8CzrvRMoE9yBGZV9szK+KErB7gPzWjmA0OJRYLGosUkd2S/JRPoK35A2zA71RpOZuhBziuHafsCLcc9l1ZjsgwYxW/IRn/5a6D662QeQy2tNuo4Pdza0UVTk0oVYrFBmUyRL7dT6wcGK/zhVeUo8DT9RKQ5yno1I15/fdhfdwGmXUa8nDsrsh3xNQ098oR39Uhj5l+/KT7vwk5pyVhCX+j7u2i+JVDvOLnubq4zo69zhBA1r7D48G0DfyIJWQgACQXMIXrzYXUyJzcluUCtw0lS/egh+qi+Jm3xODNe+8Uv16pvp4lj945gca2bCDRoahnLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v/W1J0RwVLdhjh7g+exSUQ7fiYwaYbqAyLxlIu4Ts7o=;
- b=W1Qcwm1CQ+WGQuHCakBWxYAmVHPHbiEKM9WSlG7l8SR2QadNb+WKmDPGxKvLEzRLxEzm+qP/3uRC9cExnQ8Np9si+J2XeMBuRmxd/qc/bBxUcHXetbSKhdFR0Vivz2ydYadi4YZwy6dt/wMdruBZ6auePO/QzoXQI9faAfeqrhQ=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by SN3PEPF00013E00.namprd21.prod.outlook.com (2603:10b6:82c:400:0:4:0:16)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.2; Mon, 20 Nov
- 2023 19:28:59 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::c1de:d3e5:8e05:1e4a]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::c1de:d3e5:8e05:1e4a%2]) with mapi id 15.20.7046.009; Mon, 20 Nov 2023
- 19:28:59 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        stephen <stephen@networkplumber.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH net,v5, 3/3] hv_netvsc: Mark VF as slave before exposing
- it to user-mode
-Thread-Topic: [PATCH net,v5, 3/3] hv_netvsc: Mark VF as slave before exposing
- it to user-mode
-Thread-Index: AQHaGwTlL5e+wt6IJ0GCvjHxzi6t5LCDmTaA
-Date:   Mon, 20 Nov 2023 19:28:59 +0000
-Message-ID: <SA1PR21MB13356156EF05094FE9F9B02FBFB4A@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <1700411023-14317-1-git-send-email-haiyangz@microsoft.com>
- <1700411023-14317-4-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1700411023-14317-4-git-send-email-haiyangz@microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cd8d42f2-1b18-45a6-b153-e0894e1e1d85;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-20T19:27:39Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|SN3PEPF00013E00:EE_
-x-ms-office365-filtering-correlation-id: e1b9f599-45f6-49c1-0a2f-08dbe9fef1d4
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wtYQESJUsDtHLymgtlKRhPXkxtYE5rV/KF1N7ayz2JNQXVZYPL3ISq81iNJGQfNTra8a/67ZxuAXSO1Up8IQyDuqLg8xjO/zNQAu/hocRh57vgxpTQzBN3nuNVRHC/IBjPFoxEOk/KQ5YCNlfFpNmXB9GvR2Errc065ontVQhUObMTjhtDNA2ZHlkma6qMh+4Fw1mcym2pBYjP11EFfNATSyVtdcJYRcUCWkh7JZKLMAQjHcU6L7kkn+6ww6M8ER39veMQ3NMlpidM3mEFHO1ZfdufpM36IosAu+AB5UShaQSE5VCzBkGuFwkIgz+b2nDMRuJSkmRHjmapuHMClwR4izq/qjYxoWIpVAmuoHeTd40D+HyMp5fWaUKW1AdZOkJyEQ7leF/G2ipEU+SWkXBghkGjIOocQUdFvdrWGgG+KjfWASzM3CltgoKTTsasZx9IekOTQfKmsSW7BGVCjU6QUS7kCXUpd2oIsAnww+cOOIJtScf3dVJr6qY3OBn+0YFJ7adhCnmmJSvlEbwyWUq1tiK/LPH+mPiCWSnnmrKNZA1YHoFAy3yS5rL9Vu3hjXP2d0zCF3opnydTm542tcPoIcufevwuYcyYYFs/9dnFthD+ivMrJROBj6gYR8/msgT3a99m1bpL1zO70sD1emzA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(396003)(346002)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(55016003)(122000001)(82960400001)(52536014)(8990500004)(82950400001)(6506007)(9686003)(7696005)(33656002)(41300700001)(38100700002)(2906002)(478600001)(54906003)(66476007)(86362001)(71200400001)(110136005)(316002)(76116006)(66556008)(66946007)(66446008)(4744005)(8936002)(5660300002)(4326008)(8676002)(64756008)(10290500003)(7416002)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XXsTvn3XTby7T1EmIjQ0H3qOZCctb26dI4AnLPLLQZ0nuldKnEqiek704/K6?=
- =?us-ascii?Q?NXgxvx+CRNgpB2qPSq/QzVFqVBi7XoTYiyyytHCgegghcxYlfaLJNMpAzcW4?=
- =?us-ascii?Q?8OUP1NgqZv4LE+RJwfaDdxbp+8erljssfb7ccyuxCqL3RXoGsr6OmNgG1xx4?=
- =?us-ascii?Q?3fiGBoZg4SEpY+HtTdiZh9tfnQyIt+s8kDbAfnfZuxzk2tZMHyObWokGhNUs?=
- =?us-ascii?Q?3pGwLNtpexhwfYvXmpgmHVkuEHDJRIbk86RyyOogKrO5wE90i+FpCW/BII/L?=
- =?us-ascii?Q?sAbKayE4JX+7Tn+Ou0rQAtfTZ1BhRkSGA1XuA7gCW+JMBGKPPVNL+/WBBSX4?=
- =?us-ascii?Q?F7QZKSiVBcVH8LojgGSOJBbivksmlA62g2VVs8vn8sexmAXI/eMMjd4oSSB6?=
- =?us-ascii?Q?z8LhVlHEi3Lkg7Q8ZH0+h5vYKXf1/LGEq6fBo7LuzenQ8PlEl2855+1QkrQb?=
- =?us-ascii?Q?lCjKtnu4iXHLFHqOAOb6mZ2HZ4DIf/zerNFODu25YEohkP7s7xcBBatJVDiU?=
- =?us-ascii?Q?XOBq05bYwYto9PeSRI2+rDRzVgM1iQm11W7mHnigdZd8iHWAtymIcIT2tqks?=
- =?us-ascii?Q?Jf2vGeZChmO9L9HbRUKNOe+tHuEWTR4R41qyTgY6nzdsx/zzWflMNz5iKo69?=
- =?us-ascii?Q?9JvS3n8UW4ibg86Fu7NbqvOr+0uzMzFvRm+NOsk6CLcuf9rZtopezMH0VyNP?=
- =?us-ascii?Q?PyTxrUskrVwq6CoHyBzJw+lD9cmwA2BMPBs0uuL1V6WFl3QMUM191OMxJD2+?=
- =?us-ascii?Q?+gfMwKZO5XNDN4IUOr3SMbcOUguYSeFHviEmLtlXTvtv0m7vqdhpKwqcqcfj?=
- =?us-ascii?Q?igCSGmdIlTTuCqxeKSFkl/IMw2u9lYvcRPnhy+7nuhtzjE49as8PnwGk4hDI?=
- =?us-ascii?Q?Zgiku1ge33fFgldwVrNTSq3B6Qen5vzTDUL6LM+NclCkbvHNkL27nIfTUyX4?=
- =?us-ascii?Q?pVMmRCufLDIndkp/VjPCWxfvXv6fTAMEGkG8Iu3wiZHsEJFpQATWSAvJxjIS?=
- =?us-ascii?Q?xEimFXsIebZoRJEII2nmPHyYRrYhENezBT9ysPq02h/wgxzj7LvVireJhrCj?=
- =?us-ascii?Q?tBdsub0vYJOJMikNxTATyaYC9QVN0jqu2P1qnKVAXmuZJzCTMEp5vgSa6RNi?=
- =?us-ascii?Q?K2Oge17CezjxjfGXRZuQg2Ld4YvWfW+gbBG5yvK72QE+YQHqqg14VlrfPtZf?=
- =?us-ascii?Q?KQKoEoS8QVxAlnc2HuL3Lv6MN3bGf6UmbgoErEWIo4tWcpvvVG/Ms31EZLMY?=
- =?us-ascii?Q?OZGx9sQzPI+p8GJQsafVSyUgZUcD+Dj8SDmN/o6wGBJ6tC189dUw1tzhhoFp?=
- =?us-ascii?Q?zM8kE302n2xCRoRvxwVmOlOSv0JhwmYBAvKtRJ5gYOZmLJ1zfF2g1Arrp71z?=
- =?us-ascii?Q?/W5eho2IO0kYer45zg3w3OL2NsKs0gPZUMU2vTeV19ihOdFvBMdlBIXbcRr9?=
- =?us-ascii?Q?/49ZIc58eBaooAJBaggYYO+CGzSujAtsq0ryGzeT1ctKvqUPJD5ZHetpszKr?=
- =?us-ascii?Q?FehgkFiaJgY1keM+YMUcaYtk/RAjHPv0gvU9F7hbyEM+lzOAkfyHqxwb6BN0?=
- =?us-ascii?Q?RhWXWa+VARUKyq1MmbkQk+0wacflba/nRc/d5Bioqp31KVRTujhsuCCzyi8M?=
- =?us-ascii?Q?Xzejcl9PxHOEWNMPb/K9sxk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 20 Nov 2023 14:29:32 -0500
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06D9CA;
+        Mon, 20 Nov 2023 11:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1700508569; x=1732044569;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=rGQNVVdVH5hv/vMR3DPCBR5uvBA6F0M+M9XSRzxNYYc=;
+  b=rvvCGORnaC3wIqh3eLftorOrOl0w7RVAE7gzM0MH77HztY+v1eo0LgCC
+   Sq3WcHS6QzB9gwHoV7LSL4LbGZrQ7VebxJ2v0NIMWH6fqAGflwPa3AA8p
+   4EczDDAyzdiWj9cS3fsGjR7AEqBbb9IQGl6nHVqupw63vCZmfr8KcVRJl
+   s=;
+X-IronPort-AV: E=Sophos;i="6.04,214,1695686400"; 
+   d="scan'208";a="167294987"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 19:29:26 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 4287C47655;
+        Mon, 20 Nov 2023 19:29:25 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:45993]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.2:2525] with esmtp (Farcaster)
+ id 8bd9dfb6-2746-497f-9055-ff4387331616; Mon, 20 Nov 2023 19:29:24 +0000 (UTC)
+X-Farcaster-Flow-ID: 8bd9dfb6-2746-497f-9055-ff4387331616
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 20 Nov 2023 19:29:23 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.171.26) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 20 Nov 2023 19:29:21 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <ivan@cloudflare.com>
+CC:     <edumazet@google.com>, <hdanton@sina.com>,
+        <kernel-team@cloudflare.com>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>
+Subject: Re: wait_for_unix_gc can cause CPU overload for well behaved programs
+Date:   Mon, 20 Nov 2023 11:29:13 -0800
+Message-ID: <20231120192913.28629-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CABWYdi2JmfMBK43KrkAGsz+MN8KyFSjg0QZv5G_cuA1k1c0f7w@mail.gmail.com>
+References: <CABWYdi2JmfMBK43KrkAGsz+MN8KyFSjg0QZv5G_cuA1k1c0f7w@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1b9f599-45f6-49c1-0a2f-08dbe9fef1d4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 19:28:59.0945
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZCmheX798N5yqUQQC8UmnBcS2qTBbmf+mZ8DL/icf79TecGOpsrW4dUJ8IyJfiJ5gLxhh6BiR/3vZP2AK46XVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN3PEPF00013E00
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.187.171.26]
+X-ClientProxiedBy: EX19D041UWA001.ant.amazon.com (10.13.139.124) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: LKML haiyangz <lkmlhyz@microsoft.com> On Behalf Of Haiyang
-> Zhang
-> [...]
-> From: Long Li <longli@microsoft.com>
->=20
-> When a VF is being exposed form the kernel, it should be marked as
-> "slave"
-> before exposing to the user-mode. The VF is not usable without netvsc
-> running as master. The user-mode should never see a VF without the
-> "slave"
-> flag.
->=20
-> This commit moves the code of setting the slave flag to the time before
-> VF is exposed to user-mode.
->=20
-> Cc: stable@vger.kernel.org
-> Fixes: 0c195567a8f6 ("netvsc: transparent VF management")
-> Signed-off-by: Long Li <longli@microsoft.com>
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> v5:
-> Change function name netvsc_prepare_slave() to
-> netvsc_prepare_bonding().
-> v4:
-> Add comments in get_netvsc_byslot() explaining the need to check
-> dev_addr
-> v2:
-> Use a new function to handle NETDEV_POST_INIT.
+From: Ivan Babrou <ivan@cloudflare.com>
+Date: Fri, 17 Nov 2023 15:38:42 -0800
+> On Mon, Oct 23, 2023 at 4:46 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > From: Ivan Babrou <ivan@cloudflare.com>
+> > Date: Mon, 23 Oct 2023 16:22:35 -0700
+> > > On Fri, Oct 20, 2023 at 6:23 PM Hillf Danton <hdanton@sina.com> wrote:
+> > > >
+> > > > On Fri, 20 Oct 2023 10:25:25 -0700 Ivan Babrou <ivan@cloudflare.com>
+> > > > >
+> > > > > This could solve wait_for_unix_gc spinning, but it wouldn't affect
+> > > > > unix_gc itself, from what I understand. There would always be one
+> > > > > socket writer or destroyer punished by running the gc still.
+> > > >
+> > > > See what you want. The innocents are rescued by kicking a worker off.
+> > > > Only for thoughts.
+> > > >
+> > > > --- x/net/unix/garbage.c
+> > > > +++ y/net/unix/garbage.c
+> > > > @@ -86,7 +86,6 @@
+> > > >  /* Internal data structures and random procedures: */
+> > > >
+> > > >  static LIST_HEAD(gc_candidates);
+> > > > -static DECLARE_WAIT_QUEUE_HEAD(unix_gc_wait);
+> > > >
+> > > >  static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),
+> > > >                           struct sk_buff_head *hitlist)
+> > > > @@ -185,24 +184,25 @@ static void inc_inflight_move_tail(struc
+> > > >                 list_move_tail(&u->link, &gc_candidates);
+> > > >  }
+> > > >
+> > > > -static bool gc_in_progress;
+> > > > +static void __unix_gc(struct work_struct *w);
+> > > > +static DECLARE_WORK(unix_gc_work, __unix_gc);
+> > > > +
+> > > >  #define UNIX_INFLIGHT_TRIGGER_GC 16000
+> > > >
+> > > >  void wait_for_unix_gc(void)
+> > > >  {
+> > > >         /* If number of inflight sockets is insane,
+> > > > -        * force a garbage collect right now.
+> > > > -        * Paired with the WRITE_ONCE() in unix_inflight(),
+> > > > -        * unix_notinflight() and gc_in_progress().
+> > > > -        */
+> > > > -       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
+> > > > -           !READ_ONCE(gc_in_progress))
+> > > > -               unix_gc();
+> > > > -       wait_event(unix_gc_wait, gc_in_progress == false);
+> > > > +        * kick a garbage collect right now.
+> > > > +        *
+> > > > +        * todo s/wait_for_unix_gc/kick_unix_gc/
+> > > > +        */
+> > > > +       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC /2)
+> > > > +               queue_work(system_unbound_wq, &unix_gc_work);
+> > > >  }
+> > > >
+> > > > -/* The external entry point: unix_gc() */
+> > > > -void unix_gc(void)
+> > > > +static DEFINE_MUTEX(unix_gc_mutex);
+> > > > +
+> > > > +static void __unix_gc(struct work_struct *w)
+> > > >  {
+> > > >         struct sk_buff *next_skb, *skb;
+> > > >         struct unix_sock *u;
+> > > > @@ -211,15 +211,10 @@ void unix_gc(void)
+> > > >         struct list_head cursor;
+> > > >         LIST_HEAD(not_cycle_list);
+> > > >
+> > > > +       if (!mutex_trylock(&unix_gc_mutex))
+> > > > +               return;
+> > > >         spin_lock(&unix_gc_lock);
+> > > >
+> > > > -       /* Avoid a recursive GC. */
+> > > > -       if (gc_in_progress)
+> > > > -               goto out;
+> > > > -
+> > > > -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
+> > > > -       WRITE_ONCE(gc_in_progress, true);
+> > > > -
+> > > >         /* First, select candidates for garbage collection.  Only
+> > > >          * in-flight sockets are considered, and from those only ones
+> > > >          * which don't have any external reference.
+> > > > @@ -325,11 +320,12 @@ void unix_gc(void)
+> > > >         /* All candidates should have been detached by now. */
+> > > >         BUG_ON(!list_empty(&gc_candidates));
+> > > >
+> > > > -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
+> > > > -       WRITE_ONCE(gc_in_progress, false);
+> > > > -
+> > > > -       wake_up(&unix_gc_wait);
+> > > > -
+> > > > - out:
+> > > >         spin_unlock(&unix_gc_lock);
+> > > > +       mutex_unlock(&unix_gc_mutex);
+> > > > +}
+> > > > +
+> > > > +/* The external entry point: unix_gc() */
+> > > > +void unix_gc(void)
+> > > > +{
+> > > > +       __unix_gc(NULL);
+> > > >  }
+> > > > --
+> > >
+> > > This one results in less overall load than Kuniyuki's proposed patch
+> > > with my repro:
+> > >
+> > > * https://lore.kernel.org/netdev/20231020220511.45854-1-kuniyu@amazon.com/
+> > >
+> > > My guess is that's because my repro is the one that is getting penalized there.
+> >
+> > Thanks for testing, and yes.
+> >
+> > It would be good to split the repro to one offender and one normal
+> > process, run them on different users, and measure load on the normal
+> > process.
+> >
+> >
+> > > There's still a lot work done in unix_release_sock here, where GC runs
+> > > as long as you have any fds inflight:
+> > >
+> > > * https://elixir.bootlin.com/linux/v6.1/source/net/unix/af_unix.c#L670
+> > >
+> > > Perhaps it can be improved.
+> >
+> > Yes, it also can be done async by worker as done in my first patch.
+> > I replaced schedule_work() with queue_work() to avoid using system_wq
+> > as gc could take long.
+> >
+> > Could you try this ?
+> 
+> Apologies for the long wait, I was OOO.
+> 
+> A bit of a problem here is that unix_gc is called unconditionally in
+> unix_release_sock.
 
-Acked-by: Dexuan Cui <decui@microsoft.com>
+unix_release_sock() calls gc only when there is a inflight socket.
+
+
+> It's done asynchronously now and it can only
+> consume a single CPU with your changes, which is a lot better than
+> before. I am wondering if we can still do better to only trigger gc
+> when it touches unix sockets that have inflight fds.
+> 
+> Commit 3c32da19a858 ("unix: Show number of pending scm files of
+> receive queue in fdinfo") added "struct scm_stat" to "struct
+> unix_sock", which can be used to check for the number of inflight fds
+> in the unix socket. Can we use that to drive the GC?
+
+I don't think the stat is useful to trigger gc.  Unless the receiver
+is accessible via sendmsg(), it's not a gc candidate and we need not
+care about its stats about valid FDs that are ready to be processed
+and never cleaned up by gc until close().
+
+
+> I think we can:
+> 
+> * Trigger unix_gc from unix_release_sock if there's a non-zero number
+> of inflight fds in the socket being destroyed.
+
+This is the case of now.
+
+
+> * Trigger wait_for_unix_gc from the write path only if the write
+> contains fds or if the socket contains inflight fds. Alternatively, we
+> can run gc at the end of the write path and only check for inflight
+> fds on the socket there, which is probably simpler.
+
+I don't think it's better to call gc at the end of sendmsg() as there
+would be small chance to consume memory compared to running gc in the
+beginning of sendmsg().
+
+
+> GC only applies to unix sockets inflight of other unix sockets, so GC
+> can still affect sockets passing regular fds around, but it wouldn't
+> affect non-fd-passing unix sockets, which are usually in the data
+> path.
+
+I think we can run gc only when scm contains AF_UNIX sockets by tweaking
+a little bit scm processing.
+
+
+> This way we don't have to check for per-user inflight fds, which means
+> that services running as "nobody" wouldn't be punished for other
+> services running as "nobody" screwing up.
+
+If we do not check user, a user could send 16000 AF_UNIX fds and
+other innocent users sending fds must wait gc.
+
+I think isolating users would make more sense so you can sandbox
+a suspicious process.
+
+Probably we can move flush_work() in the preceding if.  Then, the
+number of gc invocation in the "nobody" case is the same as before.
+
+---8<---
+diff --git a/net/unix/garbage.c b/net/unix/garbage.c
+index 51f30f89bacb..74fc208c8858 100644
+--- a/net/unix/garbage.c
++++ b/net/unix/garbage.c
+@@ -198,12 +198,13 @@ void wait_for_unix_gc(void)
+ 	 * Paired with the WRITE_ONCE() in unix_inflight(),
+ 	 * unix_notinflight().
+ 	 */
+-	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC)
++	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC) {
+ 		queue_work(system_unbound_wq, &unix_gc_work);
+ 
+-	/* Penalise senders of not-yet-received-fd */
+-	if (READ_ONCE(user->unix_inflight))
+-		flush_work(&unix_gc_work);
++		/* Penalise senders of not-yet-received-fd */
++		if (READ_ONCE(user->unix_inflight))
++			flush_work(&unix_gc_work);
++	}
+ }
+ 
+ static void __unix_gc(struct work_struct *work)
+---8<---
+
+
+> 
+> Does this sound like a reasonable approach?
+> 
+[...]
+> > -static bool gc_in_progress;
+> > -#define UNIX_INFLIGHT_TRIGGER_GC 16000
+> > +#define UNIX_INFLIGHT_TRIGGER_GC 16
+> 
+> It's probably best to keep it at 16k.
+
+Oops, this is just for testing on my local machine easily :p
+
+Anyway, I'll post a formal patch this week.
+
+Thanks!
