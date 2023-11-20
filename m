@@ -2,120 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F75D7F1E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBCD7F1E8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjKTVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        id S231204AbjKTVMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:12:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjKTVJ4 (ORCPT
+        with ESMTP id S229759AbjKTVMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:09:56 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F33DD2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:09:52 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-dafe04717baso4439073276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:09:52 -0800 (PST)
+        Mon, 20 Nov 2023 16:12:47 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728AAC4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:12:43 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so4881726276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:12:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700514591; x=1701119391; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1700514762; x=1701119562; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gg7L/qGzdZwGL2A3TdntZCzfUWUONuhWAXWrI9wU2BQ=;
-        b=JjQ/OyT3uTYxY/koqckWrNcXxzC+2dmMgRffQ/4VfF2Yo6nRogw1Ku/UKFrhwUiFnc
-         pu1dtSLUDCpX2BNdPo7gFVU8+KREOcdUpXd4AOE5LquokfqrGmjwhkjCefNdg88RxtRz
-         fndsajUDsSolz0wynPDPm2S38AwmxAFLn/0eiAyGUcWTTqQrY7t8SMDc3aNNWiOjEyzD
-         MiboKzuU9LdZ62prl2XPHkCAu76IPkx6Naf81KAZ2Mr+CeT//Xa0hv+j3B2lMm0BHoRa
-         zimNnNNXf/Je+gl6f8lopcsQMEHFTC6WTa8Wjz8x4T36fI7oMMFyQ6qOSIpyooFHai0E
-         xJvQ==
+        bh=sqlmM8DM6G+5eGbay1lkfj8kQgtwPw9Yngebn56yPS8=;
+        b=N3DLIT91qWAL2Osha8R+ljRp1/K7nvYIqatKViALNXewTixhSPKrM8uudt/b2tzqXO
+         Uvi99AL4MI3HzHZqMpLZq3e4U50hPuGIg2dLDqwOOqcdLQAAhNaQqmGBf5M4GqNlbAYk
+         38KtRDj6CTbsPF7WxLpjLPF6WHDumtl+M2JUusDCBY+SyMqrSY27UWkAcV76NxurG7LA
+         6nr2x0XtJhpUH6Mypgt6zSVnAO3IXEM13TmxLTN+5efJG+djDGel74K2Kxk8rM5nzN2N
+         Me+1QpTp5d38NwQUnTPQg03WHj29+OsfgpBzYWZ7st5iBa+aDooYwkKHKRjrupzQZKLV
+         T0lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700514591; x=1701119391;
+        d=1e100.net; s=20230601; t=1700514762; x=1701119562;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gg7L/qGzdZwGL2A3TdntZCzfUWUONuhWAXWrI9wU2BQ=;
-        b=s1KpT/8HZ0wLybJrrDthV7RQzT7wGj12tbSrC2qU8ZrO1rXr33lswZMil5uSphD9VQ
-         i0zO8K91lpwb5ViZr+Q69MrtJLm7TTwo1BcFFy8orAsPqM8tokA2Lfs+Gra2CbKpXKIS
-         LWraWZRPV8yEWQjf8M2gsSjQoxxCLNHczfihBXufw6g+yCdVWKM/nA3tiQaAdvb+ymrf
-         mTAJUzTtwvlvSOBGINCuU5x+MY4ph8Bc7+mkbzLi0rgvx4IFCfs/mcFZUMu/d2zrGp/1
-         oZIstj716c4jySvrCFr0YrLCREdhWTUxtaeWko10lrcwFfVVnRgIVpULrVYtBvPTygBo
-         Tacg==
-X-Gm-Message-State: AOJu0YwMkK8q4do5onqdGyAKXY5+wVnQTUNO6p8ywe7un6XnMkEeNEG0
-        o5X2K0LUccgrkGCuRgMLDQTq8S/wxmaguWUa4nYr
-X-Google-Smtp-Source: AGHT+IGJnAtEMcP7FxqU8j8ysQwR7gtvXxUwtBK0RV3lGh/9xuXTU8A+9JyOaNd830MbYTIBxEUzY2LoWkO/Bce701k=
-X-Received: by 2002:a25:2fd8:0:b0:d9c:a485:332b with SMTP id
- v207-20020a252fd8000000b00d9ca485332bmr6960328ybv.4.1700514591621; Mon, 20
- Nov 2023 13:09:51 -0800 (PST)
+        bh=sqlmM8DM6G+5eGbay1lkfj8kQgtwPw9Yngebn56yPS8=;
+        b=lkRwSz+5hXsKdUuCuHDEahJJvT6Zid4rQA+iw7fowxPC+aQ1n+tg0xWRGULCQs03rM
+         X/6wZLb5ekV1iJEWsPVsaI68BEyPnBOgwHaSCnWqIYwwv/fohMNLfzbIY2yhT5DTvJzH
+         Nqlh34AFsVlsOOu9whTntTGJWPoiOLSO5DHEnWC0rdCBM+m+HRH3NNHcS6wTRzI9kbYY
+         Gjsg0d7Up3mFlFz5EBDCn0OmvPK7umWAo7OGzRE49Hj1IbA0dqk61EcN7haDzmUdX6pf
+         CUJXYtCeS63yoKGQxTyYaoAxxPKJa4mOr1MidY1YGSk4D+JmAldIKgLCK9g96ifgRDOi
+         3rAg==
+X-Gm-Message-State: AOJu0YyvsLmv4lYYJhxesEZXUPokrlux9ZjkHLnlKV9CPLJl4kMmnTGP
+        WEySUlSDLNOXj8BUUW6Vmhy/wXwbwLBaSKVGvv15thbEwIioDR4=
+X-Google-Smtp-Source: AGHT+IHmkzLN6Hy1NnfaHz7dCug+kcrwZfp5oehCARoKr0odBnL3RXk+goVDU0SJt1+bJmoJY2sAHzXK22OKdoWv+us=
+X-Received: by 2002:a25:417:0:b0:db0:6cde:3859 with SMTP id
+ 23-20020a250417000000b00db06cde3859mr8659754ybe.41.1700514762565; Mon, 20 Nov
+ 2023 13:12:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120143106.3f8faedd@canb.auug.org.au>
-In-Reply-To: <20231120143106.3f8faedd@canb.auug.org.au>
+References: <20231114022503.6310-1-kelvie@kelvie.ca> <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
+In-Reply-To: <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 20 Nov 2023 16:09:40 -0500
-Message-ID: <CAHC9VhR4u7tzzBd6ZB=Kcj1vGCcX2VhsyjPQAoLP3C75BehWfg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the security tree with the
- vfs-brauner tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
+Date:   Mon, 20 Nov 2023 16:12:31 -0500
+Message-ID: <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com>
+Subject: Re: [PATCH RFC] Add a lockdown_hibernate parameter
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Kelvie Wong <kelvie@kelvie.ca>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 10:31=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
+On Mon, Nov 13, 2023 at 11:01=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
 >
-> Hi all,
+> [add security & dhowells]
 >
-> Today's linux-next merge of the security tree got conflicts in:
->
->   arch/alpha/kernel/syscalls/syscall.tbl
->   arch/arm/tools/syscall.tbl
->   arch/arm64/include/asm/unistd32.h
->   arch/m68k/kernel/syscalls/syscall.tbl
->   arch/microblaze/kernel/syscalls/syscall.tbl
->   arch/mips/kernel/syscalls/syscall_n32.tbl
->   arch/mips/kernel/syscalls/syscall_n64.tbl
->   arch/mips/kernel/syscalls/syscall_o32.tbl
->   arch/parisc/kernel/syscalls/syscall.tbl
->   arch/powerpc/kernel/syscalls/syscall.tbl
->   arch/s390/kernel/syscalls/syscall.tbl
->   arch/sh/kernel/syscalls/syscall.tbl
->   arch/sparc/kernel/syscalls/syscall.tbl
->   arch/x86/entry/syscalls/syscall_32.tbl
->   arch/x86/entry/syscalls/syscall_64.tbl
->   arch/xtensa/kernel/syscalls/syscall.tbl
->   include/uapi/asm-generic/unistd.h
->
-> between commit:
->
->   9fa5392c080e ("wire up syscalls for statmount/listmount")
->
-> from the vfs-brauner tree and commit:
->
->   5f42375904b0 ("LSM: wireup Linux Security Module syscalls")
->
-> from the security tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+> On 11/13/23 18:23, Kelvie Wong wrote:
+> > This allows the user to tell the kernel that they know better (namely,
+> > they secured their swap properly), and that it can enable hibernation.
+> >
+> > I've been using this for about a year now, as it doesn't seem like
+> > proper secure hibernation was going to be implemented back then, and
+> > it's now been a year since I've been building my own kernels with this
+> > patch, so getting this upstreamed would save some CO2 from me building
+> > my own kernels every upgrade.
+> >
+> > Some other not-me users have also tested the patch:
+> >
+> > https://community.frame.work/t/guide-fedora-36-hibernation-with-enabled=
+-secure-boot-and-full-disk-encryption-fde-decrypting-over-tpm2/25474/17
+> >
+> > Signed-off-by: Kelvie Wong <kelvie@kelvie.ca>
+> > ---
+> >  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+> >  kernel/power/hibernate.c                        | 10 +++++++++-
+> >  2 files changed, 14 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Document=
+ation/admin-guide/kernel-parameters.txt
+> > index 426fa892d311..54785faba9e0 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -2804,6 +2804,11 @@
+> >                       to extract confidential information from the kern=
+el
+> >                       are also disabled.
+> >
+> > +     lockdown_hibernate      [HIBERNATION]
+> > +                     Enable hibernation even if lockdown is enabled. E=
+nable this only if
+> > +                     your swap is encrypted and secured properly, as a=
+n attacker can
+> > +                     modify the kernel offline during hibernation.
+> > +
+> >       locktorture.nreaders_stress=3D [KNL]
+> >                       Set the number of locking read-acquisition kthrea=
+ds.
+> >                       Defaults to being automatically set based on the
+> > diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> > index 89c71fce225d..2221c531d54c 100644
+> > --- a/kernel/power/hibernate.c
+> > +++ b/kernel/power/hibernate.c
+> > @@ -36,6 +36,7 @@
+> >  #include "power.h"
+> >
+> >
+> > +static int lockdown_hibernate;
+> >  static int nocompress;
+> >  static int noresume;
+> >  static int nohibernate;
+> > @@ -82,7 +83,7 @@ void hibernate_release(void)
+> >  bool hibernation_available(void)
+> >  {
+> >       return nohibernate =3D=3D 0 &&
+> > -             !security_locked_down(LOCKDOWN_HIBERNATION) &&
+> > +             (lockdown_hibernate || !security_locked_down(LOCKDOWN_HIB=
+ERNATION)) &&
+> >               !secretmem_active() && !cxl_mem_active();
+> >  }
 
-Thanks Stephen.
+I would feel a lot better about this if there was a way to verify that
+the swap was protected as opposed to leaving that as a note in a doc
+that the majority of users will never see, read, or understand.
 
 --=20
 paul-moore.com
