@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E297F183D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B47F1849
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbjKTQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:13:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        id S233724AbjKTQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjKTQNs (ORCPT
+        with ESMTP id S231486AbjKTQQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:13:48 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5C7A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:13:42 -0800 (PST)
-Received: from [194.95.143.137] (helo=phil.sntech)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r56ty-0000O8-VB; Mon, 20 Nov 2023 17:13:35 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Jonas Karlman <jonas@kwiboo.se>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Andy Yan <andy.yan@rock-chips.com>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
-Date:   Mon, 20 Nov 2023 17:13:26 +0100
-Message-Id: <170049679718.1726490.18211882317992551010.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231026191500.2994225-1-jonas@kwiboo.se>
-References: <20231026191500.2994225-1-jonas@kwiboo.se>
+        Mon, 20 Nov 2023 11:16:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AB3F5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:16:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33359C433CD;
+        Mon, 20 Nov 2023 16:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700496979;
+        bh=RqLtxq3JS2WZJO5Z7BQnNMc6WxYyQfEIqiv4EGNlGr0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PQgenOGjN8Ejyic2TC8oSdPje9uSLE+ChZmT2IojOrV2JVwM4LY1pDg295rZaApGa
+         SzQ8Sefrjlq8VNBv7cqNkR9BKfMkIEEuk8ij6oA/TCUv6Ol1EqZmmS9CfgyOkXqUBr
+         ZXEEwuglqN7jLhqZwIKJO5YZWaKMTjiDe51JVoJR42gpqCGRG2OSMACDkVMBYU6RzU
+         S14zyWE7s6d5v9MSwHIZuoWSuxa19ZcD4ABx07HqqnlRErdk9ZtwMrnORFyI1JGhQ9
+         +lcO22aHCMjuOY27UG6Ek2JZZcse6tweWwcN/pWf+HAedtU3tN19QTeJ+wo/pcx8V/
+         as+OyRmrB3XJQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1r56wm-0001vk-1I;
+        Mon, 20 Nov 2023 17:16:28 +0100
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH 0/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Date:   Mon, 20 Nov 2023 17:16:04 +0100
+Message-ID: <20231120161607.7405-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 19:14:58 +0000, Jonas Karlman wrote:
-> Use of DRM_FORMAT_RGB888 and DRM_FORMAT_BGR888 on e.g. RK3288, RK3328
-> and RK3399 result in wrong colors being displayed.
-> 
-> The issue can be observed using modetest:
-> 
->   modetest -s <connector_id>@<crtc_id>:1920x1080-60@RG24
->   modetest -s <connector_id>@<crtc_id>:1920x1080-60@BG24
-> 
-> [...]
+When testing a recent series that addresses resource leaks on probe
+deferral [1] I realised that probe deferral can break wakeup from
+suspend due to how the wakeup interrupts are currently requested.
 
-Applied, thanks!
+I'll send a separate series for the Qualcomm devicetrees that used
+incorrect trigger types for the wakeup interrupts. Included here is just
+a patch fixing the binding example which hopefully will make it less
+likely that more of these gets introduced. Fortunately, there should be
+no dependency between this series and the devicetree one.
 
-[1/1] drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
-      commit: bb0a05acd6121ff0e810b44fdc24dbdfaa46b642
+Note also that I decided to include a related trivial cleanup patch.
 
-Best regards,
+Johan
+
+
+[1] https://lore.kernel.org/lkml/20231117173650.21161-1-johan+linaro@kernel.org/
+
+
+Johan Hovold (3):
+  dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
+  USB: dwc3: qcom: fix wakeup after probe deferral
+  USB: dwc3: qcom: simplify wakeup interrupt setup
+
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml |  4 ++--
+ drivers/usb/dwc3/dwc3-qcom.c                         | 12 ++++--------
+ 2 files changed, 6 insertions(+), 10 deletions(-)
+
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.41.0
+
