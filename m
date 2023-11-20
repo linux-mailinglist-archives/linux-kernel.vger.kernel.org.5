@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A50627F0FE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7707F0FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233069AbjKTKJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:09:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S232828AbjKTKJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232952AbjKTKIo (ORCPT
+        with ESMTP id S232565AbjKTKJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:08:44 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A652107
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:08:41 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9c41e95efcbso561028566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:08:41 -0800 (PST)
+        Mon, 20 Nov 2023 05:09:48 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F425BA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:09:45 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9ffb5a4f622so48475466b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:09:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700474919; x=1701079719; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700474983; x=1701079783; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wCLKc2oyn+GBNdn1gH6J3jerEIVp1fGU4r9ImpDODpM=;
-        b=te9rhoXdFj2ABRpIeubaK6sRQ+jJJVPdtCOyh7h3ZYgfUzkr/kL+pa0Iw842JmQEPN
-         Rezb8JD7Bvx6bYeqQw5yy1lF+njXIFt7IjplkPboMfhpgkhULl8FioVuIIi6asW+ujtB
-         5t43+kpPKUbCwLSASWIphTIZD6AbEWybI/tWkIZ7teLo4pOyKSQeJT0CJ9vFnVCqzUTV
-         bn0AySBMZ+u3PhAfGM4haQ5J8lRpLlhcmEcyC7N61W5v9KSQwboIinnmuZOQBuJ6Nkgj
-         i45dXqAAUkd6kQXc9lAtaiVuq11tRcxy6pZpUij3RhxMep3JwM2ikWn86Ys5+t4YEO7J
-         05cA==
+        bh=T8nD3WjfEER3VE0XMqJypI0JHyBxZJXe8U5XtUW0Co4=;
+        b=K9PWmn2akdMZZyz76G0/uE1xjEv7LkxXDmAuerSmnZm+WaRkIrzw4n3v6Bk0Vc1c+O
+         LFuvY3wZahbdqUC4VgixD+55KesgpOYbwYgW11cKzM98p/fFhvioY7cBqphZxPTy63tR
+         Sxf+LJ5Yx3seshH59Rgq4Kbf2LxQofeFRYg1HU557qDWdEd8BK1ImWPhj0EJVhZofQIR
+         WB+uI2+MUNvftwRl9y8OTbTerQWSluL9douGvpxYcnjmFFXPHdIHyHEndR8KAMsXCbaD
+         pjTgYo8V1eIpDTD7xN7rTk2KMwiy29Wpj33UTjwLQhgN/dBXILKFBzO03bqvZjzhdcm2
+         b2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700474919; x=1701079719;
+        d=1e100.net; s=20230601; t=1700474983; x=1701079783;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wCLKc2oyn+GBNdn1gH6J3jerEIVp1fGU4r9ImpDODpM=;
-        b=VUQgziJKTXDsv03PuSd2cK2qz0QaLFs4lKrPEhh9UBrFFmQ0UmswIHNmF7rI/H+mAD
-         y10tsKKAmbFW1JCZ+pwrP/RYgWQYNNIHDo6r/19b3C9bjxhPAUkQ+xKv+i4yPepwfpK3
-         ZAp4X5FriXKh13iYdGdmZt1JNiumuniOweB7h9QmUamVpqbn1rk9o5gv/iT8nm2oa5fW
-         9fEh/615mRVus3ki3rQYR2Nw9S+iSUkXPaNZyZNPsHycUNSZkagDEs5bJjcHDgnQqGat
-         GpjKBHaTC85zCZhNcRuaLTM7eOruMxj/wPn5QABbkQhUicRP81M7YQPYjw4qiHiauAit
-         2RZg==
-X-Gm-Message-State: AOJu0Yy7aCmA6sShngCSYQJoIknu1SNy7DMq9evyd+YRLtXeoBChFyyd
-        3VVSM3UFJgSoVpFBzu8zbkUnew==
-X-Google-Smtp-Source: AGHT+IEnHs8MT1YeZZtFEgaaWyke26ndvpNnaVB6pOnOK2kk7TLqkhjyzKQMx4Nxibq9u6QEMAzdYg==
-X-Received: by 2002:a17:906:105d:b0:9dd:6d39:42b9 with SMTP id j29-20020a170906105d00b009dd6d3942b9mr4779587ejj.55.1700474919587;
-        Mon, 20 Nov 2023 02:08:39 -0800 (PST)
+        bh=T8nD3WjfEER3VE0XMqJypI0JHyBxZJXe8U5XtUW0Co4=;
+        b=h3Ip0YNIC7ZxhW3xclGrlDMlapTF5dpyYbNBb3nrYa+MPcBMsPXx46vI9y8UMB6dgR
+         Ef2/armFPvk2JoUD+2UFxI0HjMjztj2ox3tFopNa/4uCj+/Tp4aMzSJLImCB1ralK8dz
+         lI0x2w+XZy9w5pOm230sxrhGEGff3cYZcbWCcs6cpQf+Bbl3f0tfuCtulajDBNqg/7VZ
+         X4vCorzY+tMKHdegzEyLU20Un9XCTglL1Uq58nrui2oquBjEw8udDdH6We8c4bX3ztwo
+         CSXtqskRj+RYl/mW4/ir/TS7P7Pf+pZeZ92bL8SNK38hEjXGLHrzOWMJxfW3Dj+Oehrq
+         CnQA==
+X-Gm-Message-State: AOJu0YycjroClrewab8bhnSh67MJvnt6Qotm5xau4w7YcZecZbwV2efg
+        CLCdGeWk4SYWO3D4bS+FnmHGNw==
+X-Google-Smtp-Source: AGHT+IG7U/IjtWsoxp6M4WG6CPk5ie4W/gni9z76WhOidNSaxxPBaHmFVGpdScIxS/qFiuOoIuiDRA==
+X-Received: by 2002:a17:906:748f:b0:9ad:f7e5:67d9 with SMTP id e15-20020a170906748f00b009adf7e567d9mr4579932ejl.4.1700474982758;
+        Mon, 20 Nov 2023 02:09:42 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id n12-20020a17090673cc00b009dd606ce80fsm3755198ejl.31.2023.11.20.02.08.37
+        by smtp.gmail.com with ESMTPSA id n12-20020a17090673cc00b009dd606ce80fsm3755198ejl.31.2023.11.20.02.09.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 02:08:38 -0800 (PST)
-Message-ID: <32f94711-e007-43bf-b919-a52267fa75d9@linaro.org>
-Date:   Mon, 20 Nov 2023 11:08:36 +0100
+        Mon, 20 Nov 2023 02:09:41 -0800 (PST)
+Message-ID: <6bc4fa28-a98f-46c7-b315-7366307b5206@linaro.org>
+Date:   Mon, 20 Nov 2023 11:09:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 0/5] arm64: qcom: sa8775p: add support for EP PCIe
+Subject: Re: [PATCH v4] dt-bindings: arm: mediatek: mmsys: Add VPPSYS
+ compatible for MT8188
 Content-Language: en-US
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
-        robh+dt@kernel.org
-Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+To:     "yu-chang.lee" <yu-chang.lee@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Garmin Chang <garmin.chang@mediatek.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-References: <1699669982-7691-1-git-send-email-quic_msarkar@quicinc.com>
- <5eae728f-f052-f2aa-7876-cb2421191fc9@quicinc.com>
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20231120100258.3428-1-yu-chang.lee@mediatek.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -120,12 +117,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <5eae728f-f052-f2aa-7876-cb2421191fc9@quicinc.com>
+In-Reply-To: <20231120100258.3428-1-yu-chang.lee@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,16 +130,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 11:06, Mrinmay Sarkar wrote:
-> Some of the patches are reviewed. Please apply in linux-next.
+On 20/11/2023 11:02, yu-chang.lee wrote:
+> For MT8188, VPPSYS0 and VPPSYS1 are 2 display pipes with
+> hardware differences in power domains, clocks and subsystem counts,
+> which should be probed from mtk-mmsys driver to populate device by
+> platform_device_register_data then start its own clock driver.
+> 
+> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
+> ---
+> Change in v4:
+> - Squashed binding patches
+> - This patch is based on [1]
+> [1] soc: mediatek: mmsys: Add support for MT8188 VPPSYS
+>   - https://patchwork.kernel.org/project/linux-mediatek/patch/20231117054345.15859-1-yu-chang.lee@mediatek.com/
 > 
 
-1 week for a ping, which included widely-known conference, is not really
-enough.
+This probably should stay part of previous patchset. Why splitting it?
 
-Please relax, and help out by reviewing other patches on the mailing
-lists in order to relieve the burden of maintainers and move your
-patches higher up the list.
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
