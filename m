@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7A47F150F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6518F7F1513
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbjKTOCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:02:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S233396AbjKTOCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:02:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233230AbjKTOCC (ORCPT
+        with ESMTP id S233356AbjKTOCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:02:02 -0500
+        Mon, 20 Nov 2023 09:02:12 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28D1116
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:01:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24188C433CC;
-        Mon, 20 Nov 2023 14:01:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762051BB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:02:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8796C433CA;
+        Mon, 20 Nov 2023 14:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700488918;
-        bh=nTh5XY9B4/9pSAxFah9W2Cq0m8o84oAUmgucp4NTxIM=;
+        s=k20201202; t=1700488922;
+        bh=oZx5xHeGEnIrSNUKwRJe5Xj6DAKxmM6RLnxMrlsczdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGmzT5QYclRIgaM6EWgDSOrsZvrBza/hzsSLVm9q4LG12IifsbGZ4Ln8y7OEfEwaT
-         iFUcUeqPpxLh3o0gbOh82vKlFMVzmO7m1ag4gaasFvunmscp+j74UZIWD9QhUn5yBP
-         /w3a3VotCl2wDp5GLb9/S+IlTSz79wR/5JRdMRlwwSiALQOQ+oLwY0GtxmFEee6BSL
-         mGhOM3Hdc6E1CMrrcE0TquKTOpaDYmnFUscbVqyzGZ2NllzYLx0kzO0fsse/twlas5
-         8dANlEVzs/R2y7iVlOSbngLmAqiHB602r4RU3pyUMcOzvPnER3GWqGEW9emCMUoRME
-         BfIybJneSKVHA==
+        b=cwLkJUI9sDp+ZWBqpFXflKm2RbX5rEOTTsNBqsx0GiZL1uezsUh0ayIcVzYMP5FZs
+         SmhmgTDEdvy3CjiGqSL6GqEa/mVnswD1Eiy5995PkzE6TLfDz/iR/q0/UHSWnJbFNV
+         QX/tpCQCYycqxq9Bmcik/aPFb+Ctq5md+qO1tjN38G6jk+l2nbaLqDkHgvV1GTrJE3
+         QzW6hkM16WuhJ2XoMkx3mgyR+eW/DxSr8YVCMxhwqfPGliZT+9Yq6GUUcxjpPhK1QM
+         uIneP8BIDXnqZxDwRqm1o9bfGM9mO7t288K7Ya9RQpl0zVB/ZshIlgizevVWJD+rK/
+         IaeFK+gXui16g==
 From:   Roger Quadros <rogerq@kernel.org>
 To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com
@@ -34,9 +34,9 @@ Cc:     vladimir.oltean@nxp.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
         vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v6 net-next 1/7] net: ethernet: am65-cpsw: Build am65-cpsw-qos only if required
-Date:   Mon, 20 Nov 2023 16:01:41 +0200
-Message-Id: <20231120140147.78726-2-rogerq@kernel.org>
+Subject: [PATCH v6 net-next 2/7] net: ethernet: am65-cpsw: cleanup TAPRIO handling
+Date:   Mon, 20 Nov 2023 16:01:42 +0200
+Message-Id: <20231120140147.78726-3-rogerq@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231120140147.78726-1-rogerq@kernel.org>
 References: <20231120140147.78726-1-rogerq@kernel.org>
@@ -52,119 +52,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build am65-cpsw-qos only if CONFIG_TI_AM65_CPSW_TAS is enabled.
+Handle offloading commands using switch-case in
+am65_cpsw_setup_taprio().
+
+Move checks to am65_cpsw_taprio_replace().
+
+Use NL_SET_ERR_MSG_MOD for error messages.
+Change error message from "Failed to set cycle time extension"
+to "cycle time extension not supported"
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
 ---
- drivers/net/ethernet/ti/Makefile        |  3 ++-
- drivers/net/ethernet/ti/am65-cpsw-qos.c | 12 ------------
- drivers/net/ethernet/ti/am65-cpsw-qos.h | 26 +++++++++++++++++++++++++
- 3 files changed, 28 insertions(+), 13 deletions(-)
+ drivers/net/ethernet/ti/am65-cpsw-qos.c | 149 +++++++++++-------------
+ 1 file changed, 70 insertions(+), 79 deletions(-)
 
 Changelog:
 
 v6: initial commit
 
-diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-index 27de1d697134..9d7cd84d1e2d 100644
---- a/drivers/net/ethernet/ti/Makefile
-+++ b/drivers/net/ethernet/ti/Makefile
-@@ -26,7 +26,8 @@ keystone_netcp_ethss-y := netcp_ethss.o netcp_sgmii.o netcp_xgbepcsr.o cpsw_ale.
- obj-$(CONFIG_TI_K3_CPPI_DESC_POOL) += k3-cppi-desc-pool.o
- 
- obj-$(CONFIG_TI_K3_AM65_CPSW_NUSS) += ti-am65-cpsw-nuss.o
--ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o am65-cpsw-qos.o
-+ti-am65-cpsw-nuss-y := am65-cpsw-nuss.o cpsw_sl.o am65-cpsw-ethtool.o cpsw_ale.o
-+ti-am65-cpsw-nuss-$(CONFIG_TI_AM65_CPSW_TAS) += am65-cpsw-qos.o
- ti-am65-cpsw-nuss-$(CONFIG_TI_K3_AM65_CPSW_SWITCHDEV) += am65-cpsw-switchdev.o
- obj-$(CONFIG_TI_K3_AM65_CPTS) += am65-cpts.o
- 
 diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-index 9ac2ff05d501..4bc611cc4aad 100644
+index 4bc611cc4aad..3539fb31541b 100644
 --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
 +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
-@@ -571,9 +571,6 @@ static int am65_cpsw_setup_taprio(struct net_device *ndev, void *type_data)
- 	    taprio->cmd != TAPRIO_CMD_DESTROY)
- 		return -EOPNOTSUPP;
- 
--	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
--		return -ENODEV;
--
- 	if (!netif_running(ndev)) {
- 		dev_err(&ndev->dev, "interface is down, link speed unknown\n");
- 		return -ENETDOWN;
-@@ -599,9 +596,6 @@ static int am65_cpsw_tc_query_caps(struct net_device *ndev, void *type_data)
- 	case TC_SETUP_QDISC_TAPRIO: {
- 		struct tc_taprio_caps *caps = base->caps;
- 
--		if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
--			return -EOPNOTSUPP;
--
- 		caps->gate_mask_per_txq = true;
- 
- 		return 0;
-@@ -806,9 +800,6 @@ void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
- {
- 	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
- 
--	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
--		return;
--
- 	am65_cpsw_est_link_up(ndev, link_speed);
- 	port->qos.link_down_time = 0;
+@@ -428,7 +428,7 @@ static void am65_cpsw_stop_est(struct net_device *ndev)
+ 	am65_cpsw_timer_stop(ndev);
  }
-@@ -817,9 +808,6 @@ void am65_cpsw_qos_link_down(struct net_device *ndev)
+ 
+-static void am65_cpsw_purge_est(struct net_device *ndev)
++static void am65_cpsw_taprio_destroy(struct net_device *ndev)
  {
  	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
  
--	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
--		return;
+@@ -441,29 +441,66 @@ static void am65_cpsw_purge_est(struct net_device *ndev)
+ 	port->qos.est_admin = NULL;
+ }
+ 
+-static int am65_cpsw_configure_taprio(struct net_device *ndev,
+-				      struct am65_cpsw_est *est_new)
++static void am65_cpsw_cp_taprio(struct tc_taprio_qopt_offload *from,
++				struct tc_taprio_qopt_offload *to)
++{
++	int i;
++
++	*to = *from;
++	for (i = 0; i < from->num_entries; i++)
++		to->entries[i] = from->entries[i];
++}
++
++static int am65_cpsw_taprio_replace(struct net_device *ndev,
++				    struct tc_taprio_qopt_offload *taprio)
+ {
+ 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
++	struct netlink_ext_ack *extack = taprio->mqprio.extack;
++	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+ 	struct am65_cpts *cpts = common->cpts;
+ 	int ret = 0, tact = TACT_PROG;
++	struct am65_cpsw_est *est_new;
+ 
+-	am65_cpsw_est_update_state(ndev);
++	if (!netif_running(ndev)) {
++		NL_SET_ERR_MSG_MOD(extack, "interface is down, link speed unknown\n");
++		return -ENETDOWN;
++	}
+ 
+-	if (est_new->taprio.cmd == TAPRIO_CMD_DESTROY) {
+-		am65_cpsw_stop_est(ndev);
+-		return ret;
++	if (common->pf_p0_rx_ptype_rrobin) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "p0-rx-ptype-rrobin flag conflicts with taprio qdisc\n");
++		return -EINVAL;
++	}
++
++	if (port->qos.link_speed == SPEED_UNKNOWN)
++		return -ENOLINK;
++
++	if (taprio->cycle_time_extension) {
++		NL_SET_ERR_MSG_MOD(extack,
++				   "cycle time extension not supported");
++		return -EOPNOTSUPP;
+ 	}
+ 
++	est_new = devm_kzalloc(&ndev->dev,
++			       struct_size(est_new, taprio.entries, taprio->num_entries),
++			       GFP_KERNEL);
++	if (!est_new)
++		return -ENOMEM;
++
++	am65_cpsw_cp_taprio(taprio, &est_new->taprio);
++
++	am65_cpsw_est_update_state(ndev);
++
+ 	ret = am65_cpsw_est_check_scheds(ndev, est_new);
+ 	if (ret < 0)
+-		return ret;
++		goto fail;
+ 
+ 	tact = am65_cpsw_timer_act(ndev, est_new);
+ 	if (tact == TACT_NEED_STOP) {
+-		dev_err(&ndev->dev,
+-			"Can't toggle estf timer, stop taprio first");
+-		return -EINVAL;
++		NL_SET_ERR_MSG_MOD(extack,
++				   "Can't toggle estf timer, stop taprio first");
++		ret = -EINVAL;
++		goto fail;
+ 	}
+ 
+ 	if (tact == TACT_PROG)
+@@ -476,62 +513,24 @@ static int am65_cpsw_configure_taprio(struct net_device *ndev,
+ 	am65_cpsw_est_set_sched_list(ndev, est_new);
+ 	am65_cpsw_port_est_assign_buf_num(ndev, est_new->buf);
+ 
+-	am65_cpsw_est_set(ndev, est_new->taprio.cmd == TAPRIO_CMD_REPLACE);
++	am65_cpsw_est_set(ndev, 1);
+ 
+ 	if (tact == TACT_PROG) {
+ 		ret = am65_cpsw_timer_set(ndev, est_new);
+ 		if (ret) {
+-			dev_err(&ndev->dev, "Failed to set cycle time");
+-			return ret;
++			NL_SET_ERR_MSG_MOD(extack,
++					   "Failed to set cycle time");
++			goto fail;
+ 		}
+ 	}
+ 
+-	return ret;
+-}
 -
- 	if (!port->qos.link_down_time)
- 		port->qos.link_down_time = ktime_get();
+-static void am65_cpsw_cp_taprio(struct tc_taprio_qopt_offload *from,
+-				struct tc_taprio_qopt_offload *to)
+-{
+-	int i;
+-
+-	*to = *from;
+-	for (i = 0; i < from->num_entries; i++)
+-		to->entries[i] = from->entries[i];
+-}
+-
+-static int am65_cpsw_set_taprio(struct net_device *ndev, void *type_data)
+-{
+-	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+-	struct tc_taprio_qopt_offload *taprio = type_data;
+-	struct am65_cpsw_est *est_new;
+-	int ret = 0;
+-
+-	if (taprio->cycle_time_extension) {
+-		dev_err(&ndev->dev, "Failed to set cycle time extension");
+-		return -EOPNOTSUPP;
+-	}
+-
+-	est_new = devm_kzalloc(&ndev->dev,
+-			       struct_size(est_new, taprio.entries, taprio->num_entries),
+-			       GFP_KERNEL);
+-	if (!est_new)
+-		return -ENOMEM;
+-
+-	am65_cpsw_cp_taprio(taprio, &est_new->taprio);
+-	ret = am65_cpsw_configure_taprio(ndev, est_new);
+-	if (!ret) {
+-		if (taprio->cmd == TAPRIO_CMD_REPLACE) {
+-			devm_kfree(&ndev->dev, port->qos.est_admin);
++	devm_kfree(&ndev->dev, port->qos.est_admin);
++	port->qos.est_admin = est_new;
  
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.h b/drivers/net/ethernet/ti/am65-cpsw-qos.h
-index 0cc2a3b3d7f9..898f13a4a112 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-qos.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-qos.h
-@@ -31,11 +31,37 @@ struct am65_cpsw_qos {
- 	struct am65_cpsw_ale_ratelimit ale_mc_ratelimit;
- };
- 
-+#if IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS)
- int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
- 			       void *type_data);
- void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed);
- void am65_cpsw_qos_link_down(struct net_device *ndev);
- int am65_cpsw_qos_ndo_tx_p0_set_maxrate(struct net_device *ndev, int queue, u32 rate_mbps);
- void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common);
-+#else
-+static inline int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev,
-+					     enum tc_setup_type type,
-+					     void *type_data)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline void am65_cpsw_qos_link_up(struct net_device *ndev,
-+					 int link_speed)
-+{ }
-+
-+static inline void am65_cpsw_qos_link_down(struct net_device *ndev)
-+{ }
-+
-+static inline int am65_cpsw_qos_ndo_tx_p0_set_maxrate(struct net_device *ndev,
-+						      int queue,
-+						      u32 rate_mbps)
-+{
+-			port->qos.est_admin = est_new;
+-		} else {
+-			devm_kfree(&ndev->dev, est_new);
+-			am65_cpsw_purge_est(ndev);
+-		}
+-	} else {
+-		devm_kfree(&ndev->dev, est_new);
+-	}
 +	return 0;
-+}
-+
-+static inline void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common)
-+{ }
-+#endif
  
- #endif /* AM65_CPSW_QOS_H_ */
++fail:
++	devm_kfree(&ndev->dev, est_new);
+ 	return ret;
+ }
+ 
+@@ -558,34 +557,26 @@ static void am65_cpsw_est_link_up(struct net_device *ndev, int link_speed)
+ 	return;
+ 
+ purge_est:
+-	am65_cpsw_purge_est(ndev);
++	am65_cpsw_taprio_destroy(ndev);
+ }
+ 
+ static int am65_cpsw_setup_taprio(struct net_device *ndev, void *type_data)
+ {
+-	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+ 	struct tc_taprio_qopt_offload *taprio = type_data;
+-	struct am65_cpsw_common *common = port->common;
+-
+-	if (taprio->cmd != TAPRIO_CMD_REPLACE &&
+-	    taprio->cmd != TAPRIO_CMD_DESTROY)
+-		return -EOPNOTSUPP;
+-
+-	if (!netif_running(ndev)) {
+-		dev_err(&ndev->dev, "interface is down, link speed unknown\n");
+-		return -ENETDOWN;
+-	}
+-
+-	if (common->pf_p0_rx_ptype_rrobin) {
+-		dev_err(&ndev->dev,
+-			"p0-rx-ptype-rrobin flag conflicts with taprio qdisc\n");
+-		return -EINVAL;
++	int err = 0;
++
++	switch (taprio->cmd) {
++	case TAPRIO_CMD_REPLACE:
++		err = am65_cpsw_taprio_replace(ndev, taprio);
++		break;
++	case TAPRIO_CMD_DESTROY:
++		am65_cpsw_taprio_destroy(ndev);
++		break;
++	default:
++		err = -EOPNOTSUPP;
+ 	}
+ 
+-	if (port->qos.link_speed == SPEED_UNKNOWN)
+-		return -ENOLINK;
+-
+-	return am65_cpsw_set_taprio(ndev, type_data);
++	return err;
+ }
+ 
+ static int am65_cpsw_tc_query_caps(struct net_device *ndev, void *type_data)
 -- 
 2.34.1
 
