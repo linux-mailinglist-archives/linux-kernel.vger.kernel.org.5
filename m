@@ -2,54 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F2D7F17BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748A07F17B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234394AbjKTPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:45:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S234330AbjKTPpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:45:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234424AbjKTPpr (ORCPT
+        with ESMTP id S232138AbjKTPpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 10:45:47 -0500
-Received: from p3plwbeout26-04.prod.phx3.secureserver.net (p3plsmtp26-04-2.prod.phx3.secureserver.net [216.69.139.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB58B4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:45:42 -0800 (PST)
-X-MW-NODE: 
-X-CMAE-Analysis: v=2.4 cv=PKnKRdmC c=1 sm=1 tr=0 ts=655b7f26
- a=dFffxkGDbYo3ckkjzRcKYg==:117 a=dFffxkGDbYo3ckkjzRcKYg==:17
- a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=AUd_NHdVAAAA:8 a=FXvPX3liAAAA:8
- a=VwQbUJbxAAAA:8 a=0wROvl3FcpXzi9APqyUA:9 a=QEXdDO2ut3YA:10
- a=EebzJV9D4rpJJoWO5PQE:22 a=UObqyxdv-6Yh2QiB9mM_:22 a=AjGcO6oz07-iQ99wixmX:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-X-SID:  56SwrEXQirdjV
-Date:   Mon, 20 Nov 2023 15:45:38 +0000 (GMT)
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-To:     Ariel Miculas <amiculas@cisco.com>, linux-doc@vger.kernel.org,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     serge@hallyn.com, Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel@vger.kernel.org
-Message-ID: <1582596779.2062926.1700495138062@eu1.myprofessionalmail.com>
-In-Reply-To: <20231117161215.140282-1-amiculas@cisco.com>
-References: <20231117161215.140282-1-amiculas@cisco.com>
-Subject: Re: [PATCH v3] docs: filesystems: document the squashfs specific
- mount options
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C361C126
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:45:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 645AEC433C8;
+        Mon, 20 Nov 2023 15:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700495143;
+        bh=Mf13kzSkExcyvPhnH9lBeXM+1UKNn14DDjcJ3StlIoc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jXuXXuoyJnfgUCQK1X12FP4JL1Y3eR9/BRp0/MUuTl3MhCF3KK0nFr3436r2pCKXb
+         xkQX/ShmAMDV5lDZsBlsCsbVehE+uguaHwGEiArapYyz87IDl+gW3cbZdsfZfZfPx1
+         ikbg4W0qxv0Bxvfze7lb/aH9l69mtk0wusvkpVpQcCB/Dg1oU38v5OHzFYgLAweCLS
+         3eduYAQKOP/cWI3pb4RulPavh2uTpkHor16JLy2GQ34HS5fOqrMOZEXVUcX7ODvlCo
+         0+rfXJJO94HQDKAiKWECUzw36pHa61BUAhuJublU3SeoSBqrWtzr8Xuo+/CvcqvOov
+         2OC9I3utaCjQA==
+Date:   Mon, 20 Nov 2023 15:45:39 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: usb: Add the binding example for the
+ Genesys Logic GL3523 hub
+Message-ID: <20231120-grinch-upbeat-05f7a32a99fa@spud>
+References: <20231119023454.1591-1-linux.amoon@gmail.com>
+ <20231119023454.1591-2-linux.amoon@gmail.com>
+ <20231119-phrasing-reverse-bbc1fde515d5@spud>
+ <CANAwSgQ6H9FUEBKz7sCf4kUZSMnCfyXG-cpGTMZoT15W9187Kg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v8.18.49
-X-Originating-IP: 82.69.79.175
-X-Originating-Client: open-xchange-appsuite
-X-CMAE-Envelope: MS4xfAZiPASMa9f/Vcpg2yN+a6ntu9MU8kCketYebboNEff/9iudapY5Jn5liTRXR99fcAFhJy4IizIy5PDaPQAvsWjKK9i9HDzXCWtv4myqH/Im/THX0b0e
- 69NVIlpZmQFRX6rUgemXdLmlXXj2FTfZmHwz0tj6vj+fa/uKvf0fBt9w593PIykCjEQvC5lXRCCuW0k36LWotdUFmF32DJlBUtOYzM/2XrrIuHpgs5Uf2dY4
- t+kUFtp0UO4FAXRPXurLJ5A0ux9pZrt/rTcW6Df2LpyDYlN1iAgqj1D7LBqbK5JXdP0pgs1ki74jRcxPjLjT0CHNjh7JuZTbKdZtP7y2UQQWELGtd5eRPtrR
- g59BaRPWkPRlWh9j1RfpI1Lv+ND8l9yNpEhTjbeta9n1aaI+GKM=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i584DEwwEuaJNfQd"
+Content-Disposition: inline
+In-Reply-To: <CANAwSgQ6H9FUEBKz7sCf4kUZSMnCfyXG-cpGTMZoT15W9187Kg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -57,111 +59,97 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On 17/11/2023 16:12 GMT Ariel Miculas <amiculas@cisco.com> wrote:
-> 
->  
-> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
-> can be used to specify the decompression mode: single-threaded,
-> multi-threaded, percpu or the number of threads used for decompression.
-> When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, SQUASHFS_DECOMP_MULTI
-> and SQUASHFS_MOUNT_DECOMP_THREADS are both set, the "threads" option can
-> also be used to specify the number of threads used for decompression.
-> This mount option is only mentioned in fs/squashfs/Kconfig, which makes
-> it difficult to find.
-> 
-> Another mount option available is "errors", which can be configured to
-> panic the kernel when squashfs errors are encountered.
-> 
-> Add both these options to the squashfs documentation, making them more
-> noticeable.
-> 
-> Signed-off-by: Ariel Miculas <amiculas@cisco.com>
+--i584DEwwEuaJNfQd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm happy with this.
+On Sun, Nov 19, 2023 at 08:57:28PM +0530, Anand Moon wrote:
+> Hi Conor,
+>=20
+> On Sun, 19 Nov 2023 at 19:28, Conor Dooley <conor@kernel.org> wrote:
+> >
+> > On Sun, Nov 19, 2023 at 08:04:50AM +0530, Anand Moon wrote:
+> > > Add the binding example for the USB3.1 Genesys Logic GL3523
+> > > integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
+> > > hub.
+> >
+> > But no comment in the commit message about the new property for the
+> > "peer hub". $subject saying "dt-bindings: usb: Add the binding example
+> > for the Genesys Logic GL3523 hub" is misleading when the meaningful
+> > parts of the patch are unrelated to the example.
+> >
+> > >
+> > > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> > > ---
+> > > V3: fix the dt_binding_check error, added new example for Genesys GL3=
+523
+> > > v2: added Genesys GL3523 binding
+> > > v1: none
+> > > ---
+> > >  .../bindings/usb/genesys,gl850g.yaml          | 63 +++++++++++++++++=
+--
+> > >  1 file changed, 59 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yam=
+l b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > index ee08b9c3721f..f8e88477fa11 100644
+> > > --- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > +++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
+> > > @@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
+> > >  maintainers:
+> > >    - Icenowy Zheng <uwu@icenowy.me>
+> > >
+> > > -allOf:
+> > > -  - $ref: usb-device.yaml#
+> > > -
+> > >  properties:
+> > >    compatible:
+> > >      enum:
+> > > @@ -27,12 +24,44 @@ properties:
+> > >
+> > >    vdd-supply:
+> > >      description:
+> > > -      the regulator that provides 3.3V core power to the hub.
+> > > +      phandle to the regulator that provides power to the hub.
+> > > +
+> > > +  peer-hub:
+> > > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > > +    description:
+> > > +      phandle to the peer hub on the controller.
+> >
+> > What is this, why is it needed? Please explain it in your commit
+> > message.
+> >
+> Ok, GL3523 integrates Genesys Logic self-developed USB 3.1 Gen 1
+> Super Speed transmitter/receiver physical layer (PHY) and USB 2.0
+> High-Speed PHY
+>=20
+> peer-hub is used to cross-connect those phy nodes so that it can help
+> hub power on/off simultaneously.
 
-Reviewed-by: Phillip Lougher <phillip@squashfs.org.uk>
+I said please explain it in your commit message, but on reflection I
+think that would be insufficient. Extending the description to explain
+what the peer-hub is would be great too. "peer hub on the controller"
+doesn't seem to make sense to me either, as the peer hub phandle is to
+another phy, not to the controller. I think that would probably also be
+resolved by explaining what the peer hub is in a more detailed manner.
 
-> ---
-> V2 -> V3: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
-> mount option also requires SQUASHFS_MOUNT_DECOMP_THREADS to be set, in
-> addition to SQUASHFS_DECOMP_MULTI
-> 
-> V1 -> V2: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
-> mount option also requires SQUASHFS_DECOMP_MULTI to be set
-> 
->  Documentation/filesystems/squashfs.rst | 60 ++++++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/squashfs.rst b/Documentation/filesystems/squashfs.rst
-> index df42106bae71..4af8d6207509 100644
-> --- a/Documentation/filesystems/squashfs.rst
-> +++ b/Documentation/filesystems/squashfs.rst
-> @@ -64,6 +64,66 @@ obtained from this site also.
->  The squashfs-tools development tree is now located on kernel.org
->  	git://git.kernel.org/pub/scm/fs/squashfs/squashfs-tools.git
->  
-> +2.1 Mount options
-> +-----------------
-> +===================    =========================================================
-> +errors=%s              Specify whether squashfs errors trigger a kernel panic
-> +                       or not
-> +
-> +		       ==========  =============================================
-> +                         continue  errors don't trigger a panic (default)
-> +                            panic  trigger a panic when errors are encountered,
-> +                                   similar to several other filesystems (e.g.
-> +                                   btrfs, ext4, f2fs, GFS2, jfs, ntfs, ubifs)
-> +
-> +                                   This allows a kernel dump to be saved,
-> +                                   useful for analyzing and debugging the
-> +                                   corruption.
-> +                       ==========  =============================================
-> +threads=%s             Select the decompression mode or the number of threads
-> +
-> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set:
-> +
-> +		       ==========  =============================================
-> +                           single  use single-threaded decompression (default)
-> +
-> +                                   Only one block (data or metadata) can be
-> +                                   decompressed at any one time. This limits
-> +                                   CPU and memory usage to a minimum, but it
-> +                                   also gives poor performance on parallel I/O
-> +                                   workloads when using multiple CPU machines
-> +                                   due to waiting on decompressor availability.
-> +                            multi  use up to two parallel decompressors per core
-> +
-> +                                   If you have a parallel I/O workload and your
-> +                                   system has enough memory, using this option
-> +                                   may improve overall I/O performance. It
-> +                                   dynamically allocates decompressors on a
-> +                                   demand basis.
-> +                           percpu  use a maximum of one decompressor per core
-> +
-> +                                   It uses percpu variables to ensure
-> +                                   decompression is load-balanced across the
-> +                                   cores.
-> +                        1|2|3|...  configure the number of threads used for
-> +                                   decompression
-> +
-> +                                   The upper limit is num_online_cpus() * 2.
-> +                       ==========  =============================================
-> +
-> +                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
-> +                       SQUASHFS_DECOMP_MULTI, SQUASHFS_MOUNT_DECOMP_THREADS are
-> +                       both set:
-> +
-> +		       ==========  =============================================
-> +                          2|3|...  configure the number of threads used for
-> +                                   decompression
-> +
-> +                                   The upper limit is num_online_cpus() * 2.
-> +                       ==========  =============================================
-> +
-> +===================    =========================================================
-> +
->  3. Squashfs Filesystem Design
->  -----------------------------
->  
-> -- 
-> 2.42.1
+If this is purely a genesys thing, the property should grow a genesys,
+prefix also.
+
+Cheers,
+Conor.
+
+--i584DEwwEuaJNfQd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVt/IwAKCRB4tDGHoIJi
+0l7WAP4jO2VytV+gaR4Fr/4ZJpmrfQ2P5ysd6CPf71fn0gDBSgEA0EeG15JAP0T2
+UF4SNHfWgFn93keokaU5a5twE8yTlQA=
+=o5XT
+-----END PGP SIGNATURE-----
+
+--i584DEwwEuaJNfQd--
