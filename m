@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091867F1979
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FC67F1961
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbjKTRLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
+        id S231352AbjKTRIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKTRLR (ORCPT
+        with ESMTP id S230129AbjKTRIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:11:17 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82883CB;
-        Mon, 20 Nov 2023 09:11:13 -0800 (PST)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AKFJn5q029650;
-        Mon, 20 Nov 2023 18:10:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=11mGKtnf68sv5F45K9ozUTLxzWamUOebDrS0r3G08pY=; b=6R
-        7v9OrAebZyCOekgEqKTMI3D9VJ8OleLR3nvTBab3f3qAmZfmXJHTQhI39u+61+VM
-        h72Trmo6w8Qf+AUhnj9rHuyo2tkJc+meRa6Uphjb7h1NTM24A3E0LPPOMkv4+LzP
-        CDzMmMgR4DpgW+c+9lmr8Ix/aUASiPsQKjpI2EGbNFrTOa96PWqUkjB2O49Jkny2
-        tY/CTkVvrPAfjeRq68vtogDbVcTFvxL+8dgZTIdn5JCr41y4kJsauwk9TPaBVczR
-        9g/AM0tEHIwpjrUpVphYMIm9YCFj2CgC92WXWcVwPHzekrMrgTubH2A54crRsnye
-        xVKo30rza+9r2iEPsqRQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uekjkg1th-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 18:10:50 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 57F1710002A;
-        Mon, 20 Nov 2023 18:10:50 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4D50F237D71;
-        Mon, 20 Nov 2023 18:10:50 +0100 (CET)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 20 Nov
- 2023 18:10:50 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 5/5] ARM: multi_v7_defconfig: enable STM32 DCMIPP media support
-Date:   Mon, 20 Nov 2023 18:08:01 +0100
-Message-ID: <20231120170809.728941-6-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231120170809.728941-1-alain.volmat@foss.st.com>
-References: <20231120170809.728941-1-alain.volmat@foss.st.com>
+        Mon, 20 Nov 2023 12:08:07 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58950BE
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:08:04 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6cd09f51fe0so3103915a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:08:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700500083; x=1701104883; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YONG+Z2URy3adHFF9a9PVlDLMWSCL7QCJLkVV8u42Pw=;
+        b=ZNkQsobKvKdCL5Kkrx73xMxt+yoOxAEqzqxHfFngU14SX4zsgAupXQztKG+yvgqZL1
+         FM3Aqi8+snFliYSusXYCYZM7rVWIotjYuPGz/pr1ADn06YXsElZQCgPOScMz6vpRZevl
+         6Lb1tDulwo8ZfQtDob9059QN88PnmtW/n3Ne2d/ARHHS7rkJmacTxfSgW6AupT/x8Wee
+         XKb5vT9byw5GYuQpAR0vRgqwkW/W4VsIu2A12/XFTATmuCQAdE2jnoLvwzZg0pQuykR8
+         N4STGC4nmcBdZV+PNuTkKeUTq4YxFcmN5jVz1wTJ+WoGEdI9mGajvkLCJT7uVw3xXMJG
+         vpPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700500083; x=1701104883;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YONG+Z2URy3adHFF9a9PVlDLMWSCL7QCJLkVV8u42Pw=;
+        b=GxLzLUpq0vLFrp/F4PrqtioNgmLeElihM59oebUQTCvnFRFWSqRnNBpuOUARpXISQj
+         G21Ho8HWdiYtWP4crZrEJl5eMzBq3WDijes5JyLmfV7vNy4qghqvtoACBSnfid8ffSXo
+         I6RWMJr6vzyElAB+i/f3wqH/l/dc3Gns+otOnZwA3WtuzhXOMf/SJj1U+5Qk4ZZwWqx7
+         jVfR4SnK7PcbjFR1DPg0TQ1782v7Fvt6xg2+fCtP5U3xcITwcFwpxu6Q6vOB1RGdZV9y
+         JC/PxiZbg/A8U9NGqUX3LQYuOMVYIYesWO4yRAVjkylqqizWKZktOHCi4m12CXJVoyWr
+         n2cw==
+X-Gm-Message-State: AOJu0Yw6k3LBu8R1JIyCesSRrJbopEpigkXYpq7lEltsQ1qCf7XixlOS
+        BWlIRc758ml8V2k/QbcUcE7www==
+X-Google-Smtp-Source: AGHT+IFntqoennN4i02M6FokmS927XOCsf17rxNKxMCqvhCEf4Qanz23np6ZpH0J6iyKKVqOgDZ1Vw==
+X-Received: by 2002:a9d:7f9a:0:b0:6cd:4fc8:3efc with SMTP id t26-20020a9d7f9a000000b006cd4fc83efcmr2991186otp.19.1700500083719;
+        Mon, 20 Nov 2023 09:08:03 -0800 (PST)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id o10-20020a817e0a000000b005c98f9d2444sm1389692ywn.3.2023.11.20.09.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 09:08:03 -0800 (PST)
+Date:   Mon, 20 Nov 2023 12:08:02 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linan666@huaweicloud.com
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH 0/3] fix null-ptr-deref in nbd_open()
+Message-ID: <20231120170802.GD1606827@perftesting>
+References: <20231116162316.1740402-1-linan666@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_17,2023-11-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116162316.1740402-1-linan666@huaweicloud.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+On Fri, Nov 17, 2023 at 12:23:13AM +0800, linan666@huaweicloud.com wrote:
+> From: Li Nan <linan122@huawei.com>
+> 
+> Li Nan (3):
+>   nbd: fold nbd config initialization into nbd_alloc_config()
+>   nbd: factor out a helper to get nbd_config without holding
+>     'config_lock'
+>   nbd: fix null-ptr-dereference while accessing 'nbd->config'
+> 
+>  drivers/block/nbd.c | 82 +++++++++++++++++++++++++++++----------------
+>  1 file changed, 53 insertions(+), 29 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
 
-Enables support of STM32 DCMIPP V4L2 media driver.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index f08f39a3ed2b..86120e1c1503 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -690,6 +690,7 @@ CONFIG_VIDEO_STI_BDISP=m
- CONFIG_VIDEO_STI_DELTA=m
- CONFIG_VIDEO_STI_HVA=m
- CONFIG_VIDEO_STM32_DCMI=m
-+CONFIG_VIDEO_STM32_DCMIPP=m
- CONFIG_V4L_TEST_DRIVERS=y
- CONFIG_VIDEO_VIVID=m
- CONFIG_VIDEO_ADV7180=m
--- 
-2.25.1
-
+Josef
