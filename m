@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5150E7F0F4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BA67F0F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbjKTJpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S232526AbjKTJzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbjKTJpD (ORCPT
+        with ESMTP id S232253AbjKTJza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:45:03 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2121.outbound.protection.outlook.com [40.107.255.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851E1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:44:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gdXzLxZUJww+/x2DqPDC8zaDB7TUl6Byj4Yps3D7iHgOIOC6bY1cZJCQnlFPuyWucN3FpAjU6foj098wmquUZM3j9oHTap4MHONDFfGxYAwBWTzRcZhEPvAU26BmwNPBNfw1SslO/iKIRfogYdBqCC462iQKBEq2nPL8RlWmILuqWOLpOeq77F9RRFipYmZM9e0DHcPyGgq6jmIt+HLVQ6grgfNYP/8w+vDuaWpk3CLfzI0IgF3k3TcBdBnlP77mhv/dRQiY5JMKeOTRQvCGIhEnVOPoNdjAFhr2WaOIfsNnalF7nQeSFZQOqtFg7Uow6s/clQXcNeQpmJ7dUryEuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NAzQ59DRbN9IBPvfTnj3BYj+z1yok15X8nyQgFac1BI=;
- b=NUKv8lFFolAZqLmF+R1+8nIu5WRhDf8Tv0Hfkhgv9IDX15knkNSfR0D5fdt8+Cwz8GxNRxQSQnSCgN6O/CkY09qjEQ/9jI0YYuqgN2vrJtX1yHOVugFcMygGHSeQyWjXnMsvpVXdsQN9DEbwt4H9yyByHCh86kIYmYYxvt9PyL3HGuyGQsaCcvIYCPuIbmuILbJfbhA62eTrtf48eeWieAMJU4jZdYaL9rsc01fmGh1vXnh0vbdx4eI2dv50sQcSRrn2wzMWS2yADBiD9mPz2SLU14vxQh9UBP371Q83bKtFpDkgLBfGMP/23VaFQJJr/m43h/BZV0VArMAmiHcq0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NAzQ59DRbN9IBPvfTnj3BYj+z1yok15X8nyQgFac1BI=;
- b=ECrCVaoFEgZHjTRvjZfPABa66WM/wKy7iVaTchbuIvyGyAWbIxx/ucNC3wqFEPWvtp0TW3xSBFSvIM4tqfkXJOO5TV7rO1oixgRSrxABUdoPq4cur9wkHWJXPXt/5APyuZs5Uojt6m0V7xc6HgTT2+Rvx2Hu1ooKW0JaUChmweiGlmqzAErHKKSL4Ln/EinRWkCWveZhJs4ipdcUQMztGr6d3fezGsXBPqBqLt+oDNYRCXZMJUpAAPCIfNnyCsoOLxaWPFAIQHJyhuYRTTZk/RWems0oihlLTPn420sAG4o/Vdn5iLDoGC3/p8mTQS1PhXndLWaqG5+FVwlqSJht6A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by TYSPR06MB6410.apcprd06.prod.outlook.com (2603:1096:400:42b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
- 2023 09:44:54 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8064:576b:554f:5246]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::8064:576b:554f:5246%3]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
- 09:44:54 +0000
-From:   Yangtao Li <frank.li@vivo.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     Yangtao Li <frank.li@vivo.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] f2fs: add support for an i_version counter
-Date:   Mon, 20 Nov 2023 02:54:09 -0700
-Message-Id: <20231120095410.3604801-1-frank.li@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG3P274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::33)
- To SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+        Mon, 20 Nov 2023 04:55:30 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C9294
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:55:26 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so12810a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:55:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700474125; x=1701078925; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nXik9sN9oPjNlP35QH0IkVw44/XuwaU3LqfwT7DUr34=;
+        b=fvcayZqgDMrtjvbZojBvPRjYTlimdzYA/+lyywdlW97prQ+E7mgY8mds8FapeY7rvH
+         HXJ1kRoUMOAuKlVMIJuKRftPQsTHQvluZK0WSvNXRX119Z45LbLX93uZg8qnslrU0ZNW
+         ZrnrWTlkinBk8nEKa/nJHFu6G0jGaq+r9PbIZpEXjQp/zcQxS/aEZvyExjWiLvrPK6D2
+         m9fehIQy0AwuCuu4KoCpvCUQal30jsIZuR+3Ij4EuiPn7YRPSniELB+VjNVx9yzV0o9e
+         nCS3WiAvPnRPNro8PSjfKaliarEmFaCWJKBlNHU9S+2ytAq2sgtsKf9AX4tiSugL+5kb
+         H/5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700474125; x=1701078925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nXik9sN9oPjNlP35QH0IkVw44/XuwaU3LqfwT7DUr34=;
+        b=D4zUuolMEgBdM19e6QAk0o4KsZxn73bJP23xGOylfR0pGD4ZgEPEAkbvUS40A3tSHq
+         3d0TP3g1OwCn3ibLFt+jUxjPJEgoY0AILPrm82OKX5zm2qdHUPH4phFmpixYqt8jLntO
+         it4aKnag8X6vzQ2+IJg+taqwJSHNhF+RIFu2NPOvp8S+YmcXLUTsQ2tLz7F7x5SLRBmf
+         IPB5VpWYKKSlhRn1vzsyANRq8uHBX98VSrZ2EfWs+TpNt2CApzoqdqoD8Y7H/xvaWOC7
+         KoZL3bw/e83bJVohteU03h6gQTO25mC7pyBZEtzXXjZYH67BjU18rIL63JXzuk5gYdmt
+         DbQg==
+X-Gm-Message-State: AOJu0Yy3HD5wBITLinuqEMHLsBlGdURGyprk9pE0uVNxj+mqATE+YaTP
+        hcBGWKm6VS074SeGx2xeR2N/UWUpFVkGtDV0wCvYtg==
+X-Google-Smtp-Source: AGHT+IGLyeTL8N3vqZ8p9XQyWBXZE+2KdHScmeVKG54pz248PW0AjCj5rhv3SFu+vAEP8EtsQHEajXYbYCANVG4nOKA=
+X-Received: by 2002:a05:6402:c41:b0:544:e249:be8f with SMTP id
+ cs1-20020a0564020c4100b00544e249be8fmr218730edb.1.1700474125026; Mon, 20 Nov
+ 2023 01:55:25 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|TYSPR06MB6410:EE_
-X-MS-Office365-Filtering-Correlation-Id: 76e1b56f-a890-4f88-4166-08dbe9ad5920
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vLgiG7B1vUx0VD2daJGUY4AzfwuKmr8whuCqeqUavrB2PeB7ICEDLCTvuQB2kOatlTcu8mhUT6nadvrvuFSSsFtCxDIGbMZWOftKyXqiBmtfhUYaxhpvG55rHkCIfhSqkbXSybhFKVKkWMm9JiECdmpYTqbaViYbZHWw4KIm2SnzK1ibPm2Tv/9HNa6L4cS7TKsuDptHnUx0H+IbPRroKilFHMIj3uQRbgq+czzuFwOz8r2NxHuEi4Vh/WfHkt0WgTukHOLQ8jcAIsaFIXrlPuJtQMnX9ki9XWT8Nip649GUYO+fYnjdX3LJIkJ/erdj0MZqL9/PacAfKccPV0Tqawu2h4rKjOyLVd+XQ8MWN7IxhW6uNMPPpO61kMQTXiVOXEWYIBCNPOxx9dQ6ejfhzkr6Cv5NS2GZs+QLUUxYQFHmMWL9cQqX5U651DhVrZmy38tHjlcv0F8keaOKIoufsxIwFWCpWBxOYjibojjUP/SfGJqPCc2mA9SKaMdQlYJZG9P0opNiv7CsqaayT3nYcKJvskyRG8VGuNgrQHDbvoWLA3N1VdoJygzuEub/ngp4nhkxJCgjVWwSzkK/fKzTo/fkHLFpvA6HSBEhuyaiJgk4T61lDyi3CwWcVEs0lh3C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(396003)(366004)(376002)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6486002)(6506007)(52116002)(1076003)(6666004)(2616005)(478600001)(6512007)(26005)(110136005)(66556008)(66946007)(66476007)(316002)(86362001)(2906002)(41300700001)(5660300002)(38350700005)(38100700002)(36756003)(8676002)(8936002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dFv9YuhtgS1/Qm/t9wO5yim+GmerjkEWC1plUNaV2qUfYIkpEbuTNeiGd8tG?=
- =?us-ascii?Q?CyfmEMJDTM5b8rnbw57T/FPzWiAdSAMkmCqExrzRWtkjQ1CsN8/zn4yuEk65?=
- =?us-ascii?Q?eFjovjKBCRNClb0Qqo3JxQJvEnB0f7Eb4G1uwxzf8M+UdHHa6zhys57eECKK?=
- =?us-ascii?Q?appQog0egFzim8oJ8e+Z7RdUygNb/LZTNLr78JDsgFUz46SEqNKvU3bB/iu7?=
- =?us-ascii?Q?aFf7KdMHhprPJuPLq2zlWcsE49J7lHnoQst+3W+MYe0+DbCuY3Y4PV2OVUYN?=
- =?us-ascii?Q?v2AM/lnrSOWYYxjW90ylVAandlIB1EarznFo1nHRNWhE4nj8gutqiw/6Tzjj?=
- =?us-ascii?Q?dNZh1yD533x6orPv75fj0VsRL+Be4hxmedEhgmE+FH23GB5k4yBk+AtS8fnJ?=
- =?us-ascii?Q?SHaE8Zlxq9NcSbluVOhC7Xm0asg/7z9KBdwBTBrBKpT2ro9z4TG+gvKT9IL6?=
- =?us-ascii?Q?qD9KbBHPTVnE0LkyTD5Ge7s2kOtIKeZa6Dzb2RUGpS167s5iBfz8MW/6n8ut?=
- =?us-ascii?Q?odMiPD5ik3RxZunHaG5GrC+qMmNfdKdYqkxLuYLTmpXAyG04KeN0TM/FhRxu?=
- =?us-ascii?Q?Xiso34HZJOndbzwwaOKqyuUhi1xIIlqi4ek0h58vyHx+wcX1i4LxCnwEkv9O?=
- =?us-ascii?Q?B1umPgHK5BqbXSUPDRiWgNQ4Vlh1pMB0XbIB/ziPmQ1mOjzvzsUGazxQwpG8?=
- =?us-ascii?Q?MdUHXmksyKyUDyQ88aWXFI8EUye7gMIlaKsiqc+RhGmNnoiqJIarRZ3P5HFp?=
- =?us-ascii?Q?/Ror9zlGV9M6KDvWmFjGWx1sghgwYhDW7Gf/UYyZ7rf7A1jQ/dbl55QSDM7i?=
- =?us-ascii?Q?ubswtxje4cwqBNocnbC8nmi6MKmgeE++gkt0p5v67/W7vwrUGZoV0yCMg2hd?=
- =?us-ascii?Q?4giBkYe618LIsh2lZOuhejy5tYZjHs0WbVQBBZKrBRwTh0hYRI+Auyq3LTaR?=
- =?us-ascii?Q?xIp+emSlhrX70HHnFaFi5GNvP6qGhKCPNI/cIH5keQ7SsJPu4oBmOERx7SrC?=
- =?us-ascii?Q?LwWFQOOAPdrRMCtM+vUnn0JIRbpSpEn9mwGStZReq/q0m3CjaurKQC9oly5R?=
- =?us-ascii?Q?QNZtXFPaki339XuiqsA1MaWc9tecGzmez1oW0FqEa+maq9YCKy5iO0cek7iq?=
- =?us-ascii?Q?SSLjq3/fDuOG54s56rhbUFnG5NqnwsKGw7Y06334oN/jc5S6xhdY5rBTKRQ1?=
- =?us-ascii?Q?cvrSl9gUWI0/c57GslpwJCgKnELXGC4q8hMjZo055BJC3xH3Deh8XUCbg1JJ?=
- =?us-ascii?Q?Bdr1OX/yWP4h1cAfG9XyXJ2O8Wg6Mg7svswLwDM6OOYZ4molE1KBM8r15yRg?=
- =?us-ascii?Q?C02dUNfYOa2lC37rHSU5S7yl66weXhhOBJgnTg8FAanBP3ESk//kQ+yZhdtI?=
- =?us-ascii?Q?XKjE1RLBcg5eOywczpqPvqHlFzQbPHixCCuIhAC/puoDxDbmkLyZkv+Q1hPX?=
- =?us-ascii?Q?gZt1fyDf4EZs2DOVyqkhmOJieDn6wJctOWND8L/jdB23tNfe/rgc3YxNEUEQ?=
- =?us-ascii?Q?h5zZEJG5LBYZ/XzcBkTCnjMqU36Dqdp7EJOmMNWSc2fjkkaps/QHarSnWG49?=
- =?us-ascii?Q?t+mbs0m6zz996sn7f7WXyUrYrtBWmpyV9Jb2hhGB?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76e1b56f-a890-4f88-4166-08dbe9ad5920
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 09:44:53.9229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u3qMGlm+61nQZIqhHmhUa83Ri1QGodXFMfUDdrqnkcNuvzL5LfGmVX1gVn6zJFG54qXFyavY0qKAoZm6yug70Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6410
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <CANn89iKsirkSvxK4L9KQqD7Q7r0MaxOx71VBk73RCi8b1NkiZw@mail.gmail.com>
+ <20231119092530.13071-2-haifeng.xu@shopee.com>
+In-Reply-To: <20231119092530.13071-2-haifeng.xu@shopee.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 20 Nov 2023 10:55:11 +0100
+Message-ID: <CANn89iJGZOg3ozTi+HLEd_WqVUiVHVXhD5_w8Dj8=4df2zxymw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] bonding: use a read-write lock in bonding_show_bonds()
+To:     Haifeng Xu <haifeng.xu@shopee.com>
+Cc:     andy@greyhouse.net, davem@davemloft.net, j.vosburgh@gmail.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,53 +72,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NFSv4 mandates a change attribute to avoid problems with timestamp
-granularity, which Linux implements using the i_version counter. This is
-particularly important when the underlying filesystem is fast.
+On Sun, Nov 19, 2023 at 10:25=E2=80=AFAM Haifeng Xu <haifeng.xu@shopee.com>=
+ wrote:
+>
+> Problem description:
+>
+> Call stack:
+> ......
+> PID: 210933  TASK: ffff92424e5ec080  CPU: 13  COMMAND: "kworker/u96:2"
+> [ffffa7a8e96bbac0] __schedule at ffffffffb0719898
+> [ffffa7a8e96bbb48] schedule at ffffffffb0719e9e
+> [ffffa7a8e96bbb68] rwsem_down_write_slowpath at ffffffffafb3167a
+> [ffffa7a8e96bbc00] down_write at ffffffffb071bfc1
+> [ffffa7a8e96bbc18] kernfs_remove_by_name_ns at ffffffffafe3593e
+> [ffffa7a8e96bbc48] sysfs_unmerge_group at ffffffffafe38922
+> [ffffa7a8e96bbc68] dpm_sysfs_remove at ffffffffb021c96a
+> [ffffa7a8e96bbc80] device_del at ffffffffb0209af8
+> [ffffa7a8e96bbcd0] netdev_unregister_kobject at ffffffffb04a6b0e
+> [ffffa7a8e96bbcf8] unregister_netdevice_many at ffffffffb046d3d9
+> [ffffa7a8e96bbd60] default_device_exit_batch at ffffffffb046d8d1
+> [ffffa7a8e96bbdd0] ops_exit_list at ffffffffb045e21d
+> [ffffa7a8e96bbe00] cleanup_net at ffffffffb045ea46
+> [ffffa7a8e96bbe60] process_one_work at ffffffffafad94bb
+> [ffffa7a8e96bbeb0] worker_thread at ffffffffafad96ad
+> [ffffa7a8e96bbf10] kthread at ffffffffafae132a
+> [ffffa7a8e96bbf50] ret_from_fork at ffffffffafa04b92
+>
+> 290858 PID: 278176  TASK: ffff925deb39a040  CPU: 32  COMMAND: "node-expor=
+ter"
+> [ffffa7a8d14dbb80] __schedule at ffffffffb0719898
+> [ffffa7a8d14dbc08] schedule at ffffffffb0719e9e
+> [ffffa7a8d14dbc28] schedule_preempt_disabled at ffffffffb071a24e
+> [ffffa7a8d14dbc38] __mutex_lock at ffffffffb071af28
+> [ffffa7a8d14dbcb8] __mutex_lock_slowpath at ffffffffb071b1a3
+> [ffffa7a8d14dbcc8] mutex_lock at ffffffffb071b1e2
+> [ffffa7a8d14dbce0] rtnl_lock at ffffffffb047f4b5
+> [ffffa7a8d14dbcf0] bonding_show_bonds at ffffffffc079b1a1 [bonding]
+> [ffffa7a8d14dbd20] class_attr_show at ffffffffb02117ce
+> [ffffa7a8d14dbd30] sysfs_kf_seq_show at ffffffffafe37ba1
+> [ffffa7a8d14dbd50] kernfs_seq_show at ffffffffafe35c07
+> [ffffa7a8d14dbd60] seq_read_iter at ffffffffafd9fce0
+> [ffffa7a8d14dbdc0] kernfs_fop_read_iter at ffffffffafe36a10
+> [ffffa7a8d14dbe00] new_sync_read at ffffffffafd6de23
+> [ffffa7a8d14dbe90] vfs_read at ffffffffafd6e64e
+> [ffffa7a8d14dbed0] ksys_read at ffffffffafd70977
+> [ffffa7a8d14dbf10] __x64_sys_read at ffffffffafd70a0a
+> [ffffa7a8d14dbf20] do_syscall_64 at ffffffffb070bf1c
+> [ffffa7a8d14dbf50] entry_SYSCALL_64_after_hwframe at ffffffffb080007c
+> ......
+>
+> Thread 210933 holds the rtnl_mutex and tries to acquire the kernfs_rwsem,
+> but there are many readers which hold the kernfs_rwsem, so it has to slee=
+p
+> for a long time to wait the readers release the lock. Thread 278176 and a=
+ny
+> other threads which call bonding_show_bonds() also need to wait because
+> they try to acquire the rtnl_mutex.
+>
+> bonding_show_bonds() uses rtnl_mutex to protect the bond_list traversal.
+> However, the addition and deletion of bond_list are only performed in
+> bond_init()/bond_uninit(), so we can introduce a separate read-write lock
+> to synchronize bond list mutation. In addition, bonding_show_bonds() coul=
+d
+> race with dev_change_name(), so we need devnet_rename_sem to protect the
+> access to dev->name.
+>
+> What are the benefits of this change?
+>
+> 1) All threads which call bonding_show_bonds() only wait when the
+> registration or unregistration of bond device happens or the name
+> of net device changes.
+>
+> 2) There are many other users of rtnl_mutex, so bonding_show_bonds()
+> won't compete with them.
+>
+> In a word, this change reduces the lock contention of rtnl_mutex.
+>
+> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> ---
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- fs/f2fs/f2fs.h  | 1 +
- fs/f2fs/inode.c | 1 +
- fs/f2fs/super.c | 1 +
- 3 files changed, 3 insertions(+)
-
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 9043cedfa12b..68fd2ef35104 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -28,6 +28,7 @@
- 
- #include <linux/fscrypt.h>
- #include <linux/fsverity.h>
-+#include <linux/iversion.h>
- 
- struct pagevec;
- 
-diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
-index 560bfcad1af2..2604fa4a0704 100644
---- a/fs/f2fs/inode.c
-+++ b/fs/f2fs/inode.c
-@@ -32,6 +32,7 @@ void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
- 	if (f2fs_inode_dirtied(inode, sync))
- 		return;
- 
-+	inode_inc_iversion(inode);
- 	mark_inode_dirty_sync(inode);
- }
- 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 033af907c3b1..2bddccd47e3a 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -2204,6 +2204,7 @@ static void default_options(struct f2fs_sb_info *sbi, bool remount)
- 	set_opt(sbi, MERGE_CHECKPOINT);
- 	F2FS_OPTION(sbi).unusable_cap = 0;
- 	sbi->sb->s_flags |= SB_LAZYTIME;
-+	sbi->sb->s_flags |= SB_I_VERSION;
- 	if (!f2fs_is_readonly(sbi))
- 		set_opt(sbi, FLUSH_MERGE);
- 	if (f2fs_sb_has_blkzoned(sbi))
--- 
-2.39.0
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
