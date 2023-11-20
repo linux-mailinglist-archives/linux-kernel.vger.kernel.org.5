@@ -2,416 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7667F1312
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4977F1320
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbjKTMUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 07:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
+        id S233413AbjKTMWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233413AbjKTMUK (ORCPT
+        with ESMTP id S232200AbjKTMWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:20:10 -0500
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B598106;
-        Mon, 20 Nov 2023 04:20:04 -0800 (PST)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 248094235;
-        Mon, 20 Nov 2023 04:20:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1700482804;
-        bh=DsNsliOn9/YKzAFNylSOy/z9/27t85S92Ax/eOo1X+0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KUgdXTfgq9UZ15UV9txcomYgmts3jo3xcE5EJr3OoBLv6SW/qtlzjVlvQHuz+1RIh
-         fS54B52od1gknkiX8D0U+QGjGym696sV1N2h3uAGbn2wxvU4H8y79mEZHWQ84beJsL
-         xijJc5D8LpkvWJ7kz8ONX9G+GUskf/rq+YLmryEQ=
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>
-Cc:     Zev Weiss <zev@bewilderbeest.net>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-Subject: [PATCH v2 2/2] ARM: dts: aspeed: Add ASRock SPC621D8HM3 BMC
-Date:   Mon, 20 Nov 2023 04:19:57 -0800
-Message-ID: <20231120121954.19926-6-zev@bewilderbeest.net>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231120121954.19926-4-zev@bewilderbeest.net>
-References: <20231120121954.19926-4-zev@bewilderbeest.net>
+        Mon, 20 Nov 2023 07:22:07 -0500
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D701ECF
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:22:04 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c1d1212631so6967704a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:22:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700482924; x=1701087724;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbUbaskN5THQ5lbAtdeg7F98SJq+P9xPJ03Gz0q47AQ=;
+        b=w9ApVr5JAdRoHdn6YAaMvMhXOhXX9+Tp1e8I/3yvoHyLbJHijAjxQt2mT9OfOPpcZS
+         v/VDuWMEFcYoc8DtjDbiX6V6YAuGtb7+QCn+XgPTv++QcaRcaqkbMXACfOBCin09ZBJW
+         qn0HFdp53grKXpIGGKbBbfXMnqOgWk605HiR6+Lxamg/9Vnhf8pi+TL7CTTX8oFgupy2
+         RAYTYGHe/4DSS77hVcQOyU2e/oKLxojsYBeSzh5TKVSoQ4wUur1wg4zBBhFNfTv6JPqL
+         a3RlYdyYuTNizmXKtevMoIeciR/8UG/2w3zqB27MyaBtGuB1d0UF/6VyAgv5vqSoY3Zg
+         5ERg==
+X-Gm-Message-State: AOJu0YxHjcL1Cl4D3R1fAL5yAM/EiLoPfc5NR47bOFjN4Ky3Y8iuChP0
+        J3kLnh1MQjyaGKxcganGd+phfvpyz2US6q93SSXpDxQF39ShTPw=
+X-Google-Smtp-Source: AGHT+IE0+oNlndZWEuFWMRIXN38+VghFds+NaBtbgOrjqOyFlga1ZpjqGeSD8xNJ++gt82VRnrPB5/yJC8GtbTuRGnSfMyMtLQXJ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:b388:b0:27d:ba3:fbf9 with SMTP id
+ e8-20020a17090ab38800b0027d0ba3fbf9mr2002825pjr.8.1700482924484; Mon, 20 Nov
+ 2023 04:22:04 -0800 (PST)
+Date:   Mon, 20 Nov 2023 04:22:04 -0800
+In-Reply-To: <000000000000bf0b1f060a2d9bea@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a91e9f060a9488d3@google.com>
+Subject: Re: [syzbot] [PATCH] Test divide err in drm
+From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a Xeon board broadly similar (aside from CPU vendor) to the
-already-support romed8hm3 (half-width, single-socket, ast2500).  It
-doesn't require anything terribly special for OpenBMC support, so this
-device-tree should provide everything necessary for basic
-functionality with it.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
----
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../aspeed/aspeed-bmc-asrock-spc621d8hm3.dts  | 324 ++++++++++++++++++
- 2 files changed, 325 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
+***
 
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index d3ac20e316d0..2df0a2e88df7 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
- 	aspeed-bmc-asrock-e3c246d4i.dtb \
- 	aspeed-bmc-asrock-romed8hm3.dtb \
-+	aspeed-bmc-asrock-spc621d8hm3.dtb \
- 	aspeed-bmc-bytedance-g220a.dtb \
- 	aspeed-bmc-delta-ahe50dc.dtb \
- 	aspeed-bmc-facebook-bletchley.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-new file mode 100644
-index 000000000000..555485871e7a
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-@@ -0,0 +1,324 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/dts-v1/;
-+
-+#include "aspeed-g5.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+#include <dt-bindings/i2c/i2c.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/{
-+	model = "ASRock SPC621D8HM3 BMC";
-+	compatible = "asrock,spc621d8hm3-bmc", "aspeed,ast2500";
-+
-+	aliases {
-+		serial4 = &uart5;
-+
-+		i2c20 = &i2c1mux0ch0;
-+		i2c21 = &i2c1mux0ch1;
-+	};
-+
-+	chosen {
-+		stdout-path = &uart5;
-+	};
-+
-+	memory@80000000 {
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		/* BMC heartbeat */
-+		led-0 {
-+			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
-+			function = LED_FUNCTION_HEARTBEAT;
-+			color = <LED_COLOR_ID_GREEN>;
-+			linux,default-trigger = "timer";
-+		};
-+
-+		/* system fault */
-+		led-1 {
-+			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
-+			function = LED_FUNCTION_FAULT;
-+			color = <LED_COLOR_ID_RED>;
-+			panic-indicator;
-+		};
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>,
-+			<&adc 4>, <&adc 5>, <&adc 6>, <&adc 7>,
-+			<&adc 8>, <&adc 9>, <&adc 10>, <&adc 11>,
-+			<&adc 12>, <&adc 13>, <&adc 14>, <&adc 15>;
-+	};
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-max-frequency = <50000000>; /* 50 MHz */
-+#include "openbmc-flash-layout-64.dtsi"
-+	};
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&vuart {
-+	status = "okay";
-+	aspeed,lpc-io-reg = <0x2f8>;
-+	aspeed,lpc-interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-+};
-+
-+&mac0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
-+
-+	nvmem-cells = <&eth0_macaddress>;
-+	nvmem-cell-names = "mac-address";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	/* hardware monitor/thermal sensor */
-+	temperature-sensor@29 {
-+		compatible = "nuvoton,nct7802";
-+		reg = <0x29>;
-+	};
-+
-+	/* motherboard temp sensor (TMP1, near BMC) */
-+	temperature-sensor@4c {
-+		compatible = "nuvoton,w83773g";
-+		reg = <0x4c>;
-+	};
-+
-+	/* motherboard FRU eeprom */
-+	eeprom@50 {
-+		compatible = "st,24c128", "atmel,24c128";
-+		reg = <0x50>;
-+		pagesize = <16>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		eth0_macaddress: macaddress@3f80 {
-+			reg = <0x3f80 6>;
-+		};
-+	};
-+
-+	/* M.2 slot smbus mux */
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9545";
-+		reg = <0x71>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		i2c1mux0ch0: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		i2c1mux0ch1: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+};
-+
-+&i2c12 {
-+	status = "okay";
-+};
-+
-+&i2c13 {
-+	status = "okay";
-+};
-+
-+&video {
-+	status = "okay";
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&lpc_ctrl {
-+	status = "okay";
-+};
-+
-+&lpc_snoop {
-+	status = "okay";
-+	snoop-ports = <0x80>;
-+};
-+
-+&kcs3 {
-+	status = "okay";
-+	aspeed,lpc-io-reg = <0xca2>;
-+};
-+
-+&peci0 {
-+	status = "okay";
-+};
-+
-+&pwm_tacho {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm0_default
-+		&pinctrl_pwm2_default
-+		&pinctrl_pwm3_default
-+		&pinctrl_pwm4_default>;
-+
-+	fan@0 {
-+		reg = <0x00>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x00>;
-+	};
-+
-+	fan@2 {
-+		reg = <0x02>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x02>;
-+	};
-+
-+	fan@3 {
-+		reg = <0x03>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x03>;
-+	};
-+
-+	fan@4 {
-+		reg = <0x04>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x04>;
-+	};
-+};
-+
-+&gpio {
-+	status = "okay";
-+	gpio-line-names =
-+		/*  A */ "LOCATORLED_STATUS_N", "LOCATORBTN_N",
-+			"BMC_READY_N", "FM_SPD_DDRCPU_LVLSHFT_EN",
-+			"", "", "", "",
-+		/*  B */ "NODE_ID_1", "NODE_ID_2", "PSU_FAN_FAIL_N", "",
-+			"", "", "", "GPIO_RST",
-+		/*  C */ "", "", "", "", "", "", "", "",
-+		/*  D */ "FP_PWR_BTN_MUX_N", "FM_BMC_PWRBTN_OUT_N",
-+			"FP_RST_BTN_N", "RST_BMC_RSTBTN_OUT_N",
-+			"NMI_BTN_N", "BMC_NMI",
-+			"", "",
-+		/*  E */ "", "", "", "FM_ME_RCVR_N", "", "", "", "",
-+		/*  F */ "BMC_SMB_SEL_N", "FM_CPU2_DISABLE_COD_N",
-+			"FM_REMOTE_DEBUG_BMC_EN", "FM_CPU_ERR0_LVT3_EN",
-+			"FM_CPU_ERR1_LVT3_EN", "FM_CPU_ERR2_LVT3_EN",
-+			"FM_MEM_THERM_EVENT_CPU1_LVT3_N", "FM_MEM_THERM_EVENT_CPU2_LVT3_N",
-+		/*  G */ "HWM_BAT_EN", "", "BMC_PHYRST_N", "FM_BIOS_SPI_BMC_CTRL",
-+			"BMC_ALERT1_N", "BMC_ALERT2_N", "BMC_ALERT3_N", "IRQ_SML0_ALERT_N",
-+		/*  H */ "BMC_SMB_PRESENT_1_N", "FM_PCH_CORE_VID_0", "FM_PCH_CORE_VID_1", "",
-+			"FM_MFG_MODE", "BMC_RTCRST", "BMC_HB_LED_N", "BMC_CASEOPEN",
-+		/*  I */ "IRQ_PVDDQ_ABCD_CPU1_VRHOT_LVC3_N", "IRQ_PVDDQ_ABCD_CPU2_VRHOT_LVC3_N",
-+			"IRQ_PVDDQ_EFGH_CPU1_VRHOT_LVC3_N", "IRQ_PVDDQ_EFGH_CPU2_VRHOT_LVC3_N",
-+			"", "", "", "",
-+		/*  J */ "", "", "", "", "", "", "", "",
-+		/*  K */ "", "", "", "", "", "", "", "",
-+		/*  L */ "", "", "", "", "", "", "", "",
-+		/*  M */ "FM_PVCCIN_CPU1_PWR_IN_ALERT_N", "FM_PVCCIN_CPU2_PWR_IN_ALERT_N",
-+			"IRQ_PVCCIN_CPU1_VRHOT_LVC3_N", "IRQ_PVCCIN_CPU2_VRHOT_LVC3_N",
-+			"FM_CPU1_PROCHOT_BMC_LVC3_N", "",
-+			"FM_CPU1_MEMHOT_OUT_N", "FM_CPU2_MEMHOT_OUT_N",
-+		/*  N */ "", "", "", "", "", "", "", "",
-+		/*  O */ "", "", "", "", "", "", "", "",
-+		/*  P */ "", "", "", "", "", "", "", "",
-+		/*  Q */ "", "", "", "", "", "", "RST_GLB_RST_WARN_N", "PCIE_WAKE_N",
-+		/*  R */ "", "", "FM_BMC_SUSACK_N", "FM_BMC_EUP_LOT6_N",
-+			"", "FM_BMC_PCH_SCI_LPC_N", "", "",
-+		/*  S */ "FM_DBP_PRESENT_N", "FM_CPU2_SKTOCC_LCT3_N",
-+			"FM_CPU1_FIVR_FAULT_LVT3", "FM_CPU2_FIVR_FAULT_LVT3",
-+			 "", "", "", "",
-+		/*  T */ "", "", "", "", "", "", "", "",
-+		/*  U */ "", "", "", "", "", "", "", "",
-+		/*  V */ "", "", "", "", "", "", "", "",
-+		/*  W */ "", "", "", "", "", "", "", "",
-+		/*  X */ "", "", "", "", "", "", "", "",
-+		/*  Y */ "FM_SLPS3_N", "FM_SLPS4_N", "", "FM_BMC_ONCTL_N_PLD",
-+			"", "", "", "",
-+		/*  Z */ "FM_CPU_MSMI_CATERR_LVT3_N", "", "SYSTEM_FAULT_LED_N", "BMC_THROTTLE_N",
-+			"", "", "", "",
-+		/* AA */ "FM_CPU1_THERMTRIP_LATCH_LVT3_N", "FM_CPU2_THERMTRIP_LATCH_LVT3_N",
-+			"FM_BIOS_POST_COMPLT_N", "DBP_BMC_SYSPWROK",
-+			"", "IRQ_SML0_ALERT_MUX_N",
-+			"IRQ_SMI_ACTIVE_N", "IRQ_NMI_EVENT_N",
-+		/* AB */ "FM_PCH_BMC_THERMTRIP_N", "PWRGD_SYS_PWROK",
-+			"ME_OVERRIDE", "IRQ_BMC_PCH_SMI_LPC_N",
-+			"", "", "", "",
-+		/* AC */ "", "", "", "", "", "", "", "";
-+};
-+
-+&adc {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default /* 3VSB */
-+		&pinctrl_adc1_default	   /* 5VSB */
-+		&pinctrl_adc2_default	   /* CPU1 */
-+		&pinctrl_adc3_default	   /* NC */
-+		&pinctrl_adc4_default	   /* VCCMABCD */
-+		&pinctrl_adc5_default	   /* VCCMEFGH */
-+		&pinctrl_adc6_default	   /* NC */
-+		&pinctrl_adc7_default	   /* NC */
-+		&pinctrl_adc8_default	   /* PVNN_PCH */
-+		&pinctrl_adc9_default	   /* 1P05PCH */
-+		&pinctrl_adc10_default	   /* 1P8PCH */
-+		&pinctrl_adc11_default	   /* BAT */
-+		&pinctrl_adc12_default	   /* 3V */
-+		&pinctrl_adc13_default	   /* 5V */
-+		&pinctrl_adc14_default	   /* 12V */
-+		&pinctrl_adc15_default>;   /* GND */
-+};
--- 
-2.42.0
+Subject: [PATCH] Test divide err in drm
+Author: eadavis@qq.com
+
+please test divide err in drm
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ac347a0655db
+
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..7c6d0229630d 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -36,6 +36,7 @@
+ #include <linux/list.h>
+ #include <linux/list_sort.h>
+ #include <linux/of.h>
++#include <linux/overflow.h>
+ 
+ #include <video/of_display_timing.h>
+ #include <video/of_videomode.h>
+@@ -1285,7 +1286,7 @@ EXPORT_SYMBOL(drm_mode_set_name);
+  */
+ int drm_mode_vrefresh(const struct drm_display_mode *mode)
+ {
+-	unsigned int num, den;
++	unsigned int num, den, x;
+ 
+ 	if (mode->htotal == 0 || mode->vtotal == 0)
+ 		return 0;
+@@ -1297,8 +1298,11 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
+ 		num *= 2;
+ 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+ 		den *= 2;
+-	if (mode->vscan > 1)
++	if (mode->vscan > 1) {
++		if (unlikely(check_mul_overflow(den, mode->vscan, &x)))
++			return 0;
+ 		den *= mode->vscan;
++	}
+ 
+ 	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
+ }
 
