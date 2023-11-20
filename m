@@ -2,55 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A937F110A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FB17F110C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjKTK6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
+        id S232972AbjKTK7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:59:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233157AbjKTK6S (ORCPT
+        with ESMTP id S232789AbjKTK66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:58:18 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94F44116
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:57:54 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45E96FEC;
-        Mon, 20 Nov 2023 02:58:40 -0800 (PST)
-Received: from [10.57.73.98] (unknown [10.57.73.98])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C87023F7A6;
-        Mon, 20 Nov 2023 02:57:51 -0800 (PST)
-Message-ID: <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
-Date:   Mon, 20 Nov 2023 10:57:50 +0000
+        Mon, 20 Nov 2023 05:58:58 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71529C;
+        Mon, 20 Nov 2023 02:58:54 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5bddf66ed63so2877690a12.1;
+        Mon, 20 Nov 2023 02:58:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700477934; x=1701082734; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hss0DScungQG3wuEN+tDn4zevM2VhdEJWx+ngv2QB2g=;
+        b=h5alUNaa6bBArrEjXy7zfYJ9s2J+tMGXyqjDyzHuPWqFJK4Dt/RXUtIGQyeS5S0sU6
+         FSqLZPUpyXNK1nWFqJb/G1hxBQOVIj9II/nOQE/Tgr8GHgWeZbcrNfQW8TsU24fIS2wL
+         hxTkVD8en2hMoLSk8xR6n7H6uT21hzwQzmS0sVxyuPOgbc61giqFLm5tesF1Sm8o5X8A
+         JYCEvP6c3RGsXTKdpk1k09R0Xl0u7vwZX/+MUFCf8O4XFA5X8MFK6ElFGWmd+wFyBqrK
+         HLMmZEP6Ip9cIu9vklH9FJdEm8I4bGz7NgHejFa5O1QzVBJlMmzjyhIXxMM/CTmwmaGV
+         KTow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700477934; x=1701082734;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hss0DScungQG3wuEN+tDn4zevM2VhdEJWx+ngv2QB2g=;
+        b=VsgoOMU+hxuyvKt3gGaMQgz05ChbYmyvbebv41ezDNDr18i64lOSSq1oVPvsn2/riv
+         aUjt5hi2RE03jICFRy/jXmneD1vxKsqxPj4CPHgruXXqhiOHXBhoTqUUeAOXBPHG4emG
+         UE/oPGcEkeYxiJApI9vUV2+1yIT6E8s30UBl2z/EHyL15x2xPd8S6Ktp8VWFooNawp1I
+         fw7fqbQnM3KzROJ7htg0RVhJYuhs6jcS7jhGzo+29yfHKxESibxRUkSCX68oXcruE1KR
+         vNYA8dxWfhKtrD6/fqwrjg/r6MY7FKX9oqLkpg6h+cAhPqan6FiU/G6LlDPdXKqt53VL
+         riog==
+X-Gm-Message-State: AOJu0YyaZyv7Rh4K1DanXgTeYd9JMiEa3SQJ9kCQEf+ObGxEWoXCSYGT
+        8Ja9klLM1epqptWLNYD+lUI=
+X-Google-Smtp-Source: AGHT+IE0ir36wseZ1ERuTn6WVBZ2hZ9lSDF8lyMELvj+kI6imXtdURMceGktUBcNOEOyuiWaZcapPg==
+X-Received: by 2002:a05:6a20:3d87:b0:187:2b7b:1b87 with SMTP id s7-20020a056a203d8700b001872b7b1b87mr9778084pzi.21.1700477933855;
+        Mon, 20 Nov 2023 02:58:53 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id v10-20020aa7850a000000b006be4bb0d2dcsm6010021pfn.149.2023.11.20.02.58.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 02:58:53 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 667ED101D8174; Mon, 20 Nov 2023 17:58:51 +0700 (WIB)
+Date:   Mon, 20 Nov 2023 17:58:51 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Yi-De Wu <yi-de.wu@mediatek.com>,
+        Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+        Ze-Yu Wang <ze-yu.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        David Bradil <dbrazdil@google.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Jade Shih <jades.shih@mediatek.com>,
+        Ivan Tseng <ivan.tseng@mediatek.com>,
+        My Chuang <my.chuang@mediatek.com>,
+        Shawn Hsiao <shawn.hsiao@mediatek.com>,
+        PeiLun Suei <peilun.suei@mediatek.com>,
+        Liju Chen <liju-clr.chen@mediatek.com>,
+        Willix Yeh <chi-shen.yeh@mediatek.com>,
+        Kevenny Hsieh <kevenny.hsieh@mediatek.com>
+Subject: Re: [PATCH v7 01/16] docs: geniezone: Introduce GenieZone hypervisor
+Message-ID: <ZVs760ggqT-erCji@archie.me>
+References: <20231116152756.4250-1-yi-de.wu@mediatek.com>
+ <20231116152756.4250-2-yi-de.wu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Barry Song <21cnbao@gmail.com>
-Cc:     steven.price@arm.com, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-References: <20231114014313.67232-1-v-songbaohua@oppo.com>
- <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
- <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com>
- <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231116152756.4250-2-yi-de.wu@mediatek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,202 +97,212 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 09:11, David Hildenbrand wrote:
-> On 17.11.23 19:41, Barry Song wrote:
->> On Fri, Nov 17, 2023 at 7:28 PM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> On 17.11.23 01:15, Barry Song wrote:
->>>> On Fri, Nov 17, 2023 at 7:47 AM Barry Song <21cnbao@gmail.com> wrote:
->>>>>
->>>>> On Thu, Nov 16, 2023 at 5:36 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>
->>>>>> On 15.11.23 21:49, Barry Song wrote:
->>>>>>> On Wed, Nov 15, 2023 at 11:16 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>>>
->>>>>>>> On 14.11.23 02:43, Barry Song wrote:
->>>>>>>>> This patch makes MTE tags saving and restoring support large folios,
->>>>>>>>> then we don't need to split them into base pages for swapping out
->>>>>>>>> on ARM64 SoCs with MTE.
->>>>>>>>>
->>>>>>>>> arch_prepare_to_swap() should take folio rather than page as parameter
->>>>>>>>> because we support THP swap-out as a whole.
->>>>>>>>>
->>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather than
->>>>>>>>> folio as swap-in always works at the granularity of base pages right
->>>>>>>>> now.
->>>>>>>>
->>>>>>>> ... but then we always have order-0 folios and can pass a folio, or what
->>>>>>>> am I missing?
->>>>>>>
->>>>>>> Hi David,
->>>>>>> you missed the discussion here:
->>>>>>>
->>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68MkhjMDw@mail.gmail.com/
->>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com/
->>>>>>
->>>>>> Okay, so you want to handle the refault-from-swapcache case where you get a
->>>>>> large folio.
->>>>>>
->>>>>> I was mislead by your "folio as swap-in always works at the granularity of
->>>>>> base pages right now" comment.
->>>>>>
->>>>>> What you actually wanted to say is "While we always swap in small folios, we
->>>>>> might refault large folios from the swapcache, and we only want to restore
->>>>>> the tags for the page of the large folio we are faulting on."
->>>>>>
->>>>>> But, I do if we can't simply restore the tags for the whole thing at once
->>>>>> at make the interface page-free?
->>>>>>
->>>>>> Let me elaborate:
->>>>>>
->>>>>> IIRC, if we have a large folio in the swapcache, the swap entries/offset are
->>>>>> contiguous. If you know you are faulting on page[1] of the folio with a
->>>>>> given swap offset, you can calculate the swap offset for page[0] simply by
->>>>>> subtracting from the offset.
->>>>>>
->>>>>> See page_swap_entry() on how we perform this calculation.
->>>>>>
->>>>>>
->>>>>> So you can simply pass the large folio and the swap entry corresponding
->>>>>> to the first page of the large folio, and restore all tags at once.
->>>>>>
->>>>>> So the interface would be
->>>>>>
->>>>>> arch_prepare_to_swap(struct folio *folio);
->>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_entry);
->>>>>>
->>>>>> I'm sorry if that was also already discussed.
->>>>>
->>>>> This has been discussed. Steven, Ryan and I all don't think this is a good
->>>>> option. in case we have a large folio with 16 basepages, as do_swap_page
->>>>> can only map one base page for each page fault, that means we have
->>>>> to restore 16(tags we restore in each page fault) * 16(the times of page
->>>>> faults)
->>>>> for this large folio.
->>>>>
->>>>> and still the worst thing is the page fault in the Nth PTE of large folio
->>>>> might free swap entry as that swap has been in.
->>>>> do_swap_page()
->>>>> {
->>>>>      /*
->>>>>       * Remove the swap entry and conditionally try to free up the swapcache.
->>>>>       * We're already holding a reference on the page but haven't mapped it
->>>>>       * yet.
->>>>>       */
->>>>>       swap_free(entry);
->>>>> }
->>>>>
->>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you might
->>>>> access
->>>>> a freed tag.
->>>>
->>>> And David, one more information is that to keep the parameter of
->>>> arch_swap_restore() unchanged as folio,
->>>> i actually tried an ugly approach in rfc v2:
->>>>
->>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
->>>> +{
->>>> + if (system_supports_mte()) {
->>>> +      /*
->>>> +       * We don't support large folios swap in as whole yet, but
->>>> +       * we can hit a large folio which is still in swapcache
->>>> +       * after those related processes' PTEs have been unmapped
->>>> +       * but before the swapcache folio  is dropped, in this case,
->>>> +       * we need to find the exact page which "entry" is mapping
->>>> +       * to. If we are not hitting swapcache, this folio won't be
->>>> +       * large
->>>> +     */
->>>> + struct page *page = folio_file_page(folio, swp_offset(entry));
->>>> + mte_restore_tags(entry, page);
->>>> + }
->>>> +}
->>>>
->>>> And obviously everybody in the discussion hated it :-)
->>>>
->>>
->>> I can relate :D
->>>
->>>> i feel the only way to keep API unchanged using folio is that we
->>>> support restoring PTEs
->>>> all together for the whole large folio and we support the swap-in of
->>>> large folios. This is
->>>> in my list to do, I will send a patchset based on Ryan's large anon
->>>> folios series after a
->>>> while. till that is really done, it seems using page rather than folio
->>>> is a better choice.
->>>
->>> I think just restoring all tags and remembering for a large folio that
->>> they have been restored might be the low hanging fruit. But as always,
->>> devil is in the detail :)
->>
->> Hi David,
->> thanks for all your suggestions though my feeling is this is too complex and
->> is not worth it for at least  three reasons.
-> 
-> Fair enough.
-> 
->>
->> 1. In multi-thread and particularly multi-processes, we need some locks to
->> protect and help know if one process is the first one to restore tags and if
->> someone else is restoring tags when one process wants to restore. there
->> is not this kind of fine-grained lock at all.
-> 
-> We surely always hold the folio lock on swapin/swapout, no? So when these
-> functions are called.
-> 
-> So that might just work already -- unless I am missing something important.
+On Thu, Nov 16, 2023 at 11:27:41PM +0800, Yi-De Wu wrote:
+> diff --git a/Documentation/virt/geniezone/introduction.rst b/Documentation/virt/geniezone/introduction.rst
+> new file mode 100644
+> index 000000000000..fb9fa41bcfb8
+> --- /dev/null
+> +++ b/Documentation/virt/geniezone/introduction.rst
+> @@ -0,0 +1,86 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +======================
+> +GenieZone Introduction
+> +======================
+> +
+> +Overview
+> +========
+> +GenieZone hypervisor(gzvm) is a type-1 hypervisor that supports various virtual
+"... hypervisor (gzvm) ..."
+> +machine types and provides security features such as TEE-like scenarios and
+> +secure boot. It can create guest VMs for security use cases and has
+> +virtualization capabilities for both platform and interrupt. Although the
+> +hypervisor can be booted independently, it requires the assistance of GenieZone
+> +hypervisor kernel driver(gzvm-ko) to leverage the ability of Linux kernel for
+"hypervisor kernel driver (also named gzvm) ..."
+> +vCPU scheduling, memory management, inter-VM communication and virtio backend
+> +support.
+> +
+> +Supported Architecture
+> +======================
+> +GenieZone now only supports MediaTek ARM64 SoC.
+> +
+> +Features
+> +========
+> +
+> +- vCPU Management
+> +
+> +VM manager aims to provide vCPUs on the basis of time sharing on physical CPUs.
+> +It requires Linux kernel in host VM for vCPU scheduling and VM power management.
+> +
+> +- Memory Management
+> +
+> +Direct use of physical memory from VMs is forbidden and designed to be dictated
+> +to the privilege models managed by GenieZone hypervisor for security reason.
+> +With the help of gzvm-ko, the hypervisor would be able to manipulate memory as
 
-We already have a page flag that we use to mark the page as having had its mte
-state associated; PG_mte_tagged. This is currently per-page (and IIUC, Matthew
-has been working to remove as many per-page flags as possible). Couldn't we just
-make arch_swap_restore() take a folio, restore the tags for *all* the pages and
-repurpose that flag to be per-folio (so head page only)? It looks like the the
-mte code already manages all the serialization requirements too. Then
-arch_swap_restore() can just exit early if it sees the flag is already set on
-the folio.
+s/gzvm-ko/gzvm module/g
 
-One (probably nonsense) concern that just sprung to mind about having MTE work
-with large folios in general; is it possible that user space could cause a large
-anon folio to be allocated (THP), then later mark *part* of it to be tagged with
-MTE? In this case you would need to apply tags to part of the folio only.
-Although I have a vague recollection that any MTE areas have to be marked at
-mmap time and therefore this type of thing is impossible?
+> +objects.
+> +
+> +- Virtual Platform
+> +
+> +We manage to emulate a virtual mobile platform for guest OS running on guest
+> +VM. The platform supports various architecture-defined devices, such as
+> +virtual arch timer, GIC, MMIO, PSCI, and exception watching...etc.
+> +
+> +- Inter-VM Communication
+> +
+> +Communication among guest VMs was provided mainly on RPC. More communication
+> +mechanisms were to be provided in the future based on VirtIO-vsock.
+> +
+> +- Device Virtualization
+> +
+> +The solution is provided using the well-known VirtIO. The gzvm-ko would
+> +redirect MMIO traps back to VMM where the virtual devices are mostly emulated.
+> +Ioeventfd is implemented using eventfd for signaling host VM that some IO
+> +events in guest VMs need to be processed.
+> +
+> +- Interrupt virtualization
+> +
+> +All Interrupts during some guest VMs running would be handled by GenieZone
+> +hypervisor with the help of gzvm-ko, both virtual and physical ones. In case
+> +there's no guest VM running out there, physical interrupts would be handled by
+> +host VM directly for performance reason. Irqfd is also implemented using
+> +eventfd for accepting vIRQ requests in gzvm-ko.
+> +
+> +Platform architecture component
+> +===============================
+> +
+> +- vm
+> +
+> +The vm component is responsible for setting up the capability and memory
+> +management for the protected VMs. The capability is mainly about the lifecycle
+> +control and boot context initialization. And the memory management is highly
+> +integrated with ARM 2-stage translation tables to convert VA to IPA to PA under
+> +proper security measures required by protected VMs.
+> +
+> +- vcpu
+> +
+> +The vcpu component is the core of virtualizing aarch64 physical CPU runnable,
+> +and it controls the vCPU lifecycle including creating, running and destroying.
+> +With self-defined exit handler, the vm component would be able to act
+> +accordingly before terminated.
+> +
+> +- vgic
+> +
+> +The vgic component exposes control interfaces to Linux kernel via irqchip, and
+> +we intend to support all SPI, PPI, and SGI. When it comes to virtual
+> +interrupts, the GenieZone hypervisor would write to list registers and trigger
+> +vIRQ injection in guest VMs via GIC.
 
-Thanks,
-Ryan
+Descriptions for feature lists can be aligned:
 
+---- >8 ----
+diff --git a/Documentation/virt/geniezone/introduction.rst b/Documentation/virt/geniezone/introduction.rst
+index fb9fa41bcfb8b3..f37ddf4e979992 100644
+--- a/Documentation/virt/geniezone/introduction.rst
++++ b/Documentation/virt/geniezone/introduction.rst
+@@ -24,63 +24,64 @@ Features
+ 
+ - vCPU Management
+ 
+-VM manager aims to provide vCPUs on the basis of time sharing on physical CPUs.
+-It requires Linux kernel in host VM for vCPU scheduling and VM power management.
++  VM manager aims to provide vCPUs on the basis of time sharing on physical
++  CPUs. It requires Linux kernel in host VM for vCPU scheduling and VM power
++  management.
+ 
+ - Memory Management
+ 
+-Direct use of physical memory from VMs is forbidden and designed to be dictated
+-to the privilege models managed by GenieZone hypervisor for security reason.
+-With the help of gzvm-ko, the hypervisor would be able to manipulate memory as
+-objects.
++  Direct use of physical memory from VMs is forbidden and designed to be
++  dictated to the privilege models managed by GenieZone hypervisor for security
++  reason. With the help of gzvm-ko, the hypervisor would be able to manipulate
++  memory as objects.
+ 
+ - Virtual Platform
+ 
+-We manage to emulate a virtual mobile platform for guest OS running on guest
+-VM. The platform supports various architecture-defined devices, such as
+-virtual arch timer, GIC, MMIO, PSCI, and exception watching...etc.
++  We manage to emulate a virtual mobile platform for guest OS running on guest
++  VM. The platform supports various architecture-defined devices, such as
++  virtual arch timer, GIC, MMIO, PSCI, and exception watching...etc.
+ 
+ - Inter-VM Communication
+ 
+-Communication among guest VMs was provided mainly on RPC. More communication
+-mechanisms were to be provided in the future based on VirtIO-vsock.
++  Communication among guest VMs was provided mainly on RPC. More communication
++  mechanisms were to be provided in the future based on VirtIO-vsock.
+ 
+ - Device Virtualization
+ 
+-The solution is provided using the well-known VirtIO. The gzvm-ko would
+-redirect MMIO traps back to VMM where the virtual devices are mostly emulated.
+-Ioeventfd is implemented using eventfd for signaling host VM that some IO
+-events in guest VMs need to be processed.
++  The solution is provided using the well-known VirtIO. The gzvm-ko would
++  redirect MMIO traps back to VMM where the virtual devices are mostly
++  emulated. Ioeventfd is implemented using eventfd for signaling host VM that
++  some IO events in guest VMs need to be processed.
+ 
+ - Interrupt virtualization
+ 
+-All Interrupts during some guest VMs running would be handled by GenieZone
+-hypervisor with the help of gzvm-ko, both virtual and physical ones. In case
+-there's no guest VM running out there, physical interrupts would be handled by
+-host VM directly for performance reason. Irqfd is also implemented using
+-eventfd for accepting vIRQ requests in gzvm-ko.
++  All Interrupts during some guest VMs running would be handled by GenieZone
++  hypervisor with the help of gzvm-ko, both virtual and physical ones. In case
++  there's no guest VM running out there, physical interrupts would be handled
++  by host VM directly for performance reason. Irqfd is also implemented using
++  eventfd for accepting vIRQ requests in gzvm-ko.
+ 
+ Platform architecture component
+ ===============================
+ 
+ - vm
+ 
+-The vm component is responsible for setting up the capability and memory
+-management for the protected VMs. The capability is mainly about the lifecycle
+-control and boot context initialization. And the memory management is highly
+-integrated with ARM 2-stage translation tables to convert VA to IPA to PA under
+-proper security measures required by protected VMs.
++  The vm component is responsible for setting up the capability and memory
++  management for the protected VMs. The capability is mainly about the
++  lifecycle control and boot context initialization. And the memory management
++  is highly integrated with ARM 2-stage translation tables to convert VA to IPA
++  to PA under proper security measures required by protected VMs.
+ 
+ - vcpu
+ 
+-The vcpu component is the core of virtualizing aarch64 physical CPU runnable,
+-and it controls the vCPU lifecycle including creating, running and destroying.
+-With self-defined exit handler, the vm component would be able to act
+-accordingly before terminated.
++  The vcpu component is the core of virtualizing aarch64 physical CPU runnable,
++  and it controls the vCPU lifecycle including creating, running and
++  destroying. With self-defined exit handler, the vm component would be able to
++  act accordingly before terminated.
+ 
+ - vgic
+ 
+-The vgic component exposes control interfaces to Linux kernel via irqchip, and
+-we intend to support all SPI, PPI, and SGI. When it comes to virtual
+-interrupts, the GenieZone hypervisor would write to list registers and trigger
+-vIRQ injection in guest VMs via GIC.
++  The vgic component exposes control interfaces to Linux kernel via irqchip,
++  and we intend to support all SPI, PPI, and SGI. When it comes to virtual
++  interrupts, the GenieZone hypervisor would write to list registers and
++  trigger vIRQ injection in guest VMs via GIC.
 
+Thanks.
 
-> 
->>
->> 2. folios are not always large, in many cases, they have just one base page
->> and there is no tail to remember. and it seems pretty ugly if we turn out have
->> to use different ways to remember restoring state for small folios and
->> large folios.
-> 
-> if (folio_test_large(folio)) {
-> 
-> } else {
-> 
-> }
-> 
-> Easy ;)
-> 
-> Seriously, it's not that complicated and/or ugly.
-> 
->>
->> 3. there is nothing wrong to use page to restore tags since right now swap-in
->> is page. restoring tags and swapping-in become harmonious with each other
->> after this patch. I would argue what is really wrong is the current mainline.
->>
->> If eventually we are able to do_swap_page() for the whole large folio, we
->> move to folios for MTE tags as well. These two behaviours make a new
->> harmonious picture again.
->>
-> 
-> Just making both functions consume folios is much cleaner and also more future
-> proof.
-> 
-> Consuming now a page where we used to consume a folio is a step backwards.
-> 
-
+-- 
+An old man doll... just what I always wanted! - Clara
