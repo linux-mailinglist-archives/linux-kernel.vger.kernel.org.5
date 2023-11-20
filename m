@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BDC7F1F68
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 132EE7F1F6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjKTVqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        id S232430AbjKTVqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbjKTVp5 (ORCPT
+        with ESMTP id S232003AbjKTVqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:45:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D239A4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:45:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FB0C433C8;
-        Mon, 20 Nov 2023 21:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700516753;
-        bh=wTllnXLudtUSjHaEEAUK+L8ZBRUeteK9UhJ3dFHB6P8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xhk8t6N3NQbIK326t8vzbsC+Lh1F7QrLoyQS5Ngt/uCzxNxN1JnMsa3RF5AMjo7xP
-         1pKL4LaoF4ivTbBnK5MnMyKKLk03xf7wmnEKFUD8DGnnFmxJn1eZeW27On+/qwCKtQ
-         zX6ux2sLm96LaMruFuqUAX1Jy99M6InH4ZT1n3ddfUCWg6mjZvUXxPHxe1iB9k/7aS
-         Ttp3zViQ4WOpzAmGOkaZ1mKvrVk9rIFuOjdZ5acoNbUBA3U4s1BPhBWt3/TrgIPCSn
-         NOWtkHeoIjZkNPv/E3rDBr1ug2f/aounyeTdaO5Fb7z1WvjfhWhapi177br/EGlHEQ
-         g8CzuXOpLfAEw==
-Date:   Mon, 20 Nov 2023 13:45:51 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231120134551.30d0306c@kernel.org>
-In-Reply-To: <20231120195858.wpaymolv6ws4hntp@skbuf>
-References: <20231118183433.30ca1d1a@kernel.org>
-        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
-        <20231120105255.cgbart5amkg4efaz@skbuf>
-        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
-        <20231120120601.ondrhbkqpnaozl2q@skbuf>
-        <20231120144929.3375317e@kmaincent-XPS-13-7390>
-        <20231120142316.d2emoaqeej2pg4s3@skbuf>
-        <20231120093723.4d88fb2a@kernel.org>
-        <157c68b0-687e-4333-9d59-fad3f5032345@lunn.ch>
-        <20231120105148.064dc4bd@kernel.org>
-        <20231120195858.wpaymolv6ws4hntp@skbuf>
+        Mon, 20 Nov 2023 16:46:33 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2013D8;
+        Mon, 20 Nov 2023 13:46:29 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32fa7d15f4eso3780962f8f.3;
+        Mon, 20 Nov 2023 13:46:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700516788; x=1701121588; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ifrjBfgOSiyuCFRkxJCsnT3OdDkva6hhJuoAwARmBUY=;
+        b=h5VtFHtwSYDoDenYVurUanZG/UlMACjpgIUuqsqH13Hu2SG9OYGib3t+j+pMeKj5bT
+         yNaGGFRhPCVmk1vfEhqN60bCfcS3xJ6fgQYTsljIwdW67lHt1F8DB4tlLYehVmqVKUpY
+         VjCPBG2CLQ3afEfsGJss77pHS6zRYYpKJoABkT3lTDtsI+8ePj+LjpPGPdkhhqpu7PPo
+         4zlpe+SzeSLObKpQhC9b/ghpLHDFJuJQrsshgRL+7V4J9VMqcSrFxB/RDiLXako3n8Sz
+         0vXVltQ3ry7dZgkQYB+A/vDuNGpJmqFOQPdbWdRq/ryPQX0EM8cF0bSQaemeaxTUGzFd
+         1hBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700516788; x=1701121588;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ifrjBfgOSiyuCFRkxJCsnT3OdDkva6hhJuoAwARmBUY=;
+        b=CUQXvxh/TrEjJdw3Fxi/3WyiMO8ZYGmjQJtpE2SkV9AfXcyIP5FYAiLaBrQ3VyA7nh
+         r5AhULJvKGwd2yKJKdW3Ls894kVSE1fOtoQYB24TdOOSmlQc389bMAHRroqc41d+cutr
+         bSpK9kw0Ld7ed9qAR8RuMXA0I5byINlfYuiuOo3kYzKmJ5qrfalHJmi2d3Tgc9NpZ31q
+         MqST0Co74wCv7/Bwghn9BCdnT6riAy/M2n3dTrgNyAZkKKxHWkZRYbvMdGBZFHkl2e9j
+         f/dT12NQ1uV7lndyFAPfdUFqTA0uU9acGCjt+01hfRBSpbXxaoOukdPcxaHBiXOiid1x
+         avSw==
+X-Gm-Message-State: AOJu0Yy3F7RFGz5iuoBLxxNUD+ptoEBj1TOpEdlqjkkdjhIQr8Lz5icf
+        xWrDuO92Pprqm+vmbdNftrw=
+X-Google-Smtp-Source: AGHT+IHp3LoF2DOrCwbBP5ZAP28MyKKAznq0CT/uy4NViD6EoST7Z+71CXBfeYQKBX9yVV00pAiniQ==
+X-Received: by 2002:adf:e9cb:0:b0:32d:9d3a:d8c0 with SMTP id l11-20020adfe9cb000000b0032d9d3ad8c0mr5215561wrn.60.1700516787764;
+        Mon, 20 Nov 2023 13:46:27 -0800 (PST)
+Received: from zotac.lan. (dynamic-2a02-3100-9030-5a00-2223-08ff-fe18-0310.310.pool.telefonica.de. [2a02:3100:9030:5a00:2223:8ff:fe18:310])
+        by smtp.gmail.com with ESMTPSA id i13-20020a5d584d000000b00332cb0937f4sm2667052wrf.33.2023.11.20.13.46.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 13:46:27 -0800 (PST)
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+To:     Wolfram Sang <wsa@kernel.org>, intel-gfx@lists.freedesktop.org
+Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jocelyn Falempe <jfalempe@redhat.com>,
+        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Yongqin Liu <yongqin.liu@linaro.org>,
+        John Stultz <jstultz@google.com>
+Subject: [PATCH v4 00/20] remove I2C_CLASS_DDC support
+Date:   Mon, 20 Nov 2023 22:46:03 +0100
+Message-ID: <20231120214624.9378-1-hkallweit1@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 21:58:58 +0200 Vladimir Oltean wrote:
-> I'm still waiting for you to fully clarify the "per socket vs global"
-> aspect, but independently of that, at least I understand why this is a
-> counter-argument to my proposal. I need to tune it a bit (ASSUMING that
-> we want DMA timestamps to "look like" hwtimestamps, and not like their
-> own thing, to user space), because the PHC index would no longer fully
-> identify a hwtstamp provider, so we need something more.
-> 
-> I imagine both ETHTOOL_MSG_TSINFO_GET and ETHTOOL_MSG_TSINFO_SET to
-> support a new (nest) nlattr called ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER.
-> 
-> This would contain (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_PHC_INDEX
-> and (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_QUALIFIER. It could be
-> extensible in the future, but this is the baseline and forms the key.
-> 
-> The latter takes values from an:
-> 
-> enum ethtool_hwstamp_provider_qualifier {
-> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_MAC,
-> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_PHY,
-> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_DMA,
-> };
+After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+Class-based device auto-detection is a legacy mechanism and shouldn't
+be used in new code. So we can remove this class completely now.
 
-Sounds reasonable. Having more attributes than just PHC index works.
-Given the lack of distinction between MAC and PHY for integrated NICs
-I'd lean towards ditching the "layers" completely and exposing 
-an "approximate" vs "precise" boolean. Approximate being the DMA point
-for NICs, but more generically a point that is separated from the wire
-by buffering or other variable length delay. Precise == IEEE 1588
-quality.
+Preferably this series should be applied via the i2c tree.
+
+v2:
+- change tag in commit subject of patch 03
+- add ack tags
+v3:
+- fix a compile error in patch 5
+v4:
+- more ack and review tags
+
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+---
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_i2c.c           |    1 -
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+ drivers/gpu/drm/ast/ast_i2c.c                     |    1 -
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c         |    1 -
+ drivers/gpu/drm/display/drm_dp_helper.c           |    1 -
+ drivers/gpu/drm/display/drm_dp_mst_topology.c     |    1 -
+ drivers/gpu/drm/gma500/cdv_intel_dp.c             |    1 -
+ drivers/gpu/drm/gma500/intel_gmbus.c              |    1 -
+ drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c        |    1 -
+ drivers/gpu/drm/gma500/psb_intel_sdvo.c           |    1 -
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_i2c.c   |    1 -
+ drivers/gpu/drm/i915/display/intel_gmbus.c        |    1 -
+ drivers/gpu/drm/i915/display/intel_sdvo.c         |    1 -
+ drivers/gpu/drm/loongson/lsdc_i2c.c               |    1 -
+ drivers/gpu/drm/mediatek/mtk_hdmi_ddc.c           |    1 -
+ drivers/gpu/drm/mgag200/mgag200_i2c.c             |    1 -
+ drivers/gpu/drm/msm/hdmi/hdmi_i2c.c               |    1 -
+ drivers/gpu/drm/radeon/radeon_i2c.c               |    1 -
+ drivers/gpu/drm/rockchip/inno_hdmi.c              |    1 -
+ drivers/gpu/drm/rockchip/rk3066_hdmi.c            |    1 -
+ drivers/gpu/drm/sun4i/sun4i_hdmi_i2c.c            |    1 -
+ drivers/video/fbdev/core/fb_ddc.c                 |    1 -
+ drivers/video/fbdev/cyber2000fb.c                 |    1 -
+ drivers/video/fbdev/i740fb.c                      |    1 -
+ drivers/video/fbdev/intelfb/intelfb_i2c.c         |   15 +++++----------
+ drivers/video/fbdev/matrox/i2c-matroxfb.c         |   12 ++++--------
+ drivers/video/fbdev/s3fb.c                        |    1 -
+ drivers/video/fbdev/tdfxfb.c                      |    1 -
+ drivers/video/fbdev/tridentfb.c                   |    1 -
+ drivers/video/fbdev/via/via_i2c.c                 |    1 -
+ include/linux/i2c.h                               |    1 -
+ 31 files changed, 9 insertions(+), 47 deletions(-)
