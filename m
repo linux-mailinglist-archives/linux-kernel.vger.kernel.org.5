@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7C57F1D3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2A87F1D36
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbjKTTTG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 14:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        id S229751AbjKTTS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjKTTTC (ORCPT
+        with ESMTP id S229504AbjKTTSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:19:02 -0500
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C692DC;
-        Mon, 20 Nov 2023 11:18:58 -0800 (PST)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5ca164bc0bbso16086097b3.3;
-        Mon, 20 Nov 2023 11:18:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700507937; x=1701112737;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GifO7/JOpk0NmY1mNUiYBsJ2MaEkt42xKaLVw+ulB/A=;
-        b=j/X/pu4PsJt1neN8AhYk+mvnpLy3S5NCW/fMYBYEGUGD6YwXWv0JdJLeDTXfgsWm8v
-         ZKO/l4rcY+DN9YWHyHiLBcNCTTI1Bst1+1H3UhJ7Kv2Ce/p2Qf5yTa9QQ/tO587789ni
-         m1s8wjINWe6tPNf/oY3F7jI+dQ2bpJKXGNgKRzqN0IgBMFsq69fs4TGHcVW5hsfvUUI6
-         kbKVSliKLR8ww+UIjErdUFxw4g2nhZjTkNx/KUBHsor1tqKQbmTLah50DyhcehcqL4pr
-         gw5BzyH2b6WhlT/8rO6aP/KmN05ZVGvdRHeJMjFy3LttoDxurc992p6AkQgFHZfFhtKF
-         TfbQ==
-X-Gm-Message-State: AOJu0YyJLL0KoJf3mIbDST8xun+fle994yo+g5jd4e9nIRYsLB16MCZ1
-        w6SHNpnv1AhI4TWwFtwYrkGuKlq7JucuXQ==
-X-Google-Smtp-Source: AGHT+IEKdxVslAs4lK2SU9f3DeKTzFiFHV1s9HlcTDGXfGnuFAe2XPArvKNPLD8UxlJgQor2VqYq8Q==
-X-Received: by 2002:a81:7e10:0:b0:5ca:67e8:4fab with SMTP id o16-20020a817e10000000b005ca67e84fabmr3717057ywn.8.1700507937165;
-        Mon, 20 Nov 2023 11:18:57 -0800 (PST)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id z126-20020a816584000000b0059b50f126fbsm2527313ywb.114.2023.11.20.11.18.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 11:18:55 -0800 (PST)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so4334191276.0;
-        Mon, 20 Nov 2023 11:18:54 -0800 (PST)
-X-Received: by 2002:a5b:f4a:0:b0:da0:c49a:5103 with SMTP id
- y10-20020a5b0f4a000000b00da0c49a5103mr7300082ybr.47.1700507934171; Mon, 20
- Nov 2023 11:18:54 -0800 (PST)
+        Mon, 20 Nov 2023 14:18:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCAA3BB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:18:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C05A4C433C8;
+        Mon, 20 Nov 2023 19:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700507931;
+        bh=7l/BJemceh+NKK3sSMzDbS+2RzVYcr6sgFQMzStHspU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=KTUjuRogANol7OYCdPyp7ohz8lnqc/2AsUFiCtytA6PVPb6xDLTlsKHiEdVGaYnkV
+         OpCB+CLx/yhopSc7sgbvGlk9LUu4AGp+qnp9NxfO4Qe/7/zMqyNlyafre1aPb8tKOJ
+         lgLl5+JWl6PohkmCvaIQUvXdcqVw7g3Ed+PRwS8QIKG2Wd4vWFrsI3BoZFU7MmoB1S
+         drWAxY+46M5W5RaDa8p0n1cAcR1gy3gV0Rf1jWX6+Mo2PzqlnMTlo+5JGt34NfNziL
+         Qv2I1Mriclg0NTXbA68HjMgwQOMj+ezvYHE09HJpR4pjlNoN6Rd0pBkoZAw53JyeL9
+         YSToaWCcFKj4Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     David Lin <CTLIN0@nuvoton.com>
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, YHCHuang@nuvoton.com,
+        KCHSU0@nuvoton.com, WTLI@nuvoton.com, SJLIN0@nuvoton.com,
+        ctlin0.linux@gmail.com
+In-Reply-To: <20231120084227.1766633-1-CTLIN0@nuvoton.com>
+References: <20231120084227.1766633-1-CTLIN0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8810: Fix incorrect type in assignment and
+ cast to restricted __be16
+Message-Id: <170050792951.1294254.14784272204812613089.b4-ty@kernel.org>
+Date:   Mon, 20 Nov 2023 19:18:49 +0000
 MIME-Version: 1.0
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
- <19358871-009d-4498-9c13-90d5338b1e9f@amd.com> <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
-In-Reply-To: <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Nov 2023 20:18:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
-Message-ID: <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Michal Simek <michal.simek@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+On Mon, 20 Nov 2023 16:42:28 +0800, David Lin wrote:
+> This issue is reproduced when W=1 build in compiler gcc-12.
+> The following are sparse warnings:
+> 
+> sound/soc/codecs/nau8810.c:183:25: sparse: warning: incorrect type in assignment
+> sound/soc/codecs/nau8810.c:183:25: sparse: expected int
+> sound/soc/codecs/nau8810.c:183:25: sparse: got restricted __be16
+> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
+> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
+> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
+> sound/soc/codecs/nau8810.c:219:25: sparse: warning: cast to restricted __be16
+> 
+> [...]
 
-On Mon, Nov 20, 2023 at 3:53 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 20/11/2023 15:01, Michal Simek wrote:> >
-> > On 11/20/23 09:40, Krzysztof Kozlowski wrote:
-> >> Document preferred coding style for Devicetree sources (DTS and DTSI),
-> >> to bring consistency among all (sub)architectures and ease in reviews.
+Applied to
 
-> >> +Organizing DTSI and DTS
-> >> +-----------------------
-> >> +
-> >> +The DTSI and DTS files should be organized in a way representing the common
-> >> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
-> >> +and DTS files into several files:
-> >> +
-> >> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
-> >> +   on the SoC).
-> >> +2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
-> >> +   entire System-on-Module).
-> >
-> > DTS/DTSI - SOMs can actually run as they are that's why it is fair to say that
-> > there doesn't need to be DTS representing the board.
->
-> I have never seen a SoM which can run without elaborate hardware-hacking
-> (e.g. connecting multiple wires to the SoM pins). The definition of the
-> SoM is that it is a module. Module can be re-used, just like SoC.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-/me looks at his board farm...
+Thanks!
 
-The Renesas White-Hawk CPU board can be used standalone, and has a
-separate power input connector for this operation mode.  As it has RAM,
-Ethernet, serial console, eMMC, and even mini-DP, it can serve useful
-purposes on its own.
-I agree it's not a super-good example, as the board is not really a
-"SoM", and we currently don't have r8a779g0-white-hawk-cpu.dts, only
-r8a779g0-white-hawk-cpu.dtsi.
+[1/1] ASoC: nau8810: Fix incorrect type in assignment and cast to restricted __be16
+      commit: af524e9dcb43f5914cecb3a3f4b79081d2e3f7f8
 
-The RZ/A2M CPU Board is a real SoM, which can be powered over USB.
-It has less standard connectors (microSD, USB, MIPI CSI-2), but still
-sufficient features to be usable on its own.
-Again, we're doing a bad job, as we only have a DTS for the full eval
-board (r7s9210-rza2mevb.dts).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-I guess there are (many) other examples...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Gr{oetje,eeting}s,
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-                        Geert
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Mark
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
