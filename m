@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 840E77F0DBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E3D7F0DBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbjKTIky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:40:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        id S232240AbjKTIlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjKTIkv (ORCPT
+        with ESMTP id S232241AbjKTIk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:40:51 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34892F2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:47 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c320a821c4so3402942b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:47 -0800 (PST)
+        Mon, 20 Nov 2023 03:40:58 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F07F0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:54 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c875207626so20347431fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700469646; x=1701074446; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cA4et5DEe58CvaUPaUoVn2JhyhKCxIJLdzNc+n4DX2I=;
-        b=FXqmwKK2EVv6oFkDad7iQc9A3S53jV1tk7MOfvqm2FUJ+pncZHWTXUPhM6875sYCwT
-         mYMiq4uLb2fqOTVfqlLPFTw3oJXCIj7yrz6Ss1eQP06zzwIS/xTWNonZGUFh508bYnIF
-         cOYxYIm5nh953R7UEfqUsXOxKqeWTKuTUgSnszeI1eYbRYwIHlzaFAO4Z5tGS1ffUrQ7
-         pOOx7dvJ7fATTAb7gawGXNZ5Koq2lns7rKHwAN5M39USxiGEyIq4CeognX1oHdSgZs/T
-         voy4OXWXw7b0PBE57Tv7kk+3TuH7Ni+OrAfv+XsSOEgcP3nR99rhY67CqVAq9CI/jq+U
-         5HYg==
+        d=linaro.org; s=google; t=1700469652; x=1701074452; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uja6WpBlyTBG5jgby6fiOGTUsSLknCmEeqWb3eouYXA=;
+        b=c2m91qd37sKAC7md1tLXGmis4c0PJQszj8lhdgWHUtHGsgDEc3sFYCmIlFTIIHKz1s
+         nfmG4JAJnqJy1p1WefOcvlbbYOyb37UkTX/NCevuc6I6oq8t6NCSQ3M6UGVBx/OLErcQ
+         AHvVmByTss7pWvIqaqzcBXfdDkUOPbtrpUdM27p12o+8kPcuywFjsbPAmojVRxHW2uNr
+         UGsU3B6sQXUPWuIvFm2xFFoTiUFccJI2gKSc+AOQc1Wp8e9b9UkyKm+3yMI6P+lCSDaD
+         O8SKgcSK42PTCin9jQPNCUgGQQjaODTJxGJLHNEbKoibEPuzbZT4hxwB3AuZraBtC80D
+         Tmcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700469646; x=1701074446;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cA4et5DEe58CvaUPaUoVn2JhyhKCxIJLdzNc+n4DX2I=;
-        b=JeUT5XZgcmXAQyDVh55z9huaY9WzDddkIFTLd+k9PNglcLHzaQOlBjyjb2GeNg1VJ/
-         5bkYE3kUJnT/KlZxg9/gs2b9GvhZk68ZS7kP3NLtGV8N3tcDdYtRrz0fmBHmmKD5SyXS
-         7Rzm1xGdQzTMDupTiy8KJKGeeAIz8XdGJYdCSH+pTx2M2JE8PBTY4PcOFzzzqjoldNFt
-         9r7HyostOkiKFRpwOK6Dv3NO/fdhUQwA3zSg3wS2/F2yVR+6DCPTqv0G9C6Bz3t/ZSLb
-         bzq4pXqHXyyKYRndUuIEngEjwC3g5uCDIp75dy4kzo73LUYqQQ13fLptz4MyPmTNdAU7
-         bd5g==
-X-Gm-Message-State: AOJu0Yyk76P+uR0Gohdbhc5kWN8wKk99BDsMdO7m4FkUkzVOfdYltEo7
-        WDl2fQvJpTn5jtQAyDwVewO2
-X-Google-Smtp-Source: AGHT+IElVewiVppHRvMO+lPS3lN61OStbKOmnNSX89BRCubPBY4/WTTj8C1eQ+g8SFtw8K29OgPTfQ==
-X-Received: by 2002:a05:6a21:9209:b0:174:7f7:d049 with SMTP id tl9-20020a056a21920900b0017407f7d049mr5987907pzb.9.1700469646494;
-        Mon, 20 Nov 2023 00:40:46 -0800 (PST)
-Received: from localhost.localdomain ([117.248.2.5])
-        by smtp.gmail.com with ESMTPSA id e24-20020a62ee18000000b00694ebe2b0d4sm5567019pfi.191.2023.11.20.00.40.37
+        d=1e100.net; s=20230601; t=1700469652; x=1701074452;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uja6WpBlyTBG5jgby6fiOGTUsSLknCmEeqWb3eouYXA=;
+        b=EkW7LB0JSIuasKEE64pzKNSgmnwRpfCdjK7rby4I0QA+36UyEn0TnU/16IsLUx6Yup
+         i5rrPH4IpH6SeSGoC3OPIsJHKWNuSwk7GEPsaxDF/XzqZSGXc9cm16vxgPYvrzmNqEio
+         fcvBGnyYMTtRacmXzGo/gQE63HTHn/poKG8g+3A4s1Gc4Vf7TI27KJUdeH5zhcK7CwOd
+         H3Pt63usvOc3yd7uFux4DpyxYEvgXSYFQzJvRN6gDKFc+Zcrm8nQGBCKdE8A+TkKPSV5
+         jTtPkbeTzV7dGDjsRN+0xmpEWFKEeOTp98aBSCas3meC6xJQWXbbvephkA7Mm3rlGbTO
+         qFig==
+X-Gm-Message-State: AOJu0YzZzq3RcteIxIhANVlhlobTi+1A/ELmxsnatgrHgarnEtoCGkpN
+        Ksdd5yZCQLKdhHH5k9FPsePbFg==
+X-Google-Smtp-Source: AGHT+IF2z2UJKmxACAGYnsgCuyDmhU5DSNYyJ8jl3UYFsf5HLqN43Rt4pV8YyXHZTojYeH5cxbBtXA==
+X-Received: by 2002:a2e:bc0f:0:b0:2c6:eccb:344d with SMTP id b15-20020a2ebc0f000000b002c6eccb344dmr6049660ljf.40.1700469652204;
+        Mon, 20 Nov 2023 00:40:52 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id m7-20020a05600c4f4700b0040772138bb7sm17248340wmq.2.2023.11.20.00.40.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 00:40:43 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_bjorande@quicinc.com,
-        fancer.lancer@gmail.com, vidyas@nvidia.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v7 2/2] PCI: designware-ep: Move pci_epc_init_notify() inside dw_pcie_ep_init_complete()
-Date:   Mon, 20 Nov 2023 14:10:14 +0530
-Message-Id: <20231120084014.108274-3-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231120084014.108274-1-manivannan.sadhasivam@linaro.org>
-References: <20231120084014.108274-1-manivannan.sadhasivam@linaro.org>
+        Mon, 20 Nov 2023 00:40:51 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andrew Davis <afd@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+Date:   Mon, 20 Nov 2023 09:40:44 +0100
+Message-Id: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,98 +87,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since pci_epc_init_notify() API is getting called right after the
-dw_pcie_ep_init_complete() API in the DWC glue drivers, let's move it
-inside dw_pcie_ep_init_complete() API as there is no compelling reason to
-call it separately.
+Document preferred coding style for Devicetree sources (DTS and DTSI),
+to bring consistency among all (sub)architectures and ease in reviews.
 
-Co-developed-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Andrew Davis <afd@ti.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Michal Simek <michal.simek@amd.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Nishanth Menon <nm@ti.com>
+Cc: Olof Johansson <olof@lixom.net>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
 ---
- drivers/pci/controller/dwc/pcie-designware-ep.c | 10 ++--------
- drivers/pci/controller/dwc/pcie-designware.h    |  5 -----
- drivers/pci/controller/dwc/pcie-qcom-ep.c       |  2 --
- drivers/pci/controller/dwc/pcie-tegra194.c      |  2 --
- 4 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index b1c79cd8e25f..63bb99d1c48f 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -22,14 +22,6 @@ void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
- }
- EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
- 
--void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
--{
--	struct pci_epc *epc = ep->epc;
--
--	pci_epc_init_notify(epc);
--}
--EXPORT_SYMBOL_GPL(dw_pcie_ep_init_notify);
--
- struct dw_pcie_ep_func *
- dw_pcie_ep_get_func_from_ep(struct dw_pcie_ep *ep, u8 func_no)
- {
-@@ -784,6 +776,8 @@ int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- 	if (ret)
- 		goto err_cleanup;
- 
-+	pci_epc_init_notify(epc);
+Merging idea: Rob/DT bindings
+
+Changes in v2
+=============
+1. Hopefully incorporate entire feedback from comments:
+a. Fix \ { => / { (Rob)
+b. Name: dts-coding-style (Rob)
+c. Exceptions for ordering nodes by name for Renesas and pinctrl (Geert,
+   Konrad)
+d. Ordering properties by common/vendor (Rob)
+e. Array entries in <> (Rob)
+
+2. New chapter: Organizing DTSI and DTS
+
+3. Several grammar fixes (missing articles)
+
+Cc: linux-rockchip@lists.infradead.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-amlogic@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+---
+ .../devicetree/bindings/dts-coding-style.rst  | 163 ++++++++++++++++++
+ Documentation/devicetree/bindings/index.rst   |   1 +
+ 2 files changed, 164 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
+
+diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+new file mode 100644
+index 000000000000..cc7e3b4d1b92
+--- /dev/null
++++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+@@ -0,0 +1,163 @@
++.. SPDX-License-Identifier: GPL-2.0
++.. _dtscodingstyle:
 +
- 	return 0;
++=====================================
++Devicetree Sources (DTS) Coding Style
++=====================================
++
++When writing Devicetree Sources (DTS) please observe below guidelines.  They
++should be considered complementary to any rules expressed already in Devicetree
++Specification and dtc compiler (including W=1 and W=2 builds).
++
++Individual architectures and sub-architectures can add additional rules, making
++the style stricter.
++
++Naming and Valid Characters
++---------------------------
++
++1. Node and property names are allowed to use only:
++
++   * lowercase characters: [a-z]
++   * digits: [0-9]
++   * dash: -
++
++2. Labels are allowed to use only:
++
++   * lowercase characters: [a-z]
++   * digits: [0-9]
++   * underscore: _
++
++3. Unit addresses should use lowercase hex, without leading zeros (padding).
++
++4. Hex values in properties, e.g. "reg", should use lowercase hex.  The address
++   part can be padded with leading zeros.
++
++Example::
++
++	gpi_dma2: dma-controller@800000 {
++		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
++		reg = <0x0 0x00800000 0x0 0x60000>;
++	}
++
++Order of Nodes
++--------------
++
++1. Nodes within any bus, thus using unit addresses for children, shall be
++   ordered incrementally by unit address.
++   Alternatively for some sub-architectures, nodes of the same type can be
++   grouped together (e.g. all I2C controllers one after another even if this
++   breaks unit address ordering).
++
++2. Nodes without unit addresses should be ordered alpha-numerically by the node
++   name.  For a few types of nodes, they can be ordered by the main property
++   (e.g. pin configuration states ordered by value of "pins" property).
++
++3. When extending nodes in the board DTS via &label, the entries should be
++   ordered alpha-numerically.
++
++Example::
++
++	// SoC DTSI
++
++	/ {
++		cpus {
++			// ...
++		};
++
++		psci {
++			// ...
++		};
++
++		soc@ {
++			dma: dma-controller@10000 {
++				// ...
++			};
++
++			clk: clock-controller@80000 {
++				// ...
++			};
++		};
++	};
++
++	// Board DTS
++
++	&clk {
++		// ...
++	};
++
++	&dma {
++		// ...
++	};
++
++
++Order of Properties in Device Node
++----------------------------------
++
++Following order of properties in device nodes is preferred:
++
++1. compatible
++2. reg
++3. ranges
++4. Standard/common properties (defined by common bindings, e.g. without
++   vendor-prefixes)
++5. Vendor-specific properties
++6. status (if applicable)
++7. Child nodes, where each node is preceded with a blank line
++
++The "status" property is by default "okay", thus it can be omitted.
++
++Example::
++
++	// SoC DTSI
++
++	usb_1_hsphy: phy@88e3000 {
++		compatible = "qcom,sm8550-snps-eusb2-phy";
++		reg = <0x0 0x088e3000 0x0 0x154>;
++		#phy-cells = <0>;
++		resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
++		status = "disabled";
++	};
++
++	// Board DTS
++
++	&usb_1_hsphy {
++		clocks = <&tcsr TCSR_USB2_CLKREF_EN>;
++		clock-names = "ref";
++		status = "okay";
++	};
++
++
++Indentation
++-----------
++
++1. Use indentation according to :ref:`codingstyle`.
++2. For arrays spanning across lines, it is preferred to align the continued
++   entries with opening < from the first line.
++3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
++   should be enclosed in <>.
++
++Example::
++
++	thermal-sensor@c271000 {
++		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
++		reg = <0x0 0x0c271000 0x0 0x1000>,
++		      <0x0 0x0c222000 0x0 0x1000>;
++	};
++
++Organizing DTSI and DTS
++-----------------------
++
++The DTSI and DTS files should be organized in a way representing the common
++(and re-usable) parts of the hardware.  Typically this means organizing DTSI
++and DTS files into several files:
++
++1. DTSI with contents of the entire SoC (without nodes for hardware not present
++   on the SoC).
++2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
++   entire System-on-Module).
++3. DTS representing the board.
++
++Hardware components which are present on the board should be placed in the
++board DTS, not in the SoC or SoM DTSI.  A partial exception is a common
++external reference SoC-input clock, which could be coded as a fixed-clock in
++the SoC DTSI with its frequency provided by each board DTS.
+diff --git a/Documentation/devicetree/bindings/index.rst b/Documentation/devicetree/bindings/index.rst
+index d9002a3a0abb..cc1fbdc05657 100644
+--- a/Documentation/devicetree/bindings/index.rst
++++ b/Documentation/devicetree/bindings/index.rst
+@@ -4,6 +4,7 @@
+    :maxdepth: 1
  
- err_cleanup:
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index 55ff76e3d384..53bf38989eea 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -578,7 +578,6 @@ static inline void __iomem *dw_pcie_own_conf_map_bus(struct pci_bus *bus,
- void dw_pcie_ep_linkup(struct dw_pcie_ep *ep);
- int dw_pcie_ep_init(struct dw_pcie_ep *ep);
- int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep);
--void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep);
- void dw_pcie_ep_exit(struct dw_pcie_ep *ep);
- int dw_pcie_ep_raise_legacy_irq(struct dw_pcie_ep *ep, u8 func_no);
- int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
-@@ -605,10 +604,6 @@ static inline int dw_pcie_ep_init_complete(struct dw_pcie_ep *ep)
- 	return 0;
- }
- 
--static inline void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
--{
--}
--
- static inline void dw_pcie_ep_exit(struct dw_pcie_ep *ep)
- {
- }
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 9e58f055199a..4a8119779a29 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -482,8 +482,6 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
- 	val &= ~PARF_MSTR_AXI_CLK_EN;
- 	writel_relaxed(val, pcie_ep->parf + PARF_MHI_CLOCK_RESET_CTRL);
- 
--	dw_pcie_ep_init_notify(&pcie_ep->pci.ep);
--
- 	/* Enable LTSSM */
- 	val = readl_relaxed(pcie_ep->parf + PARF_LTSSM);
- 	val |= BIT(8);
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 0fe113598ebb..1126d1f5830c 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -1901,8 +1901,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
- 		goto fail_init_complete;
- 	}
- 
--	dw_pcie_ep_init_notify(ep);
--
- 	/* Program the private control to allow sending LTR upstream */
- 	if (pcie->of_data->has_ltr_req_fix) {
- 		val = appl_readl(pcie, APPL_LTR_MSG_2);
+    ABI
++   dts-coding-style
+    writing-bindings
+    writing-schema
+    submitting-patches
 -- 
-2.25.1
+2.34.1
 
