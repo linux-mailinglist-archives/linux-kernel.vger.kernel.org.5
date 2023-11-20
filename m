@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5027F1D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8097F1D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjKTTtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S230021AbjKTTzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKTTtX (ORCPT
+        with ESMTP id S229632AbjKTTzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:49:23 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B090;
-        Mon, 20 Nov 2023 11:49:20 -0800 (PST)
-Received: from [192.168.1.103] (178.176.77.202) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 20 Nov
- 2023 22:49:12 +0300
-Subject: Re: [PATCH 04/13] net: ravb: Start TX queues after HW initialization
- succeeded
-To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
-        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <sergei.shtylyov@cogentembedded.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-5-claudiu.beznea.uj@bp.renesas.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <d0708c3f-ff64-3888-d93f-a20ee7b3251a@omp.ru>
-Date:   Mon, 20 Nov 2023 22:49:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 20 Nov 2023 14:55:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20DB92
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:55:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700510110; x=1732046110;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eIcnX1IfWE9lijtKlCzKbp0A86iGj84M8I59EZ2BXRk=;
+  b=dpMi0qCVTYHI4z8vJIEyIHJHRpH9tBildPdWpjnnfY7IR5+X4GZ75Yew
+   G14Z72BDy1JEtyDZA8jTFBmKjHSgtMnElMfWeiNMWkD8h6pV0L1qVQTzv
+   5zRX9cdPXZ4efdSHEF6RZyAaJYnkcMIe0ZuOK6vrR4MDSywviiw4FRGUX
+   DcxY907IzJsBU41a87vfU17TXP7Wh03J/ZQtXpUg3d7MLAiQaV39e6T/j
+   l5YTpT3z8cbCsmUUi3Kta+CJzcpzARHcqwY1oGOy0Sn7D1XuRyoojwAH2
+   rFJ910ImdrPlBlexpcnXcbVaRcvNkgCPqYtMbm+5ON8Kb0N5L2SGNiCzM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="376730708"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="376730708"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 11:54:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="716305427"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="716305427"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 20 Nov 2023 11:54:52 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5AM5-0006p2-24;
+        Mon, 20 Nov 2023 19:54:49 +0000
+Date:   Tue, 21 Nov 2023 03:52:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Waiman Long <longman@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH v6 4/4] mm,page_owner: Filter out stacks by a threshold
+ counter
+Message-ID: <202311210354.BwQoLzVO-lkp@intel.com>
+References: <20231120084300.4368-5-osalvador@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20231120084606.4083194-5-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.77.202]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/20/2023 19:33:59
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181488 [Nov 20 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.202
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/20/2023 19:40:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/20/2023 4:24:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120084300.4368-5-osalvador@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 11:45 AM, Claudiu wrote:
+Hi Oscar,
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> ravb_phy_start() may fail. If that happens the TX queues remain started.
-> Thus move the netif_tx_start_all_queues() after PHY is successfully
-> initialized.
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[...]
+url:    https://github.com/intel-lab-lkp/linux/commits/Oscar-Salvador/lib-stackdepot-Add-a-refcount-field-in-stack_record/20231120-164913
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231120084300.4368-5-osalvador%40suse.de
+patch subject: [PATCH v6 4/4] mm,page_owner: Filter out stacks by a threshold counter
+config: arc-allmodconfig (https://download.01.org/0day-ci/archive/20231121/202311210354.BwQoLzVO-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311210354.BwQoLzVO-lkp@intel.com/reproduce)
 
-MBR, Sergey
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311210354.BwQoLzVO-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/page_owner.c:819:5: warning: no previous prototype for 'page_owner_threshold_get' [-Wmissing-prototypes]
+     819 | int page_owner_threshold_get(void *data, u64 *val)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~
+>> mm/page_owner.c:825:5: warning: no previous prototype for 'page_owner_threshold_set' [-Wmissing-prototypes]
+     825 | int page_owner_threshold_set(void *data, u64 val)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/page_owner_threshold_get +819 mm/page_owner.c
+
+   818	
+ > 819	int page_owner_threshold_get(void *data, u64 *val)
+   820	{
+   821		*val = page_owner_stack_threshold;
+   822		return 0;
+   823	}
+   824	
+ > 825	int page_owner_threshold_set(void *data, u64 val)
+   826	{
+   827		page_owner_stack_threshold = val;
+   828		return 0;
+   829	}
+   830	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
