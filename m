@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0223C7F0F84
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21D87F0F86
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjKTJzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:55:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        id S232461AbjKTJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbjKTJzg (ORCPT
+        with ESMTP id S232176AbjKTJ4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:55:36 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6730E94;
-        Mon, 20 Nov 2023 01:55:32 -0800 (PST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AK8GTrw015438;
-        Mon, 20 Nov 2023 03:55:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        PODMain02222019; bh=SNC1Z9jI3APw89gGPSbS88cfIAYgH29p/XTHlJAW08M=; b=
-        S6crIaUFkAQ5ivCRcq+808uBr7xvPjPMWVLaJjf2DTb09WLfSUIErN6lMr2i72ia
-        SkB8yUQHkY46izjbWxQbFuwc15Utj8b4kj/CQ+fnAY3deX9kLXUbpSsd8Pm4FREW
-        K1jRTi1rnJDm1TLjPw2ZkSGY8oG92E71OoR8ImBm/myzvREGGXZp1XxnwXyB0s5+
-        2TT/zTaelat6vbNeKe5Rr2EoPnTDvtRdF6MNnZFix5HR8FFry/oAQaLVVYfil1MQ
-        mxy4ZnCCSRkgITmHByk5F7BC++hpaRVuzos3EEk5TlFVJgb0Lu3L/0zIbFVkO5s/
-        yVt9nfE8yjU0nm2gv3kbgQ==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uetjp9njg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 03:55:24 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 20 Nov
- 2023 09:55:22 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Mon, 20 Nov 2023 09:55:22 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D423515B9;
-        Mon, 20 Nov 2023 09:55:22 +0000 (UTC)
-Date:   Mon, 20 Nov 2023 09:55:22 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/7] ASoC: cs43130: Allow driver to work without IRQ
- thread
-Message-ID: <20231120095522.GH32655@ediswmail.ad.cirrus.com>
-References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
- <20231117141344.64320-7-mstrozek@opensource.cirrus.com>
- <ZVeWfefrEQJIx0YL@finisterre.sirena.org.uk>
- <153531080cd3d36fea86263d393ef885533f6e44.camel@opensource.cirrus.com>
+        Mon, 20 Nov 2023 04:56:12 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 4118A8F;
+        Mon, 20 Nov 2023 01:56:08 -0800 (PST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id B718C633E6ED1;
+        Mon, 20 Nov 2023 17:56:00 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     tomas.winkler@intel.com, arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     Su Hui <suhui@nfschina.com>, alexander.usyskin@intel.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2 1/2] misc: mei: client.c: return negative error code in mei_cl_write
+Date:   Mon, 20 Nov 2023 17:55:23 +0800
+Message-Id: <20231120095523.178385-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <153531080cd3d36fea86263d393ef885533f6e44.camel@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: _zgPHYykADs4dUIfYkQQmip0MpvmDQSi
-X-Proofpoint-ORIG-GUID: _zgPHYykADs4dUIfYkQQmip0MpvmDQSi
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:43:25AM +0000, Maciej Strozek wrote:
-> W dniu pią, 17.11.2023 o godzinie 16∶36 +0000, użytkownik Mark Brown
-> napisał:
-> > On Fri, Nov 17, 2023 at 02:13:43PM +0000, Maciej Strozek wrote:
-> > > Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
-> > > ---
-> > >  sound/soc/codecs/cs43130.c | 56 +++++++++++++++++++++++++++++++---
-> > > ----
-> > >  sound/soc/codecs/cs43130.h |  1 +
-> > >  2 files changed, 47 insertions(+), 10 deletions(-)
-> > 
-> > Why?  This isn't some obvious fix, you need to write a changelog
-> > motivating open coding interrupt handling if there's some reason for
-> > doing that.
-> 
-> This is to support systems without physical IRQ connection. The device
-> only requires the IRQ for a couple of internal delays, this polling
-> mechanism is a fallback when no IRQ is specified.
-> 
+mei_msg_hdr_init() return negative error code, rets should be
+'PTR_ERR(mei_hdr)' rather than '-PTR_ERR(mei_hdr)'.
 
-Yeah pop that in the change log and resend the patch as a v2.
+Fixes: 0cd7c01a60f8 ("mei: add support for mei extended header.")
+Signed-off-by: Su Hui <suhui@nfschina.com>
+---
+v2: split v1 patch to different patches
+v1: https://lore.kernel.org/all/5c98fc07-36a9-92cc-f8d6-c4efdc0c34aa@nfschina.com/
 
-Thanks,
-Charles
+ drivers/misc/mei/client.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
+index 9c8fc87938a7..7ea80779a0e2 100644
+--- a/drivers/misc/mei/client.c
++++ b/drivers/misc/mei/client.c
+@@ -2011,7 +2011,7 @@ ssize_t mei_cl_write(struct mei_cl *cl, struct mei_cl_cb *cb, unsigned long time
+ 
+ 	mei_hdr = mei_msg_hdr_init(cb);
+ 	if (IS_ERR(mei_hdr)) {
+-		rets = -PTR_ERR(mei_hdr);
++		rets = PTR_ERR(mei_hdr);
+ 		mei_hdr = NULL;
+ 		goto err;
+ 	}
+-- 
+2.30.2
+
