@@ -2,149 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1037F124C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A1D7F124F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:42:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233058AbjKTLl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S233194AbjKTLmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:42:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbjKTLl2 (ORCPT
+        with ESMTP id S232566AbjKTLmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:41:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B9C9C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:41:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700480483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XroWRvXs+Y4iSNm22W3/JdNTVL8TEZs8UV4UrMaRAU8=;
-        b=Px9sVBaeOWtyjcrVkc7AopIeuck2+tKg1uegBSQA5mFztYi4SXiAz6bHDBjY3nFs2CjQ96
-        VU+Ht/N8O0su+LQb0ucixq+z6GIAK8DBtkzoxNMJc19zklpGCvV4aMMOOlyJB8+RZMsxwK
-        kN7ST3RB9tHH+fpOqHy26t4GyS8Fcqo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-126-OwlrFnZWM9GjNlRZSgA4sA-1; Mon, 20 Nov 2023 06:41:17 -0500
-X-MC-Unique: OwlrFnZWM9GjNlRZSgA4sA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32f8371247fso2338760f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:41:16 -0800 (PST)
+        Mon, 20 Nov 2023 06:42:23 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE119C;
+        Mon, 20 Nov 2023 03:42:19 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc68c1fac2so37381845ad.0;
+        Mon, 20 Nov 2023 03:42:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700480539; x=1701085339; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V1guMx9hj3Dnab92EYIslORuUgAICHvH5VtGffdWtLk=;
+        b=gIFZwA0K5/MKAb7JICdh1SolFlR47t9EKgWqcM7cUTLt3GvLsdUhOMj1NqA5ph/5XC
+         Ith7vnud1hAaHuU09S0pfHYSh3/r/DWNaN4VwIFTMurRkhddgIEzobMwo8CQpZOYm3Il
+         ZAALo2qK01nOohng+0zEsZ8xQuQd8dbJja6V3eXpaCw+ENjxElmOyMpgvQ1IjsWbCRRT
+         lBq/XAV9OXm4uH4BR5pVzAHugfpVkbbDHtw1oNNqS1ZHZZZhTo08Wz67ys0gfloj6VM5
+         eqAFLyr7mwNGGhHSYFS9Ljcef70lMTYfREAViHocifGI2VBCKe6tDi7MKu7AyiParKJh
+         SH5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700480476; x=1701085276;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XroWRvXs+Y4iSNm22W3/JdNTVL8TEZs8UV4UrMaRAU8=;
-        b=UMSPTCPvxfbCCKQf9P+y7xl+M4BmHdnruz6/vRu/guYo0/uE3m/c7bwuPw2h1B/WQq
-         5t9otCMM89Vhc8yIPSTgY9B8O1weqCC1B/P84F94g1YmWcNL/2X+eAEmK8nyKg2Z+C41
-         uldfMUjxWIBMT2IskE8ZSHJNyjnelb8Jo9iJwrSSLg0ntzdBWWZiiJm6DFpnVGnFnRVg
-         qh5Ywek2d3uwxJQh4+pYYREIAdla5vZvGrbiqcH3qbO0+ZvPZ8N036NhMW86wm5myHbi
-         849YFcpaEBtM+wXRCGIndjteyKIF6rQrsk1+neJHsegVowdl0Dg5ac1exwIB/i+P6P14
-         G+aA==
-X-Gm-Message-State: AOJu0YwJWtc6rIFn1emyHdeAkUT/ljlbml3ySTbJMnYYbqDAtKy3+2FB
-        6iq87hqdUMzUvQlDRBaVhL/zoJfxZn9ckxzpxRx5206syhMmRzp7ZCgwFt1xBlZtA2y3lW9w00N
-        zi2jOEglInwaavdcdneebSqPd
-X-Received: by 2002:adf:8b5e:0:b0:331:6945:9d11 with SMTP id v30-20020adf8b5e000000b0033169459d11mr4491910wra.71.1700480475873;
-        Mon, 20 Nov 2023 03:41:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHQeYavQxEh9X/79Cw3cos/8euUJrt0jtYgzKPT2aR6UAKDUJgVcLEnoC7Ho8gMeRLd6M44Tw==
-X-Received: by 2002:adf:8b5e:0:b0:331:6945:9d11 with SMTP id v30-20020adf8b5e000000b0033169459d11mr4491896wra.71.1700480475496;
-        Mon, 20 Nov 2023 03:41:15 -0800 (PST)
-Received: from starship ([77.137.131.4])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d5909000000b0032f9688ea48sm10955278wrd.10.2023.11.20.03.41.14
+        d=1e100.net; s=20230601; t=1700480539; x=1701085339;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V1guMx9hj3Dnab92EYIslORuUgAICHvH5VtGffdWtLk=;
+        b=WyGngqxauHllOPKsHEcTSfbkbplB9f+LJZ4uEUW7fdWwJ3sM27SEe9bCryvCaL1IFR
+         vtlEbVPHCAdH5rOIX07M9tHNH6c/l70sMi7tmx6SJOiBncjM6RlwoU5iHugymD05OZDh
+         fVBMPW8GwYK1kr4jQaIABFHs7zG79Buy1+bWE6B1uU/NSsFHoC51IaO0yC5/lsQwDjWX
+         EEGfvxB8kBhzigvWq55/RR6st5t6B75Gj4q1lDyD4Ie12zCYgePMaHBv3ma1c3beWJo5
+         oq4jYy3V1H5Z9VdKa0YCAxg+JUxcW8sezpsYdFHVT5/j4lumknyz33a3cWa8lF4kvHJj
+         9q3w==
+X-Gm-Message-State: AOJu0YwT7NNkA5bTzTk6l35eA4SHTnEscjyzrTOp59yz4jSs/AwFrz91
+        zrP1cJoz1zDN0Bt8DxFUbCw=
+X-Google-Smtp-Source: AGHT+IHnFn0gexQ4iJb2xsKsrldOEdmuTbLbqDJD82pzS1/M00ua6MO0mkTjSdTGeEHzD535ggVjcA==
+X-Received: by 2002:a17:902:d4cb:b0:1cc:29b5:a2b7 with SMTP id o11-20020a170902d4cb00b001cc29b5a2b7mr10115355plg.51.1700480539081;
+        Mon, 20 Nov 2023 03:42:19 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id q15-20020a170902dacf00b001cf57827d69sm3024922plx.87.2023.11.20.03.42.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 03:41:15 -0800 (PST)
-Message-ID: <8018a697eae37a5e749afcb19368ac7c32b91d57.camel@redhat.com>
-Subject: Re: [PATCH 1/2] Revert "nSVM: Check for reserved encodings of
- TLB_CONTROL in nested VMCB"
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stefan Sterz <s.sterz@proxmox.com>
-Date:   Mon, 20 Nov 2023 13:41:13 +0200
-In-Reply-To: <20231018194104.1896415-2-seanjc@google.com>
-References: <20231018194104.1896415-1-seanjc@google.com>
-         <20231018194104.1896415-2-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 20 Nov 2023 03:42:18 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] ACPI: Correct and clean up the logic of acpi_parse_entries_array()
+Date:   Mon, 20 Nov 2023 19:41:43 +0800
+Message-ID: <20231120114143.95305-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-10-18 at 12:41 -0700, Sean Christopherson wrote:
-> Revert KVM's made-up consistency check on SVM's TLB control.  The APM says
-> that unsupported encodings are reserved, but the APM doesn't state that
-> VMRUN checks for a supported encoding.  Unless something is called out
-> in "Canonicalization and Consistency Checks" or listed as MBZ (Must Be
-> Zero), AMD behavior is typically to let software shoot itself in the foot.
-> 
-> This reverts commit 174a921b6975ef959dd82ee9e8844067a62e3ec1.
-> 
-> Fixes: 174a921b6975 ("nSVM: Check for reserved encodings of TLB_CONTROL in nested VMCB")
-> Reported-by: Stefan Sterz <s.sterz@proxmox.com>
-> Closes: https://lkml.kernel.org/r/b9915c9c-4cf6-051a-2d91-44cc6380f455%40proxmox.com
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 15 ---------------
->  1 file changed, 15 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 3fea8c47679e..60891b9ce25f 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -247,18 +247,6 @@ static bool nested_svm_check_bitmap_pa(struct kvm_vcpu *vcpu, u64 pa, u32 size)
->  	    kvm_vcpu_is_legal_gpa(vcpu, addr + size - 1);
->  }
->  
-> -static bool nested_svm_check_tlb_ctl(struct kvm_vcpu *vcpu, u8 tlb_ctl)
-> -{
-> -	/* Nested FLUSHBYASID is not supported yet.  */
-> -	switch(tlb_ctl) {
-> -		case TLB_CONTROL_DO_NOTHING:
-> -		case TLB_CONTROL_FLUSH_ALL_ASID:
-> -			return true;
-> -		default:
-> -			return false;
-> -	}
-> -}
-> -
->  static bool __nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
->  					 struct vmcb_ctrl_area_cached *control)
->  {
-> @@ -278,9 +266,6 @@ static bool __nested_vmcb_check_controls(struct kvm_vcpu *vcpu,
->  					   IOPM_SIZE)))
->  		return false;
->  
-> -	if (CC(!nested_svm_check_tlb_ctl(vcpu, control->tlb_ctl)))
-> -		return false;
-> -
->  	if (CC((control->int_ctl & V_NMI_ENABLE_MASK) &&
->  	       !vmcb12_is_intercept(control, INTERCEPT_NMI))) {
->  		return false;
+The original intention of acpi_parse_entries_array() is to return the
+number of all matching entries on success. This number may be greater than
+the value of the max_entries parameter. When this happens, the function
+will output a warning message, indicating that `count - max_entries`
+matching entries remain unprocessed and have been ignored.
 
+However, commit 4ceacd02f5a1 ("ACPI / table: Always count matched and
+successfully parsed entries") changed this logic to return the number of
+entries successfully processed by the handler. In this case, when the
+max_entries parameter is not zero, the number of entries successfully
+processed can never be greater than the value of max_entries. In other
+words, the expression `count > max_entries` will always evaluate to false.
+This means that the logic in the final if statement will never be executed.
 
-Yes, after checking Jim's comment (*) on this I still agree that revert is OK.
-KVM never passes through the tlb_ctl field (but does copy it to the cache),
-thus there is no need to sanitize it.
+Commit 99b0efd7c886 ("ACPI / tables: do not report the number of entries
+ignored by acpi_parse_entries()") mentioned this issue, but it tried to fix
+it by removing part of the warning message. This is meaningless because the
+pr_warn statement will never be executed in the first place.
 
-https://www.spinics.net/lists/kvm/msg316072.html
+Commit 8726d4f44150 ("ACPI / tables: fix acpi_parse_entries_array() so it
+traverses all subtables") introduced an errs variable, which is intended to
+make acpi_parse_entries_array() always traverse all of the subtables,
+calling as many of the callbacks as possible. However, it seems that the
+commit does not achieve this goal. For example, when a handler returns an
+error, none of the handlers will be called again in the subsequent
+iterations. This result appears to be no different from before the change.
 
+This patch corrects and cleans up the logic of acpi_parse_entries_array(),
+making it return the number of all matching entries, rather than the number
+of entries successfully processed by handlers. Additionally, if an error
+occurs when executing a handler, the function will return -EINVAL immediately.
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+This patch should not affect existing users of acpi_parse_entries_array().
 
-Best regards,
-	Maxim Levitsky
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ lib/fw_table.c | 30 +++++++++---------------------
+ 1 file changed, 9 insertions(+), 21 deletions(-)
+
+diff --git a/lib/fw_table.c b/lib/fw_table.c
+index b51f30a28e47..b655e6f4b647 100644
+--- a/lib/fw_table.c
++++ b/lib/fw_table.c
+@@ -85,11 +85,6 @@ acpi_get_subtable_type(char *id)
+ 	return ACPI_SUBTABLE_COMMON;
+ }
+ 
+-static __init_or_acpilib bool has_handler(struct acpi_subtable_proc *proc)
+-{
+-	return proc->handler || proc->handler_arg;
+-}
+-
+ static __init_or_acpilib int call_handler(struct acpi_subtable_proc *proc,
+ 					  union acpi_subtable_headers *hdr,
+ 					  unsigned long end)
+@@ -133,7 +128,6 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
+ 	unsigned long table_end, subtable_len, entry_len;
+ 	struct acpi_subtable_entry entry;
+ 	int count = 0;
+-	int errs = 0;
+ 	int i;
+ 
+ 	table_end = (unsigned long)table_header + table_header->length;
+@@ -145,25 +139,19 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
+ 	    ((unsigned long)table_header + table_size);
+ 	subtable_len = acpi_get_subtable_header_length(&entry);
+ 
+-	while (((unsigned long)entry.hdr) + subtable_len  < table_end) {
+-		if (max_entries && count >= max_entries)
+-			break;
+-
++	while (((unsigned long)entry.hdr) + subtable_len < table_end) {
+ 		for (i = 0; i < proc_num; i++) {
+ 			if (acpi_get_entry_type(&entry) != proc[i].id)
+ 				continue;
+-			if (!has_handler(&proc[i]) ||
+-			    (!errs &&
+-			     call_handler(&proc[i], entry.hdr, table_end))) {
+-				errs++;
+-				continue;
+-			}
++
++			if (!max_entries || count < max_entries)
++				if (call_handler(&proc[i], entry.hdr, table_end))
++					return -EINVAL;
+ 
+ 			proc[i].count++;
++			count++;
+ 			break;
+ 		}
+-		if (i != proc_num)
+-			count++;
+ 
+ 		/*
+ 		 * If entry->length is 0, break from this loop to avoid
+@@ -180,9 +168,9 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
+ 	}
+ 
+ 	if (max_entries && count > max_entries) {
+-		pr_warn("[%4.4s:0x%02x] found the maximum %i entries\n",
+-			id, proc->id, count);
++		pr_warn("[%4.4s:0x%02x] ignored %i entries of %i found\n",
++			id, proc->id, count - max_entries, count);
+ 	}
+ 
+-	return errs ? -EINVAL : count;
++	return count;
+ }
+-- 
+2.42.1
 
