@@ -2,59 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9637F105F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4723B7F1074
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233182AbjKTK2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        id S232947AbjKTKdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:33:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233125AbjKTK22 (ORCPT
+        with ESMTP id S232305AbjKTKdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:28:28 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336BFD51
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:28:21 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1EE55C000C;
-        Mon, 20 Nov 2023 10:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700476099;
+        Mon, 20 Nov 2023 05:33:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A28AA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700476379;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6E0UQ9FmojGlOqNPoGhTA5IFG2wg+7A9OzJneyMdeI8=;
-        b=hoUPSXarh/RJ8Opj9F17Qax6XFWXsAOt5m7/l8Rrt3TnySvVQXpyoBA7E6iN9NjcmCcBAq
-        d6AENXCO19FSV44vI2r4Ul+mz/lEpMXdo9s8yTqZ0mWOavxxF5RP0awhDpre8F3t70N/JF
-        ag8rCQ4ozLDLMT5lNgD9OUp7yJE308I/8dNHAB4Ds/DhynqJdAF+KMU10oxiXeFuX4f/9V
-        tbG8QCw/uMTQKW5Ddcun7y3/srF9RszdhpFxpS+XBOWIofJkb+X369eioCu6VpsFpIZo3u
-        dQnht89BvfPEia+qKFdWMb/pQKTSP5vJtbRnHH5IsvunHGqSKd5Wq6BcTo854w==
-Date:   Mon, 20 Nov 2023 11:28:16 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     dregan@broadcom.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-        bbrezillon@kernel.org, kdasu.kdev@gmail.com,
-        JaimeLiao <jaimeliao.tw@gmail.com>,
-        Adam Borowski <kilobyte@angband.pl>
-Subject: Re: [PATCH v4 4/4] mtd: rawnand: brcmnand: exec_op implementation
-Message-ID: <20231120112816.15a19e05@xps-13>
-In-Reply-To: <20231023171444.322311-4-dregan@broadcom.com>
-References: <20231023171444.322311-1-dregan@broadcom.com>
-        <20231023171444.322311-4-dregan@broadcom.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=/BRzQJsUlNqGcHYQcbPZo6N/PuuDQH6IwCC8oi/Rszw=;
+        b=BEZsGFammqmYjKaqntVZXuHc5XkExnPlpEVCKez16hA+KGMsl31R5fOPgr1ALFL96xEAwX
+        hphOaBbPsvJIThy+0xAdmQPuadD8nTUk84Wk2YM2OlIJi3xau9wkITRH07dNfS2iqkKDuM
+        kkWW2iECERvR4OJXPtC0H2Jk3mNcA8g=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28--h9NBaAINIyIkoKCHaisgQ-1; Mon, 20 Nov 2023 05:32:58 -0500
+X-MC-Unique: -h9NBaAINIyIkoKCHaisgQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4084e4ce543so10893175e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:32:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700476377; x=1701081177;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/BRzQJsUlNqGcHYQcbPZo6N/PuuDQH6IwCC8oi/Rszw=;
+        b=WCLLxeQqv5fuVxndTlRq3VGicURs8YGwTozGwJVp5Kppm+rZqwhcpuvCfQsxamvLrE
+         t0EZduCiM7740ZkL/pnTUd4oaocDHSC3IbQ/iBfNXnmEHY1yn0wfwNDk+K+0eYcvtYf1
+         Woz+xANgzyt1Vy8ivS2zQTaJ45gSUoyAihnnn7jLbVOiuBCNYaeCXBkvheIXi6C62OXj
+         +8lIkzz65pNN5TEYMjuUvs/BY+BwYUquamrPsz6r1HTuPzNqNIPUU5TYRio4VncTOR2F
+         5xFJvYev32mhVlLnS7+T4QJT/0bfgJ+bazvBoS0Hdm8F+gWIbRHr/t6fx/ND6yTGtlyp
+         MfLQ==
+X-Gm-Message-State: AOJu0YzvyjDhE2yxFRAv2zhuZP7g6slJQLKAEmQvtpQdWczvyUl+2i9H
+        p7AtMLQpMsgCY9pqK908xIJZ+aIb7nKZNWYYEPUjwJaaywg9+pQOX3ov4bYkNUszRO62mdNEy7N
+        3tkTmWBN/u/JP3OzNyQm8j02t
+X-Received: by 2002:a05:600c:3b03:b0:40a:4422:831f with SMTP id m3-20020a05600c3b0300b0040a4422831fmr5957159wms.21.1700476377139;
+        Mon, 20 Nov 2023 02:32:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEemHVlrW+f3BTClMvrJCdlyIj4QZCPR5kCK1I7Lwr2eHz3QJxwmltk3042qdWy0TymvewH3g==
+X-Received: by 2002:a05:600c:3b03:b0:40a:4422:831f with SMTP id m3-20020a05600c3b0300b0040a4422831fmr5957139wms.21.1700476376724;
+        Mon, 20 Nov 2023 02:32:56 -0800 (PST)
+Received: from ?IPV6:2003:cb:c746:7700:9885:6589:b1e3:f74c? (p200300cbc746770098856589b1e3f74c.dip0.t-ipconnect.de. [2003:cb:c746:7700:9885:6589:b1e3:f74c])
+        by smtp.gmail.com with ESMTPSA id w8-20020a05600c474800b0040836519dd9sm13125940wmo.25.2023.11.20.02.32.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:32:56 -0800 (PST)
+Message-ID: <724f61a5-4d02-4232-ae8f-71f55e73186a@redhat.com>
+Date:   Mon, 20 Nov 2023 11:32:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] mm/ksm: add sysfs knobs for advisor
+Content-Language: en-US
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231028000945.2428830-1-shr@devkernel.io>
+ <20231028000945.2428830-3-shr@devkernel.io>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231028000945.2428830-3-shr@devkernel.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,185 +127,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 28.10.23 02:09, Stefan Roesch wrote:
+> This adds four new knobs for the KSM advisor to influence its behaviour.
+> 
+> The knobs are:
+> - advisor_mode:
+>      0: no advisor (default)
+>      1: scan time advisor
+> - advisor_min_cpu: 15 (default, cpu usage percent)
+> - advisor_max_cpu: 70 (default, cpu usage percent)
+> - advisor_min_pages: 500 (default)
+> - advisor_max_pages: 30000 (default)
+> - advisor_target_scan_time: 200 (default in seconds)
 
-dregan@broadcom.com wrote on Mon, 23 Oct 2023 10:14:44 -0700:
+Is there a way we can avoid exposing advisor_min_pages/advisor_max_pages 
+and just have this internal e.g., as defines?
 
-> From: David Regan <dregan@broadcom.com>
->=20
-> exec_op implementation for Broadcom STB, Broadband and iProc SoC
-> This adds exec_op and removes the legacy interface. Based on changes
-> proposed by Boris Brezillon.
->=20
-> https://github.com/bbrezillon/linux/commit/4ec6f8d8d83f5aaca5d1877f02d48d=
-a96d41fcba
-> https://github.com/bbrezillon/linux/commit/11b4acffd761c4928652d7028d19fc=
-d6f45e4696
->=20
-> Signed-off-by: David Regan <dregan@broadcom.com>
+-- 
+Cheers,
 
-I'm fine with patches 1-3, a few minor nits on this version as well,
-nothing big. I guess I'll let some time to Florian as well to give his
-feedback and perhaps test the ->exec_op() implementation.
+David / dhildenb
 
-...
-
-> +static int brcmnand_exec_instr(struct brcmnand_host *host, int i,
-> +				const struct nand_operation *op)
-> +{
-> +	struct brcmnand_controller *ctrl =3D host->ctrl;
-> +	const struct nand_op_instr *instr =3D &op->instrs[i];
-> +	const u8 *out;
-> +	u8 *in;
-> +	int ret =3D 0;
-> +	bool last_op;
-> +
-> +	/*
-> +	 * if we are on the last command in the sequence (not including
-> +	 * waitrdy which is not a NAND command) then flag the controller
-
-May I suggest:
-
-	/*
-	 * The controller needs to be aware of the last command in the operation
-	 * (WAITRDY excepted).
-	 */
-
-> +	 */
-> +	last_op =3D (((i =3D=3D (op->ninstrs - 1)) &&
-> +			(instr->type !=3D NAND_OP_WAITRDY_INSTR)) ||
-
-You can cross the 80 chars boundary. Please use this form:
-
-	last_op =3D ((i =3D=3D (op->ninstrs - 1)) && (instr->type !=3D NAND_OP_WAI=
-TRDY_INSTR)) ||
-		  ((i =3D=3D (op->ninstrs - 2)) && (op->instrs[i+1].type =3D=3D NAND_OP_W=
-AITRDY_INSTR));
-
-> +			((i =3D=3D (op->ninstrs - 2)) &&
-> +			(op->instrs[i+1].type =3D=3D NAND_OP_WAITRDY_INSTR)));
-> +
-> +	switch (instr->type) {
-> +	case NAND_OP_CMD_INSTR:
-> +		brcmnand_low_level_op(host, LL_OP_CMD,
-> +				      instr->ctx.cmd.opcode, last_op);
-> +		break;
-> +
-> +	case NAND_OP_ADDR_INSTR:
-> +		for (i =3D 0; i < instr->ctx.addr.naddrs; i++)
-> +			brcmnand_low_level_op(host, LL_OP_ADDR,
-> +					      instr->ctx.addr.addrs[i],
-> +					      last_op &&
-> +						  i =3D=3D (instr->ctx.addr.naddrs - 1));
-> +		break;
-> +
-> +	case NAND_OP_DATA_IN_INSTR:
-> +		in =3D instr->ctx.data.buf.in;
-> +		for (i =3D 0; i < instr->ctx.data.len; i++) {
-> +			brcmnand_low_level_op(host, LL_OP_RD, 0, last_op &&
-> +						  i =3D=3D (instr->ctx.data.len - 1));
-> +			in[i] =3D brcmnand_read_reg(host->ctrl,
-> +						  BRCMNAND_LL_RDATA);
-> +		}
-> +		break;
-> +
-> +	case NAND_OP_DATA_OUT_INSTR:
-> +		out =3D instr->ctx.data.buf.out;
-> +		for (i =3D 0; i < instr->ctx.data.len; i++)
-> +			brcmnand_low_level_op(host, LL_OP_WR, out[i], last_op &&
-> +						  i =3D=3D (instr->ctx.data.len - 1));
-> +		break;
-> +
-> +	case NAND_OP_WAITRDY_INSTR:
-> +		ret =3D bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, 0=
-);
-> +		break;
-> +
-> +	default:
-> +		dev_err(ctrl->dev, "unsupported instruction type: %d\n",
-> +			instr->type);
-> +		ret =3D -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int brcmnand_exec_op_is_status(const struct nand_operation *op)
-
-brcmnand_op_is_status() would make more sense
-
-> +{
-> +	if ((op->ninstrs =3D=3D 2) &&
-> +		(op->instrs[0].type =3D=3D NAND_OP_CMD_INSTR) &&
-> +		(op->instrs[0].ctx.cmd.opcode =3D=3D NAND_CMD_STATUS) &&
-> +		(op->instrs[1].type =3D=3D NAND_OP_DATA_IN_INSTR))
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int brcmnand_exec_op_is_reset(const struct nand_operation *op)
-
-same here, please s/exec_//
-
-> +{
-> +	if ((op->ninstrs =3D=3D 1) &&
-> +		(op->instrs[0].type =3D=3D NAND_OP_CMD_INSTR) &&
-> +		(op->instrs[0].ctx.cmd.opcode =3D=3D NAND_CMD_RESET))
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int brcmnand_exec_op(struct nand_chip *chip,
-> +			    const struct nand_operation *op,
-> +			    bool check_only)
-> +{
-> +	struct brcmnand_host *host =3D nand_get_controller_data(chip);
-> +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> +	u8 *status;
-> +	unsigned int i;
-> +	int ret =3D 0;
-> +
-> +	if (check_only)
-> +		return 0;
-> +
-> +	if (brcmnand_exec_op_is_status(op)) {
-> +		status =3D op->instrs[1].ctx.data.buf.in;
-> +		*status =3D brcmnand_status(host);
-> +
-> +		return 0;
-> +	}
-
-I would add the below chunk here:
-
-	} else if (brcmnand_exec_op_is_reset(op)) {
-		...
-
-		return ...
-	}
-
-> +
-> +	if (op->deassert_wp)
-> +		brcmnand_wp(mtd, 0);
-> +
-> +	for (i =3D 0; i < op->ninstrs; i++) {
-> +		ret =3D brcmnand_exec_instr(host, i, op);
-> +		if (ret)
-> +			break;
-> +	}
-> +
-> +	if (op->deassert_wp)
-> +		brcmnand_wp(mtd, 1);
-> +
-> +	if (brcmnand_exec_op_is_reset(op)) {
-> +		brcmnand_wp(mtd, 1);
-> +		brcmnand_status(host);
-> +	}
-> +
-> +	return ret;
-> +}
-
-Thanks,
-Miqu=C3=A8l
