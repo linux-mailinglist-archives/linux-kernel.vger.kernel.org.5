@@ -2,121 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A207F206A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8643B7F206B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbjKTWcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 17:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S232476AbjKTWdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 17:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKTWcR (ORCPT
+        with ESMTP id S229539AbjKTWdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:32:17 -0500
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC0E4CF;
-        Mon, 20 Nov 2023 14:32:13 -0800 (PST)
+        Mon, 20 Nov 2023 17:33:08 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2C7AA;
+        Mon, 20 Nov 2023 14:33:04 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5c2139492d9so1620878a12.0;
+        Mon, 20 Nov 2023 14:33:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1700519534; x=1732055534;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=rDQlZ5oeaeLfue7DbNqiYyQWKb1Fe9Vhhje9JX7Eq+g=;
-  b=MOXJB84cbgYxyNn+6oXM1qkjmlqGh3NDqirVjkwPlEfh0epRuFypnWZd
-   s9budsKefoLt5iPaPN7Axbs/AvBwHfnPvjVeKkUDT5wP+twP2vtRCwN34
-   LmRujsZK0HjAzwonYXpAFKS8nhh+vunzbdEyeaaoSdD7xa7kiATkMwSGB
-   4=;
-X-IronPort-AV: E=Sophos;i="6.04,214,1695686400"; 
-   d="scan'208";a="167328892"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 22:32:12 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com (Postfix) with ESMTPS id E2B5140D40;
-        Mon, 20 Nov 2023 22:32:11 +0000 (UTC)
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:41508]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.48.37:2525] with esmtp (Farcaster)
- id 4a95383a-4603-4337-8fb7-0a86e23bc394; Mon, 20 Nov 2023 22:32:10 +0000 (UTC)
-X-Farcaster-Flow-ID: 4a95383a-4603-4337-8fb7-0a86e23bc394
-Received: from EX19D012UWC002.ant.amazon.com (10.13.138.165) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 20 Nov 2023 22:32:10 +0000
-Received: from EX19D012UWC002.ant.amazon.com (10.13.138.165) by
- EX19D012UWC002.ant.amazon.com (10.13.138.165) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 20 Nov 2023 22:32:10 +0000
-Received: from EX19D012UWC002.ant.amazon.com ([fe80::afb2:a509:3c85:23c6]) by
- EX19D012UWC002.ant.amazon.com ([fe80::afb2:a509:3c85:23c6%5]) with mapi id
- 15.02.1118.039; Mon, 20 Nov 2023 22:32:10 +0000
-From:   "Ashley, William" <wash@amazon.com>
-To:     "Ashley, William" <wash@amazon.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
-Subject: Re: armv8pmu: Pending overflow interrupt is discarded when perf event
- is disabled
-Thread-Topic: armv8pmu: Pending overflow interrupt is discarded when perf
- event is disabled
-Thread-Index: AQHaG+B2preRGLMobEe2ogRfnSWcUrCDZnWA
-Date:   Mon, 20 Nov 2023 22:32:10 +0000
-Message-ID: <EBAF38AB-2BE5-425F-8A52-DDCB0B390309@amazon.com>
-References: <950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com>
-In-Reply-To: <950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.106.239.31]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <70AE45BED0D9DF488927A8495E1F11EB@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1700519584; x=1701124384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gwUXyg7MBmR4xeoVYVivfJ5Bm/G7s4W1J7Z6JZoWHTc=;
+        b=D5FSm8Ec+P9QK18MgaEK6Ua3hbx6eGzyxSvsGa0lioMTkWpEudlAQhDA7MfEQKrayL
+         WzeiQ5cnZuDkCuWxr3WDr56BuDZ05SnQWQ+i6XugProUXbY7uVUfbGQ/1DBgnhjHED0x
+         hMXfW6rAmb0TirMH2btDtmY+4I1JCspDoCgDuA0JfHFds61SwOPQpwfZ9bZ2UA/xdFOB
+         HAX+HpARlAv4PzigYQ1oy7Je9TtYZk2eMHbz/m6bXq042v0/EhzBko1i8wRrAqb+WVv5
+         lRB8sy59CREuwtl+IUvdPaZ/+pKtCFKi+dakOSKJpnG6hXw6pyoA1nbf5HwuOfdRXbJM
+         aozA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700519584; x=1701124384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gwUXyg7MBmR4xeoVYVivfJ5Bm/G7s4W1J7Z6JZoWHTc=;
+        b=rOME1N/+G98BaaLE2FKU7pIO5pVygKQe/Ho7FN/f1504ZCvjEDihN0j+PMv6jJ2dg0
+         aUoUzo8NNVBMi02mmdk39KZAlZ8xmOJP1t+S99joSH5Thx0Ro/R8HUK5lldzNuPVbcsv
+         yMdoZ1KC+SyEnIxJvdpJTaWA0rNV6STsls7buzlAN4LQKQfcikwv89MVB0wDbqSzbnAO
+         cm+/vyK6k8uV/rJdObbFUEpW71w3tHxo6tOxcaRkkGl1hXeuvT9QHMj+7gaXPP9y8AIS
+         QKmjnEhw59I3VX6rQmNvo1br4f8AezE0uYutRqwzn/45i22YbJQdjjPUM4pbsbYDNWSj
+         ywEQ==
+X-Gm-Message-State: AOJu0Yy5bjhE6r0I7+32ODE4fS6Kdfe8yoXCrDJZwMyIr+15yrND1kbF
+        wrP/L0AXS9azd+qfU7dAntQ=
+X-Google-Smtp-Source: AGHT+IF8aM7kBXwdxWcd5QRBWOgY83+8colpgzLEa0t5kFMKqb+LSLgcbvB3DrS/MP2lq41NucbcnQ==
+X-Received: by 2002:a17:90b:4d0d:b0:27d:c36:e12d with SMTP id mw13-20020a17090b4d0d00b0027d0c36e12dmr6759637pjb.6.1700519583993;
+        Mon, 20 Nov 2023 14:33:03 -0800 (PST)
+Received: from DESKTOP-NK4TH6S.localdomain ([220.72.86.144])
+        by smtp.gmail.com with ESMTPSA id k8-20020a17090a658800b00283a0b0fd39sm4917352pjj.53.2023.11.20.14.32.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 14:33:03 -0800 (PST)
+From:   Paran Lee <p4ranlee@gmail.com>
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Li Dong <lidong@vivo.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shjy180909@gmail.com, austindh.kim@gmail.com, honggyu.kp@gmail.com,
+        Paran Lee <p4ranlee@gmail.com>
+Subject: [PATCH V3 RESEND] perf script python: Fail check on dynamic allocation
+Date:   Tue, 21 Nov 2023 07:32:19 +0900
+Message-Id: <20231120223218.9036-1-p4ranlee@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkaW5nIGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZyBhbmQgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZywNCnNvcnJ5IGZvciB0aGUgbm9pc2UuDQoNCg0K77u/T24gMTEv
-MjAvMjMsIDEyOjM2IFBNLCAiQXNobGV5LCBXaWxsaWFtIiA8d2FzaEBhbWF6b24uY29tIDxtYWls
-dG86d2FzaEBhbWF6b24uY29tPj4gd3JvdGU6DQoNCg0KQW4gaXNzdWUgWzFdIHdhcyBvcGVuZWQg
-aW4gdGhlIHJyLWRlYnVnZ2VyIHByb2plY3QgcmVwb3J0aW5nIG9jY2FzaW9uYWwgbWlzc2VkDQpw
-ZXJmIGV2ZW50IG92ZXJmbG93IHNpZ25hbHMgb24gYXJtNjQuIEkndmUgYmVlbiBkaWdnaW5nIGlu
-dG8gdGhpcyBhbmQgdGhpbmsgSQ0KdW5kZXJzdGFuZCB3aGF0J3MgaGFwcGVuaW5nLCBidXQgd2Fu
-dGVkIHRvIGNvbmZpcm0gbXkgdW5kZXJzdGFuZGluZy4NCg0KDQpUaGUgYXR0YWNoZWQgZXhhbXBs
-ZSBhcHBsaWNhdGlvbiwgZGVyaXZlZCBmcm9tIGFuIHJyLWRlYnVnZ2VyIHRlc3QgY2FzZSwgcmVw
-b3J0cw0Kd2hlbiB0aGUgdmFsdWUgb2YgYSBjb3VudGVyIGRvZXNuJ3QgaW5jcmVhc2UgYnkgdGhl
-IGV4cGVjdGVkIHBlcmlvZCArLy0gc29tZQ0KdG9sZXJhbmNlLiBXaGVuIGl0IGlzIHBpbmctcG9u
-Z2VkIGJldHdlZW4gY29yZXMgKGUuZy4gd2l0aCB0YXNrc2V0KSBhdCBhIGhpZ2gNCmZyZXF1ZW5j
-eSwgaXQgZnJlcXVlbnRseSByZXBvcnRzIGluY3JlYXNlcyBvZiB+MnggdGhlIGV4cGVjdGVkLiBJ
-J3ZlIGNvbmZpcm1lZA0KdGhpcyBzYW1lIGJlaGF2aW9yIG9uIGtlcm5lbHMgNS40LCA1LjEwLCA2
-LjEgYW5kIDYuNS4NCg0KDQpJIGZvdW5kIGFybXY4cG11X2Rpc2FibGVfaW50ZW5zIFsyXSB0aGF0
-IGlzIGNhbGxlZCBhcyBwYXJ0IG9mIGV2ZW50DQpkZS1zY2hlZHVsaW5nIGFuZCBjb250YWlucw0K
-LyogQ2xlYXIgdGhlIG92ZXJmbG93IGZsYWcgaW4gY2FzZSBhbiBpbnRlcnJ1cHQgaXMgcGVuZGlu
-Zy4gKi8NCndyaXRlX3Btb3ZzY2xyKG1hc2spOw0Kd2hpY2ggcmVzdWx0cyBpbiBhbnkgcGVuZGlu
-ZyBvdmVyZmxvdyBpbnRlcnJ1cHQgYmVpbmcgZHJvcHBlZC4gSSBhZGRlZCBzb21lDQpkZWJ1ZyBv
-dXRwdXQgaGVyZSBhbmQgaW5kZWVkIHRoZXJlIGlzIGEgY29ycmVsYXRpb24gb2YgdGhpcyBiaXQg
-YmVpbmcgaGlnaCBhdA0KdGhlIHBvaW50IG9mIHRoZSBhYm92ZSBjb2RlIGFuZCB0aGUgcmVwcm9k
-dWNlciBpZGVudGlmeWluZyBhIG1pc3NlZCBzaWduYWwuDQoNCg0KVGhpcyBiZWhhdmlvciBkb2Vz
-IG5vdCBvY2N1ciB3aXRoIHBzZXVkby1OTUlzIChpcnFjaGlwLmdpY3YzX3BzZXVkb19ubWk9MSkN
-CmVuYWJsZWQuDQoNCg0KV2hlbiBhbiBldmVudCBpcyBub3QgYmVpbmcgZXhwbGljaXRseSB0b3Ju
-IGRvd24gKGUuZy4gYmVpbmcgY2xvc2VkKSwgdGhpcyBzZWVtcw0KbGlrZSBhbiB1bmRlc2lyYWJs
-ZSBiZWhhdmlvci4gSSBoYXZlbid0IGF0dGVtcHRlZCB0byBkZW1vIGl0IHlldCwgYnV0IEkgc3Vz
-cGVjdA0KYW4gYXBwbGljYXRpb24gZGlzYWJsaW5nIGFuIGV2ZW50IHRlbXBvcmFyaWx5IGNvdWxk
-IG9jY2FzaW9uYWxseSBzZWUgdGhlIHNhbWUNCm1pc3NlZCBvdmVyZmxvdyBzaWduYWxzLiBJcyBt
-eSB1bmRlcnN0YW5kaW5nIGhlcmUgY29ycmVjdD8gRG9lcyBhbnlvbmUgaGF2ZQ0KdGhvdWdodHMg
-b24gaG93IHRoaXMgY291bGQgYmUgYWRkcmVzc2VkIHdpdGhvdXQgY3JlYXRpbmcgb3RoZXIgaXNz
-dWVzPw0KDQoNClsxXSBodHRwczovL2dpdGh1Yi5jb20vcnItZGVidWdnZXIvcnIvaXNzdWVzLzM2
-MDcgPGh0dHBzOi8vZ2l0aHViLmNvbS9yci1kZWJ1Z2dlci9yci9pc3N1ZXMvMzYwNz4NClsyXSBo
-dHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxvYi9jNDJkOWVlZWY4ZTViYTkyOTJl
-ZGEzNmZkOGUzYzExZjM1ZWUwNjVjL2RyaXZlcnMvcGVyZi9hcm1fcG11djMuYyNMNjUyQzIwLUw2
-NTJDNDMgPGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL2M0MmQ5ZWVlZjhl
-NWJhOTI5MmVkYTM2ZmQ4ZTNjMTFmMzVlZTA2NWMvZHJpdmVycy9wZXJmL2FybV9wbXV2My5jI0w2
-NTJDMjAtTDY1MkM0Mz4NCg0KDQoNCg0KDQoNCg0K
+Add PyList_New() Fail check in get_field_numeric_entry()
+function and dynamic allocation checking for
+set_regs_in_dict(), python_start_script().
+
+Signed-off-by: Paran Lee <p4ranlee@gmail.com>
+Reviewed-by: MichelleJin <shjy180909@gmail.com>
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ .../util/scripting-engines/trace-event-python.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+index 94312741443a..860e1837ba96 100644
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -353,6 +353,8 @@ static PyObject *get_field_numeric_entry(struct tep_event *event,
+ 
+ 	if (is_array) {
+ 		list = PyList_New(field->arraylen);
++		if (!list)
++			Py_FatalError("couldn't create Python list");
+ 		item_size = field->size / field->arraylen;
+ 		n_items = field->arraylen;
+ 	} else {
+@@ -754,7 +756,7 @@ static void regs_map(struct regs_dump *regs, uint64_t mask, const char *arch, ch
+ 	}
+ }
+ 
+-static void set_regs_in_dict(PyObject *dict,
++static int set_regs_in_dict(PyObject *dict,
+ 			     struct perf_sample *sample,
+ 			     struct evsel *evsel)
+ {
+@@ -770,6 +772,8 @@ static void set_regs_in_dict(PyObject *dict,
+ 	 */
+ 	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+ 	char *bf = malloc(size);
++	if (!bf)
++		return -1;
+ 
+ 	regs_map(&sample->intr_regs, attr->sample_regs_intr, arch, bf, size);
+ 
+@@ -781,6 +785,8 @@ static void set_regs_in_dict(PyObject *dict,
+ 	pydict_set_item_string_decref(dict, "uregs",
+ 			_PyUnicode_FromString(bf));
+ 	free(bf);
++
++	return 0;
+ }
+ 
+ static void set_sym_in_dict(PyObject *dict, struct addr_location *al,
+@@ -920,7 +926,8 @@ static PyObject *get_perf_sample_dict(struct perf_sample *sample,
+ 			PyLong_FromUnsignedLongLong(sample->cyc_cnt));
+ 	}
+ 
+-	set_regs_in_dict(dict, sample, evsel);
++	if (set_regs_in_dict(dict, sample, evsel))
++		Py_FatalError("Failed to setting regs in dict");
+ 
+ 	return dict;
+ }
+@@ -1918,12 +1925,18 @@ static int python_start_script(const char *script, int argc, const char **argv,
+ 	scripting_context->session = session;
+ #if PY_MAJOR_VERSION < 3
+ 	command_line = malloc((argc + 1) * sizeof(const char *));
++	if (!command_line)
++		return -1;
++
+ 	command_line[0] = script;
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = argv[i - 1];
+ 	PyImport_AppendInittab(name, initperf_trace_context);
+ #else
+ 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
++	if (!command_line)
++		return -1;
++
+ 	command_line[0] = Py_DecodeLocale(script, NULL);
+ 	for (i = 1; i < argc + 1; i++)
+ 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
+-- 
+2.25.1
+
