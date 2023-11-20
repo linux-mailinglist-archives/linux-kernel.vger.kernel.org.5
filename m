@@ -2,75 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 089C07F201E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC017F2021
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbjKTWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 17:19:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        id S233014AbjKTWUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 17:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbjKTWTk (ORCPT
+        with ESMTP id S232901AbjKTWUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:19:40 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEE391
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:19:37 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc2575dfc7so34247355ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:19:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700518776; x=1701123576; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZU36NcT9RPyJC6TQdfEVGdreh7ck6Zb0oyJfbLqLJ4s=;
-        b=BHBZSCe9TsuJXRnWjynxNsorVEt2YpNDI5jBGvOdc0lS2BVO9kGRDmab+buvBF1XDF
-         tu7hhr7ZR57P73qhf0EssUW7071iC1TrGWXMxb+lHzpNMTmhWE+USEYdog1DDnmPwp4Q
-         0vIg0Yx3r5cEKb5thX8sJKUejl3RdXbrFh3xyIeSHaCbSIsJUpsmIVmkVzoqERBCFbI1
-         dMuzWfVSVANEeHQJT/1YFOUWgXz08OkQuHh4w0MqSasRlrR26BbTI7010TgZh5i0YnB8
-         4HECP1qFKRiwv3VUpWERU4lX4yA1OgrQEvnawmrFjngupfDQAPLfkrRQV6hqQ89LY1ps
-         Jkgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700518776; x=1701123576;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZU36NcT9RPyJC6TQdfEVGdreh7ck6Zb0oyJfbLqLJ4s=;
-        b=oRbh/2nLsIn5vL9DcpTuDtfwbE53T25yoO4k5WXlbXDhAGPV3zsWJOf3JCF1LwtZ/j
-         ZfknrOOgbn6E6kqscGIjQrO0nBVSLrDIPPfAz2Xs7ex1MZbAj6eZd7SDyr7QOIVfNKH+
-         myYUjEZ9SuUJVAwOUIm9FVBe0xmw3VaUHdGuugvuqcKJiBaUcL9jPJgTl9hVEyx+THOr
-         biBgcFX/wNzwtJ5N1H3HOd/7tBtrX8ASs6kMaKFWHr68EEDkT1fyJ0WhcFVaenHOBioc
-         0uW2OoDJMfEbBMlu77C9NrxIKJstGdvP3wC27PwhvDha0Sis9E7k6H8RGSoGfNIkpuco
-         Y3WA==
-X-Gm-Message-State: AOJu0YzWNk03KCIBqzJQqTfFRJR8K82BDcVMyPFVjKXIlU0V6NKEfDJJ
-        lzm/INv/xYYlt7z2H9FopeY=
-X-Google-Smtp-Source: AGHT+IHMcbdksKd90KxZqrUcDtffyDsUiY3XBL82FnukX0GER7JnVDy/avqZExtispSySVyWf1HJxA==
-X-Received: by 2002:a17:902:a985:b0:1cc:58f1:8646 with SMTP id bh5-20020a170902a98500b001cc58f18646mr7364589plb.50.1700518776489;
-        Mon, 20 Nov 2023 14:19:36 -0800 (PST)
-Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:75c6:4212:ae99:93b6])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170902c18400b001c9c47d6cb9sm3528246pld.99.2023.11.20.14.19.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 14:19:36 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mon, 20 Nov 2023 17:20:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9A910C1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:19:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA470C433C9;
+        Mon, 20 Nov 2023 22:19:49 +0000 (UTC)
+Date:   Mon, 20 Nov 2023 17:20:04 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mingwei Zhang <mizhang@google.com>
-Subject: [PATCH 3/3] perf/x86: Add CAP_NO_INTERRUPT for uncore PMUs
-Date:   Mon, 20 Nov 2023 14:19:32 -0800
-Message-ID: <20231120221932.213710-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-In-Reply-To: <20231120221932.213710-1-namhyung@kernel.org>
-References: <20231120221932.213710-1-namhyung@kernel.org>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <20231120172004.7a1c3acc@gandalf.local.home>
+In-Reply-To: <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+        <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
@@ -80,48 +53,283 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It doesn't support sampling in uncore PMU events.  While it's
-technically possible to generate interrupts, let's treat it as if it
-has no interrupt in order to skip the freq adjust/unthrottling logic
-in the timer handler which is only meaningful to sampling events.
+On Mon, 20 Nov 2023 15:54:14 -0500
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Also remove the sampling event check because it'd be done in the general
-code in the perf_event_open syscall.
+> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+> index 4dc4955f0fbf..67bacfaa8fd0 100644
+> --- a/include/linux/tracepoint-defs.h
+> +++ b/include/linux/tracepoint-defs.h
+> @@ -29,6 +29,19 @@ struct tracepoint_func {
+>  	int prio;
+>  };
+>  
+> +/**
+> + * enum tracepoint_flags - Tracepoint flags
+> + * @TRACEPOINT_MAY_EXIST: Don't return an error if the tracepoint does not
+> + *                        exist upon registration.
+> + * @TRACEPOINT_MAY_FAULT: The tracepoint probe callback will be called with
+> + *                        preemption enabled, and is allowed to take page
+> + *                        faults.
+> + */
+> +enum tracepoint_flags {
+> +	TRACEPOINT_MAY_EXIST = (1 << 0),
+> +	TRACEPOINT_MAY_FAULT = (1 << 1),
+> +};
+> +
+>  struct tracepoint {
+>  	const char *name;		/* Tracepoint name */
+>  	struct static_key key;
+> @@ -39,6 +52,7 @@ struct tracepoint {
+>  	int (*regfunc)(void);
+>  	void (*unregfunc)(void);
+>  	struct tracepoint_func __rcu *funcs;
+> +	unsigned int flags;
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- arch/x86/events/intel/uncore.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Since faultable and non-faultable events are mutually exclusive, why not
+just allocated them separately? Then you could have the __DO_TRACE() macro
+get passed in whether the event can be faulted or not, by the created trace.
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 69043e02e8a7..f7e6228bd1b1 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -744,10 +744,6 @@ static int uncore_pmu_event_init(struct perf_event *event)
- 	if (pmu->func_id < 0)
- 		return -ENOENT;
- 
--	/* Sampling not supported yet */
--	if (hwc->sample_period)
--		return -EINVAL;
--
- 	/*
- 	 * Place all uncore events for a particular physical package
- 	 * onto a single cpu
-@@ -919,7 +915,12 @@ static int uncore_pmu_register(struct intel_uncore_pmu *pmu)
- 			.stop		= uncore_pmu_event_stop,
- 			.read		= uncore_pmu_event_read,
- 			.module		= THIS_MODULE,
--			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-+			/*
-+			 * It doesn't allow sampling for uncore events, let's
-+			 * treat the PMU has no interrupts to skip them in the
-+			 * perf_adjust_freq_unthr_context().
-+			 */
-+			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
- 			.attr_update	= pmu->type->attr_update,
- 		};
- 	} else {
--- 
-2.43.0.rc1.413.gea7ed67945-goog
 
+>  };
+>  
+>  #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+> index 88c0ba623ee6..8a6b58a2bf3b 100644
+> --- a/include/linux/tracepoint.h
+> +++ b/include/linux/tracepoint.h
+> @@ -18,6 +18,7 @@
+>  #include <linux/types.h>
+>  #include <linux/cpumask.h>
+>  #include <linux/rcupdate.h>
+> +#include <linux/rcupdate_trace.h>
+>  #include <linux/tracepoint-defs.h>
+>  #include <linux/static_call.h>
+>  
+> @@ -41,17 +42,10 @@ extern int
+>  tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
+>  			       int prio);
+>  extern int
+> -tracepoint_probe_register_prio_may_exist(struct tracepoint *tp, void *probe, void *data,
+> -					 int prio);
+> +tracepoint_probe_register_prio_flags(struct tracepoint *tp, void *probe, void *data,
+> +			       int prio, unsigned int flags);
+>  extern int
+>  tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
+> -static inline int
+> -tracepoint_probe_register_may_exist(struct tracepoint *tp, void *probe,
+> -				    void *data)
+> -{
+> -	return tracepoint_probe_register_prio_may_exist(tp, probe, data,
+> -							TRACEPOINT_DEFAULT_PRIO);
+> -}
+>  extern void
+>  for_each_kernel_tracepoint(void (*fct)(struct tracepoint *tp, void *priv),
+>  		void *priv);
+> @@ -90,6 +84,7 @@ int unregister_tracepoint_module_notifier(struct notifier_block *nb)
+>  #ifdef CONFIG_TRACEPOINTS
+>  static inline void tracepoint_synchronize_unregister(void)
+>  {
+> +	synchronize_rcu_tasks_trace();
+
+As Peter mentioned, why not use the srcu below?
+
+>  	synchronize_srcu(&tracepoint_srcu);
+>  	synchronize_rcu();
+>  }
+> @@ -192,9 +187,10 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>   * it_func[0] is never NULL because there is at least one element in the array
+>   * when the array itself is non NULL.
+>   */
+> -#define __DO_TRACE(name, args, cond, rcuidle)				\
+> +#define __DO_TRACE(name, args, cond, rcuidle, tp_flags)			\
+>  	do {								\
+>  		int __maybe_unused __idx = 0;				\
+> +		bool mayfault = (tp_flags) & TRACEPOINT_MAY_FAULT;	\
+>  									\
+>  		if (!(cond))						\
+>  			return;						\
+> @@ -202,8 +198,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
+>  			return;						\
+>  									\
+> -		/* keep srcu and sched-rcu usage consistent */		\
+> -		preempt_disable_notrace();				\
+> +		if (mayfault) {						\
+> +			rcu_read_lock_trace();				\
+> +		} else {						\
+> +			/* keep srcu and sched-rcu usage consistent */	\
+> +			preempt_disable_notrace();			\
+> +		}							\
+
+Change the above comment and have:
+
+		if (!mayfault)
+			preempt_disable_notrace();
+
+And we can have:
+
+		if (rcuidle || mayfault) {
+			__idx = srcu_read_lock_notrace(&tracepoint_srcu);
+			if (!mayfault)
+				ct_irq_enter_irqson();
+		}
+
+>  									\
+>  		/*							\
+>  		 * For rcuidle callers, use srcu since sched-rcu	\
+> @@ -221,20 +221,23 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  			srcu_read_unlock_notrace(&tracepoint_srcu, __idx);\
+>  		}							\
+>  									\
+> -		preempt_enable_notrace();				\
+> +		if (mayfault)						\
+> +			rcu_read_unlock_trace();			\
+> +		else							\
+> +			preempt_enable_notrace();			\
+>  	} while (0)
+>  
+>  #ifndef MODULE
+> -#define __DECLARE_TRACE_RCU(name, proto, args, cond)			\
+> +#define __DECLARE_TRACE_RCU(name, proto, args, cond, tp_flags)		\
+>  	static inline void trace_##name##_rcuidle(proto)		\
+>  	{								\
+>  		if (static_key_false(&__tracepoint_##name.key))		\
+>  			__DO_TRACE(name,				\
+>  				TP_ARGS(args),				\
+> -				TP_CONDITION(cond), 1);			\
+> +				TP_CONDITION(cond), 1, tp_flags);	\
+>  	}
+>  #else
+> -#define __DECLARE_TRACE_RCU(name, proto, args, cond)
+> +#define __DECLARE_TRACE_RCU(name, proto, args, cond, tp_flags)
+>  #endif
+>  
+>  /*
+> @@ -248,7 +251,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>   * site if it is not watching, as it will need to be active when the
+>   * tracepoint is enabled.
+>   */
+> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
+> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto, tp_flags)	\
+
+Instead of adding "tp_flags" just pass the "mayfault" boolean in.
+
+>  	extern int __traceiter_##name(data_proto);			\
+>  	DECLARE_STATIC_CALL(tp_func_##name, __traceiter_##name);	\
+>  	extern struct tracepoint __tracepoint_##name;			\
+> @@ -257,13 +260,15 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		if (static_key_false(&__tracepoint_##name.key))		\
+>  			__DO_TRACE(name,				\
+>  				TP_ARGS(args),				\
+> -				TP_CONDITION(cond), 0);			\
+> +				TP_CONDITION(cond), 0, tp_flags);	\
+>  		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
+>  			WARN_ON_ONCE(!rcu_is_watching());		\
+>  		}							\
+> +		if ((tp_flags) & TRACEPOINT_MAY_FAULT)			\
+> +			might_fault();					\
+>  	}								\
+>  	__DECLARE_TRACE_RCU(name, PARAMS(proto), PARAMS(args),		\
+> -			    PARAMS(cond))				\
+> +			    PARAMS(cond), tp_flags)			\
+>  	static inline int						\
+>  	register_trace_##name(void (*probe)(data_proto), void *data)	\
+>  	{								\
+> @@ -278,6 +283,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  					      (void *)probe, data, prio); \
+>  	}								\
+>  	static inline int						\
+> +	register_trace_prio_flags_##name(void (*probe)(data_proto), void *data, \
+> +				   int prio, unsigned int flags)	\
+> +	{								\
+> +		return tracepoint_probe_register_prio_flags(&__tracepoint_##name, \
+> +					      (void *)probe, data, prio, flags); \
+> +	}								\
+> +	static inline int						\
+>  	unregister_trace_##name(void (*probe)(data_proto), void *data)	\
+>  	{								\
+>  		return tracepoint_probe_unregister(&__tracepoint_##name,\
+> @@ -298,7 +310,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>   * structures, so we create an array of pointers that will be used for iteration
+>   * on the tracepoints.
+>   */
+> -#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
+> +#define DEFINE_TRACE_FN_FLAGS(_name, _reg, _unreg, proto, args, tp_flags) \
+
+Instead of passing in flags, I'm thinking that the faultable tracepoints
+need to go into its own section, and possibly have a
+register_trace_mayfault_##event() to make it highly distinguishable from
+events that don't expect to fault.
+
+Since everything is made by macros, it's not hard to keep all the above
+code, and wrap it in other macros so that the faultable and non-faultable
+tracepoints share most of the code.
+
+But as tracepoints live in __section("__tracepoints"), I'm thinking we may
+want __section("__tracepoints_mayfault") to keep them separate.
+
+Thoughts?
+
+-- Steve
+
+
+>  	static const char __tpstrtab_##_name[]				\
+>  	__section("__tracepoints_strings") = #_name;			\
+>  	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);	\
+> @@ -314,7 +326,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		.probestub = &__probestub_##_name,			\
+>  		.regfunc = _reg,					\
+>  		.unregfunc = _unreg,					\
+> -		.funcs = NULL };					\
+> +		.funcs = NULL,						\
+> +		.flags = (tp_flags),					\
+> +	};								\
+>  	__TRACEPOINT_ENTRY(_name);					\
+>  	int __traceiter_##_name(void *__data, proto)			\
+>  	{								\
+> @@ -337,8 +351,11 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  	}								\
+>  	DEFINE_STATIC_CALL(tp_func_##_name, __traceiter_##_name);
+>  
+> +#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
+> +	DEFINE_TRACE_FN_FLAGS(_name, _reg, _unreg, PARAMS(proto), PARAMS(args), 0)
+> +
+>  #define DEFINE_TRACE(name, proto, args)		\
+> -	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
+> +	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args))
+>  
+>  #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
+>  	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
+> @@ -351,7 +368,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  
+>  
+>  #else /* !TRACEPOINTS_ENABLED */
+> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
+> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto, tp_flags)	\
+>  	static inline void trace_##name(proto)				\
+>  	{ }								\
+>  	static inline void trace_##name##_rcuidle(proto)		\
+> @@ -363,6 +380,18 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		return -ENOSYS;						\
+>  	}								\
+>  	static inline int						\
+> +	register_trace_prio_##name(void (*probe)(data_proto),		\
+> +			      void *data, int prio)			\
+> +	{								\
+> +		return -ENOSYS;						\
+> +	}								\
+> +	static inline int						\
+> +	register_trace_prio_flags_##name(void (*probe)(data_proto),	\
+> +			      void *data, int prio, unsigned int flags)	\
+> +	{								\
+> +		return -ENOSYS;						\
+> +	}								\
+> +	static inline int						\
+>  	unregister_trace_##name(void (*probe)(data_proto),		\
+>  				void *data)				\
+>  	{								\
+> @@ -377,6 +406,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		return false;						\
+>  	}
+>  
