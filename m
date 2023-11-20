@@ -2,109 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 097377F1825
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18667F182D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbjKTQG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
+        id S233186AbjKTQJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:09:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjKTQGy (ORCPT
+        with ESMTP id S229798AbjKTQJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:06:54 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49694A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:06:51 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50970c2115eso6540599e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:06:51 -0800 (PST)
+        Mon, 20 Nov 2023 11:09:10 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE55100
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:09:07 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d31f3e8ca8so2783587a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:09:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700496409; x=1701101209; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gvvrj1QlPb+xqGFyqA+peRigK3UgbxK38qicOcTMV9s=;
-        b=hg0Y5i2LsKXWpvNQwn2yMscnj/sL6JPERwv7yrXne8vIonFPHJF2lfZW3Df+XwOPJX
-         unkQUbamZJsmHwt9TN0vFG3BXWIVPwgbFIoOe8ElzF81kqra10r7CZlkLCJDV1eGh0kN
-         BEH0vfGSGWn3NOOCMoA94rtyq5d8LLM10011g=
+        d=gmail.com; s=20230601; t=1700496546; x=1701101346; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M2oEbSauGOHvjZGkANky2osMy3LrJnK1DvMlgtxNIqU=;
+        b=NX/hYXuCNZMf/W5WUP37PvNmf8zRmqkKYOwcqLnRsQRnC9fTsfjLIpmWu4v6iiQyqQ
+         yeNbLQ8M65l6o/WTVY+ydd008IqaFTIL4lJnAUb/4xbNixO0UOZ5ps52WT50ejLYRe9Y
+         vGH3eHrzV0FwgGKzRE4xipT1oBGkIHYjmBk7Rt60f2NmhrAlJxLTilWLHO0xt3zB8YRp
+         Y2GLeXpXZ0wPO6o/vnoIsahPnlZulGZQaDyi8D6gs8tRmskXLqdMm8P7e/LEuAPSwJYk
+         SY8bButSZ1MJFS1KcPFTiF5oS4FVcPYXiLhRhgPwA3rySQoqZ48sMcuaKWs8idP8YUAD
+         ZbVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700496409; x=1701101209;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gvvrj1QlPb+xqGFyqA+peRigK3UgbxK38qicOcTMV9s=;
-        b=DAWoevG6d9E69rAZzWqI46VHoq9dL9kRvDEPsjxQcVxv+UZTNqWz1wqlPJzs+P3vXR
-         HgTHY+F6oDm/qHE6jdhKcAYvjwdjQPaHvIjTQXC9n1s91xvn+rKsdHRnm2kVBkKfOa4C
-         xDVr8Tv9AXGNN1NoxM7mTGdkbDA/ZMCMdCLgM9vSJWMZ74dMVuPcZ2i2Dj3wPrX8u65f
-         iJmC2Ka+psR2JB0ZVplQv3SckZfOVZkJkAurQpYO3+qU6xaM3VmSUsAHTCCPkAD3lONO
-         pZz61Xz+y4EhRW9l16j6jLpjP1FpAkkZ01hGxjOpH4dIMPQF2iL+KJCQEHzm5RC9oipm
-         QxXg==
-X-Gm-Message-State: AOJu0Yxj/Fnf6bL/xoEVZoFLMmK093vc/aAIWyRjtmG87DIicsJR417O
-        ypM9fH3yagR4WoD0MEnYvMa7t7Z9v01HeRCFf/LbsA==
-X-Google-Smtp-Source: AGHT+IGqdC4Q19am3BzoRs0QC59dQ2F9pUq10FrSwSdTR1dedN5g/7ir9JQEbWPk4h5iK23MT+7uKw==
-X-Received: by 2002:ac2:4219:0:b0:509:4655:d8d6 with SMTP id y25-20020ac24219000000b005094655d8d6mr4656727lfh.67.1700496409489;
-        Mon, 20 Nov 2023 08:06:49 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id r16-20020aa7cb90000000b0054879002b6csm2452964edt.84.2023.11.20.08.06.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 08:06:49 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so6292255a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:06:49 -0800 (PST)
-X-Received: by 2002:a05:6402:134c:b0:53e:4762:9373 with SMTP id
- y12-20020a056402134c00b0053e47629373mr5522481edw.18.1700496408702; Mon, 20
- Nov 2023 08:06:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700496546; x=1701101346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M2oEbSauGOHvjZGkANky2osMy3LrJnK1DvMlgtxNIqU=;
+        b=ODiz+v2oUJuxpD6oUhOoFjZb7b9cXmYRoj9elGYQkUYoJCpeGUsPw6oVKFE5cE1z5W
+         V5ILCuXz/cknR/YaH7apX0xpLL74Xmn+T1/nsvwCjd2zQZ6w282qWd/JUkF5JodtPqzP
+         +VSZHOuXCFugsY1BXK8SgNOK/JTNVcbz1zQjXFkRsNGvfJQGZSucHqtYZr7FBNIP5DWD
+         /Yf5MvyK3nvJBuS6uVusVLegVYw/IBsKwraIa7iEIJms4oNArn2iDZT25TQFiQEg8uS1
+         PN63nZA74XwBfzUGacV4vLRFov2m2bvXUjCnyOsCYGwvYuIVr0LLzpu5PdNJgF0EK3x8
+         jVyw==
+X-Gm-Message-State: AOJu0YywDkCh78Xz9juQl0GTCw+/uY1MCrzFhqwDw7piNq+iktEgiLHW
+        zWIV4qQrvopbkLTQ26wfskZYi95dhbeSdLhXSWePAQLO
+X-Google-Smtp-Source: AGHT+IEvbqXG00KL7aQO3Yc9jfLXnQj4XWLXSx/JaniG8N/Ocl9GUeaAS9Sx0btCzaUWmAP3MwcAMlhcoTbsFJ35TUM=
+X-Received: by 2002:a05:6870:7987:b0:1f9:34b3:7ae9 with SMTP id
+ he7-20020a056870798700b001f934b37ae9mr4808940oab.17.1700496546587; Mon, 20
+ Nov 2023 08:09:06 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local> <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
- <232440.1700153046@warthog.procyon.org.uk> <864270.1700230337@warthog.procyon.org.uk>
- <20231117160940.GGZVeQRLgLjJZXBLE1@fat_crate.local> <CAHk-=wj33FoGBQ7HkqjLbyOBQogWpYAG7WUTXatcfBF5duijjQ@mail.gmail.com>
- <CAHk-=whLbJ7vvB1ACVC6t44zjihX8w7GMY2y584+Fm83rsmaKg@mail.gmail.com>
- <20231117191243.GHZVe7K4vN9n5M92gb@fat_crate.local> <CAHk-=wiRQHD5xnB8H9Lwk9fJPDpfVNAwPS4KLnfrcrU3zbMAdQ@mail.gmail.com>
- <2284219.1700487177@warthog.procyon.org.uk>
-In-Reply-To: <2284219.1700487177@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 20 Nov 2023 08:06:30 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wid6dc9WpRdv5Gk1YL+bb9jkaMwc74b0UYA75tntq8xnw@mail.gmail.com>
-Message-ID: <CAHk-=wid6dc9WpRdv5Gk1YL+bb9jkaMwc74b0UYA75tntq8xnw@mail.gmail.com>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-To:     David Howells <dhowells@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
+References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com> <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+In-Reply-To: <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 20 Nov 2023 11:08:55 -0500
+Message-ID: <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Dave Airlie <airlied@gmail.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
         linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        dri-devel@lists.freedesktop.org, Phillip Susi <phill@thesusis.net>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 at 05:33, David Howells <dhowells@redhat.com> wrote:
+On Mon, Nov 20, 2023 at 10:57=E2=80=AFAM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
 >
-> So what, if anything, should I change?
+> Am 19.11.23 um 07:47 schrieb Dave Airlie:
+> >> On 12.11.23 01:46, Phillip Susi wrote:
+> >>> I had been testing some things on a post 6.6-rc5 kernel for a week or
+> >>> two and then when I pulled to a post 6.6 release kernel, I found that
+> >>> system suspend was broken.  It seems that the radeon driver failed to
+> >>> suspend, leaving the display dead, the wayland display server hung, a=
+nd
+> >>> the system still running.  I have been trying to bisect it for the la=
+st
+> >>> few days and have only been able to narrow it down to the following 3
+> >>> commits:
+> >>>
+> >>> There are only 'skip'ped commits left to test.
+> >>> The first bad commit could be any of:
+> >>> 56e449603f0ac580700621a356d35d5716a62ce5
+> >>> c07bf1636f0005f9eb7956404490672286ea59d3
+> >>> b70438004a14f4d0f9890b3297cd66248728546c
+> >>> We cannot bisect more!
+> >> Hmm, not a single reply from the amdgpu folks. Wondering how we can
+> >> encourage them to look into this.
+> >>
+> >> Phillip, reporting issues by mail should still work, but you might hav=
+e
+> >> more luck here, as that's where the amdgpu afaics prefer to track bugs=
+:
+> >> https://gitlab.freedesktop.org/drm/amd/-/issues
+> >>
+> >> When you file an issue there, please mention it here.
+> >>
+> >> Furthermore it might help if you could verify if 6.7-rc1 (or rc2, whic=
+h
+> >> comes out later today) or 6.6.2-rc1 improve things.
+> > It would also be good to test if reverting any of these is possible or =
+not.
+>
+> Well none of the commits mentioned can affect radeon in any way. Radeon
+> simply doesn't use the scheduler.
+>
+> My suspicion is that the user is actually using amdgpu instead of
+> radeon. The switch potentially occurred accidentally, for example by
+> compiling amdgpu support for SI/CIK.
+>
+> Those amdgpu problems for older ASIC have already been worked on and
+> should be fixed by now.
 
-I don't think you need to worry about this.
+In this case it's a navi23 (so radeon in the marketing sense).
 
-Not that I like ignoring kernel robot report performance regressions,
-because they've often been useful to find unexpected issues. But this
-one seems to clearly be just a random code choice issue by the
-compiler, and be very CPU-specific anyway.
+Alex
 
-We'll figure out some good way to make memcpy() a bit more reliable
-wrt the code it generates, but it's not the iov_iter code that should
-worry about it.
-
-               Linus
+>
+> Regards,
+> Christian.
+>
+> >
+> > File the gitlab issue and we should poke amd a but more to take a look.
+> >
+> > Dave.
+>
