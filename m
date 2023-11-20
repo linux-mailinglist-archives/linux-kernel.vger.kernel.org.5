@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFA77F184C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD717F184B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjKTQQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:16:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S233755AbjKTQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjKTQQW (ORCPT
+        with ESMTP id S231996AbjKTQQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:16:22 -0500
+        Mon, 20 Nov 2023 11:16:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B6CED
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:16:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F25FC433CB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC09BF4;
+        Mon, 20 Nov 2023 08:16:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31264C433C7;
         Mon, 20 Nov 2023 16:16:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1700496979;
-        bh=a5fyGCT8iWPqPVsgRUucqaCokV/kZiJAVbPFezCBmLw=;
+        bh=0MaPFqn+cznucJKrIbyiZQIJbG+WLSHKNg43LW6FYzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y+wXiaco7qjT78OGEVCzAARrd3lrRixC1UX4o6C9RwLaI8TIKylD1a/6dUKSMyQS2
-         6M0jAtDmFohyGdrg7jWvsNVdLKeShf5OD4s4wAV8s+pOZGe8poHcDLmeGUa8H+Q76C
-         San5bP+TQQWBPoMGH5N/CyhQHAdWD6KEshnJaTGq+CtZHmk7RR5Nj/9U0yVedavbvK
-         WVx9EjjJkVqBSqJBtMYZw/gEtKAzbVls23IzVN2uXgZ1zZS3PrMaMpvanfWSgyzgo8
-         e19B3T5folkdAIOTqcqb+pnFiLnZMRtm1AOUdYuXSt5mArW4WXLukFfF/HB1N1FrD6
-         hOxOKIEBozQCg==
+        b=f+M7JHDMHn8ZVIT2JxDub7nG01OiwBdMwf6+zh466edwZ60K1AAqZ1ZksTXL3hxiZ
+         MLK4KeLxSkakqe6D/mrFe48elNTGrewsWACuaJ0lazdJ+mEzQUbqbCTL+uGj3RsN3m
+         HecodNDE8QVfthebB1KO9Gz7/wvHdqbTksKGf1+sGZgbpWngA+D2HcGpy1+3xGvCfR
+         fHsmBoa7Sv2deofSjvPqwZZ84mF4G3MC2a2lM+OH0E5uuuXpqN9TA594gFju+HuDMV
+         cbkqKZgIWtUeCmKK94wgRU+N8EvCNgoGfQWkLixLSSt/qvzVsOU88JpkZpz+76nVEf
+         r94+ZqlFDwTNg==
 Received: from johan by xi.lan with local (Exim 4.96.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1r56wm-0001vm-1h;
+        id 1r56wm-0001vo-1x;
         Mon, 20 Nov 2023 17:16:28 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -44,10 +44,10 @@ Cc:     Andy Gross <agross@kernel.org>,
         Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
         linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
-Date:   Mon, 20 Nov 2023 17:16:05 +0100
-Message-ID: <20231120161607.7405-2-johan+linaro@kernel.org>
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Date:   Mon, 20 Nov 2023 17:16:06 +0100
+Message-ID: <20231120161607.7405-3-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231120161607.7405-1-johan+linaro@kernel.org>
 References: <20231120161607.7405-1-johan+linaro@kernel.org>
@@ -63,31 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DP/DM wakeup interrupts are edge triggered and which edge to trigger
-on depends on use-case and whether a Low speed or Full/High speed device
-is connected.
+The Qualcomm glue driver is overriding the interrupt trigger types
+defined by firmware when requesting the wakeup interrupts during probe.
 
-Fixes: 3828026c9ec8 ("dt-bindings: usb: qcom,dwc3: Convert USB DWC3 bindings")
+This can lead to a failure to map the DP/DM wakeup interrupts after a
+probe deferral as the firmware defined trigger types do not match the
+type used for the initial mapping:
+
+	irq: type mismatch, failed to map hwirq-14 for interrupt-controller@b220000!
+	irq: type mismatch, failed to map hwirq-15 for interrupt-controller@b220000!
+
+Fix this by not overriding the firmware provided trigger types when
+requesting the wakeup interrupts.
+
+Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
+Cc: stable@vger.kernel.org      # 4.18
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/dwc3/dwc3-qcom.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index e889158ca205..915c8205623b 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -521,8 +521,8 @@ examples:
- 
-             interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
-                          <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
--                         <GIC_SPI 488 IRQ_TYPE_LEVEL_HIGH>,
--                         <GIC_SPI 489 IRQ_TYPE_LEVEL_HIGH>;
-+                         <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
-+                         <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
-             interrupt-names = "hs_phy_irq", "ss_phy_irq",
-                           "dm_hs_phy_irq", "dp_hs_phy_irq";
- 
+diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+index 10fb481d943b..82544374110b 100644
+--- a/drivers/usb/dwc3/dwc3-qcom.c
++++ b/drivers/usb/dwc3/dwc3-qcom.c
+@@ -549,7 +549,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+ 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+ 					qcom_dwc3_resume_irq,
+-					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++					IRQF_ONESHOT,
+ 					"qcom_dwc3 HS", qcom);
+ 		if (ret) {
+ 			dev_err(qcom->dev, "hs_phy_irq failed: %d\n", ret);
+@@ -564,7 +564,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+ 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+ 					qcom_dwc3_resume_irq,
+-					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++					IRQF_ONESHOT,
+ 					"qcom_dwc3 DP_HS", qcom);
+ 		if (ret) {
+ 			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
+@@ -579,7 +579,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+ 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+ 					qcom_dwc3_resume_irq,
+-					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++					IRQF_ONESHOT,
+ 					"qcom_dwc3 DM_HS", qcom);
+ 		if (ret) {
+ 			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
+@@ -594,7 +594,7 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+ 		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+ 					qcom_dwc3_resume_irq,
+-					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++					IRQF_ONESHOT,
+ 					"qcom_dwc3 SS", qcom);
+ 		if (ret) {
+ 			dev_err(qcom->dev, "ss_phy_irq failed: %d\n", ret);
 -- 
 2.41.0
 
