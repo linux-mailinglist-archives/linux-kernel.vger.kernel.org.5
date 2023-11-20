@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897D77F191C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD0B7F191F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbjKTQwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S233559AbjKTQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjKTQwH (ORCPT
+        with ESMTP id S231904AbjKTQwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:52:07 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2DBBA;
-        Mon, 20 Nov 2023 08:52:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=IEmqZPNEHiRj9re2F4iCenA7GeqZoGYK1eYZxhU0tA4=; b=bp/7xqTWwBpASz6lw0QLmHwfKa
-        nbLaNxx6zUa49+0GkKPCOz6bL/SGXVNBlUbiCFhawFla2zuB+XUkafOCRl8OqtJMErw2aiihhNHw5
-        apeF4CXyT/Qhl0dJ9DqLblIcrZkNK04vhBRgD/0vop+i1u4tBGBxEL1E8VSTQ9Awzrtk=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:55666 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r57V2-00009x-Lj; Mon, 20 Nov 2023 11:51:53 -0500
-Date:   Mon, 20 Nov 2023 11:51:52 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Richard Genoud <richard.genoud@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-Id: <20231120115152.77214ee015e6c501e500b22a@hugovil.com>
-In-Reply-To: <f2e9790d8b49aeba8b43ce018d30a35b837ac1eb.1700409299.git.christophe.jaillet@wanadoo.fr>
-References: <f2e9790d8b49aeba8b43ce018d30a35b837ac1eb.1700409299.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Mon, 20 Nov 2023 11:52:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD796BC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:52:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C29AC433C7;
+        Mon, 20 Nov 2023 16:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700499129;
+        bh=z+uggHQMjKoAbxyCf88m6HvumZukoCO2tr4KQ+XI2wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IoAIyUvxhqiQY4jivygg20akkYxVre2lsLT+tqFsNQ3Nqy071EkFNQ1BKZsQ9CN2E
+         JThL4ZA+RaGqhKtNCdg7rDC7tBQcn4hbNXoLyWP6U6KpIXC3byeVmvNhy18maQouAO
+         2OL3a56K3dhYOOaobGiQHm4MxGAGsJlsNSEIxeQJi0F/bNIXgXhnGRr9wAn0eTJEGq
+         Ff7ORxkAipElAzfC+lYdGgjKdlBRfVLYlRODJT+wt9Eg7lRMxOGrhaHGeoDGNy1iEz
+         ewTlbbpMnXNQ2Rc87svL8vUYbC3bbw1KbidkmaxMNNs24khT9Cxma/QrDWvvz5HDIn
+         5Vb5eZmKEJWLA==
+Date:   Mon, 20 Nov 2023 16:52:03 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Inochi Amaoto <inochiama@outlook.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Anup Patel <anup@brainfault.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: timer: thead,c900-aclint-mtimer:
+ separate mtime and mtimecmp regs
+Message-ID: <20231120-banshee-traverse-554723cd9490@spud>
+References: <IA1PR20MB4953C82499C5D81D2C6A020BBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB4953F9D77FFC76A9D236922DBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SyM6lyfFJB4JBnze"
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB4953F9D77FFC76A9D236922DBBB6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_CSS autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: Re: [PATCH v2] serial: atmel: convert not to use
- dma_request_slave_channel()
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Nov 2023 16:55:15 +0100
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-Hi,
-change the subject to:
+--SyM6lyfFJB4JBnze
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"... replace deprecated dma_request_slave_channel()"
+Yo,
 
-Hugo.
-
-
-> dma_request_slave_channel() is deprecated. dma_request_chan() should
-> be used directly instead.
-> 
-> Switch to the preferred function and update the error handling accordingly.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Sat, Nov 18, 2023 at 03:10:26PM +0800, Inochi Amaoto wrote:
+> The timer registers of aclint don't follow the clint layout and can
+> be mapped on any different offset. As sg2042 uses separated timer
+> and mswi for its clint, it should follow the aclint spec and have
+> separated registers.
+>=20
+> The previous patch introduced a new type of T-HEAD aclint timer which
+> has clint timer layout. Although it has the clint timer layout, it
+> should follow the aclint spec and uses the separated mtime and mtimecmp
+> regs. So a ABI change is needed to make the timer fit the aclint spec.
+>=20
+> To make T-HEAD aclint timer more closer to the aclint spec, use
+> regs-names to represent the mtimecmp register, which can avoid hack
+> for unsupport mtime register of T-HEAD aclint timer.
+>=20
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> Fixes: 4734449f7311 ("dt-bindings: timer: Add Sophgo sg2042 CLINT timer")
+> Link: https://lists.infradead.org/pipermail/opensbi/2023-October/005693.h=
+tml
+> Link: https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
 > ---
-> v2: Also update atmel_prepare_rx_dma()
-> ---
->  drivers/tty/serial/atmel_serial.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-> index 1946fafc3f3e..6aeb4648843b 100644
-> --- a/drivers/tty/serial/atmel_serial.c
-> +++ b/drivers/tty/serial/atmel_serial.c
-> @@ -1013,14 +1013,18 @@ static int atmel_prepare_tx_dma(struct uart_port *port)
->  	struct device *mfd_dev = port->dev->parent;
->  	dma_cap_mask_t		mask;
->  	struct dma_slave_config config;
-> +	struct dma_chan *chan;
->  	int ret, nent;
->  
->  	dma_cap_zero(mask);
->  	dma_cap_set(DMA_SLAVE, mask);
->  
-> -	atmel_port->chan_tx = dma_request_slave_channel(mfd_dev, "tx");
-> -	if (atmel_port->chan_tx == NULL)
-> +	chan = dma_request_chan(mfd_dev, "tx");
-> +	if (IS_ERR(chan)) {
-> +		atmel_port->chan_tx = NULL;
->  		goto chan_err;
-> +	}
-> +	atmel_port->chan_tx = chan;
->  	dev_info(port->dev, "using %s for tx DMA transfers\n",
->  		dma_chan_name(atmel_port->chan_tx));
->  
-> @@ -1188,6 +1192,7 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
->  	dma_cap_mask_t		mask;
->  	struct dma_slave_config config;
->  	struct circ_buf		*ring;
-> +	struct dma_chan *chan;
->  	int ret, nent;
->  
->  	ring = &atmel_port->rx_ring;
-> @@ -1195,9 +1200,12 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
->  	dma_cap_zero(mask);
->  	dma_cap_set(DMA_CYCLIC, mask);
->  
-> -	atmel_port->chan_rx = dma_request_slave_channel(mfd_dev, "rx");
-> -	if (atmel_port->chan_rx == NULL)
-> +	chan = dma_request_chan(mfd_dev, "rx");
-> +	if (IS_ERR(chan)) {
-> +		atmel_port->chan_rx = NULL;
->  		goto chan_err;
-> +	}
-> +	atmel_port->chan_rx = chan;
->  	dev_info(port->dev, "using %s for rx DMA transfers\n",
->  		dma_chan_name(atmel_port->chan_rx));
->  
-> -- 
-> 2.34.1
-> 
+>  .../timer/thead,c900-aclint-mtimer.yaml       | 42 ++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mt=
+imer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtime=
+r.yaml
+> index fbd235650e52..053488fb1286 100644
+> --- a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.ya=
+ml
+> +++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.ya=
+ml
+> @@ -17,7 +17,20 @@ properties:
+>        - const: thead,c900-aclint-mtimer
+>=20
+>    reg:
+> -    maxItems: 1
+> +    oneOf:
+> +      - items:
+> +          - description: MTIME Registers
+> +          - description: MTIMECMP Registers
+> +      - items:
+> +          - description: MTIMECMP Registers
+> +
+> +  reg-names:
+> +    oneOf:
+> +      - items:
+> +          - const: mtime
+> +          - const: mtimecmp
+> +      - items:
+> +          - const: mtimecmp
+>=20
+>    interrupts-extended:
+>      minItems: 1
+> @@ -28,8 +41,34 @@ additionalProperties: false
+>  required:
+>    - compatible
+>    - reg
+> +  - reg-names
+>    - interrupts-extended
+>=20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: thead,c900-aclint-mtimer
+
+Is this being the c900 compatible correct? You mention in your commit
+message that this split is done on the sg2042, but the rule is applied
+here for any c900 series "aclint". Do we know if this is a sophgo
+specific thing (or even sg2042 specific), or if it applies generally?
+
+> +    then:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: MTIMECMP Registers
+> +        reg-names:
+> +          items:
+> +            - const: mtimecmp
+
+> +    else:
+> +      properties:
+> +        reg:
+> +          items:
+> +            - description: MTIME Registers
+> +            - description: MTIMECMP Registers
+> +        reg-names:
+> +          items:
+> +            - const: mtime
+> +            - const: mtimecmp
+
+If it applies generally, I would probably just delete this, but unless
+someone can confirm this to be general, I'd probably leave the else
+clause and swap for the specific sg2042 compatible above.
+
+Otherwise, this looks like a better fix than you had proposed before :)
+
+Thanks,
+Conor.
+
+--SyM6lyfFJB4JBnze
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVuOswAKCRB4tDGHoIJi
+0nUgAP9Qh7o82eKAfQthXVortYfkS6wXhMlYq7MkGEyue00G5AD7BR46o/k6lslh
+FIQz+iWXPJH+kSgGoq/KvFIQUph8TwU=
+=JOFi
+-----END PGP SIGNATURE-----
+
+--SyM6lyfFJB4JBnze--
