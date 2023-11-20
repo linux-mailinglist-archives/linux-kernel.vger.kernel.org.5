@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A887F21C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADC37F21CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbjKTX4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S229904AbjKTX4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232820AbjKTX4D (ORCPT
+        with ESMTP id S232620AbjKTX4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:56:03 -0500
+        Mon, 20 Nov 2023 18:56:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA3D12C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:55:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 117A9C433CD;
-        Mon, 20 Nov 2023 23:55:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2CE194
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:56:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3570C433C7;
+        Mon, 20 Nov 2023 23:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700524557;
-        bh=owctnHEQpTZFQ/Gh7J9JCdoUfmKHACZs61x8UVn64fA=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=kXPWNcG58IzRJcCMYKqGURnJUj6rneGHKU5SHp+Yf638TdXxD6qdEjDB7S6BCsaPN
-         kw1grYPFTeK8O5cG4h2X1cqzvy7XNsobjqD1iKKOpu1y7GW7ir3IcILs1wvsxePXiX
-         Om32bgn+r0Kc4xsb7B1qJWMcY1ZTdpkCqgZG6axe8UqYiPPUaoeS9aNspPLDfQYe7F
-         4i5WaIbb0Lb48acRfEomtvfTLDEae9OiDs96AATwQ4MzV7kPJ53TypjDlyYATRcP1F
-         nhlKAg5hr5a2EkdbbJmjlz8SdWFaQ9QHXR6en4tnnzhDUYXYcnIjzDOwk8LfxvxLFB
-         a0M4ISsRfNyLg==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 20 Nov 2023 23:54:33 +0000
-Subject: [PATCH RFT v3 5/5] kselftest/clone3: Test shadow stack support
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-clone3-shadow-stack-v3-5-a7b8ed3e2acc@kernel.org>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
-In-Reply-To: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
-To:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        s=k20201202; t=1700524590;
+        bh=6w3DroFnugMsjrjsFbvX2IGh8mvPO+6IvxBni4SrCfo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=b05qD/KI36gPoqG58vbyGpBFNmjVPupy928lnOJWOAxNE3BrZVBYa8cztb6f4jYnU
+         ZimtCrB06Kze69PZcC29FDr3Qu4v8AGjBOgoPsovsN20jMthiKTScxPg8pU+FNjkCI
+         1VYk4KY1CLvafpmlzeRIl9ghTBbETMKYQ5lmtqRHnUXRO1foo5Fic+me3t+MIczB2H
+         pQWR6TZosjQjvP8/OAkEhCnCs2ReeQ2SA8EKoHla5UgSYYjoP+O6Cfq6kZO5gNMN3V
+         mbI+RN3axfycrk53hPtu/ULKmpyuwNBCJLP6c2h+0VEsErXRGKBNViEWeAb5eqatSG
+         DJPCenK7gFW+w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 562EBCE1ABD; Mon, 20 Nov 2023 15:56:30 -0800 (PST)
+Date:   Mon, 20 Nov 2023 15:56:30 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        bsegall@google.com, linux-kselftest@vger.kernel.org,
-        linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6256; i=broonie@kernel.org;
- h=from:subject:message-id; bh=owctnHEQpTZFQ/Gh7J9JCdoUfmKHACZs61x8UVn64fA=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlW/HiMlAIrIk0zoNZPXS7mjGALNqlLtxI2zW1lzFx
- 3jMYT1aJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVvx4gAKCRAk1otyXVSH0ET0B/
- 4nvEdmzpCcydJg0+47Rl9429nQXE80i9vOlZZ/9WqqOIYAlKpHeFSIOp/PZDC83mbAQAxnUgbUKz02
- SCY9ehwt0jFjCW6KAfX3s5hXXl5tcbhUGCHr9lyXvKF4RC8gUhqsAn7Di0fIfaEyPir7UEEbwfAI9N
- KAD4OkZsq2rJBXu/VfcqDkUqE3NAI/WfYWh0ztHPuhz7F+6+z34EL5+xqEN+LBsYQMbB/5dVN/Icjx
- XRa8eunc+ibLyI5fUpjAe8aUnbiQwU+xUl/9w21ilfDLimj8hwbZSMx5zyvOvN2sl31yjPqo6wtKaB
- Qpc9fjLP8sGNv3P8Guq8Q/ZS7Ha8T6
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120222311.GE8262@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,223 +67,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic test coverage for specifying the shadow stack for a newly
-created thread via clone3(), including coverage of the newly extended
-argument structure.
+On Mon, Nov 20, 2023 at 11:23:11PM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 20, 2023 at 02:18:29PM -0800, Paul E. McKenney wrote:
+> > On Mon, Nov 20, 2023 at 10:47:42PM +0100, Peter Zijlstra wrote:
+> > > On Mon, Nov 20, 2023 at 03:54:14PM -0500, Mathieu Desnoyers wrote:
+> > > > When invoked from system call enter/exit instrumentation, accessing
+> > > > user-space data is a common use-case for tracers. However, tracepoints
+> > > > currently disable preemption around iteration on the registered
+> > > > tracepoint probes and invocation of the probe callbacks, which prevents
+> > > > tracers from handling page faults.
+> > > > 
+> > > > Extend the tracepoint and trace event APIs to allow defining a faultable
+> > > > tracepoint which invokes its callback with preemption enabled.
+> > > > 
+> > > > Also extend the tracepoint API to allow tracers to request specific
+> > > > probes to be connected to those faultable tracepoints. When the
+> > > > TRACEPOINT_MAY_FAULT flag is provided on registration, the probe
+> > > > callback will be called with preemption enabled, and is allowed to take
+> > > > page faults. Faultable probes can only be registered on faultable
+> > > > tracepoints and non-faultable probes on non-faultable tracepoints.
+> > > > 
+> > > > The tasks trace rcu mechanism is used to synchronize read-side
+> > > > marshalling of the registered probes with respect to faultable probes
+> > > > unregistration and teardown.
+> > > 
+> > > What is trace-trace rcu and why is it needed here? What's wrong with
+> > > SRCU ?
+> > 
+> > Tasks Trace RCU avoids SRCU's full barriers and the array accesses in the
+> > read-side primitives.  This can be important when tracing low-overhead
+> > components of fast paths.
+> 
+> So why wasn't SRCU improved? That is, the above doesn't much explain.
+> 
+> What is the trade-off made to justify adding yet another RCU flavour?
 
-In order to facilitate testing on systems without userspace shadow stack
-support we manually enable shadow stacks on startup, this is architecture
-specific due to the use of an arch_prctl() on x86. Due to interactions with
-potential userspace locking of features we actually detect support for
-shadow stacks on the running system by attempting to allocate a shadow
-stack page during initialisation using map_shadow_stack(), warning if this
-succeeds when the enable failed.
+We didn't think you would be all that happy about having each and
+every context switch iterating through many tens or even hundreds of
+srcu_struct structures.  For that matter, we didn't think that anyone
+else would be all that happy either.  Us included.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/clone3/clone3.c           | 117 ++++++++++++++++++++++
- tools/testing/selftests/clone3/clone3_selftests.h |   7 ++
- 2 files changed, 124 insertions(+)
-
-diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-index 6adbfd14c841..0f9f99dc5aac 100644
---- a/tools/testing/selftests/clone3/clone3.c
-+++ b/tools/testing/selftests/clone3/clone3.c
-@@ -11,6 +11,7 @@
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <sys/mman.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
- #include <sys/un.h>
-@@ -21,6 +22,10 @@
- #include "../kselftest.h"
- #include "clone3_selftests.h"
- 
-+static bool shadow_stack_enabled;
-+static bool shadow_stack_supported;
-+static size_t max_supported_args_size;
-+
- enum test_mode {
- 	CLONE3_ARGS_NO_TEST,
- 	CLONE3_ARGS_ALL_0,
-@@ -28,6 +33,7 @@ enum test_mode {
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_NEG,
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_CSIG,
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG,
-+	CLONE3_ARGS_SHADOW_STACK,
- };
- 
- typedef bool (*filter_function)(void);
-@@ -44,6 +50,36 @@ struct test {
- 	filter_function filter;
- };
- 
-+#ifndef __NR_map_shadow_stack
-+#define __NR_map_shadow_stack 453
-+#endif
-+
-+/*
-+ * We check for shadow stack support by attempting to use
-+ * map_shadow_stack() since features may have been locked by the
-+ * dynamic linker resulting in spurious errors when we attempt to
-+ * enable on startup.  We warn if the enable failed.
-+ */
-+static void test_shadow_stack_supported(void)
-+{
-+        long shadow_stack;
-+
-+	shadow_stack = syscall(__NR_map_shadow_stack, 0, getpagesize(), 0);
-+	if (shadow_stack == -1) {
-+		ksft_print_msg("map_shadow_stack() not supported\n");
-+	} else if ((void *)shadow_stack == MAP_FAILED) {
-+		ksft_print_msg("Failed to map shadow stack\n");
-+	} else {
-+		ksft_print_msg("Shadow stack supportd\n");
-+		shadow_stack_supported = true;
-+
-+		if (!shadow_stack_enabled)
-+			ksft_print_msg("Mapped but did not enable shadow stack\n");
-+
-+		munmap((void *)shadow_stack, getpagesize());
-+	}
-+}
-+
- static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- {
- 	struct __clone_args args = {
-@@ -89,6 +125,9 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 	case CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG:
- 		args.exit_signal = 0x00000000000000f0ULL;
- 		break;
-+	case CLONE3_ARGS_SHADOW_STACK:
-+		args.shadow_stack_size = getpagesize();
-+		break;
- 	}
- 
- 	memcpy(&args_ext.args, &args, sizeof(struct __clone_args));
-@@ -179,6 +218,26 @@ static bool no_timenamespace(void)
- 	return true;
- }
- 
-+static bool have_shadow_stack(void)
-+{
-+	if (shadow_stack_supported) {
-+		ksft_print_msg("Shadow stack supported\n");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool no_shadow_stack(void)
-+{
-+	if (!shadow_stack_supported) {
-+		ksft_print_msg("Shadow stack not supported\n");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static size_t page_size_plus_8(void)
- {
- 	return getpagesize() + 8;
-@@ -322,16 +381,74 @@ static const struct test tests[] = {
- 		.expected = -EINVAL,
- 		.test_mode = CLONE3_ARGS_NO_TEST,
- 	},
-+	{
-+		.name = "Shadow stack on system with shadow stack",
-+		.flags = CLONE_VM,
-+		.size = 0,
-+		.expected = 0,
-+		.e2big_valid = true,
-+		.test_mode = CLONE3_ARGS_SHADOW_STACK,
-+		.filter = no_shadow_stack,
-+	},
-+	{
-+		.name = "Shadow stack on system without shadow stack",
-+		.flags = CLONE_VM,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.e2big_valid = true,
-+		.test_mode = CLONE3_ARGS_SHADOW_STACK,
-+		.filter = have_shadow_stack,
-+	},
- };
- 
-+#ifdef __x86_64__
-+#define ARCH_SHSTK_ENABLE	0x5001
-+#define ARCH_SHSTK_SHSTK	(1ULL <<  0)
-+
-+#define ARCH_PRCTL(arg1, arg2)					\
-+({								\
-+	long _ret;						\
-+	register long _num  asm("eax") = __NR_arch_prctl;	\
-+	register long _arg1 asm("rdi") = (long)(arg1);		\
-+	register long _arg2 asm("rsi") = (long)(arg2);		\
-+								\
-+	asm volatile (						\
-+		"syscall\n"					\
-+		: "=a"(_ret)					\
-+		: "r"(_arg1), "r"(_arg2),			\
-+		  "0"(_num)					\
-+		: "rcx", "r11", "memory", "cc"			\
-+	);							\
-+	_ret;							\
-+})
-+
-+#define ENABLED_SHADOW_STACK
-+static inline void enable_shadow_stack(void)
-+{
-+	int ret = ARCH_PRCTL(ARCH_SHSTK_ENABLE, ARCH_SHSTK_SHSTK);
-+	if (ret == 0)
-+		shadow_stack_enabled = true;
-+}
-+
-+#endif
-+
-+#ifndef ENABLE_SHADOW_STACK
-+static void enable_shadow_stack(void)
-+{
-+}
-+#endif
-+
- int main(int argc, char *argv[])
- {
- 	size_t size;
- 	int i;
- 
-+	enable_shadow_stack();
-+
- 	ksft_print_header();
- 	ksft_set_plan(ARRAY_SIZE(tests));
- 	test_clone3_supported();
-+	test_shadow_stack_supported();
- 
- 	for (i = 0; i < ARRAY_SIZE(tests); i++)
- 		test_clone3(&tests[i]);
-diff --git a/tools/testing/selftests/clone3/clone3_selftests.h b/tools/testing/selftests/clone3/clone3_selftests.h
-index 3d2663fe50ba..2e06127091f5 100644
---- a/tools/testing/selftests/clone3/clone3_selftests.h
-+++ b/tools/testing/selftests/clone3/clone3_selftests.h
-@@ -31,6 +31,13 @@ struct __clone_args {
- 	__aligned_u64 set_tid;
- 	__aligned_u64 set_tid_size;
- 	__aligned_u64 cgroup;
-+#ifndef CLONE_ARGS_SIZE_VER2
-+#define CLONE_ARGS_SIZE_VER2 88	/* sizeof third published struct */
-+#endif
-+	__aligned_u64 shadow_stack_size;
-+#ifndef CLONE_ARGS_SIZE_VER3
-+#define CLONE_ARGS_SIZE_VER3 96 /* sizeof fourth published struct */
-+#endif
- };
- 
- static pid_t sys_clone3(struct __clone_args *args, size_t size)
-
--- 
-2.30.2
-
+							Thanx, Paul
