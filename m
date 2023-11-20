@@ -2,120 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634587F0A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075247F0A6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjKTBiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 20:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S231725AbjKTCBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 21:01:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTBiN (ORCPT
+        with ESMTP id S231629AbjKTCBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 20:38:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61FB128
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 17:38:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C454C433CB;
-        Mon, 20 Nov 2023 01:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700444289;
-        bh=AYOn7zw4Rj8x7zKsQ6SSA46WYucJCnvwD8FyUizIfyU=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=jJ0xF7gngT/5Helf9+d38ELFm8uTUDM5uHgUjV4BuJVJdzvbvbGoXHjpGWoL1+GVp
-         CWFOUTbMh0PTjgLPiliivoJDHuMUtt/eougjtI7Tp5VCYStKv1Ywv2b2rUmnFMovfF
-         Fqk6tb7xw0fDG9iLM7I+5UK6WRusvh1c+xf3W3rZ1PIOC226iy6H+qpo0AW4v4bR0K
-         Sb59BV2cU55BiNKjeTTchFECevZwOn5WR2m6K0Gi7cYOQcmnt9LV+ZfPT0J3xNFWMN
-         qK5juf5gE8fkYHnsMpdwUqFRRDVHSgNclZ4QFYIzlmNB9YNWrN1yogdOtNygJFC59M
-         l5FMZxcxz5tcw==
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5872b8323faso2272590eaf.1;
-        Sun, 19 Nov 2023 17:38:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YwfMntQOllBLPWzBZYzKO3AAW4a98QKoslRlfl87v/PrF3dmriM
-        nkBKYgw2b+4DId/ZcxuBwRos2TipIeRHzGKt/80=
-X-Google-Smtp-Source: AGHT+IFFy8xKP2w05jJE4B/6DjTdXUZcG3k+/Agv8H7RLynC5UnOV+rQcjAmCcWl6V+7kG6eTJvEs31XdreN6GhVf2M=
-X-Received: by 2002:a05:6820:220d:b0:58a:703e:fbf5 with SMTP id
- cj13-20020a056820220d00b0058a703efbf5mr6524430oob.5.1700444288743; Sun, 19
- Nov 2023 17:38:08 -0800 (PST)
+        Sun, 19 Nov 2023 21:01:24 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4478E136;
+        Sun, 19 Nov 2023 18:01:20 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK1euYn013633;
+        Mon, 20 Nov 2023 02:00:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=jovKGGjPM9h2UjswPH46XZgSaqKmCLFkmO95bIWrsdU=;
+ b=SNNCIFmK72sOnyR+tRJALjMLsAb0pJElUcIzDMBZRxPihrfdpLWHrgmSdstJRQ+oWZQ9
+ uaHYTfAx5oxvfCNAnJGTMh65Gb4fuV6zFiFUerV+YN8DvpHgdDzKTIentuIKwcIojNF0
+ bEhk6GHkDEmgoHK2J2Q/J4xTU/XUaakG5FpGg7ZGWHc7Er9sL+shJQrfO1JI0QiiUsia
+ WRs2742nMh4OLb5fZ8qQ9FMR55oc7i41DLdjqNaIoQOPRkls8kNgiGMPeqDacdMjZtpB
+ FBCikPB+2/E1QAzvX97+a1MR7zKjCxo94QxxK6mtDe6YFEOHko1gDfnKTOq1XZDFp2I+ 1g== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uenneakp4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 02:00:50 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AK20nRc017322
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 02:00:49 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 19 Nov
+ 2023 18:00:43 -0800
+Message-ID: <3fbc49da-99ac-4499-84df-064f3dc429d2@quicinc.com>
+Date:   Mon, 20 Nov 2023 10:00:40 +0800
 MIME-Version: 1.0
-Received: by 2002:ac9:5847:0:b0:507:5de0:116e with HTTP; Sun, 19 Nov 2023
- 17:38:06 -0800 (PST)
-In-Reply-To: <313c7290-1f8c-4944-a420-be23d28e59fa@kylinos.cn>
-References: <CAKYAXd8qZTiSBR3aSUk4YRSo+LG-Z20FRJfGgV1Awf+Lep4kpg@mail.gmail.com>
- <20231109011725.1798784-1-min_halo@163.com> <b503d929-ff3a-4dc3-9de8-aa0eb00d181a@gmail.com>
- <CAKYAXd-2vR7KF=gwKWmA+a3XkAOG78ntPq__u4P5Kqo35N1D5Q@mail.gmail.com> <313c7290-1f8c-4944-a420-be23d28e59fa@kylinos.cn>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Mon, 20 Nov 2023 10:38:06 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9L7TY+PtN1c-cNtz-NL+ksZDqAMNN11LRNW-3SdET5kA@mail.gmail.com>
-Message-ID: <CAKYAXd9L7TY+PtN1c-cNtz-NL+ksZDqAMNN11LRNW-3SdET5kA@mail.gmail.com>
-Subject: Re: [PATCH v2] ksmbd: prevent memory leak on error return
-To:     Zongmin Zhou <zhouzongmin@kylinos.cn>
-Cc:     Pierre Mariani <pierre.mariani@gmail.com>,
-        Zongmin Zhou <min_halo@163.com>, linux-cifs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
-        sfrench@samba.org, tom@talpey.com,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] ARM: kprobes: Explicitly reserve r7 for local
+ variables
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+CC:     <linux@armlinux.org.uk>, <mhiramat@kernel.org>,
+        <kernel@quicinc.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_lijuang@quicinc.com>, <stable@vger.kernel.org>
+References: <20231115095830.20607-1-quic_aiquny@quicinc.com>
+ <20231116172418.GA174808@dev-arch.thelio-3990X>
+ <CAMj1kXE4stcFikmxBMY19CR4J0+EpaNW8J=xVyFVY3A7F7BpRQ@mail.gmail.com>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <CAMj1kXE4stcFikmxBMY19CR4J0+EpaNW8J=xVyFVY3A7F7BpRQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: j0KCJ4ghVOg7mzkoXZdCrBZaDSakwziG
+X-Proofpoint-GUID: j0KCJ4ghVOg7mzkoXZdCrBZaDSakwziG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-19_21,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ clxscore=1011 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ spamscore=0 phishscore=0 mlxscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=563 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311200013
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-11-20 10:33 GMT+09:00, Zongmin Zhou <zhouzongmin@kylinos.cn>:
->
-> On 2023/11/19 22:17, Namjae Jeon wrote:
->> 2023-11-19 18:14 GMT+09:00, Pierre Mariani <pierre.mariani@gmail.com>:
->>> On 11/8/2023 5:17 PM, Zongmin Zhou wrote:
->>>> When allocated memory for 'new' failed,just return
->>>> will cause memory leak of 'ar'.
->>>>
->>>> v2: rollback iov_alloc_cnt when allocate memory failed.
->>>>
->>>> Fixes: 1819a9042999 ("ksmbd: reorganize ksmbd_iov_pin_rsp()")
->>>>
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Reported-by: Dan Carpenter <error27@gmail.com>
->>>> Closes: https://lore.kernel.org/r/202311031837.H3yo7JVl-lkp@intel.com/
->>>> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
->>>> ---
->>>>   fs/smb/server/ksmbd_work.c | 5 ++++-
->>>>   1 file changed, 4 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/smb/server/ksmbd_work.c b/fs/smb/server/ksmbd_work.c
->>>> index a2ed441e837a..44bce4c56daf 100644
->>>> --- a/fs/smb/server/ksmbd_work.c
->>>> +++ b/fs/smb/server/ksmbd_work.c
->>>> @@ -123,8 +123,11 @@ static int __ksmbd_iov_pin_rsp(struct ksmbd_work
->>>> *work, void *ib, int len,
->>>>   		new = krealloc(work->iov,
->>>>   			       sizeof(struct kvec) * work->iov_alloc_cnt,
->>>>   			       GFP_KERNEL | __GFP_ZERO);
->>>> -		if (!new)
->>>> +		if (!new) {
->>>> +			kfree(ar);
->>>> +			work->iov_alloc_cnt -= 4;
->>>>   			return -ENOMEM;
->>>> +		}
->>>>   		work->iov = new;
->>>>   	}
->>>>
->>> A few lines above, ar is allocated inside the 'if (aux_size)' block.
->>> If aux_size is falsy, isn't it possible that ar will be NULL hence
->>> we should have 'if (ar) kfree(ar);'?
->> We need to initialize ar to NULL on that case. And Passing a NULL
->> pointer to kfree is safe, So NULL check before kfree() is not needed.
-> Yes, ar should be initialized to NULL to avoid the case of  aux_size
-> will be false.
-> Since kfree(NULL) is safe.
-> Should I  send another patch for this?
-I would appreciate it if you could do that.
+On 11/17/2023 1:36 AM, Ard Biesheuvel wrote:
+> On Fri, 17 Nov 2023 at 03:24, Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> On Wed, Nov 15, 2023 at 05:58:30PM +0800, Maria Yu wrote:
+>>> Registers r7 is removed in clobber list, so compiler may choose r7 for
+>>> local variables usage, while r7 will be actually updated by the inline asm
+>>> code. This caused the runtime behavior wrong.
+>>> While those kind of reserved registers cannot be set to clobber list
+>>> because of error like "inline asm clobber list contains reserved
+>>> registers".
+>>> Explicitly reserve r7 by adding attribute no-omit-frame-pointer for needed
+>>> function, then in T32 asm code r7 is used as a frame pointer and is not
+>>> available for use as a general-purpose register.
+>>> Note that "no-omit-frame-pointer" will make the code size a little bigger
+>>> to store the stack frame pointer. So limited to needed functions can have
+>>> the less impact than the full source file.
+>>>
+>>> Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
+>>> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+>>> Cc: stable@vger.kernel.org
+>>
+>> This causes warnings with clang:
+>>
+>>    arch/arm/probes/kprobes/actions-thumb.c:441:47: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>>      441 | static unsigned long __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>>          |                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    arch/arm/probes/kprobes/actions-thumb.c:524:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>>      524 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>>          |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    arch/arm/probes/kprobes/actions-thumb.c:560:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>>      560 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>>          |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    arch/arm/probes/kprobes/actions-thumb.c:579:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>>      579 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>>          |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    4 warnings generated.
+>>
+>> Furthermore, as far as I am aware, the optimize attribute has other issues so
+>> its use is discouraged, see commits 080b6f407635 ("bpf: Don't rely on GCC
+>> __attribute__((optimize)) to disable GCSE") and a7223f5bfcae ("powerpc: Avoid
+>> broken GCC __attribute__((optimize))").
 
->
-> Best regards!
->> Thanks.
->
->
+Thx for trying this. I was tested with arm-linux-gnueabihf-gcc and not 
+notice this.
+>>
+> 
+> Ah yes, apalogies for missing that. I did a test build with Clang but
+> I did not spot the errors. So
+> 
+> Unreviewed-by: ....
+> 
+> Maria, please use the Makefile based per-file CFLAGS override that I
+> suggested before. There is really no reason to make this per-function.
+Ok. I will upload a new patchset.
+
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
+
