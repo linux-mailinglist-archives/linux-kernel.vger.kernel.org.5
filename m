@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6CA7F12F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A89707F12FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjKTMNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 07:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
+        id S233426AbjKTMNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:13:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233553AbjKTMNS (ORCPT
+        with ESMTP id S233600AbjKTMNY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:13:18 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E064F7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:13:14 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-548c548c40aso1300837a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:13:14 -0800 (PST)
+        Mon, 20 Nov 2023 07:13:24 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BE410C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:13:17 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a62d4788so6033912e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:13:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700482393; x=1701087193; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700482395; x=1701087195; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hc7Srsl8oO2HlJZxLPv8yK7GL1izzxy48y1+02c51Ts=;
-        b=g9Am2HQJqjG6BO0Jwcvnjb0cSPRagXFZozNxavQ0MoKXmGlsFmrmICMBB0nXa++3hC
-         2oc+BbIoGR5TFP/TjNF/QP7OTMFaRBpsjTVXOLB1tGntDfOgsTX9M3FxMsUz6lC+Re+z
-         xGDMf5+C7ZjkUny1OqG15U3u1AVB35pJtPz+FrdCQkDrWiFlRSbifZmMJ8JG6DCuKS5h
-         9acMZ4mB1hgqJHB+Nx34/c7m+uqwcMeOejfUkAONfb217AC762Zp9fMw9Jpfaqwh+MZP
-         vlLeu9HwPVntEYz9BlZEA0B5LnlWNhbVARbZT2hKGCOonGjZzUd5Mjwb3oM8js6rl8Xb
-         6msg==
+        bh=hjbqDcif3jzflMbhtEmEZ70pT8i9f+MEiRbeLY07kxg=;
+        b=brOFt4cq0Hc8+t8U79BiOv8onIaJ2s4gnRnXekWw3VQDQMjsyRGky18355CCiD0D8A
+         kNiRnjHfjFV8fEVbxhA1eJzYo6ajFgeLoBNp7HncHrx1ayly/xE/WCXuS6ojMN3NvPiR
+         s39eq0MZUW047BhlRQddQmabAT/B7jXObOGvCNaxkicwSsAMkLHOU5si3APJ4yAqcHjp
+         RPwc1zI0SV5yegLDns+Fl/RVXHfadHW89BOr8hX4Bxtvy8Xu7wjDeKIhL1FgmclrlOrb
+         TmfA6Bww+aP5elnK08P1VOhYDgZ72prpEaxzEzsYRSS4yreabxo42dihpi3WLAvqHalC
+         ExVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700482393; x=1701087193;
+        d=1e100.net; s=20230601; t=1700482395; x=1701087195;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hc7Srsl8oO2HlJZxLPv8yK7GL1izzxy48y1+02c51Ts=;
-        b=d9SJB1Vb6WC0jN3TH1D5MlehYzt4tdJocrdctGfre3BlKkU1K7Cd/qnyYE6rudEImu
-         q68FRoGjl94naI/imMPt72mbkz1PJgxqRcbrHSgLmmWsMMEDer9o1tSE6Q7/rjUWMPA8
-         E76tP5BmSZtD8CxNSoIbyuyP1vWc8SwyqGTiOpP20UUSAC16lB3PXXpA/vjiPfpadM6I
-         JkHX5wlstwRUJ7p5PkYJxS3N/oMLry5lAgYPsfyfvGt2wgH/SS0TntLJSOR8y+7tg1c3
-         +F/vkhKw6FogXVPUXQC5hGYv7XKOE+8D0YXjty205oLorI3c276X7fGRI6QJdSBwEwP/
-         oh3g==
-X-Gm-Message-State: AOJu0Yx0/88fJOcMAITdbw3rdLueqVUrNUuxkttMI7E+wl4V43dneCEl
-        hdefj6toaPUeqbQyiUAo0R4dog==
-X-Google-Smtp-Source: AGHT+IGw/4MA6a4F2ynhiVNpF2g4hzEzhrMsIOv0gcbFJUT46nhwK4WRybWUyxcnRwFshSqp3RC5UA==
-X-Received: by 2002:aa7:c7cc:0:b0:548:e0e1:4a37 with SMTP id o12-20020aa7c7cc000000b00548e0e14a37mr517770eds.6.1700482392848;
-        Mon, 20 Nov 2023 04:13:12 -0800 (PST)
+        bh=hjbqDcif3jzflMbhtEmEZ70pT8i9f+MEiRbeLY07kxg=;
+        b=ksH7zaAV4AVCb6/ZSDA1PD7qZCTo58iCHcxRQBFOF+Ml++LOA2EUHPtVnB2wnYxBZl
+         L11H81vvdAo98pxJT/RklJKyiBVog6zl/nhuo9ZpSM09YUvOsPBWgaIXC/ikSb3Gtswt
+         rIkhOmDAucbyOUpGnIbeiUaMh+mqQKzX5ertNlsjORd5gEX6A4UZ1/Toa7x3JLD6EQmk
+         EIvIuQ8igcvNaU/GTXEA/2YCdJsJ16v8ZS7OMh/KnnEzHWuQEFA46XsO88kZgfHXjqwG
+         rWNfr59VErNGxGI/lKHFHoFl3WRKCjt3kSn3d39D1bRl8xpGLldCI45AHfGjDXGBN1gF
+         Cj1Q==
+X-Gm-Message-State: AOJu0Yzwik8lhThHYJjiGk4p9peTwrC0SnRmMipxZWW9crVibM4UiWhs
+        ZHfjaz+5kou65u3XSEtA/a0hdg==
+X-Google-Smtp-Source: AGHT+IFxchI6MuaO4+QAa9CHUiTl9TDpRwO40gYUBYra2bKUEs5p5Bv739G2JhMQRJKThOE6+wo4lA==
+X-Received: by 2002:a19:650f:0:b0:508:1edf:92f with SMTP id z15-20020a19650f000000b005081edf092fmr4746097lfb.40.1700482395544;
+        Mon, 20 Nov 2023 04:13:15 -0800 (PST)
 Received: from [10.167.154.1] (178235187204.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.204])
-        by smtp.gmail.com with ESMTPSA id i22-20020aa7c716000000b00548ac80f90csm1324584edq.40.2023.11.20.04.13.10
+        by smtp.gmail.com with ESMTPSA id i22-20020aa7c716000000b00548ac80f90csm1324584edq.40.2023.11.20.04.13.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 04:13:12 -0800 (PST)
+        Mon, 20 Nov 2023 04:13:15 -0800 (PST)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 20 Nov 2023 13:12:54 +0100
-Subject: [PATCH v2 3/4] arm64: dts: qcom: sc7280: Mark Adreno SMMU as DMA
- coherent
+Date:   Mon, 20 Nov 2023 13:12:55 +0100
+Subject: [PATCH v2 4/4] arm64: dts: qcom: sc7280: Add 0xac Adreno speed bin
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230926-topic-a643-v2-3-06fa3d899c0a@linaro.org>
+Message-Id: <20230926-topic-a643-v2-4-06fa3d899c0a@linaro.org>
 References: <20230926-topic-a643-v2-0-06fa3d899c0a@linaro.org>
 In-Reply-To: <20230926-topic-a643-v2-0-06fa3d899c0a@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>,
@@ -81,11 +80,11 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         devicetree@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700482383; l=799;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700482383; l=2100;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=05mrlbVuANlpTmTxHApROoZU1kjiSPRK0BLlIaRuxCY=;
- b=N7V3LfV39ASMH6JxhCBajFYvAbuJCyrK9fNCDfTK84S8uEkPk7JXxd/ojzzIXDuqIEsSYBu02
- my03rnSOGj3BWgra7wVYH42C6VvOO2cRT3XyDapRQaF6EMOK760EeZG
+ bh=0f0QQnvO1OvRDYb4hv9oWcG/BSDnRfhPjCkhWoQhfrI=;
+ b=0Nffh216XN36a8KAHzJ+iTGHOH9zXgzAyU8cqvps3yJau91tC4fBXin93gUZGtvNdoae0OqNE
+ JbFUivsMLrcB0AtbFGl7/mvtmfceuIcCm5lRdcD6IOsN8qbnAw4NPGS
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -98,28 +97,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SMMUs on sc7280 are cache-coherent. APPS_SMMU is marked as such,
-mark the GPU one as well.
+A643 (A635 speedbin 0xac) tops out at 812 MHz. Fill in the
+opp-supported-hw appropriately.
 
-Fixes: 96c471970b7b ("arm64: dts: qcom: sc7280: Add gpu support")
-Reviewed-by: Akhil P Oommen <quic_akhilpo@quicinc.com>
+Note that fuseval 0xac is referred to as speedbin 1 downstream, but
+that was already in use upstream, so 2 was chosen instead.
+
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index db47af668232..6964c14ffce5 100644
+index 6964c14ffce5..b4e6951d9359 100644
 --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2787,6 +2787,7 @@ adreno_smmu: iommu@3da0000 {
- 					"gpu_cc_hub_aon_clk";
+@@ -2630,14 +2630,14 @@ opp-315000000 {
+ 					opp-hz = /bits/ 64 <315000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+ 					opp-peak-kBps = <1804000>;
+-					opp-supported-hw = <0x03>;
++					opp-supported-hw = <0x07>;
+ 				};
  
- 			power-domains = <&gpucc GPU_CC_CX_GDSC>;
-+			dma-coherent;
- 		};
+ 				opp-450000000 {
+ 					opp-hz = /bits/ 64 <450000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+ 					opp-peak-kBps = <4068000>;
+-					opp-supported-hw = <0x03>;
++					opp-supported-hw = <0x07>;
+ 				};
  
- 		remoteproc_mpss: remoteproc@4080000 {
+ 				/* Only applicable for SKUs which has 550Mhz as Fmax */
+@@ -2652,28 +2652,28 @@ opp-550000000-1 {
+ 					opp-hz = /bits/ 64 <550000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+ 					opp-peak-kBps = <6832000>;
+-					opp-supported-hw = <0x02>;
++					opp-supported-hw = <0x06>;
+ 				};
+ 
+ 				opp-608000000 {
+ 					opp-hz = /bits/ 64 <608000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L2>;
+ 					opp-peak-kBps = <8368000>;
+-					opp-supported-hw = <0x02>;
++					opp-supported-hw = <0x06>;
+ 				};
+ 
+ 				opp-700000000 {
+ 					opp-hz = /bits/ 64 <700000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
+ 					opp-peak-kBps = <8532000>;
+-					opp-supported-hw = <0x02>;
++					opp-supported-hw = <0x06>;
+ 				};
+ 
+ 				opp-812000000 {
+ 					opp-hz = /bits/ 64 <812000000>;
+ 					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
+ 					opp-peak-kBps = <8532000>;
+-					opp-supported-hw = <0x02>;
++					opp-supported-hw = <0x06>;
+ 				};
+ 
+ 				opp-840000000 {
 
 -- 
 2.42.1
