@@ -2,129 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFA27F1EA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597737F1F1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjKTVTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:19:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S230310AbjKTVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjKTVTg (ORCPT
+        with ESMTP id S232453AbjKTVWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:19:36 -0500
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B42DD8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:19:31 -0800 (PST)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id 5Bfyrw7Pe67J55BfyrmViA; Mon, 20 Nov 2023 22:19:29 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1700515169;
-        bh=NDPnmqlk0LUSy3aJ8u4TckgJQVNR/Wz4QBNCWhD8QiM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=IkGePgdiytlmlYIsvLgHrV3QcmXS/XmZfe8oEEncW/6oLcIaWKQwAKWpzyQ9zQ/Eu
-         hDz6csT6bF21q2VmW3PcqwIMOgfxTO98BhNsvUc+k0UeWmX986fXyyFx/+CMcXT2Rk
-         hRM4EGJHHP4+36lKRVCU8okurLB9CgbBgVxto/m/Y5ewNNdTN5FBEqLYadIFPAWCK9
-         86NI8NpjOvX3HyZVWqnyt8dAJsntBlDOG6IO+eyKcxtxWdCtExSOt0Wl2n6Ozzpl9F
-         PsgUKd9KGXe/oQVlSX+syna5KbUox0zWIgekrtfCWQcjoqus4t9DQ2bqr6Y3VKYjJg
-         8/fnGp8CVIoow==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 20 Nov 2023 22:19:29 +0100
-X-ME-IP: 86.243.2.178
-Message-ID: <c29e4d22-78b4-4265-b459-7cee38149084@wanadoo.fr>
-Date:   Mon, 20 Nov 2023 22:19:25 +0100
+        Mon, 20 Nov 2023 16:22:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6641E1AA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:22:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700515322; x=1732051322;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=j8B1ITWEeAkXv6+ECAk3eA35WeV+XBuBQ2iHt/ZPIRE=;
+  b=iJ0gN0oWB9eydN3czY0ij9jfkKK8/z7zo4nciTqWHVR5zXGBIPqW9SlE
+   o27c/4Q2pOpfONftDF6jEovVaoxMLWx/U4xcy5F4sbvCGMJhgAfpUhBwY
+   7uLjGxuWoZI02xbkjQp7G90AS6kJFAw2gBmVU0laKL6USmLhFr/2hdZvh
+   HhXz2HQSwp46DjPqiihswQEqhWdYS6TzZXO93KPu1gdKiq3qR80RpIDmw
+   o7QVezJsH327GPODA+2IWZ3pFC6+MvK21QyPYNqMXM9aSKDTpK/bf/v//
+   DVltEKHHaKC7VMk7DQmvj7vx6hIsvb22j0k5V2fDT8D50KFjFLxmA1/jJ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="391488628"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="391488628"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:22:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832403594"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="832403594"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:22:01 -0800
+Received: from [10.213.161.18] (kliang2-mobl1.ccr.corp.intel.com [10.213.161.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 183AC580D93;
+        Mon, 20 Nov 2023 13:22:00 -0800 (PST)
+Message-ID: <7caf86b8-f050-4d0f-8aba-e2d725a0ab64@linux.intel.com>
+Date:   Mon, 20 Nov 2023 16:21:59 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] serial: atmel: convert not to use
- dma_request_slave_channel()
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Richard Genoud <richard.genoud@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <f2e9790d8b49aeba8b43ce018d30a35b837ac1eb.1700409299.git.christophe.jaillet@wanadoo.fr>
- <ccfcf2a5-c04b-4781-8658-d63044b9b9c6@tuxon.dev>
- <5c2ec2ff-459e-4bb7-b287-8a06005c86f5@kernel.org>
- <e37ce03e-4e41-4262-9f54-bcbab3bb1421@tuxon.dev>
-Content-Language: fr, en-US
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <e37ce03e-4e41-4262-9f54-bcbab3bb1421@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] perf/x86/intel/uncore: Fix NULL pointer dereference issue
+ in upi_fill_topology()
+Content-Language: en-US
+To:     Alexander Antonov <alexander.antonov@linux.intel.com>,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Cc:     kyle.meyer@hpe.com, alexey.v.bayduraev@linux.intel.com
+References: <20231115151327.1874060-1-alexander.antonov@linux.intel.com>
+ <ceb47045-3188-49ff-85b2-b37c9d0721e1@linux.intel.com>
+ <50ce6fce-c2fc-4392-b405-5c9a7a93f061@linux.intel.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <50ce6fce-c2fc-4392-b405-5c9a7a93f061@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 20/11/2023 à 08:12, claudiu beznea a écrit :
+
+
+On 2023-11-20 2:49 p.m., Alexander Antonov wrote:
 > 
-> 
-> On 20.11.2023 09:04, Jiri Slaby wrote:
->> On 20. 11. 23, 7:14, claudiu beznea wrote:
->>> Hi, Christophe,
->>>
->>> On 19.11.2023 17:55, Christophe JAILLET wrote:
->>>> dma_request_slave_channel() is deprecated. dma_request_chan() should
->>>> be used directly instead.
->>>>
->>>> Switch to the preferred function and update the error handling accordingly.
->>>>
->>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>>> ---
->>>> v2: Also update atmel_prepare_rx_dma()
->>>> ---
->>>>    drivers/tty/serial/atmel_serial.c | 16 ++++++++++++----
->>>>    1 file changed, 12 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/tty/serial/atmel_serial.c
->>>> b/drivers/tty/serial/atmel_serial.c
->>>> index 1946fafc3f3e..6aeb4648843b 100644
->>>> --- a/drivers/tty/serial/atmel_serial.c
->>>> +++ b/drivers/tty/serial/atmel_serial.c
->>>> @@ -1013,14 +1013,18 @@ static int atmel_prepare_tx_dma(struct uart_port
->>>> *port)
->>>>        struct device *mfd_dev = port->dev->parent;
->>>>        dma_cap_mask_t        mask;
->>>>        struct dma_slave_config config;
->>>> +    struct dma_chan *chan;
->>>
->>> There is no need for this.
+> On 11/15/2023 8:00 PM, Liang, Kan wrote:
 >>
->> How'd you avoid crash in here then:
->>          if (atmel_port->chan_tx)
->>                  atmel_release_tx_dma(port);
->> ?
-> 
-> I wanted to say that instead of adding the chan variable the
-> atmel_port->chan_tx would be used instead.
-
-You mean something like:
-
--	atmel_port->chan_tx = dma_request_slave_channel(mfd_dev, "tx");
--	if (atmel_port->chan_tx == NULL)
-+	atmel_port->chan_tx = dma_request_chan(mfd_dev, "tx");
-+	if (IS_ERR(atmel_port->chan_tx)) {
-+		atmel_port->chan_tx = NULL;
-
-?
-
-Mostly a mater of taste. I can send a v3 with that if it is the 
-preferred style.
-
-CJ
-
-> 
+>> On 2023-11-15 10:13 a.m., alexander.antonov@linux.intel.com wrote:
+>>> From: Alexander Antonov <alexander.antonov@linux.intel.com>
+>>>
+>>> The NULL dereference happens inside upi_fill_topology() procedure in
+>>> case of disabling one of the sockets on the system.
+>>>
+>>> For example, if you disable the 2nd socket on a 4-socket system then
+>>> uncore_max_dies() returns 3 and inside pmu_alloc_topology() memory will
+>>> be allocated only for 3 sockets and stored in type->topology.
+>>> In discover_upi_topology() memory is accessed by socket id from
+>>> CPUNODEID
+>>> registers which contain physical ids (from 0 to 3) and on the line:
+>>>
+>>>      upi = &type->topology[nid][idx];
+>>>
+>>> out-of-bound access will happen and the 'upi' pointer will be passed to
+>>> upi_fill_topology() where it will be dereferenced.
+>>>
+>>> To avoid this issue update the code to convert physical socket id to
+>>> logical socket id in discover_upi_topology() before accessing memory.
+>>>
+>>> Fixes: f680b6e6062e ("perf/x86/intel/uncore: Enable UPI topology
+>>> discovery for Icelake Server")
+>>> Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
+>>> Tested-by: Kyle Meyer <kyle.meyer@hpe.com>
+>>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
+>>> ---
+>>>   arch/x86/events/intel/uncore_snbep.c | 10 ++++++++--
+>>>   1 file changed, 8 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/x86/events/intel/uncore_snbep.c
+>>> b/arch/x86/events/intel/uncore_snbep.c
+>>> index 8250f0f59c2b..49bc27ab26ad 100644
+>>> --- a/arch/x86/events/intel/uncore_snbep.c
+>>> +++ b/arch/x86/events/intel/uncore_snbep.c
+>>> @@ -5596,7 +5596,7 @@ static int discover_upi_topology(struct
+>>> intel_uncore_type *type, int ubox_did, i
+>>>       struct pci_dev *ubox = NULL;
+>>>       struct pci_dev *dev = NULL;
+>>>       u32 nid, gid;
+>>> -    int i, idx, ret = -EPERM;
+>>> +    int i, idx, lgc_pkg, ret = -EPERM;
+>>>       struct intel_uncore_topology *upi;
+>>>       unsigned int devfn;
+>>>   @@ -5614,8 +5614,13 @@ static int discover_upi_topology(struct
+>>> intel_uncore_type *type, int ubox_did, i
+>>>           for (i = 0; i < 8; i++) {
+>>>               if (nid != GIDNIDMAP(gid, i))
+>>>                   continue;
+>>> +            lgc_pkg = topology_phys_to_logical_pkg(i);
+>>> +            if (lgc_pkg < 0) {
+>>> +                ret = -EPERM;
+>>> +                goto err;
+>>> +            }
+>> In the snbep_pci2phy_map_init(), there are similar codes to find the
+>> logical die id. Can we factor a common function for both of them?
 >>
->> thanks,
+>> Thanks,
+>> Kan
+> Hi Kan,
 > 
+> Thank you for your comment.
+> Yes, I think we can factor out the common loop where GIDNIDMAP is being
+> checked.
+> But inside snbep_pci2phy_map_init() we have a bit different procedure which
+> also does the following:
+> 
+> if (topology_max_die_per_package() > 1)
+>     die_id = i;
+> 
+> I think that having this code, at least, in our case could bring us to the
+> same issue which we are trying to fix. But of course we could
+> parametrize this checking.
 
+The topology_max_die_per_package() > 1 means there are more that 1 die
+in a socket. AFAIK, it only happens on the Cascade Lake AP.
+
+Did you observe it in the ICX?
+
+Thanks,
+Kan
+
+> 
+> What do you think?
+> 
+> Thanks,
+> Alexander
+>>
+>>>               for (idx = 0; idx < type->num_boxes; idx++) {
+>>> -                upi = &type->topology[nid][idx];
+>>> +                upi = &type->topology[lgc_pkg][idx];
+>>>                   devfn = PCI_DEVFN(dev_link0 + idx,
+>>> ICX_UPI_REGS_ADDR_FUNCTION);
+>>>                   dev =
+>>> pci_get_domain_bus_and_slot(pci_domain_nr(ubox->bus),
+>>>                                     ubox->bus->number,
+>>> @@ -5626,6 +5631,7 @@ static int discover_upi_topology(struct
+>>> intel_uncore_type *type, int ubox_did, i
+>>>                           goto err;
+>>>                   }
+>>>               }
+>>> +            break;
+>>>           }
+>>>       }
+>>>   err:
+>>>
+>>> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
