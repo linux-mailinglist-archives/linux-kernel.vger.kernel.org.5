@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597737F1F1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 197277F1F26
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjKTVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
+        id S230429AbjKTVZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjKTVWH (ORCPT
+        with ESMTP id S229759AbjKTVZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:22:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6641E1AA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:22:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700515322; x=1732051322;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=j8B1ITWEeAkXv6+ECAk3eA35WeV+XBuBQ2iHt/ZPIRE=;
-  b=iJ0gN0oWB9eydN3czY0ij9jfkKK8/z7zo4nciTqWHVR5zXGBIPqW9SlE
-   o27c/4Q2pOpfONftDF6jEovVaoxMLWx/U4xcy5F4sbvCGMJhgAfpUhBwY
-   7uLjGxuWoZI02xbkjQp7G90AS6kJFAw2gBmVU0laKL6USmLhFr/2hdZvh
-   HhXz2HQSwp46DjPqiihswQEqhWdYS6TzZXO93KPu1gdKiq3qR80RpIDmw
-   o7QVezJsH327GPODA+2IWZ3pFC6+MvK21QyPYNqMXM9aSKDTpK/bf/v//
-   DVltEKHHaKC7VMk7DQmvj7vx6hIsvb22j0k5V2fDT8D50KFjFLxmA1/jJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="391488628"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="391488628"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:22:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832403594"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="832403594"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:22:01 -0800
-Received: from [10.213.161.18] (kliang2-mobl1.ccr.corp.intel.com [10.213.161.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 183AC580D93;
-        Mon, 20 Nov 2023 13:22:00 -0800 (PST)
-Message-ID: <7caf86b8-f050-4d0f-8aba-e2d725a0ab64@linux.intel.com>
-Date:   Mon, 20 Nov 2023 16:21:59 -0500
+        Mon, 20 Nov 2023 16:25:35 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD57C99;
+        Mon, 20 Nov 2023 13:25:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=vTiej26Yh66vUupMXOZ8FNGPsbQnKj9z0H8vgIBxYBg=; b=LxeEzEeSpN0Fpj0ZYVs+2MyM++
+        NMvgFyArPgGSngt3mWVaHMhRnEUzvoPGekmJsYhOZyMaSqYEdUzNiE0qlvMSpLwsU3d72pBf2863c
+        n3u2XkWDfI9BiRlKHJK2mD+1hPOzTWQhpTqTJCKOsLPUMEzkYu8wdHMC+pHcXfo+Udl0=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5BlW-000h20-H5; Mon, 20 Nov 2023 22:25:10 +0100
+Date:   Mon, 20 Nov 2023 22:25:10 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <45784368-93e0-4d57-bb0c-5730f53f5a08@lunn.ch>
+References: <20231120135041.15259-1-ansuelsmth@gmail.com>
+ <20231120135041.15259-4-ansuelsmth@gmail.com>
+ <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
+ <655bc8d6.050a0220.d22f2.315f@mx.google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86/intel/uncore: Fix NULL pointer dereference issue
- in upi_fill_topology()
-Content-Language: en-US
-To:     Alexander Antonov <alexander.antonov@linux.intel.com>,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Cc:     kyle.meyer@hpe.com, alexey.v.bayduraev@linux.intel.com
-References: <20231115151327.1874060-1-alexander.antonov@linux.intel.com>
- <ceb47045-3188-49ff-85b2-b37c9d0721e1@linux.intel.com>
- <50ce6fce-c2fc-4392-b405-5c9a7a93f061@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <50ce6fce-c2fc-4392-b405-5c9a7a93f061@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <655bc8d6.050a0220.d22f2.315f@mx.google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,116 +81,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-11-20 2:49 p.m., Alexander Antonov wrote:
+> A real DT that use this is (ipq807x):
 > 
-> On 11/15/2023 8:00 PM, Liang, Kan wrote:
->>
->> On 2023-11-15 10:13 a.m., alexander.antonov@linux.intel.com wrote:
->>> From: Alexander Antonov <alexander.antonov@linux.intel.com>
->>>
->>> The NULL dereference happens inside upi_fill_topology() procedure in
->>> case of disabling one of the sockets on the system.
->>>
->>> For example, if you disable the 2nd socket on a 4-socket system then
->>> uncore_max_dies() returns 3 and inside pmu_alloc_topology() memory will
->>> be allocated only for 3 sockets and stored in type->topology.
->>> In discover_upi_topology() memory is accessed by socket id from
->>> CPUNODEID
->>> registers which contain physical ids (from 0 to 3) and on the line:
->>>
->>>      upi = &type->topology[nid][idx];
->>>
->>> out-of-bound access will happen and the 'upi' pointer will be passed to
->>> upi_fill_topology() where it will be dereferenced.
->>>
->>> To avoid this issue update the code to convert physical socket id to
->>> logical socket id in discover_upi_topology() before accessing memory.
->>>
->>> Fixes: f680b6e6062e ("perf/x86/intel/uncore: Enable UPI topology
->>> discovery for Icelake Server")
->>> Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
->>> Tested-by: Kyle Meyer <kyle.meyer@hpe.com>
->>> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
->>> ---
->>>   arch/x86/events/intel/uncore_snbep.c | 10 ++++++++--
->>>   1 file changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/x86/events/intel/uncore_snbep.c
->>> b/arch/x86/events/intel/uncore_snbep.c
->>> index 8250f0f59c2b..49bc27ab26ad 100644
->>> --- a/arch/x86/events/intel/uncore_snbep.c
->>> +++ b/arch/x86/events/intel/uncore_snbep.c
->>> @@ -5596,7 +5596,7 @@ static int discover_upi_topology(struct
->>> intel_uncore_type *type, int ubox_did, i
->>>       struct pci_dev *ubox = NULL;
->>>       struct pci_dev *dev = NULL;
->>>       u32 nid, gid;
->>> -    int i, idx, ret = -EPERM;
->>> +    int i, idx, lgc_pkg, ret = -EPERM;
->>>       struct intel_uncore_topology *upi;
->>>       unsigned int devfn;
->>>   @@ -5614,8 +5614,13 @@ static int discover_upi_topology(struct
->>> intel_uncore_type *type, int ubox_did, i
->>>           for (i = 0; i < 8; i++) {
->>>               if (nid != GIDNIDMAP(gid, i))
->>>                   continue;
->>> +            lgc_pkg = topology_phys_to_logical_pkg(i);
->>> +            if (lgc_pkg < 0) {
->>> +                ret = -EPERM;
->>> +                goto err;
->>> +            }
->> In the snbep_pci2phy_map_init(), there are similar codes to find the
->> logical die id. Can we factor a common function for both of them?
->>
->> Thanks,
->> Kan
-> Hi Kan,
+> &mdio {
+> 	status = "okay";
+> 	pinctrl-0 = <&mdio_pins>;
+> 	pinctrl-names = "default";
+> 	reset-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
 > 
-> Thank you for your comment.
-> Yes, I think we can factor out the common loop where GIDNIDMAP is being
-> checked.
-> But inside snbep_pci2phy_map_init() we have a bit different procedure which
-> also does the following:
+> 	ethernet-phy-package {
+> 		compatible = "ethernet-phy-package";
+> 		phy-mode = "psgmii";
 > 
-> if (topology_max_die_per_package() > 1)
->     die_id = i;
+> 		global-phys = <&qca8075_4>, <&qca8075_psgmii>;
+> 		global-phy-names = "combo", "analog_psgmii";
 > 
-> I think that having this code, at least, in our case could bring us to the
-> same issue which we are trying to fix. But of course we could
-> parametrize this checking.
+> 		qca8075_0: ethernet-phy@0 {
+> 			compatible = "ethernet-phy-ieee802.3-c22";
+> 			reg = <0>;
+> 		};
 
-The topology_max_die_per_package() > 1 means there are more that 1 die
-in a socket. AFAIK, it only happens on the Cascade Lake AP.
+...
 
-Did you observe it in the ICX?
-
-Thanks,
-Kan
-
+> 	};
 > 
-> What do you think?
-> 
-> Thanks,
-> Alexander
->>
->>>               for (idx = 0; idx < type->num_boxes; idx++) {
->>> -                upi = &type->topology[nid][idx];
->>> +                upi = &type->topology[lgc_pkg][idx];
->>>                   devfn = PCI_DEVFN(dev_link0 + idx,
->>> ICX_UPI_REGS_ADDR_FUNCTION);
->>>                   dev =
->>> pci_get_domain_bus_and_slot(pci_domain_nr(ubox->bus),
->>>                                     ubox->bus->number,
->>> @@ -5626,6 +5631,7 @@ static int discover_upi_topology(struct
->>> intel_uncore_type *type, int ubox_did, i
->>>                           goto err;
->>>                   }
->>>               }
->>> +            break;
->>>           }
->>>       }
->>>   err:
->>>
->>> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+> 	qca8081: ethernet-phy@28 {
+> 		compatible = "ethernet-phy-id004d.d101";
+> 		reg = <28>;
+> 		reset-gpios = <&tlmm 31 GPIO_ACTIVE_LOW>;
+> 	};
+
+I've no idea if DT allows this. The issue is that reg is the same for
+both nodes within the ethernet-phy-package container, and
+ethernet-phy@28. They are all addresses on the same MDIO bus.  We are
+parsing this bus structure ourselves in __of_mdiobus_register(), so we
+could make it work, but i don't know if we should make it work.
+
+      Andrew
+
