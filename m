@@ -2,93 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E757F15C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A1B7F15CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjKTOf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:35:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50218 "EHLO
+        id S233487AbjKTOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233145AbjKTOf0 (ORCPT
+        with ESMTP id S233451AbjKTOfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:35:26 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6688A137
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:35:21 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c1b9860846so5956194a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:35:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700490921; x=1701095721;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l7LnU8RknCJWsPsqm7RXDpRlRmyk9PFdTymemdD1BB0=;
-        b=WbiQHY6ijfuBCRx9ECBEg82E7GuB6uCxMWdXKCYaNvGbyW+kkYAcTNv6UHwf2rCWst
-         vpeUcbP78L3G00sSP/sxw26ut0J6ZIteb5RMrFIfkLjusGlIxKwEuFHhpJu85Hte2Wmb
-         z5mWuTkIW1fuI8qLVMd73XJ3uATmzUoBALb69WL+VX7Zn8ELRgvEAEwYm1D3+DOx0xVE
-         wKEB2ZlVAhanQmsecflqjVTocqz724a1ZCCGNB2gWBa1m0M2e+A0Va3pxO4DMIGfmztB
-         iqOQplDV1KuNx4nvU5tYTVT8PdkIihdcQZZvoZCTCl+mIXvHkCZAe4cql1/GVHyj1Gx7
-         MLJA==
-X-Gm-Message-State: AOJu0Yy368XOahb3oLNfQNFWlK8kuPtLY72aZJPKPhpDU4TkXsgwCdfc
-        Qtp/pZjCHEg6c0qVjvWWAlRER1rThN0niRGnKLAbm0fGR8sH
-X-Google-Smtp-Source: AGHT+IEzo56JbmoqVwXpNg8mySCpYTtfjo3yW4Qe9XqQZVtkbrSYD8LRgMtcpz+jO1iIYLRpugHW71s2+YOd//5V4KN6QrJvxIwu
+        Mon, 20 Nov 2023 09:35:44 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF65112;
+        Mon, 20 Nov 2023 06:35:40 -0800 (PST)
+Date:   Mon, 20 Nov 2023 14:35:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1700490939;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7zldWwl7dHHlFIYTKVjKhMwvreh2w4NaLYmY3SinWk=;
+        b=fkCp2FPlGxZivFsHHEtrV8dbpDknBljKvECk3nVeTAwJ83yA0wztTBsgd1r2NuYsEZ8rn9
+        ngIN3IHDTlnq1zAgkZ/bg4QIPrnFYCOsPan0vt4dZOanzmaNyW5jTcIkhwEjHDfzXKaRKA
+        fsQaQuXYJRVW9nmge7Z36HyMBv/ggoR/XHguPMAJxspgd8GFjYn0FBj/GmCmUWfzJoqe2Y
+        qT7CL/kqVxH/SE2QNSnkldoHDCMqYNIzyE/I3P7PVo77rd6zs0wh0rRTuv0jh9+w8q+R1X
+        QMrBKZNV+3chGYWkMYyNHphD4TkRiHW8x6VICtjfjMZytOj/MaNpf8YLqm646w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1700490939;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A7zldWwl7dHHlFIYTKVjKhMwvreh2w4NaLYmY3SinWk=;
+        b=D54HCzbVlY2lrVNTpmIfaJRS6YqFvzUoCHLHyeo0c7y2rPRX/ziJDu61+4EblIOlRcEzt3
+        HUQbEjeQzaHWUpDQ==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/cstate: Add Grand Ridge support
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231116142245.1233485-4-kan.liang@linux.intel.com>
+References: <20231116142245.1233485-4-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a65:6897:0:b0:5c2:1816:24c5 with SMTP id
- e23-20020a656897000000b005c2181624c5mr1598710pgt.10.1700490920919; Mon, 20
- Nov 2023 06:35:20 -0800 (PST)
-Date:   Mon, 20 Nov 2023 06:35:20 -0800
-In-Reply-To: <0000000000009393ba059691c6a3@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000490858060a96651c@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
-From:   syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
-To:     Jose.Abreu@synopsys.com, arvid.brodin@alten.se,
-        davem@davemloft.net, dvyukov@google.com,
-        ilias.apalodimas@linaro.org, joabreu@synopsys.com,
-        jose.abreu@synopsys.com, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        nogikh@google.com, robin@protonic.nl, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <170049093761.398.5173457505104553782.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-can: j1939: transport: make sure the aborted session will be deactivated only once
+The following commit has been merged into the perf/core branch of tip:
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Commit-ID:     bbb968696d0f3442ab823598def3b756cf4735c6
+Gitweb:        https://git.kernel.org/tip/bbb968696d0f3442ab823598def3b756cf4735c6
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Thu, 16 Nov 2023 06:22:45 -08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 17 Nov 2023 10:54:53 +01:00
 
-#syz fix: exact-commit-title
+perf/x86/intel/cstate: Add Grand Ridge support
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+The same as the Sierra Forest, the Grand Ridge supports core C1/C6 and
+module C6. But it doesn't support pkg C6 residency counter.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
-
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20231116142245.1233485-4-kan.liang@linux.intel.com
 ---
-[1] I expect the commit to be present in:
+ arch/x86/events/intel/cstate.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index 4a46ef3..4b50a3a 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -41,7 +41,7 @@
+  *	MSR_CORE_C1_RES: CORE C1 Residency Counter
+  *			 perf code: 0x00
+  *			 Available model: SLM,AMT,GLM,CNL,ICX,TNT,ADL,RPL
+- *					  MTL,SRF
++ *					  MTL,SRF,GRR
+  *			 Scope: Core (each processor core has a MSR)
+  *	MSR_CORE_C3_RESIDENCY: CORE C3 Residency Counter
+  *			       perf code: 0x01
+@@ -52,7 +52,8 @@
+  *			       perf code: 0x02
+  *			       Available model: SLM,AMT,NHM,WSM,SNB,IVB,HSW,BDW,
+  *						SKL,KNL,GLM,CNL,KBL,CML,ICL,ICX,
+- *						TGL,TNT,RKL,ADL,RPL,SPR,MTL,SRF
++ *						TGL,TNT,RKL,ADL,RPL,SPR,MTL,SRF,
++ *						GRR
+  *			       Scope: Core
+  *	MSR_CORE_C7_RESIDENCY: CORE C7 Residency Counter
+  *			       perf code: 0x03
+@@ -99,7 +100,7 @@
+  *			       Scope: Package (physical package)
+  *	MSR_MODULE_C6_RES_MS:  Module C6 Residency Counter.
+  *			       perf code: 0x00
+- *			       Available model: SRF
++ *			       Available model: SRF,GRR
+  *			       Scope: A cluster of cores shared L2 cache
+  *
+  */
+@@ -677,6 +678,13 @@ static const struct cstate_model glm_cstates __initconst = {
+ 				  BIT(PERF_CSTATE_PKG_C10_RES),
+ };
+ 
++static const struct cstate_model grr_cstates __initconst = {
++	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
++				  BIT(PERF_CSTATE_CORE_C6_RES),
++
++	.module_events		= BIT(PERF_CSTATE_MODULE_C6_RES),
++};
++
+ static const struct cstate_model srf_cstates __initconst = {
+ 	.core_events		= BIT(PERF_CSTATE_CORE_C1_RES) |
+ 				  BIT(PERF_CSTATE_CORE_C6_RES),
+@@ -739,6 +747,7 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&glm_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&adl_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	&srf_cstates),
++	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT,	&grr_cstates),
+ 
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
