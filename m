@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113937F0FFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1797F1000
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbjKTKNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        id S232849AbjKTKNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjKTKNI (ORCPT
+        with ESMTP id S232565AbjKTKNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:13:08 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939DB9F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:13:04 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c1b986082eso4552015a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:13:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700475184; x=1701079984;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c+CEsx8h1YWhzLlneZ3uHmq8J6fuGvN9695Xd7yq2zY=;
-        b=ipG/N0CRPSZmcUp2gutTLPyThg42QC62+tdEszwK4r9imvh18y7hiGLyYhEIdAoQRU
-         mvZEiBPFqYA0/jeA0MSH8pEyWgvqeeSXeCNtsK7JQptdBeZaafQUzG+rMwHhK7CrBcH7
-         88DzYKvNXp4uK58hIfZrA/Mi8izHZTEuDZxwlFxQJPn98GlqBuBpG2wkQ4gOyPWh+yOh
-         tAAZdAplfyef1GAmC2lvUlkuSe6cZ224UrrOu8zza20KhesIpnaoqkoBOE6CIm2CVLhR
-         h+OCziDYVH57q4jAnRlEe35yyovJjJ7jBWVkNiKj15UtyLcoxNktEVPvokG0VODPwovK
-         FnwQ==
-X-Gm-Message-State: AOJu0Yw+aZNI6xkv3hc82sN8s8mW36Gl2dTJNvxGOX+lCC1FUqCcDuoF
-        L/5lz11kuKzmj4PNBmMIYJ9jAsLurEKzTlRbFM9LgiJrcTmIRDo=
-X-Google-Smtp-Source: AGHT+IGGW7paAjEEPwVBlrwO3XRO889XSgcrLNthPgLhfZp7jkFQHMOmGBaFQJ/uuws1PgSg69H7LP5VjAPSBvRqBfqNs/gacVKO
+        Mon, 20 Nov 2023 05:13:53 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F5BDBA;
+        Mon, 20 Nov 2023 02:13:48 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 704F21BF215;
+        Mon, 20 Nov 2023 10:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700475227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cmUGH3YuoMjyTyRQ6pJiUJgPb2L/5jsBh4vmboUNNnY=;
+        b=Q8ErNCtaXnZs5qZYQUDMJbWRAD/Jy/F3Vv3Vj3ZQEQ4nyuJQyw6q1BNJhz1bze05MEkXgO
+        eVvuiHZLXRdQtFpD6kVPZqpHXivAeFRekC2ixepAQqok/6gwVtIhbXEMPl7E6+HmtcdjQu
+        LfixvgdAFoNyI6OwAv/KIquB6SW/xc49HY0E/QU+Nb/QOYHY0T2JfHP7SmOFLWW/crwv1Q
+        5bCsckNXqP5gPUZLxU4V/lGOCMIUU8rGbWdAk9PcWi7SQhyKd0NZO8/nSvDkimNwA1o168
+        8ZNQcvrO3mCBcNTlr8qqbR9asKBGLBSKOXolaMnlxxmQMJPjKzbzpgA0vfqW/g==
+Date:   Mon, 20 Nov 2023 11:13:45 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 6/9] netlink: specs: Expand the pse netlink
+ command with PoE interface
+Message-ID: <20231120111345.0ad15ea5@kmaincent-XPS-13-7390>
+In-Reply-To: <20231118160131.207b7e57@kernel.org>
+References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
+        <20231116-feature_poe-v1-6-be48044bf249@bootlin.com>
+        <20231118160131.207b7e57@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a63:1b5f:0:b0:5c2:3f57:8f38 with SMTP id
- b31-20020a631b5f000000b005c23f578f38mr596098pgm.12.1700475184083; Mon, 20 Nov
- 2023 02:13:04 -0800 (PST)
-Date:   Mon, 20 Nov 2023 02:13:03 -0800
-In-Reply-To: <476cfe2b-4270-12ef-736e-11c2099d6cad@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004bf830060a92bb19@google.com>
-Subject: Re: [syzbot] [net?] [nfc?] memory leak in skb_copy (2)
-From:   syzbot <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, phind.uet@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 18 Nov 2023 16:01:31 -0800
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-syzbot tried to test the proposed patch but the build/boot failed:
+> On Thu, 16 Nov 2023 15:01:38 +0100 Kory Maincent wrote:
+> > +        name: pse-admin-state
+> > +        type: u32
+> > +        name-prefix: ethtool-a-
+> > +      -
+> > +        name: pse-admin-control
+> > +        type: u32
+> > +        name-prefix: ethtool-a-
+> > +      -
+> > +        name: pse-pw-d-status
+> > +        type: u32
+> > +        name-prefix: ethtool-a- =20
+>=20
+> The default prefix is ethtool-a-pse-
+> Why don't you leave that be and drop the pse- from the names?
 
-failed to apply patch:
-checking file drivers/nfc/virtual_ncidev.c
-patch: **** unexpected end of file in patch
+Oh right, thanks, I copied blindly the PoDL lines.
 
-
-
-Tested on:
-
-commit:         5a82d69d Add linux-next specific files for 20231120
-git tree:       linux-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ecfdf78a410c834
-dashboard link: https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=104f58bf680000
-
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
