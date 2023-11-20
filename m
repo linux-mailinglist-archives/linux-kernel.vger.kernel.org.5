@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DCD7F14D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC527F14D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbjKTNwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 08:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
+        id S233675AbjKTNwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233318AbjKTNvi (ORCPT
+        with ESMTP id S233498AbjKTNvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 08:51:38 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA7610C0;
-        Mon, 20 Nov 2023 05:51:28 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4083f613272so19033615e9.1;
-        Mon, 20 Nov 2023 05:51:28 -0800 (PST)
+        Mon, 20 Nov 2023 08:51:40 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25C510D1;
+        Mon, 20 Nov 2023 05:51:29 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4083740f92dso16080325e9.3;
+        Mon, 20 Nov 2023 05:51:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700488286; x=1701093086; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700488288; x=1701093088; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aMjjq9qLyKnXGA+eO91BLzIpEsWi8EWdg29zu6S5n/U=;
-        b=mz+Mv7wx085TBN6rp/PGnQRCgBjfhDqDbQ4jGkavcfhFCno4iA1ibrWKK17O4lXHaC
-         ShBGUkDARpSuj4iifEf2FywsjDVLdOswNTTz7j+KV37zDomUN0S0sjSLWtM4JfvRwups
-         VkC8BHJX9iCxbV/GUSQ6dCRWcRne2amgxkaWIkGjaGRsUQSYCrMxQeLQjn0quEJKgeLY
-         fXdifrhnFndEP387lljtsTc5mj4INsVH+HAsRuDC310pq3d2H4upeeuLL8LFxKfvk7in
-         Ys5XjeMRlYxDQxpIfhnCOHMxHHNYbd6RD1AD6/B5ezUAwm6Oz3DmKU1er9osXZ6bNfXA
-         fC/A==
+        bh=7KlciZ6HGUzRiM58ultDgzciNJogKhU8Km072RfwAf4=;
+        b=DzOWvVfrm178CDzV/mmSwdpTxeWYfjw4xLSRh4/7NcSxsrsTEMdLtDxUwYB4H4K14c
+         VHt7GejI75AwRzQLlkUD8oprRaoW2JN20GX3QP272DTZg4oNtnjo5K9kJbBCuL4V8Ivu
+         m2XUwRMbvoSrYNbIEFeSIo0zTMstFtVlO7Ln85DAFlndy3lQlU9KL9VTrjOTuHC9Pj2O
+         Y3AmooLD7HRhaJm3p7JU7b6eRQlkxJ3DM+0qmW7FI90aohrFLuJ6DZmHKgBdfXeGV12G
+         sQcMxhAPay8f/sn7nNnesotJNvxV/vrjqOCuTyHZDU8l4YzGYJp/qLaXH31zizVPPlTL
+         j4Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700488286; x=1701093086;
+        d=1e100.net; s=20230601; t=1700488288; x=1701093088;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aMjjq9qLyKnXGA+eO91BLzIpEsWi8EWdg29zu6S5n/U=;
-        b=LvQ9/VUuXIubFGsirVrSNvDEN4oiFqSQxBimPPkigMEohI2boAGTnGxs9t/WvhXctx
-         Cf00kJ8xacXGCmQv604cy30FVmt+zyEhW/plk676hL9wQZ6OFOZy5B6elgTjpUCjaUdN
-         uRr93qE67f7OX+JaRVsm6Sl6rvWI78W6MN10h/lQneSgCoxnP74LC8IaIHm9mqutc8ve
-         jKHCutMg/PzeAYoBnfdC1HYn91V7RDFka0bOELMNMqXNS9YEOjBLT0V4KVAxa6/ehCAX
-         W2S5uzyn0yR0+Mnuzj1cQtchEYyYfZc0e6HcozV02o09S4Sc0TvCMoo8nNOjOTlXik3n
-         Jj8w==
-X-Gm-Message-State: AOJu0YwCClhedLnv6gteV3p18DfgcM+Irf8bfYvwlDPgPP/Klx6RwrUg
-        xykzJo3gBODHJRkteQU01mM=
-X-Google-Smtp-Source: AGHT+IELaaTlk2hOemekBls41C7RViCTII0CDMoPho0KjrhB6Lc/w0Sv0fdqN6PCiINS6TOvzE03Tg==
-X-Received: by 2002:a05:600c:1d1a:b0:40a:49bc:fa9d with SMTP id l26-20020a05600c1d1a00b0040a49bcfa9dmr6576777wms.26.1700488286520;
-        Mon, 20 Nov 2023 05:51:26 -0800 (PST)
+        bh=7KlciZ6HGUzRiM58ultDgzciNJogKhU8Km072RfwAf4=;
+        b=g7XDxOj66xPyly01UZ9P773JGpiwwdYByCmt5EnswTarDR450T9hg579tapTVY3yWd
+         Tm4wRs/WsJp+OrNZg5/jx6gknf0l/cYKcbjL8GdE9Bcbldq/DO/G5iKxgc/ZR9jVo+KC
+         jkM0XPDW6zI67k+TptjM6rgJfCWZnLEMLJB8CquCz+AKhpwqpHDPs/2B2Xz6v2ml8U6T
+         e3tR6iQxNaiFy+FXgMD6WgKRE/bcModXY0Wt38tH1rvklYQzdh3Q+6uSFc5+bxDu1A5D
+         EfZQk44MomjjneYdpxiNpRnTY+CdqQPBDROApPcrAo5HVbSGbZjY3uyME0l2qq/a+uaF
+         xU+w==
+X-Gm-Message-State: AOJu0YxjcsSSW6dhOKZPCo9e0vaxbCkzU2+ZVF5PyWKmwcerfxs/rnX/
+        1Jxr6v5N/2YOCjEuRN0jfZw=
+X-Google-Smtp-Source: AGHT+IEgMWdVSmBqk/Db3v8YVKpL/4mMmUM+K0FYzCeo2AsDXwgh5SY0EbCSMcmSejPYpR8JOj4Fqg==
+X-Received: by 2002:a05:600c:3113:b0:408:e441:1697 with SMTP id g19-20020a05600c311300b00408e4411697mr5904786wmo.39.1700488288141;
+        Mon, 20 Nov 2023 05:51:28 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id j33-20020a05600c1c2100b0040772934b12sm18205846wms.7.2023.11.20.05.51.25
+        by smtp.googlemail.com with ESMTPSA id j33-20020a05600c1c2100b0040772934b12sm18205846wms.7.2023.11.20.05.51.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 05:51:26 -0800 (PST)
+        Mon, 20 Nov 2023 05:51:27 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -84,9 +84,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         linux-arm-msm@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [net-next RFC PATCH 09/14] net: phy: move mmd_phy_indirect to generic header
-Date:   Mon, 20 Nov 2023 14:50:36 +0100
-Message-Id: <20231120135041.15259-10-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH 10/14] net: phy: add support for PHY package MMD read/write
+Date:   Mon, 20 Nov 2023 14:50:37 +0100
+Message-Id: <20231120135041.15259-11-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231120135041.15259-1-ansuelsmth@gmail.com>
 References: <20231120135041.15259-1-ansuelsmth@gmail.com>
@@ -102,65 +102,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move mmd_phy_indirect function from phy-core to generic phy.h to permit
-future usage for PHY package read/write_mmd.
+Some PHY in PHY package may require to read/write MMD regs to correctly
+configure the PHY package.
+
+Add support for these additional required function in both lock and no
+lock variant.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/phy-core.c | 14 --------------
- include/linux/phy.h        | 14 ++++++++++++++
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ include/linux/phy.h | 72 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 966c93cbe616..b4f80847eefd 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -526,20 +526,6 @@ int phy_speed_down_core(struct phy_device *phydev)
- 	return 0;
- }
- 
--static void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
--			     u16 regnum)
--{
--	/* Write the desired MMD Devad */
--	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL, devad);
--
--	/* Write the desired MMD register address */
--	__mdiobus_write(bus, phy_addr, MII_MMD_DATA, regnum);
--
--	/* Select the Function : DATA with no post increment */
--	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL,
--			devad | MII_MMD_CTRL_NOINCR);
--}
--
- /**
-  * __phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
 diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 8af0a8a72b88..dd2381652dd1 100644
+index dd2381652dd1..90bfaa36689f 100644
 --- a/include/linux/phy.h
 +++ b/include/linux/phy.h
-@@ -1361,6 +1361,20 @@ static inline int __phy_modify_changed(struct phy_device *phydev, u32 regnum,
- 					regnum, mask, set);
+@@ -2110,6 +2110,78 @@ static inline int __phy_package_write(struct phy_device *phydev,
+ 	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
  }
  
-+static inline void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
-+				    u16 regnum)
++static inline int phy_package_read_mmd(struct phy_device *phydev,
++				       int global_phy_index, int devad, u32 regnum)
 +{
-+	/* Write the desired MMD Devad */
-+	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL, devad);
++	struct phy_package_shared *shared = phydev->shared;
++	struct mii_bus *bus = phydev->mdio.bus;
++	int addr, val;
 +
-+	/* Write the desired MMD register address */
-+	__mdiobus_write(bus, phy_addr, MII_MMD_DATA, regnum);
++	if (!shared || global_phy_index > shared->addrs_num - 1)
++		return -EIO;
 +
-+	/* Select the Function : DATA with no post increment */
-+	__mdiobus_write(bus, phy_addr, MII_MMD_CTRL,
-+			devad | MII_MMD_CTRL_NOINCR);
++	addr = shared->addrs[global_phy_index];
++
++	phy_lock_mdio_bus(phydev);
++	mmd_phy_indirect(bus, addr, devad, regnum);
++	val = __mdiobus_read(bus, addr, MII_MMD_DATA);
++	phy_unlock_mdio_bus(phydev);
++
++	return val;
 +}
 +
- /*
-  * phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
++static inline int __phy_package_read_mmd(struct phy_device *phydev,
++					 int global_phy_index, int devad, u32 regnum)
++{
++	struct phy_package_shared *shared = phydev->shared;
++	struct mii_bus *bus = phydev->mdio.bus;
++	int addr;
++
++	if (!shared || global_phy_index > shared->addrs_num - 1)
++		return -EIO;
++
++	addr = shared->addrs[global_phy_index];
++	mmd_phy_indirect(bus, addr, devad, regnum);
++	return __mdiobus_read(bus, addr, MII_MMD_DATA);
++}
++
++static inline int phy_package_write_mmd(struct phy_device *phydev,
++					int global_phy_index, int devad,
++					u32 regnum, u16 val)
++{
++	struct phy_package_shared *shared = phydev->shared;
++	struct mii_bus *bus = phydev->mdio.bus;
++	int addr, ret;
++
++	if (!shared || global_phy_index > shared->addrs_num - 1)
++		return -EIO;
++
++	addr = shared->addrs[global_phy_index];
++
++	phy_lock_mdio_bus(phydev);
++	mmd_phy_indirect(bus, addr, devad, regnum);
++	ret = __mdiobus_write(bus, addr, MII_MMD_DATA, val);
++	phy_unlock_mdio_bus(phydev);
++
++	return ret;
++}
++
++static inline int __phy_package_write_mmd(struct phy_device *phydev,
++					  int global_phy_index, int devad,
++					  u32 regnum, u16 val)
++{
++	struct phy_package_shared *shared = phydev->shared;
++	struct mii_bus *bus = phydev->mdio.bus;
++	int addr;
++
++	if (!shared || global_phy_index > shared->addrs_num - 1)
++		return -EIO;
++
++	addr = shared->addrs[global_phy_index];
++	mmd_phy_indirect(bus, addr, devad, regnum);
++	return __mdiobus_write(bus, addr, MII_MMD_DATA, val);
++}
++
+ static inline bool __phy_package_set_once(struct phy_device *phydev,
+ 					  unsigned int b)
+ {
 -- 
 2.40.1
 
