@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534F17F175E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F3D7F1763
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbjKTPcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S234314AbjKTPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:34:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbjKTPcO (ORCPT
+        with ESMTP id S234303AbjKTPej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:32:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9495DC8;
-        Mon, 20 Nov 2023 07:32:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700494330; x=1732030330;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=yzidrUEMCUcbFArGAxx+rdrshE4gppTFAhlR8SrrLjA=;
-  b=WuYOW1vF4qVKdsSZjGzkvpRblDOvmfnXcqQ+1UkGPpqkyEByuConDx+0
-   TF3oDQmGijhPLKd15tejBVH8cIV7F1LgPmjLZ8rnNkqD5QlkjTD0jvpnI
-   XYMOa8w9jQMf2Jrbuh8NgcgxLcEK56660NY+sL55twSBqgg9tkUoOeua1
-   DjdiSonQV52VCzbpLw1VeNlaUlTNCYujoVnOVk2VG5ETSLHL+fGO4Yjbd
-   pR+aGNxLau5AEKZktP7cbHS1foZMIvPq/ssZZ6BcQW/6/sG9t9I0kZ7Uh
-   q1woaSffJhe4R4x6eEqxmluuWWrub+mXvb8MKuJN+wvJYMzGQPdxhMD8A
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371815232"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="371815232"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 07:32:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="836760404"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="836760404"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2023 07:32:08 -0800
-Message-ID: <a970f296-da67-9a80-ab2f-a94fd16e0fd9@linux.intel.com>
-Date:   Mon, 20 Nov 2023 17:33:23 +0200
+        Mon, 20 Nov 2023 10:34:39 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A53DB4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:34:31 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-332c46d5988so888040f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:34:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700494470; x=1701099270; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3urVBxbF5NZPUeIYke5inWHKIb6xfBZ0lmHUZJ/m1IY=;
+        b=FtTUpU2X5cQJWbcF8Cs8LgCW4n4FHQt/+tEUA4LrtBvFR9od4YCVNzsRd5YitYrExP
+         7aKJw07oDLEEctj37088vIHugH3lTAf2ZG/XipwDljyeTqfhkXKxRgm1Rpkpn1vhQmSo
+         tRlCNTpwS9H9ynXFDIZhg2depIcoeoNzVpHJUIUhEnttucdHk0+q/XfEHwgrGivQT605
+         QN7tIBOhxL/Eg3F9FqTqmet1A9OCozZfzrKELvsoR9YVx5AsMMCi0zpj2vpWz1E+O4Ps
+         YDC9S895601pk2idqRpJavrvV/AIK1fOhFIaRvvOZ/BCjnKZdWwPpn3SZ9Zllw7zulm7
+         wgog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700494470; x=1701099270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3urVBxbF5NZPUeIYke5inWHKIb6xfBZ0lmHUZJ/m1IY=;
+        b=WZ8Xp6sSm7NtzR7ey3MZFMPGtLEPfO3Y7KGuGaH2QkG9vcQSsXoqV21xG0/rHBB59I
+         olNOBQq/Vy3VGmM6jxBEtmr8DD4KxI8zFBYk6KFYUAAf9BkPOqSa0YcZl5a+owqpbg+C
+         fKP2xfmlVFKqxaE09HDt2oar+JW1EyWXmWZo23fhCTxmnl8Zgqs/x4AShLNEwxNZPBLG
+         Xc8Mt3l0DI9OOlqmgYZLiRnCQaB0eTzfS5+/ArHWorWq8xtAmXiLVJUgocQ1r2EE2UaG
+         aXnHBvPWhir+sfV45hKuLxP+iJiV7/sRa8b3FpKlr4wYQrbP7JOTJ77yL3WMnsA/kVRw
+         d/4Q==
+X-Gm-Message-State: AOJu0YyA+DDy0/gXFS//rafO0xUld45IRcAgF0djjKbPHwtD1IrW0s8l
+        O5+Fk0bMwx3dpixkGD2yQRE=
+X-Google-Smtp-Source: AGHT+IFzZpgEP+NrwDy5i54MbXIVNrrlgn9FMmtroSvGF406FBhWo9xOtPosqpUdEfVe+JR7v9Ximw==
+X-Received: by 2002:a5d:6d0a:0:b0:32f:c5ea:72ac with SMTP id e10-20020a5d6d0a000000b0032fc5ea72acmr5924188wrq.46.1700494469688;
+        Mon, 20 Nov 2023 07:34:29 -0800 (PST)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id v9-20020a5d5909000000b0032f9688ea48sm11555870wrd.10.2023.11.20.07.34.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 07:34:29 -0800 (PST)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/mm/encrypt: Use %a asm operand modifier to obtain %rip-relative address
+Date:   Mon, 20 Nov 2023 16:33:50 +0100
+Message-ID: <20231120153419.3045-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Content-Language: en-US
-To:     Kuen-Han Tsai <khtsai@google.com>
-Cc:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alan Stern <stern@rowland.harvard.edu>
-References: <20231117072131.2886406-1-khtsai@google.com>
- <a4a129a3-e271-acbb-949c-534a8e1627ee@linux.intel.com>
- <CAKzKK0rnx+tSFAj6N-U_vcAZ_5P=Hx_Kb97NFkdPMHs8dR3Ukw@mail.gmail.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH] xhci: fix null pointer deref for xhci_urb_enqueue
-In-Reply-To: <CAKzKK0rnx+tSFAj6N-U_vcAZ_5P=Hx_Kb97NFkdPMHs8dR3Ukw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.11.2023 12.19, Kuen-Han Tsai wrote:
-> Hi Mathias
-> 
->>>        if (usb_endpoint_xfer_isoc(&urb->ep->desc))
->>> @@ -1552,8 +1561,10 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
->>>                num_tds = 1;
->>>
->>>        urb_priv = kzalloc(struct_size(urb_priv, td, num_tds), mem_flags);
->> kzalloc with spinlock held, should preferably be moved outside lock, otherwise should use GFP_ATOMIC
-> 
-> Thanks for pointing this out. I realize this patch is incorrect and it
-> is non-ideal to include many codes unrelated to xhci->devs[slot_id]
-> within the lock.
-> 
->> xhci_check_maxpacket() called here can't be called with spinlock held
-> 
-> It appears that xhci_check_maxpacket() might potentially lead to a
-> deadlock later if a spinlock is held. Is this the concern you were
-> referring to? If not, please let me know if there are any other
-> potential issues that I may have missed, thanks!
+The "a" asm operand modifier substitutes a memory reference, with the
+actual operand treated as address.  For x86_64, when a symbol is
+provided, the "a" modifier emits "sym(%rip)" instead of "sym".
 
-xhci_check_maxpacket() will allocate memory, wait for completion, and use the same lock,
-so there are several issues here.
+Clang allows only "i" and "r" operand constraints with an "a" modifier,
+so the patch normalizes the modifier/constraint pair to "a"/"i"
+which is consistent between both compilers.
 
-I actually think we shouldn't call xhci_check_maxpacket() at all while queuing urbs.
+No functional change intended.
 
-usb core knows when there was max packet size mismatch during enumeration.
-I think we should add a hook to the hcd that usb core can call in these cases
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+ arch/x86/mm/mem_encrypt_identity.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-Thanks
-Mathias
+diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+index d73aeb16417f..6a351fdd1b39 100644
+--- a/arch/x86/mm/mem_encrypt_identity.c
++++ b/arch/x86/mm/mem_encrypt_identity.c
+@@ -346,9 +346,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
+ 	 * We're running identity mapped, so we must obtain the address to the
+ 	 * SME encryption workarea using rip-relative addressing.
+ 	 */
+-	asm ("lea sme_workarea(%%rip), %0"
+-	     : "=r" (workarea_start)
+-	     : "p" (sme_workarea));
++	asm ("lea %a1, %0" : "=r" (workarea_start) : "i" (sme_workarea));
+ 
+ 	/*
+ 	 * Calculate required number of workarea bytes needed:
+@@ -582,15 +580,9 @@ void __init sme_enable(struct boot_params *bp)
+ 	 * identity mapped, so we must obtain the address to the SME command
+ 	 * line argument data using rip-relative addressing.
+ 	 */
+-	asm ("lea sme_cmdline_arg(%%rip), %0"
+-	     : "=r" (cmdline_arg)
+-	     : "p" (sme_cmdline_arg));
+-	asm ("lea sme_cmdline_on(%%rip), %0"
+-	     : "=r" (cmdline_on)
+-	     : "p" (sme_cmdline_on));
+-	asm ("lea sme_cmdline_off(%%rip), %0"
+-	     : "=r" (cmdline_off)
+-	     : "p" (sme_cmdline_off));
++	asm ("lea %a1, %0" : "=r" (cmdline_arg) : "i" (sme_cmdline_arg));
++	asm ("lea %a1, %0" : "=r" (cmdline_on) : "i" (sme_cmdline_on));
++	asm ("lea %a1, %0" : "=r" (cmdline_off) : "i" (sme_cmdline_off));
+ 
+ 	if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT))
+ 		active_by_default = true;
+-- 
+2.41.0
 
