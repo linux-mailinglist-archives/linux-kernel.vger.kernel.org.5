@@ -2,68 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E4E7F0E88
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578F57F0E89
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbjKTJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
+        id S232345AbjKTJHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232458AbjKTJHL (ORCPT
+        with ESMTP id S232363AbjKTJHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:07:11 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 98450D7C;
-        Mon, 20 Nov 2023 01:07:04 -0800 (PST)
-Received: from loongson.cn (unknown [112.20.112.120])
-        by gateway (Coremail) with SMTP id _____8Dxg_C2IVtlwSw7AA--.51614S3;
-        Mon, 20 Nov 2023 17:07:02 +0800 (CST)
-Received: from localhost.localdomain (unknown [112.20.112.120])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxzt6wIVtl0WRHAA--.27816S4;
-        Mon, 20 Nov 2023 17:07:00 +0800 (CST)
-From:   Binbin Zhou <zhoubinbin@loongson.cn>
-To:     Binbin Zhou <zhoubb.aaron@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
-        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v5 5/5] MIPS: Loongson64: DTS: Fix 'loongson,parent_int_map' references
-Date:   Mon, 20 Nov 2023 17:06:49 +0800
-Message-Id: <12036a9dab5b4d421fb9c74e1ef2c3cb2f26c641.1700449792.git.zhoubinbin@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <cover.1700449792.git.zhoubinbin@loongson.cn>
-References: <cover.1700449792.git.zhoubinbin@loongson.cn>
+        Mon, 20 Nov 2023 04:07:45 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84901E8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:07:38 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B718A218EB;
+        Mon, 20 Nov 2023 09:07:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700471256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OZ5xobs+oWlJvjWTqGJtqqXxdRkAWK1r+j6FWVRjRzM=;
+        b=xFm7xeNsvsiUTbNxqskfyNHSO2nCd4YqvLPvSreFouk5DSl8RkXsJH2DVnt1/hxfoqXeLr
+        OVGrtP9MtNbtj2f/3Wy5YI6NWIdvLzhEoe8ho8FpI5R8GuM3v8UEK7q4XRQUdv3ljbw/4u
+        C/SYL0a9iZkhBuxdCXZPgLTtQY/8kgU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700471256;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OZ5xobs+oWlJvjWTqGJtqqXxdRkAWK1r+j6FWVRjRzM=;
+        b=cg5URDEZvlQsUv12kHkPVIfpa6xLuBW+JRX9f257tS9EHzVYs5cSCJwjPZZ8gLh0dVzvFr
+        e/41cKevu566tgAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 88833134AD;
+        Mon, 20 Nov 2023 09:07:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4FK4INghW2UnZAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 09:07:36 +0000
+Message-ID: <40e26ded-a8c2-0e24-6fb0-d96053ae1c32@suse.cz>
+Date:   Mon, 20 Nov 2023 10:07:36 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cxzt6wIVtl0WRHAA--.27816S4
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZr13XF4kWw1UGw45AryUtwc_yoW5tw47pw
-        43A3W8Gw4xKr17A398G34UJr1fZFZ0yFZrWF4xGFW8A39aga4UXr1fJF1rtrs3Gry5Xa42
-        9r1vgrW7KFy8CabCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBmb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6x
-        kI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-        6rWY6Fy7McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48Icx
-        kI7VAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-        c4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26F1j6w1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxfHUUUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 0/4] page_owner: print stacks and their counter
+Content-Language: en-US
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@suse.com>,
+        Waiman Long <longman@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexander Potapenko <glider@google.com>
+References: <20231120084300.4368-1-osalvador@suse.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231120084300.4368-1-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.92
+X-Spamd-Result: default: False [-4.92 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         BAYES_HAM(-0.32)[75.71%];
+         NEURAL_HAM_LONG(-0.29)[-0.294];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,redhat.com,google.com,gmail.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,81 +106,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 'loongson,parent_int_map' has been dropped, replace all
-relevant references in the MIPS loongson dts{i} with
-'loongson,parent-int-map'.
+On 11/20/23 09:42, Oscar Salvador wrote:
+> Changes v5 -> v6:
+>      - Rebase on top of v6.7-rc1
 
-Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi       | 4 ++--
- arch/mips/boot/dts/loongson/loongson64c-package.dtsi     | 2 +-
- arch/mips/boot/dts/loongson/loongson64g-package.dtsi     | 2 +-
- arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Hi,
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index f878f47e4501..36f499a3772e 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -71,7 +71,7 @@ liointc0: interrupt-controller@1fe11400 {
- 			interrupts = <2>;
- 			interrupt-names = "int0";
- 
--			loongson,parent_int_map = <0xffffffff>, /* int0 */
-+			loongson,parent-int-map = <0xffffffff>, /* int0 */
- 						<0x00000000>, /* int1 */
- 						<0x00000000>, /* int2 */
- 						<0x00000000>; /* int3 */
-@@ -91,7 +91,7 @@ liointc1: interrupt-controller@1fe11440 {
- 			interrupts = <3>;
- 			interrupt-names = "int1";
- 
--			loongson,parent_int_map = <0x00000000>, /* int0 */
-+			loongson,parent-int-map = <0x00000000>, /* int0 */
- 						<0xffffffff>, /* int1 */
- 						<0x00000000>, /* int2 */
- 						<0x00000000>; /* int3 */
-diff --git a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-index 5bb876a4de52..38de0108e804 100644
---- a/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64c-package.dtsi
-@@ -35,7 +35,7 @@ liointc: interrupt-controller@3ff01400 {
- 			interrupts = <2>, <3>;
- 			interrupt-names = "int0", "int1";
- 
--			loongson,parent_int_map = <0xf0ffffff>, /* int0 */
-+			loongson,parent-int-map = <0xf0ffffff>, /* int0 */
- 						<0x0f000000>, /* int1 */
- 						<0x00000000>, /* int2 */
- 						<0x00000000>; /* int3 */
-diff --git a/arch/mips/boot/dts/loongson/loongson64g-package.dtsi b/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-index d4314f62ccc2..8972adcb83d6 100644
---- a/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-@@ -32,7 +32,7 @@ liointc: interrupt-controller@3ff01400 {
- 			interrupts = <2>, <3>;
- 			interrupt-names = "int0", "int1";
- 
--			loongson,parent_int_map = <0x00ffffff>, /* int0 */
-+			loongson,parent-int-map = <0x00ffffff>, /* int0 */
- 						<0xff000000>, /* int1 */
- 						<0x00000000>, /* int2 */
- 						<0x00000000>; /* int3 */
-diff --git a/arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts b/arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts
-index d0588d81e0c2..88642fee1bbd 100644
---- a/arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts
-+++ b/arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts
-@@ -34,7 +34,7 @@ liointc: interrupt-controller@3ff01400 {
- 			interrupts = <2>, <3>;
- 			interrupt-names = "int0", "int1";
- 
--			loongson,parent_int_map = <0x00000001>, /* int0 */
-+			loongson,parent-int-map = <0x00000001>, /* int0 */
- 						<0xfffffffe>, /* int1 */
- 						<0x00000000>, /* int2 */
- 						<0x00000000>; /* int3 */
--- 
-2.39.3
+I think at this point it would be better to rebase on top of
+https://lore.kernel.org/all/cover.1698077459.git.andreyknvl@google.com/
+which already contains the refcount field in stack_record.
+(and maybe help with the review of that series as well? Hopefully it can get
+to mm/unstable and -next towards 6.8 soon :)
 
+Vlastimil
