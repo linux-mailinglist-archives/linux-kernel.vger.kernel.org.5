@@ -2,161 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F43D7F0CF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3877F0CFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjKTHnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 02:43:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
+        id S232040AbjKTHqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 02:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKTHnU (ORCPT
+        with ESMTP id S232018AbjKTHqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 02:43:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453D0B4
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 23:43:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700466196; x=1732002196;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=0gKrCgxzW1iq86CT66UPkiumLl7mJKDuQElfDmpu7Y4=;
-  b=X7FyrYKZemPnNqN/hYgouiNml0LKckUSyzBr7QgRWe0IC4rJTXmLnu7J
-   tlKXVPeULj0AuYbsSU2mm7ilp9pg4cuPRJ4UvhdlOizxnoR34IUsUQdc2
-   t5MS0Ac45absPNjh8ERHzmGM9GcEo5Rq0Og4y6tgsvCjil6EdwgasAupu
-   tmgnFZrfaPJdSwupeljICI560RqJvmymWbSGCmfaZfPfnVmcWyHX70Ljw
-   42/QfNLOBcdsDmn49h+XoROcBYR+Q/RvQaq8YjCxpHTLiDIASUhOgM6tM
-   aUPcL0cgRg1V1mUjUfVzQVipr5cmKcUPj07n9COZcfmP1Wrt1onC7adgW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="370913079"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="370913079"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 23:43:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="910020268"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="910020268"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 23:43:13 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Kairui Song <ryncsn@gmail.com>
-Cc:     linux-mm@kvack.org, Kairui Song <kasong@tencent.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/24] mm/swap: inline __swap_count
-In-Reply-To: <20231119194740.94101-10-ryncsn@gmail.com> (Kairui Song's message
-        of "Mon, 20 Nov 2023 03:47:25 +0800")
-References: <20231119194740.94101-1-ryncsn@gmail.com>
-        <20231119194740.94101-10-ryncsn@gmail.com>
-Date:   Mon, 20 Nov 2023 15:41:12 +0800
-Message-ID: <87il5wc1nr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Mon, 20 Nov 2023 02:46:18 -0500
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FB8B5;
+        Sun, 19 Nov 2023 23:46:13 -0800 (PST)
+Received: from [192.168.0.183] (ip5f5af683.dynamic.kabel-deutschland.de [95.90.246.131])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 0F43B61E5FE01;
+        Mon, 20 Nov 2023 08:45:10 +0100 (CET)
+Message-ID: <06e1b728-64f8-400b-8a2d-212d67992227@molgen.mpg.de>
+Date:   Mon, 20 Nov 2023 08:45:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] linux-firmware: update firmware for mediatek bluetooth
+ chip (MT7921)
+To:     Chris Lu <chris.lu@mediatek.com>
+Cc:     Josh Boyer <jwboyer@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Deren Wu <deren.Wu@mediatek.com>,
+        Aaron Hou <aaron.hou@mediatek.com>,
+        KM Lin <km.lin@mediatek.com>,
+        Robin Chiu <robin.chiu@mediatek.com>,
+        Steve Lee <steve.lee@mediatek.com>,
+        linux-bluetooth@vger.kernel.org, linux-firmware@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20231116081430.28211-1-chris.lu@mediatek.com>
+Content-Language: en-US
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20231116081430.28211-1-chris.lu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kairui Song <ryncsn@gmail.com> writes:
+Dear Chris,
 
-> From: Kairui Song <kasong@tencent.com>
->
-> There is only one caller in swap subsystem now, where it can be inline
-> smoothly, avoid the memory access and function call overheads.
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+
+Thank you for the patch.
+
+Am 16.11.23 um 09:14 schrieb Chris Lu:
+> Update binary firmware for MT7921 BT devices.
+> 
+> File: mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
+> Version: 20231109191416
+
+It’d be great if you added the version in the git commit message 
+summary/title too. The `linux-firmware` prefix is probably redundant. No 
+idea if a tag exists for it. So, maybe:
+
+mediatek: Update BT MT7921 fw from 20230526131214 to 20231109191416
+
+or
+
+Update Mediatek BT MT7921 fw to 20231109191416
+
+
+Also, it would be great if you added the change-log to the commit 
+message, so people have an idea, what improved.
+
+> Signed-off-by: Chris Lu <chris.lu@mediatek.com>
 > ---
->  include/linux/swap.h | 6 ------
->  mm/swap_state.c      | 6 +++---
->  mm/swapfile.c        | 8 --------
->  3 files changed, 3 insertions(+), 17 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 2401990d954d..64a37819a9b3 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -485,7 +485,6 @@ int swap_type_of(dev_t device, sector_t offset);
->  int find_first_swap(dev_t *device);
->  extern unsigned int count_swap_pages(int, int);
->  extern sector_t swapdev_block(int, pgoff_t);
-> -extern int __swap_count(swp_entry_t entry);
->  extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t entry);
->  extern int swp_swapcount(swp_entry_t entry);
->  extern struct swap_info_struct *page_swap_info(struct page *);
-> @@ -559,11 +558,6 @@ static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
->  {
->  }
->  
-> -static inline int __swap_count(swp_entry_t entry)
-> -{
-> -	return 0;
-> -}
-> -
->  static inline int swap_swapcount(struct swap_info_struct *si, swp_entry_t entry)
->  {
->  	return 0;
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index fb78f7f18ed7..d87c20f9f7ec 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -316,9 +316,9 @@ void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
->  	release_pages(pages, nr);
->  }
->  
-> -static inline bool swap_use_no_readahead(struct swap_info_struct *si, swp_entry_t entry)
-> +static inline bool swap_use_no_readahead(struct swap_info_struct *si, pgoff_t offset)
->  {
-> -	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(entry) == 1;
-> +	return data_race(si->flags & SWP_SYNCHRONOUS_IO) && swap_count(si->swap_map[offset]) == 1;
->  }
->  
->  static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
-> @@ -928,7 +928,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
->  
->  	si = swp_swap_info(entry);
->  	mpol = get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
-> -	if (swap_use_no_readahead(si, entry)) {
-> +	if (swap_use_no_readahead(si, swp_offset(entry))) {
->  		page = swapin_no_readahead(entry, gfp_mask, mpol, ilx, vmf->vma->vm_mm);
->  		cached = false;
->  	} else if (swap_use_vma_readahead(si)) {
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index a8ae472ed2b6..e15a6c464a38 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1431,14 +1431,6 @@ void swapcache_free_entries(swp_entry_t *entries, int n)
->  		spin_unlock(&p->lock);
->  }
->  
-> -int __swap_count(swp_entry_t entry)
-> -{
-> -	struct swap_info_struct *si = swp_swap_info(entry);
-> -	pgoff_t offset = swp_offset(entry);
-> -
-> -	return swap_count(si->swap_map[offset]);
-> -}
-> -
+>   WHENCE                                  |   2 +-
+>   mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin | Bin 532846 -> 532206 bytes
+>   2 files changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/WHENCE b/WHENCE
+> index 571308be..eb6b21e9 100644
+> --- a/WHENCE
+> +++ b/WHENCE
+> @@ -5526,7 +5526,7 @@ Licence: Redistributable. See LICENCE.mediatek for details.
+>   Driver: mt7921 - MediaTek MT7921 bluetooth chipset
+>   
+>   File: mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
+> -Version: 20230526131214
+> +Version: 20231109191416
+>   
+>   Licence: Redistributable. See LICENCE.mediatek for details.
+>   
+> diff --git a/mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin b/mediatek/BT_RAM_CODE_MT7961_1_2_hdr.bin
+> index 4b637d5156f2893ebed13d55e58c1e30e9eb1195..c7a96755b122ef7aa601eb40fbd7abb9ca85a545 100644
+> GIT binary patch
+> literal 532206
 
-I'd rather keep __swap_count() in the original place together with other
-swap count related functions.  And si->swap_map[] was hided in
-swapfile.c before.  I don't think the change will have any real
-performance improvement.
+[…]
 
->  /*
->   * How many references to @entry are currently swapped out?
->   * This does not give an exact answer when swap count is continued,
 
---
-Best Regards,
-Huang, Ying
+Kind regards,
+
+Paul
