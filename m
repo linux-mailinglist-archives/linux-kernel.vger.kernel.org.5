@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2027F1623
+	by mail.lfdr.de (Postfix) with ESMTP id 471647F1622
 	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbjKTOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        id S234064AbjKTOrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbjKTOrG (ORCPT
+        with ESMTP id S233795AbjKTOrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:47:06 -0500
+        Mon, 20 Nov 2023 09:47:07 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8108CD5C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6E2D58;
         Mon, 20 Nov 2023 06:46:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1700491618; x=1732027618;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=8rCle8cWkE3/d7d+mu+uOd9fDb+OZ2qXOelghp6Npg8=;
-  b=LgEc+I8njd85ZahsD+YPLGoMyfHZWeZEVstGHJmNF00dWFU/OPpYZtas
-   4cJUHXkTOaJNF7k/pJb6/cAskvKv3OXY6/ke60bn451gDYwWZhkKM2yzB
-   +Lae21TmwOOnV4GYvsG6I4JmNNqV6pondGlP2VyGOr9J08IZh+QRBCItn
-   FKsMEa3ack8o0b7A5sOYpne2rsDPRjTqKJMu+2B8UHvxDYkB+uxV30ZCo
-   QNgcLOE2oinPl7D0iV/8sFs2WqgdVO2HlIKJqwZILT0108EykWjA2R2sd
-   9tbRJ0Th1Q/Rt5LvMHwDYDS8GUXzB4tO30vrTiB3ivD8tpnF5XQwhWmNE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382017084"
+  bh=OFonFVDQoahtw8qY4zQOdjieniDowfyGSiS8sMAPXkM=;
+  b=ebtP7/uez8l2fBMqHKgyczkv459uVKvSDfi19aEz+vvB2XCRpSOPbwzA
+   0QLNjkocEDvyLxu3gFBD8I+aQvpllpAW+cFpho1t/JMBUnG2bgPwJY/d6
+   zj4Irgm7jvRWsciWXLSiSYtmAzmvP0NpuiU05izDN+V9iLdmALBI+8Wmw
+   K3k1EvBCXoLYB8rS/RRJSAW8YlfN+wdnWkszwVr+wAVqh6JG56aXHDjFn
+   DPyjdNX6dPxkEK8c9XYX+bIia7XJgz4wb9mutR23rXbH2qNIJkR7DUPBZ
+   zVUvsqS4aWHF0CdYcrPDBLY6p4W2slflIrG7xZ9kG1ZFDWxRK5tBrS1GA
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382017076"
 X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="382017084"
+   d="scan'208";a="382017076"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 06:46:57 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832291656"
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832291655"
 X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="832291656"
+   d="scan'208";a="832291655"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga008.fm.intel.com with ESMTP; 20 Nov 2023 06:46:54 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 31DB16C8; Mon, 20 Nov 2023 16:46:45 +0200 (EET)
+        id 3D4A464E; Mon, 20 Nov 2023 16:46:45 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Mario Limonciello <mario.limonciello@amd.com>,
         Jarkko Nikula <jarkko.nikula@linux.intel.com>,
@@ -52,9 +52,9 @@ Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Jan Dabros <jsd@semihalf.com>,
         Andi Shyti <andi.shyti@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v4 21/24] i2c: designware: Use pci_get_drvdata()
-Date:   Mon, 20 Nov 2023 16:42:03 +0200
-Message-ID: <20231120144641.1660574-22-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 22/24] i2c: designware: Use temporary variable for struct device
+Date:   Mon, 20 Nov 2023 16:42:04 +0200
+Message-ID: <20231120144641.1660574-23-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
 References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
@@ -70,37 +70,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the wrapper function for getting the driver data using pci_dev
-instead of using dev_get_drvdata() with &pdev->dev, so we can directly
-pass a struct pci_dev. This is a purely cosmetic change.
+Use temporary variable for struct device to make code neater.
 
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/i2c/busses/i2c-designware-pcidrv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-designware-pcidrv.c  | 24 +++++++-------
+ drivers/i2c/busses/i2c-designware-platdrv.c | 35 ++++++++++-----------
+ 2 files changed, 27 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-index 2c7bc7dc8e44..211d8279b05e 100644
+index 211d8279b05e..1408fd22d398 100644
 --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
 +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-@@ -102,7 +102,7 @@ static u32 mfld_get_clk_rate_khz(struct dw_i2c_dev *dev)
- 
- static int mfld_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+@@ -207,6 +207,7 @@ static const struct software_node dgpu_node = {
+ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+ 			    const struct pci_device_id *id)
  {
--	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
-+	struct dw_i2c_dev *dev = pci_get_drvdata(pdev);
++	struct device *device = &pdev->dev;
+ 	struct dw_i2c_dev *dev;
+ 	struct i2c_adapter *adap;
+ 	int r;
+@@ -214,25 +215,22 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+ 	struct dw_scl_sda_cfg *cfg;
  
- 	switch (pdev->device) {
- 	case 0x0817:
-@@ -152,7 +152,7 @@ static u32 navi_amd_get_clk_rate_khz(struct dw_i2c_dev *dev)
+ 	if (id->driver_data >= ARRAY_SIZE(dw_pci_controllers))
+-		return dev_err_probe(&pdev->dev, -EINVAL,
+-				     "Invalid driver data %ld\n",
++		return dev_err_probe(device, -EINVAL, "Invalid driver data %ld\n",
+ 				     id->driver_data);
  
- static int navi_amd_setup(struct pci_dev *pdev, struct dw_pci_controller *c)
+ 	controller = &dw_pci_controllers[id->driver_data];
+ 
+ 	r = pcim_enable_device(pdev);
+ 	if (r)
+-		return dev_err_probe(&pdev->dev, r,
+-				     "Failed to enable I2C PCI device\n");
++		return dev_err_probe(device, r, "Failed to enable I2C PCI device\n");
+ 
+ 	pci_set_master(pdev);
+ 
+ 	r = pcim_iomap_regions(pdev, 1 << 0, pci_name(pdev));
+ 	if (r)
+-		return dev_err_probe(&pdev->dev, r,
+-				     "I/O memory remapping failed\n");
++		return dev_err_probe(device, r, "I/O memory remapping failed\n");
+ 
+-	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
++	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+@@ -242,7 +240,7 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+ 
+ 	dev->get_clk_rate_khz = controller->get_clk_rate_khz;
+ 	dev->base = pcim_iomap_table(pdev)[0];
+-	dev->dev = &pdev->dev;
++	dev->dev = device;
+ 	dev->irq = pci_irq_vector(pdev, 0);
+ 	dev->flags |= controller->flags;
+ 
+@@ -281,14 +279,14 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+ 	if ((dev->flags & MODEL_MASK) == MODEL_AMD_NAVI_GPU) {
+ 		dev->slave = i2c_new_ccgx_ucsi(&dev->adapter, dev->irq, &dgpu_node);
+ 		if (IS_ERR(dev->slave))
+-			return dev_err_probe(dev->dev, PTR_ERR(dev->slave),
++			return dev_err_probe(device, PTR_ERR(dev->slave),
+ 					     "register UCSI failed\n");
+ 	}
+ 
+-	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_put_autosuspend(&pdev->dev);
+-	pm_runtime_allow(&pdev->dev);
++	pm_runtime_set_autosuspend_delay(device, 1000);
++	pm_runtime_use_autosuspend(device);
++	pm_runtime_put_autosuspend(device);
++	pm_runtime_allow(device);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+index 1b76f721bf81..02dc1d1001f2 100644
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -237,6 +237,7 @@ static int dw_i2c_plat_get_reset(struct dw_i2c_dev *dev)
+ 
+ static int dw_i2c_plat_probe(struct platform_device *pdev)
  {
--	struct dw_i2c_dev *dev = dev_get_drvdata(&pdev->dev);
-+	struct dw_i2c_dev *dev = pci_get_drvdata(pdev);
++	struct device *device = &pdev->dev;
+ 	struct i2c_adapter *adap;
+ 	struct dw_i2c_dev *dev;
+ 	int irq, ret;
+@@ -245,15 +246,15 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return irq;
  
- 	dev->flags |= MODEL_AMD_NAVI_GPU;
- 	dev->timings.bus_freq_hz = I2C_MAX_STANDARD_MODE_FREQ;
+-	dev = devm_kzalloc(&pdev->dev, sizeof(struct dw_i2c_dev), GFP_KERNEL);
++	dev = devm_kzalloc(device, sizeof(*dev), GFP_KERNEL);
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	dev->flags = (uintptr_t)device_get_match_data(&pdev->dev);
+-	if (device_property_present(&pdev->dev, "wx,i2c-snps-model"))
++	dev->flags = (uintptr_t)device_get_match_data(device);
++	if (device_property_present(device, "wx,i2c-snps-model"))
+ 		dev->flags = MODEL_WANGXUN_SP;
+ 
+-	dev->dev = &pdev->dev;
++	dev->dev = device;
+ 	dev->irq = irq;
+ 	platform_set_drvdata(pdev, dev);
+ 
+@@ -276,11 +277,11 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ 	i2c_dw_configure(dev);
+ 
+ 	/* Optional interface clock */
+-	dev->pclk = devm_clk_get_optional(&pdev->dev, "pclk");
++	dev->pclk = devm_clk_get_optional(device, "pclk");
+ 	if (IS_ERR(dev->pclk))
+ 		return PTR_ERR(dev->pclk);
+ 
+-	dev->clk = devm_clk_get_optional(&pdev->dev, NULL);
++	dev->clk = devm_clk_get_optional(device, NULL);
+ 	if (IS_ERR(dev->clk))
+ 		return PTR_ERR(dev->clk);
+ 
+@@ -306,23 +307,19 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
+ 					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
+ 	adap->nr = -1;
+ 
+-	if (dev->flags & ACCESS_NO_IRQ_SUSPEND) {
+-		dev_pm_set_driver_flags(&pdev->dev,
+-					DPM_FLAG_SMART_PREPARE);
+-	} else {
+-		dev_pm_set_driver_flags(&pdev->dev,
+-					DPM_FLAG_SMART_PREPARE |
+-					DPM_FLAG_SMART_SUSPEND);
+-	}
++	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
++		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE);
++	else
++		dev_pm_set_driver_flags(device, DPM_FLAG_SMART_PREPARE | DPM_FLAG_SMART_SUSPEND);
+ 
+-	device_enable_async_suspend(&pdev->dev);
++	device_enable_async_suspend(device);
+ 
+ 	/* The code below assumes runtime PM to be disabled. */
+-	WARN_ON(pm_runtime_enabled(&pdev->dev));
++	WARN_ON(pm_runtime_enabled(device));
+ 
+-	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_set_autosuspend_delay(device, 1000);
++	pm_runtime_use_autosuspend(device);
++	pm_runtime_set_active(device);
+ 
+ 	ret = dw_i2c_plat_pm_setup(dev);
+ 	if (ret)
 -- 
 2.43.0.rc1.1.gbec44491f096
 
