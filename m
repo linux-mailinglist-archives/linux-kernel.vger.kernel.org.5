@@ -2,53 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9487F0A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D364B7F0A97
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231784AbjKTCkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 21:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
+        id S231790AbjKTClk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 21:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjKTCkJ (ORCPT
+        with ESMTP id S231676AbjKTCli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 21:40:09 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48204115;
-        Sun, 19 Nov 2023 18:40:04 -0800 (PST)
-X-UUID: 39d7d5fb5edc46168faf7ff080bd8aac-20231120
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:8135b8e8-d3b6-4fe3-9943-462edf7b4002,IP:5,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-15
-X-CID-INFO: VERSION:1.1.32,REQID:8135b8e8-d3b6-4fe3-9943-462edf7b4002,IP:5,URL
-        :0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:9ccfd572-1bd3-4f48-b671-ada88705968c,B
-        ulkID:231120103957OR2B7NMK,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
-X-UUID: 39d7d5fb5edc46168faf7ff080bd8aac-20231120
-X-User: zhouzongmin@kylinos.cn
-Received: from thinkpadx13gen2i.. [(116.128.244.169)] by mailgw
-        (envelope-from <zhouzongmin@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1341798825; Mon, 20 Nov 2023 10:39:54 +0800
-From:   Zongmin Zhou <zhouzongmin@kylinos.cn>
-To:     linkinjeon@kernel.org, sfrench@samba.org
-Cc:     senozhatsky@chromium.org, tom@talpey.com,
-        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zongmin Zhou <zhouzongmin@kylinos.cn>
-Subject: [PATCH] ksmbd: initialize ar to NULL
-Date:   Mon, 20 Nov 2023 10:39:50 +0800
-Message-Id: <20231120023950.667246-1-zhouzongmin@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Sun, 19 Nov 2023 21:41:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88068115
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:41:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AFE6C433C8;
+        Mon, 20 Nov 2023 02:41:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700448094;
+        bh=UiWuaKeTiSFKQxVccuysbinvCkmLWJ1QXqtmU4c9M9o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/0Z/1/jlmTimJm9937305yEJETPIoA66Qdh+9bcGh4iO1jC7uwn5sAd36iHbSjfF
+         y5073eOz1lEnL5m3wFSz+1ILlybe2uy2Rr7g2ANq8FuQVZjZySqzgVBrnuTj55kuec
+         W/BBC+TgPpbkDkulF6xyej5O57aBSgYOqfSM8dL4QcR5dWPS3Ol+IfXsSKi2L3qPC8
+         slYmHD0Q0xTpui580WF/xxTH3hnDRteip0YpBaJ4l9c/EObCSkSXsUcMtvI4iMgYcO
+         rQEGHHyGoNic200lCdcB8PDVuKrs2sR1Ccje+ypBCoXPRrypbL+y3FwSgKbK9M5gr3
+         Wvs4axuOecFJw==
+Date:   Sun, 19 Nov 2023 18:41:32 -0800
+From:   Chris Li <chrisl@kernel.org>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, tj@kernel.org,
+        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Hugh Dickins <hughd@google.com>, corbet@lwn.net,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
+        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Subject: Re: [PATCH v5] zswap: memcontrol: implement zswap writeback disabling
+Message-ID: <ZVrHXJLxvs4_CUxc@google.com>
+References: <20231115172344.4155593-1-nphamcs@gmail.com>
+ <CAF8kJuN-4UE0skVHvjUzpGefavkLULMonjgkXUZSBVJrcGFXCA@mail.gmail.com>
+ <CAJD7tkZ1U+YuvoBAnrXFxQDiQV2hXdbMG-gbzu64R8GLAtNAPA@mail.gmail.com>
+ <CAF8kJuPTNwQM413UdeQTkMQ8HkJFyF4OWVrxJSf7uWbege0CXQ@mail.gmail.com>
+ <CAKEwX=O5M-vZE5YhYQ5_CbCmXovS1XECO4ROXKWo06K880M1Mg@mail.gmail.com>
+ <CAF8kJuOD6zq2VPcVdoZGvkzYX8iXn1akuYhNDJx-LUdS+Sx3GA@mail.gmail.com>
+ <CAKEwX=NdFjemcmf27PVpgHpVHWQEo19KfApepWJBRYeyVCWvCw@mail.gmail.com>
+ <CAF8kJuOCyd5r0LQ3m8fQp0GtxxNUKSmwURJH6V9aApefvX8xCA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+In-Reply-To: <CAF8kJuOCyd5r0LQ3m8fQp0GtxxNUKSmwURJH6V9aApefvX8xCA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,29 +72,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize ar to NULL to avoid the case of aux_size will be false,
-and kfree(ar) without ar been initialized will be unsafe.
-But kfree(NULL) is safe.
+Hi Nhat,
 
-Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
----
- fs/smb/server/ksmbd_work.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Nov 19, 2023 at 01:50:17PM -0800, Chris Li wrote:
+> On Sun, Nov 19, 2023 at 11:08 AM Nhat Pham <nphamcs@gmail.com> wrote:
+> > I don't have any major argument against this. It just seems a bit
+> > heavyweight for what we need at the moment (only disabling
+> > swap-to-disk usage).
+> 
+> The first milestone we just implement the reserved keywords without
+> the custom swap tier list.
+> That should be very similar to "zswap.writeback". Instead of writing 0
+> to "zswap.writeback".
+> You write "zswap" to "swap.tiers". Writing "none" will disable all
+> swap. Writing "all" will allow all swap devices.
+> I consider this conceptually cleaner than the "zswap.writeback" == 0
+> will also disable other swap types behavior. "disabled zswap writeback
+> == disable all swap" feels less natural.
 
-diff --git a/fs/smb/server/ksmbd_work.c b/fs/smb/server/ksmbd_work.c
-index 44bce4c56daf..2510b9f3c8c1 100644
---- a/fs/smb/server/ksmbd_work.c
-+++ b/fs/smb/server/ksmbd_work.c
-@@ -106,7 +106,7 @@ static inline void __ksmbd_iov_pin(struct ksmbd_work *work, void *ib,
- static int __ksmbd_iov_pin_rsp(struct ksmbd_work *work, void *ib, int len,
- 			       void *aux_buf, unsigned int aux_size)
- {
--	struct aux_read *ar;
-+	struct aux_read *ar = NULL;
- 	int need_iov_cnt = 1;
+I implement a minimal version of the "swap.tiers" to replace the "zswap.writeback".
+It only implements the ABI level. Under the hook it is using the writeback bool.
+
+This patch builds on top of your V5 patch.
+
+implement memory.swap.tiers on top of memory.zswap.writeback.
+
+"memory.swap.tiers" supports two key words for now:
+all: all swap swap tiers are considered. (previously zswap.writback == 1)
+zswap: only zswap tier are considered. (previously zswap.writeback == 0)
+
+Index: linux/mm/memcontrol.c
+===================================================================
+--- linux.orig/mm/memcontrol.c
++++ linux/mm/memcontrol.c
+@@ -7992,6 +7992,32 @@ static int swap_events_show(struct seq_f
+ 	return 0;
+ }
  
- 	if (aux_size) {
--- 
-2.34.1
-
++static int swap_tiers_show(struct seq_file *m, void *v)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++
++	seq_printf(m, "%s\n", READ_ONCE(memcg->zswap_writeback) ? "all" : "zswap");
++	return 0;
++}
++
++static ssize_t swap_tiers_write(struct kernfs_open_file *of,
++				char *buf, size_t nbytes, loff_t off)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++	int zswap_writeback;
++
++	buf = strstrip(buf);
++	if (!strcmp(buf, "all"))
++		zswap_writeback = 1;
++	else if (!strcmp(buf, "zswap"))
++		zswap_writeback = 0;
++	else
++		return -EINVAL;
++
++	WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
++	return nbytes;
++}
++
+ static struct cftype swap_files[] = {
+ 	{
+ 		.name = "swap.current",
+@@ -8021,6 +8047,12 @@ static struct cftype swap_files[] = {
+ 		.file_offset = offsetof(struct mem_cgroup, swap_events_file),
+ 		.seq_show = swap_events_show,
+ 	},
++	{
++		.name = "swap.tiers",
++		.seq_show = swap_tiers_show,
++		.write = swap_tiers_write,
++	},
++
+ 	{ }	/* terminate */
+ };
+ 
+@@ -8183,31 +8215,6 @@ static ssize_t zswap_max_write(struct ke
+ 	return nbytes;
+ }
+ 
+-static int zswap_writeback_show(struct seq_file *m, void *v)
+-{
+-	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+-
+-	seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
+-	return 0;
+-}
+-
+-static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
+-				char *buf, size_t nbytes, loff_t off)
+-{
+-	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+-	int zswap_writeback;
+-	ssize_t parse_ret = kstrtoint(strstrip(buf), 0, &zswap_writeback);
+-
+-	if (parse_ret)
+-		return parse_ret;
+-
+-	if (zswap_writeback != 0 && zswap_writeback != 1)
+-		return -EINVAL;
+-
+-	WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
+-	return nbytes;
+-}
+-
+ static struct cftype zswap_files[] = {
+ 	{
+ 		.name = "zswap.current",
+@@ -8220,11 +8227,6 @@ static struct cftype zswap_files[] = {
+ 		.seq_show = zswap_max_show,
+ 		.write = zswap_max_write,
+ 	},
+-	{
+-		.name = "zswap.writeback",
+-		.seq_show = zswap_writeback_show,
+-		.write = zswap_writeback_write,
+-	},
+ 	{ }	/* terminate */
+ };
+ #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
