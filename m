@@ -2,138 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C18667F182D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A587F182A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbjKTQJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S233099AbjKTQIk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 11:08:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjKTQJK (ORCPT
+        with ESMTP id S229696AbjKTQIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:09:10 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE55100
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:09:07 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6d31f3e8ca8so2783587a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:09:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700496546; x=1701101346; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M2oEbSauGOHvjZGkANky2osMy3LrJnK1DvMlgtxNIqU=;
-        b=NX/hYXuCNZMf/W5WUP37PvNmf8zRmqkKYOwcqLnRsQRnC9fTsfjLIpmWu4v6iiQyqQ
-         yeNbLQ8M65l6o/WTVY+ydd008IqaFTIL4lJnAUb/4xbNixO0UOZ5ps52WT50ejLYRe9Y
-         vGH3eHrzV0FwgGKzRE4xipT1oBGkIHYjmBk7Rt60f2NmhrAlJxLTilWLHO0xt3zB8YRp
-         Y2GLeXpXZ0wPO6o/vnoIsahPnlZulGZQaDyi8D6gs8tRmskXLqdMm8P7e/LEuAPSwJYk
-         SY8bButSZ1MJFS1KcPFTiF5oS4FVcPYXiLhRhgPwA3rySQoqZ48sMcuaKWs8idP8YUAD
-         ZbVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700496546; x=1701101346;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M2oEbSauGOHvjZGkANky2osMy3LrJnK1DvMlgtxNIqU=;
-        b=ODiz+v2oUJuxpD6oUhOoFjZb7b9cXmYRoj9elGYQkUYoJCpeGUsPw6oVKFE5cE1z5W
-         V5ILCuXz/cknR/YaH7apX0xpLL74Xmn+T1/nsvwCjd2zQZ6w282qWd/JUkF5JodtPqzP
-         +VSZHOuXCFugsY1BXK8SgNOK/JTNVcbz1zQjXFkRsNGvfJQGZSucHqtYZr7FBNIP5DWD
-         /Yf5MvyK3nvJBuS6uVusVLegVYw/IBsKwraIa7iEIJms4oNArn2iDZT25TQFiQEg8uS1
-         PN63nZA74XwBfzUGacV4vLRFov2m2bvXUjCnyOsCYGwvYuIVr0LLzpu5PdNJgF0EK3x8
-         jVyw==
-X-Gm-Message-State: AOJu0YywDkCh78Xz9juQl0GTCw+/uY1MCrzFhqwDw7piNq+iktEgiLHW
-        zWIV4qQrvopbkLTQ26wfskZYi95dhbeSdLhXSWePAQLO
-X-Google-Smtp-Source: AGHT+IEvbqXG00KL7aQO3Yc9jfLXnQj4XWLXSx/JaniG8N/Ocl9GUeaAS9Sx0btCzaUWmAP3MwcAMlhcoTbsFJ35TUM=
-X-Received: by 2002:a05:6870:7987:b0:1f9:34b3:7ae9 with SMTP id
- he7-20020a056870798700b001f934b37ae9mr4808940oab.17.1700496546587; Mon, 20
- Nov 2023 08:09:06 -0800 (PST)
+        Mon, 20 Nov 2023 11:08:39 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D16E7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:08:34 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-27-vLVux7jWOF6nLYmEF7DxSQ-1; Mon, 20 Nov 2023 16:08:31 +0000
+X-MC-Unique: vLVux7jWOF6nLYmEF7DxSQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 20 Nov
+ 2023 16:09:02 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 20 Nov 2023 16:09:02 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Howells' <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Borislav Petkov <bp@alien8.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "fengwei.yin@intel.com" <fengwei.yin@intel.com>
+Subject: RE: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+Thread-Topic: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+Thread-Index: AQHaG7YSFfqMOen5JUCwmbDFX2u0nbCDUWGA
+Date:   Mon, 20 Nov 2023 16:09:02 +0000
+Message-ID: <ade6cd8de43b492589125295c3bc88d5@AcuMS.aculab.com>
+References: <CAHk-=wiRQHD5xnB8H9Lwk9fJPDpfVNAwPS4KLnfrcrU3zbMAdQ@mail.gmail.com>
+ <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+ <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
+ <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
+ <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
+ <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
+ <232440.1700153046@warthog.procyon.org.uk>
+ <864270.1700230337@warthog.procyon.org.uk>
+ <20231117160940.GGZVeQRLgLjJZXBLE1@fat_crate.local>
+ <CAHk-=wj33FoGBQ7HkqjLbyOBQogWpYAG7WUTXatcfBF5duijjQ@mail.gmail.com>
+ <CAHk-=whLbJ7vvB1ACVC6t44zjihX8w7GMY2y584+Fm83rsmaKg@mail.gmail.com>
+ <20231117191243.GHZVe7K4vN9n5M92gb@fat_crate.local>
+ <2284219.1700487177@warthog.procyon.org.uk>
+In-Reply-To: <2284219.1700487177@warthog.procyon.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com> <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
-In-Reply-To: <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 20 Nov 2023 11:08:55 -0500
-Message-ID: <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
-Subject: Re: Radeon regression in 6.6 kernel
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        dri-devel@lists.freedesktop.org, Phillip Susi <phill@thesusis.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 10:57=E2=80=AFAM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> Am 19.11.23 um 07:47 schrieb Dave Airlie:
-> >> On 12.11.23 01:46, Phillip Susi wrote:
-> >>> I had been testing some things on a post 6.6-rc5 kernel for a week or
-> >>> two and then when I pulled to a post 6.6 release kernel, I found that
-> >>> system suspend was broken.  It seems that the radeon driver failed to
-> >>> suspend, leaving the display dead, the wayland display server hung, a=
-nd
-> >>> the system still running.  I have been trying to bisect it for the la=
-st
-> >>> few days and have only been able to narrow it down to the following 3
-> >>> commits:
-> >>>
-> >>> There are only 'skip'ped commits left to test.
-> >>> The first bad commit could be any of:
-> >>> 56e449603f0ac580700621a356d35d5716a62ce5
-> >>> c07bf1636f0005f9eb7956404490672286ea59d3
-> >>> b70438004a14f4d0f9890b3297cd66248728546c
-> >>> We cannot bisect more!
-> >> Hmm, not a single reply from the amdgpu folks. Wondering how we can
-> >> encourage them to look into this.
-> >>
-> >> Phillip, reporting issues by mail should still work, but you might hav=
-e
-> >> more luck here, as that's where the amdgpu afaics prefer to track bugs=
-:
-> >> https://gitlab.freedesktop.org/drm/amd/-/issues
-> >>
-> >> When you file an issue there, please mention it here.
-> >>
-> >> Furthermore it might help if you could verify if 6.7-rc1 (or rc2, whic=
-h
-> >> comes out later today) or 6.6.2-rc1 improve things.
-> > It would also be good to test if reverting any of these is possible or =
-not.
->
-> Well none of the commits mentioned can affect radeon in any way. Radeon
-> simply doesn't use the scheduler.
->
-> My suspicion is that the user is actually using amdgpu instead of
-> radeon. The switch potentially occurred accidentally, for example by
-> compiling amdgpu support for SI/CIK.
->
-> Those amdgpu problems for older ASIC have already been worked on and
-> should be fixed by now.
+From: David Howells 
+> Sent: 20 November 2023 13:33
+> 
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> 
+> > So I don't think we should use either of these benchmarks as a "we
+> > need to optimize for *this*", but it is another example of how much
+> > memcpy() does matter. Even if the end result is then "but different
+> > microarchitectrues react so differently that we can't please
+> > everybody".
+> 
+> So what, if anything, should I change?  Should I make it directly call
+> __memcpy?  Or should we just leave it to the compiler?  I would prefer to
+> leave memcpy_from_iter() and memcpy_to_iter() as __always_inline to eliminate
+> the function pointer call we otherwise end up with and to eliminate the return
+> value (which is always 0 in this case).
 
-In this case it's a navi23 (so radeon in the marketing sense).
+I'd have thought you'd just want to call memcpy() (or xxxx_memcpy())
+Anything that matters here is likely to make more difference elsewhere.
 
-Alex
+I wonder if the kernel ever uses the return value from memcpy().
+I suspect it only exists for very historic reasons.
 
->
-> Regards,
-> Christian.
->
-> >
-> > File the gitlab issue and we should poke amd a but more to take a look.
-> >
-> > Dave.
->
+The wrapper:
+#define memcpy(d, s, l) {( \
+	const void *dd = d; \
+	memcpy_void(dd, s, l); \
+	dd; \
+)}
+would save all the asm implementations from saving the result.
+
+I did some more measurements over the weekend.
+A quick summary - I've not quite finished (and need to find some
+more test systems - newer and amd).
+I'm now thinking that the 5k clocks is a TLB miss.
+In any case it is a feature of my test not the instruction.
+I'm also subtracting off a baseline that has 'nop; nop' not 'rep movsb'.
+
+I'm not entirely certain about the fractional clocks!
+I counting 10 operations and getting pretty consistent counts.
+I suspect they are end effects.
+
+These measurements are also for 4k aligned src and dest.
+
+An ivy bridge i7-3xxx seems to do:
+      0	41.4 clocks
+   1-64	31.5 clocks
+  65-128	44.3
+ 129-191	55.1
+     192	47.4
+ 193-255	58.8
+then an extra 3 clocks every 64 bytes.
+
+Whereas kaby lake i7-7xxx does:
+     0	51.5 clocks
+  1-64	22.9
+ 65-95	25.3
+    96	30.5
+ 97-127	34.1
+    128	31.5
+then an extra clock every 32 bytes (if dest aligned).
+
+Note that this system is somewhat slower if the destination
+is less than (iirc) 48 bytes before the source (mod 4k).
+There are several different slow speeds worst is about half
+the speed.
+
+I might be able to find a newer system with fsrm.
+
+I was going to measure orig_memcpy() and also see what I can write.
+Both those cpu can do a read and write every clock.
+So a 64bit copy loop can execute at 8 bytes/clock.
+It should be possible to get a 2 clock loop copying 16 bytes.
+But that will need a few instructions to setup.
+You need to use negative offsets from the end so that only
+one register is changed and the 'add' sets Z for the jump.
+It can be written in C - but gcc will pessimise it for you.
+
+You also need a conditional branch for short copies (< 16 bytes)
+that could easily be mispredicted pretty much 50% of the time.
+(IIRC no static prediction on recent x86 cpu.)
+And probably a separate test for 0.
+It is hard genning a sane clock count for short copies because
+the mispredicted branches kill you.
+Trouble is any benchmark measurement is likely to train the
+branch predictor.
+It might actually be hard to reliably beat the ~20 clocks
+for 'rep movsb' on kaby lake.
+
+This graph is from the fsrm patch:
+
+Time (cycles) for memmove() sizes 1..31 with neither source nor
+destination in cache.
+
+  1800 +-+-------+--------+---------+---------+---------+--------+-------+-+
+       +         +        +         +         +         +        +         +
+  1600 +-+                                          'memmove-fsrm' *******-+
+       |   ######                                   'memmove-orig' ####### |
+  1400 +-+ #     #####################                                   +-+
+       |   #                          ############                         |
+  1200 +-+#                                       ##################     +-+
+       |  #                                                                |
+  1000 +-+#                                                              +-+
+       |  #                                                                |
+       | #                                                                 |
+   800 +-#                                                               +-+
+       | #                                                                 |
+   600 +-***********************                                         +-+
+       |                        *****************************              |
+   400 +-+                                                   *******     +-+
+       |                                                                   |
+   200 +-+                                                               +-+
+       +         +        +         +         +         +        +         +
+     0 +-+-------+--------+---------+---------+---------+--------+-------+-+
+       0         5        10        15        20        25       30        35
+
+I don't know what that was measured on.
+600 clocks seems a lot - could be dominated by loading the cache.
+I'd have thought short buffers are actually likely to be in the cache
+and/or wanted in it.
+
+There is also the lack of 'rep movsb' on erms (on various cpu).
+
+	David
+
+	
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
