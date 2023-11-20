@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56917F199E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1576D7F19AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbjKTRTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
+        id S233908AbjKTRTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbjKTRTJ (ORCPT
+        with ESMTP id S233804AbjKTRTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:19:09 -0500
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34FBBA;
-        Mon, 20 Nov 2023 09:19:06 -0800 (PST)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7afff3ea94dso169365239f.3;
-        Mon, 20 Nov 2023 09:19:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700500746; x=1701105546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oyclGiDya5ElTdlrbB14+3v/ARVDiHt2Ibniy8Hf1lw=;
-        b=u5u6tlbYj7aNKLYfUgrny4MqASRHqt3fE965oZ7FgBQP/HUJNh8Cuqvh/k3lzUt36K
-         LAB/gcvpYCjF+l2URRQrwpI84KpYrXQWiGpAV/fLntaHDJvDEv5Bwo4FtBqin/BXjeDB
-         kWwZNVOdx7S1eNx02dnjBlyCOFijL3R45KUFJ4bM6i1HjS7FnU0mPoWi7935sxO20U4X
-         43B/2QBwvYqrAb+HhO117uCIvUUWh0mBeXIxYKE4lXtkN6C62aVvmZKdOGUCI7vUyINg
-         Jv4Rx/IQt2lpQsPCUf1Uo9n6WbUHBa0TJCu62VIhy040QrhmCt4+HcQKGZofXk6xgWTw
-         2/gg==
-X-Gm-Message-State: AOJu0YyTH7piZmYq9/xCqrDtAxyegjuLKGChBf2pOeB0kSMlXCYWbU4c
-        D/L3UscPcdpsk3sRgExFCw==
-X-Google-Smtp-Source: AGHT+IGNqd6Hys+K1K83ex6FyIigc5GrfZUb/ep+oTstiRwKRhxOw7OPOP+jex+P9qmBuMGob+wskQ==
-X-Received: by 2002:a05:6602:3718:b0:7a9:4268:fc26 with SMTP id bh24-20020a056602371800b007a94268fc26mr10884199iob.10.1700500745982;
-        Mon, 20 Nov 2023 09:19:05 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id b17-20020a056638389100b0042b1061c6a8sm2141009jav.84.2023.11.20.09.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 09:19:05 -0800 (PST)
-Received: (nullmailer pid 2370658 invoked by uid 1000);
-        Mon, 20 Nov 2023 17:19:03 -0000
-Date:   Mon, 20 Nov 2023 10:19:03 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Mon, 20 Nov 2023 12:19:24 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD39D1AA;
+        Mon, 20 Nov 2023 09:19:17 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r57vQ-0008L6-0R;
+        Mon, 20 Nov 2023 17:19:09 +0000
+Date:   Mon, 20 Nov 2023 17:19:05 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-Message-ID: <20231120171903.GA2318732-robh@kernel.org>
-References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
- <20231117192305.17612-1-petre.rodan@subdimension.ro>
- <20231119134939.GA8784-robh@kernel.org>
- <ZVpswo3MSScT43Bo@sunspire>
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Jianhui Zhao <zhaojh329@gmail.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
+        Edward-JW Yang <edward-jw.yang@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Sam Shih <sam.shih@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2 3/4] clk: mediatek: Add pcw_chg_shift control
+Message-ID: <cb983f0d30f019120cf49f24efb655cf794084d3.1700498124.git.daniel@makrotopia.org>
+References: <b277c5f084ff35849efb8250510b2536053d1316.1700498124.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVpswo3MSScT43Bo@sunspire>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <b277c5f084ff35849efb8250510b2536053d1316.1700498124.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 10:14:58PM +0200, Petre Rodan wrote:
-> 
-> Good morning!
-> 
-> On Sun, Nov 19, 2023 at 07:49:39AM -0600, Rob Herring wrote:
-> > On Fri, Nov 17, 2023 at 09:22:57PM +0200, Petre Rodan wrote:
-> > > Adds binding for digital Honeywell TruStability HSC and SSC series pressure 
-> > > and temperature sensors.
-> > > 
-> [..]
-> > > Changes for v2:
-> > > - Removed redundant quotations reported by robh's bot
-> > > - Fixed yamllint warnings
-> > > 
-> > > I'm failing to run 'make DT_CHECKER_FLAGS=-m dt_binding_check' due to
-> > > python errors and exceptions
-> > 
-> > What exceptions?
-> 
-> thanks for asking.
-> 
-> first off, installed packages. the first 4 are not part of the 
-> official Gentoo repo, so I might have prepared them with missing 
-> options if any where not included by default.
-> I know nothing about python.
-> 
-> $ equery l dtschema pylibfdt ruamel-yaml yamllint jsonschema python 
-> [I-O] [  ] dev-python/dtschema-2023.9:0
-> [I-O] [  ] dev-python/pylibfdt-1.7.0_p1:0
-> [I-O] [  ] dev-python/ruamel-yaml-0.18.5:0
-> [I-O] [  ] dev-python/yamllint-1.33.0:0
-> [IP-] [  ] dev-python/jsonschema-4.19.1:0
+Introduce pcw_chg_shfit control to optionally use that instead of the
+hardcoded PCW_CHG_MASK macro.
+This will needed for clocks on the MT7988 SoC.
 
-4.18 and later are not supported.
+Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/clk/mediatek/clk-pll.c | 5 ++++-
+ drivers/clk/mediatek/clk-pll.h | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-Apparently behavior we relied on in pre-4.18 was "wrong" usage... 4.18 
-also makes rust a hard dependency. That's a problem for any arch without 
-LLVM support.
-
-Installing via pip will check this dependency.
-
-Rob
+diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
+index 513ab6b1b3229..9f08bc5d2a8a2 100644
+--- a/drivers/clk/mediatek/clk-pll.c
++++ b/drivers/clk/mediatek/clk-pll.c
+@@ -114,7 +114,10 @@ static void mtk_pll_set_rate_regs(struct mtk_clk_pll *pll, u32 pcw,
+ 			pll->data->pcw_shift);
+ 	val |= pcw << pll->data->pcw_shift;
+ 	writel(val, pll->pcw_addr);
+-	chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
++	if (pll->data->pcw_chg_shift)
++		chg = readl(pll->pcw_chg_addr) | BIT(pll->data->pcw_chg_shift);
++	else
++		chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
+ 	writel(chg, pll->pcw_chg_addr);
+ 	if (pll->tuner_addr)
+ 		writel(val + 1, pll->tuner_addr);
+diff --git a/drivers/clk/mediatek/clk-pll.h b/drivers/clk/mediatek/clk-pll.h
+index f17278ff15d78..d28d317e84377 100644
+--- a/drivers/clk/mediatek/clk-pll.h
++++ b/drivers/clk/mediatek/clk-pll.h
+@@ -44,6 +44,7 @@ struct mtk_pll_data {
+ 	u32 pcw_reg;
+ 	int pcw_shift;
+ 	u32 pcw_chg_reg;
++	int pcw_chg_shift;
+ 	const struct mtk_pll_div_table *div_table;
+ 	const char *parent_name;
+ 	u32 en_reg;
+-- 
+2.42.1
