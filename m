@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2557F1E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC197F1E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjKTUx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 15:53:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
+        id S232046AbjKTUy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 15:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKTUx5 (ORCPT
+        with ESMTP id S229759AbjKTUys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 15:53:57 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7982D2;
-        Mon, 20 Nov 2023 12:53:53 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7E54A1C0050; Mon, 20 Nov 2023 21:53:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-        t=1700513632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T6LfoMY/Fvp0UXzBZ+W7X81hPAVnp3D1vcRIVa9CydA=;
-        b=eLNR+DfutupDoKP3c+C0DbY1+lXsFmpXNqcRY2eGyyJiC+LFIxjZecUl6vD1nvFUkbTnB2
-        YmqpbfQNE0HH5kFd/oyl997swsjsEr5veurdUfW7I5FcrEMyOV3zJH200Dv6srV1ymkYhb
-        YI7sDEE4i1X6oCwkGwaPtFw5K209GFU=
-Date:   Mon, 20 Nov 2023 21:53:52 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, jikos@kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        linux-input@vger.kernel.org, ojeda@kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-Message-ID: <ZVvHYAsM1p8O7J8r@duo.ucw.cz>
-References: <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com>
- <CANiq72kvZcNp2ocXoqBae9q2UW+RPQy3dXUr+QS-izKpM1yyoA@mail.gmail.com>
+        Mon, 20 Nov 2023 15:54:48 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E76D9;
+        Mon, 20 Nov 2023 12:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1700513679;
+        bh=Mwcrf7oCSr2SVBqlstcAk4xBZt9a0mnoM+Aqfdmqy4Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oYwtD125nVYe+W0MB6r2XUkNf2OqQfo1fdqm1SiyZ1g8prH/T3lehBW6dvqWaJxLg
+         Ya4de9QXlqN5ZN+WKw7LNhiX+032moApXuo7G5jt7iCmg2H+STvj+x46s/uzM5nU6l
+         iWsX/oOQx1ud0tfJmObypf9XhvuWlh6l/vF9T6VCyUB8uxSV+vKc8SCD6TutnciQpR
+         /MVFp6Y7lVCQHd8SqoSBycvGvLrvk4pGX0xEU8d5ABjm77/Kw4hWtbCR7wN0DLZiXM
+         0ZNkIhsgmq5ImQSC4KMj3kgLGtjL6AX60svcEAQtnXU1clDXSJx239MljyUiIc+wZk
+         k9ro2z+tJWnjw==
+Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZ0B7031Nz1cX5;
+        Mon, 20 Nov 2023 15:54:38 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH v4 0/5] Faultable Tracepoints
+Date:   Mon, 20 Nov 2023 15:54:13 -0500
+Message-Id: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9jeVF7q2cF6LMKnm"
-Content-Disposition: inline
-In-Reply-To: <CANiq72kvZcNp2ocXoqBae9q2UW+RPQy3dXUr+QS-izKpM1yyoA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,50 +60,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Wire up the system call tracepoints with Tasks Trace RCU to allow
+the ftrace, perf, and eBPF tracers to handle page faults.
 
---9jeVF7q2cF6LMKnm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series does the initial wire-up allowing tracers to handle page
+faults, but leaves out the actual handling of said page faults as future
+work.
 
-On Mon 2023-10-23 13:44:46, Miguel Ojeda wrote:
-> On Mon, Oct 23, 2023 at 1:40=E2=80=AFPM Jani Nikula <jani.nikula@linux.in=
-tel.com> wrote:
-> >
-> > One could also reasonably make the argument that controlling the
-> > individual keyboard key backlights should be part of the input
-> > subsystem. It's not a display per se. (Unless you actually have small
-> > displays on the keycaps, and I think that's a thing too.)
-> >
-> > There's force feedback, there could be light feedback? There's also
-> > drivers/input/input-leds.c for the keycaps that have leds, like caps
-> > lock, num lock, etc.
-> >
-> > Anyway, just throwing ideas around, no strong opinions, really.
->=20
-> Yeah, sounds quite reasonable too, in fact it may make more sense
-> there given the LEDs are associated per-key rather than being an
-> uniform matrix in a rectangle if I understand correctly. If the input
-> subsystem wants to take it, that would be great.
+I have tested this against a feature branch of lttng-modules which
+implements handling of page faults for the filename argument of the
+openat(2) system call.
 
-Unfortunately we are getting no input from input subsystem. Question
-seems to be more of "is auxdisplay willing to take it if it is done
-properly"?
+This series is based on kernel v6.6.2.
 
-Best regards,
-								Pavel
+Thanks,
 
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
+Mathieu
 
---9jeVF7q2cF6LMKnm
-Content-Type: application/pgp-signature; name="signature.asc"
+Mathieu Desnoyers (5):
+  tracing: Introduce faultable tracepoints (v4)
+  tracing/ftrace: Add support for faultable tracepoints
+  tracing/bpf-trace: add support for faultable tracepoints
+  tracing/perf: add support for faultable tracepoints
+  tracing: convert sys_enter/exit to faultable tracepoints
 
------BEGIN PGP SIGNATURE-----
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Joel Fernandes <joel@joelfernandes.org>
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZVvHYAAKCRAw5/Bqldv6
-8tamAJ9ay6bqjz3WKWY0hzcjA1oaf0rrFACghHK4/NlmCVR1KurSm8xzJvVcKSs=
-=1Jqp
------END PGP SIGNATURE-----
+ include/linux/tracepoint-defs.h | 14 +++++
+ include/linux/tracepoint.h      | 88 ++++++++++++++++++++++---------
+ include/trace/bpf_probe.h       | 21 ++++++--
+ include/trace/define_trace.h    |  7 +++
+ include/trace/events/syscalls.h |  4 +-
+ include/trace/perf.h            | 27 ++++++++--
+ include/trace/trace_events.h    | 73 ++++++++++++++++++++++++--
+ init/Kconfig                    |  1 +
+ kernel/trace/bpf_trace.c        | 10 +++-
+ kernel/trace/trace_events.c     | 26 +++++++---
+ kernel/trace/trace_fprobe.c     |  5 +-
+ kernel/trace/trace_syscalls.c   | 92 +++++++++++++++++++++++----------
+ kernel/tracepoint.c             | 58 +++++++++++----------
+ 13 files changed, 325 insertions(+), 101 deletions(-)
 
---9jeVF7q2cF6LMKnm--
+-- 
+2.25.1
+
