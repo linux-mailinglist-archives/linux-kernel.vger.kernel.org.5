@@ -2,227 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380E97F1CB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:35:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C507F1CBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbjKTSf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S233956AbjKTSjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbjKTSe5 (ORCPT
+        with ESMTP id S233186AbjKTSiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:34:57 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3D4CB;
-        Mon, 20 Nov 2023 10:34:46 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A69CC1F8B4;
-        Mon, 20 Nov 2023 18:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700505284; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxVtau361btrxEZ1p8oQK+uCjxmURZ9Wrr8QyUc+PdA=;
-        b=dA1DtXnNqrzA2tfUWppvLMcFXSoz5YA8kR1l30NMkK9d/reHC3N3+6WLFQbFu+6G/gWj76
-        JC3Uh1TALn6ggVdxqlFKre2d3QneXkVjlbhMiZCcq3uLU/WAx9iR2vAZpfgBG5X2D4mPUD
-        jM3np8iFo/V/3eDfwFTF2GdSkTpwG4M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700505284;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CxVtau361btrxEZ1p8oQK+uCjxmURZ9Wrr8QyUc+PdA=;
-        b=hPvTmXaxercEKsn6Df6woNxnTvve8p2Um8LN9+kKZnVI6mHvDWKoVXO6fZr38i79VzZZAW
-        lzYTXtH3eDkXvLAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 67EF913912;
-        Mon, 20 Nov 2023 18:34:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UHi1GMSmW2UUMgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 20 Nov 2023 18:34:44 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-Date:   Mon, 20 Nov 2023 19:34:32 +0100
-Subject: [PATCH v2 21/21] mm/slub: optimize free fast path code layout
+        Mon, 20 Nov 2023 13:38:55 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9BF1FD6
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:37:34 -0800 (PST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKIWHKg011799;
+        Mon, 20 Nov 2023 18:37:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=WnzPVvLAMntpaYxm4Pu6jywEC25pglrK8t3Z1BZT8CI=;
+ b=ihQvN+SgmsqlfdIevpQyxwy/foFREXQNHd6sUEAuu4iR1EtXBP+WudqVqGBSizeCaDqm
+ vIXcw4HhJZBNzOEncvzHHThJAjcVmHFasKkPA110ElKYUX4WX3RFBOX2kl2WW2CIHCd8
+ JUP5l3IOY3pidFjTRRxO+Jkna9ZpnHqf0+KpgLPvmsqPhatSRK01YQjmf9Od62E5q87a
+ EmTkZAiyiOrrGgsdNPZQj1aC1Fxt5RAaDir7t93xHMptydkqdElGGav+xxqDF7zdEjWB
+ WUvoS0kGHsVMfp9qsnrGFbRDEG+yQxOHV7Ti+dfAadANhIviWQn+eF8KMPQK8cFp/+Ci Fg== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ugctk04c8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 18:37:22 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKIJ4dk005013;
+        Mon, 20 Nov 2023 18:37:21 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf7yybgvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 18:37:21 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AKIbJCn24511160
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Nov 2023 18:37:19 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE73920043;
+        Mon, 20 Nov 2023 18:37:19 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A2EC20040;
+        Mon, 20 Nov 2023 18:37:19 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Nov 2023 18:37:19 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vaneet Narang <v.narang@samsung.com>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] checkstack: bug fix and minor improvements
+Date:   Mon, 20 Nov 2023 19:37:16 +0100
+Message-Id: <20231120183719.2188479-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231120-slab-remove-slab-v2-21-9c9c70177183@suse.cz>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
-In-Reply-To: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
-To:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Vlastimil Babka <vbabka@suse.cz>
-X-Mailer: b4 0.12.4
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -6.80
-X-Spamd-Result: default: False [-6.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         R_RATELIMIT(0.00)[to_ip_from(RL563rtnmcmc9sawm86hmgtctc)];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         BAYES_HAM(-3.00)[100.00%];
-         RCPT_COUNT_TWELVE(0.00)[24];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,linux.dev,google.com,arm.com,cmpxchg.org,kernel.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com,suse.cz];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4Tjkliqil1Xnxs-VK591LfUr2WE4Wiv0
+X-Proofpoint-GUID: 4Tjkliqil1Xnxs-VK591LfUr2WE4Wiv0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_19,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ phishscore=0 impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 spamscore=0 mlxlogscore=745
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311200134
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inspection of kmem_cache_free() disassembly showed we could make the
-fast path smaller by providing few more hints to the compiler, and
-splitting the memcg_slab_free_hook() into an inline part that only
-checks if there's work to do, and an out of line part doing the actual
-uncharge.
+While trying to use the checkstack script to print the stack usage of all
+functions, I noticed that this is not possible without changing it. In
+addition the current output contains a bug, and the output can be improved.
 
-bloat-o-meter results:
-add/remove: 2/0 grow/shrink: 0/3 up/down: 286/-554 (-268)
-Function                                     old     new   delta
-__memcg_slab_free_hook                         -     270    +270
-__pfx___memcg_slab_free_hook                   -      16     +16
-kfree                                        828     665    -163
-kmem_cache_free                             1116     948    -168
-kmem_cache_free_bulk.part                   1701    1478    -223
+Therefore fix the bug and improve the script a bit.
 
-Checking kmem_cache_free() disassembly now shows the non-fastpath
-cases are handled out of line, which should reduce instruction cache
-usage.
+Heiko Carstens (3):
+  checkstack: fix printed address
+  checkstack: sort output by size and function name
+  checkstack: allow to pass MINSTACKSIZE parameter
 
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/slub.c | 40 ++++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 77d259f3d592..3f8b95757106 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1959,20 +1959,11 @@ void memcg_slab_post_alloc_hook(struct kmem_cache *s, struct obj_cgroup *objcg,
- 	return __memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
- }
- 
--static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
--					void **p, int objects)
-+static void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
-+				   void **p, int objects,
-+				   struct obj_cgroup **objcgs)
- {
--	struct obj_cgroup **objcgs;
--	int i;
--
--	if (!memcg_kmem_online())
--		return;
--
--	objcgs = slab_objcgs(slab);
--	if (!objcgs)
--		return;
--
--	for (i = 0; i < objects; i++) {
-+	for (int i = 0; i < objects; i++) {
- 		struct obj_cgroup *objcg;
- 		unsigned int off;
- 
-@@ -1988,6 +1979,22 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
- 		obj_cgroup_put(objcg);
- 	}
- }
-+
-+static __fastpath_inline
-+void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
-+			  int objects)
-+{
-+	struct obj_cgroup **objcgs;
-+
-+	if (!memcg_kmem_online())
-+		return;
-+
-+	objcgs = slab_objcgs(slab);
-+	if (likely(!objcgs))
-+		return;
-+
-+	__memcg_slab_free_hook(s, slab, p, objects, objcgs);
-+}
- #else /* CONFIG_MEMCG_KMEM */
- static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
- {
-@@ -2047,7 +2054,7 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
- 	 * The initialization memset's clear the object and the metadata,
- 	 * but don't touch the SLAB redzone.
- 	 */
--	if (init) {
-+	if (unlikely(init)) {
- 		int rsize;
- 
- 		if (!kasan_has_integrated_init())
-@@ -2083,7 +2090,8 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
- 		next = get_freepointer(s, object);
- 
- 		/* If object's reuse doesn't have to be delayed */
--		if (!slab_free_hook(s, object, slab_want_init_on_free(s))) {
-+		if (likely(!slab_free_hook(s, object,
-+					   slab_want_init_on_free(s)))) {
- 			/* Move object to the new freelist */
- 			set_freepointer(s, object, *head);
- 			*head = object;
-@@ -4282,7 +4290,7 @@ static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
- 	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
- 	 * to remove objects, whose reuse must be delayed.
- 	 */
--	if (slab_free_freelist_hook(s, &head, &tail, &cnt))
-+	if (likely(slab_free_freelist_hook(s, &head, &tail, &cnt)))
- 		do_slab_free(s, slab, head, tail, cnt, addr);
- }
- 
+ Makefile              |  6 ++++--
+ scripts/checkstack.pl | 27 +++++++++++++++++++--------
+ 2 files changed, 23 insertions(+), 10 deletions(-)
 
 -- 
-2.42.1
+2.39.2
 
