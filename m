@@ -2,159 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBC47F0D55
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB717F0D44
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbjKTIRD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 03:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S232142AbjKTIQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232183AbjKTIRA (ORCPT
+        with ESMTP id S231961AbjKTIQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:17:00 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E9EE3;
-        Mon, 20 Nov 2023 00:16:56 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYg0Z1Pc1z9v7GV;
-        Mon, 20 Nov 2023 16:00:14 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDHxV_LFVtlN1ABAQ--.398S2;
-        Mon, 20 Nov 2023 09:16:26 +0100 (CET)
-Message-ID: <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob  for integrity_iint_cache
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 20 Nov 2023 09:16:09 +0100
-In-Reply-To: <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
-         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 20 Nov 2023 03:16:22 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C07E3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:16:18 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5094727fa67so5635388e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:16:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700468177; x=1701072977; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l5sTEAmTtbhoCMXLFmbz+riipdvwXdm2iXG8qiQt4WA=;
+        b=DGaLvadlEoMLdnn32Sq7MMwK6D62KYtEirccqz4Nd8z8EU9LnVzsoWlP5fVIRSmAL+
+         zmdg7OoxZBDLHHB4q7LZwnYa7eWPmIgOQJ9/P3hvbyIkTBsqypYh4tv7mwpCPFo2ouOB
+         +zWu0YLC/GLB9jHl37CwjP8LD7IB/SSnNJbYqRnnkqVE7DK9jH84sYIQ/venKEzxJUIx
+         SVk922mUKbIPrkgXM7Ra09ARc8MY/VXviEjofhfrbwXYnAgLvUVqEBPdt6Gv+dMuqOxD
+         tJwDiCv2FaHR3ikyEcxkZwe2dNmtPA8KK4uHmUS64OpH6cTXTm7bjTH9jxHZHTdmgwAB
+         4MAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700468177; x=1701072977;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=l5sTEAmTtbhoCMXLFmbz+riipdvwXdm2iXG8qiQt4WA=;
+        b=tYqCBnMfiFqJMcYPKbTVRKi9aWDpQw1hlPEwwGNnUODYhquORrXMMOOkSOTSXnd2H9
+         rmfI5UjRovhDgkKUDLIC8GueLqqZItNBhWdciyOdv4F8R5khfO72OLe456Y03gz/nnji
+         IyOJJuEI/533Lasm3ETtHTPEZXoF7LnhayrJzhpsy5WCvgAFSKd2e7/E4hD8XoDyt4BU
+         eekoqWj3elb94QsaGieaUp2Ir48zvNpjEdbRmGBFWVzsWe5usFGovKoXwKiLGvCkmWDu
+         RWpEpkZBhcLVdKLdLynOFaa8cwa/eaEZaMnovPdgmXRmVkG+NGH0Cbub82L+hPab+L1N
+         4TGg==
+X-Gm-Message-State: AOJu0YxrSu+pzvZbeYXkTD3UDtzW7arH4G/AOo2Dt3tHV5jNTzRDdzO6
+        ZLjOUP/0oGkJYVYMRu5lrEet4tSxDzLw20de4HaEOeZF
+X-Google-Smtp-Source: AGHT+IF/PYPeGH6vKFaVERL8d59d/q4hV3dx20a+d1LHqXStUFNJsezbcXcTnBZ/CEp3k6/bUuSyhA==
+X-Received: by 2002:ac2:5619:0:b0:509:8dee:71e with SMTP id v25-20020ac25619000000b005098dee071emr4495922lfd.0.1700468176735;
+        Mon, 20 Nov 2023 00:16:16 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f04:f84b:d87d:1d06? ([2a01:e0a:982:cbb0:f04:f84b:d87d:1d06])
+        by smtp.gmail.com with ESMTPSA id l9-20020a05600002a900b00332cb5185edsm290587wry.14.2023.11.20.00.16.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 00:16:16 -0800 (PST)
+Message-ID: <58b10e6e-87cd-4157-8541-0cbfeb263422@linaro.org>
+Date:   Mon, 20 Nov 2023 09:16:13 +0100
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwDHxV_LFVtlN1ABAQ--.398S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF17Kw1kuFWrWr45ur1kGrg_yoWrJr43pF
-        W3Ka47Jr1kXFyI9rn2vF45uFWSgFWSgFWUGwn0kr1kAF98ur1Ygr15CryUuFyUGr98tw10
-        qr1a9ryUZ3Wqy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5ahSwACsN
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 11/20] drivers/gpu/drm/bridge/synopsys/dw-hdmi.c:
+ remove I2C_CLASS_DDC support
+Content-Language: en-US, fr
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>
+Cc:     linux-i2c@vger.kernel.org, Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231119112826.5115-1-hkallweit1@gmail.com>
+ <20231119112826.5115-12-hkallweit1@gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231119112826.5115-12-hkallweit1@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
-> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> > 
-> > Before the security field of kernel objects could be shared among LSMs with
-> > the LSM stacking feature, IMA and EVM had to rely on an alternative storage
-> > of inode metadata. The association between inode metadata and inode is
-> > maintained through an rbtree.
-> > 
-> > Because of this alternative storage mechanism, there was no need to use
-> > disjoint inode metadata, so IMA and EVM today still share them.
-> > 
-> > With the reservation mechanism offered by the LSM infrastructure, the
-> > rbtree is no longer necessary, as each LSM could reserve a space in the
-> > security blob for each inode. However, since IMA and EVM share the
-> > inode metadata, they cannot directly reserve the space for them.
-> > 
-> > Instead, request from the 'integrity' LSM a space in the security blob for
-> > the pointer of inode metadata (integrity_iint_cache structure). The other
-> > reason for keeping the 'integrity' LSM is to preserve the original ordering
-> > of IMA and EVM functions as when they were hardcoded.
-> > 
-> > Prefer reserving space for a pointer to allocating the integrity_iint_cache
-> > structure directly, as IMA would require it only for a subset of inodes.
-> > Always allocating it would cause a waste of memory.
-> > 
-> > Introduce two primitives for getting and setting the pointer of
-> > integrity_iint_cache in the security blob, respectively
-> > integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
-> > the code more understandable, as they directly replace rbtree operations.
-> > 
-> > Locking is not needed, as access to inode metadata is not shared, it is per
-> > inode.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
-> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  security/integrity/iint.c      | 71 +++++-----------------------------
-> >  security/integrity/integrity.h | 20 +++++++++-
-> >  2 files changed, 29 insertions(+), 62 deletions(-)
-> > 
-> > diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> > index 882fde2a2607..a5edd3c70784 100644
-> > --- a/security/integrity/iint.c
-> > +++ b/security/integrity/iint.c
-> > @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
-> >  	return 0;
-> >  }
-> >  
-> > +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
-> > +	.lbs_inode = sizeof(struct integrity_iint_cache *),
-> > +};
+On 19/11/2023 12:28, Heiner Kallweit wrote:
+> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> Class-based device auto-detection is a legacy mechanism and shouldn't
+> be used in new code. So we can remove this class completely now.
 > 
-> I'll admit that I'm likely missing an important detail, but is there
-> a reason why you couldn't stash the integrity_iint_cache struct
-> directly in the inode's security blob instead of the pointer?  For
-> example:
+> Preferably this series should be applied via the i2c tree.
 > 
->   struct lsm_blob_sizes ... = {
->     .lbs_inode = sizeof(struct integrity_iint_cache),
->   };
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 > 
->   struct integrity_iint_cache *integrity_inode_get(inode)
->   {
->     if (unlikely(!inode->isecurity))
->       return NULL;
->     return inode->i_security + integrity_blob_sizes.lbs_inode;
->   }
+> ---
+>   drivers/gpu/drm/bridge/synopsys/dw-hdmi.c |    1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> index 52d91a0df..aca5bb086 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+> @@ -515,7 +515,6 @@ static struct i2c_adapter *dw_hdmi_i2c_adapter(struct dw_hdmi *hdmi)
+>   	init_completion(&i2c->cmp);
+>   
+>   	adap = &i2c->adap;
+> -	adap->class = I2C_CLASS_DDC;
+>   	adap->owner = THIS_MODULE;
+>   	adap->dev.parent = hdmi->dev;
+>   	adap->algo = &dw_hdmi_algorithm;
+> 
 
-It would increase memory occupation. Sometimes the IMA policy
-encompasses a small subset of the inodes. Allocating the full
-integrity_iint_cache would be a waste of memory, I guess?
-
-On the other hand... (did not think fully about that) if we embed the
-full structure in the security blob, we already have a mutex available
-to use, and we don't need to take the inode lock (?).
-
-I'm fully convinced that we can improve the implementation
-significantly. I just was really hoping to go step by step and not
-accumulating improvements as dependency for moving IMA and EVM to the
-LSM infrastructure.
-
-Thanks
-
-Roberto
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
