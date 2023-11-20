@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DB47F1D82
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF747F1D88
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbjKTTqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
+        id S230006AbjKTTr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTTqg (ORCPT
+        with ESMTP id S229689AbjKTTrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:46:36 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224C291;
-        Mon, 20 Nov 2023 11:46:33 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4083f61322fso19549355e9.1;
-        Mon, 20 Nov 2023 11:46:33 -0800 (PST)
+        Mon, 20 Nov 2023 14:47:55 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E1A90;
+        Mon, 20 Nov 2023 11:47:51 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso3718471f8f.2;
+        Mon, 20 Nov 2023 11:47:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700509591; x=1701114391; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700509670; x=1701114470; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6xLiIL3r8NkHQ19cq/0NuP6fOQ+M4GE4JYubtr8bqA=;
-        b=FU2x/az63z2E53up8A2kLQDBLjwEMBYxPD+xiupzlAqvVkuSc5HLJeiEgnoEqhNhS0
-         5PQWtynH/LzWJSp0lhL2Z6ASEfVQ1VoxNcojGbODeYaTM7dnlZ/KCJxqeD2K+7U+pOiX
-         y4Ircum34/oyeoewFh0VzFxaYEcq6Afa6X++QgyeYIaniRKJoxmWCqpGPwJ/qse6fSFz
-         zQJpgg+dlNRNR/wYr8FvfzENYBBchruL7efn5ZUgif4s93LJCHGGxoMm87T/uYbAHBHu
-         bi7fFR14uhPBR4d20dYUa1oiCaIuriSPCCNk7Jjh4RjnBZCNlPRGXEtA+qLGHlsgmxjx
-         7c/A==
+        bh=P1NbJyayl7rt6FsfxDThKJ/TN1TC4Aie6KtIaSx0fd0=;
+        b=UohU/ulWwsZgcfy2vzEylgnxx5bLU7S0nEwYn6eHTskfeNKQDS8o7N7GedrF6V7ls7
+         5v1S233IzX4D6+nWfCwhE+qphRHBHzSzOEinlkkQL2TtSnae6XM4R5aA6zlYbQ2deYV+
+         Xz9kRRyJhAzZ2z8cyc1fhN5xd+vZFr/MxNB1pKMw/nYl8KcpBQxNYJ+Qq7gYQA6iVF6v
+         yuvo9dOfjfHmeKnM6tmSJQ5v04qNGqIbD1DMhZb6F/zMX1aTENWlE8SsQFT5c9NePJMD
+         k0VpJau22ZGhg/+mTP4YCWUN0z32RYIWNjTxvkNLwf9PJ2k9xKudgTa8EtXI88STXJ4d
+         NXfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700509591; x=1701114391;
+        d=1e100.net; s=20230601; t=1700509670; x=1701114470;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W6xLiIL3r8NkHQ19cq/0NuP6fOQ+M4GE4JYubtr8bqA=;
-        b=u7CQ783TMQHe19bZAVKJJIAo+RvEK3pBb5W10Li89RpmGNigl0W0JwGxhbwWrSYHeg
-         PTJ2vyCan+YZmjaLoKKJNT/NJCVF1J+1DsXD9cwQT1Uu6hA8sXJiL5goDJd9fk9c/HMR
-         RbP01zf/vUsi0MSWDi6U88YgngfwOX62PEyqKruB9N2s1GasECllupjwPE4bV++wqccU
-         3pJvAHGO/c5UKaQY/NpyrviLsNJuZ7M++1LGRPl1Sv7QP8xKqQIoJdVvZbKwaSZbnHUa
-         yetg9f5CjmjAzjVlXX7ZlFMrbk4MeNglKNx70/1rs6HrdeAFrpZ3w6CoflHd1uIxksDE
-         3wkw==
-X-Gm-Message-State: AOJu0YzdjESbbzmUPLmyySLILf17PvxnlEtdefhtw9OfB3Zp9/H5F5QB
-        Uy7xCtwPr8XbOprSGzTcTCs=
-X-Google-Smtp-Source: AGHT+IFSg+ZnL0z9VAvckLpjCUM2jyc9h2ZByNy9AXGfouqS2J8opclQ7yaQzYlUeMFCdOOjRytUmA==
-X-Received: by 2002:a05:600c:198b:b0:408:53ac:141f with SMTP id t11-20020a05600c198b00b0040853ac141fmr6758532wmq.24.1700509591268;
-        Mon, 20 Nov 2023 11:46:31 -0800 (PST)
+        bh=P1NbJyayl7rt6FsfxDThKJ/TN1TC4Aie6KtIaSx0fd0=;
+        b=FcbdBGDGq5LpKd3rDdJvlego2b3JKUYYnXXQxgIQwng87vrbNkL77ZonmRo8R32zx7
+         EF1jNKp9lp38Yqd1ZetVn3T/4Jvh2yi+ME7vtcCSjwBBOrcbGxupOjNiu/k+qFSytZkY
+         zukpQXIWa9pgobdrQw78U/5hMj+IK9ZH0oC4gNVd/1DqPjQlF7k2lmQnzlKpE2n6dKoY
+         8sgn3uxwRx2+y6VbRyBsxm8cA64ned1rc9NU0GXy2aJzNRQWMhNOtd7OVkZ072zJra68
+         wrLhDqe3AM+B4xgmam2TdsANUMPZ4aQ36DtxMdko0qT53KUnac4UG+6g6qHq3NAEj1c6
+         04ZA==
+X-Gm-Message-State: AOJu0YylmryS9vGBBJ1cKZ0QWaR6v0q/zxqtzAFiQuqcX6tzww5HZ486
+        xL5tl43nLAlkaPRdVZ8V9t8=
+X-Google-Smtp-Source: AGHT+IGZp5cbk3RB9DaON7psg96oftK35YLWF4oXEA7vWSGtTHa8e9is6Ezi61VGpC3AjWNUZujs8g==
+X-Received: by 2002:a5d:5305:0:b0:32f:b3a2:c2eb with SMTP id e5-20020a5d5305000000b0032fb3a2c2ebmr4874644wrv.65.1700509670009;
+        Mon, 20 Nov 2023 11:47:50 -0800 (PST)
 Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id m28-20020a05600c3b1c00b00401e32b25adsm14703913wms.4.2023.11.20.11.46.30
+        by smtp.gmail.com with ESMTPSA id s5-20020a5d6a85000000b0032d9f32b96csm12112207wru.62.2023.11.20.11.47.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 11:46:30 -0800 (PST)
-Message-ID: <655bb796.050a0220.750ad.21a4@mx.google.com>
-X-Google-Original-Message-ID: <ZVuOGF8aa005de6l@Ansuel-xps.>
-Date:   Mon, 20 Nov 2023 17:49:28 +0100
+        Mon, 20 Nov 2023 11:47:49 -0800 (PST)
+Message-ID: <655bb7e5.5d0a0220.59243.9a2c@mx.google.com>
+X-Google-Original-Message-ID: <ZVuObZGhckyhPO6t@Ansuel-xps.>
+Date:   Mon, 20 Nov 2023 17:50:53 +0100
 From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Larysa Zaremba <larysa.zaremba@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [net-next PATCH] net: phy: correctly check soft_reset ret ONLY
  if defined for PHY
 References: <20231120131540.9442-1-ansuelsmth@gmail.com>
- <ZVuUP797C4PLzJsP@lzaremba-mobl.ger.corp.intel.com>
+ <20231120094234.1aae153e@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVuUP797C4PLzJsP@lzaremba-mobl.ger.corp.intel.com>
+In-Reply-To: <20231120094234.1aae153e@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -81,68 +80,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 06:15:43PM +0100, Larysa Zaremba wrote:
-> On Mon, Nov 20, 2023 at 02:15:40PM +0100, Christian Marangi wrote:
-> > soft_reset call for phy_init_hw had multiple revision across the years
-> > and the implementation goes back to 2014. Originally was a simple call
-> > to write the generic PHY reset BIT, it was then moved to a dedicated
-> > function. It was then added the option for PHY driver to define their
-> > own special way to reset the PHY. Till this change, checking for ret was
-> > correct as it was always filled by either the generic reset or the
-> > custom implementation. This changed tho with commit 6e2d85ec0559 ("net:
-> > phy: Stop with excessive soft reset"), as the generic reset call to PHY
-> > was dropped but the ret check was never made entirely optional and
-> > dependent whether soft_reset was defined for the PHY driver or not.
-> > 
+On Mon, Nov 20, 2023 at 09:42:34AM -0800, Jakub Kicinski wrote:
+> On Mon, 20 Nov 2023 14:15:40 +0100 Christian Marangi wrote:
 > > Luckly nothing was ever added before the soft_reset call so the ret
 > > check (in the case where a PHY didn't had soft_reset defined) although
 > > wrong, never caused problems as ret was init 0 at the start of
 > > phy_init_hw.
-> > 
-> > To prevent any kind of problem and to make the function cleaner and more
-> > robust, correctly move the ret check if the soft_reset section making it
-> > optional and needed only with the function defined.
-> > 
-> > Fixes: 6e2d85ec0559 ("net: phy: Stop with excessive soft reset")
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/net/phy/phy_device.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > index 2ce74593d6e4..478126f6b5bc 100644
-> > --- a/drivers/net/phy/phy_device.c
-> > +++ b/drivers/net/phy/phy_device.c
-> > @@ -1235,14 +1235,13 @@ int phy_init_hw(struct phy_device *phydev)
-> >  
-> >  	if (phydev->drv->soft_reset) {
-> >  		ret = phydev->drv->soft_reset(phydev);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> >  		/* see comment in genphy_soft_reset for an explanation */
-> > -		if (!ret)
-> > -			phydev->suspended = 0;
-> > +		phydev->suspended = 0;
 > 
-> Are you sure 'suspended' should not be cleared, if soft_reset fails?
-> 
-> >  	}
+> not currently a bug => no Fixes tag, please
 
-Idea is not change current implementation... And before this, suspended
-was cleared only with reset not failing.
+I know it's not a bug but still the referenced commit was wrong. Can I
+at least use Ref to reference it?
 
-> >  
-> > -	if (ret < 0)
-> > -		return ret;
-> > -
-> >  	ret = phy_scan_fixups(phydev);
-> >  	if (ret < 0)
-> >  		return ret;
-> > -- 
-> > 2.40.1
-> > 
-> > 
+Due to the changes done to this function, it's hard to catch where the
+problem arised with a git blame.
 
 -- 
 	Ansuel
