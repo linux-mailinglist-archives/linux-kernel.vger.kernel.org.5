@@ -2,309 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C487F1D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BE77F1D51
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjKTT3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
+        id S229529AbjKTTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKTT3c (ORCPT
+        with ESMTP id S229504AbjKTTbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:29:32 -0500
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06D9CA;
-        Mon, 20 Nov 2023 11:29:27 -0800 (PST)
+        Mon, 20 Nov 2023 14:31:21 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195EABB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:31:18 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9d10972e63eso650859166b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:31:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1700508569; x=1732044569;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rGQNVVdVH5hv/vMR3DPCBR5uvBA6F0M+M9XSRzxNYYc=;
-  b=rvvCGORnaC3wIqh3eLftorOrOl0w7RVAE7gzM0MH77HztY+v1eo0LgCC
-   Sq3WcHS6QzB9gwHoV7LSL4LbGZrQ7VebxJ2v0NIMWH6fqAGflwPa3AA8p
-   4EczDDAyzdiWj9cS3fsGjR7AEqBbb9IQGl6nHVqupw63vCZmfr8KcVRJl
-   s=;
-X-IronPort-AV: E=Sophos;i="6.04,214,1695686400"; 
-   d="scan'208";a="167294987"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 19:29:26 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 4287C47655;
-        Mon, 20 Nov 2023 19:29:25 +0000 (UTC)
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:45993]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.2:2525] with esmtp (Farcaster)
- id 8bd9dfb6-2746-497f-9055-ff4387331616; Mon, 20 Nov 2023 19:29:24 +0000 (UTC)
-X-Farcaster-Flow-ID: 8bd9dfb6-2746-497f-9055-ff4387331616
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 20 Nov 2023 19:29:23 +0000
-Received: from 88665a182662.ant.amazon.com (10.187.171.26) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 20 Nov 2023 19:29:21 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <ivan@cloudflare.com>
-CC:     <edumazet@google.com>, <hdanton@sina.com>,
-        <kernel-team@cloudflare.com>, <kuniyu@amazon.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <pabeni@redhat.com>
-Subject: Re: wait_for_unix_gc can cause CPU overload for well behaved programs
-Date:   Mon, 20 Nov 2023 11:29:13 -0800
-Message-ID: <20231120192913.28629-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CABWYdi2JmfMBK43KrkAGsz+MN8KyFSjg0QZv5G_cuA1k1c0f7w@mail.gmail.com>
-References: <CABWYdi2JmfMBK43KrkAGsz+MN8KyFSjg0QZv5G_cuA1k1c0f7w@mail.gmail.com>
+        d=linaro.org; s=google; t=1700508676; x=1701113476; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aSVotS49d/36yA5tzTUTHDX/PosQTkAamLhbxQgGhzk=;
+        b=j7PKgDAthzKKasQqQzlziXI9DPBo/fZbc0E9SDesysQ8QaGSLDAJCw3WZCBezyKaH/
+         yaAbG6pulPKk20j7ZPFJoCPSWIBMCTlgg8BNgCzY3zYWa8zfM2VBaWqYYdxCCBkJVS7z
+         +UGZ5iaH/WMYf9DGqM6xfxXHDxTy9/BzWAfjgeTHX7Ydm9NmxmMMkRcDOAeh1DJuZ5NK
+         JhEzmiop4r2MrUsK0rfPo1ndm8pr4xt65vv/P+1Hyh1yV5bUBDZmuAC4UGcWaeYehN9+
+         +5Kvs5lB3MqbhntPi3BNNsbZ2oaeya3KgxcFlqwVTQ4lpzQsrRzAvuneMyFmhxnx9NaF
+         a8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700508676; x=1701113476;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aSVotS49d/36yA5tzTUTHDX/PosQTkAamLhbxQgGhzk=;
+        b=XdRxEdF4iXnfZihAdCs0oSunJAatU2C7vP+LTClgJGhDyVVnx0HO37KqngqelnIn32
+         IAIjQi7BUvRev0x9dvShrvbv9vf7d6FRoU9REN5AAcHxzNIhKmft+4QDuO/lyMaWRHFJ
+         b37GA1gdVzZ018qRA54wLsNY+uo+DG3oCU6SMeFDvFvSSz6Bwo8SL3A3OJw9tzR7/Xq8
+         7BfGrxQsVDwW7wiUlcK6JfPguVFaGlihtFW1GAB2xvVREXdwaMruHsLATt18hHMff5V6
+         WjucJUjZpjc12PFkxLH7X8vjOfLx7GQIm59Ix00RaEJavFxJm/cId/VocI7kUg0JERMO
+         v7Xg==
+X-Gm-Message-State: AOJu0Yx7IA/3z98Dy2ui/lsbvtotvLwYewxIEMHgNFyM7RaWecsjnynb
+        1WahacD4ctvpSN0m/4eqYJy9qQ==
+X-Google-Smtp-Source: AGHT+IHf8NrqouxYhlMoKQdA5WAg5kK1bQnqIvg5KQ+C7VVfL7D37N0/kUgcv6pwOVqEUG4ADLcZJA==
+X-Received: by 2002:a17:906:10b:b0:9e6:59d5:820d with SMTP id 11-20020a170906010b00b009e659d5820dmr6066678eje.2.1700508676462;
+        Mon, 20 Nov 2023 11:31:16 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id dv8-20020a170906b80800b009fdc15b5304sm1692803ejb.102.2023.11.20.11.31.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 11:31:15 -0800 (PST)
+Message-ID: <acfdce81-f117-4a1a-a9fe-e2b4b8922adb@linaro.org>
+Date:   Mon, 20 Nov 2023 20:31:13 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Michal Simek <michal.simek@amd.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <19358871-009d-4498-9c13-90d5338b1e9f@amd.com>
+ <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
+ <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.187.171.26]
-X-ClientProxiedBy: EX19D041UWA001.ant.amazon.com (10.13.139.124) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Babrou <ivan@cloudflare.com>
-Date: Fri, 17 Nov 2023 15:38:42 -0800
-> On Mon, Oct 23, 2023 at 4:46 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> >
-> > From: Ivan Babrou <ivan@cloudflare.com>
-> > Date: Mon, 23 Oct 2023 16:22:35 -0700
-> > > On Fri, Oct 20, 2023 at 6:23 PM Hillf Danton <hdanton@sina.com> wrote:
-> > > >
-> > > > On Fri, 20 Oct 2023 10:25:25 -0700 Ivan Babrou <ivan@cloudflare.com>
-> > > > >
-> > > > > This could solve wait_for_unix_gc spinning, but it wouldn't affect
-> > > > > unix_gc itself, from what I understand. There would always be one
-> > > > > socket writer or destroyer punished by running the gc still.
-> > > >
-> > > > See what you want. The innocents are rescued by kicking a worker off.
-> > > > Only for thoughts.
-> > > >
-> > > > --- x/net/unix/garbage.c
-> > > > +++ y/net/unix/garbage.c
-> > > > @@ -86,7 +86,6 @@
-> > > >  /* Internal data structures and random procedures: */
-> > > >
-> > > >  static LIST_HEAD(gc_candidates);
-> > > > -static DECLARE_WAIT_QUEUE_HEAD(unix_gc_wait);
-> > > >
-> > > >  static void scan_inflight(struct sock *x, void (*func)(struct unix_sock *),
-> > > >                           struct sk_buff_head *hitlist)
-> > > > @@ -185,24 +184,25 @@ static void inc_inflight_move_tail(struc
-> > > >                 list_move_tail(&u->link, &gc_candidates);
-> > > >  }
-> > > >
-> > > > -static bool gc_in_progress;
-> > > > +static void __unix_gc(struct work_struct *w);
-> > > > +static DECLARE_WORK(unix_gc_work, __unix_gc);
-> > > > +
-> > > >  #define UNIX_INFLIGHT_TRIGGER_GC 16000
-> > > >
-> > > >  void wait_for_unix_gc(void)
-> > > >  {
-> > > >         /* If number of inflight sockets is insane,
-> > > > -        * force a garbage collect right now.
-> > > > -        * Paired with the WRITE_ONCE() in unix_inflight(),
-> > > > -        * unix_notinflight() and gc_in_progress().
-> > > > -        */
-> > > > -       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC &&
-> > > > -           !READ_ONCE(gc_in_progress))
-> > > > -               unix_gc();
-> > > > -       wait_event(unix_gc_wait, gc_in_progress == false);
-> > > > +        * kick a garbage collect right now.
-> > > > +        *
-> > > > +        * todo s/wait_for_unix_gc/kick_unix_gc/
-> > > > +        */
-> > > > +       if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC /2)
-> > > > +               queue_work(system_unbound_wq, &unix_gc_work);
-> > > >  }
-> > > >
-> > > > -/* The external entry point: unix_gc() */
-> > > > -void unix_gc(void)
-> > > > +static DEFINE_MUTEX(unix_gc_mutex);
-> > > > +
-> > > > +static void __unix_gc(struct work_struct *w)
-> > > >  {
-> > > >         struct sk_buff *next_skb, *skb;
-> > > >         struct unix_sock *u;
-> > > > @@ -211,15 +211,10 @@ void unix_gc(void)
-> > > >         struct list_head cursor;
-> > > >         LIST_HEAD(not_cycle_list);
-> > > >
-> > > > +       if (!mutex_trylock(&unix_gc_mutex))
-> > > > +               return;
-> > > >         spin_lock(&unix_gc_lock);
-> > > >
-> > > > -       /* Avoid a recursive GC. */
-> > > > -       if (gc_in_progress)
-> > > > -               goto out;
-> > > > -
-> > > > -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
-> > > > -       WRITE_ONCE(gc_in_progress, true);
-> > > > -
-> > > >         /* First, select candidates for garbage collection.  Only
-> > > >          * in-flight sockets are considered, and from those only ones
-> > > >          * which don't have any external reference.
-> > > > @@ -325,11 +320,12 @@ void unix_gc(void)
-> > > >         /* All candidates should have been detached by now. */
-> > > >         BUG_ON(!list_empty(&gc_candidates));
-> > > >
-> > > > -       /* Paired with READ_ONCE() in wait_for_unix_gc(). */
-> > > > -       WRITE_ONCE(gc_in_progress, false);
-> > > > -
-> > > > -       wake_up(&unix_gc_wait);
-> > > > -
-> > > > - out:
-> > > >         spin_unlock(&unix_gc_lock);
-> > > > +       mutex_unlock(&unix_gc_mutex);
-> > > > +}
-> > > > +
-> > > > +/* The external entry point: unix_gc() */
-> > > > +void unix_gc(void)
-> > > > +{
-> > > > +       __unix_gc(NULL);
-> > > >  }
-> > > > --
-> > >
-> > > This one results in less overall load than Kuniyuki's proposed patch
-> > > with my repro:
-> > >
-> > > * https://lore.kernel.org/netdev/20231020220511.45854-1-kuniyu@amazon.com/
-> > >
-> > > My guess is that's because my repro is the one that is getting penalized there.
-> >
-> > Thanks for testing, and yes.
-> >
-> > It would be good to split the repro to one offender and one normal
-> > process, run them on different users, and measure load on the normal
-> > process.
-> >
-> >
-> > > There's still a lot work done in unix_release_sock here, where GC runs
-> > > as long as you have any fds inflight:
-> > >
-> > > * https://elixir.bootlin.com/linux/v6.1/source/net/unix/af_unix.c#L670
-> > >
-> > > Perhaps it can be improved.
-> >
-> > Yes, it also can be done async by worker as done in my first patch.
-> > I replaced schedule_work() with queue_work() to avoid using system_wq
-> > as gc could take long.
-> >
-> > Could you try this ?
+On 20/11/2023 20:18, Geert Uytterhoeven wrote:
+> Hi Krzysztof,
 > 
-> Apologies for the long wait, I was OOO.
+> On Mon, Nov 20, 2023 at 3:53 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>> On 20/11/2023 15:01, Michal Simek wrote:> >
+>>> On 11/20/23 09:40, Krzysztof Kozlowski wrote:
+>>>> Document preferred coding style for Devicetree sources (DTS and DTSI),
+>>>> to bring consistency among all (sub)architectures and ease in reviews.
 > 
-> A bit of a problem here is that unix_gc is called unconditionally in
-> unix_release_sock.
-
-unix_release_sock() calls gc only when there is a inflight socket.
-
-
-> It's done asynchronously now and it can only
-> consume a single CPU with your changes, which is a lot better than
-> before. I am wondering if we can still do better to only trigger gc
-> when it touches unix sockets that have inflight fds.
+>>>> +Organizing DTSI and DTS
+>>>> +-----------------------
+>>>> +
+>>>> +The DTSI and DTS files should be organized in a way representing the common
+>>>> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
+>>>> +and DTS files into several files:
+>>>> +
+>>>> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
+>>>> +   on the SoC).
+>>>> +2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
+>>>> +   entire System-on-Module).
+>>>
+>>> DTS/DTSI - SOMs can actually run as they are that's why it is fair to say that
+>>> there doesn't need to be DTS representing the board.
+>>
+>> I have never seen a SoM which can run without elaborate hardware-hacking
+>> (e.g. connecting multiple wires to the SoM pins). The definition of the
+>> SoM is that it is a module. Module can be re-used, just like SoC.
 > 
-> Commit 3c32da19a858 ("unix: Show number of pending scm files of
-> receive queue in fdinfo") added "struct scm_stat" to "struct
-> unix_sock", which can be used to check for the number of inflight fds
-> in the unix socket. Can we use that to drive the GC?
-
-I don't think the stat is useful to trigger gc.  Unless the receiver
-is accessible via sendmsg(), it's not a gc candidate and we need not
-care about its stats about valid FDs that are ready to be processed
-and never cleaned up by gc until close().
-
-
-> I think we can:
+> /me looks at his board farm...
 > 
-> * Trigger unix_gc from unix_release_sock if there's a non-zero number
-> of inflight fds in the socket being destroyed.
-
-This is the case of now.
-
-
-> * Trigger wait_for_unix_gc from the write path only if the write
-> contains fds or if the socket contains inflight fds. Alternatively, we
-> can run gc at the end of the write path and only check for inflight
-> fds on the socket there, which is probably simpler.
-
-I don't think it's better to call gc at the end of sendmsg() as there
-would be small chance to consume memory compared to running gc in the
-beginning of sendmsg().
-
-
-> GC only applies to unix sockets inflight of other unix sockets, so GC
-> can still affect sockets passing regular fds around, but it wouldn't
-> affect non-fd-passing unix sockets, which are usually in the data
-> path.
-
-I think we can run gc only when scm contains AF_UNIX sockets by tweaking
-a little bit scm processing.
-
-
-> This way we don't have to check for per-user inflight fds, which means
-> that services running as "nobody" wouldn't be punished for other
-> services running as "nobody" screwing up.
-
-If we do not check user, a user could send 16000 AF_UNIX fds and
-other innocent users sending fds must wait gc.
-
-I think isolating users would make more sense so you can sandbox
-a suspicious process.
-
-Probably we can move flush_work() in the preceding if.  Then, the
-number of gc invocation in the "nobody" case is the same as before.
-
----8<---
-diff --git a/net/unix/garbage.c b/net/unix/garbage.c
-index 51f30f89bacb..74fc208c8858 100644
---- a/net/unix/garbage.c
-+++ b/net/unix/garbage.c
-@@ -198,12 +198,13 @@ void wait_for_unix_gc(void)
- 	 * Paired with the WRITE_ONCE() in unix_inflight(),
- 	 * unix_notinflight().
- 	 */
--	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC)
-+	if (READ_ONCE(unix_tot_inflight) > UNIX_INFLIGHT_TRIGGER_GC) {
- 		queue_work(system_unbound_wq, &unix_gc_work);
- 
--	/* Penalise senders of not-yet-received-fd */
--	if (READ_ONCE(user->unix_inflight))
--		flush_work(&unix_gc_work);
-+		/* Penalise senders of not-yet-received-fd */
-+		if (READ_ONCE(user->unix_inflight))
-+			flush_work(&unix_gc_work);
-+	}
- }
- 
- static void __unix_gc(struct work_struct *work)
----8<---
-
-
+> The Renesas White-Hawk CPU board can be used standalone, and has a
+> separate power input connector for this operation mode.  As it has RAM,
+> Ethernet, serial console, eMMC, and even mini-DP, it can serve useful
+> purposes on its own.
+> I agree it's not a super-good example, as the board is not really a
+> "SoM", and we currently don't have r8a779g0-white-hawk-cpu.dts, only
+> r8a779g0-white-hawk-cpu.dtsi.
 > 
-> Does this sound like a reasonable approach?
+> The RZ/A2M CPU Board is a real SoM, which can be powered over USB.
+> It has less standard connectors (microSD, USB, MIPI CSI-2), but still
+> sufficient features to be usable on its own.
+> Again, we're doing a bad job, as we only have a DTS for the full eval
+> board (r7s9210-rza2mevb.dts).
 > 
-[...]
-> > -static bool gc_in_progress;
-> > -#define UNIX_INFLIGHT_TRIGGER_GC 16000
-> > +#define UNIX_INFLIGHT_TRIGGER_GC 16
-> 
-> It's probably best to keep it at 16k.
+> I guess there are (many) other examples...
 
-Oops, this is just for testing on my local machine easily :p
+OK, I never had such in my hands. Anyway, the SoM which can run
+standalone  has a meaning of a board, so how exactly you want to
+rephrase the paragraph?
 
-Anyway, I'll post a formal patch this week.
+Best regards,
+Krzysztof
 
-Thanks!
