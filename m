@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25FB7F193F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320437F1941
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjKTRCM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 12:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
+        id S231136AbjKTRCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbjKTRCH (ORCPT
+        with ESMTP id S229507AbjKTRCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:02:07 -0500
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDC5126;
-        Mon, 20 Nov 2023 09:02:03 -0800 (PST)
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5c1b6fc5426so225830a12.1;
-        Mon, 20 Nov 2023 09:02:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700499723; x=1701104523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wap2qAg0DBdSf4l2p1ebSWPpLwllDzPa5k8hAng2Ze4=;
-        b=q9nMv4i3nS7JnUSxPtm/VzfUjQQtavghabWXt68pZdZKLn9YpOXnifhyrW0/ZeBGqA
-         LWphlCjMGRHVnXjkC59zQmVoahjuQdYAfG2/bO3YEox3Sab6vKGh4KUdhr9rNYGJob8p
-         xm5ae2d0xUJaFy7qJtsxIZoTvwPc3UfWfo/3MObK3RZIFLzQr6AJGkJ6SufYGiFqtBNR
-         HDuHmJA/WMq9PvBaTu9vZoZhIPxQklz83drYa4IdnENGBNkftgRc6EL2lUWzN7NbbuZU
-         Ao+Qlobbbszem1s5ihX0Rgnzgs3KZhjax7BX6HpV0Ge3khFueM1/WU5x1/gj/zuaLP/g
-         cjrQ==
-X-Gm-Message-State: AOJu0YyWCsyfFvD/eDPWILTOJWkA57eLVGceKp9jjzWazMr+y4Z/qfcM
-        QmnW/JK8TwEgckHfkp+V2kaDgRVNQlvQHJP/040=
-X-Google-Smtp-Source: AGHT+IFiimo5DD8z14v7WB+HHlNduQJxInb/KP+ClEWuDUo4V9Po4DbcA9/bm7pqIq2wlMgtzBGDB5oFY9pef5JkKzU=
-X-Received: by 2002:a05:6a20:3d87:b0:14e:2c56:7b02 with SMTP id
- s7-20020a056a203d8700b0014e2c567b02mr11059145pzi.0.1700499722921; Mon, 20 Nov
- 2023 09:02:02 -0800 (PST)
+        Mon, 20 Nov 2023 12:02:41 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EC5BA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:02:36 -0800 (PST)
+Received: from [194.95.143.137] (helo=phil.sntech)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r57fI-0000jr-Uf; Mon, 20 Nov 2023 18:02:28 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>, hjc@rock-chips.com
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-arm-kernel@lists.infradead.org, airlied@gmail.com,
+        linux-rockchip@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH v1 0/4] Rockchip rk3066_hdmi update
+Date:   Mon, 20 Nov 2023 18:02:18 +0100
+Message-Id: <170049972584.1779880.13529778706599017239.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
+References: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
 MIME-Version: 1.0
-References: <a5f86bcf03b2ed809245d57f5971ae42a8b85128.camel@infradead.org> <ZVT+Fq1yVZ9G8pqx@shikoro>
-In-Reply-To: <ZVT+Fq1yVZ9G8pqx@shikoro>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 20 Nov 2023 18:01:51 +0100
-Message-ID: <CAJZ5v0j=b_k1gnHfPSNGkNm4nTW8Erou=B3KYW5+6Mqy-iTfyQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: tools: Fix sleepgraph syntax error
-To:     Wolfram Sang <wsa@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>, Xueqin Luo <luoxueqin@kylinos.cn>,
-        Todd E Brandt <todd.e.brandt@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-pm <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 6:21 PM Wolfram Sang <wsa@kernel.org> wrote:
->
-> On Wed, Nov 15, 2023 at 11:47:51AM -0500, David Woodhouse wrote:
-> > From: David Woodhouse <dwmw@amazon.co.uk>
-> >
-> > The sleepgraph tool currently fails:
-> >
-> >   File "/usr/bin/sleepgraph", line 4155
-> >     or re.match('psci: CPU(?P<cpu>[0-9]*) killed.*', msg)):
-> >                                                          ^
-> > SyntaxError: unmatched ')'
-> >
-> > Fixes: 34ea427e01ea ("PM: tools: sleepgraph: Recognize "CPU killed" messages")
-> > Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
->
-> Had the same issue:
->
-> Reviewed-by: Wolfram Sang <wsa@kernel.org>
+On Thu, 2 Nov 2023 14:40:13 +0100, Johan Jonker wrote:
+> Update the Rockchip rk3066_hdmi driver in a somewhat similar way
+> to what is proposed for the inno_hdmi driver.
+> 
+> Johan Jonker (4):
+>   drm/rockchip: rk3066_hdmi: Remove useless mode_fixup
+>   drm/rockchip: rk3066_hdmi: Switch encoder hooks to atomic
+>   drm/rockchip: rk3066_hdmi: Remove useless output format
+>   drm/rockchip: rk3066_hdmi: Remove unused drm device pointer
+> 
+> [...]
 
-Applied as 6.7-rc material, thanks!
+Applied, thanks!
+
+[1/4] drm/rockchip: rk3066_hdmi: Remove useless mode_fixup
+      commit: 1044f4a31734eef000f42cdaaf35bb2f76286be5
+[2/4] drm/rockchip: rk3066_hdmi: Switch encoder hooks to atomic
+      commit: ae3436a5e7c2ef4f92938133bd99f92fc47ea34e
+
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
