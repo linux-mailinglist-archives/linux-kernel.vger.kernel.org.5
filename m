@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6D97F1095
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B370E7F10B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbjKTKmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
+        id S232649AbjKTKp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:45:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjKTKmO (ORCPT
+        with ESMTP id S232701AbjKTKpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:42:14 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FF0A0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:42:09 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548d1f8b388so676386a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:42:09 -0800 (PST)
+        Mon, 20 Nov 2023 05:45:41 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4AED61
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:45:09 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9c603e2354fso794261266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:45:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700476928; x=1701081728; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700477108; x=1701081908; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zXef7q1NxndeoQGAm7hYwee9Pb6CdWeIDQttMrV03ZI=;
-        b=SoqcjvG3cCGjhKkBHSso+1usZoh/Y+rmCBbzbWDR2XDlW5dts2t/IWXk+ttMalWIXl
-         kkbpad+lsUYS0y4jumHAJdI+ClCHqSKtnAvOQsEkxDhbch00Nci5LptJSULEtF317SVz
-         ObEAm4J3oI7W00fxHI7hEEbSGMtzp9IikdFlB5eP2BNfGB9WzslELQYb6kpfICLbD7U3
-         FxDSY6ezBiGeN4mKnrCGb4BozjLYXG0NI7+LsT33pJtRaswoCjYubkcI6HRwmAkKoWch
-         WD1MzlbfYIwPQfJHGujyPXyh9Tk35apHMr0uiC1FyiI4w+dsX9zGB//Ch81nYfzaR3HE
-         QqKA==
+        bh=pEGM8ev0APvf3tLYEQebZXb/D0A2uaiSExo0/kQhZG0=;
+        b=Oyz9WlzdoI5o5V//eW3QSSkJIoSQVQv3wIWFk0JciwpsRs5MtA5nDb+B6vcKrveMhP
+         7OFPE61Ts4DGx1fa30J5i6aDFuojZUpnccEF40/zFDkfZ6fJoYamVe9Tqygqety0jZhk
+         mH993JNh/gWmTOEH36F5mqtq6ff7IY0dJvmbX6uZ0UtLOY2AzHrxRKzw1LEbMK4+mVdU
+         re5IzyhZSyoIkgSODIlCFIRE4C/j1KTMsxSe4GybQJ760mpd5e8/TIRQljDoubhSZBI0
+         I+gpeScraINRWIiBSv0ct6w5iBFkgnBUpujv5bmFwsZ0rmKxQ2+tHg2cuDwGSj97OfTS
+         BG0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700476928; x=1701081728;
+        d=1e100.net; s=20230601; t=1700477108; x=1701081908;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zXef7q1NxndeoQGAm7hYwee9Pb6CdWeIDQttMrV03ZI=;
-        b=T7EoVxbArDLNnWq6shW7GbPAjt981JpF/yiSGDqgTwR+ToC8WqZZRc0YvKb1zKKstI
-         nRhEaXHcWBscgHchLHmFqbSa9gx5JqaRsl60+XwJ9D5BxfiXGbp2+EK24vf0lnhVPvT1
-         tuh0KaQ+qRsyuGNG/DGo/GFeNQt00HNIO2RARrRk7EwGMvxtWItQMgFqUiedi5mrkeFE
-         PpSLeYeADkVIEfhTlXbrm/ywLPKDS9Dnroe5tpFIa2EVJWBhsSx+oobOMVQLqRVgwn/+
-         ZNti0XDjiWgC6YfuSNwkdTPbOr+Kf+lkOYDGA5bhYpT1HILlzR7ybTV0kVRBD4pEBHeU
-         tfMA==
-X-Gm-Message-State: AOJu0YyZEFfAc1wDuNwDuoLf8R9j3zPAWiqvenjasnmdEBUE6ktUxPfB
-        j5tWp+MD4FCmKIlU7gHtslrGCw==
-X-Google-Smtp-Source: AGHT+IGs0lPfYBHdD9kSGPLvmqTBh0xUeXaLVSlbG8zkPgytF0vdFUzEWNIAfsAJd/aSrKsDDtdb0A==
-X-Received: by 2002:aa7:c6c5:0:b0:53f:ef96:b2ee with SMTP id b5-20020aa7c6c5000000b0053fef96b2eemr4791598eds.22.1700476928245;
-        Mon, 20 Nov 2023 02:42:08 -0800 (PST)
+        bh=pEGM8ev0APvf3tLYEQebZXb/D0A2uaiSExo0/kQhZG0=;
+        b=m/Ejeb1c6bv3qTNFVeaRVMiwRCNL2UyEZWMAr2hVY2skBCRHZVMIZ/UC93APpBB6aY
+         o1WTrmoB28771oRi4d1MwaKw81/Kudj5fu2JEWdjugMNaVVycZfAoUTLnoFCPzhD7WQI
+         h4kCQfNLevgncm+2AAcTwD78EA3q24emrbgTXvBm/OoaKlKigveyrLBrWdzp/bZluAce
+         TEzZBxWlXV5ddf5w4YWpJltKwdzBUgn/Z3AMnooiu4xc0rqLjddyEAJRqOFxag876No3
+         X1fIbbvvRSNAF9rRJoGUHGtisv/1zJT61U7bMO3ECbcVdKCYl0C5DCUWnQQuBDR6Mwb1
+         biTw==
+X-Gm-Message-State: AOJu0YznSwPLC7B+Il5JzmefJcFP04wlsLSEpTMjdBG7gnH+yOizqvpz
+        i8NSDAl00G7Wq7AydkG3yRHjMA==
+X-Google-Smtp-Source: AGHT+IEjP8sPK0UFipMOi0e2LIEYHnmhsDWqIRUN1UJ/6btEhdrsFuvC8BQ0XgQUHicCUPuUNIHwYw==
+X-Received: by 2002:a17:906:259:b0:9ee:85ed:3196 with SMTP id 25-20020a170906025900b009ee85ed3196mr1455343ejl.0.1700477107696;
+        Mon, 20 Nov 2023 02:45:07 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id y24-20020aa7d518000000b005402c456892sm3487604edq.33.2023.11.20.02.42.06
+        by smtp.gmail.com with ESMTPSA id lz10-20020a170906fb0a00b009737b8d47b6sm3732334ejb.203.2023.11.20.02.45.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 02:42:07 -0800 (PST)
-Message-ID: <d28f4e15-3e47-4d6a-91ee-660b786974b2@linaro.org>
-Date:   Mon, 20 Nov 2023 11:42:05 +0100
+        Mon, 20 Nov 2023 02:45:07 -0800 (PST)
+Message-ID: <d82e5a5f-1bbc-455e-b6a7-c636b23591f7@linaro.org>
+Date:   Mon, 20 Nov 2023 11:45:05 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Add sophgo,efuses
+Subject: Re: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is
+ running
 Content-Language: en-US
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>
-References: <20231119131332.999-1-jszhang@kernel.org>
- <20231119131332.999-2-jszhang@kernel.org>
+To:     Nguyen Dinh Phi <phind.uet@gmail.com>, bongsu.jeon@samsung.com
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com" 
+        <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
+References: <20231119164705.1991375-1-phind.uet@gmail.com>
+ <CGME20231119164714epcas2p2c0480d014abc4f0f780c714a445881ca@epcms2p4>
+ <20231120044706epcms2p48c4579db14cc4f3274031036caac4718@epcms2p4>
+ <bafc3707-8eae-4d63-bc64-8d415d32c4b9@linaro.org>
+ <20d93e83-66c0-28d9-4426-a0d4c098f303@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,7 +112,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231119131332.999-2-jszhang@kernel.org>
+In-Reply-To: <20d93e83-66c0-28d9-4426-a0d4c098f303@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,86 +125,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2023 14:13, Jisheng Zhang wrote:
-> Sophgo SoCs such as CV1800B come with eFuses used to store
-> factory-programmed data such as calibration settings for the built-in
-> ethernet PHY.
+On 20/11/2023 11:39, Nguyen Dinh Phi wrote:
+>>>>           mutex_lock(&vdev->mtx);
+>>>>           kfree_skb(vdev->send_buff);
+>>>>           vdev->send_buff = NULL;
+>>>> +        vdev->running = false;
+>>>>           mutex_unlock(&vdev->mtx);
+>>>>   
+>>>>           return 0;
+>>>> @@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
+>>>>           struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+>>>>   
+>>>>           mutex_lock(&vdev->mtx);
+>>>> -        if (vdev->send_buff) {
+>>>> +        if (vdev->send_buff || !vdev->running) {
+>>>
+>>> Dear Krzysztof,
+>>>
+>>> I agree this defensive code.
+>>> But i think NFC submodule has to avoid this situation.(calling send function of closed nci_dev)
+>>> Could you check this?
+>>
+>> This code looks not effective. At this point vdev->send_buff is always
+>> false, so the additional check would not bring any value.
+>>
+>> I don't see this fixing anything. Syzbot also does not seem to agree.
+>>
+>> Nguyen, please test your patches against syzbot *before* sending them.
+>> If you claim this fixes the report, please provide me the link to syzbot
+>> test results confirming it is fixed.
+>>
+>> I looked at syzbot dashboard and do not see this issue fixed with this
+>> patch.
+>>
+>> Best regards,
+>> Krzysztof
+>>
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-
-Thank you for your patch. There is something to discuss/improve.
-
-
-> ---
->  .../bindings/nvmem/sophgo,efuse.yaml          | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
+> Hi Krzysztof,
 > 
-> diff --git a/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml b/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
-> new file mode 100644
-> index 000000000000..e4ae81a1742a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
+> I've submitted it to syzbot, it is the test request that created at 
+> [2023/11/20 09:39] in dashboard link 
+> https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
 
-Filename should match the compatible, unless you already have other
-devices coming.
+...and I see there two errors.
 
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/nvmem/sophgo,efuse.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sophgo SoC eFuse-based NVMEM
-> +
-> +description: |
-
-Do not need '|' unless you need to preserve formatting.
-
-> +  Sophgo SoCs such as the CV1800B contain factory-programmed eFuses used to e.g. store
-
-Please wrap at Linux coding style (so 80).
-
-> +  calibration data for the built-in ethernet PHY.
-
-
-Blank line here.
-
-> +maintainers:
-> +  - Jisheng Zhang <jszhang@kernel.org>
-> +
-> +allOf:
-> +  - $ref: nvmem.yaml#
-> +  - $ref: nvmem-deprecated-cells.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    items:
-
-Drop items, we keep just enum directly for such cases.
-
-> +      - enum:
-> +          - sophgo,cv1800b-efuse
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description:
-> +      eFuse clock id.
-
-Drop description, quite obvious.
-
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +...
+I don't know, maybe I miss something obvious (our brains like to do it
+sometimes), but please explain me how this could fix anything?
 
 Best regards,
 Krzysztof
