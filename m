@@ -2,129 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 985E67F1BD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8172C7F1BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbjKTSA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S234265AbjKTSEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbjKTSAZ (ORCPT
+        with ESMTP id S234176AbjKTSEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:00:25 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C40E92;
-        Mon, 20 Nov 2023 10:00:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=5wD7wBF+lHKdF+Dqen+lnC7hkw+eQyJUlyzbsg0+08c=; b=hjw7EmvbLqLK70QVQXYoHYyWgE
-        RaWMzEwXzQL+xor+owvdn5Wjz6Y5h8Epeo4tVEyFU0JK/NbxjR7oNneI5ZpBkBr4sh33W1orqVd2M
-        qpzH1sFnaWwBCtj6mv06ydHv1PZiHRm2u8s/SmRynOvHJesAIZyNGXRKzx5zDli7KgL8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r58Z1-000g3L-Tr; Mon, 20 Nov 2023 19:00:03 +0100
-Date:   Mon, 20 Nov 2023 19:00:03 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 2/9] ethtool: Expand Ethernet Power Equipment
- with PoE alongside PoDL
-Message-ID: <2539b109-72ad-470a-9dae-9f53de4f64ec@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
- <20231116-feature_poe-v1-2-be48044bf249@bootlin.com>
- <04cb7d87-bb6b-4997-878d-490c17bfdfd0@lunn.ch>
- <20231120110944.66938859@kmaincent-XPS-13-7390>
- <20231120111008.GC590719@pengutronix.de>
+        Mon, 20 Nov 2023 13:04:16 -0500
+Received: from sonic316-26.consmr.mail.ne1.yahoo.com (sonic316-26.consmr.mail.ne1.yahoo.com [66.163.187.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4787FBC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:04:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1700503449; bh=YsSUzOehopsOuurjoEtRppweQH73o8CvXnhYaHqSYNA=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Y48fR4a1Ue5dN+gcENJyMBe/drjiV2JVr9TJ5W51EETAC7PSyTDXh7nPOXBjXPWG4rVP3l5pMVcBO/+1zfjuvOPVOVZsPvTI5tAKoONrUA4jWZUQyGjsPMMRXKJV0BGgelmBZZa0AXZ5V7zqDg1o7m1mJvDOqFcmP0Td/g0ZrxPAhMlmNaBN4KPB/L/Vo55J/o4glEvtoPlpc8rAyLCSzO/1A8XQh+BMzVRe7M5OlREipzuSeWmtjEDM4Nn+xnrkSkLpKtFIIaisOEnr/aVtxp6PlkpLq6ydLg/t24Gstl+0RQkDIUyoTHT6R5l7MTizf3kkbUaM0px2CWGmH1yz6A==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1700503449; bh=0Cajj7CWL5u42Ymw4ZXt7+/Jl0xbYZhm0bGq/aHkHp+=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=ill12XfQwbk6r1F8Imm5oSABKvBwfq2pzy1CylQ+REizhYulRW/zYRw5WwKjeau1on11YwjCFAiuuAgMvsjccp40yXF+cdBwCO/lgJb2+8aGBSswo5j9//frT41VoBezYkXPp5r2VZJpzfp9ky8j022rB97v/XqBCMTLhx+7UCW7s5b/sO9GO1jv6mt+ND/fRrE3qlpreChqLx5CC2E18LmzUg/dB8Xo5lsXrc2wZQPvcDIaQmZ+EenTB2DYT1SFWCurM0304+lIshyjcDYl+4xohjQf6oaZEF31KvvhqrsMv9jqyFw+lUQiscbKegJ/qN7M1UPAGtim7O1j8uXH1A==
+X-YMail-OSG: i3xlU9UVM1mvC3IPjn2QuideRSRibsfGRbWKrfJrAHBGD2jEboFXXaDDltovQfu
+ EpOwZX5a.510h0YvsThKiaI5bvE0ZTuRm5upUnxOAgDisdXW53tUhdqckw_sWYPnvKTm0aBi8LVR
+ WWZgJBH0Rhl9A9j1sIrIkxsPc.dHkxVip09lgKSMG6kNrD9PNgwpC8gzIZPqE8tApawhAPnz1hV0
+ 9xs6hwBd0fNCgKoz7x9meXABK6k2JXidT2oqqpHRFarvL4OP3qvEVI8aFDc6nCQS9z7PaMiafRYU
+ nCIDj3wqduW48ROIjTH.LYgUvf2cIvIxDmxCkGlfv5fmPfP98Q1f_bJM6FF1b92FrrM.z9kcu2oC
+ uWSOnDjkHrnbjU80I_yaWjZ0fZS0dRIQWfiMWHoXftxYoqm5eH.ssr3cxcOAH9G4sJzDVi3khv0v
+ pOcAcX5c8G63M.s.Xqea15NNBXVuvDYZ0rEzmMFQLaf0qbpwBmxSDeURozhuOHP.ofxnz6GCjB3k
+ Q1Eaiu4tJ.zwMW.DYdMqhk9W2LF96ZBQYMBQY_z.TAYUUTTuluznc902_tR6zv3oyfGzLbzKYCiX
+ Fho2NlqZwNkr2knvtAcyi_8a8nPYjKsLjHibEA9_SPj4MhPHdq0apCfiqLJytcJ4L8GqqdahMNRl
+ Ls4UljVUAzELNncmxF2pISJZ5jo6cqRjIaT8NwgMyt0teWSJpd1LJ0UV.hULzlWKKnAByIjp9dDQ
+ JTrpdNJLKh5zulxcBv.b5hGhgBzjJcdiUJL0WCRmCtP.OFIUZcUZrm5M7N3wjWjiPBjhQ7qCunOk
+ IUHrcyDhFBrhYCxG3_IsFHjMaTA.4OPCTa8D8Rnsh6VqimJJhoM3oSJADi0kKmWYlQROpqz3KvGs
+ blpJhcA.1JX8b79LAz4B2CimFpbMZgHKOftPVwSdps2WW.5sMSH31DRs03ojI29Wpvayd5q2Tacl
+ v.hB6qFizEAYziT2_Xr2_F2RmysJahAqPv1yXc1ukzujjFLk_iXY0h5PG3qbDcS0CxzoUXmUJ.Mo
+ RnqKUXQqEtPbJ4OAfYB3X_RNW.T3w0rVbavYE3gyTEQFzy8IgltoOWjbwDUSrmFPxdlUTbdT_vwW
+ Sxv3g9dhf3alBXPAQPQhvISxi6IKd0v4ns4j8s3CjRG6E_hk.tjXnMvkgSSVKMDeDg6Va63w.ma8
+ Gl76lnmm6uOOEdNy2qQodCZFvfO5i9xiIIdl1_APuhP2GH4DwGo4aei0V4TK9FGKbrU17kaDJ636
+ Z.Vc41DMUEQfFDXPBCU6y4FGH3FP1F.z99_NMWQp_izS4WGIlwob.4zIvj6qkuzPccqJY3A51hqY
+ UgsDDsH9HE2SN54YV5AB45WkRsrcH3V0mI9yeA_aaT0Up.JK0KGh_newgHMdL4uZRqzdY5S6lKFU
+ z_hgar7oUZSO6uYuhv80yFCabJ.OGEyjO2SEk4kKe25vGUDVecYpLp1v9y7gy1pZjiH0qJe2Ghad
+ oUa98D_BU2yZ5HzGwdI_H8tfG_ezIiruxwJzRoGpYwN_ghRmy8_xenf7pOe28fu6oqMpcKWvVL7T
+ HkV.3nHiCFzreDyPGWCUikMR78K4kbayCD6144swLw.PNSMd9wHGbpR5Yp4kPjeM3Qsf8xXaE8j7
+ C2v1Aavmt375OukEg_qgEJsxsgI9AQor5cNTuSdYVNK8zqgAKErEkpbMs3GTnEoSc.SDq.9UAgbN
+ nCXCAGBWBZuOKIaINNqkkDx__wIXJ14Ja3OYAufxTyMZQthDZgQSIzER7FbHsxBW06hZCRdo8BPe
+ di6zGpvuhtr3MUlavnRqk30srdTXG8QoU17XHorezj51il4SLyc0_D3fJ5Cx2xat4AB4718WvEjy
+ euMmv64bEWu8dEH01pt9gVLJVA.3uiwrBy8RZUOyZ_IJ3smPS3GJYFO_lIpaH5dCwrRIhaFnL092
+ 9N2UQYbObF4hSQ46S3C9usRGtl2DjRJTcJTs_cB4_xRnguzEeLxWkahUhmHxW0jsZQvykUV9khza
+ 6T6hul82P3HOoDwB07xYfUk6fThuz9QyWZhhOzPgMB4QY19.nSvOB1bODOp1_042Xk6dVVleKi4d
+ VI6PiM9JU6.ogNdKh_mZIXPWY76vjNPor2S5eDKim4mmYdOSEzRIyjIzC.PCGfTgmSiVZityE.nZ
+ 48kLWF4tkgfJuUKZsV2qi5GLAJRT4J36i9GSF1lARncqN58niNRFfODfEhO57Fkl3EUhp8DGbUmj
+ dXuW6Azo2b2uNTS_nOd4T4xhigGpInOwTDbLR3.d6DkR92tplk0EBv2po
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: b514ae89-a91e-4c32-9d1c-c882b7e7008c
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 20 Nov 2023 18:04:09 +0000
+Received: by hermes--production-gq1-59b5df67b6-hs7p7 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 3916744e962c63c3de3d31fc01bce0cd;
+          Mon, 20 Nov 2023 18:04:02 +0000 (UTC)
+Message-ID: <13f7542f-4039-47a8-abde-45a702b85718@schaufler-ca.com>
+Date:   Mon, 20 Nov 2023 10:03:59 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120111008.GC590719@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 11/23] security: Introduce inode_post_removexattr hook
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-12-roberto.sassu@huaweicloud.com>
+ <85c5dda2-5a2f-4c73-82ae-8a333b69b4a7@schaufler-ca.com>
+ <1999ed6f77100d9d2adc613c9748f15ab8fcf432.camel@huaweicloud.com>
+Content-Language: en-US
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <1999ed6f77100d9d2adc613c9748f15ab8fcf432.camel@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > >  struct pse_control_config {
-> > > >  	enum ethtool_podl_pse_admin_state podl_admin_control;
-> > > > +	enum ethtool_pse_admin_state admin_control;  
-> > > 
-> > > When i look at this, it seems to me admin_control should be generic
-> > > across all schemes which put power down the cable, and
-> > > podl_admin_control is specific to how PoDL puts power down the cable.
-> > >
-> > > Since you appear to be adding support for a second way to put power
-> > > down the cable, i would expect something like poe_admin_control being
-> > > added here. But maybe that is in a later patch?
-> > 
-> > No as said above admin_control is for PoE and podl_admin_control is for PoDL.
-> > Maybe you prefer to use poe_admin_control, and add poe prefix in the poe
-> > variables. It will differ a bit from the IEEE standard naming but I agreed that
-> > it would be more understandable in the development part.
-> 
-> Official name for "PoE" is "Power via Media Dependent Interface". PoE is
-> not used in the IEEE 802.3-2018. Using names not used in the specification,
-> make development even harder :)
-> Especially since there are even more marketing names (names not used in the
-> specification) for different PoE variants:
-> - 802.3af (802.3at Type 1), PoE
-> - 802.3at Type 2, PoE+
-> - 802.3bt Type 3, 4PPoE or PoE++
-> - 802.3bt Type 4, 4PPoE or PoE++
+On 11/20/2023 9:31 AM, Roberto Sassu wrote:
+> On Tue, 2023-11-07 at 09:33 -0800, Casey Schaufler wrote:
+>> On 11/7/2023 5:40 AM, Roberto Sassu wrote:
+>>> From: Roberto Sassu <roberto.sassu@huawei.com>
+>>>
+>>> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+>>> the inode_post_removexattr hook.
+>>>
+>>> At inode_removexattr hook, EVM verifies the file's existing HMAC value. At
+>>> inode_post_removexattr, EVM re-calculates the file's HMAC with the passed
+>>> xattr removed and other file metadata.
+>>>
+>>> Other LSMs could similarly take some action after successful xattr removal.
+>>>
+>>> The new hook cannot return an error and cannot cause the operation to be
+>>> reverted.
+>>>
+>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+>>> ---
+>>>  fs/xattr.c                    |  9 +++++----
+>>>  include/linux/lsm_hook_defs.h |  2 ++
+>>>  include/linux/security.h      |  5 +++++
+>>>  security/security.c           | 14 ++++++++++++++
+>>>  4 files changed, 26 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/fs/xattr.c b/fs/xattr.c
+>>> index 09d927603433..84a4aa566c02 100644
+>>> --- a/fs/xattr.c
+>>> +++ b/fs/xattr.c
+>>> @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
+>>>  		goto out;
+>>>  
+>>>  	error = __vfs_removexattr(idmap, dentry, name);
+>>> +	if (error)
+>>> +		goto out;
+>> Shouldn't this be simply "return error" rather than a goto to nothing
+>> but "return error"?
+> I got a review from Andrew Morton. His argument seems convincing, that
+> having less return places makes the code easier to handle.
 
-From the 2018 standard:
+That was in a case where you did more than just "return". Nonetheless,
+I think it's a matter of style that's not worth debating. Do as you will.
 
-  1.4.407 Power Sourcing Equipment (PSE): A DTE or midspan device that
-  provides the power to a single link section. PSEs are defined for
-  use with two different types of balanced twisted-pair PHYs. When
-  used with 2 or 4 pair balanced twisted-pair (BASE-T) PHYs, (see IEEE
-  Std 802.3, Clause 33), DTE powering is intended to provide a single
-  10BASE-T, 100BASE-TX, or 1000BASE-T device with a unified interface
-  for both the data it requires and the power to process these
-  data. When used with single balanced twisted-pair (BASE-T1) PHYs
-  (see IEEE Std 802.3, Clause 104), DTE powering is intended to
-  provide a single 100BASE-T1 or 1000BASE-T1 device with a unified
-  interface for both the data it requires and the power to process
-  these data. A PSE used with balanced single twisted-pair PHYs is
-  also referred to as a PoDL PSE.
-
-So it seems like, anything not PoDL PSE does not have a name :-(
-
-However, everything not PoDL PSE seems to be clause 33. So how about:
-
-	enum ethtool_podl_pse_admin_state podl_admin_control;
-	enum ethtool_c33_pse_admin_state c33_admin_control;  
-
-At least inside the kernel we use c22, c45, c37 etc. I'm not sure they
-are visible to userspace, but if we don't have a better name, maybe we
-have to use c33 in userspace as well.
-
-I do think naming like this makes it clear we are talking about two
-parallel technologies, not a generic layer and then extensions for
-podl.
-
-What do you think?
-
-	Andrew
+>
+> Thanks
+>
+> Roberto
+>
+>>> -	if (!error) {
+>>> -		fsnotify_xattr(dentry);
+>>> -		evm_inode_post_removexattr(dentry, name);
+>>> -	}
+>>> +	fsnotify_xattr(dentry);
+>>> +	security_inode_post_removexattr(dentry, name);
+>>> +	evm_inode_post_removexattr(dentry, name);
+>>>  
+>>>  out:
+>>>  	return error;
+>>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+>>> index 67410e085205..88452e45025c 100644
+>>> --- a/include/linux/lsm_hook_defs.h
+>>> +++ b/include/linux/lsm_hook_defs.h
+>>> @@ -149,6 +149,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
+>>>  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
+>>>  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
+>>>  	 struct dentry *dentry, const char *name)
+>>> +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
+>>> +	 const char *name)
+>>>  LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
+>>>  	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
+>>>  LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
+>>> diff --git a/include/linux/security.h b/include/linux/security.h
+>>> index 664df46b22a9..922ea7709bae 100644
+>>> --- a/include/linux/security.h
+>>> +++ b/include/linux/security.h
+>>> @@ -380,6 +380,7 @@ int security_inode_getxattr(struct dentry *dentry, const char *name);
+>>>  int security_inode_listxattr(struct dentry *dentry);
+>>>  int security_inode_removexattr(struct mnt_idmap *idmap,
+>>>  			       struct dentry *dentry, const char *name);
+>>> +void security_inode_post_removexattr(struct dentry *dentry, const char *name);
+>>>  int security_inode_need_killpriv(struct dentry *dentry);
+>>>  int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry);
+>>>  int security_inode_getsecurity(struct mnt_idmap *idmap,
+>>> @@ -940,6 +941,10 @@ static inline int security_inode_removexattr(struct mnt_idmap *idmap,
+>>>  	return cap_inode_removexattr(idmap, dentry, name);
+>>>  }
+>>>  
+>>> +static inline void security_inode_post_removexattr(struct dentry *dentry,
+>>> +						   const char *name)
+>>> +{ }
+>>> +
+>>>  static inline int security_inode_need_killpriv(struct dentry *dentry)
+>>>  {
+>>>  	return cap_inode_need_killpriv(dentry);
+>>> diff --git a/security/security.c b/security/security.c
+>>> index ce3bc7642e18..8aa6e9f316dd 100644
+>>> --- a/security/security.c
+>>> +++ b/security/security.c
+>>> @@ -2452,6 +2452,20 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+>>>  	return evm_inode_removexattr(idmap, dentry, name);
+>>>  }
+>>>  
+>>> +/**
+>>> + * security_inode_post_removexattr() - Update the inode after a removexattr op
+>>> + * @dentry: file
+>>> + * @name: xattr name
+>>> + *
+>>> + * Update the inode after a successful removexattr operation.
+>>> + */
+>>> +void security_inode_post_removexattr(struct dentry *dentry, const char *name)
+>>> +{
+>>> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>>> +		return;
+>>> +	call_void_hook(inode_post_removexattr, dentry, name);
+>>> +}
+>>> +
+>>>  /**
+>>>   * security_inode_need_killpriv() - Check if security_inode_killpriv() required
+>>>   * @dentry: associated dentry
