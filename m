@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B61C87F19C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CB67F19CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbjKTRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S231416AbjKTR0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjKTRZf (ORCPT
+        with ESMTP id S229646AbjKTR0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:25:35 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CCCBA;
-        Mon, 20 Nov 2023 09:25:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YmYhixCcgUWUNmchSSemRf2Gqbv+XOu4Da8Cpe79a5R2nk2n/8iYmvInzrwNjfQmIuvxiSqb+shrIhLhj5WQXZUgAQ/aEydW4bASe/95r4yf10Ph3nf3hjD87eiNd1iSJjotJcgFkzYFaZUb7RjaVTyvAR4pVUlg/W7MGzJi8JtzPEkqOOVC+sx9tRRwr8LW41X6pPjxaiOqSChxlSwSzSo+Fu8EcOe7L6DR73cIq+plIUNSr/7XyT+/qMD4zqTl+gp7XRE87ZK9FW/2xGuiv70z2W1AOoLcgLYyvV4FmnpnMstLMFoewHgzesBt3kBNLrUyL8soPJylmpzCLQB+FA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5KTcE2P8rRPX3ABCXVh/tcLAyVOsyE7muUJvu+G6fUA=;
- b=GYAsoRI4HSLdEAhRAc6VnOg+lksBXTWSZj03NDMhK1GhWy/IvExfwXOTdZzHYHG7n46zHqhkywg/IjpNor+2Dy4ojy02fF9V4XYC+hqRaVgKfMWaQxdxzmOo3gq4s0av8ZJGxvG/2o+fIKErpE0dyfiaqt0IGC2f8E/BmpfzoY+oDveZz6E727gmRcvyJx4MJDHlS9Te9Se8AMIpy+tnIcp8Vst2MZG0MJ+JNQ+rRa9JjJHHJ2FJLPRR9JDuJMByS8/NOIx4sOpNpQgqeddKFQVumvbJ2yzJ1sIPVOBD3llWD8LEhOPkfcF4CCk3YX/rNDTDoTj0+dWtr2CZRtF7AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5KTcE2P8rRPX3ABCXVh/tcLAyVOsyE7muUJvu+G6fUA=;
- b=Q64fjgR0xnxcXUIgu0caR2UQPcbiz8Qlsvpvi0aRR9al4XqSsLUWQY81iCNVXBPQpLqMmB7CDVYBvO+Atq2W6bj4Y0zB0D7UV46+9Jnh/+vMvJro/7aWvtUqY7K7ygtA711yqxl44i8B9mnsKbYZe8VtX3jC3JeqXBR3yusyvUF4S3hmNpwTOiFFpQU0lcv6WffINneO6VvP/lG63OB1IpypexpXd8FcY0lsfBKBxqBw9Qaow96WTHnWpB2aEAe26GrgVO8GyH7hmDErDK2IMIWyIiXNE9pivb3445nYfL70p/A/IQWDomRHHhyjFas0ohIKebxARUT6JCx79bbkdQ==
-Received: from SN6PR16CA0060.namprd16.prod.outlook.com (2603:10b6:805:ca::37)
- by BN9PR12MB5241.namprd12.prod.outlook.com (2603:10b6:408:11e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Mon, 20 Nov
- 2023 17:25:24 +0000
-Received: from SN1PEPF0002BA4F.namprd03.prod.outlook.com
- (2603:10b6:805:ca:cafe::8) by SN6PR16CA0060.outlook.office365.com
- (2603:10b6:805:ca::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26 via Frontend
- Transport; Mon, 20 Nov 2023 17:25:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- SN1PEPF0002BA4F.mail.protection.outlook.com (10.167.242.72) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.12 via Frontend Transport; Mon, 20 Nov 2023 17:25:24 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 20 Nov
- 2023 09:25:11 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 20 Nov 2023 09:25:10 -0800
-Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com
- (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 20 Nov 2023 09:25:09 -0800
-Date:   Mon, 20 Nov 2023 09:25:08 -0800
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 3/6] iommu: Add iommu_copy_struct_from_user_array
- helper
-Message-ID: <ZVuWdEwYw+9uAaUz@Asurada-Nvidia>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231117130717.19875-4-yi.l.liu@intel.com>
- <BN9PR11MB52763299F886D4A534D6E0BA8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        Mon, 20 Nov 2023 12:26:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532F685
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700501192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X8aUUxFA022YpgE+kgLKSfCpFEiyXZX3VeVuIGH9hlI=;
+        b=WvRbs6Vd1SYjXrPeUvUa6tQgi5A5Fw/4Y7ojGZ99MWxv+KehrR39bYzoItN32eBuf+8KTU
+        JooxB/9bBGR+hSCcUBquxIcYpS0owN5JwUoQj2rumPdzhVwXmvMlLHDkOymhbnYYsk9c4h
+        umqbRwuz7FDum8fwe472G3i0fN1yjdg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-444-BNBrxE3vNPubdByL55sHPA-1; Mon, 20 Nov 2023 12:26:30 -0500
+X-MC-Unique: BNBrxE3vNPubdByL55sHPA-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d120c28afso32883686d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700501189; x=1701105989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X8aUUxFA022YpgE+kgLKSfCpFEiyXZX3VeVuIGH9hlI=;
+        b=gK+vlYc5CoXKpVqtJMJI9kUjtwf8/3ylneQZuzbWoMc7vDa/5D5nLRWWU/X9l8hFwS
+         0hCtC3oqfZh4OAdavuI7/fhW90oHOp5cQJkBrJafTTa//3YJXvKsTPrQdIPvGjao1Cxi
+         iY0SPNE5GSgHRuELIucTbtV10j5EyzZG5N60CHNku2SzRvtZ28H8L4z1sYf/fdCZh6Jb
+         q1AsUX/taws7d3mcfWnRcpnCAvCOBjCH7U03ZeZdeY8KntnFHYmY46fMc/+GA8TlScDX
+         YWMwELaCh0eohlDxCRegomDBC8oB9MiINeBl6mJcpSGd3w1uMRgn33fgfuo6KFDoK8l9
+         hQZg==
+X-Gm-Message-State: AOJu0YyQBq6gR0gpowRCY9e7dV0KhDH6Gb4KFoZ03Wqqp//JHKjWp4qh
+        o7q7kZWLURu92YIw1VnVqquu69c6dxQPKZMhVaayUEThqlkHVnJU+R/65tSKuCrZ/7SLHh8uoVD
+        62736osN8G1gVg/TGYFlQGUt4fxPy9hMJ
+X-Received: by 2002:a0c:f002:0:b0:66d:a301:e512 with SMTP id z2-20020a0cf002000000b0066da301e512mr8464884qvk.27.1700501189537;
+        Mon, 20 Nov 2023 09:26:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF8NqbXBCHlBTFyU0Oqc4To/gML4pdGHQ6PKI1u0iGxOpMLI/CuYR9Se7qPqoa8FdpAn03q6g==
+X-Received: by 2002:a0c:f002:0:b0:66d:a301:e512 with SMTP id z2-20020a0cf002000000b0066da301e512mr8464860qvk.27.1700501189287;
+        Mon, 20 Nov 2023 09:26:29 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id e15-20020a0cd64f000000b00674a45499dcsm3056221qvj.88.2023.11.20.09.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 09:26:28 -0800 (PST)
+Date:   Mon, 20 Nov 2023 11:26:26 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shazad Hussain <quic_shazhuss@quicinc.com>
+Subject: Re: [PATCH 02/11] arm64: dts: qcom: sa8775p: fix USB wakeup
+ interrupt types
+Message-ID: <ow6hw44aqmi2gw4bnqa363jidmyoxhuzpasy4xg4c5a34brpmo@puehdmcibmfh>
+References: <20231120164331.8116-1-johan+linaro@kernel.org>
+ <20231120164331.8116-3-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BN9PR11MB52763299F886D4A534D6E0BA8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4F:EE_|BN9PR12MB5241:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a24dea2-455a-4b9a-b0be-08dbe9edae55
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UAP/Ow5Dn8OW/i2x7CWw8xpp/JVAFnmc0/lVSq2qXZxgfuZSnk6bYVNVBoAZyvZ2ZXqx75CgFPqCAwpafZ4OtDDDiE7MzBKrTa58llyUDvx8HuECs8Y47WVAx+HnfBNVjoDqm71/nyXaJsPZmfWasWsONQ2PrEGGkatsoo5RzFRggva9AqjvVnZP6FL73an9oa1YhZhTaZVyHG+wVZOkXydSIV+GSNfoVkF26+XunD9XfGHZYerf1CVqbw3tfzNOORP2EiEmmNQ9ZqzGKLB81wtjvOt/u3SQBWX0mXm3ZEyMlgEflpcCDBB3ZnqcVu+rIPJ1qiMCTotDwOKq7LULNN5TP3YLw3ee2mVNlxD6agce19oKNtvc+F6Upio0A6Tg3mlvS39hU3J8b9KtLCWoyFkxVK4bROHW8JGLKdpnf+1KLx6f+kfqIo47Ev8dDATzNON/nuFJ4KhvClvAEuyMYqatrRh2WknqxjBHeuVz+rcl3zCu6/ArnOlQHE6f1WtzkiLxSZCaGKOx2bosRSw7LyvH6SrP5poKfS6Y7TQoUE88IH+XauYTYpamk6JE7M4zStDrklvsWGVTyMucbtiVPnD24PGOs1VZPk1yrLsAok0qJ3j1wrV2M8qbDrOiMxI8sDu6hlvD3fAKAzOrUS1a7ZKgjclh/A4Xbc/VWp9CNXUHksvlkWJJojPBFHHYBjFMRyMvb+mIwquYTpBYMIR7so5gn3smDK+h1zxfJxgUe6TTjZyEZSAWgDOhraOqUOOKsXNORtpY5/YAhxi19+9/nw==
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(346002)(136003)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(46966006)(36840700001)(40470700004)(4326008)(2906002)(4744005)(36860700001)(8936002)(8676002)(41300700001)(55016003)(26005)(426003)(70206006)(70586007)(6916009)(316002)(54906003)(9686003)(5660300002)(7416002)(478600001)(336012)(47076005)(40480700001)(7636003)(356005)(33716001)(82740400003)(86362001)(40460700003)(67856001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 17:25:24.3023
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a24dea2-455a-4b9a-b0be-08dbe9edae55
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA4F.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5241
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231120164331.8116-3-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 08:17:47AM +0000, Tian, Kevin wrote:
-> > From: Liu, Yi L <yi.l.liu@intel.com>
-> > Sent: Friday, November 17, 2023 9:07 PM
-> >
-> > +/**
-> > + * __iommu_copy_struct_from_user_array - Copy iommu driver specific
+On Mon, Nov 20, 2023 at 05:43:22PM +0100, Johan Hovold wrote:
+> The DP/DM wakeup interrupts are edge triggered and which edge to trigger
+> on depends on use-case and whether a Low speed or Full/High speed device
+> is connected.
 > 
-> __iommu_copy_entry_from_user_array?
+> Note that only triggering on rising edges can be used to detect resume
+> events but not disconnect events.
+> 
+> Fixes: de1001525c1a ("arm64: dts: qcom: sa8775p: add USB nodes")
+> Cc: Shazad Hussain <quic_shazhuss@quicinc.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-I think "struct" and "entry" are interchangeable. Yet, aligning
-with the {__}iommu_copy_struct_from_user seems to be nicer?
+Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index b6a93b11cbbd..4b42a329460c 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -1610,8 +1610,8 @@ usb_0: usb@a6f8800 {
+>  			assigned-clock-rates = <19200000>, <200000000>;
+>  
+>  			interrupts-extended = <&intc GIC_SPI 287 IRQ_TYPE_LEVEL_HIGH>,
+> -					      <&pdc 14 IRQ_TYPE_EDGE_RISING>,
+> -					      <&pdc 15 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+>  					      <&pdc 12 IRQ_TYPE_LEVEL_HIGH>;
+>  			interrupt-names = "pwr_event",
+>  					  "dp_hs_phy_irq",
+> @@ -1697,8 +1697,8 @@ usb_1: usb@a8f8800 {
+>  			assigned-clock-rates = <19200000>, <200000000>;
+>  
+>  			interrupts-extended = <&intc GIC_SPI 352 IRQ_TYPE_LEVEL_HIGH>,
+> -					      <&pdc 8 IRQ_TYPE_EDGE_RISING>,
+> -					      <&pdc 7 IRQ_TYPE_EDGE_RISING>,
+> +					      <&pdc 8 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 7 IRQ_TYPE_EDGE_BOTH>,
+>  					      <&pdc 13 IRQ_TYPE_LEVEL_HIGH>;
+>  			interrupt-names = "pwr_event",
+>  					  "dp_hs_phy_irq",
+> @@ -1760,8 +1760,8 @@ usb_2: usb@a4f8800 {
+>  			assigned-clock-rates = <19200000>, <200000000>;
+>  
+>  			interrupts-extended = <&intc GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
+> -					      <&pdc 10 IRQ_TYPE_EDGE_RISING>,
+> -					      <&pdc 9 IRQ_TYPE_EDGE_RISING>;
+> +					      <&pdc 10 IRQ_TYPE_EDGE_BOTH>,
+> +					      <&pdc 9 IRQ_TYPE_EDGE_BOTH>;
+>  			interrupt-names = "pwr_event",
+>  					  "dp_hs_phy_irq",
+>  					  "dm_hs_phy_irq";
+> -- 
+> 2.41.0
+> 
+> 
+
