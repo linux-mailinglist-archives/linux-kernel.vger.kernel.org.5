@@ -2,165 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BD27F198B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0577F199B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbjKTRP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:15:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S232446AbjKTRSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjKTRPx (ORCPT
+        with ESMTP id S229646AbjKTRSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:15:53 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2030.outbound.protection.outlook.com [40.92.74.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3A3BA;
-        Mon, 20 Nov 2023 09:15:49 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MsSR2NTNCV/Oe6mCIZ4ekmNNFZugMU7RsONWeUu5RMkys4gbHre1xriaM99avAWM9dwSYv14FgUrwf7qxE7GzgSfeWjp6YFbcFBcndZ2Q/lOcrtLAasd0H3QiMvNB9kzsW69VjS0ZomMoEIntU/rCAWC5XSy9K96q+FYpPeIaEx7cX1BqA79rBxWcI6Q42uXfLfDfoKM50B1zN20lZM/32TKSWl/+1dXSFytp69Dtdgndzbx9AVUrZiMYLTuRrPHUiOVuWAD1zdmdmBoDmu30s4LFErwVF07wHkjCFQlC+ngjUzj4BtTl/Ee3F1EHMRT9Sfemt/4QI9wQXFuVCa9Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HhbUSE9kB4lE2hk8DkGlJiGcef9zD/kSbgW/BVB8yso=;
- b=EngIDG/1CWtuMjMK1yVKIhZkbza9uBtc5ejf3ZecvROmH3YHejMQ3vJ666NPGBl6PXvL55xbw2e5/3AwWc503Ohaoc6ayOnPkq9wjFGg61vwwsEJckmCtz81+0Zujcre7Uyd3efCOuicYzVyf9PhAuJbRzlZGU5TyRFT0oQGyHM1m9Rei4xWF8VL1mePET/bicr5a6Fo1DUWVVNMTgs0zwerILJ1KDvWd+cEPC33wROnrUGiR/VBnzXkc6vo2505DthsaTzTdmvWxbiD+YLv9CWqYDJcXh+hTs56qFEE+SJggdMgaILlI9eBsaMeehObkiBKJasFRFefVv+fwIB0Ng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HhbUSE9kB4lE2hk8DkGlJiGcef9zD/kSbgW/BVB8yso=;
- b=lJkZgICwsZlfloSNKp8ZHU6E8288QA2xgwXN5FPUEbJnytQ1IuMLJ9u8u2Il5spmbkHL/1S4fIuZcZYyAuvn2/+akzCB7BzebTJu6bYi8xkYQ9oHjPrVzVPlJCm9CPFQ023DUIk9Dngbxs9iCO1vHtr+nOIgWjQ2vj9lwLbPXYZrPnQMhjv2hqB7g57HHKw5/bhxcaeyEEyUg8jpeJrCn/ozh8dgW1V6o/O6X0Zg/EMLWUH0xs+cDsS2cLgRfQyRqFEqqc3rbmGc3P7IXlTt8ncYFgph150UvzZdX1EbF6vNN3a2d1Zb+yfu6k0+dK8EN38E6Q8rKP3Mj+ExyZDhng==
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
- by GVXPR10MB5816.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:6a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
- 2023 17:15:46 +0000
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
- 17:15:46 +0000
-Date:   Mon, 20 Nov 2023 22:45:27 +0530
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, andrii.nakryiko@gmail.com,
-        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Replaces the usage of
- CHECK calls for ASSERTs in bpf_tcp_ca
-Message-ID: <GV1PR10MB6563596BC3E2B01F664010C7E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
- <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
- <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
-X-TMN:  [25HpmqNQsxr73/HO/Utg9TGpT30FKA7y]
-X-ClientProxiedBy: JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21)
- To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
-X-Microsoft-Original-Message-ID: <20231120171527.GA388225@nmj-network>
+        Mon, 20 Nov 2023 12:18:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885D0BA;
+        Mon, 20 Nov 2023 09:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700500684; x=1732036684;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UC5hPVWUnGTOtRCW9QVVFZlDvGId3Mtjmo1Ght7VoyE=;
+  b=FPo5yJrUKJVfAzyGp9enSsHaWqFl6fp9inMNmxgnqcUNw+PuLEs5cUQt
+   XLNXnlW+a047pH+AEiewjTqIOQ1J43ddt3/mhwUMk36EaTL1T15n4Jr6r
+   NCDv/1O1LKmj9+aP1GAhZSpvNHJyNxvx/hL6SKGLkDFF5eJXTjNieQ1y/
+   yA0fLf76EaBMAk8u89H1Osl1Gqs26OJiLv6aSy47jpIi0WoZStyX9Yiix
+   bNsapBvTQzivo/tBJQcaquLwNTEPVFcDNNhKUwX1KeB0BfsUefZynMcNB
+   4+JWutKojxqedGmAM/GEm1pC9Gpyh2z/QkUr+DWfmaDLG6VnEUelwSZw5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="391443956"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="391443956"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 09:18:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="836782614"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="836782614"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2023 09:18:01 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 09F946B; Mon, 20 Nov 2023 19:17:59 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v3 1/1] pinctrl: mediatek: Switch to use no-IRQ PM helpers
+Date:   Mon, 20 Nov 2023 19:15:31 +0200
+Message-ID: <20231120171754.1665539-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|GVXPR10MB5816:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1df99e4d-e42f-4315-370b-08dbe9ec555e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KgnNmONZ2M3DTu+BRL2tz1deS3FK8WAMerR7o491RU9zCFL0Zg2x30iynZA6UrmYrQg2wPhcuQlhLn7k4EwGFUknN0MnDx1ChfYBvitYMPAVmHozbEwjXizlywQctmHJVzt/04nfF37btvUI2nsB1U8V+gF/qwXah0xqNRWDRhO14Cu91FYg6WbKSAdcFW0CCv8CKbxrZMEtxehR+Q3+QVAUFq2lJD/LBzIChQSSQy8Gy6QxCB4LPhtYhOWTIrsJsI3S92GSUc8CJeh0IgagfOjNQ71dR28G21YJQ+GDkSaWjViynXUYnctszJZnx0VLj+nGhrdVnHhfdtd4B0t99E+OTG0kug4Yp4GGmV6BaF0VIfuuIEJ0BNCXHS0vvNlWgLG063T53ZT2GWPxeFHW1tbX4F1jeIh4OeyAOir30CaVe6O+x7O7nIn6SkYnrPq0bhZyW7MuwNBXT1iBz90PV/DP7yb2dGz/EBOrkVLKnxlUdfjPrdvTdd1nCxvVlkeGKv0z2rBKt3lAbPlnGswISXnUnqGWqitwpISEg0/2s4Y=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rxytGJiBvNUMIQaaF7TOgKMogBqADD3miG79IylrbRl022nQsaaM68oxKcv8?=
- =?us-ascii?Q?Fz+kae5r5ZwpOm1qVVqgqF2Z60Xt2cNlOLpYoAxdeU4juwubPv6UNpXqMqL4?=
- =?us-ascii?Q?yHTBso84It4Tom0e5CNoFXcKQ/PJpfFFT3xzVRYTsqrVt78LAK2A3PxYNK33?=
- =?us-ascii?Q?AwBQgQyB/MMs6EB/X+n42s0v21v0dl8SCMWjg6FRSOnW6lAHYwu2s1RVtFPu?=
- =?us-ascii?Q?l7eticGejThqDAYXi91HKIJNZ21Z6cNsjJu2X1K68ZEyxL6vL0YDHsePQ725?=
- =?us-ascii?Q?9e4G0LemnbttjVU4pjnhIq6PoC5hhnZJbRgFf8As3Z8QP7e2I/mqSFPKWDwR?=
- =?us-ascii?Q?uEXo6L0p/E/dCg0viFxDAXbpB+MKi2w+W8t9WGOdBtNvTZSn7zio1s/4RgVL?=
- =?us-ascii?Q?6BLObCc/QC1yuwSawR4vNM4jeK39bBO7tcvmWpACq/HTFQCTuYYGN2mDs84g?=
- =?us-ascii?Q?QYEJ9114EMp3K2u5kD30I6CxIfzWXZtR5kob9Z24FISX+AT5FdMg9j/esEBf?=
- =?us-ascii?Q?5wY7PSqjXBcRV1Rz2j1y+e7qUBiX0fkMxKq03gvQWs7reVBboROj16DX3RkM?=
- =?us-ascii?Q?yenAU/pUcljzc4+asegTRis+rkvrcA4vX9NZBFUyR0WxGgso+WmDQyMg3C9J?=
- =?us-ascii?Q?J9ju4QDAyILtwhh4A4TS8gk0XXnu0X2LO+zyh+rcIoiaPGWB4Sp1L8K9hX6C?=
- =?us-ascii?Q?MUurtPIf6QALIxhUx0WAuk2DjuoD/tboZFARj+7NRn3AYbEILZ9efXqfyBjU?=
- =?us-ascii?Q?0XfwJFC70GWmpGA06O3i85RsA20Jk1kZJPANPpOWA8Z8xYQrlH/lD2DkKgVw?=
- =?us-ascii?Q?TZztifl4xHV1fMAVhJO3O5SFmKe7+96+4IJRU+IdN6FEC26byHn88lT2q7kr?=
- =?us-ascii?Q?OawlZrNZsNZa5ECK05V9QRZRLFJJc1yNZp758gns1MQnWTjBmZQye1CSi6Bf?=
- =?us-ascii?Q?lhpliov5vP3ZoSUyyutKcBKlb9+J4WrMXQYTS2KAMJ6hvrxRZR7Szl6AvMdf?=
- =?us-ascii?Q?DSQ+Q6d66P45/QP6iHjXyfmrQW/P617sgg6VyFNKPPyHi3iY9pxJ+4I/dU3j?=
- =?us-ascii?Q?Ik2UcVaGM3IU1ewfbBOjVfUa9Sv6mq/NCukPmEiSP+N+mL9XQIJLx7Up23k9?=
- =?us-ascii?Q?BpG4IK5WdMbJMTLfVKY/oPD5SJBR4f/VifB2uY4MfSredYm0R05Pw2RbjMJk?=
- =?us-ascii?Q?8UfORJZk/QeqvnnNKEwpqYLm6TQGu7eu2g/CB8Dvy5tx4J9VT9QcgRhDPyE?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1df99e4d-e42f-4315-370b-08dbe9ec555e
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 17:15:46.0520
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB5816
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yonghong,
-On Mon, Nov 20, 2023 at 07:22:59AM -0800, Yonghong Song wrote:
-> > -		if (CHECK(!err || errno != ENOENT,
-> > -			  "bpf_map_lookup_elem(sk_stg_map)",
-> > -			  "err:%d errno:%d\n", err, errno))
-> > +		if (!ASSERT_NEQ(err, 0, "bpf_map_lookup_elem(sk_stg_map)") ||
-> 
-> !ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)")
-> might be simpler than !ASSERT_NEQ(..).
-> 
-Sure, that makes sense. I'll change it in v3.
-> > -	pthread_join(srv_thread, &thread_ret);
-> > -	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
-> > -	      PTR_ERR(thread_ret));
-> > +	err = pthread_join(srv_thread, &thread_ret);
-> > +	ASSERT_OK(err, "pthread_join");
-> 
-> The above is not equivalent to the original code.
-> The original didn't check pthread_join() return as it
-> is very very unlikely to fail. And check 'thread_ret'
-> is still needed.
-> 
-Yes that is true, but the v1 [1] broke the tests because the
-ASSERT_OK_PTR(thread_ret, "pthread_join") kept failing, even
-though all the asserts within the `server()` function itself
-passed.
+Since pm.h provides a helper for system no-IRQ PM callbacks,
+switch the driver to use it instead of open coded variant.
 
-Also, isn't asserting `thread_ret` technically checking the
-`server()` function instead of `pthread_join`? So should we
-have two asserts here? One for `server` and one for `pthread_join`
-or is it not necessary?
-i.e:
-```
-ASSERT_OK_PTR(thread_ret, "server");
-ASSERT_OK(err, "pthread_join");
-```
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-Upon taking a second look, I now think that the reason why
-`ASSERT_OK_PTR(thread_ret, "pthread_join");` failed in v1 might
-have been because it calls `libbpf_get_error` which returns
-`-errno` when the pointer is `NULL`.
+v3:
+- used EXPORT_... helper and pm_sleep_ptr() (Paul)
+- dropped renaming (Paul, Angelo, Jonathan)
 
-Since `server`'s return value is not a bpf address, which
-`ASSERT_OK_PTR` expects it to be, do you that think we should
-explicitly set `errno = 0` prior to returning NULL on server?
-That way that assert would pass even when the pointer is NULL
-(which is the case when `server` returns successfuly).
+ drivers/pinctrl/mediatek/pinctrl-mt2701.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt2712.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt6795.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8167.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8173.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8183.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8186.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8188.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8192.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8365.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mt8516.c     | 2 +-
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.c | 5 ++---
+ drivers/pinctrl/mediatek/pinctrl-paris.c      | 5 ++---
+ 14 files changed, 16 insertions(+), 18 deletions(-)
 
-[1] - https://lore.kernel.org/lkml/GV1PR10MB6563A0BE91080E6E8EC2651DE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM/
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2701.c b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
+index 5fb377c1668b..6b1c7122b0fb 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt2701.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt2701.c
+@@ -533,7 +533,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt2701-pinctrl",
+ 		.of_match_table = mt2701_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt2712.c b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
+index 8a6daa0db54b..bb7394ae252b 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt2712.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt2712.c
+@@ -581,7 +581,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt2712-pinctrl",
+ 		.of_match_table = mt2712_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt6795.c b/drivers/pinctrl/mediatek/pinctrl-mt6795.c
+index 01e855ccd4dd..ee3ae3d2fa7e 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt6795.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt6795.c
+@@ -612,7 +612,7 @@ static struct platform_driver mt6795_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt6795-pinctrl",
+ 		.of_match_table = mt6795_pctrl_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8167.c b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
+index ba7f30c3296f..143c26622272 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8167.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8167.c
+@@ -334,7 +334,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt8167-pinctrl",
+ 		.of_match_table = mt8167_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8173.c b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
+index 455eec018f93..b214deeafbf1 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8173.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8173.c
+@@ -347,7 +347,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt8173-pinctrl",
+ 		.of_match_table = mt8173_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8183.c b/drivers/pinctrl/mediatek/pinctrl-mt8183.c
+index ddc48b725c22..93e482c6b5fd 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8183.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8183.c
+@@ -576,7 +576,7 @@ static struct platform_driver mt8183_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt8183-pinctrl",
+ 		.of_match_table = mt8183_pinctrl_of_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8186.c b/drivers/pinctrl/mediatek/pinctrl-mt8186.c
+index a02f7c326970..7be591591cce 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8186.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8186.c
+@@ -1255,7 +1255,7 @@ static struct platform_driver mt8186_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt8186-pinctrl",
+ 		.of_match_table = mt8186_pinctrl_of_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8188.c b/drivers/pinctrl/mediatek/pinctrl-mt8188.c
+index c067e043e619..3975e99d9cf4 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8188.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8188.c
+@@ -1658,7 +1658,7 @@ static struct platform_driver mt8188_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt8188-pinctrl",
+ 		.of_match_table = mt8188_pinctrl_of_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops)
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8192.c b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
+index dee1b3aefd36..e3a76381f7f4 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8192.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8192.c
+@@ -1420,7 +1420,7 @@ static struct platform_driver mt8192_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt8192-pinctrl",
+ 		.of_match_table = mt8192_pinctrl_of_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
+index 09c4dcef9338..83345c52b2fa 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
+@@ -968,7 +968,7 @@ static struct platform_driver mt8195_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mt8195-pinctrl",
+ 		.of_match_table = mt8195_pinctrl_of_match,
+-		.pm = &mtk_paris_pinctrl_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_paris_pinctrl_pm_ops),
+ 	},
+ 	.probe = mtk_paris_pinctrl_probe,
+ };
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8365.c b/drivers/pinctrl/mediatek/pinctrl-mt8365.c
+index 1db04bbdb423..e3e0d66cfbbf 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8365.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8365.c
+@@ -484,7 +484,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt8365-pinctrl",
+ 		.of_match_table = mt8365_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8516.c b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
+index 950275c47122..abda75d4354e 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mt8516.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mt8516.c
+@@ -334,7 +334,7 @@ static struct platform_driver mtk_pinctrl_driver = {
+ 	.driver = {
+ 		.name = "mediatek-mt8516-pinctrl",
+ 		.of_match_table = mt8516_pctrl_match,
+-		.pm = &mtk_eint_pm_ops,
++		.pm = pm_sleep_ptr(&mtk_eint_pm_ops),
+ 	},
+ };
+ 
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+index e79d66a04194..66381e67a5e5 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common.c
+@@ -914,9 +914,8 @@ static int mtk_eint_resume(struct device *device)
+ 	return mtk_eint_do_resume(pctl->eint);
+ }
+ 
+-const struct dev_pm_ops mtk_eint_pm_ops = {
+-	.suspend_noirq = mtk_eint_suspend,
+-	.resume_noirq = mtk_eint_resume,
++EXPORT_GPL_DEV_PM_OPS(mtk_eint_pm_ops) = {
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_eint_suspend, mtk_eint_resume)
+ };
+ 
+ static int mtk_pctrl_build_state(struct platform_device *pdev)
+diff --git a/drivers/pinctrl/mediatek/pinctrl-paris.c b/drivers/pinctrl/mediatek/pinctrl-paris.c
+index 6392f1e05d02..780fdca6bc81 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-paris.c
++++ b/drivers/pinctrl/mediatek/pinctrl-paris.c
+@@ -1131,9 +1131,8 @@ static int mtk_paris_pinctrl_resume(struct device *device)
+ 	return mtk_eint_do_resume(pctl->eint);
+ }
+ 
+-const struct dev_pm_ops mtk_paris_pinctrl_pm_ops = {
+-	.suspend_noirq = mtk_paris_pinctrl_suspend,
+-	.resume_noirq = mtk_paris_pinctrl_resume,
++EXPORT_GPL_DEV_PM_OPS(mtk_paris_pinctrl_pm_ops) = {
++	NOIRQ_SYSTEM_SLEEP_PM_OPS(mtk_paris_pinctrl_suspend, mtk_paris_pinctrl_resume)
+ };
+ 
+ MODULE_LICENSE("GPL v2");
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-As always, thank you for your feedback.
-
-Yuran Pereira
