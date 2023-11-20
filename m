@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCD37F0DD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828AE7F0DE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbjKTIof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S232306AbjKTIqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbjKTIod (ORCPT
+        with ESMTP id S232211AbjKTIqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:44:33 -0500
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C6CA2;
-        Mon, 20 Nov 2023 00:44:28 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C93F55803A1;
-        Mon, 20 Nov 2023 03:44:25 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 20 Nov 2023 03:44:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1700469865; x=1700477065; bh=gf
-        FgJZ50InRlxA1bXQ5aRh+dZLzQhN0FPLPbgFDX9v8=; b=yJY4c/z49wu6OVpuBT
-        3vrAuNBqGx/HJh0CxqiWKIthY1AlXlOQjAYzcts97tbP3Ex2GGPQQnXTtmrB5Vhz
-        woHAtqMnkGd4WiBPUTrulr/h+k4WVwA9z9/cKMcle0aiA/drai6rbsntsIHuR5Wn
-        1Ya7DsMYWbsHYCNlGVJfmyqxp1uQgRNmYfgmh9l8z0+5KjR8a2D7HJ1oNO4dMxgo
-        zhk79szjzuCFuW7X+x3WeeD/23HoubJcgAeEuR9VaST0H1/3oI+Fhqv05mU6nOyi
-        Q94vDFCnHNjpgnV2ODYbANb45IAexy3h2GuRXe9+WqFXcyjo4/bQ4yA0ABFK7UoM
-        p3Ag==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700469865; x=1700477065; bh=gfFgJZ50InRlx
-        A1bXQ5aRh+dZLzQhN0FPLPbgFDX9v8=; b=QSLFSYboW8mIu3dJ5DjlbwdMObuuN
-        kPd20GyFcMT9IcXzoaduqkfNG+IQWUeZXiPs+y6S2qDT6ob3ePqPvz/mMrwQ4ZbQ
-        FFbbbzHtjVRoD1c84wG2ErsQFxg5Ne3cfCE3O3rYyasOgF6fcG7LDMDm7W9jP1mn
-        bYFf6HyiS8d7s449+/4J4hD1SZT5CJqQNvJuP2gIs6fCyk+2lyvhXJ7kepp3hbPY
-        WNpYe70r/TKJyzsIkrfg7RkcN654pS/aUIb38XeR+BswLivSm6W4Ri3zBbSvJUtq
-        XeyCNBpFC6rzdYEjwQABacq7mB7MLA9jTr2nv8gov/MNdI7Joepn6xPIw==
-X-ME-Sender: <xms:ZxxbZSjBS8ra_sObY5jpHOgzkteFSOyuM5dj_Cv8PUZRLyRqjwyUmw>
-    <xme:ZxxbZTBKoTp0rH1NMZo4pfUDsV7YsaTm0JFXz4ZOMsofDPOEgKmK6_aqKyuG7NNxr
-    h7GEGQzOTIeP4Ugx90>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeghedguddvvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:ZxxbZaEO9Np9FB7qMx9p2aGgFYghtTBdl6qb3umOSdjyh8o3z7CnPQ>
-    <xmx:ZxxbZbRMXt7VlWjH7F8ieB3Pg-61rVM08ZKBfsNCIwg5MGKQyoXfGw>
-    <xmx:ZxxbZfwkRHHzpjJjPJnLXY42gxyhTY4mWs8sp4iZW7920ijqVIwv0w>
-    <xmx:aRxbZY8Pfk7Y5L9tx8y9q5icA1GrErC01q3EpZ9X8WYKxu4Y42GBSQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1C2F9B60089; Mon, 20 Nov 2023 03:44:23 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
+        Mon, 20 Nov 2023 03:46:23 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0C383
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:18 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507975d34e8so5695959e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700469977; x=1701074777; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sOUwHQ3tIEPqVxD003y/axANZjYq9yXWHmQwKicRxv4=;
+        b=P92POmTiejhtLFaKk/Zb3U4EsmqIV2OndDcFEc7nNsB0JqJMB/HCB7o9MspiH5oH+m
+         O5YNOXGGjvXw0wEn++AanepKVZckI5GIlWm3FyFQkVkBxmYLY3Jw1y259T+7+PXK/RLk
+         BiSRwOnOYFoVV/p6IQnGJc74iDvOuk6HqDxJ63OFu3kyZoumVPX2mGeWirDJOD8CXLMV
+         ooMJXRlK0fO7nOHhfd+xpknj4enkjPTTQDzIPxEp8L7GvHrjsJQirnpw1Azem4hESCKi
+         0qh3Upwwz7629XZCVt4cB37lJWpe1X9E+ICzR0sqVpTz10wRhjPCMob+2IznSwg6IHQ1
+         5RBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700469977; x=1701074777;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sOUwHQ3tIEPqVxD003y/axANZjYq9yXWHmQwKicRxv4=;
+        b=wEEJfY0ytx7T3KZ5KhZgefwJFvhIdmDQtx+LRKVNCttgNqqaqJTrtSrpHvh5ZOv8mY
+         fci3O4+kua5b12o62HlMmCVz9sXi4/KEa5lYXVS7Xw8gxGNKtNyELee/UTYlk7c8zXQe
+         X6bVVT+ftdm2aHMablz0RZpmb2d58OKny4ToCAva3Kh47GTsYp0H4RmaeZIRyK+b5K7T
+         i07CL2ZeK6G1eRz1BYDNn2XgGqReX3URbpsIwQg7d1VF0ilfv/HKlBg8PFBBZqc0tcIT
+         koF/d2ZDUY1A1dePlxN4QZBcC01H4VcWeAUBki6EGjezZie2qb3Qho/aS289K2svhGOn
+         hp+g==
+X-Gm-Message-State: AOJu0YxzWKFxcbOOj4hAxP147oH3csV/TDsNkrZXQWLmS6BqiaAhhz76
+        mb/ot2vp1CmkjhiylQuV+nJQhA==
+X-Google-Smtp-Source: AGHT+IGA8m5mvMi46rvFWOb3dW/RQ2+4PUYMypdqU5+qjOpHXpylOvvBjm42GzDhIUkn/YKsVRHuSA==
+X-Received: by 2002:ac2:549c:0:b0:507:b935:9f5f with SMTP id t28-20020ac2549c000000b00507b9359f5fmr5263073lfk.24.1700469976750;
+        Mon, 20 Nov 2023 00:46:16 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.183])
+        by smtp.gmail.com with ESMTPSA id b8-20020a5d45c8000000b003142e438e8csm10435267wrs.26.2023.11.20.00.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 00:46:16 -0800 (PST)
+From:   Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, p.zabel@pengutronix.de,
+        yoshihiro.shimoda.uh@renesas.com, geert+renesas@glider.be,
+        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        sergei.shtylyov@cogentembedded.com,
+        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com
+Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 00/13] net: ravb: Add suspend to RAM and runtime PM support for RZ/G3S
+Date:   Mon, 20 Nov 2023 10:45:53 +0200
+Message-Id: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Message-Id: <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
-In-Reply-To: <20231120070024.4079344-15-claudiu.beznea.uj@bp.renesas.com>
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-15-claudiu.beznea.uj@bp.renesas.com>
-Date:   Mon, 20 Nov 2023 09:44:02 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Claudiu Beznea" <claudiu.beznea@tuxon.dev>,
-        "Sergey Shtylyov" <s.shtylyov@omp.ru>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        "Magnus Damm" <magnus.damm@gmail.com>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "Marek Szyprowski" <m.szyprowski@samsung.com>,
-        "Alexandre Torgue" <alexandre.torgue@foss.st.com>,
-        "Andrew Davis" <afd@ti.com>, "Mark Brown" <broonie@kernel.org>,
-        "Alexander Stein" <alexander.stein@ew.tq-group.com>,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "Biju Das" <biju.das.jz@bp.renesas.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "Claudiu Beznea" <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH 14/14] arm: multi_v7_defconfig: Enable CONFIG_RAVB
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023, at 08:00, Claudiu wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> ravb driver is used by RZ/G1H. Enable it in multi_v7_defconfig.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-We have a mix of =y and =m for ethernet drivers, and usually
-only have drivers built-in when they are frequently tested
-with NFS root booting.
+Hi,
 
-Do you need this as well, or could it be =m instead?
+This series adds suspend to RAM and runtime PM support for Ethernet
+IP available on RZ/G3S (R9A08G045) SoC.
 
-    Arnd
+Along with it series contains preparatory fixes and cleanups.
+
+Thank you,
+Claudiu Beznea
+
+Claudiu Beznea (13):
+  net: ravb: Check return value of reset_control_deassert()
+  net: ravb: Use pm_runtime_resume_and_get()
+  net: ravb: Make write access to CXR35 first before accessing other
+    EMAC registers
+  net: ravb: Start TX queues after HW initialization succeeded
+  net: ravb: Stop DMA in case of failures on ravb_open()
+  net: ravb: Let IP specific receive function to interrogate descriptors
+  net: ravb: Rely on PM domain to enable gptp_clk
+  net: ravb: Rely on PM domain to enable refclk
+  net: ravb: Make reset controller support mandatory
+  net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and
+    pm_ptr()
+  net: ravb: Use tabs instead of spaces
+  net: ravb: Assert/deassert reset on suspend/resume
+  net: ravb: Add runtime PM support
+
+ drivers/net/ethernet/renesas/ravb.h      |   2 +
+ drivers/net/ethernet/renesas/ravb_main.c | 220 ++++++++++++++++-------
+ 2 files changed, 160 insertions(+), 62 deletions(-)
+
+-- 
+2.39.2
+
