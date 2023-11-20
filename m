@@ -2,133 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFC77F2145
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B81847F2161
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbjKTXQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:16:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
+        id S230138AbjKTXYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:24:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjKTXQU (ORCPT
+        with ESMTP id S229539AbjKTXYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:16:20 -0500
+        Mon, 20 Nov 2023 18:24:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EF4A2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:16:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93559C433C7;
-        Mon, 20 Nov 2023 23:16:15 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97-RC3)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1r5DVG-00000002OcL-3mEK;
-        Mon, 20 Nov 2023 18:16:30 -0500
-Message-ID: <20231120231630.763281084@goodmis.org>
-User-Agent: quilt/0.67
-Date:   Mon, 20 Nov 2023 18:15:55 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: [for-linus][PATCH 2/2] eventfs: Do not invalidate dentry in create_file/dir_dentry()
-References: <20231120231553.374392736@goodmis.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A3FC1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:24:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F25B3C433C8;
+        Mon, 20 Nov 2023 23:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700522644;
+        bh=67KEhLI0mEivJdbrkeCl+vFBBtgFo5YzYmUACDBON68=;
+        h=From:To:Cc:Subject:Date:From;
+        b=H8jniV24tZu68db9VGGm2q1zQTL4/mK90DWnFoovUtdjLOvX2sQaRAW9tq1BGVaOj
+         7qX3z2eK3d6lvNNIKtJbLJ2Iw6euVJSNcBNlnv+gaQPgDbbDNXtCt6jA+iyW4IO6VF
+         7m73afQT36H+vXmRCSH6nm2IjaNzTcC3ZhCVDkOaspknxf90tcCYnday6+8h5BfdBt
+         wAl5D26oA/ehLsMMoHU5dV8CgCujZme+ru+sGtfkmjw6neS289tR8vbajgFjncYRxV
+         JeGody4kjKgtnTgAbfwsz//Tmoq8zfFqKBbk7I1ak4r57jtbn+mag/3++tZF5bz1dT
+         qAH0aq2JpD5mw==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
+Date:   Tue, 21 Nov 2023 08:23:32 +0900
+Message-Id: <20231120232332.4100288-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+crtsavres.o is linked to modules. However, as explained in commit
+d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
+and always-y"), 'make modules' does not build extra-y.
 
-With the call to simple_recursive_removal() on the entire eventfs sub
-system when the directory is removed, it performs the d_invalidate on all
-the dentries when it is removed. There's no need to do clean ups when a
-dentry is being created while the directory is being deleted.
+For example, the following command fails:
 
-As dentries are cleaned up by the simpler_recursive_removal(), trying to
-do d_invalidate() in these functions will cause the dentry to be
-invalidated twice, and crash the kernel.
+  $ make ARCH=powerpc LLVM=1 KBUILD_MODPOST_WARN=1 mrproper ps3_defconfig modules
+    [snip]
+    LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
+  ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such file or directory
+  make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/cell/spufs/spufs.ko] Error 1
+  make[2]: *** [Makefile:1844: modules] Error 2
+  make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: __build_one_by_one] Error 2
+  make: *** [Makefile:234: __sub-make] Error 2
 
-Link: https://lore.kernel.org/all/20231116123016.140576-1-naresh.kamboju@linaro.org/
-
-Fixes: 407c6726ca71 ("eventfs: Use simple_recursive_removal() to clean up dentries")
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- fs/tracefs/event_inode.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index f239b2b507a4..3eb6c622a74d 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -326,7 +326,6 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 	struct eventfs_attr *attr = NULL;
- 	struct dentry **e_dentry = &ei->d_children[idx];
- 	struct dentry *dentry;
--	bool invalidate = false;
+ arch/powerpc/lib/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
+index 51ad0397c17a..6eac63e79a89 100644
+--- a/arch/powerpc/lib/Makefile
++++ b/arch/powerpc/lib/Makefile
+@@ -45,7 +45,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION)	+= error-inject.o
+ # so it is only needed for modules, and only for older linkers which
+ # do not support --save-restore-funcs
+ ifndef CONFIG_LD_IS_BFD
+-extra-$(CONFIG_PPC64)	+= crtsavres.o
++always-$(CONFIG_PPC64)	+= crtsavres.o
+ endif
  
- 	mutex_lock(&eventfs_mutex);
- 	if (ei->is_freed) {
-@@ -389,17 +388,14 @@ create_file_dentry(struct eventfs_inode *ei, int idx,
- 		 * Otherwise it means two dentries exist with the same name.
- 		 */
- 		WARN_ON_ONCE(!ei->is_freed);
--		invalidate = true;
-+		dentry = NULL;
- 	}
- 	mutex_unlock(&eventfs_mutex);
- 
--	if (invalidate)
--		d_invalidate(dentry);
--
--	if (lookup || invalidate)
-+	if (lookup)
- 		dput(dentry);
- 
--	return invalidate ? NULL : dentry;
-+	return dentry;
- }
- 
- /**
-@@ -439,7 +435,6 @@ static struct dentry *
- create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 		  struct dentry *parent, bool lookup)
- {
--	bool invalidate = false;
- 	struct dentry *dentry = NULL;
- 
- 	mutex_lock(&eventfs_mutex);
-@@ -495,16 +490,14 @@ create_dir_dentry(struct eventfs_inode *pei, struct eventfs_inode *ei,
- 		 * Otherwise it means two dentries exist with the same name.
- 		 */
- 		WARN_ON_ONCE(!ei->is_freed);
--		invalidate = true;
-+		dentry = NULL;
- 	}
- 	mutex_unlock(&eventfs_mutex);
--	if (invalidate)
--		d_invalidate(dentry);
- 
--	if (lookup || invalidate)
-+	if (lookup)
- 		dput(dentry);
- 
--	return invalidate ? NULL : dentry;
-+	return dentry;
- }
- 
- /**
+ obj-$(CONFIG_PPC_BOOK3S_64) += copyuser_power7.o copypage_power7.o \
 -- 
-2.42.0
-
+2.40.1
 
