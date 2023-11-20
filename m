@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF747F1D88
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1DA7F1918
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbjKTTr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:47:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S232515AbjKTQv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKTTrz (ORCPT
+        with ESMTP id S231444AbjKTQvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:47:55 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E1A90;
-        Mon, 20 Nov 2023 11:47:51 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso3718471f8f.2;
-        Mon, 20 Nov 2023 11:47:51 -0800 (PST)
+        Mon, 20 Nov 2023 11:51:55 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B0293;
+        Mon, 20 Nov 2023 08:51:52 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5ca53400c8bso12570787b3.1;
+        Mon, 20 Nov 2023 08:51:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700509670; x=1701114470; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1NbJyayl7rt6FsfxDThKJ/TN1TC4Aie6KtIaSx0fd0=;
-        b=UohU/ulWwsZgcfy2vzEylgnxx5bLU7S0nEwYn6eHTskfeNKQDS8o7N7GedrF6V7ls7
-         5v1S233IzX4D6+nWfCwhE+qphRHBHzSzOEinlkkQL2TtSnae6XM4R5aA6zlYbQ2deYV+
-         Xz9kRRyJhAzZ2z8cyc1fhN5xd+vZFr/MxNB1pKMw/nYl8KcpBQxNYJ+Qq7gYQA6iVF6v
-         yuvo9dOfjfHmeKnM6tmSJQ5v04qNGqIbD1DMhZb6F/zMX1aTENWlE8SsQFT5c9NePJMD
-         k0VpJau22ZGhg/+mTP4YCWUN0z32RYIWNjTxvkNLwf9PJ2k9xKudgTa8EtXI88STXJ4d
-         NXfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700509670; x=1701114470;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700499111; x=1701103911; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P1NbJyayl7rt6FsfxDThKJ/TN1TC4Aie6KtIaSx0fd0=;
-        b=FcbdBGDGq5LpKd3rDdJvlego2b3JKUYYnXXQxgIQwng87vrbNkL77ZonmRo8R32zx7
-         EF1jNKp9lp38Yqd1ZetVn3T/4Jvh2yi+ME7vtcCSjwBBOrcbGxupOjNiu/k+qFSytZkY
-         zukpQXIWa9pgobdrQw78U/5hMj+IK9ZH0oC4gNVd/1DqPjQlF7k2lmQnzlKpE2n6dKoY
-         8sgn3uxwRx2+y6VbRyBsxm8cA64ned1rc9NU0GXy2aJzNRQWMhNOtd7OVkZ072zJra68
-         wrLhDqe3AM+B4xgmam2TdsANUMPZ4aQ36DtxMdko0qT53KUnac4UG+6g6qHq3NAEj1c6
-         04ZA==
-X-Gm-Message-State: AOJu0YylmryS9vGBBJ1cKZ0QWaR6v0q/zxqtzAFiQuqcX6tzww5HZ486
-        xL5tl43nLAlkaPRdVZ8V9t8=
-X-Google-Smtp-Source: AGHT+IGZp5cbk3RB9DaON7psg96oftK35YLWF4oXEA7vWSGtTHa8e9is6Ezi61VGpC3AjWNUZujs8g==
-X-Received: by 2002:a5d:5305:0:b0:32f:b3a2:c2eb with SMTP id e5-20020a5d5305000000b0032fb3a2c2ebmr4874644wrv.65.1700509670009;
-        Mon, 20 Nov 2023 11:47:50 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id s5-20020a5d6a85000000b0032d9f32b96csm12112207wru.62.2023.11.20.11.47.49
+        bh=1MFGQTwe/p7GBPxVFgVzwGs8EnMPhIPZxfWo2nHahZw=;
+        b=f7bE7Veej62EQXPe3I1XoC3G7V+tkl04aKzddbKIlj+rLYhW6OnHi4C4ifcuigINJP
+         aUPvQ9P/UpJ4NtRpkoTLLMWNRFIk/eXUWc/uPMaUAc23sQqqJln9yoxz0IQH/esi8o3b
+         BvpLRNFYBfBE0Wl+SDtaGh6WJ2BF875jLurKAX4jZPF1i7PBLjIAv6BaD/+LyXI74j1v
+         lYtKrQzLW1qZSMiK51eoeVoDlSAI2mlF6ZPYJMbcDKCiNr89lyS2lt7dc/zFG92TVRqE
+         ChD10ZyBs5MGYN/+8iqx6BC+YCKMK+oif/U5X27v1UDrDz3NArZdiT0nzbTd1o8mYUG3
+         64Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700499111; x=1701103911;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1MFGQTwe/p7GBPxVFgVzwGs8EnMPhIPZxfWo2nHahZw=;
+        b=X6BLpIFl/4yI2ciCjwZqSwTdp2gCQtCMzjZ8YhNY2LHo9I3Bh79eD9mbx7ZEHUx2rt
+         8DuFiY4VachZ5v1oi5ffHoqkB0VYnOjSG+UyxX8rFUq3nbZAr0qar/NaYyDCfq7TQ+Dl
+         Es41POi2SIHqeSgtysAA0sesq+qejUuuM9VJpofxxx2tkAgJ7bOpkatoIHrTNVGesZR7
+         r8C0Gj+Dth1s3ss0rJspIk3K57lb1cwBqm19Grl8plutu+FBgGjjH392B11gi9bo8jJh
+         k7Lh1vBHejAxmIyuRlAjsoNPeBIwL65KOkgpJtPVdFsCmctlKg0fobg1Rhad3VUAUXSn
+         wdDQ==
+X-Gm-Message-State: AOJu0Yx/FdsvU1pdx4VRRyVIjn/7sNZgZ2T1Xk8C+jk6wWwCcJdctHT9
+        dQ4kLhM4nOc65fmE+UzBlViJqLBSKOY=
+X-Google-Smtp-Source: AGHT+IG/FdR3lIAJ8c314hUAr7F2oWTexaSKft9EtQHBJBG/amKrMsC/Iye4UFArj+Umh+a4V4PJ3g==
+X-Received: by 2002:a81:9e50:0:b0:5ad:289b:999 with SMTP id n16-20020a819e50000000b005ad289b0999mr8863634ywj.28.1700499111562;
+        Mon, 20 Nov 2023 08:51:51 -0800 (PST)
+Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id f22-20020ac84996000000b0041b25ebc190sm2772258qtq.44.2023.11.20.08.51.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 11:47:49 -0800 (PST)
-Message-ID: <655bb7e5.5d0a0220.59243.9a2c@mx.google.com>
-X-Google-Original-Message-ID: <ZVuObZGhckyhPO6t@Ansuel-xps.>
-Date:   Mon, 20 Nov 2023 17:50:53 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Mon, 20 Nov 2023 08:51:49 -0800 (PST)
+Date:   Mon, 20 Nov 2023 11:51:49 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?S8O2cnkgTWFpbmNlbnQ=?= <kory.maincent@bootlin.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH] net: phy: correctly check soft_reset ret ONLY
- if defined for PHY
-References: <20231120131540.9442-1-ansuelsmth@gmail.com>
- <20231120094234.1aae153e@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120094234.1aae153e@kernel.org>
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Message-ID: <655b8ea55f3d4_34f291294ac@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20231120084805.5f012a40@kernel.org>
+References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
+ <20231114-feature_ptp_netnext-v7-7-472e77951e40@bootlin.com>
+ <20231118182247.638c0feb@kernel.org>
+ <20231120100549.22c83bd0@kmaincent-XPS-13-7390>
+ <20231120084805.5f012a40@kernel.org>
+Subject: Re: [PATCH net-next v7 07/16] net_tstamp: Add TIMESTAMPING SOFTWARE
+ and HARDWARE mask
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,20 +101,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:42:34AM -0800, Jakub Kicinski wrote:
-> On Mon, 20 Nov 2023 14:15:40 +0100 Christian Marangi wrote:
-> > Luckly nothing was ever added before the soft_reset call so the ret
-> > check (in the case where a PHY didn't had soft_reset defined) although
-> > wrong, never caused problems as ret was init 0 at the start of
-> > phy_init_hw.
-> 
-> not currently a bug => no Fixes tag, please
+Jakub Kicinski wrote:
+> On Mon, 20 Nov 2023 10:05:49 +0100 K=C3=B6ry Maincent wrote:
+> > > Does this really need to be in uAPI?  =
 
-I know it's not a bug but still the referenced commit was wrong. Can I
-at least use Ref to reference it?
+> > =
 
-Due to the changes done to this function, it's hard to catch where the
-problem arised with a git blame.
+> > I have put it in the same place as SOF_TIMESTAMPING_* flags but indee=
+d I am not
+> > sure ethtool would need it.
+> > I can move it to include/linux/net_tstamp.h and we will move back to =
+uapi if
+> > we see that it is necessary. What do you think?
+> =
 
--- 
-	Ansuel
+> include/linux/net_tstamp.h sounds better to me, Willem may disagree..
+
+Sounds like the right home to me for non uapi timestamping, too.
