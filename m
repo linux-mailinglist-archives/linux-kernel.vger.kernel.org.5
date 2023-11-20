@@ -2,52 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96377F0D09
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B1C7F0D06
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbjKTHwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 02:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42354 "EHLO
+        id S232066AbjKTHwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 02:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbjKTHwm (ORCPT
+        with ESMTP id S229483AbjKTHwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 02:52:42 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2479EB5;
-        Sun, 19 Nov 2023 23:52:38 -0800 (PST)
-Received: from [192.168.0.183] (ip5f5af683.dynamic.kabel-deutschland.de [95.90.246.131])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 7D62961E5FE01;
-        Mon, 20 Nov 2023 08:52:20 +0100 (CET)
-Message-ID: <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
-Date:   Mon, 20 Nov 2023 08:52:19 +0100
+        Mon, 20 Nov 2023 02:52:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DF9B4;
+        Sun, 19 Nov 2023 23:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700466752; x=1732002752;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=dArwzQiDbI+Mn5NFShSzQiDLHCFzEJbY1RjkIBlYTVI=;
+  b=MWXIh6Xpe2Ux5tA8VBK5yeo/Vtzvf4I5iygsrHE5BkN9VGyoTN9xj9Kw
+   XSQKI7+ewanky8KwDtOOzSo/5Nn2+knNC/nsb/ydxhvVfI/yCIC0Uk0ob
+   oXcCuBAFXAbT+Lg+u1a17Pr1kpBWcibzrX93l0tmCot7QF8GeQzoxo3z3
+   YPnWoPN466aJ6DOMutdxTNKYfKoQZ+F7/yWqldRTywAhIdzS98hqlM6Zh
+   rsz9+XYILAqttkjKKk72RZwYpXbGyr/NX4qMamigLj5gb8LYbC7IB2m+J
+   5p6qOUNBsJvra9E7KLfaT4aYQu926SEYPZPRZ+CEc5ULZtP5kT0XFPxVx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="4746849"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="4746849"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 23:52:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="14513096"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.219.253])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 23:52:27 -0800
+Message-ID: <551d8ee8-416b-47b4-b405-b4d39e46b333@intel.com>
+Date:   Mon, 20 Nov 2023 09:52:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
+Subject: Re: [PATCH V2] perf script python: Fail check on dynamic allocation
 Content-Language: en-US
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mike Jones <mike@mjones.io>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
- <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
- <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
- <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
- <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Paran Lee <p4ranlee@gmail.com>, Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Li Dong <lidong@vivo.com>
+Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shjy180909@gmail.com, austindh.kim@gmail.com, honggyu.kp@gmail.com
+References: <20231119040943.13500-1-p4ranlee@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231119040943.13500-1-p4ranlee@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,126 +72,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Alan,
+On 19/11/23 06:09, Paran Lee wrote:
+> Add PyList_New() Fail check in
+> get_field_numeric_entry() function
+> and dynamic allocation checking for
+> set_regs_in_dict(), python_start_script().
 
+Try to wrap lines at 75 characters (max).
 
-Than you again for your quick reply.
-
-Am 20.11.23 um 03:26 schrieb Alan Stern:
-> On Sun, Nov 19, 2023 at 11:09:32PM +0100, Paul Menzel wrote:
->> $ sudo modprobe btusb
 > 
->> $ grep . /sys/bus/usb/devices/1-3/power/*
->> /sys/bus/usb/devices/1-3/power/active_duration:119053224
->> /sys/bus/usb/devices/1-3/power/async:enabled
->> /sys/bus/usb/devices/1-3/power/autosuspend:2
->> /sys/bus/usb/devices/1-3/power/autosuspend_delay_ms:2000
->> /sys/bus/usb/devices/1-3/power/connected_duration:148065372
->> /sys/bus/usb/devices/1-3/power/control:auto
->> /sys/bus/usb/devices/1-3/power/level:auto
->> /sys/bus/usb/devices/1-3/power/persist:1
->> /sys/bus/usb/devices/1-3/power/runtime_active_kids:0
->> /sys/bus/usb/devices/1-3/power/runtime_active_time:119060567
->> /sys/bus/usb/devices/1-3/power/runtime_enabled:enabled
->> /sys/bus/usb/devices/1-3/power/runtime_status:active
->> /sys/bus/usb/devices/1-3/power/runtime_suspended_time:28831453
->> /sys/bus/usb/devices/1-3/power/runtime_usage:0
->> /sys/bus/usb/devices/1-3/power/wakeup:disabled
->> ```
+> Signed-off-by: Paran Lee <p4ranlee@gmail.com>
+> Reviewed-by: Seonghee Jin<shjy180909@gmail.com>
+
+Other instances of that email address in the kernel git repo
+use the name MichelleJin <shjy180909@gmail.com>.  Might as well
+be consistent.
+
+> ---
+>  .../util/scripting-engines/trace-event-python.c | 17 +++++++++++++++--
+>  1 file changed, 15 insertions(+), 2 deletions(-)
 > 
-> Hmmm.  It's not immediately clear why the device isn't being suspended.
-> The btusb driver does support autosuspend.
-> 
-> Can you also post the output from
-> 
-> 	grep . /sys/bus/usb/devices/1-3:*/power/*
-> 
-> with the driver module loaded?  I should have asked for it before.
+> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+> index 94312741443a..f96968ba371f 100644
+> --- a/tools/perf/util/scripting-engines/trace-event-python.c
+> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
+> @@ -353,6 +353,8 @@ static PyObject *get_field_numeric_entry(struct tep_event *event,
+>  
+>  	if (is_array) {
+>  		list = PyList_New(field->arraylen);
+> +		if (!list)
+> +			Py_FatalError("couldn't create Python list");
+>  		item_size = field->size / field->arraylen;
+>  		n_items = field->arraylen;
+>  	} else {
+> @@ -754,7 +756,7 @@ static void regs_map(struct regs_dump *regs, uint64_t mask, const char *arch, ch
+>  	}
+>  }
+>  
+> -static void set_regs_in_dict(PyObject *dict,
+> +static int set_regs_in_dict(PyObject *dict,
+>  			     struct perf_sample *sample,
+>  			     struct evsel *evsel)
+>  {
+> @@ -770,6 +772,8 @@ static void set_regs_in_dict(PyObject *dict,
+>  	 */
+>  	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
+>  	char *bf = malloc(size);
+> +	if (!bf)
+> +		return -1;
+>  
+>  	regs_map(&sample->intr_regs, attr->sample_regs_intr, arch, bf, size);
+>  
+> @@ -781,6 +785,8 @@ static void set_regs_in_dict(PyObject *dict,
+>  	pydict_set_item_string_decref(dict, "uregs",
+>  			_PyUnicode_FromString(bf));
+>  	free(bf);
+> +
+> +	return 0;
+>  }
+>  
+>  static void set_sym_in_dict(PyObject *dict, struct addr_location *al,
+> @@ -920,7 +926,8 @@ static PyObject *get_perf_sample_dict(struct perf_sample *sample,
+>  			PyLong_FromUnsignedLongLong(sample->cyc_cnt));
+>  	}
+>  
+> -	set_regs_in_dict(dict, sample, evsel);
+> +	if (!set_regs_in_dict(dict, sample, evsel))
 
-```
-$ sudo modprobe btusb
-$ sudo dmesg | tail -9
-[319747.390712] r8152 4-1.2:1.0 enx18dbf22dccf3: carrier on
-[320256.946094] bluetooth hci0: firmware: direct-loading firmware 
-qca/rampatch_usb_00000302.bin
-[320256.949333] Bluetooth: hci0: using rampatch file: 
-qca/rampatch_usb_00000302.bin
-[320256.949349] Bluetooth: hci0: QCA: patch rome 0x302 build 0x3e8, 
-firmware rome 0x302 build 0x111
-[320256.949643] usbcore: registered new interface driver btusb
-[320257.308935] bluetooth hci0: firmware: direct-loading firmware 
-qca/nvm_usb_00000302.bin
-[320257.309043] Bluetooth: hci0: using NVM file: qca/nvm_usb_00000302.bin
-[320257.336220] Bluetooth: hci0: HCI Enhanced Setup Synchronous 
-Connection command is advertised, but not supported.
-[320257.638188] Bluetooth: MGMT ver 1.22
-$ /sbin/rfkill
-ID TYPE      DEVICE    SOFT      HARD
-  1 wlan      phy0   blocked unblocked
-28 bluetooth hci0   blocked unblocked
-$ grep . /sys/bus/usb/devices/1-3:*/power/*
-/sys/bus/usb/devices/1-3:1.0/power/async:enabled
-/sys/bus/usb/devices/1-3:1.0/power/runtime_active_kids:0
-/sys/bus/usb/devices/1-3:1.0/power/runtime_enabled:enabled
-/sys/bus/usb/devices/1-3:1.0/power/runtime_status:suspended
-/sys/bus/usb/devices/1-3:1.0/power/runtime_usage:0
-/sys/bus/usb/devices/1-3:1.1/power/async:enabled
-/sys/bus/usb/devices/1-3:1.1/power/runtime_active_kids:0
-/sys/bus/usb/devices/1-3:1.1/power/runtime_enabled:enabled
-/sys/bus/usb/devices/1-3:1.1/power/runtime_status:suspended
-/sys/bus/usb/devices/1-3:1.1/power/runtime_usage:0
-```
+The condition is the wrong way around.
 
-For completeness:
+> +		Py_FatalError("Failed to setting regs in dict");
+>  
+>  	return dict;
+>  }
+> @@ -1918,12 +1925,18 @@ static int python_start_script(const char *script, int argc, const char **argv,
+>  	scripting_context->session = session;
+>  #if PY_MAJOR_VERSION < 3
+>  	command_line = malloc((argc + 1) * sizeof(const char *));
+> +	if (!command_line)
+> +		return -1;
+> +
+>  	command_line[0] = script;
+>  	for (i = 1; i < argc + 1; i++)
+>  		command_line[i] = argv[i - 1];
+>  	PyImport_AppendInittab(name, initperf_trace_context);
+>  #else
+>  	command_line = malloc((argc + 1) * sizeof(wchar_t *));
+> +	if (!command_line)
+> +		return -1;
+> +
+>  	command_line[0] = Py_DecodeLocale(script, NULL);
+>  	for (i = 1; i < argc + 1; i++)
+>  		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
 
-```
-$ grep . /sys/bus/usb/devices/1-3/power/*
-/sys/bus/usb/devices/1-3/power/active_duration:120462288
-/sys/bus/usb/devices/1-3/power/async:enabled
-/sys/bus/usb/devices/1-3/power/autosuspend:2
-/sys/bus/usb/devices/1-3/power/autosuspend_delay_ms:2000
-/sys/bus/usb/devices/1-3/power/connected_duration:155617216
-/sys/bus/usb/devices/1-3/power/control:auto
-/sys/bus/usb/devices/1-3/power/level:auto
-/sys/bus/usb/devices/1-3/power/persist:1
-/sys/bus/usb/devices/1-3/power/runtime_active_kids:0
-/sys/bus/usb/devices/1-3/power/runtime_active_time:120468920
-/sys/bus/usb/devices/1-3/power/runtime_enabled:enabled
-/sys/bus/usb/devices/1-3/power/runtime_status:active
-/sys/bus/usb/devices/1-3/power/runtime_suspended_time:34969407
-/sys/bus/usb/devices/1-3/power/runtime_usage:0
-/sys/bus/usb/devices/1-3/power/wakeup:disabled
-```
-
->> ```
->> $ sudo modprobe -r btusb
->> $ sudo dmesg | tail -1
->> [314106.155163] usbcore: deregistering interface driver btusb
->> $ grep . /sys/bus/usb/devices/1-3/power/*
->> /sys/bus/usb/devices/1-3/power/active_duration:119072176
->> /sys/bus/usb/devices/1-3/power/async:enabled
->> /sys/bus/usb/devices/1-3/power/autosuspend:2
->> /sys/bus/usb/devices/1-3/power/autosuspend_delay_ms:2000
->> /sys/bus/usb/devices/1-3/power/connected_duration:148320980
->> /sys/bus/usb/devices/1-3/power/control:auto
->> /sys/bus/usb/devices/1-3/power/level:auto
->> /sys/bus/usb/devices/1-3/power/persist:1
->> /sys/bus/usb/devices/1-3/power/runtime_active_kids:0
->> /sys/bus/usb/devices/1-3/power/runtime_active_time:119079518
->> /sys/bus/usb/devices/1-3/power/runtime_enabled:enabled
->> /sys/bus/usb/devices/1-3/power/runtime_status:suspended
->> /sys/bus/usb/devices/1-3/power/runtime_suspended_time:29068110
->> /sys/bus/usb/devices/1-3/power/runtime_usage:0
->> /sys/bus/usb/devices/1-3/power/wakeup:disabled
->> ```
-> 
-> Okay, and here we see that without the driver, the device does get
-> suspended.
-
-Indeed. Thank you for pointing at `runtime_status:suspended` compared to 
-`runtime_status:active`.
-
-
-Kind regards,
-
-Paul
