@@ -2,131 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9747F1E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D0A7F1E2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjKTUsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 15:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
+        id S230296AbjKTUs4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 15:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKTUst (ORCPT
+        with ESMTP id S229476AbjKTUsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 15:48:49 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBA8CC;
-        Mon, 20 Nov 2023 12:48:44 -0800 (PST)
-Received: from [192.168.1.103] (178.176.77.202) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 20 Nov
- 2023 23:48:34 +0300
-Subject: Re: [PATCH 00/13] net: ravb: Add suspend to RAM and runtime PM
- support for RZ/G3S
-To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
-        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <sergei.shtylyov@cogentembedded.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <c6f3f8f6-0588-3f0e-0be1-a5b000ace19d@omp.ru>
-Date:   Mon, 20 Nov 2023 23:48:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 20 Nov 2023 15:48:54 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285A8D2;
+        Mon, 20 Nov 2023 12:48:50 -0800 (PST)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5c210e34088so2400386a12.2;
+        Mon, 20 Nov 2023 12:48:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700513329; x=1701118129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HLACAszJAsDeK07wyfvEz6u3BDeunNq6zbMUiAuxf0E=;
+        b=A10hVPw9mQD8NCYDOwlRZVNFeUqHvFZExfTIhcwWVuTtAg6Nc0D6bCJLK7HGtxyxvM
+         TBcNFghjCN8y4y4UsIJ4pJQj4zmd5p8JxOx9gNeDFCAjd05GLm3c8KV28xk6CfuI0PBy
+         hMqLD1PhKO31aQrLRV2goC+T8F7eFG6ZMMFDAp2AhbGfTa/peIhBAVPCBoKv4HVYoh7v
+         oM5o+rE+Qqi87V82VTllu15Ij+Du/7cXvsvzCJmIX/OWkd2LsKTnsT6Dozchkrkd4Jl9
+         Y87tu0a/9SmlWsq+N5sTe3UsnKYXqExW4kzfwX8cBCobdMcxP5TwR+mzPuIVu6tL+vzr
+         zcnw==
+X-Gm-Message-State: AOJu0Yx92rmzrf2SMLSRD9L5rmMcVcczucppHB/DBZC+OGqD6QKaiPKW
+        qDrZtLL9LAbEYr/BbzsN2j3MjZlhmRXGR8P+XfE=
+X-Google-Smtp-Source: AGHT+IHywMwLFnWqSkjrlIFC80pbu6VrGJfN+mUb07oSvHQbrBOCZAsTklCHMyBM/aeS0v3kXbPfBpmEekRrnV8UFe8=
+X-Received: by 2002:a17:90b:4c06:b0:280:e2e1:f955 with SMTP id
+ na6-20020a17090b4c0600b00280e2e1f955mr9229635pjb.35.1700513329510; Mon, 20
+ Nov 2023 12:48:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.77.202]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/20/2023 20:31:37
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181488 [Nov 20 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.202
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/20/2023 20:36:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/20/2023 5:53:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231113102327.695386-1-james.clark@arm.com>
+In-Reply-To: <20231113102327.695386-1-james.clark@arm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 20 Nov 2023 12:48:38 -0800
+Message-ID: <CAM9d7cj=nF_Vq7dPkOGvYd1G0nFOffiCoyZQ=hx1hco-0_ZMBw@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Use existing config value for objdump path
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        acme@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Yonghong Song <yhs@fb.com>, Fangrui Song <maskray@google.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 11:45 AM, Claudiu wrote:
+Hello,
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Hi,
-> 
-> This series adds suspend to RAM and runtime PM support for Ethernet
-> IP available on RZ/G3S (R9A08G045) SoC.
-> 
-> Along with it series contains preparatory fixes and cleanups.
-> 
-> Thank you,
-> Claudiu Beznea
-> 
-> Claudiu Beznea (13):
->   net: ravb: Check return value of reset_control_deassert()
->   net: ravb: Use pm_runtime_resume_and_get()
->   net: ravb: Make write access to CXR35 first before accessing other
->     EMAC registers
->   net: ravb: Start TX queues after HW initialization succeeded
->   net: ravb: Stop DMA in case of failures on ravb_open()
+On Mon, Nov 13, 2023 at 2:23 AM James Clark <james.clark@arm.com> wrote:
+>
+> There is already an existing config value for changing the objdump path,
+> so instead of having two values that do the same thing, make perf test
+> use annotate.objdump as well.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-   Like I've said, the fixes should be submitted separately.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
->   net: ravb: Let IP specific receive function to interrogate descriptors
->   net: ravb: Rely on PM domain to enable gptp_clk
->   net: ravb: Rely on PM domain to enable refclk
->   net: ravb: Make reset controller support mandatory
->   net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and
->     pm_ptr()
->   net: ravb: Use tabs instead of spaces
->   net: ravb: Assert/deassert reset on suspend/resume
->   net: ravb: Add runtime PM support
+Thanks,
+Namhyung
 
-   I'll continue reviewing the rest of the series tomorrow...
-
-[...]
-
-MBR, Sergey
+> ---
+>  tools/perf/Documentation/perf-config.txt | 8 ++------
+>  tools/perf/tests/builtin-test.c          | 2 +-
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+> index 16398babd1ef..379f9d7a8ab1 100644
+> --- a/tools/perf/Documentation/perf-config.txt
+> +++ b/tools/perf/Documentation/perf-config.txt
+> @@ -251,7 +251,8 @@ annotate.*::
+>                 addr2line binary to use for file names and line numbers.
+>
+>         annotate.objdump::
+> -               objdump binary to use for disassembly and annotations.
+> +               objdump binary to use for disassembly and annotations,
+> +               including in the 'perf test' command.
+>
+>         annotate.disassembler_style::
+>                 Use this to change the default disassembler style to some other value
+> @@ -722,11 +723,6 @@ session-<NAME>.*::
+>                 Defines new record session for daemon. The value is record's
+>                 command line without the 'record' keyword.
+>
+> -test.*::
+> -
+> -       test.objdump::
+> -               objdump binary to use for disassembly and annotations.
+> -
+>  SEE ALSO
+>  --------
+>  linkperf:perf[1]
+> diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> index 113e92119e1d..b8c21e81a021 100644
+> --- a/tools/perf/tests/builtin-test.c
+> +++ b/tools/perf/tests/builtin-test.c
+> @@ -518,7 +518,7 @@ static int run_workload(const char *work, int argc, const char **argv)
+>  static int perf_test__config(const char *var, const char *value,
+>                              void *data __maybe_unused)
+>  {
+> -       if (!strcmp(var, "test.objdump"))
+> +       if (!strcmp(var, "annotate.objdump"))
+>                 test_objdump_path = value;
+>
+>         return 0;
+> --
+> 2.34.1
+>
