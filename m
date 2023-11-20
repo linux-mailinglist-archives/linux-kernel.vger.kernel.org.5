@@ -2,121 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AE27F1714
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8936D7F150B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbjKTPQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
+        id S232753AbjKTOCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:02:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbjKTPQe (ORCPT
+        with ESMTP id S232135AbjKTOB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:16:34 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3503BE;
-        Mon, 20 Nov 2023 07:16:30 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKF2Z4M005926;
-        Mon, 20 Nov 2023 15:15:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2023-03-30;
- bh=uAhbu4AUajdcQROPp7AvbiHI/LFlFhMVo6VGoxnZCWM=;
- b=iWm+eqFDXMPL5yZeVVivDaYQytpZR3S/mzy8etq05l2MOlypXUEQv/NlVT9fec+oMhtz
- n6qGjTv90sWy1upsgg/PIzkJFQu1Etcu5jo+g8rKD0xSjrOf6pp7oYpwgoQ5MNF6zwWE
- 93OErUMGMZPhTtsrGMiM9TKbrZX2/fJxDJJ+12ujXGEaMvovc4UR2YbMvmPljXeynlgd
- 01PhAiRt0XeHp/KUnWYeru74ECbsdn8TbZs5c2MMwCk548yK80dpJR+BLulGzaV7+Ana
- 5a267z8ctt3NaKeDhr4sotvF63M/mOGOM4eu8A41OfAhDxjbB9WiXrDaWWT6dfZkWymQ QA== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uemvuava8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 15:15:25 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKF2uu1023572;
-        Mon, 20 Nov 2023 15:15:24 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uekq5gr51-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 15:15:24 +0000
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AKFFF8d037000;
-        Mon, 20 Nov 2023 15:15:24 GMT
-Received: from mihai.localdomain (ban25x6uut25.us.oracle.com [10.153.73.25])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uekq5gqwc-8;
-        Mon, 20 Nov 2023 15:15:23 +0000
-From:   Mihai Carabas <mihai.carabas@oracle.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     kvm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, pbonzini@redhat.com,
-        wanpengli@tencent.com, vkuznets@redhat.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, akpm@linux-foundation.org,
-        pmladek@suse.com, peterz@infradead.org, dianders@chromium.org,
-        npiggin@gmail.com, rick.p.edgecombe@intel.com,
-        joao.m.martins@oracle.com, juerg.haefliger@canonical.com,
-        mic@digikod.net, mihai.carabas@oracle.com, arnd@arndb.de,
-        ankur.a.arora@oracle.com
-Subject: [PATCH 7/7] cpuidle/poll_state: replace cpu_relax with smp_cond_load_relaxed
-Date:   Mon, 20 Nov 2023 16:01:38 +0200
-Message-Id: <1700488898-12431-8-git-send-email-mihai.carabas@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
-References: <1700488898-12431-1-git-send-email-mihai.carabas@oracle.com>
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_15,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311200106
-X-Proofpoint-GUID: nJCLzdI_KlVOa57CUYhmhyCxfgZd5UAK
-X-Proofpoint-ORIG-GUID: nJCLzdI_KlVOa57CUYhmhyCxfgZd5UAK
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 20 Nov 2023 09:01:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C6C11A
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:01:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CFE4C433C7;
+        Mon, 20 Nov 2023 14:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700488914;
+        bh=cGs0HyLCS5owCtkNE0emwtvUGyUvuxU5P+zsEgYBDI0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=USJOSq4FNNxuYHQWs39YPg8R6ZZT+dXf9CCSEbSmnoZvEJmpZgraC6D4FuvVk2qzX
+         I4sVkWxGntrax3KKEZ9NvCg0v7pRImkteJhx0vQzmjKPdPrc6TqRoE1H4dvMUWt21E
+         BBNI1BwEywTl9qxYpp6OoSre8bZmmtcyd/+m/AKqSuibfx8L9kYQjwI+9xd1LR5S4u
+         tGUWMladzPHaO1ROHdN6OAOul3oHBYHnwNEopltcawyNc9P8dJGcAp1Yc1lrNCDvqZ
+         K6kXn3t2qKkbOjMvEdf/SsYp/qRnadeHWHvbaDgYeP2HRjsfyiji6P4wbCvmKPIdWx
+         fhFTMVM3jLN9A==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     vladimir.oltean@nxp.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
+        vigneshr@ti.com, srk@ti.com, horms@kernel.org, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v6 net-next 0/7] net: ethernet: am65-cpsw: Add mqprio, frame pre-emption & coalescing
+Date:   Mon, 20 Nov 2023 16:01:40 +0200
+Message-Id: <20231120140147.78726-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cpu_relax on ARM64 does a simple "yield". Thus we replace it with
-smp_cond_load_relaxed which basically does a "wfe".
+Hi,
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
----
- drivers/cpuidle/poll_state.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+This series adds mqprio qdisc offload in channel mode,
+Frame Pre-emption MAC merge support and RX/TX coalesing
+for AM65 CPSW driver.
 
-diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
-index 9b6d90a72601..440cd713e39a 100644
---- a/drivers/cpuidle/poll_state.c
-+++ b/drivers/cpuidle/poll_state.c
-@@ -26,12 +26,16 @@ static int __cpuidle poll_idle(struct cpuidle_device *dev,
- 
- 		limit = cpuidle_poll_time(drv, dev);
- 
--		while (!need_resched()) {
--			cpu_relax();
--			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
--				continue;
--
-+		for (;;) {
- 			loop_count = 0;
-+
-+			smp_cond_load_relaxed(&current_thread_info()->flags,
-+					      (VAL & _TIF_NEED_RESCHED) ||
-+					      (loop_count++ >= POLL_IDLE_RELAX_COUNT));
-+
-+			if (loop_count < POLL_IDLE_RELAX_COUNT)
-+				break;
-+
- 			if (local_clock_noinstr() - time_start > limit) {
- 				dev->poll_time_limit = true;
- 				break;
+Changelog information in each patch file.
+
+cheers,
+-roger
+
+Grygorii Strashko (2):
+  net: ethernet: ti: am65-cpsw: add mqprio qdisc offload in channel mode
+  net: ethernet: ti: am65-cpsw: add sw tx/rx irq coalescing based on
+    hrtimers
+
+Roger Quadros (5):
+  net: ethernet: am65-cpsw: Build am65-cpsw-qos only if required
+  net: ethernet: am65-cpsw: cleanup TAPRIO handling
+  net: ethernet: ti: am65-cpsw: Move code to avoid forward declaration
+  net: ethernet: am65-cpsw: Move register definitions to header file
+  net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge
+    support
+
+ drivers/net/ethernet/ti/Makefile            |   3 +-
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 234 +++++++
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c    |  64 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h    |   9 +
+ drivers/net/ethernet/ti/am65-cpsw-qos.c     | 730 +++++++++++++++-----
+ drivers/net/ethernet/ti/am65-cpsw-qos.h     | 184 +++++
+ 6 files changed, 1046 insertions(+), 178 deletions(-)
+
+
+base-commit: 94c81c62668954269ec852ab0284256db20ed9b4
 -- 
-1.8.3.1
+2.34.1
 
