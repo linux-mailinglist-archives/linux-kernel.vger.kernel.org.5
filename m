@@ -2,171 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727547F09FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 01:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E74F7F0A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 01:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbjKTAQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 19:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
+        id S231607AbjKTAWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 19:22:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjKTAQg (ORCPT
+        with ESMTP id S229470AbjKTAWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 19:16:36 -0500
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03olkn2091.outbound.protection.outlook.com [40.92.58.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9455AE0;
-        Sun, 19 Nov 2023 16:16:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bRLFzLf5WtbW6QEVvhwP/sKWVuNaVNPTa9PWPDaPR5xxM49wrjbQ7kbwKJczyCwibTy9aBm/32CFHidIG07clbbiEZn7oc9cc9MyDnWq0hZKrJ8X6+QvX32apOvqgOiWpV2jIedOC6iYorjxDdPetGmUYSdrym3aFU6CmxjJALp5/jISbsI5M3AA5zH7A3sKThtag5FGn2J2384MWBngSYpPm20y/s7WJpGYxHjrY3UP+uWHPe1EABk7a6JS7ObHteu04E5YVG9+F1W80lhToERY5/Oh3IeoOjNRDvgsW1rtdftAXmNDc4MMGi+HITDYn6zh/WdbmF6KVOdzvTWpSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vKyGSTBshSrHVqtfP2b0GRbfEL/kphFRDy62xCa35Lo=;
- b=Ogy8N2E6LOLKRnX+gE81Hp8Ko18RmfB475M5lHlZEmYO8p0puRVJrNuu1er0QF4OyZD6lUCYHsfuGX482WmU+r72v7/XMr1Km1PIg1qHkA6EivHIFt4Yhha674BKrjpqCpBWhHWhAEsL8tDWNHFqIVuFyDkZrthrXv/QHNk2vU1o5Kselse6cWIzNqpT4Zx57AvbCE2KchJ+nWU9JAXgKaUdjCFuPxvc0XKdHnMvmPD8u0Nzz/SJ70+AfHnuA9kEgW9BetNEybrrQO8HydraXdiZgCIqG774Bl5BWSZFFYaBHqg5G5Trgkwptj9In1/JfR6csCivgkSq/NfZfIZdCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vKyGSTBshSrHVqtfP2b0GRbfEL/kphFRDy62xCa35Lo=;
- b=JW9AihYvgbBIAKWf4TjxvUtjOwzX1WAPX94u+v6nbjGxDcCkd2WdTNJsZTvud0pd16NioDDeqaQtZmoGSROyyoV7ZYe/VtGVSs9b8wb+CZlxJPjiKgQZ92f1xm4vjfR823fMhMU4R+Q30Ljt0/OJ6hNmQ5RF+kCtBAUiouUw0gWB2jHyUlmedi7uFfrQTIg9Lgwl2PsT4Q0IpuSgQp3QKwpVx3+UblSpBoc4DJiACaso0yVGNs8OWe3bc+6eMd0EmnbSBQkOwqzL29OcLRhCKH2dvAgjbNrrd/O3yKWkBRI6mrBquv30CuxxlIReCiCE9yOduOkJ3hIlph2Jvb62Xw==
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
- by AS2PR10MB7297.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:607::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 20 Nov
- 2023 00:16:30 +0000
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
- 00:16:30 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, mark.rutland@arm.com,
-        rostedt@goodmis.org, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] ftrace: Replaces simple_strtoul in ftrace
-Date:   Mon, 20 Nov 2023 05:46:13 +0530
-Message-ID: <GV1PR10MB656333529A8D7B8AFB28D238E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [+IK25jmwXmVxrmBUqUF9m5jPMVeT1u8/]
-X-ClientProxiedBy: JNAP275CA0027.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::17)
- To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
-X-Microsoft-Original-Message-ID: <20231120001613.361195-1-yuran.pereira@hotmail.com>
+        Sun, 19 Nov 2023 19:22:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC937E0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 16:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700439716; x=1731975716;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m61ys6ij2lMA40cF9dqNMdfXSO3dycrKevx21VdZ2zs=;
+  b=oAHdWkjZwnGA4UU+5MpWPoOnxH1R7lRYGPG0WV36iRTLpwcKW1Qh7/Fj
+   AbV9Mw2joAXekp4WAWD/owSdJgrmdNRYc7L5+PXhTmgjLLiIwIyghh0Eh
+   AQjceYEXE8i7W4XJ6VZ8dYgq7uZXL/xPvFKIC5rTw3AQNor92RgkgdpGK
+   v26HawgxjXbRmyAi1s42GDTGiSPYshYK6i8rC6Gw9igfHte5rbv9qSpBY
+   uPDz9xhFu5M2ZWiQVXjYuyuwFfD0UnfLuJ8cSpoi6vBmstsLYnMST4kWA
+   vJnup6yZksIGqS3hAvpTPe2H6CnJYmHstLCFZ3khHr2dOK5s8zHuYuEUZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="390389461"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="390389461"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 16:21:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="800989011"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="800989011"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 19 Nov 2023 16:21:52 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r4s2u-0005kS-1u;
+        Mon, 20 Nov 2023 00:21:49 +0000
+Date:   Mon, 20 Nov 2023 08:20:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH 06/24] swap: rework swapin_no_readahead arguments
+Message-ID: <202311200826.8Nl5w3h8-lkp@intel.com>
+References: <20231119194740.94101-7-ryncsn@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB7297:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77ec996e-9167-48e5-8c98-08dbe95df1fe
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ch/IfEWQnwsgKP8DjruYs4aHnC5wPv4FkYEYxmw450OO67ME62J7q78RoZVQdWc7HpsbijPUbDPsj5IaFHBIZxRcVFz75Ivhf2LqA5Ylbnj7Pjhaw04+AoAqaGtvSsFzMepDYTi867M1FAB2N0nYi6wrzQSqXjTrGqX+Bqpg6irRfMcHRvRtsaUD30FmVWyytvaxCebgxUnRwPhxej+7qcikQUH6D9o8amrU3n+FBFGeOK/6GYn+DJTHuO+IZrRNqV0Wqwg2bBvXdspV2dVEzGHwkYIvFr6wZSYLoAdxPLCp5svGK8ePjb4NvUjeFaN0pIaHPt/J8NQ6FxxrWUtLo20ezxqt46jtUvfvMhhPKgFBtnXvxo0RaQMUlyc3CEQgMAU2WIYMlK7tTdOynmmba4cyD9nePLgXaBsILVEsO+6gIbTNUzgnuL1A0w/MnsnHWtPma2u9/HUQBJZe3HailPdh3Fz1Mhz4BEGJ+yNiymKj7Uw4Q4+aexgHsu6DPLAtuxU0u2EfL/iYDX5/Z00HPcfBLKtNg/UACtNEX/mf53ziAvwpfq1/ISD28NhWIFvDL91oZSwlJr+OL0O1gIz/Jz3zA3m1+IRvl4a5/oDIJz1qFmT9rqVpBIKQ4rxA3jXo
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FK6KoqjmWwpBlwPopRXKff3zTG6SdhNky7JGmy5as8vix4URFK5yHJm4nPok?=
- =?us-ascii?Q?dkUNkxCtXuk/RPzP7SiNqRCs289NjZ0PPwihvmqBqF+giPeMPgf9l7l+hh22?=
- =?us-ascii?Q?o81EPt+cXZ+mlZmp+53rSJZ1OacsNIGtNglqvsGEEgmwtc5znB4Oe+DhrLr1?=
- =?us-ascii?Q?qE+Xmjx9gDnDSWbG4v2TdqyZ/IgZs48PPLfH60eLtrYgvbN3dmPMiP/d069P?=
- =?us-ascii?Q?d1YnLJTHJaY8EIwETbtib3L5wFgjPtjEmsUpT9ULHrfS/eSLlONa+erNUm+k?=
- =?us-ascii?Q?aH9B1GlhAQpoYSU1Zv+9VsMWNJ0j0ba2ONwoX7pboNM5tlTErxCEyEv416Az?=
- =?us-ascii?Q?QtIoFoNc4/opmV+cyVwO/pkYwCfuHfmp+HsUsCStVD3FBN81XJ2LvIlLOV74?=
- =?us-ascii?Q?RLaSQtm17RaJqwOfUU5aX5suwQypUCBN7Z0iORcbHcj8c1QIMgqGywNiSRCU?=
- =?us-ascii?Q?DOH7V7jU1UjL8ueozI0AI5TZyD/WCKU24hMLt5vS6xgpqux+VhIEyJRa8gc2?=
- =?us-ascii?Q?dGkH0p01DNM1RQVUqLIfMEKsd2QjxtKis86NaqF34MfMHtOYrOWOhZKcxplv?=
- =?us-ascii?Q?rgIAJ/8AOrm3mJEGVtIC5NFCvVAJcRRIfg3bIJIlCs/GwcrRg5azmWvCtq26?=
- =?us-ascii?Q?Pa9VbHuXykzJMxM+zAe+zMMz7YYgUR1bJDF2hOwcfFbcO9bt38JpEsHJ/lza?=
- =?us-ascii?Q?MLnGvqJ2M9ChuCljsxWlALa+HYOWr2xH/7HmP9vajCwOXKAFUSqKPMa9fd//?=
- =?us-ascii?Q?tbD1dh+dYj2A5UQPICxkQtu/a5XLqcTvkHz4ZA79VFThQGAjOHGYm4U6LQHW?=
- =?us-ascii?Q?MbiBbXx6Mz8Kn+Xa5tUgG3o+sKyrw39y4y+ar0lOCVypSlKhGA3xMheqlxST?=
- =?us-ascii?Q?B+dxYANYiP+AEY383d6ay9gfczX3w0IUKp+/nDTsQX4p7D9QGogkCyMgQMb4?=
- =?us-ascii?Q?jGjXCj61OFsn8Vtjpx9z1Nb3w75fS/XQbH2YZuJqLM7Jc925JFinfAiJl1LU?=
- =?us-ascii?Q?SjOGRlxMNswZ3i+XSVN8G1IO5z2k0m2hdRFJx3mK4jCpJe+sPc1E3VYZjkwn?=
- =?us-ascii?Q?a3AMI9BDUSb0dHnSpT4oaDc8o+MieFHKIxTbMooWtugN4gbhJSlQ1j6uyXc4?=
- =?us-ascii?Q?iBNfTBbmsQEdn8neslyftBzJKgGQuLluk4VwJP3XhTTdg7OAPysM97B3tWLW?=
- =?us-ascii?Q?WyEOfaosz5OINhlIWMG1o5Lv2782k2H+7m1EXIauOfhsX4hpXyRk/jfQdxg?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77ec996e-9167-48e5-8c98-08dbe95df1fe
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 00:16:30.7419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7297
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231119194740.94101-7-ryncsn@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function simple_strtoul performs no error checking in scenarios
-where the input value overflows the intended output variable.
-This results in this function successfully returning, even when the
-output does not match the input string (aka the function returns
-successfully even when the result is wrong).
+Hi Kairui,
 
-Or as it was mentioned [1], "...simple_strtol(), simple_strtoll(),
-simple_strtoul(), and simple_strtoull() functions explicitly ignore
-overflows, which may lead to unexpected results in callers."
-Hence, the use of those functions is discouraged.
+kernel test robot noticed the following build warnings:
 
-This patch replaces all uses of the simple_strtoul with the safer
-alternatives kstrtoul and kstruint.
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on linus/master v6.7-rc2 next-20231117]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Callers affected:
-- add_rec_by_index
-- set_graph_max_depth_function
+url:    https://github.com/intel-lab-lkp/linux/commits/Kairui-Song/mm-swap-fix-a-potential-undefined-behavior-issue/20231120-035926
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231119194740.94101-7-ryncsn%40gmail.com
+patch subject: [PATCH 06/24] swap: rework swapin_no_readahead arguments
+config: i386-buildonly-randconfig-003-20231120 (https://download.01.org/0day-ci/archive/20231120/202311200826.8Nl5w3h8-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311200826.8Nl5w3h8-lkp@intel.com/reproduce)
 
-Side effects of this patch:
-- Since `fgraph_max_depth` is an `unsigned int`, this patch uses
-  kstrtouint instead of kstrtoul to avoid any compiler warnings
-  that could originate from calling the latter.
-- This patch ensures that the callers of kstrtou* return accordingly
-  when kstrtoul and kstruint fail for some reason.
-  In this case, both callers this patch is addressing return 0 on error.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311200826.8Nl5w3h8-lkp@intel.com/
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+All warnings (new ones prefixed by >>):
 
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- kernel/trace/ftrace.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+>> mm/swap_state.c:872: warning: Function parameter or member 'mpol' not described in 'swapin_no_readahead'
+>> mm/swap_state.c:872: warning: Function parameter or member 'ilx' not described in 'swapin_no_readahead'
+>> mm/swap_state.c:872: warning: Function parameter or member 'mm' not described in 'swapin_no_readahead'
+>> mm/swap_state.c:872: warning: Excess function parameter 'vmf' description in 'swapin_no_readahead'
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 8de8bec5f366..70217ee97322 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -4233,12 +4233,12 @@ static int
- add_rec_by_index(struct ftrace_hash *hash, struct ftrace_glob *func_g,
- 		 int clear_filter)
- {
--	long index = simple_strtoul(func_g->search, NULL, 0);
-+	long index;
- 	struct ftrace_page *pg;
- 	struct dyn_ftrace *rec;
- 
- 	/* The index starts at 1 */
--	if (--index < 0)
-+	if (kstrtoul(func_g->search, 0, &index) || --index < 0)
- 		return 0;
- 
- 	do_for_each_ftrace_rec(pg, rec) {
-@@ -5810,9 +5810,8 @@ __setup("ftrace_graph_notrace=", set_graph_notrace_function);
- 
- static int __init set_graph_max_depth_function(char *str)
- {
--	if (!str)
-+	if (!str || kstrtouint(str, 0, &fgraph_max_depth))
- 		return 0;
--	fgraph_max_depth = simple_strtoul(str, NULL, 0);
- 	return 1;
- }
- __setup("ftrace_graph_max_depth=", set_graph_max_depth_function);
+
+vim +872 mm/swap_state.c
+
+d9bfcfdc41e8e5 Huang Ying  2017-09-06  859  
+19f582d2684e47 Kairui Song 2023-11-20  860  /**
+19f582d2684e47 Kairui Song 2023-11-20  861   * swapin_no_readahead - swap in pages skipping swap cache and readahead
+19f582d2684e47 Kairui Song 2023-11-20  862   * @entry: swap entry of this memory
+19f582d2684e47 Kairui Song 2023-11-20  863   * @gfp_mask: memory allocation flags
+19f582d2684e47 Kairui Song 2023-11-20  864   * @vmf: fault information
+19f582d2684e47 Kairui Song 2023-11-20  865   *
+19f582d2684e47 Kairui Song 2023-11-20  866   * Returns the struct page for entry and addr after the swap entry is read
+19f582d2684e47 Kairui Song 2023-11-20  867   * in.
+19f582d2684e47 Kairui Song 2023-11-20  868   */
+598f2616cde014 Kairui Song 2023-11-20  869  static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
+2538a5e96fe62f Kairui Song 2023-11-20  870  					struct mempolicy *mpol, pgoff_t ilx,
+2538a5e96fe62f Kairui Song 2023-11-20  871  					struct mm_struct *mm)
+19f582d2684e47 Kairui Song 2023-11-20 @872  {
+19f582d2684e47 Kairui Song 2023-11-20  873  	struct folio *folio;
+2538a5e96fe62f Kairui Song 2023-11-20  874  	struct page *page;
+19f582d2684e47 Kairui Song 2023-11-20  875  	void *shadow = NULL;
+19f582d2684e47 Kairui Song 2023-11-20  876  
+2538a5e96fe62f Kairui Song 2023-11-20  877  	page = alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id());
+2538a5e96fe62f Kairui Song 2023-11-20  878  	folio = (struct folio *)page;
+19f582d2684e47 Kairui Song 2023-11-20  879  	if (folio) {
+2538a5e96fe62f Kairui Song 2023-11-20  880  		if (mem_cgroup_swapin_charge_folio(folio, mm,
+c2ac0dcbf9ab6a Kairui Song 2023-11-20  881  						   GFP_KERNEL, entry)) {
+19f582d2684e47 Kairui Song 2023-11-20  882  			folio_put(folio);
+19f582d2684e47 Kairui Song 2023-11-20  883  			return NULL;
+19f582d2684e47 Kairui Song 2023-11-20  884  		}
+c2ac0dcbf9ab6a Kairui Song 2023-11-20  885  
+c2ac0dcbf9ab6a Kairui Song 2023-11-20  886  		__folio_set_locked(folio);
+c2ac0dcbf9ab6a Kairui Song 2023-11-20  887  		__folio_set_swapbacked(folio);
+c2ac0dcbf9ab6a Kairui Song 2023-11-20  888  
+19f582d2684e47 Kairui Song 2023-11-20  889  		mem_cgroup_swapin_uncharge_swap(entry);
+19f582d2684e47 Kairui Song 2023-11-20  890  
+19f582d2684e47 Kairui Song 2023-11-20  891  		shadow = get_shadow_from_swap_cache(entry);
+19f582d2684e47 Kairui Song 2023-11-20  892  		if (shadow)
+19f582d2684e47 Kairui Song 2023-11-20  893  			workingset_refault(folio, shadow);
+19f582d2684e47 Kairui Song 2023-11-20  894  
+19f582d2684e47 Kairui Song 2023-11-20  895  		folio_add_lru(folio);
+19f582d2684e47 Kairui Song 2023-11-20  896  
+19f582d2684e47 Kairui Song 2023-11-20  897  		/* To provide entry to swap_readpage() */
+19f582d2684e47 Kairui Song 2023-11-20  898  		folio->swap = entry;
+19f582d2684e47 Kairui Song 2023-11-20  899  		swap_readpage(page, true, NULL);
+19f582d2684e47 Kairui Song 2023-11-20  900  		folio->private = NULL;
+19f582d2684e47 Kairui Song 2023-11-20  901  	}
+19f582d2684e47 Kairui Song 2023-11-20  902  
+19f582d2684e47 Kairui Song 2023-11-20  903  	return page;
+19f582d2684e47 Kairui Song 2023-11-20  904  }
+19f582d2684e47 Kairui Song 2023-11-20  905  
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
