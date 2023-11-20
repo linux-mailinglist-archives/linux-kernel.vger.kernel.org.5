@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52B57F1F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 769377F1F61
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbjKTVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        id S232116AbjKTVpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:45:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjKTVkC (ORCPT
+        with ESMTP id S229529AbjKTVpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:40:02 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D9CB;
-        Mon, 20 Nov 2023 13:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700516394;
-        bh=ZUHtKmWY+81XhelBP73qoHs8AeB/zM3hJJ3dafxVNj8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FCYhYiK41ZvwgxO6TaIDf5s3/PJnUI6Wh19jpad0X+fxNpT7nKeldI0r3hvoDZWuX
-         7ZaE5HkdSaSoGb35Kj+KvBZQJ0nNuKUlnthasHKL6RqwF9fa4AIYZd1NFqNSLhgtS6
-         uT3yAy8242CFYU2/lMo0zaCA6ge0C3L4ZgaR9kKrVHDu9uLtNAmn9saZBF3A4sGQO2
-         IHHOGJ10RV7jkFYMROWG9lFC4SKHJkguZUP1Xv+JnLHeKuKgpDNGHOUt8mBrbVIMYD
-         g5PdXrgiEBqlu56FaRSneow2f1nXbPE7YSwyVxeeQO7pWE3GzcCVPm1ip9x6q9h3Wt
-         e9vje/Oz1kQXw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SZ1BK6ZP2z4wdB;
-        Tue, 21 Nov 2023 08:39:53 +1100 (AEDT)
-Date:   Tue, 21 Nov 2023 08:39:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Fabio De Francesco <fabio.maria.de.francesco@intel.com>,
-        "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the mm tree
-Message-ID: <20231121083951.5b314a98@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Vh=cqXW67=TJWI=_58Lys6z";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 20 Nov 2023 16:45:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89D6E3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:45:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700516716; x=1732052716;
+  h=date:from:to:cc:subject:message-id;
+  bh=0WaEgIJ+CklE58u2sbA6oOSyKzTrYzFajgJJJSedofE=;
+  b=E6qII1kVkybAsFBBBQ6gTrdeaW4qYYP7C3gKCc6lC2GBSBcpW0x4Zlpx
+   h6afHy22p8fDp7kGVySKqhCHFSRmmb4+KF2zvqAmsMitA0iIk4fH+LnWz
+   3g24yfhPxvzOgkOB/yh+esa2hqMNAmpPBSezl8go/sxYQxzuugBSAENOt
+   BuMT+VdXeMxRdE54kNc8tphkI/hKPokDOFgOTpDyBFNyS0LH1K4ZLnLmD
+   XexdiaE/2m/3W85y6V8J+7VAtn7AzgzKaF53Y0/f0hy7bEdPZ8Wy4feeR
+   in9yUzPo5pef4S48qC83iDYXTDTInyhtT6MluxrHkiT5Aqimc3T2QyyXb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382100498"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="382100498"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:45:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="766439657"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="766439657"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 20 Nov 2023 13:45:15 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5C4v-0006x7-0b;
+        Mon, 20 Nov 2023 21:45:13 +0000
+Date:   Tue, 21 Nov 2023 05:44:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 4e15b91c5b7919c530c27f39c7f2d392bf0a95e3
+Message-ID: <202311210542.QaRNZ79u-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Vh=cqXW67=TJWI=_58Lys6z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
+branch HEAD: 4e15b91c5b7919c530c27f39c7f2d392bf0a95e3  x86/mtrr: Document missing function parameters in kernel-doc
 
-Hi all,
+elapsed time: 722m
 
-Commit
+configs tested: 50
+configs skipped: 137
 
-  b2419063123e ("mm/util: use kmap_local_page() in memcmp_pages()")
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-is missing a Signed-off-by from its author.
+tested configs:
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231120   clang
+i386         buildonly-randconfig-002-20231120   clang
+i386         buildonly-randconfig-003-20231120   clang
+i386         buildonly-randconfig-004-20231120   clang
+i386         buildonly-randconfig-005-20231120   clang
+i386         buildonly-randconfig-006-20231120   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231120   clang
+i386                  randconfig-002-20231120   clang
+i386                  randconfig-003-20231120   clang
+i386                  randconfig-004-20231120   clang
+i386                  randconfig-005-20231120   clang
+i386                  randconfig-006-20231120   clang
+i386                  randconfig-011-20231120   gcc  
+i386                  randconfig-012-20231120   gcc  
+i386                  randconfig-013-20231120   gcc  
+i386                  randconfig-014-20231120   gcc  
+i386                  randconfig-015-20231120   gcc  
+i386                  randconfig-016-20231120   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231120   clang
+x86_64       buildonly-randconfig-002-20231120   clang
+x86_64       buildonly-randconfig-003-20231120   clang
+x86_64       buildonly-randconfig-004-20231120   clang
+x86_64       buildonly-randconfig-005-20231120   clang
+x86_64       buildonly-randconfig-006-20231120   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231120   gcc  
+x86_64                randconfig-002-20231120   gcc  
+x86_64                randconfig-003-20231120   gcc  
+x86_64                randconfig-004-20231120   gcc  
+x86_64                randconfig-005-20231120   gcc  
+x86_64                randconfig-006-20231120   gcc  
+x86_64                randconfig-011-20231120   clang
+x86_64                randconfig-012-20231120   clang
+x86_64                randconfig-013-20231120   clang
+x86_64                randconfig-014-20231120   clang
+x86_64                randconfig-015-20231120   clang
+x86_64                randconfig-016-20231120   clang
+x86_64                randconfig-071-20231120   clang
+x86_64                randconfig-072-20231120   clang
+x86_64                randconfig-073-20231120   clang
+x86_64                randconfig-074-20231120   clang
+x86_64                randconfig-075-20231120   clang
+x86_64                randconfig-076-20231120   clang
+x86_64                          rhel-8.3-rust   clang
 
-Well, not actually, but it helps if the Author of the commit and the
-Signed-off-by use the same email address (or slightly more similar
-than this:
-
-Author: Fabio De Francesco <fabio.maria.de.francesco@intel.com>
-Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.=
-com>
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Vh=cqXW67=TJWI=_58Lys6z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVb0icACgkQAVBC80lX
-0GzlAwf7BZMi0XRFj7e5+2bRYhN4y77JCfGPhEcQlmylA+b002gzy9A0iNcYA4yo
-U4vkbNMq6Vw6BZrGJoZSK/e4O6CgCpOwyXmuoLX0juxAIn05OwmuVmp2OIH5QkII
-GaYrIq8CWRmZFmrHq6584xZEnvJjGQZuMT8Wy83btCbkvq7KDgTrqYzMuf5rjhux
-MF7BofyP5A5isDi04qGjmgY5I+GxW/H5oB+BNWd6Z9phBFmvOuduPuFzH6036f0D
-5LSwt6o1MBuQDHRv9o37BlfBHHKBeqdo9N/klB5sc+hdIgb1JxvBYdVjrmsfe5aX
-AKQFBClorMjzDM87y4nwM6cgt1iNpQ==
-=SNG0
------END PGP SIGNATURE-----
-
---Sig_/Vh=cqXW67=TJWI=_58Lys6z--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
