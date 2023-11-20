@@ -2,74 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077EC7F0D21
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6627F0D22
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbjKTIF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S232133AbjKTIFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjKTIF1 (ORCPT
+        with ESMTP id S232098AbjKTIF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:05:27 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67429C4
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:20 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so7659865e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1700467519; x=1701072319; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k/r7/AHUvU5h9gmXC8cWkhPHDiuLCW3OhU5H88ffb6E=;
-        b=c5Urs6HK+5R4uRglqHsTWMmz7EK2bzhvxoO7ZXc+L52FHnIC+MwZUzSvMhxllQNneG
-         5tJjWdX4AworNkTtJwRXdJC/Ex4VVoKeuOUpfugx+7i0kcddwkv0wym4YHO8VRNrPDQk
-         3DGtpB9hO0UJ+cq5P8ArLMqIaU4PTrbVfiRMNwPJ2EjqI/V28o7DxyvoAFTZCZj339rC
-         NfiVcqFl8oyFNrGsRBjEjkdv7/jIakwr/+KRHqiRDtrG/DZgdSgCSzdJAPRuZP+67//i
-         xcKwZ4KArv1JPpj84GuaNCJ6MSQK7FWpn9X6u0bK5MAFhWBmAvgS21J+5+sjaiAP9iVl
-         5nHA==
+        Mon, 20 Nov 2023 03:05:29 -0500
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7A5CA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:23 -0800 (PST)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1cc0e3a2b6eso48734865ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700467519; x=1701072319;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k/r7/AHUvU5h9gmXC8cWkhPHDiuLCW3OhU5H88ffb6E=;
-        b=bLKGUbonf+SBcGSjuphf3jaX40TPrMsHw6LO99t+kzJuDshOw1QG71lcQ8jqSRPFwE
-         Qv0YMQN7XW0e8Qjqu9VB28y8SGwI95XlHX673eoqcPu22CMxG8SehVRn1ZN8Zx2XK9JD
-         g8ORX16WZA8ZNO+0oQj0sRe6WVLQJpxDReLU+q4gYP1edzfpYrc9g2f7/eu2h8J+Wqqc
-         hnC0BpNYyMHUIuJx0OjGl0F0X0+AJBd7YfEykvASpvecyBghLpsPwh8I5qCCGx7wphXp
-         0leJesPTL/j9OuNPKMdmNhX8deFUNSWB92a5m7yX4jNwhKRuEup1bcpQooSFV+N9n/af
-         pQMw==
-X-Gm-Message-State: AOJu0YxbXUeKgPRSPplVNDTO2rEl8/fNYb0/JF+g8oM1lTdaDp/3lgh1
-        d77BgUb+3qB+jGbxEI0bKZjh6w==
-X-Google-Smtp-Source: AGHT+IFN4nwCSr0/wD+U66vM10GQFv+Nri9nZ939m/NOfkfbpyvhNkhO8KxhTxplHCfzLfcHQj8ulg==
-X-Received: by 2002:a05:600c:6001:b0:408:33ba:569a with SMTP id az1-20020a05600c600100b0040833ba569amr10872487wmb.8.1700467518744;
-        Mon, 20 Nov 2023 00:05:18 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id j7-20020a05600c190700b004064cd71aa8sm12586581wmq.34.2023.11.20.00.05.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 00:05:18 -0800 (PST)
-Date:   Mon, 20 Nov 2023 09:05:17 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] RISC-V: Add SBI debug console helper routines
-Message-ID: <20231120-639982716fbfd33a6fc144d6@orel>
-References: <20231118033859.726692-1-apatel@ventanamicro.com>
- <20231118033859.726692-3-apatel@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1700467523; x=1701072323;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BFFgTieMhzmpzC7zBMFZD5JT3T1t57L3DBASoDQrHkU=;
+        b=TB3hUFMUxsraAXPu3/w1kJ/ZGRBmAnSR+CF/dPa/FRxpWXnCCLDRhq0DvFt4gbtq4t
+         zJc8zYU1wTTCzPSOyoKjUlKPkW69HNYVtGcqPDPy10L/RkjsdLSRO6FFR99wjFMmV8XH
+         qU5zJouNaXbyTQHpTSVYktsaQOOt+tTAOaef2104T4jDfPecZ36YTJiARHzPfxSN3OXL
+         tmrlGD74HOrsxpMwYYcq7XKLkl8FkBlAzJhZI/SU7Zvd8UNm+5aHrNWdVRhFAFcQDqLt
+         L7cNqn6TThCK19ECp7C9FbFdgSZnxe+DlQU7vK7TzJxk/vmrdPuBD2QTwf2PIIjoe6Du
+         Yvzw==
+X-Gm-Message-State: AOJu0YwQRG4smCHlcWbn8odHsENNrXbXb1tuF3AWHJ24ZpGdhKe13k7T
+        frjf+U2v9QN42zcZc7z15PqTnj510gHituaztBueadnDR28w
+X-Google-Smtp-Source: AGHT+IGirTJ0JjBDHQiqHuy3NgK5Ew2xOfMaek3wJqfnN0aPD81r0i9kd/HnPDFnWeXVKVOQrpon4LK8ARMLLDfHbKx/d30hi7Mf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118033859.726692-3-apatel@ventanamicro.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a17:903:11c3:b0:1cf:6467:b2ed with SMTP id
+ q3-20020a17090311c300b001cf6467b2edmr231475plh.12.1700467522985; Mon, 20 Nov
+ 2023 00:05:22 -0800 (PST)
+Date:   Mon, 20 Nov 2023 00:05:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8e4a3060a90f205@google.com>
+Subject: [syzbot] [btrfs?] memory leak in __btrfs_add_free_space
+From:   syzbot <syzbot+349f1f9eb382f477ce50@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,115 +55,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 09:08:56AM +0530, Anup Patel wrote:
-> Let us provide SBI debug console helper routines which can be
-> shared by serial/earlycon-riscv-sbi.c and hvc/hvc_riscv_sbi.c.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/sbi.h |  5 +++++
->  arch/riscv/kernel/sbi.c      | 43 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 66f3933c14f6..ee7aef5f6233 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -334,6 +334,11 @@ static inline unsigned long sbi_mk_version(unsigned long major,
->  }
->  
->  int sbi_err_map_linux_errno(int err);
-> +
-> +extern bool sbi_debug_console_available;
-> +int sbi_debug_console_write(unsigned int num_bytes, phys_addr_t base_addr);
-> +int sbi_debug_console_read(unsigned int num_bytes, phys_addr_t base_addr);
-> +
->  #else /* CONFIG_RISCV_SBI */
->  static inline int sbi_remote_fence_i(const struct cpumask *cpu_mask) { return -1; }
->  static inline void sbi_init(void) {}
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 5a62ed1da453..73a9c22c3945 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -571,6 +571,44 @@ long sbi_get_mimpid(void)
->  }
->  EXPORT_SYMBOL_GPL(sbi_get_mimpid);
->  
-> +bool sbi_debug_console_available;
-> +
-> +int sbi_debug_console_write(unsigned int num_bytes, phys_addr_t base_addr)
-> +{
-> +	struct sbiret ret;
-> +
-> +	if (!sbi_debug_console_available)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				num_bytes, lower_32_bits(base_addr),
-> +				upper_32_bits(base_addr), 0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				num_bytes, base_addr, 0, 0, 0, 0);
-> +
-> +	return ret.error ? sbi_err_map_linux_errno(ret.error) : ret.value;
+Hello,
 
-We can't get perfect mappings, but I wonder if we can do better than
-returning ENOTSUPP for "Failed to write the byte due to I/O errors."
+syzbot found the following issue on:
 
-How about
+HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d5cc04e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e71d284dd6560ca8
+dashboard link: https://syzkaller.appspot.com/bug?extid=349f1f9eb382f477ce50
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112a3b0f680000
 
- if (ret.error == SBI_ERR_FAILURE)
-     return -EIO;
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/026cc0fc446f/disk-c42d9eee.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c4b4d6d092c1/vmlinux-c42d9eee.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1865f885e9d6/bzImage-c42d9eee.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/513e1afbe9d7/mount_0.gz
 
- return ret.error ? sbi_err_map_linux_errno(ret.error) : ret.value;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+349f1f9eb382f477ce50@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888123c87618 (size 104):
+  comm "syz-executor.6", pid 10287, jiffies 4294957667 (age 18.250s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81630c48>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff81630c48>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff81630c48>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff81630c48>] slab_alloc mm/slub.c:3486 [inline]
+    [<ffffffff81630c48>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+    [<ffffffff81630c48>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
+    [<ffffffff8212c5a9>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
+    [<ffffffff8212c5a9>] __btrfs_add_free_space+0x69/0x780 fs/btrfs/free-space-cache.c:2636
+    [<ffffffff8212ce5a>] do_trimming+0x19a/0x2d0 fs/btrfs/free-space-cache.c:3687
+    [<ffffffff8212d334>] trim_no_bitmap+0x3a4/0x650 fs/btrfs/free-space-cache.c:3797
+    [<ffffffff8212fc9c>] btrfs_trim_block_group+0xbc/0x1a0 fs/btrfs/free-space-cache.c:4037
+    [<ffffffff8208cbd2>] btrfs_trim_fs+0x1c2/0x6b0 fs/btrfs/extent-tree.c:6297
+    [<ffffffff82108c53>] btrfs_ioctl_fitrim+0x1d3/0x270 fs/btrfs/ioctl.c:535
+    [<ffffffff82112fd0>] btrfs_ioctl+0x2200/0x33e0 fs/btrfs/ioctl.c:4573
+    [<ffffffff816be4d2>] vfs_ioctl fs/ioctl.c:51 [inline]
+    [<ffffffff816be4d2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
+    [<ffffffff816be4d2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
+    [<ffffffff816be4d2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
+    [<ffffffff84b6ad8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b6ad8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
 
-> +}
-> +
-> +int sbi_debug_console_read(unsigned int num_bytes, phys_addr_t base_addr)
-> +{
-> +	struct sbiret ret;
-> +
-> +	if (!sbi_debug_console_available)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				num_bytes, lower_32_bits(base_addr),
-> +				upper_32_bits(base_addr), 0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				num_bytes, base_addr, 0, 0, 0, 0);
-> +
-> +	return ret.error ? sbi_err_map_linux_errno(ret.error) : ret.value;
 
-Same comment as above.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> +}
-> +
->  void __init sbi_init(void)
->  {
->  	int ret;
-> @@ -612,6 +650,11 @@ void __init sbi_init(void)
->  			sbi_srst_reboot_nb.priority = 192;
->  			register_restart_handler(&sbi_srst_reboot_nb);
->  		}
-> +		if ((sbi_spec_version >= sbi_mk_version(2, 0)) &&
-> +		    (sbi_probe_extension(SBI_EXT_DBCN) > 0)) {
-> +			pr_info("SBI DBCN extension detected\n");
-> +			sbi_debug_console_available = true;
-> +		}
->  	} else {
->  		__sbi_set_timer = __sbi_set_timer_v01;
->  		__sbi_send_ipi	= __sbi_send_ipi_v01;
-> -- 
-> 2.34.1
->
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Otherwise,
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-Thanks,
-drew
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
