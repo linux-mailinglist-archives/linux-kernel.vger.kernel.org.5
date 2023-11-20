@@ -2,108 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E6A7F1266
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8527F1267
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjKTLsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:48:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
+        id S233238AbjKTLt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:49:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjKTLsw (ORCPT
+        with ESMTP id S232566AbjKTLtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:48:52 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBECB8E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:48:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tRSjvBLeRfQ7O2tsXsQTusJsAygDUJstbiZc4CjFK0w=; b=PJkslyS3n0J8xbNI52IL+Qqxv5
-        fp2UQiM38h25OoXaQzJgznpaaXpfp2CqWBYLtqtOE64DHZL+ESsmuQLBH95UBcg6+EKRD+d1/CS8I
-        0un5Mm+ww+Ps4ZMfIEIldGlfd0gMN2bsEMpeqJURsnF1ro6I/mlHgAtxlIdJ+9WpTYf+qCYWKWqIR
-        U66BZXp6jopYx4ftXSFGf0pltVW7DEf6FRvJdU1u5VuLYEWXmje0JfPodkA2AZnmkAmdC5PwrYDpT
-        xpyBUGnxWtQP8a6rCeP3UPgJxZNOb9g+95sWOnxMeIUKKsJN0eu+/Ja4PSv0SnDjYyuoxsAJYbYfn
-        EHXLllZw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r52lX-00AwDo-2n;
-        Mon, 20 Nov 2023 11:48:37 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 25EBA3004E3; Mon, 20 Nov 2023 12:48:35 +0100 (CET)
-Date:   Mon, 20 Nov 2023 12:48:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yiwei Lin <s921975628@gmail.com>
-Cc:     mingo@redhat.com, wuyun.abel@bytedance.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, s921975627@gmail.com
-Subject: Re: [PATCH] sched/fair: Update min_vruntime for reweight_entity()
- correctly
-Message-ID: <20231120114835.GS8262@noisy.programming.kicks-ass.net>
-References: <20231117080106.12890-1-s921975628@gmail.com>
+        Mon, 20 Nov 2023 06:49:25 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DA1AA;
+        Mon, 20 Nov 2023 03:49:21 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5FAD46602173;
+        Mon, 20 Nov 2023 11:49:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700480960;
+        bh=GgeKqX0D81jFxCF2ScljQWJwFqYbf3BhS4xRK7EFl7k=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Pj4PUboTUn0PFKYoW2bVe5T5gpM1R9jE2wFD+r7NmlbnNROPHvdDpg39zZz7uh3/Z
+         m7hae9NFbRLfEFlHEo455s1RIq0QVmmbdT+0Q+CxekLQi9SxGEBngqqWSnUrmfRdvE
+         Dz8MGIo/EhrTXXTZUt0YnvIqWUhovHK7jvOaYWrCj/r0I36uQBn7J2EjIFxqd4QZiH
+         yJ350qVxghZnVt05/JaZq+G8C9pdSlpnaupzZhVWfNIETf5Y+tz10AcHinO96Nrb3M
+         2Ouy3hKXb6wBdX5tFsouBw/PHZh1IzmhlfmxSwANt6rtvORGEs7C1PU8qUm0pm3sdK
+         2jlKnZIv7lCgQ==
+Message-ID: <26145766-d6c9-468b-a4ef-78b776fcaed8@collabora.com>
+Date:   Mon, 20 Nov 2023 12:49:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117080106.12890-1-s921975628@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] dt-bindings: arm: mediatek: mmsys: Add VPPSYS
+ compatible for MT8188
+Content-Language: en-US
+To:     =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= 
+        <Yu-chang.Lee@mediatek.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        =?UTF-8?B?R2FybWluIENoYW5nICjlvLXlrrbpipgp?= 
+        <Garmin.Chang@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+References: <20231120100258.3428-1-yu-chang.lee@mediatek.com>
+ <6bc4fa28-a98f-46c7-b315-7366307b5206@linaro.org>
+ <77302f50b5c977011ec26be7a04fa3c6c63653c6.camel@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <77302f50b5c977011ec26be7a04fa3c6c63653c6.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 04:01:06PM +0800, Yiwei Lin wrote:
-> Since reweight_entity() may have chance to change the weight of
-> cfs_rq->curr entity, we should also update_min_vruntime() if
-> this is the case
-> 
-> Fixes: eab03c23c2a1 ("sched/eevdf: Fix vruntime adjustment on reweight")
-> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+Il 20/11/23 11:26, Yu-chang Lee (李禹璋) ha scritto:
+> On Mon, 2023-11-20 at 11:09 +0100, Krzysztof Kozlowski wrote:
+>>   	
+>> External email : Please do not click links or open attachments until
+>> you have verified the sender or the content.
+>>   On 20/11/2023 11:02, yu-chang.lee wrote:
+>>> For MT8188, VPPSYS0 and VPPSYS1 are 2 display pipes with
+>>> hardware differences in power domains, clocks and subsystem counts,
+>>> which should be probed from mtk-mmsys driver to populate device by
+>>> platform_device_register_data then start its own clock driver.
+>>>
+>>> Signed-off-by: yu-chang.lee <yu-chang.lee@mediatek.com>
+>>> ---
+>>> Change in v4:
+>>> - Squashed binding patches
+>>> - This patch is based on [1]
+>>> [1] soc: mediatek: mmsys: Add support for MT8188 VPPSYS
+>>>    -
+>> https://patchwork.kernel.org/project/linux-mediatek/patch/20231117054345.15859-1-yu-chang.lee@mediatek.com/
+>>>
+>>
+>> This probably should stay part of previous patchset. Why splitting
+>> it?
+>>
+>>
+>> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>> Best regards,
+>> Krzysztof
+>>
 
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Right, but as you wrote in your other patch, min_vruntime isn't all that
-critical anymore. I'll go queue this in sched/core, I don't think this
-warrants /urgent.
+> Thank you for your time and effort. I misunderstood that you want me to
+> send the binding patches as a independent serie in previous discussion.
+> Only until now I squashed them, but the driver patch has already been
+> submitted... Should I resend all of these pathes as a serie again?
+> 
 
-> ---
->  kernel/sched/fair.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+For this time it's okay, I can pick those separately... but for the next time,
+please, yes, the two are related so they should go in one series.
+
+Thanks,
+Angelo
+
+> Thanks,
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 07f555857..6fb89f4a3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3815,17 +3815,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->  	enqueue_load_avg(cfs_rq, se);
->  	if (se->on_rq) {
->  		update_load_add(&cfs_rq->load, se->load.weight);
-> -		if (!curr) {
-> -			/*
-> -			 * The entity's vruntime has been adjusted, so let's check
-> -			 * whether the rq-wide min_vruntime needs updated too. Since
-> -			 * the calculations above require stable min_vruntime rather
-> -			 * than up-to-date one, we do the update at the end of the
-> -			 * reweight process.
-> -			 */
-> +		if (!curr)
->  			__enqueue_entity(cfs_rq, se);
-> -			update_min_vruntime(cfs_rq);
-> -		}
-> +
-> +		/*
-> +		 * The entity's vruntime has been adjusted, so let's check
-> +		 * whether the rq-wide min_vruntime needs updated too. Since
-> +		 * the calculations above require stable min_vruntime rather
-> +		 * than up-to-date one, we do the update at the end of the
-> +		 * reweight process.
-> +		 */
-> +		update_min_vruntime(cfs_rq);
->  	}
->  }
->  
-> -- 
-> 2.34.1
-> 
+> Best Regards,
+> yuchang
+
