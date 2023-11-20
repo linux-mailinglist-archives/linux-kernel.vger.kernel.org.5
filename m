@@ -2,250 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D113A7F1F2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595F07F1F31
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbjKTVaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
+        id S232116AbjKTVbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTVaP (ORCPT
+        with ESMTP id S229529AbjKTVbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:30:15 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E9ECD;
-        Mon, 20 Nov 2023 13:30:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700515792; x=1701120592; i=w_armin@gmx.de;
-        bh=MBFtfZvwqMvy+UFHwM+JQ/gvlSJjJXWpeGnzAD21e2I=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=rFEGZiN+4Cjlje5zYwAlJCyHudK/cfPBfuTJy8a+k6nY2rEfkQztf0EFazZwAZFP
-         h7cDOW7rtmKWYuj+ntvKCoT+WlB5+PjZN2XxSfnfIjG2FT8bxcnXKkhr+3REdFLKP
-         C9WUeU8LrJpOv4+8pRdKeCLOOaGUQ5A3y6ZdK8co3KRZ+C8qGKg2YmjS6dlv2f8SL
-         d7nMaYIyXDarIRkG/sTG+g7CyxfH4fuz/TgQ+grG+q+bIywlU6QkVyWNaJgII4L8Q
-         Vkw6Ldgjbb6cCMMIvRHeanslMxY2NdX65xLrVd/RIEldwhZom1wlSR+ZpRtUuiOhD
-         acMsXgqMktdQHyUDSQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBDj4-1rCMJy0Dvi-00CfGz; Mon, 20
- Nov 2023 22:29:52 +0100
-Message-ID: <4512f55b-8dce-40b0-a207-7c3463ca4e01@gmx.de>
-Date:   Mon, 20 Nov 2023 22:29:50 +0100
+        Mon, 20 Nov 2023 16:31:34 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30B099;
+        Mon, 20 Nov 2023 13:31:30 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27ff7fe7fbcso3808378a91.1;
+        Mon, 20 Nov 2023 13:31:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700515890; x=1701120690; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FctPSCj7tPevGlMSxSjEDJsdguhwQ45p/dX89rjXqg0=;
+        b=iEFGX72rNsTsiFJxQVlbFyDezownQPzvJdrkL37X9YUOE0AMBvRoUG/zuQppmjAjoc
+         CfpHglAfZVdDTXjo6H3mn4r67GQf2N5uOGJqG4zXY1QqkiqDomU8dx1wE3NwpMAu7FyB
+         fUSfGzVV3Nu+lSCxxEGu5dd7e+Um8vnx8I9+9Z62qaSNKSxGqV+e8zylbdYNQMjEx3nd
+         u59JEfrEXSVgUOvsC5lnpRdU6ITjgwZJk0/S2pwS0bs2bqiuL/qsZvlTPUnLAULnTsa5
+         RPi/Uitcc1u1Z5xdJyMVFV6S9BGxzaPBsUAigb4Xg4apK9UgXuLqYCYvoSc8dj5QAHlO
+         zlyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700515890; x=1701120690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FctPSCj7tPevGlMSxSjEDJsdguhwQ45p/dX89rjXqg0=;
+        b=X2Q7lA0f07xCFqxbCNCigaALAnGUB218xz04Rw3o1+y2glYf6UK97rdMrWShD1BEQc
+         m31DSVO3ECcmSdH32FfhGwC5TSEETJ9Jfc+KjggettlBd4tsI7vOwAENLbYYIhKZM/iF
+         FtVDs2xYp/OclB3SLN9sdH1HNHuC1EZpZq2Twj2FPNx0cqg2F8EKJOvXcxC1cK4xR48j
+         DKEJeCTszjYnAGMaOGzKEqngNDFRoCzmg4nSx+05eLuqrkIZr/cFTWrRjXEnkTSkxCsk
+         pqWKKEJpvsLE5POpBTMXVLA/3hAN1RBO408K8mmWSZ0xTq5a9S+wqH6yllVyqHtXsQAx
+         zmfw==
+X-Gm-Message-State: AOJu0Yy6biaX4VmbOdf0BSoJBbaltf9LzBOTSk7A9AEzmjxXVQcLOzKj
+        8dH20N5GclmqBx+94QxWJya5eOKT6E0ylJDR2/U=
+X-Google-Smtp-Source: AGHT+IFLPipHGoDrsUtzfKJWJKbruw7OLvOy/n33f2E9xeIwg0s9OZsP2ZNEj7FYbdOZ7ZsOwoP28ZXjjGjcte1L2+0=
+X-Received: by 2002:a17:90b:3a82:b0:27d:12e1:7e20 with SMTP id
+ om2-20020a17090b3a8200b0027d12e17e20mr8939742pjb.12.1700515889879; Mon, 20
+ Nov 2023 13:31:29 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] platform/x86: wmi: Add wmidev_block_set()
-Content-Language: en-US
-To:     Hans de Goede <hdegoede@redhat.com>, jithu.joseph@intel.com,
-        markgross@kernel.org, ilpo.jarvinen@linux.intel.com
-Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+References: <20231113112507.917107-1-james.clark@arm.com> <20231113112507.917107-4-james.clark@arm.com>
+In-Reply-To: <20231113112507.917107-4-james.clark@arm.com>
+From:   Namhyung Kim <namhyung@gmail.com>
+Date:   Mon, 20 Nov 2023 13:31:18 -0800
+Message-ID: <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
+ counting threshold feature
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231103182526.3524-1-W_Armin@gmx.de>
- <4eb8e035-26f1-44e6-ae32-61d843c61f13@redhat.com>
-From:   Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <4eb8e035-26f1-44e6-ae32-61d843c61f13@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:ZX+IkWGdT7MGRB6uOQq3mabLrYDspwDXef3MskS3BFYnoih0L5R
- wU4PmmVrFHwJXwDf1Rr0lY0mT3zQmetFRe/5JArNi/aTiTo7/95Dh9rcQQ/0OFdggthnBoT
- +6dlEzCF1iI7HBy76F/4foaV1eAjaVG8LXyeAbhUSBNqLkLNzLICrW/HihM95n0O74s4N8f
- WOEx912uJMxtQtB63/pwQ==
-UI-OutboundReport: notjunk:1;M01:P0:zYzwr6bAKuE=;ZMY5Zx+InrqPDrT8LoFtEiuz9e0
- YXlc0FxHeuFjebm1bv+eRR7Ioa40hL7W5UVLPkWQ4WjhQQKoo0XCYZRFjffxVgsrlg447MidV
- o9mgr6fl7q5TAQHpY/nYowut+AQ+2RTXaMEf/f4cp+gBWV3fIboLl3fArEjEcP3J4vzS8x2yj
- TdMqATjXD9JPulcEM+5W7gXYqqFCrGXc9/iYHGN8zAPp4gMnOeQN1nM+rbBd3MwUqC0ejPeMI
- LuUo3IOCG8A6T6SSPhazJZe4oxp8290SNtRYwPFTy0bcp6Jey6gnEnYHPAMyv9SHLNkERfYMx
- FIlUqTdjAPbCm6B9kDAoBaD+6JW5uVmEDsO/UlSBEjB5P1bH5bJalKP6bbF2GhCjP5vHuKngA
- X+40M49z/cMwH32G6lzfxr0F1nOhl9qaVT9//oHB2yZNKpm3Odnccdi7MPl3zgtd+8NHzndDG
- 6BA4lrm+0saqnembzP98fX9OjSkM2CXDaotTGK8b18hWZjjcoz4JptVMR6pilgoDHz31TPlXO
- 8GjkHqBw+9Hmq/ENJhCANNaYolEtCy2Q8qDaUXCzEdxGnrLBoWS+isnBXwBYrShzuz4IKZkeE
- Y7FxpW9mo8Qjxe6LaoYasM8ePCsKIC4kGteUaW5dv2WrPph9ovQxWOpShwD41DZmUyOumIntU
- 6VqRJ6yq2Atumy/0KADG13V6gB9k4n6gcUXuEBqaCcmwMTwcrmjen9rP8byAIa/uL1XF+p8ts
- 4Lml1fBCVZw6NUwhMk7AlptIBvDwubpcDnMEGIwK7gF8dxiYzFftfEewFGZuKdnwBwKX2Isc3
- 7oCvDHS049gk+JgB4Csj29nH8JMV0ZLdG7GGk3ZymOAJIFuajl6Is4pEih6OeMwiOcDtXU9zx
- 24xa1T0LpPMvL3Gq8nl1GpCmOt409y36ONg1LDX1fya+D7Nich6aDb08K5ZylslDOT1P4e6tq
- p+Li2R3gn4BOhWnml2BUomzRKDo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 20.11.23 um 13:00 schrieb Hans de Goede:
-
-> Hi Armin,
+On Mon, Nov 13, 2023 at 3:26=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
 >
-> On 11/3/23 19:25, Armin Wolf wrote:
->> Currently, WMI drivers have to use the deprecated GUID-based
->> interface when setting data blocks. This prevents those
->> drivers from fully moving away from this interface.
->>
->> Provide wmidev_block_set() so drivers using wmi_set_block() can
->> fully migrate to the modern bus-based interface.
->>
->> Tested with a custom SSDT from the Intel Slim Bootloader project.
->>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> Thank you for your patch-series, I've applied the series to my
-> review-hans branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+> Add documentation for the new Perf event open parameters and
+> the threshold_max capability file.
 >
-> One thing which I noticed during review of patch 3/4 is that
-> some WMI drivers might benefit from having a wmidev_block_query_typed()
-> similar to how we have a acpi_evaluate_dsm_typed() which takes an
-> ACPI type and returns a NULL pointer instead of a wrongly typed
-> ACPI object when the type does not match. Specifically this
-> would allow dropping the return obj type checking from
-> sbl-fw-update.c : get_fwu_request() .
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
 >
-> Now adding a wmidev_block_query_typed() wrapper around
-> wmidev_block_query () just for this is not really a win,
-> but it might be useful in the future ? Anyways just an idea.
->
-> Regards,
->
-> Hans
+> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64=
+/perf.rst
+> index 1f87b57c2332..36b8111a710d 100644
+> --- a/Documentation/arch/arm64/perf.rst
+> +++ b/Documentation/arch/arm64/perf.rst
+> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
+>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/tools/perf/arch/arm64/tests/user-events.c
+>  .. _tools/lib/perf/tests/test-evsel.c:
+>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/tools/lib/perf/tests/test-evsel.c
+> +
+> +Event Counting Threshold
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +Overview
+> +--------
+> +
+> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+> +events whose count meets a specified threshold condition. For example if
+> +threshold_compare is set to 2 ('Greater than or equal'), and the
+> +threshold is set to 2, then the PMU counter will now only increment by
+> +when an event would have previously incremented the PMU counter by 2 or
+> +more on a single processor cycle.
+> +
+> +To increment by 1 after passing the threshold condition instead of the
+> +number of events on that cycle, add the 'threshold_count' option to the
+> +commandline.
+> +
+> +How-to
+> +------
+> +
+> +The threshold, threshold_compare and threshold_count values can be
+> +provided per event:
+> +
+> +.. code-block:: sh
+> +
+> +  perf stat -e stall_slot/threshold=3D2,threshold_compare=3D2/ \
+> +            -e dtlb_walk/threshold=3D10,threshold_compare=3D3,threshold_=
+count/
 
-Good idea, i am already working one something similar:
+Can you please explain this a bit more?
 
-The ACPI-WMI mapper on Windows translates the ACPI object into an standard WMI buffer, see
-https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/driver-defined-wmi-data-items for details.
+I guess the first event counts stall_slot PMU if the event if it's
+greater than or equal to 2.  And as threshold_count is not set,
+it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
 
-This "normalization" of the buffer content is necessary since for example WMI strings can
-be expressed either thru an ACPI string or thru an utf16 ACPI buffer. Such a problem already
-affected the HP WMI sensor driver, and i am planning to solve this with an new API.
-This API would decouple WMI drivers from the ACPI subsystem.
+OTOH, dtlb_walk will count 1 if it sees an event less than 10.
+Is my understanding correct?
 
-However i am currently busy cleaning up the WMI subsystem (suspend fixes come next), so
-it might take some time. But i have it on my (increasingly long) list.
+> +
+> +And the following comparison values are supported:
+> +
+> +.. code-block::
+> +
+> +  0: Not-equal
+> +  1: Equals
+> +  2: Greater-than-or-equal
+> +  3: Less-than
+
+So the above values are for threashold_compare, right?
+It'd be nice if it's more explicit.
+
+Similarly, it'd be helpful to have a description for the
+threshold and threshold_count fields.
 
 Thanks,
-Armin Wolf
+Namhyung
 
+> +
+> +The maximum supported threshold value can be read from the caps of each
+> +PMU, for example:
+> +
+> +.. code-block:: sh
+> +
+> +  cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
+> +
+> +  0x000000ff
+> +
+> +If a value higher than this is given, then it will be silently clamped
+> +to the maximum. The highest possible maximum is 4095, as the config
+> +field for threshold is limited to 12 bits, and the Perf tool will refuse
+> +to parse higher values.
+> +
+> +If the PMU doesn't support FEAT_PMUv3_TH, then threshold_max will read
+> +0, and both threshold and threshold_compare will be silently ignored.
+> +threshold_max will also read as 0 on aarch32 guests, even if the host
+> +is running on hardware with the feature.
+> --
+> 2.34.1
 >
 >
->
->> ---
->> Changes in v2:
->> - applies on pdx86/for-next
->> ---
->>   drivers/platform/x86/wmi.c | 64 ++++++++++++++++++++------------------
->>   include/linux/wmi.h        |  2 ++
->>   2 files changed, 36 insertions(+), 30 deletions(-)
->>
->> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
->> index 5c27b4aa9690..9d9a050e7086 100644
->> --- a/drivers/platform/x86/wmi.c
->> +++ b/drivers/platform/x86/wmi.c
->> @@ -536,41 +536,50 @@ EXPORT_SYMBOL_GPL(wmidev_block_query);
->>    *
->>    * Return: acpi_status signaling success or error.
->>    */
->> -acpi_status wmi_set_block(const char *guid_string, u8 instance,
->> -			  const struct acpi_buffer *in)
->> +acpi_status wmi_set_block(const char *guid_string, u8 instance, const struct acpi_buffer *in)
->>   {
->> -	struct wmi_block *wblock;
->> -	struct guid_block *block;
->>   	struct wmi_device *wdev;
->> -	acpi_handle handle;
->> -	struct acpi_object_list input;
->> -	union acpi_object params[2];
->> -	char method[WMI_ACPI_METHOD_NAME_SIZE];
->>   	acpi_status status;
->>
->> -	if (!in)
->> -		return AE_BAD_DATA;
->> -
->>   	wdev = wmi_find_device_by_guid(guid_string);
->>   	if (IS_ERR(wdev))
->>   		return AE_ERROR;
->>
->> -	wblock = container_of(wdev, struct wmi_block, dev);
->> -	block = &wblock->gblock;
->> -	handle = wblock->acpi_device->handle;
->> +	status =  wmidev_block_set(wdev, instance, in);
->> +	wmi_device_put(wdev);
->>
->> -	if (block->instance_count <= instance) {
->> -		status = AE_BAD_PARAMETER;
->> +	return status;
->> +}
->> +EXPORT_SYMBOL_GPL(wmi_set_block);
->>
->> -		goto err_wdev_put;
->> -	}
->> +/**
->> + * wmidev_block_set - Write to a WMI block
->> + * @wdev: A wmi bus device from a driver
->> + * @instance: Instance index
->> + * @in: Buffer containing new values for the data block
->> + *
->> + * Write contents of the input buffer to an ACPI-WMI data block.
->> + *
->> + * Return: acpi_status signaling success or error.
->> + */
->> +acpi_status wmidev_block_set(struct wmi_device *wdev, u8 instance, const struct acpi_buffer *in)
->> +{
->> +	struct wmi_block *wblock = container_of(wdev, struct wmi_block, dev);
->> +	acpi_handle handle = wblock->acpi_device->handle;
->> +	struct guid_block *block = &wblock->gblock;
->> +	char method[WMI_ACPI_METHOD_NAME_SIZE];
->> +	struct acpi_object_list input;
->> +	union acpi_object params[2];
->>
->> -	/* Check GUID is a data block */
->> -	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD)) {
->> -		status = AE_ERROR;
->> +	if (!in)
->> +		return AE_BAD_DATA;
->>
->> -		goto err_wdev_put;
->> -	}
->> +	if (block->instance_count <= instance)
->> +		return AE_BAD_PARAMETER;
->> +
->> +	/* Check GUID is a data block */
->> +	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD))
->> +		return AE_ERROR;
->>
->>   	input.count = 2;
->>   	input.pointer = params;
->> @@ -582,14 +591,9 @@ acpi_status wmi_set_block(const char *guid_string, u8 instance,
->>
->>   	get_acpi_method_name(wblock, 'S', method);
->>
->> -	status = acpi_evaluate_object(handle, method, &input, NULL);
->> -
->> -err_wdev_put:
->> -	wmi_device_put(wdev);
->> -
->> -	return status;
->> +	return acpi_evaluate_object(handle, method, &input, NULL);
->>   }
->> -EXPORT_SYMBOL_GPL(wmi_set_block);
->> +EXPORT_SYMBOL_GPL(wmidev_block_set);
->>
->>   static void wmi_dump_wdg(const struct guid_block *g)
->>   {
->> diff --git a/include/linux/wmi.h b/include/linux/wmi.h
->> index 763bd382cf2d..207544968268 100644
->> --- a/include/linux/wmi.h
->> +++ b/include/linux/wmi.h
->> @@ -35,6 +35,8 @@ extern acpi_status wmidev_evaluate_method(struct wmi_device *wdev,
->>   extern union acpi_object *wmidev_block_query(struct wmi_device *wdev,
->>   					     u8 instance);
->>
->> +acpi_status wmidev_block_set(struct wmi_device *wdev, u8 instance, const struct acpi_buffer *in);
->> +
->>   u8 wmidev_instance_count(struct wmi_device *wdev);
->>
->>   extern int set_required_buffer_size(struct wmi_device *wdev, u64 length);
->> --
->> 2.39.2
->>
