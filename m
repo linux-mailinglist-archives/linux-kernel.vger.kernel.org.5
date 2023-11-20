@@ -2,337 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A628B7F17DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5A77F17E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbjKTPxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S233799AbjKTPyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbjKTPxJ (ORCPT
+        with ESMTP id S233171AbjKTPyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:53:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE5418F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700495583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zn51yV4A7RhZk0UeIHfR4p6ynwDwnU1J5TWyxUWG93E=;
-        b=S67fxGoXq5VCI95JQK4vw0UBJX4zstSX6UQBTaCag75knXUIwNvUQfatSmnGrC+glf16SK
-        DAU7pOWX4RWklqAyr9gmdciabok0WvBT2G0OBJvj8lPq4/N7uZu6fMAE5t5C/HHCtGHzGv
-        FwB9rsT+ifY76QOuSN9r+H9+zCeye7U=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-275-GQRR37o9N3yGqcfE7DvVUA-1; Mon, 20 Nov 2023 10:53:01 -0500
-X-MC-Unique: GQRR37o9N3yGqcfE7DvVUA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a00dd93a5fcso17582466b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:53:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700495580; x=1701100380;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zn51yV4A7RhZk0UeIHfR4p6ynwDwnU1J5TWyxUWG93E=;
-        b=olAtdb1qi9KJSPmqDLdFZ7IkAlx3b1RWRLEh9fGjLyaRVvIrJuyHRL9VDKv7MusSOU
-         Ji6TzXShkpzvvbnMMW6685cpui/DIbX0C15OwfAuo5LwI7pnL4Cn1CLULcd9ILMOdFvw
-         1+sR2lsB7Uh7nFeKmDlRtFnX+W9h33//YQLyPAc6Jqqnb2SPsW59PCq2PdnVzYHlmr5G
-         eTFXxw7Rd3dcQ3J3OskIcqaRANjkHsJ4+Tgchrliiq6cJcgvwoQA8EyK/xaY2PgrYHTN
-         +eJ7dTgL/LbUbvTDI3jhC/u/rX6V9MrZPIg/X2X1XyozupLxhwLvSw5IT+g2tj5SbNAT
-         TLzw==
-X-Gm-Message-State: AOJu0Yw5mTxmaS1OujpNr9+NjP5/JFbjaKcdV7WRIVS94xYaNy0DVG08
-        rs7A3FU5mKwMDRkoEcacxKcNl74XkRwt6hsxx9QZ4Kwd0xSrmSTxBmEjG36zY+2izaFngtzAchm
-        gFK1sEgxwPP+Fo9kUTXlTGAKp
-X-Received: by 2002:a17:906:7488:b0:a00:53cc:8590 with SMTP id e8-20020a170906748800b00a0053cc8590mr1179913ejl.40.1700495580641;
-        Mon, 20 Nov 2023 07:53:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG5sMtyRpHUjgbzwprjL2YoVsjewZ8UqwgPZOBqJZlHSeGX8+LqSaoZUsqNrSdE2NhGJMS3Og==
-X-Received: by 2002:a17:906:7488:b0:a00:53cc:8590 with SMTP id e8-20020a170906748800b00a0053cc8590mr1179902ejl.40.1700495580289;
-        Mon, 20 Nov 2023 07:53:00 -0800 (PST)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id jz2-20020a170906bb0200b009ddf38056f8sm4022838ejb.118.2023.11.20.07.52.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 07:52:59 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Xin Li <xin3.li@intel.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     seanjc@google.com, pbonzini@redhat.com, corbet@lwn.net,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, peterz@infradead.org, ravi.v.shankar@intel.com
-Subject: Re: [PATCH v1 15/23] KVM: nVMX: Add support for the secondary VM
- exit controls
-In-Reply-To: <20231108183003.5981-16-xin3.li@intel.com>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-16-xin3.li@intel.com>
-Date:   Mon, 20 Nov 2023 16:52:58 +0100
-Message-ID: <87y1espgkl.fsf@redhat.com>
+        Mon, 20 Nov 2023 10:54:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3B8A0;
+        Mon, 20 Nov 2023 07:54:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 426F6C433C7;
+        Mon, 20 Nov 2023 15:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700495659;
+        bh=5RAM8HOVYUU9Y/pFLKOLBfOhvTkMT7lRAWd7TNxEfAs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SAspqX/Dssj5RtfYYHt3wCNydfXbYEChxLPiGn0CxTcos3DUyxsJRYAWvTbSzACdC
+         khzbW5fbO+tAL6mOjcdK6TSxZTmy2Jg5kHagr4AwE9OVE4EIDJ4IdxESD0VDXbzzzN
+         2NIKX4cL8+ip0K4sdCmw5SY9ipsHc7EWDRcJCGwIsRMKzWsuW+P5n0nIayyXxvwXCY
+         NqtM7oaQvOiehJ/z3p3y15yvlGU6Fa1EcLgodrrPCChE4PiVeajCbIRJXzZ7X254PN
+         ZUGArM91RkYiqfhCWBvHTIesTitsw/LLrjrjcwkPfZ9FY7S4fmphedlIsLbkY+qdbH
+         n6gyVNiln89ig==
+Date:   Mon, 20 Nov 2023 15:54:14 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ASoC: cs43130: Allow driver to work without IRQ
+ connection
+Message-ID: <c031657a-a1ec-44eb-8885-afee68d7523b@sirena.org.uk>
+References: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
+ <7248897a-0b59-4cdc-9915-d3297f2d6efe@sirena.org.uk>
+ <261e118d-529b-0ce0-5524-d24d767fa92f@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ycCrs6TZIAPbbyZe"
+Content-Disposition: inline
+In-Reply-To: <261e118d-529b-0ce0-5524-d24d767fa92f@opensource.cirrus.com>
+X-Cookie: <Manoj> I *like* the chicken
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xin Li <xin3.li@intel.com> writes:
 
-> Enable the secondary VM exit controls to prepare for nested FRED.
->
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> ---
->  Documentation/virt/kvm/x86/nested-vmx.rst |  1 +
->  arch/x86/include/asm/hyperv-tlfs.h        |  1 +
->  arch/x86/kvm/vmx/capabilities.h           |  1 +
->  arch/x86/kvm/vmx/hyperv.c                 | 18 +++++++++++++++++-
->  arch/x86/kvm/vmx/nested.c                 | 18 +++++++++++++++++-
->  arch/x86/kvm/vmx/vmcs12.c                 |  1 +
->  arch/x86/kvm/vmx/vmcs12.h                 |  2 ++
->  arch/x86/kvm/x86.h                        |  2 +-
->  8 files changed, 41 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/virt/kvm/x86/nested-vmx.rst b/Documentation/virt/kvm/x86/nested-vmx.rst
-> index ac2095d41f02..e64ef231f310 100644
-> --- a/Documentation/virt/kvm/x86/nested-vmx.rst
-> +++ b/Documentation/virt/kvm/x86/nested-vmx.rst
-> @@ -217,6 +217,7 @@ struct shadow_vmcs is ever changed.
->  		u16 host_fs_selector;
->  		u16 host_gs_selector;
->  		u16 host_tr_selector;
-> +		u64 secondary_vm_exit_controls;
->  	};
->  
->  
-> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> index 2ff26f53cd62..299554708e37 100644
-> --- a/arch/x86/include/asm/hyperv-tlfs.h
-> +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> @@ -616,6 +616,7 @@ struct hv_enlightened_vmcs {
->  	u64 host_ssp;
->  	u64 host_ia32_int_ssp_table_addr;
->  	u64 padding64_6;
-> +	u64 secondary_vm_exit_controls;
+--ycCrs6TZIAPbbyZe
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(I think Jeremi has asked a similar question but just to be sure)
+On Mon, Nov 20, 2023 at 03:46:26PM +0000, Maciej Strozek wrote:
+> W dniu 20/11/2023 o=A014:40, Mark Brown pisze:
 
-This doesn't seem to be present in the currently available TLFS version
-e.g. here:
-https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/datatypes/hv_vmx_enlightened_vmcs
+> > > +		} else {
+> > > +			return 0;
+> > > +		}
 
-That wouldn't be the first time when TLFS lags behind but as I don't see
-anyone from Microsoft signing this off, let me ask: where did you get
-this information and, in case it came from someone @microsoft.com, can
-we get their sign-off on the patch?
+> > Is it a bug to call this function without to_poll set to something
+> > known?  This will just silently ignore it which seems wrong and is
+> > inconsitent with the handling in the interrupt case which will wait for
+> > the the completion to be signalled and report a timeout on error.
 
->  } __packed;
->  
->  #define HV_VMX_ENLIGHTENED_CLEAN_FIELD_NONE			0
-> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-> index e8f3ad0f79ee..caf38a54856c 100644
-> --- a/arch/x86/kvm/vmx/capabilities.h
-> +++ b/arch/x86/kvm/vmx/capabilities.h
-> @@ -38,6 +38,7 @@ struct nested_vmx_msrs {
->  	u32 pinbased_ctls_high;
->  	u32 exit_ctls_low;
->  	u32 exit_ctls_high;
-> +	u64 secondary_exit_ctls;
->  	u32 entry_ctls_low;
->  	u32 entry_ctls_high;
->  	u32 misc_low;
-> diff --git a/arch/x86/kvm/vmx/hyperv.c b/arch/x86/kvm/vmx/hyperv.c
-> index 313b8bb5b8a7..b8cd53601a00 100644
-> --- a/arch/x86/kvm/vmx/hyperv.c
-> +++ b/arch/x86/kvm/vmx/hyperv.c
-> @@ -103,7 +103,10 @@
->  	 VM_EXIT_LOAD_IA32_EFER |					\
->  	 VM_EXIT_CLEAR_BNDCFGS |					\
->  	 VM_EXIT_PT_CONCEAL_PIP |					\
-> -	 VM_EXIT_CLEAR_IA32_RTIT_CTL)
-> +	 VM_EXIT_CLEAR_IA32_RTIT_CTL |					\
-> +	 VM_EXIT_ACTIVATE_SECONDARY_CONTROLS)
-> +
-> +#define EVMCS1_SUPPORTED_VMEXIT_CTRL2 (0ULL)
->  
->  #define EVMCS1_SUPPORTED_VMENTRY_CTRL					\
->  	(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR |				\
-> @@ -315,6 +318,8 @@ const struct evmcs_field vmcs_field_to_evmcs_1[] = {
->  		     HV_VMX_ENLIGHTENED_CLEAN_FIELD_CONTROL_GRP1),
->  	EVMCS1_FIELD(VM_EXIT_CONTROLS, vm_exit_controls,
->  		     HV_VMX_ENLIGHTENED_CLEAN_FIELD_CONTROL_GRP1),
-> +	EVMCS1_FIELD(SECONDARY_VM_EXIT_CONTROLS, secondary_vm_exit_controls,
-> +		     HV_VMX_ENLIGHTENED_CLEAN_FIELD_CONTROL_GRP1),
->  	EVMCS1_FIELD(SECONDARY_VM_EXEC_CONTROL, secondary_vm_exec_control,
->  		     HV_VMX_ENLIGHTENED_CLEAN_FIELD_CONTROL_GRP1),
->  	EVMCS1_FIELD(GUEST_ES_LIMIT, guest_es_limit,
-> @@ -464,6 +469,7 @@ enum evmcs_revision {
->  
->  enum evmcs_ctrl_type {
->  	EVMCS_EXIT_CTRLS,
-> +	EVMCS_2NDEXIT,
->  	EVMCS_ENTRY_CTRLS,
->  	EVMCS_EXEC_CTRL,
->  	EVMCS_2NDEXEC,
-> @@ -477,6 +483,9 @@ static const u32 evmcs_supported_ctrls[NR_EVMCS_CTRLS][NR_EVMCS_REVISIONS] = {
->  	[EVMCS_EXIT_CTRLS] = {
->  		[EVMCSv1_LEGACY] = EVMCS1_SUPPORTED_VMEXIT_CTRL,
->  	},
-> +	[EVMCS_2NDEXIT] = {
-> +		[EVMCSv1_LEGACY] = EVMCS1_SUPPORTED_VMEXIT_CTRL2,
-> +	},
->  	[EVMCS_ENTRY_CTRLS] = {
->  		[EVMCSv1_LEGACY] = EVMCS1_SUPPORTED_VMENTRY_CTRL,
->  	},
+> In interrupt case 0 means timeout (and calling function should expect 0 as
+> error/timeout), so the only inconsistency I see is in not waiting before
+> returning a timeout, but that would be needlessly wasting time?
+> Do you think adding a debug print or a comment would help here?
 
-What's the desired effect here? I.e. why exposing
-VM_EXIT_ACTIVATE_SECONDARY_CONTROLS when none of the controls are going
-to be exposed?
+It seems like a clear code bug if this is ever called with an unknown
+completion, I'd expect a WARN_ON_ONCE() there.  The lack of a delay is
+potentially going to affect how any error handling works which doesn't
+feel ideal though the users look fine right now.
 
-> @@ -539,6 +548,9 @@ void nested_evmcs_filter_control_msr(struct kvm_vcpu *vcpu, u32 msr_index, u64 *
->  			supported_ctrls &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
->  		ctl_high &= supported_ctrls;
->  		break;
-> +	case MSR_IA32_VMX_EXIT_CTLS2:
-> +		ctl_low &= evmcs_get_supported_ctls(EVMCS_2NDEXIT);
-> +		break;
->  	case MSR_IA32_VMX_ENTRY_CTLS:
->  	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
->  		supported_ctrls = evmcs_get_supported_ctls(EVMCS_ENTRY_CTRLS);
-> @@ -589,6 +601,10 @@ int nested_evmcs_check_controls(struct vmcs12 *vmcs12)
->  					       vmcs12->vm_exit_controls)))
->  		return -EINVAL;
->  
-> +	if (CC(!nested_evmcs_is_valid_controls(EVMCS_2NDEXIT,
-> +					       vmcs12->secondary_vm_exit_controls)))
-> +		return -EINVAL;
-> +
->  	if (CC(!nested_evmcs_is_valid_controls(EVMCS_ENTRY_CTRLS,
->  					       vmcs12->vm_entry_controls)))
->  		return -EINVAL;
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index ff07d6e736a2..d6341845df43 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1411,6 +1411,7 @@ int vmx_set_vmx_msr(struct kvm_vcpu *vcpu, u32 msr_index, u64 data)
->  	case MSR_IA32_VMX_PINBASED_CTLS:
->  	case MSR_IA32_VMX_PROCBASED_CTLS:
->  	case MSR_IA32_VMX_EXIT_CTLS:
-> +	case MSR_IA32_VMX_EXIT_CTLS2:
->  	case MSR_IA32_VMX_ENTRY_CTLS:
->  		/*
->  		 * The "non-true" VMX capability MSRs are generated from the
-> @@ -1489,6 +1490,9 @@ int vmx_get_vmx_msr(struct nested_vmx_msrs *msrs, u32 msr_index, u64 *pdata)
->  		if (msr_index == MSR_IA32_VMX_EXIT_CTLS)
->  			*pdata |= VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR;
->  		break;
-> +	case MSR_IA32_VMX_EXIT_CTLS2:
-> +		*pdata = msrs->secondary_exit_ctls;
-> +		break;
->  	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
->  	case MSR_IA32_VMX_ENTRY_CTLS:
->  		*pdata = vmx_control_msr(
-> @@ -1692,6 +1696,8 @@ static void copy_enlightened_to_vmcs12(struct vcpu_vmx *vmx, u32 hv_clean_fields
->  		vmcs12->pin_based_vm_exec_control =
->  			evmcs->pin_based_vm_exec_control;
->  		vmcs12->vm_exit_controls = evmcs->vm_exit_controls;
-> +		vmcs12->secondary_vm_exit_controls =
-> +			evmcs->secondary_vm_exit_controls;
->  		vmcs12->secondary_vm_exec_control =
->  			evmcs->secondary_vm_exec_control;
->  	}
-> @@ -1894,6 +1900,7 @@ static void copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
->  	 * evmcs->vmcs_link_pointer = vmcs12->vmcs_link_pointer;
->  	 * evmcs->pin_based_vm_exec_control = vmcs12->pin_based_vm_exec_control;
->  	 * evmcs->vm_exit_controls = vmcs12->vm_exit_controls;
-> +	 * evmcs->secondary_vm_exit_controls = vmcs12->secondary_vm_exit_controls;
->  	 * evmcs->secondary_vm_exec_control = vmcs12->secondary_vm_exec_control;
->  	 * evmcs->page_fault_error_code_mask =
->  	 *		vmcs12->page_fault_error_code_mask;
-> @@ -2411,6 +2418,11 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct loaded_vmcs *vmcs0
->  		exec_control &= ~VM_EXIT_LOAD_IA32_EFER;
->  	vm_exit_controls_set(vmx, exec_control);
->  
-> +	if (exec_control & VM_EXIT_ACTIVATE_SECONDARY_CONTROLS) {
-> +		exec_control = __secondary_vm_exit_controls_get(vmcs01);
-> +		secondary_vm_exit_controls_set(vmx, exec_control);
-> +	}
-> +
->  	/*
->  	 * Interrupt/Exception Fields
->  	 */
-> @@ -6819,13 +6831,17 @@ static void nested_vmx_setup_exit_ctls(struct vmcs_config *vmcs_conf,
->  		VM_EXIT_HOST_ADDR_SPACE_SIZE |
->  #endif
->  		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
-> -		VM_EXIT_CLEAR_BNDCFGS;
-> +		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_ACTIVATE_SECONDARY_CONTROLS;
->  	msrs->exit_ctls_high |=
->  		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
->  		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
->  		VM_EXIT_SAVE_VMX_PREEMPTION_TIMER | VM_EXIT_ACK_INTR_ON_EXIT |
->  		VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
->  
-> +	/* secondary exit controls */
-> +	if (msrs->exit_ctls_high & VM_EXIT_ACTIVATE_SECONDARY_CONTROLS)
-> +		rdmsrl(MSR_IA32_VMX_EXIT_CTLS2, msrs->secondary_exit_ctls);
-> +
->  	/* We support free control of debug control saving. */
->  	msrs->exit_ctls_low &= ~VM_EXIT_SAVE_DEBUG_CONTROLS;
->  }
-> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
-> index 106a72c923ca..98457d7b2b23 100644
-> --- a/arch/x86/kvm/vmx/vmcs12.c
-> +++ b/arch/x86/kvm/vmx/vmcs12.c
-> @@ -73,6 +73,7 @@ const unsigned short vmcs12_field_offsets[] = {
->  	FIELD(PAGE_FAULT_ERROR_CODE_MATCH, page_fault_error_code_match),
->  	FIELD(CR3_TARGET_COUNT, cr3_target_count),
->  	FIELD(VM_EXIT_CONTROLS, vm_exit_controls),
-> +	FIELD(SECONDARY_VM_EXIT_CONTROLS, secondary_vm_exit_controls),
->  	FIELD(VM_EXIT_MSR_STORE_COUNT, vm_exit_msr_store_count),
->  	FIELD(VM_EXIT_MSR_LOAD_COUNT, vm_exit_msr_load_count),
->  	FIELD(VM_ENTRY_CONTROLS, vm_entry_controls),
-> diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
-> index 01936013428b..f50f897b9b5f 100644
-> --- a/arch/x86/kvm/vmx/vmcs12.h
-> +++ b/arch/x86/kvm/vmx/vmcs12.h
-> @@ -185,6 +185,7 @@ struct __packed vmcs12 {
->  	u16 host_gs_selector;
->  	u16 host_tr_selector;
->  	u16 guest_pml_index;
-> +	u64 secondary_vm_exit_controls;
->  };
->  
->  /*
-> @@ -358,6 +359,7 @@ static inline void vmx_check_vmcs12_offsets(void)
->  	CHECK_OFFSET(host_gs_selector, 992);
->  	CHECK_OFFSET(host_tr_selector, 994);
->  	CHECK_OFFSET(guest_pml_index, 996);
-> +	CHECK_OFFSET(secondary_vm_exit_controls, 998);
->  }
->  
->  extern const unsigned short vmcs12_field_offsets[];
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 63e543c6834b..96ad139adc3f 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -47,7 +47,7 @@ void kvm_spurious_fault(void);
->   * associated feature that KVM supports for nested virtualization.
->   */
->  #define KVM_FIRST_EMULATED_VMX_MSR	MSR_IA32_VMX_BASIC
-> -#define KVM_LAST_EMULATED_VMX_MSR	MSR_IA32_VMX_VMFUNC
-> +#define KVM_LAST_EMULATED_VMX_MSR	MSR_IA32_VMX_EXIT_CTLS2
->  
->  #define KVM_DEFAULT_PLE_GAP		128
->  #define KVM_VMX_DEFAULT_PLE_WINDOW	4096
+--ycCrs6TZIAPbbyZe
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Vitaly
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbgSUACgkQJNaLcl1U
+h9DLHggAgw4p1rPiLwpJ1J/hleOS2jFFzXuwTkstI6G2g5uZWsaBuaUFeZQyHriY
+avc7aCFDEjYZBryEbey+S08tmNygDp+qVkHrCy2VSCyVM3TeP7vaIwtebTA+bLWL
+3bdP22f26lajNin048S3VyyLv0pYblUm3hSpCA/fIhp2TGW2HtRD7U1cSx9giCx1
+yMpMKx559NWzmdv2Mmi9iRCDZvgFixZT+74VtshWAwhDBE3pmxax7DxXQ2XlG0RM
+/WlpqGQbtspRZrIuhrL5TC1xZG4V1HEB5S9FpYggmY97cOxb7ZiPaN1Y7NP2ZaCt
+qiwhCBj+GjggmiCqjjqbzxVHhdwouA==
+=hruj
+-----END PGP SIGNATURE-----
+
+--ycCrs6TZIAPbbyZe--
