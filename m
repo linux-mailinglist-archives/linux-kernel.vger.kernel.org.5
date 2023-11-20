@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595F07F1F31
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D99B27F1F46
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjKTVbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S231745AbjKTVho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTVbe (ORCPT
+        with ESMTP id S229529AbjKTVhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:31:34 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30B099;
-        Mon, 20 Nov 2023 13:31:30 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-27ff7fe7fbcso3808378a91.1;
-        Mon, 20 Nov 2023 13:31:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700515890; x=1701120690; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FctPSCj7tPevGlMSxSjEDJsdguhwQ45p/dX89rjXqg0=;
-        b=iEFGX72rNsTsiFJxQVlbFyDezownQPzvJdrkL37X9YUOE0AMBvRoUG/zuQppmjAjoc
-         CfpHglAfZVdDTXjo6H3mn4r67GQf2N5uOGJqG4zXY1QqkiqDomU8dx1wE3NwpMAu7FyB
-         fUSfGzVV3Nu+lSCxxEGu5dd7e+Um8vnx8I9+9Z62qaSNKSxGqV+e8zylbdYNQMjEx3nd
-         u59JEfrEXSVgUOvsC5lnpRdU6ITjgwZJk0/S2pwS0bs2bqiuL/qsZvlTPUnLAULnTsa5
-         RPi/Uitcc1u1Z5xdJyMVFV6S9BGxzaPBsUAigb4Xg4apK9UgXuLqYCYvoSc8dj5QAHlO
-         zlyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700515890; x=1701120690;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FctPSCj7tPevGlMSxSjEDJsdguhwQ45p/dX89rjXqg0=;
-        b=X2Q7lA0f07xCFqxbCNCigaALAnGUB218xz04Rw3o1+y2glYf6UK97rdMrWShD1BEQc
-         m31DSVO3ECcmSdH32FfhGwC5TSEETJ9Jfc+KjggettlBd4tsI7vOwAENLbYYIhKZM/iF
-         FtVDs2xYp/OclB3SLN9sdH1HNHuC1EZpZq2Twj2FPNx0cqg2F8EKJOvXcxC1cK4xR48j
-         DKEJeCTszjYnAGMaOGzKEqngNDFRoCzmg4nSx+05eLuqrkIZr/cFTWrRjXEnkTSkxCsk
-         pqWKKEJpvsLE5POpBTMXVLA/3hAN1RBO408K8mmWSZ0xTq5a9S+wqH6yllVyqHtXsQAx
-         zmfw==
-X-Gm-Message-State: AOJu0Yy6biaX4VmbOdf0BSoJBbaltf9LzBOTSk7A9AEzmjxXVQcLOzKj
-        8dH20N5GclmqBx+94QxWJya5eOKT6E0ylJDR2/U=
-X-Google-Smtp-Source: AGHT+IFLPipHGoDrsUtzfKJWJKbruw7OLvOy/n33f2E9xeIwg0s9OZsP2ZNEj7FYbdOZ7ZsOwoP28ZXjjGjcte1L2+0=
-X-Received: by 2002:a17:90b:3a82:b0:27d:12e1:7e20 with SMTP id
- om2-20020a17090b3a8200b0027d12e17e20mr8939742pjb.12.1700515889879; Mon, 20
- Nov 2023 13:31:29 -0800 (PST)
+        Mon, 20 Nov 2023 16:37:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32D899
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:37:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75AEDC433C7;
+        Mon, 20 Nov 2023 21:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700516259;
+        bh=R8d5DEDGigkNAFbk6cm05T5sdaFfbW9r9xeJSv+nEM0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CdNq4Agx/5Lh12IrFa4SP/P1QMpBsjmDsuWTwI9ap1y4jYystf2HHApsKQhXiirfw
+         5wY3x1qwWbiKKIpCRvpGud1kG2ogyUQRrQL8Q6vvcrQoDGcBV3UFNjOxjyf25d/ft4
+         PfGOHq9VsS8cPA5DIck4yFwBqfOQs3UPdg6PqrlUbgOPpO7JCom4GiEqOApwI3MPUW
+         LFpAdCyDJ0WBxv9QPlPe6uVS9Sr1RhYdqc7L0WOWqUiRheguE7EI5nt3lbVZByXnFV
+         7F8s9kjj59a27dj6fU3Aub768mo2q2fqzMS6uwHl+HuzbJ+03R8KTgD4WC3WACLxBx
+         4uWi/Qt89VEfw==
+Date:   Mon, 20 Nov 2023 13:37:37 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231120133737.70dde657@kernel.org>
+In-Reply-To: <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+References: <20231118183433.30ca1d1a@kernel.org>
+        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
+        <20231120105255.cgbart5amkg4efaz@skbuf>
+        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
+        <20231120120601.ondrhbkqpnaozl2q@skbuf>
+        <20231120144929.3375317e@kmaincent-XPS-13-7390>
+        <20231120142316.d2emoaqeej2pg4s3@skbuf>
+        <20231120093723.4d88fb2a@kernel.org>
+        <20231120190023.ymog4yb2hcydhmua@skbuf>
+        <20231120115839.74ee5492@kernel.org>
+        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
 MIME-Version: 1.0
-References: <20231113112507.917107-1-james.clark@arm.com> <20231113112507.917107-4-james.clark@arm.com>
-In-Reply-To: <20231113112507.917107-4-james.clark@arm.com>
-From:   Namhyung Kim <namhyung@gmail.com>
-Date:   Mon, 20 Nov 2023 13:31:18 -0800
-Message-ID: <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
- counting threshold feature
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
-        will@kernel.org, mark.rutland@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,107 +82,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 3:26=E2=80=AFAM James Clark <james.clark@arm.com> w=
-rote:
->
-> Add documentation for the new Perf event open parameters and
-> the threshold_max capability file.
->
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
->  1 file changed, 56 insertions(+)
->
-> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64=
-/perf.rst
-> index 1f87b57c2332..36b8111a710d 100644
-> --- a/Documentation/arch/arm64/perf.rst
-> +++ b/Documentation/arch/arm64/perf.rst
-> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/tools/perf/arch/arm64/tests/user-events.c
->  .. _tools/lib/perf/tests/test-evsel.c:
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/tools/lib/perf/tests/test-evsel.c
-> +
-> +Event Counting Threshold
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Overview
-> +--------
-> +
-> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
-> +events whose count meets a specified threshold condition. For example if
-> +threshold_compare is set to 2 ('Greater than or equal'), and the
-> +threshold is set to 2, then the PMU counter will now only increment by
-> +when an event would have previously incremented the PMU counter by 2 or
-> +more on a single processor cycle.
-> +
-> +To increment by 1 after passing the threshold condition instead of the
-> +number of events on that cycle, add the 'threshold_count' option to the
-> +commandline.
-> +
-> +How-to
-> +------
-> +
-> +The threshold, threshold_compare and threshold_count values can be
-> +provided per event:
-> +
-> +.. code-block:: sh
-> +
-> +  perf stat -e stall_slot/threshold=3D2,threshold_compare=3D2/ \
-> +            -e dtlb_walk/threshold=3D10,threshold_compare=3D3,threshold_=
-count/
+On Mon, 20 Nov 2023 23:17:59 +0200 Vladimir Oltean wrote:
+> Forget the concept of an active hwtstamp provider, just open up the
+> knobs of _all_ possible hwtstamp providers for a NIC. Simultaneously!
+> To make one active and all the others inactive, just use
+> HWTSTAMP_FILTER_NONE/HWTSTAMP_TX_OFF for all except one, and the desired
+> enum hwtstamp_rx_filters / enum hwtstamp_tx_types for the active one.
+> Live with this expanded configuration model for a while, just restricted
+> for a single active timestamping layer, and then, once user space is
+> ready for an enhanced struct scm_timestamping which supports potentially
+> multiple cmsgs with distinct hwtstamps, remove the restriction and let
+> it all rip! Everybody gets their pony!
+> 
+> Additionally, SIOCSHWTSTAMP is kinda rusty, has a fixed binary format,
+> and is not extensible to target a specific hwtstamp provider. So a
+> netlink conversion of that, as a first step, would of course be great.
+> 
+> Is it an accurate summary?
 
-Can you please explain this a bit more?
+Yes.
 
-I guess the first event counts stall_slot PMU if the event if it's
-greater than or equal to 2.  And as threshold_count is not set,
-it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
+For now we can impose the requirement that only one can be active 
+easily at the kernel level. But the uAPI should allow expressing more.
 
-OTOH, dtlb_walk will count 1 if it sees an event less than 10.
-Is my understanding correct?
+> You've partially answered above. The mix of timestamps coming from the
+> PHY/MAC and those coming from the DMA is unrepresentable in today's
+> UAPI, and is just fine-tuned to work for the existing use case of "PTP
+> gets PHY/MAC, everything else gets DMA".
+> 
+> Still not 100% clear what would the proper UAPI (separate user-controllable
+> RX filters for PHY, MAC and DMA) gain, in addition to what exists in mlx5.
 
-> +
-> +And the following comparison values are supported:
-> +
-> +.. code-block::
-> +
-> +  0: Not-equal
-> +  1: Equals
-> +  2: Greater-than-or-equal
-> +  3: Less-than
-
-So the above values are for threashold_compare, right?
-It'd be nice if it's more explicit.
-
-Similarly, it'd be helpful to have a description for the
-threshold and threshold_count fields.
-
-Thanks,
-Namhyung
-
-> +
-> +The maximum supported threshold value can be read from the caps of each
-> +PMU, for example:
-> +
-> +.. code-block:: sh
-> +
-> +  cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
-> +
-> +  0x000000ff
-> +
-> +If a value higher than this is given, then it will be silently clamped
-> +to the maximum. The highest possible maximum is 4095, as the config
-> +field for threshold is limited to 12 bits, and the Perf tool will refuse
-> +to parse higher values.
-> +
-> +If the PMU doesn't support FEAT_PMUv3_TH, then threshold_max will read
-> +0, and both threshold and threshold_compare will be silently ignored.
-> +threshold_max will also read as 0 on aarch32 guests, even if the host
-> +is running on hardware with the feature.
-> --
-> 2.34.1
->
->
+Too late for mlx5 but I'm anticipating that more vendors will start
+needing such configuration in the future. At which point it will be
+good to have an API in place.
