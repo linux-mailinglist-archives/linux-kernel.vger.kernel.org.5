@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB937F1DDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CFA7F1DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjKTUOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 15:14:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S229993AbjKTUP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 15:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKTUOW (ORCPT
+        with ESMTP id S229539AbjKTUP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 15:14:22 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40189C8;
-        Mon, 20 Nov 2023 12:14:19 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-dae7cc31151so4382627276.3;
-        Mon, 20 Nov 2023 12:14:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700511258; x=1701116058; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CjZQInSkumDPknIIf3NAz5y9yKKX3FVPVDmh/NXMtbE=;
-        b=VBreR7acQ25+JfsbqIiMnG7XrED9lTnC9Wpjo6913BDOLXlYr+krvmyCA47yaj8yY3
-         Kl/czyTC7TigkrnIGGbAGx/wnQ42dbOooVE9izvV+qYNpaqlWw2zX3bnoBIOhWExCHQ+
-         PVEafzUFkHt2odeLMedNxy7ij6p4n28YumqFNUH6I+9fzDURZdtz6wJ/6l/hIY+FRahh
-         VVAjQwqggEZFgCyLfCDMCyQe3sx64iA2A+lf9Q0nau6e2YneC6x7R3d/DJULYZNih9fC
-         Gv85lgl+eN2vgDv+Gw5toRNm6EuNnYgt7aZOfF/dxwB853Fkz5hcJKIhh0lWcAAMXS0h
-         7Xew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700511258; x=1701116058;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CjZQInSkumDPknIIf3NAz5y9yKKX3FVPVDmh/NXMtbE=;
-        b=UHmUD6mVPW6WAhIQV7aL15kN0rki/G/ZDnovCv/AZeE15FqImODNqFQz3ylk+gfsW3
-         /mMG/Pi4Nws9+rFxT/HvXQL6nguZQdyXqo+p8w6NRBtHFCt8jjzXpNJEUKnonLrEZxHI
-         QuJaNnAss+1O+6MwYw5MeVjyj5GFuBhXXu5y/MV1vdQRvvFz1kp5HuGeu47LfPHwzcSI
-         y6H6O2qoh7LyyPBmS5ykV0jt1SBZP6R369sFvhM8imLTFasIqGltWVQdWnOl0O1kQhNP
-         8Ydx402+MSb/KR0fa5e265kN8JAztfbsLyuy4x21kcT1q0drkTpy38RmNfuIgfCywJRS
-         TqUg==
-X-Gm-Message-State: AOJu0YyAfF4QvMo5s/3bNKIcQT8vtMQcKiirxiHiN3zIEQNoTNmov3Qt
-        i5CySm5jWTG4hlVxpiTEm8fjsqSzHrnWFRjlCF4=
-X-Google-Smtp-Source: AGHT+IFzS9COkrOxjGX+jIQpYFk8Ecx5lHTVdXiBYlbD6mkWs4M4DCTVV5hsZvwRfoMSWZ+kYEHCjGnISBHD8v1k8FQ=
-X-Received: by 2002:a05:6902:136d:b0:d9a:f948:aae1 with SMTP id
- bt13-20020a056902136d00b00d9af948aae1mr7809326ybb.29.1700511258263; Mon, 20
- Nov 2023 12:14:18 -0800 (PST)
+        Mon, 20 Nov 2023 15:15:27 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8DFC8;
+        Mon, 20 Nov 2023 12:15:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JznYf3WwK2ea80O29WWc1jrp4vT2fXc+cuKeytbFeKE=; b=XOJgjdCCfmr8LYhyR6y2QLGjiI
+        jNSPz3w8oBz7kr7v3PA2TyUDWtVP7sM2dHQglVtug6mHRl9a2QqP4QmALdE4IzXAPSQaeZ7EyXq9K
+        dMLQEVqh9lMtTu6HwSRbbwVoE80GjYy8Xafcxep2ngc6pjehMOXe27wov2DrCj1miVaI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5Afg-000gaj-G4; Mon, 20 Nov 2023 21:15:04 +0100
+Date:   Mon, 20 Nov 2023 21:15:04 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+Message-ID: <14c3900f-8f2e-4614-8317-f85763d1d953@lunn.ch>
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-In-Reply-To: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 20 Nov 2023 21:14:06 +0100
-Message-ID: <CANiq72nTZa3YR1x_yMgffFQ3BVf9CEu50Nyd1WZS9QVBxdMhYA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
-To:     ndesaulniers@google.com
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 8:24=E2=80=AFPM <ndesaulniers@google.com> wrote:
->
-> - COMPILER ATTRIBUTES
+> +Naming and Valid Characters
+> +---------------------------
+> +
+> +1. Node and property names are allowed to use only:
+> +
+> +   * lowercase characters: [a-z]
+> +   * digits: [0-9]
+> +   * dash: -
+> +
+> +2. Labels are allowed to use only:
+> +
+> +   * lowercase characters: [a-z]
+> +   * digits: [0-9]
+> +   * underscore: _
+> +
+> +3. Unit addresses should use lowercase hex, without leading zeros (padding).
+> +
+> +4. Hex values in properties, e.g. "reg", should use lowercase hex.  The address
+> +   part can be padded with leading zeros.
+> +
+> +Example::
+> +
+> +	gpi_dma2: dma-controller@800000 {
+> +		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
+> +		reg = <0x0 0x00800000 0x0 0x60000>;
+> +	}
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+Hi Krzysztof
 
-Thanks Nick for everything and see you back soon!
+What i like about the Linux Coding Style is that most sections have a
+Rationale. I like the way it explains the 'Why?'. It makes it feel
+less arbitrary. When it does not seem arbitrary, but reasoned, i find
+it easier to follow.
 
-Cheers,
-Miguel
+Could you add rationale like the Coding Style?
+
+      Andrew
