@@ -2,138 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B181D7F1322
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30957F132D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbjKTMWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 07:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
+        id S233468AbjKTMZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbjKTMWb (ORCPT
+        with ESMTP id S232200AbjKTMZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:22:31 -0500
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4D5EB
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:22:27 -0800 (PST)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-6b74afe92dbso4925740b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:22:27 -0800 (PST)
+        Mon, 20 Nov 2023 07:25:17 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CF5D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:24:49 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so4446507b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1700483088; x=1701087888; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=prRaf28GlfVG5K8J+PPUwF0MLbf5QBVz3NQIYNhjkEM=;
+        b=jsE/HgxrbC6cgTCerZrj1m4bFswBlOXRIFVf39y2Nb0LI7RRBqzadHssWfZip1fILm
+         g6SfjwMOJZ05oZuk1Z3+IRFI9TDqlQJBYYs/SUOlzqCH8pejfTZ0f3VcYp+pjWKfTg1f
+         zBPPPF+TGSgo0V49y1aybbTu1nVPrbpn6gzxKHzl4h1POgzZR0DcEjUf3fA//LeH0qsJ
+         Le1K6q0dG3zgZsEHKjdv7bVeRRM2Zlw1qS3rGCm7d3qviXmWott/QHqfRBiG6q/LCRuE
+         4YQUtiz/LJLIr04r1Et1IYnfJfDM2+PnWxI2iama8vVsSqfWNtmkK5u9kvtXg6bMhrZP
+         oNcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700482947; x=1701087747;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fw31MFHJ1e61+W+iQEgWSL31uVgjkGuivJh7Ct5zSno=;
-        b=d5oEiwvUBeIqUMuq9zljE4yAOacamVA3QZmyo5vYiQPiuKm5MLw10hVbFitWIJ4lnt
-         Viv9IvRn6v5oqFCABKhKjKkC004BhCt3cWTqVrJgu3DLNY/wmDut4Z4lzF2XWuMpvWIN
-         gqP5wHPSxrPYBcwIoW2ZAhKYxJNW97gBrluuTXjUuL72JD4TOfKnqGD6IKuonMG+tIfB
-         nZe4STbfeBQuBtQimYhAboz+6BQi9AB0GE1dDHc4/UBOJ0pxuxKEDcUZnZZQTJTDKIda
-         0c82nZprznTp0+05gzuTvY93KgAcBZ6D5HfQX0JtmaKVM/vq/wr+qCsWakoeFiUQg3uJ
-         de9A==
-X-Gm-Message-State: AOJu0Yx+l4fe4kzMW4gCQGXvr6rZdogXTB8lfDnjvJjSekH7DBgTp/Vl
-        jMvDRzlJNuPS/VtRVh4cY3qxnHujOVVVhD2PpwXgonlMkvQo
-X-Google-Smtp-Source: AGHT+IEfz/rvqygg+44ElXcHj5ORzSu0NhcMmRQ87wTgJO+RLtEX7yZ8Lo9wfuATYdccMuAH5ZZ/4N0IGS4DVg2tg8D0Ly7tRkFy
+        d=1e100.net; s=20230601; t=1700483088; x=1701087888;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=prRaf28GlfVG5K8J+PPUwF0MLbf5QBVz3NQIYNhjkEM=;
+        b=OyDCw7CpNOeyUcHKwl40To1p1oX7ryKY3hDwUPuRkjwK3wOgTzSnOPZ+Ad70uJ6YHa
+         bNPmtN1ZiV/qMobUFQRQI8FploFS+l+/EmgkkjmdlGzDYaCThj7xOlp+8YDRqq23t5mc
+         B3v/fT/CtJQjshgPYblm3M/5EkoMLrMVz6SfA0WOrY5+0d2ADGtbbYLglRYD6sBqzKAW
+         tNeaEFW9LH4P4MMa0TuP69dV9dT0sIzs/Xaa9XuF5zLUpDzZBzm9S+7j10YLVRwFTYGq
+         hYD8qkQ/xxw++ZguHJ8RFR8chsAnYVV3Ne8oCg2KXVKntpk9L7shtuG6ffXFmg07XQsy
+         T5Fw==
+X-Gm-Message-State: AOJu0YxmSanSmwONb1oL+6YY3lButHZZnoexVcFLbX4yv62hfolxAhNT
+        2h8tZt6j6sRHT9j9w/yWwYIwJA==
+X-Google-Smtp-Source: AGHT+IGPB4qUPiXwKvOL10y3nGgZj2KLn0BAXxGYSvnGv0lSTy22YZMzXF0DemxTik25sQmAN/+BVA==
+X-Received: by 2002:a05:6a00:4309:b0:6cb:8430:de32 with SMTP id cb9-20020a056a00430900b006cb8430de32mr6183119pfb.14.1700483088628;
+        Mon, 20 Nov 2023 04:24:48 -0800 (PST)
+Received: from [192.168.3.101] ([104.28.240.134])
+        by smtp.gmail.com with ESMTPSA id y4-20020a056a00180400b006cb797722e6sm2729279pfa.109.2023.11.20.04.24.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 04:24:48 -0800 (PST)
+Message-ID: <f0007398-cd35-4e9e-8ee5-7541de92821f@bytedance.com>
+Date:   Mon, 20 Nov 2023 20:24:37 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:e0e:b0:6be:3dca:7d9d with SMTP id
- bq14-20020a056a000e0e00b006be3dca7d9dmr2035893pfb.5.1700482945313; Mon, 20
- Nov 2023 04:22:25 -0800 (PST)
-Date:   Mon, 20 Nov 2023 04:22:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6f3f4060a94898f@google.com>
-Subject: [syzbot] [reiserfs?] WARNING in reiserfs_ioctl (2)
-From:   syzbot <syzbot+1226ab53d5b557d64251@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] lib: objpool: fix head overrun on RK3588 SBC
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mattwu@163.com
+References: <20231114115148.298821-1-wuqiang.matt@bytedance.com>
+ <20231120141824.86bda7ae184baf331e3175d9@kernel.org>
+Content-Language: en-US
+From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Autocrypt: addr=wuqiang.matt@bytedance.com; keydata=
+ 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
+ 4mCJUdEkdwCS
+In-Reply-To: <20231120141824.86bda7ae184baf331e3175d9@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023/11/20 13:18, Masami Hiramatsu (Google) wrote:
+> On Tue, 14 Nov 2023 19:51:48 +0800
+> "wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+> 
+>> objpool overrun stress with test_objpool on OrangePi5+ SBC triggered the
+>> following kernel warnings:
+>>
+>>      WARNING: CPU: 6 PID: 3115 at lib/objpool.c:168 objpool_push+0xc0/0x100
+>>
+>> This message is from objpool.c:168:
+>>
+>>      WARN_ON_ONCE(tail - head > pool->nr_objs);
+>>
+>> The overrun test case is to validate the case that pre-allocated objects
+>> are insufficient: 8 objects are pre-allocated for each node and consumer
+>> thread per node tries to grab 16 objects in a row. The testing system is
+>> OrangePI 5+, with RK3588, a big.LITTLE SOC with 4x A76 and 4x A55. When
+>> disabling either all 4 big or 4 little cores, the overrun tests run well,
+>> and once with big and little cores mixed together, the overrun test would
+>> always cause an overrun loop. It's likely the memory timing differences
+>> of big and little cores cause this trouble. Here are the debugging data
+>> of objpool_try_get_slot after try_cmpxchg_release:
+>>
+>>      objpool_pop: cpu: 4/0 0:0 head: 278/279 tail:278 last:276/278
+>>
+>> The local copies of 'head' and 'last' were 278 and 276, and reloading of
+>> 'slot->head' and 'slot->last' got 279 and 278. After try_cmpxchg_release
+>> 'slot->head' became 'head + 1', which is correct. But what's wrong here
+>> is the stale value of 'last', and that stale value of 'last' finally led
+>> the overrun of 'head'.
+> 
+> Ah, good catch! So even if the ring size is enough, the head/tail update
+> value is not updated locally, it can cause the overrun!
 
-syzbot found the following issue on:
+It's really confusing at the first glance of such an issue. I was assuming
+the order between 'last' and 'head' should be implicitly maintained, but
+after more digging, then found that wasn't true actually, the order should
+be explicitly guaranteed by pop().
 
-HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1304d797680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
-dashboard link: https://syzkaller.appspot.com/bug?extid=1226ab53d5b557d64251
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+I also verified with Amlogic A311D which has 6 cores (4x A73 and 4x A53),
+and got same results. I think I just need re-discover the differences of
+HMP (heterogeneous multiprocessing) for big.LITTLE or P/E cores cpus.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> Memory updating of 'last' and 'head' are performed in push() and pop()
+>> independently, which could be the culprit leading this out of order
+>> visibility of 'last' and 'head'. So for objpool_try_get_slot(), it's
+>> not enough only checking the condition of 'head != slot', the implicit
+>> condition 'last - head <= nr_objs' must also be explicitly asserted to
+>> guarantee 'last' is always behind 'head' before the object retrieving.
+> 
+> Indeed. Thanks for the investigation!
+> 
+>>
+>> This patch will check and try reloading of 'head' and 'last' to ensure
+>> 'last' is behind 'head' at the time of object retrieving. Performance
+>> testings show the average impact is about 0.1% for X86_64 and 1.12% for
+>> ARM64. Here are the results:
+>>
+>>      OS: Debian 10 X86_64, Linux 6.6rc
+>>      HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
+>>                        1T         2T         4T         8T        16T
+>>      native:     49543304   99277826  199017659  399070324  795185848
+>>      objpool:    29909085   59865637  119692073  239750369  478005250
+>>      objpool+:   29879313   59230743  119609856  239067773  478509029
+>>                       32T        48T        64T        96T       128T
+>>      native:   1596927073 2390099988 2929397330 3183875848 3257546602
+>>      objpool:   957553042 1435814086 1680872925 2043126796 2165424198
+>>      objpool+:  956476281 1434491297 1666055740 2041556569 2157415622
+>>
+>>      OS: Debian 11 AARCH64, Linux 6.6rc
+>>      HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
+>>                        1T         2T         4T         8T        16T
+>>      native:     30890508   60399915  123111980  242257008  494002946
+>>      objpool:    14742531   28883047   57739948  115886644  232455421
+>>      objpool+:   14107220   29032998   57286084  113730493  232232850
+>>                       24T        32T        48T        64T        96T
+>>      native:    746406039 1000174750 1493236240 1998318364 2942911180
+>>      objpool:   349164852  467284332  702296756  934459713 1387898285
+>>      objpool+:  348388180  462750976  696606096  927865887 1368402195
+>>
+> 
+> OK, looks good to me.
+> 
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> And let me pick it.
+> 
+>> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+> 
+> BTW, this is a real bugfix, so it should have Fixes tag :)
+> 
+> Fixes: b4edb8d2d464 ("lib: objpool added: ring-array based lockless MPMC")
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2ef75a216da3/disk-c42d9eee.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/dc9e5a2c2dd2/vmlinux-c42d9eee.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0f11915f952a/bzImage-c42d9eee.xz
+Oh, right! Thanks for your kind reminder. I'll keep that in mind.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1226ab53d5b557d64251@syzkaller.appspotmail.com
+> Thank you!
 
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 1 PID: 4030 at kernel/locking/mutex.c:582 __mutex_lock_common kernel/locking/mutex.c:582 [inline]
-WARNING: CPU: 1 PID: 4030 at kernel/locking/mutex.c:582 __mutex_lock+0xc36/0xd60 kernel/locking/mutex.c:747
-Modules linked in:
-CPU: 1 PID: 4030 Comm: syz-executor.0 Not tainted 6.7.0-rc1-syzkaller-00019-gc42d9eeef8e5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:582 [inline]
-RIP: 0010:__mutex_lock+0xc36/0xd60 kernel/locking/mutex.c:747
-Code: 0f b6 04 20 84 c0 0f 85 18 01 00 00 83 3d 21 d6 e0 03 00 75 19 90 48 c7 c7 40 9a 6a 8b 48 c7 c6 e0 9a 6a 8b e8 cb 39 34 f6 90 <0f> 0b 90 90 90 e9 c8 f4 ff ff 90 0f 0b 90 e9 d6 f8 ff ff 90 0f 0b
-RSP: 0018:ffffc9000328fd20 EFLAGS: 00010246
-RAX: 7ede61b6dd80c100 RBX: 0000000000000000 RCX: 0000000000040000
-RDX: ffffc90004c51000 RSI: 00000000000023d8 RDI: 00000000000023d9
-RBP: ffffc9000328fe78 R08: ffffffff81545a92 R09: 1ffff11017325172
-R10: dffffc0000000000 R11: ffffed1017325173 R12: dffffc0000000000
-R13: ffff88803671b028 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00007f847f8926c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdf0d8e5000 CR3: 0000000028105000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- reiserfs_write_lock+0x7a/0xd0 fs/reiserfs/lock.c:27
- reiserfs_ioctl+0x74/0x2f0 fs/reiserfs/ioctl.c:81
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f847ea7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f847f8920c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f847eb9bf80 RCX: 00007f847ea7cae9
-RDX: 0000000020000080 RSI: 00000000c0185879 RDI: 0000000000000005
-RBP: 00007f847eac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f847eb9bf80 R15: 00007ffcbd03c0f8
- </TASK>
+Best regards.
 
+> 
+>> ---
+>>   lib/objpool.c | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/lib/objpool.c b/lib/objpool.c
+>> index ce0087f64400..cfdc02420884 100644
+>> --- a/lib/objpool.c
+>> +++ b/lib/objpool.c
+>> @@ -201,6 +201,23 @@ static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
+>>   	while (head != READ_ONCE(slot->last)) {
+>>   		void *obj;
+>>   
+>> +		/*
+>> +		 * data visibility of 'last' and 'head' could be out of
+>> +		 * order since memory updating of 'last' and 'head' are
+>> +		 * performed in push() and pop() independently
+>> +		 *
+>> +		 * before any retrieving attempts, pop() must guarantee
+>> +		 * 'last' is behind 'head', that is to say, there must
+>> +		 * be available objects in slot, which could be ensured
+>> +		 * by condition 'last != head && last - head <= nr_objs'
+>> +		 * that is equivalent to 'last - head - 1 < nr_objs' as
+>> +		 * 'last' and 'head' are both unsigned int32
+>> +		 */
+>> +		if (READ_ONCE(slot->last) - head - 1 >= pool->nr_objs) {
+>> +			head = READ_ONCE(slot->head);
+>> +			continue;
+>> +		}
+>> +
+>>   		/* obj must be retrieved before moving forward head */
+>>   		obj = READ_ONCE(slot->entries[head & slot->mask]);
+>>   
+>> -- 
+>> 2.40.1
+>>
+> 
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
