@@ -2,385 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDBB7F17D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD00F7F1633
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjKTPwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:52:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
+        id S233983AbjKTOtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233584AbjKTPww (ORCPT
+        with ESMTP id S233809AbjKTOtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:52:52 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4406B4;
-        Mon, 20 Nov 2023 07:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=TUAJbJ40xdBCxjfy4Ym48+BQtPYk790x6l+6wvwozjI=; b=ggcZcZHsyddyORie4M8DTX56Wo
-        2zj+CKr2fFqfpBkCyz/mn6H480DUqFUExU1p7HrsOejTaXIRuQm5UY72J9WBpgHpfuZT6BRXj/FRC
-        BWpzjF4a4zKUNswD21o25DP2+BM1h2F1fZiccz+s7zgBO/ZiDt3s8KHB1PbR9rldRWH4ntRARTE7u
-        0i+XHfztp2RSki09KduTMElcjC4RgAxx1eEjzPn8WOeF9gliUwyMVsW59oDLY70vkGPMLmvIRvcdI
-        MCejfevodcH9QpU6m7Q6evvSWrlOcn60HJS37GcbsAf3FdVECkqRhTAFjcZstrm8xav7RkiL1Kc+8
-        2aaht9kg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r56Z8-004iPu-LL; Mon, 20 Nov 2023 15:52:02 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4D3B33007C8; Mon, 20 Nov 2023 16:52:01 +0100 (CET)
-Message-Id: <20231120154948.708762225@infradead.org>
-User-Agent: quilt/0.65
-Date:   Mon, 20 Nov 2023 15:46:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     peterz@infradead.org
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, davem@davemloft.net, dsahern@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        samitolvanen@google.com, keescook@chromium.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-        llvm@lists.linux.dev, jpoimboe@kernel.org, joao@overdrivepizza.com,
-        mark.rutland@arm.com
-Subject: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
-References: <20231120144642.591358648@infradead.org>
+        Mon, 20 Nov 2023 09:49:33 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0937A3595
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:48:01 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32fe1a29010so2858270f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:48:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700491680; x=1701096480; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tJJwbkqvfCRGn7qw4NUfbsptbvx8KM0jIDYK6bPqbHI=;
+        b=EJkBVUr2+c3RAcw3VxduyTHIuIf1REIdnsgjfdk7u9UZ0PWKofiZsx2aypG+vLYMKC
+         mLx39ZH3p7Q+WkVjQZ0n2kA7JQFaKv68JvR9/ceABCzsIQa8qWEdukoyXdBtonlrinnx
+         MZTsPFhG77igmZLOI9Og1zd7SblfbOfPoSVuBf2SQX33rfveXiw9jX9AmEnr77X6Inb8
+         oEhBihbNzSa2G2sZcXLFs3zqC3qeTRvWT2onn9mVFz3Kbi7JYtcFD3PyqgS5RTt7V73d
+         hiPH1P617/9ILHoet9GDWOd9WjajxZvlpq63l7lx/UtSy1bSUm+LpTcAfTFHlIZEZFJJ
+         l06Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700491680; x=1701096480;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tJJwbkqvfCRGn7qw4NUfbsptbvx8KM0jIDYK6bPqbHI=;
+        b=b8IbvUZ3lDPkA7hiT9AiYDbLCaYWiSyCXtkjC4LvdXrM/aW1PntmPOPHynqtl6Hfcy
+         sTWD/s6LCxPUoWb8lRSbqg8o6EU634dx326MJ2F4QMLqhxu09DI6bW5RVKivwG8NboEX
+         tmTSmPGBtNdL27eqvT3iQBTld3BU+aCvi6sp7K6wwUfmqURJ/X6/WmqE8LIrrGfdSGZb
+         9gXn8sUiTW2SUpCk62FZyryVb6lgWDR7+N4iaGxNqED8WdIGLEbX+df5xPv83w8oGYTG
+         5GNih6lw6Svc2GL+JW99Swwm6BFmmK6eD8VdnECxggz4rrbnIzQHe7dtgvr4lyeGk52t
+         fBrw==
+X-Gm-Message-State: AOJu0YwOpugHyvHvJFH5+BBFud4DH2cDkTFOOdoQX2EU3Q0ZATX1tyDI
+        3v+JBUdKIVYfp4sqnbwNiQA22w==
+X-Google-Smtp-Source: AGHT+IHn58Rb64JPIzwX0eVZAztbDRegFkKUvEvegsNvzVuqU2Md/M8OBOctHAEzcu9bHb7VRuEF9g==
+X-Received: by 2002:a05:6000:2c7:b0:32f:7cfd:4522 with SMTP id o7-20020a05600002c700b0032f7cfd4522mr4655078wry.70.1700491680256;
+        Mon, 20 Nov 2023 06:48:00 -0800 (PST)
+Received: from [192.168.1.7] ([79.79.179.141])
+        by smtp.gmail.com with ESMTPSA id j3-20020a056000124300b0032f7e832cabsm11385126wrx.90.2023.11.20.06.47.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 06:47:59 -0800 (PST)
+Message-ID: <70402702-84d3-4577-9fd2-9e87add4283b@linaro.org>
+Date:   Mon, 20 Nov 2023 14:47:58 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/3] arm64: dts: qcom: Add base qcs6490-rb3gen2 board
+ dts
+Content-Language: en-US
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Naina Mehta <quic_nainmeht@quicinc.com>
+References: <20231120134754.9526-1-quic_kbajaj@quicinc.com>
+ <20231120134754.9526-4-quic_kbajaj@quicinc.com>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <20231120134754.9526-4-quic_kbajaj@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current BPF call convention is __nocfi, except when it calls !JIT things,
-then it calls regular C functions.
-
-It so happens that with FineIBT the __nocfi and C calling conventions are
-incompatible. Specifically __nocfi will call at func+0, while FineIBT will have
-endbr-poison there, which is not a valid indirect target. Causing #CP.
-
-Notably this only triggers on IBT enabled hardware, which is probably why this
-hasn't been reported (also, most people will have JIT on anyway).
-
-Implement proper CFI prologues for the BPF JIT codegen and drop __nocfi for
-x86.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/cfi.h    |   12 +++++
- arch/x86/kernel/alternative.c |   41 ++++++++++++++---
- arch/x86/net/bpf_jit_comp.c   |   96 +++++++++++++++++++++++++++++++++++++-----
- include/linux/bpf.h           |    9 +++
- 4 files changed, 137 insertions(+), 21 deletions(-)
-
---- a/arch/x86/include/asm/cfi.h
-+++ b/arch/x86/include/asm/cfi.h
-@@ -9,15 +9,27 @@
-  */
- #include <linux/bug.h>
- 
-+enum cfi_mode {
-+	CFI_DEFAULT,
-+	CFI_OFF,
-+	CFI_KCFI,
-+	CFI_FINEIBT,
-+};
-+
-+extern enum cfi_mode cfi_mode;
-+
- struct pt_regs;
- 
- #ifdef CONFIG_CFI_CLANG
- enum bug_trap_type handle_cfi_failure(struct pt_regs *regs);
-+#define __bpfcall
-+extern u32 cfi_bpf_hash;
- #else
- static inline enum bug_trap_type handle_cfi_failure(struct pt_regs *regs)
- {
- 	return BUG_TRAP_TYPE_NONE;
- }
-+#define cfi_bpf_hash 0U
- #endif /* CONFIG_CFI_CLANG */
- 
- #endif /* _ASM_X86_CFI_H */
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -30,6 +30,7 @@
- #include <asm/fixmap.h>
- #include <asm/paravirt.h>
- #include <asm/asm-prototypes.h>
-+#include <asm/cfi.h>
- 
- int __read_mostly alternatives_patched;
- 
-@@ -832,15 +833,37 @@ void __init_or_module apply_seal_endbr(s
- #endif /* CONFIG_X86_KERNEL_IBT */
- 
- #ifdef CONFIG_FINEIBT
-+#define __CFI_DEFAULT	CFI_DEFAULT
-+#elif defined(CONFIG_CFI_CLANG)
-+#define __CFI_DEFAULT	CFI_KCFI
-+#else
-+#define __CFI_DEFAULT	CFI_OFF
-+#endif
- 
--enum cfi_mode {
--	CFI_DEFAULT,
--	CFI_OFF,
--	CFI_KCFI,
--	CFI_FINEIBT,
--};
-+enum cfi_mode cfi_mode __ro_after_init = __CFI_DEFAULT;
-+
-+#ifdef CONFIG_CFI_CLANG
-+struct bpf_insn;
-+
-+extern unsigned int bpf_func_proto(const void *ctx,
-+				   const struct bpf_insn *insn);
-+
-+__ADDRESSABLE(bpf_func_proto);
-+
-+asm (
-+"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-+"	.type	cfi_bpf_hash,@object				\n"
-+"	.globl	cfi_bpf_hash					\n"
-+"	.p2align	2, 0x0					\n"
-+"cfi_bpf_hash:							\n"
-+"	.long	__kcfi_typeid_bpf_func_proto			\n"
-+"	.size	cfi_bpf_hash, 4					\n"
-+"	.popsection						\n"
-+);
-+#endif
-+
-+#ifdef CONFIG_FINEIBT
- 
--static enum cfi_mode cfi_mode __ro_after_init = CFI_DEFAULT;
- static bool cfi_rand __ro_after_init = true;
- static u32  cfi_seed __ro_after_init;
- 
-@@ -1149,8 +1172,10 @@ static void __apply_fineibt(s32 *start_r
- 		goto err;
- 
- 	if (cfi_rand) {
--		if (builtin)
-+		if (builtin) {
- 			cfi_seed = get_random_u32();
-+			cfi_bpf_hash = cfi_rehash(cfi_bpf_hash);
-+		}
- 
- 		ret = cfi_rand_preamble(start_cfi, end_cfi);
- 		if (ret)
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -17,6 +17,7 @@
- #include <asm/nospec-branch.h>
- #include <asm/text-patching.h>
- #include <asm/unwind.h>
-+#include <asm/cfi.h>
- 
- static bool all_callee_regs_used[4] = {true, true, true, true};
- 
-@@ -51,9 +52,11 @@ static u8 *emit_code(u8 *ptr, u32 bytes,
- 	do { EMIT4(b1, b2, b3, b4); EMIT(off, 4); } while (0)
- 
- #ifdef CONFIG_X86_KERNEL_IBT
--#define EMIT_ENDBR()	EMIT(gen_endbr(), 4)
-+#define EMIT_ENDBR()		EMIT(gen_endbr(), 4)
-+#define EMIT_ENDBR_POISON()	EMIT(gen_endbr_poison(), 4);
- #else
- #define EMIT_ENDBR()
-+#define EMIT_ENDBR_POISON()
- #endif
- 
- static bool is_imm8(int value)
-@@ -247,6 +250,7 @@ struct jit_context {
- 	 */
- 	int tail_call_direct_label;
- 	int tail_call_indirect_label;
-+	int prog_offset;
- };
- 
- /* Maximum number of bytes emitted while JITing one eBPF insn */
-@@ -304,21 +308,86 @@ static void pop_callee_regs(u8 **pprog,
- 	*pprog = prog;
- }
- 
-+static int emit_fineibt(u8 **pprog)
-+{
-+	u8 *prog = *pprog;
-+
-+	EMIT_ENDBR();
-+	EMIT3_off32(0x41, 0x81, 0xea, cfi_bpf_hash);
-+	EMIT2(0x74, 0x07);
-+	EMIT2(0x0f, 0x0b);
-+	EMIT1(0x90);
-+	EMIT_ENDBR_POISON();
-+
-+	*pprog = prog;
-+	return 16;
-+}
-+
-+static int emit_kcfi(u8 **pprog)
-+{
-+	u8 *prog = *pprog;
-+	int offset = 5;
-+
-+	EMIT1_off32(0xb8, cfi_bpf_hash);
-+#ifdef CONFIG_CALL_PADDING
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	EMIT1(0x90);
-+	offset += 11;
-+#endif
-+	EMIT_ENDBR();
-+
-+	*pprog = prog;
-+	return offset;
-+}
-+
-+static int emit_cfi(u8 **pprog)
-+{
-+	u8 *prog = *pprog;
-+	int offset = 0;
-+
-+	switch (cfi_mode) {
-+	case CFI_FINEIBT:
-+		offset = emit_fineibt(&prog);
-+		break;
-+
-+	case CFI_KCFI:
-+		offset = emit_kcfi(&prog);
-+		break;
-+
-+	default:
-+		EMIT_ENDBR();
-+		break;
-+	}
-+
-+	*pprog = prog;
-+	return offset;
-+}
-+
- /*
-  * Emit x86-64 prologue code for BPF program.
-  * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
-  * while jumping to another program
-  */
--static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
--			  bool tail_call_reachable, bool is_subprog,
--			  bool is_exception_cb)
-+static int emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
-+			 bool tail_call_reachable, bool is_subprog,
-+			 bool is_exception_cb)
- {
- 	u8 *prog = *pprog;
-+	int offset;
- 
-+	offset = emit_cfi(&prog);
- 	/* BPF trampoline can be made to work without these nops,
- 	 * but let's waste 5 bytes for now and optimize later
- 	 */
--	EMIT_ENDBR();
- 	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
- 	prog += X86_PATCH_SIZE;
- 	if (!ebpf_from_cbpf) {
-@@ -357,6 +426,8 @@ static void emit_prologue(u8 **pprog, u3
- 	if (tail_call_reachable)
- 		EMIT1(0x50);         /* push rax */
- 	*pprog = prog;
-+
-+	return offset;
- }
- 
- static int emit_patch(u8 **pprog, void *func, void *ip, u8 opcode)
-@@ -1083,8 +1154,8 @@ static int do_jit(struct bpf_prog *bpf_p
- 	bool tail_call_seen = false;
- 	bool seen_exit = false;
- 	u8 temp[BPF_MAX_INSN_SIZE + BPF_INSN_SAFETY];
--	int i, excnt = 0;
- 	int ilen, proglen = 0;
-+	int i, excnt = 0;
- 	u8 *prog = temp;
- 	int err;
- 
-@@ -1094,9 +1165,12 @@ static int do_jit(struct bpf_prog *bpf_p
- 	/* tail call's presence in current prog implies it is reachable */
- 	tail_call_reachable |= tail_call_seen;
- 
--	emit_prologue(&prog, bpf_prog->aux->stack_depth,
--		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
--		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
-+	ctx->prog_offset = emit_prologue(&prog, bpf_prog->aux->stack_depth,
-+					 bpf_prog_was_classic(bpf_prog),
-+					 tail_call_reachable,
-+					 bpf_is_subprog(bpf_prog),
-+					 bpf_prog->aux->exception_cb);
-+
- 	/* Exception callback will clobber callee regs for its own use, and
- 	 * restore the original callee regs from main prog's stack frame.
- 	 */
-@@ -2935,9 +3009,9 @@ struct bpf_prog *bpf_int_jit_compile(str
- 			jit_data->header = header;
- 			jit_data->rw_header = rw_header;
- 		}
--		prog->bpf_func = (void *)image;
-+		prog->bpf_func = (void *)image + ctx.prog_offset;
- 		prog->jited = 1;
--		prog->jited_len = proglen;
-+		prog->jited_len = proglen - ctx.prog_offset; // XXX?
- 	} else {
- 		prog = orig_prog;
- 	}
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -29,6 +29,7 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/static_call.h>
- #include <linux/memcontrol.h>
-+#include <linux/cfi.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -1188,7 +1189,11 @@ struct bpf_dispatcher {
- #endif
- };
- 
--static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
-+#ifndef __bpfcall
-+#define __bpfcall __nocfi
-+#endif
-+
-+static __always_inline __bpfcall unsigned int bpf_dispatcher_nop_func(
- 	const void *ctx,
- 	const struct bpf_insn *insnsi,
- 	bpf_func_t bpf_func)
-@@ -1278,7 +1283,7 @@ int arch_prepare_bpf_dispatcher(void *im
- 
- #define DEFINE_BPF_DISPATCHER(name)					\
- 	__BPF_DISPATCHER_SC(name);					\
--	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
-+	noinline __bpfcall unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
- 		bpf_func_t bpf_func)					\
 
 
+On 20/11/2023 13:47, Komal Bajaj wrote:
+> Add DTS for Qualcomm qcs6490-rb3gen2 board which uses
+> QCS6490 SoC. This adds debug uart and usb support along
+> with regulators found on this board.
+
+Hi,
+
+I understand there was a lot of previous discussion around these two
+boards, sorry to be bringing it up again here, but I have a few more
+questions.
+
+How similar are these two boards in terms of design? If they're derived
+from the same reference schematic then I think this is a good
+justification to de-duplicate the common DTS parts.
+
+Dropping them in a diff tool [1] it seems as though the only changes are
+the modem reserved memory for the IDP board, some minor regulator
+changes, and the sdcard on the IDP board being enabled. However it's
+important to differentiate between these just, being the same, vs them
+being based on the same reference design.
+
+I left some comments on the parts that differ between the boards below,
+but basically my question is: do these boards share enough of the same
+*design* that it would make sense to have a "qcm6490-iot.dtsi" file with
+the common reserved memory and regulators?
+
+The IDP and rb3 boards would then inherit from there, avoiding a lot of
+duplication and weirdness where some boards have certain regulator
+properties that others don't with it being hard to tell if this is
+intentional or not (this is the case with a lot of the existing upstream
+devices).
+
+On a related note, should we further split the rb3 board into a
+qcs6490-whatever-som.dtsi file which may define the SoM specific parts?
+This would undoubtebly make it easier for other boards based on the same
+SoM to be bought up and kept up to date.
+
+[1]: https://quickdiff.net/?unique_id=630F6851-C750-839E-1651-4CA6D997A74D
+
+
+[...]
+
+> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> new file mode 100644
+> index 000000000000..f023dcf768f1
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+> @@ -0,0 +1,410 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+[...]
+> +
+> +		vreg_l7b_2p952: ldo7 {
+
+The IDP board defined voltages here for the sdcard, does the rb3 board
+have an sdcard slot (if so which regulator does it use)?
+
+Is there a reason not to define the same voltage range for this board?
+> +			regulator-allow-set-load;
+
+This property is set for rb3 but not for the idp board, even though this
+regulator is unused, should this be set?
+> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
+[...]
+> +
+> +		vreg_l9b_1p2: ldo9 {
+Same question as above
+> +			regulator-allow-set-load;
+Same question
+> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+> +		};
+> +
+[...]
+> +		vreg_l19b_1p8: ldo19 {
+> +			regulator-min-microvolt = <1800000>;
+> +			regulator-max-microvolt = <2000000>;
+> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+The IDP board has the regulator-allow-set-load property here, as well as
+regulator-allowed-modes. This regulator is used for the sdcard on that
+board. Is it used for anything on rb3? Can these properties be the same?
+> +		};
+> +	};
+> +
+
+
+Thanks and regards,
+-- 
+// Caleb (they/them)
