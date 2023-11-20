@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FE37F1C68
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7857F1C71
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjKTS34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:29:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
+        id S232224AbjKTScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKTS3y (ORCPT
+        with ESMTP id S229497AbjKTScQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:29:54 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F86C8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:29:50 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9ffef4b2741so119554966b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:29:50 -0800 (PST)
+        Mon, 20 Nov 2023 13:32:16 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC7FC9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:32:12 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso6739360a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:32:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700504989; x=1701109789; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T7S1tKK+JLZHxsOf8xPtpSYx7utqfH0QNLzA9k3diLo=;
-        b=g7sECBqAstEOEgofsFN6uMCIFGnpEMaOagoJzTE/bH5H+M7+B8mNuL1OJkhCIjXtY6
-         iBLpI5G8gTEuymAxZyXJNdsin9bo9invE3G2q3p7K8/wmDmCoJPDXQDhlfi5AeZCHE5g
-         SIp8tE9CMRqo+a/yDLR0wQN5YnjlIw5c+lmxOw4Mev8ha6i7k0l+0j3x9IPjo4cT+4IO
-         wbN+YsaBcnqCnhPXiy1X5CgS8gv4cQkdR0teQfxADP3FAc45bxvwiUWIsPbWFL8qMqtO
-         jHuTbZFndysdqKVTqLak/+ilS/Z0fvAhPEMrmpTazaVLLynIrGmDHk2Nx51Ti0nC7p+z
-         PU/w==
+        d=linaro.org; s=google; t=1700505131; x=1701109931; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=JQKqeOCNXeZ0nxaIJQRxwCvrWoWO36a0tmBuhjIQhrM=;
+        b=RxKaQ6hmPW7NIsqncNbMiKg/yVLy6SMYcmBsbgVN5ZJEdY5wW6Li6h8RsrJCCxDRD5
+         3kbCpqdD5nuBxspgKl4A5iL1ViBKv1jo4EvLzeBwsYTtCNQ8ltGHS9xMR6zVnr0JBXfh
+         AUoRab0xFrxGrMazo9T/lKXpy1QFhUbMR1xhvHN3zRWBb+lk/EOQ+71whgU9GHKeg2BH
+         issvlpbplbgUgu/0b68U5eTj9g4drFEMi6ZWJo1WLDQ7Djc6xn0+RuOaLv+SJY0O6Vjy
+         CUznriknbpL0vlRM8jsHzqbUFL8sXsZ8kLVZJY6LUK3FsE2FgWspxjr9zEOJQPkGv4qG
+         eNZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700504989; x=1701109789;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T7S1tKK+JLZHxsOf8xPtpSYx7utqfH0QNLzA9k3diLo=;
-        b=VIbTtJ/AbYMwghlDcQlTiVO0h1TE1dp35vibejq3SMZ5iu0MUzgFkEuE+4l3TCW65b
-         SVY+I2MMgTQeDnYkxPx88TdlDzORJ9rgWTN4RqyrA8KNXqcSrsvoEG+HKyN4Aar/MqNF
-         3Zd3l7UAXfLtFHvyzsq84aS81uhw4M6/cj5ThwJaeEXg9B6nSGAfTqMa3z/UIw64WI2r
-         LHcyN+svZRuBralKHfl6NY3CaeFJ7q144E+m73O10bhtB6LrKc3wj3XlvlGdZ4ycvIrS
-         ZQ2fmqVdQfmzZEN5k4FTUNPHicx7v8FJ3GhCnP5kraSp1WA9aJpE7+DqbMFZL2fVKVJs
-         Y65w==
-X-Gm-Message-State: AOJu0YzstH1NEjNpa4jk3fkXS1uuVnWeH+WOaf5AasM4qWXyCAylsApw
-        NjFYFxdQut22Bn6GmewBVfamqg==
-X-Google-Smtp-Source: AGHT+IE5ANvtJBiIRAvI+sDwfMSShU7ATXSXYCrOdCoztcxu5imohR3W7YEf1+eByesWMdoxDd9G5g==
-X-Received: by 2002:a17:906:10b:b0:9d3:85b9:afdf with SMTP id 11-20020a170906010b00b009d385b9afdfmr5459912eje.3.1700504989258;
-        Mon, 20 Nov 2023 10:29:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700505131; x=1701109931;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JQKqeOCNXeZ0nxaIJQRxwCvrWoWO36a0tmBuhjIQhrM=;
+        b=SBzkJlUN+owLDTo8eG14iVZYE0b611N0Pow2YMvCuMQkWuSzS/sZKpdPAW28gfWvRo
+         jzPDkg1N7KN5YtJiQ4wdJJ5zyUyHlx/sVBD7+ktRa5nrfTNEbMbPymu6Pqnh+tD2UKRO
+         6Rja6HDa37qRTGLj1dOnREteqyOb3/+eACrYuwHUccoLrmU8hNoEVf3Y+0UhPbFtZHia
+         elQr0rlkbO12ePXCa8gGaYSqrbzC5sEq1ydGlojSPdLWZQc2Loj3JtsyH2jAvkDUiRDE
+         CvWAp/0HgaiQMr5lKHTk0UHMJKHP047Ov/oZSCW1WjlhwvzYqSCmRpQT4dvzCssG/IzX
+         /JDg==
+X-Gm-Message-State: AOJu0YxmhjRoXh+1Wi0SySDiWJT9D7cRmzrNSAQWHhG+zfzTrKhc7ORJ
+        zk64KGGBm5Xe390Iu4LLiWGdUg==
+X-Google-Smtp-Source: AGHT+IF/9N6qQKk1HXreVhDLJ17LVXcbfNg8jUXAt55BjVxlC59Oa4uL0fJ22FvoKaCp2qOrp7eMTg==
+X-Received: by 2002:a17:906:5197:b0:9ba:fe6:225 with SMTP id y23-20020a170906519700b009ba0fe60225mr6326061ejk.55.1700505130969;
+        Mon, 20 Nov 2023 10:32:10 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id x26-20020a1709065ada00b009fd04a1a1dfsm1880622ejs.40.2023.11.20.10.29.48
+        by smtp.gmail.com with ESMTPSA id kq14-20020a170906abce00b009fcb10eecb2sm1999386ejb.84.2023.11.20.10.32.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 10:29:48 -0800 (PST)
-Message-ID: <9db5e25f-9fe1-45d9-9a3b-91c45c6cdddf@linaro.org>
-Date:   Mon, 20 Nov 2023 19:29:47 +0100
+        Mon, 20 Nov 2023 10:32:09 -0800 (PST)
+Message-ID: <0954d66f-a685-4aaa-90a4-3d3492c79cd4@linaro.org>
+Date:   Mon, 20 Nov 2023 19:32:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is
  running
 Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Phi Nguyen <phind.uet@gmail.com>, bongsu.jeon@samsung.com
 Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -69,7 +71,7 @@ References: <20231119164705.1991375-1-phind.uet@gmail.com>
  <20d93e83-66c0-28d9-4426-a0d4c098f303@gmail.com>
  <d82e5a5f-1bbc-455e-b6a7-c636b23591f7@linaro.org>
  <8bce1251-7a6b-4b4c-b700-9d97c664689f@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ <9db5e25f-9fe1-45d9-9a3b-91c45c6cdddf@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -114,11 +116,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8bce1251-7a6b-4b4c-b700-9d97c664689f@gmail.com>
+In-Reply-To: <9db5e25f-9fe1-45d9-9a3b-91c45c6cdddf@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -127,78 +129,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 19:23, Phi Nguyen wrote:
-> On 11/20/2023 6:45 PM, Krzysztof Kozlowski wrote:
->> On 20/11/2023 11:39, Nguyen Dinh Phi wrote:
->>>>>>            mutex_lock(&vdev->mtx);
->>>>>>            kfree_skb(vdev->send_buff);
->>>>>>            vdev->send_buff = NULL;
->>>>>> +        vdev->running = false;
->>>>>>            mutex_unlock(&vdev->mtx);
->>>>>>    
->>>>>>            return 0;
->>>>>> @@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
->>>>>>            struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
->>>>>>    
->>>>>>            mutex_lock(&vdev->mtx);
->>>>>> -        if (vdev->send_buff) {
->>>>>> +        if (vdev->send_buff || !vdev->running) {
+On 20/11/2023 19:29, Krzysztof Kozlowski wrote:
+> On 20/11/2023 19:23, Phi Nguyen wrote:
+>> On 11/20/2023 6:45 PM, Krzysztof Kozlowski wrote:
+>>> On 20/11/2023 11:39, Nguyen Dinh Phi wrote:
+>>>>>>>            mutex_lock(&vdev->mtx);
+>>>>>>>            kfree_skb(vdev->send_buff);
+>>>>>>>            vdev->send_buff = NULL;
+>>>>>>> +        vdev->running = false;
+>>>>>>>            mutex_unlock(&vdev->mtx);
+>>>>>>>    
+>>>>>>>            return 0;
+>>>>>>> @@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
+>>>>>>>            struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+>>>>>>>    
+>>>>>>>            mutex_lock(&vdev->mtx);
+>>>>>>> -        if (vdev->send_buff) {
+>>>>>>> +        if (vdev->send_buff || !vdev->running) {
+>>>>>>
+>>>>>> Dear Krzysztof,
+>>>>>>
+>>>>>> I agree this defensive code.
+>>>>>> But i think NFC submodule has to avoid this situation.(calling send function of closed nci_dev)
+>>>>>> Could you check this?
 >>>>>
->>>>> Dear Krzysztof,
+>>>>> This code looks not effective. At this point vdev->send_buff is always
+>>>>> false, so the additional check would not bring any value.
 >>>>>
->>>>> I agree this defensive code.
->>>>> But i think NFC submodule has to avoid this situation.(calling send function of closed nci_dev)
->>>>> Could you check this?
+>>>>> I don't see this fixing anything. Syzbot also does not seem to agree.
+>>>>>
+>>>>> Nguyen, please test your patches against syzbot *before* sending them.
+>>>>> If you claim this fixes the report, please provide me the link to syzbot
+>>>>> test results confirming it is fixed.
+>>>>>
+>>>>> I looked at syzbot dashboard and do not see this issue fixed with this
+>>>>> patch.
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
 >>>>
->>>> This code looks not effective. At this point vdev->send_buff is always
->>>> false, so the additional check would not bring any value.
+>>>> Hi Krzysztof,
 >>>>
->>>> I don't see this fixing anything. Syzbot also does not seem to agree.
->>>>
->>>> Nguyen, please test your patches against syzbot *before* sending them.
->>>> If you claim this fixes the report, please provide me the link to syzbot
->>>> test results confirming it is fixed.
->>>>
->>>> I looked at syzbot dashboard and do not see this issue fixed with this
->>>> patch.
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>>
+>>>> I've submitted it to syzbot, it is the test request that created at
+>>>> [2023/11/20 09:39] in dashboard link
+>>>> https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
 >>>
->>> Hi Krzysztof,
+>>> ...and I see there two errors.
 >>>
->>> I've submitted it to syzbot, it is the test request that created at
->>> [2023/11/20 09:39] in dashboard link
->>> https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
+>> These are because I sent email wrongly and syzbot truncates the patch 
+>> and can not compile
 >>
->> ...and I see there two errors.
+>>> I don't know, maybe I miss something obvious (our brains like to do it
+>>> sometimes), but please explain me how this could fix anything?
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
 >>
-> These are because I sent email wrongly and syzbot truncates the patch 
-> and can not compile
+>> The issue arises when an skb is added to the send_buff after invoking 
+>> ndev->ops->close() but before unregistering the device. In such cases, 
+>> the virtual device will generate a copy of skb, but with no consumer 
+>> thereafter. Consequently, this object persists indefinitely.
+>>
+>> This problem seems to stem from the existence of time gaps between 
+>> ops->close() and the destruction of the workqueue. During this interval, 
+>> incoming requests continue to trigger the send function.
 > 
->> I don't know, maybe I miss something obvious (our brains like to do it
->> sometimes), but please explain me how this could fix anything?
->>
->> Best regards,
->> Krzysztof
->>
+> I asked how this could fix anything. Can you respond to my original comment?
 > 
-> The issue arises when an skb is added to the send_buff after invoking 
-> ndev->ops->close() but before unregistering the device. In such cases, 
-> the virtual device will generate a copy of skb, but with no consumer 
-> thereafter. Consequently, this object persists indefinitely.
+> Look:
 > 
-> This problem seems to stem from the existence of time gaps between 
-> ops->close() and the destruction of the workqueue. During this interval, 
-> incoming requests continue to trigger the send function.
+>>>>> This code looks not effective. At this point vdev->send_buff is always
+>>>>> false, so the additional check would not bring any value.
 
-I asked how this could fix anything. Can you respond to my original comment?
-
-Look:
-
->>>> This code looks not effective. At this point vdev->send_buff is always
->>>> false, so the additional check would not bring any value.
+Uh, now I see, I missed that's the if here is for send_buff != NULL, so
+quite different case than virtual_nci_close().
 
 Best regards,
 Krzysztof
