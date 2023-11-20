@@ -2,114 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3407F146A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6A07F1470
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbjKTNaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 08:30:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
+        id S232538AbjKTNax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjKTNaY (ORCPT
+        with ESMTP id S232985AbjKTNak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 08:30:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EEFD2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 05:30:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BD7EC433C8;
-        Mon, 20 Nov 2023 13:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700487020;
-        bh=PHdu57Wzp+xZqOVNY9Pteh5+H3/OUfTVYEQwZtnjgaI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Adn5+nCRh7+2esCt06PpWOJ6Q7Sf9wGWzyL8OZ3xQ4KTuGsVYCl41uUSDvoZM1Qgh
-         xYH9OzH46SDNykHqua+lZM2VDAFNJNwAhIazL4+HhuPw4y+ePFT4d4rp8a2u9mWmRp
-         PnCbz5w1ll14XS8VhdWdJuOuFS0/ORhBUxPN9LZrU5nM5XwUgSrSc4kXfWDjHIHbGB
-         JT3utmOA0eqk2DInnearZCiHRLiXuzkgmY4JBzfMGPTQF/bM9Mo53CgDyCMs/E4vK7
-         vEYpztDFwP8Cf9bC1VZuImptYoTJCr3dqt3i1A+skz+dJKGH7DjDkXQ+BECL8kWBh6
-         +vMaV+mcY9SLg==
-Date:   Mon, 20 Nov 2023 13:30:08 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v9 00/27] Add support for QMC HDLC, framer infrastructure
- and PEF2256 framer
-Message-ID: <573c9ca1-a560-4f7a-ba21-80673a2e162e@sirena.org.uk>
-References: <20231115144007.478111-1-herve.codina@bootlin.com>
- <20231117164746.0589e955@kernel.org>
+        Mon, 20 Nov 2023 08:30:40 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9908D131
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 05:30:36 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1ce5b6ec63cso37244255ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 05:30:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700487036; x=1701091836;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JaBs9yaex3CpTCsjQhZQgAZfjs1nKcoUFzS37fbktjc=;
+        b=jjl9oqAYz9KqVZYRYmFWgDO9nkzTq+Sn/IxqfHRgC3BDJTHDLjWROz9sOx7pIM3VOx
+         ptzsFgbpfyohRQtehkv/OgU9MOe67p7YJkpYmfiquKenke0xjOdwiR9LIheBf/+Ajf1a
+         oDIfaDOI0fnMLstY7pD7h3ScCUtlFv29ylxjisCcF0qtSKyt8odwNbP6Q1DzPemW3lTB
+         CIQ1DWySLz6f+Z+TfRlu0CvmshCVIlqNc3y15dh5aNMhaWD/oxa3jcETYCJszvIhUeRo
+         tprcubm61MhbOpXoweUFslIQXPMYduK/aACzwLV6yhfl8ys9gG/kOSym3aseSsdY73jO
+         tTYQ==
+X-Gm-Message-State: AOJu0Yz2pEZOf8LnBgqz1aZ8rpVuFxSkc3dpBGoz596quKif6ExVsqVU
+        toRWLXuokiIeuwnrDLNmrZoavnaUJtiHiPzvq2NE7O0AQ087hjc=
+X-Google-Smtp-Source: AGHT+IG5byLfrF4ihdnfCMdyvpEzGraz/2NTP/4r381JvT5NiVr4OwBdtKn5Cm/h15ZYwg1VyVxj2UvgjWQ0VDD+ZYTvKdgeptkp
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HuVabfiR1A06kEJd"
-Content-Disposition: inline
-In-Reply-To: <20231117164746.0589e955@kernel.org>
-X-Cookie: <Manoj> I *like* the chicken
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:22c8:b0:1ca:7a4c:834d with SMTP id
+ y8-20020a17090322c800b001ca7a4c834dmr2458430plg.13.1700487035864; Mon, 20 Nov
+ 2023 05:30:35 -0800 (PST)
+Date:   Mon, 20 Nov 2023 05:30:35 -0800
+In-Reply-To: <000000000000bf0b1f060a2d9bea@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b7d228060a957d5c@google.com>
+Subject: Re: [syzbot] [PATCH] Test divide err in drm
+From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
---HuVabfiR1A06kEJd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+***
 
-On Fri, Nov 17, 2023 at 04:47:46PM -0800, Jakub Kicinski wrote:
-> On Wed, 15 Nov 2023 15:39:36 +0100 Herve Codina wrote:
-> >    - Removed Patches 6, 7 and 8 (patches applied)
-> >=20
-> >    - Patches 7, 20, 21, 23 (patches 10, 23, 24, 26 in v8)
-> >      Add 'Acked-by: Jakub Kicinski <kuba@kernel.org>'
+Subject: [PATCH] Test divide err in drm
+Author: eadavis@qq.com
 
-> I thought someone (Mark?) asked for the networking stuff to be put=20
-> on a branch. If that's still the preference - is it possible to factor
-> these out as a standalone series, too?  Will they build on their own?
+please test divide err in drm
 
-Yes, can we *please* at least get the generic non-driver bits of this
-series moving - they seem uncontroversial as far as I can see and are a
-tiny portion of the overall 20 patches.  Patches 21-23 look like they
-can go on a branch in the net tree?
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ac347a0655db
 
---HuVabfiR1A06kEJd
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index ac9a406250c5..60739d861da2 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -36,6 +36,7 @@
+ #include <linux/list.h>
+ #include <linux/list_sort.h>
+ #include <linux/of.h>
++#include <linux/overflow.h>
+ 
+ #include <video/of_display_timing.h>
+ #include <video/of_videomode.h>
+@@ -1297,8 +1298,10 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
+ 		num *= 2;
+ 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+ 		den *= 2;
+-	if (mode->vscan > 1)
+-		den *= mode->vscan;
++	if (mode->vscan > 1) {
++		if (unlikely(check_mul_overflow(den, mode->vscan, &den)))
++			return 0;
++	}
+ 
+ 	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
+ }
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbX18ACgkQJNaLcl1U
-h9BhUQf/Y8e+dECLekhRMQLy8O0p4YRvMtVtYbyazFL0PEJyvuI93CnL/nqRzW/7
-x6zzsmJn2uab1/SmDbu8m5yE2PQDQs448v2ZAIcvu9SOQoH9ph+y/Li1dsCx0MQS
-b+VU0vl6YJcBmn8ycRkgBldpLgOoc6HU2tss4FQBAlR2R0Aw6KG97Smd+Py70Yyg
-ewedo+nXh+OkOHdJiG3Fbcbw6GwLEoQB+jj2MFy4QA3VilnEu+NBvRxIoegctggc
-mPB4GWRQNg9fb57iy6IqsME7oUq1hUb4SJ55O7s88qko3hFJ4ediuncLVP25kbl/
-HNP87K6I1Mebqh5LHTcVOvfo8zM/BQ==
-=n/vU
------END PGP SIGNATURE-----
-
---HuVabfiR1A06kEJd--
