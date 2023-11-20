@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CC67F0B5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7114D7F0B55
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbjKTEVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 23:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
+        id S230033AbjKTESS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 23:18:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTEVx (ORCPT
+        with ESMTP id S229470AbjKTESQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 23:21:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9C4C5;
-        Sun, 19 Nov 2023 20:21:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700454110; x=1731990110;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6v/qk6XILJ+EShe/DB479gTNTuB+ktH4JpqYg6NOK44=;
-  b=Gri5v89c3emaAYFCIIK4RTwo7EropjZxTtjHnru0JhnqlzVbE0g4HQcQ
-   WR/Ae3/x7mvbx3nzRe6uCNlJ+yB/yoexsIn19utS9RhS9Ho7zBGvOtDgq
-   h6byLIlwaxHgMUyp6F7ljw8Fi+urVjDDWmztcDs8w9/2G6UIs731kkZ1S
-   2Q9LA+WX32noRNyIMlILVymHAwEnwziTvFWD/bJlhdhh5qcFnVPxQSYOv
-   f84dlK9qZ6smKg+vTEORGh+WgvWqBrAzXV2YF9B1lDtQGVykENmVd4SH4
-   3zejx7Esva3aic3xH02xSGIoP9arljI6Zt2ViECa1GvxgBsvMZ1w0d1il
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="381939857"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="381939857"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 20:21:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="716104605"
-X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
-   d="scan'208";a="716104605"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga003.jf.intel.com with ESMTP; 19 Nov 2023 20:21:46 -0800
-Message-ID: <c67754fc-9fff-43b4-82ce-078e71134815@linux.intel.com>
-Date:   Mon, 20 Nov 2023 12:17:28 +0800
+        Sun, 19 Nov 2023 23:18:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA3313E
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:18:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD15C433CC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700453891;
+        bh=BluD7GIVPO8PrPVuaW0518p8IU0xm5lBhxJYVGvOByo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=osZUrbBoau/5wiylWuf727gI2yFiwS42NUycYdcMhSsIPZ6zg8UN0qIUwemah4AjV
+         26IplfITNMI4E3CbRY6Pmd2EP75Aiids9S6m+hmJ1wadnTw7EL3Rq1fOY80lcw+RSJ
+         HU8IhCH9TnHssqjPaut1ZbRrsn2mVa33F49gTbLor+J9T6qRcr0j1onTEBgBNOWGl7
+         BqsVWiMa81+EFH7w+u9p90safr3xQgBMRRk3Qo62wq4dlB1fdUP84xMKwaYD1A0DDd
+         V4FXDgwDZh06Q4pC+W2ikhufkdaLlZIki6A9CWw9sMPNnbQWMj//ZEHRu8m5MRbywl
+         u2HaHaXK5CGBQ==
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2851b271e51so536168a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:18:11 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxjc8z5pFr/WrwqoobRtfKWwFmY1MA8U4rStJ9zaO8/hEda4LMB
+        7V8GXEWRi7sCSWjcp3/NL/kBpMmkJkwkrihgwR4Obw==
+X-Google-Smtp-Source: AGHT+IEJodpCm5QEZgAh344L09AH+Jfnh6wGRkUZQu4v/ot9+4ois/EpwLm/GZKydBJyx86vspgRmVNepQfLaKfeRdE=
+X-Received: by 2002:a17:90b:3e85:b0:283:2652:3d20 with SMTP id
+ rj5-20020a17090b3e8500b0028326523d20mr9197638pjb.9.1700453890466; Sun, 19 Nov
+ 2023 20:18:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-5-ryncsn@gmail.com>
+In-Reply-To: <20231119194740.94101-5-ryncsn@gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Sun, 19 Nov 2023 20:17:59 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
+Message-ID: <CAF8kJuNbcvwmojMB2Vp2LjTBxZtKFO_Zng4TODqADxmNPn2kCg@mail.gmail.com>
+Subject: Re: [PATCH 04/24] mm/swap: avoid setting page lock bit and doing
+ extra unlock check
+To:     Kairui Song <kasong@tencent.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         "Huang, Ying" <ying.huang@intel.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        "Luo, Yuzhang" <yuzhang.luo@intel.com>,
-        "Zhu, Tony" <tony.zhu@intel.com>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Fix incorrect cache invalidation for mm
- notification
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231117090933.75267-1-baolu.lu@linux.intel.com>
- <BN9PR11MB52768C9149602718CD2EFC1B8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52768C9149602718CD2EFC1B8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 11:45 AM, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Friday, November 17, 2023 5:10 PM
->>
->> Commit 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
->> invalidating TLBs") moved the secondary TLB invalidations into the TLB
->> invalidation functions to ensure that all secondary TLB invalidations
->> happen at the same time as the CPU invalidation and added a flush-all
->> type of secondary TLB invalidation for the batched mode, where a range
->> of [0, -1UL) is used to indicates that the range extends to the end of
->> the address space.
->>
->> However, using an end address of -1UL caused an overflow in the Intel
->> IOMMU driver, where the end address was rounded up to the next page.
->> As a result, both the IOTLB and device ATC were not invalidated correctly.
->>
->> Add a flush all helper function and call it when the invalidation range
->> is from 0 to -1UL, ensuring that the entire caches are invalidated
->> correctly.
->>
->> Fixes: 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
->> invalidating TLBs")
->> Cc:stable@vger.kernel.org
->> Cc: Huang Ying<ying.huang@intel.com>
->> Cc: Alistair Popple<apopple@nvidia.com>
->> Tested-by: Luo Yuzhang<yuzhang.luo@intel.com>  # QAT
->> Tested-by: Tony Zhu<tony.zhu@intel.com>  # DSA
->> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/svm.c | 26 ++++++++++++++++++++++++++
->>   1 file changed, 26 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->> index 50a481c895b8..588385050a07 100644
->> --- a/drivers/iommu/intel/svm.c
->> +++ b/drivers/iommu/intel/svm.c
->> @@ -216,6 +216,27 @@ static void intel_flush_svm_range(struct intel_svm
->> *svm, unsigned long address,
->>   	rcu_read_unlock();
->>   }
->>
->> +static void intel_flush_svm_all(struct intel_svm *svm)
->> +{
->> +	struct device_domain_info *info;
->> +	struct intel_svm_dev *sdev;
->> +
->> +	rcu_read_lock();
->> +	list_for_each_entry_rcu(sdev, &svm->devs, list) {
->> +		info = dev_iommu_priv_get(sdev->dev);
->> +
->> +		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL,
->> 1);
-> Why setting 'ih' to skip invalidating page structure caches?
+On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
+te:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> When swapping in a page, mem_cgroup_swapin_charge_folio is called for new
+> allocated folio, nothing else is referencing the folio so no need to set
+> the lock bit. This avoided doing unlock check on error path.
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> ---
+>  mm/swap_state.c | 20 +++++++++-----------
+>  1 file changed, 9 insertions(+), 11 deletions(-)
+>
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index ac4fa404eaa7..45dd8b7c195d 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -458,6 +458,8 @@ struct page *__read_swap_cache_async(swp_entry_t entr=
+y, gfp_t gfp_mask,
 
-It should be set to '0'. Good catch! Thank you!
+You move the mem_cgroup_swapin_charge_folio() inside the for loop:
 
-Best regards,
-baolu
+
+        for (;;) {
+                int err;
+                /*
+                 * First check the swap cache.  Since this is normally
+                 * called after swap_cache_get_folio() failed, re-calling
+                 * that would confuse statistics.
+                 */
+                folio =3D filemap_get_folio(swap_address_space(entry),
+                                                swp_offset(entry));
+
+
+>                                                 mpol, ilx, numa_node_id()=
+);
+>                 if (!folio)
+>                          goto fail_put_swap;
+> +               if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask,=
+ entry))
+> +                       goto fail_put_folio;
+
+Wouldn't it cause repeat charging of the folio when it is racing
+against others in the for loop?
+
+>
+>                 /*
+>                  * Swap entry may have been freed since our caller observ=
+ed it.
+> @@ -483,13 +485,9 @@ struct page *__read_swap_cache_async(swp_entry_t ent=
+ry, gfp_t gfp_mask,
+>         /*
+>          * The swap entry is ours to swap in. Prepare the new page.
+>          */
+> -
+>         __folio_set_locked(folio);
+>         __folio_set_swapbacked(folio);
+>
+> -       if (mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask, entry))
+> -               goto fail_unlock;
+> -
+
+The original code makes the charge outside of the for loop. Only the
+winner can charge once.
+
+Chris
