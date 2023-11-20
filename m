@@ -2,107 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFFE7F20C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E51A7F211D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbjKTW7e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 17:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
+        id S229719AbjKTXBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKTW7d (ORCPT
+        with ESMTP id S229448AbjKTXBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:59:33 -0500
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8B7A2;
-        Mon, 20 Nov 2023 14:59:30 -0800 (PST)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1e9c9d181d6so3036125fac.0;
-        Mon, 20 Nov 2023 14:59:30 -0800 (PST)
+        Mon, 20 Nov 2023 18:01:10 -0500
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D9BC4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:01:06 -0800 (PST)
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6b5cac99d3dso7642803b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:01:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700521169; x=1701125969;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4dZP1CpgWwT6/Z66YkAUxS5DUl+N3kpH1NW1HsPopb8=;
-        b=Qt38cGYsWK6Ew6N3ZLimPQFW2CewaJQACJzy/crNcX/3QaB7ULmSdXCSfVW+9QQOmw
-         ioiNHmhyMuRswX0Dyd6DOeP9ZE0aSNo466T6+fPppQl0564k7Y4ZWHI1TgONTF3ukhIu
-         mUUgdWPvH2BDix4PP289QBQLadk+btViSs/k3E+ta/7TTcjOM/0en7Sbk5xifGvnHeDn
-         ThxdKbaWSyPFQ8jnCRrGERN/Tedf8BZbDlhFyWGwvvZdHbRAa/hcH/seLrwZ3XmzkjkX
-         f+BcOI+6ws335nPFmB2OGrTlhKnz7aIOH3+OUdLZqivZX96VM4L7AeHOqhQIQllbw3tG
-         z9Fg==
-X-Gm-Message-State: AOJu0YzF2NhsTrx6RkWf+ceVUIa3XDkUw2OC6aLImA2f+XzjhmdQT3fy
-        spGvWQ/H2otjvjB2sr8Q26ZK0uACfwSu8TW5vPYKPEBH
-X-Google-Smtp-Source: AGHT+IHZYCmSiVsMg5RbPK+Qqi6FabJEEst4pGayAdFMvCMlMPSl41S5C6Rsr+aONbxNaWOHXLfjcLa0zaKOrFGjPBs=
-X-Received: by 2002:a05:6871:22c7:b0:1f9:4afd:e3c9 with SMTP id
- se7-20020a05687122c700b001f94afde3c9mr3570756oab.1.1700521169416; Mon, 20 Nov
- 2023 14:59:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700521266; x=1701126066;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pUHvZqUtxIelqOkhWJ/rNyIb+FyfEgnajsCDcd1770s=;
+        b=lSvGVybGW35Z+lQSL3HCdVVd/qO0zfQ1HbIsd9vygLZ//ztoP2EcPRSKe35Xia5eLL
+         t1VW6iHeO/uB3tl6Vz08RZK7C2Cmi30QdPYW61TjwyaCtBBDNtPvVamLF5M9KiwB+njq
+         ZzyTaRnrxmLAteOhOGppLSHQJpQUqwbSbaA/j3idYyWPltHO+2X9BFzw7c09IbjVj64z
+         p3Y8cQpkC7NiIPJpk6kdIEKjk/KBigsGH6T7Y6M6iV4DuKTUzh6LKgpyBzcX36oZC3OY
+         TMBWK6uoHjP5LntkWOuA/rm/KFCWm+BWqbUXjK6oo+OAycuqG2bsuT+42WKykTZi3Bm7
+         ABdg==
+X-Gm-Message-State: AOJu0YwvSRiR+ZFi7ewskTEz5NtuatY5Gqwm9PT0pmqHIXMqhM/bH95H
+        O4crWqQkxsPWWnysRwn6068Bv0B8BhB1UDHgaDX5snlPp8P5
+X-Google-Smtp-Source: AGHT+IFsaThVJyrbPxGaoq/F9sa+Xu+ULx9VWg5KB5Glx02QEN86inWnAmqiO01cPY08/Uhz2336VuPkShrD6jBlKUSQfiVxsIQf
 MIME-Version: 1.0
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com> <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com> <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com> <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
- <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com> <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
- <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
-In-Reply-To: <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 20 Nov 2023 14:59:18 -0800
-Message-ID: <CAM9d7chFQ1L0h0av7ziXU4ja_j1FMRgwd-CHULnOB5YuH9yo2w@mail.gmail.com>
-Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed for
- aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-To:     David Wang <00107082@163.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:aa7:8115:0:b0:693:3851:bd82 with SMTP id
+ b21-20020aa78115000000b006933851bd82mr2186063pfi.2.1700521266007; Mon, 20 Nov
+ 2023 15:01:06 -0800 (PST)
+Date:   Mon, 20 Nov 2023 15:01:05 -0800
+In-Reply-To: <00000000000040e14205ffbf333f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe54ea060a9d752c@google.com>
+Subject: Re: [syzbot] [ntfs3?] WARNING in wnd_add_free_ext (2)
+From:   syzbot <syzbot+5b2f934f08ab03d473ff@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 5:48 PM David Wang <00107082@163.com> wrote:
->
->
-> At 2023-11-18 05:11:02, "Namhyung Kim" <namhyung@kernel.org> wrote:
-> >On Wed, Nov 15, 2023 at 8:09 PM David Wang <00107082@163.com> wrote:
-> >>
->
-> >>
-> >>
-> >> From the data I collected, I think two problem could be observed for f06cc667f79909e9175460b167c277b7c64d3df0
-> >> 1. sample missing.
-> >> 2. sample unstable, total sample count drift a lot between tests.
-> >
-> >Hmm.. so the fio process was running in the background during
-> >the profiling, right?  But I'm not sure how you measured the same
-> >amount of time.  Probably you need to run this (for 10 seconds):
-> >
-> >  sudo perf record -a -G mytest -- sleep 10
-> >
-> >And I guess you don't run the perf command in the target cgroup
-> >which is good.
-> >
->
-> Yes  profiling process was not in the target cgroup.
-> I use  fio with `fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=4 --time_based=1` which would run 600 seconds.
-> There would be drifts in the profiling report between runs,  from those small  samples of test data I collected, maybe not enough to make a firm conclusion,  I feel when the commit is reverted, the expectation for total sample count is higher and the standard deviation is smaller.
->
-> >And is there any chance if it's improved because of the change?
-> >Are the numbers in 6.7 better or worse?
-> >
-> I have no idea whether the change of expected total sample count a bug or a fix,  but,  the observed result that total sample count drift a lot (bigger standard deviation), I think ,  is a bad thing.
+syzbot suspects this issue was fixed by commit:
 
-Right.  Can you run perf stat to measure the number of context
-switches and cgroup switches, then?
+commit 4ad5c924df6cd6d85708fa23f9d9a2b78a2e428e
+Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Date:   Fri Sep 22 10:07:59 2023 +0000
 
-  sudo perf stat -a -e context-switches,cgroup-switches -- sleep 10
+    fs/ntfs3: Allow repeated call to ntfs3_put_sbi
 
-Thanks,
-Namhyung
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15283368e80000
+start commit:   dd72f9c7e512 Merge tag 'spi-fix-v6-6-rc4' of git://git.ker..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4471dbb58008c9f2
+dashboard link: https://syzkaller.appspot.com/bug?extid=5b2f934f08ab03d473ff
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15665425680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1618cd9d680000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs/ntfs3: Allow repeated call to ntfs3_put_sbi
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
