@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC377F1A0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663E27F1A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbjKTRcb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 12:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
+        id S232901AbjKTRbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:31:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233710AbjKTRc2 (ORCPT
+        with ESMTP id S232428AbjKTRbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:32:28 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DDABA;
-        Mon, 20 Nov 2023 09:32:24 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYvKW1Jf5z9xvrJ;
-        Tue, 21 Nov 2023 01:15:43 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwDHxV_8l1tllXsHAQ--.3416S2;
-        Mon, 20 Nov 2023 18:31:55 +0100 (CET)
-Message-ID: <1999ed6f77100d9d2adc613c9748f15ab8fcf432.camel@huaweicloud.com>
-Subject: Re: [PATCH v5 11/23] security: Introduce inode_post_removexattr hook
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Date:   Mon, 20 Nov 2023 18:31:37 +0100
-In-Reply-To: <85c5dda2-5a2f-4c73-82ae-8a333b69b4a7@schaufler-ca.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
-         <20231107134012.682009-12-roberto.sassu@huaweicloud.com>
-         <85c5dda2-5a2f-4c73-82ae-8a333b69b4a7@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 20 Nov 2023 12:31:53 -0500
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9496D8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:31:49 -0800 (PST)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1f938410f92so664702fac.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:31:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700501509; x=1701106309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WAF1U/lCbnAz9mXeRmxCPX739RNT9Ki2al6h9FhAbIA=;
+        b=lcwtqxZko3TddVRGzqogbr3ywmZHJw7TLUjAH+7nVS5xIng7Se9yQEBtqwtZB+yRJs
+         4LVgd/NHWm7c6B34OibpgElYCq8Ywr8IiSpA9ni37hs37Ihm1Y9sq8F/cpvKURGO/cTV
+         ckeYeckaPno7LO2Rq/xvWWzeVXyFvfmuL+12MwP1rTgyQBNfmcF3x4Aq1Tgfjn2I5agT
+         sFgzDl71mT2VNjSbhw3Zo5koTvBRxOLy2KSOSj8nW9gkxzBVuNSMTtV332jR3k456l1L
+         Et2ss4bmwf/OymyFIjH9T8jwPlvs4sqpaGqbR9VSNN+og4qeF3HbzDrACNd/3078JPlj
+         oRuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700501509; x=1701106309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WAF1U/lCbnAz9mXeRmxCPX739RNT9Ki2al6h9FhAbIA=;
+        b=XmAABpwN77+TEvt+3ia5UcGI8v9Dj38aHEueAfy6D+nInvWP0DMc2qZ5MtA+gWs7tW
+         P5iYmcY8t2QWwx0ce91e6IqyugOc6lvHzYkLDpVN1tLWU8obQBrfUgo9sFJPIzpN9V15
+         jJi+WakzBkl1tnciL9ps8SLkgBfsEqe2bwCP8UoM/i7Ad6CDTXSZtRHKH/U8ejwnBqeP
+         2/ct2KtdRGic8tPjwfLxfcTs9+7YgPfafqKjMQO7dOgTvFsLSmzmzhz36a4mgTJ/n5cq
+         noXNxePvZuLlgMknZ8f5LLBA66/xVZ5Sviyzqtm28y7Gd2nChSGyQXbJ5n8hYtlLi2cO
+         i16A==
+X-Gm-Message-State: AOJu0YyYzDB97WnQhP5B0fHAoKyKBD6wUqgpMnuJZdNuVONos2T2f93m
+        r3W1GHskfcRUFoyqjjJ73xwJHWBCtIGJC64zhoo=
+X-Google-Smtp-Source: AGHT+IHXGPskkZjPASHv5zjmBj8vTC+m/HXkKut1/0s33s6XPps0+a5t8sGmtHhxRowQsRtHWKhR/1Ty6hqrzEufKKE=
+X-Received: by 2002:a05:6870:d3cc:b0:1f0:c29:d75c with SMTP id
+ l12-20020a056870d3cc00b001f00c29d75cmr9798494oag.47.1700501509193; Mon, 20
+ Nov 2023 09:31:49 -0800 (PST)
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwDHxV_8l1tllXsHAQ--.3416S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCryfur1DZr4xWrW7XF48Crg_yoWrKFyfpF
-        s8K3Z0kr4rJFy7Wry8tF1UCw4I9ayFgry7A3y2gw12vFn2yr1IqrWakF15C34rJrWjgF1q
-        q3ZFkrs5Cr15Ja7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
-        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
-        F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
-        kC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIx
-        AIcVCF04k26cxKx2IYs7xG6r1I6r4UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUrfOzDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5apagAAsm
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+In-Reply-To: <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 20 Nov 2023 12:31:38 -0500
+Message-ID: <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        dri-devel@lists.freedesktop.org, Phillip Susi <phill@thesusis.net>,
+        Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,122 +78,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-07 at 09:33 -0800, Casey Schaufler wrote:
-> On 11/7/2023 5:40 AM, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> > the inode_post_removexattr hook.
-> > 
-> > At inode_removexattr hook, EVM verifies the file's existing HMAC value. At
-> > inode_post_removexattr, EVM re-calculates the file's HMAC with the passed
-> > xattr removed and other file metadata.
-> > 
-> > Other LSMs could similarly take some action after successful xattr removal.
-> > 
-> > The new hook cannot return an error and cannot cause the operation to be
-> > reverted.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  fs/xattr.c                    |  9 +++++----
-> >  include/linux/lsm_hook_defs.h |  2 ++
-> >  include/linux/security.h      |  5 +++++
-> >  security/security.c           | 14 ++++++++++++++
-> >  4 files changed, 26 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index 09d927603433..84a4aa566c02 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
-> >  		goto out;
-> >  
-> >  	error = __vfs_removexattr(idmap, dentry, name);
-> > +	if (error)
-> > +		goto out;
-> 
-> Shouldn't this be simply "return error" rather than a goto to nothing
-> but "return error"?
+On Mon, Nov 20, 2023 at 11:24=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 20.11.23 um 17:08 schrieb Alex Deucher:
+> > On Mon, Nov 20, 2023 at 10:57=E2=80=AFAM Christian K=C3=B6nig
+> > <ckoenig.leichtzumerken@gmail.com> wrote:
+> >> Am 19.11.23 um 07:47 schrieb Dave Airlie:
+> >>>> On 12.11.23 01:46, Phillip Susi wrote:
+> >>>>> I had been testing some things on a post 6.6-rc5 kernel for a week =
+or
+> >>>>> two and then when I pulled to a post 6.6 release kernel, I found th=
+at
+> >>>>> system suspend was broken.  It seems that the radeon driver failed =
+to
+> >>>>> suspend, leaving the display dead, the wayland display server hung,=
+ and
+> >>>>> the system still running.  I have been trying to bisect it for the =
+last
+> >>>>> few days and have only been able to narrow it down to the following=
+ 3
+> >>>>> commits:
+> >>>>>
+> >>>>> There are only 'skip'ped commits left to test.
+> >>>>> The first bad commit could be any of:
+> >>>>> 56e449603f0ac580700621a356d35d5716a62ce5
+> >>>>> c07bf1636f0005f9eb7956404490672286ea59d3
+> >>>>> b70438004a14f4d0f9890b3297cd66248728546c
+> >>>>> We cannot bisect more!
+> >>>> Hmm, not a single reply from the amdgpu folks. Wondering how we can
+> >>>> encourage them to look into this.
+> >>>>
+> >>>> Phillip, reporting issues by mail should still work, but you might h=
+ave
+> >>>> more luck here, as that's where the amdgpu afaics prefer to track bu=
+gs:
+> >>>> https://gitlab.freedesktop.org/drm/amd/-/issues
+> >>>>
+> >>>> When you file an issue there, please mention it here.
+> >>>>
+> >>>> Furthermore it might help if you could verify if 6.7-rc1 (or rc2, wh=
+ich
+> >>>> comes out later today) or 6.6.2-rc1 improve things.
+> >>> It would also be good to test if reverting any of these is possible o=
+r not.
+> >> Well none of the commits mentioned can affect radeon in any way. Radeo=
+n
+> >> simply doesn't use the scheduler.
+> >>
+> >> My suspicion is that the user is actually using amdgpu instead of
+> >> radeon. The switch potentially occurred accidentally, for example by
+> >> compiling amdgpu support for SI/CIK.
+> >>
+> >> Those amdgpu problems for older ASIC have already been worked on and
+> >> should be fixed by now.
+> > In this case it's a navi23 (so radeon in the marketing sense).
+>
+> Thanks, couldn't find that in the mail thread.
+>
+> In that case those are the already known problems with the scheduler
+> changes, aren't they?
 
-I got a review from Andrew Morton. His argument seems convincing, that
-having less return places makes the code easier to handle.
+Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Maybe I'm
+misunderstanding what the original report was actually testing.  If it
+was 6.7, then try reverting:
+56e449603f0ac580700621a356d35d5716a62ce5
+b70438004a14f4d0f9890b3297cd66248728546c
 
-Thanks
+Alex
 
-Roberto
-
-> > -	if (!error) {
-> > -		fsnotify_xattr(dentry);
-> > -		evm_inode_post_removexattr(dentry, name);
-> > -	}
-> > +	fsnotify_xattr(dentry);
-> > +	security_inode_post_removexattr(dentry, name);
-> > +	evm_inode_post_removexattr(dentry, name);
-> >  
-> >  out:
-> >  	return error;
-> > diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> > index 67410e085205..88452e45025c 100644
-> > --- a/include/linux/lsm_hook_defs.h
-> > +++ b/include/linux/lsm_hook_defs.h
-> > @@ -149,6 +149,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
-> >  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
-> >  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
-> >  	 struct dentry *dentry, const char *name)
-> > +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
-> > +	 const char *name)
-> >  LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
-> >  	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
-> >  LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
-> > diff --git a/include/linux/security.h b/include/linux/security.h
-> > index 664df46b22a9..922ea7709bae 100644
-> > --- a/include/linux/security.h
-> > +++ b/include/linux/security.h
-> > @@ -380,6 +380,7 @@ int security_inode_getxattr(struct dentry *dentry, const char *name);
-> >  int security_inode_listxattr(struct dentry *dentry);
-> >  int security_inode_removexattr(struct mnt_idmap *idmap,
-> >  			       struct dentry *dentry, const char *name);
-> > +void security_inode_post_removexattr(struct dentry *dentry, const char *name);
-> >  int security_inode_need_killpriv(struct dentry *dentry);
-> >  int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry);
-> >  int security_inode_getsecurity(struct mnt_idmap *idmap,
-> > @@ -940,6 +941,10 @@ static inline int security_inode_removexattr(struct mnt_idmap *idmap,
-> >  	return cap_inode_removexattr(idmap, dentry, name);
-> >  }
-> >  
-> > +static inline void security_inode_post_removexattr(struct dentry *dentry,
-> > +						   const char *name)
-> > +{ }
-> > +
-> >  static inline int security_inode_need_killpriv(struct dentry *dentry)
-> >  {
-> >  	return cap_inode_need_killpriv(dentry);
-> > diff --git a/security/security.c b/security/security.c
-> > index ce3bc7642e18..8aa6e9f316dd 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -2452,6 +2452,20 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
-> >  	return evm_inode_removexattr(idmap, dentry, name);
-> >  }
-> >  
-> > +/**
-> > + * security_inode_post_removexattr() - Update the inode after a removexattr op
-> > + * @dentry: file
-> > + * @name: xattr name
-> > + *
-> > + * Update the inode after a successful removexattr operation.
-> > + */
-> > +void security_inode_post_removexattr(struct dentry *dentry, const char *name)
-> > +{
-> > +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> > +		return;
-> > +	call_void_hook(inode_post_removexattr, dentry, name);
-> > +}
-> > +
-> >  /**
-> >   * security_inode_need_killpriv() - Check if security_inode_killpriv() required
-> >   * @dentry: associated dentry
-
+>
+> Christian.
+>
+> >
+> > Alex
+> >
+> >> Regards,
+> >> Christian.
+> >>
+> >>> File the gitlab issue and we should poke amd a but more to take a loo=
+k.
+> >>>
+> >>> Dave.
+>
