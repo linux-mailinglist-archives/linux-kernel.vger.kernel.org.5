@@ -2,99 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57AE57F1FAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494607F1FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjKTVru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S232598AbjKTVsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232902AbjKTVrO (ORCPT
+        with ESMTP id S232902AbjKTVsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:47:14 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E8DD79;
-        Mon, 20 Nov 2023 13:46:47 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-409299277bbso17817435e9.2;
-        Mon, 20 Nov 2023 13:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700516806; x=1701121606; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=NJObFDy1D0dyDfAj4tNiz+auUALyeVTm1J2hMFjdWftGR3JnXkdNsjrFmHe7b2MC1U
-         B/n7eXLsiERVc4c4lDIQjBU089Qk9TLR0fDN1lMDNnCs78zPEVPcmcomvabflElmHTmF
-         w1DHAqm5VH0iPL9z8I9JFOAozeiuvLvKDLgL4JBBAqMx/vpNwWGdii8dVkBSpniuTKH0
-         VRiRH0Ahn59+CeCVSHKX+nCND9OnUiwL1TL7WqHYUBvjfNp5HXdB7pr1z7KPLctT+ric
-         5bh7H3cFFtmp2cbcikehP8101TEBWkJks1X5ZAc5mM932Gvtc5b8Pje/23dhTaBwmOaH
-         7tzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700516806; x=1701121606;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xoOuxVfYX3lHdi36PKjYbl3tsLm17OpynR1y+9rBRUM=;
-        b=YN8kyODE89DTSodKIXW/zbtOvg0sXhx0MCUxLb6yoX9kfRZDWrJObehWh/AaJpdGFc
-         lxKw1Y9xRA3Ot7w3itFY+9pCYoJbOIYIGAVfjqumIApbJdWPeoZb12SkjtmzH2QfKmu/
-         vQ6PUFmsS5fhaT/gD3edBZ10xPnZLHtSs+G2E4H2hUFlpYnomv1LRMO1JfLivRnjiWEF
-         LA54oACvQ0r8P4Gf57jKaTJZH+7VlYfDbCWEXhUR7itxAxmQQmYWv0NEYrDjMNbTh/l5
-         KS/QtMe2hDcF39gi6NaEaEU1zFLohN8LokhhLV09QYBmjf30tGZsBiBcPmWJqcutQSaF
-         8b/Q==
-X-Gm-Message-State: AOJu0YyUgzmhrBZKkkU65lEF7rpN806mm+UqkRTNVhzKuwMdlVd+Lnmd
-        DjusGrC9twnPxm7QkV+2MIScY9kpkzg=
-X-Google-Smtp-Source: AGHT+IEqJE/oVNOUE1Qqm8diYpUVGakA8xpgibcOqaJoKcZswdc3zI/IPqN/vZiu77V30PdsZ7piBQ==
-X-Received: by 2002:a05:6000:1845:b0:32d:a4e5:d3d1 with SMTP id c5-20020a056000184500b0032da4e5d3d1mr7428728wri.4.1700516805958;
-        Mon, 20 Nov 2023 13:46:45 -0800 (PST)
-Received: from zotac.lan. (dynamic-2a02-3100-9030-5a00-2223-08ff-fe18-0310.310.pool.telefonica.de. [2a02:3100:9030:5a00:2223:8ff:fe18:310])
-        by smtp.gmail.com with ESMTPSA id i13-20020a5d584d000000b00332cb0937f4sm2667052wrf.33.2023.11.20.13.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 13:46:45 -0800 (PST)
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 20/20] include/linux/i2c.h: remove I2C_CLASS_DDC support
-Date:   Mon, 20 Nov 2023 22:46:23 +0100
-Message-ID: <20231120214624.9378-21-hkallweit1@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231120214624.9378-1-hkallweit1@gmail.com>
-References: <20231120214624.9378-1-hkallweit1@gmail.com>
+        Mon, 20 Nov 2023 16:48:23 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D932626A9;
+        Mon, 20 Nov 2023 13:47:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VbEEEvOKQiy4zEH0Fh29KF4UlqN9PFMjTOjddwVcuH0=; b=IpU6vftxa1fXYJ78C8NKRyS+9l
+        f7v4iA/kVSFpjbSWiu9akz5U9lxJc07AnqL9j2Objf4DHd6mnsNCRRxH737bJyhjFpFD1fKjFw0/E
+        S9J40QiM4h0O8mWcRRQGHVEywvU6hWuYP1C8vNed/oLM1FqvKVEgZdTRLCM8IiHzBSbqTRIcRg60z
+        tEW5D+sriSXR1wWbCcBt5UKy6tkB/ZrwxNpeZZMQwtquD+PdOhEiF5nvUf4VzCvQqvHqxin936pNf
+        8I1hnpVhmz4WbWMabaHjJfRcPHGqbQYR34Em/11cCC7yDHfXYCIArGDEVvZBcTmhti8NljgnrREK5
+        8mOBNh+Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5C6c-00B8ac-0k;
+        Mon, 20 Nov 2023 21:46:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1F2C33004E3; Mon, 20 Nov 2023 22:46:57 +0100 (CET)
+Date:   Mon, 20 Nov 2023 22:46:57 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 5/5] tracing: convert sys_enter/exit to faultable
+ tracepoints
+Message-ID: <20231120214657.GB8262@noisy.programming.kicks-ass.net>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-6-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120205418.334172-6-mathieu.desnoyers@efficios.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
-olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
-Class-based device auto-detection is a legacy mechanism and shouldn't
-be used in new code. So we can remove this class completely now.
+On Mon, Nov 20, 2023 at 03:54:18PM -0500, Mathieu Desnoyers wrote:
 
-Preferably this series should be applied via the i2c tree.
+> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+> index de753403cdaf..718a0723a0bc 100644
+> --- a/kernel/trace/trace_syscalls.c
+> +++ b/kernel/trace/trace_syscalls.c
+> @@ -299,27 +299,33 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>  	int syscall_nr;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+	guard(preempt_notrace)();
 
----
- include/linux/i2c.h |    1 -
- 1 file changed, 1 deletion(-)
+and ditch all the goto crap.
 
-diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-index 0dae9db27..d029aade3 100644
---- a/include/linux/i2c.h
-+++ b/include/linux/i2c.h
-@@ -850,7 +850,6 @@ static inline void i2c_mark_adapter_resumed(struct i2c_adapter *adap)
- 
- /* i2c adapter classes (bitmask) */
- #define I2C_CLASS_HWMON		(1<<0)	/* lm_sensors, ... */
--#define I2C_CLASS_DDC		(1<<3)	/* DDC bus on graphics adapters */
- #define I2C_CLASS_SPD		(1<<7)	/* Memory modules */
- /* Warn users that the adapter doesn't support classes anymore */
- #define I2C_CLASS_DEPRECATED	(1<<8)
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  
+>  	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE) */
+>  	trace_file = rcu_dereference_sched(tr->enter_syscall_files[syscall_nr]);
+>  	if (!trace_file)
+> -		return;
+> +		goto end;
+>  
+>  	if (trace_trigger_soft_disabled(trace_file))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	size = sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
+>  
+>  	entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
+>  	if (!entry)
+> -		return;
+> +		goto end;
+>  
+>  	entry = ring_buffer_event_data(fbuffer.event);
+>  	entry->nr = syscall_nr;
+> @@ -327,6 +333,8 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>  	memcpy(entry->args, args, sizeof(unsigned long) * sys_data->nb_args);
+>  
+>  	trace_event_buffer_commit(&fbuffer);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+> @@ -338,31 +346,39 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+>  	struct trace_event_buffer fbuffer;
+>  	int syscall_nr;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
 
+Idem.
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  
+>  	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE()) */
+>  	trace_file = rcu_dereference_sched(tr->exit_syscall_files[syscall_nr]);
+>  	if (!trace_file)
+> -		return;
+> +		goto end;
+>  
+>  	if (trace_trigger_soft_disabled(trace_file))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	entry = trace_event_buffer_reserve(&fbuffer, trace_file, sizeof(*entry));
+>  	if (!entry)
+> -		return;
+> +		goto end;
+>  
+>  	entry = ring_buffer_event_data(fbuffer.event);
+>  	entry->nr = syscall_nr;
+>  	entry->ret = syscall_get_return_value(current, regs);
+>  
+>  	trace_event_buffer_commit(&fbuffer);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int reg_event_syscall_enter(struct trace_event_file *file,
+> @@ -377,7 +393,9 @@ static int reg_event_syscall_enter(struct trace_event_file *file,
+>  		return -ENOSYS;
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!tr->sys_refcount_enter)
+> -		ret = register_trace_sys_enter(ftrace_syscall_enter, tr);
+> +		ret = register_trace_prio_flags_sys_enter(ftrace_syscall_enter, tr,
+> +							  TRACEPOINT_DEFAULT_PRIO,
+> +							  TRACEPOINT_MAY_FAULT);
+>  	if (!ret) {
+>  		rcu_assign_pointer(tr->enter_syscall_files[num], file);
+>  		tr->sys_refcount_enter++;
+> @@ -415,7 +433,9 @@ static int reg_event_syscall_exit(struct trace_event_file *file,
+>  		return -ENOSYS;
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!tr->sys_refcount_exit)
+> -		ret = register_trace_sys_exit(ftrace_syscall_exit, tr);
+> +		ret = register_trace_prio_flags_sys_exit(ftrace_syscall_exit, tr,
+> +							 TRACEPOINT_DEFAULT_PRIO,
+> +							 TRACEPOINT_MAY_FAULT);
+>  	if (!ret) {
+>  		rcu_assign_pointer(tr->exit_syscall_files[num], file);
+>  		tr->sys_refcount_exit++;
+
+/me hands you a bucket of {}, free of charge.
+
+> @@ -582,20 +602,26 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  	int rctx;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+Again, guard(preempt_notrace)();
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  	if (!test_bit(syscall_nr, enabled_perf_enter_syscalls))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	head = this_cpu_ptr(sys_data->enter_event->perf_events);
+>  	valid_prog_array = bpf_prog_array_valid(sys_data->enter_event);
+>  	if (!valid_prog_array && hlist_empty(head))
+> -		return;
+> +		goto end;
+>  
+>  	/* get the size after alignment with the u32 buffer size field */
+>  	size = sizeof(unsigned long) * sys_data->nb_args + sizeof(*rec);
+> @@ -604,7 +630,7 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  
+>  	rec = perf_trace_buf_alloc(size, NULL, &rctx);
+>  	if (!rec)
+> -		return;
+> +		goto end;
+>  
+>  	rec->nr = syscall_nr;
+>  	syscall_get_arguments(current, regs, args);
+> @@ -614,12 +640,14 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  	     !perf_call_bpf_enter(sys_data->enter_event, regs, sys_data, rec)) ||
+>  	    hlist_empty(head)) {
+>  		perf_swevent_put_recursion_context(rctx);
+> -		return;
+> +		goto end;
+>  	}
+>  
+>  	perf_trace_buf_submit(rec, size, rctx,
+>  			      sys_data->enter_event->event.type, 1, regs,
+>  			      head, NULL);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int perf_sysenter_enable(struct trace_event_call *call)
+> @@ -631,7 +659,9 @@ static int perf_sysenter_enable(struct trace_event_call *call)
+>  
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!sys_perf_refcount_enter)
+> -		ret = register_trace_sys_enter(perf_syscall_enter, NULL);
+> +		ret = register_trace_prio_flags_sys_enter(perf_syscall_enter, NULL,
+> +							  TRACEPOINT_DEFAULT_PRIO,
+> +							  TRACEPOINT_MAY_FAULT);
+
+More {}
+
+>  	if (ret) {
+>  		pr_info("event trace: Could not activate syscall entry trace point");
+>  	} else {
+> @@ -682,20 +712,26 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  	int rctx;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+Guess?
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  	if (!test_bit(syscall_nr, enabled_perf_exit_syscalls))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	head = this_cpu_ptr(sys_data->exit_event->perf_events);
+>  	valid_prog_array = bpf_prog_array_valid(sys_data->exit_event);
+>  	if (!valid_prog_array && hlist_empty(head))
+> -		return;
+> +		goto end;
+>  
+>  	/* We can probably do that at build time */
+>  	size = ALIGN(sizeof(*rec) + sizeof(u32), sizeof(u64));
+> @@ -703,7 +739,7 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  
+>  	rec = perf_trace_buf_alloc(size, NULL, &rctx);
+>  	if (!rec)
+> -		return;
+> +		goto end;
+>  
+>  	rec->nr = syscall_nr;
+>  	rec->ret = syscall_get_return_value(current, regs);
+> @@ -712,11 +748,13 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  	     !perf_call_bpf_exit(sys_data->exit_event, regs, rec)) ||
+>  	    hlist_empty(head)) {
+>  		perf_swevent_put_recursion_context(rctx);
+> -		return;
+> +		goto end;
+>  	}
+>  
+>  	perf_trace_buf_submit(rec, size, rctx, sys_data->exit_event->event.type,
+>  			      1, regs, head, NULL);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int perf_sysexit_enable(struct trace_event_call *call)
+> @@ -728,7 +766,9 @@ static int perf_sysexit_enable(struct trace_event_call *call)
+>  
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!sys_perf_refcount_exit)
+> -		ret = register_trace_sys_exit(perf_syscall_exit, NULL);
+> +		ret = register_trace_prio_flags_sys_exit(perf_syscall_exit, NULL,
+> +							 TRACEPOINT_DEFAULT_PRIO,
+> +							 TRACEPOINT_MAY_FAULT);
+
+And yet more {}
+
+>  	if (ret) {
+>  		pr_info("event trace: Could not activate syscall exit trace point");
+>  	} else {
+> -- 
+> 2.25.1
+> 
