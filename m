@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F09CC7F1522
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD787F1524
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjKTODA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:03:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
+        id S233762AbjKTODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:03:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233696AbjKTOCj (ORCPT
+        with ESMTP id S233616AbjKTOCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:02:39 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D55310F0;
-        Mon, 20 Nov 2023 06:02:30 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-677fb277b7cso12068236d6.3;
-        Mon, 20 Nov 2023 06:02:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700488949; x=1701093749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SW5H6+GFrLZpuAg2kGT9GqVc35788MqwtA8XYVGcezU=;
-        b=MS4SPydTxdqqJAZZHQ6IWh9sd4oaL6USu5Y318QtCqVfniYI2uM8eIfi0AZxavwMk2
-         l5SvoJd4cp/94S+TPIOyHX0fxLa1ewRDouGFZvgs3XhYiHXwyV9pZJx+DGgMCfCmPnCe
-         VNvhRJZcAjwTyOwnuYituQdQnwBlUrdHLVMDkENEVwXrcKBTi5OQVxQwYojRU5DR5SjR
-         f9Sf91z56pgDadONXm+Zc9k/er7ge7V14WNRVrr2R8dcbEqwafk6y9WV0ZKsJWRnznbg
-         QLV1XRqHSUIM0WsVnrWvUjR3zSiCPEiJ90WUFngZrHLs3NikDvsRgJGauO4KfimEEQLa
-         QZDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700488949; x=1701093749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SW5H6+GFrLZpuAg2kGT9GqVc35788MqwtA8XYVGcezU=;
-        b=fyiPIbcTj07xpiG32D96VTvF0cTlNlWbv+4Q/i01SmsUoH6BiwAT79KbZ7kiXJn5FF
-         Qr9Ss6Ia6G2EuAGwDJHftWDhSAnbN3lZ5zKxTRPVGKUlwzOa9dSKbYoAJMMGG5NL66Wi
-         qqr8EkC9icTEJA6MWe5W4Zqp4hkRzQYGezetbbIhXDuEr9tP4YSlUXv2M0Z73v3rrBbK
-         uMgR3kogSJ8agpN+k4bqWRl2DEer/sVgIwdOw47+gKAhfSgSgx73P7cL97fBztQyFwJT
-         DILjPm0BeVtWf4XihunrT6lCrsv8E8xDJPIoCWKrGJqHEpSSu84mD54iInWNXrZOUjSZ
-         qBsw==
-X-Gm-Message-State: AOJu0YwxVjZbHFNCr/rxOO6dKf2qP80uD99IZnp88U9UGf2HhI0G90YF
-        yqkB1W5yeFFf+0j+eoqg1SYUS8ujs5Rkg0HJ2Yc=
-X-Google-Smtp-Source: AGHT+IGeSrnoTC16ZLCmpmUVs/JOx3P+70UOzoWmnEnwoTuS02z1pZ2tcccL8OodBdGDyRMLzrT1lmoHfF8FywLQpaA=
-X-Received: by 2002:ad4:5de6:0:b0:673:7256:7c70 with SMTP id
- jn6-20020ad45de6000000b0067372567c70mr10262221qvb.38.1700488948995; Mon, 20
- Nov 2023 06:02:28 -0800 (PST)
+        Mon, 20 Nov 2023 09:02:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61BFD70
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:02:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF78C433C8;
+        Mon, 20 Nov 2023 14:02:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700488957;
+        bh=FCrmZ65nO1A52VtVMBc8whDn/taxA3mU5UI2kUhmaBc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=guWpBVNRYMm597lpO9bdcyXMBxX2ZOKL54b3ONVQMl2r6M1sVbA3ntY+anjCWwu+G
+         l9G1hCcXaWFzztr61p92+zv1vtW3ruDSqjMYcGv2u3w7wmmDDtFn38NlTKfoUviD/8
+         /EsINeGMXuz+GISsqakEWIMjJA051VhFGikrOQaTmvnzM1/FNXRpogPJCou3TXv2cn
+         PJyuERk9vkLmc2oI5SZyQV9eK92i6VL59ut61dCI+hBldU8vUn/7YN0bxXfuc1VrVS
+         3mYECa+fU8JK78i7NaRCPQIuB0l1Y9QX2hLt8I0034PV7U6HVC6Nc99Y2UVegx0Ynp
+         PVwdYgEpO0/XA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Bill O'Donnell <billodo@redhat.com>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v2] autofs: add: new_inode check in autofs_fill_super()
+Date:   Mon, 20 Nov 2023 15:01:55 +0100
+Message-ID: <20231120-dergleichen-parkverbot-dbfcafdc0c26@brauner>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231119225319.331156-1-raven@themaw.net>
+References: <20231119225319.331156-1-raven@themaw.net>
 MIME-Version: 1.0
-References: <20231116223045.274211-1-afd@ti.com>
-In-Reply-To: <20231116223045.274211-1-afd@ti.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 20 Nov 2023 16:01:52 +0200
-Message-ID: <CAHp75Vcdr9yvCXBBU1R-PQ1K8B8U6YRtXQgz_hZfENtMgr6OfA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: as3722: Use devm_gpiochip_add_data() to simplify
- remove path
-To:     Andrew Davis <afd@ti.com>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1188; i=brauner@kernel.org; h=from:subject:message-id; bh=Tnvki9Nfk5bjCuJJqhEtlw/13JFN9XNgay+otjhGek0=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRGp13W+LxKUurNC1s+x59cvw/7tMrVTeWWbEvUde+7n 1TyNEm1o5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCIPnzAynO3sWrh7xged89FF jsZvkuYI6l/6JfOsfN2E10LHDs9/8p3hf+TLLN2HwQsYFGON0r7e38rmVPS8Nrli41ympPWdLQs FeQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,15 +57,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 12:30=E2=80=AFAM Andrew Davis <afd@ti.com> wrote:
->
-> Use devm version of gpiochip add function to handle removal for us.
+On Mon, 20 Nov 2023 06:53:19 +0800, Ian Kent wrote:
+> Add missing NULL check of root_inode in autofs_fill_super().
+> 
+> While we are at it simplify the logic by taking advantage of the VFS
+> cleanup procedures and get rid of the goto error handling, as suggested
+> by Al Viro.
+> 
+> 
+> [...]
 
-LGTM,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+I've removed an unused variable. I also changed it so that it errors out
+right after autofs_get_inode() returns NULL.
 
-Consider adding a new patch to convert to use return dev_err_probe(...);
+---
 
---=20
-With Best Regards,
-Andy Shevchenko
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[1/1] autofs: add: new_inode check in autofs_fill_super()
+      https://git.kernel.org/vfs/vfs/c/368e8258536e
