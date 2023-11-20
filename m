@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC497F0FA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0223C7F0F84
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbjKTKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:02:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S232624AbjKTJzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:55:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTKCD (ORCPT
+        with ESMTP id S232540AbjKTJzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:02:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271358F;
-        Mon, 20 Nov 2023 02:01:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700474519; x=1732010519;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=zKggXAZlS8YgibFlT38P+9qlRp4mLDSsXnLg/K6JlEY=;
-  b=X/EgsJmFh1RSoh3FMXp0VuOK59pGQ1nxvRdfr/Tc11kIYcyMwcD56tVa
-   qyrD2aAla4vhpSu6+lQ4b646++TewdK/sCcN33P9Ek2dx5ovVqRvBtaEr
-   auRm1FcLFyu6ST0EcILD91F25YgGTo7hdIHrFxfju4Ok6XHRI2pi+ReyI
-   BWlZLrtc8nmGZtFqEqWtBrXMqjZXNNndqa+cSJEM3Uau59MtOLDYbOq2j
-   EAzzSYWIr1MKlhmqspIS1WkIVlpfONGXzStX3ziCfTtBECo9HQUBs/wS6
-   PDLEI3isuGCFJ4gZx7I5PtYtQiwDwFdGWJdlsShg8grc8Lhz+N6tG5864
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="455914400"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="455914400"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:55:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="769841610"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="769841610"
-Received: from akeren-mobl.ger.corp.intel.com ([10.252.40.26])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:55:23 -0800
-Date:   Mon, 20 Nov 2023 11:55:21 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Th=E9o_Lebrun?= <theo.lebrun@bootlin.com>
-cc:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?ISO-8859-15?Q?Gr=E9gory_Clement?= <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v3 6/6] tty: serial: amba-pl011: factor QDF2400 SoC
- erratum 44 out of probe
-In-Reply-To: <20231120-mbly-uart-v3-6-07ae35979f1f@bootlin.com>
-Message-ID: <5c10e247-3fe-7455-a13-fde4c3cb0b4@linux.intel.com>
-References: <20231120-mbly-uart-v3-0-07ae35979f1f@bootlin.com> <20231120-mbly-uart-v3-6-07ae35979f1f@bootlin.com>
+        Mon, 20 Nov 2023 04:55:36 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6730E94;
+        Mon, 20 Nov 2023 01:55:32 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AK8GTrw015438;
+        Mon, 20 Nov 2023 03:55:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=
+        PODMain02222019; bh=SNC1Z9jI3APw89gGPSbS88cfIAYgH29p/XTHlJAW08M=; b=
+        S6crIaUFkAQ5ivCRcq+808uBr7xvPjPMWVLaJjf2DTb09WLfSUIErN6lMr2i72ia
+        SkB8yUQHkY46izjbWxQbFuwc15Utj8b4kj/CQ+fnAY3deX9kLXUbpSsd8Pm4FREW
+        K1jRTi1rnJDm1TLjPw2ZkSGY8oG92E71OoR8ImBm/myzvREGGXZp1XxnwXyB0s5+
+        2TT/zTaelat6vbNeKe5Rr2EoPnTDvtRdF6MNnZFix5HR8FFry/oAQaLVVYfil1MQ
+        mxy4ZnCCSRkgITmHByk5F7BC++hpaRVuzos3EEk5TlFVJgb0Lu3L/0zIbFVkO5s/
+        yVt9nfE8yjU0nm2gv3kbgQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uetjp9njg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 03:55:24 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 20 Nov
+ 2023 09:55:22 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Mon, 20 Nov 2023 09:55:22 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D423515B9;
+        Mon, 20 Nov 2023 09:55:22 +0000 (UTC)
+Date:   Mon, 20 Nov 2023 09:55:22 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Maciej Strozek <mstrozek@opensource.cirrus.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6/7] ASoC: cs43130: Allow driver to work without IRQ
+ thread
+Message-ID: <20231120095522.GH32655@ediswmail.ad.cirrus.com>
+References: <20231117141344.64320-1-mstrozek@opensource.cirrus.com>
+ <20231117141344.64320-7-mstrozek@opensource.cirrus.com>
+ <ZVeWfefrEQJIx0YL@finisterre.sirena.org.uk>
+ <153531080cd3d36fea86263d393ef885533f6e44.camel@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-557729899-1700474126=:2032"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <153531080cd3d36fea86263d393ef885533f6e44.camel@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: _zgPHYykADs4dUIfYkQQmip0MpvmDQSi
+X-Proofpoint-ORIG-GUID: _zgPHYykADs4dUIfYkQQmip0MpvmDQSi
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-557729899-1700474126=:2032
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 20 Nov 2023, Théo Lebrun wrote:
-
-> On this platform, different vendor data is used. That requires a
-> compile-time check as we access (1) a global boolean & (2) our local
-> vendor data. Both symbols are accessible only when
-> CONFIG_ACPI_SPCR_TABLE is enabled.
+On Mon, Nov 20, 2023 at 09:43:25AM +0000, Maciej Strozek wrote:
+> W dniu pią, 17.11.2023 o godzinie 16∶36 +0000, użytkownik Mark Brown
+> napisał:
+> > On Fri, Nov 17, 2023 at 02:13:43PM +0000, Maciej Strozek wrote:
+> > > Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+> > > ---
+> > >  sound/soc/codecs/cs43130.c | 56 +++++++++++++++++++++++++++++++---
+> > > ----
+> > >  sound/soc/codecs/cs43130.h |  1 +
+> > >  2 files changed, 47 insertions(+), 10 deletions(-)
+> > 
+> > Why?  This isn't some obvious fix, you need to write a changelog
+> > motivating open coding interrupt handling if there's some reason for
+> > doing that.
 > 
-> Factor the vendor data overriding to a separate function that is empty
-> when CONFIG_ACPI_SPCR_TABLE is not defined.
+> This is to support systems without physical IRQ connection. The device
+> only requires the IRQ for a couple of internal delays, this polling
+> mechanism is a fallback when no IRQ is specified.
 > 
-> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  drivers/tty/serial/amba-pl011.c | 25 ++++++++++++++++++-------
->  1 file changed, 18 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-> index 4185d6fd243b..e08a32eb0ed1 100644
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -2874,6 +2874,22 @@ static int pl011_resume(struct device *dev)
->  
->  static SIMPLE_DEV_PM_OPS(pl011_dev_pm_ops, pl011_suspend, pl011_resume);
->  
-> +#ifdef CONFIG_ACPI_SPCR_TABLE
-> +static void qpdf2400_erratum44_workaround(struct device *dev,
-> +					  struct uart_amba_port *uap)
-> +{
-> +	if (qdf2400_e44_present)
 
-This should be !qdf2400_e44_present.
+Yeah pop that in the change log and resend the patch as a v2.
 
--- 
- i.
-
-
-> +		return;
-> +
-> +	dev_info(dev, "working around QDF2400 SoC erratum 44\n");
-> +	uap->vendor = &vendor_qdt_qdf2400_e44;
-> +}
-> +#else
-> +static void qpdf2400_erratum44_workaround(struct device *dev,
-> +					  struct uart_amba_port *uap)
-> +{ /* empty */ }
-> +#endif
-> +
->  static int sbsa_uart_probe(struct platform_device *pdev)
->  {
->  	struct uart_amba_port *uap;
-> @@ -2909,13 +2925,8 @@ static int sbsa_uart_probe(struct platform_device *pdev)
->  		return ret;
->  	uap->port.irq	= ret;
->  
-> -#ifdef CONFIG_ACPI_SPCR_TABLE
-> -	if (qdf2400_e44_present) {
-> -		dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
-> -		uap->vendor = &vendor_qdt_qdf2400_e44;
-> -	} else
-> -#endif
-> -		uap->vendor = &vendor_sbsa;
-> +	uap->vendor = &vendor_sbsa;
-> +	qpdf2400_erratum44_workaround(&pdev->dev, uap);
->  
->  	uap->reg_offset	= uap->vendor->reg_offset;
->  	uap->fifosize	= 32;
-> 
-> 
---8323329-557729899-1700474126=:2032--
+Thanks,
+Charles
