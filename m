@@ -2,254 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBF57F10DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E617F10E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbjKTKyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:54:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        id S232786AbjKTKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbjKTKyS (ORCPT
+        with ESMTP id S232632AbjKTKy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:54:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009B69D;
-        Mon, 20 Nov 2023 02:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700477655; x=1732013655;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3iDX7dVKder9KQMVZYc3X0MGJbgyOtOSKFpY5c1P79w=;
-  b=GHGuLlS1Dl18+vSO7adnYW0qXOScr5d5xqcCr+vT0ndKaH7wOy++dbJm
-   5V/xN0B5BxDhvhHAv3xahnpK0BQBnX0atWMA6kVSE1J05SDCkO5563MVi
-   UK1Y9mK2tierNKHyAqT59dKw72UOJPIak6KwdLtXopCe6BWStrZixNaHz
-   GKkEQrlc+jimD7BQFZ+fto4MhXzTPdx39mL/VQ3iaMrF8wbwr9686MFNc
-   Q6I5aSWO9tjDw8ptdsIVMKnuht2rZrjG+fTslek8yA/ujS2S5x4DKRyQ7
-   Lg7VB+z5GBE3b9EP16CPwI9qDKkFP2O4RIv4tHN5clu/7M+DkTtj0RQuG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="371773076"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="371773076"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 02:54:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="742691083"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="742691083"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.180]) ([10.93.8.180])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 02:54:10 -0800
-Message-ID: <8e0934a0-c478-413a-8a58-36f7d20c23e9@linux.intel.com>
-Date:   Mon, 20 Nov 2023 18:54:07 +0800
+        Mon, 20 Nov 2023 05:54:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57E2FB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:54:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700477660;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2zUAf0kRwyhFacdVDNduqaFmW+J2nhNnMJ6K916lSRE=;
+        b=JF4Fp2nnhphCjILUdJ6p0Q5YtN11BxnU1nzbUUcvyCLhCgyk1IQqPz9YDQ2fpgVcS57Q1Q
+        xkhmG7U+YiPmcLhUxSjfT3+XCQahkaY8mVPYyeR2g9tjJUMbuifUg4V4d60LKGTgv6jy29
+        OnfVC9PyYiUTBON91VQL4c2ORJ0rpD8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-RsP80sxNPQyihahIi-OLDw-1; Mon, 20 Nov 2023 05:54:19 -0500
+X-MC-Unique: RsP80sxNPQyihahIi-OLDw-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9fa63374410so136617466b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:54:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700477658; x=1701082458;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2zUAf0kRwyhFacdVDNduqaFmW+J2nhNnMJ6K916lSRE=;
+        b=KJDQM1PnLuyPFyzfkwosHhlUXN3qSEAodjvk+YSgYCT0w7dmpi7hoMnMAE/FzbUPeZ
+         RRpkxgZKnHW5dpnLqoHeYdIKX4cwOq/wVjO7cEJKwjuMUgPImgpnGTuiZMFDGR4Yy8Uf
+         t0KhdNsB/NBcioH1GBxU5Z6rJpyhS4yp/2pO2oNmTxsIhs28gUjmNqbX3YRplAlg3pYb
+         zApTjMC8yZMia9BJTXQHAC3DVBPk/8466fByhAlOHYDFmINh9apSZ3vFkKh8wCvOYHuV
+         LU2Whgy0hXUOhZkb670O/eYKdq933zZslP0WGk7SBAG34JN5itHMcrXR4xvZ25rkCO7E
+         pYJg==
+X-Gm-Message-State: AOJu0YwxEG1Z2kj0C+iczVr/G5qOYj6ovFFSekGs/F+UYlXq0i6p3wB5
+        cmtvCa8x+jgQeYxfJg+SpStz7LPWxM+8Yfo+VGc7/rw5CtmSrwtVek9q9VRrFBs6YDqwK3/dSFF
+        sSan7nWR2sZvhhV3fnc/xRsXG
+X-Received: by 2002:a17:906:32c7:b0:9e7:3af8:1fd0 with SMTP id k7-20020a17090632c700b009e73af81fd0mr5202197ejk.76.1700477658017;
+        Mon, 20 Nov 2023 02:54:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEgoytvF8lwwp8rKx8884Oj65m/vmtmib1MiNPAMSTReWskVDTF1HFC8OJm9t7uAUXBc0cvnQ==
+X-Received: by 2002:a17:906:32c7:b0:9e7:3af8:1fd0 with SMTP id k7-20020a17090632c700b009e73af81fd0mr5202175ejk.76.1700477657734;
+        Mon, 20 Nov 2023 02:54:17 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id jx27-20020a170906ca5b00b009fda627abd9sm1262032ejb.79.2023.11.20.02.54.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:54:16 -0800 (PST)
+Message-ID: <76d4f18e-a349-4337-a301-ffebb8f1c5e8@redhat.com>
+Date:   Mon, 20 Nov 2023 11:54:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 07/16] KVM: MMU: Introduce level info in PFERR code
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <ea9057ece714a919664e0403a3e7f774e4b3fedf.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ea9057ece714a919664e0403a3e7f774e4b3fedf.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v12 0/9] Enable Wifi RFI interference mitigation feature
+ support
+Content-Language: en-US, nl
+To:     "Ma, Jun" <majun@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
+        amd-gfx@lists.freedesktop.org, lenb@kernel.org,
+        johannes@sipsolutions.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
+        mario.limonciello@amd.com
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20231017025358.1773598-1-Jun.Ma2@amd.com>
+ <5f85eb72-3f34-4006-85ca-2a2181113008@amd.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <5f85eb72-3f34-4006-85ca-2a2181113008@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 10/19/23 08:17, Ma, Jun wrote:
+> ping...
+> Any other comments?
+
+Patches 1/9 and 2/9 look reasonable, once the questions about
+use of the _DSM vs directly calling the WBRF ACPI method are
+resolved I can merge patches 1/9 and 2/9 and create an immutable
+feature branch based on 6.7-rc1 + these 2 patches.
+
+I'll then also send a pull-request to the wifi /resp amdgpu
+maintainers from this branch.
+
+I see no acks / reviews from the wifi folks yet,
+so once that immutable feature branch is ready the first
+thing to do is try to get the wifi folks to review + merge WBRF
+support.
+
+Note I plan to not actually merge the feature branch
+into for-next until the wifi folks are happy with the code.
+
+This way if changes are necessary I can do a v2 feature branch
+and the wifi folks can merge that instead.
+
+Regards,
+
+Hans
 
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> For TDX, EPT violation can happen when TDG.MEM.PAGE.ACCEPT.
-> And TDG.MEM.PAGE.ACCEPT contains the desired accept page level of TD guest.
->
-> 1. KVM can map it with 4KB page while TD guest wants to accept 2MB page.
->
->    TD geust will get TDX_PAGE_SIZE_MISMATCH and it should try to accept
-s/geust/guest
-
->    4KB size.
->
-> 2. KVM can map it with 2MB page while TD guest wants to accept 4KB page.
->
->    KVM needs to honor it because
->    a) there is no way to tell guest KVM maps it as 2MB size. And
->    b) guest accepts it in 4KB size since guest knows some other 4KB page
->       in the same 2MB range will be used as shared page.
->
-> For case 2, it need to pass desired page level to MMU's
-> page_fault_handler. Use bit 29:31 of kvm PF error code for this purpose.
-
-The level info is needed not only for case 2, KVM also needs the info so 
-that
-it can map a 2MB page when TD guest wants to accept a 2MB page.
 
 
->
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/include/asm/kvm_host.h |  3 +++
->   arch/x86/kvm/mmu/mmu.c          |  5 +++++
->   arch/x86/kvm/vmx/common.h       |  6 +++++-
->   arch/x86/kvm/vmx/tdx.c          | 15 ++++++++++++++-
->   arch/x86/kvm/vmx/tdx.h          | 19 +++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.c          |  2 +-
->   6 files changed, 47 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index edcafcd650db..eed36c1eedb7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -261,6 +261,8 @@ enum x86_intercept_stage;
->   #define PFERR_FETCH_BIT 4
->   #define PFERR_PK_BIT 5
->   #define PFERR_SGX_BIT 15
-> +#define PFERR_LEVEL_START_BIT 29
-> +#define PFERR_LEVEL_END_BIT 31
->   #define PFERR_GUEST_FINAL_BIT 32
->   #define PFERR_GUEST_PAGE_BIT 33
->   #define PFERR_GUEST_ENC_BIT 34
-> @@ -273,6 +275,7 @@ enum x86_intercept_stage;
->   #define PFERR_FETCH_MASK	BIT(PFERR_FETCH_BIT)
->   #define PFERR_PK_MASK		BIT(PFERR_PK_BIT)
->   #define PFERR_SGX_MASK		BIT(PFERR_SGX_BIT)
-> +#define PFERR_LEVEL_MASK	GENMASK_ULL(PFERR_LEVEL_END_BIT, PFERR_LEVEL_START_BIT)
->   #define PFERR_GUEST_FINAL_MASK	BIT_ULL(PFERR_GUEST_FINAL_BIT)
->   #define PFERR_GUEST_PAGE_MASK	BIT_ULL(PFERR_GUEST_PAGE_BIT)
->   #define PFERR_GUEST_ENC_MASK	BIT_ULL(PFERR_GUEST_ENC_BIT)
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index eb17a508c5d1..265177cedf37 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4615,6 +4615,11 @@ bool __kvm_mmu_honors_guest_mtrrs(bool vm_has_noncoherent_dma)
->   
->   int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
->   {
-> +	u8 err_level = (fault->error_code & PFERR_LEVEL_MASK) >> PFERR_LEVEL_START_BIT;
-> +
-> +	if (err_level)
-> +		fault->max_level = min(fault->max_level, err_level);
-> +
->   	/*
->   	 * If the guest's MTRRs may be used to compute the "real" memtype,
->   	 * restrict the mapping level to ensure KVM uses a consistent memtype
-> diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-> index 027aa4175d2c..bb00433932ee 100644
-> --- a/arch/x86/kvm/vmx/common.h
-> +++ b/arch/x86/kvm/vmx/common.h
-> @@ -67,7 +67,8 @@ static inline void vmx_handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
->   }
->   
->   static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
-> -					     unsigned long exit_qualification)
-> +					     unsigned long exit_qualification,
-> +					     int err_page_level)
->   {
->   	u64 error_code;
->   
-> @@ -90,6 +91,9 @@ static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
->   	if (kvm_is_private_gpa(vcpu->kvm, gpa))
->   		error_code |= PFERR_GUEST_ENC_MASK;
->   
-> +	if (err_page_level > 0)
-> +		error_code |= (err_page_level << PFERR_LEVEL_START_BIT) & PFERR_LEVEL_MASK;
-> +
->   	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
->   }
->   
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 31598b84811f..e4167f08b58b 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1803,7 +1803,20 @@ void tdx_deliver_interrupt(struct kvm_lapic *apic, int delivery_mode,
->   
->   static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
->   {
-> +	union tdx_ext_exit_qualification ext_exit_qual;
->   	unsigned long exit_qual;
-> +	int err_page_level = 0;
-> +
-> +	ext_exit_qual.full = tdexit_ext_exit_qual(vcpu);
-> +
-> +	if (ext_exit_qual.type >= NUM_EXT_EXIT_QUAL) {
-Can we add unlikely() hint here?
-
-> +		pr_err("EPT violation at gpa 0x%lx, with invalid ext exit qualification type 0x%x\n",
-> +			tdexit_gpa(vcpu), ext_exit_qual.type);
-> +		kvm_vm_bugged(vcpu->kvm);
-> +		return 0;
-> +	} else if (ext_exit_qual.type == EXT_EXIT_QUAL_ACCEPT) {
-> +		err_page_level = tdx_sept_level_to_pg_level(ext_exit_qual.req_sept_level);
-> +	}
->   
->   	if (kvm_is_private_gpa(vcpu->kvm, tdexit_gpa(vcpu))) {
->   		/*
-> @@ -1830,7 +1843,7 @@ static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
->   	}
->   
->   	trace_kvm_page_fault(vcpu, tdexit_gpa(vcpu), exit_qual);
-> -	return __vmx_handle_ept_violation(vcpu, tdexit_gpa(vcpu), exit_qual);
-> +	return __vmx_handle_ept_violation(vcpu, tdexit_gpa(vcpu), exit_qual, err_page_level);
->   }
->   
->   static int tdx_handle_ept_misconfig(struct kvm_vcpu *vcpu)
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> index 54c3f6b83571..37ee944c36a1 100644
-> --- a/arch/x86/kvm/vmx/tdx.h
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -72,6 +72,25 @@ union tdx_exit_reason {
->   	u64 full;
->   };
->   
-> +union tdx_ext_exit_qualification {
-> +	struct {
-> +		u64 type		: 4;
-> +		u64 reserved0		: 28;
-> +		u64 req_sept_level	: 3;
-> +		u64 err_sept_level	: 3;
-> +		u64 err_sept_state	: 8;
-> +		u64 err_sept_is_leaf	: 1;
-> +		u64 reserved1		: 17;
-> +	};
-> +	u64 full;
-> +};
-> +
-> +enum tdx_ext_exit_qualification_type {
-> +	EXT_EXIT_QUAL_NONE,
-> +	EXT_EXIT_QUAL_ACCEPT,
-> +	NUM_EXT_EXIT_QUAL,
-> +};
-> +
->   struct vcpu_tdx {
->   	struct kvm_vcpu	vcpu;
->   
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 28732925792e..ae9ba0731521 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5753,7 +5753,7 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
->   	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
->   		return kvm_emulate_instruction(vcpu, 0);
->   
-> -	return __vmx_handle_ept_violation(vcpu, gpa, exit_qualification);
-> +	return __vmx_handle_ept_violation(vcpu, gpa, exit_qualification, 0);
->   }
->   
->   static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+> On 10/17/2023 10:53 AM, Ma Jun wrote:
+>> Due to electrical and mechanical constraints in certain platform designs there
+>> may be likely interference of relatively high-powered harmonics of the (G-)DDR
+>> memory clocks with local radio module frequency bands used by Wifi 6/6e/7. To
+>> mitigate possible RFI interference we introuduced WBRF(Wifi Band RFI mitigation Feature).
+>> Producers can advertise the frequencies in use and consumers can use this information
+>> to avoid using these frequencies for sensitive features.
+>>
+>> The whole patch set is based on Linux 6.5.0. With some brief introductions
+>> as below:
+>> Patch1:      Document about WBRF
+>> Patch2:      Core functionality setup for WBRF feature support
+>> Patch3 - 4:  Bring WBRF support to wifi subsystem.
+>> Patch5 - 9:  Bring WBRF support to AMD graphics driver.
+>>
+>> Evan Quan (7):
+>>   cfg80211: expose nl80211_chan_width_to_mhz for wide sharing
+>>   wifi: mac80211: Add support for WBRF features
+>>   drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
+>>   drm/amd/pm: setup the framework to support Wifi RFI mitigation feature
+>>   drm/amd/pm: add flood detection for wbrf events
+>>   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.0
+>>   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
+>>
+>> Ma Jun (2):
+>>   Documentation/driver-api: Add document about WBRF mechanism
+>>   platform/x86/amd: Add support for AMD ACPI based Wifi band RFI
+>>     mitigation feature
+>>
+>>  Documentation/driver-api/wbrf.rst             |  71 +++
+>>  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
+>>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  17 +
+>>  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c     | 214 +++++++++
+>>  drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  33 ++
+>>  .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  14 +-
+>>  .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  14 +-
+>>  .../pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |   3 +-
+>>  .../pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |   3 +-
+>>  drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |   3 +-
+>>  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |   3 +
+>>  .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |   9 +
+>>  .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  60 +++
+>>  .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  |  59 +++
+>>  drivers/gpu/drm/amd/pm/swsmu/smu_internal.h   |   3 +
+>>  drivers/platform/x86/amd/Kconfig              |  15 +
+>>  drivers/platform/x86/amd/Makefile             |   1 +
+>>  drivers/platform/x86/amd/wbrf.c               | 422 ++++++++++++++++++
+>>  include/linux/acpi_amd_wbrf.h                 | 101 +++++
+>>  include/linux/ieee80211.h                     |   1 +
+>>  include/net/cfg80211.h                        |   8 +
+>>  net/mac80211/Makefile                         |   2 +
+>>  net/mac80211/chan.c                           |   9 +
+>>  net/mac80211/ieee80211_i.h                    |   9 +
+>>  net/mac80211/main.c                           |   2 +
+>>  net/mac80211/wbrf.c                           | 105 +++++
+>>  net/wireless/chan.c                           |   3 +-
+>>  27 files changed, 1180 insertions(+), 6 deletions(-)
+>>  create mode 100644 Documentation/driver-api/wbrf.rst
+>>  create mode 100644 drivers/platform/x86/amd/wbrf.c
+>>  create mode 100644 include/linux/acpi_amd_wbrf.h
+>>  create mode 100644 net/mac80211/wbrf.c
+>>
+> 
 
