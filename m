@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC427F1951
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825E17F1956
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:06:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbjKTRG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S232315AbjKTRGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231563AbjKTRGR (ORCPT
+        with ESMTP id S229646AbjKTRGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 12:06:17 -0500
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66829E8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202EDBE;
         Mon, 20 Nov 2023 09:06:13 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 62A2FE0010;
-        Mon, 20 Nov 2023 17:06:11 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 34272E000B;
+        Mon, 20 Nov 2023 17:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
         t=1700499972;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nDo2L/kHH9S9njIE6FRuQXRwkc6RX5NfCLZkNNd2W9E=;
-        b=QBqPbnsxX5rPc90WJBdLJNqmikqCqCW9lLULcko2NpiWhto/Vzx2pBz1B1AyHUAckANfOn
-        NOWwyh1lTnaIn3E0HmBzw5lgnGbvDErrP5rlqISW7AtaDHhy95aNawkIA+uDfh4dnVRIRH
-        YSLa5MXVUPQ41b7VwNYsC+fwgi30ZjmCC4Ue+pCLNQdzsVGwUDg1AToa0QzAE3uIsyu6TJ
-        sQ5Okl4vkxi7vl06ZP13kvGpe4rfCBTUFYCjYLOcgZYyh7QyF8+lwewZXi/c49xIfLfIJp
-        95vGcaCza1+nxKTvoiTUeZwjmxI19pSBXHfqH9c2Dyikj/koqNOy1PYXAQuQCA==
+        bh=psIdhG1r0J8G800d6Izk2n63b31U1ZZAZ9rXUyFBS5Q=;
+        b=YSyItrHfbf+k8A4+8SzdiVoIgRTSJ9p7kJOCB82WPphGJs2ktpIZ9muRi7YGvMKk/5vBFk
+        cd1VSLoR04Brb/ycw4nBEnHaLH0eEjz50Y1/HTU8EOn/2ft/JelSmEZ4wkrTXprO25PVm3
+        /2SAU2ms060NioPTmpfGRnBgGQl1IDmAo/16epU7YcXywLS1o8IVTMYJbJCakl0RFTt5nx
+        GTm4x0N4wd4SOKhp08d7PdVEg0sSHaNZbURoNnzs28vFVWneK/aCWjNllBNuDUTGLkOGoy
+        1t5NiUl5Cv+BhYm6iXIwQ4Uufu7w54KUxdxxRTV/CVgGMMYggEojlueU63zNvQ==
 From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date:   Mon, 20 Nov 2023 18:06:06 +0100
-Subject: [PATCH v2 6/7] usb: cdns3-ti: signal reset-on-resume to xHCI for
- J7200 platform
+Date:   Mon, 20 Nov 2023 18:06:07 +0100
+Subject: [PATCH v2 7/7] arm64: dts: ti: k3-j7200: use J7200-specific USB
+ compatible
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231120-j7200-usb-suspend-v2-6-038c7e4a3df4@bootlin.com>
+Message-Id: <20231120-j7200-usb-suspend-v2-7-038c7e4a3df4@bootlin.com>
 References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
 In-Reply-To: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -66,74 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass CDNS3_RESET_ON_RESUME as platform data to cdns3 host role. It will
-in turn pass it down to xHCI platform data as XHCI_RESET_ON_RESUME.
-
-Avoid this warning on resume:
-
-  [   16.017462] xhci-hcd xhci-hcd.1.auto: xHC error in resume, USBSTS 0x401, Reinit
-
-When used, remote wakeup is not expected to work.
-
-Only focus J7200 as other SoC are untested.
+On our platform, suspend-to-idle or suspend-to-RAM turn the controller
+off. This compatible triggers reset on resume behavior to reconfigure
+the hardware.
 
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/usb/cdns3/cdns3-ti.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-index 84f93c2fcd5c..7d56a1acbc54 100644
---- a/drivers/usb/cdns3/cdns3-ti.c
-+++ b/drivers/usb/cdns3/cdns3-ti.c
-@@ -16,6 +16,7 @@
- #include <linux/of_platform.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
-+#include "core.h"
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+index 709081cd1e7f..52c4ee0fa334 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+@@ -788,7 +788,7 @@ pcie1_ep: pcie-ep@2910000 {
+ 	};
  
- /* USB Wrapper register offsets */
- #define USBSS_PID		0x0
-@@ -128,6 +129,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct device_node *node = pdev->dev.of_node;
-+	const struct of_dev_auxdata *auxdata;
- 	struct cdns_ti *data;
- 	unsigned long rate;
- 	int error, i;
-@@ -177,7 +179,8 @@ static int cdns_ti_probe(struct platform_device *pdev)
- 
- 	cdns_ti_init_hw(data);
- 
--	error = of_platform_populate(node, NULL, NULL, dev);
-+	auxdata = of_device_get_match_data(dev);
-+	error = of_platform_populate(node, NULL, auxdata, dev);
- 	if (error) {
- 		dev_err(dev, "failed to create children: %d\n", error);
- 		return error;
-@@ -222,8 +225,20 @@ static const struct dev_pm_ops cdns_ti_pm_ops = {
- 
- #endif /* CONFIG_PM */
- 
-+static struct cdns3_platform_data cdns_ti_j7200_pdata = {
-+	.quirks = CDNS3_RESET_ON_RESUME,
-+};
-+
-+static const struct of_dev_auxdata cdns_ti_j7200_auxdata[] = {
-+	{
-+		.compatible = "cdns,usb3",
-+		.platform_data = &cdns_ti_j7200_pdata,
-+	},
-+	{},
-+};
-+
- static const struct of_device_id cdns_ti_of_match[] = {
--	{ .compatible = "ti,j7200-usb", },
-+	{ .compatible = "ti,j7200-usb", .data = cdns_ti_j7200_auxdata, },
- 	{ .compatible = "ti,j721e-usb", },
- 	{ .compatible = "ti,am64-usb", },
- 	{},
+ 	usbss0: cdns-usb@4104000 {
+-		compatible = "ti,j721e-usb";
++		compatible = "ti,j7200-usb", "ti,j721e-usb";
+ 		reg = <0x00 0x4104000 0x00 0x100>;
+ 		dma-coherent;
+ 		power-domains = <&k3_pds 288 TI_SCI_PD_EXCLUSIVE>;
 
 -- 
 2.42.0
