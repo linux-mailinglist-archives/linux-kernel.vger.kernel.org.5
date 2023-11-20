@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 197277F1F26
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FDF7F1F2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjKTVZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37082 "EHLO
+        id S230429AbjKTV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbjKTVZf (ORCPT
+        with ESMTP id S229637AbjKTV2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:25:35 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD57C99;
-        Mon, 20 Nov 2023 13:25:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=vTiej26Yh66vUupMXOZ8FNGPsbQnKj9z0H8vgIBxYBg=; b=LxeEzEeSpN0Fpj0ZYVs+2MyM++
-        NMvgFyArPgGSngt3mWVaHMhRnEUzvoPGekmJsYhOZyMaSqYEdUzNiE0qlvMSpLwsU3d72pBf2863c
-        n3u2XkWDfI9BiRlKHJK2mD+1hPOzTWQhpTqTJCKOsLPUMEzkYu8wdHMC+pHcXfo+Udl0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5BlW-000h20-H5; Mon, 20 Nov 2023 22:25:10 +0100
-Date:   Mon, 20 Nov 2023 22:25:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <45784368-93e0-4d57-bb0c-5730f53f5a08@lunn.ch>
-References: <20231120135041.15259-1-ansuelsmth@gmail.com>
- <20231120135041.15259-4-ansuelsmth@gmail.com>
- <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
- <655bc8d6.050a0220.d22f2.315f@mx.google.com>
+        Mon, 20 Nov 2023 16:28:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D343D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:28:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700515694; x=1732051694;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fgbT9umBX5qx6FDkSEMaq0vWexN6eBlM61WrBeIo+1o=;
+  b=jtWlE9ZsrS0G7ycJSFtO81Ki91rAGmaOKYW98phdpwZNL9qZCb4bSaT6
+   hqBI9OM+CAsi3ftEJK6YSg0WpI5LyUZTxSu1oPy8jIDjJ4Up7opiysdyT
+   wwg6d/nTTR0+/8pgfTpraB6h1r/7FMjNHW66NVvBL3T8hjvQ6jQ1WPkcJ
+   rORbTHFZGYoaXihV2KDr0nCZwInENgM466vjnhwJrEYF5E4WahO+Bb8b0
+   4RqIrwWGcXh8UyQWMOZtVm1wVDJS5+lhdD89NSigl8VK73SAW+zS5WVIc
+   IJN3DfwVfVSL4j7YzC/JyP8yJ81yajPGd10XvAp72AHdi6TIb/40wiTYo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="4823355"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="4823355"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:28:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="7688814"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 20 Nov 2023 13:28:11 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5BoN-0006wQ-3A;
+        Mon, 20 Nov 2023 21:28:07 +0000
+Date:   Tue, 21 Nov 2023 05:27:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Mayuresh Chitale <mchitale@ventanamicro.com>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
+Subject: Re: [PATCH 1/1] tty/serial: RISC-V SBI earlycon via DBCN extension
+Message-ID: <202311210512.n4evtQf6-lkp@intel.com>
+References: <20231115133127.107575-1-heinrich.schuchardt@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <655bc8d6.050a0220.d22f2.315f@mx.google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231115133127.107575-1-heinrich.schuchardt@canonical.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> A real DT that use this is (ipq807x):
-> 
-> &mdio {
-> 	status = "okay";
-> 	pinctrl-0 = <&mdio_pins>;
-> 	pinctrl-names = "default";
-> 	reset-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
-> 
-> 	ethernet-phy-package {
-> 		compatible = "ethernet-phy-package";
-> 		phy-mode = "psgmii";
-> 
-> 		global-phys = <&qca8075_4>, <&qca8075_psgmii>;
-> 		global-phy-names = "combo", "analog_psgmii";
-> 
-> 		qca8075_0: ethernet-phy@0 {
-> 			compatible = "ethernet-phy-ieee802.3-c22";
-> 			reg = <0>;
-> 		};
+Hi Heinrich,
 
-...
+kernel test robot noticed the following build errors:
 
-> 	};
-> 
-> 	qca8081: ethernet-phy@28 {
-> 		compatible = "ethernet-phy-id004d.d101";
-> 		reg = <28>;
-> 		reset-gpios = <&tlmm 31 GPIO_ACTIVE_LOW>;
-> 	};
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next tty/tty-linus linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I've no idea if DT allows this. The issue is that reg is the same for
-both nodes within the ethernet-phy-package container, and
-ethernet-phy@28. They are all addresses on the same MDIO bus.  We are
-parsing this bus structure ourselves in __of_mdiobus_register(), so we
-could make it work, but i don't know if we should make it work.
+url:    https://github.com/intel-lab-lkp/linux/commits/Heinrich-Schuchardt/tty-serial-RISC-V-SBI-earlycon-via-DBCN-extension/20231115-213355
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20231115133127.107575-1-heinrich.schuchardt%40canonical.com
+patch subject: [PATCH 1/1] tty/serial: RISC-V SBI earlycon via DBCN extension
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231121/202311210512.n4evtQf6-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311210512.n4evtQf6-lkp@intel.com/reproduce)
 
-      Andrew
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311210512.n4evtQf6-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+>> drivers/tty/serial/earlycon-riscv-sbi.c:11:10: fatal error: 'asm/sbi.h' file not found
+      11 | #include <asm/sbi.h>
+         |          ^~~~~~~~~~~
+   1 error generated.
+
+
+vim +11 drivers/tty/serial/earlycon-riscv-sbi.c
+
+27de1f541f1f91 Anup Patel 2018-12-04 @11  #include <asm/sbi.h>
+27de1f541f1f91 Anup Patel 2018-12-04  12  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
