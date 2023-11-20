@@ -2,89 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13E67F0D4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBC47F0D55
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjKTIQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        id S232182AbjKTIRD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 03:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbjKTIQY (ORCPT
+        with ESMTP id S232183AbjKTIRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:16:24 -0500
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5BC6AED;
-        Mon, 20 Nov 2023 00:16:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hgq9Z
-        CjqvMpwCSb1biw4ArBkdPTWEHtoxNKDFAzpN0k=; b=exk3C/Uhfftv5amfG00sR
-        AY3Vc7WhJv1YhR6kpFwPbhJ2I8uF5NgpDHqjcw/3MxJpAVK79Z3Zu3F9fgA+6jB+
-        vgDqDhOopCLYV7XwlKzOYOCJK/y8DK457xb/rOeKVby8av0dup0LsaZ16oHBqO1S
-        HDDQGVhCG/Ef5sJS5uaduc=
-Received: from localhost.localdomain (unknown [39.144.137.207])
-        by zwqz-smtp-mta-g3-2 (Coremail) with SMTP id _____wDH52myFVtlTcE1Dg--.30221S4;
-        Mon, 20 Nov 2023 16:15:50 +0800 (CST)
-From:   Xing Tong Wu <xingtong_wu@163.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     xingtong.wu@siemens.com, tobias.schaffner@siemens.com,
-        gerd.haeussler.ext@siemens.com
-Subject: [PATCH v2 2/2] hwmon: (nct6775) Fix fan speed set failure in automatic mode
-Date:   Mon, 20 Nov 2023 16:15:42 +0800
-Message-Id: <20231120081542.3174-3-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231120081542.3174-1-xingtong_wu@163.com>
-References: <20231120081542.3174-1-xingtong_wu@163.com>
+        Mon, 20 Nov 2023 03:17:00 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E9EE3;
+        Mon, 20 Nov 2023 00:16:56 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYg0Z1Pc1z9v7GV;
+        Mon, 20 Nov 2023 16:00:14 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDHxV_LFVtlN1ABAQ--.398S2;
+        Mon, 20 Nov 2023 09:16:26 +0100 (CET)
+Message-ID: <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob  for integrity_iint_cache
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Mon, 20 Nov 2023 09:16:09 +0100
+In-Reply-To: <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wDH52myFVtlTcE1Dg--.30221S4
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFWDWr4UXw45ZrykWrWfZrb_yoWfKFb_Ww
-        4F93s7urs8tF1ak34q9FyFyFy5tFW5WFWxXFnFg3s8Ja4jvw1DAFyvqr9Fqw17CFW29FyD
-        Wa17WrW0934UCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeo7K5UUUUU==
-X-Originating-IP: [39.144.137.207]
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiEBwu0F8YMmhU7wAAsU
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwDHxV_LFVtlN1ABAQ--.398S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF17Kw1kuFWrWr45ur1kGrg_yoWrJr43pF
+        W3Ka47Jr1kXFyI9rn2vF45uFWSgFWSgFWUGwn0kr1kAF98ur1Ygr15CryUuFyUGr98tw10
+        qr1a9ryUZ3Wqy3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj5ahSwACsN
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xing Tong Wu <xingtong.wu@siemens.com>
+On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > 
+> > Before the security field of kernel objects could be shared among LSMs with
+> > the LSM stacking feature, IMA and EVM had to rely on an alternative storage
+> > of inode metadata. The association between inode metadata and inode is
+> > maintained through an rbtree.
+> > 
+> > Because of this alternative storage mechanism, there was no need to use
+> > disjoint inode metadata, so IMA and EVM today still share them.
+> > 
+> > With the reservation mechanism offered by the LSM infrastructure, the
+> > rbtree is no longer necessary, as each LSM could reserve a space in the
+> > security blob for each inode. However, since IMA and EVM share the
+> > inode metadata, they cannot directly reserve the space for them.
+> > 
+> > Instead, request from the 'integrity' LSM a space in the security blob for
+> > the pointer of inode metadata (integrity_iint_cache structure). The other
+> > reason for keeping the 'integrity' LSM is to preserve the original ordering
+> > of IMA and EVM functions as when they were hardcoded.
+> > 
+> > Prefer reserving space for a pointer to allocating the integrity_iint_cache
+> > structure directly, as IMA would require it only for a subset of inodes.
+> > Always allocating it would cause a waste of memory.
+> > 
+> > Introduce two primitives for getting and setting the pointer of
+> > integrity_iint_cache in the security blob, respectively
+> > integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
+> > the code more understandable, as they directly replace rbtree operations.
+> > 
+> > Locking is not needed, as access to inode metadata is not shared, it is per
+> > inode.
+> > 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > ---
+> >  security/integrity/iint.c      | 71 +++++-----------------------------
+> >  security/integrity/integrity.h | 20 +++++++++-
+> >  2 files changed, 29 insertions(+), 62 deletions(-)
+> > 
+> > diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> > index 882fde2a2607..a5edd3c70784 100644
+> > --- a/security/integrity/iint.c
+> > +++ b/security/integrity/iint.c
+> > @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+> >  	return 0;
+> >  }
+> >  
+> > +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
+> > +	.lbs_inode = sizeof(struct integrity_iint_cache *),
+> > +};
+> 
+> I'll admit that I'm likely missing an important detail, but is there
+> a reason why you couldn't stash the integrity_iint_cache struct
+> directly in the inode's security blob instead of the pointer?  For
+> example:
+> 
+>   struct lsm_blob_sizes ... = {
+>     .lbs_inode = sizeof(struct integrity_iint_cache),
+>   };
+> 
+>   struct integrity_iint_cache *integrity_inode_get(inode)
+>   {
+>     if (unlikely(!inode->isecurity))
+>       return NULL;
+>     return inode->i_security + integrity_blob_sizes.lbs_inode;
+>   }
 
-Setting the fan speed is only valid in manual mode; it is not possible
-to set the fan's speed in automatic mode.
-Return error when attempting to set the fan speed in automatic mode.
+It would increase memory occupation. Sometimes the IMA policy
+encompasses a small subset of the inodes. Allocating the full
+integrity_iint_cache would be a waste of memory, I guess?
 
-Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
----
- drivers/hwmon/nct6775-core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+On the other hand... (did not think fully about that) if we embed the
+full structure in the security blob, we already have a mutex available
+to use, and we don't need to take the inode lock (?).
 
-diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
-index c24b2c312911..38c2e5b7cfe9 100644
---- a/drivers/hwmon/nct6775-core.c
-+++ b/drivers/hwmon/nct6775-core.c
-@@ -2556,6 +2556,13 @@ store_pwm(struct device *dev, struct device_attribute *attr, const char *buf,
- 	int err;
- 	u16 reg;
- 
-+	/*
-+	 * The fan control mode should be set to manual if the user wants to adjust
-+	 * the fan speed. Otherwise, it will fail to set.
-+	 */
-+	if (index == 0 && data->pwm_enable[nr] > manual)
-+		return -EBUSY;
-+
- 	err = kstrtoul(buf, 10, &val);
- 	if (err < 0)
- 		return err;
--- 
-2.25.1
+I'm fully convinced that we can improve the implementation
+significantly. I just was really hoping to go step by step and not
+accumulating improvements as dependency for moving IMA and EVM to the
+LSM infrastructure.
+
+Thanks
+
+Roberto
 
