@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBB47F1132
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468D67F1135
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbjKTLCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S233118AbjKTLCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbjKTLCP (ORCPT
+        with ESMTP id S232801AbjKTLCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:02:15 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4363AC9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:02:11 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32f78dcf036so3157550f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:02:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700478130; x=1701082930; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HytwA7HVysgBJScXXutqEK+0fdWB/b6Ao+3Wu2cMOOA=;
-        b=m/MfN+qUw+jY1BHl2iTTNPAMTu0rRc0v5pv/LSGhhCpeleb5remyCa3E4Ak/ehmbW0
-         yP9QC3LF96IhNCyt8ynBv41oF0Elwan441L/+nrUdPxB8B4sGF5aZDiqa1CxxcPk5s2y
-         XMTfY3Ujq++rkVrj5wnQ/mEbtE9LdkVojdpFqdYRqtx7axhkq/f0jQnu7fjIPFHsBUn2
-         rO729TEJnyeLxzZ0RODEADAzUhnSR50bQwHMukUm/vJlW2FVvBPqmXe2zdW8C7zHL9nv
-         2NO3afsY07pTOCtnoD/+lmocm+YULns9WCCW7hghto9DiCUGO4zvudknTqy329U/y9GU
-         vkEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700478130; x=1701082930;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HytwA7HVysgBJScXXutqEK+0fdWB/b6Ao+3Wu2cMOOA=;
-        b=txEH6674LIq7NZgvaxB5BIDo/H8Wn4TcPLBcAGjocyHpr7BJToJTQDzmUsm8ablN8l
-         j0Dbm9TjOOm7rltc2qHZRMBOVqGX5dSV2QdHUTtIIpQB44wOZ6ZsgWw6k8slMd37IDQZ
-         AJCyVYtdt0+4a+jpxhbeV0cffQ6ttr8GUlrToCvLt5I9XoFK4bl2xzPyctKd4xcYw4Qd
-         Qan38Yy/ua0MH3MR6RdfoKVa2bTd3fi9k8QkOZ9hgyjXgKh3TqxtgcebTwa8z1Iyrcnc
-         +Yr6yQj0XTeeL1mYb9iRynpFbHZ6CDK1r05tmzZCJZohrYzh4Q1uFQZ2ttrUUSLTZpT/
-         tl6w==
-X-Gm-Message-State: AOJu0YyIGLHzLfHD4wyD4i86rDeNigiF7kqCqZgeXaVuIq5inzPsr/xX
-        NvRHN8l/1Xh8WRrrLXbmBqeEUQ==
-X-Google-Smtp-Source: AGHT+IFu3vVwHKbXDD1C9QxIgvpCTCFkU5meq1IURj2o2nkB8wQpPG9Pphbrie1MH1TmSnRBN58iLw==
-X-Received: by 2002:a5d:6d86:0:b0:32f:7a22:8b42 with SMTP id l6-20020a5d6d86000000b0032f7a228b42mr11134783wrs.23.1700478129621;
-        Mon, 20 Nov 2023 03:02:09 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id b11-20020a05600010cb00b00332c0d256c5sm5916490wrx.80.2023.11.20.03.02.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 03:02:08 -0800 (PST)
-Message-ID: <567a0eeb-3116-4103-b61f-5d8e7ab1f768@linaro.org>
-Date:   Mon, 20 Nov 2023 11:02:07 +0000
+        Mon, 20 Nov 2023 06:02:40 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19AF85
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:02:36 -0800 (PST)
+Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 10D5A66022D1;
+        Mon, 20 Nov 2023 11:02:33 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700478155;
+        bh=/sm0Hj2RnfQif68Ay2Vo+hONdmo2lESCVcj5nMYwWi4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ntQl3n5IMwfCZ3084QNrJMZsOK/EBeDt0XucBu+b79iwkcv+LaGRHYZuD195NE9bY
+         Ytw5WalbvLao8VSihuYK9sZkbLo9gJaPI2xjtaaKoKKbluix9Xk6U+cyG2mt80q5OE
+         FgBBuCxWjNf2blvKRpekmPxiFmW03sEIL2NBUTSpi/14MKckTETARYnPimEGE3nCBs
+         9YKlRgR3MMNn9AVoOz2j0aIx7H7KQkVK8sakbpEah+aW0uEXqMtDvKnTZbeIcGc5JA
+         bmaH2+TV7nkxKmaN+rxAbif1x1XT+3LBtN6+/SUk41a/rvzWiCq1uGfQki18H14ap+
+         iEj3Nyy0hA9yw==
+Message-ID: <bd2308d6-38e5-6042-3da8-fb436f67a88e@collabora.com>
+Date:   Mon, 20 Nov 2023 14:02:29 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/4] clk: qcom: Add Global Clock controller (GCC)
- driver for X1E80100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v18 11/26] drm/shmem-helper: Prepare drm_gem_shmem_free()
+ to shrinker addition
 Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>, andersson@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
-        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
-        abel.vesa@linaro.org, quic_tsoni@quicinc.com
-References: <20231117092737.28362-1-quic_sibis@quicinc.com>
- <20231117092737.28362-3-quic_sibis@quicinc.com>
- <ec9d03f7-7158-4309-9a04-b08c69b89f39@linaro.org>
- <2e0d2c55-fb2f-4903-a555-f51019942c6e@linaro.org>
- <c8cf229b-4d15-4eca-bc4b-61dc67d63e91@linaro.org>
- <4af8e7a4-0506-a08c-f294-d055fb463af8@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <4af8e7a4-0506-a08c-f294-d055fb463af8@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+ <20231029230205.93277-12-dmitry.osipenko@collabora.com>
+ <20231110111601.5d6bd1ab@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20231110111601.5d6bd1ab@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 06:42, Sibi Sankar wrote:
-> Bryan,
+On 11/10/23 13:16, Boris Brezillon wrote:
+> On Mon, 30 Oct 2023 02:01:50 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 > 
-> 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use floor ops for sdcc clks")
-> 
-> The floor_ops was introduced in sdm845 ^^ and later propagated to all
-> other QC SoCs later on. It makes sense to do the same for sc8280xp as
-> well.
+>> Prepare drm_gem_shmem_free() to addition of memory shrinker support
+>> to drm-shmem by adding and using variant of put_pages() that doesn't
+>> touch reservation lock. Reservation shouldn't be touched because lockdep
+>> will trigger a bogus warning about locking contention with fs_reclaim
+>> code paths that can't happen during the time when GEM is freed and
+>> lockdep doesn't know about that.
+>>
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>> ---
+>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 35 +++++++++++++-------------
+>>  1 file changed, 18 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> index 08b5a57c59d8..24ff2b99e75b 100644
+>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> @@ -128,6 +128,22 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
+>>  }
+>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
+>>  
+>> +static void
+>> +drm_gem_shmem_free_pages(struct drm_gem_shmem_object *shmem)
+>> +{
+>> +	struct drm_gem_object *obj = &shmem->base;
+>> +
+>> +#ifdef CONFIG_X86
+>> +	if (shmem->map_wc)
+>> +		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+>> +#endif
+>> +
+>> +	drm_gem_put_pages(obj, shmem->pages,
+>> +			  shmem->pages_mark_dirty_on_put,
+>> +			  shmem->pages_mark_accessed_on_put);
+>> +	shmem->pages = NULL;
+>> +}
+>> +
+>>  /**
+>>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
+>>   * @shmem: shmem GEM object to free
+>> @@ -142,8 +158,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>  	if (obj->import_attach) {
+>>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>>  	} else {
+>> -		dma_resv_lock(shmem->base.resv, NULL);
+>> -
+>>  		drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+>>  
+>>  		if (shmem->sgt) {
+>> @@ -157,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>  
+> If you drop the dma_resv_lock/unlock(), you should also replace the
+> drm_gem_shmem_put_pages_locked() by a drm_gem_shmem_free_pages() in this
+> commit.
 
-OK good enough.
+drm_gem_shmem_put_pages_locked() is exported by a later patch of this
+series, it's not worthwhile to remove this function
+
+-- 
+Best regards,
+Dmitry
+
