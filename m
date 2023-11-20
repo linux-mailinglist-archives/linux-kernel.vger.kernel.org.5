@@ -2,161 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A093A7F0CC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279C27F0CCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 08:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjKTHV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 02:21:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
+        id S232124AbjKTHXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 02:23:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbjKTHVx (ORCPT
+        with ESMTP id S231997AbjKTHXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 02:21:53 -0500
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58277AF;
-        Sun, 19 Nov 2023 23:21:49 -0800 (PST)
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40836ea8cbaso11722215e9.0;
-        Sun, 19 Nov 2023 23:21:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700464908; x=1701069708;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JRoAuF0BEEns2f3l7pX09rmBkVI9L6aai29xONWHIFI=;
-        b=jfdzDZthrv6HEB9sCLLFG3EUAp/yBQ1fd+kJqQRJiyGY9ftVmzKbHvUVsDyk44zerN
-         rPwSo4bKnTqKULSDomQqegpSMaci+0htb4+2XVD7ARS/xg5qrqzVMiBXps3LJHCz6wAS
-         pgNT4vJHCAO5tqHZOh3BTyPU4N8+vFvnbPnDRXt+lWIk0W7Vj6N9qd2SJTirmizKiywX
-         HEpCSsqly2En3TCBbhgBH/RzvIpa77ykOwUYHa1gFqfDF+04N04QI3Kg7OiYBlhST7bi
-         oKeEU3IIgnlbxrmjDcf1GVn1/rAERDm01cX+ABs8WgpYwGWSuRWP7rFn6qi8aLQtSR/B
-         QZPw==
-X-Gm-Message-State: AOJu0YzNmOcYUpGYYtimG3wM7Hjs8/PqIRpRL/A8tQYqBXgXAC6qYkix
-        yS4oBkY8Xo5dVMQCRJo7QDw=
-X-Google-Smtp-Source: AGHT+IF/J4ak+jkNv9ANmitPbaWRMtr8DnBvjQgaAzm7VLrlD5GiSLgCL4r/m46eTLBTV9kEDHaivA==
-X-Received: by 2002:a05:600c:444d:b0:409:79cb:81a3 with SMTP id v13-20020a05600c444d00b0040979cb81a3mr4721127wmn.30.1700464907661;
-        Sun, 19 Nov 2023 23:21:47 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id f6-20020a7bcd06000000b0040a463cf09dsm16531151wmj.33.2023.11.19.23.21.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 19 Nov 2023 23:21:47 -0800 (PST)
-Message-ID: <1b89d7df-2511-4b3e-ab35-071734fb413c@kernel.org>
-Date:   Mon, 20 Nov 2023 08:21:46 +0100
+        Mon, 20 Nov 2023 02:23:45 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8183CAA;
+        Sun, 19 Nov 2023 23:23:41 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK6ZaNh026332;
+        Mon, 20 Nov 2023 07:23:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=XXY2K4XRh/H3GltFZ7UvZpHSolyErrI5WrSWhciBmoE=;
+ b=eNsG9T4DTWjZh6/Wr2vt0OL2+0kEuZNzKKEahkzKmZyUyJBrzk8EQyCqelimrHpOHSdk
+ nruREysthWYwXw+45+XktZ7j8Hdiaor9bIXOh6aqB/u67X+gdi2jmD/4m75Vsw+6sDjh
+ VToViTj4lKKnzgfm2BrcISZnaDQ4tJ91byrT0b/UAA5LRl0VfobAqYBMTvdFlwhyeZ73
+ XKH3Q/StcR7eFWBurBc6OCqoXC2nHS8F3Gv36AV1ejmUwl23sDesBr9TJTdcKC2Sskkg
+ NOxi/Lb1bCH4V1QV6//M3bjH5ow9JGBsiQhgrrQ1vAHOsWBiaRi6DERawceOJPLYG44r ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ufrd5488r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 07:23:30 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AK7B47w008132;
+        Mon, 20 Nov 2023 07:23:29 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ufrd5488h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 07:23:29 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK7KVAq012325;
+        Mon, 20 Nov 2023 07:23:28 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ufaa1q3c5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 07:23:28 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK7NPZT23855696
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Nov 2023 07:23:25 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7781C2004E;
+        Mon, 20 Nov 2023 07:23:25 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27D222004B;
+        Mon, 20 Nov 2023 07:23:25 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Nov 2023 07:23:25 +0000 (GMT)
+From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
+To:     linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] mm/memory_hotplug: fixes for memory hotplug altmap support
+Date:   Mon, 20 Nov 2023 08:23:14 +0100
+Message-Id: <20231120072317.3169630-1-sumanthk@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v8 1/6] tty: add new helper function tty_get_tiocm
-Content-Language: en-US
-To:     Florian Eckert <fe@dev.tdt.de>, Eckert.Florian@googlemail.com,
-        gregkh@linuxfoundation.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        m.brock@vanmierlo.com
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-References: <20231109085038.371977-1-fe@dev.tdt.de>
- <20231109085038.371977-2-fe@dev.tdt.de>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <20231109085038.371977-2-fe@dev.tdt.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: y4E_6cc9mxaWWbLfjayca_OWq7H0T2YK
+X-Proofpoint-GUID: k6Zu0eurcRnHEhVkhRFkwTY6I1Wqqddr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_04,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ adultscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=759 spamscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311200046
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09. 11. 23, 9:50, Florian Eckert wrote:
-> There is no in-kernel function to get the status register of a tty device
-> like the TIOCMGET ioctl returns to userspace. Create a new function,
-> tty_get_tiocm(), to obtain the status register that other portions of the
-> kernel can call if they need this information, and move the existing
-> internal tty_tiocmget() function to use this interface.
-> 
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
-> ---
->   drivers/tty/tty_io.c | 28 ++++++++++++++++++++++------
->   include/linux/tty.h  |  1 +
->   2 files changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> index 06414e43e0b5..e2e93404133e 100644
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -2498,6 +2498,24 @@ static int send_break(struct tty_struct *tty, unsigned int duration)
->   	return retval;
->   }
->   
-> +/**
-> + * tty_get_tiocm - get tiocm status register
-> + * @tty: tty device
-> + *
-> + * Obtain the modem status bits from the tty driver if the feature
-> + * is supported.
-> + */
-> +int tty_get_tiocm(struct tty_struct *tty)
-> +{
-> +	int retval = -ENOTTY;
-> +
-> +	if (tty->ops->tiocmget)
-> +		retval = tty->ops->tiocmget(tty);
-> +
-> +	return retval;
+Patch 1  adds  the missing lock  in memory hotplug operations,
+ensuring that the mem_hotplug_lock is held during critical operations
+like mhp_init_memmap_on_memory() and mhp_deinit_memmap_on_memory()
 
-Why not simply:
-{
-  if (tty->ops->tiocmget)
-     return tty->ops->tiocmget(tty);
+Patch 2 deals with error handling in add_memory_resource() and considers
+the possibility of altmap support. This ensures proper deallocation of
+struct pages, aligning with the allocation strategy.
 
-  return -ENOTTY;
-}
-?
+Patch 3 relocates the vmem_altmap code to sparse-vmemmap.c, enabling the
+utilization of vmem_altmap_free() and vmem_altmap_offset() without the
+dependency on CONFIG_ZONE_DEVICE.
 
-thanks,
+Changes since patch series "implement "memmap on memory" feature on
+s390":
+Feedback from David:
+Patch 1:
+* Fixed subject for memory hotplug lock.
+* Added locking comments before
+  memory_block_online()/memory_block_offline().
+Patch 2:
+* Fixed Fixes-by commit.
+
+lkp report:
+Patch 3:
+* when CONFIG_SPARSEMEM_VMEMMAP is disabled, resolve
+  undefined reference to `vmem_altmap_offset' error.
+* Request for Reviewed-by once again due to the change in patch3.
+
+Thank you
+
+Sumanth Korikkar (3):
+  mm/memory_hotplug: add missing mem_hotplug_lock
+  mm/memory_hotplug: fix error handling in add_memory_resource()
+  mm: use vmem_altmap code without CONFIG_ZONE_DEVICE
+
+ drivers/base/memory.c    | 18 +++++++++++++++---
+ include/linux/memremap.h | 12 ------------
+ include/linux/mm.h       | 15 +++++++++++++++
+ mm/memory_hotplug.c      | 15 +++++++--------
+ mm/memremap.c            | 14 +-------------
+ mm/sparse-vmemmap.c      | 13 +++++++++++++
+ 6 files changed, 51 insertions(+), 36 deletions(-)
+
 -- 
-js
-suse labs
+2.41.0
 
