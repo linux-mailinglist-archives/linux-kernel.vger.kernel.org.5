@@ -2,321 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ECB97F1629
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40847F15F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbjKTOsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        id S233602AbjKTOoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233876AbjKTOrI (ORCPT
+        with ESMTP id S232259AbjKTOoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:47:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2ECD71;
-        Mon, 20 Nov 2023 06:47:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700491620; x=1732027620;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=H5OX7CLCWf8ZvXE01SKLbtt5d6EZIh6rMIWjVSE/85w=;
-  b=KvrQVnbgvk82ke5pLOOY088amrNx92pfJ8iGEQ5Vbe7mAxl4HRh0oi8O
-   hhLCWlynJwE0b5Iz0CkhK3AHSjJdatHJ8H3sbWHIkxcAB+axe1iCdtIho
-   5QMWCcf1cczAFzMBXHVJt9jRuTOfrAcD5e9FqGK/QRq35EQWaLsr+4rBJ
-   bfuI0cEoUEtmp5y/TzghPbCtSgZzK7qio0Fzh3+ik0i4DEPj7LuvRzjzm
-   hfn+MHXgm5glTpWTwcXX1BIbFD9qF+bejMOZg3/Av1aIpEeU5FfxOR9/h
-   a9oikSlyNZkoBnjBg27Jqn8UoQnCncr3FqIJsRWbvXcssGNZzyi++cHiB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382017087"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="382017087"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 06:46:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832291658"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="832291658"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Nov 2023 06:46:54 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 51ED970A; Mon, 20 Nov 2023 16:46:45 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        Mon, 20 Nov 2023 09:44:24 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0FCA4;
+        Mon, 20 Nov 2023 06:44:20 -0800 (PST)
+Date:   Mon, 20 Nov 2023 14:44:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1700491459;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QnRXy1yVWCfRsNPkXtlfyjrD/wRceMj0d6uDTf+ma9g=;
+        b=0BlJ6M8fsA1cn0Saynwt3eMvOQxRRBkHxrCXEd6vWQ4O3Uk9fHbtr64pdPk99rdpHCZqAQ
+        aVO+1QGeIw6fvXD1rlAg6EtFbqZdPkpAf1Zh8wJL8w4atSc7BDVQz5tCDfs1CmEHdexqAx
+        A08cv8RQRfL1ft+ioZZAvhMuVvHoK6AWRH+SO6WUVJCuBkbn5svhB5aeRZuOOZTTuClyQb
+        OX6m56y8hiIo2Oeb+5WLWpbyVWWZzB15rJACYN4NCyKlTel1gVibTMJwj2Fjamx4G/usta
+        iFhvS1/2E9PxqHqlPbtlHO3XjFx4kPPTyj1+Z29aCpSZFs5AfdNqdqPTVO5BQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1700491459;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QnRXy1yVWCfRsNPkXtlfyjrD/wRceMj0d6uDTf+ma9g=;
+        b=/mKtkhSn9YyfjlpsCgPUYDdjiJZn+YNDOZdtk/QosgHQ1NN6ZEnpdi1fl8Mgu3nYsCM6KT
+        BpIOeoccBYBEIuDw==
+From:   "tip-bot2 for Sam James" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/core] objtool: Fix calloc call for new -Walloc-size
+Cc:     Sam James <sam@gentoo.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v4 24/24] i2c: designware: Fix spelling and other issues in the comments
-Date:   Mon, 20 Nov 2023 16:42:06 +0200
-Message-ID: <20231120144641.1660574-25-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
-References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231107205504.1470006-1-sam@gentoo.org>
+References: <20231107205504.1470006-1-sam@gentoo.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <170049145878.398.18419078180350195785.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix spelling and other issues, such as kernel-doc reported about,
-in the comments. While at it, fix some indentation issues as well.
+The following commit has been merged into the objtool/core branch of tip:
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Commit-ID:     e2e13630f93d942d02f3b3f98660228a3545c60e
+Gitweb:        https://git.kernel.org/tip/e2e13630f93d942d02f3b3f98660228a354=
+5c60e
+Author:        Sam James <sam@gentoo.org>
+AuthorDate:    Tue, 07 Nov 2023 20:55:00=20
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 17 Nov 2023 10:54:50 +01:00
+
+objtool: Fix calloc call for new -Walloc-size
+
+GCC 14 introduces a new -Walloc-size included in -Wextra which errors out
+like:
+```
+check.c: In function =E2=80=98cfi_alloc=E2=80=99:
+check.c:294:33: error: allocation of insufficient size =E2=80=981=E2=80=99 fo=
+r type =E2=80=98struct cfi_state=E2=80=99 with size =E2=80=98320=E2=80=99 [-W=
+error=3Dalloc-size]
+  294 |         struct cfi_state *cfi =3D calloc(sizeof(struct cfi_state), 1);
+      |                                 ^~~~~~
+```
+
+The calloc prototype is:
+```
+void *calloc(size_t nmemb, size_t size);
+```
+
+So, just swap the number of members and size arguments to match the prototype=
+, as
+we're initialising 1 struct of size `sizeof(struct ...)`. GCC then sees we're=
+ not
+doing anything wrong.
+
+Signed-off-by: Sam James <sam@gentoo.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Link: https://lore.kernel.org/r/20231107205504.1470006-1-sam@gentoo.org
 ---
- drivers/i2c/busses/i2c-designware-amdpsp.c  | 10 +++++-----
- drivers/i2c/busses/i2c-designware-common.c  |  8 +++++---
- drivers/i2c/busses/i2c-designware-core.h    | 10 +++++-----
- drivers/i2c/busses/i2c-designware-master.c  | 15 +++++++++------
- drivers/i2c/busses/i2c-designware-platdrv.c |  4 ++--
- drivers/i2c/busses/i2c-designware-slave.c   |  6 ++++--
- 6 files changed, 30 insertions(+), 23 deletions(-)
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-amdpsp.c b/drivers/i2c/busses/i2c-designware-amdpsp.c
-index 63454b06e5da..8fbd2a10c31a 100644
---- a/drivers/i2c/busses/i2c-designware-amdpsp.c
-+++ b/drivers/i2c/busses/i2c-designware-amdpsp.c
-@@ -155,7 +155,7 @@ static void psp_release_i2c_bus_deferred(struct work_struct *work)
- 
- 	/*
- 	 * If there is any pending transaction, cannot release the bus here.
--	 * psp_release_i2c_bus will take care of this later.
-+	 * psp_release_i2c_bus() will take care of this later.
- 	 */
- 	if (psp_i2c_access_count)
- 		goto cleanup;
-@@ -210,12 +210,12 @@ static void psp_release_i2c_bus(void)
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e94756e..548ec3c 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -291,7 +291,7 @@ static void init_insn_state(struct objtool_file *file, st=
+ruct insn_state *state,
+=20
+ static struct cfi_state *cfi_alloc(void)
  {
- 	mutex_lock(&psp_i2c_access_mutex);
- 
--	/* Return early if mailbox was malfunctional */
-+	/* Return early if mailbox was malfunctioned */
- 	if (psp_i2c_mbox_fail)
- 		goto cleanup;
- 
- 	/*
--	 * If we are last owner of PSP semaphore, need to release aribtration
-+	 * If we are last owner of PSP semaphore, need to release arbitration
- 	 * via mailbox.
- 	 */
- 	psp_i2c_access_count--;
-@@ -235,9 +235,9 @@ static void psp_release_i2c_bus(void)
- 
- /*
-  * Locking methods are based on the default implementation from
-- * drivers/i2c/i2c-core-base.c, but with psp acquire and release operations
-+ * drivers/i2c/i2c-core-base.c, but with PSP acquire and release operations
-  * added. With this in place we can ensure that i2c clients on the bus shared
-- * with psp are able to lock HW access to the bus for arbitrary number of
-+ * with PSP are able to lock HW access to the bus for arbitrary number of
-  * operations - that is e.g. write-wait-read.
-  */
- static void i2c_adapter_dw_psp_lock_bus(struct i2c_adapter *adapter,
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index b8e5d56473d6..bef53a746b8d 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -127,6 +127,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
-  * Autodetects needed register access mode and creates the regmap with
-  * corresponding read/write callbacks. This must be called before doing any
-  * other register access.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
- {
-@@ -174,7 +176,7 @@ int i2c_dw_init_regmap(struct dw_i2c_dev *dev)
- 	/*
- 	 * Note we'll check the return value of the regmap IO accessors only
- 	 * at the probe stage. The rest of the code won't do this because
--	 * basically we have MMIO-based regmap so non of the read/write methods
-+	 * basically we have MMIO-based regmap, so none of the read/write methods
- 	 * can fail.
- 	 */
- 	dev->map = devm_regmap_init(dev->dev, NULL, dev, &map_cfg);
-@@ -336,7 +338,7 @@ static u32 i2c_dw_acpi_round_bus_speed(struct device *device)
- 
- 	acpi_speed = i2c_acpi_find_bus_speed(device);
- 	/*
--	 * Some DSTDs use a non standard speed, round down to the lowest
-+	 * Some DSDTs use a non standard speed, round down to the lowest
- 	 * standard speed.
- 	 */
- 	for (i = 0; i < ARRAY_SIZE(supported_speeds); i++) {
-@@ -532,7 +534,7 @@ void __i2c_dw_disable(struct dw_i2c_dev *dev)
- 
- 		/*
- 		 * Wait 10 times the signaling period of the highest I2C
--		 * transfer supported by the driver (for 400KHz this is
-+		 * transfer supported by the driver (for 400kHz this is
- 		 * 25us) as described in the DesignWare I2C databook.
- 		 */
- 		usleep_range(25, 250);
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 7479cb3a450d..5405d4da2b7d 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -141,10 +141,10 @@
- #define DW_IC_SLAVE				1
- 
- /*
-- * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register
-+ * Hardware abort codes from the DW_IC_TX_ABRT_SOURCE register.
-  *
-- * Only expected abort codes are listed here
-- * refer to the datasheet for the full list
-+ * Only expected abort codes are listed here,
-+ * refer to the datasheet for the full list.
-  */
- #define ABRT_7B_ADDR_NOACK			0
- #define ABRT_10ADDR1_NOACK			1
-@@ -201,7 +201,7 @@ struct i2c_dw_semaphore_callbacks;
-  * @rst: optional reset for the controller
-  * @slave: represent an I2C slave device
-  * @get_clk_rate_khz: callback to retrieve IP specific bus speed
-- * @cmd_err: run time hadware error code
-+ * @cmd_err: run time hardware error code
-  * @msgs: points to an array of messages currently being transferred
-  * @msgs_num: the number of elements in msgs
-  * @msg_write_idx: the element index of the current tx message in the msgs array
-@@ -236,7 +236,7 @@ struct i2c_dw_semaphore_callbacks;
-  * @release_lock: function to release a hardware lock on the bus
-  * @semaphore_idx: Index of table with semaphore type attached to the bus. It's
-  *	-1 if there is no semaphore.
-- * @shared_with_punit: true if this bus is shared with the SoCs PUNIT
-+ * @shared_with_punit: true if this bus is shared with the SoC's PUNIT
-  * @init: function to initialize the I2C hardware
-  * @set_sda_hold_time: callback to retrieve IP specific SDA hold timing
-  * @mode: operation mode - DW_IC_MASTER or DW_IC_SLAVE
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index bd3c8db521de..4ef4160db01f 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -168,12 +168,14 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- }
- 
- /**
-- * i2c_dw_init_master() - Initialize the designware I2C master hardware
-+ * i2c_dw_init_master() - Initialize the DesignWare I2C master hardware
-  * @dev: device private data
-  *
-  * This functions configures and enables the I2C master.
-  * This function is called during I2C init function, and in case of timeout at
-  * run time.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- static int i2c_dw_init_master(struct dw_i2c_dev *dev)
- {
-@@ -314,7 +316,7 @@ static int amd_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 		/*
- 		 * Initiate the i2c read/write transaction of buffer length,
- 		 * and poll for bus busy status. For the last message transfer,
--		 * update the command with stopbit enable.
-+		 * update the command with stop bit enable.
- 		 */
- 		for (msg_itr_lmt = buf_len; msg_itr_lmt > 0; msg_itr_lmt--) {
- 			if (msg_wrt_idx == num_msgs - 1 && msg_itr_lmt == 1)
-@@ -421,7 +423,7 @@ static int txgbe_i2c_dw_xfer_quirk(struct i2c_adapter *adap, struct i2c_msg *msg
- 
- /*
-  * Initiate (and continue) low level master read/write transaction.
-- * This function is only called from i2c_dw_isr, and pumping i2c_msg
-+ * This function is only called from i2c_dw_isr(), and pumping i2c_msg
-  * messages into the tx buffer.  Even if the size of i2c_msg data is
-  * longer than the size of the tx buffer, it handles everything.
-  */
-@@ -459,7 +461,8 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
- 			buf = msgs[dev->msg_write_idx].buf;
- 			buf_len = msgs[dev->msg_write_idx].len;
- 
--			/* If both IC_EMPTYFIFO_HOLD_MASTER_EN and
-+			/*
-+			 * If both IC_EMPTYFIFO_HOLD_MASTER_EN and
- 			 * IC_RESTART_EN are set, we must manually
- 			 * set restart bit between messages.
- 			 */
-@@ -949,7 +952,7 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
- 	rinfo->unprepare_recovery = i2c_dw_unprepare_recovery;
- 	adap->bus_recovery_info = rinfo;
- 
--	dev_info(dev->dev, "running with gpio recovery mode! scl%s",
-+	dev_info(dev->dev, "running with GPIO recovery mode! scl%s",
- 		 rinfo->sda_gpiod ? ",sda" : "");
- 
- 	return 0;
-@@ -1053,7 +1056,7 @@ int i2c_dw_probe_master(struct dw_i2c_dev *dev)
- 	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr, irq_flags,
- 			       dev_name(dev->dev), dev);
- 	if (ret) {
--		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-+		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
- 			dev->irq, ret);
- 		return ret;
- 	}
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index 02dc1d1001f2..fa9c0c56b11e 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -72,7 +72,7 @@ static int bt1_i2c_write(void *context, unsigned int reg, unsigned int val)
- 		return ret;
- 
- 	return regmap_write(dev->sysmap, BT1_I2C_CTL,
--		BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
-+			    BT1_I2C_CTL_GO | BT1_I2C_CTL_WR | (reg & BT1_I2C_CTL_ADDR_MASK));
- }
- 
- static struct regmap_config bt1_i2c_cfg = {
-@@ -304,7 +304,7 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 	adap = &dev->adapter;
- 	adap->owner = THIS_MODULE;
- 	adap->class = dmi_check_system(dw_i2c_hwmon_class_dmi) ?
--					I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
-+				       I2C_CLASS_HWMON : I2C_CLASS_DEPRECATED;
- 	adap->nr = -1;
- 
- 	if (dev->flags & ACCESS_NO_IRQ_SUSPEND)
-diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
-index 5abd5ec41954..21d80fe81cfe 100644
---- a/drivers/i2c/busses/i2c-designware-slave.c
-+++ b/drivers/i2c/busses/i2c-designware-slave.c
-@@ -32,12 +32,14 @@ static void i2c_dw_configure_fifo_slave(struct dw_i2c_dev *dev)
- }
- 
- /**
-- * i2c_dw_init_slave() - Initialize the designware i2c slave hardware
-+ * i2c_dw_init_slave() - Initialize the DesignWare i2c slave hardware
-  * @dev: device private data
-  *
-  * This function configures and enables the I2C in slave mode.
-  * This function is called during I2C init function, and in case of timeout at
-  * run time.
-+ *
-+ * Return: 0 on success, or negative errno otherwise.
-  */
- static int i2c_dw_init_slave(struct dw_i2c_dev *dev)
- {
-@@ -264,7 +266,7 @@ int i2c_dw_probe_slave(struct dw_i2c_dev *dev)
- 	ret = devm_request_irq(dev->dev, dev->irq, i2c_dw_isr_slave,
- 			       IRQF_SHARED, dev_name(dev->dev), dev);
- 	if (ret) {
--		dev_err(dev->dev, "failure requesting irq %i: %d\n",
-+		dev_err(dev->dev, "failure requesting IRQ %i: %d\n",
- 			dev->irq, ret);
- 		return ret;
- 	}
--- 
-2.43.0.rc1.1.gbec44491f096
-
+-	struct cfi_state *cfi =3D calloc(sizeof(struct cfi_state), 1);
++	struct cfi_state *cfi =3D calloc(1, sizeof(struct cfi_state));
+ 	if (!cfi) {
+ 		WARN("calloc failed");
+ 		exit(1);
