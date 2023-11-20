@@ -2,167 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 393837F0D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB3C7F0D39
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232098AbjKTIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:09:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55806 "EHLO
+        id S232112AbjKTILp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjKTIJn (ORCPT
+        with ESMTP id S231961AbjKTILn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:09:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D48CBF;
-        Mon, 20 Nov 2023 00:09:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700467780; x=1732003780;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Ai/lK4AcozqNiz8S6lCiP0i8KualNn0g+8Oiu7kxCxQ=;
-  b=PMYqEjUt1Gm3EJ7BPE4KttV1KZLH347SHi8CPVBftZXmmlMpCNwe38qX
-   SUw1y6qsleSXV4t2DyD4kccrNF7kwKgtowjRYEgL98HBvWe44WEv5z5Wm
-   PVrmeVhPy9vnbyACa98XMsnbqcL95tl2VhpuzDlI/MRD6eduyLO5ATtxH
-   vYsKlQ/SJe0j30vLBqrsy0RJLLQ0+kmipYd4HOFfyz4NeYj4c7LyGuoyU
-   fcZ7nb5/4t6z+mgbdk1TR2Gp+kq33DTpp0h+Z2PBHP73G1XoATCd7STxT
-   tVylHTyXLdCKaih/ppS4PHE1UPegG7fmNY/fxSi82iGkmm0lUg4xCPYXM
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="391357863"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="391357863"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 00:09:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="7491166"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Nov 2023 00:09:39 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 20 Nov 2023 00:09:38 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 20 Nov 2023 00:09:38 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 20 Nov 2023 00:09:38 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b1nFWcGwzQzEpuL/Rei18A8ipzDG7NcLdhxhMoS0j02lJ6VQhn7oeBDgjKwPnLMR+RZk9hqXF1gvxrHtJSAXYSTrMjruLx/92g/5BalEJJjtBl95nAXglE6T3gZXYEUun9XjsNFU2NArQi5WQQ+65YoL5ugmGrKeMIsFqlvCUx86SNxl/fv+PdmVS91sQy4PmiAvh4iBUmw5bWkCPFoOX8DNS9/mxHmVU8phJOtf7GlMsnPaBOaqVfISgz7Ov1ct3zn1ieipgMrsmQ0uxTE/ppuKZ+FOtfMWiAYQRWDBrdYOj/jaxnTtNqq/ZLsT62RCYR7hjnGaIPTziJX/oKrWng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=irsZALTSGAcS9SJ/Q4OkV7/EXw8HCQuqINPxaaJl9bw=;
- b=m7tfN9lmJczPhYYSt/2eg5vYvJn9+pQwj7W5/OgIGXyHQPdj5/DBA1RKpc4+E4ibXZrdEux3JsWLjl0l6gTQfwqcmcnSSZ62LLeCtuFoZELnaXxAJLzqEDdBQ3qWeeGxHQn8QFMoJNsrVF0sFaIKORJccn2JdOo383E1eshG0XewWPVlF+4MfG67+kvwipGWH6CfgnZIAWHzIU3JDVqrDPTR0GRZCqIG8pheOfmI4ahvhPzqP7SE4DZzqPTyqLh12MpTMwuHPIww3WFHpO/PFz/AP3TufZP+DnBk/d96oLZsgEF4IF3Y8sip+I7gDqPM5gNZE21XIIjgugzZqjfh2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA1PR11MB8254.namprd11.prod.outlook.com (2603:10b6:806:251::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
- 2023 08:09:36 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
- 08:09:36 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: RE: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Thread-Topic: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Thread-Index: AQHaGVcJ4nFLu64FV02Qq9BjVpwSvbCC3axQ
-Date:   Mon, 20 Nov 2023 08:09:35 +0000
-Message-ID: <BN9PR11MB5276D8406BF08B853329288C8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231117130717.19875-3-yi.l.liu@intel.com>
-In-Reply-To: <20231117130717.19875-3-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA1PR11MB8254:EE_
-x-ms-office365-filtering-correlation-id: 96a05c70-4da4-4ab9-136f-08dbe9a00901
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QJEdNgUPsj/bHQ520okKKbX1zIpNZpJUq3drLwLBKGXW1hXoWVaf4uTSv7LWHu1haKDhkunvkL4ykbRsLwf9J0/x5WUXKw6fNelF4eDCiEpY2JY59HX6/swH4FghRTdeE2PrlhDM4w/bc4nQNJr3EwBWSf2b8zoG2ZIfX/4QT99PX3kgMOxFPU1ojEhoDxidnfAzoTYBDVrwAhk+L8PGlozVZLNRUbVvwa7V4AEzq96Qgu1irLUAHV2+ScKhnInVCm4HlfYh1rXwSbVzmluZt0c3aGuzb1fckKRxxaVyaIT+lZ7ryz0+7X99Y2rAZnu1EmzJNkiY7fHhqOQugfOTCZ0X8Wos46PC1vn9IyI8rgD8Dusy1vrKGSxQlNxr6kXr9LZdgHG8fELE3bp3f4L6fnE1kEskMkwfGlxtLcWd6Si/9VkbuDqXAqaZr1qoNm2rRBRIUVCHsd27tmcN4K2lH3IVDXCduYA6Qw03/pKGozysxYws1QpT4/6NcMB4dVrpAuR79p3kEamJHiZIq1a8+7tb2hEe1J6Mou05nwXpwR0Ow9R80w1Se69YBgFX9rcBHUec9qrtpdGcSyKdAr/hvTw3qLgZ76BTgVqXYZzsW7zrTspmOG001/GHaOmJBB5h
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66476007)(66446008)(66556008)(110136005)(66946007)(76116006)(64756008)(54906003)(316002)(71200400001)(7696005)(9686003)(6506007)(26005)(38070700009)(478600001)(38100700002)(82960400001)(122000001)(83380400001)(33656002)(86362001)(55016003)(2906002)(5660300002)(7416002)(4326008)(8676002)(8936002)(52536014)(41300700001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?JMohBZkjcyHJ6bcoWGZs2+S2VSj42bs9xXAuLAxauWIQb6IglKBKvZQRtxo/?=
- =?us-ascii?Q?CRvOkjsKSNSxlIwVimZKe7CLU53lmr51a9+Q8DoX6AV2LETbKLNvLgQh1giq?=
- =?us-ascii?Q?Bw85rMkAfHzps4e9KocFwsKXgDKGVsbA0VZVIIMHmvMQnpMQkZ1UC6U7tmv4?=
- =?us-ascii?Q?82UAKJ6MDI5zpwREphDgoreOMTd3+1pNsDXbHkyWkBr3Biva619WBPaQkiPJ?=
- =?us-ascii?Q?p/96hqN6fZDNTzyCh8F0kPbQT8Wrwf0cz7Xnnjs0IJBsuLNrR5YEuYUiiRqq?=
- =?us-ascii?Q?VMpeQLcgl0yMgQNSD758etiJ3cJjyqzPpIEaVxKEQZYA8PTS9pXy688+wEdr?=
- =?us-ascii?Q?SuxxhG5j1pouw+LoMKk77mHoWIUsL74MYgkKoP0yfG7VG0WVykkII3oxQYqH?=
- =?us-ascii?Q?n9eH9dmsUAoB3jLiOTia1jowa0vgGa6EYkBw5BNsd+wy5c1sz2fvi7fQ+EeP?=
- =?us-ascii?Q?9pKh4Sndr1+KhAYRBZki8bOFQP4tEUZgESD0OJN6D/a9tHdzTjkDdtrte3lw?=
- =?us-ascii?Q?RtcOoBONSppOea/yToadc0hj8h6OsCXec1W3fQI9bBpO5bBNWrjZpY16CRia?=
- =?us-ascii?Q?acvHm0s4x6cBLaKyE0uEyBLx18Pb+Lzj4ZJfu6FVOkvpRp+8eK2pJkoCR6hr?=
- =?us-ascii?Q?CanllFw4W/7JGAH2rst6C34AjsD/3vA12GuZCkNB7sEB6qVWsOs1QbqfApHz?=
- =?us-ascii?Q?DR+NfOoWo+amNfDeA3ozuD9SdvtDvQvzhtw3BguSs9SBPMhrwyH2e72yrmSM?=
- =?us-ascii?Q?CXA3OmiszSlT09vCmHUQ71h8f7rQxxY2lJBCz/u5pMeXAGcbRFpiFDQZw3a3?=
- =?us-ascii?Q?tkUdVpKUX6kN41uyYYu58gnuwPQ9UL7jQwQpvuG4ip87Ll2d1N/vc8Sigjx2?=
- =?us-ascii?Q?i7bgB6Nk8SvInS+X8ItWNlQQa/KM65Hd4wb2nPH82tjAakucvS8mhJr6qU9R?=
- =?us-ascii?Q?hxEBcsbmb0TW+XeL8QVl1yEOdy2cadNeVXMFhsvyH+WUirclWe1aV+6kem9B?=
- =?us-ascii?Q?F2l+4VkG6vvywkc5kPp9Hqn9JsryxijmZ6j4403gaqihlZDsJgdIkg+oQdWC?=
- =?us-ascii?Q?5KRIYus14UoPcHDJEUCI8L6LQobhLqc7L/ezszA0cJ7eiCy2xvBtIa4OGy1I?=
- =?us-ascii?Q?SqdktUBuw6YNN8HoE1Q5znyNZg3eamFXpT68qGJmDAdHbOUXqrrbW8cfGdDG?=
- =?us-ascii?Q?TSFJnncQRTROTh+T0BJbtW8BDi+yeS/uum1x1ZVlXGlvg7RH+ZxUIxCFthRB?=
- =?us-ascii?Q?QvqcCnUkTFM4DrXm0k9PCY59hdytBs6Hs2WbQ+KQCTdqogK2G57K9haNWusM?=
- =?us-ascii?Q?6KzgceC1IvsDPLz95XD9t2CHFWZ8FoQmaHH3q3Dz9GP3U4DZkLDvKT0QdRSJ?=
- =?us-ascii?Q?QUpbO42UipGshNwz9Wp9Ru34d1BKQMG2kjogzNSeja/Ox069eJAtw/mWIRLw?=
- =?us-ascii?Q?bTn607JTX1Jf6ah6Cc/UUWKHXmWJUZHWGbx6fKYOMfmPXqIuttLTnyX5aucb?=
- =?us-ascii?Q?Bdu2/28yrAv1IkxgXsdLbHim1ITpmjtb9OAjnOw62rm2VJ5zRf2okLFJrQdT?=
- =?us-ascii?Q?9yDtRlBS7bNjRyElWZqq0+btlCTSkhw8Q1UIfUyz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 20 Nov 2023 03:11:43 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50ACBF
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:11:39 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-408425c7c10so13798515e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700467898; x=1701072698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fcUuuNi+u/xKZe4/lMw1EaVmTDsSwUBnZFGw/iTPhBg=;
+        b=jrgTFYWHZ3g5BZ98zz9W8lEUY41u9N5QUwsx2MfOQLzVJVTrWFnnfPSn808O2Vmjvb
+         kyjAoUuPWk9PiRMGtlz3GFXek51ZQ9SttIdg7fnqhrQaHGKsea9H3zuWt5ipp2U90CBl
+         Xwwd1E14bhuh3kEMg7iykHBEOdSG4O0rSiMqHeM4vGxfiVOw45dr9PCV+z/Ngbx9M0Fd
+         WTXXIC3Wk2IxJwd3XYtrOXMQyLz+lI9wPMSTHvyZvMTTxVCGoPOaeLGDTAXq09Xp2Pn2
+         eUVyvyLW2nbcFQaDbKYaVOHhs0tqsO637jaVDS5qSOlsUXkCkQyzHbfnyDjSX2HscFVx
+         LKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700467898; x=1701072698;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fcUuuNi+u/xKZe4/lMw1EaVmTDsSwUBnZFGw/iTPhBg=;
+        b=r57eM7aEndIS6rpOdRjOeelVxMia8dkkyZ0yTiZB1O//Vr31Qvoi2e7OutenWbnlPl
+         pqXoIvNhRGHdh3Rn9GDSY/uKpYUIpHflBF4vy6FYBu4x1SrlGEK0+NlgLjmua7qSU+e+
+         ZcaS/hXc377Jl75Hc999gIaDI08XG/s530ZpmFQfDrTOcRkh9LR2CqLYiiuoR63oyW05
+         EDAGqdujjievyVsk89sjST3pVRA+owC8fHSVhjSdq2f0NneLWIR+ckEsBlpGT9DStPhw
+         nVzlkK1W53zqfiw9GDoI+bWN2MZSkmfbFd0ri/aIex9Lrl771JY1vGmKQL7+9fi1VrMj
+         +YGQ==
+X-Gm-Message-State: AOJu0Yy3oq2QpmJKEZW30JPKtpfa26G4UdQktkHU/xiauncAt/ygH0Lb
+        pgg3f+invdXIafiTfXhAXBFtow==
+X-Google-Smtp-Source: AGHT+IFw7EeRhj7JxE3HkKK1fMaQo4ZJRm9ZMXgx89CxzuXxbSCE0/pSwxmZk/2IWdTiXV1kPh584Q==
+X-Received: by 2002:a05:600c:1f94:b0:401:b6f6:d8fd with SMTP id je20-20020a05600c1f9400b00401b6f6d8fdmr4575322wmb.6.1700467898303;
+        Mon, 20 Nov 2023 00:11:38 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f04:f84b:d87d:1d06? ([2a01:e0a:982:cbb0:f04:f84b:d87d:1d06])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c358d00b0040841e79715sm12714341wmq.27.2023.11.20.00.11.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 00:11:37 -0800 (PST)
+Message-ID: <5f18ab4a-e4b0-48ef-946e-524e8dadf7ce@linaro.org>
+Date:   Mon, 20 Nov 2023 09:11:35 +0100
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96a05c70-4da4-4ab9-136f-08dbe9a00901
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 08:09:35.7874
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SyFt94AlB6Jlbtu5YaLNfRs0l7Lp1sm+rwT4xHqRZ1f+Gk5EZx7XEz8bH5V6G7fYBEmN97V2IKaaokPLbYv2Ig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8254
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 7/8] arm64: dts: qcom: sm8650-mtp: add interconnect
+ dependent device nodes
+Content-Language: en-US, fr
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231106-topic-sm8650-upstream-dt-v2-0-44d6f9710fa7@linaro.org>
+ <20231106-topic-sm8650-upstream-dt-v2-7-44d6f9710fa7@linaro.org>
+ <3f3f7c21-0d03-4b59-b12c-a72e1d2b82af@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <3f3f7c21-0d03-4b59-b12c-a72e1d2b82af@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -170,103 +111,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Friday, November 17, 2023 9:07 PM
-> +
-> +	hwpt =3D iommufd_hw_pagetable_get_nested(ucmd, cmd->hwpt_id);
-> +	if (IS_ERR(hwpt))
-> +		return PTR_ERR(hwpt);
-> +
-> +	rc =3D hwpt->domain->ops->cache_invalidate_user(hwpt->domain,
-> &data_array,
-> +						      &cmd-
-> >out_driver_error_code);
-> +	cmd->req_num =3D data_array.entry_num;
-> +	if (iommufd_ucmd_respond(ucmd, sizeof(*cmd)))
-> +		return -EFAULT;
-> +	iommufd_put_object(&hwpt->obj);
+On 18/11/2023 01:25, Konrad Dybcio wrote:
+> On 6.11.2023 09:39, Neil Armstrong wrote:
+>> Now interconnect dependent devices are added in sm8650 DTSI,
+>> now enable more devices for the Qualcomm SM8650 MTP board:
+>> - PCIe
+>> - Display
+>> - DSPs
+>> - SDCard
+>> - UFS
+>> - USB role switch with PMIC Glink
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> Little nits:
+> 
+> [...]
+> 
+>>   &tlmm {
+>>   	gpio-reserved-ranges = <32 8>;
+>> +
+>> +	sde_dsi_active: sde-dsi-active-state {
+> Dmitry voiced concerns about having the "SDE_" part here lately
+> is it part of the actual pin name (in the schematic)?
 
-the object is not put when ucmd response fails. It can be put right
-after calling @cache_invalidate_user()
+Indeed, names and DISP0_RESET_N and MDP_VSYNC, will rename.
 
-> @@ -309,6 +309,7 @@ union ucmd_buffer {
->  	struct iommu_hwpt_alloc hwpt;
->  	struct iommu_hwpt_get_dirty_bitmap get_dirty_bitmap;
->  	struct iommu_hwpt_set_dirty_tracking set_dirty_tracking;
-> +	struct iommu_hwpt_invalidate cache;
+> 
+> [...]
+> 
+>>   
+>>   &usb_1_dwc3 {
+>> -	dr_mode = "peripheral";
+>> +	dr_mode = "otg";
+> Isn't that the default?
 
-In alphabetic order this should be put before "hwpt_set_dirty"
+Without PMIC GLINK/UCSI, there's no mode switch source, so otg is not possible,
+and bootloader leaves the PMIC power state in peripheral mode.
 
->  	struct iommu_ioas_alloc alloc;
->  	struct iommu_ioas_allow_iovas allow_iovas;
->  	struct iommu_ioas_copy ioas_copy;
-> @@ -348,6 +349,8 @@ static const struct iommufd_ioctl_op
-> iommufd_ioctl_ops[] =3D {
->  		 struct iommu_hwpt_get_dirty_bitmap, data),
->  	IOCTL_OP(IOMMU_HWPT_SET_DIRTY_TRACKING,
-> iommufd_hwpt_set_dirty_tracking,
->  		 struct iommu_hwpt_set_dirty_tracking, __reserved),
-> +	IOCTL_OP(IOMMU_HWPT_INVALIDATE, iommufd_hwpt_invalidate,
-> +		 struct iommu_hwpt_invalidate, out_driver_error_code),
+On the other side with the next patch, we add pmic-glink and we add
+"usb-role-switch" making it switchable.
 
-ditto
+Neil
 
-> +/**
-> + * struct iommu_hwpt_invalidate - ioctl(IOMMU_HWPT_INVALIDATE)
-> + * @size: sizeof(struct iommu_hwpt_invalidate)
-> + * @hwpt_id: HWPT ID of a nested HWPT for cache invalidation
+> 
+> Konrad
 
-remove the first 'HWPT'
-
-> + * @reqs_uptr: User pointer to an array having @req_num of cache
-> invalidation
-> + *             requests. The request entries in the array are of fixed w=
-idth
-> + *             @req_len, and contain a user data structure for invalidat=
-ion
-> + *             request specific to the given hardware page table.
-> + * @req_type: One of enum iommu_hwpt_data_type, defining the data
-> type of all
-> + *            the entries in the invalidation request array. It should s=
-uit
-> + *            with the data_type passed per the allocation of the hwpt p=
-ointed
-> + *            by @hwpt_id.
-
-"It should match the data_type given to the specified hwpt"
-
-> + * @req_len: Length (in bytes) of a request entry in the request array
-> + * @req_num: Input the number of cache invalidation requests in the arra=
-y.
-> + *           Output the number of requests successfully handled by kerne=
-l.
-> + * @out_driver_error_code: Report a driver speicifc error code upon fail=
-ure.
-> + *                         It's optional, driver has a choice to fill it=
- or
-> + *                         not.
-
-Being optional how does the user tell whether the code is filled or not?
-
-> + *
-> + * Invalidate the iommu cache for user-managed page table. Modifications
-> on a
-> + * user-managed page table should be followed by this operation to sync
-> cache.
-> + * Each ioctl can support one or more cache invalidation requests in the
-> array
-> + * that has a total size of @req_len * @req_num.
-> + */
-> +struct iommu_hwpt_invalidate {
-> +	__u32 size;
-> +	__u32 hwpt_id;
-> +	__aligned_u64 reqs_uptr;
-> +	__u32 req_type;
-> +	__u32 req_len;
-> +	__u32 req_num;
-> +	__u32 out_driver_error_code;
-> +};
-
-Probably 'data_uptr', 'data_type', "entry_len' and 'entry_num" read slightl=
-y
-better.
