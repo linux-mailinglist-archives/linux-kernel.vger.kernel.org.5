@@ -2,107 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3BE7F0A9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110AE7F0AA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbjKTCmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 21:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S231820AbjKTCtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 21:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjKTCmd (ORCPT
+        with ESMTP id S231775AbjKTCte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 21:42:33 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D1B115
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:42:28 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50aaaf6e58fso1200690e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700448147; x=1701052947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1OeThoHf3uMeDHt078nnfHlRh9jpmMCwPFIZIn397Jc=;
-        b=N0gJ3QuoNyF6wnF5kK1mdx9nexcs9RMD9oNMnft4upRCP+L3UqPJTMBpkc3z5vVXEN
-         fAThq821YxswDcZylw8SR8B/FV4GoJxxij2Ae+/ZOoJ7NF+6zIIqO/xHqbJvyqrJFrEi
-         KnlqLB3HnFIFT8xkuXqDEaomFkjBDD+5NOBsfohvGu5TDNSq6dMDzJ79mRlBeHUxYPwD
-         +VmbhAJkgMkfVJ3FjpMxhm2nJLAsXeDSgnSgpFi8E4vHa1or/0p6iIM+FL0ZDFynQ4kA
-         DIBtNhUf3xoLDfqw/FW0eMvDZkaUthiLu26q8WrA21FjJugm689+EHUorrroHBQuBd64
-         1WIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700448147; x=1701052947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1OeThoHf3uMeDHt078nnfHlRh9jpmMCwPFIZIn397Jc=;
-        b=YVHnbA0y2b2yyY9Qq5rUquXwUs9O86/A0q5Jz70pGxWo87Vd9uEhecfKG49Ko0rzRm
-         3mMFqxJ47Up4NPNjiVfqPuAz5fsyyHnFkRr3BQFUPQT1TCY7tDOFzmnYqACxFjBmshC7
-         e3dgML0jStxntsL16KRA8Lg09OTRbtk5a9/RCrCmnn2k6kDFAG/lYimPGSXelHNUVcVE
-         7rg0V5krg0fch9nc9XdMQ9iUUJmqinkyfHAw0pz6JqOByQgBuDkBLso/SqChyB0m9yug
-         RsDKh3xnDBiRuHklXY73UJW0zV/+pvgOtQ676A+LwxdoRD6PAQPrsWn/rPjt8tWuXJ7C
-         QDqg==
-X-Gm-Message-State: AOJu0YxiOB1QhtFTbTOzrqiL2SnW7yWxWd8+Ww2rILrQejXdjvD/CDqm
-        sPIiybtBj5+7TLsbxFdmOqEXCCXy9eUo8biLLFSDNIaM1+/JYPyycmI=
-X-Google-Smtp-Source: AGHT+IFMEhHZQSdBSQP6HIDQV+eH1EumpQzHxEExKvm8bLGoK89XkTNdivLD/bjPEbVY3wnx1OCxlHLNueYlzvQgMbQ=
-X-Received: by 2002:a05:6512:3b83:b0:50a:a9ec:1897 with SMTP id
- g3-20020a0565123b8300b0050aa9ec1897mr3482128lfv.35.1700448146995; Sun, 19 Nov
- 2023 18:42:26 -0800 (PST)
+        Sun, 19 Nov 2023 21:49:34 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5083F13A
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:49:30 -0800 (PST)
+Received: from loongson.cn (unknown [10.2.5.213])
+        by gateway (Coremail) with SMTP id _____8Cxrus4yVplVx87AA--.48370S3;
+        Mon, 20 Nov 2023 10:49:28 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3tw2yVplyjFHAA--.23995S2;
+        Mon, 20 Nov 2023 10:49:26 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>
+Cc:     Peter Zijlstra <peterz@infradead.org>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, WANG Xuerui <git@xen0n.name>
+Subject: [PATCH v2] LoongArch: Implement constant timer shutdown interface
+Date:   Mon, 20 Nov 2023 10:46:52 +0800
+Message-Id: <20231120024652.3191881-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
- <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
- <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
- <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
- <CACSyD1NJ4ycr74pXHNus3ZjA=LvZP+aMNyz=iWyHuDODpx7aww@mail.gmail.com>
- <CAF8kJuPymUX+DwouwgH6og0BO6ZYheGXsk=GYqYuMjKMz-Xqbw@mail.gmail.com>
- <CACSyD1P-6mQ7n+ghsZQ0Gp4AxyTTi6=UZHz2DnXWuCWke2fkPw@mail.gmail.com> <CAKEwX=O0eNmoFRsnRXpkY55UGHBOiGL2aQW6um8Kq5hgGH=c_A@mail.gmail.com>
-In-Reply-To: <CAKEwX=O0eNmoFRsnRXpkY55UGHBOiGL2aQW6um8Kq5hgGH=c_A@mail.gmail.com>
-From:   Zhongkun He <hezhongkun.hzk@bytedance.com>
-Date:   Mon, 20 Nov 2023 10:42:15 +0800
-Message-ID: <CACSyD1Pn1HrJgG4XhSmrq7ROpHU5bO4SS6Szn+L5Nz1EjVxGZQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
- failure in two scenarios
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Chris Li <chrisl@kernel.org>, Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, Ying <ying.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax3tw2yVplyjFHAA--.23995S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGw48XFyUKr4rtFW8ZFyUCFX_yoW5Gw4Dpw
+        sxCF9xJrWY93ZaqF1DJrs7Zr98Jw1v93y7tr97Gay8AFyjvr4fKFZ7trZ2vF4YvryFqr42
+        ya1Fvw4qgrW7J3XCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
+        XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+        kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
+        6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+        vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kfnx
+        nUUI43ZEXa7IU8q2NtUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> Shameless plug: zswap will much less likely hit the limit (global or
-> cgroup) with the shrinker enabled ;) It will proactively reclaim the
-> objects way ahead of the limit.
+When cpu is hot-unplugged,, it is put in idle state and function
+arch_cpu_idle_dead is called. Timer interrupt for this processor should be
+disabled, else there will be pending timer interrupt for the plug-out cpu,
+so that vcpu is prevented from giving up scheduling when system is running
+in vm mode.
 
-Hi  Nhat=EF=BC=8Cglad to hear from you.
-Back to the beginning, the original intention of this patch is to solve
-the problem that shrink_work() fails to reclaim memory in two situations.
-The zswap_writeback_entry() will failed for !page_was_allocated
-because zswap_load will have two copies of the same page in memory
-  (compressed and uncompressed) after faulting in a page from zswap when
-zswap_exclusive_loads disabled.
+This patch implements the timer shutdown interface so that the timer will
+be properly disabled when a CPU is hot-unplugged.
 
-A simple test:
-1): Turn off  zswap_exclusive_loads_enabled.
-2): Run a read-only program and allocate more memory than the limit,
-so the limit will be reached and shrinker will fail.
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Reviewed-by: WANG Xuerui <git@xen0n.name>
+---
+Changes in v2:
+  1. Remove function constant_set_state_oneshot_stopped and add detailed
+implementation in constant_set_state_shutdown.
+  2. Modify patch description and make it easier to understand.
 
->
-> It comes with its own can of worms, of course - it's unlikely to work
-> for all workloads in its current form, but perhaps worth experimenting
-> with/improved upon?
->
+---
+ arch/loongarch/kernel/time.c | 25 +++++++++----------------
+ 1 file changed, 9 insertions(+), 16 deletions(-)
+
+diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
+index 3064af94db9c..6a1734473aea 100644
+--- a/arch/loongarch/kernel/time.c
++++ b/arch/loongarch/kernel/time.c
+@@ -58,21 +58,6 @@ static int constant_set_state_oneshot(struct clock_event_device *evt)
+ 	return 0;
+ }
+ 
+-static int constant_set_state_oneshot_stopped(struct clock_event_device *evt)
+-{
+-	unsigned long timer_config;
+-
+-	raw_spin_lock(&state_lock);
+-
+-	timer_config = csr_read64(LOONGARCH_CSR_TCFG);
+-	timer_config &= ~CSR_TCFG_EN;
+-	csr_write64(timer_config, LOONGARCH_CSR_TCFG);
+-
+-	raw_spin_unlock(&state_lock);
+-
+-	return 0;
+-}
+-
+ static int constant_set_state_periodic(struct clock_event_device *evt)
+ {
+ 	unsigned long period;
+@@ -92,6 +77,14 @@ static int constant_set_state_periodic(struct clock_event_device *evt)
+ 
+ static int constant_set_state_shutdown(struct clock_event_device *evt)
+ {
++	unsigned long timer_config;
++
++	raw_spin_lock(&state_lock);
++	timer_config = csr_read64(LOONGARCH_CSR_TCFG);
++	timer_config &= ~CSR_TCFG_EN;
++	csr_write64(timer_config, LOONGARCH_CSR_TCFG);
++	raw_spin_unlock(&state_lock);
++
+ 	return 0;
+ }
+ 
+@@ -161,7 +154,7 @@ int constant_clockevent_init(void)
+ 	cd->rating = 320;
+ 	cd->cpumask = cpumask_of(cpu);
+ 	cd->set_state_oneshot = constant_set_state_oneshot;
+-	cd->set_state_oneshot_stopped = constant_set_state_oneshot_stopped;
++	cd->set_state_oneshot_stopped = constant_set_state_shutdown;
+ 	cd->set_state_periodic = constant_set_state_periodic;
+ 	cd->set_state_shutdown = constant_set_state_shutdown;
+ 	cd->set_next_event = constant_timer_next_event;
+
+base-commit: 037266a5f7239ead1530266f7d7af153d2a867fa
+-- 
+2.39.3
+
