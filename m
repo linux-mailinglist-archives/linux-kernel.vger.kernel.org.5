@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F057F0D6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39A07F0D78
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbjKTIX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        id S232065AbjKTI0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjKTIXy (ORCPT
+        with ESMTP id S229635AbjKTI0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:23:54 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90B795
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:23:50 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C71B467373; Mon, 20 Nov 2023 09:23:46 +0100 (CET)
-Date:   Mon, 20 Nov 2023 09:23:46 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Yuanyuan Zhong <yzhong@purestorage.com>,
-        Jens Axboe <axboe@kernel.dk>, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        randyj@purestorage.com, hcoutinho@purestorage.com
-Subject: Re: [PATCH] nvme-core: remove head->effects to fix use-after-free
-Message-ID: <20231120082346.GA11622@lst.de>
-References: <20231115185439.2616073-1-yzhong@purestorage.com> <69218380-45f0-41cc-8a65-50878d44219e@kernel.dk> <CA+AMecFkR0k9ofJt0_iHrPOvfMQ_ePv8QCPYy9m=U7xEjsNCKg@mail.gmail.com> <ZVUiLr3g1_i5YmRQ@kbusch-mbp.dhcp.thefacebook.com> <CA+AMecH1TZc3zVm0OF1VwwTBCrLp9mZnOa5zw59yr_W0WbH_uw@mail.gmail.com> <ZVWR4Rtr1N7IF6iQ@kbusch-mbp.dhcp.thefacebook.com> <20231117132846.GB7867@lst.de> <ZVeW-8cNNVOvNdaR@kbusch-mbp.dhcp.thefacebook.com>
+        Mon, 20 Nov 2023 03:26:32 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5961EB9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uMp2fMZBMPCr8C/u9KI5jUF0TwPRUJ/bxniQfy1HXoM=; b=p0fDRvzTKV43hpBu0+sr2+Pz73
+        TZn39hehC2t56EK4IteS4aWT9jFaZ/21cuIc5qudV4m5Ud+NRJkwVpbq8c5J8qHTSB4a6MmJfMGQb
+        UGdRc0QuQs7kP/u7CJn7pQQtY6YQ+YaY49Y8BXDregSPUnGGmRCcKYJDAwMO83hqWydxfVubHETSQ
+        msAyW9/Ot5qrWxGUV5lWqNKOg6V804Rw4GUzSg+z910mQcNCcEQonRyGMY/ioEsmhcR9b9WezX2IK
+        SZhguB0DFZGf+XBBLeKDx4/juMQhOMdzferrd/qZg8BsBikUOtQtsfl/e4DPxBeXe6NnJIRnwm8xr
+        dyfRwizg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r4zbs-00BVBv-2U;
+        Mon, 20 Nov 2023 08:26:24 +0000
+Date:   Mon, 20 Nov 2023 00:26:24 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
+ hugepd processing
+Message-ID: <ZVsYMMJpmFV2T/Zc@infradead.org>
+References: <20231116012908.392077-1-peterx@redhat.com>
+ <20231116012908.392077-7-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVeW-8cNNVOvNdaR@kbusch-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231116012908.392077-7-peterx@redhat.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 09:38:19AM -0700, Keith Busch wrote:
-> The effects log is per-CSI so different command sets won't create
-> conflicts.
+On Wed, Nov 15, 2023 at 08:29:02PM -0500, Peter Xu wrote:
+> Hugepd format is only used in PowerPC with hugetlbfs.  In commit
+> a6e79df92e4a ("mm/gup: disallow FOLL_LONGTERM GUP-fast writing to
+> file-backed mappings"), we added a check to fail gup-fast if there's
+> potential risk of violating GUP over writeback file systems.  That should
+> never apply to hugepd.
+>
+> Drop that check, not only because it'll never be true for hugepd, but also
+> it paves way for reusing the function outside fast-gup.
 
-True.  But that wasn't the point anyway.  It is that different
-controllers might expose very different namespaes with different
-capabilities.  Maybe a controller with HDD namespaces vs flash might
-be a better example.
+What prevents us from ever using hugepd with file mappings?  I think
+it would naturally fit in with how large folios for the pagecache work.
 
-> Namespaces that are not shared don't really matter here because this
-> problem is unique to mulitpath.
-
-Indeed.
-
-> It doesn't make sense for effects logs to be different per-controller
-> for the same shared namespace. The spec doesn't seem to explicitly
-> prevent that, but hints that all hosts should be seeing the same thing
-> no matter which controller they're connected to:
-
-Also agreed as already indicated in the past mail.
+So keeping this check and generalizing it seems like the better idea to
+me.
