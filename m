@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDED7F0EC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DD17F0EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbjKTJQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S232541AbjKTJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:16:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbjKTJQJ (ORCPT
+        with ESMTP id S232533AbjKTJQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:16:09 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C513B9;
-        Mon, 20 Nov 2023 01:16:05 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so3780959276.0;
-        Mon, 20 Nov 2023 01:16:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700471764; x=1701076564; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vpwOvzzEhozZ00SFHXEpmejOMEaeMFuJw7NXLVeDvN0=;
-        b=BMe4TT7GeyVUaXK/zUrqC1giG57HOYo1BT7seqXWWcIJTuzyWI8a+pT6OaP2/bAidH
-         Q2C4GrQMwWKFsckP7RCTEE8UDr9mcIbBzSBObnDUwphHWObgnVD+81fbRmpq0gVoJj2n
-         3ZHnSFE/UaMCULDgm+aUMKNQvvLtDPTIdbclmeYCK3PnAYACb5feJxVxD5VHtcEnJ7eO
-         2UJpRT7rRwi1iQWwJwaB5FINLXjcr27p3Gpw5R/nOh5KdVutRncZqCrwlhASxNjy5S4P
-         ywhanJD6UshMMtO67+Jw86WYrfMwNrYiK9wOmH+6Yke8lz94kMHDUB3A2txCu/6sirtx
-         eSrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700471764; x=1701076564;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vpwOvzzEhozZ00SFHXEpmejOMEaeMFuJw7NXLVeDvN0=;
-        b=gHVY8whAoezf7bpSLdaPM9A7UzzwPER9TcbA5XP4BZa5ltMv7deQzVV36qixY8G/TW
-         Vl4reCJpd0tQXYNcolmOEad/dSOprv6dKhoJu5NquXGpwTNqPlw+iZHhoJlDYCmUprkq
-         7JNLU/wLIN5u1Ea2migpKbG9QhcozOl1YVxq4t+Sr+WRbnPmqHdIZXfvmm4q5bOFPBKj
-         LEfQltLl6xDR3Myocgq9MjFD6mBR5M4gXWfmplHat8eKQWDhZuUgkIBeuL5jHayKZskX
-         KLLo/sv+uZZmqq7GlYPoedoScVgb0HkL3k/DYd00gSGvkWvvcCdevm6EGwRhZUnao5R0
-         k8Nw==
-X-Gm-Message-State: AOJu0Yym3nxcnLTIspMl70K9bCbD2k+5CqSCCS8U4plSoVHgTPFuMUub
-        wPWufQ271Luj3c45BT3N7kbyAEg0iixPJUbcNi4=
-X-Google-Smtp-Source: AGHT+IHQZdFmExncdM9w92IhRdz9hY7vAbs09uTd8RTDMHe6yfQhLY+Jt6pDbPzwWpTI/d6kO1raiNKHVl+oY27Gx6U=
-X-Received: by 2002:a05:6902:4e6:b0:da3:b87b:5b7c with SMTP id
- w6-20020a05690204e600b00da3b87b5b7cmr5863456ybs.38.1700471764148; Mon, 20 Nov
- 2023 01:16:04 -0800 (PST)
+        Mon, 20 Nov 2023 04:16:20 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D010C9;
+        Mon, 20 Nov 2023 01:16:17 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK9856m028497;
+        Mon, 20 Nov 2023 09:16:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=nFdUQj9AOSWjewm5RoNwJqldd5TNj4Jn1ns4UszwmWo=;
+ b=tKA8L0HtOsZTqJUF9W3VdlYvUM7Q//vFm0sTzInVZj30FoPhQv2NOguJ87s9ieoJFoJ6
+ OP5Qd3q5p4NQ0IPT9bhDKJnhVkNEvJa7mXTBcvwf8PCYkfXqBfynm5wvzP81/In0BxV/
+ 09rJAfg/Sbj8JCc/oB855pWUM59XfLbD8fjqT5ltiLPGFKsyF/STG2TV5GSm19OJbs/A
+ oUJ3xG7Jnz/WTg5Y0RknfcEq0gpBPyD8oZUEWSr0k7aUkl6dIuadAVUfKvY5rHw3CJpL
+ Wzp/22n/qZKCZ+aE+mCKOEUfPAhMotTgp08FXbudcOV3GArT/ZeE0T8HJi131FBQaRXS Lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ug4j786v8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 09:16:15 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AK9C3w7009295;
+        Mon, 20 Nov 2023 09:16:15 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ug4j786uq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 09:16:15 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK7KEUt028315;
+        Mon, 20 Nov 2023 09:16:14 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uf7ksregr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 09:16:14 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK9GBpj22414022
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 20 Nov 2023 09:16:11 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72B452004B;
+        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E39620040;
+        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
+Received: from [9.152.224.222] (unknown [9.152.224.222])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 20 Nov 2023 09:16:11 +0000 (GMT)
+Message-ID: <f18f6993-17e8-cab4-6a7f-059f669fc890@linux.ibm.com>
+Date:   Mon, 20 Nov 2023 10:16:10 +0100
 MIME-Version: 1.0
-References: <20231119104514.25536-1-tanure@linux.com>
-In-Reply-To: <20231119104514.25536-1-tanure@linux.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Mon, 20 Nov 2023 17:15:52 +0800
-Message-ID: <CAA+D8ANMZd1xT2nyNskaroz-X0pDTv2fCSPxKc+H4R2RS3FRCw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_mqs: Remove duplicate linux/of.h header
-To:     Lucas Tanure <tanure@linux.com>
-Cc:     Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] s390/vfio-ap: fix sysfs status attribute for AP queue
+ devices
+Content-Language: en-US
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Harald Freudenberger <freude@linux.ibm.com>
+References: <20231108201135.351419-1-akrowiak@linux.ibm.com>
+ <17ef8d76-5dec-46a3-84e1-1b92fadd27b0@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@linux.ibm.com>
+In-Reply-To: <17ef8d76-5dec-46a3-84e1-1b92fadd27b0@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: _2cgNhOm5HEippqYDl7vFdPrSsc1x0a7
+X-Proofpoint-GUID: luzmibklj_XTsQxEiYDY84TR7F4tgQ5o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_07,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=920 spamscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311200061
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 6:45=E2=80=AFPM Lucas Tanure <tanure@linux.com> wro=
-te:
->
-> Remove linux/of.h as is included more than once.
-> Reported by make includecheck.
->
-> Signed-off-by: Lucas Tanure <tanure@linux.com>
+Am 08.11.23 um 21:21 schrieb Tony Krowiak:
+> Christian,
+> Can this be pushed with the Acks by Halil and Harald?
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
-best regards
-Wang shengjiu
-> ---
->  sound/soc/fsl/fsl_mqs.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-> index f2d74ec05cdf..86704ba5f6f0 100644
-> --- a/sound/soc/fsl/fsl_mqs.c
-> +++ b/sound/soc/fsl/fsl_mqs.c
-> @@ -10,7 +10,6 @@
->  #include <linux/moduleparam.h>
->  #include <linux/mfd/syscon.h>
->  #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
-> -#include <linux/of.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/of.h>
->  #include <linux/pm.h>
-> --
-> 2.42.1
->
+[...]
+
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Acked-by: Halil Pasic <pasic@linux.ibm.com>
+>> Acked-by: Harald Freudenberger <freude@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c | 16 +++++++++++++++-
+>>   1 file changed, 15 insertions(+), 1 deletion(-)
+>>
+
+I think this can go via the s390 tree as well. Alexander do you want to take it?
