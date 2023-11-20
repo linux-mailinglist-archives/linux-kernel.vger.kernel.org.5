@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 825E17F1956
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288B77F195F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbjKTRGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        id S232116AbjKTRHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjKTRGR (ORCPT
+        with ESMTP id S231944AbjKTRHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:06:17 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202EDBE;
-        Mon, 20 Nov 2023 09:06:13 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 34272E000B;
-        Mon, 20 Nov 2023 17:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700499972;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=psIdhG1r0J8G800d6Izk2n63b31U1ZZAZ9rXUyFBS5Q=;
-        b=YSyItrHfbf+k8A4+8SzdiVoIgRTSJ9p7kJOCB82WPphGJs2ktpIZ9muRi7YGvMKk/5vBFk
-        cd1VSLoR04Brb/ycw4nBEnHaLH0eEjz50Y1/HTU8EOn/2ft/JelSmEZ4wkrTXprO25PVm3
-        /2SAU2ms060NioPTmpfGRnBgGQl1IDmAo/16epU7YcXywLS1o8IVTMYJbJCakl0RFTt5nx
-        GTm4x0N4wd4SOKhp08d7PdVEg0sSHaNZbURoNnzs28vFVWneK/aCWjNllBNuDUTGLkOGoy
-        1t5NiUl5Cv+BhYm6iXIwQ4Uufu7w54KUxdxxRTV/CVgGMMYggEojlueU63zNvQ==
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date:   Mon, 20 Nov 2023 18:06:07 +0100
-Subject: [PATCH v2 7/7] arm64: dts: ti: k3-j7200: use J7200-specific USB
- compatible
+        Mon, 20 Nov 2023 12:07:02 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEB2D6A
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:06:47 -0800 (PST)
+Received: from [194.95.143.137] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r57jP-0000mH-3V; Mon, 20 Nov 2023 18:06:43 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     hjc@rock-chips.com, Johan Jonker <jbx6244@gmail.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/4] drm/rockchip: rk3066_hdmi: Remove useless output format
+Date:   Mon, 20 Nov 2023 18:06:42 +0100
+Message-ID: <4308014.ejJDZkT8p0@phil>
+In-Reply-To: <bb5cac77-a705-738e-13ae-667ea87f1cb1@gmail.com>
+References: <cda574be-4f33-b66d-eb14-92c2b31d241e@gmail.com>
+ <bb5cac77-a705-738e-13ae-667ea87f1cb1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231120-j7200-usb-suspend-v2-7-038c7e4a3df4@bootlin.com>
-References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
-In-Reply-To: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "Thomas Petazzoni thomas.petazzoni"@bootlin.com,
-        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
-        =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.12.3
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On our platform, suspend-to-idle or suspend-to-RAM turn the controller
-off. This compatible triggers reset on resume behavior to reconfigure
-the hardware.
+Hi Johan,
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Am Donnerstag, 2. November 2023, 14:42:19 CET schrieb Johan Jonker:
+> The Rk3066 hdmi output format is hard coded to RGB. Remove
+> all useless code related to colorimetry and enc_out_format.
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index 709081cd1e7f..52c4ee0fa334 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -788,7 +788,7 @@ pcie1_ep: pcie-ep@2910000 {
- 	};
- 
- 	usbss0: cdns-usb@4104000 {
--		compatible = "ti,j721e-usb";
-+		compatible = "ti,j7200-usb", "ti,j721e-usb";
- 		reg = <0x00 0x4104000 0x00 0x100>;
- 		dma-coherent;
- 		power-domains = <&k3_pds 288 TI_SCI_PD_EXCLUSIVE>;
+I guess my first question is, is the hardcoding happening just because
+of missing functionality in the driver, or does the hardware only
+support RGB?
 
--- 
-2.42.0
+
+> ---
+>  drivers/gpu/drm/rockchip/rk3066_hdmi.c | 20 +-------------------
+>  1 file changed, 1 insertion(+), 19 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rk3066_hdmi.c b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+> index 0e7aae341960..f2b1b2faa096 100644
+> --- a/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+> +++ b/drivers/gpu/drm/rockchip/rk3066_hdmi.c
+> @@ -23,8 +23,6 @@
+> 
+>  struct hdmi_data_info {
+>  	int vic; /* The CEA Video ID (VIC) of the current drm display mode. */
+> -	unsigned int enc_out_format;
+> -	unsigned int colorimetry;
+>  };
+> 
+>  struct rk3066_hdmi_i2c {
+> @@ -200,14 +198,7 @@ static int rk3066_hdmi_config_avi(struct rk3066_hdmi *hdmi,
+>  	rc = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi,
+>  						      &hdmi->connector, mode);
+> 
+> -	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV444)
+> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV444;
+> -	else if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_YUV422)
+> -		frame.avi.colorspace = HDMI_COLORSPACE_YUV422;
+> -	else
+> -		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+> -
+> -	frame.avi.colorimetry = hdmi->hdmi_data.colorimetry;
+> +	frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+>  	frame.avi.scan_mode = HDMI_SCAN_MODE_NONE;
+> 
+>  	return rk3066_hdmi_upload_frame(hdmi, rc, &frame,
+> @@ -329,15 +320,6 @@ static int rk3066_hdmi_setup(struct rk3066_hdmi *hdmi,
+>  	struct drm_display_info *display = &hdmi->connector.display_info;
+> 
+>  	hdmi->hdmi_data.vic = drm_match_cea_mode(mode);
+> -	hdmi->hdmi_data.enc_out_format = HDMI_COLORSPACE_RGB;
+> -
+> -	if (hdmi->hdmi_data.vic == 6 || hdmi->hdmi_data.vic == 7 ||
+> -	    hdmi->hdmi_data.vic == 21 || hdmi->hdmi_data.vic == 22 ||
+> -	    hdmi->hdmi_data.vic == 2 || hdmi->hdmi_data.vic == 3 ||
+> -	    hdmi->hdmi_data.vic == 17 || hdmi->hdmi_data.vic == 18)
+> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_601;
+> -	else
+> -		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
+
+while I can understand the RGB output format, why does the colorimetry
+also get removed? This looks like it is dependent on the mode itself
+and not the output format?
+
+Thanks
+Heiko
+
 
