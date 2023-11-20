@@ -2,162 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBD57F1F4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52B57F1F57
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjKTVib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:38:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S232301AbjKTVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTVia (ORCPT
+        with ESMTP id S232003AbjKTVkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:38:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E736CA;
-        Mon, 20 Nov 2023 13:38:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700516306; x=1732052306;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o3m56hl+JqpBTbDARZLvzqTO79AW8kpf8jC8GzCYZig=;
-  b=RS93XSkXyuwIyOF/zDrhESMWJysdcRIIN4WI227fOSZMlJpD0F8DyGQS
-   WX6dppZdSAHPmarIO0KvjgdKPtVZnirJFEcR61/5NjnC59RXuzpQB8Ys9
-   np/l5BXEa48ZOFcpIrbe6KGrfcoEdPAAnN6zjptWwcA0aOKBpXHjaBMH/
-   /oxyGQ8wOGNaZw1Tk73CJUzyxkti10yRGOArsxIIRbhLWAeoeN86BXowv
-   1KfnN7QR9yi2P8TeQrFSGLg/x04fSg31zsp5K2IXjkvymgWB2DXmkm/lm
-   ErfWB912pvBNH9xN44a/qAUsgAVrI2gmZYU4P+DU87kKJ5P4bxlUiiqfP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371886532"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="371886532"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:38:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="890056312"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="890056312"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 20 Nov 2023 13:38:11 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5By4-0006wq-2K;
-        Mon, 20 Nov 2023 21:38:08 +0000
-Date:   Tue, 21 Nov 2023 05:38:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arch@vger.kernel.org, x86@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCH 1/5] jump_label,module: Don't alloc static_key_mod for
- __ro_after_init keys
-Message-ID: <202311210541.RAdnu4yL-lkp@intel.com>
-References: <20231120105528.760306-2-vschneid@redhat.com>
+        Mon, 20 Nov 2023 16:40:02 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D9CB;
+        Mon, 20 Nov 2023 13:39:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1700516394;
+        bh=ZUHtKmWY+81XhelBP73qoHs8AeB/zM3hJJ3dafxVNj8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FCYhYiK41ZvwgxO6TaIDf5s3/PJnUI6Wh19jpad0X+fxNpT7nKeldI0r3hvoDZWuX
+         7ZaE5HkdSaSoGb35Kj+KvBZQJ0nNuKUlnthasHKL6RqwF9fa4AIYZd1NFqNSLhgtS6
+         uT3yAy8242CFYU2/lMo0zaCA6ge0C3L4ZgaR9kKrVHDu9uLtNAmn9saZBF3A4sGQO2
+         IHHOGJ10RV7jkFYMROWG9lFC4SKHJkguZUP1Xv+JnLHeKuKgpDNGHOUt8mBrbVIMYD
+         g5PdXrgiEBqlu56FaRSneow2f1nXbPE7YSwyVxeeQO7pWE3GzcCVPm1ip9x6q9h3Wt
+         e9vje/Oz1kQXw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SZ1BK6ZP2z4wdB;
+        Tue, 21 Nov 2023 08:39:53 +1100 (AEDT)
+Date:   Tue, 21 Nov 2023 08:39:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Fabio De Francesco <fabio.maria.de.francesco@intel.com>,
+        "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the mm tree
+Message-ID: <20231121083951.5b314a98@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120105528.760306-2-vschneid@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Vh=cqXW67=TJWI=_58Lys6z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin,
+--Sig_/Vh=cqXW67=TJWI=_58Lys6z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel test robot noticed the following build errors:
+Hi all,
 
-[auto build test ERROR on tip/x86/core]
-[also build test ERROR on linus/master v6.7-rc2 next-20231120]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Commit
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Valentin-Schneider/jump_label-module-Don-t-alloc-static_key_mod-for-__ro_after_init-keys/20231120-190044
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20231120105528.760306-2-vschneid%40redhat.com
-patch subject: [PATCH 1/5] jump_label,module: Don't alloc static_key_mod for __ro_after_init keys
-config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20231121/202311210541.RAdnu4yL-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311210541.RAdnu4yL-lkp@intel.com/reproduce)
+  b2419063123e ("mm/util: use kmap_local_page() in memcmp_pages()")
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311210541.RAdnu4yL-lkp@intel.com/
+is missing a Signed-off-by from its author.
 
-All errors (new ones prefixed by >>):
+Well, not actually, but it helps if the Author of the commit and the
+Signed-off-by use the same email address (or slightly more similar
+than this:
 
-   init/main.c: In function 'mark_readonly':
->> init/main.c:1406:17: error: implicit declaration of function 'jump_label_ro'; did you mean 'jump_label_lock'? [-Werror=implicit-function-declaration]
-    1406 |                 jump_label_ro();
-         |                 ^~~~~~~~~~~~~
-         |                 jump_label_lock
-   cc1: some warnings being treated as errors
+Author: Fabio De Francesco <fabio.maria.de.francesco@intel.com>
+Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.=
+com>
 
+--=20
+Cheers,
+Stephen Rothwell
 
-vim +1406 init/main.c
+--Sig_/Vh=cqXW67=TJWI=_58Lys6z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  1394	
-  1395	#ifdef CONFIG_STRICT_KERNEL_RWX
-  1396	static void mark_readonly(void)
-  1397	{
-  1398		if (rodata_enabled) {
-  1399			/*
-  1400			 * load_module() results in W+X mappings, which are cleaned
-  1401			 * up with call_rcu().  Let's make sure that queued work is
-  1402			 * flushed so that we don't hit false positives looking for
-  1403			 * insecure pages which are W+X.
-  1404			 */
-  1405			rcu_barrier();
-> 1406			jump_label_ro();
-  1407			mark_rodata_ro();
-  1408			rodata_test();
-  1409		} else
-  1410			pr_info("Kernel memory protection disabled.\n");
-  1411	}
-  1412	#elif defined(CONFIG_ARCH_HAS_STRICT_KERNEL_RWX)
-  1413	static inline void mark_readonly(void)
-  1414	{
-  1415		pr_warn("Kernel memory protection not selected by kernel config.\n");
-  1416	}
-  1417	#else
-  1418	static inline void mark_readonly(void)
-  1419	{
-  1420		pr_warn("This architecture does not have kernel memory protection.\n");
-  1421	}
-  1422	#endif
-  1423	
+-----BEGIN PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVb0icACgkQAVBC80lX
+0GzlAwf7BZMi0XRFj7e5+2bRYhN4y77JCfGPhEcQlmylA+b002gzy9A0iNcYA4yo
+U4vkbNMq6Vw6BZrGJoZSK/e4O6CgCpOwyXmuoLX0juxAIn05OwmuVmp2OIH5QkII
+GaYrIq8CWRmZFmrHq6584xZEnvJjGQZuMT8Wy83btCbkvq7KDgTrqYzMuf5rjhux
+MF7BofyP5A5isDi04qGjmgY5I+GxW/H5oB+BNWd6Z9phBFmvOuduPuFzH6036f0D
+5LSwt6o1MBuQDHRv9o37BlfBHHKBeqdo9N/klB5sc+hdIgb1JxvBYdVjrmsfe5aX
+AKQFBClorMjzDM87y4nwM6cgt1iNpQ==
+=SNG0
+-----END PGP SIGNATURE-----
+
+--Sig_/Vh=cqXW67=TJWI=_58Lys6z--
