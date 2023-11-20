@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D006C7F1D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB197F1D35
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjKTTK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S229632AbjKTTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjKTTKY (ORCPT
+        with ESMTP id S232525AbjKTTKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:10:24 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C21E3;
-        Mon, 20 Nov 2023 11:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nQggdxI9MQ2FS/W0GEG8D1cdBawPg8AZAzpNVf/hhDE=; b=wv7i7KIsLK5sNs6GxBZ1eTPvBs
-        8D8waGZ6Bwkk1VOH7PyCYlBdY9FsgioEi1s1ihGrbcNKiF9AfI7TAtw9C3PUA/kTAIHd12QNvdw4o
-        DOtwmu10YB8J+ElXm/wS/syMFmzPx6OXbkbgALZ95FKgsPgKIEkAwVFlO2KcY8A133LpHG23/UDXt
-        DxGwZ0Ee1yOjGDnINBC/yfQAQU9K0KOT2AdYYXMPnLAMhzilCsGlSHatd15UG/R4Zf831IuuTQvtR
-        o6JmuUipByC7p2R4IlIWia1+wi6WZUEDC0JRDZ+tVZBruY6fC5yfCeWJPrdORF0W9FOWHPCbxrmm4
-        v6qFC6bA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60598)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r59ef-00062L-1c;
-        Mon, 20 Nov 2023 19:09:57 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r59ed-0003Q4-V6; Mon, 20 Nov 2023 19:09:55 +0000
-Date:   Mon, 20 Nov 2023 19:09:55 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <ZVuvA5V6IWa4fIs3@shell.armlinux.org.uk>
-References: <20231114-feature_ptp_netnext-v7-15-472e77951e40@bootlin.com>
- <20231118183433.30ca1d1a@kernel.org>
- <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
- <20231120105255.cgbart5amkg4efaz@skbuf>
- <20231120121440.3274d44c@kmaincent-XPS-13-7390>
- <20231120120601.ondrhbkqpnaozl2q@skbuf>
- <20231120144929.3375317e@kmaincent-XPS-13-7390>
- <20231120142316.d2emoaqeej2pg4s3@skbuf>
- <20231120093723.4d88fb2a@kernel.org>
- <157c68b0-687e-4333-9d59-fad3f5032345@lunn.ch>
+        Mon, 20 Nov 2023 14:10:42 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB06F9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:10:38 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9ffb5a4f622so134890966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:10:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700507437; x=1701112237; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m2uesSr1RZAG/avk1Qh8AUkPhBEOaB3euOWyklILHFo=;
+        b=TdY+gnjLRFrp6ovIbujZESoLWWIu19mMJo7qQIsMen8NeJ5HKVfP/vvCWGO3TzDUsH
+         eBQmUPzXriW2+yC5nBjmRiRDcjmpjVbefM+ry2/JJOaCURBpCUVc8qzIMzATGN/JYpR/
+         WsJF7ZY/1vH735csc1fcFpChEzu8Tt1u7kgBiN932M27iCc66i4AnzU2aC0h46r3Kd1n
+         Q/tQzV6jR1Q6nTiwYeMOoxG+p4S4xHvkKhMHbWynCuEv22Sqf8yuH/b2Sn6SXWdU3Sjo
+         Ul/hUwcUP+cHp/+3+g4E7QmuuL+sda2xo7uOsezvVW9+c2HqrftG6SxEo4Z87lWsLzSy
+         Ax4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700507437; x=1701112237;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m2uesSr1RZAG/avk1Qh8AUkPhBEOaB3euOWyklILHFo=;
+        b=k/D4oJCL5UPDS+GrWNLi8IjEiQk6EV/AE5OWbzGDvAScp9WX8e96ahnKtZ3V3MaHi4
+         AL5uw5Y91xTAJVdgnMPHqLXjSsqTDLkIzPy+t2lDB0tAFyZrUvOOmLMDCYAkyvBR9V58
+         D/TJxt46bKw6FS76k7RsqLGpG10jrlaju2drYQXLivL3zAX1LS2EB8vGl58EbMxO6auf
+         Mp11AoFLV8w49lodzBj/U2Ua26lDAYMzINUXBIpnJ5TNwzpIIbDC84hhYgMlGL8itFnH
+         bWy1V5WIL0cEgrL+iJxNY5aCMRT/fXKWuSv+jM3pf81ANisZueQr3/ml2idQBwsSkxsk
+         Ub6w==
+X-Gm-Message-State: AOJu0Yx2iGZ3Etrn4GyoUffeGK7qiIciQ4PxpvOcpJPyB3XPqTlT8pIB
+        4aGILVCT49CGKvVywQOI03qC5ncvMX8tZIluZg29pQ==
+X-Google-Smtp-Source: AGHT+IGN3CuWMRbRGYyiy4VguhASYZXTkUCRpw8AZsUGWsrdAUs4cau/J/ydxAbEfu7eBcEbxLbMo80RdseTX4rHVlY=
+X-Received: by 2002:a17:906:5619:b0:9c4:b8c9:1bf4 with SMTP id
+ f25-20020a170906561900b009c4b8c91bf4mr6269527ejq.19.1700507436601; Mon, 20
+ Nov 2023 11:10:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <157c68b0-687e-4333-9d59-fad3f5032345@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com>
+In-Reply-To: <20231119194740.94101-1-ryncsn@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 20 Nov 2023 11:09:58 -0800
+Message-ID: <CAJD7tkYXcQkTZkUnAz89dR0O1YmEUr29UFeg3142t6Y09aaSpg@mail.gmail.com>
+Subject: Re: [PATCH 00/24] Swapin path refactor for optimization and bugfix
+To:     Kairui Song <kasong@tencent.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:39:35PM +0100, Andrew Lunn wrote:
-> > What about my use case of having a NIC which can stamp at a low rate
-> > at the PHY (for PTP) and high rate at the DMA block (for congestion
-> > control)? Both stamp points have the same PHC index.
-> 
-> How theoretical is that? To me, it seems more likely you have two PHC.
-> 
-> The PHY stamping tends to be slow because of the MDIO bus. If the MAC
-> has fast access to the PHC, it means its not on the MDIO bus. It
-> probably means you have the PHY integrated into the MAC/SoC, so the
-> MAC can access it. But if its integrated like this, i don't see why
-> PHY stamping should be particularly slow. So you can probably use it
-> for congestion control. And then you don't need DMA stamping.
-> 
-> Do you know of real hardware with a MAC and a PHY sharing a PHC?
+On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
+te:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> This series tries to unify and clean up the swapin path, fixing a few
+> issues with optimizations:
+>
+> 1. Memcg leak issue: when a process that previously swapped out some
+>    migrated to another cgroup, and the origianl cgroup is dead. If we
+>    do a swapoff, swapped in pages will be accounted into the process
+>    doing swapoff instead of the new cgroup. This will allow the process
+>    to use more memory than expect easily.
+>
+>    This can be easily reproduced by:
+>    - Setup a swap.
+>    - Create memory cgroup A, B and C.
+>    - Spawn process P1 in cgroup A and make it swap out some pages.
+>    - Move process P1 to memory cgroup B.
+>    - Destroy cgroup A.
+>    - Do a swapoff in cgroup C
+>    - Swapped in pages is accounted into cgroup C.
+>
+>    This patch will fix it make the swapped in pages accounted in cgroup B=
+.
+>
 
-Not so much a MAC and PHY sharing a PHC, but I notice in USXGMII-M,
-there is the ability for the PHY to pass the timestamp back to the MAC
-through the USXGMII-M connection - which would eliminate the problems
-of accessing the PHY to get that the timestamps.
+I guess this only works for anonymous memory and not shmem, right?
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I think tying memcg charges to a process is not something we usually
+do. Charging the pages to the memcg of the faulting process if the
+previous owner is dead makes sense, it's essentially recharging the
+memory to the new owner. Swapoff is indeed a special case, since the
+faulting process is not the new owner, but an admin process or so. I
+am guessing charging to the new memcg of the previous owner might make
+sense in this case, but it is a change of behavior.
