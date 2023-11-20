@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 716577F0F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E18E7F0F5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbjKTJsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        id S232565AbjKTJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:48:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTJsj (ORCPT
+        with ESMTP id S232229AbjKTJsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 04:48:39 -0500
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB5194;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F6695;
         Mon, 20 Nov 2023 01:48:35 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DE1BD20009;
-        Mon, 20 Nov 2023 09:48:32 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E317D20011;
+        Mon, 20 Nov 2023 09:48:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700473713;
+        t=1700473714;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Hj6bwwF80hCVZud43IrkasSpNlgaA1s6m8gFcAg5NDQ=;
-        b=FyFIFaXjQ6txcrROLo8Ssy+cqZO+RllOLJDyzBDojGSZFv/KGC6tyOHLOCu+yx9Egd2HkR
-        6wtBSQZQU+BNUZlE3BMNtvUw4Dvt8T1NoxfloL3itClKLMv1lPvJ6MPLf56SB+1nw6phkX
-        5G6LF3UZXlIfnkoqJmiYP2sfPQENjyU24l4Qe+kcWPV8jWiLeld9hp83ioYXZbKLxs6g2F
-        d0V+3Bzs6RB8RCHtPwoDpseHVJH8UK0NLR2DwGPX7OGOJLIJZHowYShyMfKBAdUnfsk/QV
-        KtrVHjOzv7bENrdKV0nLd7FGxiUKke3QdIrC+61IFsecu12+HvOqL8aVyox+pg==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u6N8cnAeiMvZjIuo8ykO3zJAvNmqAkrErQjox7ErLGQ=;
+        b=jdZ7wH29KE5ig8CcaKFWpbraN75XQtTwiXvG1xlhVTCAA7QSQm0CDAnDvjvtOB6bBVTqz4
+        2lNo29axG/W56kURygrWpYBlUkU6lZHyBuA/PksrwjnVucpLI617iOMNdjEfHX0loM0HFG
+        r2mdOGBX7zy1CrNlhtw6ltbxPIXf2M3sJvSav/yXbv2YljTMzAduOsh2RYCRTwFrmMg0hG
+        J3RiTu2XvC0zkb/KSLjBeur85Ofn1F69/ITZ+fY7/jiV06j0EHqL309qrFh3BW3kb00ndw
+        iGyVCTi3XKLjr1I3cfnb1OoRy/WJaMV5SaOglGS8sHeIlQjOquBa2W5hE3RFQA==
 From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: [PATCH v3 0/6] Cleanup AMBA PL011 driver
-Date:   Mon, 20 Nov 2023 10:48:23 +0100
-Message-Id: <20231120-mbly-uart-v3-0-07ae35979f1f@bootlin.com>
+Date:   Mon, 20 Nov 2023 10:48:24 +0100
+Subject: [PATCH v3 1/6] tty: serial: amba: cleanup whitespace
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-B4-Tracking: v=1; b=H4sIAGgrW2UC/1WMQQ6DIBBFr2JmXRqBSLGr3qPpAnCoJCoGLKkx3
- r1o0rQuZvEm/70FIgaHEa7FAgGTi84PGfipANOq4YnENZmBlYzTfKTX3UxeKkxEWaOM1rW0UkP
- ejwGte++t+yNz6+Lkw7ynE92+34r4qyRKSlKzSiIqVl8aftPeT50bzsb3sHUS+7mUHlyWXSm4F
- aIyWLHy6K7r+gHdREx14AAAAA==
+Message-Id: <20231120-mbly-uart-v3-1-07ae35979f1f@bootlin.com>
+References: <20231120-mbly-uart-v3-0-07ae35979f1f@bootlin.com>
+In-Reply-To: <20231120-mbly-uart-v3-0-07ae35979f1f@bootlin.com>
 To:     Russell King <linux@armlinux.org.uk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>
@@ -63,57 +62,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Fix whitespace in include/linux/amba/serial.h to match current kernel
+coding standards. Fixes about:
 
-While adding upstream support to a new platform (Mobileye EyeQ5[1]) that
-uses the AMBA PL011 driver, I took some time to look at the PL011
-driver and ended up with a few patches that cleanup parts of it. The
-line-diff is big mostly because of the checkpatch-fixing commits.
+ - CHECK: spaces preferred around that '|' (ctx:VxV)
+ - ERROR: code indent should use tabs where possible
+ - WARNING: Unnecessary space before function pointer arguments
+ - WARNING: please, no spaces at the start of a line
 
-The driver hadn't received any love for quite some time. See commit
-messages for more information.
-
-We can thank Ilpo Järvinen for this V3! See below for changes compared
-to V2.
-
-[1]: https://lore.kernel.org/all/202310050726.GDpZbMDO-lkp@intel.com/T/
-
-Have a nice day,
-Théo Lebrun
-
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
-Changes in v3:
-- Replace magic constants in linux/amba/serial.h by FIELD_PREP_CONST calls
-- Refactor QDF2400 SoC erratum 44 handling out of probe in a new patch
-- A nit in "unindent pl011_console_get_options function body"
-- Link to v2: https://lore.kernel.org/r/20231116-mbly-uart-v2-0-863f665ce520@bootlin.com
+ include/linux/amba/serial.h | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Changes in v2:
-- [PATCH 2]: add #include <linux/bits.h> in include/linux/amba/serial.h
-  as we use the BIT() macro.
-- Move one whitespace cleanup from [PATCH 4/6] to [PATCH v2 3/5] where
-  it belongs.
-- Drop [PATCH 6/6]: console will never have a word length of 5 or 6.
-- Link to v1: https://lore.kernel.org/r/20231026-mbly-uart-v1-0-9258eea297d3@bootlin.com
+diff --git a/include/linux/amba/serial.h b/include/linux/amba/serial.h
+index a1307b58cc2c..27003ec52114 100644
+--- a/include/linux/amba/serial.h
++++ b/include/linux/amba/serial.h
+@@ -75,10 +75,10 @@
+ #define UART011_DR_PE		(1 << 9)
+ #define UART011_DR_FE		(1 << 8)
+ 
+-#define UART01x_RSR_OE 		0x08
+-#define UART01x_RSR_BE 		0x04
+-#define UART01x_RSR_PE 		0x02
+-#define UART01x_RSR_FE 		0x01
++#define UART01x_RSR_OE		0x08
++#define UART01x_RSR_BE		0x04
++#define UART01x_RSR_PE		0x02
++#define UART01x_RSR_FE		0x01
+ 
+ #define UART011_FR_RI		0x100
+ #define UART011_FR_TXFE		0x080
+@@ -86,9 +86,9 @@
+ #define UART01x_FR_TXFF		0x020
+ #define UART01x_FR_RXFE		0x010
+ #define UART01x_FR_BUSY		0x008
+-#define UART01x_FR_DCD 		0x004
+-#define UART01x_FR_DSR 		0x002
+-#define UART01x_FR_CTS 		0x001
++#define UART01x_FR_DCD		0x004
++#define UART01x_FR_DSR		0x002
++#define UART01x_FR_CTS		0x001
+ #define UART01x_FR_TMSK		(UART01x_FR_TXFF + UART01x_FR_BUSY)
+ 
+ /*
+@@ -110,14 +110,14 @@
+ #define UART011_CR_TXE		0x0100	/* transmit enable */
+ #define UART011_CR_LBE		0x0080	/* loopback enable */
+ #define UART010_CR_RTIE		0x0040
+-#define UART010_CR_TIE 		0x0020
+-#define UART010_CR_RIE 		0x0010
++#define UART010_CR_TIE		0x0020
++#define UART010_CR_RIE		0x0010
+ #define UART010_CR_MSIE		0x0008
+ #define ST_UART011_CR_OVSFACT	0x0008	/* Oversampling factor */
+ #define UART01x_CR_IIRLP	0x0004	/* SIR low power mode */
+ #define UART01x_CR_SIREN	0x0002	/* SIR enable */
+ #define UART01x_CR_UARTEN	0x0001	/* UART enable */
+- 
++
+ #define UART011_LCRH_SPS	0x80
+ #define UART01x_LCRH_WLEN_8	0x60
+ #define UART01x_LCRH_WLEN_7	0x40
+@@ -203,8 +203,8 @@
+ #define UART011_TXDMAE		(1 << 1)	/* enable transmit dma */
+ #define UART011_RXDMAE		(1 << 0)	/* enable receive dma */
+ 
+-#define UART01x_RSR_ANY		(UART01x_RSR_OE|UART01x_RSR_BE|UART01x_RSR_PE|UART01x_RSR_FE)
+-#define UART01x_FR_MODEM_ANY	(UART01x_FR_DCD|UART01x_FR_DSR|UART01x_FR_CTS)
++#define UART01x_RSR_ANY		(UART01x_RSR_OE | UART01x_RSR_BE | UART01x_RSR_PE | UART01x_RSR_FE)
++#define UART01x_FR_MODEM_ANY	(UART01x_FR_DCD | UART01x_FR_DSR | UART01x_FR_CTS)
+ 
+ #ifndef __ASSEMBLY__
+ struct amba_device; /* in uncompress this is included but amba/bus.h is not */
+@@ -220,8 +220,8 @@ struct amba_pl011_data {
+ 	bool dma_rx_poll_enable;
+ 	unsigned int dma_rx_poll_rate;
+ 	unsigned int dma_rx_poll_timeout;
+-        void (*init) (void);
+-	void (*exit) (void);
++	void (*init)(void);
++	void (*exit)(void);
+ };
+ #endif
+ 
 
----
-Théo Lebrun (6):
-      tty: serial: amba: cleanup whitespace
-      tty: serial: amba: Use linux/bits.h macros for constant declarations
-      tty: serial: amba-pl011: cleanup driver
-      tty: serial: amba-pl011: replace TIOCMBIT macros by static functions
-      tty: serial: amba-pl011: unindent pl011_console_get_options function body
-      tty: serial: amba-pl011: factor QDF2400 SoC erratum 44 out of probe
-
- drivers/tty/serial/amba-pl011.c | 260 +++++++++++++++++++++-------------------
- include/linux/amba/serial.h     | 257 ++++++++++++++++++++-------------------
- 2 files changed, 265 insertions(+), 252 deletions(-)
----
-base-commit: 82251bf0515a7c32121b0e833922708d4dd70da9
-change-id: 20231023-mbly-uart-afcacbb98f8b
-
-Best regards,
 -- 
-Théo Lebrun <theo.lebrun@bootlin.com>
+2.42.0
 
