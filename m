@@ -2,132 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6627F0D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E2D7F0D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbjKTIFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S232095AbjKTIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232098AbjKTIF3 (ORCPT
+        with ESMTP id S232081AbjKTIFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:05:29 -0500
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E7A5CA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:23 -0800 (PST)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1cc0e3a2b6eso48734865ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700467523; x=1701072323;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Mon, 20 Nov 2023 03:05:53 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0806E8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:47 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so4252363b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700467547; x=1701072347; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BFFgTieMhzmpzC7zBMFZD5JT3T1t57L3DBASoDQrHkU=;
-        b=TB3hUFMUxsraAXPu3/w1kJ/ZGRBmAnSR+CF/dPa/FRxpWXnCCLDRhq0DvFt4gbtq4t
-         zJc8zYU1wTTCzPSOyoKjUlKPkW69HNYVtGcqPDPy10L/RkjsdLSRO6FFR99wjFMmV8XH
-         qU5zJouNaXbyTQHpTSVYktsaQOOt+tTAOaef2104T4jDfPecZ36YTJiARHzPfxSN3OXL
-         tmrlGD74HOrsxpMwYYcq7XKLkl8FkBlAzJhZI/SU7Zvd8UNm+5aHrNWdVRhFAFcQDqLt
-         L7cNqn6TThCK19ECp7C9FbFdgSZnxe+DlQU7vK7TzJxk/vmrdPuBD2QTwf2PIIjoe6Du
-         Yvzw==
-X-Gm-Message-State: AOJu0YwQRG4smCHlcWbn8odHsENNrXbXb1tuF3AWHJ24ZpGdhKe13k7T
-        frjf+U2v9QN42zcZc7z15PqTnj510gHituaztBueadnDR28w
-X-Google-Smtp-Source: AGHT+IGirTJ0JjBDHQiqHuy3NgK5Ew2xOfMaek3wJqfnN0aPD81r0i9kd/HnPDFnWeXVKVOQrpon4LK8ARMLLDfHbKx/d30hi7Mf
+        bh=n4NoqTxZnppS8i0nP/xGCXWB/hxXsx67zIl1hkFjXDo=;
+        b=OGRyE6wZHDiPSa6gF4QXDy5G++VYIEFZkEWmeZEiaskWAB2wUBXtzA5uds46mPpmIB
+         tOe9lhtEvqHdhC3ulemjpZKATvLGbU8hgBrIG5BVVwHGG2ZUNIuZQYotukauA/hBuIRG
+         YptTDtk2RaTYWz51aEQzGQB18IalXh2sqC4SErvC7mZ+3fQwRJA42NBV3fQTU85VvVmv
+         F7RoQe10E6yMVAKEEJcC5js3pXvwarz8J+wa5FW5c4E2S4VaqaBKERXUG+DhVfT2Urnp
+         kRLqGRCEzdGsy85oOI2lKINxkTEKWq3ChqOIkRxk6eeU4aDNjhfThaO37pT2P9HxPaAA
+         b44w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700467547; x=1701072347;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n4NoqTxZnppS8i0nP/xGCXWB/hxXsx67zIl1hkFjXDo=;
+        b=ks+v0PCdMiEMQ2uiCl30tXx1vcuU3VzALCZ4B3teJ0J9Xr5HqSoQCVGPPWxBeh3AFv
+         /C6t01WOQr/pkz2EH8ih/BEb8cbgRXJ2Z0hBP2mz4VGBeLNC28La/qeOy6rrQo8pX8Ep
+         1QfXHthGMKVHBPYMdAEvUujaLaFLUIQ2GsVwMmfUzHOlTjVV/fVWD/lL7QIgcdBUmfMR
+         6xawiFXWU7A5Blk3JK4VWlvCE6HLyM/S/rh3w6GupmEhm8Wx6J0mx5IWLN8HoCKGz/V7
+         te/no773U+JZusshLUOWWdYUbARdffamFConpcLh3ktAPQwkW0p4pPjGACayjtsXrhWR
+         SAJA==
+X-Gm-Message-State: AOJu0YxvOvQGZeo0KSDEfM1r3FN145m/+nB/sCGg0nJ5RNj0xdHgISOA
+        9GGt43z7Iw2OVS9RUm+A1xRRaA==
+X-Google-Smtp-Source: AGHT+IGssdhQXa2d+roUN7IT+TTU6LwlrMuPiMYOCQM48dnmpaA4XEU9k505dahywkNiyYYGiT6THg==
+X-Received: by 2002:a05:6a00:80a:b0:6cb:910a:c6fe with SMTP id m10-20020a056a00080a00b006cb910ac6femr3670261pfk.7.1700467547194;
+        Mon, 20 Nov 2023 00:05:47 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id f32-20020a056a000b2000b006c5da63556dsm5673415pfu.178.2023.11.20.00.05.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 00:05:46 -0800 (PST)
+Message-ID: <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+Date:   Mon, 20 Nov 2023 17:05:40 +0900
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:11c3:b0:1cf:6467:b2ed with SMTP id
- q3-20020a17090311c300b001cf6467b2edmr231475plh.12.1700467522985; Mon, 20 Nov
- 2023 00:05:22 -0800 (PST)
-Date:   Mon, 20 Nov 2023 00:05:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8e4a3060a90f205@google.com>
-Subject: [syzbot] [btrfs?] memory leak in __btrfs_add_free_space
-From:   syzbot <syzbot+349f1f9eb382f477ce50@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Song Liu <song@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com>
+ <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
+ <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
+ <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+ <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+ <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com>
+ <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Content-Language: en-US
+From:   Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023/11/20 6:02, Song Liu wrote:
+> On Sun, Nov 19, 2023 at 12:03 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>
+> [...]
+>>
+>> Unfortunately no. The communication with the userspace can be done with
+>> two different means:
+>> - usual socket read/write
+>> - vhost for direct interaction with a KVM guest
+>>
+>> The BPF map may be a valid option for socket read/write, but it is not
+>> for vhost. In-kernel vhost may fetch hash from the BPF map, but I guess
+>> it's not a standard way to have an interaction between the kernel code
+>> and a BPF program.
+> 
+> I am very new to areas like vhost and KVM. So I don't really follow.
+> Does this mean we have the guest kernel reading data from host eBPF
+> programs (loaded by Qemu)?
 
-syzbot found the following issue on:
+Yes, the guest will read hashes calculated by the host, and the 
+interface is strictly defined with the virtio-net specification.
 
-HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d5cc04e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e71d284dd6560ca8
-dashboard link: https://syzkaller.appspot.com/bug?extid=349f1f9eb382f477ce50
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112a3b0f680000
+> 
+>>>
+>>>>
+>>>> Unfortunately, however, it is not acceptable for the BPF subsystem
+>>>> because the "stable" BPF is completely fixed these days. The
+>>>> "unstable/kfunc" BPF is an alternative, but the eBPF program will be
+>>>> shipped with a portable userspace program (QEMU)[1] so the lack of
+>>>> interface stability is not tolerable.
+>>>
+>>> bpf kfuncs are as stable as exported symbols. Is exported symbols
+>>> like stability enough for the use case? (I would assume yes.)
+>>>
+>>>>
+>>>> Another option is to hardcode the algorithm that was conventionally
+>>>> implemented with eBPF steering program in the kernel[2]. It is possible
+>>>> because the algorithm strictly follows the virtio-net specification[3].
+>>>> However, there are proposals to add different algorithms to the
+>>>> specification[4], and hardcoding the algorithm to the kernel will
+>>>> require to add more UAPIs and code each time such a specification change
+>>>> happens, which is not good for tuntap.
+>>>
+>>> The requirement looks similar to hid-bpf. Could you explain why that
+>>> model is not enough? HID also requires some stability AFAICT.
+>>
+>> I have little knowledge with hid-bpf, but I assume it is more like a
+>> "safe" kernel module; in my understanding, it affects the system state
+>> and is intended to be loaded with some kind of a system daemon. It is
+>> fine to have the same lifecycle with the kernel for such a BPF program;
+>> whenever the kernel is updated, the distributor can recompile the BPF
+>> program with the new kernel headers and ship it along with the kernel
+>> just as like a kernel module.
+>>
+>> In contrast, our intended use case is more like a normal application.
+>> So, for example, a user may download a container and run QEMU (including
+>> the BPF program) installed in the container. As such, it is nice if the
+>> ABI is stable across kernel releases, but it is not guaranteed for
+>> kfuncs. Such a use case is already covered with the eBPF steering
+>> program so I want to maintain it if possible.
+> 
+> TBH, I don't think stability should be a concern for kfuncs used by QEMU.
+> Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
+> bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
+> be supported.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/026cc0fc446f/disk-c42d9eee.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c4b4d6d092c1/vmlinux-c42d9eee.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1865f885e9d6/bzImage-c42d9eee.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/513e1afbe9d7/mount_0.gz
+Documentation/bpf/kfuncs.rst still says:
+ > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
+ > of the strict stability restrictions associated with kernel <-> user
+ > UAPIs.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+349f1f9eb382f477ce50@syzkaller.appspotmail.com
+Is it possible to change the statement like as follows:
+"Most kfuncs provide a kernel <-> kernel API, and thus are not bound by 
+any of the strict stability restrictions associated with kernel <-> user
+UAPIs. kfuncs that have same stability restrictions associated with 
+UAPIs are exceptional, and must be carefully reviewed by subsystem (and 
+BPF?) maintainers as any other UAPIs are."
 
-BUG: memory leak
-unreferenced object 0xffff888123c87618 (size 104):
-  comm "syz-executor.6", pid 10287, jiffies 4294957667 (age 18.250s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81630c48>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
-    [<ffffffff81630c48>] slab_post_alloc_hook mm/slab.h:766 [inline]
-    [<ffffffff81630c48>] slab_alloc_node mm/slub.c:3478 [inline]
-    [<ffffffff81630c48>] slab_alloc mm/slub.c:3486 [inline]
-    [<ffffffff81630c48>] __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
-    [<ffffffff81630c48>] kmem_cache_alloc+0x298/0x430 mm/slub.c:3502
-    [<ffffffff8212c5a9>] kmem_cache_zalloc include/linux/slab.h:711 [inline]
-    [<ffffffff8212c5a9>] __btrfs_add_free_space+0x69/0x780 fs/btrfs/free-space-cache.c:2636
-    [<ffffffff8212ce5a>] do_trimming+0x19a/0x2d0 fs/btrfs/free-space-cache.c:3687
-    [<ffffffff8212d334>] trim_no_bitmap+0x3a4/0x650 fs/btrfs/free-space-cache.c:3797
-    [<ffffffff8212fc9c>] btrfs_trim_block_group+0xbc/0x1a0 fs/btrfs/free-space-cache.c:4037
-    [<ffffffff8208cbd2>] btrfs_trim_fs+0x1c2/0x6b0 fs/btrfs/extent-tree.c:6297
-    [<ffffffff82108c53>] btrfs_ioctl_fitrim+0x1d3/0x270 fs/btrfs/ioctl.c:535
-    [<ffffffff82112fd0>] btrfs_ioctl+0x2200/0x33e0 fs/btrfs/ioctl.c:4573
-    [<ffffffff816be4d2>] vfs_ioctl fs/ioctl.c:51 [inline]
-    [<ffffffff816be4d2>] __do_sys_ioctl fs/ioctl.c:871 [inline]
-    [<ffffffff816be4d2>] __se_sys_ioctl fs/ioctl.c:857 [inline]
-    [<ffffffff816be4d2>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:857
-    [<ffffffff84b6ad8f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b6ad8f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Akihiko Odaki
