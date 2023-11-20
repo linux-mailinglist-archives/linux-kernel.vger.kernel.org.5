@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4487F12D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2177F12DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbjKTMJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 07:09:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S233470AbjKTMKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233481AbjKTMJX (ORCPT
+        with ESMTP id S233701AbjKTMKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:09:23 -0500
+        Mon, 20 Nov 2023 07:10:01 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0B9CF;
-        Mon, 20 Nov 2023 04:09:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D32D4F;
+        Mon, 20 Nov 2023 04:09:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700482158; x=1732018158;
+  t=1700482194; x=1732018194;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=G01FEu7mgWj6wch0a4BuSRZSlujWtyeQmN3DyjCESFk=;
-  b=i74tk9rWI7un0hPI06+gjrAwxTDmVOZfYtqG4kFiIwl5wJLWJJeoNR2z
-   kJXJioL1Dgcu6ZMotG2WxGlVTWqm76rPbL8qK1G3HrrGJYmUg/EEVZbAa
-   +/zYDLhUbZ9cXngfvgTRxpQt5vkiRAqSFgmsW0NLj7VSfwn/88CFNPvIO
-   wGYqvz4ExqOL5IFYRGzXetjaZ3QICeWwQRmDXYLd8BrEYXU5fe8O+k+p/
-   Q1WBV0nI1AY49i0Z0k2RFpiBA3v2CNg4YpGfKKvc0jHZlSdgp97z4ji6X
-   A9wotPZKfhbH8n18mXs5pSNXQFXFrDCW1d6os7xGWGiJNv7M+RwKHwb90
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="394455773"
+  bh=cyTTkzopgowEchiu4ldonlKqhiUOPUU0HwEqAMqzgPA=;
+  b=TxcBEPd0DxpXlnh43pMaoR5x3+dZdIOMYwriSfy1AzeJdhdowHLFY9hd
+   naFwxOK/A8PUIMSrO94LIW1f8tBmYZa8aVl4G87Zvz8IlTCtV0fDq59MP
+   Y7No2tCprXEVnyuQAlAvZZY+mYLrgNrlNubn1ik+EozQMi/+9WEPuV1X3
+   /0TCwap0bMLAEU5vVBEMM0sHTuaCIbwi+QfMycKNgQ6MX59oM94GmefPb
+   LVTIXzCVQH/S6TrBGMIZMx1vGCKzNtbn2K2yyFgBItPjqKWcx6vH2P59z
+   +Qo9mTb/44gLhlicRo2o1cpcXp5uEc7vQ0RSdEsncKeDR6b069egmu0fF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="394455812"
 X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="394455773"
+   d="scan'208";a="394455812"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 04:09:13 -0800
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 04:09:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="769878675"
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="769878708"
 X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="769878675"
+   d="scan'208";a="769878708"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmsmga007.fm.intel.com with ESMTP; 20 Nov 2023 04:09:08 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 20 Nov 2023 04:09:13 -0800
 From:   Raag Jadav <raag.jadav@intel.com>
 To:     mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
         rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
@@ -48,9 +48,9 @@ Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com,
         Raag Jadav <raag.jadav@intel.com>
-Subject: [PATCH v1 5/6] efi: dev-path-parser: use acpi_dev_uid_match() for matching _UID
-Date:   Mon, 20 Nov 2023 17:38:36 +0530
-Message-Id: <20231120120837.3002-6-raag.jadav@intel.com>
+Subject: [PATCH v1 6/6] perf: arm_cspmu: drop redundant acpi_dev_uid_to_integer()
+Date:   Mon, 20 Nov 2023 17:38:37 +0530
+Message-Id: <20231120120837.3002-7-raag.jadav@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231120120837.3002-1-raag.jadav@intel.com>
 References: <20231120120837.3002-1-raag.jadav@intel.com>
@@ -65,39 +65,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Now that we have _UID matching support for integer types, we can use
-acpi_dev_uid_match() for it.
+acpi_dev_hid_uid_match() for it.
 
 Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 ---
- drivers/firmware/efi/dev-path-parser.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/perf/arm_cspmu/arm_cspmu.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
-index f80d87c199c3..937be269fee8 100644
---- a/drivers/firmware/efi/dev-path-parser.c
-+++ b/drivers/firmware/efi/dev-path-parser.c
-@@ -18,8 +18,6 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
- 	struct acpi_device *adev;
- 	struct device *phys_dev;
- 	char hid[ACPI_ID_LEN];
--	u64 uid;
--	int ret;
+diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+index 42b72042f6b3..9642e703ccd3 100644
+--- a/drivers/perf/arm_cspmu/arm_cspmu.c
++++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+@@ -1105,7 +1105,6 @@ static int arm_cspmu_request_irq(struct arm_cspmu *cspmu)
  
- 	if (node->header.length != 12)
- 		return -EINVAL;
-@@ -31,10 +29,9 @@ static long __init parse_acpi_path(const struct efi_dev_path *node,
- 			node->acpi.hid >> 16);
+ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ {
+-	u64 acpi_uid;
+ 	struct device *cpu_dev;
+ 	struct acpi_device *acpi_dev;
  
- 	for_each_acpi_dev_match(adev, hid, NULL, -1) {
--		ret = acpi_dev_uid_to_integer(adev, &uid);
--		if (ret == 0 && node->acpi.uid == uid)
-+		if (acpi_dev_uid_match(adev, node->acpi.uid))
- 			break;
--		if (ret == -ENODATA && node->acpi.uid == 0)
-+		if (!acpi_device_uid(adev) && node->acpi.uid == 0)
- 			break;
- 	}
- 	if (!adev)
+@@ -1115,8 +1114,7 @@ static inline int arm_cspmu_find_cpu_container(int cpu, u32 container_uid)
+ 
+ 	acpi_dev = ACPI_COMPANION(cpu_dev);
+ 	while (acpi_dev) {
+-		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, NULL) &&
+-		    !acpi_dev_uid_to_integer(acpi_dev, &acpi_uid) && acpi_uid == container_uid)
++		if (acpi_dev_hid_uid_match(acpi_dev, ACPI_PROCESSOR_CONTAINER_HID, container_uid))
+ 			return 0;
+ 
+ 		acpi_dev = acpi_dev_parent(acpi_dev);
 -- 
 2.17.1
 
