@@ -2,151 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B509F7F1C4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F147F1C4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbjKTSYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
+        id S232109AbjKTSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232109AbjKTSX7 (ORCPT
+        with ESMTP id S231265AbjKTSZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:23:59 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC8AC8;
-        Mon, 20 Nov 2023 10:23:54 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc9b626a96so34069135ad.2;
-        Mon, 20 Nov 2023 10:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700504634; x=1701109434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KWt2/ngqRZl5QuD4sv4zP0M/aVeTZYIc/05gHj626E0=;
-        b=S+wdhtbzJQrxem8qosDtNISOLMdN7jSlgRs/qcGbAgyPbiLaTxuztYL7g5cI6KDv2D
-         oVGLsOECLBx98DXzTGPIra3OV6LdwcL0ZVk9npVhQkhp59NimQYjQ/WpRjx/CY0vF+ap
-         kP8Hcx38memWh2BV4d9MCI82dj+an5eXJlZcsVOARD6ed3G1yencgRtlMe6nREmbdZ99
-         1NUjUDCwGFnPbUrmjHHc53bjc4lL++j1MCg+dOlCmZGwZL/cE/M6koJhu6cSobegVwy2
-         ES0MjgFSI1LVrPNTnYL+m4Gok4uUZw0YPyT/NLL5H6S637+Rp4EWN8Kl97jXWYm60TM1
-         HyHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700504634; x=1701109434;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KWt2/ngqRZl5QuD4sv4zP0M/aVeTZYIc/05gHj626E0=;
-        b=R35lBeKCHS+S/5UvFWYIE3AKOqMYO2vWOrBauHy78IkdJqJNF4cveaAO4f9yORAA1Z
-         jvJLhfIwJUZwuInychpcMYyTXXuUSPMFN2tpf/MyN0TnryDded6d6JuRDU2IFXn3kk0F
-         3V74dw1d//27qiRV3FEeBZvwt1g2MRAx+0GknbCoG92/qSH7xddmeL9h5qaddJ2QmEc2
-         f6EGa/Zz00mjBqiGvm5SiodtoNZ94/5EIWz4clRo3FsJytJPvtmwGdd3DifqVmSuwtab
-         lzOhbd7B2yjKRkAtlR9lOWILbLuuNybIqdRY0SJNnHFpmNotjxmsFrBTXSkx0TufWY9b
-         4hpw==
-X-Gm-Message-State: AOJu0YxgZw4WZ4ee4qGTowbVQr3/Rsm4MIQnBD+qVmuO/IMPp7a66m6/
-        CRhVA0fB/UE2vAQ1K+gORYg=
-X-Google-Smtp-Source: AGHT+IHrha1hJaeUAEfyDeFwDKziEKc0iFZt+aGntiYuaF6IHyvLDYgaoz7VSZSlPyBlwO1InKAh6w==
-X-Received: by 2002:a17:902:ecd0:b0:1ce:6687:c93e with SMTP id a16-20020a170902ecd000b001ce6687c93emr7650636plh.69.1700504633709;
-        Mon, 20 Nov 2023 10:23:53 -0800 (PST)
-Received: from [192.168.1.100] (bb220-255-254-193.singnet.com.sg. [220.255.254.193])
-        by smtp.gmail.com with ESMTPSA id bj11-20020a170902850b00b001c739768214sm6401716plb.92.2023.11.20.10.23.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 10:23:53 -0800 (PST)
-Message-ID: <8bce1251-7a6b-4b4c-b700-9d97c664689f@gmail.com>
-Date:   Tue, 21 Nov 2023 02:23:51 +0800
+        Mon, 20 Nov 2023 13:25:15 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8E1C8;
+        Mon, 20 Nov 2023 10:25:11 -0800 (PST)
+Received: from sunspire (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 2E5CC28EE6F;
+        Mon, 20 Nov 2023 18:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1700504710;
+        bh=TqPCYi/lfIqtwCO6M0vvyzzQcnlSevyzaWBJMKt67zI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=morhvBQTAbQh5MbTCeiLvnMOThf9SrBu76IjYpU/VGqvGd24SDnqdEqtQQaQ2hFa/
+         1WdwaPW+9Yu7PczCiWz9tozCinhRSKceEkYghEO3wtCSk7fc/RtVnhLVAUiIFG8uh1
+         F/irdTFARvvIzQ0nuW/UY/DlQAbrnMdzKlXufW5s=
+Date:   Mon, 20 Nov 2023 20:25:08 +0200
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Message-ID: <ZVukhMcY8A3Crxc_@sunspire>
+References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
+ <20231117192305.17612-1-petre.rodan@subdimension.ro>
+ <5b2e4b05-9408-48ea-92ac-15883e102013@linaro.org>
+ <ZVtiVM2Gm1x1j_G1@sunspire>
+ <8aa11758-5eee-427b-adcb-c3578a521daf@linaro.org>
+ <ZVtv8x8LqGMhCisw@sunspire>
+ <20231120173929.00006a6d@Huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is
- running
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        bongsu.jeon@samsung.com
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com" 
-        <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
-References: <20231119164705.1991375-1-phind.uet@gmail.com>
- <CGME20231119164714epcas2p2c0480d014abc4f0f780c714a445881ca@epcms2p4>
- <20231120044706epcms2p48c4579db14cc4f3274031036caac4718@epcms2p4>
- <bafc3707-8eae-4d63-bc64-8d415d32c4b9@linaro.org>
- <20d93e83-66c0-28d9-4426-a0d4c098f303@gmail.com>
- <d82e5a5f-1bbc-455e-b6a7-c636b23591f7@linaro.org>
-Content-Language: en-US
-From:   Phi Nguyen <phind.uet@gmail.com>
-In-Reply-To: <d82e5a5f-1bbc-455e-b6a7-c636b23591f7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120173929.00006a6d@Huawei.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/2023 6:45 PM, Krzysztof Kozlowski wrote:
-> On 20/11/2023 11:39, Nguyen Dinh Phi wrote:
->>>>>            mutex_lock(&vdev->mtx);
->>>>>            kfree_skb(vdev->send_buff);
->>>>>            vdev->send_buff = NULL;
->>>>> +        vdev->running = false;
->>>>>            mutex_unlock(&vdev->mtx);
->>>>>    
->>>>>            return 0;
->>>>> @@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
->>>>>            struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
->>>>>    
->>>>>            mutex_lock(&vdev->mtx);
->>>>> -        if (vdev->send_buff) {
->>>>> +        if (vdev->send_buff || !vdev->running) {
->>>>
->>>> Dear Krzysztof,
->>>>
->>>> I agree this defensive code.
->>>> But i think NFC submodule has to avoid this situation.(calling send function of closed nci_dev)
->>>> Could you check this?
->>>
->>> This code looks not effective. At this point vdev->send_buff is always
->>> false, so the additional check would not bring any value.
->>>
->>> I don't see this fixing anything. Syzbot also does not seem to agree.
->>>
->>> Nguyen, please test your patches against syzbot *before* sending them.
->>> If you claim this fixes the report, please provide me the link to syzbot
->>> test results confirming it is fixed.
->>>
->>> I looked at syzbot dashboard and do not see this issue fixed with this
->>> patch.
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> Hi Krzysztof,
->>
->> I've submitted it to syzbot, it is the test request that created at
->> [2023/11/20 09:39] in dashboard link
->> https://syzkaller.appspot.com/bug?extid=6eb09d75211863f15e3e
-> 
-> ...and I see there two errors.
-> 
-These are because I sent email wrongly and syzbot truncates the patch 
-and can not compile
 
-> I don't know, maybe I miss something obvious (our brains like to do it
-> sometimes), but please explain me how this could fix anything?
+Hello!
+
+On Mon, Nov 20, 2023 at 05:39:29PM +0000, Jonathan Cameron wrote:
+> On Mon, 20 Nov 2023 16:40:51 +0200
+> Petre Rodan <petre.rodan@subdimension.ro> wrote:
 > 
-> Best regards,
-> Krzysztof
+> > Hello!
+> > 
+> > On Mon, Nov 20, 2023 at 03:04:07PM +0100, Krzysztof Kozlowski wrote:
+> > > On 20/11/2023 14:42, Petre Rodan wrote:
+> > >   
+> > > >>> +properties:
+> > > >>> +  compatible:
+> > > >>> +    enum:
+> > > >>> +      - honeywell,hsc  
+> > > >>
+> > > >> Way too generic  
+> > > > 
+> > > > I'm new to this, please excuse my ignorance.
+> > > > my driver covers all Honeywell pressure sensors under the "TruStability board mount HSC/SSC" moniker.  
+> > > 
+> > > We talk here about bindings, not driver. For the driver you can use
+> > > whatever name is approved by reviewers of your driver.
+> > >   
+> > > > that is why my intention was to provide a rather generic name for the driver itself.
+> > > > are you afraid that they will come up with a different device that they will call "hsc" in the future?
+> > > > in this case honeywell,trustability-hsc would be fine?
+> > > > 
+> > > > as I see you prefer to target a particular chip, but I am a bit afraid that the end-user will be confused by needing to set up something like
+> > > > 
+> > > > pressure@28 {
+> > > > 	compatible = "honeywell,hsc030pa";  
+> > > 
+> > > The compatible should be specific, thus for example match exact model
+> > > number.  
+> > 
+> > there are an infinite number of combinations of 4 transfer functions and 118 ranges + one custom range, so providing an array with all specific chips that could end up as compatible is out of the question.
+> > I was aiming at providing a generic name for the binding and get the transfer function and the pressure range as required parameters.
+> > 
+> > > If you can guarantee that all devices from given family are the same in
+> > > respect of programming model and hardware requirements (e.g. supplies),
+> > > then you could go with family name. However such guarantees are rarely
+> > > given.  
+> > 
+> > I see your point.
+> > 
+> > > Therefore for mprls0025pa I agreed for using one specific model
+> > > for entire family.
+> > > 
+> > > https://lore.kernel.org/all/d577bc44-780f-f25d-29c6-ed1d353b540c@linaro.org/
+> > > 
+> > >   
+> > > > 	reg = <0x28>;
+> > > > 	honeywell,transfer-function = <0>;
+> > > > 	honeywell,pressure-range = "250MD";
+> > > > };
+> > > > 
+> > > > ie. specifying "hsc030pa" as driver while his chip is not in the 030PA range, but 250MD.
+> > > > 
+> > > > so do you prefer
+> > > >  honeywell,trustability-hsc  OR
+> > > >  honeywell,hsc030pa  
+> > > 
+> > > I think the latter, just like we did for mprls0025pa. How many devices
+> > > do you have there?  
+> > 
+> > both hsc and ssc have 118 ranges, 4 transfer functions and both can be requested from the manufacturer with custom measurement ranges.
+> > 
+> > ok,I will rename hsc->hsc030pa in the code as you requested.
 > 
+> Where does pa come from? 
 
-The issue arises when an skb is added to the send_buff after invoking 
-ndev->ops->close() but before unregistering the device. In such cases, 
-the virtual device will generate a copy of skb, but with no consumer 
-thereafter. Consequently, this object persists indefinitely.
+honeywell,hsc030pa was provided as an equivalent to honeywell,mprls0025pa (which is already in the repo).
 
-This problem seems to stem from the existence of time gaps between 
-ops->close() and the destruction of the workqueue. During this interval, 
-incoming requests continue to trigger the send function.
+'030PA' and '0025PA' define the pressure range (0-30, 0-25), the unit of measure (Psi) and the measurement type (Absolute) for a particular chip in the honeywell catalog. (please ignore the psi part, we convert everything to pascals).
+but both my driver and Andreas Klinger's mprls0025pa actually provide a generic abstraction layer for entire series of sensors.
 
-best regards,
-Phi
+> If we are going generic, feels like trustability-ssc etc are more representative
+> and matches the datasheet cover page.
+
+Krzysztof voted for non-generic, honeywell,mprls0025pa is already set up non-generic, my intent was to go generic.
+
+I'll rewrite the code to whatever you guys feel is best.
+
+peter
+
+
+-- 
+petre rodan
