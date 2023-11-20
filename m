@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F297A7F11C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBD57F1182
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbjKTLTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
+        id S233193AbjKTLPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbjKTLSn (ORCPT
+        with ESMTP id S233118AbjKTLPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:18:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED99710DA;
-        Mon, 20 Nov 2023 03:17:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700479054; x=1732015054;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YjHBr9jtSW2NF2jd5L+qwwZNfHWmiNVZEiAJFuAKXls=;
-  b=OiQqHarE+PXSKy76xe8OUgItElPUh2+EXhnqgVZjefStq+vwDJFU5y33
-   4FOOpBkNhyZQNbqxSFVkkHoKh6FpE5gE8xby+enRSmbGHUKz21WJDYTNS
-   MkybcvvNPa+kX/nx3Vc7hCdQafuBtojGTpOIc6NNYRcTsPb0cjtzHIIQ/
-   likkIzW3pnvD4duRDQ9/Ykz3A3AtROvvxCRVmVWcNcAz7Q82wqaXFTOsB
-   ywnSM9FeHvsi5KPlkM78Xcz5j6KVDccaTAKugm8KhCvUIhr8da0SeFj33
-   NMdUv1C8L720vwaN0zkp7/vTR3J14uQxtwciDqd5ln9+7I5V07QNp5hml
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="390457965"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="390457965"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:17:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="801127615"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="801127615"
-Received: from sc9itsct4906.amr.corp.intel.com (HELO localhost) ([10.249.46.107])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:17:29 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-kselftest@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 26/26] selftests/resctrl: Add test groups and name L3 CAT test L3_CAT
-Date:   Mon, 20 Nov 2023 13:13:40 +0200
-Message-Id: <20231120111340.7805-27-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
+        Mon, 20 Nov 2023 06:15:02 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C315D9C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:14:58 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so55508821fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:14:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700478897; x=1701083697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=haXSxEr8SHL2k7h4L7GLg+3o357Ly/kj2SV4CyscdCo=;
+        b=auWBk+GBAfdH3quxbpBbsH8Teg4BRzXQEySBn3NgcDSadra129VoH5yx26A7//bIV8
+         uwJrO3pZjuJVQimtuAdhXpvy8Bcwc+bXKkuqO60GYuNwcJgVgXPiRPOxFKeHOLgTUvcf
+         EGgFlStpeAbr1fFCUlrwaPTYmvpAYkC9WC8q4p/4hjEY1phoWKvJj/mKAJPmnNuHw8sS
+         47Qdk7md6njIfPMFkXGwgnwKd8v4JuGwSl3T5m8IxOs5NP9dLkNHeSMWlrkMyH3uWRH3
+         AbMgQ2gGqfkAxn8ySSRbrHC7reHg8gimKDi8mNHSI6pMd+syWx1JzLdp5a1ao+59tFBX
+         yk4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700478897; x=1701083697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=haXSxEr8SHL2k7h4L7GLg+3o357Ly/kj2SV4CyscdCo=;
+        b=H3t7lgc9Kx117A1rLmW9EpS6jHt2kd7pmz0v7XluNCyvLf/Wm1C4novS8s2ZardDs0
+         ovfOCUSoulcxNLY1+J05WolsgrkOWW1BtNBv6KgDyzmq7pFNFnArbpQF8si3VszsQawS
+         PGYSrbMFNoKs4LTpqadhWrpQ3VXwqOzDEFr0dT9oe3vVv2/Qeso6LsMYGeXF1VJBoh58
+         F4OB3X0AfmLg9dWZb1kp6bjXEaXCmnAYAANv2zyGapuoi6eRMg+s6Yxd82Xkzx1qJt2u
+         OAXKm5+X7TJV78t9OB+AthQ20MTsRHRzZaaMqZYirkCv1MFkfzGpAuGA4WKUY3dNmYpB
+         wJKA==
+X-Gm-Message-State: AOJu0YwCfGuv/ia+UauHGb5zEDM1itmdMUsFh3SmtStYDon7+vA8OhEl
+        jmsWdVw2clufxhz3g/+Tdb0K6xmV5HKz8VUCDTM=
+X-Google-Smtp-Source: AGHT+IHda1+XicvS0ufYq5VLBr8oYzW6t2wOCQxIXHo6dpcVZVP27gJWMDfd2kc5E5X7Z/hjw0FCVrchMV8HjQgGjWM=
+X-Received: by 2002:a2e:2a83:0:b0:2c8:2e3a:e974 with SMTP id
+ q125-20020a2e2a83000000b002c82e3ae974mr4676611ljq.44.1700478896638; Mon, 20
+ Nov 2023 03:14:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-4-ryncsn@gmail.com>
+ <ZVp3WR+D4Z/UZEqO@casper.infradead.org>
+In-Reply-To: <ZVp3WR+D4Z/UZEqO@casper.infradead.org>
+From:   Kairui Song <ryncsn@gmail.com>
+Date:   Mon, 20 Nov 2023 19:14:37 +0800
+Message-ID: <CAMgjq7A-X2EVCFXdQsrPF0tyW_JArdrBb=rLnGNbX7cAtf0d9Q@mail.gmail.com>
+Subject: Re: [PATCH 03/24] mm/swap: move no readahead swapin code to a stand
+ alone helper
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To select test to run -t parameter can be used. However, -t cat
-currently maps to L3 CAT test which is confusing after more CAT related
-tests are added.
+Matthew Wilcox <willy@infradead.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8820=E6=
+=97=A5=E5=91=A8=E4=B8=80 05:00=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Nov 20, 2023 at 03:47:19AM +0800, Kairui Song wrote:
+> > +                     /* skip swapcache and readahead */
+> > +                     page =3D swapin_no_readahead(entry, GFP_HIGHUSER_=
+MOVABLE,
+> > +                                             vmf);
+> > +                     if (page)
+> > +                             folio =3D page_folio(page);
+>
+> I think this should rather be:
+>
+>                         folio =3D swapin_no_readahead(entry,
+>                                         GFP_HIGHUSER_MOVABLE, vma);
+>                         page =3D &folio->page;
+>
+> and have swapin_no_readahead() work entirely in terms of folios.
+>
 
-Allow selecting tests as groups and call L3 CAT test "L3_CAT", "CAT"
-group will enable all CAT related tests.
+Thanks for the review!
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- tools/testing/selftests/resctrl/cat_test.c      |  3 ++-
- tools/testing/selftests/resctrl/resctrl.h       |  2 ++
- tools/testing/selftests/resctrl/resctrl_tests.c | 16 +++++++++++-----
- 3 files changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 293b42ccd39f..869fd280c993 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -289,7 +289,8 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- }
- 
- struct resctrl_test l3_cat_test = {
--	.name = "CAT",
-+	.name = "L3_CAT",
-+	.group = "CAT",
- 	.resource = "L3",
- 	.feature_check = test_resource_feature_check,
- 	.run_test = cat_run_test,
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 9b49065cc6da..2f0fa8a604e6 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -60,6 +60,7 @@ struct user_params {
- /*
-  * resctrl_test:	resctrl test definition
-  * @name:		Test name
-+ * @group:		Test group (e.g., L2 and L3 CAT test belong to CAT group), can be NULL
-  * @resource:		Resource to test (e.g., MB, L3, L2, etc.)
-  * @vendor_specific:	Bitmask for vendor-specific tests (can be 0 for universal tests)
-  * @disabled:		Test is disabled
-@@ -68,6 +69,7 @@ struct user_params {
-  */
- struct resctrl_test {
- 	const char	*name;
-+	const char	*group;
- 	const char	*resource;
- 	unsigned int	vendor_specific;
- 	bool		disabled;
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index fec677d41cf4..3d8fd1d3ca43 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -65,11 +65,15 @@ static void cmd_help(void)
- 	printf("usage: resctrl_tests [-h] [-t test list] [-n no_of_bits] [-b benchmark_cmd [option]...]\n");
- 	printf("\t-b benchmark_cmd [option]...: run specified benchmark for MBM, MBA and CMT\n");
- 	printf("\t   default benchmark is builtin fill_buf\n");
--	printf("\t-t test list: run tests specified in the test list, ");
-+	printf("\t-t test list: run tests/groups specified by the list, ");
- 	printf("e.g. -t mbm,mba,cmt,cat\n");
--	printf("\t\tSupported tests:\n");
--	for (i = 0; i < ARRAY_SIZE(resctrl_tests); i++)
--		printf("\t\t\t%s\n", resctrl_tests[i]->name);
-+	printf("\t\tSupported tests (group):\n");
-+	for (i = 0; i < ARRAY_SIZE(resctrl_tests); i++) {
-+		if (resctrl_tests[i]->group)
-+			printf("\t\t\t%s (%s)\n", resctrl_tests[i]->name, resctrl_tests[i]->group);
-+		else
-+			printf("\t\t\t%s\n", resctrl_tests[i]->name);
-+	}
- 	printf("\t-n no_of_bits: run cache tests using specified no of bits in cache bit mask\n");
- 	printf("\t-p cpu_no: specify CPU number to run the test. 1 is default\n");
- 	printf("\t-h: help\n");
-@@ -197,7 +201,9 @@ int main(int argc, char **argv)
- 				bool found = false;
- 
- 				for (i = 0; i < ARRAY_SIZE(resctrl_tests); i++) {
--					if (!strcasecmp(token, resctrl_tests[i]->name)) {
-+					if (!strcasecmp(token, resctrl_tests[i]->name) ||
-+					    (resctrl_tests[i]->group &&
-+					     !strcasecmp(token, resctrl_tests[i]->group))) {
- 						if (resctrl_tests[i]->disabled)
- 							tests++;
- 						resctrl_tests[i]->disabled = false;
--- 
-2.30.2
-
+Good suggestion, I was actually thinking about converting more swapin
+function to use folio in later series, since that involved more
+changes, and this series is getting a bit too long.
+I'll try to see if I can reorganize the series to cover that too in a
+sensible way.
