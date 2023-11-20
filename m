@@ -2,122 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCAB7F0B1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A34B7F0B22
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjKTDnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59346 "EHLO
+        id S231815AbjKTDpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 22:45:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231629AbjKTDnK (ORCPT
+        with ESMTP id S231629AbjKTDpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:43:10 -0500
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F6683
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:43:06 -0800 (PST)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28515f4cd74so1491016a91.3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:43:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700451786; x=1701056586;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bOyKkUQDo74pZloe5q3dh6gyfP8G7HtxI58TIP7S644=;
-        b=dWcUvnMisR2zF7I0IcTUGaOB0jE7naJXmgvs9LigZAyerqE7FLNtqM47J29wHerHEc
-         R5o339TqpX86G2nqorTeFp1fxEhVSCLUhiLbKX5uzUTR2xJQ5lqV4LzImqN1xxZ02yuE
-         POGFQGf8jvPH9ZAqAvur4IJJyVmfKx1HOT/HHSgi+H0o9XDRtebU6bwqu/81pdPSYnrd
-         oPTW2kJwkgIVqdtKkYUW4w+C+uqKk7rrLCFj/Sd4ThHoyBT8QqiQV8by2OqTA3EOkQPC
-         j/hX6vcmGqpHmfFA56ZjkvkRHzOTnCasJMAqnIjBiK1xlWmdiXyfKz0eW+dW4s5r2MOo
-         DVkw==
-X-Gm-Message-State: AOJu0Ywm5nTHji8ojUT6a7DrgxwI1FGmNpiruoAaXsOkFpPM3qZnOBvU
-        a8RmNFgt7tf2yv89NeIPEgUxd/hrdpzIfFETzWXY2JyD3j8l
-X-Google-Smtp-Source: AGHT+IGFUmSBh9pwk7l0+FYkuoYdT2GjrdfutGVu9F8EVqmunBwjIzXf+jCanPNX2o0F/NGVUXAyPZv1YLYgN0tepLLTOPvM0QcG
+        Sun, 19 Nov 2023 22:45:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B254BB9;
+        Sun, 19 Nov 2023 19:45:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700451936; x=1731987936;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vZfgIOE46oWk1DBrpLKlxglhzO7zUx+wf8M1D78X2Qg=;
+  b=F0+LSox2H6CspE5FzQA+zcWgVe8aunk9rdPtcHgklXnGPbUOr30VJilC
+   sMx+PYIO9GIBPoVTjWVJoeWdsKuLyDl25CTxsW6nQN9DgTEGA4wMFUv1B
+   f7VQ94YVzoXu5JkKAewqGQaszALO1+pCCflxWdj+nH6E0KsbKr8+QCi0F
+   f4D3OrP8iFMaaGcH/f1IuS37vbab59o0WnMh0cSTjOciSziNcQjbIdGK1
+   dMKY4RdBOiA7IT5s8FFA/HpGEoNoQiMhffqAL/YgHMfstFnFUWTfohSBx
+   S26oUn7DvIlgX5lonB9+AxCVY1pvqXMRBRl9lFx8B+atxJLxE554Ut1fs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="455866458"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="455866458"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2023 19:45:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="766134510"
+X-IronPort-AV: E=Sophos;i="6.04,212,1695711600"; 
+   d="scan'208";a="766134510"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Nov 2023 19:45:36 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 19 Nov 2023 19:45:35 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 19 Nov 2023 19:45:35 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Sun, 19 Nov 2023 19:45:35 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Sun, 19 Nov 2023 19:45:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LiDicSmgWbzVCfhsCXuJw+xfR1xzGYCmzaJLU0we4TLFgH2Bn0DiIVtRQNyyrvGbIAgEE6II2Xufcz3ESKgREAwOi6uKJ7kN83xLVchHP2Qt1KmtEyjub1TVuImxKA+5AoPN2MHM0oixllVZpf6MyL6lBy6+eqJycq5X1njjg7WtEGrEOavVBqz4LqLItvIE+o3yNkYioHEgUo4C36Zx+0tNHqSyKXwIko3wNWr9V9x7dpIbygUGasl1akPhTf6ubX9/+IP26dlE/GBJgfqTgAC3OboBlUZlkJCCVA5iHVACSe61W7dsjwkWxIt38ctbfwUtjh9mdYKFYlhV4xbgNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=d10aXuBIpAWRE65sp6jh6Rjb6AiSTjPzbFUFZGp3QWY=;
+ b=LdkwXV3ZF2MYZ0anVBlQ6N/+KvkggEhxHaEv/1a3444OAdScaXVMoE/+MXZKtQ1UDmYt/rJaKZYwyqkLyHjp0Uk9U+fTSMl3UxQxC1gN7veuhSn4Ze8GmIA8XKqPoEJUHnf3iSPYPEGi9TpzUhG50K960eC4WvkYLaXwZUhuKSilfF3oAuc7QtFPC5na5b5s88evx4Le8xwhXrP8wpytJb7BZpssZD8x6pEcVfmeLCriFAOYKJcFvQMmCwRcYiZ341NFkK3g0r7BCvFZuQFKiZtCrw3N2GoarjrCyosC6q0cyfuH8Kp2HhR+EpuHAMSX4hZ7ajuBO3bkAzYWSCaZJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by BL1PR11MB5415.namprd11.prod.outlook.com (2603:10b6:208:315::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 20 Nov
+ 2023 03:45:32 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
+ 03:45:32 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Will Deacon" <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>
+CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        "Luo, Yuzhang" <yuzhang.luo@intel.com>,
+        "Zhu, Tony" <tony.zhu@intel.com>
+Subject: RE: [PATCH 1/1] iommu/vt-d: Fix incorrect cache invalidation for mm
+ notification
+Thread-Topic: [PATCH 1/1] iommu/vt-d: Fix incorrect cache invalidation for mm
+ notification
+Thread-Index: AQHaGTZydMt5bwtVCUafDdflf+2X6bCClLqQ
+Date:   Mon, 20 Nov 2023 03:45:32 +0000
+Message-ID: <BN9PR11MB52768C9149602718CD2EFC1B8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20231117090933.75267-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20231117090933.75267-1-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|BL1PR11MB5415:EE_
+x-ms-office365-filtering-correlation-id: 9c6666b8-a4ce-4827-13c4-08dbe97b257f
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PPVsDbG6KSErLiOpgFraTh9czWtFixoSS3wwC7D+7HbS05QSos61PCFjo8mEYbqmbCo84G6MCeIDV8tVIQMqEWj8dWThqfI3gOevGGQeqtquesaMg8w2wopIMjrnPXPt0IkBLbU1ZYzKhJiVlk8vboyV3Jh8ecN5vlJ1h0zcR5cELa0iHer0NIeIv1GCZvcrUz/3PM12AcfSADC9dp/FrngVBGyzT+kN7nyVTjj8Mbd3AEpmLyf7zJ5z1iPfO8eRRQFmQ9raCcZyYO4VYQuQ7WLyhZf51o2gXQArIWCfB8bFoawplcXPJWDMgWKIh+iQXgko8Vt68RYkvMzRl//WJ8/ytqn3pJmLkK5rrFsVxMKjiZ5zaWJ8nCMMqJN2fwa6LQiVMtai/ERy50jspBDvNKgVm+nqOncG4nLSMNGj/xxJc7EiO3fneCCZ8pFue0nwbh04R5H3nuFpxqEgThZSQNMOfBMTm9aIqFu5AvcIo4z/g0LCHYWQFT7CIPsYqP4j4cI51PFZTyiIEaSvg9LmWj4erXEEO+4VjL47ho9A0C3lTc8NrlPg3lmnONW2ntcEQyY5G236eVPkxuSKXIt/ZMdK2cgq4L/PuANe/SdPs1raZ+zlUWJhUA1LPtmQQCCW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(66476007)(66446008)(66556008)(66946007)(110136005)(76116006)(64756008)(54906003)(316002)(7696005)(9686003)(71200400001)(6506007)(38070700009)(478600001)(26005)(38100700002)(82960400001)(122000001)(83380400001)(33656002)(86362001)(55016003)(2906002)(5660300002)(4326008)(8676002)(8936002)(52536014)(41300700001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?HpLT757oGJDIPQTJ7Ai4H+JP20laOMbT8gduD+lRdqUbuveIQYgmUk83pRIY?=
+ =?us-ascii?Q?HSsT7WLg7Qiz8agXBwPjjyaZggkZn0jX/hV2MKnxzdvk89LffAN6nk2NAANC?=
+ =?us-ascii?Q?A28QRg7uIF8NsCS1qXBx3oq6pGV0v78gqs3ATmDSIxpgZKFNBYr86TV0aBbf?=
+ =?us-ascii?Q?rzyVML2wYyz6GV8GLtylA4E/u3AfhM9IQCtgyaS+4ZPsFCgQM8AS+ovAsDDK?=
+ =?us-ascii?Q?4MVI2g2h8YPA03E6jbqhwYQE6pFKJfEdaq1nkVLHSdci8s28b7nwo7t71ZOU?=
+ =?us-ascii?Q?fwt9rYsg/wspoSSKivZQ0nvDCh9JYKZyiFerr/e/OyacRYL8jHekcdrL+znG?=
+ =?us-ascii?Q?6uOXMIYqiV5RvEfAxXDOOJqNbYDb7yWxTvc573a1m13o4duVp0RC+W58oqcQ?=
+ =?us-ascii?Q?w03VsdWYLYg9zUq6wlBu5fAzpAi4n1bbujMN137AgTuW/w/Dv+YK1TUJvZLR?=
+ =?us-ascii?Q?MENZ6neDLQ3JUtvPKUTz0i6VN5Zk2e+Bgrgf08BFUQsGGG/kn7STZ5gQCDz5?=
+ =?us-ascii?Q?ZSoHXrWn4KvuHSeGdFm1iPc6TM0nbTmtL5ES6Xm2Jhgf1HzxY+gSY1QBRaVp?=
+ =?us-ascii?Q?/6TAo+Mmkl3FTuFKv7GmCed11qb1NvxKAHmqy0EV6TTPtwoPC3p61D9iU425?=
+ =?us-ascii?Q?k0te3oXV/w7o5eSLOBOYxcfU62fxa7iCuE9FTLkimpf3F6anl5kQIOIzp7Do?=
+ =?us-ascii?Q?0gBfJgkV1dn6EK9ON0GGJN/tPdEgBG95FJTLnBd/O4TLY6LDuDV6Zmt6Nhfw?=
+ =?us-ascii?Q?OVwh38VYvyFYjUtInceNF0Logd+CmNUqQ/1yvDA3qIBE4SkfKVMuG7ZUZYyw?=
+ =?us-ascii?Q?gtRCxzGa2a9MIDdgCfOQv8felbjGjO9pW2Oel5ZsXOA0PeeZ9dC+SUQVYdWC?=
+ =?us-ascii?Q?1dxyTdaMaiyb0TSBw/5K/bL+fQFALu5KJYzC605VhY5WYDKnaOKRrtc9r6At?=
+ =?us-ascii?Q?/gRK1AyE8mc2rAURodyKZX4R+6dYn1JLqx+LK2xgoHTFDMDe542nl+7h3paX?=
+ =?us-ascii?Q?4BSqPESfhL8ThQ7aeNmdrUNJibuMON+59FUM2oWxlt+bTN0V+nFeZvdfD9cb?=
+ =?us-ascii?Q?tHjMY0WNLJgQeli2Sn2cMKUup3IZGeBX1WHgEyB8njkgr0r5aBpSXTL+7E1A?=
+ =?us-ascii?Q?UiDec+JALkq8jyY9anOiKo/OAWR6E1YDAGKu/oE2OYE5XsxRQgrnm3Vu8Ghj?=
+ =?us-ascii?Q?+4pzgJp1iJeEKzLUbYpp9gqgo2/LT7KLB1ccSZ98roL/ir8WoKJOfGM+fzff?=
+ =?us-ascii?Q?+PcVFZzD00xOuj2/se0PgW8dslYZkLdOhYzA2aHaT7frav70UmugfEB/CMSZ?=
+ =?us-ascii?Q?ijGojPciojwHJV4Du7D24QsjPSv8ANbVu5Cuj6W91DkI9Q8jcimubcE14bon?=
+ =?us-ascii?Q?9xcmvu+PU/6xJjAU1bKKO2e2ZZtu/jr1w+EWNXICMQDKctuBT2DntXZe0p5q?=
+ =?us-ascii?Q?7sZ9NXVe43+mZVERVq3INQ+PWUu7MALEk9f8hrzy7klB1SYI9BZAdzW7CL4q?=
+ =?us-ascii?Q?TyYk74/5wFBRaYwkJlMjGIa00pVgCmYGCqSruvKPECb2O9ATF+SwLmHMpdxk?=
+ =?us-ascii?Q?YaZ+l6Sjlk4l1h8Z0wAxEBfJNEiWHImJRSVngkEA?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:77c3:b0:280:31a8:1929 with SMTP id
- e3-20020a17090a77c300b0028031a81929mr1604871pjs.7.1700451786361; Sun, 19 Nov
- 2023 19:43:06 -0800 (PST)
-Date:   Sun, 19 Nov 2023 19:43:06 -0800
-In-Reply-To: <20231120030705.1265508-1-eadavis@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000af1897060a8d482f@google.com>
-Subject: Re: [syzbot] [netfilter?] WARNING in __nf_unregister_net_hook (6)
-From:   syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
-To:     eadavis@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c6666b8-a4ce-4827-13c4-08dbe97b257f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 03:45:32.1977
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 84ZjPmJpubLFGbymM9sxg76OtyuaMh5H6F19v9eGcWYEWyHZr0TXoPu0/s7mLjBE6kRZyG5N8buI3d9VETjf/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5415
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Friday, November 17, 2023 5:10 PM
+>=20
+> Commit 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
+> invalidating TLBs") moved the secondary TLB invalidations into the TLB
+> invalidation functions to ensure that all secondary TLB invalidations
+> happen at the same time as the CPU invalidation and added a flush-all
+> type of secondary TLB invalidation for the batched mode, where a range
+> of [0, -1UL) is used to indicates that the range extends to the end of
+> the address space.
+>=20
+> However, using an end address of -1UL caused an overflow in the Intel
+> IOMMU driver, where the end address was rounded up to the next page.
+> As a result, both the IOTLB and device ATC were not invalidated correctly=
+.
+>=20
+> Add a flush all helper function and call it when the invalidation range
+> is from 0 to -1UL, ensuring that the entire caches are invalidated
+> correctly.
+>=20
+> Fixes: 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
+> invalidating TLBs")
+> Cc: stable@vger.kernel.org
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Alistair Popple <apopple@nvidia.com>
+> Tested-by: Luo Yuzhang <yuzhang.luo@intel.com> # QAT
+> Tested-by: Tony Zhu <tony.zhu@intel.com> # DSA
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/intel/svm.c | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>=20
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 50a481c895b8..588385050a07 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -216,6 +216,27 @@ static void intel_flush_svm_range(struct intel_svm
+> *svm, unsigned long address,
+>  	rcu_read_unlock();
+>  }
+>=20
+> +static void intel_flush_svm_all(struct intel_svm *svm)
+> +{
+> +	struct device_domain_info *info;
+> +	struct intel_svm_dev *sdev;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(sdev, &svm->devs, list) {
+> +		info =3D dev_iommu_priv_get(sdev->dev);
+> +
+> +		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL,
+> 1);
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in __nf_unregister_net_hook
+Why setting 'ih' to skip invalidating page structure caches?=20
 
-------------[ cut here ]------------
-hook not found, pf 2 num 1
-WARNING: CPU: 0 PID: 5828 at net/netfilter/core.c:519 __nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:519
-Modules linked in:
-CPU: 0 PID: 5828 Comm: syz-executor.2 Not tainted 6.6.0-rc3-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:__nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:519
-Code: 14 02 4c 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 7a 04 00 00 8b 53 1c 48 c7 c7 c0 d4 a8 8b 8b 74 24 04 e8 b2 ce dc f8 <0f> 0b e9 ec 00 00 00 e8 46 a5 16 f9 48 89 e8 48 c1 e0 04 49 8d 7c
-RSP: 0018:ffffc90003ecf2b8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888061921800 RCX: 0000000000000000
-RDX: ffff88807a4a6180 RSI: ffffffff814cf016 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: ffff8880772b7250
-R13: ffff888023717598 R14: ffff888023717500 R15: ffff88806192181c
-FS:  00007f709206d6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2411480420 CR3: 000000001c0be000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- nf_unregister_net_hook+0xd5/0x110 net/netfilter/core.c:541
- __nf_tables_unregister_hook net/netfilter/nf_tables_api.c:361 [inline]
- __nf_tables_unregister_hook+0x1a0/0x220 net/netfilter/nf_tables_api.c:340
- nf_tables_unregister_hook net/netfilter/nf_tables_api.c:368 [inline]
- nf_tables_commit+0x410f/0x59f0 net/netfilter/nf_tables_api.c:9992
- nfnetlink_rcv_batch+0xf36/0x2500 net/netfilter/nfnetlink.c:569
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:639 [inline]
- nfnetlink_rcv+0x3bf/0x430 net/netfilter/nfnetlink.c:657
- netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
- netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
- netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
- sock_sendmsg_nosec net/socket.c:730 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:753
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2541
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2595
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2624
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f709127cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f709206d0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f709139bf80 RCX: 00007f709127cae9
-RDX: 0000000000000000 RSI: 000000002000c2c0 RDI: 0000000000000004
-RBP: 00007f70912c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f709139bf80 R15: 00007ffca21c8a28
- </TASK>
-
-
-Tested on:
-
-commit:         6465e260 Linux 6.6-rc3
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=127331b8e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d7d7928f78936aa
-dashboard link: https://syzkaller.appspot.com/bug?extid=de4025c006ec68ac56fc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14c46f2f680000
+> +		if (info->ats_enabled) {
+> +			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid,
+> info->pfsid,
+> +						 svm->pasid, sdev->qdep,
+> +						 0, 64 - VTD_PAGE_SHIFT);
+> +			quirk_extra_dev_tlb_flush(info, 0, 64 -
+> VTD_PAGE_SHIFT,
+> +						  svm->pasid, sdev->qdep);
+> +		}
+> +	}
+> +	rcu_read_unlock();
+> +}
+> +
+>  /* Pages have been freed at this point */
+>  static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn=
+,
+>  					struct mm_struct *mm,
+> @@ -223,6 +244,11 @@ static void
+> intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+>  {
+>  	struct intel_svm *svm =3D container_of(mn, struct intel_svm, notifier);
+>=20
+> +	if (start =3D=3D 0 && end =3D=3D -1UL) {
+> +		intel_flush_svm_all(svm);
+> +		return;
+> +	}
+> +
+>  	intel_flush_svm_range(svm, start,
+>  			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT,
+> 0);
+>  }
+> --
+> 2.34.1
 
