@@ -2,183 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FAA7F10E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A028D7F10EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbjKTKzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S232738AbjKTKzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbjKTKzG (ORCPT
+        with ESMTP id S232804AbjKTKzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:55:06 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E9B9C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:01 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so12103325e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700477700; x=1701082500; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=S7yigsWpqo5NnEMD9rs1RxI3LcZvc/Yo1+fclqVDtR0=;
-        b=YSN0UEJ90UZ6lQ8BkbRBAVugn9rUh79lyEiB3i1DGJymQ0kj4s+B3vYuId6XXXdHVm
-         VPtUk0JM6arXTIbqRFPbHkwVpxr0sDB2RQ4zxZQCt4xspdZUuOclI60nQHqiWgIz1kj0
-         ZZpFXFf6QiQmQufnPn8ESTN6FUnucugG3SY+1j6Y8M46QtfSKqB7Rnn3+DbLCppsVOIp
-         HxOtLd81B3ZINczp7Zcm7SOOR8vIkXm199Tdg5kwRXC37akdPBg3OE4LDdUrYkWMO65A
-         x6ERv4E1gzUNjfE/IUwddbahtucnf6tQ1hZe3ofmG+hKCPahOMuDtyV4wPJQZW0J1Z93
-         2qUQ==
+        Mon, 20 Nov 2023 05:55:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E63D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700477717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=xSIGRF/7VBbZlLtEMWR+fp7S8tCj8dJX1So74Eiu2Zg=;
+        b=hYq5PJTpAOyMMxbF5CAcDC6q5lrmOunL3RX95n0PSu+F1Xu6xxxjYaF3GU6AEvJ7t1dBof
+        nAGSgXxFLkdNODwZwC4BTDOleJxDm0clHa+IOekpwQD8PB/gvw8i2vZPHCrjPTcooicrUV
+        7C5NrAKbusPmtJ1lXJSRW/ekYNZxUvc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-332-Gzxcgw1SNAyI_bowQgty2g-1; Mon, 20 Nov 2023 05:55:15 -0500
+X-MC-Unique: Gzxcgw1SNAyI_bowQgty2g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40853e14f16so10992385e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700477700; x=1701082500;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S7yigsWpqo5NnEMD9rs1RxI3LcZvc/Yo1+fclqVDtR0=;
-        b=gj5n3UmuOvqn7ZlYS0gii4Z7Z2qVWqSIf9TGy36m1e19fEg87tLd+m5wQI5iMfa2Ns
-         g8cmVAT/L68yFQZ9uv6ZNy7Z9w2VrQsyVmLBazzSLlLzaYMZH0JvdayJr+S2zmMKSsiv
-         R3V0ahGpvx2oA8oWgDyAqP0/zA/3/aDLWufIFzPrVnPv8c1AZvvcfE21ZE1S/49NOFKK
-         MR8qB55erO4MVuNwTtFipVvB5vs1mZZ2SvZ1f+RMPRptI41alkXxvPrwAotJbFWO1uje
-         pdVHSm9pl91nzfuK4KGYfl+at74Vpxw6AJ+ix11BKWuyg5ScU8MTNkh4hibpbJz/01c9
-         RwJQ==
-X-Gm-Message-State: AOJu0YwZyGKhlVCWNLz+Ubk1ak7zfDT+6toy5OhoRJlJdJe9pJJIwGzm
-        K3BW49wdxYxSXMXyMD+8DwFjQg==
-X-Google-Smtp-Source: AGHT+IETDFg3+zhHdqRS0r+kKYhNfXKDAirf7sGch5NG5N8rbdEccC65Ia69iOIzuyn3kUAe49YETw==
-X-Received: by 2002:a05:600c:4e92:b0:405:4daa:6e3d with SMTP id f18-20020a05600c4e9200b004054daa6e3dmr5790050wmq.39.1700477700200;
-        Mon, 20 Nov 2023 02:55:00 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id fb11-20020a05600c520b00b004076f522058sm17346948wmb.0.2023.11.20.02.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 02:54:59 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon, 20 Nov 2023 05:54:56 -0500
-To:     oe-kbuild@lists.linux.dev, Min Li <lnimi@hotmail.com>,
-        richardcochran@gmail.com, lee@kernel.org
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH net-next v2 1/1] ptp: clockmatrix: support 32-bit address
- space
-Message-ID: <03e74acd-bb49-472a-b200-e84e11ae2865@suswa.mountain>
+        d=1e100.net; s=20230601; t=1700477714; x=1701082514;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSIGRF/7VBbZlLtEMWR+fp7S8tCj8dJX1So74Eiu2Zg=;
+        b=dPQM5ERpZystT5jsb7eTryah/5rpVnyVPC2V3o3tEXy2Rcn2rkcS+oJYerog5ocw0V
+         DPDTXh/A+mpbrTJ1vBa/+tDhC2Lq8jnPRci2rk4O35tyXHqHhfE90FpD96ZX3xxV/JJW
+         wdFaAUHFChUbnQQ8CppUHT/D/h+lDMjFI9MNXKlqHw/dSgV5HvaVifR0LdIzoStsd1JP
+         n5hnuP7YRn6Qsu3uIHHrMX5UdIC+Jk2GyIbuhgdJRkAJeYz4+jVuZElGmBhHHsWLRXE/
+         j6XHsWO0cHghTJamzjV3cs66/YqUvjvAaI5pH0CaGdLlJoIWYLVqg/sxTME576YOs4P+
+         dFRA==
+X-Gm-Message-State: AOJu0YwT4J6SKlNGyVrMvz/Lo+azcjca75rGaAhNzJ6bQGosuO+pTd7z
+        FYr+40ZUM57cFN5JqiIVNiJW3BmezI36RGz5i2mJUkOtnfA3vJKQNGFCq2upC3slNgvexPXAoUJ
+        b6xBfixY94WsQGXslwP84FDIt
+X-Received: by 2002:a05:600c:4289:b0:406:8496:bd8b with SMTP id v9-20020a05600c428900b004068496bd8bmr5056522wmc.9.1700477714094;
+        Mon, 20 Nov 2023 02:55:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH0McoI7xSESM8bl+W66YBAk/AMaRM4vUIiYOo17Iy5QLcM986P3yoIU3IsHbmFHdqPMzPgGA==
+X-Received: by 2002:a05:600c:4289:b0:406:8496:bd8b with SMTP id v9-20020a05600c428900b004068496bd8bmr5056500wmc.9.1700477713627;
+        Mon, 20 Nov 2023 02:55:13 -0800 (PST)
+Received: from ?IPV6:2003:cb:c746:7700:9885:6589:b1e3:f74c? (p200300cbc746770098856589b1e3f74c.dip0.t-ipconnect.de. [2003:cb:c746:7700:9885:6589:b1e3:f74c])
+        by smtp.gmail.com with ESMTPSA id h18-20020a05600c351200b004063ea92492sm13154818wmq.22.2023.11.20.02.55.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:55:13 -0800 (PST)
+Message-ID: <ae9b6a15-9f9a-45f3-bbe1-bfbbaa45f3b1@redhat.com>
+Date:   Mon, 20 Nov 2023 11:55:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW5PR03MB6932A4AAD4F612B45E9F6856A0AFA@MW5PR03MB6932.namprd03.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] mm: use vmem_altmap code without
+ CONFIG_ZONE_DEVICE
+Content-Language: en-US
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <20231120102734.2001576-1-sumanthk@linux.ibm.com>
+ <20231120102734.2001576-4-sumanthk@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231120102734.2001576-4-sumanthk@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Min,
+On 20.11.23 11:27, Sumanth Korikkar wrote:
+> vmem_altmap_free() and vmem_altmap_offset() could be utlized without
+> CONFIG_ZONE_DEVICE enabled. For example,
+> mm/memory_hotplug.c:__add_pages() relies on that.  The altmap is no
+> longer restricted to ZONE_DEVICE handling, but instead depends on
+> CONFIG_SPARSEMEM_VMEMMAP.
+> 
+> When CONFIG_SPARSEMEM_VMEMMAP is disabled, these functions are defined
+> as inline stubs, ensuring compatibility with configurations that do not
+> use sparsemem vmemmap. Without it, lkp reported the following:
+> 
+> ld: arch/x86/mm/init_64.o: in function `remove_pagetable':
+> init_64.c:(.meminit.text+0xfc7): undefined reference to
+> `vmem_altmap_free'
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202311180545.VeyRXEDq-lkp@intel.com/
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
 
-kernel test robot noticed the following build warnings:
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Min-Li/ptp-clockmatrix-support-32-bit-address-space/20231110-044554
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/MW5PR03MB6932A4AAD4F612B45E9F6856A0AFA%40MW5PR03MB6932.namprd03.prod.outlook.com
-patch subject: [PATCH net-next v2 1/1] ptp: clockmatrix: support 32-bit address space
-config: i386-randconfig-141-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110542.BjfgVNxz-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110542.BjfgVNxz-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311110542.BjfgVNxz-lkp@intel.com/
-
-New smatch warnings:
-drivers/ptp/ptp_clockmatrix.c:1257 idtcm_load_firmware() warn: '(537972560)' 537972560 can't fit into 65535 'scratch'
-
-vim +1257 drivers/ptp/ptp_clockmatrix.c
-
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1254  static int idtcm_load_firmware(struct idtcm *idtcm,
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1255  			       struct device *dev)
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1256  {
-794c3dffacc166 Min Li        2021-09-13 @1257  	u16 scratch = IDTCM_FW_REG(idtcm->fw_ver, V520, SCRATCH);
-
--#define SCRATCH_V520                      0xcf4c
-+#define SCRATCH_V520                      0x2010cf4c
-
-This doesn't fit into a u16 any more.  I'm not sure this a bug, but it's
-a bit ugly.
-
-7ea5fda2b1325e Min Li        2020-07-28  1258  	char fname[128] = FW_FILENAME;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1259  	const struct firmware *fw;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1260  	struct idtcm_fwrc *rec;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1261  	u32 regaddr;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1262  	int err;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1263  	s32 len;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1264  	u8 val;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1265  	u8 loaddr;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1266  
-7ea5fda2b1325e Min Li        2020-07-28  1267  	if (firmware) /* module parameter */
-7ea5fda2b1325e Min Li        2020-07-28  1268  		snprintf(fname, sizeof(fname), "%s", firmware);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1269  
-930dfa56315517 Min Li        2021-09-24  1270  	dev_info(idtcm->dev, "requesting firmware '%s'", fname);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1271  
-7ea5fda2b1325e Min Li        2020-07-28  1272  	err = request_firmware(&fw, fname, dev);
-7ea5fda2b1325e Min Li        2020-07-28  1273  	if (err) {
-930dfa56315517 Min Li        2021-09-24  1274  		dev_err(idtcm->dev,
-1c49d3e947783b Vincent Cheng 2021-02-17  1275  			"Failed at line %d in %s!", __LINE__, __func__);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1276  		return err;
-7ea5fda2b1325e Min Li        2020-07-28  1277  	}
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1278  
-930dfa56315517 Min Li        2021-09-24  1279  	dev_dbg(idtcm->dev, "firmware size %zu bytes", fw->size);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1280  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1281  	rec = (struct idtcm_fwrc *) fw->data;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1282  
-794c3dffacc166 Min Li        2021-09-13  1283  	if (contains_full_configuration(idtcm, fw))
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1284  		idtcm_state_machine_reset(idtcm);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1285  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1286  	for (len = fw->size; len > 0; len -= sizeof(*rec)) {
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1287  		if (rec->reserved) {
-930dfa56315517 Min Li        2021-09-24  1288  			dev_err(idtcm->dev,
-1c49d3e947783b Vincent Cheng 2021-02-17  1289  				"bad firmware, reserved field non-zero");
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1290  			err = -EINVAL;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1291  		} else {
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1292  			regaddr = rec->hiaddr << 8;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1293  			regaddr |= rec->loaddr;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1294  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1295  			val = rec->value;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1296  			loaddr = rec->loaddr;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1297  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1298  			rec++;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1299  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1300  			err = check_and_set_masks(idtcm, regaddr, val);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1301  		}
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1302  
-7ea5fda2b1325e Min Li        2020-07-28  1303  		if (err != -EINVAL) {
-7ea5fda2b1325e Min Li        2020-07-28  1304  			err = 0;
-7ea5fda2b1325e Min Li        2020-07-28  1305  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1306  			/* Top (status registers) and bottom are read-only */
-9fe9b9792d7236 Min Li        2023-11-09  1307  			if (regaddr < SCSR_ADDR(GPIO_USER_CONTROL) || regaddr >= scratch)
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1308  				continue;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1309  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1310  			/* Page size 128, last 4 bytes of page skipped */
-77fdb168a3e2a6 Vincent Cheng 2021-02-17  1311  			if ((loaddr > 0x7b && loaddr <= 0x7f) || loaddr > 0xfb)
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1312  				continue;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1313  
-9fe9b9792d7236 Min Li        2023-11-09  1314  			err = idtcm_write(idtcm, SCSR_BASE, regaddr, &val, sizeof(val));
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1315  		}
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1316  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1317  		if (err)
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1318  			goto out;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1319  	}
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1320  
-7ea5fda2b1325e Min Li        2020-07-28  1321  	display_pll_and_masks(idtcm);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1322  
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1323  out:
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1324  	release_firmware(fw);
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1325  	return err;
-3a6ba7dc779935 Vincent Cheng 2019-10-31  1326  }
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
 
