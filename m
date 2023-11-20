@@ -2,179 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755897F0E8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 986FC7F0E92
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbjKTJI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:08:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S232338AbjKTJJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbjKTJIz (ORCPT
+        with ESMTP id S232206AbjKTJJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:08:55 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D2AA7;
-        Mon, 20 Nov 2023 01:08:48 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AK98JUA0707805, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AK98JUA0707805
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 17:08:19 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 20 Nov 2023 17:08:19 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 20 Nov 2023 17:08:18 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Mon, 20 Nov 2023 17:08:18 +0800
-From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
-Thread-Topic: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
- for Realtek DHC SoCs
-Thread-Index: AQHaGXMHJnbDooY4VkyEcMH4aisPjrCBFAaAgAG3OTA=
-Date:   Mon, 20 Nov 2023 09:08:18 +0000
-Message-ID: <7959920acf004f3cb8072de1e17439fa@realtek.com>
-References: <20231117162709.1096585-1-james.tai@realtek.com>
- <20231117162709.1096585-2-james.tai@realtek.com>
- <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
-In-Reply-To: <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [49.216.22.4]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 20 Nov 2023 04:09:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6FEAA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:09:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700471374; x=1732007374;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2CTH71gUL8f+hX64gpw0KnmZN7mC9T3jKZ/oNiWW2p0=;
+  b=hrqstafr8RXSZfi2p40fjJkZueakEYd1RG4RFjxtdwEuA15QbG4QCq5m
+   7HLbvYP5VDkO2pKtfsEl9kPBLkLkCOj1Whui7x6+R3fLvI1r/6sH3wY72
+   7fKMGHUxTKcl9lV+WgBk0GOyjXWQop4HZh30bkEjMT3FRNcypF+gYOspE
+   KaPbjN0u9edAjw26efIPXdPMUfvGj1jcqFFvxTbKMe171hdBTxHTug8a+
+   ZZpKb5l8dMrS0nFCNf4r4gyt3+lcyP7TjfHI1MEdkkWDkvOz/aTo1FtRe
+   f1d0ZqcnFxn0yObWi3GSe0LVu6Typ7hI5RZ/fSdaK2QSaYePOzwGj9usV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="370926011"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="370926011"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:09:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="832209606"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="832209606"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 20 Nov 2023 01:09:30 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r50HY-0006FK-0L;
+        Mon, 20 Nov 2023 09:09:28 +0000
+Date:   Mon, 20 Nov 2023 17:08:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>, Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Sui Jingfeng <suijingfeng@loongson.cn>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+Message-ID: <202311201649.qjEbx5YL-lkp@intel.com>
+References: <20231114150130.497915-9-sui.jingfeng@linux.dev>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114150130.497915-9-sui.jingfeng@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+SSBkb3VidCBpdC4NCj4NCj5BbmQgYm90IHByb292ZXMgaXQuDQoN
-Ck15ICdkdHNjaGVtYScgaXMgb3V0ZGF0ZWQsIGFuZCBJIGVuY291bnRlcmVkIGVycm9ycyBhZnRl
-ciB1cGRhdGluZyBpdC4NCkkgd2lsbCBmaXggaXQgaW4gbmV4dCBwYXRjaGVzLg0KDQo+PiAtIEZp
-eGVkIGNvZGUgc3R5bGUgaXNzdWVzDQo+DQo+QmUgc3BlY2lmaWMgLSB3aGF0IGNvZGUgc3R5bGUg
-aXNzdWVzIGRpZCB5b3UgZml4Pw0KPg0KSSBmaXhlZCB0aGUgY29kZSBzdHlsZSBpc3N1ZSByZWxh
-dGVkIHRvIHRoZSBsaWNlbnNlIGRlY2xhcmF0aW9uLg0KDQo+Pg0KPj4gIC4uLi9yZWFsdGVrLHJ0
-ZDEzMTktaW50Yy55YW1sICAgICAgICAgICAgICAgICB8IDc5DQo+KysrKysrKysrKysrKysrKysr
-Kw0KPj4gIC4uLi9yZWFsdGVrLHJ0ZDEzMTlkLWludGMueWFtbCAgICAgICAgICAgICAgICB8IDc5
-DQo+KysrKysrKysrKysrKysrKysrKw0KPj4gIC4uLi9yZWFsdGVrLHJ0ZDEzMjUtaW50Yy55YW1s
-ICAgICAgICAgICAgICAgICB8IDc5DQo+KysrKysrKysrKysrKysrKysrKw0KPj4gIC4uLi9yZWFs
-dGVrLHJ0ZDE2MTliLWludGMueWFtbCAgICAgICAgICAgICAgICB8IDc4ICsrKysrKysrKysrKysr
-KysrKw0KPj4gIDQgZmlsZXMgY2hhbmdlZCwgMzE1IGluc2VydGlvbnMoKykNCj4+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQNCj4+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pbnRlcnJ1
-cHQtY29udHJvbGxlci9yZWFsdGVrLHJ0ZDEzMTkNCj4+IC1pbnRjLnlhbWwgIGNyZWF0ZSBtb2Rl
-IDEwMDY0NA0KPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1j
-b250cm9sbGVyL3JlYWx0ZWsscnRkMTMxOQ0KPj4gZC1pbnRjLnlhbWwgIGNyZWF0ZSBtb2RlIDEw
-MDY0NA0KPj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1jb250
-cm9sbGVyL3JlYWx0ZWsscnRkMTMyNQ0KPj4gLWludGMueWFtbCAgY3JlYXRlIG1vZGUgMTAwNjQ0
-DQo+PiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xs
-ZXIvcmVhbHRlayxydGQxNjE5DQo+PiBiLWludGMueWFtbA0KPg0KPldoeSBkbyB5b3UgaGF2ZSBm
-b3VyIGJpbmRpbmdzIGZvciB0aGUgc2FtZT8gUGxlYXNlIGV4cGxhaW4gbWUgdGhlIGRpZmZlcmVu
-Y2VzLg0KPg0KSWYgdGhlIGJpbmRpbmdzIGNhbiBiZSBzaGFyZWQsIEkgd2lsbCBjb25zb2xpZGF0
-ZSBpdCBpbnRvIG9uZS4NCg0KPj4NCj4+IGRpZmYgLS1naXQNCj4+IGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL3JlYWx0ZWsscnRkMTMNCj4+
-IDE5LWludGMueWFtbA0KPj4gYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaW50
-ZXJydXB0LWNvbnRyb2xsZXIvcmVhbHRlayxydGQxMw0KPj4gMTktaW50Yy55YW1sDQo+PiBuZXcg
-ZmlsZSBtb2RlIDEwMDY0NA0KPj4gaW5kZXggMDAwMDAwMDAwMDAwLi5iODhmM2FjMDdjZDkNCj4+
-IC0tLSAvZGV2L251bGwNCj4+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9pbnRlcnJ1cHQtY29udHJvbGxlci9yZWFsdGVrLHINCj4+ICsrKyB0ZDEzMTktaW50Yy55YW1s
-DQo+PiBAQCAtMCwwICsxLDc5IEBADQo+PiArIyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogKEdQ
-TC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpICVZQU1MIDEuMg0KPj4gKy0tLQ0KPj4gKyRpZDoN
-Cj4+ICtodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9pbnRlcnJ1cHQtY29udHJvbGxlci9y
-ZWFsdGVrLHJ0ZDEzMTktaW4NCj4+ICt0Yy55YW1sIw0KPj4gKyRzY2hlbWE6IGh0dHA6Ly9kZXZp
-Y2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sIw0KPj4gKw0KPj4gK3RpdGxlOiBSZWFs
-dGVrIERIQyBSVEQxMzE5IEludGVycnVwdCBDb250cm9sbGVyIERldmljZSBUcmVlIEJpbmRpbmdz
-DQo+PiArDQo+PiArZGVzY3JpcHRpb246DQo+PiArICBUaGlzIGludGVycnVwdCBjb250cm9sbGVy
-IGlzIGEgY29tcG9uZW50IG9mIFJlYWx0ZWsgREhDIFJURDEzMTkgYW5kDQo+PiArICBpcyBkZXNp
-Z25lZCB0byByZWNlaXZlIGludGVycnVwdHMgZnJvbSBwZXJpcGhlcmFsIGRldmljZXMuDQo+PiAr
-DQo+PiArICBFYWNoIERIQyBTb0MgaGFzIHR3byBzZXRzIG9mIGludGVycnVwdCBjb250cm9sbGVy
-cywgZWFjaCBjYXBhYmxlIG9mDQo+PiArIGhhbmRsaW5nIHVwIHRvIDMyIGludGVycnVwdHMuDQo+
-PiArDQo+PiArbWFpbnRhaW5lcnM6DQo+PiArICAtIEphbWVzIFRhaSA8amFtZXMudGFpQHJlYWx0
-ZWsuY29tPg0KPj4gKw0KPj4gK2FsbE9mOg0KPj4gKyAgLSAkcmVmOiAvc2NoZW1hcy9pbnRlcnJ1
-cHQtY29udHJvbGxlci55YW1sIw0KPj4gKw0KPj4gK3Byb3BlcnRpZXM6DQo+PiArICAiI2ludGVy
-cnVwdC1jZWxscyI6DQo+PiArICAgIGNvbnN0OiAxDQo+DQo+DQo+Y29tcGF0aWJsZSBpcyBmaXJz
-dCwgcHV0IHRoZSBjZWxscyBuZXh0IHRvIG90aGVyIGludGVycnVwdCBjb250cm9sbGVyIHByb3Bl
-cnRpZXMuDQo+DQpJIHdpbGwgZml4IGl0IGluIG5leHQgcGF0Y2hlcy4NCg0KPj4gKw0KPj4gKyAg
-Y29tcGF0aWJsZToNCj4+ICsgICAgZW51bToNCj4+ICsgICAgICAtIHJlYWx0ZWsscnRkMTMxOS1p
-bnRjLWlzbw0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQxMzE5LWludGMtbWlzYw0KPj4gKw0KPj4g
-KyAgIiNhZGRyZXNzLWNlbGxzIjoNCj4+ICsgICAgY29uc3Q6IDANCj4+ICsNCj4+ICsgIGludGVy
-cnVwdC1jb250cm9sbGVyOiB0cnVlDQo+PiArDQo+PiArICBpbnRlcnJ1cHRzLWV4dGVuZGVkOg0K
-Pg0KPmludGVycnVwdHMgaW5zdGVhZC4NCj4NCj5Bbnl3YXksIHlvdSBtdXN0IGRlc2NyaWJlIHRo
-ZSBpdGVtcy4gV2h5IHRoaXMgaXMgbm90IGZpeGVkIGJ1dCBmbGV4aWJsZT8NCj5IYXJkd2FyZSBo
-YXMgZGlmZmVyZW50IG51bWJlciBvZiBwaW5zPyBUaGF0J3MgdW5saWtlbHkuDQo+DQpJIHdpbGwg
-cmVwbGFjZSBpdCB3aXRoICdpbnRlcnJ1cHRzJy4gU2luY2Ugb3VyIEludGVycnVwdCBjb250cm9s
-bGVyIGFyY2hpdGVjdHVyZSBkb2Vzbid0IGludm9sdmUgbXVsdGlwbGUgaW50ZXJydXB0IHNvdXJj
-ZXMsIHVzaW5nICdpbnRlcnJ1cHRzJyBzaG91bGQgc3VmZmljZS4NCg0KPj4gKyAgICBtaW5JdGVt
-czogMQ0KPj4gKyAgICBtYXhJdGVtczogNA0KPj4gKw0KPj4gKyAgcmVnOg0KPj4gKyAgICBtYXhJ
-dGVtczogMQ0KPj4gKw0KPj4gK3JlcXVpcmVkOg0KPj4gKyAgLSAiI2ludGVycnVwdC1jZWxscyIN
-Cj4+ICsgIC0gIiNhZGRyZXNzLWNlbGxzIg0KPj4gKyAgLSBjb21wYXRpYmxlDQo+PiArICAtIGlu
-dGVycnVwdC1jb250cm9sbGVyDQo+PiArICAtIGludGVycnVwdHMtZXh0ZW5kZWQNCj4+ICsgIC0g
-cmVnDQo+PiArDQo+PiArYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+PiArDQo+PiArZXhh
-bXBsZXM6DQo+PiArICAtIHwNCj4+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVw
-dC1jb250cm9sbGVyL2lycS5oPg0KPj4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJy
-dXB0LWNvbnRyb2xsZXIvYXJtLWdpYy5oPg0KPj4gKw0KPj4gKyAgICBydGQxMzE5X2lzb19pcnE6
-IGludGVycnVwdC1jb250cm9sbGVyQDQwIHsNCj4+ICsgICAgICBjb21wYXRpYmxlID0gInJlYWx0
-ZWsscnRkMTMxOS1pbnRjLWlzbyI7DQo+PiArICAgICAgcmVnID0gPDB4MDAgMHg0MD47DQo+PiAr
-ICAgICAgaW50ZXJydXB0cy1leHRlbmRlZCA9IDwmZ2ljIEdJQ19TUEkgNDEgSVJRX1RZUEVfTEVW
-RUxfSElHSD4sDQo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkg
-MCBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCj4+ICsgICAgICBpbnRlcnJ1cHQtY29udHJvbGxlcjsN
-Cj4+ICsgICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCj4+ICsgICAgICAjaW50ZXJydXB0LWNl
-bGxzID0gPDE+Ow0KPj4gKyAgICB9Ow0KPj4gKw0KPj4gKyAgICBydGQxMzE5X21pc2NfaXJxOiBp
-bnRlcnJ1cHQtY29udHJvbGxlckA4MCB7DQo+PiArICAgICAgY29tcGF0aWJsZSA9ICJyZWFsdGVr
-LHJ0ZDEzMTktaW50Yy1taXNjIjsNCj4NCj5Ecm9wLCBvbmUgZXhhbXBsZSBpcyBlbm91Z2guIFRo
-aXMgaXMgdGhlIHNhbWUgYXMgcHJldmlvdXMuDQo+DQpJIHdpbGwgZml4IGl0IGluIG5leHQgcGF0
-Y2hlcy4NCg0KPj4gKyAgICAgIHJlZyA9IDwweDAwIDB4ODA+Ow0KPj4gKyAgICAgIGludGVycnVw
-dHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQwIElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KPj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDg5DQo+SVJRX1RZUEVf
-TEVWRUxfSElHSD4sDQo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19T
-UEkgOTANCj5JUlFfVFlQRV9MRVZFTF9ISUdIPiwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgPCZnaWMgR0lDX1NQSSAzOQ0KPklSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KPj4gKyAgICAg
-IGludGVycnVwdC1jb250cm9sbGVyOw0KPj4gKyAgICAgICNhZGRyZXNzLWNlbGxzID0gPDA+Ow0K
-Pj4gKyAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQo+PiArICAgIH07DQo+PiArLi4uDQo+
-PiBkaWZmIC0tZ2l0DQo+PiBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pbnRl
-cnJ1cHQtY29udHJvbGxlci9yZWFsdGVrLHJ0ZDEzDQo+PiAxOWQtaW50Yy55YW1sDQo+PiBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9yZWFs
-dGVrLHJ0ZDEzDQo+PiAxOWQtaW50Yy55YW1sDQo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPj4g
-aW5kZXggMDAwMDAwMDAwMDAwLi43NWFiYTQ0OGJhZjcNCj4+IC0tLSAvZGV2L251bGwNCj4+ICsr
-KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxl
-ci9yZWFsdGVrLHINCj4+ICsrKyB0ZDEzMTlkLWludGMueWFtbA0KPj4gQEAgLTAsMCArMSw3OSBA
-QA0KPj4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChHUEwtMi4wLW9ubHkgT1IgQlNELTIt
-Q2xhdXNlKSAlWUFNTCAxLjINCj4+ICstLS0NCj4+ICskaWQ6DQo+PiAraHR0cDovL2RldmljZXRy
-ZWUub3JnL3NjaGVtYXMvaW50ZXJydXB0LWNvbnRyb2xsZXIvcmVhbHRlayxydGQxMzE5ZC1pDQo+
-PiArbnRjLnlhbWwjDQo+PiArJHNjaGVtYTogaHR0cDovL2RldmljZXRyZWUub3JnL21ldGEtc2No
-ZW1hcy9jb3JlLnlhbWwjDQo+PiArDQo+PiArdGl0bGU6IFJlYWx0ZWsgREhDIFJURDEzMTlEIElu
-dGVycnVwdCBDb250cm9sbGVyIERldmljZSBUcmVlIEJpbmRpbmdzDQo+PiArDQo+PiArZGVzY3Jp
-cHRpb246DQo+PiArICBUaGlzIGludGVycnVwdCBjb250cm9sbGVyIGlzIGEgY29tcG9uZW50IG9m
-IFJlYWx0ZWsgREhDIFJURDEzMTlEDQo+PiArYW5kDQo+PiArICBpcyBkZXNpZ25lZCB0byByZWNl
-aXZlIGludGVycnVwdHMgZnJvbSBwZXJpcGhlcmFsIGRldmljZXMuDQo+PiArDQo+PiArICBFYWNo
-IERIQyBTb0MgaGFzIHR3byBzZXRzIG9mIGludGVycnVwdCBjb250cm9sbGVycywgZWFjaCBjYXBh
-YmxlIG9mDQo+PiArIGhhbmRsaW5nIHVwIHRvIDMyIGludGVycnVwdHMuDQo+PiArDQo+PiArbWFp
-bnRhaW5lcnM6DQo+PiArICAtIEphbWVzIFRhaSA8amFtZXMudGFpQHJlYWx0ZWsuY29tPg0KPj4g
-Kw0KPj4gK2FsbE9mOg0KPj4gKyAgLSAkcmVmOiAvc2NoZW1hcy9pbnRlcnJ1cHQtY29udHJvbGxl
-ci55YW1sIw0KPj4gKw0KPj4gK3Byb3BlcnRpZXM6DQo+PiArICAiI2ludGVycnVwdC1jZWxscyI6
-DQo+PiArICAgIGNvbnN0OiAxDQo+PiArDQo+PiArICBjb21wYXRpYmxlOg0KPj4gKyAgICBlbnVt
-Og0KPj4gKyAgICAgIC0gcmVhbHRlayxydGQxMzE5ZC1pbnRjLWlzbw0KPj4gKyAgICAgIC0gcmVh
-bHRlayxydGQxMzE5ZC1pbnRjLW1pc2MNCj4NCj5TbyB0aGlzIGlzIHRoZSBzYW1lIGFzIHRoZSBv
-dGhlciBvbmU/IFdoeSBpdCBjYW5ub3QgYmUgcGFydCBvZiB0aGF0IG9uZT8NCg0KSSB3aWxsIGNv
-bnNvbGlkYXRlIHRoZXNlIHBhcnRzIGludG8gYSBzaW5nbGUgZmlsZS4NCg0KVGhhbmsgeW91IGZv
-ciB5b3VyIGZlZWRiYWNrLg0KDQpSZWdhcmRzLA0KSmFtZXMNCg0KDQoNCg==
+Hi Sui,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/drm-bridge-it66121-Use-dev-replace-ctx-dev-in-the-it66121_probe/20231114-231203
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20231114150130.497915-9-sui.jingfeng%40linux.dev
+patch subject: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+config: x86_64-buildonly-randconfig-004-20231120 (https://download.01.org/0day-ci/archive/20231120/202311201649.qjEbx5YL-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311201649.qjEbx5YL-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311201649.qjEbx5YL-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpu/drm/bridge/ite-it66121.c:1654:5: warning: no previous prototype for function 'it66121_create_bridge' [-Wmissing-prototypes]
+   int it66121_create_bridge(struct i2c_client *client, bool of_support,
+       ^
+   drivers/gpu/drm/bridge/ite-it66121.c:1654:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int it66121_create_bridge(struct i2c_client *client, bool of_support,
+   ^
+   static 
+>> drivers/gpu/drm/bridge/ite-it66121.c:1752:6: warning: no previous prototype for function 'it66121_destroy_bridge' [-Wmissing-prototypes]
+   void it66121_destroy_bridge(struct drm_bridge *bridge)
+        ^
+   drivers/gpu/drm/bridge/ite-it66121.c:1752:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void it66121_destroy_bridge(struct drm_bridge *bridge)
+   ^
+   static 
+   2 warnings generated.
+
+
+vim +/it66121_create_bridge +1654 drivers/gpu/drm/bridge/ite-it66121.c
+
+  1653	
+> 1654	int it66121_create_bridge(struct i2c_client *client, bool of_support,
+  1655				  bool hpd_support, bool audio_support,
+  1656				  struct drm_bridge **bridge)
+  1657	{
+  1658		struct device *dev = &client->dev;
+  1659		int ret;
+  1660		struct it66121_ctx *ctx;
+  1661	
+  1662		ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+  1663		if (!ctx)
+  1664			return -ENOMEM;
+  1665	
+  1666		ctx->dev = dev;
+  1667		ctx->client = client;
+  1668		mutex_init(&ctx->lock);
+  1669	
+  1670		if (of_support) {
+  1671			ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+  1672			if (ret)
+  1673				return ret;
+  1674	
+  1675			ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+  1676			if (ret)
+  1677				return ret;
+  1678		} else {
+  1679			ctx->bus_width = 24;
+  1680			ctx->next_bridge = NULL;
+  1681		}
+  1682	
+  1683		it66121_hw_reset(ctx);
+  1684	
+  1685		ctx->regmap = devm_regmap_init_i2c(client, &it66121_regmap_config);
+  1686		if (IS_ERR(ctx->regmap))
+  1687			return PTR_ERR(ctx->regmap);
+  1688	
+  1689		ret = it66121_read_chip_id(ctx, false);
+  1690		if (ret)
+  1691			return ret;
+  1692	
+  1693		ctx->info = it66121_get_match_data(ctx->vender_id, ctx->device_id);
+  1694		if (!ctx->info)
+  1695			return -ENODEV;
+  1696	
+  1697		if (hpd_support) {
+  1698			ret = devm_request_threaded_irq(dev, client->irq, NULL,
+  1699							it66121_irq_threaded_handler,
+  1700							IRQF_ONESHOT, dev_name(dev),
+  1701							ctx);
+  1702			if (ret < 0) {
+  1703				dev_err(dev, "Failed to request irq: %d\n", ret);
+  1704				return ret;
+  1705			}
+  1706		}
+  1707	
+  1708		it66121_bridge_init_base(&ctx->bridge, dev->of_node, true);
+  1709	
+  1710		if (audio_support)
+  1711			it66121_audio_codec_init(ctx, dev);
+  1712	
+  1713		*bridge = &ctx->bridge;
+  1714	
+  1715		dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
+  1716			 ctx->vender_id, ctx->device_id, ctx->revision);
+  1717	
+  1718		return 0;
+  1719	}
+  1720	EXPORT_SYMBOL_GPL(it66121_create_bridge);
+  1721	
+  1722	static int it66121_probe(struct i2c_client *client)
+  1723	{
+  1724		struct device *dev = &client->dev;
+  1725		struct it66121_ctx *ctx;
+  1726		struct drm_bridge *bridge;
+  1727		int ret;
+  1728	
+  1729		if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+  1730			dev_err(dev, "I2C check functionality failed.\n");
+  1731			return -ENXIO;
+  1732		}
+  1733	
+  1734		ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
+  1735						     it66121_supplies);
+  1736		if (ret) {
+  1737			dev_err(dev, "Failed to enable power supplies\n");
+  1738			return ret;
+  1739		}
+  1740	
+  1741		ret = it66121_create_bridge(client, true, true, true, &bridge);
+  1742		if (ret)
+  1743			return ret;
+  1744	
+  1745		ctx = bridge_to_it66121(bridge);
+  1746	
+  1747		i2c_set_clientdata(client, ctx);
+  1748	
+  1749		return 0;
+  1750	}
+  1751	
+> 1752	void it66121_destroy_bridge(struct drm_bridge *bridge)
+  1753	{
+  1754		struct it66121_ctx *ctx = bridge_to_it66121(bridge);
+  1755	
+  1756		drm_bridge_remove(bridge);
+  1757	
+  1758		mutex_destroy(&ctx->lock);
+  1759	}
+  1760	EXPORT_SYMBOL_GPL(it66121_destroy_bridge);
+  1761	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
