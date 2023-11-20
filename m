@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1ECB7F1DF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC747F1DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbjKTUXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 15:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47304 "EHLO
+        id S230224AbjKTU2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 15:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKTUXU (ORCPT
+        with ESMTP id S229500AbjKTU2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 15:23:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E25C7;
-        Mon, 20 Nov 2023 12:23:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F93C433C7;
-        Mon, 20 Nov 2023 20:23:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700511796;
-        bh=64qT/wOcuw4k4+n5Kkq7uUCAVlOExcQnfX8RYUHstxI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=oiQoXXH+fHhQ8ndFf5xJd3rDSNoEHrh4y0K7iRrAw5ojNcpZyaGzHXmKFM3eaW+U5
-         +PeKzdbMZ+FAlFqWLu9kfUfBtNhiXC2cnNnvKXM/3FdAMp5oE/jQDUBLHJqU+RbRxv
-         9j2ZUbYcrDMqTVFO4WWqoHztAB0fMIsv53hospjik/2ImIjIBASi9Ohp1fOwJZaQMf
-         OG7cDYW5VD/+8oP9chj4sONb8pbuMRTA2a5oHge34DrkKZrDB6juoAdjIdCZNxoWhY
-         z+NfTe2aefBjjNj8j2YWSTar2k1yFTSnD36J8big6mlLZ0jBVYDHiQ0pls2brkOHtW
-         alts96V2/jVSw==
-Date:   Mon, 20 Nov 2023 14:23:14 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Praveenkumar I <quic_ipkumar@quicinc.com>
-Cc:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, lpieralisi@kernel.org, kw@linux.com,
-        robh@kernel.org, bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_varada@quicinc.com, quic_devipriy@quicinc.com
-Subject: Re: [PATCH v2] PCI: qcom: Set max payload size 256 bytes for IPQ9574
-Message-ID: <20231120202314.GA211658@bhelgaas>
+        Mon, 20 Nov 2023 15:28:48 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F4EC3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 12:28:45 -0800 (PST)
+Received: from notapiano.myfiosgateway.com (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 518FF66071D4;
+        Mon, 20 Nov 2023 20:28:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700512123;
+        bh=gCwZgV8zJpLMsi8EPwsQoJVBIyq0juJd2X+ekA2F1+c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k3n50MQVYemXDQ0xWa4l3ho2D1Rr1/II7hG+Mr9k6DjxufxpvNbu3Jw5PdYW30po7
+         WxZHls2gEskNN9O7Qd9Iee1qJomMXTpRzebEaohbQa+xnOrtdJIbbUMBuorWwCJrgU
+         38PcqzeJjnGYVMttzXfA5X2hBA/KtL4YPRX0mN9SP6TWLujUK+k8XuyOvuFpKgC73p
+         JItG09o7yRrL2mYHXhJCzeKqn3q52whMXhQb99ktIu0mOav1dFmhBm7HnuftMjjuOU
+         AlCNpMHAPDKecVjzImr7btHiHQZtBeTe15yIplqN5dYq++dqqjU3utHgWUd7G4rl19
+         HdLZiMdPFgPSQ==
+From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, Bo-Chen Chen <rex-bc.chen@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Guillaume Ranquet <granquet@baylibre.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] drm/mediatek: dp: Add phy_mtk_dp module as pre-dependency
+Date:   Mon, 20 Nov 2023 15:28:16 -0500
+Message-ID: <20231120202837.396760-1-nfraprado@collabora.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726104249.534210-1-quic_ipkumar@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:12:49PM +0530, Praveenkumar I wrote:
-> This patch sets 256 bytes as payload size for IPQ9574. This allows
-> PCIe RC to use the max payload size when a capable link partner is
-> connected.
+The mtk_dp driver registers a phy device which is handled by the
+phy_mtk_dp driver and assumes that the phy probe will complete
+synchronously, proceeding to make use of functionality exposed by that
+driver right away. This assumption however is false when the phy driver
+is built as a module, causing the mtk_dp driver to fail probe in this
+case.
 
-I'm confused because this patch doesn't apply to v6.7-rc1, and I don't
-see qcom_pcie_post_init_1_27_0() or IPQ9574 mentioned in the git
-history.  Maybe this depends on some out-of-tree patch?
+Add the phy_mtk_dp module as a pre-dependency to the mtk_dp module to
+ensure the phy module has been loaded before the dp, so that the phy
+probe happens synchrounously and the mtk_dp driver can probe
+successfully even with the phy driver built as a module.
 
-I think this commit log should explain why the existing code in the
-PCI core doesn't do what's needed.  Is there something qcom-specific
-about this issue?
+Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-Maybe an example including the DEVCAP Max_Payload_Size Supported and
-the DEVCTL Max_Payload_Size for both ends of the link would help
-understand what's going wrong.
+---
 
-Does this setting get lost after suspend?  Does it need to be updated
-again after suspend/resume?
+ drivers/gpu/drm/mediatek/mtk_dp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
-> ---
-> [v2]:
-> 	Dropped cover letter for this patch. Configured the max payload
-> 	in the post_init of IPQ9574 instead for early fixup.
-> 
->  drivers/pci/controller/dwc/pcie-qcom.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 8ee7c2b5de27..739c0d514a96 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -1145,6 +1145,15 @@ static int qcom_pcie_post_init(struct qcom_pcie *pcie)
->  
->  static int qcom_pcie_post_init_1_27_0(struct qcom_pcie *pcie)
->  {
-> +	struct dw_pcie *pci = pcie->pci;
-> +	u16 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +	u32 val;
-> +
-> +	val = readl(pci->dbi_base + offset + PCI_EXP_DEVCTL);
-> +	val &= ~PCI_EXP_DEVCTL_PAYLOAD;
-> +	val |= PCI_EXP_DEVCTL_PAYLOAD_256B;
-> +	writel(val, pci->dbi_base + offset + PCI_EXP_DEVCTL);
-> +
->  	writel(SLV_ADDR_SPACE_SZ_1_27_0,
->  	       pcie->parf + PARF_SLV_ADDR_SPACE_SIZE);
->  
-> -- 
-> 2.34.1
-> 
+diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+index e4c16ba9902d..2136a596efa1 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dp.c
++++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+@@ -2818,3 +2818,4 @@ MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
+ MODULE_AUTHOR("Bo-Chen Chen <rex-bc.chen@mediatek.com>");
+ MODULE_DESCRIPTION("MediaTek DisplayPort Driver");
+ MODULE_LICENSE("GPL");
++MODULE_SOFTDEP("pre: phy_mtk_dp");
+-- 
+2.42.1
+
