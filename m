@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2717F17EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B037F17F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbjKTPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        id S232759AbjKTP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbjKTPzV (ORCPT
+        with ESMTP id S229823AbjKTP5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:55:21 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889D7E3;
-        Mon, 20 Nov 2023 07:55:17 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507a0907896so6400834e87.2;
-        Mon, 20 Nov 2023 07:55:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700495716; x=1701100516; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bmiqxT90YVFrOlPlqhujIZF2WAbgKxIymaxdbEcrsTk=;
-        b=Ispji2YtUWGY0fMQjhsXzUezOL18fprLv3zds3N0sqq53L6PV001ePiNvPozuMbWNv
-         +kpun5IkFDW4zQwGcGGsxKayWxyVEAau4rlo1reA0SKk2zBSxwzxT0yNvIrfOBZxLtMg
-         3ynH8IMVxJN/PRDBJgjfJlTHic1aUfbo7vHMP17vzxiDPM2tJngkCGUbDhbigJJvgkjT
-         Iy9/PHdbotLEa8imkZhho3OAqorzMZqYYhE57/mea/FS4rTo426S0aP6Ts54yfrboNFg
-         wrcMmZHQj9/BvCzrF9LviVHAxqX/4o6ha3kAR9ZCl5H/92pwi4J3a9/pETk6sxM75nWy
-         oYDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700495716; x=1701100516;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bmiqxT90YVFrOlPlqhujIZF2WAbgKxIymaxdbEcrsTk=;
-        b=Chez6Byj8/5ido35unxZqxugWotLRkI0rBwmeg3pNBLjWu78BRmLihckSrFoRyGoAx
-         UJWMi0AUOQS5iEDKGm8KPu70Itq8BJCiTH5ElBqYzWKXvz7uDa6T0p0SWO8K7rYgXUNX
-         /q7H2b6ruWulNzx3rfCSor2RaU+CTiblFtv34MnOLgGjX5OrZXEqQBfdT+3LU2THNXnO
-         /PDeJDmqrPPhV7M9SUyOQhWL9fcoHe75HP/FKm6SwHfxS8LqZJyK54Qxh2ezDFPUBBlk
-         D7Ks/Y8DWjTfhcNm3evYBZ4gJY8zhdnjaSsCYjfAIwQvfFNhAOVZ8yIZxo8DxMJfui7Z
-         +jtw==
-X-Gm-Message-State: AOJu0YybfyPdaz5rp6rTlXrs195BfTGvWaMLaoUulIyVyEy1m+yPLxDO
-        ZWrsioGud9QjCNpu78t6fiwZua28kn8qfu0xiwY=
-X-Google-Smtp-Source: AGHT+IEGvqQr6cTOB2FCQA0WzT+rjb0MBN6QsjipE6JCfOsNlEFDX+m//iKUwZnUmucKMpMXjJ3kug==
-X-Received: by 2002:a19:5514:0:b0:509:4c8a:525d with SMTP id n20-20020a195514000000b005094c8a525dmr5251624lfe.35.1700495715385;
-        Mon, 20 Nov 2023 07:55:15 -0800 (PST)
-Received: from [172.25.98.130] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id a2-20020adffb82000000b0032dba85ea1bsm11629737wrr.75.2023.11.20.07.55.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 07:55:14 -0800 (PST)
-Message-ID: <5cf3824f-6375-4c76-86ff-c5389ddf4196@gmail.com>
-Date:   Mon, 20 Nov 2023 17:55:12 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] iio: adc: ad7173: add AD7173 driver
-Content-Language: en-US
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231116134655.21052-1-user@HYB-hhAwRlzzMZb>
- <20231116134655.21052-2-user@HYB-hhAwRlzzMZb>
- <ZVtYeWZmcDZ_SMPo@smile.fi.intel.com>
-From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
-In-Reply-To: <ZVtYeWZmcDZ_SMPo@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Mon, 20 Nov 2023 10:57:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614139F;
+        Mon, 20 Nov 2023 07:57:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B65E721910;
+        Mon, 20 Nov 2023 15:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700495830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F7PHDpnVy2lTG03bseJP/V2+jncktgxQQFaSuIPkBLk=;
+        b=w587o13FK81/QgJpA3yBbGce9j7RBg0tucqm7mquwIwtcAZKcXRZsRTx+xfohbeXVQMjol
+        5rRx1mMOTTrdhQxw2cqFJvSV6na1ofukBnpgBDH/R6mnLLAmUi/ZBwaCsPedCdz96Z9fJ4
+        N+K2sO2TnX3T00B7UzkiVdDSvhX+yAg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700495830;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F7PHDpnVy2lTG03bseJP/V2+jncktgxQQFaSuIPkBLk=;
+        b=T0YT1AJBtw9kX1YM4GoSpd7lH71ue+bwhpIBHLhaseE00YMdulNbNahoIZAeNDv5JIFSuJ
+        eqXrUidF0/NL8sDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 518D4134AD;
+        Mon, 20 Nov 2023 15:57:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bR32EtaBW2XmWQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 20 Nov 2023 15:57:10 +0000
+Date:   Mon, 20 Nov 2023 16:57:09 +0100
+Message-ID: <877cmcpgdm.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Daniel Mack <zonque@gmail.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>, linux-sound@vger.kernel.org,
+        alsa-devel@alsa-project.org, Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH 30/34] ALSA: use atomic find_bit() functions where applicable
+In-Reply-To: <20231118155105.25678-31-yury.norov@gmail.com>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+        <20231118155105.25678-31-yury.norov@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Score: 1.20
+X-Spamd-Result: default: False [1.20 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         BAYES_HAM(-0.00)[21.87%];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[17];
+         MID_CONTAINS_FROM(1.00)[];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,perex.cz,suse.com,gmail.com,intel.com,linux.intel.com,chromium.org,alsa-project.org,suse.cz,alu.unizg.hr,infradead.org,rasmusvillemoes.dk,linaro.org];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/20/23 15:00, Andy Shevchenko wrote:
-> On Thu, Nov 16, 2023 at 03:46:55PM +0200, mitrutzceclan wrote:
->> +struct ad7173_channel_config {
->> +	bool live;
->> +	u8 cfg_slot;
->> +	/* Following fields are used to compare equality. Bipolar must be first */
->> +	bool bipolar;
->> +	bool input_buf;
->> +	u8 odr;
->> +	u8 ref_sel;
+On Sat, 18 Nov 2023 16:51:01 +0100,
+Yury Norov wrote:
 > 
-> If you group better by types, it might save a few bytes on the architectures /
-> compilers where bool != byte.
->
-Grouping by type will result in not being able to use memcmp() for
-comparing configs. But then there is the issue that I was under the
-assumption that bool=byte. If that is not the case, the config equality
-check might be comparing padding bytes.
-
-In this case what do you suggest:
-- using the packed attribute
-- using only u8
-- drop memcmp, manually compare fields
-
-...
-
->> +	cmp_size = sizeof(*cfg) - offset;
+> ALSA code tests each bit in bitmaps in a for() loop. Switch it to
+> dedicated atomic find_bit() API.
 > 
-> sizeof_field() from the above mentioned header?
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-This computes the size of multiple fields, following cfg_slot. Better to
-group the fields that need to be compared into another struct then use
-sizeof_field()?
+Through a quick glance, both changes look OK.
+Feel free to take my ack
 
-...
+Acked-by: Takashi Iwai <tiwai@suse.de>
 
-> 
->> +	return vref / (MICRO/MILLI);
-> 
-> What does the denominator mean and why you can't simply use MILL?
->
 
-Original vref values are in micro, I considered that it was adequate to
-represent the conversion from MICRO to MILLI as a fraction.
+thanks,
 
->> +		*val = st->info->sinc5_data_rates[reg] / (MICRO/MILLI);
->> +		*val2 = (st->info->sinc5_data_rates[reg] % MILLI) * (MICRO/MILLI);
-> 
-> Same Q about denominator.
-> 
-Here, a misunderstanding on my part of a suggestion from Jonathan in V2,
-will be removed.
+Takashi
