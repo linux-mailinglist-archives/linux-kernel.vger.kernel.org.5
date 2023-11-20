@@ -2,45 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3E67F1755
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4427F1776
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbjKTPcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S234142AbjKTPhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234109AbjKTPcM (ORCPT
+        with ESMTP id S231352AbjKTPhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:32:12 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C88CF;
-        Mon, 20 Nov 2023 07:32:08 -0800 (PST)
-Received: from [194.95.143.137] (helo=phil.sntech)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r56Fn-0008VB-Mr; Mon, 20 Nov 2023 16:32:03 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>, Alex Bee <knaerzche@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v3 0/5] Add USB support for RK3128
-Date:   Mon, 20 Nov 2023 16:31:52 +0100
-Message-Id: <170049419905.1671702.10955033014678896611.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231119121340.109025-1-knaerzche@gmail.com>
-References: <20231119121340.109025-1-knaerzche@gmail.com>
+        Mon, 20 Nov 2023 10:37:13 -0500
+Received: from 4.mo560.mail-out.ovh.net (4.mo560.mail-out.ovh.net [87.98.172.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0E8A7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:37:08 -0800 (PST)
+Received: from director5.ghost.mail-out.ovh.net (unknown [10.109.156.34])
+        by mo560.mail-out.ovh.net (Postfix) with ESMTP id 8FA3425E44
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:31:55 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-lljcm (unknown [10.110.208.139])
+        by director5.ghost.mail-out.ovh.net (Postfix) with ESMTPS id CE6831FEBC;
+        Mon, 20 Nov 2023 15:31:54 +0000 (UTC)
+Received: from RCM-web2.webmail.mail.ovh.net ([176.31.232.109])
+        by ghost-submission-6684bf9d7b-lljcm with ESMTPSA
+        id Gli7Lup7W2WsAgAAgGBV+g
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Mon, 20 Nov 2023 15:31:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Date:   Mon, 20 Nov 2023 17:31:53 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     viro@zeniv.linux.org.uk, skhan@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev,
+        syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
+Subject: Re: [PATCH] iov_iter: fix memleak in iov_iter_extract_pages
+In-Reply-To: <20231111075323.208181-1-jose.pekkarinen@foxhound.fi>
+References: <20231111075323.208181-1-jose.pekkarinen@foxhound.fi>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <8ab69336548dfe4f556d7be83d90afeb@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 192.42.116.182
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+X-Ovh-Tracer-Id: 8929230686578320904
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudegjedghedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeggfffhvfevufgjfhgfkfigohhitgfgsehtkehjtddtreejnecuhfhrohhmpeflohhsrocurfgvkhhkrghrihhnvghnuceojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqnecuggftrfgrthhtvghrnhepvdffhfegtdeuiefgkefhgeefheektdekffeufeehgeeuueehjeeijeelleetjeeinecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmnecukfhppeduvdejrddtrddtrddupdduledvrdegvddrudduiedrudekvddpudejiedrfedurddvfedvrddutdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedtpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,29 +57,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Nov 2023 13:13:35 +0100, Alex Bee wrote:
-> While interestingly the DT-binding for the Innosilicon usb phy found in
-> RK3128 SoC exists already and it is exposed in the SoC DT, it has never
-> been added to the driver.
-> This patch-set adds support for this early version of the phy and does
-> some DT-fixups in order to make the 2-port host/otg phy and the respective
-> controllers work.
+On 2023-11-11 09:53, José Pekkarinen wrote:
+> syzbot reports there is a memory leak in iov_iter_extract_pages where 
+> in
+> the unlikely case of having an error in pin_user_pages_fast, the pages
+> aren't free. This patch will free it before returning. Output of mem
+> leak follows:
 > 
-> [...]
+> BUG: memory leak
+> unreferenced object 0xffff888109d2e400 (size 1024):
+>   comm "syz-executor121", pid 5006, jiffies 4294943225 (age 17.760s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
+> [inline]
+>     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+>     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+>     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+>     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+>     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
+> [inline]
+>     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_user_pages
+> lib/iov_iter.c:1765 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
+> lib/iov_iter.c:1831
+>     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
+> block/blk-map.c:297
+>     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
+> block/blk-map.c:664
+>     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+>     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
+> block/blk-map.c:724
+>     [<ffffffff82ca0925>] sg_io+0x285/0x510 
+> drivers/scsi/scsi_ioctl.c:456
+>     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
+> drivers/scsi/scsi_ioctl.c:820
+>     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
+> drivers/scsi/scsi_ioctl.c:903
+>     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+>     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+>     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
+> [inline]
+>     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
+> arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888109d2dc00 (size 1024):
+>   comm "syz-executor121", pid 5007, jiffies 4294943747 (age 12.540s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
+> [inline]
+>     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+>     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+>     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+>     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+>     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
+> [inline]
+>     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_user_pages
+> lib/iov_iter.c:1765 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
+> lib/iov_iter.c:1831
+>     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
+> block/blk-map.c:297
+>     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
+> block/blk-map.c:664
+>     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+>     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
+> block/blk-map.c:724
+>     [<ffffffff82ca0925>] sg_io+0x285/0x510 
+> drivers/scsi/scsi_ioctl.c:456
+>     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
+> drivers/scsi/scsi_ioctl.c:820
+>     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
+> drivers/scsi/scsi_ioctl.c:903
+>     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+>     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+>     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
+> [inline]
+>     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
+> arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888109d2d800 (size 1024):
+>   comm "syz-executor121", pid 5010, jiffies 4294944269 (age 7.320s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff81554bbb>] __do_kmalloc_node mm/slab_common.c:984 
+> [inline]
+>     [<ffffffff81554bbb>] __kmalloc_node+0x4b/0x150 mm/slab_common.c:992
+>     [<ffffffff815440f9>] kmalloc_node include/linux/slab.h:602 [inline]
+>     [<ffffffff815440f9>] kvmalloc_node+0x99/0x170 mm/util.c:604
+>     [<ffffffff824c52fe>] kvmalloc include/linux/slab.h:720 [inline]
+>     [<ffffffff824c52fe>] kvmalloc_array include/linux/slab.h:738 
+> [inline]
+>     [<ffffffff824c52fe>] want_pages_array lib/iov_iter.c:985 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_user_pages
+> lib/iov_iter.c:1765 [inline]
+>     [<ffffffff824c52fe>] iov_iter_extract_pages+0x1ee/0xa40 
+> lib/iov_iter.c:1831
+>     [<ffffffff824125a7>] bio_map_user_iov+0x167/0x5d0 
+> block/blk-map.c:297
+>     [<ffffffff82412df3>] blk_rq_map_user_iov+0x3e3/0xb30 
+> block/blk-map.c:664
+>     [<ffffffff82413943>] blk_rq_map_user block/blk-map.c:691 [inline]
+>     [<ffffffff82413943>] blk_rq_map_user_io+0x143/0x160 
+> block/blk-map.c:724
+>     [<ffffffff82ca0925>] sg_io+0x285/0x510 
+> drivers/scsi/scsi_ioctl.c:456
+>     [<ffffffff82ca1025>] scsi_cdrom_send_packet+0x1b5/0x480
+> drivers/scsi/scsi_ioctl.c:820
+>     [<ffffffff82ca13ba>] scsi_ioctl+0xca/0xd30 
+> drivers/scsi/scsi_ioctl.c:903
+>     [<ffffffff82d35964>] sg_ioctl+0x5f4/0x10a0 drivers/scsi/sg.c:1163
+>     [<ffffffff8168e602>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff8168e602>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff8168e602>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff8168e602>] __x64_sys_ioctl+0xf2/0x140 fs/ioctl.c:856
+>     [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 
+> [inline]
+>     [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 
+> arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> Reported-by: syzbot+cb729843d0f42a5c1a50@syzkaller.appspotmail.com
+> Closes:
+> https://syzkaller.appspot.com/bug?id=99c8551967f413d108cfdd2950a0cb5652de07b8
+> Fixes: 7d58fe7310281 ("iov_iter: Add a function to extract a page list
+> from an iterator")
+> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> ---
+>  lib/iov_iter.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index 27234a820eeb..c3fd0448dead 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -1780,8 +1780,10 @@ static ssize_t
+> iov_iter_extract_user_pages(struct iov_iter *i,
+>  	if (!maxpages)
+>  		return -ENOMEM;
+>  	res = pin_user_pages_fast(addr, maxpages, gup_flags, *pages);
+> -	if (unlikely(res <= 0))
+> +	if (unlikely(res <= 0)) {
+> +		kvfree(*pages);
+>  		return res;
+> +	}
+>  	maxsize = min_t(size_t, maxsize, res * PAGE_SIZE - offset);
+>  	iov_iter_advance(i, maxsize);
+>  	return maxsize;
 
-Applied, thanks!
+     Ping.
 
-[3/5] ARM: dts: rockchip: Add USB host clocks for RK3128
-      commit: 759d6bd9ef94f0e658202947d44b939c6e3ed363
-[4/5] ARM: dts: rockchip: Add dwc2 otg fifo siztes for RK3128
-      commit: 4b12245e59efea81e19d1aa118f6f835b3e27b3a
-[5/5] ARM: dts: rockchip: Make usbphy the parent of SCLK_USB480M for RK3128
-      commit: fd610e604837936440ef7c64ab6998b004631647
-
-The rk3128 binding and the phys is already defined in the binding
-and devicetree, so I've picked up these, as they're independent of
-the phy changes themself.
-
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+     José.
