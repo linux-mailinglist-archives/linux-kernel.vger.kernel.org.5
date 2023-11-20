@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD377F196F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE637F1988
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbjKTRKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:10:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
+        id S231563AbjKTRPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:15:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbjKTRKO (ORCPT
+        with ESMTP id S230169AbjKTRPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:10:14 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F46D8;
-        Mon, 20 Nov 2023 09:10:09 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKGcCAo011905;
-        Mon, 20 Nov 2023 17:09:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=rKRFbcoiJFnyC4kTtbuw38KkKTxXnsEOsT+x/71gpJU=;
- b=TJ34m5VuSY7JtCxQvOUwrBFEF/Mx/4c/wZejY9ck2JFWh8EzEGcqK6W0b3twx2F1Jt8/
- 4NbnMeAIstOP/kzO8t78CW7jo7Z4aHStvbV3CmLgAenz8rBqIc+7jquHrE5BZ6zU39U2
- NpH+sKZ8P8wvRO8oSttPCjMctm/9vsIMPyMCLl0lM4Yo3AEl2L4JD+gXQjJRqWQKiIpU
- 4o6XieRysHbQFMnV7USHlZNk/G9yXWNuzCIs4hw7/5POLDqb6NwKJly+pR+t4AFAl/aV
- RgORRJQztpMaU/xwFh6HYj2EoVXHix1l5F3hQKyDIckOR3hAv+3ZeA7St1YykcTrlWjG tQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uem9ecnpp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 17:09:57 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AKH9uK9009254
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 17:09:56 GMT
-Received: from [10.110.123.216] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 09:09:55 -0800
-Message-ID: <13a254af-415d-4fbe-9f4f-7984e064a880@quicinc.com>
-Date:   Mon, 20 Nov 2023 09:09:54 -0800
+        Mon, 20 Nov 2023 12:15:34 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40211CF
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:15:29 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 47EF040E01E3;
+        Mon, 20 Nov 2023 17:15:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id xaSCVYJ0f5QL; Mon, 20 Nov 2023 17:15:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700500522; bh=fdWOmTLSf43i6ShLExgvRSvrIeZq2RHpM/h9jmmkNZA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=daxxyimAXN57KctBefPhYIwyK4snLXUgmDClLS+QVbmGWRaAzUfsvIsJv1wE0Dkpw
+         mw64wujRNjuqM997QZBwY9CswEzpzif3IYD+OOVqamQVHv8bDpXpFY+twI7IbdjNJr
+         jZfzoioSKsa8VwcOZ28X5Ro8jS9itjs+A7Kk4YwM8P0243lB0dZ5Xz0Acvc3o2HeYv
+         pz5QiCLBjgCgfxcDnvLnnkldWB7sIHbtan+7PsuSzNsm1PgbrVWot5Zo1sD7EaqWcq
+         D5+JNiTsvh3sfP/qjniAhsQTaI6rxSZU5L2W2VZNSFllsdsb3O0CPwoqFVOhb+fdtO
+         9B+xaXtX3/9ObIPrnFgiIDitUGonYXujWom4mEYGu7jO0pJVEGOaVSj9kKXLzWOZDR
+         hIaPN3/74iTqOUljBHGyWfQinRpOERXZFp7C+vwMYkCpNNNHw4BYCddap7XdeZvpXN
+         yhOKwmSUqzGpytN96CNox0E1VTJRGSyKFDASTmNtBDO5p6dtnVkO2RmihtxxmRQFni
+         IUxmp2/3FjmWcV9i8eCeH544YdZ54SJjBQ3VyhnLQRzXIvC5X1tSj7nNtwuhGBol4Y
+         Z0AyMOR1uRIXY4X/1/tMA/7/kFpk8S0JZXocpA1Hq/R9wEiBfktPHt7GK2OFNn1lb0
+         mA2nfZHTxlYV/d3g1pHpiJ0U=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B2C340E0197;
+        Mon, 20 Nov 2023 17:15:12 +0000 (UTC)
+Date:   Mon, 20 Nov 2023 18:15:07 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86/mm/encrypt: Use %a asm operand modifier to obtain
+ %rip-relative address
+Message-ID: <20231120171507.GGZVuUG9aSLyF52jHd@fat_crate.local>
+References: <20231120153419.3045-1-ubizjak@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: arm: Document reboot mode magic
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-References: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
- <20231117-arm-psci-system_reset2-vendor-reboots-v1-2-03c4612153e2@quicinc.com>
- <eb2d0992-4d9a-4f59-8e79-da277f39d2d9@linaro.org>
- <51785de6-2a69-482d-b686-c3694f87e6b7@quicinc.com>
- <2d8c7cc2-2c6c-4539-abf3-81700f27b1a7@linaro.org>
-From:   Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <2d8c7cc2-2c6c-4539-abf3-81700f27b1a7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Bc3Gi-DKZNJM0qmHVq7a-POPw5mf2NT1
-X-Proofpoint-GUID: Bc3Gi-DKZNJM0qmHVq7a-POPw5mf2NT1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_17,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 phishscore=0 suspectscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200121
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231120153419.3045-1-ubizjak@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -90,65 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/20/2023 8:41 AM, Krzysztof Kozlowski wrote:
-> On 20/11/2023 16:45, Elliot Berman wrote:
->>
->>
->> On 11/20/2023 2:56 AM, Krzysztof Kozlowski wrote:
->>> On 17/11/2023 22:18, Elliot Berman wrote:
->>>> -
->>>> -additionalProperties: false
->>>> +  - if:
->>>> +      properties:
->>>> +        compatible:
->>>> +          contains:
->>>> +            const: arm,psci-1.0
->>>> +    then:
->>>> +      $ref: /schemas/power/reset/reboot-mode.yaml#
->>>> +      properties:
->>>> +        # "mode-normal" is just SYSTEM_RESET
->>>> +        mode-normal: false
->>>> +      patternProperties:
->>>> +        "^mode-.*$":
->>>> +          maxItems: 2
->>>
->>> And if you tested the patch, it would tell you it can be max 1 item.
->>
->> make dt_binding_check DT_SCHEMA_FILES=arm/psci.yaml
+On Mon, Nov 20, 2023 at 04:33:50PM +0100, Uros Bizjak wrote:
+> The "a" asm operand modifier substitutes a memory reference, with the
+> actual operand treated as address.  For x86_64, when a symbol is
+> provided, the "a" modifier emits "sym(%rip)" instead of "sym".
 > 
-> psci.example.dtb: psci: mode-edl: [[0]] is too short
-> psci.example.dtb: psci: mode-bootloader: [[1, 2]] is too short
-> 
-> psci.example.dtb: psci: Unevaluated properties are not allowed
-> ('mode-bootloader', 'mode-edl' were unexpected)
-> 
+> Clang allows only "i" and "r" operand constraints with an "a" modifier,
+> so the patch normalizes the modifier/constraint pair to "a"/"i"
 
-Ah, tip of tree for dt-schema doesn't seem to report the error.
+s/the patch normalizes/normalize/
 
-Doesn't report the error:
-dt-validate --version
-2023.10.dev17+g58feadb
-
-Reports the error:
-dt-validate --version
-2023.9
-
-Looks likely related to generated the processed-schema.json rather
-than dt-validate itself. The tip of tree dt-validate does report
-the error if processed-schema.json is generated by 2023.9 tool,
-but not if the schema was also generated by tip-of-tree mkschema.
-
-I'll try bisecting the error and report back.
-
->>
->> passes for me. Rob explained why it's working (and why it shouldn't), 
->> so I'll fix it according to his recommendation in v2.
+> which is consistent between both compilers.
 > 
-> Then you wanted uint32-matrix.
+> No functional change intended.
 > 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> ---
+>  arch/x86/mm/mem_encrypt_identity.c | 16 ++++------------
+>  1 file changed, 4 insertions(+), 12 deletions(-)
 > 
-> Best regards,
-> Krzysztof
-> 
+> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+> index d73aeb16417f..6a351fdd1b39 100644
+> --- a/arch/x86/mm/mem_encrypt_identity.c
+> +++ b/arch/x86/mm/mem_encrypt_identity.c
+> @@ -346,9 +346,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
+>  	 * We're running identity mapped, so we must obtain the address to the
+>  	 * SME encryption workarea using rip-relative addressing.
+>  	 */
+> -	asm ("lea sme_workarea(%%rip), %0"
+> -	     : "=r" (workarea_start)
+> -	     : "p" (sme_workarea));
+> +	asm ("lea %a1, %0" : "=r" (workarea_start) : "i" (sme_workarea));
+
+Yeah, I saw that particular subthread today.
+
+Are you sure this "a" modifier DTRT with all gcc version we support?
+
+I.e., from 5.1 onwards...
+
+Just making sure.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
