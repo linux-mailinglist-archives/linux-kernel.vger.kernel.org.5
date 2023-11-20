@@ -2,72 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3827C7F0AFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D244F7F0B00
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjKTD3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
+        id S231866AbjKTD37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 22:29:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbjKTD3r (ORCPT
+        with ESMTP id S231841AbjKTD35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:29:47 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A667194;
-        Sun, 19 Nov 2023 19:29:43 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK3CHTS018348;
-        Mon, 20 Nov 2023 03:29:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=MXZb06dO0e5VghAyynbrHW/Ridb0Wla0tD7TN/K48VU=;
- b=Ixn1s+IHueCaAZ9vsiRKzv9XnqXnhCuJWVV320N00kpBi4AJvBK1V8GvyK3Atr9NxV2R
- e9XShkuHfcaVioiuLev4OSpBtluwhYsGOqDqxBKNbxi76KHuS6ZtPQVVwWQ7hWHZICsP
- SdfMlhE0+ZHvFiahOLFKU+kUhm+vZfTwcVB5dNBtrOREUdBXaeiMzQzrdm/N+5oV5vp+
- ZR66TNmacWXqbd1jsD+irMeN3tzEBCseu2lDe8mS0tQP4OudAaq16Y12zX8Amx9q3dD7
- wDehqtj5ZZvPCYHSpbvij88UcL9IuBX+65/4uzs9MVu38x/yeNQI2bMSPWe32537pGU+ Ow== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uemks2rng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 03:29:31 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AK3TUpr032694
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 03:29:30 GMT
-Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 19 Nov 2023 19:29:24 -0800
-From:   Maria Yu <quic_aiquny@quicinc.com>
-To:     Nathan Chancellor <nathan@kernel.org>, <linux@armlinux.org.uk>,
-        <ardb@kernel.org>, <mhiramat@kernel.org>
-CC:     Maria Yu <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_lijuang@quicinc.com>, <stable@vger.kernel.org>
-Subject: [PATCH v3 1/1] ARM: kprobes: Explicitly reserve r7 for local variables
-Date:   Mon, 20 Nov 2023 11:29:09 +0800
-Message-ID: <20231120032909.19186-1-quic_aiquny@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 19 Nov 2023 22:29:57 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3DD1A1
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:29:52 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SYXvg0j31zRj3H;
+        Mon, 20 Nov 2023 11:25:35 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 20 Nov 2023 11:29:49 +0800
+CC:     <yangyicong@hisilicon.com>, <llvm@lists.linux.dev>,
+        <oe-kbuild-all@lists.linux.dev>, <dietmar.eggemann@arm.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
+        <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/4] arch_topology: Support basic SMT control for the
+ driver
+To:     kernel test robot <lkp@intel.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <sudeep.holla@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20231114040110.54590-2-yangyicong@huawei.com>
+ <202311152356.OWWDpFRB-lkp@intel.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <0ef6d426-1b35-5455-5f97-b2f03b042560@huawei.com>
+Date:   Mon, 20 Nov 2023 11:29:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nXIc84DIJG67fapBTqJd7EOTyenoPWSf
-X-Proofpoint-ORIG-GUID: nXIc84DIJG67fapBTqJd7EOTyenoPWSf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-19_21,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 mlxscore=0 adultscore=0
- malwarescore=0 mlxlogscore=561 spamscore=0 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311200024
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <202311152356.OWWDpFRB-lkp@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,40 +57,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Registers r7 is removed in clobber list, so compiler may choose r7 for
-local variables usage, while r7 will be actually updated by the inline asm
-code. This caused the runtime behavior wrong.
-While those kind of reserved registers cannot be set to clobber list
-because of error like "inline asm clobber list contains reserved
-registers".
-Explicitly reserve r7 by adding attribute no-omit-frame-pointer for this
-file, then in T32 asm code r7 is used as a frame pointer and is not
-available for use as a general-purpose register.
-Note that "no-omit-frame-pointer" will make the code size a little bigger
-to store the stack frame pointer.
+On 2023/11/15 23:23, kernel test robot wrote:
+> Hi Yicong,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on arm64/for-next/core]
+> [also build test WARNING on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arm/for-next kvmarm/next soc/for-next linus/master arm/fixes v6.7-rc1 next-20231115]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yicong-Yang/arch_topology-Support-basic-SMT-control-for-the-driver/20231114-120544
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> patch link:    https://lore.kernel.org/r/20231114040110.54590-2-yangyicong%40huawei.com
+> patch subject: [PATCH v3 1/4] arch_topology: Support basic SMT control for the driver
+> config: arm-socfpga_defconfig (https://download.01.org/0day-ci/archive/20231115/202311152356.OWWDpFRB-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152356.OWWDpFRB-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311152356.OWWDpFRB-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> drivers/base/arch_topology.c:32:12: warning: unused variable 'topology_smt_num_threads' [-Wunused-variable]
+>       32 | static int topology_smt_num_threads = 1;
+>          |            ^
+>    1 warning generated.
+> 
 
-Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
-Cc: stable@vger.kernel.org
----
- arch/arm/probes/kprobes/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+This variable needs to be protected by CONFIG_HOTPLUG_SMT, otherwise it'll be unused
+if architecture like arm/parisc selects CONFIG_GENERIC_ARCH_TOPOLOGY but not
+CONFIG_HOTPLUG_SMT.
 
-diff --git a/arch/arm/probes/kprobes/Makefile b/arch/arm/probes/kprobes/Makefile
-index 6159010dac4a..b1f21e78950b 100644
---- a/arch/arm/probes/kprobes/Makefile
-+++ b/arch/arm/probes/kprobes/Makefile
-@@ -8,6 +8,7 @@ test-kprobes-objs		:= test-core.o
- 
- ifdef CONFIG_THUMB2_KERNEL
- obj-$(CONFIG_KPROBES)		+= actions-thumb.o checkers-thumb.o
-+CFLAGS_actions-thumb.o		+= -fno-omit-frame-pointer
- test-kprobes-objs		+= test-thumb.o
- else
- obj-$(CONFIG_KPROBES)		+= actions-arm.o checkers-arm.o
-
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
--- 
-2.17.1
-
+> 
+> vim +/topology_smt_num_threads +32 drivers/base/arch_topology.c
+> 
+>     30	
+>     31	/* Maximum threads number per-Core */
+>   > 32	static int topology_smt_num_threads = 1;
+>     33	
+> 
