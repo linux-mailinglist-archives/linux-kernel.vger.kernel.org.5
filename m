@@ -2,45 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E7B7F0AF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D445B7F0AF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbjKTD0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
+        id S231718AbjKTD1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 22:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjKTD0M (ORCPT
+        with ESMTP id S231629AbjKTD1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:26:12 -0500
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [IPv6:2001:41d0:203:375::b4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1789BD3
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:26:07 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700450765;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=+VymdBzRpvTEsF3r3W4saDJpuCxv1e2XIK11MThN86Y=;
-        b=pvG4sWihLLOWQMeNrUGbVMCed1GK0wWLXgmev8oACdRLvYJ9DrEtcOasNYh/uvpz30av7j
-        SiJkIS6g1AogyFxYNF7I/CeOikgUGuenfDgWlW3eAkihvSm7YZzVkmULdjNBHHGv51t20q
-        5HtQQxdyGLQggrjxxvz+42ayVBPy3fA=
-From:   chengming.zhou@linux.dev
-To:     axboe@kernel.dk, bvanassche@acm.org
-Cc:     kch@nvidia.com, damien.lemoal@opensource.wdc.com,
-        ming.lei@redhat.com, zhouchengming@bytedance.com,
-        justinstitt@google.com, shinichiro.kawasaki@wdc.com,
-        akinobu.mita@gmail.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chengming.zhou@linux.dev,
-        syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
-Subject: [PATCH] block/null_blk: Fix double blk_mq_start_request() warning
-Date:   Mon, 20 Nov 2023 03:25:21 +0000
-Message-Id: <20231120032521.1012037-1-chengming.zhou@linux.dev>
+        Sun, 19 Nov 2023 22:27:48 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F52F2
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:27:43 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SYXt80gPNz1P8bg;
+        Mon, 20 Nov 2023 11:24:16 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 20 Nov 2023 11:27:41 +0800
+CC:     <yangyicong@hisilicon.com>, <oe-kbuild-all@lists.linux.dev>,
+        <dietmar.eggemann@arm.com>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
+        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] arm64: Kconfig: Enable HOTPLUG_SMT
+To:     kernel test robot <yujie.liu@intel.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <sudeep.holla@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <202311151900.K9xc6Xqz-lkp@intel.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <d2454857-009c-ffd3-26fa-a77853f5622d@huawei.com>
+Date:   Mon, 20 Nov 2023 11:27:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <202311151900.K9xc6Xqz-lkp@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -49,103 +55,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+On 2023/11/16 12:59, kernel test robot wrote:
+> Hi Yicong,
+> 
+> kernel test robot noticed the following build errors:
+> 
+> [auto build test ERROR on arm64/for-next/core]
+> [also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arm/for-next kvmarm/next soc/for-next linus/master arm/fixes v6.7-rc1 next-20231115]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Yicong-Yang/arch_topology-Support-basic-SMT-control-for-the-driver/20231114-120544
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> patch link:    https://lore.kernel.org/r/20231114040110.54590-5-yangyicong%40huawei.com
+> patch subject: [PATCH v3 4/4] arm64: Kconfig: Enable HOTPLUG_SMT
+> config: arm64-randconfig-002-20231115 (https://download.01.org/0day-ci/archive/20231115/202311151900.K9xc6Xqz-lkp@intel.com/config)
+> compiler: aarch64-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311151900.K9xc6Xqz-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <yujie.liu@intel.com>
+> | Closes: https://lore.kernel.org/r/202311151900.K9xc6Xqz-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    kernel/cpu.c: In function 'cpuhp_smt_disable':
+>>> kernel/cpu.c:2687:23: error: implicit declaration of function 'cpu_down_maps_locked' [-Werror=implicit-function-declaration]
+>     2687 |                 ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+>          |                       ^~~~~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+> 
 
-When CONFIG_BLK_DEV_NULL_BLK_FAULT_INJECTION is enabled, null_queue_rq()
-would return BLK_STS_RESOURCE or BLK_STS_DEV_RESOURCE for the request,
-which has been marked as MQ_RQ_IN_FLIGHT by blk_mq_start_request().
+cpu_down_maps_locked() is introduced by CONFIG_HOTPLUG_CPU, so CONFIG_HOTPLUG_SMT will need to depend
+on CONFIG_HOTPLUG_CPU. Will add it.
 
-Then null_queue_rqs() put these requests in the rqlist, return back to
-the block layer core, which would try to queue them individually again,
-so the warning in blk_mq_start_request() triggered.
-
-Fix it by splitting the null_queue_rq() into two parts: the first is the
-preparation of request, the second is the handling of request. We put
-the blk_mq_start_request() after the preparation part, which may fail
-and return back to the block layer core.
-
-The throttling also belongs to the preparation part, so move it before
-blk_mq_start_request(). And change the return type of null_handle_cmd()
-to void, since it always return BLK_STS_OK now.
-
-Reported-by: syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/all/0000000000000e6aac06098aee0c@google.com/
-Fixes: d78bfa1346ab ("block/null_blk: add queue_rqs() support")
-Suggested-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- drivers/block/null_blk/main.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-index 22a3cf7f32e2..3021d58ca51c 100644
---- a/drivers/block/null_blk/main.c
-+++ b/drivers/block/null_blk/main.c
-@@ -1464,19 +1464,13 @@ blk_status_t null_process_cmd(struct nullb_cmd *cmd, enum req_op op,
- 	return BLK_STS_OK;
- }
- 
--static blk_status_t null_handle_cmd(struct nullb_cmd *cmd, sector_t sector,
--				    sector_t nr_sectors, enum req_op op)
-+static void null_handle_cmd(struct nullb_cmd *cmd, sector_t sector,
-+			    sector_t nr_sectors, enum req_op op)
- {
- 	struct nullb_device *dev = cmd->nq->dev;
- 	struct nullb *nullb = dev->nullb;
- 	blk_status_t sts;
- 
--	if (test_bit(NULLB_DEV_FL_THROTTLED, &dev->flags)) {
--		sts = null_handle_throttled(cmd);
--		if (sts != BLK_STS_OK)
--			return sts;
--	}
--
- 	if (op == REQ_OP_FLUSH) {
- 		cmd->error = errno_to_blk_status(null_handle_flush(nullb));
- 		goto out;
-@@ -1493,7 +1487,6 @@ static blk_status_t null_handle_cmd(struct nullb_cmd *cmd, sector_t sector,
- 
- out:
- 	nullb_complete_cmd(cmd);
--	return BLK_STS_OK;
- }
- 
- static enum hrtimer_restart nullb_bwtimer_fn(struct hrtimer *timer)
-@@ -1724,8 +1717,6 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	cmd->fake_timeout = should_timeout_request(rq) ||
- 		blk_should_fake_timeout(rq->q);
- 
--	blk_mq_start_request(rq);
--
- 	if (should_requeue_request(rq)) {
- 		/*
- 		 * Alternate between hitting the core BUSY path, and the
-@@ -1738,6 +1729,15 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 		return BLK_STS_OK;
- 	}
- 
-+	if (test_bit(NULLB_DEV_FL_THROTTLED, &nq->dev->flags)) {
-+		blk_status_t sts = null_handle_throttled(cmd);
-+
-+		if (sts != BLK_STS_OK)
-+			return sts;
-+	}
-+
-+	blk_mq_start_request(rq);
-+
- 	if (is_poll) {
- 		spin_lock(&nq->poll_lock);
- 		list_add_tail(&rq->queuelist, &nq->poll_list);
-@@ -1747,7 +1747,8 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	if (cmd->fake_timeout)
- 		return BLK_STS_OK;
- 
--	return null_handle_cmd(cmd, sector, nr_sectors, req_op(rq));
-+	null_handle_cmd(cmd, sector, nr_sectors, req_op(rq));
-+	return BLK_STS_OK;
- }
- 
- static void null_queue_rqs(struct request **rqlist)
--- 
-2.40.1
-
+> 
+> vim +/cpu_down_maps_locked +2687 kernel/cpu.c
+> 
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2672  
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2673  int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2674  {
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2675  	int cpu, ret = 0;
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2676  
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2677  	cpu_maps_update_begin();
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2678  	for_each_online_cpu(cpu) {
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2679  		if (topology_is_primary_thread(cpu))
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2680  			continue;
+> 38253464bc821d Michael Ellerman 2023-07-05  2681  		/*
+> 38253464bc821d Michael Ellerman 2023-07-05  2682  		 * Disable can be called with CPU_SMT_ENABLED when changing
+> 38253464bc821d Michael Ellerman 2023-07-05  2683  		 * from a higher to lower number of SMT threads per core.
+> 38253464bc821d Michael Ellerman 2023-07-05  2684  		 */
+> 38253464bc821d Michael Ellerman 2023-07-05  2685  		if (ctrlval == CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
+> 38253464bc821d Michael Ellerman 2023-07-05  2686  			continue;
+> dc8d37ed304eee Arnd Bergmann    2019-12-10 @2687  		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2688  		if (ret)
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2689  			break;
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2690  		/*
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2691  		 * As this needs to hold the cpu maps lock it's impossible
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2692  		 * to call device_offline() because that ends up calling
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2693  		 * cpu_down() which takes cpu maps lock. cpu maps lock
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2694  		 * needs to be held as this might race against in kernel
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2695  		 * abusers of the hotplug machinery (thermal management).
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2696  		 *
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2697  		 * So nothing would update device:offline state. That would
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2698  		 * leave the sysfs entry stale and prevent onlining after
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2699  		 * smt control has been changed to 'off' again. This is
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2700  		 * called under the sysfs hotplug lock, so it is properly
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2701  		 * serialized against the regular offline usage.
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2702  		 */
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2703  		cpuhp_offline_cpu_device(cpu);
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2704  	}
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2705  	if (!ret)
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2706  		cpu_smt_control = ctrlval;
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2707  	cpu_maps_update_done();
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2708  	return ret;
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2709  }
+> dc8d37ed304eee Arnd Bergmann    2019-12-10  2710  
+> 
