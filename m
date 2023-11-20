@@ -2,141 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDB87F1639
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450A07F163C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjKTOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
+        id S233058AbjKTOvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:51:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjKTOur (ORCPT
+        with ESMTP id S233954AbjKTOvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:50:47 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F3F198E;
-        Mon, 20 Nov 2023 06:49:05 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5cade8466f7so6258737b3.1;
-        Mon, 20 Nov 2023 06:49:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700491745; x=1701096545; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=kkqrCTQYUsakYJCviHl+S/yW32iUxn7DN+xEx1mj1ws=;
-        b=c4LLEuw52vKWCqR9shzS7Txq//fASkwdZhtftKBE0YwZHJW/MsF5vzx9WTiK47hzY3
-         Mcyu43LGcJv0QL1CV+8p2/tAgzaJkW2uAdoh9dYSbTDRO5h1Tg5OqeWE9mW4EdqHKkKE
-         Pz4ojLQlqM8BRJ7+i3cWmhikHOMK83vw7Vmjn6R2UHOqe+S8HlIVYu751I9LoOoXofkg
-         ++CP3OpyaISt6N4nAgrU+zWEEC5Olyhs4xUIZ4GcRStNRD9I3Z5qEOMzQS4YI+NOerHP
-         wUht8tq7TivVITDo7SHlTF1ZreZ3MTteBDmiB/hLrhcw43CjfxJfXdhGje+FJ/CeiuQr
-         LCHA==
+        Mon, 20 Nov 2023 09:51:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E463A1BF7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:49:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700491767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=h09dJptIUW8lShCqB/JHJlG4YuuHK6xGW6edJE77rvw=;
+        b=dqsajI55ZCkkJ4SLS0DJWlDmpxRmDwXiBwV8jUFdpP2YMoxL3RhEkRG0/fm1kDXVOX7EIq
+        QR7bTXIvp//OQddtso5n240zaMN773fvUVKvm+pjli5s6ze2+H0HDDA8zYWGQgwIc2+55h
+        okVcpEZ9SAFYLoHw+Cy0kt7ElOywY88=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-138-g4vkE6btNoKkGvdAz0ecvA-1; Mon, 20 Nov 2023 09:49:25 -0500
+X-MC-Unique: g4vkE6btNoKkGvdAz0ecvA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-408597a1ae3so13794045e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:49:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700491745; x=1701096545;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kkqrCTQYUsakYJCviHl+S/yW32iUxn7DN+xEx1mj1ws=;
-        b=td0p32Gc5ZUnj43UL5Upm6fokPBmDRNnYzj+OH4w9kBJ9+DSwISdaDKVeu99znLtt3
-         x2xPECekKKW6gIT/rfxFM1XS0J4gkUGTJG3JFghsq4NImpZ0BFIbfUMpYg8K5tu7+eOn
-         86eFxC13XNlUGa9aBwVxMpavaWeH8OspFacX6Cb5oNhYrpAr+Sp4nW2wZg3D1cdY31h3
-         uyPax0n/u+y6zXEp67vkDt7uhlw/4AVoW4oE4nEZPxBanTWJ2pMITPKy2/tGbTXYHvI2
-         j5mrXlFz76ecYguiSbw2JkXZQj/kO5mRwa0+9qzzh9F4GfwCSnGNi5Q/r7Vu7s8oPB16
-         Gx5w==
-X-Gm-Message-State: AOJu0YzNVZHwWI6wSd3CjAiWGPRgXIiX3bFlsHCJz7pZb8/dlY7Hj7Xc
-        BACqjsIBIRQVLzubHGNENgahNmRHCS4=
-X-Google-Smtp-Source: AGHT+IEgj+n9SDl36fXA4ikqYVKVhE6tQ0bZ64oDlXE0hJAh3SHMQ5eQac6jpjGptYSb2XkQcar3Jw==
-X-Received: by 2002:a81:fd14:0:b0:5c8:7269:b8b2 with SMTP id g20-20020a81fd14000000b005c87269b8b2mr5508135ywn.0.1700491744866;
-        Mon, 20 Nov 2023 06:49:04 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u201-20020a8184d2000000b005a23ab90366sm2381630ywf.11.2023.11.20.06.49.03
+        d=1e100.net; s=20230601; t=1700491764; x=1701096564;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h09dJptIUW8lShCqB/JHJlG4YuuHK6xGW6edJE77rvw=;
+        b=AMaeO9odXJk0kUbLB838oYVYuukloxobmo1UHmYjOUvD6EXFZCJWETybvduMa59xKc
+         Idnm1t4lR5rst7K6nLLdan04+5noaz1qmZG2A9cgK1bYCKLrLuHL9FiTqezdOeVzLBfz
+         l/Ctn4FMeohTmpXECrLw9rAdaHvnmat+DAl+ZecttVhzTo5DPkHOr1ShKN8zz9ZAKPJB
+         aq2MzZKZgdv7G5U3pjqXJ6KTo1yGReDowknbACyq2gi4wKAuuH+Sp9VtkuayQ3yvhj8m
+         j7HSRVlI2BlcVSVYBV73gz6TneQHDdXpWgJw3IQzybzqEaTAZrU7PRU18QXjkaIhntKt
+         cLXQ==
+X-Gm-Message-State: AOJu0YzzZ72S3Jv/wGFT7xtw0pVCsBLNIw5nXWvHY41MeA8fYkRvcdK0
+        2RNHidXN3cawqU4MiRfxRUWkf4Nx8gIAfmInVW3Mt6wqFG4zCn7iP7Pa/qR4vy5Z78g67gbWLIY
+        tVATvWYbXXKh2W62ksZwoDD5199kQovTI
+X-Received: by 2002:a05:600c:4e87:b0:401:bcd9:4871 with SMTP id f7-20020a05600c4e8700b00401bcd94871mr5958568wmq.21.1700491764184;
+        Mon, 20 Nov 2023 06:49:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG85nbFpD5ft0UYna49OAK/ZEF1DumwHwbLRWtGtKaMckmofBaZdhjGE83lMdVAczBnGY9MUw==
+X-Received: by 2002:a05:600c:4e87:b0:401:bcd9:4871 with SMTP id f7-20020a05600c4e8700b00401bcd94871mr5958556wmq.21.1700491763721;
+        Mon, 20 Nov 2023 06:49:23 -0800 (PST)
+Received: from ?IPV6:2003:cb:c746:7700:9885:6589:b1e3:f74c? (p200300cbc746770098856589b1e3f74c.dip0.t-ipconnect.de. [2003:cb:c746:7700:9885:6589:b1e3:f74c])
+        by smtp.gmail.com with ESMTPSA id k21-20020a7bc415000000b004042dbb8925sm17830675wmi.38.2023.11.20.06.49.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 06:49:04 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <a6f7198e-f2f4-4691-a0e2-8a1c09d01b6a@roeck-us.net>
-Date:   Mon, 20 Nov 2023 06:49:02 -0800
+        Mon, 20 Nov 2023 06:49:23 -0800 (PST)
+Message-ID: <8e2f3e24-e2b9-42ee-a401-6c4b681b9ad3@redhat.com>
+Date:   Mon, 20 Nov 2023 15:49:22 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] hwmon: (nct6775) Fix incomplete register array
+Subject: Re: [PATCH 6/8] s390/mm: implement MEM_PHYS_ONLINE MEM_PHYS_OFFLINE
+ memory notifiers
 Content-Language: en-US
-To:     Xing Tong Wu <xingtong_wu@163.com>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     xingtong.wu@siemens.com, tobias.schaffner@siemens.com,
-        gerd.haeussler.ext@siemens.com
-References: <20231120081542.3174-1-xingtong_wu@163.com>
- <20231120081542.3174-2-xingtong_wu@163.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231120081542.3174-2-xingtong_wu@163.com>
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
+ <20231114180238.1522782-7-sumanthk@linux.ibm.com>
+ <458da84d-3838-4c5d-abda-1aebba676186@redhat.com>
+ <ZVTTs2H6DgNGFPkF@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
+ <dfa5eb84-270e-4c6b-b9a1-3bb66beed6a4@redhat.com>
+ <20231117140027.00866eab@thinkpad-T15>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231117140027.00866eab@thinkpad-T15>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 00:15, Xing Tong Wu wrote:
-> From: Xing Tong Wu <xingtong.wu@siemens.com>
+[catching up on mails]
+
+>>> This new approach has the advantage that we do not need to allocate any
+>>> additional memory during online phase, neither for direct mapping page
+>>> tables nor struct pages, so that memory hotplug can never fail.
+>>
+>> Right, just like any other architecture that (triggered by whatever
+>> mechanism) ends up calling add_memory() and friends.
 > 
-> The nct6116 specification actually includes 5 PWMs, but only 3
-> PWMs are present in the array. To address this, the missing 2
-> PWMs have been added to the array.
+> Just for better understanding, are page tables for identity and also
+> vmemmap mapping not allocated from system memory on other archs? I.e.
+> no altmap support for that, only for struct pages (so far)?
+
+Yes, only the actual "memmap ("struct page")" comes from altmap space, 
+everything else comes from the buddy during memory hotplug.
+
 > 
+>>
+>>>
+>>> The old approach (without altmap) is already a hack, because we add
+>>> the memmap / struct pages, but for memory that is not really accessible.
+>>
+>> Yes, it's disgusting. And you still allocate other things like memory
+>> block devices or the identify map.
+> 
+> I would say it is special :-). And again, for understanding, all other
 
-Please rephrase.
+:)
 
-The subject and the description is a bit misleading. The need to extend
-the arrays is necessary, but the key change is adding support for the two
-additional fan controls.
+> things apart from struct pages, still would need to be allocated from
+> system memory on other archs?
 
-Thanks,
-Guenter
+Yes!
+
+> 
+> Of course, struct pages would be by far the biggest part, so having
+> altmap support for that helps a lot. Doing the other allocations also
+> via altmap would feel natural, but it is not possible yet, or did we
+> miss something?
+
+The tricky part is making sure ahead of time that that we set aside the 
+required number of pageblocks, to properly control during memory 
+onlining what to set aside and what to expose to the buddy.
+
+See mhp_supports_memmap_on_memory() / 
+memory_block_memmap_on_memory_pages() for the dirty details :)
+
+> 
+>>
+>>> And with all the disadvantage of pre-allocating struct pages from system
+>>> memory.
+>>
+>> Jep. It never should have been done like that.
+> 
+> At that time, it gave the benefit over all others, that we do not need
+> to allocate struct pages from system memory, at the time of memory online,
+> when memory pressure might be high and such allocations might fail.
+
+Agreed. Having the memmap already around can be helpful. But not for all 
+standby memory, that's just pure waste.
+
+... but as memory onlining is triggered by user space, it's likely that 
+that user space cannot even make progress (e.g., start a process to set 
+memory online) to actually trigger memory onlining in serious low-memory 
+situations.
+
+> 
+> I guess you can say that it should have been done "right" at that time,
+> e.g. by already adding something like altmap support, instead of our own
+> hack.
+
+Probably yes. IMHO, relying on the existing memory block interface was 
+the low hanging fruit. Now, s390x is just special.
+
+> 
+>>
+>>>
+>>> The new approach allows to better integrate s390 to the existing
+>>> interface, and also make use of altmap support, which would eliminate
+>>> the major disadvantage of the old behaviour. So from s390 perspective,
+>>> this new mechanism would be preferred, provided that there is no
+>>> functional issue with the "added memory blocks without a memmap"
+>>> approach.
+>>
+>> It achieves that by s390x specific hacks in common code :) Instead of
+>> everybody else that simply uses add_memory() and friends.
+>>
+>>>
+>>> Do you see any functional issues, e.g. conflict with common
+>>> code?
+>>
+>> I don't see functional issues right now, just the way it is done to
+>> implement support for a new feature is a hack IMHO. Replacing hack #1 by
+>> hack #2 is not really something reasonable. Let's try to remove hacks.
+> 
+> Ok, sounds reasonable, let's try that. Introducing some new s390-specific
+> interface also feels a bit hacky, or ugly, but we'll see if we find a
+> way so that it is only "special" :-)
+
+As proposed in my other mail, I think there are ways to make s390x happy 
+first and look into a cleaner approach long-term.
+
+> Reminds me a bit of that "probe" attribute, that also was an arch-specific
+> hack initially, IIRC, and is now to be deprecated...
+
+Yeah, that was for interfaces where the kernel has absolutely no clue 
+where/what/how memory gets hotplugged. ARM64 without ACPI.
+
+s390x is completely different though: you know exactly which standby 
+memory exists, where it resides, in which granularity in can be 
+enabled/disabled, ... you don't have to play dangerous "I'm pretty sure 
+there is memory out there although nobody can check so I crash the 
+kernel" games.
+
+-- 
+Cheers,
+
+David / dhildenb
 
