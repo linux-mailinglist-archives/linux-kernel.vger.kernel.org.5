@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 455047F20C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFFE7F20C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbjKTW5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 17:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S229504AbjKTW7e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 17:59:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKTW5m (ORCPT
+        with ESMTP id S229448AbjKTW7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:57:42 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C80CC1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:57:39 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50931d0bb04so1003e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700521058; x=1701125858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BWVFW2RnOYhgO1cRQlFLQGYRwK79uUTtHuGNl8l1qxM=;
-        b=lpzjqKY/mxl0L031w6tixUNcUlgI5OOJ7ka85MYGTYfQ9hGlOrzLY135tPGEyF1/TY
-         lxSt++Si1ULcdQ9fp3hld1J6+xD9hcWJ4P0O58vMgoeQeN3SJ97B7w8+Pr6rHVvOyKsD
-         kqmvr+V85ru1AsZKzCPUyYcTWwamr6mqX1G8QlLiO2X1KC4FuUSm8r/sAxbMwnyGY1sS
-         PXRK5/Bm6ZG8uNXjgqxYuYa+PeaXBhjKa/bbPGt01HvtYfzjB1QpFEqNv/NIVzyumHXf
-         FNVj6vPxnVmUUt0jCK38ZE89VrGUvlBVHy214xonyCfXuH+XRX01qTQsRgnlT/keejCn
-         XV6A==
+        Mon, 20 Nov 2023 17:59:33 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8B7A2;
+        Mon, 20 Nov 2023 14:59:30 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1e9c9d181d6so3036125fac.0;
+        Mon, 20 Nov 2023 14:59:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700521058; x=1701125858;
+        d=1e100.net; s=20230601; t=1700521169; x=1701125969;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BWVFW2RnOYhgO1cRQlFLQGYRwK79uUTtHuGNl8l1qxM=;
-        b=KWqNeujGoHYtRr4pK3FRM2M8wP1veFdXmnRsgUIZEOXIXKlr9nLnRwVNEQ2ts4R651
-         OUkkcqoXzaNQFFfaGLjW8Fmfu7G1zVByeEKseG6U2wOX4IJJ8HlRjiYBhAw2AcJ7AsNQ
-         wOEl1nx51+zzBSjHNUEwmhYD8c0CIKUSySft7hViBZXKVZeeXFtm/wzO3oZfeY7daS3i
-         d1CGFUpo7ShBtF/o2+YzZk3DqQe7fNV6yLZaeWyELu1wmC8EJbgq3Bn8dqm58KHWpsha
-         G7vOueNgxUBGVTkN910SxRSvpZjl7xllZYQqtTjSPRNsigM+YJ8orIdiROW4SoUZYryG
-         hNqw==
-X-Gm-Message-State: AOJu0Yxp3bpgJmMD1Yi8B1ASj0DnCVDC5CLT7h82/0inBu+96y1NHJVG
-        FEfJqBGcaJlkMTptBPVsuGJrs6Sq3+4I2q/GuDPW9A==
-X-Google-Smtp-Source: AGHT+IFBxF48a6mrpZhZlo3Ykv3kzih0QaBtSTI8yav2r5eRNHsGrToX10g9hskxPXwgXg0Ogo6zEqHI+FdwVI6q+KM=
-X-Received: by 2002:a05:6512:3743:b0:507:9a37:1483 with SMTP id
- a3-20020a056512374300b005079a371483mr227375lfs.3.1700521057603; Mon, 20 Nov
- 2023 14:57:37 -0800 (PST)
+        bh=4dZP1CpgWwT6/Z66YkAUxS5DUl+N3kpH1NW1HsPopb8=;
+        b=Qt38cGYsWK6Ew6N3ZLimPQFW2CewaJQACJzy/crNcX/3QaB7ULmSdXCSfVW+9QQOmw
+         ioiNHmhyMuRswX0Dyd6DOeP9ZE0aSNo466T6+fPppQl0564k7Y4ZWHI1TgONTF3ukhIu
+         mUUgdWPvH2BDix4PP289QBQLadk+btViSs/k3E+ta/7TTcjOM/0en7Sbk5xifGvnHeDn
+         ThxdKbaWSyPFQ8jnCRrGERN/Tedf8BZbDlhFyWGwvvZdHbRAa/hcH/seLrwZ3XmzkjkX
+         f+BcOI+6ws335nPFmB2OGrTlhKnz7aIOH3+OUdLZqivZX96VM4L7AeHOqhQIQllbw3tG
+         z9Fg==
+X-Gm-Message-State: AOJu0YzF2NhsTrx6RkWf+ceVUIa3XDkUw2OC6aLImA2f+XzjhmdQT3fy
+        spGvWQ/H2otjvjB2sr8Q26ZK0uACfwSu8TW5vPYKPEBH
+X-Google-Smtp-Source: AGHT+IHZYCmSiVsMg5RbPK+Qqi6FabJEEst4pGayAdFMvCMlMPSl41S5C6Rsr+aONbxNaWOHXLfjcLa0zaKOrFGjPBs=
+X-Received: by 2002:a05:6871:22c7:b0:1f9:4afd:e3c9 with SMTP id
+ se7-20020a05687122c700b001f94afde3c9mr3570756oab.1.1700521169416; Mon, 20 Nov
+ 2023 14:59:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20231115071109.11511-1-zhujun2@cmss.chinamobile.com>
-In-Reply-To: <20231115071109.11511-1-zhujun2@cmss.chinamobile.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 20 Nov 2023 14:57:26 -0800
-Message-ID: <CAP-5=fWvnEaNSMRRNEF1ijX_AcuP-AM0rfPnRZ9kr7iYeKzeTA@mail.gmail.com>
-Subject: Re: [PATCH] toos:leds: Fix printf format string in uledmon.c
-To:     zhujun2 <zhujun2@cmss.chinamobile.com>, david@lechnology.com
-Cc:     acme@kernel.org, ast@kernel.org, namhyung@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
+References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
+ <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com> <20231115103241.GD3818@noisy.programming.kicks-ass.net>
+ <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com> <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
+ <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com> <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
+ <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com> <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
+ <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
+In-Reply-To: <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 20 Nov 2023 14:59:18 -0800
+Message-ID: <CAM9d7chFQ1L0h0av7ziXU4ja_j1FMRgwd-CHULnOB5YuH9yo2w@mail.gmail.com>
+Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed for
+ aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
+To:     David Wang <00107082@163.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nit in the subject: toos:leds: -> tools/leds:
-
-On Tue, Nov 14, 2023 at 11:11=E2=80=AFPM zhujun2 <zhujun2@cmss.chinamobile.=
-com> wrote:
+On Fri, Nov 17, 2023 at 5:48 PM David Wang <00107082@163.com> wrote:
 >
-> When the argument type is 'int',printf '%d'
-> in format string.Problem found during code reading.
 >
-> Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
+> At 2023-11-18 05:11:02, "Namhyung Kim" <namhyung@kernel.org> wrote:
+> >On Wed, Nov 15, 2023 at 8:09 PM David Wang <00107082@163.com> wrote:
+> >>
+>
+> >>
+> >>
+> >> From the data I collected, I think two problem could be observed for f06cc667f79909e9175460b167c277b7c64d3df0
+> >> 1. sample missing.
+> >> 2. sample unstable, total sample count drift a lot between tests.
+> >
+> >Hmm.. so the fio process was running in the background during
+> >the profiling, right?  But I'm not sure how you measured the same
+> >amount of time.  Probably you need to run this (for 10 seconds):
+> >
+> >  sudo perf record -a -G mytest -- sleep 10
+> >
+> >And I guess you don't run the perf command in the target cgroup
+> >which is good.
+> >
+>
+> Yes  profiling process was not in the target cgroup.
+> I use  fio with `fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=4 --time_based=1` which would run 600 seconds.
+> There would be drifts in the profiling report between runs,  from those small  samples of test data I collected, maybe not enough to make a firm conclusion,  I feel when the commit is reverted, the expectation for total sample count is higher and the standard deviation is smaller.
+>
+> >And is there any chance if it's improved because of the change?
+> >Are the numbers in 6.7 better or worse?
+> >
+> I have no idea whether the change of expected total sample count a bug or a fix,  but,  the observed result that total sample count drift a lot (bigger standard deviation), I think ,  is a bad thing.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Right.  Can you run perf stat to measure the number of context
+switches and cgroup switches, then?
+
+  sudo perf stat -a -e context-switches,cgroup-switches -- sleep 10
 
 Thanks,
-Ian
-
-> ---
->  tools/leds/uledmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/leds/uledmon.c b/tools/leds/uledmon.c
-> index c15a39c1f271..62befe06eab5 100644
-> --- a/tools/leds/uledmon.c
-> +++ b/tools/leds/uledmon.c
-> @@ -55,7 +55,7 @@ int main(int argc, char const *argv[])
->                         return 1;
->                 }
->                 clock_gettime(CLOCK_MONOTONIC, &ts);
-> -               printf("[%ld.%09ld] %u\n", ts.tv_sec, ts.tv_nsec, brightn=
-ess);
-> +               printf("[%ld.%09ld] %d\n", ts.tv_sec, ts.tv_nsec, brightn=
-ess);
->         }
->
->         close(fd);
-> --
-> 2.17.1
->
->
->
+Namhyung
