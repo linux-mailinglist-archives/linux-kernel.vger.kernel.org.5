@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BE27F0A5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634587F0A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbjKTBef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 20:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S231718AbjKTBiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 20:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231615AbjKTBee (ORCPT
+        with ESMTP id S229470AbjKTBiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 20:34:34 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C439A128;
-        Sun, 19 Nov 2023 17:34:29 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6be1bc5aa1cso4037773b3a.3;
-        Sun, 19 Nov 2023 17:34:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700444069; x=1701048869; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/mFMZVK/lhe/UOIVNdnOUMIpZBMESZjMufWJQUFv6zE=;
-        b=nqmzkg2FCO3MgaIDAbDCtwwSEYvuQKvZrpqYk7Yn8whC1e+HxnPXZyuIYnd3xk12bs
-         uJ5EnUfRXo2dZLmcmptCASGQaGT8SI48FzvATiEuGACaenP5SEEWX8FU5U7SZzRvVqRo
-         7IW/nezeeMhqbz6tG0vEGlu05+cLNRPcRrr3AwYtZkpbeKC5taDSy0fKn/hsPXS+MuL3
-         53FO6b4Lf/IgKKHOu/ZZLg/bkTUt6naL+tCYgiqrcaiRQQ8tSpH2La7GRn7qsxhn/GSh
-         p60njlQ5hi5ZU1x8uEXWUCZhjAPf0Nl5Lh4PAbad9NyERZSLanFuohcZmPAdjjGhPRv0
-         WSSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700444069; x=1701048869;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/mFMZVK/lhe/UOIVNdnOUMIpZBMESZjMufWJQUFv6zE=;
-        b=GTmHGgY7F/FJPoT2jAVC9tK61aiJF98rA1AMcPpY6RJgOpXVhiL5usfF+DZrLZxaM+
-         MtLIP1A/FSFLGMv75NmQB+fX+ZLj5e7fVRJlzS2Xkfyv/UShVN8g9PfbH9Ogv64PII6u
-         WqC/91NdIVMoW44cyd3EFej/v6FOfqrcc56fCr2ROgYd5xv30dsMlOdEIyBmgRXEEDCY
-         pn5lS028YsLl3yxZRAozsFzaQ3qpxubUWos0JK+1cYDQkWPuwI2KbpQLqPQzQyxuUF0V
-         gsXwlM2VyveJ1jcNUswsgwV0PPMUnCuT+V0kg/EVYNL3znrWE+RQycLBlnrD07Tzqqe8
-         LH4Q==
-X-Gm-Message-State: AOJu0YwUi36fsCuelOBrbztC/rnFhVF51nRiHGZ8H0lVM9wEwTXV9UYY
-        R7n1Il70zY1vzNX6rvFg0Ko=
-X-Google-Smtp-Source: AGHT+IH6wOaT7IvlhH1cBNzzv/52oOm+4m2RM3UOtVTx8c0nh8V0ATPjAEpdYDfbhRclNOLeH4LuFQ==
-X-Received: by 2002:a05:6a20:e588:b0:187:9521:92a7 with SMTP id ng8-20020a056a20e58800b00187952192a7mr6715422pzb.18.1700444069166;
-        Sun, 19 Nov 2023 17:34:29 -0800 (PST)
-Received: from localhost.localdomain ([154.85.51.139])
-        by smtp.gmail.com with ESMTPSA id v4-20020aa78504000000b006cb884c0362sm1291865pfn.87.2023.11.19.17.34.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 17:34:28 -0800 (PST)
-From:   Yusong Gao <a869920004@gmail.com>
-To:     davem@davemloft.net, dhowells@redhat.com, dwmw2@infradead.org,
-        jarkko@kernel.org, zohar@linux.ibm.com,
-        herbert@gondor.apana.org.au, lists@sapience.com,
-        dimitri.ledkov@canonical.com
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [RESEND PATCH v2] sign-file: Fix incorrect return values check
-Date:   Mon, 20 Nov 2023 01:33:59 +0000
-Message-Id: <20231120013359.814059-1-a869920004@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 19 Nov 2023 20:38:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61FB128
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 17:38:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C454C433CB;
+        Mon, 20 Nov 2023 01:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700444289;
+        bh=AYOn7zw4Rj8x7zKsQ6SSA46WYucJCnvwD8FyUizIfyU=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=jJ0xF7gngT/5Helf9+d38ELFm8uTUDM5uHgUjV4BuJVJdzvbvbGoXHjpGWoL1+GVp
+         CWFOUTbMh0PTjgLPiliivoJDHuMUtt/eougjtI7Tp5VCYStKv1Ywv2b2rUmnFMovfF
+         Fqk6tb7xw0fDG9iLM7I+5UK6WRusvh1c+xf3W3rZ1PIOC226iy6H+qpo0AW4v4bR0K
+         Sb59BV2cU55BiNKjeTTchFECevZwOn5WR2m6K0Gi7cYOQcmnt9LV+ZfPT0J3xNFWMN
+         qK5juf5gE8fkYHnsMpdwUqFRRDVHSgNclZ4QFYIzlmNB9YNWrN1yogdOtNygJFC59M
+         l5FMZxcxz5tcw==
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5872b8323faso2272590eaf.1;
+        Sun, 19 Nov 2023 17:38:09 -0800 (PST)
+X-Gm-Message-State: AOJu0YwfMntQOllBLPWzBZYzKO3AAW4a98QKoslRlfl87v/PrF3dmriM
+        nkBKYgw2b+4DId/ZcxuBwRos2TipIeRHzGKt/80=
+X-Google-Smtp-Source: AGHT+IFFy8xKP2w05jJE4B/6DjTdXUZcG3k+/Agv8H7RLynC5UnOV+rQcjAmCcWl6V+7kG6eTJvEs31XdreN6GhVf2M=
+X-Received: by 2002:a05:6820:220d:b0:58a:703e:fbf5 with SMTP id
+ cj13-20020a056820220d00b0058a703efbf5mr6524430oob.5.1700444288743; Sun, 19
+ Nov 2023 17:38:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:ac9:5847:0:b0:507:5de0:116e with HTTP; Sun, 19 Nov 2023
+ 17:38:06 -0800 (PST)
+In-Reply-To: <313c7290-1f8c-4944-a420-be23d28e59fa@kylinos.cn>
+References: <CAKYAXd8qZTiSBR3aSUk4YRSo+LG-Z20FRJfGgV1Awf+Lep4kpg@mail.gmail.com>
+ <20231109011725.1798784-1-min_halo@163.com> <b503d929-ff3a-4dc3-9de8-aa0eb00d181a@gmail.com>
+ <CAKYAXd-2vR7KF=gwKWmA+a3XkAOG78ntPq__u4P5Kqo35N1D5Q@mail.gmail.com> <313c7290-1f8c-4944-a420-be23d28e59fa@kylinos.cn>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Mon, 20 Nov 2023 10:38:06 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9L7TY+PtN1c-cNtz-NL+ksZDqAMNN11LRNW-3SdET5kA@mail.gmail.com>
+Message-ID: <CAKYAXd9L7TY+PtN1c-cNtz-NL+ksZDqAMNN11LRNW-3SdET5kA@mail.gmail.com>
+Subject: Re: [PATCH v2] ksmbd: prevent memory leak on error return
+To:     Zongmin Zhou <zhouzongmin@kylinos.cn>
+Cc:     Pierre Mariani <pierre.mariani@gmail.com>,
+        Zongmin Zhou <min_halo@163.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, senozhatsky@chromium.org,
+        sfrench@samba.org, tom@talpey.com,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some wrong return values check in sign-file when call OpenSSL
-API. For example the CMS_final() return 1 for success or 0 for failure.
-The ERR() check cond is wrong because of the program only check the
-return value is < 0 instead of <= 0.
+2023-11-20 10:33 GMT+09:00, Zongmin Zhou <zhouzongmin@kylinos.cn>:
+>
+> On 2023/11/19 22:17, Namjae Jeon wrote:
+>> 2023-11-19 18:14 GMT+09:00, Pierre Mariani <pierre.mariani@gmail.com>:
+>>> On 11/8/2023 5:17 PM, Zongmin Zhou wrote:
+>>>> When allocated memory for 'new' failed,just return
+>>>> will cause memory leak of 'ar'.
+>>>>
+>>>> v2: rollback iov_alloc_cnt when allocate memory failed.
+>>>>
+>>>> Fixes: 1819a9042999 ("ksmbd: reorganize ksmbd_iov_pin_rsp()")
+>>>>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Reported-by: Dan Carpenter <error27@gmail.com>
+>>>> Closes: https://lore.kernel.org/r/202311031837.H3yo7JVl-lkp@intel.com/
+>>>> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
+>>>> ---
+>>>>   fs/smb/server/ksmbd_work.c | 5 ++++-
+>>>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/smb/server/ksmbd_work.c b/fs/smb/server/ksmbd_work.c
+>>>> index a2ed441e837a..44bce4c56daf 100644
+>>>> --- a/fs/smb/server/ksmbd_work.c
+>>>> +++ b/fs/smb/server/ksmbd_work.c
+>>>> @@ -123,8 +123,11 @@ static int __ksmbd_iov_pin_rsp(struct ksmbd_work
+>>>> *work, void *ib, int len,
+>>>>   		new = krealloc(work->iov,
+>>>>   			       sizeof(struct kvec) * work->iov_alloc_cnt,
+>>>>   			       GFP_KERNEL | __GFP_ZERO);
+>>>> -		if (!new)
+>>>> +		if (!new) {
+>>>> +			kfree(ar);
+>>>> +			work->iov_alloc_cnt -= 4;
+>>>>   			return -ENOMEM;
+>>>> +		}
+>>>>   		work->iov = new;
+>>>>   	}
+>>>>
+>>> A few lines above, ar is allocated inside the 'if (aux_size)' block.
+>>> If aux_size is falsy, isn't it possible that ar will be NULL hence
+>>> we should have 'if (ar) kfree(ar);'?
+>> We need to initialize ar to NULL on that case. And Passing a NULL
+>> pointer to kfree is safe, So NULL check before kfree() is not needed.
+> Yes, ar should be initialized to NULL to avoid the case of  aux_size
+> will be false.
+> Since kfree(NULL) is safe.
+> Should I  send another patch for this?
+I would appreciate it if you could do that.
 
-Link:
-https://www.openssl.org/docs/manmaster/man3/CMS_final.html
-https://www.openssl.org/docs/manmaster/man3/i2d_CMS_bio_stream.html
-https://www.openssl.org/docs/manmaster/man3/i2d_PKCS7_bio.html
-https://www.openssl.org/docs/manmaster/man3/BIO_free.html
-
-Signed-off-by: Yusong Gao <a869920004@gmail.com>
----
- scripts/sign-file.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-index 598ef5465f82..dcebbcd6bebd 100644
---- a/scripts/sign-file.c
-+++ b/scripts/sign-file.c
-@@ -322,7 +322,7 @@ int main(int argc, char **argv)
- 				     CMS_NOSMIMECAP | use_keyid |
- 				     use_signed_attrs),
- 		    "CMS_add1_signer");
--		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
-+		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) <= 0,
- 		    "CMS_final");
- 
- #else
-@@ -341,10 +341,10 @@ int main(int argc, char **argv)
- 			b = BIO_new_file(sig_file_name, "wb");
- 			ERR(!b, "%s", sig_file_name);
- #ifndef USE_PKCS7
--			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
-+			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) <= 0,
- 			    "%s", sig_file_name);
- #else
--			ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
-+			ERR(i2d_PKCS7_bio(b, pkcs7) <= 0,
- 			    "%s", sig_file_name);
- #endif
- 			BIO_free(b);
-@@ -374,9 +374,9 @@ int main(int argc, char **argv)
- 
- 	if (!raw_sig) {
- #ifndef USE_PKCS7
--		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
-+		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) <= 0, "%s", dest_name);
- #else
--		ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
-+		ERR(i2d_PKCS7_bio(bd, pkcs7) <= 0, "%s", dest_name);
- #endif
- 	} else {
- 		BIO *b;
-@@ -396,7 +396,7 @@ int main(int argc, char **argv)
- 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
- 	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
- 
--	ERR(BIO_free(bd) < 0, "%s", dest_name);
-+	ERR(BIO_free(bd) <= 0, "%s", dest_name);
- 
- 	/* Finally, if we're signing in place, replace the original. */
- 	if (replace_orig)
--- 
-2.34.1
-
+>
+> Best regards!
+>> Thanks.
+>
+>
