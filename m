@@ -2,162 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 663E27F1A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15027F1A06
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbjKTRbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S233602AbjKTRcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:32:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbjKTRbx (ORCPT
+        with ESMTP id S232547AbjKTRcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:31:53 -0500
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9496D8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:31:49 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1f938410f92so664702fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:31:49 -0800 (PST)
+        Mon, 20 Nov 2023 12:32:19 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C78313D
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:32:12 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so72280166b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:32:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700501509; x=1701106309; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WAF1U/lCbnAz9mXeRmxCPX739RNT9Ki2al6h9FhAbIA=;
-        b=lcwtqxZko3TddVRGzqogbr3ywmZHJw7TLUjAH+7nVS5xIng7Se9yQEBtqwtZB+yRJs
-         4LVgd/NHWm7c6B34OibpgElYCq8Ywr8IiSpA9ni37hs37Ihm1Y9sq8F/cpvKURGO/cTV
-         ckeYeckaPno7LO2Rq/xvWWzeVXyFvfmuL+12MwP1rTgyQBNfmcF3x4Aq1Tgfjn2I5agT
-         sFgzDl71mT2VNjSbhw3Zo5koTvBRxOLy2KSOSj8nW9gkxzBVuNSMTtV332jR3k456l1L
-         Et2ss4bmwf/OymyFIjH9T8jwPlvs4sqpaGqbR9VSNN+og4qeF3HbzDrACNd/3078JPlj
-         oRuA==
+        d=linaro.org; s=google; t=1700501531; x=1701106331; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GDgsmQLBT5rQ4HpNZnN0ciu0ZjbXj48vwcFVvWRaR80=;
+        b=Sb35I2lSE0rUiNAPIFWIrEccE7pUQEfm/Vg4r5MbNDoMKwRXc9/gNu7LimsN8RGRso
+         NFgPAscHLYNWz7FzXwrP5byjs75bzp1vy33hWGyZRXLJGYDsgSgJseeYYouimk48KHWE
+         rbqWQQEadhUEBzjGioueV/pDlyXHDKr07dUu5VV/3dSSTAelw9O4IgiQHn3PxsrffrNt
+         ptD2RI6TR1Id1FHMditW7fwkG3ykiECX0LRbfEVTWDB3BLvhyTuSmS31LJP6gzoQzaTi
+         XH4Nh8YqHqAj2050C7by84/5dkWUeIeTCPAF+IXQJ+E9d98kYCBC6q49Z3lqDlox+Wvl
+         USdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700501509; x=1701106309;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WAF1U/lCbnAz9mXeRmxCPX739RNT9Ki2al6h9FhAbIA=;
-        b=XmAABpwN77+TEvt+3ia5UcGI8v9Dj38aHEueAfy6D+nInvWP0DMc2qZ5MtA+gWs7tW
-         P5iYmcY8t2QWwx0ce91e6IqyugOc6lvHzYkLDpVN1tLWU8obQBrfUgo9sFJPIzpN9V15
-         jJi+WakzBkl1tnciL9ps8SLkgBfsEqe2bwCP8UoM/i7Ad6CDTXSZtRHKH/U8ejwnBqeP
-         2/ct2KtdRGic8tPjwfLxfcTs9+7YgPfafqKjMQO7dOgTvFsLSmzmzhz36a4mgTJ/n5cq
-         noXNxePvZuLlgMknZ8f5LLBA66/xVZ5Sviyzqtm28y7Gd2nChSGyQXbJ5n8hYtlLi2cO
-         i16A==
-X-Gm-Message-State: AOJu0YyYzDB97WnQhP5B0fHAoKyKBD6wUqgpMnuJZdNuVONos2T2f93m
-        r3W1GHskfcRUFoyqjjJ73xwJHWBCtIGJC64zhoo=
-X-Google-Smtp-Source: AGHT+IHXGPskkZjPASHv5zjmBj8vTC+m/HXkKut1/0s33s6XPps0+a5t8sGmtHhxRowQsRtHWKhR/1Ty6hqrzEufKKE=
-X-Received: by 2002:a05:6870:d3cc:b0:1f0:c29:d75c with SMTP id
- l12-20020a056870d3cc00b001f00c29d75cmr9798494oag.47.1700501509193; Mon, 20
- Nov 2023 09:31:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700501531; x=1701106331;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GDgsmQLBT5rQ4HpNZnN0ciu0ZjbXj48vwcFVvWRaR80=;
+        b=Upv51pXmXIK552jHfifrbH1jWmeV9CDY2ptkUmMr6lsUaVLAlvYJdDRQ+OjQwb8ktR
+         AL2D3HLljcWv484id0FYB8bEn9rxMexPJNSauIRCQooIH1A5mf4ZPLoOW99LG7eZexnk
+         HtwRQBs9+t+3eLRl2tfbsnveZKzH0ViZCMlI4YHhUyHUhGJnBceDBmWmOrTX26IAyjLv
+         JtPsa/+yI5qnGUUGDyEtOHnu0A8fkvaavsMQsAiRnGlnFIAxNxxWeAn/GwXEEEKvGw+8
+         1V28bi9ZqOJVXs8iW354YpHy3cH1l2vDbw2EkngscEvSYVYi8cfh9cmGme5J0Fs4S0yu
+         l+hQ==
+X-Gm-Message-State: AOJu0YzBPs7qE8Obm9v9z2nME4vPVAxbRozbB/9T5xqJ03PvvOh1UpK2
+        Ky0xhXIVz9RWPCeWN+AE/bpPtA==
+X-Google-Smtp-Source: AGHT+IFa3ZXuU5jtCAYq0jKzGexWbijpVgnOgGhxfTjUJyMIFfKwPmfhLSWOQ6HIcqSPBHp6N2IGwg==
+X-Received: by 2002:a17:907:d046:b0:9e2:b87d:9c5c with SMTP id vb6-20020a170907d04600b009e2b87d9c5cmr7951532ejc.36.1700501530750;
+        Mon, 20 Nov 2023 09:32:10 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id lz13-20020a170906fb0d00b009fcbb9162e9sm1965740ejb.174.2023.11.20.09.32.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 09:32:10 -0800 (PST)
+Message-ID: <6f0da181-717c-4b14-ba3f-d287efe4105b@linaro.org>
+Date:   Mon, 20 Nov 2023 18:32:07 +0100
 MIME-Version: 1.0
-References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
-In-Reply-To: <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 20 Nov 2023 12:31:38 -0500
-Message-ID: <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
-Subject: Re: Radeon regression in 6.6 kernel
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        dri-devel@lists.freedesktop.org, Phillip Susi <phill@thesusis.net>,
-        Alex Deucher <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/7] dt-bindings: usb: ti,j721e-usb: add ti,j7200-usb
+ compatible
+Content-Language: en-US
+To:     =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Peter Chen <peter.chen@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?Q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
+ <20231120-j7200-usb-suspend-v2-1-038c7e4a3df4@bootlin.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231120-j7200-usb-suspend-v2-1-038c7e4a3df4@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 11:24=E2=80=AFAM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 20.11.23 um 17:08 schrieb Alex Deucher:
-> > On Mon, Nov 20, 2023 at 10:57=E2=80=AFAM Christian K=C3=B6nig
-> > <ckoenig.leichtzumerken@gmail.com> wrote:
-> >> Am 19.11.23 um 07:47 schrieb Dave Airlie:
-> >>>> On 12.11.23 01:46, Phillip Susi wrote:
-> >>>>> I had been testing some things on a post 6.6-rc5 kernel for a week =
-or
-> >>>>> two and then when I pulled to a post 6.6 release kernel, I found th=
-at
-> >>>>> system suspend was broken.  It seems that the radeon driver failed =
-to
-> >>>>> suspend, leaving the display dead, the wayland display server hung,=
- and
-> >>>>> the system still running.  I have been trying to bisect it for the =
-last
-> >>>>> few days and have only been able to narrow it down to the following=
- 3
-> >>>>> commits:
-> >>>>>
-> >>>>> There are only 'skip'ped commits left to test.
-> >>>>> The first bad commit could be any of:
-> >>>>> 56e449603f0ac580700621a356d35d5716a62ce5
-> >>>>> c07bf1636f0005f9eb7956404490672286ea59d3
-> >>>>> b70438004a14f4d0f9890b3297cd66248728546c
-> >>>>> We cannot bisect more!
-> >>>> Hmm, not a single reply from the amdgpu folks. Wondering how we can
-> >>>> encourage them to look into this.
-> >>>>
-> >>>> Phillip, reporting issues by mail should still work, but you might h=
-ave
-> >>>> more luck here, as that's where the amdgpu afaics prefer to track bu=
-gs:
-> >>>> https://gitlab.freedesktop.org/drm/amd/-/issues
-> >>>>
-> >>>> When you file an issue there, please mention it here.
-> >>>>
-> >>>> Furthermore it might help if you could verify if 6.7-rc1 (or rc2, wh=
-ich
-> >>>> comes out later today) or 6.6.2-rc1 improve things.
-> >>> It would also be good to test if reverting any of these is possible o=
-r not.
-> >> Well none of the commits mentioned can affect radeon in any way. Radeo=
-n
-> >> simply doesn't use the scheduler.
-> >>
-> >> My suspicion is that the user is actually using amdgpu instead of
-> >> radeon. The switch potentially occurred accidentally, for example by
-> >> compiling amdgpu support for SI/CIK.
-> >>
-> >> Those amdgpu problems for older ASIC have already been worked on and
-> >> should be fixed by now.
-> > In this case it's a navi23 (so radeon in the marketing sense).
->
-> Thanks, couldn't find that in the mail thread.
->
-> In that case those are the already known problems with the scheduler
-> changes, aren't they?
+On 20/11/2023 18:06, Théo Lebrun wrote:
+> On this platform, the controller & its wrapper are reset on resume. This
+> makes it have a different behavior from other platforms.
+> 
+> We allow using the new compatible with a fallback onto the original
+> ti,j721e-usb compatible. We therefore allow using an older kernel with
 
-Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Maybe I'm
-misunderstanding what the original report was actually testing.  If it
-was 6.7, then try reverting:
-56e449603f0ac580700621a356d35d5716a62ce5
-b70438004a14f4d0f9890b3297cd66248728546c
+Where is fallback ti,j721e-usb used? Please point me to the code.
 
-Alex
 
->
-> Christian.
->
-> >
-> > Alex
-> >
-> >> Regards,
-> >> Christian.
-> >>
-> >>> File the gitlab issue and we should poke amd a but more to take a loo=
-k.
-> >>>
-> >>> Dave.
->
+> a more recent devicetree.
+> 
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> index 95ff9791baea..69a222dfd9ff 100644
+> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+> @@ -12,11 +12,15 @@ maintainers:
+>  properties:
+>    compatible:
+>      oneOf:
+> +      - const: ti,j7200-usb
+>        - const: ti,j721e-usb
+>        - const: ti,am64-usb
+>        - items:
+>            - const: ti,j721e-usb
+>            - const: ti,am64-usb
+> +      - items:
+> +          - const: ti,j721e-usb
+
+This makes little sense. It's already on the list. Twice! Don't add it
+third time.
+
+I am sorry, but this binding makes no sense. I mean, existing binding
+makes no sense, but your change is not making it anyhow better.
+
+Best regards,
+Krzysztof
+
