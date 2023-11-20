@@ -2,144 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB717F0D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A197F0D4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbjKTIQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52552 "EHLO
+        id S232141AbjKTIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbjKTIQW (ORCPT
+        with ESMTP id S232148AbjKTIQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:16:22 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C07E3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:16:18 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5094727fa67so5635388e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700468177; x=1701072977; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l5sTEAmTtbhoCMXLFmbz+riipdvwXdm2iXG8qiQt4WA=;
-        b=DGaLvadlEoMLdnn32Sq7MMwK6D62KYtEirccqz4Nd8z8EU9LnVzsoWlP5fVIRSmAL+
-         zmdg7OoxZBDLHHB4q7LZwnYa7eWPmIgOQJ9/P3hvbyIkTBsqypYh4tv7mwpCPFo2ouOB
-         +zWu0YLC/GLB9jHl37CwjP8LD7IB/SSnNJbYqRnnkqVE7DK9jH84sYIQ/venKEzxJUIx
-         SVk922mUKbIPrkgXM7Ra09ARc8MY/VXviEjofhfrbwXYnAgLvUVqEBPdt6Gv+dMuqOxD
-         tJwDiCv2FaHR3ikyEcxkZwe2dNmtPA8KK4uHmUS64OpH6cTXTm7bjTH9jxHZHTdmgwAB
-         4MAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700468177; x=1701072977;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=l5sTEAmTtbhoCMXLFmbz+riipdvwXdm2iXG8qiQt4WA=;
-        b=tYqCBnMfiFqJMcYPKbTVRKi9aWDpQw1hlPEwwGNnUODYhquORrXMMOOkSOTSXnd2H9
-         rmfI5UjRovhDgkKUDLIC8GueLqqZItNBhWdciyOdv4F8R5khfO72OLe456Y03gz/nnji
-         IyOJJuEI/533Lasm3ETtHTPEZXoF7LnhayrJzhpsy5WCvgAFSKd2e7/E4hD8XoDyt4BU
-         eekoqWj3elb94QsaGieaUp2Ir48zvNpjEdbRmGBFWVzsWe5usFGovKoXwKiLGvCkmWDu
-         RWpEpkZBhcLVdKLdLynOFaa8cwa/eaEZaMnovPdgmXRmVkG+NGH0Cbub82L+hPab+L1N
-         4TGg==
-X-Gm-Message-State: AOJu0YxrSu+pzvZbeYXkTD3UDtzW7arH4G/AOo2Dt3tHV5jNTzRDdzO6
-        ZLjOUP/0oGkJYVYMRu5lrEet4tSxDzLw20de4HaEOeZF
-X-Google-Smtp-Source: AGHT+IF/PYPeGH6vKFaVERL8d59d/q4hV3dx20a+d1LHqXStUFNJsezbcXcTnBZ/CEp3k6/bUuSyhA==
-X-Received: by 2002:ac2:5619:0:b0:509:8dee:71e with SMTP id v25-20020ac25619000000b005098dee071emr4495922lfd.0.1700468176735;
-        Mon, 20 Nov 2023 00:16:16 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:f04:f84b:d87d:1d06? ([2a01:e0a:982:cbb0:f04:f84b:d87d:1d06])
-        by smtp.gmail.com with ESMTPSA id l9-20020a05600002a900b00332cb5185edsm290587wry.14.2023.11.20.00.16.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 00:16:16 -0800 (PST)
-Message-ID: <58b10e6e-87cd-4157-8541-0cbfeb263422@linaro.org>
-Date:   Mon, 20 Nov 2023 09:16:13 +0100
+        Mon, 20 Nov 2023 03:16:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A84B9;
+        Mon, 20 Nov 2023 00:16:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700468212; x=1732004212;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nmarBsxG5NKkdhayYn4K9VsVkn7w4NTztMAXS4yLut8=;
+  b=L4r0cUBpiaICiz0IicliW4+5baPDU83Qt8OlR3jiqTVLThUABWYz9uYB
+   tJkYrUSecLMQ8PYu1afjjCuJGpS2bhydBpiivSTC1USy6wTbUbqE1qedA
+   4MVOZv3Nl03n1HZEXCgOGyOHQh37Ph3KjhbTu5H8ji64fIz07hJINnYm9
+   N9WA8d/dq7zJSsNlWtGVfEoLuRELDIg6dE6O8SKGir4raO+/liLlE3B40
+   aMpvHVkLnbBKXOiRgaM70GOTECNsx2dw2SkSgYvvlctSRvxgWVzzM2XYS
+   xkXrE1y5aU5vtEHgaQYG0tJ3o4O6+3B6krTa4Jaf1/MdXOj+0dM2xL0CG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="13125970"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="13125970"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 00:16:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="716147886"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="716147886"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Nov 2023 00:16:51 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 20 Nov 2023 00:16:50 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 20 Nov 2023 00:16:50 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 20 Nov 2023 00:16:50 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QcutVo5abgOxaaDMfBS/nCzLgs+RIAMZGm6WT2Jux4aZtlZHlCBHGfrsYHFRQeBEgbeUxX04gXhjNxyZ2228+9azNdtiEXosahANCSzzUHWrz3gxNzjlWHWrxoYBeCoq7FdhaN/BBriyO+MACHvtJPTLaJF8CfjhEyQop+V4Tx2MlQpO0tv1KR9IFvUiTQIqPhtCH6jhpLBISqqJFRiDuvW9g5W1SnMNXy9vTp28faPiVa9uf6CwEAXJR/Ayu/t06RnaldGuuIanV70FODcL3K8e4lTbLp0a40cYOe101WKRAblmDZLOKp2GJV9y9ayCCxYQ9xQX3ixxS9shLEMgkg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8VYsoHXtvDPyrLty/dqdW44fiYMS/KR6g605C5Qyw5k=;
+ b=WHHvM4DTYzdVXNQDpgH53VZwA6Qk2W7krJ/3bYVz0QVQAjKzx3ZckppqHQr4Hlk92W2ybYRkvRgOVl12h/h8T+bVeq2GhgPSJdtRkHe4oHjGHC9Orjq8goEfWjtu7vk6911luLdGBLkLsP8lylq/QSOyKpvewrw2MY9GEJV1S5kUrdeLb9ESGFSmwj3mkUxB73m/QPsYdily3rxWgXrj3cs3egiilemQst9u5XYLisfu3AS/ExGAUf8vRM+PF+UPz8WjN0E3V6jng95Ph6UFk7aAjniJ5hnYylmD93/vEmNLXU7HLyHtDeY/1R63S9vLzjdMb/I+Iv3YPoGglTzEUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com (2603:10b6:806:25d::22)
+ by DM3PR11MB8672.namprd11.prod.outlook.com (2603:10b6:0:44::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 20 Nov
+ 2023 08:16:48 +0000
+Received: from SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::3d98:6afd:a4b2:49e3]) by SA1PR11MB6734.namprd11.prod.outlook.com
+ ([fe80::3d98:6afd:a4b2:49e3%7]) with mapi id 15.20.7002.025; Mon, 20 Nov 2023
+ 08:16:48 +0000
+From:   "Li, Xin3" <xin3.li@intel.com>
+To:     "Gao, Chao" <chao.gao@intel.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
+Subject: RE: [PATCH v1 12/23] KVM: VMX: Handle FRED event data
+Thread-Topic: [PATCH v1 12/23] KVM: VMX: Handle FRED event data
+Thread-Index: AQHaEnYZT2abIZhNcUyoZ5A/RVnRc7B4D5WAgAEtDsCAAFANgIAAotQwgAIX7gCABp+2UA==
+Date:   Mon, 20 Nov 2023 08:16:48 +0000
+Message-ID: <SA1PR11MB6734CCE019A5BFC5BF8CF6F3A8B4A@SA1PR11MB6734.namprd11.prod.outlook.com>
+References: <20231108183003.5981-1-xin3.li@intel.com>
+ <20231108183003.5981-13-xin3.li@intel.com> <ZVH3IUsfvzuPaj6L@chao-email>
+ <SA1PR11MB6734B2389911D76A4B95319AA8B2A@SA1PR11MB6734.namprd11.prod.outlook.com>
+ <ZVM203KI5D3o+ksS@chao-email>
+ <SA1PR11MB6734FAD33CAC432ABB5EF7D5A8B1A@SA1PR11MB6734.namprd11.prod.outlook.com>
+ <ZVV/Rso4Rs4Hf8Df@chao-email>
+In-Reply-To: <ZVV/Rso4Rs4Hf8Df@chao-email>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR11MB6734:EE_|DM3PR11MB8672:EE_
+x-ms-office365-filtering-correlation-id: a2e9c579-a377-4ff4-fa2f-08dbe9a10ace
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PVgGiNxmc5yIEwwiyCknJe363MrhqPdMZC68TeE0zS7twQCDXoE2z8we82Ku9NaDQWX+4XafbhRuA4+tN+Y7FG8Ca5AuFwTJmrogiX7a6QzYEu1zsY2onLne0yfAbKogk358pcB2tS5M1CevBjT0jWW9x22X23Cm2PaqOdA9uM6Y/dL7TErFgr428ptoltsehOmeLwLNOhwGmNNQx6STcQ/x4+aqwsfiOZY2G73aVGacxiFE4pRWkmnyOq8lCAa8EPTkq8AqjVzDleuGrppbsbbUGsPO7f6UFZ0bndjh1Z1ynjq6QaLWX5aYi/+PHOOrAULlNWRWvk+o5x2TsG7apTfUetUHDf51I5GdXA+aXP9TR85sAPAVjnuLDR66HPl9YPE0tcVo3KidT70lzm9Mx/J3o0V4H7paGdXLdv90xc/UX+qgm86LDbuJLEsAclUvHLyqDz4iBbxZUVs6scwhtFImVG8ZS/sF3q/VidicVJt1YBu8z+N3GDCpN8uAJ4uVNesk6Mqxom7e0HTu4bYXoOzY6+5rG4cZaz189I9940im776UmVEkH9xfmEbJ6pGETWuGTgW8WW+dMF/M1MEfu30jrb/y+axxmwMAvStUiS65pWNVBj/GI0dGgzYAoKvQ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6734.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(346002)(376002)(136003)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(4744005)(2906002)(33656002)(52536014)(4326008)(6862004)(8676002)(8936002)(5660300002)(38100700002)(86362001)(7416002)(38070700009)(41300700001)(9686003)(55016003)(26005)(71200400001)(6506007)(7696005)(82960400001)(122000001)(478600001)(66556008)(66946007)(66476007)(54906003)(64756008)(66446008)(76116006)(6636002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?f6RIrS/50OkUHy9FhRsdxW90AJw5NQv893STc3VDTdlvvMASIvvvBLvf4v/k?=
+ =?us-ascii?Q?3YXWT/6YC5fMBxzsGmykn873FuPH9m0ki73plc26JuhJn/tsFyy6WAoXP/r7?=
+ =?us-ascii?Q?jHjGiTdr1RQF8aebXBrC/qS17bcLLvqCM0hLN1ABevzM329sVRhh7i3wK587?=
+ =?us-ascii?Q?aCzo1jSzEo31TrJEkA7PwzXTnPk0DMlZECqGdSpt9/VgNVn6FGR/YxaJAh76?=
+ =?us-ascii?Q?P1iR8KmAy+Vb4AKLb5wfe1GfJP2s8aI4HwlBAz1cIb3O7du5tGDFMPcpv8rU?=
+ =?us-ascii?Q?KjQtT1XxglYfqlvTOpK6Ri2iuqITLRs+Ri6v1P8EOMIssJP2PVEqFZsBMINS?=
+ =?us-ascii?Q?sccxmvFnEJQQUquHFt2Ff8WYmy5s3XUi6657s0HfOrlt1T0V8oqOwmSBxChV?=
+ =?us-ascii?Q?WxswugS9n71076/Lss0dg7G0eF3W17nWZubjet1NPRcqAn4Zv/O0Gm3xD9Ww?=
+ =?us-ascii?Q?84iubZnlbsQMNiuBxOQOBKW1HAb0yQieYNuDnHLpSXK5wED3YRyV7ZTGf5j/?=
+ =?us-ascii?Q?glaZDyST9gL5H49uwr8Qoq5vATS0opUQCV38M9U+GMnXCMjNvrGksNrIw5Ms?=
+ =?us-ascii?Q?Vj1Ck8wu0cWyO5nhkIbeAbQmEz9g4XOm1//DMMmvqwW2a0pooi061uh7r057?=
+ =?us-ascii?Q?zbpxhCfyjHN0H/ic5uNTfZqRw7b8K3uxaRMYQXiKnYBtm4UYXxIv9QfrQSE0?=
+ =?us-ascii?Q?ynPOXb1IbcP/fIcGMNa2WyCzPqqYZ6cAhawBBqa5klvTWSAHi20b6bLw63Ia?=
+ =?us-ascii?Q?vdWsWunr9DiwWctqD4MDp7VMnjZX/9x0NbK7CwYwvF8LEANXrMfByAHztpZZ?=
+ =?us-ascii?Q?sS3epIyDq2aHLMDMej6mzx7fP6Ui0rgkE7PL0NWLriIaL6FGpHGAttgSqRI4?=
+ =?us-ascii?Q?VqlNQOsYQS8GaDUzJH7nTA5MkLkoZUHZ+erx/0Wgx1/BdHOTc7Y3Tot49lgc?=
+ =?us-ascii?Q?5zeT1HOKTUIXqalZf57Li1kznSjE6RI5rhC7BFLlCz5A05JNgcJVqZD8aubL?=
+ =?us-ascii?Q?O0IL8e4CsHLkplRKoUpRJDCuxNQWAxr8h4zpBjr+nJ2MPg+sbWXFjAQVlp4d?=
+ =?us-ascii?Q?GCsTAHlBj2sdXo985GJOgvO/5CdKE1X9YqwZZfIwIctDts2vhKtco2CEC0mH?=
+ =?us-ascii?Q?VOlYU8ohYpreFPLHLlW+QQlWaGC+0evYAGOU5VrTmIvx3U8KEztfusUp6pDE?=
+ =?us-ascii?Q?S4nlArBdKVG3ibj9vXihPR/lZo9cmxC0LVj4ROh61SFYk4XIZj8ApfM7Sd1E?=
+ =?us-ascii?Q?OM0UTFnteOewIeg9uxIHk32xWjiXKRjOWkIvTOZlsfeZeL2AGApbQZ2AFynh?=
+ =?us-ascii?Q?s6UZDLpyjr0nkz7/8Z000UDS2BzVvBQ/qOhx+T+13VTd7Kei86/MY3pTr/6s?=
+ =?us-ascii?Q?tFg63bDjiIP9MA++kvGkLX2RSN8i7ikTEAEUZsW/nGh1Vdrh1SANKvi4iJjU?=
+ =?us-ascii?Q?gm+3rNDzix82skZWac5G0g8VSQZH1D/Yyh1lsyz3G/YOZkCAMMRQuSR/jUQL?=
+ =?us-ascii?Q?YMdAJVIgKP8uNLfVnlz9gGBTU3wwjLEOD9xmdrjm9QjAn3cL9B3W1hMAoMKA?=
+ =?us-ascii?Q?tZFDggRCkrdnPtGawcg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 11/20] drivers/gpu/drm/bridge/synopsys/dw-hdmi.c:
- remove I2C_CLASS_DDC support
-Content-Language: en-US, fr
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     linux-i2c@vger.kernel.org, Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231119112826.5115-1-hkallweit1@gmail.com>
- <20231119112826.5115-12-hkallweit1@gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231119112826.5115-12-hkallweit1@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6734.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2e9c579-a377-4ff4-fa2f-08dbe9a10ace
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 08:16:48.2887
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HJuqDatnr1+J6RHa3EFjKgvTRALU6P/QXmgRZrjkqXIsfcKmmvYBsrXo+df8BALhQe2Ts+xP85ZyuFeBtN0ZuQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8672
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/11/2023 12:28, Heiner Kallweit wrote:
-> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
-> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
-> Class-based device auto-detection is a legacy mechanism and shouldn't
-> be used in new code. So we can remove this class completely now.
-> 
-> Preferably this series should be applied via the i2c tree.
-> 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> 
-> ---
->   drivers/gpu/drm/bridge/synopsys/dw-hdmi.c |    1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index 52d91a0df..aca5bb086 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -515,7 +515,6 @@ static struct i2c_adapter *dw_hdmi_i2c_adapter(struct dw_hdmi *hdmi)
->   	init_completion(&i2c->cmp);
->   
->   	adap = &i2c->adap;
-> -	adap->class = I2C_CLASS_DDC;
->   	adap->owner = THIS_MODULE;
->   	adap->dev.parent = hdmi->dev;
->   	adap->algo = &dw_hdmi_algorithm;
-> 
+> >> IIUC, L1 KVM can inject a nested exception whose vector isn't #DB, or
+> >> #NM or #PF with a non-zero event_data to L2.
+> >
+> >No, this is not allowed.
+>=20
+> How do you interpret the last sentence:
+>=20
+> 	Section 5.2.1 specifies the event data that FRED event delivery of
+> 	certain events saves on the stack. When FRED event delivery is used
+> 	for an event injected by VM entry, the event data saved is the value
+> 	of the injected-event-data field in the VMCS. This value is used
+> 	instead of what is specified in Section 5.2.1 and is done for __ALL__
+> 	injected events using FRED event delivery
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+To me, it means FRED event injection during VM entry simply pushes the
+value in the injected-event-data field of the VMCS as event data.  But
+the event data definition should comply with Section 5.2.1.  It is a
+forward compatibility issue otherwise.
