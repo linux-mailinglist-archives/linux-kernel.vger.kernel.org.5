@@ -2,178 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CA27F0B3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52537F0B4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjKTENI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 23:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S231974AbjKTEPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 23:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTENG (ORCPT
+        with ESMTP id S231925AbjKTEPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 23:13:06 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC166C5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:13:02 -0800 (PST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK3i8El021928;
-        Mon, 20 Nov 2023 04:12:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=UkuhkTHXh3KZ0wjePy3kranqh5iqEWUMN+wxlcdWguI=;
- b=Bsq+Sp87G4wthGUmWsZkAdj6c3sLs1UvzqSbkXI/GEqfHyQ/z+9hhqNpJOfeT3KBC+bN
- heoYKw+Pmq7cl8w1TAJZSlgq2J7yP5/0LfKpzzkGOXz0kQ3UEg0j3ziOyVBm49NdS2Uq
- SMGLKBG7ntZJGuY9CvgVKNpFmgmszaSBtrckTBGuBQIUNp6WNo87rKwgN/608lUl585H
- glyENGr+s7BU56K+UvbSVGA2MUgy1aUXF217qaYw6PMlkhCKvh37av+5+HYZi0YhStnF
- hpPgsK7XD8Bys2aQR89jp+ww9LaHSjp5mAYb1KAztE7voYecIRMzzVORno9mkEmZd2R3 Sg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uf0echvpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 04:12:53 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK1U9eH028785;
-        Mon, 20 Nov 2023 04:12:52 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf8knesds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 04:12:52 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK4CoJH15205118
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 04:12:50 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 563CE20043;
-        Mon, 20 Nov 2023 04:12:50 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7492520040;
-        Mon, 20 Nov 2023 04:12:49 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Nov 2023 04:12:49 +0000 (GMT)
-Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id B44A760100;
-        Mon, 20 Nov 2023 15:12:46 +1100 (AEDT)
-Message-ID: <65fae3db40ada9a2bc3d1333f27d9a4f4db6ac72.camel@linux.ibm.com>
-Subject: Re: [PATCH] misc: ocxl: link: Remove unnecessary (void*) conversions
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-To:     Li zeming <zeming@nfschina.com>, fbarrat@linux.ibm.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Mon, 20 Nov 2023 15:12:46 +1100
-In-Reply-To: <20231113014533.11064-1-zeming@nfschina.com>
-References: <20231113014533.11064-1-zeming@nfschina.com>
-Autocrypt: addr=ajd@linux.ibm.com; prefer-encrypt=mutual;
- keydata=mDMEZPaWfhYJKwYBBAHaRw8BAQdAAuMUoxVRwqphnsFua1W+WBz6I2cIn0+Ox4YypJSdBJ+0MEFuZHJldyBEb25uZWxsYW4gKElCTSBzdHVmZikgPGFqZEBsaW51eC5pYm0uY29tPoiTBBMWCgA7FiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQj1Qx8QRYRqAdswD8DhIh4trRQYiPe+7LaM7q+0+Thz+CwUJCW3UFOf0SEO0BAPNdsi7aVV+4Oah6nYzqzH5Zbs4Tz5RY+Vsf+DD/EzUKuDgEZPaWfhIKKwYBBAGXVQEFAQEHQLN9moJRqN8Zop/kcyIjga+2qzLoVaNAL6+4diGnlr1xAwEIB4h4BBgWCgAgFiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwwACgkQj1Qx8QRYRqCYkwD/W+gIP9kITfU4wnLtueFUThxA0T/LF49M7k31Qb8rPCwBALeEYAlX648lzjSA07pJB68Jt39FuUno444dSVmhYtoH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+        Sun, 19 Nov 2023 23:15:48 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE580C5
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:15:20 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c4cf0aea06so3851396b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:15:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1700453720; x=1701058520; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nIDTyvDZmEbG+Yu+hBrCT0MY3hx+Ko8aN1HuoFlM3pE=;
+        b=bzVrxfuix35mXnLiKJOKoJCtv6FMZR3vNfCexNnBmBONMiqlxjAOnC8xxqRatQ22N/
+         fvKj8ahuLJ3h0R98WVitMuiBW1eQIbwZPGSOPEhwPAbnh32tHfGeXKp8kdeAxX6sGcSQ
+         KpZ1cEXKMP3rEZYUnJTD3lFPsCneu5Kk4GlylABIFBfcMIef2DWXePqvD9+fUQXVxEnt
+         Nxq4vBhqtUmT5h4rlMgfeQZCiQDxdTkeiJWvU5RRoIsqUGEgy0xIOleXwgDeHgID3Qmc
+         /eB/IpB3Tsa5mRizkAzIPMjHtKzx+mcXebM4rZglVBE2rMiBHSJpLME8+En7dzpfNQfD
+         B8bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700453720; x=1701058520;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nIDTyvDZmEbG+Yu+hBrCT0MY3hx+Ko8aN1HuoFlM3pE=;
+        b=AD7N7lrebXd0aZ3jSl1i/1/F8C+IOE22sIYtXWTTKdkymwghHTABMs4Sk94/Zu89pd
+         W0B2dQPV6VtdO37I9DwwtkgNg+8jk9GHQeh4/SiirTbTTh4NiLW+r9PWsO/7a46p8li5
+         +OkzrahdVf5Oll4RCvIIY39/PLcBv15PmanvQu8qPz7ahpPZ0y9Q3/gTsf0aIj2ABf1/
+         Rq3grV23HKF2MF3IcIfjRw8kRdPDFYvm1EnpEnBLoN+KYM41r5GNOLtWZxyRgV55xwpf
+         XLi41rJd0met8+RJ7lIyHkXaKD0Uw95iwA8ixCW7db5wsGsBz99E9hdES7FZGtWX0pAi
+         eaVA==
+X-Gm-Message-State: AOJu0YyB47+3k0H128O78SPXW3Q0Z6ov3/NStKQp0Lrx0oXJdaf4B3N+
+        YsZb90WXeWJriJ02LFOlyyMiDA==
+X-Google-Smtp-Source: AGHT+IGVZZxbvriUAg4m5DBW0KlhluDN/YDbsZf0qUPd9sQzHBSRdkPXBSjpcmPduH8x79b1PQAWuA==
+X-Received: by 2002:a05:6a20:1612:b0:187:f22b:8037 with SMTP id l18-20020a056a20161200b00187f22b8037mr7742380pzj.52.1700453720117;
+        Sun, 19 Nov 2023 20:15:20 -0800 (PST)
+Received: from C02G705SMD6V.bytedance.net ([61.213.176.5])
+        by smtp.gmail.com with ESMTPSA id h18-20020a170902f7d200b001cc4e477861sm5065266plw.212.2023.11.19.20.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Nov 2023 20:15:19 -0800 (PST)
+From:   Jia Zhu <zhujia.zj@bytedance.com>
+To:     dhowells@redhat.com, linux-cachefs@redhat.com
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jefflexu@linux.alibaba.com,
+        hsiangkao@linux.alibaba.com, Jia Zhu <zhujia.zj@bytedance.com>
+Subject: [PATCH V6 RESEND 0/5] cachefiles: Introduce failover mechanism for on-demand mode
+Date:   Mon, 20 Nov 2023 12:14:17 +0800
+Message-Id: <20231120041422.75170-1-zhujia.zj@bytedance.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ld2FDWfcyVW3D6kLmiRclHUzrtu-RiTy
-X-Proofpoint-GUID: Ld2FDWfcyVW3D6kLmiRclHUzrtu-RiTy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_01,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- impostorscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
- mlxlogscore=763 adultscore=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200028
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-13 at 09:45 +0800, Li zeming wrote:
-> The link pointer does not need to cast the type.
->=20
-> Signed-off-by: Li zeming <zeming@nfschina.com>
+Changes since v5:
+In cachefiles_daemon_poll(), replace xa_for_each_marked with xas_for_each_marked.
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
+[Background]
+============
+In the on-demand read mode, if user daemon unexpectedly closes an on-demand fd
+(for example, due to daemon crashing), subsequent read operations and inflight
+requests relying on these fd will result in a return value of -EIO, indicating
+an I/O error.
+While this situation might be tolerable for individual personal users, it
+becomes a significant concern when it occurs in a real public cloud service
+production environment (like us).  Such I/O errors will be propagated to cloud
+service users, potentially impacting the execution of their jobs and
+compromising the overall stability of the cloud service.  Besides, we have no
+way to recover this.
 
-> ---
-> =C2=A0drivers/misc/ocxl/link.c | 14 +++++++-------
-> =C2=A01 file changed, 7 insertions(+), 7 deletions(-)
->=20
-> diff --git a/drivers/misc/ocxl/link.c b/drivers/misc/ocxl/link.c
-> index c06c699c0e7b1..03402203cacdb 100644
-> --- a/drivers/misc/ocxl/link.c
-> +++ b/drivers/misc/ocxl/link.c
-> @@ -188,7 +188,7 @@ static void xsl_fault_handler_bh(struct
-> work_struct *fault_work)
-> =C2=A0
-> =C2=A0static irqreturn_t xsl_fault_handler(int irq, void *data)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) data;
-> +	struct ocxl_link *link =3D data;
-> =C2=A0	struct spa *spa =3D link->spa;
-> =C2=A0	u64 dsisr, dar, pe_handle;
-> =C2=A0	struct pe_data *pe_data;
-> @@ -483,7 +483,7 @@ static void release_xsl(struct kref *ref)
-> =C2=A0
-> =C2=A0void ocxl_link_release(struct pci_dev *dev, void *link_handle)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0
-> =C2=A0	mutex_lock(&links_list_lock);
-> =C2=A0	kref_put(&link->ref, release_xsl);
-> @@ -540,7 +540,7 @@ int ocxl_link_add_pe(void *link_handle, int
-> pasid, u32 pidr, u32 tidr,
-> =C2=A0		void (*xsl_err_cb)(void *data, u64 addr, u64 dsisr),
-> =C2=A0		void *xsl_err_data)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0	struct spa *spa =3D link->spa;
-> =C2=A0	struct ocxl_process_element *pe;
-> =C2=A0	int pe_handle, rc =3D 0;
-> @@ -630,7 +630,7 @@ EXPORT_SYMBOL_GPL(ocxl_link_add_pe);
-> =C2=A0
-> =C2=A0int ocxl_link_update_pe(void *link_handle, int pasid, __u16 tid)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0	struct spa *spa =3D link->spa;
-> =C2=A0	struct ocxl_process_element *pe;
-> =C2=A0	int pe_handle, rc;
-> @@ -666,7 +666,7 @@ int ocxl_link_update_pe(void *link_handle, int
-> pasid, __u16 tid)
-> =C2=A0
-> =C2=A0int ocxl_link_remove_pe(void *link_handle, int pasid)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0	struct spa *spa =3D link->spa;
-> =C2=A0	struct ocxl_process_element *pe;
-> =C2=A0	struct pe_data *pe_data;
-> @@ -752,7 +752,7 @@ EXPORT_SYMBOL_GPL(ocxl_link_remove_pe);
-> =C2=A0
-> =C2=A0int ocxl_link_irq_alloc(void *link_handle, int *hw_irq)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0	int irq;
-> =C2=A0
-> =C2=A0	if (atomic_dec_if_positive(&link->irq_available) < 0)
-> @@ -771,7 +771,7 @@ EXPORT_SYMBOL_GPL(ocxl_link_irq_alloc);
-> =C2=A0
-> =C2=A0void ocxl_link_free_irq(void *link_handle, int hw_irq)
-> =C2=A0{
-> -	struct ocxl_link *link =3D (struct ocxl_link *) link_handle;
-> +	struct ocxl_link *link =3D link_handle;
-> =C2=A0
-> =C2=A0	xive_native_free_irq(hw_irq);
-> =C2=A0	atomic_inc(&link->irq_available);
+[Design]
+========
+The main concept behind daemon failover is to reopen the inflight request-related
+objects so that the newly started daemon can process the requests as usual. 
+To achieve this, certain requirements need to be met:
+1. Storing inflight requests during a daemon crash:
+   It is necessary to have a mechanism in place to store the inflight
+   requests while the daemon is offline or during a crash. This ensures
+   that the requests are not lost and can be processed once the daemon
+   is up and running again.
+2. Holding the handle of /dev/cachefiles:
+   The handle of /dev/cachefiles should be retained, either by the container
+   snapshotter or systemd, to facilitate the failover process. This allows
+   the newly started daemon to access the necessary resources and continue
+   processing the requests seamlessly.
 
---=20
-Andrew Donnellan    OzLabs, ADL Canberra
-ajd@linux.ibm.com   IBM Australia Limited
+It's important to note that if the user chooses not to keep the /dev/cachefiles
+fd, the failover feature will not be enabled. In this case, inflight requests
+will return error, which will be passed on to the container, maintaining the same
+behavior as the current setup.
+
+By implementing these mechanisms, the failover system ensures that inflight requests
+are not lost during a daemon crash and that the newly started daemon can resume
+its operations smoothly, providing a more robust and reliable service for users.
+
+[Flow Path]
+===========
+This patchset introduce three states for ondemand object:
+CLOSE: This state represents an object that has either just been allocated or
+	   closed by the user daemon.
+OPEN: This state indicates that the object is open and ready for processing.
+	  It signifies that the related OPEN request has been successfully handled
+	  and the object is available for read operations or other interactions.
+REOPENING: This state is assigned to an object that has been previously closed
+	  but is now being driven to reopen due to a read request. The REOPENING state
+	  indicates that the object is in the process of being reopened, preparing
+	  for subsequent read operations.
+
+1. The daemon utilizes Unix Domain Sockets (UDS) to send and receive fd in order to
+   maintain and pass the reference to "/dev/cachefiles".
+
+2. In the event of a user daemon crash, the daemon is restarted and the reference
+   to the file descriptor for "/dev/cachefiles" is recovered.
+
+3. The user daemon writes "restore" to the device, triggering the following actions:
+   3.1. The object's state is reset from CLOSE to REOPENING, indicating that it
+        is in the process of reopening.
+   3.2. A work unit is initialized, which reinitializes the object and adds it to
+        the work queue. This allows the daemon to handle the open request,
+        transitioning from kernel space to user space.
+
+4. As a result of these recovery mechanisms, the user of the upper filesystem
+   remains unaware of the daemon crash. The inflight I/O operations are restored
+   and correctly handled, ensuring that the system operates seamlessly without
+   any noticeable disruptions.
+
+By implementing these steps, the system achieves fault tolerance by recovering and
+restoring the necessary references and states, ensuring the smooth functioning of
+the user daemon and providing a seamless experience to the users of the upper filesystem.
+
+[GitWeb]
+========
+https://github.com/userzj/linux/tree/fscache-failover-v6
+
+RFC: https://lore.kernel.org/all/20220818135204.49878-1-zhujia.zj@bytedance.com/
+V1: https://lore.kernel.org/all/20221011131552.23833-1-zhujia.zj@bytedance.com/
+V2: https://lore.kernel.org/all/20221014030745.25748-1-zhujia.zj@bytedance.com/
+V3: https://lore.kernel.org/all/20221014080559.42108-1-zhujia.zj@bytedance.com/
+V4: https://lore.kernel.org/all/20230111052515.53941-1-zhujia.zj@bytedance.com/
+V5: https://lore.kernel.org/all/20230329140155.53272-1-zhujia.zj@bytedance.com/
+
+[Test]
+======
+There are testcases for above mentioned scenario.
+A user process read the file by fscache on-demand reading.
+At the same time, we kill the daemon constantly.
+The expected result is that the file read by user is consistent with
+original, and the user doesn't notice that daemon has ever been killed.
+
+https://github.com/userzj/demand-read-cachefilesd/commits/failover-test
+
+In addition, this patchset has also been merged in our downstream kernel
+for almost one year as out-of-tree patches for real production use.
+Therefore, we hope it could be landed upstream too.
+
+Jia Zhu (5):
+  cachefiles: introduce object ondemand state
+  cachefiles: extract ondemand info field from cachefiles_object
+  cachefiles: resend an open request if the read request's object is
+    closed
+  cachefiles: narrow the scope of triggering EPOLLIN events in ondemand
+    mode
+  cachefiles: add restore command to recover inflight ondemand read
+    requests
+
+ fs/cachefiles/daemon.c    |  15 +++-
+ fs/cachefiles/interface.c |   7 +-
+ fs/cachefiles/internal.h  |  59 +++++++++++++-
+ fs/cachefiles/ondemand.c  | 166 ++++++++++++++++++++++++++++----------
+ 4 files changed, 201 insertions(+), 46 deletions(-)
+
+-- 
+2.20.1
+
