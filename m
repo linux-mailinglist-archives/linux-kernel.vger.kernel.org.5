@@ -2,154 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 622787F14AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 879417F14B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjKTNtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 08:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S232237AbjKTNvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:51:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232270AbjKTNti (ORCPT
+        with ESMTP id S232148AbjKTNvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 08:49:38 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F39116;
-        Mon, 20 Nov 2023 05:49:33 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 143D220010;
-        Mon, 20 Nov 2023 13:49:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700488172;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7GFf2MmlZRbRryB9gq03P/QdrczVE9sVH3xjYJA5blE=;
-        b=WU9e64b7dxhhmS5tY3Ewf9DZhZ4FNQbEc1dqBCABIwKqcCTEGu3N5XUxqYFN6+1NwBXNmL
-        4K0FCzqi7f5BmNvus4CG5MVVkI424l1fUBhRVFGCAMGk9L5sWQilQuHGK+Dxl8QpDwO0ns
-        YxQzQQKvVzIk1c/q7yn4oIIrcGP4tI7+nZGRclVear2DMioqjTi7fvoj0KtQie5zIZjbwR
-        JvpDlLMWXFp8aNbILVoYqrx2asmCQTlgH6WDpTGQhX/QpU4kfMDDztRA0OhcflpcpqSYij
-        u6rH1gWnoPZYryN9ahnkBGNIP6acA8bIUvsQRn200q0fwWgqsrlfHN1p6XNBow==
-Date:   Mon, 20 Nov 2023 14:49:29 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
+        Mon, 20 Nov 2023 08:51:17 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB76EE;
+        Mon, 20 Nov 2023 05:51:12 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40859dee28cso18315575e9.0;
+        Mon, 20 Nov 2023 05:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700488271; x=1701093071; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=umWEKXWFXv0eNP2vzXEwDqh3C4XXm2b3F2YK1OcVyho=;
+        b=Ug1PenHzHBVPOrmeVIBrUWmU8RhAM/adjddhvy0Iw3qBVosuWBJTZuAzOC60moSe4z
+         Axd81i15KibYHzjBLdAJ0Qw/YB7iAq28R6zxLekWZoh0Gz1lAxR21NspSUctpUkhPHv5
+         NbaSMnsD9zk+u/vctHmz2L8eAUFs5X3SYdGDyYRzwSVxfqshtt1G1JolOIDBGE1vXgZ4
+         d2irt6r0lN/BgZkTuZOAKvO4b+6acgAsuUpcC74I+uO3pR3tEuUAvhbay/fEJbPIF0M8
+         HrA3rcQY6vQJI0hgGFcFiocO5zTZUBLUcDOGnYon2LY4BlVGNkrcAucVCNZZxaPk7+NK
+         jvNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700488271; x=1701093071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=umWEKXWFXv0eNP2vzXEwDqh3C4XXm2b3F2YK1OcVyho=;
+        b=ct5vss/L/KVkMQN66WtziOseEShTn7DjQoQ73Z8AG5TmDmO1r5KWiIwF7K30gCOe+G
+         spHXQDL26rFurZgxZsHqczcicOQwy3O0S6sMP9KmPy/aNpx7Z2Yngt6RAgfTt4BTn9Vf
+         d0I9conIEnrytDUfRXiQ3asuKVcGpb0ghBIaFkDOID2S0JcuTuT8cgKXT8gpO+bnc46I
+         K+i5/S95TbH97eZkyGaIHVV7YBYE2QcensS/FTbqy7tQ5aYpi7YaZZju/5KTVcapUQtZ
+         7z1xi1Gwy+0r7gKfw6Q4iGP6UNfbXAIUKArsuVm8Iyfi//6u1OpHE4IPvhYb2Om2gthr
+         TrOQ==
+X-Gm-Message-State: AOJu0YxhBgO/lIHBKrC7718iLkmXqAczZr61vdGJUTf0RZUsJ+uflAek
+        DxF3Qb7wXDWOSB+BBLcfzJAUyhu2pcE=
+X-Google-Smtp-Source: AGHT+IG1J8cbmxkv7bK3mr7U//mrN6TW30Hcy9cOIwzVFGvTJowIC50goBaskga2xCFUBmOawihy0w==
+X-Received: by 2002:a05:600c:1392:b0:40a:69f2:3b7c with SMTP id u18-20020a05600c139200b0040a69f23b7cmr7002035wmf.16.1700488270960;
+        Mon, 20 Nov 2023 05:51:10 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id j33-20020a05600c1c2100b0040772934b12sm18205846wms.7.2023.11.20.05.51.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 05:51:10 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231120144929.3375317e@kmaincent-XPS-13-7390>
-In-Reply-To: <20231120120601.ondrhbkqpnaozl2q@skbuf>
-References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
-        <20231114-feature_ptp_netnext-v7-15-472e77951e40@bootlin.com>
-        <20231118183433.30ca1d1a@kernel.org>
-        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
-        <20231120105255.cgbart5amkg4efaz@skbuf>
-        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
-        <20231120120601.ondrhbkqpnaozl2q@skbuf>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [net-next RFC PATCH 00/14] net: phy: Support DT PHY package
+Date:   Mon, 20 Nov 2023 14:50:27 +0100
+Message-Id: <20231120135041.15259-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        WEIRD_QUOTING autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 14:06:01 +0200
-Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
+Idea of this big series is to introduce the concept of PHY package in DT
+and generalize the support of it by PHY driver.
 
-> On Mon, Nov 20, 2023 at 12:14:40PM +0100, K=C3=B6ry Maincent wrote:
-> > > Does your UAPI proposal make it possible in any way to select
-> > > timestamping in phylib PHY A rather than PHY B? Or do you think it is
-> > > extensible to support that, somehow? =20
-> >=20
-> > It does not support it for now.
-> > I didn't want to base my work on his series as it could work without it=
- for
-> > now and I didn't want to wait to have his series accepted. It is more a
-> > future possible support as I don't have anything to test it and I don't
-> > know if such hardware exists right now.
-> > I think it will be extensible to support that, my thinking was to create
-> > this struct in net_device struct:
-> >=20
-> > struct {
-> > 	enum layer;
-> > 	u32 id;
-> > } ts;
-> >=20
-> > With id saving the phy_index of the PHY X used when the layer PHY is
-> > selected. This id could also be used to store the timestamp point in ca=
-se
-> > of several timestamp in a MAC. =20
->=20
-> Ok, and I suppose the "u32 id" would be numerically the same as the
-> ETHTOOL_A_HEADER_PHY_INDEX nlattr that Maxime is proposing?
+The concept of PHY package is nothing new and is already a thing in the
+kernel with the API phy_package_join/leave/read/write.
 
-Yes.
+The main idea of those API is to permit the PHY to have a shared global
+data and to run probe/config only once for the PHY package. There are
+various example of this already in the kernel with the mscc, bcm54140
+mediatek ge and micrle driver and they all follow the same pattern.
 
-> The next question would be: if a driver performs PHY management in
-> firmware, and does not use phylib, how should user space interact with it?
-> What timestamping layer and upon what should the ID be chosen?
+What is currently lacking is describing this in DT and better reference
+the PHY in charge of global configuration of the PHY package. For the
+already present PHY, the implementation is simple enough with only one
+PHY having the required regs to apply global configuration.
 
-In that case it could be the second options I refereed to.
-Using the id to select the right timestamp within the NIC driver.
-It indeed won't be called PHY timestamping as it is managed by the NIC firm=
-ware
-but as it is managed by only one firmware and driver using the id to separa=
-te
-the available timestamp seems a good idea.
+This can be ok for simple PHY package but some Qcom PHY package on
+""modern"" SoC have more complex implementation. One example is the PHY
+for qca807x where some global regs are present in the so-called "combo"
+port and everything about psgmii calibration is placed in a 5th port in
+the PHY package.
 
-Another solution would be to create another value in the layer enumeration.
-PHY_NIC_TIMESTAMPING? Better idea? I am not good at naming.
-=20
-> Finally (and unrelated to the question above), why is SOFTWARE_TIMESTAMPI=
-NG
-> even a layer exposed in the UAPI? My understanding of this patch set is
-> that it is meant to select the source of hardware timestamps that are
-> given to a socket. What gap in the UAPI does the introduction of a
-> SOFTWARE_TIMESTAMPING hwtstamping layer cover?
+Given these additional thing, the original phy_package API are extended
+with support for multiple global PHY for configuration. Each PHY driver
+will have an enum of the ID for the global PHY to reference and is
+required to pass to the read/write function.
 
-As I explained to Jakub:
-The software timestamping comes from the MAC driver capabilities and I deci=
-ded
-to separate software and MAC timestamping. If we select PHY timestamping we
-can't use software timestamping and for an user, selecting the MAC as
-timestamping seems not logical to use software timestamping (I got confused
-myself when I first dig into it long time ago). Be able to select
-directly Software timestamping seems appropriate and won't bring any harm. =
-What
-do you think?
+On top of this, it's added correct DT support for describing PHY
+package.
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+One example is this:
+
+        ethernet-phy-package {
+            compatible = "ethernet-phy-package";
+            #address-cells = <1>;
+            #size-cells = <0>;
+
+            global-phys = <&phy4>;
+            global-phy-names = "base";
+
+            ethernet-phy@1 {
+              compatible = "ethernet-phy-ieee802.3-c22";
+              reg = <1>;
+            };
+
+            phy4: ethernet-phy@4 {
+              compatible = "ethernet-phy-ieee802.3-c22";
+              reg = <4>;
+            };
+        };
+
+The mdio parse functions are changed to address for this additional
+special node, the function is changed to simply detect this node and
+search also in this.
+
+If this is detected phy core will join each PHY present in the node and
+use (if defined) the additional info in the PHY driver to probe/config
+once the PHY package.
+
+Some PHY package also supports a single phy-mode for every PHY in the
+PHY package. This is also supported and can be described in DT by
+defining the phy-mode in the PHY package node.
+
+I hope this implementation is clean enough as I expect more and more of
+these configuration to appear in the future.
+
+Christian Marangi (12):
+  net: phy: extend PHY package API to support multiple global address
+  dt-bindings: net: move PHY modes to common PHY mode types definition
+  dt-bindings: net: document ethernet PHY package nodes
+  net: phy: add initial support for PHY package in DT
+  net: phy: add support for named global PHY in DT PHY package
+  net: phy: add support for shared priv data size for PHY package in DT
+  net: phy: add support for driver specific PHY package probe/config
+  net: phy: add support for PHY package interface mode
+  net: phy: move mmd_phy_indirect to generic header
+  net: phy: add support for PHY package MMD read/write
+  dt-bindings: net: Document Qcom QCA807x PHY package
+  net: phy: qca807x: Add support for configurable LED
+
+Robert Marko (2):
+  dt-bindings: net: add QCA807x PHY defines
+  net: phy: add Qualcom QCA807x driver
+
+ .../bindings/net/ethernet-controller.yaml     |   47 +-
+ .../bindings/net/ethernet-phy-mode-types.yaml |  132 ++
+ .../bindings/net/ethernet-phy-package.yaml    |   86 ++
+ .../devicetree/bindings/net/qcom,qca807x.yaml |  143 ++
+ drivers/net/mdio/of_mdio.c                    |   60 +-
+ drivers/net/phy/Kconfig                       |    7 +
+ drivers/net/phy/Makefile                      |    1 +
+ drivers/net/phy/bcm54140.c                    |   23 +-
+ drivers/net/phy/mdio_bus.c                    |   33 +-
+ drivers/net/phy/mediatek-ge-soc.c             |   11 +-
+ drivers/net/phy/micrel.c                      |   13 +-
+ drivers/net/phy/mscc/mscc.h                   |    7 +
+ drivers/net/phy/mscc/mscc_main.c              |   16 +-
+ drivers/net/phy/phy-core.c                    |   14 -
+ drivers/net/phy/phy_device.c                  |  218 ++-
+ drivers/net/phy/qca807x.c                     | 1232 +++++++++++++++++
+ include/dt-bindings/net/qcom-qca807x.h        |   45 +
+ include/linux/phy.h                           |  178 ++-
+ 18 files changed, 2119 insertions(+), 147 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-mode-types.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+ create mode 100644 drivers/net/phy/qca807x.c
+ create mode 100644 include/dt-bindings/net/qcom-qca807x.h
+
+-- 
+2.40.1
+
