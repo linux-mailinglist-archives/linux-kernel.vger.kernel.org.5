@@ -2,142 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 241257F1E4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EB37F1E6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 21:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjKTU4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 15:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S230402AbjKTU6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 15:58:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjKTU4L (ORCPT
+        with ESMTP id S229689AbjKTU6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 15:56:11 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7FFCF
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 12:56:06 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-daec4e4c5eeso4385286276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 12:56:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700513766; x=1701118566; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9TZd4/9tDYUVpH+va2bN+Lz+wNAalFU9/JWBiin7Umg=;
-        b=dIN+TWjB7DwY0CKa0z9f4TAEhPpuVnITgs51MdVSO/sn+arv6vDkaAE+8j/HKDuUM1
-         GwebVP0DAs0QMj1gPJiZPUm9Td7HGYrjiLx979fyGVdPoNdblR/yi5f8aaIMQR7BiX4g
-         CSnBeLFLW8wZLEYz0D4KFbH0EDNxXtEhULuNiYReIE1QCLzNuEXvG7IADxCQnNKppQu2
-         EmvHtz6I5+wZaFTRUhzV46MrXo3SjchHI2haXaEljwz4B+e29cl/dUwOrRS085VbsWzN
-         ISCuNZ/osu1X+QN1ydECzaNHMEtop//t/WxbUQZoJ3wx9xTBFqXKIupURA2uwrOhk/sh
-         hGbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700513766; x=1701118566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9TZd4/9tDYUVpH+va2bN+Lz+wNAalFU9/JWBiin7Umg=;
-        b=k7Vfkd0uCwPGiN46yv/HJ9EecsX8J75N86kxbbupd2/zKfHK7thWxwL+z3nlDVJBkz
-         Vqf7kSb4h6q7CJe2TB+5aY9XBC7pGi3o6bdjvLpjtQk5Hn3mivhWrkT3xMAOUg+Jm/04
-         thWlOJ1xvrTEN5aeVxR17rMgLsKWXCuZTr6CGa1NiylmEQMvhmQnKn4C+dVBkn5v/JjI
-         PbPkO97dDkjC0QlPYHATT+Hfeo66CmfW7Wz1MRwc7Jvtia9+jJAUe04bS0mSLCF7Mrnn
-         qKK1dFW/NKbVxI4UyJVZte2SuVSRmRt1522zm1LgqyUh0llVOKvDdasied66a8KpNDhK
-         oSjg==
-X-Gm-Message-State: AOJu0YwlIxS09qT9bhtBZ7todF6SkacXidjG7Nf7SjOVoKv/lE44vwUb
-        +UVpJ4VB/oqw8CIDr7Xi2V9RV17BSd5tCXNF/2hc
-X-Google-Smtp-Source: AGHT+IEaRVh061VYZ3MAeHPyfSYqU87TX2/fj8L258pJWZLZTg4+MCecpLfeUh+AQrPfjanR5lZ9zeXYiylSMWWt87o=
-X-Received: by 2002:a25:8907:0:b0:da0:400e:750c with SMTP id
- e7-20020a258907000000b00da0400e750cmr7368373ybl.27.1700513765828; Mon, 20 Nov
- 2023 12:56:05 -0800 (PST)
+        Mon, 20 Nov 2023 15:58:46 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AF7CF;
+        Mon, 20 Nov 2023 12:58:41 -0800 (PST)
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id CB8F72071A;
+        Mon, 20 Nov 2023 21:58:36 +0100 (CET)
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Hiago De Franco <hiago.franco@toradex.com>
+Subject: [PATCH v1 0/3] ARM: dts: imx: Add mmc aliases to Toradex DTS
+Date:   Mon, 20 Nov 2023 21:58:15 +0100
+Message-Id: <20231120205818.33120-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
- <20231107134012.682009-12-roberto.sassu@huaweicloud.com> <85c5dda2-5a2f-4c73-82ae-8a333b69b4a7@schaufler-ca.com>
- <1999ed6f77100d9d2adc613c9748f15ab8fcf432.camel@huaweicloud.com> <13f7542f-4039-47a8-abde-45a702b85718@schaufler-ca.com>
-In-Reply-To: <13f7542f-4039-47a8-abde-45a702b85718@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 20 Nov 2023 15:55:54 -0500
-Message-ID: <CAHC9VhTPC6_dR0ymPtktVfi9rcFrnqXZL8Cq+c58OiijTRgOxg@mail.gmail.com>
-Subject: Re: [PATCH v5 11/23] security: Introduce inode_post_removexattr hook
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 1:04=E2=80=AFPM Casey Schaufler <casey@schaufler-ca=
-.com> wrote:
-> On 11/20/2023 9:31 AM, Roberto Sassu wrote:
-> > On Tue, 2023-11-07 at 09:33 -0800, Casey Schaufler wrote:
-> >> On 11/7/2023 5:40 AM, Roberto Sassu wrote:
-> >>> From: Roberto Sassu <roberto.sassu@huawei.com>
-> >>>
-> >>> In preparation for moving IMA and EVM to the LSM infrastructure, intr=
-oduce
-> >>> the inode_post_removexattr hook.
-> >>>
-> >>> At inode_removexattr hook, EVM verifies the file's existing HMAC valu=
-e. At
-> >>> inode_post_removexattr, EVM re-calculates the file's HMAC with the pa=
-ssed
-> >>> xattr removed and other file metadata.
-> >>>
-> >>> Other LSMs could similarly take some action after successful xattr re=
-moval.
-> >>>
-> >>> The new hook cannot return an error and cannot cause the operation to=
- be
-> >>> reverted.
-> >>>
-> >>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >>> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> >>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> >>> ---
-> >>>  fs/xattr.c                    |  9 +++++----
-> >>>  include/linux/lsm_hook_defs.h |  2 ++
-> >>>  include/linux/security.h      |  5 +++++
-> >>>  security/security.c           | 14 ++++++++++++++
-> >>>  4 files changed, 26 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/fs/xattr.c b/fs/xattr.c
-> >>> index 09d927603433..84a4aa566c02 100644
-> >>> --- a/fs/xattr.c
-> >>> +++ b/fs/xattr.c
-> >>> @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idma=
-p,
-> >>>             goto out;
-> >>>
-> >>>     error =3D __vfs_removexattr(idmap, dentry, name);
-> >>> +   if (error)
-> >>> +           goto out;
-> >> Shouldn't this be simply "return error" rather than a goto to nothing
-> >> but "return error"?
-> > I got a review from Andrew Morton. His argument seems convincing, that
-> > having less return places makes the code easier to handle.
->
-> That was in a case where you did more than just "return". Nonetheless,
-> I think it's a matter of style that's not worth debating. Do as you will.
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-I'm not too bothered by this in the VFS code, that's up to the VFS
-maintainers, but for future reference, in the LSM layer I really
-dislike jumping to a label simply to return.
+Add mmc aliases to ensure a consistent mmc device naming across the
+Toradex SoM family, with this commit mmc0 is the on-module eMMC
+boot device and the not available mmc interfaces are removed.
 
---=20
-paul-moore.com
+Hiago De Franco (3):
+  ARM: dts: imx6qdl-apalis: Add usdhc aliases
+  ARM: dts: imx6qdl-colibri: Add usdhc aliases
+  ARM: dts: imx7d-colibri-emmc: Add usdhc aliases
+
+ arch/arm/boot/dts/nxp/imx/imx6qdl-apalis.dtsi     | 7 +++++++
+ arch/arm/boot/dts/nxp/imx/imx6qdl-colibri.dtsi    | 7 +++++++
+ arch/arm/boot/dts/nxp/imx/imx7d-colibri-emmc.dtsi | 4 ++++
+ 3 files changed, 18 insertions(+)
+
+-- 
+2.25.1
+
