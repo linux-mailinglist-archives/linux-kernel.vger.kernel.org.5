@@ -2,176 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED577F1D84
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C45F7F1D9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbjKTTrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
+        id S232808AbjKTT5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTTrJ (ORCPT
+        with ESMTP id S232876AbjKTT43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:47:09 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBB9A2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:47:04 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c8769edd9fso27735051fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:47:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700509623; x=1701114423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k63y0ImIMzxwhoXgElC40ZBYzHWgYpN897FOa0LAhXo=;
-        b=TytuiUM9xjgmSrq8PTCyhB8GE4jNsAj4tXQqLg69j0RL9bfmFxBU5CJsbCO0PY5Wwc
-         4l7JejFJMW5ooDzTjZllyKxd2RZPrt5YYDr78DAGE+bbsiXce+uPKuL3p270nVgqb+sp
-         3oKtsat1WxlPSQHkTihWb63BYlwmwtTfsd2ypmN4TzF2AIZEdy59AZaBq7tETUtnSIAW
-         CvrU716KpBfL7JabFqlanu37nhj739r7IeynpzZ0SJo/DzJyRJAoOrgrHgtxMq5i+yLF
-         BAGdTZByHbBu9OT5idjwmQ5eHFOc0+IhrLNcRmRc14Md+K8p9imCrojKEKoJPj+iIU5m
-         uXWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700509623; x=1701114423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k63y0ImIMzxwhoXgElC40ZBYzHWgYpN897FOa0LAhXo=;
-        b=siFBTGhPl8TPkv3FShbh93uyg2Kf5rvGYL17+CXR1yXZQzWtSJKj8N/wYwQcXjjGvb
-         dsWRpMvbrZGYsi8gH0JiG2ID7+AcVa3+6uOQ3TXUmqTAO4VsYkA/Hh0L3urGkceOJXhi
-         fGXaQJt2n86n32de71Uz+4pgk9gsTd44dFu75/1oopLexW9ZKp5Ui/xCE9yMh/IyMiZF
-         P8JHtq60yfmhsdKmwWcWGGKsCshVxLh/WQoc02G30VmWUA19w0vaxDC5dQ3gRJ6K4Mru
-         4lTFj0N0McG0p70t2UzSkJ0qZrPEAI9P5eYm3QJCEM2i+QFBldTm7m2sM7vhjk6kWaOX
-         0GQw==
-X-Gm-Message-State: AOJu0Yw6gZo40uabNOt7B/bjObuodLHYInkhKds9Hd5Rw6Skq+HG9pwH
-        8YIM13vX4mk+fmuchFs0cUuB8E/koQ8n1vEITesFkQ==
-X-Google-Smtp-Source: AGHT+IFcP9Bi77QpumgXWYcYlyZBFp9cVOTTuzfplw5aXvIURHzOjITODIQ80+1AZypInFxLgyl/s1nd/Te+pEN9yGs=
-X-Received: by 2002:a2e:9912:0:b0:2c5:3a9:7467 with SMTP id
- v18-20020a2e9912000000b002c503a97467mr5808973lji.8.1700509622610; Mon, 20 Nov
- 2023 11:47:02 -0800 (PST)
+        Mon, 20 Nov 2023 14:56:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC39AA;
+        Mon, 20 Nov 2023 11:56:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700510185; x=1732046185;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zb7vywnY5jyenAxj9sbtLt+bBMaQnCZHqRqsqRdZ/10=;
+  b=EUDN8S+caPxE19UesPiGzk6D3eROcb+BsscwTMzynqbDsarMWljf3mZH
+   2KahXLKtGWhw4JSuvJoGY1KZOSbgeYqmNg1g5uOm5W3sGEInSkjwsw7xZ
+   i6Xtty00VFnLFrtVabqqcDYPtp81yvKFJmlYkLXKiwYBfKHiyOXUiVrQ3
+   g5Y/TQ27YDWwM8MEvBvj+0i6BbMqwdm8Ab5vZu9P0dldtVzsVlnDkefFL
+   Y1/E/fgDDrM+wHSLiSpL8LfgTxwmCuu/0wdC603qSHeBuxHha4QVcsvb2
+   ydtmnFBd/cuOSkJR2bk7giRKXKYXq5+2qLRptSiGi/B8VV5F+/xmQJyrW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="395622098"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="395622098"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 11:56:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="801298590"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="801298590"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 20 Nov 2023 11:56:05 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 184E813A; Mon, 20 Nov 2023 21:48:05 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] pinctrl: nuvoton: Convert to use struct pingroup and PINCTRL_PINGROUP()
+Date:   Mon, 20 Nov 2023 21:48:02 +0200
+Message-ID: <20231120194802.1675239-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-In-Reply-To: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Mon, 20 Nov 2023 11:46:49 -0800
-Message-ID: <CAFhGd8qLEoJGuur8KVO8=ijUF_O_XgcaABwTp+aZ2W6bxmfy5Q@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
-To:     ndesaulniers@google.com
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Bill Wendling <morbo@google.com>, Tom Rix <trix@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 11:24=E2=80=AFAM <ndesaulniers@google.com> wrote:
->
-> As discussed at the ClangBuiltLinux '23 meetup (co-located with Linux Plu=
-mbers
-> Conf '23), I'll be taking a step back from kernel work to focus on my gro=
-wing
-> family and helping Google figure out its libc story. So I think it's time=
- to
-> formally hand over the reigns to my co-maintainer Nathan.
->
-> As such, remove myself from reviewer for:
-> - CLANG CONTROL FLOW INTEGRITY SUPPORT
-> - COMPILER ATTRIBUTES
-> - KERNEL BUILD
->
-> For CLANG/LLVM BUILD SUPPORT I'm bumping myself down from maintainer to
-> reviewer, adding Bill and Justin, and removing Tom (Tom and I confirmed t=
-his
-> via private email; thanks for the work done Tom, ++beers_owed).
->
-> It has been my pleasure to work with everyone to improve the toolchain
-> portability of the Linux kernel, and to help bring LLVM to the table as a
-> competitor. The work here is not done.  I have a few last LLVM patches in=
- the
-> works to improve stack usage of clang which has been our longest standing=
- open
-> issue (getting "rm" inline asm constraints to DTRT is part of that). But
-> looking back I'm incredibly proud of where we are to today relative to wh=
-ere we
-> were when we started the ClangBuiltLinux journey, and am confident that t=
-he
-> team and processes we have put in place will continue to be successful. I
-> continue to believe that a rising tide will lift all boats.
->
-> I identify first and foremost as a Linux kernel developer, and an LLVM de=
-v
-> second. May it be a cold day in hell when that changes.
->
-> Wake me when you need me.
->
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  MAINTAINERS | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 482d428472e7..1e6692697167 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5076,7 +5076,6 @@ CLANG CONTROL FLOW INTEGRITY SUPPORT
->  M:     Sami Tolvanen <samitolvanen@google.com>
->  M:     Kees Cook <keescook@chromium.org>
->  R:     Nathan Chancellor <nathan@kernel.org>
-> -R:     Nick Desaulniers <ndesaulniers@google.com>
->  L:     llvm@lists.linux.dev
->  S:     Supported
->  B:     https://github.com/ClangBuiltLinux/linux/issues
-> @@ -5091,8 +5090,9 @@ F:        .clang-format
->
->  CLANG/LLVM BUILD SUPPORT
->  M:     Nathan Chancellor <nathan@kernel.org>
-> -M:     Nick Desaulniers <ndesaulniers@google.com>
-> -R:     Tom Rix <trix@redhat.com>
-> +R:     Nick Desaulniers <ndesaulniers@google.com>
-> +R:     Bill Wendling <morbo@google.com>
-> +R:     Justin Stitt <justinstitt@google.com>
->  L:     llvm@lists.linux.dev
->  S:     Supported
->  W:     https://clangbuiltlinux.github.io/
-> @@ -5242,7 +5242,6 @@ F:        drivers/platform/x86/compal-laptop.c
->
->  COMPILER ATTRIBUTES
->  M:     Miguel Ojeda <ojeda@kernel.org>
-> -R:     Nick Desaulniers <ndesaulniers@google.com>
->  S:     Maintained
->  F:     include/linux/compiler_attributes.h
->
-> @@ -11516,7 +11515,6 @@ F:      fs/autofs/
->  KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
->  M:     Masahiro Yamada <masahiroy@kernel.org>
->  R:     Nathan Chancellor <nathan@kernel.org>
-> -R:     Nick Desaulniers <ndesaulniers@google.com>
->  R:     Nicolas Schier <nicolas@fjasle.eu>
->  L:     linux-kbuild@vger.kernel.org
->  S:     Maintained
->
-> ---
-> base-commit: 6bc40e44f1ddef16a787f3501b97f1fff909177c
-> change-id: 20231117-maintainers-88eac4c024a1
->
-> Best regards,
-> --
-> Nick Desaulniers <ndesaulniers@google.com>
->
+The pin control header provides struct pingroup and PINCTRL_PINGROUP() macro.
+Utilize them instead of open coded variants in the driver.
 
-Thanks for all the hard work Nick! The ClangBuiltLinux project wouldn't be
-where it is today without your contributions and leadership.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Justin
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+index 0cff44b07b29..4589900244c7 100644
+--- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+@@ -474,9 +474,8 @@ enum {
+ #undef WPCM450_GRP
+ };
+ 
+-static struct group_desc wpcm450_groups[] = {
+-#define WPCM450_GRP(x) { .name = #x, .pins = x ## _pins, \
+-			.num_pins = ARRAY_SIZE(x ## _pins) }
++static struct pingroup wpcm450_groups[] = {
++#define WPCM450_GRP(x) PINCTRL_PINGROUP(#x, x ## _pins, ARRAY_SIZE(x ## _pins))
+ 	WPCM450_GRPS
+ #undef WPCM450_GRP
+ };
+@@ -852,7 +851,7 @@ static int wpcm450_get_group_pins(struct pinctrl_dev *pctldev,
+ 				  const unsigned int **pins,
+ 				  unsigned int *npins)
+ {
+-	*npins = wpcm450_groups[selector].num_pins;
++	*npins = wpcm450_groups[selector].npins;
+ 	*pins  = wpcm450_groups[selector].pins;
+ 
+ 	return 0;
+@@ -901,7 +900,7 @@ static int wpcm450_pinmux_set_mux(struct pinctrl_dev *pctldev,
+ 	struct wpcm450_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+ 
+ 	wpcm450_setfunc(pctrl->gcr_regmap, wpcm450_groups[group].pins,
+-			wpcm450_groups[group].num_pins, function);
++			wpcm450_groups[group].npins, function);
+ 
+ 	return 0;
+ }
+-- 
+2.43.0.rc1.1.gbec44491f096
+
