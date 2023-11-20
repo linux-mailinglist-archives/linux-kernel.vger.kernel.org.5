@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5E87F1192
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413977F1198
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbjKTLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S233413AbjKTLQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233431AbjKTLPl (ORCPT
+        with ESMTP id S233406AbjKTLQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:15:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DCF1AD;
-        Mon, 20 Nov 2023 03:15:34 -0800 (PST)
+        Mon, 20 Nov 2023 06:16:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD62FE8;
+        Mon, 20 Nov 2023 03:15:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700478935; x=1732014935;
+  t=1700478947; x=1732014947;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tVN/FhwY6NyA0nXfkYCvWVI9YZaBRRB4ulMKfSyM56g=;
-  b=OzNnbW3A7f78BjWGZgZmIXVoA/ZyE7nlZUPNaBjmd8+t2VdwOAUxKK1M
-   5ienRbiL+U2BSC6uHrB7kQmz7mnZes+heRPmXWShg7poNOOhYFeeoUxMq
-   ZQWdGg0OlD8Abywsc+vOtbFiYArILck9PXIdxLiLUEbUfbp9FYFhDgW3V
-   AUKfxFq10Xjqbsm9RGzjlPy+pkA+F53VdyL/E6UVpHHAMLbZIQMOVHLk7
-   4E+2iiTYCFk3YPLGdnLDO4/gEVYM0esWQuaMEFKZ2pz8Hf4wPuod60CrB
-   aGHIYtxCLghWFFww3OqE8gt/MT9x6yFMvM1Jfp2PvokRJf4akYndhEQnt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="13151924"
+  bh=+2nuB8c4RaFldr1vBKKlrQfzunfFSpEE8iiNB8l6YAk=;
+  b=ZwLjWhsSCCm7vo+5LJpeGRztvLCi6lUEfrRGVvG8+DCGpTiwUgPE51fx
+   f8hcnVv815vyviokK1hbi5SkJyW7rk5O8Jyko8EC5a5M7peNw9YOnOI01
+   Vwi1p4aCXNQoTybWWNIEFVv6OFczCf/Gf502G2gh1IfZhtXZ+ZL6P8aOA
+   hetJlqa/8VW+McxFzNbHJuydotEIaXmsMdcwaRGjXtf3oclDd4s69uvK7
+   +U9ytRamH0J/uDlUy5/vbS76T6AhnRuTSTdo94EPkj30vTwFBmelAGF1k
+   xg/L8gKtGcT0KaNVH8W74xicpzEaNkuHSDgmt5SLq1L4BeOgrFkbgWva2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="388737113"
 X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="13151924"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:15:34 -0800
+   d="scan'208";a="388737113"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:15:47 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="832238252"
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="759761255"
 X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="832238252"
+   d="scan'208";a="759761255"
 Received: from sc9itsct4906.amr.corp.intel.com (HELO localhost) ([10.249.46.107])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:15:30 -0800
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:15:39 -0800
 From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 To:     linux-kselftest@vger.kernel.org,
         Reinette Chatre <reinette.chatre@intel.com>,
@@ -49,156 +49,93 @@ To:     linux-kselftest@vger.kernel.org,
         Fenghua Yu <fenghua.yu@intel.com>
 Cc:     linux-kernel@vger.kernel.org,
         =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v2 12/26] selftests/resctrl: Consolidate naming of perf event related things
-Date:   Mon, 20 Nov 2023 13:13:26 +0200
-Message-Id: <20231120111340.7805-13-ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 13/26] selftests/resctrl: Improve perf init
+Date:   Mon, 20 Nov 2023 13:13:27 +0200
+Message-Id: <20231120111340.7805-14-ilpo.jarvinen@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
 References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Naming for perf event related functions, types, and variables is
-currently inconsistent.
+struct perf_event_attr initialization is spread into
+perf_event_initialize() and perf_event_attr_initialize() and setting
+->config is hardcoded by the deepest level.
 
-Make struct read_format and all functions related to perf events start
-with "perf_". Adjust variable names towards the same direction but use
-shorter names for variables where appropriate (pe prefix).
+perf_event_attr init belongs to perf_event_attr_initialize() so move it
+entirely there. Rename the other function
+perf_event_initialized_read_format().
+
+Call each init function directly from the test as they will take
+different parameters (especially true after the perf related global
+variables are moved to local variables).
 
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
- tools/testing/selftests/resctrl/cache.c | 42 ++++++++++++-------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ tools/testing/selftests/resctrl/cache.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
 diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-index aea4f54d32bd..52d37d1c380f 100644
+index 52d37d1c380f..315f30f23371 100644
 --- a/tools/testing/selftests/resctrl/cache.c
 +++ b/tools/testing/selftests/resctrl/cache.c
-@@ -3,7 +3,7 @@
- #include <stdint.h>
- #include "resctrl.h"
- 
--struct read_format {
-+struct perf_event_read {
- 	__u64 nr;			/* The number of events */
- 	struct {
- 		__u64 value;		/* The value of the event */
-@@ -11,11 +11,11 @@ struct read_format {
- };
- 
- static struct perf_event_attr pea_llc_miss;
--static struct read_format rf_cqm;
--static int fd_lm;
-+static struct perf_event_read pe_read;
-+static int pe_fd;
+@@ -15,8 +15,9 @@ static struct perf_event_read pe_read;
+ static int pe_fd;
  char llc_occup_path[1024];
  
--static void initialize_perf_event_attr(void)
-+static void perf_event_attr_initialize(void)
+-static void perf_event_attr_initialize(void)
++static void perf_event_attr_initialize(__u64 config)
  {
++	memset(&pea_llc_miss, 0, sizeof(struct perf_event_attr));
  	pea_llc_miss.type = PERF_TYPE_HARDWARE;
  	pea_llc_miss.size = sizeof(struct perf_event_attr);
-@@ -30,34 +30,34 @@ static void initialize_perf_event_attr(void)
+ 	pea_llc_miss.read_format = PERF_FORMAT_GROUP;
+@@ -27,6 +28,7 @@ static void perf_event_attr_initialize(void)
+ 	pea_llc_miss.inherit = 1;
+ 	pea_llc_miss.exclude_guest = 1;
+ 	pea_llc_miss.disabled = 1;
++	pea_llc_miss.config = config;
  }
  
  /* Start counters to log values */
--static void ioctl_perf_event_ioc_reset_enable(void)
-+static void perf_event_reset_enable(void)
+@@ -36,16 +38,9 @@ static void perf_event_reset_enable(void)
+ 	ioctl(pe_fd, PERF_EVENT_IOC_ENABLE, 0);
+ }
+ 
+-static void perf_event_initialize(void)
++static void perf_event_initialize_read_format(void)
  {
--	ioctl(fd_lm, PERF_EVENT_IOC_RESET, 0);
--	ioctl(fd_lm, PERF_EVENT_IOC_ENABLE, 0);
-+	ioctl(pe_fd, PERF_EVENT_IOC_RESET, 0);
-+	ioctl(pe_fd, PERF_EVENT_IOC_ENABLE, 0);
+-	memset(&pea_llc_miss, 0, sizeof(struct perf_event_attr));
+ 	memset(&pe_read, 0, sizeof(struct perf_event_read));
+-
+-	/* Initialize perf_event_attr structures for HW_CACHE_MISSES */
+-	perf_event_attr_initialize();
+-
+-	pea_llc_miss.config = PERF_COUNT_HW_CACHE_MISSES;
+-
+ 	pe_read.nr = 1;
  }
  
--static void initialize_llc_perf(void)
-+static void perf_event_initialize(void)
- {
- 	memset(&pea_llc_miss, 0, sizeof(struct perf_event_attr));
--	memset(&rf_cqm, 0, sizeof(struct read_format));
-+	memset(&pe_read, 0, sizeof(struct perf_event_read));
- 
- 	/* Initialize perf_event_attr structures for HW_CACHE_MISSES */
--	initialize_perf_event_attr();
-+	perf_event_attr_initialize();
- 
- 	pea_llc_miss.config = PERF_COUNT_HW_CACHE_MISSES;
- 
--	rf_cqm.nr = 1;
-+	pe_read.nr = 1;
- }
- 
--static int reset_enable_llc_perf(pid_t pid, int cpu_no)
-+static int perf_open(pid_t pid, int cpu_no)
- {
--	fd_lm = perf_event_open(&pea_llc_miss, pid, cpu_no, -1, PERF_FLAG_FD_CLOEXEC);
--	if (fd_lm == -1) {
-+	pe_fd = perf_event_open(&pea_llc_miss, pid, cpu_no, -1, PERF_FLAG_FD_CLOEXEC);
-+	if (pe_fd == -1) {
- 		perror("Error opening leader");
- 		return -1;
- 	}
- 
--	ioctl_perf_event_ioc_reset_enable();
-+	perf_event_reset_enable();
- 
- 	return 0;
- }
-@@ -141,15 +141,15 @@ static int perf_event_measure(const char *filename, int bm_pid)
- 	int ret;
- 
- 	/* Stop counters after one span to get miss rate */
--	ioctl(fd_lm, PERF_EVENT_IOC_DISABLE, 0);
-+	ioctl(pe_fd, PERF_EVENT_IOC_DISABLE, 0);
- 
--	ret = read(fd_lm, &rf_cqm, sizeof(struct read_format));
-+	ret = read(pe_fd, &pe_read, sizeof(struct perf_event_read));
- 	if (ret == -1) {
- 		perror("Could not get perf value");
- 		return -1;
- 	}
- 
--	return print_results_cache(filename, bm_pid, rf_cqm.values[0].value);
-+	return print_results_cache(filename, bm_pid, pe_read.values[0].value);
- }
- 
- /*
-@@ -205,7 +205,7 @@ int cat_val(struct resctrl_val_param *param, size_t span)
+@@ -205,7 +200,8 @@ int cat_val(struct resctrl_val_param *param, size_t span)
  	if (ret)
  		return ret;
  
--	initialize_llc_perf();
-+	perf_event_initialize();
+-	perf_event_initialize();
++	perf_event_attr_initialize(PERF_COUNT_HW_CACHE_MISSES);
++	perf_event_initialize_read_format();
  
  	/* Test runs until the callback setup() tells the test to stop. */
  	while (1) {
-@@ -216,7 +216,7 @@ int cat_val(struct resctrl_val_param *param, size_t span)
- 		}
- 		if (ret < 0)
- 			break;
--		ret = reset_enable_llc_perf(bm_pid, param->cpu_no);
-+		ret = perf_open(bm_pid, param->cpu_no);
- 		if (ret)
- 			break;
- 
-@@ -235,7 +235,7 @@ int cat_val(struct resctrl_val_param *param, size_t span)
- 	return ret;
- 
- pe_close:
--	close(fd_lm);
-+	close(pe_fd);
- 	return ret;
- }
- 
 -- 
 2.30.2
 
