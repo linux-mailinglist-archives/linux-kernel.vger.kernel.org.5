@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D40C7F218D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2324A7F219D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbjKTXoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47684 "EHLO
+        id S232260AbjKTXub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:50:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjKTXoM (ORCPT
+        with ESMTP id S229492AbjKTXua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:44:12 -0500
+        Mon, 20 Nov 2023 18:50:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BE3C3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:44:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1359C433C7;
-        Mon, 20 Nov 2023 23:44:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700523848;
-        bh=Kd8MO4g1L5NTe6VF4FsH/eaduBF2fDgRgJuS7ZGu1iU=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=Ufd0rVmR5y3R7QnornCtBcuirGAcrKKp42f3eDqcYIB1XonOVDSdvIw6LrO4cW2ar
-         0NpeKZXlbxFXQqrGmG2KBLfCq9/M0n7dN8/1Dtc2JLwtubEj0mLNR6/jxRpyhuF9OR
-         R9SxEJt5l1+Cr/VOEqAnN4vRCKbhLjltSO2E7Lx316gDOrTKyZ+sZIIToUVsG2vuio
-         h5np78o+4dKBYHNZZFzQUkUCxZc3+p69vTiHJ7Y395UkGtLmJKQr88G0oKHWwoiIGO
-         a5mrFDA/e6gvjX7JVIVBvk4BTRlex4VESUTbpYKwKmoz/14KtZRi7Jb49dbEDDyqRf
-         ukRiua9v/JZeg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 21 Nov 2023 01:44:03 +0200
-Message-Id: <CX41E533XH4S.1B6IZCU0PKPL2@kernel.org>
-Cc:     <keyrings@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>
-Subject: Re: [RESEND PATCH v2] sign-file: Fix incorrect return values check
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Yusong Gao" <a869920004@gmail.com>, <davem@davemloft.net>,
-        <dhowells@redhat.com>, <dwmw2@infradead.org>,
-        <zohar@linux.ibm.com>, <herbert@gondor.apana.org.au>,
-        <lists@sapience.com>, <dimitri.ledkov@canonical.com>
-X-Mailer: aerc 0.15.2
-References: <20231120013359.814059-1-a869920004@gmail.com>
-In-Reply-To: <20231120013359.814059-1-a869920004@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD30FBE
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:50:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC45C433C8;
+        Mon, 20 Nov 2023 23:50:25 +0000 (UTC)
+Date:   Mon, 20 Nov 2023 18:50:40 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [for-linus][PATCH 0/2] eventfs: Fixes for v6.7-rc2
+Message-ID: <20231120185040.50a2a235@gandalf.local.home>
+In-Reply-To: <20231120231553.374392736@goodmis.org>
+References: <20231120231553.374392736@goodmis.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Nov 20, 2023 at 3:33 AM EET, Yusong Gao wrote:
-> There are some wrong return values check in sign-file when call OpenSSL
-> API. For example the CMS_final() return 1 for success or 0 for failure.
+On Mon, 20 Nov 2023 18:15:53 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Why not make it a closed sentence and list the functions that need to be
-changed?
+> A couple of fixes to eventfs:
+> 
+> - With the usage of simple_recursive_remove() recommended by Al Viro,
+>   the code should not be calling "d_invalidate()" itself. Doing so
+>   is causing crashes. The code was calling d_invalidate() on the race
+>   of trying to look up a file while the parent was being deleted.
+>   This was detected, and the added dentry was having d_invalidate() called
+>   on it, but the deletion of the directory was also calling d_invalidate()
+>   on that same dentry.
+> 
+> - A fix to not free the eventfs_inode (ei) until the last dput() was called
+>   on its ei->dentry made the ei->dentry exist even after it was marked
+>   for free by setting the ei->is_freed. But code elsewhere still was
+>   checking if ei->dentry was NULL if ei->is_freed is set and would
+>   trigger WARN_ON if that was the case. That's no longer true and there
+>   should not be any warnings when it is true.
+> 
+> Steven Rostedt (Google) (2):
+>       eventfs: Remove expectation that ei->is_freed means ei->dentry == NULL
+>       eventfs: Do not invalidate dentry in create_file/dir_dentry()
+> 
+> ----
+>  fs/tracefs/event_inode.c | 41 ++++++++++++++++++-----------------------
+>  1 file changed, 18 insertions(+), 23 deletions(-)
 
-> The ERR() check cond is wrong because of the program only check the
-> return value is < 0 instead of <=3D 0.
->
+Oops, used the "for-linus" script when this was suppose to be just a normal
+"PATCH" script :-p
 
-Lacking Fixes tag(s). See: ttps://www.kernel.org/doc/html/latest/process/su=
-bmitting-patches.html
-
-> Link:
-> https://www.openssl.org/docs/manmaster/man3/CMS_final.html
-> https://www.openssl.org/docs/manmaster/man3/i2d_CMS_bio_stream.html
-> https://www.openssl.org/docs/manmaster/man3/i2d_PKCS7_bio.html
-> https://www.openssl.org/docs/manmaster/man3/BIO_free.html
-
-Replace with
-
-Link: https://www.openssl.org/docs/manmaster/man3/
-
-BR, Jarkko
+-- Steve
