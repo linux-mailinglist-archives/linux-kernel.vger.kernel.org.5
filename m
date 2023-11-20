@@ -2,357 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3677F0E5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E657F0E60
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjKTJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
+        id S232212AbjKTJEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232065AbjKTJEU (ORCPT
+        with ESMTP id S232065AbjKTJEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:04:20 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE7FA7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:04:16 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso8072615e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:04:16 -0800 (PST)
+        Mon, 20 Nov 2023 04:04:51 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15710B8;
+        Mon, 20 Nov 2023 01:04:48 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc2fc281cdso27642335ad.0;
+        Mon, 20 Nov 2023 01:04:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700471054; x=1701075854; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dc9/+nScpB7VGtfg0Joktxx3OBTdnZc7jGwJ4OZOLc8=;
-        b=yZwjRXm7Htgkp/lS7KpiwFsTTp02reI4guoAmGqOHKiGYS1tl5Gu3r0T7qi1QZ5rsq
-         lkjckl8EMsMaR+s4T9TQT9445GBE/soXw8xpdERFQ+4MDG0qcBgi1JOhhT7x4zRp1VJ1
-         qoNTXqYj8oK/HbpRRsPEJVWb+HEiZOnjlLd4tCG9G9oEHdRM8Lb7Mv3ThHLc4ARZ+yXp
-         eo9SWrH/wvWN26TmVz/tis9f5Zy+Cb5A+qjbX8epbhze5j9/ZGKncskUqByuFQuVQEQy
-         bI6SOJ3XEi+zE3u8My2Lr1/c4AJ+aJa7dcbDA0rig9BO+rVimJTbWiC2M4PhsvXkHop6
-         ZeAQ==
+        d=gmail.com; s=20230601; t=1700471087; x=1701075887; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZP2pGqhjcW1cIuiHffLEE4yPgm+Ha/UDWGdnJ3PgW/s=;
+        b=Ev8B99GjGIsuGmff5qc49zbzz0fkIzeaum6u5sabqbLjo4PS376CPVco7UeUAdfatc
+         Su6goIfXBtEsytyhCX5kCbNxm7gqhUhBYKs9/SfgcJ5D/ZFct52aTFWGnA7xk7uQJFcG
+         kJVVFDGkFM/pt+BP3vAVGJOtAiMeLhW5E3PukNzPjEhp9tsZZd4V03M0ooU+tqR6yTwY
+         OUbzWn+gzCuwxGJXgTyzgNs6hNMabu8l7n0Ts9e2gxDg/BqJde+cG5mTfKGKbHTQax7W
+         oYuCLfYEwUsvWUUIzI/xiel4C8Cp8kUU+eU24aUzhEJ14TlBKFDsuAFI43ZVKaSlB+n8
+         KgrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700471054; x=1701075854;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dc9/+nScpB7VGtfg0Joktxx3OBTdnZc7jGwJ4OZOLc8=;
-        b=w6XAEWivDtM0IVsrakDVBKCJu4xHoDjqmJuvZWkpP18HmbKmlu3jiqLcPvkiq0OW7I
-         wqPzT1WLUmXgfXffq94V2VJ0YZQzZVuLvEAqSg7NWXVz+jYH1twUVkAghTzorJp82Gj5
-         ORWk8LlQMqKdzo2a4wKvZsnboK6WR6JKYV8x28twQ9GRJxr3Orfu7gASWJzEVnV5Ah/C
-         vhPRV9qXDj9wfey93gRWXaeHLeeBcOKcfvpH873zP/EmdzISB1enlImcOw0fXBuTsEUd
-         d8wv0iJWVOrJe760jfjC0EjRS2Vr9AMXbgngW3UcK2N8foORdRxNmEIShL5At2YNj/J8
-         CrDA==
-X-Gm-Message-State: AOJu0Yy/iorHelTUkSGc4jZv5GWt7u40G4iRu24MXjbLcuyOjZTix7HD
-        laGFp2TIia3D6XNwWuVsL8wmqw==
-X-Google-Smtp-Source: AGHT+IGQHbmRWLd+DyRnCIJYDmGKMzABC5lWmy0gqxtduSVtq9DPmfHMwhkrJ6yyhFMepEgEpXhzhQ==
-X-Received: by 2002:a05:600c:5490:b0:406:51a0:17ea with SMTP id iv16-20020a05600c549000b0040651a017eamr5770564wmb.10.1700471053293;
-        Mon, 20 Nov 2023 01:04:13 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:f04:f84b:d87d:1d06? ([2a01:e0a:982:cbb0:f04:f84b:d87d:1d06])
-        by smtp.gmail.com with ESMTPSA id bi27-20020a05600c3d9b00b004097881d5f0sm17075789wmb.29.2023.11.20.01.04.11
+        d=1e100.net; s=20230601; t=1700471087; x=1701075887;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZP2pGqhjcW1cIuiHffLEE4yPgm+Ha/UDWGdnJ3PgW/s=;
+        b=j4ElTqXdQApSRRe71hnRQyiYuFCA/E2zo/683zzRMsvkgb1KMxno8T35arIEImBx1T
+         cAt5AMFN5gXzXdUgMieZL+Gi3gwoVD6iJ2U/yODc+bOIPdHFg91Au6ec3AOai1ZMqWBA
+         f6Voct2KJyFA0ZgE3W2unsU8/xhj0Ix2VQb52D94VcxKnMHArW9KwCWSdWlVGHlqGYl/
+         Q6WRv1VwEuJ08Dgu3vUWlhBABwD8AWxy9QWz8fUApHfJI8X63bs2j6q6pXwN9Rj4n361
+         hAPbXkm+yUJiKPqjRqc4bPt/9nPh1P8VCv9TbFl4Va3uvNICDM4D+TaeHaRvPkPkL1N7
+         NnXw==
+X-Gm-Message-State: AOJu0YwRTU4/MCZm8R68Ua/jYSRcMUGSm49rWC8xD8VH4onRcI2HppUQ
+        Popf1KJyMmnMxK3WS+j9AShi3MgnPLYeOQ==
+X-Google-Smtp-Source: AGHT+IEUlQG5PpnhVHUcFkVZilyCsDB9tsc2mW+VYDfgwTm51ozkMKDsha1GzPMpCFZggdSBJCH9Jw==
+X-Received: by 2002:a17:902:d381:b0:1cc:5258:845c with SMTP id e1-20020a170902d38100b001cc5258845cmr4627042pld.57.1700471086948;
+        Mon, 20 Nov 2023 01:04:46 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170902c18400b001c9c47d6cb9sm2563398pld.99.2023.11.20.01.04.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 01:04:12 -0800 (PST)
-Message-ID: <947673a6-7f5a-463f-b960-21cbcdf1ae30@linaro.org>
-Date:   Mon, 20 Nov 2023 10:04:10 +0100
+        Mon, 20 Nov 2023 01:04:46 -0800 (PST)
+Message-ID: <8539e7cb-43d7-4191-bf55-6ac15b5e9e48@gmail.com>
+Date:   Mon, 20 Nov 2023 16:04:41 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US, fr
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Andrew Davis <afd@ti.com>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Device Mapper <dm-devel@lists.linux.dev>,
+        Linux ext4 <linux-ext4@vger.kernel.org>,
+        Linux RAID <linux-raid@vger.kernel.org>
+Cc:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Song Liu <song@kernel.org>,
+        Matthew Stapleton <matthew4196@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: fdatasync to a block device seems to block writes on unrelated
+ devices
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 09:40, Krzysztof Kozlowski wrote:
-> Document preferred coding style for Devicetree sources (DTS and DTSI),
-> to bring consistency among all (sub)architectures and ease in reviews.
-> 
-> Cc: Andrew Davis <afd@ti.com>
-> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Bjorn Andersson <andersson@kernel.org>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Michal Simek <michal.simek@amd.com>
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Cc: Nishanth Menon <nm@ti.com>
-> Cc: Olof Johansson <olof@lixom.net>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Merging idea: Rob/DT bindings
-> 
-> Changes in v2
-> =============
-> 1. Hopefully incorporate entire feedback from comments:
-> a. Fix \ { => / { (Rob)
-> b. Name: dts-coding-style (Rob)
-> c. Exceptions for ordering nodes by name for Renesas and pinctrl (Geert,
->     Konrad)
-> d. Ordering properties by common/vendor (Rob)
-> e. Array entries in <> (Rob)
-> 
-> 2. New chapter: Organizing DTSI and DTS
-> 
-> 3. Several grammar fixes (missing articles)
-> 
-> Cc: linux-rockchip@lists.infradead.org
-> Cc: linux-mediatek@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-amlogic@lists.infradead.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-arm-msm@vger.kernel.org
-> ---
->   .../devicetree/bindings/dts-coding-style.rst  | 163 ++++++++++++++++++
->   Documentation/devicetree/bindings/index.rst   |   1 +
->   2 files changed, 164 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
-> 
-> diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
-> new file mode 100644
-> index 000000000000..cc7e3b4d1b92
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dts-coding-style.rst
-> @@ -0,0 +1,163 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. _dtscodingstyle:
-> +
-> +=====================================
-> +Devicetree Sources (DTS) Coding Style
-> +=====================================
-> +
-> +When writing Devicetree Sources (DTS) please observe below guidelines.  They
-> +should be considered complementary to any rules expressed already in Devicetree
-> +Specification and dtc compiler (including W=1 and W=2 builds).
-> +
-> +Individual architectures and sub-architectures can add additional rules, making
-> +the style stricter.
-> +
-> +Naming and Valid Characters
-> +---------------------------
-> +
-> +1. Node and property names are allowed to use only:
-> +
-> +   * lowercase characters: [a-z]
-> +   * digits: [0-9]
-> +   * dash: -
-> +
-> +2. Labels are allowed to use only:
-> +
-> +   * lowercase characters: [a-z]
-> +   * digits: [0-9]
-> +   * underscore: _
-> +
-> +3. Unit addresses should use lowercase hex, without leading zeros (padding).
-> +
-> +4. Hex values in properties, e.g. "reg", should use lowercase hex.  The address
-> +   part can be padded with leading zeros.
-> +
-> +Example::
-> +
-> +	gpi_dma2: dma-controller@800000 {
-> +		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
-> +		reg = <0x0 0x00800000 0x0 0x60000>;
-> +	}
-> +
-> +Order of Nodes
-> +--------------
-> +
-> +1. Nodes within any bus, thus using unit addresses for children, shall be
-> +   ordered incrementally by unit address.
-> +   Alternatively for some sub-architectures, nodes of the same type can be
-> +   grouped together (e.g. all I2C controllers one after another even if this
-> +   breaks unit address ordering).
-> +
-> +2. Nodes without unit addresses should be ordered alpha-numerically by the node
-> +   name.  For a few types of nodes, they can be ordered by the main property
-> +   (e.g. pin configuration states ordered by value of "pins" property).
-> +
-> +3. When extending nodes in the board DTS via &label, the entries should be
-> +   ordered alpha-numerically.
-> +
-> +Example::
-> +
-> +	// SoC DTSI
-> +
-> +	/ {
-> +		cpus {
-> +			// ...
-> +		};
-> +
-> +		psci {
-> +			// ...
-> +		};
-> +
-> +		soc@ {
-> +			dma: dma-controller@10000 {
-> +				// ...
-> +			};
-> +
-> +			clk: clock-controller@80000 {
-> +				// ...
-> +			};
-> +		};
-> +	};
-> +
-> +	// Board DTS
-> +
-> +	&clk {
-> +		// ...
-> +	};
-> +
-> +	&dma {
-> +		// ...
-> +	};
-> +
-> +
-> +Order of Properties in Device Node
-> +----------------------------------
-> +
-> +Following order of properties in device nodes is preferred:
-> +
-> +1. compatible
-> +2. reg
-> +3. ranges
-> +4. Standard/common properties (defined by common bindings, e.g. without
-> +   vendor-prefixes)
-> +5. Vendor-specific properties
-> +6. status (if applicable)
-> +7. Child nodes, where each node is preceded with a blank line
-> +
-> +The "status" property is by default "okay", thus it can be omitted.
-> +
-> +Example::
-> +
-> +	// SoC DTSI
-> +
-> +	usb_1_hsphy: phy@88e3000 {
-> +		compatible = "qcom,sm8550-snps-eusb2-phy";
-> +		reg = <0x0 0x088e3000 0x0 0x154>;
-> +		#phy-cells = <0>;
-> +		resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
-> +		status = "disabled";
-> +	};
-> +
-> +	// Board DTS
-> +
-> +	&usb_1_hsphy {
-> +		clocks = <&tcsr TCSR_USB2_CLKREF_EN>;
-> +		clock-names = "ref";
-> +		status = "okay";
-> +	};
-> +
-> +
-> +Indentation
-> +-----------
-> +
-> +1. Use indentation according to :ref:`codingstyle`.
-> +2. For arrays spanning across lines, it is preferred to align the continued
-> +   entries with opening < from the first line.
-> +3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
-> +   should be enclosed in <>.
-> +
-> +Example::
-> +
-> +	thermal-sensor@c271000 {
-> +		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
-> +		reg = <0x0 0x0c271000 0x0 0x1000>,
-> +		      <0x0 0x0c222000 0x0 0x1000>;
-> +	};
-> +
-> +Organizing DTSI and DTS
-> +-----------------------
-> +
-> +The DTSI and DTS files should be organized in a way representing the common
-> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
-> +and DTS files into several files:
-> +
-> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
-> +   on the SoC).
-> +2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
-> +   entire System-on-Module).
-> +3. DTS representing the board.
-> +
-> +Hardware components which are present on the board should be placed in the
-> +board DTS, not in the SoC or SoM DTSI.  A partial exception is a common
-> +external reference SoC-input clock, which could be coded as a fixed-clock in
-> +the SoC DTSI with its frequency provided by each board DTS.
-> diff --git a/Documentation/devicetree/bindings/index.rst b/Documentation/devicetree/bindings/index.rst
-> index d9002a3a0abb..cc1fbdc05657 100644
-> --- a/Documentation/devicetree/bindings/index.rst
-> +++ b/Documentation/devicetree/bindings/index.rst
-> @@ -4,6 +4,7 @@
->      :maxdepth: 1
->   
->      ABI
-> +   dts-coding-style
->      writing-bindings
->      writing-schema
->      submitting-patches
+Hi,
 
-Please add my:
-Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+I notice a bug report on Bugzilla [1]. Quoting from it:
 
-I agree with everything in this document and it's a huge step in the right direction.
+> I was running nwipe on a failing hard drive that was running very slow and while nwipe was running fdatasync it seemed to cause delays for the filesystems on the other drives.  The other drives are attached to the same onboard ahci sata adapter if that is important.  After stopping nwipe, performance returned to normal
+> 
+> The system is using ext4 filesystems on top of LVM on top of Linux RAID6 and the kernel is 6.1.53.
+> 
+> Is this a design problem with fdatasync or could it be something else?
+> 
+> Nov 18 08:10:27 server kernel: sysrq: Show Blocked State
+> Nov 18 08:10:27 server kernel: task:nwipe           state:D stack:0     pid:61181 ppid:42337  flags:0x00004000
+> Nov 18 08:10:27 server kernel: Call Trace:
+> Nov 18 08:10:27 server kernel:  <TASK>
+> Nov 18 08:10:27 server kernel:  __schedule+0x2f8/0x870
+> Nov 18 08:10:27 server kernel:  schedule+0x55/0xc0
+> Nov 18 08:10:27 server kernel:  io_schedule+0x3d/0x60
+> Nov 18 08:10:27 server kernel:  folio_wait_bit_common+0x12c/0x300
+> Nov 18 08:10:27 server kernel:  ? filemap_invalidate_unlock_two+0x30/0x30
+> Nov 18 08:10:27 server kernel:  write_cache_pages+0x1c6/0x460
+> Nov 18 08:10:27 server kernel:  ? dirty_background_bytes_handler+0x20/0x20
+> Nov 18 08:10:27 server kernel:  generic_writepages+0x76/0xa0
+> Nov 18 08:10:27 server kernel:  do_writepages+0xbb/0x1c0
+> Nov 18 08:10:27 server kernel:  filemap_fdatawrite_wbc+0x56/0x80
+> Nov 18 08:10:27 server kernel:  __filemap_fdatawrite_range+0x53/0x70
+> Nov 18 08:10:27 server kernel:  file_write_and_wait_range+0x3c/0x90
+> Nov 18 08:10:27 server kernel:  blkdev_fsync+0xe/0x30
+> Nov 18 08:10:27 server kernel:  __x64_sys_fdatasync+0x46/0x80
+> Nov 18 08:10:27 server kernel:  do_syscall_64+0x3a/0xb0
+> Nov 18 08:10:27 server kernel:  entry_SYSCALL_64_after_hwframe+0x5e/0xc8
+> Nov 18 08:10:27 server kernel: RIP: 0033:0x7f02a735f00b
+> Nov 18 08:10:27 server kernel: RSP: 002b:00007f02a6858c80 EFLAGS: 00000293 ORIG_RAX: 000000000000004b
+> Nov 18 08:10:27 server kernel: RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f02a735f00b
+> Nov 18 08:10:27 server kernel: RDX: 0000000000000002 RSI: 00007f02a6858d80 RDI: 0000000000000004
+> Nov 18 08:10:27 server kernel: RBP: 00000118badb6000 R08: 0000000000000000 R09: 00007f02a0000080
+> Nov 18 08:10:27 server kernel: R10: 0000000000001000 R11: 0000000000000293 R12: 00000000000186a0
+> Nov 18 08:10:27 server kernel: R13: 00000000000186a0 R14: 0000000000001000 R15: 000055b7a0775850
+> Nov 18 08:10:27 server kernel:  </TASK>
+> Nov 18 08:10:27 server kernel: task:kworker/u64:4   state:D stack:0     pid:7842  ppid:2      flags:0x00004000
+> Nov 18 08:10:27 server kernel: Workqueue: writeback wb_workfn (flush-8:0)
+> Nov 18 08:10:27 server kernel: Call Trace:
+> Nov 18 08:10:27 server kernel:  <TASK>
+> Nov 18 08:10:27 server kernel:  __schedule+0x2f8/0x870
+> Nov 18 08:10:27 server kernel:  schedule+0x55/0xc0
+> Nov 18 08:10:27 server kernel:  io_schedule+0x3d/0x60
+> Nov 18 08:10:27 server kernel:  blk_mq_get_tag+0x115/0x2a0
+> Nov 18 08:10:27 server kernel:  ? destroy_sched_domains_rcu+0x20/0x20
+> Nov 18 08:10:27 server kernel:  __blk_mq_alloc_requests+0x18c/0x2e0
+> Nov 18 08:10:27 server kernel:  blk_mq_submit_bio+0x3dc/0x590
+> Nov 18 08:10:27 server kernel:  __submit_bio+0xec/0x170
+> Nov 18 08:10:27 server kernel:  submit_bio_noacct_nocheck+0x2bd/0x2f0
+> Nov 18 08:10:27 server kernel:  ? submit_bio_noacct+0x68/0x440
+> Nov 18 08:10:27 server kernel:  __block_write_full_page+0x1ef/0x4c0
+> Nov 18 08:10:27 server kernel:  ? bh_uptodate_or_lock+0x70/0x70
+> Nov 18 08:10:27 server kernel:  ? blkdev_write_begin+0x20/0x20
+> Nov 18 08:10:27 server kernel:  __writepage+0x14/0x60
+> Nov 18 08:10:27 server kernel:  write_cache_pages+0x172/0x460
+> Nov 18 08:10:27 server kernel:  ? dirty_background_bytes_handler+0x20/0x20
+> Nov 18 08:10:27 server kernel:  generic_writepages+0x76/0xa0
+> Nov 18 08:10:27 server kernel:  do_writepages+0xbb/0x1c0
+> Nov 18 08:10:27 server kernel:  ? __wb_calc_thresh+0x46/0x130
+> Nov 18 08:10:27 server kernel:  __writeback_single_inode+0x30/0x1a0
+> Nov 18 08:10:27 server kernel:  writeback_sb_inodes+0x205/0x4a0
+> Nov 18 08:10:27 server kernel:  __writeback_inodes_wb+0x47/0xe0
+> Nov 18 08:10:27 server kernel:  wb_writeback.isra.0+0x189/0x1d0
+> Nov 18 08:10:27 server kernel:  wb_workfn+0x1d0/0x3a0
+> Nov 18 08:10:27 server kernel:  process_one_work+0x1e5/0x320
+> Nov 18 08:10:27 server kernel:  worker_thread+0x45/0x3a0
+> Nov 18 08:10:27 server kernel:  ? rescuer_thread+0x390/0x390
+> Nov 18 08:10:27 server kernel:  kthread+0xd5/0x100
+> Nov 18 08:10:27 server kernel:  ? kthread_complete_and_exit+0x20/0x20
+> Nov 18 08:10:27 server kernel:  ret_from_fork+0x22/0x30
+> Nov 18 08:10:27 server kernel:  </TASK>
+> Nov 18 08:10:27 server kernel: task:rm              state:D stack:0     pid:54615 ppid:54597  flags:0x00004000
+> Nov 18 08:10:27 server kernel: Call Trace:
+> Nov 18 08:10:27 server kernel:  <TASK>
+> Nov 18 08:10:27 server kernel:  __schedule+0x2f8/0x870
+> Nov 18 08:10:27 server kernel:  schedule+0x55/0xc0
+> Nov 18 08:10:27 server kernel:  io_schedule+0x3d/0x60
+> Nov 18 08:10:27 server kernel:  bit_wait_io+0x8/0x50
+> Nov 18 08:10:27 server kernel:  __wait_on_bit+0x46/0x100
+> Nov 18 08:10:27 server kernel:  ? bit_wait+0x50/0x50
+> Nov 18 08:10:27 server kernel:  out_of_line_wait_on_bit+0x8c/0xb0
+> Nov 18 08:10:27 server kernel:  ? sugov_start+0x140/0x140
+> Nov 18 08:10:27 server kernel:  ext4_read_bh+0x6e/0x80
+> Nov 18 08:10:27 server kernel:  ext4_bread+0x45/0x60
+> Nov 18 08:10:27 server kernel:  __ext4_read_dirblock+0x4d/0x330
+> Nov 18 08:10:27 server kernel:  htree_dirblock_to_tree+0xa7/0x370
+> Nov 18 08:10:27 server kernel:  ? path_lookupat+0x92/0x190
+> Nov 18 08:10:27 server kernel:  ? filename_lookup+0xdf/0x1e0
+> Nov 18 08:10:27 server kernel:  ext4_htree_fill_tree+0x108/0x3c0
+> Nov 18 08:10:27 server kernel:  ext4_readdir+0x725/0xb40
+> Nov 18 08:10:27 server kernel:  iterate_dir+0x16a/0x1b0
+> Nov 18 08:10:27 server kernel:  __x64_sys_getdents64+0x7f/0x120
+> Nov 18 08:10:27 server kernel:  ? compat_filldir+0x180/0x180
+> Nov 18 08:10:27 server kernel:  do_syscall_64+0x3a/0xb0
+> Nov 18 08:10:27 server kernel:  entry_SYSCALL_64_after_hwframe+0x5e/0xc8
+> Nov 18 08:10:27 server kernel: RIP: 0033:0x7f8e32834897
+> Nov 18 08:10:27 server kernel: RSP: 002b:00007fffa3fb78c8 EFLAGS: 00000293 ORIG_RAX: 00000000000000d9
+> Nov 18 08:10:27 server kernel: RAX: ffffffffffffffda RBX: 0000558d8c4f8a70 RCX: 00007f8e32834897
+> Nov 18 08:10:27 server kernel: RDX: 0000000000008000 RSI: 0000558d8c4f8aa0 RDI: 0000000000000004
+> Nov 18 08:10:27 server kernel: RBP: 0000558d8c4f8aa0 R08: 0000000000000030 R09: 00007f8e3292da60
+> Nov 18 08:10:27 server kernel: R10: 00007f8e3292e140 R11: 0000000000000293 R12: ffffffffffffff88
+> Nov 18 08:10:27 server kernel: R13: 0000558d8c4f8a74 R14: 0000000000000000 R15: 0000558d8c503c78
+> Nov 18 08:10:27 server kernel:  </TASK>
 
-Thanks,
-Neil
+And then ...
+
+> Also, I was running badblocks -b 4096 -w -s -v on the failing hard drive for a few days before trying nwipe and it didn't seem to be causing slowdowns on the server and the man page for badblocks says it uses Direct I/O by default.  I decided to try nwipe as it provides the option disable read verifying.
+> 
+> I could probably try removing fdatasync from nwipe or modifying it to use Direct I/O, but I haven't done that yet.
+
+See Bugzilla for the full thread.
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218158
+
+-- 
+An old man doll... just what I always wanted! - Clara
