@@ -2,67 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A397F1332
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1E87F115A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbjKTMZu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 07:25:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
+        id S233018AbjKTKzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233679AbjKTMZs (ORCPT
+        with ESMTP id S232948AbjKTKzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:25:48 -0500
-X-Greylist: delayed 1248 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 04:25:45 PST
-Received: from GHMG01.great-harvest.local (mail.great-harvest.com.hk [202.82.82.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4956DE3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:25:45 -0800 (PST)
-X-AuditID: c0a80a26-927612400000462b-bf-655b2a436176
-Received: from [194.26.192.108] (194.26.192.108.powered.by.rdp.sh [194.26.192.108])
-        (using TLS with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        by GHMG01.great-harvest.local (Symantec Messaging Gateway) with SMTP id F7.90.17963.34A2B556; Mon, 20 Nov 2023 17:43:32 +0800 (HKT)
-Content-Type: text/plain; charset="iso-8859-1"
-Message-ID: <F7.90.17963.34A2B556@GHMG01.great-harvest.local>
+        Mon, 20 Nov 2023 05:55:35 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE93D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:29 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-32dff08bbdbso3280612f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700477728; x=1701082528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2Ydc3aPLrm+NIPOgY7lEV6d3p5Eng+CVEruaIut0/2k=;
+        b=lBfp7AjIpjYW8cacvFCHEpP3na5LgEPP2eSzMsggRhr98Zow2E0h+JC6Co9wsmfTOU
+         PRHgxw2m9mgNzQfpH7/RpuxdHxdVj435AjIfvRkamn0NGpWBWZUyny/Uz1xh2Jv2rpa1
+         ay5pvUALlNBSAIRiQLQyn4XrfRukWAXKm98G9QNyYUD69qfSpV+dak4YYwnyhFvl80ST
+         GBWu2RBw+DPeDUlACtQDi+XFPygLDPEfx57UtKA+iLaOV/LWsofTW7M0Y2hFO/RSnJYQ
+         deY/edSbnSMLzOIBgiK2lVD81TAw3RDl5D9P+R+htgBi9DjmYB3TwQUXk5TcpFa5QmDH
+         c5uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700477728; x=1701082528;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Ydc3aPLrm+NIPOgY7lEV6d3p5Eng+CVEruaIut0/2k=;
+        b=LgECkY9vY+KJPN2YDy16aQiFmGgJPmBawsC7YCa/ZY8RtDPRAJGj/VANV0CO6kcB5x
+         +E8X2+BDxYdlwZJGmaVqGTTbGWZbs2tf9jPgojZdA5XnTKUi1RpAqflYv5DL+koFqUSC
+         mNzo9iC7xvcM9itksQlUhDUEpVQOGhWT055IMvF418w2xGtOygd1BXbqOcmoFNbWop38
+         8r9PsZdR/2bsAbui2YEf0JWdAq2xB7vbCsB22ra9phBc0pPbPnBNosBrg0GL7/VCFH1y
+         pxVhvQcedzM6LWl2aoKj9Qro5+DQhVmfYy8CCQjrkX+w06zRFwQUbOv4p3UQD1i9fs+f
+         bhkA==
+X-Gm-Message-State: AOJu0YzpXZXS1n9zK2zyUJqDhho/03MYFo7EAe7sBNbFiOVU2pVMtZcA
+        qE01dDjTbcQoe7W/pW67enPPqQ==
+X-Google-Smtp-Source: AGHT+IH0Yi0BlnhP+AyCxkHR2ebZGUWO71heHD2OpxZtw/Tw1I2JqFXy12eaZFlwHzXQhyGcH1QIMw==
+X-Received: by 2002:adf:ec51:0:b0:31f:8999:c409 with SMTP id w17-20020adfec51000000b0031f8999c409mr4460011wrn.66.1700477727742;
+        Mon, 20 Nov 2023 02:55:27 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id dh18-20020a0560000a9200b00332cb1bcd01sm981198wrb.86.2023.11.20.02.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:55:26 -0800 (PST)
+Message-ID: <417cb5cb-01f5-4d01-8bbe-aa2286fca43e@linaro.org>
+Date:   Mon, 20 Nov 2023 11:55:24 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Investment Expression of Interest (IEOI)
-To:     linux-kernel@vger.kernel.org
-From:   "Ramadan Ahmad" <Ahmadramcfa03@pobox.com>
-Date:   Mon, 20 Nov 2023 10:43:30 +0100
-Reply-To: finance@almnadrinvestment.com
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFJMWRmVeSWpSXmKPExsVySOpAjq6LVnSqwZufPBaXd81hc2D0+LxJ
-        LoAxissmJTUnsyy1SN8ugStjxcwnzAWHmSuam76yNTB+ZOpi5OSQEDCReHD8AXsXIxeHkMA+
-        Jom7Wx6wgCSYBfQkbkydwgZi8wrYSvQvXc8MYQtKnJz5BKpGW2LZwtdAcQ4gW03ia1cJSFhY
-        wFDi6ZGrjCC2iICCxObeZ6wgJWwC+hJzN+WBhFkEVCVurrvJDmILCahLnJ96hWkCI88sJItn
-        IVk2C8myWQjLFjCyrGKUcvfwdTcw1EsvSk0s0c1ILCpLLS7Ry8lPTszZxAgMngMruNR2MH6c
-        9FHvECMTB+MhRgkOZiUR3m9CEalCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeQMCpOKFBNITS1Kz
-        U1MLUotgskwcnFINTJHXeA9/zdm/YqrJqZ/1USXPVjB/Of/BiDf7i272rUSeoq6kcukpn3N/
-        qy55tVlSO/bpjb4yp9uvJog37Ayb0K/4bHbNJhl528lsE8Q/Kpz5KXjcIoDzBP/9pmOXFsQu
-        VP1XpPmAI9+fPaZK5PZmy3l2N4173hy9YHfs2my3uqW1UQvLG54Lpa3e+tH5rsnUc0ZenM1v
-        9WNFYp9wLQ9SXxUr5CbG3f7n8H0//fsntvHPYauYLK4TNJ3hheuHsu2Pzt18x9N65NI092U9
-        btMtH5xecGVrnuKMSrZEEYOfvmfV7+9b0PiyjMMrOFH60belqlfuHPfNujlvVUrHlJuLVaVT
-        NLVbzgYuvpumtWatlqYSS3FGoqEWc1FxIgD1TD+MjQIAAA==
-X-Spam-Status: No, score=3.5 required=5.0 tests=BAYES_50,DEAR_SOMETHING,
-        KHOP_HELO_FCRDNS,SPF_HELO_NONE,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] Implement vendor resets for PSCI SYSTEM_RESET2
+Content-Language: en-US
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+References: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attn: linux-kernel@vger.kernel.org
-Date: 20-11-2023
-Subject: Investment Expression of Interest (IEOI)
+On 17/11/2023 22:18, Elliot Berman wrote:
+> The PSCI SYSTEM_RESET2 call allows vendor firmware to define additional
+> reset types which could be mapped to the reboot argument.
+> 
+> Setting up reboot on Qualcomm devices can be inconsistent from chipset
+> to chipset.  Generally, there is a PMIC register that gets written to
+> decide the reboot type. There is also sometimes a cookie that can be
+> written to indicate that the bootloader should behave differently than a
+> regular boot. These knobs evolve over product generations and require 
+> more drivers. Qualcomm firmwares are beginning to expose vendor
+> SYSTEM_RESET2 types to simplify driver requirements from Linux.
+> 
+> Add support in PSCI to statically wire reboot mode commands from
+> userspace to a vendor reset and cookie value using the device tree. The
+> DT bindings are similar to reboot mode framework except that 2
+> integers are accepted (the type and cookie). Also, reboot mode framework
+> is intended to program, but not reboot, the host. PSCI SYSTEM_RESET2
+> does both. I've not added support for reading ACPI tables since I don't
+> have any device which provides them + firmware that supports vendor
+> SYSTEM_RESET2 types.
+> 
+> Previous discussions around SYSTEM_RESET2:
+> - https://lore.kernel.org/lkml/20230724223057.1208122-2-quic_eberman@quicinc.com/T/
+> - https://lore.kernel.org/all/4a679542-b48d-7e11-f33a-63535a5c68cb@quicinc.com/
 
-Dear Sir,
+Please link here upstream DTS user for this.
 
-Having been referred to your investment by my team, we would be honored to review your available investment projects for onward referral to my principal investors who can allocate capital for the financing of it.
+Best regards,
+Krzysztof
 
-kindly advise at your convenience
-
-Best Regards,
-Ramadan Ahmad CFA
-Chartered Finance Investment Analyst
