@@ -2,97 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48FD7F1FB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BDC7F1F68
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjKTVtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
+        id S232336AbjKTVqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbjKTVsv (ORCPT
+        with ESMTP id S232359AbjKTVp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:48:51 -0500
-X-Greylist: delayed 121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 13:47:52 PST
-Received: from mxe-1-ab7.seznam.cz (mxe-1-ab7.seznam.cz [IPv6:2a02:598:128:8a00::1000:ab7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A9DED;
-        Mon, 20 Nov 2023 13:47:52 -0800 (PST)
-Received: from email.seznam.cz
-        by smtpc-mxe-b7dc65f8c-crqsd
-        (smtpc-mxe-b7dc65f8c-crqsd [2a02:598:128:8a00::1000:ab7])
-        id 6abd72749449c0de6a33fc6c;
-        Mon, 20 Nov 2023 22:47:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz;
-        s=szn20221014; t=1700516871;
-        bh=tV7rRu+hZULtUAqYXJOLdln7sRyZoCRG7oXpFuJMw7s=;
-        h=Received:From:To:Cc:Subject:Date:Message-Id:References:
-         In-Reply-To:Mime-Version:X-Mailer:Content-Type:
-         Content-Transfer-Encoding;
-        b=u2/Ex8R98G1Iz3VLJ9XczTtmYftQsCfeX3Zur2QyOqaN/Toh88WdGQjYSj5isUdb7
-         WZ6FDaUE9l/2jlwQC4lc3LbjUIqqy3t2ptgIhoFCNKCUF75/s2oKEiCa8ILwtuFf/M
-         8fButrOQJRynUJGudnWB6cfyJO6Frp813NSUZdmaICaElw+vFnB0HTpuPRdi+K76sy
-         QZNn1ZmHh5xBPYB9Y24vem8bQk13AzBxMMd5rRig+urQt1CYk6iChniRgasIIDJxDy
-         /+cQof90rmZwCiHsMpK3FDftA47T7bNkCoZsxgrDi85rN2yf3o2x1Z8z/E1ZiJ+MAE
-         EWN07MR3JFzFg==
-Received: from 184-143.gtt-net.cz (184-143.gtt-net.cz [82.144.143.184])
-        by email.seznam.cz (szn-UNKNOWN-unknown) with HTTP;
-        Mon, 20 Nov 2023 22:45:23 +0100 (CET)
-From:   "Tomas Paukrt" <tomaspaukrt@email.cz>
-To:     "Krzysztof Kozlowski" <krzk@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Jiri Slaby" <jirislaby@kernel.org>
-Cc:     <linux-serial@vger.kernel.org>,
-        "Lino Sanfilippo" <LinoSanfilippo@gmx.de>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: =?utf-8?q?Re=3A_=5BPATCH_v3_2/2=5D_dt-bindings=3A_serial=3A_Add_o?=
-        =?utf-8?q?ption_to_enable_RS485_mode_via_GPIO_?=
-Date:   Mon, 20 Nov 2023 22:45:23 +0100 (CET)
-Message-Id: <3Nk.ZZrp.5w3Yn0Ecy5C.1bMzDp@seznam.cz>
-References: <VY.ZZnz.2Km1cHBSh2}.1bLIJa@seznam.cz>
-        <476876ca-806f-a5ad-1eeb-435c8a3111a2@gmx.de>
-        <2cZ.ZZqF.1YADr1CLFoQ.1bMn3d@seznam.cz>
-        <5a0321ac-e1e6-45e9-9faf-153db8d34980@kernel.org>
-In-Reply-To: <5a0321ac-e1e6-45e9-9faf-153db8d34980@kernel.org>
-Mime-Version: 1.0 (szn-mime-2.1.33)
-X-Mailer: szn-UNKNOWN-unknown
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Mon, 20 Nov 2023 16:45:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D239A4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:45:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7FB0C433C8;
+        Mon, 20 Nov 2023 21:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700516753;
+        bh=wTllnXLudtUSjHaEEAUK+L8ZBRUeteK9UhJ3dFHB6P8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Xhk8t6N3NQbIK326t8vzbsC+Lh1F7QrLoyQS5Ngt/uCzxNxN1JnMsa3RF5AMjo7xP
+         1pKL4LaoF4ivTbBnK5MnMyKKLk03xf7wmnEKFUD8DGnnFmxJn1eZeW27On+/qwCKtQ
+         zX6ux2sLm96LaMruFuqUAX1Jy99M6InH4ZT1n3ddfUCWg6mjZvUXxPHxe1iB9k/7aS
+         Ttp3zViQ4WOpzAmGOkaZ1mKvrVk9rIFuOjdZ5acoNbUBA3U4s1BPhBWt3/TrgIPCSn
+         NOWtkHeoIjZkNPv/E3rDBr1ug2f/aounyeTdaO5Fb7z1WvjfhWhapi177br/EGlHEQ
+         g8CzuXOpLfAEw==
+Date:   Mon, 20 Nov 2023 13:45:51 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231120134551.30d0306c@kernel.org>
+In-Reply-To: <20231120195858.wpaymolv6ws4hntp@skbuf>
+References: <20231118183433.30ca1d1a@kernel.org>
+        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
+        <20231120105255.cgbart5amkg4efaz@skbuf>
+        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
+        <20231120120601.ondrhbkqpnaozl2q@skbuf>
+        <20231120144929.3375317e@kmaincent-XPS-13-7390>
+        <20231120142316.d2emoaqeej2pg4s3@skbuf>
+        <20231120093723.4d88fb2a@kernel.org>
+        <157c68b0-687e-4333-9d59-fad3f5032345@lunn.ch>
+        <20231120105148.064dc4bd@kernel.org>
+        <20231120195858.wpaymolv6ws4hntp@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the device tree property "rs485-mode-gpio".
+On Mon, 20 Nov 2023 21:58:58 +0200 Vladimir Oltean wrote:
+> I'm still waiting for you to fully clarify the "per socket vs global"
+> aspect, but independently of that, at least I understand why this is a
+> counter-argument to my proposal. I need to tune it a bit (ASSUMING that
+> we want DMA timestamps to "look like" hwtimestamps, and not like their
+> own thing, to user space), because the PHC index would no longer fully
+> identify a hwtstamp provider, so we need something more.
+> 
+> I imagine both ETHTOOL_MSG_TSINFO_GET and ETHTOOL_MSG_TSINFO_SET to
+> support a new (nest) nlattr called ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER.
+> 
+> This would contain (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_PHC_INDEX
+> and (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_QUALIFIER. It could be
+> extensible in the future, but this is the baseline and forms the key.
+> 
+> The latter takes values from an:
+> 
+> enum ethtool_hwstamp_provider_qualifier {
+> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_MAC,
+> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_PHY,
+> 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_DMA,
+> };
 
-Signed-off-by: Tomas Paukrt <tomaspaukrt@email.cz>
----
- Documentation/devicetree/bindings/serial/rs485.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/serial/rs485.yaml b/Documen=
-tation/devicetree/bindings/serial/rs485.yaml
-index 9418fd6..7a72f37 100644
---- a/Documentation/devicetree/bindings/serial/rs485.yaml
-+++ b/Documentation/devicetree/bindings/serial/rs485.yaml
-@@ -47,6 +47,10 @@ properties:
-       later with proper ioctl.
-     $ref: /schemas/types.yaml#/definitions/flag
- 
-+  rs485-mode-gpio:
-+    description: GPIO pin to enable RS485 mode at boot time.
-+    maxItems: 1
-+
-   rs485-rx-during-tx:
-     description: enables the receiving of data even while sending data.=
-
-     $ref: /schemas/types.yaml#/definitions/flag
--- 
-2.7.4
- 
+Sounds reasonable. Having more attributes than just PHC index works.
+Given the lack of distinction between MAC and PHY for integrated NICs
+I'd lean towards ditching the "layers" completely and exposing 
+an "approximate" vs "precise" boolean. Approximate being the DMA point
+for NICs, but more generically a point that is separated from the wire
+by buffering or other variable length delay. Precise == IEEE 1588
+quality.
