@@ -2,70 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D787F0A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE287F0A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 02:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbjKTB2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 20:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        id S231698AbjKTBdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 20:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTB2x (ORCPT
+        with ESMTP id S229470AbjKTBde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 20:28:53 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95BFDE5;
-        Sun, 19 Nov 2023 17:28:47 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.183])
-        by gateway (Coremail) with SMTP id _____8DxqOpNtlplNxw7AA--.15489S3;
-        Mon, 20 Nov 2023 09:28:45 +0800 (CST)
-Received: from [10.20.42.183] (unknown [10.20.42.183])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxjd5ItlplQCdHAA--.27386S3;
-        Mon, 20 Nov 2023 09:28:43 +0800 (CST)
-Subject: Re: [PATCH v1 1/2] LoongArch: KVM: Add lsx support
-To:     maobibo <maobibo@loongson.cn>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20231115091921.85516-1-zhaotianrui@loongson.cn>
- <20231115091921.85516-2-zhaotianrui@loongson.cn>
- <2161517e-1934-9d18-3bdf-1e397413b3a8@loongson.cn>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <7618adc1-9aa9-35a0-8d5a-756931e5bbc7@loongson.cn>
-Date:   Mon, 20 Nov 2023 09:31:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sun, 19 Nov 2023 20:33:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96C7E6
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 17:33:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6630CC433CB;
+        Mon, 20 Nov 2023 01:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700444010;
+        bh=4aKRWnXGFRDigBEXfTlhbvkBAJbCco+oZ5t5OlcFpdI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EtiCTtkLuYGV9apkfKPyVjisq7pLPUQCAVx9uPT1A+TpwmIA9JStslFknSmJUOmRg
+         wBTXIkLVq0fhmHAL2MFQyNGKm3UuY02ywI6pVwH6nW5SJPOjDYzT6siuRmX+vOOSB+
+         1qztC63+AZZgDuIpT5mrUb3SOjNgz2RhiXoyFiYRO3n1TnZX3K6l5B1f1cq8QUAE9q
+         1l2vLfC0O1u7KT9cKosNQMllTTqQD//jNy1mvXE/65w288vZ7kpOvS/h3y/QT2J/pG
+         4xSFCRFRt2iKUV3Uo1JDu4SjUxdNZUtHnj2m6j0PHsA1sOoQr6oP2zIKcaujKkQYop
+         TMpu/7CvJ5KCg==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so172528a12.2;
+        Sun, 19 Nov 2023 17:33:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YxNv6nS+m9HKaFpgHlFfKK+IeM4uh+eDdGw0d4/NzygfHH9LRAR
+        b3uoi47TuBylOwfyjVh7Udi/peKbFqkWbv4vC1w=
+X-Google-Smtp-Source: AGHT+IHQzhTmN1WGQSpS+/Xj3MkxDDNblmBut8i5DlGRtpthh7co7vJFFWfx5mrkhW6l4tNHTclwObeILVuMcrSkC5Q=
+X-Received: by 2002:aa7:d491:0:b0:542:eb1f:c70a with SMTP id
+ b17-20020aa7d491000000b00542eb1fc70amr4398062edr.29.1700444008824; Sun, 19
+ Nov 2023 17:33:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2161517e-1934-9d18-3bdf-1e397413b3a8@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf8Cxjd5ItlplQCdHAA--.27386S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Cr43Cry7Zw4DCry3Jw4rtFc_yoWDuw4Upr
-        1kArZ8JrWUGrn3tr1UJr1DXFy5Zr18Kw17XFy8XFy5JF1Utryjqr18XrWqgFyUJw48JF1I
-        qF18XrnxZFyUJ3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20231119053448.2367725-1-masahiroy@kernel.org>
+ <CAAhV-H6Y4vqc45eaMs+wCN7Quf4e9ogp8aDA8V0sA=TUnMWd-Q@mail.gmail.com> <CAK7LNAR=5s0tbqvB+poMD45Oyjknx9=VpVqE+qwqZy9LfQermQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAR=5s0tbqvB+poMD45Oyjknx9=VpVqE+qwqZy9LfQermQ@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 20 Nov 2023 09:33:19 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4w1Esxp7pE02nbeh_Wft6=a8Q8MBEr54Q5D3_g9XP1gQ@mail.gmail.com>
+Message-ID: <CAAhV-H4w1Esxp7pE02nbeh_Wft6=a8Q8MBEr54Q5D3_g9XP1gQ@mail.gmail.com>
+Subject: Re: [PATCH] loongarch: add dependency between vmlinuz.efi and vmlinux.efi
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Simon Glass <sjg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,247 +61,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Masahiro,
 
-在 2023/11/17 下午4:24, maobibo 写道:
+On Sun, Nov 19, 2023 at 10:25=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.=
+org> wrote:
+>
+> On Sun, Nov 19, 2023 at 8:59=E2=80=AFPM Huacai Chen <chenhuacai@kernel.or=
+g> wrote:
+> >
+> > Hi, Masahiro,
+> >
+> > On Sun, Nov 19, 2023 at 1:35=E2=80=AFPM Masahiro Yamada <masahiroy@kern=
+el.org> wrote:
+> > >
+> > > A common issue in Makefile is a race in parallel building.
+> > >
+> > > You need to be careful to prevent multiple threads from writing to th=
+e
+> > > same file simultaneously.
+> > >
+> > > Commit 3939f3345050 ("ARM: 8418/1: add boot image dependencies to not
+> > > generate invalid images") addressed such a bad scenario.
+> > >
+> > > A similar symptom occurs with the following command:
+> > >
+> > >   $ make -j$(nproc) ARCH=3Dloongarch vmlinux.efi vmlinuz.efi
+> > >     [ snip ]
+> > >     SORTTAB vmlinux
+> > >     OBJCOPY arch/loongarch/boot/vmlinux.efi
+> > >     OBJCOPY arch/loongarch/boot/vmlinux.efi
+> > >     PAD     arch/loongarch/boot/vmlinux.bin
+> > >     GZIP    arch/loongarch/boot/vmlinuz
+> > >     OBJCOPY arch/loongarch/boot/vmlinuz.o
+> > >     LD      arch/loongarch/boot/vmlinuz.efi.elf
+> > >     OBJCOPY arch/loongarch/boot/vmlinuz.efi
+> > >
+> > > The log "OBJCOPY arch/loongarch/boot/vmlinux.efi" is displayed twice.
+> > >
+> > > It indicates that two threads simultaneously enter arch/loongarch/boo=
+t/
+> > > and write to arch/loongarch/boot/vmlinux.efi.
+> > >
+> > > It occasionally leads to a build failure:
+> > >
+> > >   $ make -j$(nproc) ARCH=3Dloongarch vmlinux.efi vmlinuz.efi
+> > >     [ snip ]
+> > >     SORTTAB vmlinux
+> > >     OBJCOPY arch/loongarch/boot/vmlinux.efi
+> > >     PAD     arch/loongarch/boot/vmlinux.bin
+> > >   truncate: Invalid number: =E2=80=98arch/loongarch/boot/vmlinux.bin=
+=E2=80=99
+> > >   make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13:
+> > >   arch/loongarch/boot/vmlinux.bin] Error 1
+> > >   make[2]: *** Deleting file 'arch/loongarch/boot/vmlinux.bin'
+> > >   make[1]: *** [arch/loongarch/Makefile:146: vmlinuz.efi] Error 2
+> > >   make[1]: *** Waiting for unfinished jobs....
+> > >   make: *** [Makefile:234: __sub-make] Error 2
+> > >
+> > > vmlinuz.efi depends on vmlinux.efi, but such a dependency is not
+> > > specified in arch/loongarch/Makefile.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > ---
+> > >
+> > >  arch/loongarch/Makefile | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+> > > index 9eeb0c05f3f4..6022bf3d30c9 100644
+> > > --- a/arch/loongarch/Makefile
+> > > +++ b/arch/loongarch/Makefile
+> > > @@ -142,6 +142,7 @@ vdso-install-y +=3D arch/loongarch/vdso/vdso.so.d=
+bg
+> > >
+> > >  all:   $(notdir $(KBUILD_IMAGE))
+> > >
+> > > +vmlinuz.efi: vmlinux.efi
+> > >  vmlinux.elf vmlinux.efi vmlinuz.efi: vmlinux
+> > >         $(Q)$(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/$@
+> > It is a little strange, because
+> >
+> > in drivers/firmware/efi/libstub/Makefile.zboot:
+> > vmlinuz.efi depends on vmlinuz.efi.elf, vmlinuz.efi.elf depends on
+> > vmlinuz.o, vmlinuz.o depends on vmlinuz, vmlinuz depends on
+> > vmlinux.bin, vmlinux.bin depends on $(EFI_ZBOOT_PAYLOAD).
+> >
+> > in arch/loongarch/boot/Makefile,
+> > EFI_ZBOOT_PAYLOAD :=3D vmlinux.efi
+> >
+> > So I think vmlinuz.efi has already depend on vmlinux.efi.
 >
 >
-> On 2023/11/15 下午5:19, Tianrui Zhao wrote:
->> This patch adds LSX support for LoongArch KVM. The LSX means
->> LoongArch 128-bits vector instruction.
->> There will be LSX exception in KVM when guest use the LSX
->> instruction. KVM will enable LSX and restore the vector
->> registers for guest then return to guest to continue running.
->>
->>
->> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->> ---
->>   arch/loongarch/include/asm/kvm_host.h |  6 ++++
->>   arch/loongarch/include/asm/kvm_vcpu.h | 12 +++++++
->>   arch/loongarch/kvm/exit.c             | 18 ++++++++++
->>   arch/loongarch/kvm/switch.S           | 22 +++++++++++++
->>   arch/loongarch/kvm/trace.h            |  4 ++-
->>   arch/loongarch/kvm/vcpu.c             | 47 +++++++++++++++++++++++++--
->>   6 files changed, 105 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/loongarch/include/asm/kvm_host.h 
->> b/arch/loongarch/include/asm/kvm_host.h
->> index 11328700d4..6c65c25169 100644
->> --- a/arch/loongarch/include/asm/kvm_host.h
->> +++ b/arch/loongarch/include/asm/kvm_host.h
->> @@ -94,6 +94,7 @@ enum emulation_result {
->>   #define KVM_LARCH_FPU        (0x1 << 0)
->>   #define KVM_LARCH_SWCSR_LATEST    (0x1 << 1)
->>   #define KVM_LARCH_HWCSR_USABLE    (0x1 << 2)
->> +#define KVM_LARCH_LSX        (0x1 << 3)
->>     struct kvm_vcpu_arch {
->>       /*
->> @@ -175,6 +176,11 @@ static inline void writel_sw_gcsr(struct 
->> loongarch_csrs *csr, int reg, unsigned
->>       csr->csrs[reg] = val;
->>   }
->>   +static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
->> +{
->> +    return arch->cpucfg[2] & CPUCFG2_LSX;
->> +}
->> +
->>   /* Debug: dump vcpu state */
->>   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
->>   diff --git a/arch/loongarch/include/asm/kvm_vcpu.h 
->> b/arch/loongarch/include/asm/kvm_vcpu.h
->> index 553cfa2b2b..c629771e12 100644
->> --- a/arch/loongarch/include/asm/kvm_vcpu.h
->> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
->> @@ -55,6 +55,18 @@ void kvm_save_fpu(struct loongarch_fpu *fpu);
->>   void kvm_restore_fpu(struct loongarch_fpu *fpu);
->>   void kvm_restore_fcsr(struct loongarch_fpu *fpu);
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +void kvm_own_lsx(struct kvm_vcpu *vcpu);
->> +void kvm_save_lsx(struct loongarch_fpu *fpu);
->> +void kvm_restore_lsx(struct loongarch_fpu *fpu);
->> +void kvm_restore_lsx_upper(struct loongarch_fpu *fpu);
->> +#else
->> +static inline void kvm_own_lsx(struct kvm_vcpu *vcpu) { }
->> +static inline void kvm_save_lsx(struct loongarch_fpu *fpu) { }
->> +static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
->> +static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
->> +#endif
->> +
->>   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
->>   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
->>   void kvm_reset_timer(struct kvm_vcpu *vcpu);
->> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
->> index ce8de3fa47..1b1c58ccc8 100644
->> --- a/arch/loongarch/kvm/exit.c
->> +++ b/arch/loongarch/kvm/exit.c
->> @@ -659,6 +659,23 @@ static int kvm_handle_fpu_disabled(struct 
->> kvm_vcpu *vcpu)
->>       return RESUME_GUEST;
->>   }
->>   +/*
->> + * kvm_handle_lsx_disabled() - Guest used LSX while disabled in root.
->> + * @vcpu:      Virtual CPU context.
->> + *
->> + * Handle when the guest attempts to use LSX when it is disabled in 
->> the root
->> + * context.
->> + */
->> +static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
->> +{
->> +    if (!kvm_guest_has_lsx(&vcpu->arch))
->> +        kvm_queue_exception(vcpu, EXCCODE_INE, 0);
->> +    else
->> +        kvm_own_lsx(vcpu);
->> +
->> +    return RESUME_GUEST;
->> +}
->> +
->>   /*
->>    * LoongArch KVM callback handling for unimplemented guest exiting
->>    */
->> @@ -687,6 +704,7 @@ static exit_handle_fn 
->> kvm_fault_tables[EXCCODE_INT_START] = {
->>       [EXCCODE_TLBS]            = kvm_handle_write_fault,
->>       [EXCCODE_TLBM]            = kvm_handle_write_fault,
->>       [EXCCODE_FPDIS]            = kvm_handle_fpu_disabled,
->> +    [EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
->>       [EXCCODE_GSPR]            = kvm_handle_gspr,
->>   };
->>   diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
->> index 0ed9040307..32ba092a44 100644
->> --- a/arch/loongarch/kvm/switch.S
->> +++ b/arch/loongarch/kvm/switch.S
->> @@ -245,6 +245,28 @@ SYM_FUNC_START(kvm_restore_fpu)
->>       jr                 ra
->>   SYM_FUNC_END(kvm_restore_fpu)
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +SYM_FUNC_START(kvm_save_lsx)
->> +    fpu_save_csr    a0 t1
->> +    fpu_save_cc     a0 t1 t2
->> +    lsx_save_data   a0 t1
->> +    jirl            zero, ra, 0
->> +SYM_FUNC_END(kvm_save_lsx)
->> +
->> +SYM_FUNC_START(kvm_restore_lsx)
->> +    lsx_restore_data a0 t1
->> +    fpu_restore_cc   a0 t1 t2
->> +    fpu_restore_csr  a0 t1
->> +    jirl             zero, ra, 0
->> +SYM_FUNC_END(kvm_restore_lsx)
->> +
->> +SYM_FUNC_START(kvm_restore_lsx_upper)
->> +    lsx_restore_all_upper a0 t0 t1
->> +
->> +    jirl                  zero, ra, 0
->> +SYM_FUNC_END(kvm_restore_lsx_upper)
->> +#endif
->> +
->>       .section ".rodata"
->>   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
->>   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - 
->> kvm_enter_guest)
->> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
->> index a1e35d6554..7da4e230e8 100644
->> --- a/arch/loongarch/kvm/trace.h
->> +++ b/arch/loongarch/kvm/trace.h
->> @@ -102,6 +102,7 @@ TRACE_EVENT(kvm_exit_gspr,
->>   #define KVM_TRACE_AUX_DISCARD        4
->>     #define KVM_TRACE_AUX_FPU        1
->> +#define KVM_TRACE_AUX_LSX        2
->>     #define kvm_trace_symbol_aux_op                \
->>       { KVM_TRACE_AUX_SAVE,        "save" },    \
->> @@ -111,7 +112,8 @@ TRACE_EVENT(kvm_exit_gspr,
->>       { KVM_TRACE_AUX_DISCARD,    "discard" }
->>     #define kvm_trace_symbol_aux_state            \
->> -    { KVM_TRACE_AUX_FPU,     "FPU" }
->> +    { KVM_TRACE_AUX_FPU,     "FPU" },        \
->> +    { KVM_TRACE_AUX_LSX,     "LSX" }
->>     TRACE_EVENT(kvm_aux,
->>           TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
->> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
->> index 73d0c2b9c1..f0bb583353 100644
->> --- a/arch/loongarch/kvm/vcpu.c
->> +++ b/arch/loongarch/kvm/vcpu.c
->> @@ -378,9 +378,13 @@ static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
->>           break;
->>       case KVM_REG_LOONGARCH_CPUCFG:
->>           id = KVM_GET_IOC_CPUCFG_IDX(reg->id);
->> -        if (id >= 0 && id < KVM_MAX_CPUCFG_REGS)
->> +        if (id >= 0 && id < KVM_MAX_CPUCFG_REGS) {
->>               vcpu->arch.cpucfg[id] = (u32)v;
->> -        else
->> +            if (id == 2 && v & CPUCFG2_LSX && !cpu_has_lsx) {
-> Hi Tianrui,
 >
-> Can you add some annotations about these piece of codes? so that
-> people can understand easily.
+> That is a story in arch/loongarch/boot/Makefile.
 >
-> And do we need interface to get host capabilities to user application?
-> Such as QEMU first gets supported capabilities from kvm and then sets 
-> the required ones.
 >
-> Regards
-> Bibo Mao
-Thanks, I will add annotations for this and I think it is better to add 
-the checking LSX,LASX capabilities interfaces for user space and I will 
-supplement it later.
+> I am talking about arch/loongarch/Makefile,
+> which is included from the top Makefile.
+>
+>
+> See this code.
+>
+>
+> vmlinux.elf vmlinux.efi vmlinuz.efi: vmlinux
+>         $(Q)$(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/$@
+>
+>
+>
+>
+> Only the required dependency is
+>
+>  - vmlinux.elf depends on vmlinux
+>  - vmlinuz.elf depends on vmlinux
+>
+>
+> vmlinux.elf and vmlinuz.elf are independent of each other.
+>
+>
+>
+> In parallel building, GNU Make considers that
+> vmlinux.elf and vmlinuz.elf can be built simultaneously.
+>
+>
+> GNU Make spawns two processes to execute these simultaneously:
+>
+>  $(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/vmlinux.elf
+>  $(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/vmlinuz.elf
+>
+>
+>
+> The former enters arch/loongarch/boot/Makefile to build
+> vmlinux.elf.  (A)
+>
+>
+> The latter also enters arch/loongarch/boot/Makefile to build
+> vmlinuz.elf, which depends on vmlinux.elf  (B)
+>
+>
+>
+> (A) and (B) are independent processes, hence none of them
+> know the other.
+>
+>
+> I hope it is clearer.
+Sorry, I'm not familiar with Makefile rules, so you are probably
+right, but should we do it like this (remove the direct dependency
+from vmlinuz.efi to vmlinux)?
 
-Thanks
-Tianrui Zhao
->> +                vcpu->arch.cpucfg[id] &= ~CPUCFG2_LSX;
->> +                ret = -EINVAL;
->> +            }
->> +        } else
->>               ret = -EINVAL;
->>           break;
->>       case KVM_REG_LOONGARCH_KVM:
->> @@ -561,12 +565,49 @@ void kvm_own_fpu(struct kvm_vcpu *vcpu)
->>       preempt_enable();
->>   }
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +/* Enable LSX for guest and restore context */
->> +void kvm_own_lsx(struct kvm_vcpu *vcpu)
->> +{
->> +    preempt_disable();
->> +
->> +    /* Enable LSX for guest */
->> +    set_csr_euen(CSR_EUEN_LSXEN | CSR_EUEN_FPEN);
->> +    switch (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->> +    case KVM_LARCH_FPU:
->> +        /*
->> +         * Guest FPU state already loaded,
->> +         * only restore upper LSX state
->> +         */
->> +        kvm_restore_lsx_upper(&vcpu->arch.fpu);
->> +        break;
->> +    default:
->> +        /* Neither FP or LSX already active,
->> +         * restore full LSX state
->> +         */
->> +        kvm_restore_lsx(&vcpu->arch.fpu);
->> +    break;
->> +    }
->> +
->> +    trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LSX);
->> +    vcpu->arch.aux_inuse |= KVM_LARCH_LSX | KVM_LARCH_FPU;
->> +    preempt_enable();
->> +}
->> +#endif
->> +
->>   /* Save context and disable FPU */
->>   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
->>   {
->>       preempt_disable();
->>   -    if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->> +    if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
->> +        kvm_save_lsx(&vcpu->arch.fpu);
->> +        vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
->> +        trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
->> +
->> +        /* Disable LSX & FPU */
->> +        clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN);
->> +    } else if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->>           kvm_save_fpu(&vcpu->arch.fpu);
->>           vcpu->arch.aux_inuse &= ~KVM_LARCH_FPU;
->>           trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_FPU);
->>
+vmlinuz.efi: vmlinux.efi
+vmlinux.elf vmlinux.efi: vmlinux
+        $(Q)$(MAKE) $(build)=3D$(boot) $(bootvars-y) $(boot)/$@
 
+Huacai
+
+>
+>
+>
+>
+>
+>
+> > Huacai
+> >
+> > >
+> > > --
+> > > 2.40.1
+> > >
+> > >
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
