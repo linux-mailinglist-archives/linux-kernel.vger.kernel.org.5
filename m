@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D65C7F10AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32747F10AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbjKTKo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
+        id S233144AbjKTKom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:44:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbjKTKoJ (ORCPT
+        with ESMTP id S233145AbjKTKoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:44:09 -0500
+        Mon, 20 Nov 2023 05:44:17 -0500
 Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329FDF1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:43:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C0110E0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:43:25 -0800 (PST)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 9FAD940E0031;
-        Mon, 20 Nov 2023 10:43:14 +0000 (UTC)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 48E8940E0030;
+        Mon, 20 Nov 2023 10:43:24 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
         reason="fail (body has been altered)" header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
         by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jFkyOQGuoUdA; Mon, 20 Nov 2023 10:43:13 +0000 (UTC)
+        with ESMTP id 6MdqnS4uwAxP; Mon, 20 Nov 2023 10:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700476966; bh=zSLgutEmyCmCS539z/eElXM8kHbppEABOqOJE2A9kTo=;
+        t=1700476969; bh=/Cy8NatvX/Kmu3ga/aoJptF1EvKLJEj2qDDtcQHYy0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KfaLwZFiE/0gqirbhxB0qNTgeotT1cCYzCY45DBWt0bYLHBMbOABzNHDEEe1ePKKN
-         ZmBk8aoVCLrZDCnb/4CVreCMX6+ncm0a0PftPrAQfydPKYF9xTtVRj1BtoWC6IelcN
-         zGaFZQi+jRtzzYHGIYKU+7xFpWvH/JFORC1EIBzOELuIZ2XwdTwbgJjxfhMj249sRa
-         gpENy/lJKBqQX7u6saBaoUc9mS9Hn0KMT87P8GE9nx6rzxECpP/1rtqqnM8kTb+q4S
-         gfUGJlU3MgiUyHX6VRHlmQ4w91IlIJ0x9aJo/p3+2pbkyqcrMPu5Wgii6Fo3sE8fYA
-         DwTxzm4WTka5ZQkXQ5Y3zVywTdFtjs8oQkiQK2deTrAFDDImCbN0OOVcbiQqRoq+zX
-         U7Tg9siw9OTuOlkHqJCLn57uXCKuJjIC5Jq1tggMLLBRCt8X298ss9XT7xz5bkCnTn
-         y9+LlUin3kS5VZ8D/5BpO2ryz9acVcSr7yQBveAxdKKwNsTkvx1jGDisMAjnxiWcEh
-         g/HlMfzEzgfnw/2BfdzM+YNS+56VKogiajV+Ilhmt8cdYZAyZL/vlApJpbD6PVwe2C
-         uUP7z9Yfpcrbe2TiL8yjxFkecvdPGVoxF+XFhauQbg7lPHfwumnunk5oExNrO2e++i
-         uRIB/33Ryb1pmDLqLeedYKgQ=
+        b=FORQY5GWUhmMqGcviDAUSKl5P0aEjY/jU2Z7LWwHkOafLwm77LW4ydKq9vuswNw9s
+         /wquzcAPGkFjxa2EZ0IGhWOmimZnHjXQ34u7Oz2hO8oGySn1CLrwusydPdKUj8jeY1
+         uPFWMlf8m9dpgNSOcdp54qJPMe2fs7FpLmQBw3yJRvGBrPwBYJ0ZEJYpDgU3cQsgxt
+         maS2VI/3PkYVG/a4ZgF8BtfLpVUZwIu6Vg4yGansAChOt1PdH7q9ISaaMHh3Luunt0
+         wKok4HE73I6Q+zSgkwJWB/jWL2i2+cXnDTAKi8CG0Pgo2Fpu+RYB4oTHPcuEZKQHIz
+         a0SIjsIVBKN8AR5CZV21KGeKlYv3fhhV9vl7RNnQ6dcGUm05Y95Iq/Uf35SRAMrOCl
+         UGiWaanqiU0ppNJy0W6WUJ9OcUk2RK+6d2eD1EyKEVYtKpQmkR2Q4FqQUwHWg2lZsB
+         mVfv31vblQaX4cPjdCdMEUYdXLXPn/bv3nIBAAhVkcx8Xbe1O9vrgEuqEEg3i4VnDe
+         0qwnRw6kGXFcgnA7A0SmMxRHaCKfnyLoW0XL/KpLrOLNzWEsH1hcN42u9asElStNPT
+         gRp4RcGkN3Hi+/fA0wAwqJpQV+bCi/xKkLoIl2+yE8BFz6z4c+9ErK3x4fuVz456E4
+         1ayOMHuKdncSJ07tWYAecUts=
 Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DDDB840E0176;
-        Mon, 20 Nov 2023 10:42:43 +0000 (UTC)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 17E6540E01C2;
+        Mon, 20 Nov 2023 10:42:47 +0000 (UTC)
 From:   Borislav Petkov <bp@alien8.de>
 To:     X86 ML <x86@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 12/13] x86/CPU/AMD: Get rid of amd_erratum_1485[]
-Date:   Mon, 20 Nov 2023 11:41:51 +0100
-Message-ID: <20231120104152.13740-13-bp@alien8.de>
+Subject: [PATCH 13/13] x86/CPU/AMD: Drop now unused CPU erratum checking function
+Date:   Mon, 20 Nov 2023 11:41:52 +0100
+Message-ID: <20231120104152.13740-14-bp@alien8.de>
 X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 In-Reply-To: <20231120104152.13740-1-bp@alien8.de>
 References: <20231120104152.13740-1-bp@alien8.de>
@@ -66,50 +66,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-No functional changes.
+Bye bye.
 
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 ---
- arch/x86/kernel/cpu/amd.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ arch/x86/kernel/cpu/amd.c | 56 ---------------------------------------
+ 1 file changed, 56 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index f913ca245639..54e07c9b1292 100644
+index 54e07c9b1292..a363de80ce28 100644
 --- a/arch/x86/kernel/cpu/amd.c
 +++ b/arch/x86/kernel/cpu/amd.c
-@@ -59,10 +59,6 @@ static u32 nodes_per_socket =3D 1;
- #define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
- #define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
+@@ -34,62 +34,6 @@
+  */
+ static u32 nodes_per_socket =3D 1;
 =20
--static const int amd_erratum_1485[] =3D
--	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x19, 0x10, 0x0, 0x1f, 0xf),
--			   AMD_MODEL_RANGE(0x19, 0x60, 0x0, 0xaf, 0xf));
+-/*
+- * AMD errata checking
+- *
+- * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() o=
+r
+- * AMD_OSVW_ERRATUM() macros. The latter is intended for newer errata th=
+at
+- * have an OSVW id assigned, which it takes as first argument. Both take=
+ a
+- * variable number of family-specific model-stepping ranges created by
+- * AMD_MODEL_RANGE().
+- *
+- * Example:
+- *
+- * const int amd_erratum_319[] =3D
+- *	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x10, 0x2, 0x1, 0x4, 0x2),
+- *			   AMD_MODEL_RANGE(0x10, 0x8, 0x0, 0x8, 0x0),
+- *			   AMD_MODEL_RANGE(0x10, 0x9, 0x0, 0x9, 0x0));
+- */
 -
- static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erra=
+-#define AMD_LEGACY_ERRATUM(...)		{ -1, __VA_ARGS__, 0 }
+-#define AMD_OSVW_ERRATUM(osvw_id, ...)	{ osvw_id, __VA_ARGS__, 0 }
+-#define AMD_MODEL_RANGE(f, m_start, s_start, m_end, s_end) \
+-	((f << 24) | (m_start << 16) | (s_start << 12) | (m_end << 4) | (s_end)=
+)
+-#define AMD_MODEL_RANGE_FAMILY(range)	(((range) >> 24) & 0xff)
+-#define AMD_MODEL_RANGE_START(range)	(((range) >> 12) & 0xfff)
+-#define AMD_MODEL_RANGE_END(range)	((range) & 0xfff)
+-
+-static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erra=
 tum)
- {
- 	int osvw_id =3D *erratum++;
-@@ -1093,6 +1089,9 @@ static void init_amd_zen3(struct cpuinfo_x86 *c)
- static void init_amd_zen4(struct cpuinfo_x86 *c)
- {
- 	init_amd_zen_common();
-+
-+	if (!cpu_has(c, X86_FEATURE_HYPERVISOR))
-+		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
- }
-=20
- static void init_amd(struct cpuinfo_x86 *c)
-@@ -1215,10 +1214,6 @@ static void init_amd(struct cpuinfo_x86 *c)
- 	if (spectre_v2_in_eibrs_mode(spectre_v2_enabled) &&
- 	    cpu_has(c, X86_FEATURE_AUTOIBRS))
- 		WARN_ON_ONCE(msr_set_bit(MSR_EFER, _EFER_AUTOIBRS));
+-{
+-	int osvw_id =3D *erratum++;
+-	u32 range;
+-	u32 ms;
 -
--	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
--	     cpu_has_amd_erratum(c, amd_erratum_1485))
--		msr_set_bit(MSR_ZEN4_BP_CFG, MSR_ZEN4_BP_CFG_SHARED_BTB_FIX_BIT);
- }
-=20
- #ifdef CONFIG_X86_32
+-	if (osvw_id >=3D 0 && osvw_id < 65536 &&
+-	    cpu_has(cpu, X86_FEATURE_OSVW)) {
+-		u64 osvw_len;
+-
+-		rdmsrl(MSR_AMD64_OSVW_ID_LENGTH, osvw_len);
+-		if (osvw_id < osvw_len) {
+-			u64 osvw_bits;
+-
+-			rdmsrl(MSR_AMD64_OSVW_STATUS + (osvw_id >> 6),
+-			    osvw_bits);
+-			return osvw_bits & (1ULL << (osvw_id & 0x3f));
+-		}
+-	}
+-
+-	/* OSVW unavailable or ID unknown, match family-model-stepping range */
+-	ms =3D (cpu->x86_model << 4) | cpu->x86_stepping;
+-	while ((range =3D *erratum++))
+-		if ((cpu->x86 =3D=3D AMD_MODEL_RANGE_FAMILY(range)) &&
+-		    (ms >=3D AMD_MODEL_RANGE_START(range)) &&
+-		    (ms <=3D AMD_MODEL_RANGE_END(range)))
+-			return true;
+-
+-	return false;
+-}
+-
+ static inline int rdmsrl_amd_safe(unsigned msr, unsigned long long *p)
+ {
+ 	u32 gprs[8] =3D { 0 };
 --=20
 2.42.0.rc0.25.ga82fb66fed25
 
