@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5027F0F9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F127F0FA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbjKTKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S232475AbjKTKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:02:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTKBE (ORCPT
+        with ESMTP id S232495AbjKTKCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:01:04 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493718F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:01:00 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40839807e82so9063645e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:01:00 -0800 (PST)
+        Mon, 20 Nov 2023 05:02:16 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5CDCF
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:02:10 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32daeed7771so2543097f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:02:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700474459; x=1701079259; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jq9JRUdKOLTnT8WnnlX5Kjk7fKbCoaZLOG+eigQvj6U=;
-        b=xxTwifqSPMxiTonOMCQLpCOJ1jbDZaRva23XZDd6JInWcvf/E0ItuI9UVFn9HWuPxi
-         vlys6XCMFuvFcwhwbP5XwrHjtkuhnOGral0CJvdKnkSxEauQA+GMtVcX3EQBtJVAJ5s7
-         DsEAw18Tev6GcRNvyg2G0cllstNN5vj0bCEMm/3Wz5EKyCOGw993gcMufG/Xb3tDhQfU
-         /BpW/H4XQMP8Ia+l49Il+VHjTcbL1Ieb8DvU/SYFntYxE8lYAJnV9M1d0X0KnwWLqCfW
-         0rWZxbYsky5N64PjTv8jsUVLtCk8OnnXuyKJ5RysFPJku6cJ3XxImC7onDRr/QGAxy2s
-         xkrg==
+        d=linaro.org; s=google; t=1700474529; x=1701079329; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vy8rMQtqsCk1GsACWhAOc0FlTKa9XwBaniO3wcGrbeE=;
+        b=oF9lpo+OJya2tu4Mk3qgT5eVUJdRIwPEEzzJNLza7ltMkChQEWBkV2t/+ryDyDMClQ
+         8qhFRz16ykUVJKqxcOBEap7woqz+COBmySBrG2rkMItvvpcBP/XeDjLSECSd0+3MbXcV
+         lPuhFo0QPkARMEwNLSMcfPnjgUOT0QIICG8WQMH18CH26EKDUOOz9+fE6gDcsIz90Ilr
+         YRZDyHSiIRP+dmVHhoBW5OWNogZ7jbUyKuRzoZbvFP+Gvc/FCrlRE90DlbqGfwI0UlwJ
+         9Uci2t55XCbu84Zxn/BqYQxYLRyIZDAqTWobB3HXIu9QSzAXLXtMZb8e9cT8n548O4hV
+         xSDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700474459; x=1701079259;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jq9JRUdKOLTnT8WnnlX5Kjk7fKbCoaZLOG+eigQvj6U=;
-        b=QMgHYYO47geG3xqMzjhmj8D743fs03kpI5s2MDvFu7deP6UbikZ5sUBq9ndaVmEhET
-         Ck7+jMOblyq/RUfoi1ILbrFtFJ3DGOBx4zivd6Km7FI7Ou/MHRx632vt2eQa4CrVlLL6
-         6w1gIsjCwiG7r82STjKzafbChC0n2n9wnGAfv7NESeLRYMVnbSJQgBqil6v2FnS0iz27
-         Q3Fu3CXwV2bx73iqMoBIjHdeMtjHm2cesVYBqwgsMndUrG1RM9q/JAP3/h+5fMZmWXto
-         EUNQyPo3oJTrX/1RCA1+dL9bnCoK8CiR9Fz2ZMfRqG5eq62uaEhdo9xNBuwNvMRmYqhW
-         fJcg==
-X-Gm-Message-State: AOJu0YzuhymVxOlxvFB+YbsOCGVgRsf156v8f6kYnNavg4A+ieNFYAVH
-        +RiAHeGSzeowBLjaQub7+jYMEg==
-X-Google-Smtp-Source: AGHT+IHgsSU9xj0hKPWpxT9Vk1ZeDlmDhlQtZDVSmlX098fSTuAZhRxTckOXWCNL1Om5eh3w7fsDHA==
-X-Received: by 2002:a05:600c:348b:b0:405:2d29:1648 with SMTP id a11-20020a05600c348b00b004052d291648mr10756789wmq.19.1700474458629;
-        Mon, 20 Nov 2023 02:00:58 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id v12-20020a05600c214c00b004065daba6casm17018246wml.46.2023.11.20.02.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 02:00:58 -0800 (PST)
-Date:   Mon, 20 Nov 2023 05:00:55 -0500
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Umang Jain <umang.jain@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "Ricardo B . Marliere" <ricardo@marliere.net>,
-        Dan Carpenter <error27@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.org>
-Subject: Re: [PATCH v2 04/15] staging: mmal-vchiq: Add support for event
- callbacks
-Message-ID: <2a3cb5ad-4791-4d37-a6a1-785432d5dd46@suswa.mountain>
-References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
- <20231109210309.638594-5-umang.jain@ideasonboard.com>
+        d=1e100.net; s=20230601; t=1700474529; x=1701079329;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vy8rMQtqsCk1GsACWhAOc0FlTKa9XwBaniO3wcGrbeE=;
+        b=LtG7auPqXXM9G/nIlTt0N7I8p8aCmHvBpQh+V/QCQ7WeezTX08HM8UMd54GOAm8gSd
+         S+xrV6RyOz1zVaoA0/sSWzFiubGAqjVqX2d3oEVmcY1uXcmk/ygf/CD6CqgFEQ73eQAQ
+         ZIFcHKQ2gA4rRtBAaqAXkHXBXSyPcOUca2rDG3PnkW+i0UQljhafB2x4Ov8dSWaNrRoy
+         6BDfC6mTMWa50zmBI2Ok1ryI2UBGzcgyPLlpoJbLdJMChH3swCv2Q+ahGr/GVYkgerF1
+         sq7lZVRCO0+v3rpdU5qFSHnEyXyCbDGyVINrAcKSYbCxi6GDy2XtNsJfO7/v5/216TLa
+         MHCA==
+X-Gm-Message-State: AOJu0Yyb2aFeJPj/U3V1W7e6k4UzehmOsewdmMD16QDy1e4AUadzoupp
+        FY3pRw1PTvzbK0ZmT/CS7XU6DQ==
+X-Google-Smtp-Source: AGHT+IE2ddZXAHZ+EtosCg35xyk2TmZZE0wleCg6iIlOBQInFGwfP73LXvoCuc7pVTQxp9U55RQpFw==
+X-Received: by 2002:adf:e103:0:b0:331:6a43:5a84 with SMTP id t3-20020adfe103000000b003316a435a84mr3553674wrz.42.1700474528864;
+        Mon, 20 Nov 2023 02:02:08 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id t8-20020a5d49c8000000b0031984b370f2sm10679075wrs.47.2023.11.20.02.02.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 02:02:08 -0800 (PST)
+Message-ID: <50062f55-e516-4bc6-bc06-ddb043532aa8@linaro.org>
+Date:   Mon, 20 Nov 2023 11:02:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109210309.638594-5-umang.jain@ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/2] dt-bindings: cache: qcom,llcc: Add X1E80100
+ compatible
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+References: <20231117095315.2087-1-quic_sibis@quicinc.com>
+ <20231117095315.2087-2-quic_sibis@quicinc.com>
+ <f3cd8531-faa8-4ec4-b1b8-ba327b7df5cd@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <f3cd8531-faa8-4ec4-b1b8-ba327b7df5cd@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,149 +125,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 04:02:56PM -0500, Umang Jain wrote:
-> +static void event_to_host_cb(struct vchiq_mmal_instance *instance,
-> +			     struct mmal_msg *msg, u32 msg_len)
-> +{
-> +	int comp_idx = msg->u.event_to_host.client_component;
-> +	struct vchiq_mmal_component *component =
-> +					&instance->component[comp_idx];
-> +	struct vchiq_mmal_port *port = NULL;
-> +	struct mmal_msg_context *msg_context;
-> +	u32 port_num = msg->u.event_to_host.port_num;
-> +
-> +	if (msg->u.buffer_from_host.drvbuf.magic == MMAL_MAGIC) {
-> +		pr_err("%s: MMAL_MSG_TYPE_BUFFER_TO_HOST with bad magic\n",
-> +		       __func__);
-> +		return;
-> +	}
-> +
-> +	switch (msg->u.event_to_host.port_type) {
-> +	case MMAL_PORT_TYPE_CONTROL:
-> +		if (port_num) {
-> +			pr_err("%s: port_num of %u >= number of ports 1",
-
-This message is confusing.  Perhaps:
-
-	pr_err("%s: invalid port_num %u (should be zero)", ...
-
-> +			       __func__, port_num);
-> +			return;
-> +		}
-> +		port = &component->control;
-> +		break;
-> +	case MMAL_PORT_TYPE_INPUT:
-> +		if (port_num >= component->inputs) {
-> +			pr_err("%s: port_num of %u >= number of ports %u",
-
-	pr_err("%s: port_num (%u) >= component->inputs (%u)",
+On 18/11/2023 00:37, Konrad Dybcio wrote:
+> On 17.11.2023 10:53, Sibi Sankar wrote:
+>> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+>>
+>> Add the compatible for X1E80100 platforms.
+>>
+>> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+>> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> ---
+> Unrelated to this patch alone, but I noticed that with this new naming
+> scheme, patterns in Documentation/devicetree/bindings/arm/qcom-soc.yaml will
+> require an update as well.
 
 
-> +			       __func__, port_num,
-> +			       port_num >= component->inputs);
-> +			return;
-> +		}
-> +		port = &component->input[port_num];
-> +		break;
-> +	case MMAL_PORT_TYPE_OUTPUT:
-> +		if (port_num >= component->outputs) {
-> +			pr_err("%s: port_num of %u >= number of ports %u",
+I'll fix existing platforms.
 
+Best regards,
+Krzysztof
 
-	pr_err("%s: port_num (%u) >= component->outputs (%u)",
-
-> +			       __func__, port_num,
-> +			       port_num >= component->outputs);
-> +			return;
-> +		}
-> +		port = &component->output[port_num];
-> +		break;
-> +	case MMAL_PORT_TYPE_CLOCK:
-> +		if (port_num >= component->clocks) {
-> +			pr_err("%s: port_num of %u >= number of ports %u",
-> +			       __func__, port_num,
-> +			       port_num >= component->clocks);
-> +			return;
-> +		}
-> +		port = &component->clock[port_num];
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	if (!mutex_trylock(&port->event_context_mutex)) {
-> +		pr_err("dropping event 0x%x\n", msg->u.event_to_host.cmd);
-> +		return;
-> +	}
-> +	msg_context = port->event_context;
-> +
-> +	if (msg->h.status != MMAL_MSG_STATUS_SUCCESS) {
-> +		/* message reception had an error */
-> +		pr_err("%s: error %d in reply\n", __func__, msg->h.status);
-> +
-> +		msg_context->u.bulk.status = msg->h.status;
-> +	} else if (msg->u.event_to_host.length > MMAL_WORKER_EVENT_SPACE) {
-> +		/* data is not in message, queue a bulk receive */
-> +		pr_err("%s: payload not in message - bulk receive??! NOT SUPPORTED\n",
-> +		       __func__);
-> +		msg_context->u.bulk.status = -1;
-> +	} else {
-> +		memcpy(msg_context->u.bulk.buffer->buffer,
-> +		       msg->u.event_to_host.data,
-> +		       msg->u.event_to_host.length);
-> +
-> +		msg_context->u.bulk.buffer_used =
-> +		    msg->u.event_to_host.length;
-> +
-> +		msg_context->u.bulk.mmal_flags = 0;
-> +		msg_context->u.bulk.dts = MMAL_TIME_UNKNOWN;
-> +		msg_context->u.bulk.pts = MMAL_TIME_UNKNOWN;
-> +		msg_context->u.bulk.cmd = msg->u.event_to_host.cmd;
-> +
-> +		pr_debug("event component:%u port type:%d num:%d cmd:0x%x length:%d\n",
-> +			 msg->u.event_to_host.client_component,
-> +			 msg->u.event_to_host.port_type,
-> +			 msg->u.event_to_host.port_num,
-> +			 msg->u.event_to_host.cmd, msg->u.event_to_host.length);
-> +	}
-> +
-> +	schedule_work(&msg_context->u.bulk.work);
-> +}
-> +
->  /* deals with receipt of buffer to host message */
->  static void buffer_to_host_cb(struct vchiq_mmal_instance *instance,
->  			      struct mmal_msg *msg, u32 msg_len)
-> @@ -1329,6 +1421,7 @@ static int port_disable(struct vchiq_mmal_instance *instance,
->  				mmalbuf->mmal_flags = 0;
->  				mmalbuf->dts = MMAL_TIME_UNKNOWN;
->  				mmalbuf->pts = MMAL_TIME_UNKNOWN;
-> +				mmalbuf->cmd = 0;
->  				port->buffer_cb(instance,
->  						port, 0, mmalbuf);
->  			}
-> @@ -1630,6 +1723,43 @@ int mmal_vchi_buffer_cleanup(struct mmal_buffer *buf)
->  }
->  EXPORT_SYMBOL_GPL(mmal_vchi_buffer_cleanup);
->  
-> +static void init_event_context(struct vchiq_mmal_instance *instance,
-> +			       struct vchiq_mmal_port *port)
-> +{
-> +	struct mmal_msg_context *ctx = get_msg_context(instance);
-> +
-> +	mutex_init(&port->event_context_mutex);
-> +
-> +	port->event_context = ctx;
-> +	ctx->u.bulk.instance = instance;
-> +	ctx->u.bulk.port = port;
-> +	ctx->u.bulk.buffer =
-> +		kzalloc(sizeof(*ctx->u.bulk.buffer), GFP_KERNEL);
-
-This is 79 chars.  Delete the line break.
-
-> +	if (!ctx->u.bulk.buffer)
-> +		goto release_msg_context;
-> +	ctx->u.bulk.buffer->buffer = kzalloc(MMAL_WORKER_EVENT_SPACE,
-> +					     GFP_KERNEL);
-
-regards,
-dan carpenter
