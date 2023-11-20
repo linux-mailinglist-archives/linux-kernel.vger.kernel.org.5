@@ -2,66 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA967F1126
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8BA7F112C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjKTLBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:01:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
+        id S232789AbjKTLBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjKTLBL (ORCPT
+        with ESMTP id S232741AbjKTLBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:01:11 -0500
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CF7C5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:01:07 -0800 (PST)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-408423fc784so2185975e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:01:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700478066; x=1701082866;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
-        b=VRGPYlejlgRW8D8NHHDFM+md1tYFSzw7yM0bJwcPBcKtcJew0Nt4U4NW+q3EQkTtAr
-         0kg6YkoNeYSCXQi9tMqCOBVi4Pfnw3EASyWVJ9Uj3udPbEmbjGeUqmWtuHDyuq1bSOVo
-         vqnrqJzeEYPY6lZSdVUsVhw+pn6Bwese7pGKfoOp+BWzdTJgMfxZ5gvSB7hCOEIY75eT
-         boxo+CFQS/CTdFtsLyKb28t0GC86eI4eo0o+Z7emxIAM3ifzhw37DLpos92bRfY6TVhb
-         lRIYTuwUOrl49q+1/MhfAXOKVuycwBjg6epVdeAdOQcItZmrgn5tFIv+As7FCgevivUs
-         bzIg==
-X-Gm-Message-State: AOJu0Yw5CBvlEK8iA6/O0Y7DGAoKEaplGG5uUuMkE4tK+4j9Rn+vhgZq
-        +3+fWaU0RVCVCqO58osUueUySIafraA=
-X-Google-Smtp-Source: AGHT+IGhlldqDixGyGllvnolSag0cu3gFPwbWA1e4u9fC5SdAdWMJO1V1YinqrYKHdrIj54JFTR4DQ==
-X-Received: by 2002:a05:600c:4e41:b0:404:7606:a871 with SMTP id e1-20020a05600c4e4100b004047606a871mr5977827wmq.2.1700478066190;
-        Mon, 20 Nov 2023 03:01:06 -0800 (PST)
-Received: from [192.168.64.177] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id t13-20020a05600c450d00b004094e565e71sm13041848wmo.23.2023.11.20.03.01.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 03:01:05 -0800 (PST)
-Message-ID: <550c6580-bc39-42ac-ac19-230f54a6e10c@grimberg.me>
-Date:   Mon, 20 Nov 2023 13:01:04 +0200
+        Mon, 20 Nov 2023 06:01:40 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83BFD2;
+        Mon, 20 Nov 2023 03:01:35 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AKB19M4016016;
+        Mon, 20 Nov 2023 05:01:09 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700478069;
+        bh=dK5EtPWsONa0/kGuX8aw4ZjhPdWzygkQ+zFeP8bQ8UU=;
+        h=From:To:CC:Subject:Date;
+        b=UV5IqoaNEqJ8El5bzL0UqZaX5wFwKZDODTTaTHAaZx4swD5vcMA++ksvqw4Ebh6sy
+         pfsnbqe99hrXhtGuyXlOYM6RxHuJ6/noRv6gZaCFmEajJbWVlIft6A4iDv+Ru+SXCL
+         g/2cGp2Wlz6EkiFGpIJI1UtnZzq9PPVQcbzNQOR4=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AKB19OV098656
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Nov 2023 05:01:09 -0600
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 20
+ Nov 2023 05:01:09 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 20 Nov 2023 05:01:09 -0600
+Received: from uda0500640.dal.design.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AKB1654029628;
+        Mon, 20 Nov 2023 05:01:07 -0600
+From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>
+CC:     <bigeasy@linutronix.de>, <horms@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <r-gunasekaran@ti.com>
+Subject: [PATCH net-next] net: hsr: Add support for MC filtering at the slave device
+Date:   Mon, 20 Nov 2023 16:31:05 +0530
+Message-ID: <20231120110105.18416-1-r-gunasekaran@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2 RESEND] nvme-auth: set explanation code for failure2
- msgs
-Content-Language: en-US
-To:     Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
-Cc:     linux-nvme@lists.infradead.org, hch@lst.de, axboe@kernel.dk,
-        kbusch@kernel.org, hare@suse.de
-References: <20231011084512.1835614-1-shiftee@posteo.net>
- <20231011084512.1835614-2-shiftee@posteo.net>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <20231011084512.1835614-2-shiftee@posteo.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+From: Murali Karicheri <m-karicheri2@ti.com>
+
+When MC (multicast) list is updated by the networking layer due to a
+user command and as well as when allmulti flag is set, it needs to be
+passed to the enslaved Ethernet devices. This patch allows this
+to happen by implementing ndo_change_rx_flags() and ndo_set_rx_mode()
+API calls that in turns pass it to the slave devices using
+existing API calls.
+
+Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
+---
+ net/hsr/hsr_device.c | 67 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 66 insertions(+), 1 deletion(-)
+
+diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+index 306f942c3b28..4e8f4a3cefbf 100644
+--- a/net/hsr/hsr_device.c
++++ b/net/hsr/hsr_device.c
+@@ -173,7 +173,24 @@ static int hsr_dev_open(struct net_device *dev)
+ 
+ static int hsr_dev_close(struct net_device *dev)
+ {
+-	/* Nothing to do here. */
++	struct hsr_port *port;
++	struct hsr_priv *hsr;
++
++	hsr = netdev_priv(dev);
++	hsr_for_each_port(hsr, port) {
++		if (port->type == HSR_PT_MASTER)
++			continue;
++		switch (port->type) {
++		case HSR_PT_SLAVE_A:
++		case HSR_PT_SLAVE_B:
++			dev_uc_unsync(port->dev, dev);
++			dev_mc_unsync(port->dev, dev);
++			break;
++		default:
++			break;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -404,12 +421,60 @@ void hsr_del_ports(struct hsr_priv *hsr)
+ 		hsr_del_port(port);
+ }
+ 
++static void hsr_ndo_set_rx_mode(struct net_device *dev)
++{
++	struct hsr_port *port;
++	struct hsr_priv *hsr;
++
++	hsr = netdev_priv(dev);
++
++	hsr_for_each_port(hsr, port) {
++		if (port->type == HSR_PT_MASTER)
++			continue;
++		switch (port->type) {
++		case HSR_PT_SLAVE_A:
++		case HSR_PT_SLAVE_B:
++			dev_mc_sync_multiple(port->dev, dev);
++			dev_uc_sync_multiple(port->dev, dev);
++			break;
++		default:
++			break;
++		}
++	}
++}
++
++static void hsr_change_rx_flags(struct net_device *dev, int change)
++{
++	struct hsr_port *port;
++	struct hsr_priv *hsr;
++
++	hsr = netdev_priv(dev);
++
++	hsr_for_each_port(hsr, port) {
++		if (port->type == HSR_PT_MASTER)
++			continue;
++		switch (port->type) {
++		case HSR_PT_SLAVE_A:
++		case HSR_PT_SLAVE_B:
++			if (change & IFF_ALLMULTI)
++				dev_set_allmulti(port->dev,
++						 dev->flags &
++						 IFF_ALLMULTI ? 1 : -1);
++			break;
++		default:
++			break;
++		}
++	}
++}
++
+ static const struct net_device_ops hsr_device_ops = {
+ 	.ndo_change_mtu = hsr_dev_change_mtu,
+ 	.ndo_open = hsr_dev_open,
+ 	.ndo_stop = hsr_dev_close,
+ 	.ndo_start_xmit = hsr_dev_xmit,
++	.ndo_change_rx_flags = hsr_change_rx_flags,
+ 	.ndo_fix_features = hsr_fix_features,
++	.ndo_set_rx_mode = hsr_ndo_set_rx_mode,
+ };
+ 
+ static struct device_type hsr_type = {
+
+base-commit: 5a82d69d48c82e89aef44483d2a129f869f3506a
+-- 
+2.17.1
+
