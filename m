@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1576D7F19AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635747F19A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbjKTRTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34178 "EHLO
+        id S233653AbjKTRTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233804AbjKTRTY (ORCPT
+        with ESMTP id S233443AbjKTRTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:19:24 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD39D1AA;
-        Mon, 20 Nov 2023 09:19:17 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1r57vQ-0008L6-0R;
-        Mon, 20 Nov 2023 17:19:09 +0000
-Date:   Mon, 20 Nov 2023 17:19:05 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Jianhui Zhao <zhaojh329@gmail.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        "Garmin.Chang" <Garmin.Chang@mediatek.com>,
-        Edward-JW Yang <edward-jw.yang@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v2 3/4] clk: mediatek: Add pcw_chg_shift control
-Message-ID: <cb983f0d30f019120cf49f24efb655cf794084d3.1700498124.git.daniel@makrotopia.org>
-References: <b277c5f084ff35849efb8250510b2536053d1316.1700498124.git.daniel@makrotopia.org>
+        Mon, 20 Nov 2023 12:19:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41279110
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700500753; x=1732036753;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tftpT5rZLKbRyBjfdRG89+3WcMyMC/cSf3NwsXLUelU=;
+  b=OI6c0JHcay2BTRndWa0URny2YQHvkMc+yWYZov83h4hX1Hz7//MS5/7M
+   Vo68FpWEBgrF/aLqB8qKfBGjh3GzEnYrDO+9qYOhYnVMlWn5lAgBj2qgU
+   uD3i2lIsMKsgIfcOcvvg3dOHg9k+iIpIx+sMgyg6e1M1hI23W2DQHyDM1
+   MFoJv8IGJZKgQy9b0HH/2VO5IIFw7OvizXSr8cQPGlxlsVxtpse2VD50f
+   cjTkKa+CFgbVFLl+BrUrBR3NeXenElAIFiKPGsFLE/mi+OlDmbvh1vfIY
+   pDWcBIrolftl3mR//646GP/HaTBdItZ3mRFBKsaaZnNi1FVGnLAqz+yqY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371007205"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="371007205"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 09:19:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="795520290"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="795520290"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 09:19:10 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r57vQ-0000000Fbs1-1r1g;
+        Mon, 20 Nov 2023 19:19:08 +0200
+Date:   Mon, 20 Nov 2023 19:19:08 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [resend, PATCH v1 1/1] logic_pio: Use RESOURCE_SIZE_MAX
+ definition
+Message-ID: <ZVuVDBW3grRB-Cto@smile.fi.intel.com>
+References: <20231016132611.1201402-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b277c5f084ff35849efb8250510b2536053d1316.1700498124.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231016132611.1201402-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce pcw_chg_shfit control to optionally use that instead of the
-hardcoded PCW_CHG_MASK macro.
-This will needed for clocks on the MT7988 SoC.
+On Mon, Oct 16, 2023 at 04:26:11PM +0300, Andy Shevchenko wrote:
+> Use a predefined limit instead of hardcoding it.
 
-Signed-off-by: Sam Shih <sam.shih@mediatek.com>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/clk/mediatek/clk-pll.c | 5 ++++-
- drivers/clk/mediatek/clk-pll.h | 1 +
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Any comments on this?
 
-diff --git a/drivers/clk/mediatek/clk-pll.c b/drivers/clk/mediatek/clk-pll.c
-index 513ab6b1b3229..9f08bc5d2a8a2 100644
---- a/drivers/clk/mediatek/clk-pll.c
-+++ b/drivers/clk/mediatek/clk-pll.c
-@@ -114,7 +114,10 @@ static void mtk_pll_set_rate_regs(struct mtk_clk_pll *pll, u32 pcw,
- 			pll->data->pcw_shift);
- 	val |= pcw << pll->data->pcw_shift;
- 	writel(val, pll->pcw_addr);
--	chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
-+	if (pll->data->pcw_chg_shift)
-+		chg = readl(pll->pcw_chg_addr) | BIT(pll->data->pcw_chg_shift);
-+	else
-+		chg = readl(pll->pcw_chg_addr) | PCW_CHG_MASK;
- 	writel(chg, pll->pcw_chg_addr);
- 	if (pll->tuner_addr)
- 		writel(val + 1, pll->tuner_addr);
-diff --git a/drivers/clk/mediatek/clk-pll.h b/drivers/clk/mediatek/clk-pll.h
-index f17278ff15d78..d28d317e84377 100644
---- a/drivers/clk/mediatek/clk-pll.h
-+++ b/drivers/clk/mediatek/clk-pll.h
-@@ -44,6 +44,7 @@ struct mtk_pll_data {
- 	u32 pcw_reg;
- 	int pcw_shift;
- 	u32 pcw_chg_reg;
-+	int pcw_chg_shift;
- 	const struct mtk_pll_div_table *div_table;
- 	const char *parent_name;
- 	u32 en_reg;
 -- 
-2.42.1
+With Best Regards,
+Andy Shevchenko
+
+
