@@ -2,220 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 633E77F145A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713627F1456
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbjKTNYl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 08:24:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S232607AbjKTNYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232866AbjKTNYi (ORCPT
+        with ESMTP id S232984AbjKTNYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 08:24:38 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3928D51;
-        Mon, 20 Nov 2023 05:24:32 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYnqV4VwGz9xFr4;
-        Mon, 20 Nov 2023 21:07:50 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDHtXXkXVtlxasHAQ--.12528S2;
-        Mon, 20 Nov 2023 14:24:02 +0100 (CET)
-Message-ID: <6f8fb47a73fe27c6f77ac9280c3f8b63ce57ba27.camel@huaweicloud.com>
-Subject: Re: [PATCH v5 22/23] integrity: Move integrity functions to the LSM
- infrastructure
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Mon, 20 Nov 2023 14:23:45 +0100
-In-Reply-To: <CAHC9VhRpG3wFbu6-EZw3t1TeKxBzYX86YzizE6x9JGeWmyxixA@mail.gmail.com>
-References: <20231107134012.682009-23-roberto.sassu@huaweicloud.com>
-         <f529266a02533411e72d706b908924e8.paul@paul-moore.com>
-         <49a7fd0a1f89188fa92f258e88c50eaeca0f4ac9.camel@huaweicloud.com>
-         <CAHC9VhRpG3wFbu6-EZw3t1TeKxBzYX86YzizE6x9JGeWmyxixA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 20 Nov 2023 08:24:13 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8312131;
+        Mon, 20 Nov 2023 05:24:08 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SYpBB2lMMz4f3knr;
+        Mon, 20 Nov 2023 21:24:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id EC84E1A02CA;
+        Mon, 20 Nov 2023 21:24:03 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgA3iA7yXVtlJWLJBQ--.22273S3;
+        Mon, 20 Nov 2023 21:24:03 +0800 (CST)
+Subject: Re: [PATCH 1/2] block: introduce new field flags in block_device
+To:     Hannes Reinecke <hare@suse.de>, Yu Kuai <yukuai1@huaweicloud.com>,
+        axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        Ming Lei <ming.lei@redhat.com>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231120093847.2228127-1-yukuai1@huaweicloud.com>
+ <20231120093847.2228127-2-yukuai1@huaweicloud.com>
+ <f0ac497e-e599-4892-94f7-469660cb5f84@suse.de>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <1338945e-5033-3bb2-0480-7c6767bf0848@huaweicloud.com>
+Date:   Mon, 20 Nov 2023 21:24:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-CM-TRANSID: LxC2BwDHtXXkXVtlxasHAQ--.12528S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF1kGFWkWFWkJF43trW5Jrb_yoW7tF43pa
-        yUKay5Cr4kAr1Fk3Wvy3Wrua1S9rZ7XFW7WrnxJry8A34UZFySvF48Kay5uFWDCryrtw10
-        qa1jkr9xC3Z0v3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj5KmQgAAsG
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <f0ac497e-e599-4892-94f7-469660cb5f84@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgA3iA7yXVtlJWLJBQ--.22273S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFWxGw1xXF17Zw18CrWUtwb_yoW5Gr1Dpr
+        ykJFy5WrWUGrn5Wr4xJr1UJFyrXw48t3W8Gryaya42yr4UJr1Yqr18Xry0gF17Ar4xJF47
+        Xr1UJrWkZFyUGrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-17 at 16:22 -0500, Paul Moore wrote:
-> On Thu, Nov 16, 2023 at 5:08 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
-> > > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> 
-> ...
-> 
-> > > > +/*
-> > > > + * Perform the initialization of the 'integrity', 'ima' and 'evm' LSMs to
-> > > > + * ensure that the management of integrity metadata is working at the time
-> > > > + * IMA and EVM hooks are registered to the LSM infrastructure, and to keep
-> > > > + * the original ordering of IMA and EVM functions as when they were hardcoded.
-> > > > + */
-> > > >  static int __init integrity_lsm_init(void)
-> > > >  {
-> > > > +   const struct lsm_id *lsmid;
-> > > > +
-> > > >     iint_cache =
-> > > >         kmem_cache_create("iint_cache", sizeof(struct integrity_iint_cache),
-> > > >                           0, SLAB_PANIC, iint_init_once);
-> > > > +   /*
-> > > > +    * Obtain either the IMA or EVM LSM ID to register integrity-specific
-> > > > +    * hooks under that LSM, since there is no LSM ID assigned to the
-> > > > +    * 'integrity' LSM.
-> > > > +    */
-> > > > +   lsmid = ima_get_lsm_id();
-> > > > +   if (!lsmid)
-> > > > +           lsmid = evm_get_lsm_id();
-> > > > +   /* No point in continuing, since both IMA and EVM are disabled. */
-> > > > +   if (!lsmid)
-> > > > +           return 0;
-> > > > +
-> > > > +   security_add_hooks(integrity_hooks, ARRAY_SIZE(integrity_hooks), lsmid);
-> > > 
-> > > Ooof.  I understand, or at least I think I understand, why the above
-> > > hack is needed, but I really don't like the idea of @integrity_hooks
-> > > jumping between IMA and EVM depending on how the kernel is configured.
-> > > 
-> > > Just to make sure I'm understanding things correctly, the "integrity"
-> > > LSM exists to ensure the proper hook ordering between IMA/EVM, shared
-> > > metadata management for IMA/EVM, and a little bit of a hack to solve
-> > > some kernel module loading issues with signatures.  Is that correct?
-> > > 
-> > > I see that patch 23/23 makes some nice improvements to the metadata
-> > > management, moving them into LSM security blobs, but it appears that
-> > > they are still shared, and thus the requirement is still there for
-> > > an "integrity" LSM to manage the shared blobs.
-> > 
-> > Yes, all is correct.
-> 
-> Thanks for the clarification, more on this below.
-> 
-> > > I'd like to hear everyone's honest opinion on this next question: do
-> > > we have any hope of separating IMA and EVM so they are independent
-> > > (ignore the ordering issues for a moment), or are we always going to
-> > > need to have the "integrity" LSM to manage shared resources, hooks,
-> > > etc.?
-> > 
-> > I think it should not be technically difficult to do it. But, it would
-> > be very important to understand all the implications of doing those
-> > changes.
-> > 
-> > Sorry, for now I don't see an immediate need to do that, other than
-> > solving this LSM naming issue. I tried to find the best solution I
-> > could.
-> 
-> I first want to say that I think you've done a great job thus far, and
-> I'm very grateful for the work you've done.  We can always use more
-> help in the kernel security space and I'm very happy to see your
-> contributions - thank you :)
+Hi,
 
-Thank you!
+在 2023/11/20 18:45, Hannes Reinecke 写道:
+> On 11/20/23 10:38, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> There are multiple switches in struct block_device, use seperate bool
+>> fields for them is not gracefully. Add a new field flags and replace
+>> swithes to a bit, there are no functional changes, and preapre to add
+>> a new switch in the next patch.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   block/bdev.c              | 15 ++++++++-------
+>>   block/blk-core.c          |  7 ++++---
+>>   block/genhd.c             |  8 +++++---
+>>   block/ioctl.c             |  2 +-
+>>   include/linux/blk_types.h | 12 ++++++------
+>>   include/linux/blkdev.h    |  5 +++--
+>>   6 files changed, 27 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/block/bdev.c b/block/bdev.c
+>> index fc8d28d77495..cb849bcf61ae 100644
+>> --- a/block/bdev.c
+>> +++ b/block/bdev.c
+>> @@ -408,10 +408,10 @@ struct block_device *bdev_alloc(struct gendisk 
+>> *disk, u8 partno)
+>>       bdev->bd_partno = partno;
+>>       bdev->bd_inode = inode;
+>>       bdev->bd_queue = disk->queue;
+>> -    if (partno)
+>> -        bdev->bd_has_submit_bio = disk->part0->bd_has_submit_bio;
+>> +    if (partno && test_bit(BD_FLAG_HAS_SUBMIT_BIO, &disk->part0->flags))
+>> +        set_bit(BD_FLAG_HAS_SUBMIT_BIO, &bdev->flags);
+>>       else
+>> -        bdev->bd_has_submit_bio = false;
+>> +        clear_bit(BD_FLAG_HAS_SUBMIT_BIO, &bdev->flags);
+>>       bdev->bd_stats = alloc_percpu(struct disk_stats);
+>>       if (!bdev->bd_stats) {
+>>           iput(inode);
+> 
+> Couldn't you achieve the very same result by using 
+> 'READ_ONCE()/WRITE_ONCE()' and keep the structure as-is?
 
-> I'm concerned about the integrity LSM because it isn't really a LSM,
-> it is simply an implementation artifact from a time when only one LSM
-> was enabled.  Now that we have basic support for stacking LSMs, as we
-> promote integrity/IMA/EVM I think this is the perfect time to move
-> away from the "integrity" portion and integrate the necessary
-> functionality into the IMA and EVM LSMs.  This is even more important
-> now that we are looking at making the LSMs more visible to userspace
-> via syscalls; how would you explain to a developer or user the need
-> for an "integrity" LSM along with the IMA and EVM LSMs?
-> 
-> Let's look at the three things the the integrity code provides in this patchset:
-> 
-> * IMA/EVM hook ordering
-> 
-> For better or worse, we have requirements on LSM ordering today that
-> are enforced only by convention, the BPF LSM being the perfect
-> example.  As long as we document this in Kconfig I think we are okay.
-> 
-> * Shared metadata
-> 
-> Looking at the integrity_iint_cache struct at the end of your patchset
-> I see the following:
-> 
->   struct integrity_iint_cache {
->     struct mutex mutex;
->     struct inode *inode;
->     u64 version;
->     unsigned long flags;
->     unsigned long measured_pcrs;
->     unsigned long atomic_flags;
->     enum integrity_status ima_file_status:4;
->     enum integrity_status ima_mmap_status:4;
->     enum integrity_status ima_bprm_status:4;
->     enum integrity_status ima_read_status:4;
->     enum integrity_status ima_creds_status:4;
->     enum integrity_status evm_status:4;
->     struct ima_digest_data *ima_hash;
->   };
-> 
-> Now that we are stashing the metadata in the inode, we should be able
-> to remove the @inode field back pointer.  It seems like we could
-> duplicate @mutex and @version without problem.
-> 
-> I only see the @measured_pcrs, @atomic_flags used in the IMA code.
-> 
-> I only see the @ima_XXX_status fields using in the IMA code, and the
-> @evm_status used in the EVM code.
-> 
-> I only see the @ima_hash field used by the IMA code.
-> 
-> I do see both IMA and EVM using the @flags field, but only one case
-> (IMA_NEW_FILE) where one LSM (EVM) looks for another flags (IMA).  I'm
-> not sure how difficult that would be to untangle, but I imagine we
-> could do something here; if we had to, we could make EVM be dependent
-> on IMA in Kconfig and add a function call to check on the inode
-> status.  Although I hope we could find a better solution.
-> 
-> * Kernel module loading hook (integrity_kernel_module_request(...))
-> 
-> My guess is that this is really an IMA hook, but I can't say for
-> certain.  If it is needed for EVM we could always duplicate it across
-> the IMA and EVM LSMs, it is trivially small and one extra strcmp() at
-> kernel module load time doesn't seem awful to me.
+Yes, remove this patch and add a new bool field in the next patch can
+work as well, the idea here is replace multiple fields with a single
+flag, and just use the flag in next patch. If people thinks add a new
+bool field is better, I'll follow that.
 
-Ok... so, for now I'm trying to separate them just to see if it is
-possible. Will send just the integrity-related patches shortly.
+Thanks,
+Kuai
 
-Thanks
-
-Roberto
+> 
+> Cheers,
+> 
+> Hannes--
+> Dr. Hannes Reinecke                   Kernel Storage Architect
+> hare@suse.de                              +49 911 74053 688
+> SUSE Software Solutions Germany GmbH, Frankenstr. 146, 90461 Nürnberg
+> Managing Directors: I. Totev, A. McDonald, W. Knoblich
+> (HRB 36809, AG Nürnberg)
+> 
+> .
+> 
 
