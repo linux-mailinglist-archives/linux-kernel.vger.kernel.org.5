@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0D57F18B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586C07F18BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229457AbjKTQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S231352AbjKTQix convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 11:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbjKTQfG (ORCPT
+        with ESMTP id S231444AbjKTQiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:35:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975DCC5
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:35:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700498101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZvczFxIKyKy6D2excjoW9QSNl/x+SIklQ2YwnPNLtE=;
-        b=Gp6hnjM0nN5WIinUdZ4cQMP6wxHtovXz9KVCpDQaJCS2IpCJX+puH/uQKYWv682IAJ7CzP
-        ou+BB5AafrrquIRtDCu6pHRlSf59K6OP3hQjEcZlHYFhpq6tiPsQo50vQzBt+6C7xIeoae
-        TuRQFlOoCu/YXbiD4yiWzZUT3HBzUVY=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-467-a3NuuBPnN3Wfx6Zp3V8zug-1; Mon, 20 Nov 2023 11:35:00 -0500
-X-MC-Unique: a3NuuBPnN3Wfx6Zp3V8zug-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58a23b6c2d3so4357051eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:35:00 -0800 (PST)
+        Mon, 20 Nov 2023 11:38:51 -0500
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B2F1A1;
+        Mon, 20 Nov 2023 08:38:44 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1cc28719cb0so8098135ad.0;
+        Mon, 20 Nov 2023 08:38:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700498099; x=1701102899;
+        d=1e100.net; s=20230601; t=1700498324; x=1701103124;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RZvczFxIKyKy6D2excjoW9QSNl/x+SIklQ2YwnPNLtE=;
-        b=hdAwut1kiy7qh2o//h3SQYKYNlJb3R4yLqylVn+HoElHulz0n8ZKAdY8J0J9TYLK1V
-         TXjO28JGlYBN5zoZP+2O/E7BG60689g8MmzQrC58RBdh04GEyw95KgxZf20irLmsLRYA
-         B7BrEkIiG0K7EVyKiJQ+Uq459fA2aPgcCF9/m/u/WCRncpp58nR+0EOYykFgVvFa0okw
-         tGndwctpJFyCIQnhquDXBwP/OnQhID8yHMYYU3VduaEoNXSCcr/lv8kCeQLWe6WRQJIk
-         xJEi1bHuPd69ify2lTv9ov4nLpFTKiMv0wi//ZIX3/jCetVSh+3/egORfyj4ka7/npnc
-         HesQ==
-X-Gm-Message-State: AOJu0YzRZ/8TjCgcm/J87mHOQzb1TKAByzyM8z8dO06LL0skYuZBLNt5
-        DqMagMa+FIaznJ6eAUUQeozkP7ZqFCno8BCEcHGwjCTNw/fHWlhFQjroaWbHcDfAqHd8UGQlU9e
-        UB3t+eIrcsnd5xn3Q9j8d4X2VYtKF/6oEvJmia6/r
-X-Received: by 2002:a05:6358:726:b0:16b:4b12:1842 with SMTP id e38-20020a056358072600b0016b4b121842mr8647509rwj.6.1700498099552;
-        Mon, 20 Nov 2023 08:34:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFR0FE8SSbDLW3AevgsAwFEu6zOq5yK2N2TwdyzHuvhL6NWib3gECyjA5arteEcU++mTZz2XKREqHBK0HUJhqc=
-X-Received: by 2002:a05:6358:726:b0:16b:4b12:1842 with SMTP id
- e38-20020a056358072600b0016b4b121842mr8647488rwj.6.1700498099328; Mon, 20 Nov
- 2023 08:34:59 -0800 (PST)
+        bh=bQOioIBEe44MwPtkyvqYFQAPmWMTxr0AHcSiFY3JvEw=;
+        b=DnMQudJR3Wr000u/XnmjMYt2A53FuvP8uzDUW823YlkmghXdCM5i1gY/U9Pg21fI6N
+         TT4NdHgZVXsMe95I4wZ3Oq5Yj8001scT01LUkPp8xNXK2/yFoilF49kFW8B2qmWFyy3a
+         4lWsbES7L4/3vpfzhtCXEGmA29XR2ArwGGXfY2pY+rdI0BBdMxhp5IxJK7iCsNf3SiZU
+         TksD4eC5W83vGD+MStab9ROqXvcMaovdq+MmqlTcOzKZTKMZa8OTVTsbUnXUarFseS9b
+         c006qR++YBT4FsiXJw3XJlAM6XHQlVteF+TNQvtZvVDf3hyz6LTpSdfklUdWzQKS5pL+
+         VarA==
+X-Gm-Message-State: AOJu0YzDTui567Q3OQ4E/KKPxu1kiAx6l4uBDubDqsnDnoN9y2C1vHnk
+        HtefUtKoHFuss7vviFDUXynf9C4IBIxstB5rXYY=
+X-Google-Smtp-Source: AGHT+IHZxZmoC+y3JhyFoImDC8R1QNZWBDz2hZ4XJpcQr4bg8N5VcIMpm08Ag25h8Eor/wZ2zmtn31A4efX9X1F30zY=
+X-Received: by 2002:a05:6a20:e125:b0:187:df59:5c43 with SMTP id
+ kr37-20020a056a20e12500b00187df595c43mr12459064pzb.2.1700498323819; Mon, 20
+ Nov 2023 08:38:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120105545.1209530-1-cmirabil@redhat.com> <8818a183-84a3-4460-a8ca-73a366ae6153@kernel.dk>
-In-Reply-To: <8818a183-84a3-4460-a8ca-73a366ae6153@kernel.dk>
-From:   Charles Mirabile <cmirabil@redhat.com>
-Date:   Mon, 20 Nov 2023 11:34:48 -0500
-Message-ID: <CABe3_aHtkDm0y2mhKF0BJu5VUcMvzRWSd7sPeyTFCZEFZt05rA@mail.gmail.com>
-Subject: Re: [PATCH] io_uring/fs: consider link->flags when getting path for LINKAT
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, asml.silence@gmail.com,
-        io-uring@vger.kernel.org, stable@vger.kernel.org
+References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+ <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com> <CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com>
+ <41160dbf-d8c8-4dc0-9fda-42cc97df5b77@intel.com>
+In-Reply-To: <41160dbf-d8c8-4dc0-9fda-42cc97df5b77@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 20 Nov 2023 17:38:32 +0100
+Message-ID: <CAJZ5v0jNOXKv2fHNGUDjDvvg6FGbXuahhH9dBhWiAwiPv3fH8A@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sam Edwards <cfsworks@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 10:59=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
-:
+On Mon, Nov 20, 2023 at 5:19 PM Dave Jiang <dave.jiang@intel.com> wrote:
 >
-> On 11/20/23 3:55 AM, Charles Mirabile wrote:
-> > In order for `AT_EMPTY_PATH` to work as expected, the fact
-> > that the user wants that behavior needs to make it to `getname_flags`
-> > or it will return ENOENT.
 >
-> Looks good - do you have a liburing test case for this too?
-Yes, see here https://github.com/axboe/liburing/issues/995 and here
-https://github.com/axboe/liburing/pull/996.
 >
-> --
-> Jens Axboe
+> On 11/20/23 08:46, Rafael J. Wysocki wrote:
+> > On Tue, Nov 14, 2023 at 7:09 PM Sam Edwards <cfsworks@gmail.com> wrote:
+> >>
+> >> On 11/13/23 16:08, Linus Walleij wrote:
+> >>> After commit a103f46633fd the kernel stopped compiling for
+> >>> several ARM32 platforms that I am building with a bare metal
+> >>> compiler. Bare metal compilers (arm-none-eabi-) don't
+> >>> define __linux__.
+> >>
+> >> Hi Linus,
+> >>
+> >> I saw the same baremetal-compiler error here on the ARM64 side of the
+> >> fence, and narrowed the problem to the same commit as you.
+> >>
+> >>>
+> >>> This is because the header <acpi/platform/acenv.h> is now
+> >>> in the include path for <linux/irq.h>:
+> >>
+> >> More generally, I think it's because of this addition to linux/acpi.h:
+> >> +#include <linux/fw_table.h>
+> >>
+> >> linux/acpi.h is supposed to ensure _LINUX is defined (if it isn't
+> >> already done by a non-baremetal compiler) before we start pulling in
+> >> ACPICA includes, so that ACPICA knows the platform. But because
+> >> fw_table.h contains:
+> >> #include <linux/acpi.h>
+> >> #include <acpi/acpi.h>
+> >>
+> >> ...the circular include does nothing (linux/acpi.h's include guard stops
+> >> the include before _LINUX is defined) and we end up pulling in
+> >> acpi/acpi.h before we're ready.
 >
-Best - Charlie
+> Not including either causes compile errors for me.
 
+Interesting.  What errors do you get if you include linux/acpi.h only?
+
+It should not be necessary to include acpi/acpi.h in addition to
+linux/acpi.h, because the latter is expected to include the former.
+If it doesn't do that, something is amiss.
+
+> And directly including acpi/acpi.h w/o linux/acpi.h causes triggering the #error and some other stuff:
+>
+> ./include/acpi/platform/aclinux.h:18:2: error: #error "Please don't include <acpi/acpi.h> directly, include <linux/acpi.h> instead."
+>    18 | #error "Please don't include <acpi/acpi.h> directly, include <linux/acpi.h> instead."
+>       |  ^~~~~
+>
+>
+> Only including linux/acpi.h:
+> In file included from ./include/linux/acpi.h:18,
+>                  from init/main.c:30:
+> ./include/linux/fw_table.h:32:37: error: field ‘common’ has incomplete type
+>    32 |         struct acpi_subtable_header common;
+>       |                                     ^~~~~~
+> ./include/linux/fw_table.h:33:36: error: field ‘hmat’ has incomplete type
+>    33 |         struct acpi_hmat_structure hmat;
+>       |                                    ^~~~
+> ./include/linux/fw_table.h:34:40: error: field ‘prmt’ has incomplete type
+>    34 |         struct acpi_prmt_module_header prmt;
+>       |                                        ^~~~
+> ./include/linux/fw_table.h:35:33: error: field ‘cedt’ has incomplete type
+>    35 |         struct acpi_cedt_header cedt;
+>       |                                 ^~~~
+>
+>
+> >
+> > Yes, that's the problem AFAICS.  Dave?
+> >
+> > What about moving the fw_table.h include in linux/acpi.h below the
+> > mutex.h one, along with the EXPORT_SYMBOL_ACPI_LIB-related
+> > definitions?
+>
+> This builds cleanly for me.
+
+OK, so I'm wondering if this also helps the other people in this thread.
