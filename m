@@ -2,267 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956B87F163D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B4E7F164E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbjKTOwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:52:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        id S233976AbjKTOwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:52:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbjKTOvu (ORCPT
+        with ESMTP id S233506AbjKTOvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:51:50 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78F3AD76
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:50:42 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78727FEC;
-        Mon, 20 Nov 2023 06:51:28 -0800 (PST)
-Received: from [10.57.37.35] (unknown [10.57.37.35])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E95DD3F6C4;
-        Mon, 20 Nov 2023 06:50:38 -0800 (PST)
-Message-ID: <18c3ce48-86a7-4880-9b46-816b831145cf@arm.com>
-Date:   Mon, 20 Nov 2023 14:50:41 +0000
+        Mon, 20 Nov 2023 09:51:55 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600FE10F5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:51:02 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231120145101euoutp0109198847b973dd0f4b1e4c8efb349b20~ZXFaQD2El2522625226euoutp01a
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 14:51:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231120145101euoutp0109198847b973dd0f4b1e4c8efb349b20~ZXFaQD2El2522625226euoutp01a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700491861;
+        bh=7/6FemRmnMZSvOrVZ5Dgthh/u/9EWRsMZanz4+6xfv0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WLp7tqlkH6Shr0I0HrIR7NILj9vCSP3es3tfHlsso5ygtjyb1mM4TZeyKm2gwfj2x
+         vc+QnwKnOKRL0O5XTC8bzFJkzxV2LeBIMmjssd1SQjzrOng31VgEex1kwIdGSbKidA
+         dBwyi5oBBJPNNTl47lSrKIY13ofP4yI5rxwZEwIk=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231120145100eucas1p2d792b2b650f2806556d50436e7749079~ZXFZwjwh11100611006eucas1p2s;
+        Mon, 20 Nov 2023 14:51:00 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 22.A8.09552.4527B556; Mon, 20
+        Nov 2023 14:51:00 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231120145100eucas1p2c451ecec1274d7ba4eb337c409ef7fd2~ZXFZW5GXA1067610676eucas1p2q;
+        Mon, 20 Nov 2023 14:51:00 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231120145100eusmtrp2b50a1b5194651c48b00e9cef7f0bff7d~ZXFZWNRHc0700707007eusmtrp2Y;
+        Mon, 20 Nov 2023 14:51:00 +0000 (GMT)
+X-AuditID: cbfec7f5-83dff70000002550-78-655b72541292
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id D1.C3.09146.4527B556; Mon, 20
+        Nov 2023 14:51:00 +0000 (GMT)
+Received: from AMDC4515.eu.corp.samsungelectronics.net (unknown
+        [106.120.51.28]) by eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231120145059eusmtip28574b0da08cec730abbc281a878c265f~ZXFYg2CN00740707407eusmtip2X;
+        Mon, 20 Nov 2023 14:50:59 +0000 (GMT)
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Mateusz Majewski <m.majewski2@samsung.com>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v5 2/9] thermal: exynos: drop id field
+Date:   Mon, 20 Nov 2023 15:50:42 +0100
+Message-ID: <20231120145049.310509-3-m.majewski2@samsung.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231120145049.310509-1-m.majewski2@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-Content-Language: en-GB
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Barry Song <21cnbao@gmail.com>
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-References: <20231114014313.67232-1-v-songbaohua@oppo.com>
- <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
- <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com>
- <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
- <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
-From:   Steven Price <steven.price@arm.com>
-In-Reply-To: <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBKsWRmVeSWpSXmKPExsWy7djPc7ohRdGpBr+3KFk8mLeNzeLw/AqL
+        qQ+fsFl833KdyWLeZ1mLva+3slt8u9LBZLHp8TVWi8u75rBZfO49wmgx4/w+JouFTS3sFhOP
+        TWa2WHvkLrvF3C9TmS2ePOxjcxDwWDNvDaPHzll32T0W73nJ5LFpVSebx51re9g8Ni+p9+jb
+        sorR4/MmuQCOKC6blNSczLLUIn27BK6MrtNvmAom8VQc/z2LpYHxE2cXIyeHhICJxOTJbaxd
+        jFwcQgIrGCU+/17FBpIQEvjCKNFxgQ0i8ZlRYua8XywwHRt3/4VKLGeU2Nt4mh3CaWWSuLzn
+        PDtIFZuAgcSDN8vAbBGBVqD2JnWQImaBr8wSV1/PZwZJCAuYSZxsuAI2lkVAVWLZvFlgDbwC
+        thJLD0yFWicvsWfRdyYQm1PATqLtyHM2iBpBiZMzn4DVMAPVNG+dzQyyQEKgn1Ni3/yZrBDN
+        LhKtvd/YIWxhiVfHt0DZMhL/d85ngrDzJWZsfg80iAPIrpC4e9ALwrSW+HiGGcRkFtCUWL9L
+        H6LYUeJwx2EmiAo+iRtvBSEO4JOYtG06M0SYV6KjTQiiWlXi+J5JzBC2tMSTlttQKz0kPq/8
+        yD6BUXEWkldmIXllFsLeBYzMqxjFU0uLc9NTi43zUsv1ihNzi0vz0vWS83M3MQIT2+l/x7/u
+        YFzx6qPeIUYmDsZDjBIczEoivN+EIlKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ86qmyKcKCaQn
+        lqRmp6YWpBbBZJk4OKUamEwm9R7wd03zbb7MwLMqJWzSrN0bCtw3pefOm9jyqnbn9u6eUL3t
+        1UdTdQ2WPwv+cndJ4fM/Rcuba1bc3HnXY7/L59LH/8xmP7/bzXE7dX+zb2RYmmP+47o11+JV
+        pp1dJ892/UD4pp6E3dP+3zWVatvBVdginrhnu/70tUrKiuo596wVJ+19fXK1/6X0uoliMevO
+        reQqkrzCo30tIZO/y+fb0Qdr1nS9e31dnntthaGff8TmaZIMfn03zvJOt9QNeNqdoPdD43FQ
+        6pm0TGHLzJwdyY+7ZSoNKrgVr79cKb9Yn69vzrYGgft5M70Pqeoe33F86/cbS1eklH6q3xxw
+        dMW/Ar/XNk2apUnej+fPiFZiKc5INNRiLipOBAAWRLnn2wMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJIsWRmVeSWpSXmKPExsVy+t/xe7ohRdGpBtP/s1s8mLeNzeLw/AqL
+        qQ+fsFl833KdyWLeZ1mLva+3slt8u9LBZLHp8TVWi8u75rBZfO49wmgx4/w+JouFTS3sFhOP
+        TWa2WHvkLrvF3C9TmS2ePOxjcxDwWDNvDaPHzll32T0W73nJ5LFpVSebx51re9g8Ni+p9+jb
+        sorR4/MmuQCOKD2bovzSklSFjPziElulaEMLIz1DSws9IxNLPUNj81grI1MlfTublNSczLLU
+        In27BL2MrtNvmAom8VQc/z2LpYHxE2cXIyeHhICJxMbdf9m6GLk4hASWMkqcODqdGSIhLXH4
+        yxR2CFtY4s+1LqiiZiaJO3+OgRWxCRhIPHizjB0kISLQySjRtfkcE0iCWeA/s8TXmQogtrCA
+        mcTJhissIDaLgKrEsnmzwKbyCthKLD0wlQVig7zEnkXfwXo5Bewk2o48B9rGAbTNVqLjrgZE
+        uaDEyZlPWCDGy0s0b53NPIFRYBaS1CwkqQWMTKsYRVJLi3PTc4sN9YoTc4tL89L1kvNzNzEC
+        43DbsZ+bdzDOe/VR7xAjEwfjIUYJDmYlEd5vQhGpQrwpiZVVqUX58UWlOanFhxhNgc6eyCwl
+        mpwPTAR5JfGGZgamhiZmlgamlmbGSuK8ngUdiUIC6YklqdmpqQWpRTB9TBycUg1M1hv4d/af
+        tW32TAvl+uix9RT7TYcpbD1ukbbTHvQ8uGkeb+39PjwgI/UK06rD87S3Np5vfx69zLR87v7L
+        GvuKV2kXldSZTJWUbHK1V68ROnQoLTpTXWK5g9n2hNRjjDvv58uXCjMdLM7byyJ7X+fnYZ+5
+        B864q3678SEjXTYqYfLV83X7dA7Kie38lC7WKS2xsMF1brLKsY2HymYWpF6vNbURmyTR9FHi
+        +SqVZVKssziuH6g0PR2xQXn5osieiUIO7P+XVdg8i53qmsljUiR7alluwR17aZeTO7perxLY
+        ahVTtzTQ4Y9kdcM6+1rXWVPbzQX0tKIvJh1mlGd/nsGn2C1Ydrdxe+zy9THvVyqxFGckGmox
+        FxUnAgBFytN+TAMAAA==
+X-CMS-MailID: 20231120145100eucas1p2c451ecec1274d7ba4eb337c409ef7fd2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231120145100eucas1p2c451ecec1274d7ba4eb337c409ef7fd2
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231120145100eucas1p2c451ecec1274d7ba4eb337c409ef7fd2
+References: <20231120145049.310509-1-m.majewski2@samsung.com>
+        <CGME20231120145100eucas1p2c451ecec1274d7ba4eb337c409ef7fd2@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 10:57, Ryan Roberts wrote:
-> On 20/11/2023 09:11, David Hildenbrand wrote:
->> On 17.11.23 19:41, Barry Song wrote:
->>> On Fri, Nov 17, 2023 at 7:28 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 17.11.23 01:15, Barry Song wrote:
->>>>> On Fri, Nov 17, 2023 at 7:47 AM Barry Song <21cnbao@gmail.com> wrote:
->>>>>>
->>>>>> On Thu, Nov 16, 2023 at 5:36 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>>
->>>>>>> On 15.11.23 21:49, Barry Song wrote:
->>>>>>>> On Wed, Nov 15, 2023 at 11:16 PM David Hildenbrand <david@redhat.com> wrote:
->>>>>>>>>
->>>>>>>>> On 14.11.23 02:43, Barry Song wrote:
->>>>>>>>>> This patch makes MTE tags saving and restoring support large folios,
->>>>>>>>>> then we don't need to split them into base pages for swapping out
->>>>>>>>>> on ARM64 SoCs with MTE.
->>>>>>>>>>
->>>>>>>>>> arch_prepare_to_swap() should take folio rather than page as parameter
->>>>>>>>>> because we support THP swap-out as a whole.
->>>>>>>>>>
->>>>>>>>>> Meanwhile, arch_swap_restore() should use page parameter rather than
->>>>>>>>>> folio as swap-in always works at the granularity of base pages right
->>>>>>>>>> now.
->>>>>>>>>
->>>>>>>>> ... but then we always have order-0 folios and can pass a folio, or what
->>>>>>>>> am I missing?
->>>>>>>>
->>>>>>>> Hi David,
->>>>>>>> you missed the discussion here:
->>>>>>>>
->>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68MkhjMDw@mail.gmail.com/
->>>>>>>> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzmh1Veocg@mail.gmail.com/
->>>>>>>
->>>>>>> Okay, so you want to handle the refault-from-swapcache case where you get a
->>>>>>> large folio.
->>>>>>>
->>>>>>> I was mislead by your "folio as swap-in always works at the granularity of
->>>>>>> base pages right now" comment.
->>>>>>>
->>>>>>> What you actually wanted to say is "While we always swap in small folios, we
->>>>>>> might refault large folios from the swapcache, and we only want to restore
->>>>>>> the tags for the page of the large folio we are faulting on."
->>>>>>>
->>>>>>> But, I do if we can't simply restore the tags for the whole thing at once
->>>>>>> at make the interface page-free?
->>>>>>>
->>>>>>> Let me elaborate:
->>>>>>>
->>>>>>> IIRC, if we have a large folio in the swapcache, the swap entries/offset are
->>>>>>> contiguous. If you know you are faulting on page[1] of the folio with a
->>>>>>> given swap offset, you can calculate the swap offset for page[0] simply by
->>>>>>> subtracting from the offset.
->>>>>>>
->>>>>>> See page_swap_entry() on how we perform this calculation.
->>>>>>>
->>>>>>>
->>>>>>> So you can simply pass the large folio and the swap entry corresponding
->>>>>>> to the first page of the large folio, and restore all tags at once.
->>>>>>>
->>>>>>> So the interface would be
->>>>>>>
->>>>>>> arch_prepare_to_swap(struct folio *folio);
->>>>>>> void arch_swap_restore(struct page *folio, swp_entry_t start_entry);
->>>>>>>
->>>>>>> I'm sorry if that was also already discussed.
->>>>>>
->>>>>> This has been discussed. Steven, Ryan and I all don't think this is a good
->>>>>> option. in case we have a large folio with 16 basepages, as do_swap_page
->>>>>> can only map one base page for each page fault, that means we have
->>>>>> to restore 16(tags we restore in each page fault) * 16(the times of page
->>>>>> faults)
->>>>>> for this large folio.
->>>>>>
->>>>>> and still the worst thing is the page fault in the Nth PTE of large folio
->>>>>> might free swap entry as that swap has been in.
->>>>>> do_swap_page()
->>>>>> {
->>>>>>      /*
->>>>>>       * Remove the swap entry and conditionally try to free up the swapcache.
->>>>>>       * We're already holding a reference on the page but haven't mapped it
->>>>>>       * yet.
->>>>>>       */
->>>>>>       swap_free(entry);
->>>>>> }
->>>>>>
->>>>>> So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you might
->>>>>> access
->>>>>> a freed tag.
->>>>>
->>>>> And David, one more information is that to keep the parameter of
->>>>> arch_swap_restore() unchanged as folio,
->>>>> i actually tried an ugly approach in rfc v2:
->>>>>
->>>>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
->>>>> +{
->>>>> + if (system_supports_mte()) {
->>>>> +      /*
->>>>> +       * We don't support large folios swap in as whole yet, but
->>>>> +       * we can hit a large folio which is still in swapcache
->>>>> +       * after those related processes' PTEs have been unmapped
->>>>> +       * but before the swapcache folio  is dropped, in this case,
->>>>> +       * we need to find the exact page which "entry" is mapping
->>>>> +       * to. If we are not hitting swapcache, this folio won't be
->>>>> +       * large
->>>>> +     */
->>>>> + struct page *page = folio_file_page(folio, swp_offset(entry));
->>>>> + mte_restore_tags(entry, page);
->>>>> + }
->>>>> +}
->>>>>
->>>>> And obviously everybody in the discussion hated it :-)
->>>>>
->>>>
->>>> I can relate :D
->>>>
->>>>> i feel the only way to keep API unchanged using folio is that we
->>>>> support restoring PTEs
->>>>> all together for the whole large folio and we support the swap-in of
->>>>> large folios. This is
->>>>> in my list to do, I will send a patchset based on Ryan's large anon
->>>>> folios series after a
->>>>> while. till that is really done, it seems using page rather than folio
->>>>> is a better choice.
->>>>
->>>> I think just restoring all tags and remembering for a large folio that
->>>> they have been restored might be the low hanging fruit. But as always,
->>>> devil is in the detail :)
->>>
->>> Hi David,
->>> thanks for all your suggestions though my feeling is this is too complex and
->>> is not worth it for at least  three reasons.
->>
->> Fair enough.
->>
->>>
->>> 1. In multi-thread and particularly multi-processes, we need some locks to
->>> protect and help know if one process is the first one to restore tags and if
->>> someone else is restoring tags when one process wants to restore. there
->>> is not this kind of fine-grained lock at all.
->>
->> We surely always hold the folio lock on swapin/swapout, no? So when these
->> functions are called.
->>
->> So that might just work already -- unless I am missing something important.
-> 
-> We already have a page flag that we use to mark the page as having had its mte
-> state associated; PG_mte_tagged. This is currently per-page (and IIUC, Matthew
-> has been working to remove as many per-page flags as possible). Couldn't we just
-> make arch_swap_restore() take a folio, restore the tags for *all* the pages and
-> repurpose that flag to be per-folio (so head page only)? It looks like the the
-> mte code already manages all the serialization requirements too. Then
-> arch_swap_restore() can just exit early if it sees the flag is already set on
-> the folio.
-> 
-> One (probably nonsense) concern that just sprung to mind about having MTE work
-> with large folios in general; is it possible that user space could cause a large
-> anon folio to be allocated (THP), then later mark *part* of it to be tagged with
-> MTE? In this case you would need to apply tags to part of the folio only.
-> Although I have a vague recollection that any MTE areas have to be marked at
-> mmap time and therefore this type of thing is impossible?
+We do not use the value, and only Exynos 7 defines this alias anyway.
 
-It is possible to use mprotect() to 'upgrade' memory to be MTE. So in
-this case you'd need to be able to either split the folio or deal with
-only part of it being tagged.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Mateusz Majewski <m.majewski2@samsung.com>
+---
+v1 -> v2: minor commit message rewording.
 
-Steve
+ drivers/thermal/samsung/exynos_tmu.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> Thanks,
-> Ryan
-> 
-> 
-> 
->>
->>>
->>> 2. folios are not always large, in many cases, they have just one base page
->>> and there is no tail to remember. and it seems pretty ugly if we turn out have
->>> to use different ways to remember restoring state for small folios and
->>> large folios.
->>
->> if (folio_test_large(folio)) {
->>
->> } else {
->>
->> }
->>
->> Easy ;)
->>
->> Seriously, it's not that complicated and/or ugly.
->>
->>>
->>> 3. there is nothing wrong to use page to restore tags since right now swap-in
->>> is page. restoring tags and swapping-in become harmonious with each other
->>> after this patch. I would argue what is really wrong is the current mainline.
->>>
->>> If eventually we are able to do_swap_page() for the whole large folio, we
->>> move to folios for MTE tags as well. These two behaviours make a new
->>> harmonious picture again.
->>>
->>
->> Just making both functions consume folios is much cleaner and also more future
->> proof.
->>
->> Consuming now a page where we used to consume a folio is a step backwards.
->>
-> 
+diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
+index 187086658e8f..4ff32245d2a9 100644
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -138,7 +138,6 @@ enum soc_type {
+ /**
+  * struct exynos_tmu_data : A structure to hold the private data of the TMU
+  *			    driver
+- * @id: identifier of the one instance of the TMU controller.
+  * @base: base address of the single instance of the TMU controller.
+  * @base_second: base address of the common registers of the TMU controller.
+  * @irq: irq number of the TMU controller.
+@@ -172,7 +171,6 @@ enum soc_type {
+  * @tmu_clear_irqs: SoC specific TMU interrupts clearing method
+  */
+ struct exynos_tmu_data {
+-	int id;
+ 	void __iomem *base;
+ 	void __iomem *base_second;
+ 	int irq;
+@@ -865,10 +863,6 @@ static int exynos_map_dt_data(struct platform_device *pdev)
+ 	if (!data || !pdev->dev.of_node)
+ 		return -ENODEV;
+ 
+-	data->id = of_alias_get_id(pdev->dev.of_node, "tmuctrl");
+-	if (data->id < 0)
+-		data->id = 0;
+-
+ 	data->irq = irq_of_parse_and_map(pdev->dev.of_node, 0);
+ 	if (data->irq <= 0) {
+ 		dev_err(&pdev->dev, "failed to get IRQ\n");
+-- 
+2.42.0
 
