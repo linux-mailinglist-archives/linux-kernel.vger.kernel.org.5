@@ -2,129 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408C97F213A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9627F2148
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbjKTXIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
+        id S229490AbjKTXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKTXIY (ORCPT
+        with ESMTP id S229448AbjKTXSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:08:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B51A2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:08:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B7BC433C8;
-        Mon, 20 Nov 2023 23:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700521699;
-        bh=CFqoX8V2WNEiSzZISkGpjZgqDIO60dgqCnVyQdufY0k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pm0ocCOuOM935pl00FZ7y8WqMAQHOpgOGaD6c9Umz3wSPv+b+ywRvOFVrGqJDsjpe
-         MOsKExWGV46pb4wNHQhYNdmWdwFDRVCR/NvTlAfJC8ZM0zlAVG239yHgDJBfDTh0wJ
-         5LibP1FfBpF5Cnazh/45hzIPRACn0/CDLcwOYP6Iqmd1SaJ5Oc2HzW07QFFy7Nslwn
-         Tn0X8yTzXAP70Gn8/WJ9CKIXnxzSTXPbukl5EMSXBQ6uXbqxGX11uklzQfh/I/Hux8
-         f4kJEYXAQR/Hsg36Qvqtp9TMUhuYYzAyQubKIN/oQJclZXgxyXYXTm0EuwEnbzWrhY
-         YXmhg5H72w8Jw==
-Date:   Mon, 20 Nov 2023 16:08:17 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     WANG Rui <wangrui@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Xi Ruoyao <xry111@xry111.site>, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH] LoongArch: Record pc instead of offset in la-abs
- relocation
-Message-ID: <20231120230817.GA2116806@dev-arch.thelio-3990X>
-References: <20231116130331.241395-1-wangrui@loongson.cn>
+        Mon, 20 Nov 2023 18:18:05 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46D3C1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:18:00 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50aab20e828so2530722e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:18:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700522279; x=1701127079; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ADt8pzOsXpdfsf1HgObr0YIdUIhge4egXUaCPmB+CDg=;
+        b=lacxF1LqvkmCPwO3lglQAtKCn9yNCdUD/JOLG8Qsi89G6n0vvKI99Ra/MxAcY4tMgV
+         EhIxacTXDIgZ953eFf7R2zkvmxyTiQIYZ3UWOIAXyY9RQLjq6lXs8qhYsqZxJuudO1GM
+         s8dfj4l17iPq+md0ByXM5G7jSqeZxODcD28p4zZat/2LFpxvm3CxFQCI1vXZ+ALfMhtP
+         aFO41pjKLuXVs6IZqRL4xoxzX9+TsEF2aWUl4jFP6w7JpPHCxMHVaazT5lRQsF43z23S
+         sh5EYlxKCWOsgWNLXRK3t2b9+nksOZTdbMRxC0xz6clI9k/ohzbyxOtl03l0m9R5jwDs
+         h4hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700522279; x=1701127079;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ADt8pzOsXpdfsf1HgObr0YIdUIhge4egXUaCPmB+CDg=;
+        b=s+dvUPVtAWZo7BlCJxRSazggHYNMiThy0SF5xLPctbff+JvVD/PgbpiIT3iMaesRM6
+         WeFT07UV0isMz7nWJcWqZVhtrA5wfuKRgg3Iphihr91lSCzoc8UmSWKYFr62HgmZ2fkQ
+         L80Gop1AZtQhLEmTd5PeQ+8szIWJgNGIHxWq2sZ5wTL2MS439IB/3Am/AqHDfaAEJ4qW
+         zH15QbYOTxlpJ0NkVJSyUQULF0D2by6TdIsiO8SkJXDBrVK3eItwRizejSLXeDauP1rm
+         ytol6fEKCVYQ/Z/gqS9swaS9bRXYTMEmYX8V5/v512hZPbEusz2sFrLM1/EVR0tco3uO
+         63OA==
+X-Gm-Message-State: AOJu0YzUePb467uhlRKRjrl6E7SYz6BkDwR7L0zo/wmS1U02osqM3oTs
+        N/799DEeP3yrf0dhfIg9qOBq8w==
+X-Google-Smtp-Source: AGHT+IF9nbnnlfFuWTc+kca9xlA0YRyUIqjfnoareDqrnufygavYMGGnBbf+MK5jzMXQplQJTEzWKQ==
+X-Received: by 2002:a19:7109:0:b0:509:494d:c3d5 with SMTP id m9-20020a197109000000b00509494dc3d5mr5445896lfc.26.1700522279090;
+        Mon, 20 Nov 2023 15:17:59 -0800 (PST)
+Received: from eriador.lan (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id bi32-20020a0565120ea000b0050aab042c7csm677036lfb.190.2023.11.20.15.17.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 15:17:58 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH 0/2] usb: typec: tcpm: Handle Accessory Modes
+Date:   Tue, 21 Nov 2023 01:11:06 +0200
+Message-ID: <20231120231757.2309482-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231116130331.241395-1-wangrui@loongson.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rui,
+In addition to Alternative Modes (see [1]), some of the TCPM-backed
+boards (e.g. Qualcomm SM8150-HDK) can support USB-C Accessory Modes
+(e.g. the Analog Audio). Add bindings and driver support for parsing
+this kind of information.
 
-On Thu, Nov 16, 2023 at 09:03:31PM +0800, WANG Rui wrote:
-> To clarify, the previous version functioned flawlessly. However, it's
-> worth noting that the LLVM's LoongArch backend currently lacks support
-> for cross-section label calculations. With this patch, we enable the use
-> of clang to compile relocatable kernels.
-> 
-> Signed-off-by: WANG Rui <wangrui@loongson.cn>
+Note, while it might make sense to put accessory-mode-audio and -debug
+handling to typec_get_fw_cap(), I decided against it. Several existing
+drivers use this function, while providing AccMode caps based on some
+internal logic.
 
-Thanks a lot for the patch! This fixes the CONFIG_RELOCATABLE build for
-me as well.
+[1] https://lore.kernel.org/linux-usb/20231120224919.2293730-1-dmitry.baryshkov@linaro.org/
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+Dmitry Baryshkov (2):
+  dt-bindings: connector: usb: add accessory mode description
+  usb: typec: tcpm: Parse Accessory Mode information
 
-Something I noticed while testing is that a kernel linked with ld.lld
-does not boot while one linked with ld.bfd did. I think this might be
-the same issue that Xuerui filed on our issue tracker but I figured I
-would mention it in case not:
-https://github.com/ClangBuiltLinux/linux/issues/1883
+ .../devicetree/bindings/connector/usb-connector.yaml | 12 ++++++++++++
+ drivers/usb/typec/tcpm/tcpm.c                        |  7 +++++++
+ 2 files changed, 19 insertions(+)
 
-Cheers,
-Nathan
+-- 
+2.42.0
 
-> ---
->  arch/loongarch/include/asm/asmmacro.h | 3 +--
->  arch/loongarch/include/asm/setup.h    | 2 +-
->  arch/loongarch/kernel/relocate.c      | 2 +-
->  3 files changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/loongarch/include/asm/asmmacro.h b/arch/loongarch/include/asm/asmmacro.h
-> index c9544f358c33..655db7d7a427 100644
-> --- a/arch/loongarch/include/asm/asmmacro.h
-> +++ b/arch/loongarch/include/asm/asmmacro.h
-> @@ -609,8 +609,7 @@
->  	lu32i.d	\reg, 0
->  	lu52i.d	\reg, \reg, 0
->  	.pushsection ".la_abs", "aw", %progbits
-> -	768:
-> -	.dword	768b-766b
-> +	.dword	766b
->  	.dword	\sym
->  	.popsection
->  #endif
-> diff --git a/arch/loongarch/include/asm/setup.h b/arch/loongarch/include/asm/setup.h
-> index a0bc159ce8bd..ee52fb1e9963 100644
-> --- a/arch/loongarch/include/asm/setup.h
-> +++ b/arch/loongarch/include/asm/setup.h
-> @@ -25,7 +25,7 @@ extern void set_merr_handler(unsigned long offset, void *addr, unsigned long len
->  #ifdef CONFIG_RELOCATABLE
->  
->  struct rela_la_abs {
-> -	long offset;
-> +	long pc;
->  	long symvalue;
->  };
->  
-> diff --git a/arch/loongarch/kernel/relocate.c b/arch/loongarch/kernel/relocate.c
-> index 6c3eff9af9fb..288b739ca88d 100644
-> --- a/arch/loongarch/kernel/relocate.c
-> +++ b/arch/loongarch/kernel/relocate.c
-> @@ -52,7 +52,7 @@ static inline void __init relocate_absolute(long random_offset)
->  	for (p = begin; (void *)p < end; p++) {
->  		long v = p->symvalue;
->  		uint32_t lu12iw, ori, lu32id, lu52id;
-> -		union loongarch_instruction *insn = (void *)p - p->offset;
-> +		union loongarch_instruction *insn = (void *)p->pc;
->  
->  		lu12iw = (v >> 12) & 0xfffff;
->  		ori    = v & 0xfff;
-> -- 
-> 2.42.1
-> 
-> 
