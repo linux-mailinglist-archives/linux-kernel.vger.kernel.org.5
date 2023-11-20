@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFDD7F1553
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75417F154F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbjKTOJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S233050AbjKTOJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:09:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjKTOJe (ORCPT
+        with ESMTP id S232148AbjKTOJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:09:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74482F3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:09:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A142C433C9;
-        Mon, 20 Nov 2023 14:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700489371;
-        bh=hoIhA8+0yRB+8xKNhUqRCTi4Cj0Q9PRSELx11+Gdf9k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r45lYZBBqyt2qIC3VTWvXeFOLpp7CslcoudAqZHo3c3ToiD3advJLwF+LCeQTSM4V
-         ian9GJtKKF/6WQNbnSlPU6HPsyneu0ZkHaso51fhQyb5HfooUycrugoOjqW3AvaFvH
-         JbSyG7Q6aiUwYwnG9OQSQDRK4H2FDhgaP+yGZfOW9mvm9hc6UiF2csU75mRMpuJsB/
-         u1dCYBO9SVZu1FuLumVUvtcx32ALSNqXSMdsp9G0IufrXorcmRf7kCkpyLAOe7IGza
-         CZVtn9hq2ML7D6TA2ZoEM+IA98iwR0d/sA7ltvFzg0zveh92v1bjHGQjv6XIUZ6hjb
-         x08JifS0gmx4Q==
-Date:   Mon, 20 Nov 2023 14:09:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Anish Moorthy <amoorthy@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH 34/34] KVM: selftests: Add a memory region subtest to
- validate invalid flags
-Message-ID: <13677ced-e464-4cdb-82ae-4236536e169c@sirena.org.uk>
-References: <20231105163040.14904-1-pbonzini@redhat.com>
- <20231105163040.14904-35-pbonzini@redhat.com>
- <CAF7b7mpmuYLTY6OQfRRoOryfO-2e1ZumQ6SCQDHHPD5XFyhFTQ@mail.gmail.com>
+        Mon, 20 Nov 2023 09:09:26 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBB4BA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:09:22 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c875207626so24593161fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700489360; x=1701094160; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tUT5G9wWKDux+q/3wEibNtR/ItuQhmKh/lwb8ikN/Rg=;
+        b=as6b0PaRvP3yHBollblKs+tz7joLu75qq4EQo3nBJAcwjGZ6XirOvH7A8XavQHKPkX
+         tWETe7HHKojaJacbQrEwOk8qovZbOkuPFM1wxa/3Sn3bHdRtpZIHyMs69z8QOKHMdh9V
+         peeokx7CMuaLoi+3ma0uouS6fwuUxt/7y+kFI81mFTPsTVDDb7SP2H3+0Q6K2/Q6/V6a
+         QNzOBRDQN64E4yTBlpOJybe+Dl59fxvZs9yX3kjLVUUULgUaNwCQ6Ce2PD/0fY3DQvq+
+         7wtQRZdSJSAKo9RnWdH7Yg95SpzTNcAwAtV/Ili+MdbLroAe1VZbnhox6+3YEC6yMmGH
+         GRNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700489360; x=1701094160;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tUT5G9wWKDux+q/3wEibNtR/ItuQhmKh/lwb8ikN/Rg=;
+        b=tabsI05i9/OLLC4rVreHHSKm9ZinzS6tV9I3ufmZ1zEPtlwKgrlv9oBKaGSzt9FZd5
+         gYUiTCj6ASL8Kc448yKXQd9eLUz+x2zSDlO6IiQgp22zjcoAJsf6UrXXHBNpbOvMdus2
+         tHxPDPSkXNJHaM3hEUITPAFSpJS9o8+9p9b3oQdq9ShHZnOyLyLKk8ih72MQfjza/74t
+         YNPdlZGqbsl3L0IrhNvGYHOJw4rgyYHqJimLXQ2uCWja43y15xy+fM3+/69DkuTPEUVV
+         9oC4sZkdp0uQp+1W8eZEY32LmS0Ru5zwvDZZUEcXr5E+pDZquBnmC5bbRXgMiNGSG3Gz
+         YjoQ==
+X-Gm-Message-State: AOJu0YybxpZXQqNvkUrHg2fnhd26olathD29ebwfpNL2Xw31MxZgCBew
+        /pQUKGpg7Hgmj/OMfM+xyLaDHQ==
+X-Google-Smtp-Source: AGHT+IFbXKYY9UNUZ8jVcSKkbWSASIFyrO+LxDhQ3+XU4oa71aGhP+E2nN9ls2SkWYQquuniadlVuA==
+X-Received: by 2002:a2e:9101:0:b0:2c5:32b:28fa with SMTP id m1-20020a2e9101000000b002c5032b28famr6563347ljg.30.1700489360533;
+        Mon, 20 Nov 2023 06:09:20 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id p11-20020adfcc8b000000b0032d9337e7d1sm11358195wrj.11.2023.11.20.06.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 06:09:20 -0800 (PST)
+Date:   Mon, 20 Nov 2023 09:09:17 -0500
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Su Hui <suhui@nfschina.com>,
+        "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
+Message-ID: <4b34643f-812e-4aad-9a10-eee5bc553144@suswa.mountain>
+References: <20231115050123.951862-1-suhui@nfschina.com>
+ <ff8637fc05324c04a447ea505d8eba1b@realtek.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="61dY8WQ8Ox8wOW0h"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF7b7mpmuYLTY6OQfRRoOryfO-2e1ZumQ6SCQDHHPD5XFyhFTQ@mail.gmail.com>
-X-Cookie: Happiness is twin floppies.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ff8637fc05324c04a447ea505d8eba1b@realtek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 17, 2023 at 02:53:52AM +0000, Ping-Ke Shih wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Su Hui <suhui@nfschina.com>
+> > Sent: Wednesday, November 15, 2023 1:01 PM
+> > To: Ping-Ke Shih <pkshih@realtek.com>; Jes.Sorensen@gmail.com
+> > Cc: Su Hui <suhui@nfschina.com>; kvalo@kernel.org; linux-wireless@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org
+> > Subject: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
+> > 
+> > When 'rtl8xxxu_dma_agg_pages <= page_thresh', 'timeout' should equal to
+> > 'page_thresh' rather than '4'. Change the code order to fix this problem.
+> > 
+> > Fixes: fd83f1227826 ("rtl8xxxu: gen1: Add module parameters to adjust DMA aggregation parameters")
+> > Signed-off-by: Su Hui <suhui@nfschina.com>
+> > ---
+> 
+> Checking logic of agg_pages and agg_timeout, I think we should correct it
+> by below changes. So, NACK this patch. 
+> 
+> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> index 43ee7592bc6e..c9e227aed685 100644
+> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+> @@ -4760,7 +4760,7 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
+>         page_thresh = (priv->fops->rx_agg_buf_size / 512);
+>         if (rtl8xxxu_dma_agg_pages >= 0) {
+>                 if (rtl8xxxu_dma_agg_pages <= page_thresh)
+> -                       timeout = page_thresh;
+> +                       page_thresh = rtl8xxxu_dma_agg_pages;
 
---61dY8WQ8Ox8wOW0h
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah.  That looks correct.  What I suggested earlier was wrong.
 
-On Wed, Nov 08, 2023 at 05:08:01PM -0800, Anish Moorthy wrote:
-> Applying [1] and [2] reveals that this also breaks non-x86 builds- the
-> MEM_REGION_GPA/SLOT definitions are guarded behind an #ifdef
-> __x86_64__, while the usages introduced here aren't.
->=20
-> Should
->=20
-> On Sun, Nov 5, 2023 at 8:35=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.com=
-> wrote:
-> >
-> > +       test_invalid_memory_region_flags();
->=20
-> be #ifdef'd, perhaps? I'm not quite sure what the intent is.
+regards,
+dan carpenter
 
-This has been broken in -next for a week now, do we have any progress
-on a fix or should we just revert the patch?
-
---61dY8WQ8Ox8wOW0h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbaI0ACgkQJNaLcl1U
-h9Aj2Qf9EbUUwOLmAwUa3Jl4QMfiLrKntsPjxIsD9MYRWpqfdGr2gZb7wNXozUgD
-A1SOrSPxLG5lvE3dOdXD1O/mzrxVwLcfAssVQ6KjXu13pJtZDIQHAUpYQBJL28QR
-KIeV8OVDMKeFryWnyt+y92xYK+7d4TocCuAq2Ph3jQj/OIXp4bI5quuTV58jmIG4
-1QuJFi73b7JIL4Ksmg32pp3aWaoP7BqMqnDxx92GwdngF0Jrg1NBhgHoMkh/J28y
-zT6Vui1HZF2pSrrxexqXFLJKhveYmLyg3kaoEyvYeRwj/WjZSB3U/9LJrhBDctTJ
-2Y23Hu9kFWuPdJxy0l8BV7AiIxSr4Q==
-=GWvB
------END PGP SIGNATURE-----
-
---61dY8WQ8Ox8wOW0h--
