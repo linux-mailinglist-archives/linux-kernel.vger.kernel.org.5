@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CB67F19CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C077F19CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbjKTR0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        id S232057AbjKTR0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjKTR0g (ORCPT
+        with ESMTP id S231821AbjKTR0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:26:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532F685
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700501192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X8aUUxFA022YpgE+kgLKSfCpFEiyXZX3VeVuIGH9hlI=;
-        b=WvRbs6Vd1SYjXrPeUvUa6tQgi5A5Fw/4Y7ojGZ99MWxv+KehrR39bYzoItN32eBuf+8KTU
-        JooxB/9bBGR+hSCcUBquxIcYpS0owN5JwUoQj2rumPdzhVwXmvMlLHDkOymhbnYYsk9c4h
-        umqbRwuz7FDum8fwe472G3i0fN1yjdg=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-444-BNBrxE3vNPubdByL55sHPA-1; Mon, 20 Nov 2023 12:26:30 -0500
-X-MC-Unique: BNBrxE3vNPubdByL55sHPA-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d120c28afso32883686d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700501189; x=1701105989;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Mon, 20 Nov 2023 12:26:52 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D71E8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:48 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7a9541c9b2aso41574339f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:26:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700501208; x=1701106008; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=X8aUUxFA022YpgE+kgLKSfCpFEiyXZX3VeVuIGH9hlI=;
-        b=gK+vlYc5CoXKpVqtJMJI9kUjtwf8/3ylneQZuzbWoMc7vDa/5D5nLRWWU/X9l8hFwS
-         0hCtC3oqfZh4OAdavuI7/fhW90oHOp5cQJkBrJafTTa//3YJXvKsTPrQdIPvGjao1Cxi
-         iY0SPNE5GSgHRuELIucTbtV10j5EyzZG5N60CHNku2SzRvtZ28H8L4z1sYf/fdCZh6Jb
-         q1AsUX/taws7d3mcfWnRcpnCAvCOBjCH7U03ZeZdeY8KntnFHYmY46fMc/+GA8TlScDX
-         YWMwELaCh0eohlDxCRegomDBC8oB9MiINeBl6mJcpSGd3w1uMRgn33fgfuo6KFDoK8l9
-         hQZg==
-X-Gm-Message-State: AOJu0YyQBq6gR0gpowRCY9e7dV0KhDH6Gb4KFoZ03Wqqp//JHKjWp4qh
-        o7q7kZWLURu92YIw1VnVqquu69c6dxQPKZMhVaayUEThqlkHVnJU+R/65tSKuCrZ/7SLHh8uoVD
-        62736osN8G1gVg/TGYFlQGUt4fxPy9hMJ
-X-Received: by 2002:a0c:f002:0:b0:66d:a301:e512 with SMTP id z2-20020a0cf002000000b0066da301e512mr8464884qvk.27.1700501189537;
-        Mon, 20 Nov 2023 09:26:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF8NqbXBCHlBTFyU0Oqc4To/gML4pdGHQ6PKI1u0iGxOpMLI/CuYR9Se7qPqoa8FdpAn03q6g==
-X-Received: by 2002:a0c:f002:0:b0:66d:a301:e512 with SMTP id z2-20020a0cf002000000b0066da301e512mr8464860qvk.27.1700501189287;
-        Mon, 20 Nov 2023 09:26:29 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id e15-20020a0cd64f000000b00674a45499dcsm3056221qvj.88.2023.11.20.09.26.28
+        bh=M4NKMxSmS203pqGjqep8cbifAOK1r66CeK+tH5/F9fk=;
+        b=Xz/bK33rhNQ7TSMbIZQ8FG3MxgydJ2GY9MytsvTWpt1aaWZcmtwrjK83Raf953cc1m
+         yKK8rC500w3CPJAdKiY905uqwarcbAe0bSX/knqixbowLrLnXar3S0Y3DS+lHek/+iGc
+         XYgEXcNcTAnPBSwtsOh0UW611qkGVMmbIYNxFMqsPWT5ggwDnTw3AlKFNEbylorDQUUC
+         CPb0fpTpptveWWclPV58o1/TvdHzUPA4ejhBGrchA/0SuOII+OEmDvYolhSo6fsBz0zg
+         waufe6MJvXC8YRC9gnJI1ux++2A+wABnU+uFpHTcJft7dmV7qlhnM9IP1oivpmYR6dBR
+         jddg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700501208; x=1701106008;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M4NKMxSmS203pqGjqep8cbifAOK1r66CeK+tH5/F9fk=;
+        b=hwswB0ADdzm0wwDeqTFRV6d3w2ypixh5j2PahXneTo6tj3CCVsCLoPbJNfaPyumRk6
+         cPAayQTQVxdGuLLW6BjGpRXoijtab2MXN56jbksfCa6GQSag1eM4zM+ZrZ3S36wWQ/4/
+         Yoi9Oa3gAWmyhVuhAlcLMMmFzwVItO75wdMB9RcKebIVGbiQBsgm0hmZGTJY+3QebM+l
+         YEqE1pAAU2qTlXIS9VXJPQAsC4YgQa0FyE5zbXoBZvQAhkLuDfhrw2Xfr6XCNs6Yig7v
+         RX7kOQdN0zmE06afyeFWFt3oIakv8AUxJrBL2Hm7JQsKB9DB9gxrMCzrQCq8vlwdNZvN
+         S81g==
+X-Gm-Message-State: AOJu0YzSPjnfBHPwzQfIdvrgrlxbDmf52iHj4nOSw+BvZ494nTCsSEUf
+        bQakE/beybjtJT53Y4JgJVaPPw==
+X-Google-Smtp-Source: AGHT+IF74W5PDCNxklMdLnj1M/hiC+Xck8Tm7RKtQ8Fq+jRQx1O862OeeeepzEh0vBaEg469qXYLeA==
+X-Received: by 2002:a5d:8d82:0:b0:7b0:ae97:cdeb with SMTP id b2-20020a5d8d82000000b007b0ae97cdebmr4864211ioj.2.1700501207830;
+        Mon, 20 Nov 2023 09:26:47 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id r7-20020a02c847000000b0046455c93317sm143008jao.92.2023.11.20.09.26.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 09:26:28 -0800 (PST)
-Date:   Mon, 20 Nov 2023 11:26:26 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shazad Hussain <quic_shazhuss@quicinc.com>
-Subject: Re: [PATCH 02/11] arm64: dts: qcom: sa8775p: fix USB wakeup
- interrupt types
-Message-ID: <ow6hw44aqmi2gw4bnqa363jidmyoxhuzpasy4xg4c5a34brpmo@puehdmcibmfh>
-References: <20231120164331.8116-1-johan+linaro@kernel.org>
- <20231120164331.8116-3-johan+linaro@kernel.org>
+        Mon, 20 Nov 2023 09:26:47 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     bvanassche@acm.org, chengming.zhou@linux.dev
+Cc:     kch@nvidia.com, damien.lemoal@opensource.wdc.com,
+        ming.lei@redhat.com, zhouchengming@bytedance.com,
+        justinstitt@google.com, shinichiro.kawasaki@wdc.com,
+        akinobu.mita@gmail.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+fcc47ba2476570cbbeb0@syzkaller.appspotmail.com
+In-Reply-To: <20231120032521.1012037-1-chengming.zhou@linux.dev>
+References: <20231120032521.1012037-1-chengming.zhou@linux.dev>
+Subject: Re: [PATCH] block/null_blk: Fix double blk_mq_start_request()
+ warning
+Message-Id: <170050120665.99906.16634161281918179381.b4-ty@kernel.dk>
+Date:   Mon, 20 Nov 2023 10:26:46 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120164331.8116-3-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-26615
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 05:43:22PM +0100, Johan Hovold wrote:
-> The DP/DM wakeup interrupts are edge triggered and which edge to trigger
-> on depends on use-case and whether a Low speed or Full/High speed device
-> is connected.
-> 
-> Note that only triggering on rising edges can be used to detect resume
-> events but not disconnect events.
-> 
-> Fixes: de1001525c1a ("arm64: dts: qcom: sa8775p: add USB nodes")
-> Cc: Shazad Hussain <quic_shazhuss@quicinc.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+On Mon, 20 Nov 2023 03:25:21 +0000, chengming.zhou@linux.dev wrote:
+> When CONFIG_BLK_DEV_NULL_BLK_FAULT_INJECTION is enabled, null_queue_rq()
+> would return BLK_STS_RESOURCE or BLK_STS_DEV_RESOURCE for the request,
+> which has been marked as MQ_RQ_IN_FLIGHT by blk_mq_start_request().
+> 
+> Then null_queue_rqs() put these requests in the rqlist, return back to
+> the block layer core, which would try to queue them individually again,
+> so the warning in blk_mq_start_request() triggered.
+> 
+> [...]
 
-> ---
->  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> index b6a93b11cbbd..4b42a329460c 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> @@ -1610,8 +1610,8 @@ usb_0: usb@a6f8800 {
->  			assigned-clock-rates = <19200000>, <200000000>;
->  
->  			interrupts-extended = <&intc GIC_SPI 287 IRQ_TYPE_LEVEL_HIGH>,
-> -					      <&pdc 14 IRQ_TYPE_EDGE_RISING>,
-> -					      <&pdc 15 IRQ_TYPE_EDGE_RISING>,
-> +					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
-> +					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
->  					      <&pdc 12 IRQ_TYPE_LEVEL_HIGH>;
->  			interrupt-names = "pwr_event",
->  					  "dp_hs_phy_irq",
-> @@ -1697,8 +1697,8 @@ usb_1: usb@a8f8800 {
->  			assigned-clock-rates = <19200000>, <200000000>;
->  
->  			interrupts-extended = <&intc GIC_SPI 352 IRQ_TYPE_LEVEL_HIGH>,
-> -					      <&pdc 8 IRQ_TYPE_EDGE_RISING>,
-> -					      <&pdc 7 IRQ_TYPE_EDGE_RISING>,
-> +					      <&pdc 8 IRQ_TYPE_EDGE_BOTH>,
-> +					      <&pdc 7 IRQ_TYPE_EDGE_BOTH>,
->  					      <&pdc 13 IRQ_TYPE_LEVEL_HIGH>;
->  			interrupt-names = "pwr_event",
->  					  "dp_hs_phy_irq",
-> @@ -1760,8 +1760,8 @@ usb_2: usb@a4f8800 {
->  			assigned-clock-rates = <19200000>, <200000000>;
->  
->  			interrupts-extended = <&intc GIC_SPI 444 IRQ_TYPE_LEVEL_HIGH>,
-> -					      <&pdc 10 IRQ_TYPE_EDGE_RISING>,
-> -					      <&pdc 9 IRQ_TYPE_EDGE_RISING>;
-> +					      <&pdc 10 IRQ_TYPE_EDGE_BOTH>,
-> +					      <&pdc 9 IRQ_TYPE_EDGE_BOTH>;
->  			interrupt-names = "pwr_event",
->  					  "dp_hs_phy_irq",
->  					  "dm_hs_phy_irq";
-> -- 
-> 2.41.0
-> 
-> 
+Applied, thanks!
+
+[1/1] block/null_blk: Fix double blk_mq_start_request() warning
+      commit: 53f2bca2609237f910531f2c1a7779b16ce7952d
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
