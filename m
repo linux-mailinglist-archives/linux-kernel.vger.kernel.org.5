@@ -2,141 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338207F15B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291EB7F15B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbjKTO3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S233627AbjKTOa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:30:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233606AbjKTO3j (ORCPT
+        with ESMTP id S233584AbjKTOa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:29:39 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2089.outbound.protection.outlook.com [40.107.237.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4F698;
-        Mon, 20 Nov 2023 06:29:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m7TRiHOFwXViAWlxyWXu8YYLQrbRzd60F84+Hu9OozwexeZeSivnZxmCGacWQF5EI/uh3+sjAhpisOzWEk4rVGHXNIgEbRaXSs4f0aV39xeg03LVzqDOh63FR8R11OaDwyzWpH/KDzmGdxAhU5xbWE5E9DwzlXGX2pa+cl4a4vaj8BmISfeXunUy8xuqms/w5Kmahh7QkfBXhQoH1mhN+wvM1zhJmeRTAGlm+Lr3CoRay8J6+FlggVoUsb3Dk6bVTaf0kL4u1VkKxkchjjXYglBLT2vcSUBsJtEvDF2s3tS3UJMZC83h8UrB06R0fHD1ArpCQ2EmZ4SjfjaY9kzKOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7by+eLfwHQCnYuH2fNiocsiIGHdDW/4/5Ty6E7ZoxLE=;
- b=BgA7bfsafquYwa/xvvMwa/k2hy5YOtm5gnMoxtntoHYYl+c8T8Pt6PG3bgbvHRb0V4sPBardakckApa0preze21IYW8U24WHa+0MRmeCmVIaO0UeeI0UcFBGe59q0VIt60jrQlhgfCaMz/msc/xUBsM56wqOwwp0ffnmrNdveLBfFJsLRHaMm24XDPPnEj9/qHFXyXTaO0NGE2L3In7KdmEz8185mO6VQ5OO50ENXnlsqOgptgvGRiIPz6VwGkUBt0arZpGdVPS5KTyZgMgnDaKOVLm0zuDnrSKI7Qv97uNPojskRrSmqns+HEPJhVTVfnZEKmG1o1X8ncujAdvceg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7by+eLfwHQCnYuH2fNiocsiIGHdDW/4/5Ty6E7ZoxLE=;
- b=W8E8VgjcaL/WxG9mmsCudrD4UwBCccky+x78mJ2UWVrjevWUgsQvGbceHqvrTSVqy1GNw1oF9mcShl4o0VxoAxCCNWR7WNaYIJYV/P2L7SZyaRoKFrTUec4cf0JlbLhtC/FxmDwXUQBmnI4mmpv02kVkhC7Bw15GdXB+oOs4toFmZGhoZFcedqJKgjQxzg57uoc4bygxS9fomcS7+jBTszOe6d5TkIDJdtKxXsmRSgQW2LbhDQ1vjb48tDsHtKrySWDzRbQ8QGnLlm0lRSXUTzRPa5q3q9Y6kGDoaDewgrqdjV1MpyMZbF6XkuroCdd7I8/J76nGZ1ylBUjAFwOglw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH7PR12MB7307.namprd12.prod.outlook.com (2603:10b6:510:20b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
- 2023 14:29:31 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
- 14:29:31 +0000
-Date:   Mon, 20 Nov 2023 10:29:28 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, yishaih@nvidia.com,
-        kevin.tian@intel.com, linuxarm@huawei.com, liulongfang@huawei.com
-Subject: Re: [PATCH] hisi_acc_vfio_pci: Update migration data pointer
- correctly on saving/resume
-Message-ID: <20231120142928.GC6083@nvidia.com>
-References: <20231120091406.780-1-shameerali.kolothum.thodi@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120091406.780-1-shameerali.kolothum.thodi@huawei.com>
-X-ClientProxiedBy: SN4PR0501CA0110.namprd05.prod.outlook.com
- (2603:10b6:803:42::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 20 Nov 2023 09:30:27 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94810ED
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:30:22 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53e751aeb3cso6399856a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:30:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700490621; x=1701095421; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O2HbC/VopNY1IV2jIP8X31m8Zh4hzxb9EKfxsgSbhlM=;
+        b=O3XXXkxJtHSw0yMX6SPYlBwc4kuj9H3yydGf+Xn2JjLTXWSWCIDxLdQRP149IzCsJH
+         DoVGDeO305GhGdcAtD2CdTC09kihU4UMJEO4WsmYndZTlRVUPxzuKU8+wN0tQF390m7L
+         A9zqA3lT4iTnXF2rNijBpTfEzL7Z8lFTk4hBVRFY2080IvUI5wS0vit/iLcctfKOsInL
+         AH7YEq92h4FOatEoeRSwDttzGrPjEi9m/p+TLis+xX3tJfwmvv5cISfug/t+D6fzp9HN
+         td4nsrAxMZNuRcp0fThiC1XAOeB+rerQ0xu+BZJKvQYz7QkjYC3JKIHlxYYHHX5owkJs
+         OJJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700490621; x=1701095421;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O2HbC/VopNY1IV2jIP8X31m8Zh4hzxb9EKfxsgSbhlM=;
+        b=ms9MhXZLkpeOz0aiYKSE968ApCt0XEsM2UzRntQtwuAdWx1iV/8btbemEilZ3He1qW
+         ZnPkJNZMDr6fBTZFen2ktaFK8hIdmDe6bxTFAgAttXGFwuDZRJcc0uOT7DXX6aLay58w
+         FCO/evpiaW2ID6c/St0PqL9ce2X3CQ9O8mFnVkYJqABiIQIwFPoyrdmtUG/SBLFESY81
+         +awJKDBxQkNT8f0ZtxV8ZJBW0mzuNbs3LFtGZaZzaiHWxwZr6JfphiB2vJ9hERnlwisw
+         5Waahf30o/DtWOAJP5keVFll2/WPBjAhhAp2pBqcqk+OFq5YEkIoRaggJ6mQaAfuYy4u
+         0SQA==
+X-Gm-Message-State: AOJu0Ywjb8uhxv0QnjSsTIS7KqhLFpbvLuqnfB2TIZ5OG3n+esMZ3XDM
+        WrDiY8BDfqcU+BxcGmPt5vA69w==
+X-Google-Smtp-Source: AGHT+IGPNPjAufJGG7kQfgOTZQFzxxOpHHZaOICe6MzY0XqMW84/s3rZg46UYHp2NjPxxOTVWzW9ow==
+X-Received: by 2002:a17:906:8e:b0:9fb:248:2d4e with SMTP id 14-20020a170906008e00b009fb02482d4emr4627202ejc.12.1700490621091;
+        Mon, 20 Nov 2023 06:30:21 -0800 (PST)
+Received: from [192.168.201.100] (178235187204.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.204])
+        by smtp.gmail.com with ESMTPSA id m8-20020a170906160800b009fad1dfe472sm2599927ejd.153.2023.11.20.06.30.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 06:30:20 -0800 (PST)
+Message-ID: <1ab4e5a0-dd6b-4b74-90ab-12e7a15153d7@linaro.org>
+Date:   Mon, 20 Nov 2023 15:30:17 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB7307:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6848490-6953-44f7-ae52-08dbe9d51bfe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vkE4Jsx8NowdmTvC8KYcctSKSFMmCsUgS/WRLyl9vyBpD8uu7u347O/yjjxitbNIMHUQ/6+Gnu6+bgneVQerYk5oRlVPS+lq8vBn/xA9wkvLDG0HwrT7iEomBVJ1xE3uJCKJGTwn3He9WAsqzoUNq5F5AhNmpd/f1CzMzJSXgzPe2BoB0i97fsON1/sAu9HG5T6GVkhZq7+2/cOl2Z4gdKLJi9W9fqslzjc9gqAmOjAWfoShuPDpmsuzOEdfGMyNIpSCV6zIBqXmo/BA12LPvzCigE5ShFFTCL9t1HtsKfO33N/34go2FfdDTEZ34GWvd/mztR8EPhxxcVRFiwgST2OJo2AO43BuasPm3pWCNty5fA9r9z0ydWGyGYpRaseQhw2YanoFwotWI+bjb+6GTQP6VnGxOlJ4R4AmaskLfT652R0WunA++nZ4em/51grYgrBziIdYAdhHokJTqwCKFTLluZUq/T47iGn6ek423eWAnJhUw/27IM1j5/kL9KErIH4EptS4G7dQEZTp5LLeo9xLFoGpXvIsTmrKzbzQVlTN7UvwPSGC1Y2fCPvw+AOT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(396003)(366004)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(83380400001)(36756003)(86362001)(33656002)(38100700002)(66946007)(66556008)(66476007)(6916009)(4326008)(8676002)(316002)(41300700001)(8936002)(15650500001)(5660300002)(2906002)(6512007)(1076003)(6506007)(2616005)(26005)(478600001)(6486002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xZfk56657jGwqquCaFd/cg7zG7bDT6KpGM5ZSTccH9BbmS7t2JyVmEOZpBRs?=
- =?us-ascii?Q?kkaslQ9gcyv5q1CqhUBDSg3apHsTABcVomOgX+YGtldNs6VCgV24kq/bUTDJ?=
- =?us-ascii?Q?U1BEUhJZgjeAI8grDlq7ghCiqoOWIVpy1F2ZTJW3sJuibShFSovU6jNRvyp6?=
- =?us-ascii?Q?YWlZZ0VZVi5f3267UkD3X9PmN9B+zGlKntP3B24n3OCDm57QqbVgfGyBHKhO?=
- =?us-ascii?Q?nudUriagPxEGJEmyNpB8I4YFNbi7K8Vqa814QGrTZspS6QIpbZorJ3Z+J674?=
- =?us-ascii?Q?78eRUTSJ9/zZr6F1qCO/8aeETNsbn9ceHTZGbLgJMvZ/ppd3ClsxUMXsvAnO?=
- =?us-ascii?Q?1OZmOyd76UHrCQQUxsGMDPrSSuR64BNygY8QSZkTfOWuKl3Rezbr9Bp3HJKt?=
- =?us-ascii?Q?VbsrDLlftpp2WTI3aNFllyLHawG/BrsIFZwN5nLBuA5y9ej4WoBKXP93bqUZ?=
- =?us-ascii?Q?t5r72MGkpXUUw/56sjZtgNRAQkNSly9h/jfw60/CzMjWhtjUGfEn6i8EA3Nl?=
- =?us-ascii?Q?KMtc1tKOX7AgCwoSX/bwSCYhWUVsTGvhIEEvU68QxJhcuITlpuK8lPh25kVm?=
- =?us-ascii?Q?n6ADZLni4bOkwRYI5Af0zvjeRqLidjACBLMBNbCMUFo1HmqrAxN/KMUgxEMw?=
- =?us-ascii?Q?TE198KQk61owGw2+m41Wi0Al/D9P9/T4pHBzcgb84Y0UyJ9ZOLQjbMRTr31b?=
- =?us-ascii?Q?zcyI2BYYB7dNJl8c57KVrwFdsBzUedAwiPMNc6SRcwABylxa/ogh0Wxqb0wr?=
- =?us-ascii?Q?ju/deidxPofzyPiK6yC4XUgNZXR/a8VfGr4pdVP+1n8XBgD832kn0Po1DbLD?=
- =?us-ascii?Q?D42QMKf+nqDI1KGKVjtRNk3b8ayrLP/bOHBuN0s+vtEl70Jj3cxVBhjvefQ2?=
- =?us-ascii?Q?eU8mm/MHc5ShQSV0z30QPITSwJcI6HcwhJnAsN1gGpPFxlwhag0yb5FJL+TE?=
- =?us-ascii?Q?n5kODW9QqeeRFSOrXi2c0N9dbL+KKshNP6DwST0IM++quYtAoW/JarcKQb2e?=
- =?us-ascii?Q?j0oJbIRhR7GD6BsehTaP8fGVxInS6DVG0RmhieBH3R6CoDmucv1zbLzh4Eoy?=
- =?us-ascii?Q?XayeQupqRYzWRX9oKnaCz3wxmxtzCLUrIU1bqg0zMEkw6F4A9NSZvsbTScWJ?=
- =?us-ascii?Q?GDU+9faYV3RHcQ952BIZdzqXYH1EzgFcw05xGNHkgtnpqP6u1EvLGXox/Vq/?=
- =?us-ascii?Q?qfrBsGxgijYWiNK5mwFfFBG3gvvav5eIH25/WAuIlDys8lE3rWqPSfabbqom?=
- =?us-ascii?Q?aQjABpiL2PoKCjN6PXkVMzgKFVrQi/lc1PDVEQsrQZGQOGUBWOwVFmlEYo0P?=
- =?us-ascii?Q?cjq+2rB8S7Pm4M0hOY5A5Vg0iFPHW3Ci0pUQJPuEI9i5C1Ow5btTE//odBVG?=
- =?us-ascii?Q?k/TgBGhcLpBDeyIY6YxutjamWrFUzShkNRHKTnhjUn8HP1UQLCSADFqnlMZ0?=
- =?us-ascii?Q?S37e5CA3CXrorR8RMdgtW/N/KYOL9YC/uslshZsw1eWq8WYf/DoPm6dOUnWY?=
- =?us-ascii?Q?mmRbLQriieM6OmMLDFoMveN8k/1SOTYSkaq6WP693OJvL0KoC6JDm6T2U5Zg?=
- =?us-ascii?Q?tr/MjIsbERxpkS6AvEtOR4VvpMwNrkBSQvosI0Zi?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6848490-6953-44f7-ae52-08dbe9d51bfe
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 14:29:31.1138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SUDzEokSZ0+obN3Cm/rmZ50fS94M1m9c6NO0bDuhT3ijAvB4VPqWbbQ6CeMMgqte
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7307
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 2/2] arm64: dts: qcom: sm8250-xiaomi-pipa: Add initial
+ device tree
+Content-Language: en-US
+To:     Luka Panio <lukapanio@gmail.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231024063740.4975-1-lukapanio@gmail.com>
+ <20231024063740.4975-2-lukapanio@gmail.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231024063740.4975-2-lukapanio@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:14:06AM +0000, Shameer Kolothum wrote:
-> When the optional PRE_COPY support was added to speed up the device
-> compatibility check, it failed to update the saving/resuming data
-> pointers based on the fd offset. This results in migration data
-> corruption and when the device gets started on the destination the
-> following error is reported in some cases,
+On 24.10.2023 08:37, Luka Panio wrote:
+> Initial support for Xiaomi Pad 6 tablet, that have sm8250 soc.
 > 
-> [  478.907684] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
-> [  478.913691] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000310200000010
-> [  478.919603] arm-smmu-v3 arm-smmu-v3.2.auto:  0x000002088000007f
-> [  478.925515] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
-> [  478.931425] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
-> [  478.947552] hisi_zip 0000:31:00.0: qm_axi_rresp [error status=0x1] found
-> [  478.955930] hisi_zip 0000:31:00.0: qm_db_timeout [error status=0x400] found
-> [  478.955944] hisi_zip 0000:31:00.0: qm sq doorbell timeout in function 2
-> 
-> Fixes: d9a871e4a143 ("hisi_acc_vfio_pci: Introduce support for PRE_COPY state transitions")
-> Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+> Signed-off-by: Luka Panio <lukapanio@gmail.com>
 > ---
->  drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+[...]
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> +
+> +	gpio_keys: gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&vol_up_n>;
+property-n
+property-names
 
-Jason
+other than that lgtm
+
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
+
