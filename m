@@ -2,178 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF8D7F2176
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56F87F2177
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 00:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjKTXeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 18:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        id S230014AbjKTXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 18:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKTXeS (ORCPT
+        with ESMTP id S229539AbjKTXhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 18:34:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56CCC3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:34:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98A18C433C8;
-        Mon, 20 Nov 2023 23:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700523253;
-        bh=UKOg81H8o/6iLNicPunApOZKAZR/qkOAnT2RKdCcu48=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=JxvM6Mk+ACcUm5jBwk19Mq1N9RK0Xgtb55yN7bVinpHN4eBfKVKxfL7fMBoRnomPu
-         fMODuAQWxKAHRrwPqP+cs1TSEMh/hINshQ6Yt5jsPwPHbXb+niJ8CMtDC3Be1l8CcU
-         WcZNdpb7Ayj2KspXvkF5W66+rqU7Dp76j4b5cwqTLRq43QYecRelytYWGPqMiANFgZ
-         iXfGDSGc8iUmjkTV6IPcHkDvE9OdbOfvWIo1nH6Dx8WeLfa7SWqeEV67yWuLicz7FU
-         bZa8b1dzshy7ESBaRX5zzNMNgESe2Qi6Ugc1yNnOf3B0P9dpPpVa9zOzlCsRp487k4
-         YOjniDJ6XHNxg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 21 Nov 2023 01:34:10 +0200
-Message-Id: <CX416KNURFJD.3OKJBUW8D5O2T@kernel.org>
-Cc:     "Lukas Wunner" <lukas@wunner.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: tpm_tis_spi_remove() triggers WARN_ON() in __flushwork (RPi3B+
- and SLB9670)
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Lino Sanfilippo" <l.sanfilippo@kunbus.com>,
-        <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.15.2
-References: <CX32RFOMJUQ0.3R4YCL9MDCB96@kernel.org>
- <CX342W32D30U.330BVFC336MA8@kernel.org>
- <8712ccc3-8619-41b8-97d0-d0187c0b59c6@kunbus.com>
-In-Reply-To: <8712ccc3-8619-41b8-97d0-d0187c0b59c6@kunbus.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 20 Nov 2023 18:37:10 -0500
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A3295
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 15:37:05 -0800 (PST)
+Date:   Mon, 20 Nov 2023 18:36:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700523424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=hYzm3PJkGaxBULjKx6yIXNaN8vleLHYsskEQneF97xU=;
+        b=rANOR0ezOFsnHenEAdIKZIEENpjIq9HsnZaInIWE5DQWLZfIvmtYQTOyJUSUqP+IlzPbKw
+        lg8fstoNuSXlLG+zoh5gzGF7u4C2rp64xPibYj6hZ00QAERynFsLTaMS0yyyESCReN+lHP
+        YEGu9cvhZb/jEXzQoiSLh5UlMcJVhk8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: lockdep + kasan bug?
+Message-ID: <20231120233659.e36txv3fedbjn4sx@moria.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Nov 20, 2023 at 10:08 PM EET, Lino Sanfilippo wrote:
-> Hi,
->
-> On 19.11.23 22:37, Jarkko Sakkinen wrote:
->
-> >=20
-> > On Sun Nov 19, 2023 at 10:35 PM EET, Jarkko Sakkinen wrote:
-> >> Captured from serial link with Raspberry Pi 3B+ and Infineon SLB9670 T=
-PM2 chip, i.e.
-> >> triggers here:
-> >>
-> >> static bool __flush_work(struct work_struct *work, bool from_cancel)
-> >> {
-> >>       struct wq_barrier barr;
-> >>
-> >>       if (WARN_ON(!wq_online))
-> >>               return false;
-> >>
-> >>       if (WARN_ON(!work->func)) /* <-- */
-> >>               return false;
-> >>
-> >>
-> >> # uname -a
-> >> Linux buildroot 6.6.1-v8 #1 SMP PREEMPT Sun Nov 19 21:46:00 EET 2023 a=
-arch64 GNU/Linux
-> >> # poweroff
-> >> # Stopping dropbear sshd: OK
-> >> Stopping network: [  246.487818] smsc95xx 3-1.1:1.0 eth0: hardware isn=
-'t capable of remote wakeup
-> >> OK
-> >> Stopping klogd: OK
-> >> Stopping syslogd: OK
-> >> Seeding 256 bits and crediting
-> >> Saving 256 bits of creditable seed for next boot
-> >> umount: devtmpfs busy - remounted read-only
-> >> [  246.623163] EXT4-fs (mmcblk0p2): re-mounted c5bb63df-c03e-4e4a-9846=
--0cdf5986edc4 ro. Quota mode: none.
-> >> The system is going down NOW!
-> >> Sent SIGTERM to all processes
-> >> Sent SIGKILL to al[  248.680154] ------------[ cut here ]------------
-> >> [  248.684825] WARNING: CPU: 1 PID: 298 at kernel/workqueue.c:3400 __f=
-lush_work.isra.0+0x29c/0x2c4
-> >> [  248.693582] CPU: 1 PID: 298 Comm: init Tainted: G        W         =
- 6.6.1-v8 #1
-> >> [  248.700926] Hardware name: Raspberry Pi 3 Model B Rev 1.2 (DT)
-> >> [  248.706780] pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS B=
-TYPE=3D--)
-> >> [  248.713774] pc : __flush_work.isra.0+0x29c/0x2c4
-> >> [  248.718415] lr : __flush_work.isra.0+0x44/0x2c4
-> >> [  248.722970] sp : ffffffc0812fb910
-> >> [  248.726299] x29: ffffffc0812fb910 x28: ffffff8003e30e40 x27: 000000=
-0000000000
-> >> [  248.733481] x26: fffffff0350c9c10 x25: 0000000000000000 x24: ffffff=
-f03500c028
-> >> [  248.740661] x23: fffffff03500d208 x22: 0000000000000001 x21: ffffff=
-f034f37568
-> >> [  248.747840] x20: ffffff80064d9ac0 x19: ffffff80064d9a80 x18: ffffff=
-ffffffffff
-> >> [  248.755019] x17: 0000000000000000 x16: 0000000000000000 x15: ffffff=
-c0812fb760
-> >> [  248.762197] x14: 0000000000000004 x13: ffffff8002808410 x12: 000000=
-0000000000
-> >> [  248.769376] x11: 0000000000000040 x10: fffffff034f35a98 x9 : 000000=
-0000000004
-> >> [  248.776554] x8 : ffffffc0812fb9a8 x7 : 0000000000000000 x6 : 000000=
-00000003e8
-> >> [  248.783732] x5 : fffffff034e46000 x4 : 0000000000000000 x3 : 000000=
-0000000000
-> >> [  248.790909] x2 : 0000000000000008 x1 : 0000000000000000 x0 : 000000=
-0000000000
-> >> [  248.798087] Call trace:
-> >> [  248.800546]  __flush_work.isra.0+0x29c/0x2c4
-> >> [  248.804841]  flush_work+0x10/0x1c
-> >> [  248.808177]  tpm_tis_remove+0x90/0xc8
-> >> [  248.811866]  tpm_tis_spi_remove+0x24/0x34
-> >> [  248.815901]  spi_remove+0x30/0x4c
-> >> [  248.819238]  device_remove+0x4c/0x80
-> >> [  248.822836]  device_release_driver_internal+0x1d4/0x228
-> >> [  248.828088]  device_release_driver+0x18/0x24
-> >> [  248.832381]  bus_remove_device+0xcc/0x10c
-> >> [  248.836421]  device_del+0x15c/0x41c
-> >> [  248.839934]  spi_unregister_device+0x48/0x98
-> >> [  248.844231]  __unregister+0x10/0x20
-> >> [  248.847742]  device_for_each_child+0x60/0xb4
-> >> [  248.852037]  spi_unregister_controller+0x48/0x15c
-> >> [  248.856768]  bcm2835_spi_remove+0x20/0x60
-> >> [  248.860804]  platform_shutdown+0x24/0x34
-> >> [  248.864751]  device_shutdown+0x150/0x258
-> >> [  248.868701]  kernel_power_off+0x38/0x7c
-> >> [  248.872563]  __do_sys_reboot+0x200/0x238
-> >> [  248.876511]  __arm64_sys_reboot+0x24/0x30
-> >> [  248.880546]  invoke_syscall+0x48/0x114
-> >> [  248.884324]  el0_svc_common.constprop.0+0x40/0xe0
-> >> [  248.889057]  do_el0_svc+0x1c/0x28
-> >> [  248.892397]  el0_svc+0x40/0xe8
-> >> [  248.895478]  el0t_64_sync_handler+0x100/0x12c
-> >> [  248.899864]  el0t_64_sync+0x190/0x194
-> >> [  248.903549] ---[ end trace 0000000000000000 ]---
-> >> [  248.910555] reboot: Power down
-> >>
-> >> Just putting out. I was testing https://github.com/jarkkojs/buildroot-=
-tpmdd/tree/linux-6.6.y
-> >> and this popped up. To build sdcard.img bootable with Raspberry Pi 3:
-> >>
-> >> make raspberrypi3_tpmdd_64_defconfig && make
-> >>
-> >> BR, Jarkko
-> >=20
-> > So I applied [1] and now I get a clean shutdown:
-> >=20
->
-> AFAIU the warning is shown in case that interrupts are not enabled and th=
-us INIT_WORK has not
-> been called for free_irq_work. This should not be too hard to fix, so I t=
-hink I can provide=20
-> a patch for that, soon.
+I've been seeing a lot of reports like the following in a lot of my
+lockdep + kasan tests.
 
-Agreed, and take your time. I just captured without further analysis so
-that does not get lost, that's all. Thanks for looking into it.
+Some lockdep patches are in my tree: they don't touch this code path
+(except I do have to increase MAX_LOCK_DEPTH from 48 to 63, perhaps that
+has unintended side effects?)
 
-> BR,
-> Lino
+https://evilpiepirate.org/git/bcachefs.git/log/?id=2f42f415f7573001b4f4887b785d8a8747b3757f
 
-BR, Jarkko
+bcachefs does take a _large_ number of locks for lockdep to track, also
+possibly relevant
+
+Have not dug into the lockdep hash table of outstanding locks code yet
+but happy to test patches...
+
+04752 ========= TEST   tiering_variable_buckets_replicas
+04752 
+04752 WATCHDOG 3600
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): mounting version 1.3: rebalance_work opts=metadata_replicas=2,data_replicas=2,foreground_target=ssd,background_target=hdd,promote_target=ssd,fsck
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing new filesystem
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): going read-write
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): marking superblocks
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing freespace
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): done initializing freespace
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots table
+04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots done
+04753 WATCHDOG 3600
+04753 randrw: (g=0): rw=randrw, bs=(R) 4096B-1024KiB, (W) 4096B-1024KiB, (T) 4096B-1024KiB, ioengine=libaio, iodepth=64
+04753 fio-3.33
+04753 Starting 1 process
+04753 randrw: Laying out IO file (1 file / 3500MiB)
+05117 Jobs: 1 (f=1)
+05117 BUG: KASAN: global-out-of-bounds in add_chain_block+0x44/0x288
+05117 Read of size 4 at addr ffffffc081b7a8bc by task fio/120528
+05117 
+05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
+05117 Hardware name: linux,dummy-virt (DT)
+05117 Call trace:
+05117  dump_backtrace+0xa8/0xe8
+05117  show_stack+0x1c/0x30
+05117  dump_stack_lvl+0x5c/0xa0
+05117  print_report+0x1e4/0x5a0
+05117  kasan_report+0x80/0xc0
+05117  __asan_load4+0x90/0xb0
+05117  add_chain_block+0x44/0x288
+05117  __lock_acquire+0x1104/0x24f8
+05117  lock_acquire+0x1e0/0x470
+05117  _raw_spin_lock_nested+0x54/0x78
+05117  raw_spin_rq_lock_nested+0x30/0x50
+05117  try_to_wake_up+0x3b4/0x1050
+05117  wake_up_process+0x1c/0x30
+05117  kick_pool+0x104/0x1b0
+05117  __queue_work+0x350/0xa58
+05117  queue_work_on+0x98/0xd0
+05117  __bch2_btree_node_write+0xec0/0x10a0
+05117  bch2_btree_node_write+0x88/0x138
+05117  btree_split+0x744/0x14a0
+05117  bch2_btree_split_leaf+0x94/0x258
+05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
+05117  __bch2_trans_commit+0x1128/0x3010
+05117  bch2_extent_update+0x410/0x570
+05117  bch2_write_index_default+0x404/0x598
+05117  __bch2_write_index+0xb0/0x3b0
+05117  __bch2_write+0x6f0/0x928
+05117  bch2_write+0x368/0x8e0
+05117  bch2_direct_write+0xaa8/0x12c0
+05117  bch2_write_iter+0x2e4/0x1050
+05117  aio_write.constprop.0+0x19c/0x420
+05117  io_submit_one.constprop.0+0xf30/0x17a0
+05117  __arm64_sys_io_submit+0x244/0x388
+05117  invoke_syscall.constprop.0+0x64/0x138
+05117  do_el0_svc+0x7c/0x120
+05117  el0_svc+0x34/0x80
+05117  el0t_64_sync_handler+0xb8/0xc0
+05117  el0t_64_sync+0x14c/0x150
+05117 
+05117 The buggy address belongs to the variable:
+05117  nr_large_chain_blocks+0x3c/0x40
+05117 
+05117 The buggy address belongs to the virtual mapping at
+05117  [ffffffc081710000, ffffffc088861000) created by:
+05117  paging_init+0x260/0x820
+05117 
+05117 The buggy address belongs to the physical page:
+05117 page:00000000ce625900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x41d7a
+05117 flags: 0x4000(reserved|zone=0)
+05117 page_type: 0xffffffff()
+05117 raw: 0000000000004000 fffffffe00075e88 fffffffe00075e88 0000000000000000
+05117 raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+05117 page dumped because: kasan: bad access detected
+05117 
+05117 Memory state around the buggy address:
+05117  ffffffc081b7a780: 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
+05117  ffffffc081b7a800: 00 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
+05117 >ffffffc081b7a880: 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
+05117                                         ^
+05117  ffffffc081b7a900: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9
+05117  ffffffc081b7a980: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+05117 ==================================================================
+05117 Kernel panic - not syncing: kasan.fault=panic set ...
+05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
+05117 Hardware name: linux,dummy-virt (DT)
+05117 Call trace:
+05117  dump_backtrace+0xa8/0xe8
+05117  show_stack+0x1c/0x30
+05117  dump_stack_lvl+0x5c/0xa0
+05117  dump_stack+0x18/0x20
+05117  panic+0x3ac/0x408
+05117  kasan_report_invalid_free+0x0/0x90
+05117  kasan_report+0x90/0xc0
+05117  __asan_load4+0x90/0xb0
+05117  add_chain_block+0x44/0x288
+05117  __lock_acquire+0x1104/0x24f8
+05117  lock_acquire+0x1e0/0x470
+05117  _raw_spin_lock_nested+0x54/0x78
+05117  raw_spin_rq_lock_nested+0x30/0x50
+05117  try_to_wake_up+0x3b4/0x1050
+05117  wake_up_process+0x1c/0x30
+05117  kick_pool+0x104/0x1b0
+05117  __queue_work+0x350/0xa58
+05117  queue_work_on+0x98/0xd0
+05117  __bch2_btree_node_write+0xec0/0x10a0
+05117  bch2_btree_node_write+0x88/0x138
+05117  btree_split+0x744/0x14a0
+05117  bch2_btree_split_leaf+0x94/0x258
+05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
+05117  __bch2_trans_commit+0x1128/0x3010
+05117  bch2_extent_update+0x410/0x570
+05117  bch2_write_index_default+0x404/0x598
+05117  __bch2_write_index+0xb0/0x3b0
+05117  __bch2_write+0x6f0/0x928
+05117  bch2_write+0x368/0x8e0
+05117  bch2_direct_write+0xaa8/0x12c0
+05117  bch2_write_iter+0x2e4/0x1050
+05117  aio_write.constprop.0+0x19c/0x420
+05117  io_submit_one.constprop.0+0xf30/0x17a0
+05117  __arm64_sys_io_submit+0x244/0x388
+05117  invoke_syscall.constprop.0+0x64/0x138
+05117  do_el0_svc+0x7c/0x120
+05117  el0_svc+0x34/0x80
+05117  el0t_64_sync_handler+0xb8/0xc0
+05117  el0t_64_sync+0x14c/0x150
+05117 SMP: stopping secondary CPUs
+05117 Kernel Offset: disabled
+05117 CPU features: 0x0,00000000,70000001,1040500b
+05117 Memory Limit: none
+05117 ---[ end Kernel panic - not syncing: kasan.fault=panic set ... ]---
+05122 ========= FAILED TIMEOUT tiering_variable_buckets_replicas in 3600s
