@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EDB7F16AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261647F16B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjKTPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51184 "EHLO
+        id S233430AbjKTPHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:07:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbjKTPFZ (ORCPT
+        with ESMTP id S232148AbjKTPG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:05:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA05F93
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:05:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA398C433C8;
-        Mon, 20 Nov 2023 15:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700492721;
-        bh=wkDFkqWY1q+7TNnh5FBjMJrCHmKUB6aLYQbdLpZqwSE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nf37+MGouG1zQ31cVpFoLYz4Q3JdOGJ2KdrauMtMigOEAKXQY9aNLsyOo+rGpUjsf
-         aLsPbrR8LlQv6etrojYjeLvn+nkaDC4vNLCxVbwc5nU9tumi4+cqHnujmWpoRGkziE
-         7YgUZnmGWKlnSHTuar2CA44JXgd88+kqru1oHVOcUudm4Y5S1k/P2XxKJbEMqJOXWu
-         KQ/LWrQrsZdXOEF/DyqUIxGBNgJxA1H9fkI3ZPFGdZNwhSLrCb7AcFefSTzAzd9HBC
-         06Me0sJT+1oVQYAjL08izkU7iQ2QKtcGqrMNjLL/uvq9zybglyCWiF1rLJ0vhotWc1
-         Kr14ETS5/dloQ==
-Date:   Mon, 20 Nov 2023 15:05:16 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PULL REQUEST] i2c-for-6.7-rc2
-Message-ID: <20231120150515.GA32570@willie-the-truck>
-References: <ZVf/pqw5YcF7sldg@shikoro>
- <CAHk-=wi9a9u+1cAxxHw7KxXsfPvdWCbhatK7enFSjgwjrovCZA@mail.gmail.com>
+        Mon, 20 Nov 2023 10:06:58 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2232E94
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:06:55 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6ce2988d62eso2585660a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:06:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700492814; x=1701097614; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1vVhCBw4UGnbOTaPublp+dT13ul5pmR1HyKDFK4Q5L8=;
+        b=sYPcyH8FC2/TI3GRqENHP2USiyIzWe5ZfI2yrsR2/DgUI6kBqoYsCfcRFRH+Zba6nK
+         gAtwKNGmZPJJ6zomhngB6MnD8rpeNDe2VeIGBQZiFuNLmtf/YqNkpcB0IpIQXve1lxoW
+         K3c79JPUfd0g1GZemvXRlEFLlNVS6QzVwbZk5Ig+QQ9URuvpR20k8T5AsGbKjbsoI01r
+         WunVKmvbsEpnpGAw/jHpuJWprAgq9FwK7+mtjvkNRKWCSWqsZXLpU8Wy0B6PPFmNiAnN
+         JBt65uB3NKy24Rg9i6aPRBx2ZEsQ8X7cGLn8/7f0sGAm1DcQLSMVBnSG9zRWmcgflk3u
+         sgEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700492814; x=1701097614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1vVhCBw4UGnbOTaPublp+dT13ul5pmR1HyKDFK4Q5L8=;
+        b=uNREdvlCeft7Y4Xiwlk8A+ZtBXOlVIxeFX1uaNcnoCvpV4FgZwsrzmB0m1sFr+/Omj
+         /Jwau6kkr7yKEqZr++6BA+XUDXGH+hqaqJWh6IbmO18qJjeibTWgaKOJpHzV7ydegAab
+         ZO2/Y6MhbKvppPnuqiJ+0qHNfNuaB7uQm9f8YW7Yb2ptU1ChOrOSzML+YaqepxOUh9S5
+         n1xtiDcVMkTbjZ9A3DerIlrT7e0WH8OYB+ko2P+QRmXf4wxgf+Ollk2NI6JqfBtM0+24
+         Z5/TlrRR+N+rUKx4IDQ0fF/2FZd42cT7ubW5ZKeWUvsv2WiYrs8MWNdRr1bHQAy6zLQC
+         XsVQ==
+X-Gm-Message-State: AOJu0Yxlit/URSYlalnd4KUt/OgMOJpNBbuOJdC2qn+qyDhIVRr1sSvJ
+        JY1wo0bkaxhC3gZUzK44vbRS5gpM5u8/eN9RlSBbqQ==
+X-Google-Smtp-Source: AGHT+IHiOw/GOhoqSglQEq4xwFJxVajS26VlN4i3Ic8j6+NDTi7W6YgdeZC24XKyFtN4IUFTWod/HG5DRe7EefXqyME=
+X-Received: by 2002:a05:6358:7e14:b0:16b:c63d:5dfe with SMTP id
+ o20-20020a0563587e1400b0016bc63d5dfemr7829578rwm.16.1700492814326; Mon, 20
+ Nov 2023 07:06:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi9a9u+1cAxxHw7KxXsfPvdWCbhatK7enFSjgwjrovCZA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231115165001.2932350-1-brgl@bgdev.pl> <CACRpkdbDny8X3WB_qJ4h_vbwrjno5ytAtNMgTeXg4jpegdUH2w@mail.gmail.com>
+In-Reply-To: <CACRpkdbDny8X3WB_qJ4h_vbwrjno5ytAtNMgTeXg4jpegdUH2w@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 20 Nov 2023 16:06:43 +0100
+Message-ID: <CAMRc=McZJzdj04Ckf_ygDhWNN2JcbTfY+yefOZSYx_nTE_Jpjg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] pinctrl: don't use gpiod_to_chip()
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 09:56:59AM -0800, Linus Torvalds wrote:
-> On Fri, 17 Nov 2023 at 16:05, Wolfram Sang <wsa@kernel.org> wrote:
+On Thu, Nov 16, 2023 at 2:43=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
+>
+> On Wed, Nov 15, 2023 at 5:50=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+>
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > >
-> > Jan Bottorff (1):
-> >       i2c: designware: Fix corrupted memory seen in the ISR
-> 
-> I have pulled this, but honestly, looking at the patch, I really get
-> the feeling that there's some deeper problem going on.
-> 
-> Either the designware driver doesn't do the right locking, or the
-> relaxed IO accesses improperly are escaping the locks that do exist.
-> 
-> Either way, just changing "writel_relaxed()" to "writel()" seems to be wrong.
-> 
-> Of course, it is entirely possible that those accesses should never
-> have been relaxed in the first place, and that the actual access
-> ordering between two accesses in the same thread matters. For example,
-> the code did
-> 
->         *val = readw_relaxed(dev->base + reg) |
->                 (readw_relaxed(dev->base + reg + 2) << 16);
-> 
-> and if the order of those two readw's mattered, then the "relaxed" was
-> always entirely wrong.
-> 
-> But the commit message seems to very much imply a multi-thread issue,
-> and for *that* issue, doing "writel_relaxed" -> "writel" is very much
-> wrong. The only thing fixing threading issues is proper locks (or
-> _working_ locks).
-> 
-> Removing the "relaxed" may *hide* the issue, but doesn't really fix it.
-> 
-> For the arm64 people I brought in: this is now commit f726eaa787e9
-> ("i2c: designware: Fix corrupted memory seen in the ISR") upstream.
-> I've done the pull, because even if this is purely a "hide the
-> problem" fix, it's better than what the code did. I'm just asking that
-> people look at this a bit more.
+> > Let's start working towards removing gpiod_to_chip() from the kernel.
+> > Start with pinctrl. The first patch should go through the GPIO tree
+> > and become available through an immutable tag so that we can get more
+> > conversions in this cycle elsewhere.
+>
+> Fair enough, maybe an immutable branch with all three patches?
+> Probably best to merga all three into both subsystems I think.
+>
 
-Thanks for putting me on CC. The original issue was discussed quite a bit
-over at:
+Nah, I don't think I need to pollute the GPIO tree with every pinctrl
+patch. It's enough to just merge the first one into GPIO and you do
+the same in pinctrl.
 
-https://lore.kernel.org/all/20230913232938.420423-1-janb@os.amperecomputing.com/
+Bart
 
-and I think the high-level problem was something like:
-
-1. CPU x writes some stuff to memory (I think one example was i2c_dw_xfer()
-   setting 'dev->msg_read_idx' to 0)
-2. CPU x writes to an I/O register on this I2C controller which generates
-   an IRQ (end of i2c_dw_xfer_init())
-3. CPU y takes the IRQ
-4. CPU y reads 'dev->msg_read_idx' and doesn't see the write from (1)
-
-(i2c folks: please chime in if I got this wrong)
-
-the issue being that the writes in (1) are not ordered before the I/O
-access in (2) if the relaxed accessor is used. Rather than upgrade only
-the register writes which can trigger an interrupt, the more conservative
-approach of upgrading everything to non-relaxed I/O accesses was taken
-(which is probably necessary to deal with spurious IRQs properly anyway
-because otherwise 'dev->msg_read_idx' could be read early in step (4)).
-
-Your point about locking is interesting. I don't see any obvious locks
-being taken in i2c_dw_isr(), so I don't think the issue is because relaxed
-accesses are escaping existing locks. An alternative would be putting
-steps (1) and (2) in a critical section and then taking the lock again
-in the interrupt handler. Or did you have something else in mind?
-
-Will
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> Yours,
+> Linus Walleij
