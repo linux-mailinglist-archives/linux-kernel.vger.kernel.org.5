@@ -2,98 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E11C7F0E3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 130507F0E44
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjKTI4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:56:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S232214AbjKTI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbjKTI4r (ORCPT
+        with ESMTP id S232437AbjKTI5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:56:47 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8111AA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:56:43 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50aab20e828so1328042e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:56:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1700470601; x=1701075401; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=59pC2LHry6cb5cqfhMULcVrIqT91aTViztLNNnCSwLA=;
-        b=SJexwnN9N8EtVhSOmDkJ7iuayuk/jKb9c+hTmYuFJdOLgRUwC0z1NMjytqjVMSn22t
-         P80s2THPuHwmZ4AylvN0Buzo3ww9FTdHo4EdVuJRFUDYXcwLerhnF9BPraw/5+5wcDtz
-         Qa9a8e+Zeifsb++AT64Nu1ShyqxcTLpniH0+m58ff3YSyZNnXMPAwHZzEO3bNRpuXwnD
-         JZX4dEci0bba0m2pKB1L3eHA4WKPe7896e4cBf3H8kNnp4x8pw2g19mNjmjhadBkG4Iw
-         cv35LqzWWS/X3EE5yfqiMl1yAs3zdKsqplF+xnARBl5+8tYAvpx5OJX1InLHuLzoUkY3
-         /38g==
+        Mon, 20 Nov 2023 03:57:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831CFA4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:57:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700470630;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=5Qf+s++PJXkoIaJ5ZWtjbotl2CQD5cU4WwKuFq4lyG8=;
+        b=GROTT17vHJ9jqMHomTo8s8QAKdU41Jd+RW54kN6mtVUv/tGFFShhpevRUlDD7DF6YFGSZV
+        +uuC2kfbfFVYCs0qqRD7tqbxFC3ygf8YX+WFUtXVor4sqhffGq8ElqtVbLCOjZSZYnoZEs
+        U1Pdtq0Xwv3RlmChdM3cl9aXfHJ3hDg=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-EKOoA7LGOPC66nrBWAY_rw-1; Mon, 20 Nov 2023 03:57:09 -0500
+X-MC-Unique: EKOoA7LGOPC66nrBWAY_rw-1
+Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5079a3362afso3793584e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:57:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700470601; x=1701075401;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=59pC2LHry6cb5cqfhMULcVrIqT91aTViztLNNnCSwLA=;
-        b=DEwDO0dAjfa+7xJrIRnGK+sKVypLqWcAda8V6bxuMip3PXXZLO2ZU7kv7P09LXHcyg
-         pUu9vB6WfWNMOSoaasQksj7ViqNdGLRhKC+oe8E9kiAx3E83BUjKxLBKvC773atFCMQa
-         zUxAbPWkBSjsMdi0Idb1XSzzRxNbCKXasewT9xukgrznjgAxJMhJWn6M3zf6Ne1gg0/u
-         rqfjgcTyH8BjNe4SU1P6EDYFQRWCD1Er1NqC5xVev4UeCxfMHGqMOyhxTRZJJxDXKIpw
-         5Wb6kYw2G2xEdMWnbFARe40zA0/cXPH0jfwTmUYQFkeYQxdHtt07ksmIL1r4SYPqM3vj
-         InZA==
-X-Gm-Message-State: AOJu0YxSjA7zOgndOPGmezCKxBpibV0R9u3pyOCgfsv8e01V4j35AFN3
-        LbSA2SXN3wsh4a3QB/z9gWT60Q==
-X-Google-Smtp-Source: AGHT+IHE45wQIbvUvBpnUSKuVGaK0HGXYQLdyDOslaoOuSDIijD+KTDxVgVYHkC9GH3JKKQYbqNBGQ==
-X-Received: by 2002:ac2:532f:0:b0:50a:a337:1f42 with SMTP id f15-20020ac2532f000000b0050aa3371f42mr4869740lfh.36.1700470601250;
-        Mon, 20 Nov 2023 00:56:41 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.183])
-        by smtp.gmail.com with ESMTPSA id f10-20020adfdb4a000000b0032da35baf7bsm10422832wrj.113.2023.11.20.00.56.37
+        d=1e100.net; s=20230601; t=1700470628; x=1701075428;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5Qf+s++PJXkoIaJ5ZWtjbotl2CQD5cU4WwKuFq4lyG8=;
+        b=tSzaQu1TX7dpx2qRESYp3IoBHKEnHuCsVcXAcpo67UFmqeZwX3SAU/sFNqCjSnGmiT
+         hxizzPe58mAAHddIXjRo6rsc9LFSn+t67L6RGPCKJKXlrbjm4WAri7VJr5COIEbj3HOa
+         V45VkOJ+j2OAYBYYA3tpFHvBXdK8qc9ahglg9f3jKpRTrkhp74L4xVh/yKZr0y27izrS
+         e1AI5/80y3Xmcx5GFxOwRaZGg3+rfiohY1IarlVQWtJdojOXLWhE88GHB6YhWQnLubvO
+         sfdq42rrUhkzLGVSW5jVEU66z/a5I8jWDyH2vJ8/3xO6SfZ+78omEYfWfI1o/PRLDXeD
+         1EPw==
+X-Gm-Message-State: AOJu0YxK/iMdMbPbui34l+719sxD0+DTv6QbCwt2Lch29ZfnavlcIksP
+        PzAKonzmDDcDOwfJXCU2cwONnBmYpfZCUj2IS4BcZnQJ8wP7rMb2aqAUCgGb/y9HsIr+JJ/V2kn
+        6jLiPRF0eJumTqGasD8hnyAw+
+X-Received: by 2002:ac2:59c9:0:b0:509:f45c:fae6 with SMTP id x9-20020ac259c9000000b00509f45cfae6mr5988301lfn.10.1700470627730;
+        Mon, 20 Nov 2023 00:57:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFh06/r0MKuhiwR+4tIcg/KWZFHDnajsuICyBAflJOTfSWVJxA+J4knkZKoVK/fbctMYH8BoQ==
+X-Received: by 2002:ac2:59c9:0:b0:509:f45c:fae6 with SMTP id x9-20020ac259c9000000b00509f45cfae6mr5988284lfn.10.1700470627351;
+        Mon, 20 Nov 2023 00:57:07 -0800 (PST)
+Received: from ?IPV6:2003:cb:c746:7700:9885:6589:b1e3:f74c? (p200300cbc746770098856589b1e3f74c.dip0.t-ipconnect.de. [2003:cb:c746:7700:9885:6589:b1e3:f74c])
+        by smtp.gmail.com with ESMTPSA id b11-20020a05600010cb00b00332c0d256c5sm5558804wrx.80.2023.11.20.00.57.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 00:56:40 -0800 (PST)
-Message-ID: <0272299f-40b5-4840-887a-3d017e3f77bb@tuxon.dev>
-Date:   Mon, 20 Nov 2023 10:56:36 +0200
+        Mon, 20 Nov 2023 00:57:07 -0800 (PST)
+Message-ID: <1d8908d6-8084-4539-8ec0-178815e1c9e7@redhat.com>
+Date:   Mon, 20 Nov 2023 09:57:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/14] arm: multi_v7_defconfig: Enable CONFIG_RAVB
+Subject: Re: [PATCH 2/3] mm/memory_hotplug: fix error handling in
+ add_memory_resource()
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andrew Davis <afd@ti.com>, Mark Brown <broonie@kernel.org>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-15-claudiu.beznea.uj@bp.renesas.com>
- <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231120072317.3169630-1-sumanthk@linux.ibm.com>
+ <20231120072317.3169630-3-sumanthk@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231120072317.3169630-3-sumanthk@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,26 +138,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 20.11.2023 10:44, Arnd Bergmann wrote:
-> On Mon, Nov 20, 2023, at 08:00, Claudiu wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> ravb driver is used by RZ/G1H. Enable it in multi_v7_defconfig.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 20.11.23 08:23, Sumanth Korikkar wrote:
+> In add_memory_resource(), creation of memory block devices occurs after
+> successful call to arch_add_memory(). However, creation of memory block
+> devices could fail.  In that case, arch_remove_memory() is called to
+> perform necessary cleanup.
 > 
-> We have a mix of =y and =m for ethernet drivers, and usually
-> only have drivers built-in when they are frequently tested
-> with NFS root booting.
+> Currently with or without altmap support, arch_remove_memory() is always
+> passed with altmap set to NULL during error handling. This leads to
+> freeing of struct pages using free_pages(), eventhough the allocation
+> might have been performed with altmap support via
+> altmap_alloc_block_buf().
 > 
-> Do you need this as well, or could it be =m instead?
-
-I would prefer to have it =y as internal testing infrastructure is using NFS.
-
-Thank you,
-Claudiu Beznea
-
+> Fix the error handling by passing altmap in arch_remove_memory(). This
+> ensures the following:
+> * When altmap is disabled, deallocation of the struct pages array occurs
+>    via free_pages().
+> * When altmap is enabled, deallocation occurs via vmem_altmap_free().
 > 
->     Arnd
+> Fixes: a08a2ae34613 ("mm,memory_hotplug: allocate memmap from the added memory range")
+> Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+> Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+> ---
+>   mm/memory_hotplug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index c8238fc5edcb..4f476a970e84 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1458,7 +1458,7 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>   	/* create memory block devices after memory was added */
+>   	ret = create_memory_block_devices(start, size, params.altmap, group);
+>   	if (ret) {
+> -		arch_remove_memory(start, size, NULL);
+> +		arch_remove_memory(start, size, params.altmap);
+>   		goto error_free;
+>   	}
+>   
+
+We should likely CC stable on this one
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
