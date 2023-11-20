@@ -2,62 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A047F0DAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0877F0DB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbjKTIgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:36:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
+        id S232230AbjKTIkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231948AbjKTIgh (ORCPT
+        with ESMTP id S232211AbjKTIke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:36:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F6B9E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:36:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700469388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CBLqoMyIVireLlLreZE4y9YWUgoFtH3j+ZLwtIAR6bY=;
-        b=HUHlzKLEfszrbruskvsw0HcBledqTaQAxNszDt+ZaAyPkPwt+ILYeigKpeMkiiYq8ehTu0
-        qsgsRfeqQGaxLj1iZ7WchGAjqR0jR+t5ons/C5sfEOSjtQ2ZSsI8mPxUYephkuOqNPoROs
-        tmVIlUc6TSsjlEKNHHHj8iUVfjsl00Q=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-461-W8IigMUsOXuqc3NP8N005A-1; Mon,
- 20 Nov 2023 03:36:23 -0500
-X-MC-Unique: W8IigMUsOXuqc3NP8N005A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 90AA53C0E657;
-        Mon, 20 Nov 2023 08:36:22 +0000 (UTC)
-Received: from localhost (unknown [10.72.120.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BDEA40C6EB9;
-        Mon, 20 Nov 2023 08:36:21 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Keith Busch <kbusch@kernel.org>,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        Yi Zhang <yi.zhang@redhat.com>,
-        Guangwu Zhang <guazhang@redhat.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH V4 resend] lib/group_cpus.c: avoid to acquire cpu hotplug lock in group_cpus_evenly
-Date:   Mon, 20 Nov 2023 16:35:59 +0800
-Message-ID: <20231120083559.285174-1-ming.lei@redhat.com>
+        Mon, 20 Nov 2023 03:40:34 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8DB90
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:30 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so4276040b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700469629; x=1701074429; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q1l7DrgcLu7VXd3X25X1T1+EEwHez3TAITsgaEsk2/c=;
+        b=szbEyj2HT6h+dB9Q2jnR57VzvzY3z73WCtWa05aGwZWqjIGJ00aayT4yDKyRey6rLb
+         l8dlFP83N846R5EhEfyvG0iWme/jNkFP1WmWcg54EcLzfR4xjma1tY/hznnO4sJk1ci+
+         ce6TkPQP91GhPlPrXIvopW2Jz5+h8DdqDKz5vphbSzpG0xZxjNgqNvB1Jl4GCS+VQegj
+         CM+fJqy+Le5r0LWdBS3GrwjXRDeUzB9tZYn6RhDFdgzwz92BkKhArDAI8/q1R2nVGe/U
+         iLA2Yc/EqUeAu73D6Os86xkfFhgTaQALDhW6oE6b6ugfFqHygBjQ9Qrrz9VwzDWn09NQ
+         +8Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700469629; x=1701074429;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q1l7DrgcLu7VXd3X25X1T1+EEwHez3TAITsgaEsk2/c=;
+        b=oUF+VHCKMORqIDpIMJJ1m5jeldwtFvWSD6KR4orY1Cxq5WVuC55/svDB6D1cnpQ7l4
+         hPM+YvfKyxsKzpa6hBvVz+YzLVK61sNvQY58emNw0IetEzd4rO7EU/PtFz9522ncu8hW
+         gqpl+4riLSX1oH9pxv5oNOBiBVi0kYD+Nh9yl8oCSv6pvpKNpjG1sQ2j/eKHNy4Zs1W9
+         jhWcmV9DoNK/LJ7GL1g2ACstyWoyGA5HrkWXSbfTZkq47gNeqLahAqlWofGzs0wO2zPV
+         wdYlZ1A4rusgofPtpPrM6PakuOSzgVONHKFjE+8Dc0ZHaymRKfL31/LkxBvxXFQfowgC
+         k+GQ==
+X-Gm-Message-State: AOJu0YzWfI3E0Vxef83uFr1SMAaTBoR8qhzdItZVPJt5+2+mFBsxiQpz
+        uCGezh08Bs5Q+sKFRCHpJ13V
+X-Google-Smtp-Source: AGHT+IFtQV/ccq96KNMgHw78cdV9zVDXhrmwTg6H1dMXISAr54kG1H+fS2nrstxC8hq4JKy/7bUxhQ==
+X-Received: by 2002:a05:6a00:6c83:b0:6be:130a:22a0 with SMTP id jc3-20020a056a006c8300b006be130a22a0mr9695978pfb.14.1700469629585;
+        Mon, 20 Nov 2023 00:40:29 -0800 (PST)
+Received: from localhost.localdomain ([117.248.2.5])
+        by smtp.gmail.com with ESMTPSA id e24-20020a62ee18000000b00694ebe2b0d4sm5567019pfi.191.2023.11.20.00.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 00:40:28 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        lpieralisi@kernel.org, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_bjorande@quicinc.com,
+        fancer.lancer@gmail.com, vidyas@nvidia.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v7 0/2] PCI: designware-ep: Fix DBI access before core init
+Date:   Mon, 20 Nov 2023 14:10:12 +0530
+Message-Id: <20231120084014.108274-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,93 +73,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-group_cpus_evenly() could be part of storage driver's error handler,
-such as nvme driver, when may happen during CPU hotplug, in which
-storage queue has to drain its pending IOs because all CPUs associated
-with the queue are offline and the queue is becoming inactive. And
-handling IO needs error handler to provide forward progress.
+Hello,
 
-Then dead lock is caused:
+This series is the continuation of previous work by Vidya Sagar [1] to fix the
+issues related to accessing DBI register space before completing the core
+initialization in some EP platforms like Tegra194/234 and Qcom SM8450.
 
-1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
-handler is waiting for inflight IO
+Since Vidya is busy, I took over the series based on his consent (off-list
+discussion).
 
-2) error handler is waiting for CPU hotplug lock
+I've reworked the series in v7 to make it bisect friendly, and also to avoid
+build issue with the dependency. This resulted in the patches being heavily
+modified, so I took over the authorship of the patches.
 
-3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
-error handling can't provide forward progress.
+Testing
+=======
 
-Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
-in which two stage spreads are taken: 1) the 1st stage is over all present
-CPUs; 2) the end stage is over all other CPUs.
+I've tested the series on Qcom SM8450 based dev board. I also expect it to work
+on Tegra platforms as well but it'd be good if Vidya or someone could test it.
 
-Turns out the two stage spread just needs consistent 'cpu_present_mask', and
-remove the CPU hotplug lock by storing it into one local cache. This way
-doesn't change correctness, because all CPUs are still covered.
+- Mani
 
-Cc: Keith Busch <kbusch@kernel.org>
-Cc: linux-nvme@lists.infradead.org
-Cc: linux-block@vger.kernel.org
-Reported-by: Yi Zhang <yi.zhang@redhat.com>
-Reported-by: Guangwu Zhang <guazhang@redhat.com>
-Tested-by: Guangwu Zhang <guazhang@redhat.com>
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- lib/group_cpus.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+[1] https://lore.kernel.org/linux-pci/20221013175712.7539-1-vidyas@nvidia.com/
+[2] https://lore.kernel.org/linux-pci/20230825123843.GD6005@thinkpad/
 
-diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-index aa3f6815bb12..ee272c4cefcc 100644
---- a/lib/group_cpus.c
-+++ b/lib/group_cpus.c
-@@ -366,13 +366,25 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 	if (!masks)
- 		goto fail_node_to_cpumask;
- 
--	/* Stabilize the cpumasks */
--	cpus_read_lock();
- 	build_node_to_cpumask(node_to_cpumask);
- 
-+	/*
-+	 * Make a local cache of 'cpu_present_mask', so the two stages
-+	 * spread can observe consistent 'cpu_present_mask' without holding
-+	 * cpu hotplug lock, then we can reduce deadlock risk with cpu
-+	 * hotplug code.
-+	 *
-+	 * Here CPU hotplug may happen when reading `cpu_present_mask`, and
-+	 * we can live with the case because it only affects that hotplug
-+	 * CPU is handled in the 1st or 2nd stage, and either way is correct
-+	 * from API user viewpoint since 2-stage spread is sort of
-+	 * optimization.
-+	 */
-+	cpumask_copy(npresmsk, data_race(cpu_present_mask));
-+
- 	/* grouping present CPUs first */
- 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
--				  cpu_present_mask, nmsk, masks);
-+				  npresmsk, nmsk, masks);
- 	if (ret < 0)
- 		goto fail_build_affinity;
- 	nr_present = ret;
-@@ -387,15 +399,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
- 		curgrp = 0;
- 	else
- 		curgrp = nr_present;
--	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
-+	cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk);
- 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
- 				  npresmsk, nmsk, masks);
- 	if (ret >= 0)
- 		nr_others = ret;
- 
-  fail_build_affinity:
--	cpus_read_unlock();
--
- 	if (ret >= 0)
- 		WARN_ON(nr_present + nr_others < numgrps);
- 
+Changes in v7:
+
+- Rebased on top of v6.7-rc1
+- Kept the current dw_pcie_ep_init_complete() API instead of renaming it to
+  dw_pcie_ep_init_late(), since changing the name causes a slight ambiguity.
+- Splitted the change that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify() to help bisecting and also to avoid build issue.
+- Added a new patch that moves pci_epc_init_notify() inside
+  dw_pcie_ep_init_notify().
+- Took over the authorship and dropped the previous Ack as the patches are
+  heavily modified.
+
+Changes in v6:
+
+- Rebased on top of pci/next (6e2fca71e187)
+- removed ep_init_late() callback as it is no longer necessary
+
+For previous changelog, please refer [1].
+
+
+Manivannan Sadhasivam (2):
+  PCI: designware-ep: Fix DBI access before core init
+  PCI: designware-ep: Move pci_epc_init_notify() inside
+    dw_pcie_ep_init_complete()
+
+ .../pci/controller/dwc/pcie-designware-ep.c   | 149 +++++++++++-------
+ drivers/pci/controller/dwc/pcie-designware.h  |   5 -
+ drivers/pci/controller/dwc/pcie-qcom-ep.c     |   2 -
+ drivers/pci/controller/dwc/pcie-tegra194.c    |   2 -
+ 4 files changed, 93 insertions(+), 65 deletions(-)
+
 -- 
-2.41.0
+2.25.1
 
