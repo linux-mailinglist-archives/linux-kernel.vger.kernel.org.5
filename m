@@ -2,77 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15D17F173B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2912A7F17FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbjKTPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:25:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
+        id S233381AbjKTP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233880AbjKTPZu (ORCPT
+        with ESMTP id S233795AbjKTPZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:25:50 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EB3A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:25:46 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso2578713a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:25:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700493946; x=1701098746; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ST028Kw+5opFnctTC026fdT6iYVhh3htW2mHBCbv3rM=;
-        b=TNEPf+HKlYZ8A7VjdjLqlMf50cwFlug5NQnOQ72H+1lcrh/Mzc453QDWCbeYVia7bf
-         LhfbKopGZeNT1AbTvXj25RGYoa+C56y+KbjGqnh0YrqyNVyoEu+C0xS4KEeq6YXMgXm7
-         2nDS7y7U0AVRPU6idh06HdpJh/6qag5NBqYSQ/gz1GW6IyaW4o4/JeX+voc1vVV6JkZq
-         RThnJ2I/LxA8FiVS5SNj8jehwLhuoS/eF/QSSBKExYrSHN9+7Vl4oQJr8O4uRIgS6UoZ
-         mAU/Kr7xhcy2qGbr7JCJSEaAoOaNxj87Zk4TCxfoZj6bU3dBLEk4NkOYMmLyRO7yQ0B+
-         RanQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700493946; x=1701098746;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ST028Kw+5opFnctTC026fdT6iYVhh3htW2mHBCbv3rM=;
-        b=dZ7Rx8k1UvtxU/Ss8koa8DtAjkvPXninvmG6sPvSCsAHVKzKeyl/R7lCY2VLIV+Kc2
-         SPng7SvHajpvSrAoi/ybmpwVa1/5Lli0ceoM3AIhhc059i3cvRW6+Qpvord+R7qKHxXX
-         IopuOF6dbFfn7Q1gahEbxcgnBxeQWewf8FMJYSUQZBv6zfWgnBvQefjSxbKm/J8d7XvB
-         vmaWRVPuuemDbECzkX756lEtkHHYcfYeJ/LEC7dPgRcNtSQ2AzI56FkzVtSN1NekyFqC
-         39whzxrBYsZvZac1fk7pCJelsiUxkhTOP8sI4EpYsM0FXzAm88VPV7pMTRm+fJYIK/gv
-         tiqg==
-X-Gm-Message-State: AOJu0YxAOKANhhz5EjjqI88QW7+uVetmvde22Edj0lL/X3KseLRstVXw
-        d/6q+Syztbco277wyJ/2Z/pcNIStF3V1Mx8IqTqpJQ==
-X-Google-Smtp-Source: AGHT+IGZ24BmTxFlV8ARS0eiBOVZL6XuY7FDIhzbJcGWCamZieGWAK8UG+n6P3hSBpS7YfkOpYF8HB8uorYNx0Elgz8=
-X-Received: by 2002:a17:90b:4f81:b0:27d:d36:763b with SMTP id
- qe1-20020a17090b4f8100b0027d0d36763bmr5505892pjb.31.1700493946018; Mon, 20
- Nov 2023 07:25:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
- <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com> <CACRpkdYUzYxV+NY=mymXP59mt9msTUvSXM__f+4qRM+_xjX0Nw@mail.gmail.com>
-In-Reply-To: <CACRpkdYUzYxV+NY=mymXP59mt9msTUvSXM__f+4qRM+_xjX0Nw@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Mon, 20 Nov 2023 09:25:34 -0600
-Message-ID: <CAPLW+4mT5Qpo+B7fSfiG1qRVr4cSvuWhArpu-3kbFtSukSV8_w@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Sam Edwards <cfsworks@gmail.com>,
+        Mon, 20 Nov 2023 10:25:44 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01761B4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:25:39 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 00F21E000D;
+        Mon, 20 Nov 2023 15:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700493938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PVyjl2JgjwzwAOZdoBU8qtJUrkpjo468gdgCetORECI=;
+        b=bZYukV0FY3Wkt1npcmgbzufEQEPJafXZfgp6VA5c7iyagj9NQAed4QBIJPozQbvhfyQia+
+        PMM5hvwxxZm7fJB9OZrsDkf/1rRfeCRfY19POFkYlk/nDoLQ1zUFjosDel5FD0u6IY8JB3
+        Ai3c+QWUZ5KEkFL4yEkpFrpdzcXGyjVROUcq0O+YQ2ij9e/FdvFrJq7QmsDools0sTILdb
+        q2XmMZ7ox4TyCbOqfdXh6qpzGifBV1j3TSbknIeuLS3aW2ldd4WpwALOW3DcjQrK4AFF8K
+        bUSnWP+tpBPzvso/lQTpddEJ4MjF/uolC9hEvdPKKlN298BvpFBax63WilCRZA==
+Date:   Mon, 20 Nov 2023 16:25:37 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>
+Subject: Re: [PATCH] firmware_loader: Expand Firmware upload error codes
+ with firmware invalid error
+Message-ID: <20231120162537.468de5b6@kmaincent-XPS-13-7390>
+In-Reply-To: <2023111727-exert-dab-b940@gregkh>
+References: <20231117-feature_firmware_error_code-v1-1-92c973a50847@bootlin.com>
+        <2023111720-slicer-exes-7d9f@gregkh>
+        <548c3b60-60ce-4166-9943-224e03152cc5@lunn.ch>
+        <2023111727-exert-dab-b940@gregkh>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,34 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, 17 Nov 2023 14:48:32 -0500
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-On Tue, Nov 14, 2023 at 2:20=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
->
-> On Tue, Nov 14, 2023 at 7:09=E2=80=AFPM Sam Edwards <cfsworks@gmail.com> =
-wrote:
->
-> > I am not an ACPI subsystem maintainer, but my understanding is that the
-> > files in include/acpi/ are copied verbatim from ACPICA, so any change t=
-o
-> > those files will have to be sent to the ACPICA project and wouldn't be
-> > accepted here.
-> >
-> > More likely, we'd want to do something about the circular-include
-> > situation between linux/fw_table.h<->linux/acpi.h.
->
-> I agree but I have no idea how to fix that really, should I just send
-> a revert instead so the authors can get some time to figure it out?
->
+> > > > This patch was initially submitted as part of a net patch series.
+> > > > Conor expressed interest in using it in a different subsystem.
+> > > > Consequently, I extracted it from the series and submitted it separ=
+ately
+> > > > to the main tree, driver-core.
+> > > > https://lore.kernel.org/netdev/20231116-feature_poe-v1-7-be48044bf2=
+49@bootlin.com/
+> > > > =20
+> > >=20
+> > > So you want me to take it through my tree?  Sure, but if you are rely=
+ing
+> > > on this for any other code, it will be a while before it gets into
+> > > Linus's tree, not until 6.8-rc1, is that ok? =20
+> >=20
+> > My idea was that you could create a stable branch, which can then be
+> > pulled into netdev and arm-soc. =20
+>=20
+> I'll be glad to do so, you just need to ask me to do that, I don't see
+> that request here :)
 
-Just want to confirm that linux-mainline and linux-next builds are
-broken for my ARM64 board as well, because of the commit you
-pin-pointed. I vote for reverting it and letting the author rework it
-properly. On a side note: I'm surprised there are no bots or automatic
-CI builds out there testing the kernel builds with baremetal
-toolchains. Can't believe everyone's using Linux toolchain, the kernel
-is supposed to be baremetal project.
+Sorry, my fault, I did not know well the merge actions that were needed for
+this particular case.
 
-> Yours,
-> Linus Walleij
+> > If you don't want to do that, we can ask Arnd to take it, and he can
+> > create a stable branch which we pull into netdev. =20
+>=20
+> You want a stable tag to pull from, right?
+>=20
+> But really, why not just take this through netdev?  It's just one
+> commit, I have no problem with it going that way at all.  If the odd
+> chance there's a merge conflict in the future, I can handle it.
+
+Seems a good and simple idea to me, Andrew any thoughts about it?
+Do I send a single patch to net-next and ask Conor to pull it in his
+subsystem for his patch series?
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
