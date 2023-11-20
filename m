@@ -2,117 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D99B27F1F46
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBD57F1F4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjKTVho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
+        id S232116AbjKTVib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjKTVhn (ORCPT
+        with ESMTP id S229529AbjKTVia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:37:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32D899
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:37:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75AEDC433C7;
-        Mon, 20 Nov 2023 21:37:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700516259;
-        bh=R8d5DEDGigkNAFbk6cm05T5sdaFfbW9r9xeJSv+nEM0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CdNq4Agx/5Lh12IrFa4SP/P1QMpBsjmDsuWTwI9ap1y4jYystf2HHApsKQhXiirfw
-         5wY3x1qwWbiKKIpCRvpGud1kG2ogyUQRrQL8Q6vvcrQoDGcBV3UFNjOxjyf25d/ft4
-         PfGOHq9VsS8cPA5DIck4yFwBqfOQs3UPdg6PqrlUbgOPpO7JCom4GiEqOApwI3MPUW
-         LFpAdCyDJ0WBxv9QPlPe6uVS9Sr1RhYdqc7L0WOWqUiRheguE7EI5nt3lbVZByXnFV
-         7F8s9kjj59a27dj6fU3Aub768mo2q2fqzMS6uwHl+HuzbJ+03R8KTgD4WC3WACLxBx
-         4uWi/Qt89VEfw==
-Date:   Mon, 20 Nov 2023 13:37:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231120133737.70dde657@kernel.org>
-In-Reply-To: <20231120211759.j5uvijsrgt2jqtwx@skbuf>
-References: <20231118183433.30ca1d1a@kernel.org>
-        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
-        <20231120105255.cgbart5amkg4efaz@skbuf>
-        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
-        <20231120120601.ondrhbkqpnaozl2q@skbuf>
-        <20231120144929.3375317e@kmaincent-XPS-13-7390>
-        <20231120142316.d2emoaqeej2pg4s3@skbuf>
-        <20231120093723.4d88fb2a@kernel.org>
-        <20231120190023.ymog4yb2hcydhmua@skbuf>
-        <20231120115839.74ee5492@kernel.org>
-        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+        Mon, 20 Nov 2023 16:38:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E736CA;
+        Mon, 20 Nov 2023 13:38:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700516306; x=1732052306;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=o3m56hl+JqpBTbDARZLvzqTO79AW8kpf8jC8GzCYZig=;
+  b=RS93XSkXyuwIyOF/zDrhESMWJysdcRIIN4WI227fOSZMlJpD0F8DyGQS
+   WX6dppZdSAHPmarIO0KvjgdKPtVZnirJFEcR61/5NjnC59RXuzpQB8Ys9
+   np/l5BXEa48ZOFcpIrbe6KGrfcoEdPAAnN6zjptWwcA0aOKBpXHjaBMH/
+   /oxyGQ8wOGNaZw1Tk73CJUzyxkti10yRGOArsxIIRbhLWAeoeN86BXowv
+   1KfnN7QR9yi2P8TeQrFSGLg/x04fSg31zsp5K2IXjkvymgWB2DXmkm/lm
+   ErfWB912pvBNH9xN44a/qAUsgAVrI2gmZYU4P+DU87kKJ5P4bxlUiiqfP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371886532"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="371886532"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:38:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="890056312"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="890056312"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 20 Nov 2023 13:38:11 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5By4-0006wq-2K;
+        Mon, 20 Nov 2023 21:38:08 +0000
+Date:   Tue, 21 Nov 2023 05:38:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arch@vger.kernel.org, x86@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Feng Tang <feng.tang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Subject: Re: [PATCH 1/5] jump_label,module: Don't alloc static_key_mod for
+ __ro_after_init keys
+Message-ID: <202311210541.RAdnu4yL-lkp@intel.com>
+References: <20231120105528.760306-2-vschneid@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120105528.760306-2-vschneid@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 23:17:59 +0200 Vladimir Oltean wrote:
-> Forget the concept of an active hwtstamp provider, just open up the
-> knobs of _all_ possible hwtstamp providers for a NIC. Simultaneously!
-> To make one active and all the others inactive, just use
-> HWTSTAMP_FILTER_NONE/HWTSTAMP_TX_OFF for all except one, and the desired
-> enum hwtstamp_rx_filters / enum hwtstamp_tx_types for the active one.
-> Live with this expanded configuration model for a while, just restricted
-> for a single active timestamping layer, and then, once user space is
-> ready for an enhanced struct scm_timestamping which supports potentially
-> multiple cmsgs with distinct hwtstamps, remove the restriction and let
-> it all rip! Everybody gets their pony!
-> 
-> Additionally, SIOCSHWTSTAMP is kinda rusty, has a fixed binary format,
-> and is not extensible to target a specific hwtstamp provider. So a
-> netlink conversion of that, as a first step, would of course be great.
-> 
-> Is it an accurate summary?
+Hi Valentin,
 
-Yes.
+kernel test robot noticed the following build errors:
 
-For now we can impose the requirement that only one can be active 
-easily at the kernel level. But the uAPI should allow expressing more.
+[auto build test ERROR on tip/x86/core]
+[also build test ERROR on linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> You've partially answered above. The mix of timestamps coming from the
-> PHY/MAC and those coming from the DMA is unrepresentable in today's
-> UAPI, and is just fine-tuned to work for the existing use case of "PTP
-> gets PHY/MAC, everything else gets DMA".
-> 
-> Still not 100% clear what would the proper UAPI (separate user-controllable
-> RX filters for PHY, MAC and DMA) gain, in addition to what exists in mlx5.
+url:    https://github.com/intel-lab-lkp/linux/commits/Valentin-Schneider/jump_label-module-Don-t-alloc-static_key_mod-for-__ro_after_init-keys/20231120-190044
+base:   tip/x86/core
+patch link:    https://lore.kernel.org/r/20231120105528.760306-2-vschneid%40redhat.com
+patch subject: [PATCH 1/5] jump_label,module: Don't alloc static_key_mod for __ro_after_init keys
+config: s390-allnoconfig (https://download.01.org/0day-ci/archive/20231121/202311210541.RAdnu4yL-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311210541.RAdnu4yL-lkp@intel.com/reproduce)
 
-Too late for mlx5 but I'm anticipating that more vendors will start
-needing such configuration in the future. At which point it will be
-good to have an API in place.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311210541.RAdnu4yL-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   init/main.c: In function 'mark_readonly':
+>> init/main.c:1406:17: error: implicit declaration of function 'jump_label_ro'; did you mean 'jump_label_lock'? [-Werror=implicit-function-declaration]
+    1406 |                 jump_label_ro();
+         |                 ^~~~~~~~~~~~~
+         |                 jump_label_lock
+   cc1: some warnings being treated as errors
+
+
+vim +1406 init/main.c
+
+  1394	
+  1395	#ifdef CONFIG_STRICT_KERNEL_RWX
+  1396	static void mark_readonly(void)
+  1397	{
+  1398		if (rodata_enabled) {
+  1399			/*
+  1400			 * load_module() results in W+X mappings, which are cleaned
+  1401			 * up with call_rcu().  Let's make sure that queued work is
+  1402			 * flushed so that we don't hit false positives looking for
+  1403			 * insecure pages which are W+X.
+  1404			 */
+  1405			rcu_barrier();
+> 1406			jump_label_ro();
+  1407			mark_rodata_ro();
+  1408			rodata_test();
+  1409		} else
+  1410			pr_info("Kernel memory protection disabled.\n");
+  1411	}
+  1412	#elif defined(CONFIG_ARCH_HAS_STRICT_KERNEL_RWX)
+  1413	static inline void mark_readonly(void)
+  1414	{
+  1415		pr_warn("Kernel memory protection not selected by kernel config.\n");
+  1416	}
+  1417	#else
+  1418	static inline void mark_readonly(void)
+  1419	{
+  1420		pr_warn("This architecture does not have kernel memory protection.\n");
+  1421	}
+  1422	#endif
+  1423	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
