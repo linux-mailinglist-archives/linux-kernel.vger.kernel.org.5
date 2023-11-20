@@ -2,153 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E197F122A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34ABD7F122E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbjKTLff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50008 "EHLO
+        id S233204AbjKTLgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjKTLfP (ORCPT
+        with ESMTP id S233382AbjKTLfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:35:15 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A46E10D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:35:09 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50a938dda08so6036467e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:35:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700480107; x=1701084907; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FnHXXBG/PcSIOhkoJ9kEnpC6kzNN9AjZ6LY10zqo+h0=;
-        b=OkzZomg3mm3SnDgawRoHg0LjYZ65kjkK8Gq/OKkPk2jjp0DSrQ//u8NihcHHv22SR5
-         80l7VRiYkrFZmfc5RgF/kuJ47w+WIH0LEHrIz4JyhvnIzRlXIEoZ782D8Ik+roLoT4E7
-         JHc4IFUbJVMpIFnwycfVpqogMDNBmLSRlmIMv7lGDld1GKA/Sger4khVtAEy9DeGp9vg
-         aHdfXxSouKPyLsl4z3C473J2PQ3ShoJSPSo2SzRRnJi6xYKU+uKQs3HPV3c+rREZ584C
-         wlNiQa0dknIQD4Z82ceWkWx+ItjQjWKYxiaxpG/fF0JoJewmBUVXzjJ0Wp8Gy6DE6BGW
-         1w7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700480107; x=1701084907;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FnHXXBG/PcSIOhkoJ9kEnpC6kzNN9AjZ6LY10zqo+h0=;
-        b=i4fzvdl1hF4XpuvPk5q5UgeOj3IQ+KH2BoSUHvCJ06NkO7A+SVRQwUfyI91p8lSAUp
-         31MbhGnQF+0YoqUuvqEH0oNV8pN5iZc22Li6nkuqWy7bq45EDOkZhm9yjjnFIbvFXSlI
-         kviSAghTpgxzELnioTDcshB1lSgPn/dLmH3gpAf8gsbsyWy7be2X9ngizKRsXVHuRm3J
-         dGh962qMtZ2Q1Hu51idYGJC3eKjz8F6RNxgTZW3DHei3oIGc2Gi//KYBrFLxXeL4dGjD
-         DTod0v/0q2YGWlN/Y8F3AOU6oVYNUC9mVjItvmlKIzcocVAhI/rHjwzEKEpH3PWw+/ZW
-         avsg==
-X-Gm-Message-State: AOJu0Yz+Ep2rr03dJn8PCsYmGOxUL0Z5RTsh/TJ8vUjBfrPjsdvNKXZ+
-        rkc8KKVAAoomiPaLiFb3BZooJQ==
-X-Google-Smtp-Source: AGHT+IE4p1HjJUlGRGxGDBmDUsbIOwoBbIXNzM2Hj8ktYhCtgv5uw2xJHZLQAN5AdJEy4CeFtILz0A==
-X-Received: by 2002:a05:6512:360e:b0:509:8e13:48e0 with SMTP id f14-20020a056512360e00b005098e1348e0mr4603700lfs.37.1700480107308;
-        Mon, 20 Nov 2023 03:35:07 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id f19-20020a05600c4e9300b00405d9a950a2sm17666272wmq.28.2023.11.20.03.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 03:35:07 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon, 20 Nov 2023 06:35:04 -0500
-To:     oe-kbuild@lists.linux.dev,
-        Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v7 2/2] rtc: max31335: add driver support
-Message-ID: <ad78bb08-d415-481d-8f26-0b0195a1ad9d@suswa.mountain>
+        Mon, 20 Nov 2023 06:35:51 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB7FD78;
+        Mon, 20 Nov 2023 03:35:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E131A2190C;
+        Mon, 20 Nov 2023 11:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700480145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Q+c9KCNCk4phwSWIGOwpqJ0qmONW0iqFNOW1khLxYWo=;
+        b=Q5PudbcpHQnR0Ab89sx0fg4bnjxusH+EGdvIFrTdsyIUfJxwtlxvN7NqD/S8/eiSUOrYO/
+        xLK7Uuj+COiLTLHXEieSoBKvA7KqsawICQ+rCfEoiu2yjwIs266/u5P3H+LUnFaaRfFVfA
+        W1/XgJ2rCq6KSKWPwP/UB5pzsRynBl8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700480145;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Q+c9KCNCk4phwSWIGOwpqJ0qmONW0iqFNOW1khLxYWo=;
+        b=SBqRNCeH2FLdjUc4Pu04z7Bl6gHvZrz8VEd98mv5TpRNymFVQ2hDnom2OeYPr1+NtBMMMw
+        ZX0Xw7uvj9GEM8Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA95913499;
+        Mon, 20 Nov 2023 11:35:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 4Hm/J5FEW2WBOwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 20 Nov 2023 11:35:45 +0000
+Message-ID: <950888cc-9d7e-4253-8821-e843ef32b6ec@suse.de>
+Date:   Mon, 20 Nov 2023 12:35:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109101449.8347-2-antoniu.miclaus@analog.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 17/20] drivers/gpu/drm/ast/ast_i2c.c: remove
+ I2C_CLASS_DDC support
+Content-Language: en-US
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Dave Airlie <airlied@redhat.com>
+Cc:     Jocelyn Falempe <jfalempe@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>, linux-i2c@vger.kernel.org
+References: <20231119101445.4737-1-hkallweit1@gmail.com>
+ <20231119101445.4737-18-hkallweit1@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20231119101445.4737-18-hkallweit1@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Dal7yWifu1tGxRxXL2MVTv81"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.29
+X-Spamd-Result: default: False [-5.29 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         SIGNED_PGP(-2.00)[];
+         FREEMAIL_TO(0.00)[gmail.com,kernel.org,redhat.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Antoniu,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Dal7yWifu1tGxRxXL2MVTv81
+Content-Type: multipart/mixed; boundary="------------n2jKO0zPuEt2E7ncKRUIRjS0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Heiner Kallweit <hkallweit1@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+ Dave Airlie <airlied@redhat.com>
+Cc: Jocelyn Falempe <jfalempe@redhat.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ linux-i2c@vger.kernel.org
+Message-ID: <950888cc-9d7e-4253-8821-e843ef32b6ec@suse.de>
+Subject: Re: [PATCH v3 17/20] drivers/gpu/drm/ast/ast_i2c.c: remove
+ I2C_CLASS_DDC support
+References: <20231119101445.4737-1-hkallweit1@gmail.com>
+ <20231119101445.4737-18-hkallweit1@gmail.com>
+In-Reply-To: <20231119101445.4737-18-hkallweit1@gmail.com>
 
-kernel test robot noticed the following build warnings:
+--------------n2jKO0zPuEt2E7ncKRUIRjS0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+DQoNCkFtIDE5LjExLjIzIHVtIDExOjE0IHNjaHJpZWIgSGVpbmVyIEthbGx3ZWl0Og0KPiBB
+ZnRlciByZW1vdmFsIG9mIHRoZSBsZWdhY3kgRUVQUk9NIGRyaXZlciBhbmQgSTJDX0NMQVNT
+X0REQyBzdXBwb3J0IGluDQo+IG9scGNfZGNvbiB0aGVyZSdzIG5vIGkyYyBjbGllbnQgZHJp
+dmVyIGxlZnQgc3VwcG9ydGluZyBJMkNfQ0xBU1NfRERDLg0KPiBDbGFzcy1iYXNlZCBkZXZp
+Y2UgYXV0by1kZXRlY3Rpb24gaXMgYSBsZWdhY3kgbWVjaGFuaXNtIGFuZCBzaG91bGRuJ3QN
+Cj4gYmUgdXNlZCBpbiBuZXcgY29kZS4gU28gd2UgY2FuIHJlbW92ZSB0aGlzIGNsYXNzIGNv
+bXBsZXRlbHkgbm93Lg0KPiANCj4gUHJlZmVyYWJseSB0aGlzIHNlcmllcyBzaG91bGQgYmUg
+YXBwbGllZCB2aWEgdGhlIGkyYyB0cmVlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogSGVpbmVy
+IEthbGx3ZWl0IDxoa2FsbHdlaXQxQGdtYWlsLmNvbT4NCg0KUmV2aWV3ZWQtYnk6IFRob21h
+cyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPg0KDQo+IA0KPiAtLS0NCj4gICBk
+cml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9pMmMuYyB8ICAgIDEgLQ0KPiAgIDEgZmlsZSBjaGFu
+Z2VkLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
+L2FzdC9hc3RfaTJjLmMgYi9kcml2ZXJzL2dwdS9kcm0vYXN0L2FzdF9pMmMuYw0KPiBpbmRl
+eCAwZTg0NWU3YWMuLmU1ZDNmNzEyMSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
+L2FzdC9hc3RfaTJjLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FzdC9hc3RfaTJjLmMN
+Cj4gQEAgLTEyMCw3ICsxMjAsNiBAQCBzdHJ1Y3QgYXN0X2kyY19jaGFuICphc3RfaTJjX2Ny
+ZWF0ZShzdHJ1Y3QgZHJtX2RldmljZSAqZGV2KQ0KPiAgIAkJcmV0dXJuIE5VTEw7DQo+ICAg
+DQo+ICAgCWkyYy0+YWRhcHRlci5vd25lciA9IFRISVNfTU9EVUxFOw0KPiAtCWkyYy0+YWRh
+cHRlci5jbGFzcyA9IEkyQ19DTEFTU19EREM7DQo+ICAgCWkyYy0+YWRhcHRlci5kZXYucGFy
+ZW50ID0gZGV2LT5kZXY7DQo+ICAgCWkyYy0+ZGV2ID0gZGV2Ow0KPiAgIAlpMmNfc2V0X2Fk
+YXBkYXRhKCZpMmMtPmFkYXB0ZXIsIGkyYyk7DQo+IA0KDQotLSANClRob21hcyBaaW1tZXJt
+YW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9u
+cyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBH
+ZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwg
+Qm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Antoniu-Miclaus/rtc-max31335-add-driver-support/20231109-231755
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-patch link:    https://lore.kernel.org/r/20231109101449.8347-2-antoniu.miclaus%40analog.com
-patch subject: [PATCH v7 2/2] rtc: max31335: add driver support
-config: i386-randconfig-141-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110943.V2lcrQlf-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110943.V2lcrQlf-lkp@intel.com/reproduce)
+--------------n2jKO0zPuEt2E7ncKRUIRjS0--
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311110943.V2lcrQlf-lkp@intel.com/
+--------------Dal7yWifu1tGxRxXL2MVTv81
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-smatch warnings:
-drivers/rtc/rtc-max31335.c:415 max31335_trickle_charger_setup() error: uninitialized symbol 'trickle_cfg'.
+-----BEGIN PGP SIGNATURE-----
 
-vim +/trickle_cfg +415 drivers/rtc/rtc-max31335.c
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmVbRJEFAwAAAAAACgkQlh/E3EQov+C/
+hQ//VOrLXUUM9ZeD3F9PjPkmpsTVaJhhcUOTYPEP8ayHEpGBRDNYDr38R7U3X7TZtJDCp4bWxHFl
+EHJmbD/35LyujEwhUQWTR+Zg/BfhWa+GMf4ymI60kgxM505JGDUcllXuu7Zo3qPY2+BvXFm6wdHm
+EJz8+jCCxVKsLhN09Mn678OaNfJiRPc/LtA3NKBuELJDjyNJCVypUI2i0YgUAs5Fxm6eozjfaqCi
+sJszxsPDtUuApMwJ1BE7AjapowSjFTfaGqzFo2WOoq8VqsXaU5oMI9ZEn2VBgRI2MEgyOqyyiwWq
+pj/fxOfqSRnwC1NvWDA2AsSzGR6hrqnDchDo2WCPSbqREpk2kUDthVzBoivLe6RZ2XKU7cpYPtwH
+v6BRQBVlMi87IR1JpRDolBwC6mtUQWJfB5phOkqVnY4y2P4lfG9pLNQyAkFIZwioSqYs2RTvIKHL
+z1+WhFH3hJB+1SQXyK46ApxH15aBNrAiHZfSj55krYzfQaYmSheAJLpH5u21bX1+58AzUQLBeGno
+Ok5esc/Bu/CBPECr5I4yI8DvUs0ZCT0kTQzl38f7rXDwJOx5XemqcjRRB5pyD8Z3bryZdEZg5Z53
+bT4IKm6+zA/JCAnHq3l/9+2eO4VeDc0lNKaHNYhKMFlBdfTzQ9P1IgyQFuOhBaRna7wk6/tQWrVo
+zfo=
+=zJQi
+-----END PGP SIGNATURE-----
 
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  383  static int max31335_trickle_charger_setup(struct device *dev,
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  384  					  struct max31335_data *max31335)
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  385  {
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  386  	u32 ohms, chargeable;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  387  	int i, trickle_cfg;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  388  	const char *diode;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  389  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  390  	if (device_property_read_u32(dev, "aux-voltage-chargeable",
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  391  				     &chargeable))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  392  		return 0;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  393  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  394  	if (device_property_read_u32(dev, "trickle-resistor-ohms", &ohms))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  395  		return 0;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  396  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  397  	if (device_property_read_string(dev, "adi,tc-diode", &diode))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  398  		return 0;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  399  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  400  	if (!strcmp(diode, "schottky"))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  401  		trickle_cfg = MAX31335_TRICKLE_SCHOTTKY_DIODE;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  402  	else if (!strcmp(diode, "standard+schottky"))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  403  		trickle_cfg = MAX31335_TRICKLE_STANDARD_DIODE;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  404  	else
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  405  		dev_err_probe(dev, -EINVAL, "Invalid tc-diode value: %s\n",
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  406  			      diode);
-
-Probably was intended to be return dev_err_probe();
-
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  407  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  408  	for (i = 0; i < ARRAY_SIZE(max31335_trickle_resistors); i++)
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  409  		if (ohms == max31335_trickle_resistors[i])
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  410  			break;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  411  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  412  	if (i >= ARRAY_SIZE(max31335_trickle_resistors))
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  413  		return 0;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  414  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09 @415  	i = i + trickle_cfg;
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  416  
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  417  	return regmap_write(max31335->regmap, MAX31335_TRICKLE_REG,
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  418  			    FIELD_PREP(MAX31335_TRICKLE_REG_TRICKLE, i) |
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  419  			    FIELD_PREP(MAX31335_TRICKLE_REG_EN_TRICKLE,
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  420  				       chargeable));
-d76a0d3a61615e5 Antoniu Miclaus 2023-11-09  421  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+--------------Dal7yWifu1tGxRxXL2MVTv81--
