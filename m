@@ -2,149 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4723B7F1074
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:33:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE47F1076
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbjKTKdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:33:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
+        id S232804AbjKTKeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjKTKdD (ORCPT
+        with ESMTP id S232305AbjKTKeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:33:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A28AA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:33:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700476379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=/BRzQJsUlNqGcHYQcbPZo6N/PuuDQH6IwCC8oi/Rszw=;
-        b=BEZsGFammqmYjKaqntVZXuHc5XkExnPlpEVCKez16hA+KGMsl31R5fOPgr1ALFL96xEAwX
-        hphOaBbPsvJIThy+0xAdmQPuadD8nTUk84Wk2YM2OlIJi3xau9wkITRH07dNfS2iqkKDuM
-        kkWW2iECERvR4OJXPtC0H2Jk3mNcA8g=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28--h9NBaAINIyIkoKCHaisgQ-1; Mon, 20 Nov 2023 05:32:58 -0500
-X-MC-Unique: -h9NBaAINIyIkoKCHaisgQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4084e4ce543so10893175e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:32:58 -0800 (PST)
+        Mon, 20 Nov 2023 05:34:08 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A6C5
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:34:04 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507bd644a96so5826304e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700476443; x=1701081243; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+/A67yCsKCYjT4OzekwJL7Zg9Z+4KiWMU478yrnJ6A=;
+        b=Rr4vj8DYG1C9mB75c8LFHJqqARMge/NuWS+2AtgEoULQOpK3EgbcwE+nwV4UOFuqyr
+         jhYSD/zdXWpOuxwlmHvBCxn5TfO+0c3J5IQWUNns6lP8BBKaPdOI3FuRcGqIPbeMlQGp
+         U8FfwUEquCGoAMCn8ArSHDbL7kBnizbHE9j3WNsBPpe6rPz1bYVTpEoG/7asIauO0XEV
+         n3ctmu1yxTpnI/RILbf3bFcIl6bOjuRtPahxEmoiubSmFF7aofvTepGGKuYi2ipRF6i0
+         thYEuRgl3yiRxOYnC2+BjD3YytpvFAt3pcAp7JJkVZC7pH0BCJ361uEHYzDgC5pECxkM
+         ZLmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700476377; x=1701081177;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1700476443; x=1701081243;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/BRzQJsUlNqGcHYQcbPZo6N/PuuDQH6IwCC8oi/Rszw=;
-        b=WCLLxeQqv5fuVxndTlRq3VGicURs8YGwTozGwJVp5Kppm+rZqwhcpuvCfQsxamvLrE
-         t0EZduCiM7740ZkL/pnTUd4oaocDHSC3IbQ/iBfNXnmEHY1yn0wfwNDk+K+0eYcvtYf1
-         Woz+xANgzyt1Vy8ivS2zQTaJ45gSUoyAihnnn7jLbVOiuBCNYaeCXBkvheIXi6C62OXj
-         +8lIkzz65pNN5TEYMjuUvs/BY+BwYUquamrPsz6r1HTuPzNqNIPUU5TYRio4VncTOR2F
-         5xFJvYev32mhVlLnS7+T4QJT/0bfgJ+bazvBoS0Hdm8F+gWIbRHr/t6fx/ND6yTGtlyp
-         MfLQ==
-X-Gm-Message-State: AOJu0YzvyjDhE2yxFRAv2zhuZP7g6slJQLKAEmQvtpQdWczvyUl+2i9H
-        p7AtMLQpMsgCY9pqK908xIJZ+aIb7nKZNWYYEPUjwJaaywg9+pQOX3ov4bYkNUszRO62mdNEy7N
-        3tkTmWBN/u/JP3OzNyQm8j02t
-X-Received: by 2002:a05:600c:3b03:b0:40a:4422:831f with SMTP id m3-20020a05600c3b0300b0040a4422831fmr5957159wms.21.1700476377139;
-        Mon, 20 Nov 2023 02:32:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEemHVlrW+f3BTClMvrJCdlyIj4QZCPR5kCK1I7Lwr2eHz3QJxwmltk3042qdWy0TymvewH3g==
-X-Received: by 2002:a05:600c:3b03:b0:40a:4422:831f with SMTP id m3-20020a05600c3b0300b0040a4422831fmr5957139wms.21.1700476376724;
-        Mon, 20 Nov 2023 02:32:56 -0800 (PST)
-Received: from ?IPV6:2003:cb:c746:7700:9885:6589:b1e3:f74c? (p200300cbc746770098856589b1e3f74c.dip0.t-ipconnect.de. [2003:cb:c746:7700:9885:6589:b1e3:f74c])
-        by smtp.gmail.com with ESMTPSA id w8-20020a05600c474800b0040836519dd9sm13125940wmo.25.2023.11.20.02.32.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 02:32:56 -0800 (PST)
-Message-ID: <724f61a5-4d02-4232-ae8f-71f55e73186a@redhat.com>
-Date:   Mon, 20 Nov 2023 11:32:55 +0100
+        bh=k+/A67yCsKCYjT4OzekwJL7Zg9Z+4KiWMU478yrnJ6A=;
+        b=Ar5iRBl/60GzhZQKRGQusY1wDSEVCUeEnZYDSnM0LqDf+mk4LcXXPGxXlGu/4xx+SM
+         bO9gqGpOour6KI8OCoCcHVZAyustcE0UP2b7R9rpQHbvMMDMQq94o6xgpLHWATGLQPRc
+         1l2L0uCOE8CZIifbbyzi3eaxL/Dcs5Z5TpRcLE4d589GAgg9OkmXxPfxtDbT959Xe0lX
+         trfSllneHUM8u1qMvJql0Usfm6nKqSuTP2LivMxznak11I1s14ugS9snpgxPlZs1CN18
+         dmvjPcYv4kykk8X/nl4u4st1sN1NchWcTnFn7g7SwgtpnK5vfOT2nI/9XqU7ZKJP6Niq
+         a5GQ==
+X-Gm-Message-State: AOJu0YyKviwxyVw7Qp8ZOfLkR7AiLL04yNyDzF+raxG/rch0oP3LEhAI
+        BVrJE/7OXkMMlRsaJYEMDke/6A==
+X-Google-Smtp-Source: AGHT+IGC+q6OhZa2pu5cx3aVWD4t46z49DbuzV37RCxExtAfJLBJFt42IgxDX1xcBMYvlOiJRA17RQ==
+X-Received: by 2002:a19:5517:0:b0:503:95b:db0a with SMTP id n23-20020a195517000000b00503095bdb0amr6382815lfe.12.1700476443129;
+        Mon, 20 Nov 2023 02:34:03 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id t8-20020a5d49c8000000b0031984b370f2sm10768685wrs.47.2023.11.20.02.34.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 02:34:02 -0800 (PST)
+Date:   Mon, 20 Nov 2023 05:33:59 -0500
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Umang Jain <umang.jain@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Naushir Patuck <naush@raspberrypi.com>
+Subject: Re: [PATCH v2 10/15] staging: vc04_services: bcm2835-isp: Add a more
+ complex ISP processing component
+Message-ID: <fe7b0a08-941f-4dbc-b89f-d3da0a96ac32@suswa.mountain>
+References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+ <20231109210309.638594-11-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] mm/ksm: add sysfs knobs for advisor
-Content-Language: en-US
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231028000945.2428830-1-shr@devkernel.io>
- <20231028000945.2428830-3-shr@devkernel.io>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231028000945.2428830-3-shr@devkernel.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109210309.638594-11-umang.jain@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.10.23 02:09, Stefan Roesch wrote:
-> This adds four new knobs for the KSM advisor to influence its behaviour.
-> 
-> The knobs are:
-> - advisor_mode:
->      0: no advisor (default)
->      1: scan time advisor
-> - advisor_min_cpu: 15 (default, cpu usage percent)
-> - advisor_max_cpu: 70 (default, cpu usage percent)
-> - advisor_min_pages: 500 (default)
-> - advisor_max_pages: 30000 (default)
-> - advisor_target_scan_time: 200 (default in seconds)
+On Thu, Nov 09, 2023 at 04:03:02PM -0500, Umang Jain wrote:
+> +static int media_controller_register(struct bcm2835_isp_dev *dev)
+> +{
+> +	char *name;
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	v4l2_dbg(2, debug, &dev->v4l2_dev, "Registering with media controller\n");
+> +	dev->mdev.dev = dev->dev;
+> +	strscpy(dev->mdev.model, "bcm2835-isp",
+> +		sizeof(dev->mdev.model));
+> +	strscpy(dev->mdev.bus_info, "platform:bcm2835-isp",
+> +		sizeof(dev->mdev.bus_info));
+> +	media_device_init(&dev->mdev);
+> +	dev->v4l2_dev.mdev = &dev->mdev;
+> +
+> +	v4l2_dbg(2, debug, &dev->v4l2_dev, "Register entity for nodes\n");
+> +
+> +	name = kmalloc(BCM2835_ISP_ENTITY_NAME_LEN, GFP_KERNEL);
+> +	if (!name) {
+> +		ret = -ENOMEM;
+> +		goto done;
 
-Is there a way we can avoid exposing advisor_min_pages/advisor_max_pages 
-and just have this internal e.g., as defines?
+Oh crap.  This function doesn't clean up after itself, but instead
+returns to a One Magical Cleanup Function...  This style of error
+handling is *ALWAYS* buggy.  But in this case I only see a very minor
+leak.
 
--- 
-Cheers,
+These two cleanups are under one ->registered flag but they are
+allocated separately.  So if we only complete one action and not the
+second then the flag is not set and we don't call media_device_cleanup().
+(This is one of many typical problems with One Magical Cleanup Function
+Style).
 
-David / dhildenb
+> +	if (dev->media_device_registered) {
+> +		media_device_unregister(&dev->mdev);
+> +		media_device_cleanup(&dev->mdev);
+> +		dev->media_device_registered = false;
+> +	}
+
+It's just such a headache to review...  (That's why it's so bug prone).
+
+If you wrote it in Free the Last Thing Style then you could get rid
+of a bunch of flags like ->media_device_registered and
+->media_entity_registered because at that point you would always know
+what you had done and hadn't done.
+
+regards,
+dan carpenter
+
+
+> +	}
+> +	snprintf(name, BCM2835_ISP_ENTITY_NAME_LEN, "bcm2835_isp0");
+> +	dev->entity.name = name;
+> +	dev->entity.obj_type = MEDIA_ENTITY_TYPE_BASE;
+> +	dev->entity.function = MEDIA_ENT_F_PROC_VIDEO_SCALER;
+> +
+> +	for (i = 0; i < BCM2835_ISP_NUM_NODES; i++) {
+> +		dev->pad[i].flags = node_is_output(&dev->node[i]) ?
+> +					MEDIA_PAD_FL_SINK : MEDIA_PAD_FL_SOURCE;
+> +	}
+> +
+> +	ret = media_entity_pads_init(&dev->entity, BCM2835_ISP_NUM_NODES,
+> +				     dev->pad);
+> +	if (ret)
+> +		goto done;
+> +
+> +	ret = media_device_register_entity(&dev->mdev, &dev->entity);
+> +	if (ret)
+> +		goto done;
+> +
+> +	dev->media_entity_registered = true;
+> +	for (i = 0; i < BCM2835_ISP_NUM_NODES; i++) {
+> 		ret = media_controller_register_node(dev, i);
+> +		if (ret)
+> +			goto done;
+> +	}
+> +
+> +	ret = media_device_register(&dev->mdev);
+> +	if (!ret)
+> +		dev->media_device_registered = true;
+> +done:
+> +	return ret;
+> +}
 
