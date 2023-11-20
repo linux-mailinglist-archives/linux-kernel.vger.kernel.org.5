@@ -2,159 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B86D7F1D8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5027F1D8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 20:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbjKTTtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 14:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
+        id S230035AbjKTTtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 14:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbjKTTta (ORCPT
+        with ESMTP id S229689AbjKTTtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 14:49:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F9FDC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 11:49:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700509766; x=1732045766;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3CfVBHprN3F2efur8G3TZVr5oodSTmFDVzg3hC2rSbY=;
-  b=AYA168H9tPlZqGbVRsXshEkHLETkZFD+twIbpzre/GmGp1Mld6bSQy7H
-   r+k+ARCw/wbYZCF5OJgVQR2N86eMzN7CBBLr6ncdbTtyotYUo5XeRb3mh
-   CwZF/ZFv0T3o10ZHxstvwZd72sgttJdlfCdYd9sECKqmagb+nXVM/oQgX
-   DMGiIkdS6Vs/RRWSi/e/7PUx8x/be7at62ndyPxE+ybR1QHSDrX0CBrMA
-   yTjjkPPcmftLSkLKYkfDsBFCCOt9BRQFGfN6GRuwIstF1Nvjwm6+9YpqW
-   2U8lUEnv6S8RktKo/9ViByOcaenH+buVFIsO2kglLEqWBmld+Akn39r3e
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="422795680"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="422795680"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 11:49:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="14265648"
-Received: from aantonov-mobl1.ger.corp.intel.com (HELO [10.252.56.254]) ([10.252.56.254])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 11:49:25 -0800
-Message-ID: <50ce6fce-c2fc-4392-b405-5c9a7a93f061@linux.intel.com>
-Date:   Mon, 20 Nov 2023 20:49:05 +0100
+        Mon, 20 Nov 2023 14:49:23 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B090;
+        Mon, 20 Nov 2023 11:49:20 -0800 (PST)
+Received: from [192.168.1.103] (178.176.77.202) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 20 Nov
+ 2023 22:49:12 +0300
+Subject: Re: [PATCH 04/13] net: ravb: Start TX queues after HW initialization
+ succeeded
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
+        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-5-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <d0708c3f-ff64-3888-d93f-a20ee7b3251a@omp.ru>
+Date:   Mon, 20 Nov 2023 22:49:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86/intel/uncore: Fix NULL pointer dereference issue
- in upi_fill_topology()
-To:     "Liang, Kan" <kan.liang@linux.intel.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     kyle.meyer@hpe.com, alexey.v.bayduraev@linux.intel.com
-References: <20231115151327.1874060-1-alexander.antonov@linux.intel.com>
- <ceb47045-3188-49ff-85b2-b37c9d0721e1@linux.intel.com>
+In-Reply-To: <20231120084606.4083194-5-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-In-Reply-To: <ceb47045-3188-49ff-85b2-b37c9d0721e1@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.77.202]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/20/2023 19:33:59
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181488 [Nov 20 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.77.202 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.77.202
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/20/2023 19:40:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/20/2023 4:24:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/20/23 11:45 AM, Claudiu wrote:
 
-On 11/15/2023 8:00 PM, Liang, Kan wrote:
->
-> On 2023-11-15 10:13 a.m., alexander.antonov@linux.intel.com wrote:
->> From: Alexander Antonov <alexander.antonov@linux.intel.com>
->>
->> The NULL dereference happens inside upi_fill_topology() procedure in
->> case of disabling one of the sockets on the system.
->>
->> For example, if you disable the 2nd socket on a 4-socket system then
->> uncore_max_dies() returns 3 and inside pmu_alloc_topology() memory will
->> be allocated only for 3 sockets and stored in type->topology.
->> In discover_upi_topology() memory is accessed by socket id from CPUNODEID
->> registers which contain physical ids (from 0 to 3) and on the line:
->>
->>      upi = &type->topology[nid][idx];
->>
->> out-of-bound access will happen and the 'upi' pointer will be passed to
->> upi_fill_topology() where it will be dereferenced.
->>
->> To avoid this issue update the code to convert physical socket id to
->> logical socket id in discover_upi_topology() before accessing memory.
->>
->> Fixes: f680b6e6062e ("perf/x86/intel/uncore: Enable UPI topology discovery for Icelake Server")
->> Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
->> Tested-by: Kyle Meyer <kyle.meyer@hpe.com>
->> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
->> ---
->>   arch/x86/events/intel/uncore_snbep.c | 10 ++++++++--
->>   1 file changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
->> index 8250f0f59c2b..49bc27ab26ad 100644
->> --- a/arch/x86/events/intel/uncore_snbep.c
->> +++ b/arch/x86/events/intel/uncore_snbep.c
->> @@ -5596,7 +5596,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->>   	struct pci_dev *ubox = NULL;
->>   	struct pci_dev *dev = NULL;
->>   	u32 nid, gid;
->> -	int i, idx, ret = -EPERM;
->> +	int i, idx, lgc_pkg, ret = -EPERM;
->>   	struct intel_uncore_topology *upi;
->>   	unsigned int devfn;
->>   
->> @@ -5614,8 +5614,13 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->>   		for (i = 0; i < 8; i++) {
->>   			if (nid != GIDNIDMAP(gid, i))
->>   				continue;
->> +			lgc_pkg = topology_phys_to_logical_pkg(i);
->> +			if (lgc_pkg < 0) {
->> +				ret = -EPERM;
->> +				goto err;
->> +			}
-> In the snbep_pci2phy_map_init(), there are similar codes to find the
-> logical die id. Can we factor a common function for both of them?
->
-> Thanks,
-> Kan
-Hi Kan,
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> ravb_phy_start() may fail. If that happens the TX queues remain started.
+> Thus move the netif_tx_start_all_queues() after PHY is successfully
+> initialized.
+> 
+> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Thank you for your comment.
-Yes, I think we can factor out the common loop where GIDNIDMAP is being 
-checked.
-But inside snbep_pci2phy_map_init() we have a bit different procedure which
-also does the following:
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-if (topology_max_die_per_package() > 1)
-     die_id = i;
+[...]
 
-I think that having this code, at least, in our case could bring us to the
-same issue which we are trying to fix. But of course we could
-parametrize this checking.
-
-What do you think?
-
-Thanks,
-Alexander
->
->>   			for (idx = 0; idx < type->num_boxes; idx++) {
->> -				upi = &type->topology[nid][idx];
->> +				upi = &type->topology[lgc_pkg][idx];
->>   				devfn = PCI_DEVFN(dev_link0 + idx, ICX_UPI_REGS_ADDR_FUNCTION);
->>   				dev = pci_get_domain_bus_and_slot(pci_domain_nr(ubox->bus),
->>   								  ubox->bus->number,
->> @@ -5626,6 +5631,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->>   						goto err;
->>   				}
->>   			}
->> +			break;
->>   		}
->>   	}
->>   err:
->>
->> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+MBR, Sergey
