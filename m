@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC58F7F147D
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F12C7F148E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 14:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbjKTNdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 08:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
+        id S232646AbjKTNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 08:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbjKTNdy (ORCPT
+        with ESMTP id S232637AbjKTNlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 08:33:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F39ED2;
-        Mon, 20 Nov 2023 05:33:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700487229; x=1732023229;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=5HVMU6JZtizeU63fvBk5p0s7a2delV+ya6C0pApQPfA=;
-  b=bMQKt3nG0fiajH85eNchRSUFrkDf64ixyrK5YhSwgs9CwETBZFn0fFpO
-   9vo5Oc5LdwOyLAsyBdnPikmfR0FLAb2/gq8DMDzubZdISMBZtbuibSUHX
-   quqrfB9Bt3sGRLBUBeLTF/LUzQu+t83wQiaNyhjbTgx4FD9bRWSzUExJe
-   DHKpr2e5Ek29WUdsHD4rM1OF/TMXKhG6lDU+P21/riUY78IGv7FwCnW8i
-   tctBxfeCFoprOFnC5r4V3auS9hIKd4Fxs1fI7i7L110fcQ7xlUwhahuXe
-   kWYSNEhflmyZMUhd4ALOkehpzpcl9YaLcL+mztK7XhRXVBymLLthCo6kf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="395545875"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="395545875"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 05:33:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="856989747"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="856989747"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.219.253])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 05:33:45 -0800
-Message-ID: <eab96b0a-bcd3-4c9c-94c6-8b00889807b4@intel.com>
-Date:   Mon, 20 Nov 2023 15:33:42 +0200
+        Mon, 20 Nov 2023 08:41:20 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81601AA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 05:41:17 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 64D9F6602F1D;
+        Mon, 20 Nov 2023 13:41:15 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700487676;
+        bh=PfevUn2vEpVwdELNCNuBvMAFJ97ByO4+qoe/NlZlijg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L3bxV3SEJrsJ68N83Y21UhALaDEq+rP54Yg+fETvbxwtxSTlRFBOlRy8515AsSxKT
+         t2fC8iFEJ+oal37ScMpl7DLMaoKvvP01QGtxNRstfE/JzQYBiBr0toRm71Nb+fu443
+         Nscfkin9tK/eXCl3wj8sgdPxtXmfILRIUtd4lVS18RB27iDaqQ3tA/lo2vH0xMNX90
+         WeahCdnQAx93mhAJvWsFHb+HvoLQoFu21ss0y0g/p7dsoYH1Hr3zsL9Hc42flXnh6f
+         bijtP/lKaUOPd6DbcYY/D2alMKQeHrccShG9MwSriut38cdj5CGWFVzY9KC0LEbWdV
+         WjIP2zZjpBHlg==
+Message-ID: <a7243a4b-766f-4e77-b0b5-0450f02d32e9@collabora.com>
+Date:   Mon, 20 Nov 2023 14:41:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: Disable LPM during initialization
+Subject: Re: [PATCH v2 3/5] arm64: dts: mt7986: change cooling trips
 Content-Language: en-US
-To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sven van Ashbrook <svenva@google.com>,
-        Jason Lai <jasonlai.genesyslogic@gmail.com>
-Cc:     Victor Shih <victor.shih@genesyslogic.com.tw>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        =?UTF-8?Q?Stanis=C5=82aw_Kardach?= <skardach@google.com>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20231114115516.1585361-1-korneld@chromium.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231114115516.1585361-1-korneld@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Eric Woudstra <ericwouds@gmail.com>
+References: <20231025170832.78727-1-linux@fw-web.de>
+ <20231025170832.78727-4-linux@fw-web.de>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231025170832.78727-4-linux@fw-web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,111 +65,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/23 13:54, Kornel Dulęba wrote:
-> To address IO performance commit f9e5b33934ce
-> ("mmc: host: Improve I/O read/write performance for GL9763E")
-> limited LPM negotiation to runtime suspend state.
-> The problem is that it only flips the switch in the runtime PM
-> resume/suspend logic.
+Il 25/10/23 19:08, Frank Wunderlich ha scritto:
+> From: Frank Wunderlich <frank-w@public-files.de>
 > 
-> Disable LPM negotiation in gl9763e_add_host.
-> This helps in two ways:
-> 1. It was found that the LPM switch stays in the same position after
->    warm reboot. Having it set in init helps with consistency.
-> 2. Disabling LPM during the first runtime resume leaves us susceptible
->    to the performance issue in the time window between boot and the
->    first runtime suspend.
+> Add Critical and hot trips for emergency system shutdown and limiting
+> system load.
 > 
-> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for GL9763E")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
+> Change passive trip to active to make sure fan is activated on the
+> lowest trip.
+> 
+> Fixes: 1f5be05132f3 ("arm64: dts: mt7986: add thermal-zones")
+> Fixes: c26f779a2295 ("arm64: dts: mt7986: add pwm-fan and cooling-maps to BPI-R3 dts")
+> Suggested-by: Daniel Golle <daniel@makrotopia.org>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-> ---
-> v2: Move up gl9763e_set_low_power_negotiation to avoid having to forward
->     declare it.
-> 
->  drivers/mmc/host/sdhci-pci-gli.c | 54 +++++++++++++++++---------------
->  1 file changed, 29 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index d8a991b349a8..77911a57b12c 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -1189,6 +1189,32 @@ static void gl9763e_hs400_enhanced_strobe(struct mmc_host *mmc,
->  	sdhci_writel(host, val, SDHCI_GLI_9763E_HS400_ES_REG);
->  }
->  
-> +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot,
-> +					      bool enable)
-> +{
-> +	struct pci_dev *pdev = slot->chip->pdev;
-> +	u32 value;
-> +
-> +	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> +	value &= ~GLI_9763E_VHS_REV;
-> +	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-> +	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> +
-> +	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-> +
-> +	if (enable)
-> +		value &= ~GLI_9763E_CFG_LPSN_DIS;
-> +	else
-> +		value |= GLI_9763E_CFG_LPSN_DIS;
-> +
-> +	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-> +
-> +	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> +	value &= ~GLI_9763E_VHS_REV;
-> +	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-> +	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> +}
-> +
->  static void sdhci_set_gl9763e_signaling(struct sdhci_host *host,
->  					unsigned int timing)
->  {
-> @@ -1297,6 +1323,9 @@ static int gl9763e_add_host(struct sdhci_pci_slot *slot)
->  	if (ret)
->  		goto cleanup;
->  
-> +	/* Disable LPM negotiation to avoid entering L1 state. */
-> +	gl9763e_set_low_power_negotiation(slot, false);
-> +
->  	return 0;
->  
->  cleanup:
-> @@ -1340,31 +1369,6 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
->  }
->  
->  #ifdef CONFIG_PM
-> -static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool enable)
-> -{
-> -	struct pci_dev *pdev = slot->chip->pdev;
-> -	u32 value;
-> -
-> -	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> -	value &= ~GLI_9763E_VHS_REV;
-> -	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_W);
-> -	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> -
-> -	pci_read_config_dword(pdev, PCIE_GLI_9763E_CFG, &value);
-> -
-> -	if (enable)
-> -		value &= ~GLI_9763E_CFG_LPSN_DIS;
-> -	else
-> -		value |= GLI_9763E_CFG_LPSN_DIS;
-> -
-> -	pci_write_config_dword(pdev, PCIE_GLI_9763E_CFG, value);
-> -
-> -	pci_read_config_dword(pdev, PCIE_GLI_9763E_VHS, &value);
-> -	value &= ~GLI_9763E_VHS_REV;
-> -	value |= FIELD_PREP(GLI_9763E_VHS_REV, GLI_9763E_VHS_REV_R);
-> -	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
-> -}
-> -
->  static int gl9763e_runtime_suspend(struct sdhci_pci_chip *chip)
->  {
->  	struct sdhci_pci_slot *slot = chip->slots[0];
 
