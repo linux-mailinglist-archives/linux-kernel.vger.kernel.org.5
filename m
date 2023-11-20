@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C907F1105
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BCD7F10F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbjKTK4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
+        id S233199AbjKTK4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:56:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233115AbjKTK43 (ORCPT
+        with ESMTP id S233175AbjKTK4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:56:29 -0500
+        Mon, 20 Nov 2023 05:56:09 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3680BD4C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:56:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBBA129
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:56:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700477776;
+        s=mimecast20190719; t=1700477764;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fh5nWCS7m0i97fxRSND8fdK+nCY+MD6Me1hw+2UF/3c=;
-        b=aL2R4ferCNTSW0/DM4wCLENT5BUyJ7WVaXa3M6x0ATKoxDUAXKkstGMplnZxLz1uyYE/FR
-        xCCUnWiZdKVQqHQ8YL+9E/4f/M0K8jLsrYPQNiOrcOUKRJkFJvb99eKNc6xdMnhWmhePS1
-        58GVkehSPcacpMI+EvsbA2Qj0ZvHtfw=
+         content-transfer-encoding:content-transfer-encoding;
+        bh=58d2U9xwG/dFDTm6m8iS0jLQCEukimChxPfpR9Nt88k=;
+        b=US7XIkJLTkayhuASJab74R9VZ5ik6LxEJszbgSnEbjn7UYFbg7MGh1b9f1TEU1ZCf2DHAt
+        3+Nubkvhq6AUQ8Nk/kVBge4tJ/MSzPWyVjmkP/j4g49cX4BUI6DSBGDjxoSckRJqTZyrtk
+        lXY/GBVBjCzxKay/GEF+7rcTd8GD53Y=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-88-Q63KOD7EPAGRzHG2NpasBw-1; Mon, 20 Nov 2023 05:56:12 -0500
-X-MC-Unique: Q63KOD7EPAGRzHG2NpasBw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+ us-mta-656-1JNkX8rcO2iydwKGkdNdiQ-1; Mon, 20 Nov 2023 05:55:58 -0500
+X-MC-Unique: 1JNkX8rcO2iydwKGkdNdiQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7DB26811003;
-        Mon, 20 Nov 2023 10:56:11 +0000 (UTC)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.39.195.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BAC3C2026D4C;
-        Mon, 20 Nov 2023 10:56:06 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arch@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: [PATCH 5/5] x86/tsc: Make __use_tsc __ro_after_init
-Date:   Mon, 20 Nov 2023 11:55:28 +0100
-Message-ID: <20231120105528.760306-6-vschneid@redhat.com>
-In-Reply-To: <20231120105528.760306-1-vschneid@redhat.com>
-References: <20231120105528.760306-1-vschneid@redhat.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78EC38007B3;
+        Mon, 20 Nov 2023 10:55:58 +0000 (UTC)
+Received: from cmirabil.redhat.com (unknown [10.22.8.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E4F65036;
+        Mon, 20 Nov 2023 10:55:58 +0000 (UTC)
+From:   Charles Mirabile <cmirabil@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     axboe@kernel.dk, asml.silence@gmail.com, io-uring@vger.kernel.org,
+        Charles Mirabile <cmirabil@redhat.com>, stable@vger.kernel.org
+Subject: [PATCH] io_uring/fs: consider link->flags when getting path for LINKAT
+Date:   Mon, 20 Nov 2023 05:55:45 -0500
+Message-ID: <20231120105545.1209530-1-cmirabil@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__use_tsc is only ever enabled in __init tsc_enable_sched_clock(), so mark
-it as __ro_after_init.
+In order for `AT_EMPTY_PATH` to work as expected, the fact
+that the user wants that behavior needs to make it to `getname_flags`
+or it will return ENOENT.
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+Fixes: cf30da90bc3a ("io_uring: add support for IORING_OP_LINKAT")
+Cc: stable@vger.kernel.org
+Link: https://github.com/axboe/liburing/issues/995
+Signed-off-by: Charles Mirabile <cmirabil@redhat.com>
 ---
- arch/x86/kernel/tsc.c | 2 +-
+ io_uring/fs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 15f97c0abc9d0..f19b42ea40573 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -44,7 +44,7 @@ EXPORT_SYMBOL(tsc_khz);
- static int __read_mostly tsc_unstable;
- static unsigned int __initdata tsc_early_khz;
+diff --git a/io_uring/fs.c b/io_uring/fs.c
+index 08e3b175469c..eccea851dd5a 100644
+--- a/io_uring/fs.c
++++ b/io_uring/fs.c
+@@ -254,7 +254,7 @@ int io_linkat_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ 	newf = u64_to_user_ptr(READ_ONCE(sqe->addr2));
+ 	lnk->flags = READ_ONCE(sqe->hardlink_flags);
  
--static DEFINE_STATIC_KEY_FALSE(__use_tsc);
-+static DEFINE_STATIC_KEY_FALSE_RO(__use_tsc);
- 
- int tsc_clocksource_reliable;
+-	lnk->oldpath = getname(oldf);
++	lnk->oldpath = getname_uflags(oldf, lnk->flags);
+ 	if (IS_ERR(lnk->oldpath))
+ 		return PTR_ERR(lnk->oldpath);
  
 -- 
 2.41.0
