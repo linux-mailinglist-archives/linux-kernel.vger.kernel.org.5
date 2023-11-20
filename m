@@ -2,127 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B527A7F0B58
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71AB7F0B5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 05:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbjKTETx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 23:19:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
+        id S231887AbjKTEWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 23:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKTETv (ORCPT
+        with ESMTP id S229470AbjKTEWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 23:19:51 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34428E5
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 20:19:47 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK3fD5D004248;
-        Mon, 20 Nov 2023 04:19:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=hMfDWSsizKfaNGBkGA3TtNzG7wl906lsCoWRQsuBtxI=;
- b=FKr5NK1yJHHZNOf2wKAV9HKyvBLfSiFY7Gz0H0g4fADaEcMEui8qIZBdxW1NB0h8QSFQ
- YcchHbh0+KxYNrlgt5Jfww9MxvTshg86esdM8v1iOT1WoJHKu6pp1xAdgjVG0hPWXc5R
- XTFP+WSjXETT+csFvLmec5ztCPCVq2dGiIpUH8Awf1hF3Uj/4BId0my1dd5TwFWk+VyM
- I5N7jVm/qkwK2pkyDlK9da+++X3D8Ohb5WXc86vvOHLruoZOpg8z9DrRJoTmF8XEarhf
- MZ4qj0YIArBhkAYy9NquBRXPvTO56Ts5abK3jy/iA5UsWSAMdk4bFrvrAW1oUficw0wa +Q== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uf1f71y2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 04:19:36 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK1imuU000960;
-        Mon, 20 Nov 2023 04:19:35 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ufaa1pa5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 04:19:35 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AK4JXRL47186264
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 04:19:33 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AD5BA20040;
-        Mon, 20 Nov 2023 04:19:33 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3B7462004D;
-        Mon, 20 Nov 2023 04:19:33 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Nov 2023 04:19:33 +0000 (GMT)
-Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 19 Nov 2023 23:22:43 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3623BC5;
+        Sun, 19 Nov 2023 20:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1700454156;
+        bh=0q6NjU+ifeLvujPJLHr8VqYO47RqQ4I3ODqxgOoEHMY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SWM5zXWmCl9j2pPW5U4s2sP/7ykJceEih5LBo4n7tulgcg9ecov73QBwrU1jSz/gy
+         5d87zLWpgenaT673+I/V71Z80HQs5zI4nMezehUVreW+r4XvrR76IkCsoK155PyRUp
+         3Wm1UsnIyJKTFTrwp10qsnY47K2oH8oe6Y2YuQ1GuSUOcP2QStBreNvCYh7gdVse36
+         Ddb3al2kKGjsfYl+NG/UVAWS9m4GrE1yOiABts1Ct2HsA6diM5O0wZ4n3Cioxmu8Rr
+         tzBkuInPyoXWh5TG/i87kZ3np9VFHAUx600dtU6w084YCTaXBdn+pXiKP4//mLGzgr
+         iPCwyisrsm3GQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id B0FD660100;
-        Mon, 20 Nov 2023 15:19:31 +1100 (AEDT)
-Message-ID: <233c463be8440240dde08d0d0d564050a5bf5b73.camel@linux.ibm.com>
-Subject: Re: [PATCH] misc: ocxl: main: Remove unnecessary
- =?UTF-8?Q?=E2=80=980=E2=80=99?= values from rc
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-To:     Li kunyu <kunyu@nfschina.com>, fbarrat@linux.ibm.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Mon, 20 Nov 2023 15:19:31 +1100
-In-Reply-To: <20231113015229.12074-1-kunyu@nfschina.com>
-References: <20231113015229.12074-1-kunyu@nfschina.com>
-Autocrypt: addr=ajd@linux.ibm.com; prefer-encrypt=mutual;
- keydata=mDMEZPaWfhYJKwYBBAHaRw8BAQdAAuMUoxVRwqphnsFua1W+WBz6I2cIn0+Ox4YypJSdBJ+0MEFuZHJldyBEb25uZWxsYW4gKElCTSBzdHVmZikgPGFqZEBsaW51eC5pYm0uY29tPoiTBBMWCgA7FiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQj1Qx8QRYRqAdswD8DhIh4trRQYiPe+7LaM7q+0+Thz+CwUJCW3UFOf0SEO0BAPNdsi7aVV+4Oah6nYzqzH5Zbs4Tz5RY+Vsf+DD/EzUKuDgEZPaWfhIKKwYBBAGXVQEFAQEHQLN9moJRqN8Zop/kcyIjga+2qzLoVaNAL6+4diGnlr1xAwEIB4h4BBgWCgAgFiEE01kE3s9shZVYLX1Aj1Qx8QRYRqAFAmT2ln4CGwwACgkQj1Qx8QRYRqCYkwD/W+gIP9kITfU4wnLtueFUThxA0T/LF49M7k31Qb8rPCwBALeEYAlX648lzjSA07pJB68Jt39FuUno444dSVmhYtoH
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SYZ9M3Hsmz4xS9;
+        Mon, 20 Nov 2023 15:22:31 +1100 (AEDT)
+Date:   Mon, 20 Nov 2023 15:22:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     KVM <kvm@vger.kernel.org>, Ackerley Tng <ackerleytng@google.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the kvm tree
+Message-ID: <20231120152227.3bfe2450@canb.auug.org.au>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fTF-1KCpYv6uYPD-CKGUwZVEFZO1mi2t
-X-Proofpoint-ORIG-GUID: fTF-1KCpYv6uYPD-CKGUwZVEFZO1mi2t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_01,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- phishscore=0 mlxscore=0 spamscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311200028
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/HQyEe5MksKX=y34cCuJH7xS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-13 at 09:52 +0800, Li kunyu wrote:
-> rc is assigned first, so it does not need to initialize the
-> assignment.
->=20
-> Signed-off-by: Li kunyu <kunyu@nfschina.com>
+--Sig_/HQyEe5MksKX=y34cCuJH7xS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't have strong feelings about whether to get rid of unnecessary
-initialisations, but most of the code doesn't do it, so for
-consistency:
+Hi all,
 
-Acked-by: Andrew Donnellan <ajd@linux.ibm.com>
+After merging the kvm tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
+arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:10: error: 'const struct a=
+ddress_space_operations' has no member named 'error_remove_page'; did you m=
+ean 'error_remove_folio'?
+  306 |         .error_remove_page =3D kvm_gmem_error_page,
+      |          ^~~~~~~~~~~~~~~~~
+      |          error_remove_folio
+arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:30: error: initialization =
+of 'int (*)(struct folio *)' from incompatible pointer type 'int (*)(struct=
+ address_space *, struct page *)' [-Werror=3Dincompatible-pointer-types]
+  306 |         .error_remove_page =3D kvm_gmem_error_page,
+      |                              ^~~~~~~~~~~~~~~~~~~
+arch/x86/kvm/../../../virt/kvm/guest_memfd.c:306:30: note: (near initializa=
+tion for 'kvm_gmem_aops.launder_folio')
+
+Caused by commit
+
+  640be5bc564f ("fs: convert error_remove_page to error_remove_folio")
+
+from the mm tree intercting with commit
+
+  a7800aa80ea4 ("KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific=
+ backing memory")
+
+I have applied the following supplied merge fix patch (thanks Andrew).
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Date: Fri, 17 Nov 2023 09:28:33 -0800
+Subject: [PATCH] fs: Convert error_remove_page to error_remove_folio
+
+On Fri, 17 Nov 2023 16:14:47 +0000 "Matthew Wilcox (Oracle)" <willy@infrade=
+ad.org> wrote:
+
+> There were already assertions that we were not passing a tail page
+> to error_remove_page(), so make the compiler enforce that by converting
+> everything to pass and use a folio.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
-> =C2=A0drivers/misc/ocxl/main.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/misc/ocxl/main.c b/drivers/misc/ocxl/main.c
-> index ef73cf35dda2b..658974143c3cc 100644
-> --- a/drivers/misc/ocxl/main.c
-> +++ b/drivers/misc/ocxl/main.c
-> @@ -7,7 +7,7 @@
-> =C2=A0
-> =C2=A0static int __init init_ocxl(void)
-> =C2=A0{
-> -	int rc =3D 0;
-> +	int rc;
-> =C2=A0
-> =C2=A0	if (!tlbie_capable)
-> =C2=A0		return -EINVAL;
+>  Documentation/filesystems/locking.rst |  4 ++--
+>  Documentation/filesystems/vfs.rst     |  6 +++---
+>  block/fops.c                          |  2 +-
+>  fs/afs/write.c                        |  2 +-
+>  fs/bcachefs/fs.c                      |  2 +-
+>  fs/btrfs/inode.c                      |  2 +-
+>  fs/ceph/addr.c                        |  4 ++--
+>  fs/ext2/inode.c                       |  2 +-
+>  fs/ext4/inode.c                       |  6 +++---
+>  fs/f2fs/compress.c                    |  2 +-
+>  fs/f2fs/inode.c                       |  2 +-
+>  fs/gfs2/aops.c                        |  4 ++--
+>  fs/hugetlbfs/inode.c                  |  6 +++---
+>  fs/nfs/file.c                         |  2 +-
+>  fs/ntfs/aops.c                        |  6 +++---
+>  fs/ocfs2/aops.c                       |  2 +-
+>  fs/xfs/xfs_aops.c                     |  2 +-
+>  fs/zonefs/file.c                      |  2 +-
+>  include/linux/fs.h                    |  2 +-
+>  include/linux/mm.h                    |  3 ++-
+>  mm/memory-failure.c                   | 10 +++++-----
+>  mm/shmem.c                            |  6 +++---
+>  mm/truncate.c                         |  9 ++++-----
+>  virt/kvm/guest_memfd.c                |  9 +++++----
+
+virt/kvm/guest_memfd.c exists only in the KVM tree (and hence
+linux-next).  So I assume Stephen will use the change from this patch
+when doing his resolution.
+
+This:
+---
+ virt/kvm/guest_memfd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
+index b99272396119..451435123fe7 100644
+--- a/virt/kvm/guest_memfd.c
++++ b/virt/kvm/guest_memfd.c
+@@ -267,7 +267,8 @@ static int kvm_gmem_migrate_folio(struct address_space =
+*mapping,
+ 	return -EINVAL;
+ }
+=20
+-static int kvm_gmem_error_page(struct address_space *mapping, struct page =
+*page)
++static int kvm_gmem_error_folio(struct address_space *mapping,
++		struct folio *folio)
+ {
+ 	struct list_head *gmem_list =3D &mapping->private_list;
+ 	struct kvm_gmem *gmem;
+@@ -275,8 +276,8 @@ static int kvm_gmem_error_page(struct address_space *ma=
+pping, struct page *page)
+=20
+ 	filemap_invalidate_lock_shared(mapping);
+=20
+-	start =3D page->index;
+-	end =3D start + thp_nr_pages(page);
++	start =3D folio->index;
++	end =3D start + folio_nr_pages(folio);
+=20
+ 	list_for_each_entry(gmem, gmem_list, entry)
+ 		kvm_gmem_invalidate_begin(gmem, start, end);
+@@ -303,7 +304,7 @@ static const struct address_space_operations kvm_gmem_a=
+ops =3D {
+ #ifdef CONFIG_MIGRATION
+ 	.migrate_folio	=3D kvm_gmem_migrate_folio,
+ #endif
+-	.error_remove_page =3D kvm_gmem_error_page,
++	.error_remove_folio =3D kvm_gmem_error_folio,
+ };
+=20
+ static int kvm_gmem_getattr(struct mnt_idmap *idmap, const struct path *pa=
+th,
+--=20
+2.40.1
 
 --=20
-Andrew Donnellan    OzLabs, ADL Canberra
-ajd@linux.ibm.com   IBM Australia Limited
+Cheers,
+Stephen Rothwell
+
+--Sig_/HQyEe5MksKX=y34cCuJH7xS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVa3wMACgkQAVBC80lX
+0GyOogf9EJDh3i01lt60JctG5HM++m93Iszf4pAQw5fEiRxG/YKyWCAC/mK6s9mq
+UTlcebdBYgcYGtDclNoYVpZ2mYXqfwxEhPkfT6glga1POWDW/acuhLtTe/yo7uUX
+oz4liDYNa76V+Q3lPtrdAfbUiwudq7AHwkuWBnjCeDbOByQrDaV5y5YEOSemC1Zg
+0j5G8xNLyTMZFk2T0w3Lmb8QBimcf1g2ECwZr5Cvse6kCsoq+nuVwJmnEv8kWR4K
+QrD8EngzncFxH3RWcVKBCn4E51NLOdJkj1d71uq5UlyA5rsZ8Cu5WZ7vsqV+hgqP
+2EgAhy4WoIFPvKzcOA9jydK0uV3dSA==
+=gNFH
+-----END PGP SIGNATURE-----
+
+--Sig_/HQyEe5MksKX=y34cCuJH7xS--
