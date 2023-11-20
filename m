@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD00F7F1633
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDB87F1639
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:51:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbjKTOtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:49:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        id S233848AbjKTOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233809AbjKTOtd (ORCPT
+        with ESMTP id S233559AbjKTOur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:49:33 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0937A3595
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:48:01 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-32fe1a29010so2858270f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:48:01 -0800 (PST)
+        Mon, 20 Nov 2023 09:50:47 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F3F198E;
+        Mon, 20 Nov 2023 06:49:05 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5cade8466f7so6258737b3.1;
+        Mon, 20 Nov 2023 06:49:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700491680; x=1701096480; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tJJwbkqvfCRGn7qw4NUfbsptbvx8KM0jIDYK6bPqbHI=;
-        b=EJkBVUr2+c3RAcw3VxduyTHIuIf1REIdnsgjfdk7u9UZ0PWKofiZsx2aypG+vLYMKC
-         mLx39ZH3p7Q+WkVjQZ0n2kA7JQFaKv68JvR9/ceABCzsIQa8qWEdukoyXdBtonlrinnx
-         MZTsPFhG77igmZLOI9Og1zd7SblfbOfPoSVuBf2SQX33rfveXiw9jX9AmEnr77X6Inb8
-         oEhBihbNzSa2G2sZcXLFs3zqC3qeTRvWT2onn9mVFz3Kbi7JYtcFD3PyqgS5RTt7V73d
-         hiPH1P617/9ILHoet9GDWOd9WjajxZvlpq63l7lx/UtSy1bSUm+LpTcAfTFHlIZEZFJJ
-         l06Q==
+        d=gmail.com; s=20230601; t=1700491745; x=1701096545; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=kkqrCTQYUsakYJCviHl+S/yW32iUxn7DN+xEx1mj1ws=;
+        b=c4LLEuw52vKWCqR9shzS7Txq//fASkwdZhtftKBE0YwZHJW/MsF5vzx9WTiK47hzY3
+         Mcyu43LGcJv0QL1CV+8p2/tAgzaJkW2uAdoh9dYSbTDRO5h1Tg5OqeWE9mW4EdqHKkKE
+         Pz4ojLQlqM8BRJ7+i3cWmhikHOMK83vw7Vmjn6R2UHOqe+S8HlIVYu751I9LoOoXofkg
+         ++CP3OpyaISt6N4nAgrU+zWEEC5Olyhs4xUIZ4GcRStNRD9I3Z5qEOMzQS4YI+NOerHP
+         wUht8tq7TivVITDo7SHlTF1ZreZ3MTteBDmiB/hLrhcw43CjfxJfXdhGje+FJ/CeiuQr
+         LCHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700491680; x=1701096480;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tJJwbkqvfCRGn7qw4NUfbsptbvx8KM0jIDYK6bPqbHI=;
-        b=b8IbvUZ3lDPkA7hiT9AiYDbLCaYWiSyCXtkjC4LvdXrM/aW1PntmPOPHynqtl6Hfcy
-         sTWD/s6LCxPUoWb8lRSbqg8o6EU634dx326MJ2F4QMLqhxu09DI6bW5RVKivwG8NboEX
-         tmTSmPGBtNdL27eqvT3iQBTld3BU+aCvi6sp7K6wwUfmqURJ/X6/WmqE8LIrrGfdSGZb
-         9gXn8sUiTW2SUpCk62FZyryVb6lgWDR7+N4iaGxNqED8WdIGLEbX+df5xPv83w8oGYTG
-         5GNih6lw6Svc2GL+JW99Swwm6BFmmK6eD8VdnECxggz4rrbnIzQHe7dtgvr4lyeGk52t
-         fBrw==
-X-Gm-Message-State: AOJu0YwOpugHyvHvJFH5+BBFud4DH2cDkTFOOdoQX2EU3Q0ZATX1tyDI
-        3v+JBUdKIVYfp4sqnbwNiQA22w==
-X-Google-Smtp-Source: AGHT+IHn58Rb64JPIzwX0eVZAztbDRegFkKUvEvegsNvzVuqU2Md/M8OBOctHAEzcu9bHb7VRuEF9g==
-X-Received: by 2002:a05:6000:2c7:b0:32f:7cfd:4522 with SMTP id o7-20020a05600002c700b0032f7cfd4522mr4655078wry.70.1700491680256;
-        Mon, 20 Nov 2023 06:48:00 -0800 (PST)
-Received: from [192.168.1.7] ([79.79.179.141])
-        by smtp.gmail.com with ESMTPSA id j3-20020a056000124300b0032f7e832cabsm11385126wrx.90.2023.11.20.06.47.59
+        d=1e100.net; s=20230601; t=1700491745; x=1701096545;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kkqrCTQYUsakYJCviHl+S/yW32iUxn7DN+xEx1mj1ws=;
+        b=td0p32Gc5ZUnj43UL5Upm6fokPBmDRNnYzj+OH4w9kBJ9+DSwISdaDKVeu99znLtt3
+         x2xPECekKKW6gIT/rfxFM1XS0J4gkUGTJG3JFghsq4NImpZ0BFIbfUMpYg8K5tu7+eOn
+         86eFxC13XNlUGa9aBwVxMpavaWeH8OspFacX6Cb5oNhYrpAr+Sp4nW2wZg3D1cdY31h3
+         uyPax0n/u+y6zXEp67vkDt7uhlw/4AVoW4oE4nEZPxBanTWJ2pMITPKy2/tGbTXYHvI2
+         j5mrXlFz76ecYguiSbw2JkXZQj/kO5mRwa0+9qzzh9F4GfwCSnGNi5Q/r7Vu7s8oPB16
+         Gx5w==
+X-Gm-Message-State: AOJu0YzNVZHwWI6wSd3CjAiWGPRgXIiX3bFlsHCJz7pZb8/dlY7Hj7Xc
+        BACqjsIBIRQVLzubHGNENgahNmRHCS4=
+X-Google-Smtp-Source: AGHT+IEgj+n9SDl36fXA4ikqYVKVhE6tQ0bZ64oDlXE0hJAh3SHMQ5eQac6jpjGptYSb2XkQcar3Jw==
+X-Received: by 2002:a81:fd14:0:b0:5c8:7269:b8b2 with SMTP id g20-20020a81fd14000000b005c87269b8b2mr5508135ywn.0.1700491744866;
+        Mon, 20 Nov 2023 06:49:04 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u201-20020a8184d2000000b005a23ab90366sm2381630ywf.11.2023.11.20.06.49.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 06:47:59 -0800 (PST)
-Message-ID: <70402702-84d3-4577-9fd2-9e87add4283b@linaro.org>
-Date:   Mon, 20 Nov 2023 14:47:58 +0000
+        Mon, 20 Nov 2023 06:49:04 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a6f7198e-f2f4-4691-a0e2-8a1c09d01b6a@roeck-us.net>
+Date:   Mon, 20 Nov 2023 06:49:02 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] arm64: dts: qcom: Add base qcs6490-rb3gen2 board
- dts
+Subject: Re: [PATCH v2 1/2] hwmon: (nct6775) Fix incomplete register array
 Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Naina Mehta <quic_nainmeht@quicinc.com>
-References: <20231120134754.9526-1-quic_kbajaj@quicinc.com>
- <20231120134754.9526-4-quic_kbajaj@quicinc.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <20231120134754.9526-4-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Xing Tong Wu <xingtong_wu@163.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     xingtong.wu@siemens.com, tobias.schaffner@siemens.com,
+        gerd.haeussler.ext@siemens.com
+References: <20231120081542.3174-1-xingtong_wu@163.com>
+ <20231120081542.3174-2-xingtong_wu@163.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231120081542.3174-2-xingtong_wu@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/20/23 00:15, Xing Tong Wu wrote:
+> From: Xing Tong Wu <xingtong.wu@siemens.com>
+> 
+> The nct6116 specification actually includes 5 PWMs, but only 3
+> PWMs are present in the array. To address this, the missing 2
+> PWMs have been added to the array.
+> 
 
+Please rephrase.
 
-On 20/11/2023 13:47, Komal Bajaj wrote:
-> Add DTS for Qualcomm qcs6490-rb3gen2 board which uses
-> QCS6490 SoC. This adds debug uart and usb support along
-> with regulators found on this board.
+The subject and the description is a bit misleading. The need to extend
+the arrays is necessary, but the key change is adding support for the two
+additional fan controls.
 
-Hi,
+Thanks,
+Guenter
 
-I understand there was a lot of previous discussion around these two
-boards, sorry to be bringing it up again here, but I have a few more
-questions.
-
-How similar are these two boards in terms of design? If they're derived
-from the same reference schematic then I think this is a good
-justification to de-duplicate the common DTS parts.
-
-Dropping them in a diff tool [1] it seems as though the only changes are
-the modem reserved memory for the IDP board, some minor regulator
-changes, and the sdcard on the IDP board being enabled. However it's
-important to differentiate between these just, being the same, vs them
-being based on the same reference design.
-
-I left some comments on the parts that differ between the boards below,
-but basically my question is: do these boards share enough of the same
-*design* that it would make sense to have a "qcm6490-iot.dtsi" file with
-the common reserved memory and regulators?
-
-The IDP and rb3 boards would then inherit from there, avoiding a lot of
-duplication and weirdness where some boards have certain regulator
-properties that others don't with it being hard to tell if this is
-intentional or not (this is the case with a lot of the existing upstream
-devices).
-
-On a related note, should we further split the rb3 board into a
-qcs6490-whatever-som.dtsi file which may define the SoM specific parts?
-This would undoubtebly make it easier for other boards based on the same
-SoM to be bought up and kept up to date.
-
-[1]: https://quickdiff.net/?unique_id=630F6851-C750-839E-1651-4CA6D997A74D
-
-
-[...]
-
-> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> new file mode 100644
-> index 000000000000..f023dcf768f1
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
-> @@ -0,0 +1,410 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-[...]
-> +
-> +		vreg_l7b_2p952: ldo7 {
-
-The IDP board defined voltages here for the sdcard, does the rb3 board
-have an sdcard slot (if so which regulator does it use)?
-
-Is there a reason not to define the same voltage range for this board?
-> +			regulator-allow-set-load;
-
-This property is set for rb3 but not for the idp board, even though this
-regulator is unused, should this be set?
-> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-[...]
-> +
-> +		vreg_l9b_1p2: ldo9 {
-Same question as above
-> +			regulator-allow-set-load;
-Same question
-> +			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM RPMH_REGULATOR_MODE_HPM>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
-[...]
-> +		vreg_l19b_1p8: ldo19 {
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <2000000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-The IDP board has the regulator-allow-set-load property here, as well as
-regulator-allowed-modes. This regulator is used for the sdcard on that
-board. Is it used for anything on rb3? Can these properties be the same?
-> +		};
-> +	};
-> +
-
-
-Thanks and regards,
--- 
-// Caleb (they/them)
