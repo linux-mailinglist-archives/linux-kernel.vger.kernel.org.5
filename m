@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B017F0E45
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982187F0E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbjKTI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
+        id S232180AbjKTI6y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 03:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTI5h (ORCPT
+        with ESMTP id S232165AbjKTI6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:57:37 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FB0AA;
-        Mon, 20 Nov 2023 00:57:32 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D798B6603149;
-        Mon, 20 Nov 2023 08:57:30 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700470651;
-        bh=d23ZT5zVaG2k3DicMJVOBp0FoX7BK2oj+2zL9rkLlcU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jFG/4oQkTiPCuFeWdj+hKl+IkpmsojIFQH+cPvfEWyMlJLPEfzYgpC5vo3ZDDcbPj
-         O/ygRUdSfa+jCME81v7FE0srl3G9yeaK9m1nub4CTXF70ffpom3huQQvk1bFence5W
-         4+Gsk+5L/npS23XvSMwPXt6c8++JAVJ9JUnXoWrdeA0Zzd8LmfqtGKoDKapMfTJ2o9
-         yN147CWiV5TaVRcAlkzg0NjsLqUEbvMH6M+Qhu5acHZkXc0Xi10CCtqJ9GbZaftzjK
-         AxJGSyXO2Dfo9g+0ULn20qDO/J3Ax1Rt3TGn3NBeBltmuJa0u9ekcZXXxu1tOJls+4
-         5ZAGzDZSmIvnQ==
-Message-ID: <0b95d90d-5dd3-43da-a860-6a84019d097a@collabora.com>
-Date:   Mon, 20 Nov 2023 09:57:27 +0100
+        Mon, 20 Nov 2023 03:58:52 -0500
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A9583;
+        Mon, 20 Nov 2023 00:58:46 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5c9adcaf514so11814867b3.2;
+        Mon, 20 Nov 2023 00:58:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700470726; x=1701075526;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=18JbpiPMAEDFj6NXYlnrzta9l+LmgYRwVtYP+eE4AiM=;
+        b=kIqfBCEsBy50pkCwU0QuQeeblaweWR539FfwYYLkSoqaUzENRLFoY52epOChRub0QI
+         nDnYstgdjX7gybF1uHgfZNCR3IVc30gNFrJOTLNz1tW6mmPJ1Tifo3PxHgDENisNJ9Yk
+         97JJJ4PAYB4KwYozM5ll70PEsCyWSPhEyvWgrtkY5LlUt2vgYAfFk4TJkViH9jdSZ3Nn
+         dqqco3CmGjvMUH2ZPgZDIhEUrqWVm+cjzfvDE1QtpKcr89xN9vQU4ihE6wVVtvgNJK5p
+         TSh6bx787h7MUG0tOfL1WiCdo22P/YloHe7dGYqJewY6SY0Aks2DKJu8OeipF5E18sgq
+         CgZA==
+X-Gm-Message-State: AOJu0YyzqPMt9lVz3IhFisoDDBrema9/oAeRwtWkGC0Xppoj4Wx3wkFL
+        7TxJUpO5GQeOX2rgTQzhNXKix1XbNL0AUw==
+X-Google-Smtp-Source: AGHT+IEcAKhmD2Cwhxx2WVp7uxIs04LulpgMIz9grHiBKuB8tFrxBucq43RCBbNt7vZs4H2MyknXxw==
+X-Received: by 2002:a05:690c:2884:b0:5ca:a8b6:3319 with SMTP id ee4-20020a05690c288400b005caa8b63319mr937155ywb.52.1700470725764;
+        Mon, 20 Nov 2023 00:58:45 -0800 (PST)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id s2-20020a819b02000000b005ca265f0c68sm717128ywg.42.2023.11.20.00.58.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 00:58:43 -0800 (PST)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da819902678so3874391276.1;
+        Mon, 20 Nov 2023 00:58:43 -0800 (PST)
+X-Received: by 2002:a25:6a55:0:b0:da0:cfca:ed9 with SMTP id
+ f82-20020a256a55000000b00da0cfca0ed9mr5235404ybc.12.1700470723057; Mon, 20
+ Nov 2023 00:58:43 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ASoC: mediatek: mt8186: trivial: align code
-Content-Language: en-US
-To:     Eugen Hristev <eugen.hristev@collabora.com>,
-        linux-sound@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-References: <20231117160914.65341-1-eugen.hristev@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231117160914.65341-1-eugen.hristev@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120070024.4079344-15-claudiu.beznea.uj@bp.renesas.com> <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
+In-Reply-To: <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 20 Nov 2023 09:58:30 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUkVO7cXpsHd_oGvEpZdJpP6GP+VC8H5GAZ94KJf2joLA@mail.gmail.com>
+Message-ID: <CAMuHMdUkVO7cXpsHd_oGvEpZdJpP6GP+VC8H5GAZ94KJf2joLA@mail.gmail.com>
+Subject: Re: [PATCH 14/14] arm: multi_v7_defconfig: Enable CONFIG_RAVB
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andrew Davis <afd@ti.com>, Mark Brown <broonie@kernel.org>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 17/11/23 17:09, Eugen Hristev ha scritto:
-> No functionality change, squash some lines and align parameters for
-> function prototypes to 80 chars.
-> 
+On Mon, Nov 20, 2023 at 9:44 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Mon, Nov 20, 2023, at 08:00, Claudiu wrote:
+> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >
+> > ravb driver is used by RZ/G1H. Enable it in multi_v7_defconfig.
 
-Please use scripts/get_maintainer.pl to get the correct recipients list.
+Used by:
+  - iWave-RZ/G1M/G1N Qseven carrier board,
+  - iWave-RZ/G1H Qseven board,
+  - iWave-RZG1E SODIMM carrier board,
+  - iWave-RZ/G1C single board computer.
 
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> ---
->   sound/soc/mediatek/mt8186/mt8186-afe-control.c | 13 +++++++------
->   1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-control.c b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
-> index 55edf6374578..dda648c1e8f8 100644
-> --- a/sound/soc/mediatek/mt8186/mt8186-afe-control.c
-> +++ b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
-> @@ -181,7 +181,8 @@ static unsigned int pcm_rate_transform(struct device *dev, unsigned int rate)
->   	return MTK_AFE_PCM_RATE_48K;
->   }
->   
-> -unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev, unsigned int rate)
-> +unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev,
-> +					       unsigned int rate)
+So I'd write "used by various iWave RZ/G1 development boards".
 
-That's not needed, 86 columns is ok.
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> We have a mix of =y and =m for ethernet drivers, and usually
+> only have drivers built-in when they are frequently tested
+> with NFS root booting.
+>
+> Do you need this as well, or could it be =m instead?
 
->   {
->   	switch (rate) {
->   	case 8000:
-> @@ -222,7 +223,8 @@ unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev, unsigned int
->   	return MTK_AFE_TDM_RELATCH_RATE_48K;
->   }
->   
-> -unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate, int aud_blk)
-> +unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate,
-> +				   int aud_blk)
+As the default chosen/bootargs for the iWave-RZ/G1M/G1N Qseven carrier
+board contains root=/dev/nfs, builtin is appropriate.
+The iWave-RZ/G1H Qseven board defaults to root=/dev/mmcblk0p1.
 
-Same here, not needed.
+Gr{oetje,eeting}s,
 
->   {
->   	switch (aud_blk) {
->   	case MT8186_DAI_PCM:
-> @@ -234,14 +236,13 @@ unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate, int au
->   	}
->   }
->   
-> -int mt8186_dai_set_priv(struct mtk_base_afe *afe, int id, int priv_size, const void *priv_data)
-> +int mt8186_dai_set_priv(struct mtk_base_afe *afe, int id, int priv_size,
-> +			const void *priv_data)
+                        Geert
 
-ditto.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->   {
->   	struct mt8186_afe_private *afe_priv = afe->platform_priv;
->   	void *temp_data;
->   
-> -	temp_data = devm_kzalloc(afe->dev,
-> -				 priv_size,
-> -				 GFP_KERNEL);
-> +	temp_data = devm_kzalloc(afe->dev, priv_size, GFP_KERNEL);
-
-The only change I agree on is this one... but I don't know if it's even worth
-making a commit for just this...
-
-Regards,
-Angelo
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
