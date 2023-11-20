@@ -2,293 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 242CE7F0EB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3677F0E5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbjKTJMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S232138AbjKTJEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbjKTJMX (ORCPT
+        with ESMTP id S232065AbjKTJEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:12:23 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2043.outbound.protection.outlook.com [40.107.14.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E08210DA;
-        Mon, 20 Nov 2023 01:12:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cF0mE4ae0bzJhmsxUpVNo6CBy7OrDacxyQZobDhQBlQC7WmcdhIPnwL7QVl/CIjL57qnEGmumrS/fDl05zg1p23CdOcjeacdilrYWz2CYfx4bYQv2f8vWTNAMNX8Yi7VH83iQiwhiFI0yKJClJmf2pZ2H3RnXUdcTMIkdF9l1hUt7RPlBLuFjuHMcZipK1hIwkGwS5qy8YuR10EJfhIRGyc+/+EoDDk8dYvRpsefvTfKP7WtSrfgw0U33Bk4b5e1DsLn5jP9ceGqUqNJRsq8y0xy7H6FAux+BbqITbIZbRGEkMzXKLRyPxFQiIuvKkf0X3aemLTShgqxDd0tHBNwsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=luGc91YIHm7PJu1Sq2eBjN9Ud/issUKfZURg3+bsFtU=;
- b=f6XSBH9BmM2mlRcQYv/cZL0M0cfAr6rU05JxQ8LycmNGmU/2ZhAnrsi0hhTPWQh9tko6DKwPz/wUTwELQ9QVNwF5dsD3NPiRSiCpnBVfqr5tmDfDYRyzvk05BpdHlKHuWMvCp6MGULL3ZoXuMsC3LkIjlY188AaX7Y/F3WvRGna0WWMUv0k32jZomuXN3ERMo7hYbysRyLGwmLmocxxLxv0hB8qNOyXJ9SOeB735wb17CYC60U82BnX3BYWuqeYVNSkMpOmXNtdj7EAJL95bfoY41Pwjc5z/QlHpmXlaK48WT40wYR9baksgllrEw3A9uklmy8ik4/pQ5klew4y5nw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=luGc91YIHm7PJu1Sq2eBjN9Ud/issUKfZURg3+bsFtU=;
- b=qm7JjqlGIGYskyWQMtrvBul9vw+uzPQZmYUyUzvA0XoKrLAQIHQNouXOT3+JS3UdE7K4J02r/ST8TrNo7ws2zJCfOSPzrPVOO0td9cQQjuvUrDR3iDlKk7iungAAKndG06MQTPshxEQpFMBWMELureFlJF6AQRUmyTJTTCMNirc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DBBPR04MB7563.eurprd04.prod.outlook.com (2603:10a6:10:206::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.16; Mon, 20 Nov
- 2023 09:12:14 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::dffc:1d:4398:7768]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::dffc:1d:4398:7768%6]) with mapi id 15.20.7025.015; Mon, 20 Nov 2023
- 09:12:14 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Chancel Liu <chancel.liu@nxp.com>
-Subject: [RESEND v2 3/3] ASoC: dt-bindings: fsl,mqs: Convert format to json-schema
-Date:   Mon, 20 Nov 2023 16:49:05 +0800
-Message-Id: <20231120084905.664-4-chancel.liu@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231120084905.664-1-chancel.liu@nxp.com>
-References: <20231120084905.664-1-chancel.liu@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AS4P190CA0052.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:656::24) To DB9PR04MB9498.eurprd04.prod.outlook.com
- (2603:10a6:10:360::21)
+        Mon, 20 Nov 2023 04:04:20 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE7FA7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:04:16 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4081ccf69dcso8072615e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:04:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700471054; x=1701075854; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dc9/+nScpB7VGtfg0Joktxx3OBTdnZc7jGwJ4OZOLc8=;
+        b=yZwjRXm7Htgkp/lS7KpiwFsTTp02reI4guoAmGqOHKiGYS1tl5Gu3r0T7qi1QZ5rsq
+         lkjckl8EMsMaR+s4T9TQT9445GBE/soXw8xpdERFQ+4MDG0qcBgi1JOhhT7x4zRp1VJ1
+         qoNTXqYj8oK/HbpRRsPEJVWb+HEiZOnjlLd4tCG9G9oEHdRM8Lb7Mv3ThHLc4ARZ+yXp
+         eo9SWrH/wvWN26TmVz/tis9f5Zy+Cb5A+qjbX8epbhze5j9/ZGKncskUqByuFQuVQEQy
+         bI6SOJ3XEi+zE3u8My2Lr1/c4AJ+aJa7dcbDA0rig9BO+rVimJTbWiC2M4PhsvXkHop6
+         ZeAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700471054; x=1701075854;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dc9/+nScpB7VGtfg0Joktxx3OBTdnZc7jGwJ4OZOLc8=;
+        b=w6XAEWivDtM0IVsrakDVBKCJu4xHoDjqmJuvZWkpP18HmbKmlu3jiqLcPvkiq0OW7I
+         wqPzT1WLUmXgfXffq94V2VJ0YZQzZVuLvEAqSg7NWXVz+jYH1twUVkAghTzorJp82Gj5
+         ORWk8LlQMqKdzo2a4wKvZsnboK6WR6JKYV8x28twQ9GRJxr3Orfu7gASWJzEVnV5Ah/C
+         vhPRV9qXDj9wfey93gRWXaeHLeeBcOKcfvpH873zP/EmdzISB1enlImcOw0fXBuTsEUd
+         d8wv0iJWVOrJe760jfjC0EjRS2Vr9AMXbgngW3UcK2N8foORdRxNmEIShL5At2YNj/J8
+         CrDA==
+X-Gm-Message-State: AOJu0Yy/iorHelTUkSGc4jZv5GWt7u40G4iRu24MXjbLcuyOjZTix7HD
+        laGFp2TIia3D6XNwWuVsL8wmqw==
+X-Google-Smtp-Source: AGHT+IGQHbmRWLd+DyRnCIJYDmGKMzABC5lWmy0gqxtduSVtq9DPmfHMwhkrJ6yyhFMepEgEpXhzhQ==
+X-Received: by 2002:a05:600c:5490:b0:406:51a0:17ea with SMTP id iv16-20020a05600c549000b0040651a017eamr5770564wmb.10.1700471053293;
+        Mon, 20 Nov 2023 01:04:13 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f04:f84b:d87d:1d06? ([2a01:e0a:982:cbb0:f04:f84b:d87d:1d06])
+        by smtp.gmail.com with ESMTPSA id bi27-20020a05600c3d9b00b004097881d5f0sm17075789wmb.29.2023.11.20.01.04.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 01:04:12 -0800 (PST)
+Message-ID: <947673a6-7f5a-463f-b960-21cbcdf1ae30@linaro.org>
+Date:   Mon, 20 Nov 2023 10:04:10 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9498:EE_|DBBPR04MB7563:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa2d3cf2-bb1d-4f83-7ef8-08dbe9a8c94f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VxpOcp3PnzCGwGBxCZL2v5/ElSjMoRtUHZiC9LfeAm5VkCZ2p71R9iAXWy/cwLtc2m1bqtXTQc+geMXAGuSjf5auxNJLuvPHD80r5MT//dUJDabbOFHXAmAbkj39jBcNs4ZS/QyWM6r73/uKqQ9GL+Sx6lXaxDeu9YIRk64QFH2r4nN76NKpQXFpS1yxX5BAXjbSf7B1GuuDYyrUPGyg2yzUsu9YiqyEEqYNPRyUnKtzzDmt5wx3TURBT8+j/y1jIv/v448JUVcs7TNSMdPnJ2eS1TdSkyXC7VsTLs98q5FcTPcmwyNZCFxQW04//g/cIMVp2Q78/hH4WUXbGwS7K6cghcLsf5ayuhGHVui3aZawBZ6e4/uAchOdB2DwGaRA4QlzcuNAN6j3NhfaKzOm7YnoTuD3HPAw29mRWTgmEANvMlIpe7bAtTSwHgNViPymmRlHOF7W3e1WBTKTyhWjgfxhmiHdIA2vsJMS7KYHYxmHU5AnUypoCaXmRwvbEg+1LxmBjW3et+dDU6bApsnT1DnCojCnqYDAKMaOPBvfASl0oRSsHcsQk4keC1ssgVcngB53DmOIMgN6EW4clsUTjJFLTTOpdUnLcah6rN+e/3VbBHFEjEOjeXh+V5nAwIy8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(366004)(396003)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(7416002)(5660300002)(1076003)(2906002)(26005)(2616005)(4326008)(8676002)(8936002)(41300700001)(86362001)(44832011)(38350700005)(921008)(83380400001)(36756003)(66946007)(52116002)(66556008)(66476007)(6506007)(316002)(478600001)(966005)(6486002)(6512007)(38100700002)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/xB7TFDSLhrwawEQMw1LUTzfxiisCWIHhOf340Bv58ZtWUXDBIS88qHN+SH0?=
- =?us-ascii?Q?Su0QzruPbK5VVd2MF3frDIUFGQM0+En4wYb00Epb6eNCRxODhQ+OhHUqEFoC?=
- =?us-ascii?Q?X7l/JGjV8dFpxqt/iqumwZWTXKS5bnxont4fs/+MtseopSZDaJgOWC82Zl+H?=
- =?us-ascii?Q?+5hQuQW5Wr95mB843+Prxct28RLwhHUy6YoYwEDf/wiGAizLw0FIWn8kX2jE?=
- =?us-ascii?Q?lvIyfCFXPAYz1wHImYPmAaZzN/6oyTVXrb+fhLiPj3rNHNkYONB6lFOusgnC?=
- =?us-ascii?Q?jeFpukXCxz4IgqDWAwDPq1QPb60+UxNRw7+dhRLCrKqcf1wKbEfrFeHPiDcU?=
- =?us-ascii?Q?fvJzqTlouAuNFtdFe4awPDKi+wgS0vLXcm94NZiOopkRNcoCm+jLOMEmqb9k?=
- =?us-ascii?Q?2Q+HMra/d8U3nBscvhc4OymI4jdtz9ceG/Joyxgig/DHjPgUKDkaykMykh71?=
- =?us-ascii?Q?toDENTUttCwDztFFe+Xp7AZXCmGXByOGpQqPHc31jbOyqQ9pn06yphEk8eRZ?=
- =?us-ascii?Q?KpLuxptCgcudbGs/j0GQ0qh1G0GIAIY1f3A288VqFxWcNUsIUWBXhkT6EpjX?=
- =?us-ascii?Q?eAywzEe6jU2eRGsH3ilIb17nGdrVcPfEnMrAGAjD+2rNCjqvdHc4ohsVIO+l?=
- =?us-ascii?Q?fkTaiLgRvLamiVtXb4xk1lajHV7MzaTu2CBVryeVCqzG1nfhOC4x4C90nboo?=
- =?us-ascii?Q?Dq6m4oL61y5Szn7LcF9s74fXB7FRIOzMDdwOeAXDjXp0cPrLqRLSveLAQVK7?=
- =?us-ascii?Q?fV7ytptNpAhx1sGMhpTHsG7jYHzQC7YhwfxOQsDNyaEknHQlruTwdoBXMuin?=
- =?us-ascii?Q?/X7t0O81BOfdEL63S0uSfe0Zi8FVoCgjAVcl9Cdrh+2X29RMcJbu9b7VNpXB?=
- =?us-ascii?Q?YJmWeqSEfEadOOl7x7fN6D4HOEP8/Jtjih24aiFEodiJyxFrnW+itccc/J86?=
- =?us-ascii?Q?EQ4/epPG6F053Ee/t3yigcyB3uAjXR89WnHt0nMq+zcjTs8DFt5/5wB0USp/?=
- =?us-ascii?Q?ooVVWGUuCq8nlFrpJcsE60KZVMbu63eegKWDmPZ1wIbHXjS/w2viLp27aYqt?=
- =?us-ascii?Q?wKm0xH4LYJftpnyl3j2NLv5GKq7j+7uU/phvo+9zpEReH6EHB9uVTcwcSgWp?=
- =?us-ascii?Q?7pD4tfFj4V+Ay8CIpcL0hO9ul/m50oAbufRBVhnSarccTeu27eH0Q7hVT8Z3?=
- =?us-ascii?Q?YdimM3wXRM5E19Z8CV11ecfWEERYBEnIoiw3pL0811OH6wMbhRt+ZoCdotjj?=
- =?us-ascii?Q?AkWXMz0mXWgcT/rReTaLSM+J0FgMQ++bsSQqVY1nY8W7PhwCA4SyKdrfvNox?=
- =?us-ascii?Q?FlwmWTIdq0+QoZCcxpDJR28KX5UZW3/w0WvTDwJ7/MtGU43vgIgRyfs6KGyv?=
- =?us-ascii?Q?IPnBddPqASOWNTkEyuqFI5t+0rhenDKfPGc6ByTn6I7H59exgQtBAbrUOKj9?=
- =?us-ascii?Q?iTHPEYcKi67gKns9Oc7TJwEwYiufaXNpnY9uzikbEvC6WBP0BtuReaZipw82?=
- =?us-ascii?Q?3YffKyUIrXZe1YxfaH1Kkgi5etnb4Fx+lizsCK/KaDktos+cLyJK4cohYC+Q?=
- =?us-ascii?Q?AB5J7y4XGzuWmgURg1OhOcikchcM53HiEx38LJzY?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa2d3cf2-bb1d-4f83-7ef8-08dbe9a8c94f
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 09:12:14.8812
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lbuohfoKZ3rnPwhvsYgNiEyDgJuHciPCuZh7Fhy2wBk7P8iaYGqRnmGiXK7amz2uOqF4tsFeafnUNd6JGVwxlA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7563
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+Content-Language: en-US, fr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Andrew Davis <afd@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert NXP medium quality sound (MQS) device tree binding
-documentation to json-schema.
+On 20/11/2023 09:40, Krzysztof Kozlowski wrote:
+> Document preferred coding style for Devicetree sources (DTS and DTSI),
+> to bring consistency among all (sub)architectures and ease in reviews.
+> 
+> Cc: Andrew Davis <afd@ti.com>
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Heiko Stuebner <heiko@sntech.de>
+> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Michal Simek <michal.simek@amd.com>
+> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> Cc: Nishanth Menon <nm@ti.com>
+> Cc: Olof Johansson <olof@lixom.net>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Merging idea: Rob/DT bindings
+> 
+> Changes in v2
+> =============
+> 1. Hopefully incorporate entire feedback from comments:
+> a. Fix \ { => / { (Rob)
+> b. Name: dts-coding-style (Rob)
+> c. Exceptions for ordering nodes by name for Renesas and pinctrl (Geert,
+>     Konrad)
+> d. Ordering properties by common/vendor (Rob)
+> e. Array entries in <> (Rob)
+> 
+> 2. New chapter: Organizing DTSI and DTS
+> 
+> 3. Several grammar fixes (missing articles)
+> 
+> Cc: linux-rockchip@lists.infradead.org
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-amlogic@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-arm-msm@vger.kernel.org
+> ---
+>   .../devicetree/bindings/dts-coding-style.rst  | 163 ++++++++++++++++++
+>   Documentation/devicetree/bindings/index.rst   |   1 +
+>   2 files changed, 164 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
+> 
+> diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+> new file mode 100644
+> index 000000000000..cc7e3b4d1b92
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+> @@ -0,0 +1,163 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +.. _dtscodingstyle:
+> +
+> +=====================================
+> +Devicetree Sources (DTS) Coding Style
+> +=====================================
+> +
+> +When writing Devicetree Sources (DTS) please observe below guidelines.  They
+> +should be considered complementary to any rules expressed already in Devicetree
+> +Specification and dtc compiler (including W=1 and W=2 builds).
+> +
+> +Individual architectures and sub-architectures can add additional rules, making
+> +the style stricter.
+> +
+> +Naming and Valid Characters
+> +---------------------------
+> +
+> +1. Node and property names are allowed to use only:
+> +
+> +   * lowercase characters: [a-z]
+> +   * digits: [0-9]
+> +   * dash: -
+> +
+> +2. Labels are allowed to use only:
+> +
+> +   * lowercase characters: [a-z]
+> +   * digits: [0-9]
+> +   * underscore: _
+> +
+> +3. Unit addresses should use lowercase hex, without leading zeros (padding).
+> +
+> +4. Hex values in properties, e.g. "reg", should use lowercase hex.  The address
+> +   part can be padded with leading zeros.
+> +
+> +Example::
+> +
+> +	gpi_dma2: dma-controller@800000 {
+> +		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
+> +		reg = <0x0 0x00800000 0x0 0x60000>;
+> +	}
+> +
+> +Order of Nodes
+> +--------------
+> +
+> +1. Nodes within any bus, thus using unit addresses for children, shall be
+> +   ordered incrementally by unit address.
+> +   Alternatively for some sub-architectures, nodes of the same type can be
+> +   grouped together (e.g. all I2C controllers one after another even if this
+> +   breaks unit address ordering).
+> +
+> +2. Nodes without unit addresses should be ordered alpha-numerically by the node
+> +   name.  For a few types of nodes, they can be ordered by the main property
+> +   (e.g. pin configuration states ordered by value of "pins" property).
+> +
+> +3. When extending nodes in the board DTS via &label, the entries should be
+> +   ordered alpha-numerically.
+> +
+> +Example::
+> +
+> +	// SoC DTSI
+> +
+> +	/ {
+> +		cpus {
+> +			// ...
+> +		};
+> +
+> +		psci {
+> +			// ...
+> +		};
+> +
+> +		soc@ {
+> +			dma: dma-controller@10000 {
+> +				// ...
+> +			};
+> +
+> +			clk: clock-controller@80000 {
+> +				// ...
+> +			};
+> +		};
+> +	};
+> +
+> +	// Board DTS
+> +
+> +	&clk {
+> +		// ...
+> +	};
+> +
+> +	&dma {
+> +		// ...
+> +	};
+> +
+> +
+> +Order of Properties in Device Node
+> +----------------------------------
+> +
+> +Following order of properties in device nodes is preferred:
+> +
+> +1. compatible
+> +2. reg
+> +3. ranges
+> +4. Standard/common properties (defined by common bindings, e.g. without
+> +   vendor-prefixes)
+> +5. Vendor-specific properties
+> +6. status (if applicable)
+> +7. Child nodes, where each node is preceded with a blank line
+> +
+> +The "status" property is by default "okay", thus it can be omitted.
+> +
+> +Example::
+> +
+> +	// SoC DTSI
+> +
+> +	usb_1_hsphy: phy@88e3000 {
+> +		compatible = "qcom,sm8550-snps-eusb2-phy";
+> +		reg = <0x0 0x088e3000 0x0 0x154>;
+> +		#phy-cells = <0>;
+> +		resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
+> +		status = "disabled";
+> +	};
+> +
+> +	// Board DTS
+> +
+> +	&usb_1_hsphy {
+> +		clocks = <&tcsr TCSR_USB2_CLKREF_EN>;
+> +		clock-names = "ref";
+> +		status = "okay";
+> +	};
+> +
+> +
+> +Indentation
+> +-----------
+> +
+> +1. Use indentation according to :ref:`codingstyle`.
+> +2. For arrays spanning across lines, it is preferred to align the continued
+> +   entries with opening < from the first line.
+> +3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
+> +   should be enclosed in <>.
+> +
+> +Example::
+> +
+> +	thermal-sensor@c271000 {
+> +		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
+> +		reg = <0x0 0x0c271000 0x0 0x1000>,
+> +		      <0x0 0x0c222000 0x0 0x1000>;
+> +	};
+> +
+> +Organizing DTSI and DTS
+> +-----------------------
+> +
+> +The DTSI and DTS files should be organized in a way representing the common
+> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
+> +and DTS files into several files:
+> +
+> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
+> +   on the SoC).
+> +2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
+> +   entire System-on-Module).
+> +3. DTS representing the board.
+> +
+> +Hardware components which are present on the board should be placed in the
+> +board DTS, not in the SoC or SoM DTSI.  A partial exception is a common
+> +external reference SoC-input clock, which could be coded as a fixed-clock in
+> +the SoC DTSI with its frequency provided by each board DTS.
+> diff --git a/Documentation/devicetree/bindings/index.rst b/Documentation/devicetree/bindings/index.rst
+> index d9002a3a0abb..cc1fbdc05657 100644
+> --- a/Documentation/devicetree/bindings/index.rst
+> +++ b/Documentation/devicetree/bindings/index.rst
+> @@ -4,6 +4,7 @@
+>      :maxdepth: 1
+>   
+>      ABI
+> +   dts-coding-style
+>      writing-bindings
+>      writing-schema
+>      submitting-patches
 
-Signed-off-by: Chancel Liu <chancel.liu@nxp.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/sound/fsl,mqs.txt     |  36 ------
- .../devicetree/bindings/sound/fsl,mqs.yaml    | 113 ++++++++++++++++++
- 2 files changed, 113 insertions(+), 36 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.txt
- create mode 100644 Documentation/devicetree/bindings/sound/fsl,mqs.yaml
+Please add my:
+Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.txt b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
-deleted file mode 100644
-index d66284b8bef2..000000000000
---- a/Documentation/devicetree/bindings/sound/fsl,mqs.txt
-+++ /dev/null
-@@ -1,36 +0,0 @@
--fsl,mqs audio CODEC
--
--Required properties:
--  - compatible : Must contain one of "fsl,imx6sx-mqs", "fsl,codec-mqs"
--		"fsl,imx8qm-mqs", "fsl,imx8qxp-mqs", "fsl,imx93-mqs".
--  - clocks : A list of phandles + clock-specifiers, one for each entry in
--	     clock-names
--  - clock-names : "mclk" - must required.
--		  "core" - required if compatible is "fsl,imx8qm-mqs", it
--		           is for register access.
--  - gpr : A phandle of General Purpose Registers in IOMUX Controller.
--	  Required if compatible is "fsl,imx6sx-mqs".
--
--Required if compatible is "fsl,imx8qm-mqs":
--  - power-domains: A phandle of PM domain provider node.
--  - reg: Offset and length of the register set for the device.
--
--Example:
--
--mqs: mqs {
--	compatible = "fsl,imx6sx-mqs";
--	gpr = <&gpr>;
--	clocks = <&clks IMX6SX_CLK_SAI1>;
--	clock-names = "mclk";
--	status = "disabled";
--};
--
--mqs: mqs@59850000 {
--	compatible = "fsl,imx8qm-mqs";
--	reg = <0x59850000 0x10000>;
--	clocks = <&clk IMX8QM_AUD_MQS_IPG>,
--		 <&clk IMX8QM_AUD_MQS_HMCLK>;
--	clock-names = "core", "mclk";
--	power-domains = <&pd_mqs0>;
--	status = "disabled";
--};
-diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.yaml b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-new file mode 100644
-index 000000000000..c697b97f888e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/fsl,mqs.yaml
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/fsl,mqs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Medium Quality Sound (MQS)
-+
-+maintainers:
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
-+  - Chancel Liu <chancel.liu@nxp.com>
-+
-+description: |
-+  Medium quality sound (MQS) is used to generate medium quality audio
-+  via a standard GPIO in the pinmux, allowing the user to connect
-+  stereo speakers or headphones to a power amplifier without an
-+  additional DAC chip.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - fsl,imx6sx-mqs
-+      - fsl,codec-mqs
-+      - fsl,imx8qm-mqs
-+      - fsl,imx8qxp-mqs
-+      - fsl,imx93-mqs
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+
-+  gpr:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: The phandle to the General Purpose Register (GPR) node
-+
-+  reg:
-+    maxItems: 1
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  resets:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8qm-mqs
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Master clock
-+            - description: Clock for register access
-+        clock-names:
-+          items:
-+            - const: mclk
-+            - const: core
-+      required:
-+        - reg
-+        - power-domains
-+    else:
-+      properties:
-+        clocks:
-+          items:
-+            - description: Master clock
-+        clock-names:
-+          items:
-+            - const: mclk
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx6sx-mqs
-+              - fsl,imx93-mqs
-+    then:
-+      required:
-+        - gpr
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx6sx-clock.h>
-+    mqs0: mqs {
-+        compatible = "fsl,imx6sx-mqs";
-+        gpr = <&gpr>;
-+        clocks = <&clks IMX6SX_CLK_SAI1>;
-+        clock-names = "mclk";
-+    };
-+
-+  - |
-+    #include <dt-bindings/firmware/imx/rsrc.h>
-+    mqs1: mqs@59850000 {
-+        compatible = "fsl,imx8qm-mqs";
-+        reg = <0x59850000 0x10000>;
-+        clocks = <&mqs0_lpcg 0>, <&mqs0_lpcg 1>;
-+        clock-names = "mclk", "core";
-+        power-domains = <&pd IMX_SC_R_MQS_0>;
-+    };
--- 
-2.42.0
+I agree with everything in this document and it's a huge step in the right direction.
 
+Thanks,
+Neil
