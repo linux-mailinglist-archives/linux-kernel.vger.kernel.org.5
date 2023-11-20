@@ -2,166 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5930A7F0F9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5027F0F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232338AbjKTKAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:00:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
+        id S232305AbjKTKBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjKTJ76 (ORCPT
+        with ESMTP id S232138AbjKTKBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:59:58 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2071.outbound.protection.outlook.com [40.107.94.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CAC95;
-        Mon, 20 Nov 2023 01:59:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KSNoqBDHIQ7VRGPH3wrOZh78CCxdqKAiCa49ky/Z0OOjUhIIBrhRqtxZp0kofZnPWTIywZ0IZuGo8cmX/OCQvhpMn/uyF5p2l38MYnznc3pY1QK+ype5jk/y8y0ol1q6mXXqq85xG3gTPYMCzzJrb+r8v1+6znzCYGjNkGlA/1rfx0OkEtttv7pLB/MdCiFzTNS7TnLGB0TMWwh2HbPKJE343gXr6kfpHYYIns5fGduX08oZtsD+JXwn/KlQzj61ij1+GctlOgrTU4HPQznc/k1BK4v3IbkSMg4HFSBtdMVlZgtmTUMDdLbdP4JCSHR8WF64ByDINp8rpVHWOqPvFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AFrh/sC7ndqdMaGUxMamCl3xy+XKX/8AaSQFawSJf2c=;
- b=hZouQWpLBmO+SZcFwSsHnxZjaPkx68RIDQpPmPCG3XneW3vuEd77FFmAoNvRzjsFx/8osje9c7cCzEOj4mmEdCy2CMZI9YE61dguO/SiKq2p5Y9b5Td97458DWLHQAPOyLQMqnhfB1tkODkvnixadloVaCwCv4aE6wEbcT2D5kgSZydKHlGlGc1qPJ/si+2nd75OC3gGVfq6t8rzFjCXMkk+7w6tpMF+WiijDnuQ47Wa/QLJ38dT2MfMNXvpCzhFE2ipQFoAOaHLiiX8lqCxtW6ldJ50+rSuwWzTeM8OA1P1HYvbCJsPuvUzDU96sipMVolwL25uh9Fr5MXZGT7rHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AFrh/sC7ndqdMaGUxMamCl3xy+XKX/8AaSQFawSJf2c=;
- b=ZXDVaxP/IDbd7mUlciA5kKraxuIUlZIWqmTJ3O7irmcqdvERKi5yyqMAZKUkbcZygAkjVqCYRu76YlUoXZKMO7EeUTF+cXVXthQ+0k4hc/WmV0dzOT7kA3Gy+JcR3JxJAVvNOo5rESyd5Qg7hcyAYDMGE7ogT/6PyQwAWJhiW48=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by MW3PR12MB4523.namprd12.prod.outlook.com (2603:10b6:303:5b::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 20 Nov
- 2023 09:59:50 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7002.027; Mon, 20 Nov 2023
- 09:59:50 +0000
-Message-ID: <4ff92772-9194-42db-b8af-8024e1fdf59f@amd.com>
-Date:   Mon, 20 Nov 2023 10:59:45 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: Replace strlcpy() with strscpy()
-Content-Language: en-US
-To:     "T.J. Mercier" <tjmercier@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linaro-mm-sig@lists.linaro.org, linux-hardening@vger.kernel.org,
-        linux-media@vger.kernel.org
-References: <20231116191409.work.634-kees@kernel.org>
- <CABdmKX1oNw+quAd+ALcgGoz-PPsvy=O6YM4f2_SmP+dQBddzAA@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CABdmKX1oNw+quAd+ALcgGoz-PPsvy=O6YM4f2_SmP+dQBddzAA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0154.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a2::7) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Mon, 20 Nov 2023 05:01:04 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493718F
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:01:00 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40839807e82so9063645e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700474459; x=1701079259; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jq9JRUdKOLTnT8WnnlX5Kjk7fKbCoaZLOG+eigQvj6U=;
+        b=xxTwifqSPMxiTonOMCQLpCOJ1jbDZaRva23XZDd6JInWcvf/E0ItuI9UVFn9HWuPxi
+         vlys6XCMFuvFcwhwbP5XwrHjtkuhnOGral0CJvdKnkSxEauQA+GMtVcX3EQBtJVAJ5s7
+         DsEAw18Tev6GcRNvyg2G0cllstNN5vj0bCEMm/3Wz5EKyCOGw993gcMufG/Xb3tDhQfU
+         /BpW/H4XQMP8Ia+l49Il+VHjTcbL1Ieb8DvU/SYFntYxE8lYAJnV9M1d0X0KnwWLqCfW
+         0rWZxbYsky5N64PjTv8jsUVLtCk8OnnXuyKJ5RysFPJku6cJ3XxImC7onDRr/QGAxy2s
+         xkrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700474459; x=1701079259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jq9JRUdKOLTnT8WnnlX5Kjk7fKbCoaZLOG+eigQvj6U=;
+        b=QMgHYYO47geG3xqMzjhmj8D743fs03kpI5s2MDvFu7deP6UbikZ5sUBq9ndaVmEhET
+         Ck7+jMOblyq/RUfoi1ILbrFtFJ3DGOBx4zivd6Km7FI7Ou/MHRx632vt2eQa4CrVlLL6
+         6w1gIsjCwiG7r82STjKzafbChC0n2n9wnGAfv7NESeLRYMVnbSJQgBqil6v2FnS0iz27
+         Q3Fu3CXwV2bx73iqMoBIjHdeMtjHm2cesVYBqwgsMndUrG1RM9q/JAP3/h+5fMZmWXto
+         EUNQyPo3oJTrX/1RCA1+dL9bnCoK8CiR9Fz2ZMfRqG5eq62uaEhdo9xNBuwNvMRmYqhW
+         fJcg==
+X-Gm-Message-State: AOJu0YzuhymVxOlxvFB+YbsOCGVgRsf156v8f6kYnNavg4A+ieNFYAVH
+        +RiAHeGSzeowBLjaQub7+jYMEg==
+X-Google-Smtp-Source: AGHT+IHgsSU9xj0hKPWpxT9Vk1ZeDlmDhlQtZDVSmlX098fSTuAZhRxTckOXWCNL1Om5eh3w7fsDHA==
+X-Received: by 2002:a05:600c:348b:b0:405:2d29:1648 with SMTP id a11-20020a05600c348b00b004052d291648mr10756789wmq.19.1700474458629;
+        Mon, 20 Nov 2023 02:00:58 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id v12-20020a05600c214c00b004065daba6casm17018246wml.46.2023.11.20.02.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 02:00:58 -0800 (PST)
+Date:   Mon, 20 Nov 2023 05:00:55 -0500
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Umang Jain <umang.jain@ideasonboard.com>
+Cc:     linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>
+Subject: Re: [PATCH v2 04/15] staging: mmal-vchiq: Add support for event
+ callbacks
+Message-ID: <2a3cb5ad-4791-4d37-a6a1-785432d5dd46@suswa.mountain>
+References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+ <20231109210309.638594-5-umang.jain@ideasonboard.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|MW3PR12MB4523:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fd0e950-2d36-4e28-a66b-08dbe9af6f43
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jvhKcHeoH3d+DNh2eztHUQeuZdT67txD0KPKCwosdqLqoWYGcKuisRlvSOB1EhGcTXXRLGOLHMoCiLeF6+kXMg9q1h1nH38KuqmMPuqMLboH9RXD6KL267RDH81CLjLn4bS5tkAaeWJbSG9DkO8TxqRd60dmgjtkMMbfA5HTwBGw+aLGf7xkJol59/jhlgyk0G0NW4ElT7fOS4YEwL6Lbrl4QD/CU7wGMNnuQAUtDobBW+YlqlVhxUDnm/SI+tUbxYRoEQtkEbZcmqQyGaLZsPm518UrI7UJsqKWUAC61FS8mD/9g5mzq+MXNDp4+K7a+R0w7ClaVfnMexdsvyjLRvqk21Euz2hf2/r/Zz6d32TdUTKhYotGDcRFgScp/I46w324BldTRqMT7kDtZDkFl/ZFIIhsiO2corWHMQenD/8FPgwWA0W5RD/Wtse8JwyRavCXWBU+noaQm+Y2hEhmfIUcMocSGc8LHAifX1ujrapkf6jQABQRtBnRWroG0WIHpiM+YdSoPTggM+EhhIjESCCQHTvycZSXXSHXFlY9FZ3jn6yb8gbGM//NYZmoxcji4mZYB4Xm+3IHeHtVSBXYPXDg3Qfs/5FUEcDdcSqfyxNXkki3FrnphSxkEbnRNg7dKTblCAC05oBkSfUQAieSlZbZHIVtQxcy2vVZJSHh7MeRUzr1ORyBFQJbERxO9Ju6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(136003)(396003)(376002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(2906002)(8936002)(4326008)(8676002)(5660300002)(38100700002)(86362001)(31696002)(41300700001)(36756003)(2616005)(6512007)(26005)(6666004)(53546011)(6506007)(31686004)(83380400001)(66574015)(478600001)(66556008)(66946007)(66476007)(54906003)(110136005)(316002)(966005)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjA2ekIwZDhNemZFYVArYmNkdWVwZ3EvYWswek83eGpDYi8xUUM2MWJlWndt?=
- =?utf-8?B?bXZBV0szeU9Yb1dKbjVNTDhWRDI0SnBjT0VKMVdFRGVNUVBXU3NuaGtqM0ly?=
- =?utf-8?B?a0ZYRzZmU1ZVSmFhbmhwL2dPcmRhS3pRZktoUHAzbVZGamR6Z0crbXNUZHR6?=
- =?utf-8?B?SVQ2SWxsZ3NCQ2p3alkrOU15R3lLN24xb0hhWnpLVE9ZajdKMGE2NzlVbDRS?=
- =?utf-8?B?Nkl5WnNPeURHSFFuSkpBLzM2MU8wRUNqYUVPc1YrQ0s0eXNFdnQwanpoT1NC?=
- =?utf-8?B?NCtuM0VVMGZJb29FN2QzYkltdHhZdzM2RDdWVG1KY3ZWRGFSSG5ZdTlqcSt5?=
- =?utf-8?B?QVlMc3Axd3NKcmdwUVloa0VLanZHSkpDRldvSWR6SUNCQUtscGl5SWVCOUR2?=
- =?utf-8?B?M3RURE1PeHJjcXBnSWtNVmpaeWdzWDFETmIzQkJNMzhZcVRTbklSMHg1Y3py?=
- =?utf-8?B?L2lvbzJjZlFDK0lCcGorYzdhTHpmaVYvZUNIcWpnYkd0clBYeXJSclJDQ2Nk?=
- =?utf-8?B?Yk1xcWFrd3o4djhTQjloNHlBZUZHNHpXazlyTTdiMUtnZUp1OFhQc3p2YVRk?=
- =?utf-8?B?RDUrZTRXUXJBUXNWVlIvT2NVM09UMGJ0TWFiVEdpRmNVZG1SOExMVWpUK3ho?=
- =?utf-8?B?OTdzcmI4MklwSTJxaGIyUEhQYTU0MCtYOFJLN2JhV3kyaEMwdzIyZ3BlcnIw?=
- =?utf-8?B?aTJUOEdqU3ZEU0JJMWFDUkxjZHUrRW5tMitZVDcvdngwdnRHTHZITHl5b0s0?=
- =?utf-8?B?R2EvOVVvc0pjRTdCMXRPQWtFVktNMmdoSmNsbVRNTFlsRC9xZTd4NmxXbkl4?=
- =?utf-8?B?eVZVYURucXNnMTY2QVZGSXlyeUkrVkcyYUN0VGdjWG1kUlZwUkdqNW90UWZI?=
- =?utf-8?B?Wk1BQ2xXSjZTRVBWUTQ0bk45TmkwNTk5cUdFb3BOVUdFaDd2VlRCSWJZQk43?=
- =?utf-8?B?aGRCZGJiZXNhVWZoWDQ0MjlEbFh0S3grVkRwVG5GSFRBQ0k1NzROaGVYU1l1?=
- =?utf-8?B?UU5VZUY5YVI3RCthY0ZPL0Yxekg4YkdoaVVPbXNDNzh5YkZkZ2NMVzhkcEJY?=
- =?utf-8?B?VUFpR05wWTBYTTFjYlRpR0NsUXNRaVRHUjFrNmxRSmk0Z2lweXhOOVBwTTI0?=
- =?utf-8?B?YUF5U1VpSjBhZW1MaU9qcXY2V3dMSnN1bFRjUmkxKzhQTXNUUEdnZXRRemUv?=
- =?utf-8?B?ZDcrUE8yYkt0cmh5WFJXWS9tT3YrdmEyRE9wRkY5TEw2M1pLREVZcGJnK2FS?=
- =?utf-8?B?anRjOTZzeEhGOFVTT0VqWG0xcURNTCszZjRXK2JwTlFUcFZjR2VDM1ljbmdo?=
- =?utf-8?B?YjU0VUtZYnJCd1V5WGNRWnRHNFprTzhKQU9pN3J5dEdQYjVSK3lEVGpFdSs4?=
- =?utf-8?B?MlRSK0lzOExsVzljdEJ1K3NwQ1B2ZzJ4VEJQeTZjL2h4OTlpU3ZoZEpxcnA3?=
- =?utf-8?B?dzlPb1dMY3N2WE1hNWlaOWxuZ2NNMnQxS1dxTUZTS0VkUVJzZFNrQmh1TkRs?=
- =?utf-8?B?WlQvQ01nVFZUNE0zeFBLUmpQWlZlRG9yM3h0eUQxK1ZQY3RrM0gxNTdyYUl1?=
- =?utf-8?B?dU5PMHVvZVBqZlplaUFDSUJmWHp5QVhETUdUWlcyWEtyYzVrWTloUVVqUlhw?=
- =?utf-8?B?N3ZCZnd6MklaNlNwTlRUUE1sMERWOE1RQm11MmVabUVtVmM5QUZXYVB2eHVN?=
- =?utf-8?B?aGcwZTl5ZGp5a01jWTdPeGE0NHpRVlU1Q2RwN1ZsKzFjbk9lcDhoOVFlcHpG?=
- =?utf-8?B?OUFMaThzcVpVajFNcWFOblN2Yjk4MXRLeVhvalpRVks4aUU3UGlTNERxRXVw?=
- =?utf-8?B?dTBMbEJxdVl3ZWEzb0lNVi8rVzgzYnp1TDczR29SRW5hc2c2L1ZQRUEzSUh4?=
- =?utf-8?B?a04xL0dxYkl3KzNUUjVHbGFFK0w3WEszOW8wZ1kxU3JId3cvTGg4elBhYlls?=
- =?utf-8?B?QVhpMXFlS2IybmhqRUZRTnpMVFdTNFBvRFdDTkRWR1o4MDdudnkrZFdpYnBE?=
- =?utf-8?B?azJOQUZKNWkvM1VxanVmZWFrVmdPbEw0YWZUNDloaEV6cVBhSWxYRnhBUDA3?=
- =?utf-8?B?K1VmTWduTU41ZHhkTE16MkRKRjMyOE5zdFZxOGpwYkUzQ0I0TVBtOWNpQUJt?=
- =?utf-8?Q?2lhY=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fd0e950-2d36-4e28-a66b-08dbe9af6f43
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 09:59:50.0857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YivVTmkAJGrSyJapH69LLPoAr4pkBBTerGKFYT/cSU663UBMeAQMIDt+MwVkPc45
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4523
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231109210309.638594-5-umang.jain@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 17.11.23 um 19:50 schrieb T.J. Mercier:
-> On Thu, Nov 16, 2023 at 11:14 AM Kees Cook <keescook@chromium.org> wrote:
->> strlcpy() reads the entire source buffer first. This read may exceed
->> the destination size limit. This is both inefficient and can lead
->> to linear read overflows if a source string is not NUL-terminated[1].
->> Additionally, it returns the size of the source string, not the
->> resulting size of the destination string. In an effort to remove strlcpy()
->> completely[2], replace strlcpy() here with strscpy().
->>
->> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
->> Link: https://github.com/KSPP/linux/issues/89 [2]
->> Cc: Sumit Semwal <sumit.semwal@linaro.org>
->> Cc: "Christian König" <christian.koenig@amd.com>
->> Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
->> Cc: linux-media@vger.kernel.org
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: linaro-mm-sig@lists.linaro.org
->> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: T.J. Mercier <tjmercier@google.com>
->
-> strscpy returns -E2BIG when it truncates / force null-terminates which
-> would provide the wrong argument for dynamic_dname, but
-> dma_buf_set_name{_user} makes sure we have a null-terminated string of
-> the appropriate maximum size in dmabuf->name.
+On Thu, Nov 09, 2023 at 04:02:56PM -0500, Umang Jain wrote:
+> +static void event_to_host_cb(struct vchiq_mmal_instance *instance,
+> +			     struct mmal_msg *msg, u32 msg_len)
+> +{
+> +	int comp_idx = msg->u.event_to_host.client_component;
+> +	struct vchiq_mmal_component *component =
+> +					&instance->component[comp_idx];
+> +	struct vchiq_mmal_port *port = NULL;
+> +	struct mmal_msg_context *msg_context;
+> +	u32 port_num = msg->u.event_to_host.port_num;
+> +
+> +	if (msg->u.buffer_from_host.drvbuf.magic == MMAL_MAGIC) {
+> +		pr_err("%s: MMAL_MSG_TYPE_BUFFER_TO_HOST with bad magic\n",
+> +		       __func__);
+> +		return;
+> +	}
+> +
+> +	switch (msg->u.event_to_host.port_type) {
+> +	case MMAL_PORT_TYPE_CONTROL:
+> +		if (port_num) {
+> +			pr_err("%s: port_num of %u >= number of ports 1",
 
-Thanks for that background check, I was about to note that this might 
-not be a good idea.
+This message is confusing.  Perhaps:
 
-Linus pretty clearly stated that he doesn't want to see patches like 
-that one here, see this article as well. https://lwn.net/Articles/659214/
+	pr_err("%s: invalid port_num %u (should be zero)", ...
 
-I think the commit message gives enough reason to merge the patch, so 
-I'm going to push it to drm-misc-next. But please make sure to triple 
-check stuff like this before sending.
+> +			       __func__, port_num);
+> +			return;
+> +		}
+> +		port = &component->control;
+> +		break;
+> +	case MMAL_PORT_TYPE_INPUT:
+> +		if (port_num >= component->inputs) {
+> +			pr_err("%s: port_num of %u >= number of ports %u",
 
-Thanks,
-Christian.
+	pr_err("%s: port_num (%u) >= component->inputs (%u)",
+
+
+> +			       __func__, port_num,
+> +			       port_num >= component->inputs);
+> +			return;
+> +		}
+> +		port = &component->input[port_num];
+> +		break;
+> +	case MMAL_PORT_TYPE_OUTPUT:
+> +		if (port_num >= component->outputs) {
+> +			pr_err("%s: port_num of %u >= number of ports %u",
+
+
+	pr_err("%s: port_num (%u) >= component->outputs (%u)",
+
+> +			       __func__, port_num,
+> +			       port_num >= component->outputs);
+> +			return;
+> +		}
+> +		port = &component->output[port_num];
+> +		break;
+> +	case MMAL_PORT_TYPE_CLOCK:
+> +		if (port_num >= component->clocks) {
+> +			pr_err("%s: port_num of %u >= number of ports %u",
+> +			       __func__, port_num,
+> +			       port_num >= component->clocks);
+> +			return;
+> +		}
+> +		port = &component->clock[port_num];
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	if (!mutex_trylock(&port->event_context_mutex)) {
+> +		pr_err("dropping event 0x%x\n", msg->u.event_to_host.cmd);
+> +		return;
+> +	}
+> +	msg_context = port->event_context;
+> +
+> +	if (msg->h.status != MMAL_MSG_STATUS_SUCCESS) {
+> +		/* message reception had an error */
+> +		pr_err("%s: error %d in reply\n", __func__, msg->h.status);
+> +
+> +		msg_context->u.bulk.status = msg->h.status;
+> +	} else if (msg->u.event_to_host.length > MMAL_WORKER_EVENT_SPACE) {
+> +		/* data is not in message, queue a bulk receive */
+> +		pr_err("%s: payload not in message - bulk receive??! NOT SUPPORTED\n",
+> +		       __func__);
+> +		msg_context->u.bulk.status = -1;
+> +	} else {
+> +		memcpy(msg_context->u.bulk.buffer->buffer,
+> +		       msg->u.event_to_host.data,
+> +		       msg->u.event_to_host.length);
+> +
+> +		msg_context->u.bulk.buffer_used =
+> +		    msg->u.event_to_host.length;
+> +
+> +		msg_context->u.bulk.mmal_flags = 0;
+> +		msg_context->u.bulk.dts = MMAL_TIME_UNKNOWN;
+> +		msg_context->u.bulk.pts = MMAL_TIME_UNKNOWN;
+> +		msg_context->u.bulk.cmd = msg->u.event_to_host.cmd;
+> +
+> +		pr_debug("event component:%u port type:%d num:%d cmd:0x%x length:%d\n",
+> +			 msg->u.event_to_host.client_component,
+> +			 msg->u.event_to_host.port_type,
+> +			 msg->u.event_to_host.port_num,
+> +			 msg->u.event_to_host.cmd, msg->u.event_to_host.length);
+> +	}
+> +
+> +	schedule_work(&msg_context->u.bulk.work);
+> +}
+> +
+>  /* deals with receipt of buffer to host message */
+>  static void buffer_to_host_cb(struct vchiq_mmal_instance *instance,
+>  			      struct mmal_msg *msg, u32 msg_len)
+> @@ -1329,6 +1421,7 @@ static int port_disable(struct vchiq_mmal_instance *instance,
+>  				mmalbuf->mmal_flags = 0;
+>  				mmalbuf->dts = MMAL_TIME_UNKNOWN;
+>  				mmalbuf->pts = MMAL_TIME_UNKNOWN;
+> +				mmalbuf->cmd = 0;
+>  				port->buffer_cb(instance,
+>  						port, 0, mmalbuf);
+>  			}
+> @@ -1630,6 +1723,43 @@ int mmal_vchi_buffer_cleanup(struct mmal_buffer *buf)
+>  }
+>  EXPORT_SYMBOL_GPL(mmal_vchi_buffer_cleanup);
+>  
+> +static void init_event_context(struct vchiq_mmal_instance *instance,
+> +			       struct vchiq_mmal_port *port)
+> +{
+> +	struct mmal_msg_context *ctx = get_msg_context(instance);
+> +
+> +	mutex_init(&port->event_context_mutex);
+> +
+> +	port->event_context = ctx;
+> +	ctx->u.bulk.instance = instance;
+> +	ctx->u.bulk.port = port;
+> +	ctx->u.bulk.buffer =
+> +		kzalloc(sizeof(*ctx->u.bulk.buffer), GFP_KERNEL);
+
+This is 79 chars.  Delete the line break.
+
+> +	if (!ctx->u.bulk.buffer)
+> +		goto release_msg_context;
+> +	ctx->u.bulk.buffer->buffer = kzalloc(MMAL_WORKER_EVENT_SPACE,
+> +					     GFP_KERNEL);
+
+regards,
+dan carpenter
