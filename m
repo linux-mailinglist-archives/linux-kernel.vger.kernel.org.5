@@ -2,236 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9F27F11E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D3E7F11EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbjKTLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
+        id S232994AbjKTL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbjKTLZC (ORCPT
+        with ESMTP id S232649AbjKTL0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:25:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA5A9C;
-        Mon, 20 Nov 2023 03:24:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700479499; x=1732015499;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=uTkB+Hje4wP8pbg2bIwSYaJnbqz6BREwOV4c29lulFg=;
-  b=QbCgpi8FSHpVCXziDcRnAX7fDX5ugE5ZuVb1PkQMtZm0CnFRdpfA1jt+
-   RTG67Jq63y//9uWV6kzrdCkpXNjdsrZNoyvZ9JQ5uZlVguOr/U0kNwUXI
-   dqXQgzLAZUO8owRGlgJNfh9lDIO2clitF1bma769rosdYgmTXnY5ROTdp
-   +n691hy/EYRmOoI1T6NksiVwaAmMfyIMECpM/ZGt4JqQ0rXnPfWPT5YTU
-   L6wpyn88UPYn4WgPiGvvWdAtaiHnwNqMqei0evur1AoOibIVeLFX1MK/T
-   Lx7F976kzkMKp+h9IoTAmE2qQICZgIWHOemwZyU+h5XgowlqbVrA3vZuU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="13153144"
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="13153144"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:24:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
-   d="scan'208";a="7524304"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.180]) ([10.93.8.180])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:24:54 -0800
-Message-ID: <815d893b-63fc-4dec-8c04-6580344c7eef@linux.intel.com>
-Date:   Mon, 20 Nov 2023 19:24:51 +0800
+        Mon, 20 Nov 2023 06:26:47 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544069C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:26:43 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4084de32db5so17828295e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700479602; x=1701084402; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=81y0BUjxhYX0m+rbPWqRJ0OIC+UNbPoSMg340RJn51Q=;
+        b=xSYdx8aDPPoFP0KdeeBaXe3zk0Un0+zUveMKx0hhCYgqWEkoUC/pGNG+9Dl1wYdW6U
+         MfhfPrXd51u3HNZ6hbhAe1Ry58B/llAq7xdzeMh6/WUBj7rE8iuF40q6e/Gec5LFcrBF
+         iYy8ElWKCglHB58RmSv41UsHJr878XlC+8hDrPaUDeDEB1KzyY6Q0oZK5Jzc6/g+VwzC
+         OToXYEQrg/JsLh7Vkrvu8klXXe+p91T7vFnhx1X/cLAkhaypILFLvXpisJmQ63eX+eR6
+         QK3dP/b2CQlKH5f66KQWJsi/gmTtSA065KWPgVD78985bnw9zWu0dyOU/AKO2qR6kTop
+         Yvzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700479602; x=1701084402;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=81y0BUjxhYX0m+rbPWqRJ0OIC+UNbPoSMg340RJn51Q=;
+        b=tQVIbXjTlGwX3e4grPnNTYUvPI/vK8B3CyfbJUenhwCCuW+rsCuf1E20DbW6igJZOB
+         Spa2Mol1K9JQ0WMo9J8qggzWuzo9rNS+8FCQXarCEBXdLrSW4fr3cbkug08BBCkoc2me
+         ILpNB4cjCC9swPRWdraSvKq37fJ1cGZts5ZV0Rnp2uLctmu9HEBeKa7zT6Ru5TQKi43D
+         xXxx1K13vnq08Fu40T1ax4eXBey7vkfMAAOYmaHlYPGljJOlP7VKKYn6TaICNZzW9EPf
+         dy4331Iq7QYbwzAQETZEx9GL4O7c57DqNsfztQJUwwQfb44lMKoJJZgfl0vJCvZLfNR6
+         eE4Q==
+X-Gm-Message-State: AOJu0YwpdGHk4ymES9W2XZsrSsDpWExe3ihxdRNMNY5KnHC20ZLz4GeI
+        BO3/C711+QfWnMJU+QB6pGNl9w==
+X-Google-Smtp-Source: AGHT+IH4w9GJxepzA7mbaASTzS/ffTp4zkm3iulaLsADbJXdCuK2ssYTf1uaq15/ecJlepInY14KZQ==
+X-Received: by 2002:a05:600c:1394:b0:409:5d7d:b26d with SMTP id u20-20020a05600c139400b004095d7db26dmr4930617wmf.15.1700479601654;
+        Mon, 20 Nov 2023 03:26:41 -0800 (PST)
+Received: from [10.1.1.118] ([80.111.64.44])
+        by smtp.gmail.com with ESMTPSA id 1-20020a05600c230100b003fefb94ccc9sm12860464wmo.11.2023.11.20.03.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 03:26:40 -0800 (PST)
+Message-ID: <08e0126f8075711e7bd59ca4110c2817c905d5a9.camel@linaro.org>
+Subject: Re: [PATCH] iommu: Avoid more races around device probe
+From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
+To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
+        lpieralisi@kernel.org, quic_zhenhuah@quicinc.com, jgg@nvidia.com
+Date:   Mon, 20 Nov 2023 11:26:39 +0000
+In-Reply-To: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
+References: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.49.2-2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 09/16] KVM: TDX: Pass desired page level in err code
- for page fault handler
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <71943490df987be8a3a3e131b12750e8c6d82afc.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <71943490df987be8a3a3e131b12750e8c6d82afc.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Robin,
+
+On Wed, 2023-11-15 at 18:25 +0000, Robin Murphy wrote:
+> It turns out there are more subtle races beyond just the main part of
+> __iommu_probe_device() itself running in parallel - the
+> dev_iommu_free()
+> on the way out of an unsuccessful probe can still manage to trip up
+> concurrent accesses to a device's fwspec. Thus, extend the scope of
+> iommu_probe_device_lock() to also serialise fwspec creation and
+> initial
+> retrieval.
+>=20
+> Reported-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> Link:
+> https://lore.kernel.org/linux-iommu/e2e20e1c-6450-4ac5-9804-b0000acdf7de@=
+quicinc.com/
+> Fixes: 01657bc14a39 ("iommu: Avoid races around device probe")
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+
+Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
+Tested-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org> (using continuous
+boot test loop)
+
+I like that this is easily back-portable to 6.1, thanks for this patch
+:-)
+
+Cheers,
+Andr=C3=A9
 
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> For TDX, EPT violation can happen when TDG.MEM.PAGE.ACCEPT.
-> And TDG.MEM.PAGE.ACCEPT contains the desired accept page level of TD guest.
->
-> 1. KVM can map it with 4KB page while TD guest wants to accept 2MB page.
->
->    TD geust will get TDX_PAGE_SIZE_MISMATCH and it should try to accept
->    4KB size.
->
-> 2. KVM can map it with 2MB page while TD guest wants to accept 4KB page.
->
->    KVM needs to honor it because
->    a) there is no way to tell guest KVM maps it as 2MB size. And
->    b) guest accepts it in 4KB size since guest knows some other 4KB page
->       in the same 2MB range will be used as shared page.
->
-> For case 2, it need to pass desired page level to MMU's
-> page_fault_handler. Use bit 29:31 of kvm PF error code for this purpose.
-The shortlog is the same as patch 7/16..., I am a bit confused by the 
-structure of this patch series...
-Can this patch be squashed into 7/16?
-
->
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
 > ---
->   arch/x86/include/asm/kvm_host.h |  2 ++
->   arch/x86/kvm/vmx/common.h       |  2 +-
->   arch/x86/kvm/vmx/tdx.c          |  7 ++++++-
->   arch/x86/kvm/vmx/tdx.h          | 19 -------------------
->   arch/x86/kvm/vmx/tdx_arch.h     | 19 +++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.c          |  2 +-
->   6 files changed, 29 insertions(+), 22 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index eed36c1eedb7..c16823f3326e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -285,6 +285,8 @@ enum x86_intercept_stage;
->   				 PFERR_WRITE_MASK |		\
->   				 PFERR_PRESENT_MASK)
->   
-> +#define PFERR_LEVEL(err_code)	(((err_code) & PFERR_LEVEL_MASK) >> PFERR_LEVEL_START_BIT)
-It's defined, but never used?
-
-
+>=20
+> This is my idea of a viable fix, since it does not need a 700-line
+> diffstat to make the code do what it was already *trying* to do
+> anyway.
+> This stuff should fundamentally not be hanging off driver probe in
+> the
+> first place, so I'd rather get on with removing the underlying
+> brokenness than waste time and effort polishing it any further.
+>=20
+> =C2=A0drivers/acpi/scan.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 ++++++-
+> =C2=A0drivers/iommu/iommu.c=C2=A0=C2=A0=C2=A0 | 20 ++++++++++----------
+> =C2=A0drivers/iommu/of_iommu.c | 12 +++++++++---
+> =C2=A0include/linux/iommu.h=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
+> =C2=A04 files changed, 26 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index fa5dd71a80fa..02bb2cce423f 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -1568,17 +1568,22 @@ static const struct iommu_ops
+> *acpi_iommu_configure_id(struct device *dev,
+> =C2=A0	int err;
+> =C2=A0	const struct iommu_ops *ops;
+> =C2=A0
+> +	/* Serialise to make dev->iommu stable under our potential
+> fwspec */
+> +	mutex_lock(&iommu_probe_device_lock);
+> =C2=A0	/*
+> =C2=A0	 * If we already translated the fwspec there is nothing left
+> to do,
+> =C2=A0	 * return the iommu_ops.
+> =C2=A0	 */
+> =C2=A0	ops =3D acpi_iommu_fwspec_ops(dev);
+> -	if (ops)
+> +	if (ops) {
+> +		mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0		return ops;
+> +	}
+> =C2=A0
+> =C2=A0	err =3D iort_iommu_configure_id(dev, id_in);
+> =C2=A0	if (err && err !=3D -EPROBE_DEFER)
+> =C2=A0		err =3D viot_iommu_configure(dev);
+> +	mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0
+> =C2=A0	/*
+> =C2=A0	 * If we have reason to believe the IOMMU driver missed the
+> initial
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index f17a1113f3d6..e0c962648dde 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -485,11 +485,12 @@ static void iommu_deinit_device(struct device
+> *dev)
+> =C2=A0	dev_iommu_free(dev);
+> =C2=A0}
+> =C2=A0
+> +DEFINE_MUTEX(iommu_probe_device_lock);
 > +
->   /* apic attention bits */
->   #define KVM_APIC_CHECK_VAPIC	0
->   /*
-> diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-> index bb00433932ee..787f59c44abc 100644
-> --- a/arch/x86/kvm/vmx/common.h
-> +++ b/arch/x86/kvm/vmx/common.h
-> @@ -91,7 +91,7 @@ static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
->   	if (kvm_is_private_gpa(vcpu->kvm, gpa))
->   		error_code |= PFERR_GUEST_ENC_MASK;
->   
-> -	if (err_page_level > 0)
-> +	if (err_page_level > PG_LEVEL_NONE)
->   		error_code |= (err_page_level << PFERR_LEVEL_START_BIT) & PFERR_LEVEL_MASK;
->   
->   	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 7b81811eb404..c614ab20c191 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -2713,6 +2713,7 @@ static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
->   	struct kvm_tdx_init_mem_region region;
->   	struct kvm_vcpu *vcpu;
->   	struct page *page;
-> +	u64 error_code;
->   	int idx, ret = 0;
->   	bool added = false;
->   
-> @@ -2770,7 +2771,11 @@ static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
->   		kvm_tdx->source_pa = pfn_to_hpa(page_to_pfn(page)) |
->   				     (cmd->flags & KVM_TDX_MEASURE_MEMORY_REGION);
->   
-> -		ret = kvm_mmu_map_tdp_page(vcpu, region.gpa, TDX_SEPT_PFERR,
-> +		/* TODO: large page support. */
-> +		error_code = TDX_SEPT_PFERR;
-> +		error_code |= (PG_LEVEL_4K << PFERR_LEVEL_START_BIT) &
-> +			PFERR_LEVEL_MASK;
-> +		ret = kvm_mmu_map_tdp_page(vcpu, region.gpa, error_code,
->   					   PG_LEVEL_4K);
->   		put_page(page);
->   		if (ret)
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> index 37ee944c36a1..54c3f6b83571 100644
-> --- a/arch/x86/kvm/vmx/tdx.h
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -72,25 +72,6 @@ union tdx_exit_reason {
->   	u64 full;
->   };
->   
-> -union tdx_ext_exit_qualification {
-> -	struct {
-> -		u64 type		: 4;
-> -		u64 reserved0		: 28;
-> -		u64 req_sept_level	: 3;
-> -		u64 err_sept_level	: 3;
-> -		u64 err_sept_state	: 8;
-> -		u64 err_sept_is_leaf	: 1;
-> -		u64 reserved1		: 17;
-> -	};
-> -	u64 full;
-> -};
+> =C2=A0static int __iommu_probe_device(struct device *dev, struct list_hea=
+d
+> *group_list)
+> =C2=A0{
+> =C2=A0	const struct iommu_ops *ops =3D dev->bus->iommu_ops;
+> =C2=A0	struct iommu_group *group;
+> -	static DEFINE_MUTEX(iommu_probe_device_lock);
+> =C2=A0	struct group_device *gdev;
+> =C2=A0	int ret;
+> =C2=A0
+> @@ -502,17 +503,15 @@ static int __iommu_probe_device(struct device
+> *dev, struct list_head *group_list
+> =C2=A0	 * probably be able to use device_lock() here to minimise
+> the scope,
+> =C2=A0	 * but for now enforcing a simple global ordering is fine.
+> =C2=A0	 */
+> -	mutex_lock(&iommu_probe_device_lock);
+> +	lockdep_assert_held(&iommu_probe_device_lock);
+> =C2=A0
+> =C2=A0	/* Device is probed already if in a group */
+> -	if (dev->iommu_group) {
+> -		ret =3D 0;
+> -		goto out_unlock;
+> -	}
+> +	if (dev->iommu_group)
+> +		return 0;
+> =C2=A0
+> =C2=A0	ret =3D iommu_init_device(dev, ops);
+> =C2=A0	if (ret)
+> -		goto out_unlock;
+> +		return ret;
+> =C2=A0
+> =C2=A0	group =3D dev->iommu_group;
+> =C2=A0	gdev =3D iommu_group_alloc_device(group, dev);
+> @@ -548,7 +547,6 @@ static int __iommu_probe_device(struct device
+> *dev, struct list_head *group_list
+> =C2=A0			list_add_tail(&group->entry, group_list);
+> =C2=A0	}
+> =C2=A0	mutex_unlock(&group->mutex);
+> -	mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0
+> =C2=A0	if (dev_is_pci(dev))
+> =C2=A0		iommu_dma_set_pci_32bit_workaround(dev);
+> @@ -562,8 +560,6 @@ static int __iommu_probe_device(struct device
+> *dev, struct list_head *group_list
+> =C2=A0	iommu_deinit_device(dev);
+> =C2=A0	mutex_unlock(&group->mutex);
+> =C2=A0	iommu_group_put(group);
+> -out_unlock:
+> -	mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0
+> =C2=A0	return ret;
+> =C2=A0}
+> @@ -573,7 +569,9 @@ int iommu_probe_device(struct device *dev)
+> =C2=A0	const struct iommu_ops *ops;
+> =C2=A0	int ret;
+> =C2=A0
+> +	mutex_lock(&iommu_probe_device_lock);
+> =C2=A0	ret =3D __iommu_probe_device(dev, NULL);
+> +	mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0	if (ret)
+> =C2=A0		return ret;
+> =C2=A0
+> @@ -1822,7 +1820,9 @@ static int probe_iommu_group(struct device
+> *dev, void *data)
+> =C2=A0	struct list_head *group_list =3D data;
+> =C2=A0	int ret;
+> =C2=A0
+> +	mutex_lock(&iommu_probe_device_lock);
+> =C2=A0	ret =3D __iommu_probe_device(dev, group_list);
+> +	mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0	if (ret =3D=3D -ENODEV)
+> =C2=A0		ret =3D 0;
+> =C2=A0
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index 157b286e36bf..c25b4ae6aeee 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -112,16 +112,20 @@ const struct iommu_ops
+> *of_iommu_configure(struct device *dev,
+> =C2=A0					=C2=A0=C2=A0 const u32 *id)
+> =C2=A0{
+> =C2=A0	const struct iommu_ops *ops =3D NULL;
+> -	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+> +	struct iommu_fwspec *fwspec;
+> =C2=A0	int err =3D NO_IOMMU;
+> =C2=A0
+> =C2=A0	if (!master_np)
+> =C2=A0		return NULL;
+> =C2=A0
+> +	/* Serialise to make dev->iommu stable under our potential
+> fwspec */
+> +	mutex_lock(&iommu_probe_device_lock);
+> +	fwspec =3D dev_iommu_fwspec_get(dev);
+> =C2=A0	if (fwspec) {
+> -		if (fwspec->ops)
+> +		if (fwspec->ops) {
+> +			mutex_unlock(&iommu_probe_device_lock);
+> =C2=A0			return fwspec->ops;
 > -
-> -enum tdx_ext_exit_qualification_type {
-> -	EXT_EXIT_QUAL_NONE,
-> -	EXT_EXIT_QUAL_ACCEPT,
-> -	NUM_EXT_EXIT_QUAL,
-> -};
-> -
->   struct vcpu_tdx {
->   	struct kvm_vcpu	vcpu;
->   
-> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
-> index 9f93250d22b9..ba41fefa47ee 100644
-> --- a/arch/x86/kvm/vmx/tdx_arch.h
-> +++ b/arch/x86/kvm/vmx/tdx_arch.h
-> @@ -218,4 +218,23 @@ union tdx_sept_level_state {
->   	u64 raw;
->   };
->   
-> +union tdx_ext_exit_qualification {
-> +	struct {
-> +		u64 type		:  4;
-> +		u64 reserved0		: 28;
-> +		u64 req_sept_level	:  3;
-> +		u64 err_sept_level	:  3;
-> +		u64 err_sept_state	:  8;
-> +		u64 err_sept_is_leaf	:  1;
-> +		u64 reserved1		: 17;
-> +	};
-> +	u64 full;
-> +};
+> +		}
+> =C2=A0		/* In the deferred case, start again from scratch */
+> =C2=A0		iommu_fwspec_free(dev);
+> =C2=A0	}
+> @@ -155,6 +159,8 @@ const struct iommu_ops *of_iommu_configure(struct
+> device *dev,
+> =C2=A0		fwspec =3D dev_iommu_fwspec_get(dev);
+> =C2=A0		ops=C2=A0=C2=A0=C2=A0 =3D fwspec->ops;
+> =C2=A0	}
+> +	mutex_unlock(&iommu_probe_device_lock);
 > +
-> +enum tdx_ext_exit_qualification_type {
-> +	EXT_EXIT_QUAL_NONE = 0,
-> +	EXT_EXIT_QUAL_ACCEPT,
-Since this value should be fixed to 1, maybe better to initialize it to 
-1 for future proof?
-
-> +	NUM_EXT_EXIT_QUAL,
-> +};
-> +
->   #endif /* __KVM_X86_TDX_ARCH_H */
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index ae9ba0731521..fb3913df6a5d 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5753,7 +5753,7 @@ static int handle_ept_violation(struct kvm_vcpu *vcpu)
->   	if (unlikely(allow_smaller_maxphyaddr && kvm_vcpu_is_illegal_gpa(vcpu, gpa)))
->   		return kvm_emulate_instruction(vcpu, 0);
->   
-> -	return __vmx_handle_ept_violation(vcpu, gpa, exit_qualification, 0);
-> +	return __vmx_handle_ept_violation(vcpu, gpa, exit_qualification, PG_LEVEL_NONE);
->   }
->   
->   static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+> =C2=A0	/*
+> =C2=A0	 * If we have reason to believe the IOMMU driver missed the
+> initial
+> =C2=A0	 * probe for dev, replay it to get things in order.
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index ec289c1016f5..6291aa7b079b 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -845,6 +845,7 @@ static inline void dev_iommu_priv_set(struct
+> device *dev, void *priv)
+> =C2=A0	dev->iommu->priv =3D priv;
+> =C2=A0}
+> =C2=A0
+> +extern struct mutex iommu_probe_device_lock;
+> =C2=A0int iommu_probe_device(struct device *dev);
+> =C2=A0
+> =C2=A0int iommu_dev_enable_feature(struct device *dev, enum
+> iommu_dev_features f);
 
