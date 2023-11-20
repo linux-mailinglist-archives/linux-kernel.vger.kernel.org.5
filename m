@@ -2,93 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C7B7F13CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D34C7F1299
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 13:02:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjKTMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 07:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S232200AbjKTMCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 07:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbjKTMAP (ORCPT
+        with ESMTP id S229635AbjKTMCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 07:00:15 -0500
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4759F
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:00:09 -0800 (PST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28513ea9e15so1970593a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 04:00:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700481609; x=1701086409;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mEXXljN3rCCw93/ROnFZECXwdMgPXZVCRul5GFcysIw=;
-        b=W5nwyjvzPTvyzLtnI7ND4rfcRKuQJPM4B88bbwBGnABEZULGKU4gARTBGD7wY71wMo
-         x6t85trbDWCy8H5OxgbT+z8MRH20isNmnco5QsyHO8ln/2gfv1jCeL1Z6Fb+BHYGQPKe
-         r9Mk2cl8PVb9zkuCtvaUqZ5koocBW660DAliN6Pkm3thCqewkmn3Fs3afsOdqBu+45TQ
-         dTyNw6lU2PmOFn4In/1llnG5n/Fv5yhE+cf5Nhf4L8nVzB6QzulffHdqtfcEwsnhiMOR
-         5LKUU6MX7Husk/r9F4o8bqWfmnMTMc5cGS892+047oNfK/6a9QsBDArCA0ROhQu2uod2
-         hO/Q==
-X-Gm-Message-State: AOJu0YypHMR7iWXcd0irDcUR6S4t50UIazBmXK1tKKz8zBjkSJkLfWbK
-        ry+GsBiN6q3P5xiHFp8es5mLpBrtkfxD6WXcylkHe6Dx2Xa0PPM=
-X-Google-Smtp-Source: AGHT+IEsf/hGTEy6LrlvzRq2unbISsjgglmUiuVuQndI7vybE1Agn+kW+JQb0LblrYJccFxSLCzlGcFk/C1sFLIgHflT1h9icG5k
+        Mon, 20 Nov 2023 07:02:35 -0500
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4DB8E;
+        Mon, 20 Nov 2023 04:02:31 -0800 (PST)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AK6xSWn027130;
+        Mon, 20 Nov 2023 07:01:37 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3uer086uhk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 07:01:37 -0500 (EST)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3AKC1Zkp030882
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 20 Nov 2023 07:01:35 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Mon, 20 Nov
+ 2023 07:01:34 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Mon, 20 Nov 2023 07:01:34 -0500
+Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.183])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3AKC1IZK027545;
+        Mon, 20 Nov 2023 07:01:20 -0500
+From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hwmon@vger.kernel.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v9 1/2] dt-bindings: rtc: max31335: add max31335 bindings
+Date:   Mon, 20 Nov 2023 14:00:16 +0200
+Message-ID: <20231120120114.48657-1-antoniu.miclaus@analog.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:8982:b0:280:a5e9:3b61 with SMTP id
- v2-20020a17090a898200b00280a5e93b61mr1808029pjn.9.1700481609482; Mon, 20 Nov
- 2023 04:00:09 -0800 (PST)
-Date:   Mon, 20 Nov 2023 04:00:09 -0800
-In-Reply-To: <000000000000bf0b1f060a2d9bea@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047c963060a943a54@google.com>
-Subject: Re: [syzbot] [PATCH] Test divide err in drm
-From:   syzbot <syzbot+2e93e6fb36e6fdc56574@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: ngGhBbcf9jRsfVmMgu7mQ_lz1Z5wXuyH
+X-Proofpoint-GUID: ngGhBbcf9jRsfVmMgu7mQ_lz1Z5wXuyH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_10,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=999 spamscore=0 bulkscore=0 suspectscore=0 phishscore=0
+ clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311060001 definitions=main-2311200082
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Document the Analog Devices MAX31335 device tree bindings.
 
-***
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+---
+no changes in v9.
+ .../devicetree/bindings/rtc/adi,max31335.yaml | 70 +++++++++++++++++++
+ 1 file changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/adi,max31335.yaml
 
-Subject: [PATCH] Test divide err in drm
-Author: eadavis@qq.com
-
-please test divide err in drm
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git ac347a0655db
-
-diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-index ac9a406250c5..117ee4e41c63 100644
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -36,6 +36,7 @@
- #include <linux/list.h>
- #include <linux/list_sort.h>
- #include <linux/of.h>
-+#include <linux/overflow.h>
- 
- #include <video/of_display_timing.h>
- #include <video/of_videomode.h>
-@@ -1297,8 +1298,11 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
- 		num *= 2;
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		den *= 2;
--	if (mode->vscan > 1)
-+	if (mode->vscan > 1) {
-+		if (unlikely(check_mul_overflow(den, mode->vscan, &den)))
-+			return 0;
- 		den *= mode->vscan;
-+	}
- 
- 	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
- }
+diff --git a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+new file mode 100644
+index 000000000000..0125cf6727cc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/adi,max31335.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices MAX31335 RTC
++
++maintainers:
++  - Antoniu Miclaus <antoniu.miclaus@analog.com>
++
++description:
++  Analog Devices MAX31335 I2C RTC ±2ppm Automotive Real-Time Clock with
++  Integrated MEMS Resonator.
++
++allOf:
++  - $ref: rtc.yaml#
++
++properties:
++  compatible:
++    const: adi,max31335
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#clock-cells":
++    description:
++      RTC can be used as a clock source through its clock output pin.
++    const: 0
++
++  adi,tc-diode:
++    description:
++      Select the diode configuration for the trickle charger.
++      schottky - Schottky diode in series.
++      standard+schottky - standard diode + Schottky diode in series.
++    enum: [schottky, standard+schottky]
++
++  trickle-resistor-ohms:
++    description:
++      Selected resistor for trickle charger. Should be specified if trickle
++      charger should be enabled.
++    enum: [3000, 6000, 11000]
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        rtc@68 {
++            compatible = "adi,max31335";
++            reg = <0x68>;
++            pinctrl-0 = <&rtc_nint_pins>;
++            interrupts-extended = <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
++            aux-voltage-chargeable = <1>;
++            trickle-resistor-ohms = <6000>;
++            adi,tc-diode = "schottky";
++        };
++    };
++...
+-- 
+2.42.0
 
