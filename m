@@ -2,102 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322737F1BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121FE7F1BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbjKTRzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:55:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
+        id S231721AbjKTRz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbjKTRzC (ORCPT
+        with ESMTP id S231132AbjKTRzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:55:02 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A66694
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:54:59 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2851967b945so1119681a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700502899; x=1701107699; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ic5/m1SwSzZGkQHYWWndzWVSLqtg6CVcSVqWXKyhh3Q=;
-        b=L/qZAwth+SCD/kL/bPzTKKT0ubzJPI8x6Y9QQ/osa/V8iNWLVvJF56Y8Tl23hcs7oD
-         5R8glZkgGv+zExdEuPA4sPkqc7iOswzbw046mSIYqh5/INE/NqsgtzkDvWuY+MbyDW7G
-         qyLMKPsMxTdRH5ciI7kLRd+Lqfj9fIpTPE2PyZa62P8GpncOkYwvnuozz5DwvayUYrKK
-         l/O5gV8hu86khBo5eDuYOsw1W1eafIcCAwc2jsjJ1qcAteYHMYXR0xBkGyFZusHBf40R
-         UI+xZmzORj7mck9TAYppSQxPZ+2/FROedpvDWBTaCF1PWjMxDYIfHA+4GU5IUV2PKQkH
-         h9Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700502899; x=1701107699;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ic5/m1SwSzZGkQHYWWndzWVSLqtg6CVcSVqWXKyhh3Q=;
-        b=t6ZJmG7bFmcNyHFOO7YJJOx0CtCo8ANmBUHfamD5eNvuCK6Sh2kan1Ikkuz+r8Wm1+
-         23smz3ps5T/NJ2TNKho+/HMcCfoViRb6MuaygWc4CnVONi8HzQ7w4Hl3w/qErKh8xT/o
-         ywX4BzO4R93fmH1odcj/Q4d7d5ETr0Slk9Iptq7m2ndBRLs8+B6IYmWfGcj8NE7a3rh5
-         4R+6K9i9PfP2TY7c/xdfuGlzMJA3SFr0d5s34C1OjmvPzggyvt/tTnoEV5sZ/9arO2CD
-         RIuZUOxCy8JutTn0uOQAULKML+mKK5kuAP4OsvZKeA3/dcHn346NMC8aLEOmK7X5X4bC
-         XPIQ==
-X-Gm-Message-State: AOJu0YwsHWt/VJTXBK2Jwskas2SadKqs6whEc3CAu3zFBclrQD8UqG+S
-        +ghNMW7lPWv/0v3D5akyMBvpQdgW+oD5rsjDqkjER6MSVcs=
-X-Google-Smtp-Source: AGHT+IEJoL2QLhB/T1sZspkG2O1JG99nADjzMQxs2co49d+h5JqPd/oD4OyYei18fcpyWJynS7kBJx/lCw3fIsdN/9w=
-X-Received: by 2002:a17:90b:3908:b0:281:3a5:d2ec with SMTP id
- ob8-20020a17090b390800b0028103a5d2ecmr298941pjb.8.1700502898959; Mon, 20 Nov
- 2023 09:54:58 -0800 (PST)
+        Mon, 20 Nov 2023 12:55:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F239E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:55:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700502949;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6G9H3tkseCt3efcb3Be3wJxxKfn5uz65Box8O4djf1o=;
+        b=aSlO4EsHhSK6EmtrAzYXSdhZLe4gHXDTrbm2XEgM0JtJdzbS+U4YZySQZREM3NQw8ZkoZs
+        J2fx1vvUh+/p/szVt2svO4qo9IAwsmBt01kjNeFUByjta8v5E0jeIOHpeGR0dc5B4yBUcW
+        mA3JjHFkXOGanG0a4skZeOZFZ19F2wg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-102-tzwAAGVqNVq0GsfIxjQw7Q-1; Mon,
+ 20 Nov 2023 12:55:45 -0500
+X-MC-Unique: tzwAAGVqNVq0GsfIxjQw7Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A998A380450C;
+        Mon, 20 Nov 2023 17:55:44 +0000 (UTC)
+Received: from [10.45.225.144] (unknown [10.45.225.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D7A221C060AE;
+        Mon, 20 Nov 2023 17:55:42 +0000 (UTC)
+Message-ID: <26b17c32-c9ad-4b4c-8193-3a9757e587db@redhat.com>
+Date:   Mon, 20 Nov 2023 18:55:42 +0100
 MIME-Version: 1.0
-References: <20231120084300.4368-1-osalvador@suse.de> <40e26ded-a8c2-0e24-6fb0-d96053ae1c32@suse.cz>
-In-Reply-To: <40e26ded-a8c2-0e24-6fb0-d96053ae1c32@suse.cz>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Mon, 20 Nov 2023 18:54:48 +0100
-Message-ID: <CA+fCnZcj4=02L9qc9wvr36Tsc-a5Qcd9146qVOva9N6gK_a9HQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] page_owner: print stacks and their counter
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Michal Hocko <mhocko@suse.com>,
-        Waiman Long <longman@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next v3 3/5] i40e: Add helpers to find VSI and VEB by
+ SEID and use them
+Content-Language: en-US
+To:     Simon Horman <horms@kernel.org>
+Cc:     intel-wired-lan@lists.osuosl.org,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        mschmidt@redhat.com, netdev@vger.kernel.org
+References: <20231116152114.88515-1-ivecera@redhat.com>
+ <20231116152114.88515-4-ivecera@redhat.com>
+ <20231120114224.GB223713@kernel.org>
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <20231120114224.GB223713@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 10:07=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 11/20/23 09:42, Oscar Salvador wrote:
-> > Changes v5 -> v6:
-> >      - Rebase on top of v6.7-rc1
->
-> Hi,
->
-> I think at this point it would be better to rebase on top of
-> https://lore.kernel.org/all/cover.1698077459.git.andreyknvl@google.com/
-> which already contains the refcount field in stack_record.
-> (and maybe help with the review of that series as well? Hopefully it can =
-get
-> to mm/unstable and -next towards 6.8 soon :)
 
-Yes, please; I just mailed a v4 that is based on v6.7-rc2:
-https://lore.kernel.org/linux-mm/cover.1700502145.git.andreyknvl@google.com=
-/T/#t
+On 20. 11. 23 12:42, Simon Horman wrote:
+> On Thu, Nov 16, 2023 at 04:21:12PM +0100, Ivan Vecera wrote:
+>> Add two helpers i40e_(veb|vsi)_get_by_seid() to find corresponding
+>> VEB or VSI by their SEID value and use these helpers to replace
+>> existing open-coded loops.
+>>
+>> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+>> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+> 
+> Hi Ivan,
+> 
+> some minor feedback from my side.
+> 
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+>> index 1e9266de270b..ca8997d29c02 100644
+>> --- a/drivers/net/ethernet/intel/i40e/i40e.h
+>> +++ b/drivers/net/ethernet/intel/i40e/i40e.h
+>> @@ -1360,4 +1360,38 @@ static inline struct i40e_pf *i40e_hw_to_pf(struct i40e_hw *hw)
+>>   
+>>   struct device *i40e_hw_to_dev(struct i40e_hw *hw);
+>>   
+>> +/**
+>> + * i40e_pf_get_vsi_by_seid - find VSI by SEID
+>> + * @pf: pointer to a PF
+> 
+> nit: @seid is missing here
+> 
+>> + **/
+>> +static inline struct i40e_vsi *
+>> +i40e_pf_get_vsi_by_seid(struct i40e_pf *pf, u16 seid)
+>> +{
+>> +	struct i40e_vsi *vsi;
+>> +	int i;
+>> +
+>> +	i40e_pf_for_each_vsi(pf, i, vsi)
+>> +		if (vsi->seid == seid)
+>> +			return vsi;
+>> +
+>> +	return NULL;
+>> +}
+>> +
+>> +/**
+>> + * i40e_pf_get_veb_by_seid - find VEB by SEID
+>> + * @pf: pointer to a PF
+> 
+> Ditto
+> 
+> ...
+> 
+>> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> 
+> ...
+> 
+>> @@ -14848,23 +14831,16 @@ struct i40e_veb *i40e_veb_setup(struct i40e_pf *pf, u16 flags,
+>>   	}
+>>   
+>>   	/* make sure there is such a vsi and uplink */
+>> -	i40e_pf_for_each_vsi(pf, vsi_idx, vsi)
+>> -		if (vsi->seid == vsi_seid)
+>> -			break;
+>> -
+>> -	if (vsi_idx == pf->num_alloc_vsi && vsi_seid != 0) {
+>> -		dev_info(&pf->pdev->dev, "vsi seid %d not found\n",
+>> -			 vsi_seid);
+>> -		return NULL;
+>> +	if (vsi_seid) {
+>> +		vsi = i40e_pf_get_vsi_by_seid(pf, vsi_seid);
+>> +		if (!vsi) {
+>> +			dev_err(&pf->pdev->dev, "vsi seid %d not found\n",
+>> +				vsi_seid);
+>> +			return NULL;
+>> +		}
+>>   	}
+>> -
+>>   	if (uplink_seid && uplink_seid != pf->mac_seid) {
+>> -		i40e_pf_for_each_veb(pf, veb_idx, veb) {
+>> -			if (veb->seid == uplink_seid) {
+>> -				uplink_veb = veb;
+>> -				break;
+>> -			}
+>> -		}
+>> +		uplink_veb = i40e_pf_get_veb_by_seid(pf, uplink_seid);
+>>   		if (!uplink_veb) {
+>>   			dev_info(&pf->pdev->dev,
+>>   				 "uplink seid %d not found\n", uplink_seid);
+> 
+> The next part of this function looks like this:
+> 
+> 		if (!uplink_veb) {
+> 			dev_info(&pf->pdev->dev,
+> 				 "uplink seid %d not found\n", uplink_seid);
+> 			return NULL;
+> 		}
+> 	}
+> 	/* get veb sw struct */
+> 	veb_idx = i40e_veb_mem_alloc(pf);
+> 	if (veb_idx < 0)
+> 		goto err_alloc;
+> 	veb = pf->veb[veb_idx];
+> 	veb->flags = flags;
+> 	veb->uplink_seid = uplink_seid;
+> 	veb->veb_idx = (uplink_veb ? uplink_veb->idx : I40E_NO_VEB);
+> 	veb->enabled_tc = (enabled_tc ? enabled_tc : 0x1);
+> 
+> 	/* create the VEB in the switch */
+> 	ret = i40e_add_veb(veb, vsi);
+> 
+> Smatch complains that vsi may be used uninitialised here.
+> Which does seem possible to me if vsi_seid is 0.
 
-You should also be able to use the new
-stack_depot_save_flags(STACK_DEPOT_FLAG_GET)/stack_depot_put API to
-keep only the relevant stack traces.
+Yes, the support for floating VEBs is and WAS broken prior this patch 
+and it is fixed by the following patch.
 
-Thank you!
+Prior this patch... Let's vsi_seid == 0:
+
+	/* make sure there is such a vsi and uplink */
+	i40e_pf_for_each_vsi(pf, vsi_idx, vsi)
+		if (vsi->seid == vsi_seid)
+			break;
+-> here vsi_idx == pf->num_alloc_vsi because there cannot be VSI with 
+SEID == 0... and VSI points after the pf->vsi[] array.
+
+	if (vsi_idx == pf->num_alloc_vsi && vsi_seid != 0) {
+		dev_info(&pf->pdev->dev, "vsi seid %d not found\n",
+			 vsi_seid);
+		return NULL;
+	}
+
+This condition is not met, although vsi_idx == pf->num_alloc_vsi but 
+vsi_seid == 0 so the rest of code ended by:
+
+	ret = i40e_add_veb(veb, vsi);
+
+and vsi pointer points to invalid area (item after the last one from 
+pf->vsi).
+
+As I mentioned the broken floating VEB functionality (where vsi_seid == 
+0 and uplink_seid == 0) is fixed by the following patch.
+
+Thanks,
+Ivan
+
