@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419397F0F24
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1697F0F25
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbjKTJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
+        id S232343AbjKTJdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjKTJdp (ORCPT
+        with ESMTP id S232258AbjKTJdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:33:45 -0500
-Received: from smtp-42af.mail.infomaniak.ch (smtp-42af.mail.infomaniak.ch [84.16.66.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1868A7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:33:40 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4SYj4M0kwtzMq5wV;
-        Mon, 20 Nov 2023 09:33:39 +0000 (UTC)
-Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4SYj4L2f9jzMpnxv;
-        Mon, 20 Nov 2023 10:33:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bigler.io;
-        s=20200409; t=1700472819;
-        bh=anqWQNS0I72M2owQefb7VXUDy0DSr6CStGbfRFslnqE=;
-        h=Date:Subject:From:Reply-To:To:Cc:References:In-Reply-To:From;
-        b=x1DDRYbqVMTjxKUpVzo+weILZPXiHwYTqw8U0gBq55EV5oQT9XmKgOgAzSf8cfreo
-         LY+eiAdRA6OB+v6fkqR/3O8WC2LRlirrimXzmmAaCU40cktwv0XmDxRreKfIhVygF1
-         P3d5m7/FS0FHFRTFiQec48yHIF874rRT/f4FuJ00=
-Message-ID: <6322fd4c1967a518310140c35ab34f65@mail.infomaniak.com>
-Date:   Mon, 20 Nov 2023 10:33:38 +0100
-Subject: Re: spi: imx: Increase imx51 ecspi burst length fails on imx6dl and
- imx8mm
-From:   linux@bigler.io
-Reply-To: linux@bigler.io
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Stefan Moring <stefan.moring@technolution.nl>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
+        Mon, 20 Nov 2023 04:33:50 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD56E98
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:33:47 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5c1f17f0198so3887728a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:33:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700472827; x=1701077627;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lGapxB8OZnsaby1fpok/LrYkCyEoPx5NPA4MAwCS2Ic=;
+        b=p0fzrZp/3ZGL1R2TBwHMJIXiz9m1zMOFqVocq2H2S/8OByxEGMXn0a2sEuipbDMR/3
+         Z2YTmIBSzOUUqW2ICsrKi2UNVM7TdPjqjfpqBe72CNo6L/ErK3LEz/pEoEnwWza92HBv
+         KatI574NNFjnE7YMvwXV/UjnU9iULDwU2iyRJfOsomfHDKLz6Kfy/MIlBzlqLiVBp9hD
+         oyoTMDIrploXaijw0fDc3Flx/ohdsVOWcLerzrhU8Q0TCXeuflf9HfoQEfRZ3Orb3P4a
+         iRnI0h4368pMyM8lDicmDtIipiFdwaYviDsiPFsHDFcuK05G90YwT9xrdvk0r6e3b0HN
+         2bpw==
+X-Gm-Message-State: AOJu0YyLiYJoi+DoWIz7rBMIpUWcD5A1QuVdkAnEPZbhillduzwD0ZKw
+        Nbh/mcKoFFaPqXa+mU8z5PR+g/AHF593Lzn0vxwge5x7Dxn7zk8=
+X-Google-Smtp-Source: AGHT+IFlAqakaypFfCulYQu+yZHeBFDQj3GxEH71IUylAvB1sN9q6wzlV7+zRZQzlMFEySdxDx/EvGJILWGTZwTNT6IZrteFT4za
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-WS-User-Origin: eyJpdiI6IloxTld3ZTFSQ2tZeW9ma2tTa0VyMGc9PSIsInZhbHVlIjoiQW1YbkhvSUxyV2V1TWtRUEVHTDJDdz09IiwibWFjIjoiZDg4NmE0M2NmMGU5YTBhMTM3ZmNkMDc3ODVlOWYzODlhN2VhZDdiZjRjZjdkNDM1M2M3ZGMwMmI4MmE5OWViNSIsInRhZyI6IiJ9
-X-WS-User-Mbox: eyJpdiI6Ik94a0poaGI1YjgzM05YS3hHV1cxUVE9PSIsInZhbHVlIjoibGd6aXFtQXp6U25ZNGlJL2kwOGxqUT09IiwibWFjIjoiN2ZlN2RkMDA3NDU5ODg0MzczYjNlOGIwMzk0YzlhNDE3M2M0MTBhMDViOGU2Y2VhODdjMWM3NWVlZWY0ZDFjZiIsInRhZyI6IiJ9
-X-WS-Location: eJxzKUpMKykGAAfpAmU-
-X-Mailer: Infomaniak Workspace (1.3.596)
-References: <8a415902c751cdbb4b20ce76569216ed@mail.infomaniak.com>
- <e4f12422-1c47-4877-88b3-dfa9917331a2@leemhuis.info>
- <f4439fd1-7c2d-4a96-9116-1dbe04fceac0@leemhuis.info>
- <CAB3BuKA+qOY+UhWR-9Ov3qsz3wQr8q8n38MrEMf3FMCthr04yA@mail.gmail.com>
- <2fcdd99eee9ee4f5d34fa1abab2f51bb@mail.infomaniak.com>
- <CAB3BuKARgJhaVNFsP1FQ+2yLe18QU9H17fHKjc-Sf3izE+MZ1Q@mail.gmail.com>
- <86566391db9c5044f1a082bc8ec697a2@mail.infomaniak.com>
- <ZVsdNGyVrTJ/Kv3n@francesco-nb.int.toradex.com>
-In-Reply-To: <ZVsdNGyVrTJ/Kv3n@francesco-nb.int.toradex.com>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:c40d:b0:1cc:449a:7f4d with SMTP id
+ k13-20020a170902c40d00b001cc449a7f4dmr2354331plk.12.1700472827353; Mon, 20
+ Nov 2023 01:33:47 -0800 (PST)
+Date:   Mon, 20 Nov 2023 01:33:47 -0800
+In-Reply-To: <00000000000075472b06007df4fb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d32294060a922e91@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [nfc?] memory leak in skb_copy (2)
+From:   syzbot <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francesco
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-I run the test and it worked fine. The transmitted data matches with the re=
-cived data, no diff.
+***
 
-BUT!!! on the MDIO it is completly different !!!
-When I request to send 4kB Data I measure on the line 16384Byte.
+Subject: Re: [syzbot] [nfc?] memory leak in skb_copy (2)
+Author: phind.uet@gmail.com
 
-The data is again   3Dummy Bytes followed by the databyte.
-So the error symetic on send and recive
 
-Regards Stefan
+#syz test: 
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
 
-Am 2023-11-20T09:47:48.000+01:00 hat Francesco Dolcini <francesco@dolcini.i=
-t> geschrieben:
->  On Mon, Nov 20, 2023 at 09:27:10AM +0100, linux@bigler.io wrote:
->=20
-> >    Load the spi-dma (imx-sdma 302c0000.dma-controller: loaded firmware
-> >  4.5), run the spi_imx and the spidev as kenelmodule.
-> > =20
-> >  I run the code on a Toradex Verdin Development Board and use the
-> >  imx8mm-verdin-nonwifi-dev.dts
-> > =20
-> >  To add the spidev I patched imx8mm-verdin.dtsi
-> >  diff --git a/arch/arm64/boot/dts/freescale/imx8mm-verdin.dtsi b/arch/a=
-rm64/boot/dts/freescale/imx8mm-verdin.dtsi
-> >  index 6f0811587142..262500940adc 100644
-> >  --- a/arch/arm64/boot/dts/freescale/imx8mm-verdin.dtsi
-> >  +++ b/arch/arm64/boot/dts/freescale/imx8mm-verdin.dtsi
-> >  @@ -209,6 +209,15 @@ &ecspi2 {
-> >          cs-gpios =3D <&gpio5 13 GPIO_ACTIVE_LOW>;
-> >          pinctrl-names =3D "default";
-> >          pinctrl-0 =3D <&pinctrl_ecspi2>;
-> >  +
-> >  +       spidev@0{
-> >  +               compatible =3D "micron,spi-authenta";
-> >  +               reg =3D <0>;
-> >  +               #address-cells =3D <1>;
-> >  +               #size-cells =3D <0>;
-> >  +               spi-max-frequency =3D <20000000>;
-> >  +               status =3D "okay";
-> >  +       };
-> >   };
-> > =20
-> >  as a spidev test program I used=20
-> >  https://raw.githubusercontent.com/raspberrypi/linux/rpi-3.10.y/Documen=
-tation/spi/spidev_test.c
-> =20
-> Would you mind doing the following tests looping the SPI interface MISO/M=
-OSI?
->=20
-> ```
-> cd /tmp
->=20
-> dd if=3D/dev/urandom of=3D4k-spi-test-data.bin bs=3D1 count=3D4k
-> spidev_test -D "$device" -s 4000000 -i 4k-spi-test-data.bin -o 4k-spi-tes=
-t-result.bin
->=20
-> dd if=3D/dev/urandom of=3D16bytes-spi-test-data.bin bs=3D1 count=3D16
-> spidev_test -D "$device" -s 16000 -i 16bytes-spi-test-data.bin -o 16bytes=
--spi-test-result.bin
-> ```
->=20
-> with "$device" being your actual spidev device?
->=20
-> Those tests are passing on 6.7.0-rc2 for me.
->=20
-Francesco
+diff --git a/drivers/nfc/virtual_ncidev.c b/drivers/nfc/virtual_ncidev.c
+index b027be0b0b6f..ac8226db54e2 100644
+--- a/drivers/nfc/virtual_ncidev.c
++++ b/drivers/nfc/virtual_ncidev.c
+@@ -20,26 +20,31 @@
+  				 NFC_PROTO_ISO14443_MASK | \
+  				 NFC_PROTO_ISO14443_B_MASK | \
+  				 NFC_PROTO_ISO15693_MASK)
++#define NCIDEV_RUNNING 0
+
+  struct virtual_nci_dev {
+  	struct nci_dev *ndev;
+  	struct mutex mtx;
+  	struct sk_buff *send_buff;
+  	struct wait_queue_head wq;
++	bool running;
+  };
+
+  static int virtual_nci_open(struct nci_dev *ndev)
+  {
++	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
++
++	vdev->running = true;
+  	return 0;
+  }
+
+  static int virtual_nci_close(struct nci_dev *ndev)
+  {
+  	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+-
+  	mutex_lock(&vdev->mtx);
+  	kfree_skb(vdev->send_buff);
+  	vdev->send_buff = NULL;
++	vdev->running = false;
+  	mutex_unlock(&vdev->mtx);
+
+  	return 0;
+@@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, 
+struct sk_buff *skb)
+  	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
+
+  	mutex_lock(&vdev->mtx);
+-	if (vdev->send_buff) {
++	if (vdev->send_buff || !vdev->running) {
+  		mutex_unlock(&vdev->mtx);
+  		kfree_skb(skb);
+  		return -1;
