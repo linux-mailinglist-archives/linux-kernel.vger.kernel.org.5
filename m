@@ -2,125 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97917F172B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE147F172D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233716AbjKTPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S233697AbjKTPXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbjKTPXF (ORCPT
+        with ESMTP id S233726AbjKTPXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:23:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC093D8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:23:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700493781;
+        Mon, 20 Nov 2023 10:23:16 -0500
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C10CB
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:23:11 -0800 (PST)
+Message-ID: <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700493788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZxbmrPGylWswXo8aLH4U/JNxik/OiDDURPN0WtCCdCc=;
-        b=XX/j28qAnJX+ci4pJo96vLQPGJ91NVKOnnK9kKcwE3ZrLntj7fOKv7sGGfHwUlzLUkWEQz
-        kkL5gVsL7LxXpLtollOIfsrwOdFU7XfFxFHL6h0jOzBgDLBkZSKiNVrXuvPPgLB7QPJSf8
-        ANgKJi2eXVXf/OWo3U/NZFF0dp+3Raw=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-338-Z2Hd4SFIPImN50TpJyJAFA-1; Mon, 20 Nov 2023 10:22:59 -0500
-X-MC-Unique: Z2Hd4SFIPImN50TpJyJAFA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-41cb7c104ddso51226121cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:22:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700493776; x=1701098576;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZxbmrPGylWswXo8aLH4U/JNxik/OiDDURPN0WtCCdCc=;
-        b=M5cF6abcvhG4mL1NCixiFFBaIkvvRvF2O5dIdcmZMjbi/1zyxP2rzzBUmYsU0ABcvW
-         W8WSRTIDgHIz3F6NJY5WE5SvjfPKETJrR1iuEiLoCs/Wzkw0tByteRJaO6iCKO67sWvL
-         RNoKsC/v4+mjHa+Pg629u3RdyWs2q6XPrj/UkWwaCI0ZT/vXU2J1ZmIRsbIhpEfhn9uU
-         tIutcgh7b2R6rV2n1/9oP7wL8HsYFwZAR4ASSo6WxiagO22PiPrmRLUN67Chk2lm1yBX
-         uWqAcbasXUB0IJAsgvLs4+bHWZ4IjHcAhRQeQ1FwZ2O0b0vnKzBxgMDuRmLDnl8jASju
-         HJRw==
-X-Gm-Message-State: AOJu0YzHLHSGKwMu+8FuCqEPHCR8BQWVrINKzJ+e65Atq8xW2CyZAG8n
-        vPwxCR3osoIolq6cUneWD3hyXBL7pDV6B5n/DMTaNJMend2pOj8N+Iv9T5BBJWN3QslysRq+oUT
-        JF2J2ZPjvJGyUd243RcSX+tP8
-X-Received: by 2002:ac8:5b84:0:b0:41e:1cd3:2ae9 with SMTP id a4-20020ac85b84000000b0041e1cd32ae9mr8941106qta.64.1700493776787;
-        Mon, 20 Nov 2023 07:22:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFywBJRydhvu1dXvc1nv2EDgslOpX/xHYvPFOD5M1Uz1taB2jzWvRwaRdsYzsY10DnCgAtv1A==
-X-Received: by 2002:ac8:5b84:0:b0:41e:1cd3:2ae9 with SMTP id a4-20020ac85b84000000b0041e1cd32ae9mr8941086qta.64.1700493776436;
-        Mon, 20 Nov 2023 07:22:56 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id jr44-20020a05622a802c00b0041519614354sm2730324qtb.7.2023.11.20.07.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 07:22:56 -0800 (PST)
-Date:   Mon, 20 Nov 2023 09:22:54 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] USB: dwc3: qcom: fix resource leaks on probe deferral
-Message-ID: <74cswe5tivcctmnty3gfavzsxdvjz5m4rktyj5auzwvrndninm@dah4h2fdj3zv>
-References: <20231117173650.21161-1-johan+linaro@kernel.org>
- <041f239f-7b40-4681-8c6c-2268f9c2c684@linaro.org>
+        bh=IiHEeRIW4PiYmJMxEUYlbJ9aO6ly6BInuCc931k4EN8=;
+        b=sK17G8fl/Gww8T6qBYhVT6o7jYn3w9ZawQPkHKsYWKEdHz88crw/aEDIcWtpoQWWVHrN5v
+        86XXo4wLHDLhzzwYn/fw8QJZBxHIAF4kGbFT3TJPbyvA3o48+lIQP3wjR0t6CdGDkUYYrX
+        8/2PnvIbOrZ/SGqMJCMIWk3CxWEWPME=
+Date:   Mon, 20 Nov 2023 07:22:59 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <041f239f-7b40-4681-8c6c-2268f9c2c684@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Replaces the usage of
+ CHECK calls for ASSERTs in bpf_tcp_ca
+Content-Language: en-GB
+To:     Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org
+Cc:     andrii@kernel.org, andrii.nakryiko@gmail.com, mykolal@fb.com,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 12:47:30AM +0100, Konrad Dybcio wrote:
-> On 17.11.2023 18:36, Johan Hovold wrote:
-> > When reviewing the recently submitted series which reworks the dwc3 qcom
-> > glue implementation [1], I noticed that the driver's tear down handling
-> > is currently broken, something which can lead to memory leaks and
-> > potentially use-after-free issues on probe deferral and on driver
-> > unbind.
-> > 
-> > Let's get this sorted before reworking driver.
-> > 
-> > Note that the last patch has only been compile tested as I don't have
-> > access to a sdm845 device.
-> > 
-> > Johan
-> I'll sound like a broken record, but:
-> 
-> is there anyone in the world that is actively benefiting from this failed
-> experiment of using the ACPI tables that were shipped with these SoCs?
-> 
-> There are so so so many shortcomings associated with it due to how Windows
-> drivers on these platforms know waaaay too much and largely use ACPI to
-> "bind driver x" and I simply think it doesn't make sense to continue
-> carrying this code forward given little use and no testing.
-> 
-> Konrad
-> 
 
-For what it is worth, I have agreed with your opinion on this every time
-I've read it. I am not the target audience of the question, but I'll at
-least give my personal (interpreted: uneducated? undesired?) opinion
-that the ACPI support in here adds little value and extra burden.
+On 11/18/23 1:42 PM, Yuran Pereira wrote:
+> bpf_tcp_ca uses the `CHECK` calls even though the use of
+> ASSERT_ series of macros is preferred in the bpf selftests.
+>
+> This patch replaces all `CHECK` calls for equivalent `ASSERT_`
+> macro calls.
+>
+> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+> ---
+>   .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 50 +++++++++----------
+>   1 file changed, 23 insertions(+), 27 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> index 4aabeaa525d4..6d610b66ec38 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> @@ -20,15 +20,14 @@
+>   
+>   static const unsigned int total_bytes = 10 * 1024 * 1024;
+>   static int expected_stg = 0xeB9F;
+> -static int stop, duration;
+> +static int stop;
+>   
+> [...]
+> @@ -108,26 +107,27 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+>   	sa6.sin6_family = AF_INET6;
+>   	sa6.sin6_addr = in6addr_loopback;
+>   	err = bind(lfd, (struct sockaddr *)&sa6, addrlen);
+> -	if (CHECK(err == -1, "bind", "errno:%d\n", errno))
+> +	if (!ASSERT_NEQ(err, -1, "bind"))
+>   		goto done;
+> +
+>   	err = getsockname(lfd, (struct sockaddr *)&sa6, &addrlen);
+> -	if (CHECK(err == -1, "getsockname", "errno:%d\n", errno))
+> +	if (!ASSERT_NEQ(err, -1, "getsockname"))
+>   		goto done;
+> +
+>   	err = listen(lfd, 1);
+> -	if (CHECK(err == -1, "listen", "errno:%d\n", errno))
+> +	if (!ASSERT_NEQ(err, -1, "listen"))
+>   		goto done;
+>   
+>   	if (sk_stg_map) {
+>   		err = bpf_map_update_elem(bpf_map__fd(sk_stg_map), &fd,
+>   					  &expected_stg, BPF_NOEXIST);
+> -		if (CHECK(err, "bpf_map_update_elem(sk_stg_map)",
+> -			  "err:%d errno:%d\n", err, errno))
+> +		if (!ASSERT_OK(err, "bpf_map_update_elem(sk_stg_map)"))
+>   			goto done;
+>   	}
+>   
+>   	/* connect to server */
+>   	err = connect(fd, (struct sockaddr *)&sa6, addrlen);
+> -	if (CHECK(err == -1, "connect", "errno:%d\n", errno))
+> +	if (!ASSERT_NEQ(err, -1, "connect"))
+>   		goto done;
+>   
+>   	if (sk_stg_map) {
+> @@ -135,14 +135,13 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+>   
+>   		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
+>   					  &tmp_stg);
+> -		if (CHECK(!err || errno != ENOENT,
+> -			  "bpf_map_lookup_elem(sk_stg_map)",
+> -			  "err:%d errno:%d\n", err, errno))
+> +		if (!ASSERT_NEQ(err, 0, "bpf_map_lookup_elem(sk_stg_map)") ||
 
-Of course that topic is a bit independent of this series, but I'd be
-curious if a patchset removing the support would be welcomed or not by
-maintainers, so I'm stirring the pot by replying here :)
+!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)")
+might be simpler than !ASSERT_NEQ(..).
 
-Thanks,
-Andrew
+> +				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
+>   			goto done;
+>   	}
+>   
+>   	err = pthread_create(&srv_thread, NULL, server, (void *)(long)lfd);
+> -	if (CHECK(err != 0, "pthread_create", "err:%d errno:%d\n", err, errno))
+> +	if (!ASSERT_OK(err, "pthread_create"))
+>   		goto done;
+>   
+>   	/* recv total_bytes */
+> @@ -156,13 +155,12 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+>   		bytes += nr_recv;
+>   	}
+>   
+> -	CHECK(bytes != total_bytes, "recv", "%zd != %u nr_recv:%zd errno:%d\n",
+> -	      bytes, total_bytes, nr_recv, errno);
+> +	ASSERT_EQ(bytes, total_bytes, "recv");
+>   
+>   	WRITE_ONCE(stop, 1);
+> -	pthread_join(srv_thread, &thread_ret);
+> -	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
+> -	      PTR_ERR(thread_ret));
+> +	err = pthread_join(srv_thread, &thread_ret);
+> +	ASSERT_OK(err, "pthread_join");
+
+The above is not equivalent to the original code.
+The original didn't check pthread_join() return as it
+is very very unlikely to fail. And check 'thread_ret'
+is still needed.
+
+> +
+>   done:
+>   	close(lfd);
+>   	close(fd);
+> @@ -174,7 +172,7 @@ static void test_cubic(void)
+>   	struct bpf_link *link;
+>   
+>   	cubic_skel = bpf_cubic__open_and_load();
+> -	if (CHECK(!cubic_skel, "bpf_cubic__open_and_load", "failed\n"))
+> +	if (!ASSERT_OK_PTR(cubic_skel, "bpf_cubic__open_and_load"))
+>   		return;
+
+[...]
 
