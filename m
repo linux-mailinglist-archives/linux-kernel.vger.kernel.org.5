@@ -2,129 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE637F1988
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BD27F198B
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 18:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbjKTRPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 12:15:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S232265AbjKTRP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 12:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230169AbjKTRPe (ORCPT
+        with ESMTP id S230129AbjKTRPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 12:15:34 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40211CF
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 09:15:29 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 47EF040E01E3;
-        Mon, 20 Nov 2023 17:15:25 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id xaSCVYJ0f5QL; Mon, 20 Nov 2023 17:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700500522; bh=fdWOmTLSf43i6ShLExgvRSvrIeZq2RHpM/h9jmmkNZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=daxxyimAXN57KctBefPhYIwyK4snLXUgmDClLS+QVbmGWRaAzUfsvIsJv1wE0Dkpw
-         mw64wujRNjuqM997QZBwY9CswEzpzif3IYD+OOVqamQVHv8bDpXpFY+twI7IbdjNJr
-         jZfzoioSKsa8VwcOZ28X5Ro8jS9itjs+A7Kk4YwM8P0243lB0dZ5Xz0Acvc3o2HeYv
-         pz5QiCLBjgCgfxcDnvLnnkldWB7sIHbtan+7PsuSzNsm1PgbrVWot5Zo1sD7EaqWcq
-         D5+JNiTsvh3sfP/qjniAhsQTaI6rxSZU5L2W2VZNSFllsdsb3O0CPwoqFVOhb+fdtO
-         9B+xaXtX3/9ObIPrnFgiIDitUGonYXujWom4mEYGu7jO0pJVEGOaVSj9kKXLzWOZDR
-         hIaPN3/74iTqOUljBHGyWfQinRpOERXZFp7C+vwMYkCpNNNHw4BYCddap7XdeZvpXN
-         yhOKwmSUqzGpytN96CNox0E1VTJRGSyKFDASTmNtBDO5p6dtnVkO2RmihtxxmRQFni
-         IUxmp2/3FjmWcV9i8eCeH544YdZ54SJjBQ3VyhnLQRzXIvC5X1tSj7nNtwuhGBol4Y
-         Z0AyMOR1uRIXY4X/1/tMA/7/kFpk8S0JZXocpA1Hq/R9wEiBfktPHt7GK2OFNn1lb0
-         mA2nfZHTxlYV/d3g1pHpiJ0U=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3B2C340E0197;
-        Mon, 20 Nov 2023 17:15:12 +0000 (UTC)
-Date:   Mon, 20 Nov 2023 18:15:07 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/mm/encrypt: Use %a asm operand modifier to obtain
- %rip-relative address
-Message-ID: <20231120171507.GGZVuUG9aSLyF52jHd@fat_crate.local>
-References: <20231120153419.3045-1-ubizjak@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 20 Nov 2023 12:15:53 -0500
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2030.outbound.protection.outlook.com [40.92.74.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3A3BA;
+        Mon, 20 Nov 2023 09:15:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MsSR2NTNCV/Oe6mCIZ4ekmNNFZugMU7RsONWeUu5RMkys4gbHre1xriaM99avAWM9dwSYv14FgUrwf7qxE7GzgSfeWjp6YFbcFBcndZ2Q/lOcrtLAasd0H3QiMvNB9kzsW69VjS0ZomMoEIntU/rCAWC5XSy9K96q+FYpPeIaEx7cX1BqA79rBxWcI6Q42uXfLfDfoKM50B1zN20lZM/32TKSWl/+1dXSFytp69Dtdgndzbx9AVUrZiMYLTuRrPHUiOVuWAD1zdmdmBoDmu30s4LFErwVF07wHkjCFQlC+ngjUzj4BtTl/Ee3F1EHMRT9Sfemt/4QI9wQXFuVCa9Yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HhbUSE9kB4lE2hk8DkGlJiGcef9zD/kSbgW/BVB8yso=;
+ b=EngIDG/1CWtuMjMK1yVKIhZkbza9uBtc5ejf3ZecvROmH3YHejMQ3vJ666NPGBl6PXvL55xbw2e5/3AwWc503Ohaoc6ayOnPkq9wjFGg61vwwsEJckmCtz81+0Zujcre7Uyd3efCOuicYzVyf9PhAuJbRzlZGU5TyRFT0oQGyHM1m9Rei4xWF8VL1mePET/bicr5a6Fo1DUWVVNMTgs0zwerILJ1KDvWd+cEPC33wROnrUGiR/VBnzXkc6vo2505DthsaTzTdmvWxbiD+YLv9CWqYDJcXh+hTs56qFEE+SJggdMgaILlI9eBsaMeehObkiBKJasFRFefVv+fwIB0Ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HhbUSE9kB4lE2hk8DkGlJiGcef9zD/kSbgW/BVB8yso=;
+ b=lJkZgICwsZlfloSNKp8ZHU6E8288QA2xgwXN5FPUEbJnytQ1IuMLJ9u8u2Il5spmbkHL/1S4fIuZcZYyAuvn2/+akzCB7BzebTJu6bYi8xkYQ9oHjPrVzVPlJCm9CPFQ023DUIk9Dngbxs9iCO1vHtr+nOIgWjQ2vj9lwLbPXYZrPnQMhjv2hqB7g57HHKw5/bhxcaeyEEyUg8jpeJrCn/ozh8dgW1V6o/O6X0Zg/EMLWUH0xs+cDsS2cLgRfQyRqFEqqc3rbmGc3P7IXlTt8ncYFgph150UvzZdX1EbF6vNN3a2d1Zb+yfu6k0+dK8EN38E6Q8rKP3Mj+ExyZDhng==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by GVXPR10MB5816.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:6a::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
+ 2023 17:15:46 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
+ 17:15:46 +0000
+Date:   Mon, 20 Nov 2023 22:45:27 +0530
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     Yonghong Song <yonghong.song@linux.dev>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, andrii.nakryiko@gmail.com,
+        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Replaces the usage of
+ CHECK calls for ASSERTs in bpf_tcp_ca
+Message-ID: <GV1PR10MB6563596BC3E2B01F664010C7E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120153419.3045-1-ubizjak@gmail.com>
+In-Reply-To: <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
+X-TMN:  [25HpmqNQsxr73/HO/Utg9TGpT30FKA7y]
+X-ClientProxiedBy: JN2P275CA0033.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::21)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231120171527.GA388225@nmj-network>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|GVXPR10MB5816:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1df99e4d-e42f-4315-370b-08dbe9ec555e
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KgnNmONZ2M3DTu+BRL2tz1deS3FK8WAMerR7o491RU9zCFL0Zg2x30iynZA6UrmYrQg2wPhcuQlhLn7k4EwGFUknN0MnDx1ChfYBvitYMPAVmHozbEwjXizlywQctmHJVzt/04nfF37btvUI2nsB1U8V+gF/qwXah0xqNRWDRhO14Cu91FYg6WbKSAdcFW0CCv8CKbxrZMEtxehR+Q3+QVAUFq2lJD/LBzIChQSSQy8Gy6QxCB4LPhtYhOWTIrsJsI3S92GSUc8CJeh0IgagfOjNQ71dR28G21YJQ+GDkSaWjViynXUYnctszJZnx0VLj+nGhrdVnHhfdtd4B0t99E+OTG0kug4Yp4GGmV6BaF0VIfuuIEJ0BNCXHS0vvNlWgLG063T53ZT2GWPxeFHW1tbX4F1jeIh4OeyAOir30CaVe6O+x7O7nIn6SkYnrPq0bhZyW7MuwNBXT1iBz90PV/DP7yb2dGz/EBOrkVLKnxlUdfjPrdvTdd1nCxvVlkeGKv0z2rBKt3lAbPlnGswISXnUnqGWqitwpISEg0/2s4Y=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rxytGJiBvNUMIQaaF7TOgKMogBqADD3miG79IylrbRl022nQsaaM68oxKcv8?=
+ =?us-ascii?Q?Fz+kae5r5ZwpOm1qVVqgqF2Z60Xt2cNlOLpYoAxdeU4juwubPv6UNpXqMqL4?=
+ =?us-ascii?Q?yHTBso84It4Tom0e5CNoFXcKQ/PJpfFFT3xzVRYTsqrVt78LAK2A3PxYNK33?=
+ =?us-ascii?Q?AwBQgQyB/MMs6EB/X+n42s0v21v0dl8SCMWjg6FRSOnW6lAHYwu2s1RVtFPu?=
+ =?us-ascii?Q?l7eticGejThqDAYXi91HKIJNZ21Z6cNsjJu2X1K68ZEyxL6vL0YDHsePQ725?=
+ =?us-ascii?Q?9e4G0LemnbttjVU4pjnhIq6PoC5hhnZJbRgFf8As3Z8QP7e2I/mqSFPKWDwR?=
+ =?us-ascii?Q?uEXo6L0p/E/dCg0viFxDAXbpB+MKi2w+W8t9WGOdBtNvTZSn7zio1s/4RgVL?=
+ =?us-ascii?Q?6BLObCc/QC1yuwSawR4vNM4jeK39bBO7tcvmWpACq/HTFQCTuYYGN2mDs84g?=
+ =?us-ascii?Q?QYEJ9114EMp3K2u5kD30I6CxIfzWXZtR5kob9Z24FISX+AT5FdMg9j/esEBf?=
+ =?us-ascii?Q?5wY7PSqjXBcRV1Rz2j1y+e7qUBiX0fkMxKq03gvQWs7reVBboROj16DX3RkM?=
+ =?us-ascii?Q?yenAU/pUcljzc4+asegTRis+rkvrcA4vX9NZBFUyR0WxGgso+WmDQyMg3C9J?=
+ =?us-ascii?Q?J9ju4QDAyILtwhh4A4TS8gk0XXnu0X2LO+zyh+rcIoiaPGWB4Sp1L8K9hX6C?=
+ =?us-ascii?Q?MUurtPIf6QALIxhUx0WAuk2DjuoD/tboZFARj+7NRn3AYbEILZ9efXqfyBjU?=
+ =?us-ascii?Q?0XfwJFC70GWmpGA06O3i85RsA20Jk1kZJPANPpOWA8Z8xYQrlH/lD2DkKgVw?=
+ =?us-ascii?Q?TZztifl4xHV1fMAVhJO3O5SFmKe7+96+4IJRU+IdN6FEC26byHn88lT2q7kr?=
+ =?us-ascii?Q?OawlZrNZsNZa5ECK05V9QRZRLFJJc1yNZp758gns1MQnWTjBmZQye1CSi6Bf?=
+ =?us-ascii?Q?lhpliov5vP3ZoSUyyutKcBKlb9+J4WrMXQYTS2KAMJ6hvrxRZR7Szl6AvMdf?=
+ =?us-ascii?Q?DSQ+Q6d66P45/QP6iHjXyfmrQW/P617sgg6VyFNKPPyHi3iY9pxJ+4I/dU3j?=
+ =?us-ascii?Q?Ik2UcVaGM3IU1ewfbBOjVfUa9Sv6mq/NCukPmEiSP+N+mL9XQIJLx7Up23k9?=
+ =?us-ascii?Q?BpG4IK5WdMbJMTLfVKY/oPD5SJBR4f/VifB2uY4MfSredYm0R05Pw2RbjMJk?=
+ =?us-ascii?Q?8UfORJZk/QeqvnnNKEwpqYLm6TQGu7eu2g/CB8Dvy5tx4J9VT9QcgRhDPyE?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1df99e4d-e42f-4315-370b-08dbe9ec555e
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2023 17:15:46.0520
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB5816
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 04:33:50PM +0100, Uros Bizjak wrote:
-> The "a" asm operand modifier substitutes a memory reference, with the
-> actual operand treated as address.  For x86_64, when a symbol is
-> provided, the "a" modifier emits "sym(%rip)" instead of "sym".
+Hello Yonghong,
+On Mon, Nov 20, 2023 at 07:22:59AM -0800, Yonghong Song wrote:
+> > -		if (CHECK(!err || errno != ENOENT,
+> > -			  "bpf_map_lookup_elem(sk_stg_map)",
+> > -			  "err:%d errno:%d\n", err, errno))
+> > +		if (!ASSERT_NEQ(err, 0, "bpf_map_lookup_elem(sk_stg_map)") ||
 > 
-> Clang allows only "i" and "r" operand constraints with an "a" modifier,
-> so the patch normalizes the modifier/constraint pair to "a"/"i"
-
-s/the patch normalizes/normalize/
-
-> which is consistent between both compilers.
+> !ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)")
+> might be simpler than !ASSERT_NEQ(..).
 > 
-> No functional change intended.
+Sure, that makes sense. I'll change it in v3.
+> > -	pthread_join(srv_thread, &thread_ret);
+> > -	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
+> > -	      PTR_ERR(thread_ret));
+> > +	err = pthread_join(srv_thread, &thread_ret);
+> > +	ASSERT_OK(err, "pthread_join");
 > 
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> ---
->  arch/x86/mm/mem_encrypt_identity.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
+> The above is not equivalent to the original code.
+> The original didn't check pthread_join() return as it
+> is very very unlikely to fail. And check 'thread_ret'
+> is still needed.
 > 
-> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-> index d73aeb16417f..6a351fdd1b39 100644
-> --- a/arch/x86/mm/mem_encrypt_identity.c
-> +++ b/arch/x86/mm/mem_encrypt_identity.c
-> @@ -346,9 +346,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
->  	 * We're running identity mapped, so we must obtain the address to the
->  	 * SME encryption workarea using rip-relative addressing.
->  	 */
-> -	asm ("lea sme_workarea(%%rip), %0"
-> -	     : "=r" (workarea_start)
-> -	     : "p" (sme_workarea));
-> +	asm ("lea %a1, %0" : "=r" (workarea_start) : "i" (sme_workarea));
+Yes that is true, but the v1 [1] broke the tests because the
+ASSERT_OK_PTR(thread_ret, "pthread_join") kept failing, even
+though all the asserts within the `server()` function itself
+passed.
 
-Yeah, I saw that particular subthread today.
+Also, isn't asserting `thread_ret` technically checking the
+`server()` function instead of `pthread_join`? So should we
+have two asserts here? One for `server` and one for `pthread_join`
+or is it not necessary?
+i.e:
+```
+ASSERT_OK_PTR(thread_ret, "server");
+ASSERT_OK(err, "pthread_join");
+```
 
-Are you sure this "a" modifier DTRT with all gcc version we support?
+Upon taking a second look, I now think that the reason why
+`ASSERT_OK_PTR(thread_ret, "pthread_join");` failed in v1 might
+have been because it calls `libbpf_get_error` which returns
+`-errno` when the pointer is `NULL`.
 
-I.e., from 5.1 onwards...
+Since `server`'s return value is not a bpf address, which
+`ASSERT_OK_PTR` expects it to be, do you that think we should
+explicitly set `errno = 0` prior to returning NULL on server?
+That way that assert would pass even when the pointer is NULL
+(which is the case when `server` returns successfuly).
 
-Just making sure.
+[1] - https://lore.kernel.org/lkml/GV1PR10MB6563A0BE91080E6E8EC2651DE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM/
 
-Thx.
+As always, thank you for your feedback.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yuran Pereira
