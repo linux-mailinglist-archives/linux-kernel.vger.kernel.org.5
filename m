@@ -2,186 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E617F10E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FAA7F10E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 11:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbjKTKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 05:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S232775AbjKTKzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 05:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232632AbjKTKy0 (ORCPT
+        with ESMTP id S232738AbjKTKzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 05:54:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57E2FB
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:54:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700477660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2zUAf0kRwyhFacdVDNduqaFmW+J2nhNnMJ6K916lSRE=;
-        b=JF4Fp2nnhphCjILUdJ6p0Q5YtN11BxnU1nzbUUcvyCLhCgyk1IQqPz9YDQ2fpgVcS57Q1Q
-        xkhmG7U+YiPmcLhUxSjfT3+XCQahkaY8mVPYyeR2g9tjJUMbuifUg4V4d60LKGTgv6jy29
-        OnfVC9PyYiUTBON91VQL4c2ORJ0rpD8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665-RsP80sxNPQyihahIi-OLDw-1; Mon, 20 Nov 2023 05:54:19 -0500
-X-MC-Unique: RsP80sxNPQyihahIi-OLDw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9fa63374410so136617466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:54:18 -0800 (PST)
+        Mon, 20 Nov 2023 05:55:06 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E9B9C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:01 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so12103325e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 02:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700477700; x=1701082500; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S7yigsWpqo5NnEMD9rs1RxI3LcZvc/Yo1+fclqVDtR0=;
+        b=YSN0UEJ90UZ6lQ8BkbRBAVugn9rUh79lyEiB3i1DGJymQ0kj4s+B3vYuId6XXXdHVm
+         VPtUk0JM6arXTIbqRFPbHkwVpxr0sDB2RQ4zxZQCt4xspdZUuOclI60nQHqiWgIz1kj0
+         ZZpFXFf6QiQmQufnPn8ESTN6FUnucugG3SY+1j6Y8M46QtfSKqB7Rnn3+DbLCppsVOIp
+         HxOtLd81B3ZINczp7Zcm7SOOR8vIkXm199Tdg5kwRXC37akdPBg3OE4LDdUrYkWMO65A
+         x6ERv4E1gzUNjfE/IUwddbahtucnf6tQ1hZe3ofmG+hKCPahOMuDtyV4wPJQZW0J1Z93
+         2qUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700477658; x=1701082458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2zUAf0kRwyhFacdVDNduqaFmW+J2nhNnMJ6K916lSRE=;
-        b=KJDQM1PnLuyPFyzfkwosHhlUXN3qSEAodjvk+YSgYCT0w7dmpi7hoMnMAE/FzbUPeZ
-         RRpkxgZKnHW5dpnLqoHeYdIKX4cwOq/wVjO7cEJKwjuMUgPImgpnGTuiZMFDGR4Yy8Uf
-         t0KhdNsB/NBcioH1GBxU5Z6rJpyhS4yp/2pO2oNmTxsIhs28gUjmNqbX3YRplAlg3pYb
-         zApTjMC8yZMia9BJTXQHAC3DVBPk/8466fByhAlOHYDFmINh9apSZ3vFkKh8wCvOYHuV
-         LU2Whgy0hXUOhZkb670O/eYKdq933zZslP0WGk7SBAG34JN5itHMcrXR4xvZ25rkCO7E
-         pYJg==
-X-Gm-Message-State: AOJu0YwxEG1Z2kj0C+iczVr/G5qOYj6ovFFSekGs/F+UYlXq0i6p3wB5
-        cmtvCa8x+jgQeYxfJg+SpStz7LPWxM+8Yfo+VGc7/rw5CtmSrwtVek9q9VRrFBs6YDqwK3/dSFF
-        sSan7nWR2sZvhhV3fnc/xRsXG
-X-Received: by 2002:a17:906:32c7:b0:9e7:3af8:1fd0 with SMTP id k7-20020a17090632c700b009e73af81fd0mr5202197ejk.76.1700477658017;
-        Mon, 20 Nov 2023 02:54:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEgoytvF8lwwp8rKx8884Oj65m/vmtmib1MiNPAMSTReWskVDTF1HFC8OJm9t7uAUXBc0cvnQ==
-X-Received: by 2002:a17:906:32c7:b0:9e7:3af8:1fd0 with SMTP id k7-20020a17090632c700b009e73af81fd0mr5202175ejk.76.1700477657734;
-        Mon, 20 Nov 2023 02:54:17 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id jx27-20020a170906ca5b00b009fda627abd9sm1262032ejb.79.2023.11.20.02.54.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 02:54:16 -0800 (PST)
-Message-ID: <76d4f18e-a349-4337-a301-ffebb8f1c5e8@redhat.com>
-Date:   Mon, 20 Nov 2023 11:54:16 +0100
+        d=1e100.net; s=20230601; t=1700477700; x=1701082500;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S7yigsWpqo5NnEMD9rs1RxI3LcZvc/Yo1+fclqVDtR0=;
+        b=gj5n3UmuOvqn7ZlYS0gii4Z7Z2qVWqSIf9TGy36m1e19fEg87tLd+m5wQI5iMfa2Ns
+         g8cmVAT/L68yFQZ9uv6ZNy7Z9w2VrQsyVmLBazzSLlLzaYMZH0JvdayJr+S2zmMKSsiv
+         R3V0ahGpvx2oA8oWgDyAqP0/zA/3/aDLWufIFzPrVnPv8c1AZvvcfE21ZE1S/49NOFKK
+         MR8qB55erO4MVuNwTtFipVvB5vs1mZZ2SvZ1f+RMPRptI41alkXxvPrwAotJbFWO1uje
+         pdVHSm9pl91nzfuK4KGYfl+at74Vpxw6AJ+ix11BKWuyg5ScU8MTNkh4hibpbJz/01c9
+         RwJQ==
+X-Gm-Message-State: AOJu0YwZyGKhlVCWNLz+Ubk1ak7zfDT+6toy5OhoRJlJdJe9pJJIwGzm
+        K3BW49wdxYxSXMXyMD+8DwFjQg==
+X-Google-Smtp-Source: AGHT+IETDFg3+zhHdqRS0r+kKYhNfXKDAirf7sGch5NG5N8rbdEccC65Ia69iOIzuyn3kUAe49YETw==
+X-Received: by 2002:a05:600c:4e92:b0:405:4daa:6e3d with SMTP id f18-20020a05600c4e9200b004054daa6e3dmr5790050wmq.39.1700477700200;
+        Mon, 20 Nov 2023 02:55:00 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id fb11-20020a05600c520b00b004076f522058sm17346948wmb.0.2023.11.20.02.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 02:54:59 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Mon, 20 Nov 2023 05:54:56 -0500
+To:     oe-kbuild@lists.linux.dev, Min Li <lnimi@hotmail.com>,
+        richardcochran@gmail.com, lee@kernel.org
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v2 1/1] ptp: clockmatrix: support 32-bit address
+ space
+Message-ID: <03e74acd-bb49-472a-b200-e84e11ae2865@suswa.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 0/9] Enable Wifi RFI interference mitigation feature
- support
-Content-Language: en-US, nl
-To:     "Ma, Jun" <majun@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
-        amd-gfx@lists.freedesktop.org, lenb@kernel.org,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, Lijo.Lazar@amd.com,
-        mario.limonciello@amd.com
-Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20231017025358.1773598-1-Jun.Ma2@amd.com>
- <5f85eb72-3f34-4006-85ca-2a2181113008@amd.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <5f85eb72-3f34-4006-85ca-2a2181113008@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR03MB6932A4AAD4F612B45E9F6856A0AFA@MW5PR03MB6932.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Min,
 
-On 10/19/23 08:17, Ma, Jun wrote:
-> ping...
-> Any other comments?
+kernel test robot noticed the following build warnings:
 
-Patches 1/9 and 2/9 look reasonable, once the questions about
-use of the _DSM vs directly calling the WBRF ACPI method are
-resolved I can merge patches 1/9 and 2/9 and create an immutable
-feature branch based on 6.7-rc1 + these 2 patches.
+url:    https://github.com/intel-lab-lkp/linux/commits/Min-Li/ptp-clockmatrix-support-32-bit-address-space/20231110-044554
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/MW5PR03MB6932A4AAD4F612B45E9F6856A0AFA%40MW5PR03MB6932.namprd03.prod.outlook.com
+patch subject: [PATCH net-next v2 1/1] ptp: clockmatrix: support 32-bit address space
+config: i386-randconfig-141-20231111 (https://download.01.org/0day-ci/archive/20231111/202311110542.BjfgVNxz-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231111/202311110542.BjfgVNxz-lkp@intel.com/reproduce)
 
-I'll then also send a pull-request to the wifi /resp amdgpu
-maintainers from this branch.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311110542.BjfgVNxz-lkp@intel.com/
 
-I see no acks / reviews from the wifi folks yet,
-so once that immutable feature branch is ready the first
-thing to do is try to get the wifi folks to review + merge WBRF
-support.
+New smatch warnings:
+drivers/ptp/ptp_clockmatrix.c:1257 idtcm_load_firmware() warn: '(537972560)' 537972560 can't fit into 65535 'scratch'
 
-Note I plan to not actually merge the feature branch
-into for-next until the wifi folks are happy with the code.
+vim +1257 drivers/ptp/ptp_clockmatrix.c
 
-This way if changes are necessary I can do a v2 feature branch
-and the wifi folks can merge that instead.
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1254  static int idtcm_load_firmware(struct idtcm *idtcm,
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1255  			       struct device *dev)
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1256  {
+794c3dffacc166 Min Li        2021-09-13 @1257  	u16 scratch = IDTCM_FW_REG(idtcm->fw_ver, V520, SCRATCH);
 
-Regards,
+-#define SCRATCH_V520                      0xcf4c
++#define SCRATCH_V520                      0x2010cf4c
 
-Hans
+This doesn't fit into a u16 any more.  I'm not sure this a bug, but it's
+a bit ugly.
 
+7ea5fda2b1325e Min Li        2020-07-28  1258  	char fname[128] = FW_FILENAME;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1259  	const struct firmware *fw;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1260  	struct idtcm_fwrc *rec;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1261  	u32 regaddr;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1262  	int err;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1263  	s32 len;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1264  	u8 val;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1265  	u8 loaddr;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1266  
+7ea5fda2b1325e Min Li        2020-07-28  1267  	if (firmware) /* module parameter */
+7ea5fda2b1325e Min Li        2020-07-28  1268  		snprintf(fname, sizeof(fname), "%s", firmware);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1269  
+930dfa56315517 Min Li        2021-09-24  1270  	dev_info(idtcm->dev, "requesting firmware '%s'", fname);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1271  
+7ea5fda2b1325e Min Li        2020-07-28  1272  	err = request_firmware(&fw, fname, dev);
+7ea5fda2b1325e Min Li        2020-07-28  1273  	if (err) {
+930dfa56315517 Min Li        2021-09-24  1274  		dev_err(idtcm->dev,
+1c49d3e947783b Vincent Cheng 2021-02-17  1275  			"Failed at line %d in %s!", __LINE__, __func__);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1276  		return err;
+7ea5fda2b1325e Min Li        2020-07-28  1277  	}
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1278  
+930dfa56315517 Min Li        2021-09-24  1279  	dev_dbg(idtcm->dev, "firmware size %zu bytes", fw->size);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1280  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1281  	rec = (struct idtcm_fwrc *) fw->data;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1282  
+794c3dffacc166 Min Li        2021-09-13  1283  	if (contains_full_configuration(idtcm, fw))
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1284  		idtcm_state_machine_reset(idtcm);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1285  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1286  	for (len = fw->size; len > 0; len -= sizeof(*rec)) {
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1287  		if (rec->reserved) {
+930dfa56315517 Min Li        2021-09-24  1288  			dev_err(idtcm->dev,
+1c49d3e947783b Vincent Cheng 2021-02-17  1289  				"bad firmware, reserved field non-zero");
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1290  			err = -EINVAL;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1291  		} else {
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1292  			regaddr = rec->hiaddr << 8;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1293  			regaddr |= rec->loaddr;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1294  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1295  			val = rec->value;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1296  			loaddr = rec->loaddr;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1297  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1298  			rec++;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1299  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1300  			err = check_and_set_masks(idtcm, regaddr, val);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1301  		}
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1302  
+7ea5fda2b1325e Min Li        2020-07-28  1303  		if (err != -EINVAL) {
+7ea5fda2b1325e Min Li        2020-07-28  1304  			err = 0;
+7ea5fda2b1325e Min Li        2020-07-28  1305  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1306  			/* Top (status registers) and bottom are read-only */
+9fe9b9792d7236 Min Li        2023-11-09  1307  			if (regaddr < SCSR_ADDR(GPIO_USER_CONTROL) || regaddr >= scratch)
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1308  				continue;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1309  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1310  			/* Page size 128, last 4 bytes of page skipped */
+77fdb168a3e2a6 Vincent Cheng 2021-02-17  1311  			if ((loaddr > 0x7b && loaddr <= 0x7f) || loaddr > 0xfb)
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1312  				continue;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1313  
+9fe9b9792d7236 Min Li        2023-11-09  1314  			err = idtcm_write(idtcm, SCSR_BASE, regaddr, &val, sizeof(val));
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1315  		}
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1316  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1317  		if (err)
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1318  			goto out;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1319  	}
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1320  
+7ea5fda2b1325e Min Li        2020-07-28  1321  	display_pll_and_masks(idtcm);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1322  
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1323  out:
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1324  	release_firmware(fw);
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1325  	return err;
+3a6ba7dc779935 Vincent Cheng 2019-10-31  1326  }
 
-
-
-> On 10/17/2023 10:53 AM, Ma Jun wrote:
->> Due to electrical and mechanical constraints in certain platform designs there
->> may be likely interference of relatively high-powered harmonics of the (G-)DDR
->> memory clocks with local radio module frequency bands used by Wifi 6/6e/7. To
->> mitigate possible RFI interference we introuduced WBRF(Wifi Band RFI mitigation Feature).
->> Producers can advertise the frequencies in use and consumers can use this information
->> to avoid using these frequencies for sensitive features.
->>
->> The whole patch set is based on Linux 6.5.0. With some brief introductions
->> as below:
->> Patch1:      Document about WBRF
->> Patch2:      Core functionality setup for WBRF feature support
->> Patch3 - 4:  Bring WBRF support to wifi subsystem.
->> Patch5 - 9:  Bring WBRF support to AMD graphics driver.
->>
->> Evan Quan (7):
->>   cfg80211: expose nl80211_chan_width_to_mhz for wide sharing
->>   wifi: mac80211: Add support for WBRF features
->>   drm/amd/pm: update driver_if and ppsmc headers for coming wbrf feature
->>   drm/amd/pm: setup the framework to support Wifi RFI mitigation feature
->>   drm/amd/pm: add flood detection for wbrf events
->>   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.0
->>   drm/amd/pm: enable Wifi RFI mitigation feature support for SMU13.0.7
->>
->> Ma Jun (2):
->>   Documentation/driver-api: Add document about WBRF mechanism
->>   platform/x86/amd: Add support for AMD ACPI based Wifi band RFI
->>     mitigation feature
->>
->>  Documentation/driver-api/wbrf.rst             |  71 +++
->>  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   2 +
->>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  17 +
->>  drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c     | 214 +++++++++
->>  drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h |  33 ++
->>  .../inc/pmfw_if/smu13_driver_if_v13_0_0.h     |  14 +-
->>  .../inc/pmfw_if/smu13_driver_if_v13_0_7.h     |  14 +-
->>  .../pm/swsmu/inc/pmfw_if/smu_v13_0_0_ppsmc.h  |   3 +-
->>  .../pm/swsmu/inc/pmfw_if/smu_v13_0_7_ppsmc.h  |   3 +-
->>  drivers/gpu/drm/amd/pm/swsmu/inc/smu_types.h  |   3 +-
->>  drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h  |   3 +
->>  .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c    |   9 +
->>  .../drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c  |  60 +++
->>  .../drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c  |  59 +++
->>  drivers/gpu/drm/amd/pm/swsmu/smu_internal.h   |   3 +
->>  drivers/platform/x86/amd/Kconfig              |  15 +
->>  drivers/platform/x86/amd/Makefile             |   1 +
->>  drivers/platform/x86/amd/wbrf.c               | 422 ++++++++++++++++++
->>  include/linux/acpi_amd_wbrf.h                 | 101 +++++
->>  include/linux/ieee80211.h                     |   1 +
->>  include/net/cfg80211.h                        |   8 +
->>  net/mac80211/Makefile                         |   2 +
->>  net/mac80211/chan.c                           |   9 +
->>  net/mac80211/ieee80211_i.h                    |   9 +
->>  net/mac80211/main.c                           |   2 +
->>  net/mac80211/wbrf.c                           | 105 +++++
->>  net/wireless/chan.c                           |   3 +-
->>  27 files changed, 1180 insertions(+), 6 deletions(-)
->>  create mode 100644 Documentation/driver-api/wbrf.rst
->>  create mode 100644 drivers/platform/x86/amd/wbrf.c
->>  create mode 100644 include/linux/acpi_amd_wbrf.h
->>  create mode 100644 net/mac80211/wbrf.c
->>
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
