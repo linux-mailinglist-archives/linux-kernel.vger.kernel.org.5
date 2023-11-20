@@ -2,491 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A79477F18CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758E47F18CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbjKTQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S231839AbjKTQmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232330AbjKTQjo (ORCPT
+        with ESMTP id S230169AbjKTQmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:39:44 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCB5C3;
-        Mon, 20 Nov 2023 08:39:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=H1Bc+gVBGTTOST3FIRNIQ7FRPVrlrW9Zg0DfbbqXoz0=; b=ZWcsmwTWvg3v1pT//ksRuDeqLn
-        tbH8HNixvrX5XiemZ/VzWFCfW+cKgTJlfhyUlxf9oSJhJg95komXAEtzqvEioG9jqV0ktchR9duZb
-        40CkRO5umABl9X4ile/LV7wLWeTwGkCP5YXxETqQzvs5M+kGQp85CNmV52B1+Wo35b6I=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52556 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r57JA-00005F-Dp; Mon, 20 Nov 2023 11:39:37 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        hugo@hugovil.com, lech.perczak@camlingroup.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Mon, 20 Nov 2023 11:39:31 -0500
-Message-Id: <20231120163931.2872431-2-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231120163931.2872431-1-hugo@hugovil.com>
-References: <20231120163931.2872431-1-hugo@hugovil.com>
+        Mon, 20 Nov 2023 11:42:00 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5308393
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:41:57 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso627871566b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:41:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700498516; x=1701103316; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mGOVi/4CZ8DBlDqRG21wKopM69ZgoDrSXufXqOAMELk=;
+        b=sWoiz1U7T+vCav4Rpw6A90Ok/dtP6Lgje/TIzU4FHagOH2aWbf6XcJnoafGXTCgVyF
+         Flte7FavU3K6Zn1qy+e0Klz1KSnewkGFh/fg4mp8QSZEMgiGuikFgAtpeXCjtW96toOi
+         +rH8uQt+DSslzaQkaJFOYoWeyE6l2VxyCM7+j1co6NEFFQ33IK64fPMq1Fad+0Fff/3K
+         zsrPCDvPr55v7E1lntPdsk4SHoDaok8MyOevzVvmn6OJNKH8JKJ19JsP1WHtlQT668fg
+         +Fx2s16qeUsCMAzkbFgqQ4KJUUE5WfBBDZLdiN/iSeZ5bn55hV5n64mItb+zwonCFqD7
+         TwsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700498516; x=1701103316;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGOVi/4CZ8DBlDqRG21wKopM69ZgoDrSXufXqOAMELk=;
+        b=IjQnnfI13ghu8ktpM3C+ohx7D8aV/QlKdo7v2m90qNpqrEmRpqWWjUSgF/5EfuIPye
+         D7jv7Fh/6SqeTRzMDtG3tyvPBAbXkwLeXNb/JaHcxP3Wn5lqe6wTP/UmdfMuPSleFNnQ
+         7aSmSGv/5ZMy+TzvMnZy3Wb0HibCnc/eVk4YctniXQ03ayc0Khc2cHxWHC6ib71PGHtv
+         tKlhuZoMDRL2xiWytS039QhDgGF0L0KVzCkvUalHBqDK3qkCnpQWpb2V0R1b72mjKVsG
+         dlFtuASkAlcoW36QNsGS2CXtPefe3XpEQKD3zXIc6nEKNTv0fymymTHgRfNcfGjCyAKv
+         rZnA==
+X-Gm-Message-State: AOJu0YxT6ndtx4E+dvdBGCW3GazjgIFeWE8pZwjjcLi9tfpxtKla16Lj
+        oNL+2RkNXUfghDKAX9UgkJ9Djg==
+X-Google-Smtp-Source: AGHT+IE9ngt7IhcLEp2WfgIRoJcX2MEM3sDmQuXVDWW6FP4uWRXsZbgSUYIWtl61u3zpcKg/n+t3+g==
+X-Received: by 2002:a17:907:3a07:b0:9fe:324b:f70a with SMTP id fb7-20020a1709073a0700b009fe324bf70amr2782911ejc.63.1700498515796;
+        Mon, 20 Nov 2023 08:41:55 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id y11-20020a1709063a8b00b009fbdacf9363sm2247973ejd.21.2023.11.20.08.41.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 08:41:55 -0800 (PST)
+Message-ID: <2d8c7cc2-2c6c-4539-abf3-81700f27b1a7@linaro.org>
+Date:   Mon, 20 Nov 2023 17:41:52 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: arm: Document reboot mode magic
+Content-Language: en-US
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+References: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
+ <20231117-arm-psci-system_reset2-vendor-reboots-v1-2-03c4612153e2@quicinc.com>
+ <eb2d0992-4d9a-4f59-8e79-da277f39d2d9@linaro.org>
+ <51785de6-2a69-482d-b686-c3694f87e6b7@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <51785de6-2a69-482d-b686-c3694f87e6b7@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_CSS autolearn=ham autolearn_force=no
-        version=3.4.6
-Subject: [PATCH v2 1/1] serial: sc16is7xx: improve regmap debugfs by using one regmap per port
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 20/11/2023 16:45, Elliot Berman wrote:
+> 
+> 
+> On 11/20/2023 2:56 AM, Krzysztof Kozlowski wrote:
+>> On 17/11/2023 22:18, Elliot Berman wrote:
+>>> -
+>>> -additionalProperties: false
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            const: arm,psci-1.0
+>>> +    then:
+>>> +      $ref: /schemas/power/reset/reboot-mode.yaml#
+>>> +      properties:
+>>> +        # "mode-normal" is just SYSTEM_RESET
+>>> +        mode-normal: false
+>>> +      patternProperties:
+>>> +        "^mode-.*$":
+>>> +          maxItems: 2
+>>
+>> And if you tested the patch, it would tell you it can be max 1 item.
+> 
+> make dt_binding_check DT_SCHEMA_FILES=arm/psci.yaml
 
-With this current driver regmap implementation, it is hard to make sense
-of the register addresses displayed using the regmap debugfs interface,
-because they do not correspond to the actual register addresses documented
-in the datasheet. For example, register 1 is displayed as registers 04 thru
-07:
+psci.example.dtb: psci: mode-edl: [[0]] is too short
+psci.example.dtb: psci: mode-bootloader: [[1, 2]] is too short
 
-$ cat /sys/kernel/debug/regmap/spi0.0/registers
-  04: 10 -> Port 0, register offset 1
-  05: 10 -> Port 1, register offset 1
-  06: 00 -> Port 2, register offset 1 -> invalid
-  07: 00 -> port 3, register offset 1 -> invalid
-  ...
+psci.example.dtb: psci: Unevaluated properties are not allowed
+('mode-bootloader', 'mode-edl' were unexpected)
 
-The reason is that bits 0 and 1 of the register address correspond to the
-channel (port) bits, so the register address itself starts at bit 2, and we
-must 'mentally' shift each register address by 2 bits to get its real
-address/offset.
+> 
+> passes for me. Rob explained why it's working (and why it shouldn't), 
+> so I'll fix it according to his recommendation in v2.
 
-Also, only channels 0 and 1 are supported by the chip, so channel mask
-combinations of 10b and 11b are invalid, and the display of these
-registers is useless.
+Then you wanted uint32-matrix.
 
-This patch adds a separate regmap configuration for each port, similar to
-what is done in the max310x driver, so that register addresses displayed
-match the register addresses in the chip datasheet. Also, each port now has
-its own debugfs entry.
 
-Example with new regmap implementation:
-
-$ cat /sys/kernel/debug/regmap/spi0.0-port0/registers
-1: 10
-2: 01
-3: 00
-...
-
-$ cat /sys/kernel/debug/regmap/spi0.0-port1/registers
-1: 10
-2: 01
-3: 00
-
-As an added bonus, this also simplifies some operations (read/write/modify)
-because it is no longer necessary to manually shift register addresses.
-
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/tty/serial/sc16is7xx.c | 145 ++++++++++++++++++---------------
- 1 file changed, 81 insertions(+), 64 deletions(-)
-
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index db2bb1c0d36c..b23d3308c92f 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -300,8 +300,8 @@
- 
- 
- /* Misc definitions */
-+#define SC16IS7XX_SPI_READ_BIT		BIT(7)
- #define SC16IS7XX_FIFO_SIZE		(64)
--#define SC16IS7XX_REG_SHIFT		2
- #define SC16IS7XX_GPIOS_PER_BANK	4
- 
- struct sc16is7xx_devtype {
-@@ -322,7 +322,7 @@ struct sc16is7xx_one_config {
- 
- struct sc16is7xx_one {
- 	struct uart_port		port;
--	u8				line;
-+	struct regmap			*regmap;
- 	struct kthread_work		tx_work;
- 	struct kthread_work		reg_work;
- 	struct kthread_delayed_work	ms_work;
-@@ -360,48 +360,37 @@ static void sc16is7xx_stop_tx(struct uart_port *port);
- 
- #define to_sc16is7xx_one(p,e)	((container_of((p), struct sc16is7xx_one, e)))
- 
--static int sc16is7xx_line(struct uart_port *port)
--{
--	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
--
--	return one->line;
--}
--
- static u8 sc16is7xx_port_read(struct uart_port *port, u8 reg)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	unsigned int val = 0;
--	const u8 line = sc16is7xx_line(port);
- 
--	regmap_read(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line, &val);
-+	regmap_read(one->regmap, reg, &val);
- 
- 	return val;
- }
- 
- static void sc16is7xx_port_write(struct uart_port *port, u8 reg, u8 val)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regmap_write(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line, val);
-+	regmap_write(one->regmap, reg, val);
- }
- 
- static void sc16is7xx_fifo_read(struct uart_port *port, unsigned int rxlen)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
--	u8 addr = (SC16IS7XX_RHR_REG << SC16IS7XX_REG_SHIFT) | line;
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regcache_cache_bypass(s->regmap, true);
--	regmap_raw_read(s->regmap, addr, s->buf, rxlen);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, true);
-+	regmap_raw_read(one->regmap, SC16IS7XX_RHR_REG, s->buf, rxlen);
-+	regcache_cache_bypass(one->regmap, false);
- }
- 
- static void sc16is7xx_fifo_write(struct uart_port *port, u8 to_send)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
--	u8 addr = (SC16IS7XX_THR_REG << SC16IS7XX_REG_SHIFT) | line;
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
- 	/*
- 	 * Don't send zero-length data, at least on SPI it confuses the chip
-@@ -410,19 +399,17 @@ static void sc16is7xx_fifo_write(struct uart_port *port, u8 to_send)
- 	if (unlikely(!to_send))
- 		return;
- 
--	regcache_cache_bypass(s->regmap, true);
--	regmap_raw_write(s->regmap, addr, s->buf, to_send);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, true);
-+	regmap_raw_write(one->regmap, SC16IS7XX_THR_REG, s->buf, to_send);
-+	regcache_cache_bypass(one->regmap, false);
- }
- 
- static void sc16is7xx_port_update(struct uart_port *port, u8 reg,
- 				  u8 mask, u8 val)
- {
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
--	const u8 line = sc16is7xx_line(port);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 
--	regmap_update_bits(s->regmap, (reg << SC16IS7XX_REG_SHIFT) | line,
--			   mask, val);
-+	regmap_update_bits(one->regmap, reg, mask, val);
- }
- 
- static int sc16is7xx_alloc_line(void)
-@@ -477,7 +464,7 @@ static const struct sc16is7xx_devtype sc16is762_devtype = {
- 
- static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- {
--	switch (reg >> SC16IS7XX_REG_SHIFT) {
-+	switch (reg) {
- 	case SC16IS7XX_RHR_REG:
- 	case SC16IS7XX_IIR_REG:
- 	case SC16IS7XX_LSR_REG:
-@@ -496,7 +483,7 @@ static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
- 
- static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
- {
--	switch (reg >> SC16IS7XX_REG_SHIFT) {
-+	switch (reg) {
- 	case SC16IS7XX_RHR_REG:
- 		return true;
- 	default:
-@@ -509,6 +496,7 @@ static bool sc16is7xx_regmap_precious(struct device *dev, unsigned int reg)
- static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- {
- 	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
-+	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
- 	u8 lcr;
- 	u8 prescaler = 0;
- 	unsigned long clk = port->uartclk, div = clk / 16 / baud;
-@@ -540,12 +528,12 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
- 	/* Enable enhanced features */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
- 			      SC16IS7XX_EFR_ENABLE_BIT,
- 			      SC16IS7XX_EFR_ENABLE_BIT);
- 
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Put LCR back to the normal mode */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -561,10 +549,10 @@ static int sc16is7xx_set_baud(struct uart_port *port, int baud)
- 			     SC16IS7XX_LCR_CONF_MODE_A);
- 
- 	/* Write the new divisor */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLH_REG, div / 256);
- 	sc16is7xx_port_write(port, SC16IS7XX_DLL_REG, div % 256);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Put LCR back to the normal mode */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -1078,7 +1066,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
- 	/* Configure flow control */
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 	sc16is7xx_port_write(port, SC16IS7XX_XON1_REG, termios->c_cc[VSTART]);
- 	sc16is7xx_port_write(port, SC16IS7XX_XOFF1_REG, termios->c_cc[VSTOP]);
- 
-@@ -1097,7 +1085,7 @@ static void sc16is7xx_set_termios(struct uart_port *port,
- 			      SC16IS7XX_EFR_REG,
- 			      SC16IS7XX_EFR_FLOWCTRL_BITS,
- 			      flow);
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Update LCR register */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, lcr);
-@@ -1148,7 +1136,6 @@ static int sc16is7xx_config_rs485(struct uart_port *port, struct ktermios *termi
- static int sc16is7xx_startup(struct uart_port *port)
- {
- 	struct sc16is7xx_one *one = to_sc16is7xx_one(port, port);
--	struct sc16is7xx_port *s = dev_get_drvdata(port->dev);
- 	unsigned int val;
- 	unsigned long flags;
- 
-@@ -1165,7 +1152,7 @@ static int sc16is7xx_startup(struct uart_port *port)
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG,
- 			     SC16IS7XX_LCR_CONF_MODE_B);
- 
--	regcache_cache_bypass(s->regmap, true);
-+	regcache_cache_bypass(one->regmap, true);
- 
- 	/* Enable write access to enhanced features and internal clock div */
- 	sc16is7xx_port_update(port, SC16IS7XX_EFR_REG,
-@@ -1183,7 +1170,7 @@ static int sc16is7xx_startup(struct uart_port *port)
- 			     SC16IS7XX_TCR_RX_RESUME(24) |
- 			     SC16IS7XX_TCR_RX_HALT(48));
- 
--	regcache_cache_bypass(s->regmap, false);
-+	regcache_cache_bypass(one->regmap, false);
- 
- 	/* Now, initialize the UART */
- 	sc16is7xx_port_write(port, SC16IS7XX_LCR_REG, SC16IS7XX_LCR_WORD_LEN_8);
-@@ -1464,7 +1451,7 @@ static int sc16is7xx_setup_mctrl_ports(struct sc16is7xx_port *s)
- 	if (s->mctrl_mask)
- 		regmap_update_bits(
- 			s->regmap,
--			SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
-+			SC16IS7XX_IOCONTROL_REG,
- 			SC16IS7XX_IOCONTROL_MODEM_A_BIT |
- 			SC16IS7XX_IOCONTROL_MODEM_B_BIT, s->mctrl_mask);
- 
-@@ -1479,7 +1466,7 @@ static const struct serial_rs485 sc16is7xx_rs485_supported = {
- 
- static int sc16is7xx_probe(struct device *dev,
- 			   const struct sc16is7xx_devtype *devtype,
--			   struct regmap *regmap, int irq)
-+			   struct regmap *regmaps[], int irq)
- {
- 	unsigned long freq = 0, *pfreq = dev_get_platdata(dev);
- 	unsigned int val;
-@@ -1487,16 +1474,16 @@ static int sc16is7xx_probe(struct device *dev,
- 	int i, ret;
- 	struct sc16is7xx_port *s;
- 
--	if (IS_ERR(regmap))
--		return PTR_ERR(regmap);
-+	for (i = 0; i < devtype->nr_uart; i++)
-+		if (IS_ERR(regmaps[i]))
-+			return PTR_ERR(regmaps[i]);
- 
- 	/*
- 	 * This device does not have an identification register that would
- 	 * tell us if we are really connected to the correct device.
- 	 * The best we can do is to check if communication is at all possible.
- 	 */
--	ret = regmap_read(regmap,
--			  SC16IS7XX_LSR_REG << SC16IS7XX_REG_SHIFT, &val);
-+	ret = regmap_read(regmaps[0], SC16IS7XX_LSR_REG, &val);
- 	if (ret < 0)
- 		return -EPROBE_DEFER;
- 
-@@ -1530,7 +1517,7 @@ static int sc16is7xx_probe(struct device *dev,
- 			return -EINVAL;
- 	}
- 
--	s->regmap = regmap;
-+	s->regmap = regmaps[0];
- 	s->devtype = devtype;
- 	dev_set_drvdata(dev, s);
- 	mutex_init(&s->efr_lock);
-@@ -1545,11 +1532,10 @@ static int sc16is7xx_probe(struct device *dev,
- 	sched_set_fifo(s->kworker_task);
- 
- 	/* reset device, purging any pending irq / data */
--	regmap_write(s->regmap, SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
--			SC16IS7XX_IOCONTROL_SRESET_BIT);
-+	regmap_write(s->regmap, SC16IS7XX_IOCONTROL_REG,
-+		     SC16IS7XX_IOCONTROL_SRESET_BIT);
- 
- 	for (i = 0; i < devtype->nr_uart; ++i) {
--		s->p[i].line		= i;
- 		/* Initialize port data */
- 		s->p[i].port.dev	= dev;
- 		s->p[i].port.irq	= irq;
-@@ -1570,6 +1556,7 @@ static int sc16is7xx_probe(struct device *dev,
- 		s->p[i].port.ops	= &sc16is7xx_ops;
- 		s->p[i].old_mctrl	= 0;
- 		s->p[i].port.line	= sc16is7xx_alloc_line();
-+		s->p[i].regmap		= regmaps[i];
- 
- 		if (s->p[i].port.line >= SC16IS7XX_MAX_DEVS) {
- 			ret = -ENOMEM;
-@@ -1598,13 +1585,13 @@ static int sc16is7xx_probe(struct device *dev,
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG,
- 				     SC16IS7XX_LCR_CONF_MODE_B);
- 
--		regcache_cache_bypass(s->regmap, true);
-+		regcache_cache_bypass(regmaps[i], true);
- 
- 		/* Enable write access to enhanced features */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_EFR_REG,
- 				     SC16IS7XX_EFR_ENABLE_BIT);
- 
--		regcache_cache_bypass(s->regmap, false);
-+		regcache_cache_bypass(regmaps[i], false);
- 
- 		/* Restore access to general registers */
- 		sc16is7xx_port_write(&s->p[i].port, SC16IS7XX_LCR_REG, 0x00);
-@@ -1698,19 +1685,36 @@ static const struct of_device_id __maybe_unused sc16is7xx_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, sc16is7xx_dt_ids);
- 
- static struct regmap_config regcfg = {
--	.reg_bits = 7,
--	.pad_bits = 1,
-+	.reg_bits = 5,
-+	.pad_bits = 3,
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
- 	.volatile_reg = sc16is7xx_regmap_volatile,
- 	.precious_reg = sc16is7xx_regmap_precious,
-+	.max_register = SC16IS7XX_EFCR_REG,
- };
- 
-+static const char *sc16is7xx_regmap_name(unsigned int port_id)
-+{
-+	static char buf[6];
-+
-+	snprintf(buf, sizeof(buf), "port%d", port_id);
-+
-+	return buf;
-+}
-+
-+static unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id)
-+{
-+	/* CH1,CH0 are at bits 2:1. */
-+	return port_id << 1;
-+}
-+
- #ifdef CONFIG_SERIAL_SC16IS7XX_SPI
- static int sc16is7xx_spi_probe(struct spi_device *spi)
- {
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmap;
-+	struct regmap *regmaps[2];
-+	unsigned int i;
- 	int ret;
- 
- 	/* Setup SPI bus */
-@@ -1732,11 +1736,20 @@ static int sc16is7xx_spi_probe(struct spi_device *spi)
- 		devtype = (struct sc16is7xx_devtype *)id_entry->driver_data;
- 	}
- 
--	regcfg.max_register = (0xf << SC16IS7XX_REG_SHIFT) |
--			      (devtype->nr_uart - 1);
--	regmap = devm_regmap_init_spi(spi, &regcfg);
-+	for (i = 0; i < devtype->nr_uart; i++) {
-+		regcfg.name = sc16is7xx_regmap_name(i);
-+		/*
-+		 * If read_flag_mask is 0, the regmap code sets it to a default
-+		 * of 0x80. Since we specify our own mask, we must add the READ
-+		 * bit ourselves:
-+		 */
-+		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i) |
-+			SC16IS7XX_SPI_READ_BIT;
-+		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regmaps[i] = devm_regmap_init_spi(spi, &regcfg);
-+	}
- 
--	return sc16is7xx_probe(&spi->dev, devtype, regmap, spi->irq);
-+	return sc16is7xx_probe(&spi->dev, devtype, regmaps, spi->irq);
- }
- 
- static void sc16is7xx_spi_remove(struct spi_device *spi)
-@@ -1775,7 +1788,8 @@ static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- {
- 	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
- 	const struct sc16is7xx_devtype *devtype;
--	struct regmap *regmap;
-+	struct regmap *regmaps[2];
-+	unsigned int i;
- 
- 	if (i2c->dev.of_node) {
- 		devtype = device_get_match_data(&i2c->dev);
-@@ -1785,11 +1799,14 @@ static int sc16is7xx_i2c_probe(struct i2c_client *i2c)
- 		devtype = (struct sc16is7xx_devtype *)id->driver_data;
- 	}
- 
--	regcfg.max_register = (0xf << SC16IS7XX_REG_SHIFT) |
--			      (devtype->nr_uart - 1);
--	regmap = devm_regmap_init_i2c(i2c, &regcfg);
-+	for (i = 0; i < devtype->nr_uart; i++) {
-+		regcfg.name = sc16is7xx_regmap_name(i);
-+		regcfg.read_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regcfg.write_flag_mask = sc16is7xx_regmap_port_mask(i);
-+		regmaps[i] = devm_regmap_init_i2c(i2c, &regcfg);
-+	}
- 
--	return sc16is7xx_probe(&i2c->dev, devtype, regmap, i2c->irq);
-+	return sc16is7xx_probe(&i2c->dev, devtype, regmaps, i2c->irq);
- }
- 
- static void sc16is7xx_i2c_remove(struct i2c_client *client)
--- 
-2.39.2
+Best regards,
+Krzysztof
 
