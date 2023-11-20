@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3CE7F161E
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BBF57F1626
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbjKTOrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:47:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        id S233627AbjKTOsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbjKTOrF (ORCPT
+        with ESMTP id S233423AbjKTOrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:47:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D100D4D;
-        Mon, 20 Nov 2023 06:46:57 -0800 (PST)
+        Mon, 20 Nov 2023 09:47:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EBED69;
+        Mon, 20 Nov 2023 06:46:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700491617; x=1732027617;
+  t=1700491619; x=1732027619;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=mWnrCbe952qZv1cdRW5+nJoDJDChwK0VNgu5M+CVVe8=;
-  b=Ma6yvUUFxOc5hswOn0EoW04i+KwE30SfweummFWecKd++fxSDo1rnE2p
-   ZwGLo8M9gH0f2ksQPNDmw2YLhG8Mff90vMG6hg0chdrA4sgeeKTYf9LNw
-   6JPKN7a0vAc8OnoqqBaaqTroi82aVtZjEToD4chbND7T6RBgvKvvshEAv
-   JykvI7pTssUcyGQdTvjuGelnF09hfZ8jKEXrLEOf6923y4qKopnsvdu+w
-   uBEwFmSWBS+qXszenmSjrXp73lD0/bZsEX+rDzcBEQinKZEgu2LPsvTjD
-   J49RSs3Z8fgJOlgWNr0cxeY68cGs60XJ8z0vJfsWLQiK8aMa2EjXtBpTt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382017054"
+  bh=uLVeF/uTk0+x9zvX73n0BK9nE9dqOP8VDpiHMj0UVU0=;
+  b=Msqjec5h2I/AYlFd6Y/HkcnA92o0Cg0jOG3aRRcSTM4WB/Tn31xM9x+V
+   op3PQ6Y4IS8ln20hRUPw+2sbuCQuE3+1dNJbrNlTYuZrKOXq7aXUh+jyY
+   Q7xt07v39DvyuM+QItLzZd8Pn0gCV7GECE7e8S9U2j2LZFWVT1Pbq12YQ
+   zvDUa/nXj6LKWZTb8Z8UHFpRw7pQdI/ydwvJHkD1MjPVAq356NPnjevEY
+   zRDK4lpS/zfFlr+4daLUuA67AH3ZlcIfXqCUux8JWCVPclG0ic/sk/3ra
+   RswIzHbGb63pNGzqSiFHjC4cTZfyLKBLMeEiI9qY1CHDRAFOR3slgFgUR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="455956510"
 X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="382017054"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 06:46:56 -0800
+   d="scan'208";a="455956510"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 06:46:56 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832291652"
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="801193204"
 X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="832291652"
+   d="scan'208";a="801193204"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 20 Nov 2023 06:46:53 -0800
+  by orsmga001.jf.intel.com with ESMTP; 20 Nov 2023 06:46:53 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D47AA516; Mon, 20 Nov 2023 16:46:44 +0200 (EET)
+        id DA4AC497; Mon, 20 Nov 2023 16:46:44 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Mario Limonciello <mario.limonciello@amd.com>,
         Jarkko Nikula <jarkko.nikula@linux.intel.com>,
@@ -52,64 +52,106 @@ Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
         Jan Dabros <jsd@semihalf.com>,
         Andi Shyti <andi.shyti@kernel.org>,
         Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v4 15/24] i2c: designware: Unify the firmware type checks
-Date:   Mon, 20 Nov 2023 16:41:57 +0200
-Message-ID: <20231120144641.1660574-16-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 16/24] i2c: designware: Move exports to I2C_DW namespaces
+Date:   Mon, 20 Nov 2023 16:41:58 +0200
+Message-ID: <20231120144641.1660574-17-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
 References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of asymmetrical checks for the firmware type use
-the is_*_node() calls.
+Reduce scope of the I²C DesignWare driver exports to I2C_DW namespaces.
+This will prevent abuse of the symbols and clean up global namespace.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/i2c/busses/i2c-designware-common.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-designware-common.c  | 2 ++
+ drivers/i2c/busses/i2c-designware-master.c  | 3 +++
+ drivers/i2c/busses/i2c-designware-pcidrv.c  | 2 ++
+ drivers/i2c/busses/i2c-designware-platdrv.c | 2 ++
+ drivers/i2c/busses/i2c-designware-slave.c   | 3 +++
+ 5 files changed, 12 insertions(+)
 
 diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index d3ddfec46200..fb75e9b3d4fc 100644
+index fb75e9b3d4fc..89b8fa492e26 100644
 --- a/drivers/i2c/busses/i2c-designware-common.c
 +++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -22,6 +22,7 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/swab.h>
+@@ -28,6 +28,8 @@
  #include <linux/types.h>
-@@ -372,14 +373,15 @@ int i2c_dw_fw_parse_and_configure(struct dw_i2c_dev *dev)
- {
- 	struct i2c_timings *t = &dev->timings;
- 	struct device *device = dev->dev;
-+	struct fwnode_handle *fwnode = dev_fwnode(device);
+ #include <linux/units.h>
  
- 	i2c_parse_fw_timings(device, t, false);
++#define DEFAULT_SYMBOL_NAMESPACE	I2C_DW_COMMON
++
+ #include "i2c-designware-core.h"
  
- 	i2c_dw_adjust_bus_speed(dev);
+ static char *abort_sources[] = {
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index 85dbd0eb5392..0b6576d7f811 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -22,6 +22,8 @@
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
  
--	if (device->of_node)
-+	if (is_of_node(fwnode))
- 		i2c_dw_of_configure(device);
--	if (has_acpi_companion(device))
-+	else if (is_acpi_node(fwnode))
- 		i2c_dw_acpi_configure(device);
++#define DEFAULT_SYMBOL_NAMESPACE	I2C_DW
++
+ #include "i2c-designware-core.h"
  
- 	return i2c_dw_validate_speed(dev);
+ #define AMD_TIMEOUT_MIN_US	25
+@@ -1079,3 +1081,4 @@ EXPORT_SYMBOL_GPL(i2c_dw_probe_master);
+ 
+ MODULE_DESCRIPTION("Synopsys DesignWare I2C bus master adapter");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(I2C_DW_COMMON);
+diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
+index 7556e9cbf8d2..a40acc3d9288 100644
+--- a/drivers/i2c/busses/i2c-designware-pcidrv.c
++++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
+@@ -410,3 +410,5 @@ module_pci_driver(dw_i2c_driver);
+ MODULE_AUTHOR("Baruch Siach <baruch@tkos.co.il>");
+ MODULE_DESCRIPTION("Synopsys DesignWare PCI I2C bus adapter");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(I2C_DW);
++MODULE_IMPORT_NS(I2C_DW_COMMON);
+diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
+index b275a1b19eec..6b1a26afc278 100644
+--- a/drivers/i2c/busses/i2c-designware-platdrv.c
++++ b/drivers/i2c/busses/i2c-designware-platdrv.c
+@@ -471,3 +471,5 @@ module_exit(dw_i2c_exit_driver);
+ MODULE_AUTHOR("Baruch Siach <baruch@tkos.co.il>");
+ MODULE_DESCRIPTION("Synopsys DesignWare I2C bus adapter");
+ MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(I2C_DW);
++MODULE_IMPORT_NS(I2C_DW_COMMON);
+diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
+index 2e079cf20bb5..70d183fa3bff 100644
+--- a/drivers/i2c/busses/i2c-designware-slave.c
++++ b/drivers/i2c/busses/i2c-designware-slave.c
+@@ -16,6 +16,8 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+ 
++#define DEFAULT_SYMBOL_NAMESPACE	I2C_DW
++
+ #include "i2c-designware-core.h"
+ 
+ static void i2c_dw_configure_fifo_slave(struct dw_i2c_dev *dev)
+@@ -279,3 +281,4 @@ EXPORT_SYMBOL_GPL(i2c_dw_probe_slave);
+ MODULE_AUTHOR("Luis Oliveira <lolivei@synopsys.com>");
+ MODULE_DESCRIPTION("Synopsys DesignWare I2C bus slave adapter");
+ MODULE_LICENSE("GPL v2");
++MODULE_IMPORT_NS(I2C_DW_COMMON);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
