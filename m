@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B6B7F0DEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68D57F0DF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjKTIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 03:46:38 -0500
+        id S232464AbjKTIqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 03:46:42 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjKTIq3 (ORCPT
+        with ESMTP id S232426AbjKTIqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:46:29 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F0FE8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:25 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32fadd4ad09so3068412f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:25 -0800 (PST)
+        Mon, 20 Nov 2023 03:46:37 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FB4191
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:28 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32df66c691dso2576603f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 00:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1700469984; x=1701074784; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1700469987; x=1701074787; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W5DUTseQ9M13B3c/uNsGDyKmzs8yrYsJMqyVo9/Bt0g=;
-        b=SffkOGBzwA4VLDateY/j88lK4kM93BCcrecM+r8sOsIKiPFqFMkxD0QZCLGS1KDKA8
-         lTV6i6Dnmn9kr14gQvYDiLHLIS/SpKkA/FxTWm+ZoEQP/s5WFg5osYmiwgumnu8SautG
-         Cmr0qYF2ZrSURmdKM6tBsZe+0FIN9XNtFX8xOy4wRL0j7vcmx0ERgJJN3LfITIGIrq4g
-         J1JICItYgP6tOBuNBlnaLIVFRwbxRHOcu6UQ0GkCnAnho21UN5lujm7tOl82twRISzAF
-         pZU0w4/2vTwireL9dEIg7VNqCwabLw9Fs7au5Lzh4+uF6dLL17nB7cQzoDrxX5fhXTDa
-         0CrA==
+        bh=yTMsePF1mIhRVZgGZkTVw0dE2aONjlO+ow85WD/JWc8=;
+        b=ktCZkBmkvmQUDiyuap6uQwubSBx7KGSyi5EtxzayIrQ8mSpYn8nEM7yjrs8+RbyHng
+         Rg3Dr7OTYPdQ2I5lYB0Ff2+9k1CSYbG5St9XWKu/diOxFfCW38O75PK0PX+CPusRH/D7
+         mh5m8YPIaILJM6NoK2UH7jn+uWoLwI4QtoWePpC7W/nTojbKAyAgX3RuDNwfhd0uFc25
+         S6BV2OTfxLOZ9FgMedRqAwbMALqpUVONeG7f0chfq2aXWCJSIxca4gaaTlmiisBX6VGd
+         DO1+5vK3+CBGMArf3bmA9Ngzv5Z31sZfIlsiddoSsDQKAvSqbmkaBHzfEwOff/MJq3Ou
+         W2mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700469984; x=1701074784;
+        d=1e100.net; s=20230601; t=1700469987; x=1701074787;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W5DUTseQ9M13B3c/uNsGDyKmzs8yrYsJMqyVo9/Bt0g=;
-        b=LeYpIWhQLhoGYGCykAwJTclB9bIIvXpTAsMkOrYlRCWdHytc7czcO0ZL3WUmoOTu3n
-         bqNmVQh4gfd8TcbMTlR7WA8sE3UC92/n+iUEDUJ+DJeH8NTpd+7MuebvvzBROoeT73NM
-         zD7W0FERWb4Yd8lwXeuxh+nXfo6L2ZiRnvzZHkrwhMg+bPK7x0DgLrw+86SlSSyQdcbw
-         0ZwROB/jMEbWSrsFiObkO+7I0nYi7DKBQRQRshJE2ifmZ7I4kgrlGdv/ZgXwCMx7yUlO
-         BUIkT28uVLiuKfysrqDmxltfcHiIkpzctMEv6tYngYP8YnznzNlpaFhFBSw95O3PqRBF
-         irHg==
-X-Gm-Message-State: AOJu0YwNv1H+U6NUR+ix48aPS5MxugRs2Jtii7+vQdXEbp5YDV/X31VU
-        uj7yU/rIlyf7QLNsqR7m41SiEg==
-X-Google-Smtp-Source: AGHT+IH+kw0D3I8hcIjXDKB623M+1uoixo0SRLnUYry7SJ1e2Cyi7IKXMIG8YCxsaQqU/WoO+oYnFw==
-X-Received: by 2002:adf:e406:0:b0:331:6d38:5d18 with SMTP id g6-20020adfe406000000b003316d385d18mr3774080wrm.61.1700469984417;
-        Mon, 20 Nov 2023 00:46:24 -0800 (PST)
+        bh=yTMsePF1mIhRVZgGZkTVw0dE2aONjlO+ow85WD/JWc8=;
+        b=oRZxXDRAk508WI6NR1tCW7itVRWNX5d5+7H53qDMnNvOZdlUuSx6ZFWOVx8tVJ2gLO
+         GvzjOT6TdhLaWk5gQvGZTIEFi8z2JtzgBXTSt+rNL1d+mYuj64cFPlN3AOU0Yltp6+Bp
+         NPKgoXZU+xHufUfArn5hfQV/LV9PWgRegIguRMgJH3DDCgrz0bZtkFYWSDxwNx0X6qEJ
+         aTvHYiCDM/0/tYboXWMnes06Hj39jxkZZkYSaYq2/mxdtJHG+02UOG98Gmc3H9exyofZ
+         QByjT1Cz52GyXWcAPgNt0nxaiVZDXwRuugl2U1HM9/hiRzpvLdMNar2kBuKSuZX3/6WF
+         syFw==
+X-Gm-Message-State: AOJu0YxDHQBgluHvjHN0Y6VBTY49Kxzv4v+/tf+w0eADBNaJzRxFRUi6
+        J173szc3DLF7uEbDQe30n2kk7Q==
+X-Google-Smtp-Source: AGHT+IHfqiV7VgEqFIq+d6ViMBq15jgGeoQzEC1z36ww167uYWXbfgpS3O66gbmfQWdM9U1Cajw2iQ==
+X-Received: by 2002:a5d:64e5:0:b0:32d:8da0:48d0 with SMTP id g5-20020a5d64e5000000b0032d8da048d0mr4783264wri.68.1700469987164;
+        Mon, 20 Nov 2023 00:46:27 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.183])
-        by smtp.gmail.com with ESMTPSA id b8-20020a5d45c8000000b003142e438e8csm10435267wrs.26.2023.11.20.00.46.22
+        by smtp.gmail.com with ESMTPSA id b8-20020a5d45c8000000b003142e438e8csm10435267wrs.26.2023.11.20.00.46.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 00:46:23 -0800 (PST)
+        Mon, 20 Nov 2023 00:46:26 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -62,16 +62,16 @@ To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
 Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 04/13] net: ravb: Start TX queues after HW initialization succeeded
-Date:   Mon, 20 Nov 2023 10:45:57 +0200
-Message-Id: <20231120084606.4083194-5-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH 05/13] net: ravb: Stop DMA in case of failures on ravb_open()
+Date:   Mon, 20 Nov 2023 10:45:58 +0200
+Message-Id: <20231120084606.4083194-6-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,36 +82,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-ravb_phy_start() may fail. If that happens the TX queues remain started.
-Thus move the netif_tx_start_all_queues() after PHY is successfully
-initialized.
+In case ravb_phy_start() returns with error the settings applied in
+ravb_dma_init() are not reverted (e.g. config mode). For this call
+ravb_stop_dma() on failure path of ravb_open().
 
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+Fixes: a0d2f20650e8 ("Renesas Ethernet AVB PTP clock driver")
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 ---
- drivers/net/ethernet/renesas/ravb_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/renesas/ravb_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index d798a7109a09..b7e9035cb989 100644
+index b7e9035cb989..588e3be692d3 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -1812,13 +1812,13 @@ static int ravb_open(struct net_device *ndev)
+@@ -1825,6 +1825,7 @@ static int ravb_open(struct net_device *ndev)
+ 	/* Stop PTP Clock driver */
  	if (info->gptp)
- 		ravb_ptp_init(ndev, priv->pdev);
- 
--	netif_tx_start_all_queues(ndev);
--
- 	/* PHY control start */
- 	error = ravb_phy_start(ndev);
- 	if (error)
- 		goto out_ptp_stop;
- 
-+	netif_tx_start_all_queues(ndev);
-+
- 	return 0;
- 
- out_ptp_stop:
+ 		ravb_ptp_stop(ndev);
++	ravb_stop_dma(ndev);
+ out_free_irq_mgmta:
+ 	if (!info->multi_irqs)
+ 		goto out_free_irq;
 -- 
 2.39.2
 
