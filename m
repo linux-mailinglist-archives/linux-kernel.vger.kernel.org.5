@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7415C7F11F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5677F121D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 12:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbjKTL3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 06:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
+        id S233227AbjKTLeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 06:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbjKTL3g (ORCPT
+        with ESMTP id S233199AbjKTLeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 06:29:36 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D3990;
-        Mon, 20 Nov 2023 03:29:31 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AKBTEYE128584;
-        Mon, 20 Nov 2023 05:29:14 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700479754;
-        bh=BLEDsm/tYWfhwzYZpH4LZ43y0iT2tVYZ/aiTuDK+wDw=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=FwVSnWBPoUq1E/t7aTdM1MsoYVnr+l73iEzilaZEK+KYW+Rzz0KSfYjDa8/Cfrc66
-         6r8THDO5ztYsgm5M2ob3d8asWQ3ydvfMZOrj1CcbpZakIW05jm3kddubmdoufE9cx/
-         mWDqzTop+eTBiDs1oyfx5QgK1MYGsvMu9zPwZ+4w=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AKBTELw013637
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Nov 2023 05:29:14 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 20
- Nov 2023 05:29:14 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 20 Nov 2023 05:29:14 -0600
-Received: from [10.24.69.31] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AKBSIm7122511;
-        Mon, 20 Nov 2023 05:29:11 -0600
-Message-ID: <85ec4b6e-e3eb-4a19-aec4-82865a940cbf@ti.com>
-Date:   Mon, 20 Nov 2023 16:59:10 +0530
+        Mon, 20 Nov 2023 06:34:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3D29C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:34:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700480057; x=1732016057;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OrCX94Gi20FAuTMva6n9USU5rVLYqIjivGDRZZq68Ic=;
+  b=ZvVKTsZqTZ5DWApeY+N2KZL7HkNXCmvxfL807PQp/Cx78vwjnrZxCKt0
+   lvECBzLCGug92CQFUupBZmlQ79iwGAzDmbLgJB4P4AfQ4K4xk7VcwFOnd
+   c7yQpV43UdCVuloUOYcblkD6QsYuzzlktf3G6wj86/v/JLW01ecozl1cJ
+   BRsNIlVdUwx547OhnhzhYQqy6ZBLElzxY9KIuCqHj6cnjQaiF7JkPdZlW
+   NHTIYvqObQwr16UM4GIPlzr2FxiTF0O2yjknFPjpo0jClnVTTDrNgiG9o
+   tWbbktzkLhCRX85nDqYMBDzcjxF+OIbYLRYAK+XgIw+8krAbrgZxdQxMn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="376634963"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="376634963"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 03:34:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="856963592"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="856963592"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by FMSMGA003.fm.intel.com with ESMTP; 20 Nov 2023 03:34:03 -0800
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH 0/5] iommu/vt-d: Convert to use static identity domain
+Date:   Mon, 20 Nov 2023 19:29:39 +0800
+Message-Id: <20231120112944.142741-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupts
- for ICSSG2
-Content-Language: en-US
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>
-References: <20231120063159.539306-1-s-vadapalli@ti.com>
-From:   MD Danish Anwar <danishanwar@ti.com>
-In-Reply-To: <20231120063159.539306-1-s-vadapalli@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,72 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Intel's IOMMU driver used a special domain called 1:1 mapping domain to
+support the domain of type IOMMU_DOMAIN_IDENTITY, which enables device
+drivers to directly utilize physical addresses for DMA access despite
+the presence of IOMMU units.
 
+The implementation of the 1:1 mapping domain is influenced by hardware
+differences. While modern Intel VT-d implementations support hardware
+passthrough translation mode, earlier versions lacked this feature,
+which requires a more complex implementation approach.
 
-On 20/11/23 12:01 pm, Siddharth Vadapalli wrote:
-> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
-> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
-> for interrupts generated by the PHY. Thus, add the necessary device-tree
-> support to enable it.
-> 
-> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
-> the pinmux to select GPIO1_87 for routing the interrupt.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
+The 1:1 mapping domain for earlier hardware was implemented by associating
+a DMA domain with an IOVA (IO Virtual Address) equivalent to the
+physical address. While, for most hardware supporting passthrough mode,
+simply setting the hardware's passthrough mode is sufficient. These two
+modes were merged together in si_domain, which is a special DMA domain
+sharing the domain ops of an ordinary DMA domain.
 
-> ---
-> 
-> This patch is based on linux-next tagged next-20231120.
-> 
-> Regards,
-> Siddharth.
-> 
->  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> index ec8cf20ca3ac..9f723592d0f4 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> @@ -124,21 +124,34 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
->  	};
->  };
->  
-> +&main_pmx1 {
-> +	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
-> +	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
-> +		>;
-> +	};
-> +};
-> +
->  &icssg2_mdio {
->  	status = "okay";
-> -	pinctrl-names = "default";
-> -	pinctrl-0 = <&icssg2_mdio_pins_default>;
-> +	pinctrl-names = "default", "icssg2-phy-irq";
-> +	pinctrl-0 = <&icssg2_mdio_pins_default>, <&icssg2_phy_irq_pins_default>;
->  	#address-cells = <1>;
->  	#size-cells = <0>;
->  
->  	icssg2_phy0: ethernet-phy@0 {
->  		reg = <0>;
-> +		interrupt-parent = <&main_gpio1>;
-> +		interrupts = <87 0x2>;
->  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->  	};
->  
->  	icssg2_phy1: ethernet-phy@3 {
->  		reg = <3>;
-> +		interrupt-parent = <&main_gpio1>;
-> +		interrupts = <87 0x2>;
->  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->  	};
+As the iommu core has evolved, it has introduced global static identity
+domain with "never fail" attach semantics. This means that the domain is
+always available and cannot fail to attach. The iommu driver now assigns
+this domain directly at iommu_ops->identity_domain instead of allocating
+it through the domain allocation interface.
+
+This converts the Intel IOMMU driver to embrace the global static
+identity domain. For early legacy hardwares that don't support
+passthrough translation mode, ask the iommu core to use a DMA type of
+default domain. For modern hardwares that support passthrough
+translation mode, implement a static global identity domain.
+
+The whole series is also avaiable at
+
+https://github.com/LuBaolu/intel-iommu/commits/vtd-static-identity-domain-v1
+
+Very appreciated for your review comments and suggestions.
+
+Lu Baolu (5):
+  iommu/vt-d: Setup scalable mode context entry in probe path
+  iommu/vt-d: Remove scalable mode context entry setup from attach_dev
+  iommu/vt-d: Refactor domain_context_mapping_one() to be reusable
+  iommu/vt-d: Add support for static identity domain
+  iommu/vt-d: Remove si_domain
+
+ drivers/iommu/intel/pasid.h |   1 +
+ drivers/iommu/intel/iommu.c | 565 +++++++++++++++---------------------
+ drivers/iommu/intel/pasid.c | 180 ++++++++++++
+ drivers/iommu/intel/svm.c   |   2 +-
+ 4 files changed, 414 insertions(+), 334 deletions(-)
 
 -- 
-Thanks and Regards,
-Danish
+2.34.1
+
