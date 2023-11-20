@@ -2,301 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ADF7F0A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3C37F0A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 03:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbjKTCrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 21:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        id S231807AbjKTCt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 21:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjKTCrl (ORCPT
+        with ESMTP id S231775AbjKTCt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 21:47:41 -0500
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 875AC137
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:47:37 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1eb39505ba4so2545041fac.0
-        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 18:47:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700448456; x=1701053256; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VU/ggVYx2HP9QVrpc118lNpu44S80Eqnc57DemebZM8=;
-        b=IvNZV5hvWH27eBiylGbNVGBn3y7Gz1MOW635NJaQzcL9ctIHpISTrA2zqtIbt5MslB
-         fDtJAZG70Yiddbs/bGvHzuxflkpM5E4Ynx6iqM1JOaTJotWtS4SlSphbRQStusjftW2X
-         VtIGQzzUaRwN1aXk48yR+pUEL/0ermGkKLj2MUsB2gULhvXGTM8JbaDlng4moCZ+dU/c
-         1JbK9JRC2W/1ZzIaaLfOiJKrN76hcVEPzQgp8QZwwkKk9JkA2tV8qggBgiUtNrk+e8hF
-         AwakG49LWdp5xbk8tySeUD4TNEqY7OWvp6gwP5M8/O78MmlbWnlhNqLMTcenmZhkSBKB
-         FlDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700448456; x=1701053256;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VU/ggVYx2HP9QVrpc118lNpu44S80Eqnc57DemebZM8=;
-        b=JNUus2JVvZu9RpVU90Ow5ajdBlSUaggLCAKJV0JftR4PBUxkIH5DrInI+eQ0HRvooO
-         GlbPYVWS4jHcl1QdiouXFZJfQOywmKlCOISW7br29pqVC+GZ8q7x/kv0YYY/MXJfxzSt
-         txEVsdTPbOXQQUaTtCdTsl5hwX2HBpoy4xUnEKmOsSMofxu5BbcTXUTMP16nuMR2YOv9
-         LNSdTubrNQYGxCHbcZOWgxDHMnDeKzsrqIr9t8PN41kFkSOmF577dI1uP61Gb8LJ/ibr
-         P3nxWybkPLYgjesNneNcppZp1+dGtgLyOKoc/wnBxGiI27IzdCehR9E5TUeWfbNZjBnC
-         6CQQ==
-X-Gm-Message-State: AOJu0YyzU5fZeiQgo6FDXw70FVRQSPHs2Sx4LM6NmUKGrZB17so4PlB0
-        01369dVF4Hema89h26zduKwEcQ==
-X-Google-Smtp-Source: AGHT+IG2yVOZskv7kdmEs8Y1YsZ/XPgdjGJmM54ZpbOJcfIJtiwxdqNWPxS3wLqNO1ObFLA2tMXR5Q==
-X-Received: by 2002:a05:6870:a489:b0:1ef:b16f:d294 with SMTP id j9-20020a056870a48900b001efb16fd294mr7688617oal.38.1700448456607;
-        Sun, 19 Nov 2023 18:47:36 -0800 (PST)
-Received: from ?IPv6:2402:7500:5d5:bc21:3420:fefa:20d4:2a2f? ([2402:7500:5d5:bc21:3420:fefa:20d4:2a2f])
-        by smtp.gmail.com with ESMTPSA id j2-20020a056a00234200b006cb638ba1aasm2599324pfj.49.2023.11.19.18.47.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 19 Nov 2023 18:47:36 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH 06/12] RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS
- implementations
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231102051639.GF1498@sol.localdomain>
-Date:   Mon, 20 Nov 2023 10:47:29 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <267FDF51-7720-40AC-9416-B5361C45393B@sifive.com>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-7-jerry.shih@sifive.com>
- <20231102051639.GF1498@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 19 Nov 2023 21:49:28 -0500
+Received: from CO1PR02CU002.outbound.protection.outlook.com (mail-westus2azon11010005.outbound.protection.outlook.com [52.101.46.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E9C13A;
+        Sun, 19 Nov 2023 18:49:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DnQJQJjbX9aDZPrWNJpYEi77nNSzn21pb7jm0C+TabVVPnxxnxPdc2NpFWOPUtgkJ6loSCzFKIRSLjV8vzUrnFiwQrRAqLlOsipKdnkryT75NEU5UXFZXPeObMncJTo6gqXuuPtrKHTixkc9F0xnPqfyKifrh7JdBTBdALNmw1zlH0SeiENL1JNZT+KG7Zg2P3/znquAOMYS2vjzosw4eipkhL9bET1MJ501msXEPW7eTkSrSeWN2G2wHnnMajIHe5VvSfsgVtOAO1mJxD9S3fwYp7Pkq4WuoasGRAcZIYGpjCLgkWINJzg0Wdu5am2E6MOH0DKFTty48O/LmAnfug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+wjFoJgfUxRI5csw/FH5HmU3FSBNadWs2HYeQph58Eg=;
+ b=TEm7DuiXdQNswJm75AZStffmBaN6iIrPIewh11IYua9EPkKMEIimgFWu3qa5PUVi97PuZkb06KoyxlGPvdAmTAcoGIdDPsKtHlDjzbJ0C1brBZC9VxxXM1rc66NB9kC/w1GKhW6JEJPcUgFD3uawVRZJxMYcGmbuA3eAOUqNcdPUa8neRGB5m7UedtwIw7Zu4nPV66bbjxqSQ82m3fKrT5vA9hvIde8gXLH2ERHE15cfD67pvoncfC/Xllh1eJ3VODa91aqv+cBJELmYNvjMt8RgeJMchei2Qt5pPJspzyJvuQP5DyulLbeyk13hceVUHgCe/Wbv2SeDNhiJ9UoOGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+wjFoJgfUxRI5csw/FH5HmU3FSBNadWs2HYeQph58Eg=;
+ b=LYfwyt7xncdXJO/Q61cZCKDFd4eueMacG7YratLPC5DP0Ch7eYQhiruXWotEZnkxdAGiqW4OC/5RUAqPCsMtzoEdlNJVtzXlT1uPU4eB2P+6KSXBkWyf9J3knSQC2mcJVWIRtmDn/N8MwbM2eee+rW6AsX6miivPoWRRCRGXu44=
+Received: from IA0PR05MB9832.namprd05.prod.outlook.com (2603:10b6:208:404::6)
+ by SJ0PR05MB7471.namprd05.prod.outlook.com (2603:10b6:a03:282::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Mon, 20 Nov
+ 2023 02:49:19 +0000
+Received: from IA0PR05MB9832.namprd05.prod.outlook.com
+ ([fe80::7e24:8821:d736:fbb5]) by IA0PR05MB9832.namprd05.prod.outlook.com
+ ([fe80::7e24:8821:d736:fbb5%5]) with mapi id 15.20.7002.026; Mon, 20 Nov 2023
+ 02:49:19 +0000
+From:   Zack Rusin <zackr@vmware.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "javierm@redhat.com" <javierm@redhat.com>
+CC:     "corbet@lwn.net" <corbet@lwn.net>,
+        "olvaffe@gmail.com" <olvaffe@gmail.com>,
+        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
+        "nunes.erico@gmail.com" <nunes.erico@gmail.com>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        "pekka.paalanen@collabora.com" <pekka.paalanen@collabora.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "belmouss@redhat.com" <belmouss@redhat.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "gurchetansingh@chromium.org" <gurchetansingh@chromium.org>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "kraxel@redhat.com" <kraxel@redhat.com>,
+        "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        "contact@emersion.fr" <contact@emersion.fr>
+Subject: Re: [PATCH v3 0/5] drm: Allow the damage helpers to handle buffer
+ damage
+Thread-Topic: [PATCH v3 0/5] drm: Allow the damage helpers to handle buffer
+ damage
+Thread-Index: AQHaGtcr0MrbJic62k+7yYZdqWm+tbCCgqEA
+Date:   Mon, 20 Nov 2023 02:49:18 +0000
+Message-ID: <477e78dc2fe31372d3b4e270b4ef82d9bae22705.camel@vmware.com>
+References: <20231119105709.3143489-1-javierm@redhat.com>
+In-Reply-To: <20231119105709.3143489-1-javierm@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.1-0ubuntu1 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA0PR05MB9832:EE_|SJ0PR05MB7471:EE_
+x-ms-office365-filtering-correlation-id: 1939a44a-e70b-4b92-ef47-08dbe9734adc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZTe1uMDJ8BhxjYt1hUqpt+Hwap4lLWFoTiCbivkdCGSxKx0J0BL2ghbwt7iG3UuWgZSi1UldjCPl6KHzwL+e5wkqnfqSjCV5zfCxqaKSe00sAPNzWX4LeHjow5dN1N9yMGvOtkbThKv36Hg3KICNkRgmiDyX0j4PqferMTv1K+N8PZSju+n9Ne0xmrUDGKKuxTWkG4k9jniU/nHc19FI4mluD2KUfKNP1Krk+Iy5sIET4antnNKacRi/oks6bwdTr92zyLXoDNkT/6bBjB4WfD4TVFxEgCx8G2xxqfTxV/Fx0iXhOFEcp8nS+wi+XB77Y/PIMZQ0NpcEA4E6Ok+VzJKdc5QY2H4/r1zP1z1phxIXWcGV+WUr58WKU2e5DbS92jOBQN/UctndAc0ywriuWiaD4/JKWSoiJy2rGFau1KeKuJxYTbGUupYNQ/8MJvDvjbeeuYHj43ZcbRVPb/RivXq2iyqsbuSvX7y7AdJyRzdGyJ484utXdugSf2p2zYFshCvHUlG6bn7MHDdOCyzJyh/xktxHW5E9cPh9OPasIWgQ7jIDJypzicZfD2eenkNwRLAHZiq/np0r+UYsq7xrhifj+hVoTg1Dyw/wm5xeSX3sYdLWeQdJ+c2PEfIDPpcgWkBJZTp/yvJqTs5w/a+uP31SPdK5fq2Rw+vNg8+LjFRnJzAsVvNWMbLsW0fjIZgZJqMALDqWM+cfZJ9wWepdVA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR05MB9832.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(346002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(41300700001)(2906002)(4001150100001)(8676002)(4326008)(8936002)(316002)(5660300002)(7416002)(86362001)(38070700009)(36756003)(2616005)(83380400001)(122000001)(26005)(71200400001)(45080400002)(6512007)(6506007)(38100700002)(478600001)(6486002)(966005)(66476007)(110136005)(66556008)(66946007)(76116006)(66446008)(54906003)(64756008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Ym50eEVOeVB2NVBDdFhndE5yR1NxWFhLc2NEQkxzNk91MDEzUU9YK3JGTjAr?=
+ =?utf-8?B?a1o1d3MvUVRwQXRqTXRsN2JpUkJZYWpnMDdsaXM1Ylg1T1lLTU5PWDM5am8x?=
+ =?utf-8?B?dG5SUTVDUlZuYlhFODRrMnd4VFNhbFo1RjVvZnkyZkIrYjFQMUhacGtoWklJ?=
+ =?utf-8?B?QzByd3ZnaC9RamNTYy83dDZRQVppMXU1Z1dYU1Y5bjRQSjBpaG1idUhvZGZD?=
+ =?utf-8?B?Uk9Fam1NNFFON0w2dlpRdDZkQ21FVTlYQ2J0eXd2OHR1SHp3V3F0anlGT3pD?=
+ =?utf-8?B?VkUzL0QyRldtZWtNMnB0azVuSUdETHJXdlp5T0Y2T0FFQ3RFaU9rR1FVYmFL?=
+ =?utf-8?B?OXZ6M0d0RTh6Yit6UU9ROG5EOWcxSE0zYVR5dCtDSTlDWEtuMlRLNjcyWUI5?=
+ =?utf-8?B?VTJtaFlSRUlYdWVYTDYwb0ZTcmhrNnEvYmYwdXJ6Z1I2bWpVOVJLelRvU0t1?=
+ =?utf-8?B?Q1gwcTJzZmJ2bVJpRkwrVm1oYyt0TklQV1c5SmI0dEQvdFNQQnk0MU9uSlc1?=
+ =?utf-8?B?VFR0OWowZGxXY0lCQjROSlFDSGFQSW1vSVdaTmxhYi9VTk0wUWtoa2t3N2Vq?=
+ =?utf-8?B?Y0FPNDMrNWp3RTJnZC9tQ2tFY3ZKU3VlRE0xek0wZUtNQzg5MTBsVTZlUGtj?=
+ =?utf-8?B?S1NQcWc1czI5UXZhVU90djZ3WHF5czFGQWliTWVXV3ZmTGFVQXlReEhwNzJW?=
+ =?utf-8?B?UkhtOGQ1MTRZVjd1d3B3ZHRMK3IxN1NiSXE2Z2NaUlhZUC9IRExsaEVNTkpn?=
+ =?utf-8?B?K0IzNy8xVEYvUloxNkZ2ZUUrbk5LeFA5bHg2R2hheVFjQjlucXNvdy83Ylc0?=
+ =?utf-8?B?Tmw0NnRJYzNVK1M0bUpuRGVheUFrSURRKzNXSU5LYUF5R2JDRk9pbzAyVWFa?=
+ =?utf-8?B?NUFuMVcwNElwMDdkU1FoQmVacEFzQlAwRGRCci9yRWFHQzIyOEljK3hoYjBl?=
+ =?utf-8?B?TmZYZ0ZVRG9pdE9oaGtEeXdkYm1yaUdxajhkdlp6NDdFQnpwbFVlcXF4c3FF?=
+ =?utf-8?B?bWF5a1J0dGN2VFMyUk82WDNZckNaNk5hRVNnVzRHRlAySGpOR2JUNTZJL3Qw?=
+ =?utf-8?B?QjliRTlXeEhUNkR0SUdrSW10WHp4MXVLTmRyeEVyQnI0N3cvcHBCWTNQNkdR?=
+ =?utf-8?B?TzRaSHNmTG96TXNTWjJFYUNTbG9sbEFMazd2S2t1dTdaamhEeWhZczY3UTVF?=
+ =?utf-8?B?ajVMWXJZZmp3RXJZcFNsanVQS2hwWS9kOXFLa29MRm9UOE9iT0NLWmJjNVpQ?=
+ =?utf-8?B?ODIzeXB5RERJQkRJbTB6aHdtRXVrUG53OE5KM00xM3JDeXJXWUQxOSswYUdN?=
+ =?utf-8?B?ejdHUFR0N2plMDJDS1lHdWZwSTFqTE4wRUpKM1RlQjZMUm1WdnVYQllkbG1i?=
+ =?utf-8?B?RmZnbDRrRjZ1RTRCcmcvd3JqYnJOY2dQWS8yTmJPTlo2STE4aVRGWGxQbnlo?=
+ =?utf-8?B?NlBmeFowQWJybFJ5QXlxL1A2eU9Ib2M5VVVkbVcwLytYdnA2cDgzZTk3TXEr?=
+ =?utf-8?B?WXljZVdrM2VXMXB6dXhucEZ3S1FORW1TV1U3K2NzNnpKZVlqSHhpOE95c1ZJ?=
+ =?utf-8?B?V09PbHZpRTBTUnNheGh2elAwVmFWeWd0L2ZnbHdFZHI3STgvRWliVkFJbVZy?=
+ =?utf-8?B?ZUZobi85c1Fock1XeXUyNjVqTEJQSjFmNmZwYXc3ZVJXdGhmYXhuUFJTekpX?=
+ =?utf-8?B?NEVjQ1BCUjV0UHV4cDkxTThiNG5MMGlUY3RUckphOW15bW03eTBsWXdLZzZq?=
+ =?utf-8?B?VWhjMVoxdXBzZ3ZBekRJOTNNbHNNanNqZzdtNTE0S0xGUDBjYkgvWjc0ZVd3?=
+ =?utf-8?B?MnYrNzd3QlZPdVVRSllkZzB3bUxRQUplN3YrYy83cGxHY2htWEo5Q1NxSXlS?=
+ =?utf-8?B?ZVJkS0UySTNhWVFyWlB2T0FvcmFrSzdGY3lsWG5Wa1ROdFgvUGlkQmFQR3Bv?=
+ =?utf-8?B?MFpXN200OVNWNXU1MnYrWXhySURURXVyVGFlRUdFbkJxdVprbGJrbmJPcWtK?=
+ =?utf-8?B?bXYrbXNTNjlZaCtsNmJWejVZUy9sWWpNK1QwN0lvQ0wvSFlObGdDVDQ5RUNZ?=
+ =?utf-8?B?T3NEOGxqVVUzL2t3clR4c0hGWjdMemJERWZZaDBRZkRNZFdlM01ackRDaUl1?=
+ =?utf-8?Q?DjgWWboaHzkMaQ74DYxwwouzV?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <98F88E65C15AC54EBC8D38C450D18212@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR05MB9832.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1939a44a-e70b-4b92-ef47-08dbe9734adc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2023 02:49:18.9489
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vdqIHWaIKshCVSxV2Vc1OLIy5c4d/PHqq83gzZPCphrKMBz1xXmooWzdIBrm5qkf+T80gS4m/mp78mz+fb4Prg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7471
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 2, 2023, at 13:16, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Thu, Oct 26, 2023 at 02:36:38AM +0800, Jerry Shih wrote:
->> +config CRYPTO_AES_BLOCK_RISCV64
->> +	default y if RISCV_ISA_V
->> +	tristate "Ciphers: AES, modes: ECB/CBC/CTR/XTS"
->> +	depends on 64BIT && RISCV_ISA_V
->> +	select CRYPTO_AES_RISCV64
->> +	select CRYPTO_SKCIPHER
->> +	help
->> +	  Length-preserving ciphers: AES cipher algorithms (FIPS-197)
->> +	  with block cipher modes:
->> +	  - ECB (Electronic Codebook) mode (NIST SP 800-38A)
->> +	  - CBC (Cipher Block Chaining) mode (NIST SP 800-38A)
->> +	  - CTR (Counter) mode (NIST SP 800-38A)
->> +	  - XTS (XOR Encrypt XOR Tweakable Block Cipher with Ciphertext
->> +	    Stealing) mode (NIST SP 800-38E and IEEE 1619)
->> +
->> +	  Architecture: riscv64 using:
->> +	  - Zvbb vector extension (XTS)
->> +	  - Zvkb vector crypto extension (CTR/XTS)
->> +	  - Zvkg vector crypto extension (XTS)
->> +	  - Zvkned vector crypto extension
->=20
-> Maybe list Zvkned first since it's the most important one in this =
-context.
-
-Fixed.
-
-
->> +#define AES_BLOCK_VALID_SIZE_MASK (~(AES_BLOCK_SIZE - 1))
->> +#define AES_BLOCK_REMAINING_SIZE_MASK (AES_BLOCK_SIZE - 1)
->=20
-> I think it would be easier to read if these values were just used =
-directly.
-
-Fixed.
-
->> +static int ecb_encrypt(struct skcipher_request *req)
->> +{
->> +	struct crypto_skcipher *tfm =3D crypto_skcipher_reqtfm(req);
->> +	const struct riscv64_aes_ctx *ctx =3D crypto_skcipher_ctx(tfm);
->> +	struct skcipher_walk walk;
->> +	unsigned int nbytes;
->> +	int err;
->> +
->> +	/* If we have error here, the `nbytes` will be zero. */
->> +	err =3D skcipher_walk_virt(&walk, req, false);
->> +	while ((nbytes =3D walk.nbytes)) {
->> +		kernel_vector_begin();
->> +		rv64i_zvkned_ecb_encrypt(walk.src.virt.addr, =
-walk.dst.virt.addr,
->> +					 nbytes & =
-AES_BLOCK_VALID_SIZE_MASK,
->> +					 &ctx->key);
->> +		kernel_vector_end();
->> +		err =3D skcipher_walk_done(
->> +			&walk, nbytes & AES_BLOCK_REMAINING_SIZE_MASK);
->> +	}
->> +
->> +	return err;
->> +}
->=20
-> There's no fallback for !crypto_simd_usable() here.  I really like it =
-this way.
-> However, for it to work (for skciphers and aeads), RISC-V needs to =
-allow the
-> vector registers to be used in softirq context.  Is that already the =
-case?
-
-I turn to use simd skcipher interface. More details will be in the v2 =
-patch set.
-
->> +/* ctr */
->> +static int ctr_encrypt(struct skcipher_request *req)
->> +{
->> +	struct crypto_skcipher *tfm =3D crypto_skcipher_reqtfm(req);
->> +	const struct riscv64_aes_ctx *ctx =3D crypto_skcipher_ctx(tfm);
->> +	struct skcipher_walk walk;
->> +	unsigned int ctr32;
->> +	unsigned int nbytes;
->> +	unsigned int blocks;
->> +	unsigned int current_blocks;
->> +	unsigned int current_length;
->> +	int err;
->> +
->> +	/* the ctr iv uses big endian */
->> +	ctr32 =3D get_unaligned_be32(req->iv + 12);
->> +	err =3D skcipher_walk_virt(&walk, req, false);
->> +	while ((nbytes =3D walk.nbytes)) {
->> +		if (nbytes !=3D walk.total) {
->> +			nbytes &=3D AES_BLOCK_VALID_SIZE_MASK;
->> +			blocks =3D nbytes / AES_BLOCK_SIZE;
->> +		} else {
->> +			/* This is the last walk. We should handle the =
-tail data. */
->> +			blocks =3D (nbytes + (AES_BLOCK_SIZE - 1)) /
->> +				 AES_BLOCK_SIZE;
->=20
-> '(nbytes + (AES_BLOCK_SIZE - 1)) / AES_BLOCK_SIZE' can be replaced =
-with
-> 'DIV_ROUND_UP(nbytes, AES_BLOCK_SIZE)'
-
-Fixed.
-
->> +static int xts_crypt(struct skcipher_request *req, aes_xts_func =
-func)
->> +{
->> +	struct crypto_skcipher *tfm =3D crypto_skcipher_reqtfm(req);
->> +	const struct riscv64_aes_xts_ctx *ctx =3D =
-crypto_skcipher_ctx(tfm);
->> +	struct skcipher_request sub_req;
->> +	struct scatterlist sg_src[2], sg_dst[2];
->> +	struct scatterlist *src, *dst;
->> +	struct skcipher_walk walk;
->> +	unsigned int walk_size =3D crypto_skcipher_walksize(tfm);
->> +	unsigned int tail_bytes;
->> +	unsigned int head_bytes;
->> +	unsigned int nbytes;
->> +	unsigned int update_iv =3D 1;
->> +	int err;
->> +
->> +	/* xts input size should be bigger than AES_BLOCK_SIZE */
->> +	if (req->cryptlen < AES_BLOCK_SIZE)
->> +		return -EINVAL;
->> +
->> +	/*
->> +	 * The tail size should be small than walk_size. Thus, we could =
-make sure the
->> +	 * walk size for tail elements could be bigger than =
-AES_BLOCK_SIZE.
->> +	 */
->> +	if (req->cryptlen <=3D walk_size) {
->> +		tail_bytes =3D req->cryptlen;
->> +		head_bytes =3D 0;
->> +	} else {
->> +		if (req->cryptlen & AES_BLOCK_REMAINING_SIZE_MASK) {
->> +			tail_bytes =3D req->cryptlen &
->> +				     AES_BLOCK_REMAINING_SIZE_MASK;
->> +			tail_bytes =3D walk_size + tail_bytes - =
-AES_BLOCK_SIZE;
->> +			head_bytes =3D req->cryptlen - tail_bytes;
->> +		} else {
->> +			tail_bytes =3D 0;
->> +			head_bytes =3D req->cryptlen;
->> +		}
->> +	}
->> +
->> +	riscv64_aes_encrypt_zvkned(&ctx->ctx2, req->iv, req->iv);
->> +
->> +	if (head_bytes && tail_bytes) {
->> +		skcipher_request_set_tfm(&sub_req, tfm);
->> +		skcipher_request_set_callback(
->> +			&sub_req, skcipher_request_flags(req), NULL, =
-NULL);
->> +		skcipher_request_set_crypt(&sub_req, req->src, req->dst,
->> +					   head_bytes, req->iv);
->> +		req =3D &sub_req;
->> +	}
->> +
->> +	if (head_bytes) {
->> +		err =3D skcipher_walk_virt(&walk, req, false);
->> +		while ((nbytes =3D walk.nbytes)) {
->> +			if (nbytes =3D=3D walk.total)
->> +				update_iv =3D (tail_bytes > 0);
->> +
->> +			nbytes &=3D AES_BLOCK_VALID_SIZE_MASK;
->> +			kernel_vector_begin();
->> +			func(walk.src.virt.addr, walk.dst.virt.addr, =
-nbytes,
->> +			     &ctx->ctx1.key, req->iv, update_iv);
->> +			kernel_vector_end();
->> +
->> +			err =3D skcipher_walk_done(&walk, walk.nbytes - =
-nbytes);
->> +		}
->> +		if (err || !tail_bytes)
->> +			return err;
->> +
->> +		dst =3D src =3D scatterwalk_next(sg_src, &walk.in);
->> +		if (req->dst !=3D req->src)
->> +			dst =3D scatterwalk_next(sg_dst, &walk.out);
->> +		skcipher_request_set_crypt(req, src, dst, tail_bytes, =
-req->iv);
->> +	}
->> +
->> +	/* tail */
->> +	err =3D skcipher_walk_virt(&walk, req, false);
->> +	if (err)
->> +		return err;
->> +	if (walk.nbytes !=3D tail_bytes)
->> +		return -EINVAL;
->> +	kernel_vector_begin();
->> +	func(walk.src.virt.addr, walk.dst.virt.addr, walk.nbytes,
->> +	     &ctx->ctx1.key, req->iv, 0);
->> +	kernel_vector_end();
->> +
->> +	return skcipher_walk_done(&walk, 0);
->> +}
->=20
-> This function looks a bit weird.  I see it's also the only caller of =
-the
-> scatterwalk_next() function that you're adding.  I haven't looked at =
-this super
-> closely, but I expect that there's a cleaner way of handling the =
-"tail" than
-> this -- maybe use scatterwalk_map_and_copy() to copy from/to a stack =
-buffer?
->=20
-> - Eric
-
-I put more comments in v2 patch set. Hope it will be more clear.
-Even though we use `scatterwalk_map_and_copy()`, it still use
-`scatterwalk_ffwd()` inside. The `scatterwalk_next()` is used
-for just `moving the next scatterlist` from from the previous
-walk instead of iterating from the head.
-
--Jerry
-
+T24gU3VuLCAyMDIzLTExLTE5IGF0IDExOjU2ICswMTAwLCBKYXZpZXIgTWFydGluZXogQ2FuaWxs
+YXMgd3JvdGU6DQo+IEhlbGxvLA0KPg0KPiBUaGlzIHNlcmllcyBpcyB0byBmaXggYW4gaXNzdWUg
+dGhhdCBzdXJmYWNlZCBhZnRlciBkYW1hZ2UgY2xpcHBpbmcgd2FzDQo+IGVuYWJsZWQgZm9yIHRo
+ZSB2aXJ0aW8tZ3B1IGJ5IGNvbW1pdCAwMWYwNTk0MGE5YTcgKCJkcm0vdmlydGlvOiBFbmFibGUN
+Cj4gZmIgZGFtYWdlIGNsaXBzIHByb3BlcnR5IGZvciB0aGUgcHJpbWFyeSBwbGFuZSIpLg0KPg0K
+PiBBZnRlciB0aGF0IGNoYW5nZSwgZmxpY2tlcmluZyBhcnRpZmFjdHMgd2FzIHJlcG9ydGVkIHRv
+IGJlIHByZXNlbnQgd2l0aA0KPiBib3RoIHdlc3RvbiBhbmQgd2xyb290cyB3YXlsYW5kIGNvbXBv
+c2l0b3JzIHdoZW4gcnVubmluZyBpbiBhIHZpcnR1YWwNCj4gbWFjaGluZS4gVGhlIGNhdXNlIHdh
+cyBpZGVudGlmaWVkIGJ5IFNpbWEgVmV0dGVyLCB3aG8gcG9pbnRlZCBvdXQgdGhhdA0KPiB2aXJ0
+aW8tZ3B1IGRvZXMgcGVyLWJ1ZmZlciB1cGxvYWRzIGFuZCBmb3IgdGhpcyByZWFzb24gaXQgbmVl
+ZHMgdG8gZG8NCj4gYSBidWZmZXIgZGFtYWdlIGhhbmRsaW5nLCBpbnN0ZWFkIG9mIGZyYW1lIGRh
+bWFnZSBoYW5kbGluZy4NCj4NCj4gVGhlaXIgc3VnZ2VzdGlvbiB3YXMgdG8gZXh0ZW5kIHRoZSBk
+YW1hZ2UgaGVscGVycyB0byBjb3ZlciB0aGF0IGNhc2UNCj4gYW5kIGdpdmVuIHRoYXQgdGhlcmUn
+cyBpc24ndCBhIGJ1ZmZlciBkYW1hZ2UgYWNjdW11bGF0aW9uIGFsZ29yaXRobQ0KPiAoZS5nOiBi
+dWZmZXIgYWdlKSwganVzdCBkbyBhIGZ1bGwgcGxhbmUgdXBkYXRlIGlmIHRoZSBmcmFtZWJ1ZmZl
+ciB0aGF0DQo+IGlzIGF0dGFjaGVkIHRvIGEgcGxhbmUgY2hhbmdlZCBzaW5jZSB0aGUgbGFzdCBw
+bGFuZSB1cGRhdGUgKHBhZ2UtZmxpcCkuDQo+DQo+IEl0IGlzIGEgdjMgdGhhdCBhZGRyZXNzZXMg
+aXNzdWVzIHBvaW50ZWQgb3V0IGJ5IFRob21hcyBaaW1tZXJtYW5uICBhbmQNCj4gU2ltb24gU2Vy
+IGluIHYyOg0KPg0KPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNoaXZlcy9kcmkt
+ZGV2ZWwvMjAyMy1Ob3ZlbWJlci80MzA4OTYuaHRtbA0KPg0KPiBQYXRjaCAjMSBhZGRzIGEgaWdu
+b3JlX2RhbWFnZV9jbGlwcyBmaWVsZCB0byBzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlIHRvIGJlDQo+
+IHNldCBieSBkcml2ZXJzIHRoYXQgd2FudCB0aGUgZGFtYWdlIGhlbHBlcnMgdG8gaWdub3JlIHRo
+ZSBkYW1hZ2UgY2xpcHMuDQo+DQo+IFBhdGNoICMyIGZpeGVzIHRoZSB2aXJ0aW8tZ3B1IGRhbWFn
+ZSBoYW5kbGluZyBsb2dpYyBieSBhc2tpbmcgdGhlIGRhbWFnZQ0KPiBoZWxwZXIgdG8gaWdub3Jl
+IHRoZSBkYW1hZ2UgY2xpcHMgaWYgdGhlIGZyYW1lYnVmZmVyIGF0dGFjaGVkIHRvIGEgcGxhbmUN
+Cj4gaGFzIGNoYW5nZWQgc2luY2UgdGhlIGxhc3QgcGFnZS1mbGlwLg0KPg0KPiBQYXRjaCAjMyBk
+b2VzIHRoZSBzYW1lIGJ1dCBmb3IgdGhlIHZtd2dmeCBkcml2ZXIgdGhhdCBhbHNvIG5lZWRzIHRv
+IGhhbmRsZQ0KPiBidWZmZXIgZGFtYWdlIGFuZCBzaG91bGQgaGF2ZSB0aGUgc2FtZSBpc3N1ZSAo
+YWx0aG91Z2ggSSBoYXZlbid0IHRlc3RlZCBpdA0KPiBkdWUgbm90IGhhdmluZyBhIFZNV2FyZSBz
+ZXR1cCkuDQo+DQo+IFBhdGNoICM0IGFkZHMgdG8gdGhlIEtNUyBkYW1hZ2UgdHJhY2tpbmcga2Vy
+bmVsLWRvYyBzb21lIHBhcmFncmFwaHMgYWJvdXQNCj4gZGFtYWdlIHRyYWNraW5nIHR5cGVzIGFu
+ZCByZWZlcmVuY2VzIHRvIGxpbmtzIHRoYXQgZXhwbGFpbiBmcmFtZSBkYW1hZ2UgdnMNCj4gYnVm
+ZmVyIGRhbWFnZS4NCj4NCj4gRmluYWxseSBwYXRjaCAjNSBhZGRzIGFuIGl0ZW0gdG8gdGhlIERS
+TSB0b2RvLCBhYm91dCB0aGUgbmVlZCB0byBpbXBsZW1lbnQNCj4gc29tZSBidWZmZXIgZGFtYWdl
+IGFjY3VtdWxhdGlvbiBhbGdvcml0aG0gaW5zdGVhZCBvZiBqdXN0IGRvaW5nIGZ1bGwgcGxhbmUN
+Cj4gdXBkYXRlcyBpbiB0aGlzIGNhc2UuDQo+DQo+IEJlY2F1c2UgY29tbWl0IDAxZjA1OTQwYTlh
+NyBsYW5kZWQgaW4gdjYuNCwgdGhlIGZpcnN0IDIgcGF0Y2hlcyBhcmUgbWFya2VkDQo+IGFzIEZp
+eGVzIGFuZCBDYyBzdGFibGUuDQo+DQo+IEkndmUgdGVzdGVkIHRoaXMgb24gYSBWTSB3aXRoIHdl
+c3Rvbiwgd2FzIGFibGUgdG8gcmVwcm9kdWNlIHRoZSBpc3N1ZQ0KPiByZXBvcnRlZCBhbmQgdGhl
+IHBhdGNoZXMgZGlkIGZpeCB0aGUgcHJvYmxlbS4NCj4NCj4gQmVzdCByZWdhcmRzLA0KPiBKYXZp
+ZXINCj4NCj4gQ2hhbmdlcyBpbiB2MzoNCj4gLSBGaXggdHlwbyBpbiB0aGUga2VybmVsLWRvYyAo
+U2ltb24gU2VyKS4NCj4gLSBBZGQgYSBwYXJhZ3JhcGggZXhwbGFpbmluZyB3aGF0IHRoZSBwcm9i
+bGVtIGluIHRoZSBrZXJuZWwgaXMgYW5kDQo+ICAgbWFrZSBpdCBjbGVhciB0aGF0IHRoZSByZWZl
+ZmVyZW5jZSBkb2N1bWVudHMgYXJlIHJlbGF0ZWQgdG8gaG93DQo+ICAgdXNlci1zcGFjZSBoYW5k
+bGVzIHRoaXMgY2FzZSAoVGhvbWFzIFppbW1lcm1hbm4pLg0KPg0KPiBDaGFuZ2VzIGluIHYyOg0K
+PiAtIEFkZCBhIHN0cnVjdCBkcm1fcGxhbmVfc3RhdGUgLmlnbm9yZV9kYW1hZ2VfY2xpcHMgdG8g
+c2V0IGluIHRoZSBwbGFuZSdzDQo+ICAgLmF0b21pY19jaGVjaywgaW5zdGVhZCBvZiBoYXZpbmcg
+ZGlmZmVyZW50IGhlbHBlcnMgKFRob21hcyBaaW1tZXJtYW5uKS4NCj4gLSBTZXQgc3RydWN0IGRy
+bV9wbGFuZV9zdGF0ZSAuaWdub3JlX2RhbWFnZV9jbGlwcyBpbiB2aXJ0aW8tZ3B1IHBsYW5lJ3MN
+Cj4gICAuYXRvbWljX2NoZWNrIGluc3RlYWQgb2YgdXNpbmcgYSBkaWZmZXJlbnQgaGVscGVycyAo
+VGhvbWFzIFppbW1lcm1hbm4pLg0KPiAtIFNldCBzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlIC5pZ25v
+cmVfZGFtYWdlX2NsaXBzIGluIHZtd2dmeCBwbGFuZSdzDQo+ICAgLmF0b21pY19jaGVjayBpbnN0
+ZWFkIG9mIHVzaW5nIGEgZGlmZmVyZW50IGhlbHBlcnMgKFRob21hcyBaaW1tZXJtYW5uKS4NCj4N
+Cj4gSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzICg1KToNCj4gICBkcm06IEFsbG93IGRyaXZlcnMg
+dG8gaW5kaWNhdGUgdGhlIGRhbWFnZSBoZWxwZXJzIHRvIGlnbm9yZSBkYW1hZ2UNCj4gICAgIGNs
+aXBzDQo+ICAgZHJtL3ZpcnRpbzogRGlzYWJsZSBkYW1hZ2UgY2xpcHBpbmcgaWYgRkIgY2hhbmdl
+ZCBzaW5jZSBsYXN0IHBhZ2UtZmxpcA0KPiAgIGRybS92bXdnZng6IERpc2FibGUgZGFtYWdlIGNs
+aXBwaW5nIGlmIEZCIGNoYW5nZWQgc2luY2UgbGFzdCBwYWdlLWZsaXANCj4gICBkcm0vcGxhbmU6
+IEV4dGVuZCBkYW1hZ2UgdHJhY2tpbmcga2VybmVsLWRvYw0KPiAgIGRybS90b2RvOiBBZGQgZW50
+cnkgYWJvdXQgaW1wbGVtZW50aW5nIGJ1ZmZlciBhZ2UgZm9yIGRhbWFnZSB0cmFja2luZw0KPg0K
+PiAgRG9jdW1lbnRhdGlvbi9ncHUvdG9kby5yc3QgICAgICAgICAgICAgfCAyMCArKysrKysrKysr
+KysrKysrKysrKw0KPiAgZHJpdmVycy9ncHUvZHJtL2RybV9kYW1hZ2VfaGVscGVyLmMgICAgfCAg
+MyArKy0NCj4gIGRyaXZlcnMvZ3B1L2RybS9kcm1fcGxhbmUuYyAgICAgICAgICAgIHwgMjYgKysr
+KysrKysrKysrKysrKysrKysrKysrKysNCj4gIGRyaXZlcnMvZ3B1L2RybS92aXJ0aW8vdmlydGdw
+dV9wbGFuZS5jIHwgMTAgKysrKysrKysrKw0KPiAgZHJpdmVycy9ncHUvZHJtL3Ztd2dmeC92bXdn
+Znhfa21zLmMgICAgfCAxMSArKysrKysrKysrKw0KPiAgaW5jbHVkZS9kcm0vZHJtX3BsYW5lLmgg
+ICAgICAgICAgICAgICAgfCAgOCArKysrKysrKw0KPiAgNiBmaWxlcyBjaGFuZ2VkLCA3NyBpbnNl
+cnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+DQoNCkxvb2tzIGdvb2QuIFRoYW5rcy4gRm9yIHRo
+ZSBzZXJpZXM6DQpSZXZpZXdlZC1ieTogWmFjayBSdXNpbiA8emFja3JAdm13YXJlLmNvbT4NCg0K
+eg0K
