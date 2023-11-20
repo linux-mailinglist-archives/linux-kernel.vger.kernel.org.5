@@ -2,138 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4298E7F1588
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01AA7F1586
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233453AbjKTOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
+        id S233341AbjKTOR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233353AbjKTOSE (ORCPT
+        with ESMTP id S232759AbjKTORy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:18:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F95CA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 06:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700489880; x=1732025880;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SIQqNu5a5f9r/m9C12b+ZnqfhFeNry/inI2ahfZeaHM=;
-  b=nPbseGko5Mdy5KWqGhHZLPqGORjGLZY4SRfzuuMTPbyeLaYuX218bNKv
-   kjjfFJ20091p352mpsWVfZ07A0OZnIwlBHXH1UYqhvRYgNnBLQCAry0pI
-   pufhKUlrgmNterXQ7KoFFZw53ZORWkHFrc+wDf71PAAWj2HsOqNEFV/zc
-   ZRJlVzmYvaRSK7vA9teEqjJc/dw/CLp1vzQaMeJ7UgMqE2vV2+fpL81Wl
-   pQiFyM9iU9PH6NmFEoEhH9iDKp23M9tL4ZolYVX9V1lCtmvOLAN6YOYmB
-   VUn9V2pns5DxwJ4TAnMdpl6WfkOr2SHRv0Q3701bzSVC5heOjt5Uzxgry
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="458123267"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="458123267"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 06:17:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="759795652"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="759795652"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 20 Nov 2023 06:17:55 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5561-0006W5-0g;
-        Mon, 20 Nov 2023 14:17:53 +0000
-Date:   Mon, 20 Nov 2023 22:17:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Waiman Long <longman@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH v6 4/4] mm,page_owner: Filter out stacks by a threshold
- counter
-Message-ID: <202311202220.b6pHpn7J-lkp@intel.com>
-References: <20231120084300.4368-5-osalvador@suse.de>
+        Mon, 20 Nov 2023 09:17:54 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BAA7A0;
+        Mon, 20 Nov 2023 06:17:51 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AK7gLvc013978;
+        Mon, 20 Nov 2023 08:17:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=M
+        2IHF0tk12GZj3YAbzn33ZWKXZjVhQ4APZRmBFKGdYg=; b=bghR0rJbKddrRZML8
+        gCVGdA6NLA80PobxV0ymyZTAP67EFQsD/TCArc+SRq/joRpwU1+xJwCyAM7Y34Hz
+        GJX1qDI+EEz4noCncEU08iy1OLBJ15BpPVokcGftNWBsCmMvhgcxXGspQscNVs0+
+        9c6bhUSln52Gz1IefkOKG6lo1/foZIS8t6D8dn+8wkw1cc0NhTjY6B6MWxC++UKL
+        4n2jz/FmWeGOHrsqA3b9NAsBxvmnb4BfKYzurjvGymSeklP2kUw8cO5uDyjuLOJ6
+        iVsCfJJETlLs1FMny3lOb8xVOc3FLoZUyW5ycy6CfFlc9pNZsHb5+vjs6GSuIsbM
+        74iuQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj29vac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 08:17:41 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 20 Nov
+ 2023 14:17:39 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Mon, 20 Nov 2023 14:17:39 +0000
+Received: from upx-tgl-008-ubuntu.ad.cirrus.com (upx-tgl-008-ubuntu.ad.cirrus.com [198.90.251.167])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 31C6115B6;
+        Mon, 20 Nov 2023 14:17:39 +0000 (UTC)
+From:   Maciej Strozek <mstrozek@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Maciej Strozek <mstrozek@opensource.cirrus.com>
+Subject: [PATCH v3] ASoC: cs43130: Allow driver to work without IRQ connection
+Date:   Mon, 20 Nov 2023 14:17:34 +0000
+Message-ID: <20231120141734.76679-1-mstrozek@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120084300.4368-5-osalvador@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: n6W9nEu8gRDEmlx73Nu4MNDOqZCArYFE
+X-Proofpoint-GUID: n6W9nEu8gRDEmlx73Nu4MNDOqZCArYFE
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oscar,
+Add a polling mechanism that will keep the driver operational even in
+absence of physical IRQ connection. If IRQ line is detected, the driver
+will continue working as usual, in case of missing IRQ line it will
+fallback to the polling mechanism introduced in this change.
+This will support users which choose not to connect an IRQ line as it
+is not critical to part's operation.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Maciej Strozek <mstrozek@opensource.cirrus.com>
+---
+V2 -> V3: Amended changelog message and subject line
+V1 -> V2: Add changelog message
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master v6.7-rc2 next-20231120]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+ sound/soc/codecs/cs43130.c | 56 +++++++++++++++++++++++++++++++-------
+ sound/soc/codecs/cs43130.h |  1 +
+ 2 files changed, 47 insertions(+), 10 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oscar-Salvador/lib-stackdepot-Add-a-refcount-field-in-stack_record/20231120-164913
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231120084300.4368-5-osalvador%40suse.de
-patch subject: [PATCH v6 4/4] mm,page_owner: Filter out stacks by a threshold counter
-config: arm-randconfig-001-20231120 (https://download.01.org/0day-ci/archive/20231120/202311202220.b6pHpn7J-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231120/202311202220.b6pHpn7J-lkp@intel.com/reproduce)
+diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
+index fd39328579fb..1e7c32eedc7b 100644
+--- a/sound/soc/codecs/cs43130.c
++++ b/sound/soc/codecs/cs43130.c
+@@ -326,6 +326,43 @@ static int cs43130_set_pll(struct snd_soc_component *component, int pll_id, int
+ 	return ret;
+ }
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311202220.b6pHpn7J-lkp@intel.com/
++static int cs43130_wait_for_completion(struct cs43130_private *cs43130, struct completion *to_poll,
++					int time)
++{
++	int stickies, offset, flag;
++	int ret = 0;
++
++	if (cs43130->has_irq_line) {
++		ret = wait_for_completion_timeout(to_poll, msecs_to_jiffies(time));
++	} else {
++		if (to_poll == &cs43130->xtal_rdy) {
++			offset = 0;
++			flag = CS43130_XTAL_RDY_INT;
++		} else if (to_poll == &cs43130->pll_rdy) {
++			offset = 0;
++			flag = CS43130_PLL_RDY_INT;
++		} else if (to_poll == &cs43130->hpload_evt) {
++			offset = 3;
++			flag = CS43130_HPLOAD_NO_DC_INT | CS43130_HPLOAD_UNPLUG_INT |
++				CS43130_HPLOAD_OOR_INT | CS43130_HPLOAD_AC_INT |
++				CS43130_HPLOAD_DC_INT | CS43130_HPLOAD_ON_INT |
++				CS43130_HPLOAD_OFF_INT;
++		} else {
++			return 0;
++		}
++
++		ret = regmap_read_poll_timeout(cs43130->regmap, CS43130_INT_STATUS_1 + offset,
++					       stickies, (stickies & flag),
++					       1000, time * 1000);
++
++		/*
++		 * Return 0 for an timeout/error to be consistent with wait_for_completion_timeout
++		 */
++		ret = !ret;
++	}
++	return ret;
++}
++
+ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				 enum cs43130_mclk_src_sel src)
+ {
+@@ -364,8 +401,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+@@ -400,8 +436,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 					   CS43130_XTAL_RDY_INT_MASK, 0);
+ 			regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 					   CS43130_PDN_XTAL_MASK, 0);
+-			ret = wait_for_completion_timeout(&cs43130->xtal_rdy,
+-							  msecs_to_jiffies(100));
++			ret = cs43130_wait_for_completion(cs43130, &cs43130->xtal_rdy, 100);
+ 			regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 					   CS43130_XTAL_RDY_INT_MASK,
+ 					   1 << CS43130_XTAL_RDY_INT_SHIFT);
+@@ -416,8 +451,7 @@ static int cs43130_change_clksrc(struct snd_soc_component *component,
+ 				   CS43130_PLL_RDY_INT_MASK, 0);
+ 		regmap_update_bits(cs43130->regmap, CS43130_PWDN_CTL,
+ 				   CS43130_PDN_PLL_MASK, 0);
+-		ret = wait_for_completion_timeout(&cs43130->pll_rdy,
+-						  msecs_to_jiffies(100));
++		ret = cs43130_wait_for_completion(cs43130, &cs43130->pll_rdy, 100);
+ 		regmap_update_bits(cs43130->regmap, CS43130_INT_MASK_1,
+ 				   CS43130_PLL_RDY_INT_MASK,
+ 				   1 << CS43130_PLL_RDY_INT_SHIFT);
+@@ -2040,8 +2074,8 @@ static int cs43130_hpload_proc(struct cs43130_private *cs43130,
+ 	regmap_multi_reg_write(cs43130->regmap, seq,
+ 			       seq_size);
 
-All warnings (new ones prefixed by >>):
+-	ret = wait_for_completion_timeout(&cs43130->hpload_evt,
+-					  msecs_to_jiffies(1000));
++	ret = cs43130_wait_for_completion(cs43130, &cs43130->hpload_evt, 1000);
++
+ 	regmap_read(cs43130->regmap, CS43130_INT_MASK_4, &msk);
+ 	if (!ret) {
+ 		dev_err(cs43130->dev, "Timeout waiting for HPLOAD interrupt\n");
+@@ -2545,8 +2579,10 @@ static int cs43130_i2c_probe(struct i2c_client *client)
+ 					IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+ 					"cs43130", cs43130);
+ 	if (ret != 0) {
+-		dev_err(cs43130->dev, "Failed to request IRQ: %d\n", ret);
+-		goto err;
++		dev_dbg(cs43130->dev, "Failed to request IRQ: %d, will poll instead\n", ret);
++		cs43130->has_irq_line = 0;
++	} else {
++		cs43130->has_irq_line = 1;
+ 	}
 
->> mm/page_owner.c:819:5: warning: no previous prototype for function 'page_owner_threshold_get' [-Wmissing-prototypes]
-     819 | int page_owner_threshold_get(void *data, u64 *val)
-         |     ^
-   mm/page_owner.c:819:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     819 | int page_owner_threshold_get(void *data, u64 *val)
-         | ^
-         | static 
->> mm/page_owner.c:825:5: warning: no previous prototype for function 'page_owner_threshold_set' [-Wmissing-prototypes]
-     825 | int page_owner_threshold_set(void *data, u64 val)
-         |     ^
-   mm/page_owner.c:825:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-     825 | int page_owner_threshold_set(void *data, u64 val)
-         | ^
-         | static 
-   2 warnings generated.
+ 	cs43130->mclk_int_src = CS43130_MCLK_SRC_RCO;
+diff --git a/sound/soc/codecs/cs43130.h b/sound/soc/codecs/cs43130.h
+index d3f595bbd3ba..dbdb5b262f1b 100644
+--- a/sound/soc/codecs/cs43130.h
++++ b/sound/soc/codecs/cs43130.h
+@@ -508,6 +508,7 @@ struct	cs43130_private {
+ 	struct gpio_desc		*reset_gpio;
+ 	unsigned int			dev_id; /* codec device ID */
+ 	int				xtal_ibias;
++	bool				has_irq_line;
 
+ 	/* shared by both DAIs */
+ 	struct mutex			clk_mutex;
+--
+2.34.1
 
-vim +/page_owner_threshold_get +819 mm/page_owner.c
-
-   818	
- > 819	int page_owner_threshold_get(void *data, u64 *val)
-   820	{
-   821		*val = page_owner_stack_threshold;
-   822		return 0;
-   823	}
-   824	
- > 825	int page_owner_threshold_set(void *data, u64 val)
-   826	{
-   827		page_owner_stack_threshold = val;
-   828		return 0;
-   829	}
-   830	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
