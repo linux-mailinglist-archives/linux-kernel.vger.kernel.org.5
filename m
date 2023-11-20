@@ -2,69 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6648A7F0F52
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE337F0F54
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbjKTJq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
+        id S232475AbjKTJrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:47:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbjKTJq1 (ORCPT
+        with ESMTP id S232138AbjKTJrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:46:27 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416FBA7
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:46:01 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c503dbe50dso54490101fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:46:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700473559; x=1701078359; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zkX770QsciZgmyIjGlD/aDGrwKJCqahJAwyCfq7+gms=;
-        b=em0LFo0+cNdIwjHui+KvAJqhsgPFIryudKSw7lvCaZkfx5RO7o8Mqc7OrgvX6AyGuH
-         PhkeM8C5Us3U6x/f1oeEjd5/4IW98UwJK0lzs0fM5/5LMwfluNFD6GHv14CXje6Vw92m
-         oXuWl7mhIf2tp2bD9maiczdrRXQtRVjNRDQucBbBQIiJ2SbGgZGsgvHFtqMQhgl0qxoP
-         zXeAub3ZG6LY8bFr1tI/FZQtylF+Xz9ryw/lVGpKRgYQbQskQJg+Wfst3Vswdk2zRde5
-         C9sXJQY8Kl3n1wC8/tJloR9et6V7DOoQrXvJzOoGeG5tuwqVJV3JUF98qYMLZgHz35fY
-         wQrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700473559; x=1701078359;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zkX770QsciZgmyIjGlD/aDGrwKJCqahJAwyCfq7+gms=;
-        b=ALbX1SQCMsQtLzk4D3g7ThgzvLZLYGlOmvpf3j6ZUIc8RXnDcASCjo9cs/KhtqvuVI
-         3N6PEaEu4YycoOeEdy7rz11wreBHudfZGM7RLA03UForQIrjNu5NlBKggzhnLqj8eIgO
-         MQIdDgf1fIALOqzNTO9mtQ0QgOlWAG2gBi2hZATx6zz79quAHDn9J4LF05iA5rNh7yUz
-         0Q0LWqomVuWLgcSd+7Y7xQXu2U+UZIj1rTSyCEbOGFHN82lKzKqfkE7+5YQJl5NB1SeY
-         WA132kBvmM7wJQmehjh2GflcLxBjexspeIf+QAWpAy5Mnfjn0/J8l1ZVDk7V92RKmC3F
-         1Wuw==
-X-Gm-Message-State: AOJu0YyFThNwczvkLliGieUKLLRIDb2j2yN34bKYyqvKoJL76oVbliDq
-        dq0AfKx6h9HqnULGhQs7jIdwNV1GqUEew1wthk73yQ==
-X-Google-Smtp-Source: AGHT+IEXtmIeiiZFXoFRKaKbc0qrn9hxoDeZVP3wrl6QX3VQYn1t47LiuGEcBE/xagf4bs0P7gMKS4so7X7kWUS/TJM=
-X-Received: by 2002:a2e:8e38:0:b0:2c6:ed5e:bbf0 with SMTP id
- r24-20020a2e8e38000000b002c6ed5ebbf0mr4711811ljk.34.1700473559467; Mon, 20
- Nov 2023 01:45:59 -0800 (PST)
+        Mon, 20 Nov 2023 04:47:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33489A7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:47:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700473660; x=1732009660;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=6s4aw/Qth2eVOxbcVqrXfUl6il4NKHU5Z308nwfa2H0=;
+  b=SEODkJ0qBiq8rY/EEVs+9jnMBSOOQpG8iy4HlAXfpUtbpCWx7XuBJuHA
+   n0bSjtZUUfAGxMbAaRREHHX8gBL7hNUeHnjTfaCngJ3wL1s/qNYSUEYMF
+   M+i099KEjGShyRFNKeNgPuXtuy7QePbx+HkNXet4jw9/Jvg/t7uZWhiKI
+   p8cAH6kepuvTurQslsOhV1GGecRd9QjtFT+pWyeYsppjEXLQyS/AYRuKV
+   AX/d8HqNe31v03qOR6HhkzNOBvU/ZtcHSrxQ32z0h5T6QUsh4d5Z9CBGq
+   r00BQI61JZ4c4nTlWLm6Q/7qWqSbq0yf04qQypvwcyaKi4TbujxzZF9Z2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="388727240"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="388727240"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 01:47:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10899"; a="939760776"
+X-IronPort-AV: E=Sophos;i="6.04,213,1695711600"; 
+   d="scan'208";a="939760776"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 20 Nov 2023 01:47:37 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r50sR-0006IM-25;
+        Mon, 20 Nov 2023 09:47:35 +0000
+Date:   Mon, 20 Nov 2023 17:47:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202311201751.e7jX5wti-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231116114150.48639-1-huangjie.albert@bytedance.com> <ZVcxmwm/DRTB8QwO@lore-desk>
-In-Reply-To: <ZVcxmwm/DRTB8QwO@lore-desk>
-From:   =?UTF-8?B?6buE5p2w?= <huangjie.albert@bytedance.com>
-Date:   Mon, 20 Nov 2023 17:45:47 +0800
-Message-ID: <CABKxMyPMboVYs01KfPEdxPbx-LT88Qe1pcDMaT0NiNWhA-5emg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH net] veth: fix ethtool statistical errors
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,65 +64,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lorenzo Bianconi <lorenzo@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8817=
-=E6=97=A5=E5=91=A8=E4=BA=94 17:26=E5=86=99=E9=81=93=EF=BC=9A
->
-> > if peer->real_num_rx_queues > 1, the ethtool -s command for
-> > veth network device will display some error statistical values.
-> > The value of tx_idx is reset with each iteration, so even if
-> > peer->real_num_rx_queues is greater than 1, the value of tx_idx
-> > will remain constant. This results in incorrect statistical values.
-> > To fix this issue, assign the value of pp_idx to tx_idx.
-> >
-> > Fixes: 5fe6e56776ba ("veth: rely on peer veth_rq for ndo_xdp_xmit accou=
-nting")
-> > Signed-off-by: Albert Huang <huangjie.albert@bytedance.com>
-> > ---
-> >  drivers/net/veth.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> > index 0deefd1573cf..3a8e3fc5eeb5 100644
-> > --- a/drivers/net/veth.c
-> > +++ b/drivers/net/veth.c
-> > @@ -225,7 +225,7 @@ static void veth_get_ethtool_stats(struct net_devic=
-e *dev,
-> >       for (i =3D 0; i < peer->real_num_rx_queues; i++) {
-> >               const struct veth_rq_stats *rq_stats =3D &rcv_priv->rq[i]=
-.stats;
-> >               const void *base =3D (void *)&rq_stats->vs;
-> > -             unsigned int start, tx_idx =3D idx;
-> > +             unsigned int start, tx_idx =3D pp_idx;
-> >               size_t offset;
-> >
-> >               tx_idx +=3D (i % dev->real_num_tx_queues) * VETH_TQ_STATS=
-_LEN;
-> > --
-> > 2.20.1
-> >
->
-> Hi Albert,
->
-> Can you please provide more details about the issue you are facing?
-> In particular, what is the number of configured tx and rx queues for both
-> peers?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+commit: 90db9dbedd26ce029f3a0f8d2cbd3a142f452408 kasan, powerpc: don't rename memintrinsics if compiler adds prefixes
+date:   8 months ago
+config: powerpc64-randconfig-r112-20231120 (https://download.01.org/0day-ci/archive/20231120/202311201751.e7jX5wti-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20231120/202311201751.e7jX5wti-lkp@intel.com/reproduce)
 
-Hi, Lorenzo
-I found this because I wanted to add more echo information in ethttool=EF=
-=BC=88for veth,
-but I found that the information was incorrect. That's why I paid
-attention here.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311201751.e7jX5wti-lkp@intel.com/
 
-> tx_idx is the index of the current (local) tx queue and it must restart f=
-rom
-> idx in each iteration otherwise we will have an issue when
-> peer->real_num_rx_queues is greater than dev->real_num_tx_queues.
->
-OK. I don't know if this is a known issue.
+sparse warnings: (new ones prefixed by >>)
+   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/char/tpm/tpm_ibmvtpm.c:125:9: sparse: sparse: cast removes address space '__iomem' of expression
+>> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void const *
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
+>> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void const *
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
+>> drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     expected void *p
+   drivers/char/tpm/tpm_ibmvtpm.c:126:9: sparse:     got void [noderef] __iomem *rtce_buf
+   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/char/tpm/tpm_ibmvtpm.c:229:9: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *objp @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse:     expected void const *objp
+   drivers/char/tpm/tpm_ibmvtpm.c:366:30: sparse:     got void [noderef] __iomem *rtce_buf
+   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *rtce_buf @@     got void * @@
+   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse:     expected void [noderef] __iomem *rtce_buf
+   drivers/char/tpm/tpm_ibmvtpm.c:525:43: sparse:     got void *
+   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void *ptr @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse:     expected void *ptr
+   drivers/char/tpm/tpm_ibmvtpm.c:532:52: sparse:     got void [noderef] __iomem *rtce_buf
+   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const *objp @@     got void [noderef] __iomem *rtce_buf @@
+   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse:     expected void const *objp
+   drivers/char/tpm/tpm_ibmvtpm.c:538:46: sparse:     got void [noderef] __iomem *rtce_buf
 
-BR
-Albert
+vim +126 drivers/char/tpm/tpm_ibmvtpm.c
 
+132f7629474424 Ashley Lai        2012-08-22   94  
+132f7629474424 Ashley Lai        2012-08-22   95  /**
+132f7629474424 Ashley Lai        2012-08-22   96   * tpm_ibmvtpm_recv - Receive data after send
+93c12f293f8798 Winkler, Tomas    2016-11-23   97   *
+132f7629474424 Ashley Lai        2012-08-22   98   * @chip:	tpm chip struct
+132f7629474424 Ashley Lai        2012-08-22   99   * @buf:	buffer to read
+93c12f293f8798 Winkler, Tomas    2016-11-23  100   * @count:	size of buffer
+132f7629474424 Ashley Lai        2012-08-22  101   *
+93c12f293f8798 Winkler, Tomas    2016-11-23  102   * Return:
+132f7629474424 Ashley Lai        2012-08-22  103   *	Number of bytes read
+132f7629474424 Ashley Lai        2012-08-22  104   */
+132f7629474424 Ashley Lai        2012-08-22  105  static int tpm_ibmvtpm_recv(struct tpm_chip *chip, u8 *buf, size_t count)
+132f7629474424 Ashley Lai        2012-08-22  106  {
+9e0d39d8a6a0a8 Christophe Ricard 2016-03-31  107  	struct ibmvtpm_dev *ibmvtpm = dev_get_drvdata(&chip->dev);
+132f7629474424 Ashley Lai        2012-08-22  108  	u16 len;
+132f7629474424 Ashley Lai        2012-08-22  109  
+132f7629474424 Ashley Lai        2012-08-22  110  	if (!ibmvtpm->rtce_buf) {
+132f7629474424 Ashley Lai        2012-08-22  111  		dev_err(ibmvtpm->dev, "ibmvtpm device is not ready\n");
+132f7629474424 Ashley Lai        2012-08-22  112  		return 0;
+132f7629474424 Ashley Lai        2012-08-22  113  	}
+132f7629474424 Ashley Lai        2012-08-22  114  
+b5666502700855 Ashley Lai        2012-09-12  115  	len = ibmvtpm->res_len;
+132f7629474424 Ashley Lai        2012-08-22  116  
+b5666502700855 Ashley Lai        2012-09-12  117  	if (count < len) {
+132f7629474424 Ashley Lai        2012-08-22  118  		dev_err(ibmvtpm->dev,
+37ab03414829e5 Jason Gunthorpe   2013-09-14  119  			"Invalid size in recv: count=%zd, crq_size=%d\n",
+b5666502700855 Ashley Lai        2012-09-12  120  			count, len);
+132f7629474424 Ashley Lai        2012-08-22  121  		return -EIO;
+132f7629474424 Ashley Lai        2012-08-22  122  	}
+132f7629474424 Ashley Lai        2012-08-22  123  
+132f7629474424 Ashley Lai        2012-08-22  124  	spin_lock(&ibmvtpm->rtce_lock);
+b5666502700855 Ashley Lai        2012-09-12  125  	memcpy((void *)buf, (void *)ibmvtpm->rtce_buf, len);
+b5666502700855 Ashley Lai        2012-09-12 @126  	memset(ibmvtpm->rtce_buf, 0, len);
+b5666502700855 Ashley Lai        2012-09-12  127  	ibmvtpm->res_len = 0;
+132f7629474424 Ashley Lai        2012-08-22  128  	spin_unlock(&ibmvtpm->rtce_lock);
+132f7629474424 Ashley Lai        2012-08-22  129  	return len;
+132f7629474424 Ashley Lai        2012-08-22  130  }
+132f7629474424 Ashley Lai        2012-08-22  131  
 
-> Regards,
-> Lorenzo
+:::::: The code at line 126 was first introduced by commit
+:::::: b5666502700855a1eb1a15482005b22478b9460e drivers/char/tpm: remove tasklet and cleanup
+
+:::::: TO: Ashley Lai <adlai@linux.vnet.ibm.com>
+:::::: CC: Kent Yoder <key@linux.vnet.ibm.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
