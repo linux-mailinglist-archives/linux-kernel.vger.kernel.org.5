@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5447F1CBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDAC7F1CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 19:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjKTSjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 13:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
+        id S232733AbjKTSj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 13:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233155AbjKTSiz (ORCPT
+        with ESMTP id S232654AbjKTSjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 13:38:55 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B191FDF
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:37:35 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKIFiCt021361;
-        Mon, 20 Nov 2023 18:37:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=lO8b6ZXr7zrGhq7ykp8qfuxFOUwTl24MyRC5J5RxAco=;
- b=gB6mQUppGlsfKGPQaOH5aYAsVMikkH4cWu7BH/B7YWrmAs+H7mk3zJoydnU4yItpNeqE
- 9z7xK3R2phtDUjtH+jqzSylrFkW8gCzrLLmSY2RMdi5G+GPSz76yy2o3PT7jG7dH9rbB
- U+aSPuQ0PO7arHH53coqx34PVYVmuVvwhiGuFRQ3BVpc9B4Nlq5ctwemk1y7Zmk80DwI
- FnpoLRkfM93QYdYit22p5GWCFlDuh71b2JvGJQ7b1zBjbawi3/WtsCo2Ak1cUq0pW2RH
- OSEGU4gmqe1SI9MxbRBwj7DUMjS4HrvMi2GtANsReVgRpLLsPnR8alLTG8i40WGgx1/w Hw== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ugcck8s7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 18:37:23 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKIJ1Sf004988;
-        Mon, 20 Nov 2023 18:37:22 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf7yybgvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 20 Nov 2023 18:37:22 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AKIbKtC38142362
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 20 Nov 2023 18:37:20 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1EAF120040;
-        Mon, 20 Nov 2023 18:37:20 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04D4F2004B;
-        Mon, 20 Nov 2023 18:37:20 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 20 Nov 2023 18:37:19 +0000 (GMT)
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vaneet Narang <v.narang@samsung.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
+        Mon, 20 Nov 2023 13:39:03 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B54D6C
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:38:27 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-332c7d4a6a7so764758f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 10:38:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700505505; x=1701110305; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kg0bpxRdcL8t4yRhGzqbCgUsQk8IIqBGTHsR5xQerDs=;
+        b=a3KYCq1F3WLVrkift4CNCBJXO/IPMn2Zwhl2zWgLTIdCs3PqwBhkuhu/2tpGOnAMZK
+         05Z01XpgFt9ZSX7CmYay7JbTf3wSVFVmcSu9Sc+gZuqQ34AOoPUlF/MgB3RE35/ChrcK
+         Mv9mO4qy8VTFfjEf0bSm7gDQmBCbnmLQpQB4TyGtWm1RC7EXhP3WPeq1BvxrYCGZorG8
+         DtEJJngMS02Sl9LthGjQgZVAVsSl4nuLZH10CBjOhrXP1hrzS0r7AoFDtqUL8mimeZba
+         Uti/efz6+xPmCeOgwW802SH2oS28CMAESuDf1I/7MyaLKvoR9YrgegyWiQrqNLR6hpYL
+         bZeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700505505; x=1701110305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kg0bpxRdcL8t4yRhGzqbCgUsQk8IIqBGTHsR5xQerDs=;
+        b=E1H4NVrRLxr/s1T/2iRMQTC26JDdcsJz3DNGwq28CRQlA0do1g3FD5nj1QXiGXsx80
+         UcWiMWw1/MUBF9mgEz8gRfUGIu+p55GePu6Nr23M/Tv0KnMRBHXgjm/VoGQb1QxiHLfk
+         Ien6hJWZaojD/N9ZrDgWQrf+z0/uoTORz5sUR6awfeAeQcez+WDIsLtlpW088T6r748c
+         H7Uj+25KNG+eIBSp5DOQdJzfHhSXTb+UcDfh2nuTvvWMM3F4LPRm38yYd2+j9tmw0ox2
+         EmGHLn57sB/sIW3HsOdrUkSqWRwM/PROFHgKeMPtgqcZhdzOfAy8DmvQ/9EGd7/oMeoS
+         3+oQ==
+X-Gm-Message-State: AOJu0Yy5T8OTSleS6AUGcigL2uOfRcX5CsLky8WXsOahuUvJw+TwheXr
+        +DDklkWj0Ym+tCIy0fOyR03fkw==
+X-Google-Smtp-Source: AGHT+IHMunydcfDqafYEVS8rh4UBWcg4B9mAZ2t8F2fQH+JRl/yole2wNILvFQ9UWlf9jYlmdOnM/g==
+X-Received: by 2002:a05:6000:18a9:b0:332:c9c3:2cd3 with SMTP id b9-20020a05600018a900b00332c9c32cd3mr2386984wri.47.1700505504906;
+        Mon, 20 Nov 2023 10:38:24 -0800 (PST)
+Received: from myrica ([2.221.137.100])
+        by smtp.gmail.com with ESMTPSA id y4-20020a5d4ac4000000b003316c8ad545sm10939806wrs.76.2023.11.20.10.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 10:38:24 -0800 (PST)
+Date:   Mon, 20 Nov 2023 18:38:33 +0000
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Robin Murphy <robin.murphy@arm.com>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] checkstack: allow to pass MINSTACKSIZE parameter
-Date:   Mon, 20 Nov 2023 19:37:19 +0100
-Message-Id: <20231120183719.2188479-4-hca@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231120183719.2188479-1-hca@linux.ibm.com>
-References: <20231120183719.2188479-1-hca@linux.ibm.com>
+Subject: Re: [PATCH v3 0/2] iommu/virtio: Enable IOMMU_CAP_DERRED_FLUSH
+Message-ID: <20231120183833.GA38524@myrica>
+References: <20231120-viommu-sync-map-v3-0-50a57ecf78b5@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QXUHMnfiDbPQtDbzUEehVZCRwAIcngRZ
-X-Proofpoint-ORIG-GUID: QXUHMnfiDbPQtDbzUEehVZCRwAIcngRZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_19,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- phishscore=0 adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=947 priorityscore=1501 mlxscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311200134
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-viommu-sync-map-v3-0-50a57ecf78b5@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,50 +74,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The checkstack script omits all functions with a stack usage of less than
-100 bytes. However the script already has support for a parameter which
-allows to override the default, but it cannot be set with
+Hi Niklas,
 
-$ make checkstack
+On Mon, Nov 20, 2023 at 03:51:55PM +0100, Niklas Schnelle wrote:
+> Hi All,
+> 
+> Previously I used virtio-iommu as a non-s390x test vehicle[0] for the
+> single queue flushing scheme introduced by my s390x DMA API conversion
+> series[1]. For this I modified virtio-iommu to a) use .iotlb_sync_map
+> and b) enable IOMMU_CAP_DEFERRED_FLUSH. It turned out that deferred
+> flush and even just the introduction of ops->iotlb_sync_map yield
+> performance uplift[2] even with per-CPU queues. So here is a small
+> series of these two changes.
+> 
+> The code is also available on the b4/viommu-deferred-flush branch of my
+> kernel.org git repository[3].
+> 
+> Note on testing: I tested this series on my AMD Ryzen 3900X workstation
+> using QEMU 8.1.2 a pass-through NVMe and Intel 82599 NIC VFs. For the
+> NVMe I saw an increase of about 10% in IOPS and 30% in read bandwidth
+> compared with v6.7-rc2. One odd thing though is that QEMU seemed to make
+> the entire guest resident/pinned once I passed-through a PCI device.
+> I seem to remember this wasn't the case with my last version but not
+> sure which QEMU version I used back then.
 
-Add a MINSTACKSIZE parameter which allows to change the default. This might
-be useful in order to print the stack usage of all functions, or only those
-with large stack usage:
+That's probably expected, now that boot-bypass is enabled by default: on
+VM boot, endpoints are able to do DMA to the entire guest-physical address
+space, until a virtio-iommu driver disables global bypass in the config
+space (at which point the pinned memory is hopefully reclaimed by the
+host). QEMU enables it by default to mimic other IOMMU implementations,
+and to allow running firmware or OS that don't support virtio-iommu. It
+can be disabled with boot-bypass=off
 
-$ make checkstack MINSTACKSIZE=0
-$ make checkstack MINSTACKSIZE=800
+> @Jean-Philippe: I didn't include your R-b's as I changed back to the
+> nr_endpoints check and this is like 30% of the patches.
 
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
----
- Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Thank you for the patches. For the series:
 
-diff --git a/Makefile b/Makefile
-index 724c79bebe72..b90413e7e590 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1576,7 +1576,8 @@ help:
- 	 echo  '                    (default: $(INSTALL_HDR_PATH))'; \
- 	 echo  ''
- 	@echo  'Static analysers:'
--	@echo  '  checkstack      - Generate a list of stack hogs'
-+	@echo  '  checkstack      - Generate a list of stack hogs and consider all functions'
-+	@echo  '                    with a stack size larger than MINSTACKSIZE (default: 100)'
- 	@echo  '  versioncheck    - Sanity check on version.h usage'
- 	@echo  '  includecheck    - Check for duplicate included header files'
- 	@echo  '  export_report   - List the usages of all exported symbols'
-@@ -2016,9 +2017,10 @@ CHECKSTACK_ARCH := $(SUBARCH)
- else
- CHECKSTACK_ARCH := $(ARCH)
- endif
-+MINSTACKSIZE	?= 100
- checkstack:
- 	$(OBJDUMP) -d vmlinux $$(find . -name '*.ko') | \
--	$(PERL) $(srctree)/scripts/checkstack.pl $(CHECKSTACK_ARCH)
-+	$(PERL) $(srctree)/scripts/checkstack.pl $(CHECKSTACK_ARCH) $(MINSTACKSIZE)
- 
- kernelrelease:
- 	@$(filechk_kernel.release)
--- 
-2.39.2
-
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
