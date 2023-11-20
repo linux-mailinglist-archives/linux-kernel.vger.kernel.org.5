@@ -2,329 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB017F0EE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8AB7F0EBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjKTJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 04:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        id S232494AbjKTJPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjKTJUa (ORCPT
+        with ESMTP id S232444AbjKTJPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 04:20:30 -0500
-Received: from pv50p00im-ztdg10011201.me.com (pv50p00im-ztdg10011201.me.com [17.58.6.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF71BBC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 01:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1700471581; bh=AWaj1ki3rwcuwpTBAPDzYvQWi1J126ZZaCIJ2Nblgd8=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=rYi1u8wZOp0OrfiANALqBBzTEN2M0f6lGNJBSLz6HLwevM0aEhdQWh9aoZkirKdFM
-         NergaZPv15dFBOa6yN26VLwf60oecQ2t1knY4//RG/5gLDDgpr5uOiFdyPBu1dFuK2
-         uy0BPrTW6OQTPP2WBeurw/gtydeSpsyHK3GGRcaP/eV3OT+42TEaJ8U6TACpXKliX9
-         39d4pmfOhcG/iHZdyYJWpzdinJSiDGZvUqdrVJdeVscEPGZn85OitiKchCZ9vAVSBT
-         Nx7zkD344/z0XjshDlf1XVTEi6cOESbvkOasJobMN7rZ1ND1c+fshy8KEdgyoI9x45
-         W2ZV4djkODAqg==
-Received: from xiongwei.. (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-        by pv50p00im-ztdg10011201.me.com (Postfix) with ESMTPSA id BE336680246;
-        Mon, 20 Nov 2023 09:12:56 +0000 (UTC)
-From:   sxwjean@me.com
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com
-Cc:     corbet@lwn.net, linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] mm/slab: move slab merge from slab_common.c to slub.c
-Date:   Mon, 20 Nov 2023 17:12:14 +0800
-Message-Id: <20231120091214.150502-5-sxwjean@me.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231120091214.150502-1-sxwjean@me.com>
-References: <20231120091214.150502-1-sxwjean@me.com>
+        Mon, 20 Nov 2023 04:15:06 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52071B8;
+        Mon, 20 Nov 2023 01:15:02 -0800 (PST)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SYhYB4rH6z6JBGD;
+        Mon, 20 Nov 2023 17:10:06 +0800 (CST)
+Received: from A2006125610.china.huawei.com (10.202.227.178) by
+ lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 20 Nov 2023 09:14:55 +0000
+From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <yishaih@nvidia.com>, <kevin.tian@intel.com>,
+        <linuxarm@huawei.com>, <liulongfang@huawei.com>
+Subject: [PATCH] hisi_acc_vfio_pci: Update migration data pointer correctly on saving/resume
+Date:   Mon, 20 Nov 2023 09:14:06 +0000
+Message-ID: <20231120091406.780-1-shameerali.kolothum.thodi@huawei.com>
+X-Mailer: git-send-email 2.12.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: wmdiAmmV3HG-u_79uyar0KcaBugWOyer
-X-Proofpoint-ORIG-GUID: wmdiAmmV3HG-u_79uyar0KcaBugWOyer
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.517,18.0.883,17.0.605.474.0000000_definitions?=
- =?UTF-8?Q?=3D2022-06-21=5F08:2022-06-21=5F01,2022-06-21=5F08,2020-01-23?=
- =?UTF-8?Q?=5F02_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 clxscore=1015 adultscore=0 phishscore=0 mlxscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2311200061
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.202.227.178]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.6 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <xiongwei.song@windriver.com>
+When the optional PRE_COPY support was added to speed up the device
+compatibility check, it failed to update the saving/resuming data
+pointers based on the fd offset. This results in migration data
+corruption and when the device gets started on the destination the
+following error is reported in some cases,
 
-Since slab allocator has been removed. There is no users about slab
-merge except slub. This commit is almost to revert
-commit 423c929cbbec ("mm/slab_common: commonize slab merge logic").
+[  478.907684] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[  478.913691] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000310200000010
+[  478.919603] arm-smmu-v3 arm-smmu-v3.2.auto:  0x000002088000007f
+[  478.925515] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
+[  478.931425] arm-smmu-v3 arm-smmu-v3.2.auto:  0x0000000000000000
+[  478.947552] hisi_zip 0000:31:00.0: qm_axi_rresp [error status=0x1] found
+[  478.955930] hisi_zip 0000:31:00.0: qm_db_timeout [error status=0x400] found
+[  478.955944] hisi_zip 0000:31:00.0: qm sq doorbell timeout in function 2
 
-Also change all prefix of slab merge related functions, variables and
-definitions from "slab/SLAB" to"slub/SLUB".
-
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+Fixes: d9a871e4a143 ("hisi_acc_vfio_pci: Introduce support for PRE_COPY state transitions")
+Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
 ---
- mm/slab.h        |   3 --
- mm/slab_common.c |  98 ----------------------------------------------
- mm/slub.c        | 100 ++++++++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 99 insertions(+), 102 deletions(-)
+ drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/mm/slab.h b/mm/slab.h
-index 8d20f8c6269d..cd52e705ce28 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -429,9 +429,6 @@ extern void create_boot_cache(struct kmem_cache *, const char *name,
+diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+index b2f9778c8366..4d27465c8f1a 100644
+--- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
++++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+@@ -694,6 +694,7 @@ static ssize_t hisi_acc_vf_resume_write(struct file *filp, const char __user *bu
+ 					size_t len, loff_t *pos)
+ {
+ 	struct hisi_acc_vf_migration_file *migf = filp->private_data;
++	u8 *vf_data = (u8 *)&migf->vf_data;
+ 	loff_t requested_length;
+ 	ssize_t done = 0;
+ 	int ret;
+@@ -715,7 +716,7 @@ static ssize_t hisi_acc_vf_resume_write(struct file *filp, const char __user *bu
+ 		goto out_unlock;
+ 	}
  
- unsigned int calculate_alignment(slab_flags_t flags,
- 		unsigned int align, unsigned int size);
--int slab_unmergeable(struct kmem_cache *s);
--struct kmem_cache *find_mergeable(unsigned size, unsigned align,
--		slab_flags_t flags, const char *name, void (*ctor)(void *));
- struct kmem_cache *
- __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
- 		   slab_flags_t flags, void (*ctor)(void *));
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 62eb77fdedf2..6960ae5c35ee 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -45,36 +45,6 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work);
- static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
- 		    slab_caches_to_rcu_destroy_workfn);
+-	ret = copy_from_user(&migf->vf_data, buf, len);
++	ret = copy_from_user(vf_data + *pos, buf, len);
+ 	if (ret) {
+ 		done = -EFAULT;
+ 		goto out_unlock;
+@@ -835,7 +836,9 @@ static ssize_t hisi_acc_vf_save_read(struct file *filp, char __user *buf, size_t
  
--/*
-- * Set of flags that will prevent slab merging
-- */
--#define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
--		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
--		SLAB_FAILSLAB | SLAB_NO_MERGE | kasan_never_merge())
--
--#define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
--			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
--
--/*
-- * Merge control. If this is set then no merging of slab caches will occur.
-- */
--static bool slub_nomerge = !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
--
--static int __init setup_slab_nomerge(char *str)
--{
--	slub_nomerge = true;
--	return 1;
--}
--
--static int __init setup_slab_merge(char *str)
--{
--	slub_nomerge = false;
--	return 1;
--}
--
--__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
--__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
--
- /*
-  * Determine the size of a slab object
-  */
-@@ -130,74 +100,6 @@ unsigned int calculate_alignment(slab_flags_t flags,
- 	return ALIGN(align, sizeof(void *));
- }
- 
--/*
-- * Find a mergeable slab cache
-- */
--int slab_unmergeable(struct kmem_cache *s)
--{
--	if (slub_nomerge || (s->flags & SLAB_NEVER_MERGE))
--		return 1;
--
--	if (s->ctor)
--		return 1;
--
--#ifdef CONFIG_HARDENED_USERCOPY
--	if (s->usersize)
--		return 1;
--#endif
--
--	/*
--	 * We may have set a slab to be unmergeable during bootstrap.
--	 */
--	if (s->refcount < 0)
--		return 1;
--
--	return 0;
--}
--
--struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
--		slab_flags_t flags, const char *name, void (*ctor)(void *))
--{
--	struct kmem_cache *s;
--
--	if (slub_nomerge)
--		return NULL;
--
--	if (ctor)
--		return NULL;
--
--	size = ALIGN(size, sizeof(void *));
--	align = calculate_alignment(flags, align, size);
--	size = ALIGN(size, align);
--	flags = kmem_cache_flags(size, flags, name);
--
--	if (flags & SLAB_NEVER_MERGE)
--		return NULL;
--
--	list_for_each_entry_reverse(s, &slab_caches, list) {
--		if (slab_unmergeable(s))
--			continue;
--
--		if (size > s->size)
--			continue;
--
--		if ((flags & SLAB_MERGE_SAME) != (s->flags & SLAB_MERGE_SAME))
--			continue;
--		/*
--		 * Check if alignment is compatible.
--		 * Courtesy of Adrian Drzewiecki
--		 */
--		if ((s->size & ~(align - 1)) != s->size)
--			continue;
--
--		if (s->size - size >= sizeof(void *))
--			continue;
--
--		return s;
--	}
--	return NULL;
--}
--
- static struct kmem_cache *create_cache(const char *name,
- 		unsigned int object_size, unsigned int align,
- 		slab_flags_t flags, unsigned int useroffset,
-diff --git a/mm/slub.c b/mm/slub.c
-index ae1e6e635253..435d9ed140e4 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -709,6 +709,104 @@ static inline bool slab_update_freelist(struct kmem_cache *s, struct slab *slab,
- 	return false;
- }
- 
-+/*
-+ * Set of flags that will prevent slab merging
-+ */
-+#define SLUB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER | \
-+		SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-+		SLAB_FAILSLAB | SLAB_NO_MERGE | kasan_never_merge())
+ 	len = min_t(size_t, migf->total_length - *pos, len);
+ 	if (len) {
+-		ret = copy_to_user(buf, &migf->vf_data, len);
++		u8 *vf_data = (u8 *)&migf->vf_data;
 +
-+#define SLUB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
-+			 SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
-+
-+/*
-+ * Merge control. If this is set then no merging of slab caches will occur.
-+ */
-+static bool slub_nomerge = !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
-+
-+static int __init setup_slub_nomerge(char *str)
-+{
-+	slub_nomerge = true;
-+	return 1;
-+}
-+
-+static int __init setup_slub_merge(char *str)
-+{
-+	slub_nomerge = false;
-+	return 1;
-+}
-+
-+__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-+__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
-+
-+/*
-+ * Find a mergeable slab cache
-+ */
-+static inline int slub_unmergeable(struct kmem_cache *s)
-+{
-+	if (slub_nomerge || (s->flags & SLUB_NEVER_MERGE))
-+		return 1;
-+
-+	if (s->ctor)
-+		return 1;
-+
-+#ifdef CONFIG_HARDENED_USERCOPY
-+	if (s->usersize)
-+		return 1;
-+#endif
-+
-+	/*
-+	 * We may have set a slab to be unmergeable during bootstrap.
-+	 */
-+	if (s->refcount < 0)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
-+		slab_flags_t flags, const char *name, void (*ctor)(void *))
-+{
-+	struct kmem_cache *s;
-+
-+	if (slub_nomerge)
-+		return NULL;
-+
-+	if (ctor)
-+		return NULL;
-+
-+	size = ALIGN(size, sizeof(void *));
-+	align = calculate_alignment(flags, align, size);
-+	size = ALIGN(size, align);
-+	flags = kmem_cache_flags(size, flags, name);
-+
-+	if (flags & SLUB_NEVER_MERGE)
-+		return NULL;
-+
-+	list_for_each_entry_reverse(s, &slab_caches, list) {
-+		if (slub_unmergeable(s))
-+			continue;
-+
-+		if (size > s->size)
-+			continue;
-+
-+		if ((flags & SLUB_MERGE_SAME) != (s->flags & SLUB_MERGE_SAME))
-+			continue;
-+		/*
-+		 * Check if alignment is compatible.
-+		 * Courtesy of Adrian Drzewiecki
-+		 */
-+		if ((s->size & ~(align - 1)) != s->size)
-+			continue;
-+
-+		if (s->size - size >= sizeof(void *))
-+			continue;
-+
-+		return s;
-+	}
-+	return NULL;
-+}
-+
- #ifdef CONFIG_SLUB_DEBUG
- static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
- static DEFINE_SPINLOCK(object_map_lock);
-@@ -6679,7 +6777,7 @@ static int sysfs_slab_add(struct kmem_cache *s)
- 	int err;
- 	const char *name;
- 	struct kset *kset = cache_kset(s);
--	int unmergeable = slab_unmergeable(s);
-+	int unmergeable = slub_unmergeable(s);
- 
- 	if (!unmergeable && disable_higher_order_debug &&
- 			(slub_debug & DEBUG_METADATA_FLAGS))
++		ret = copy_to_user(buf, vf_data + *pos, len);
+ 		if (ret) {
+ 			done = -EFAULT;
+ 			goto out_unlock;
 -- 
 2.34.1
 
