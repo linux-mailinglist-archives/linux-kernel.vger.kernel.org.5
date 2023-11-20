@@ -2,76 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B545D7F17C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B842E7F17CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 16:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjKTPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 10:48:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S233733AbjKTPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 10:50:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbjKTPsG (ORCPT
+        with ESMTP id S232138AbjKTPu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 10:48:06 -0500
+        Mon, 20 Nov 2023 10:50:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBC1A0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:48:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8761EC433C7;
-        Mon, 20 Nov 2023 15:47:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B922A0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 07:50:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A91EC433C7;
+        Mon, 20 Nov 2023 15:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700495281;
-        bh=Pqf0n0WeWapO2rexMfY7DVUbXOQsxxnsm5OV8uzP0l0=;
+        s=k20201202; t=1700495425;
+        bh=hwGdvTC30e2lqKVVWjBXy5T6ES/s37IXoRVGMd2+0pQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LFGlYdyZ4aooQny7HpcVdwiEhDOv+NfyxvwJDl5MhddiGZMQcQfPexiJQG5vduf+2
-         e6usNZrsf9DQAJavs1p0ZasnPuxM7z42rQB5u3DPzTMUV8hocsdghKfYkL/wCemVHA
-         AEQwyTdHo9DB50LPO9wiYjrKDkMo361uqixSnd4x7QE1PrBQVguNmxViYJQj8xC4L/
-         QoK060hByDKtkmW7XJLgEWlg/5Pr+2adCARB2Fn0/mW3E7XBWGvOghm/6LwqcTkwFj
-         ezh6zPw5NfemTc8o89g3ZOSALWluWZsI5q2KhV3AXoOz9UaKggQprcdsb35h3npn1y
-         ZM6/+pcUkOJwA==
-Date:   Mon, 20 Nov 2023 15:47:52 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Deepak Gupta <debug@rivosinc.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
-Subject: Re: [PATCH RFC RFT v2 5/5] kselftest/clone3: Test shadow stack
- support
-Message-ID: <fde30e5a-f795-46ed-9dd8-9370c4f0aae8@sirena.org.uk>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-5-b613f8681155@kernel.org>
- <309927ad8bfa72ce2d084ee16cd0cd84e69fef16.camel@intel.com>
- <ZVfXTmVestrAwIkN@debug.ba.rivosinc.com>
+        b=OuakXYfH2B3OCYrq02ImXPaLKHHgv1XoOxq2euxeIQWC0Crhms/GQfyHAERvfK69s
+         DF1RBMamEUYPuaOfpnaQp1j+CNzucEdp1EpNAPN+hWMv57j1T/49wvYAu20TggHUvr
+         9h9mFblafUh5Qh+JN7xv4j9enLyvvjGgt/YK2XvQvOmhX4pbud5Uo9wJI5ysIkZrNw
+         BPWdpOl8U5S3cdCW/wUONBUm0CW8H5dyUUZJsDljmdbgfcn5XTMVRFnoX/B5WCXJTP
+         PyXPoKPqTJYSNuJDOUBMqvy72xpUWxgQ/NsRdT6CL/dMnTLhYok/ymvlzSQA5CyIvF
+         LZZLM4LJ/KWzQ==
+Date:   Mon, 20 Nov 2023 15:50:20 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Sahaj Sarup <sahaj.sarup@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 1/3] dt-bindings: display: ssd1307fb: Change
+ "solomon,page-offset" default value
+Message-ID: <20231120-granola-sturdy-83d054f1b6fa@spud>
+References: <20231116180743.2763021-1-javierm@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3acFUUbMZ6fZyK3o"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4bFoAD9+noYJcHZh"
 Content-Disposition: inline
-In-Reply-To: <ZVfXTmVestrAwIkN@debug.ba.rivosinc.com>
-X-Cookie: <Manoj> I *like* the chicken
+In-Reply-To: <20231116180743.2763021-1-javierm@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,49 +60,69 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---3acFUUbMZ6fZyK3o
+--4bFoAD9+noYJcHZh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 17, 2023 at 01:12:46PM -0800, Deepak Gupta wrote:
-> On Tue, Nov 14, 2023 at 11:11:58PM +0000, Edgecombe, Rick P wrote:
+On Thu, Nov 16, 2023 at 07:07:37PM +0100, Javier Martinez Canillas wrote:
+> This is used to specify the page start address offset of the display RAM.
+>=20
+> The value is used as offset when setting the page start address with the
+> SSD130X_SET_PAGE_RANGE command, and the driver currently sets its value to
+> 1 if the property is not present in the Device Tree.
+>=20
+> But the datasheet mentions that the value on reset for the page start is a
+> 0, so it makes more sense to also have 0 as the default value for the page
+> offset if the property is not present.
+>=20
+> In fact, using a default value of 1 leads to the display not working when
+> the fbdev is attached to the framebuffer console.
+>=20
+> Reported-by: Sahaj Sarup <sahaj.sarup@linaro.org>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
+>=20
+>  .../devicetree/bindings/display/solomon,ssd1307fb.yaml          | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/display/solomon,ssd1307fb.=
+yaml b/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
+> index 3afbb52d1b7f..badd81459aaa 100644
+> --- a/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
+> +++ b/Documentation/devicetree/bindings/display/solomon,ssd1307fb.yaml
+> @@ -35,7 +35,7 @@ properties:
+> =20
+>    solomon,page-offset:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+> -    default: 1
+> +    default: 0
 
-> > It seems like there will be a need for some generic method of checking
-> > if shadow stack is enabled. Maybe a more generic compiler
-> > intrinsic/builtin or glibc API (something unrelated to SSP)?
+I think I saw it pointed out by Maxime elsewhere that this breaks the
+ABI. It would be nice if DT defaults matched the hardware's, but I don't
+really think it is worth breaking the ABI here. Expanding the property
+description to explain the impact of the particular values might help
+with incorrect usage.
 
-> Exposing a new file under procfs would be useful?
-> Something like "/proc/sys/vm/user_shadow_stack_supported"
+Thanks,
+Conor.
 
-> `map_shadow_stack` can return MAP_FAILED for other reasons.
-> I think `kselftests` are fine but I don't want people to pick up this
-> as test code and run with it in production :-)
+>      description:
+>        Offset of pages (band of 8 pixels) that the screen is mapped to
+> =20
+> --=20
+> 2.41.0
+>=20
 
-> So kernel providing a way to indicate whether it supports shadow stack
-> mappings in user mode via procfs would be useful and arch agnostic.
-
-I can see that might be useful for some higher level code that wants to
-tune the size and nothing else.  I'd be tempted to do it through adding
-a tuneable for the maximum default shadow stack size (x86 currently uses
-4G) just so it's *vaguely* useful rather than just a file.  I question
-the utility of that but just a plain file doesn't feel quite idiomatic.
-
-In any case it feels like it's off topic for this series and should be
-done separately.
-
---3acFUUbMZ6fZyK3o
+--4bFoAD9+noYJcHZh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVbf6cACgkQJNaLcl1U
-h9Ak7wf8CA50MceuP83I2frKM1LB7rUjimAktBhZrwl5FbVW7GLI9WxpLtXZ4Gce
-6+H6sDQmMtCmAiYmwZG214ZNu95rQr8HUxQCVs8WY7Ir3h9U02/MNpcaIXswd1oe
-kbT14fSM/GGsA+uSKGkbuXMSQAONUKNC7iNF6R52pKZs4J4clVxxylydo47OFrDD
-/EkwidMFHpPlsJkv48ETgjih58pssM9+B/oBIP1RlwmS4sgPshT9+wyEGnFjs83O
-susJUcqp61pP6dV2CQN1YRfvGWo+vsZ6ByHLKOrOM9SEVJAm01FzzwYPEyRhXj+S
-FxAsuQ+E51GZknCUfOkBnAjqeuY8hw==
-=L/Yb
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVuAPAAKCRB4tDGHoIJi
+0rwwAQDwlz5bsqGXaRqTo+gxHO6qWygSskpfqHWje4LOQ/STSAEAjptBSDLIi9s1
+DjGRyqKsN280gvpMTdz7FUpAEO1gZwg=
+=pjLO
 -----END PGP SIGNATURE-----
 
---3acFUUbMZ6fZyK3o--
+--4bFoAD9+noYJcHZh--
