@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F017F0B0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4315B7F0B10
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 04:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbjKTDdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 19 Nov 2023 22:33:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59488 "EHLO
+        id S231718AbjKTDf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 19 Nov 2023 22:35:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbjKTDc7 (ORCPT
+        with ESMTP id S230033AbjKTDf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 19 Nov 2023 22:32:59 -0500
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D344126;
-        Sun, 19 Nov 2023 19:32:55 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VwfuOLj_1700451172;
-Received: from 30.97.48.234(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VwfuOLj_1700451172)
-          by smtp.aliyun-inc.com;
-          Mon, 20 Nov 2023 11:32:52 +0800
-Message-ID: <06eb8c00-3ee8-7004-ce2c-cb84cf03e970@linux.alibaba.com>
-Date:   Mon, 20 Nov 2023 11:32:51 +0800
+        Sun, 19 Nov 2023 22:35:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3A6AA
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:35:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A64C433C8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 03:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700451354;
+        bh=62lRMD43jjAKjDzraj2ZVEWyz4K9K7STu+VjEnu4DJk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sB8jmsaenxaQSZtTnEZhkNerXZATf+rVxpKOLUwpsTswT10G+JSMumZkBKND6uKv0
+         PXj9CITTz6fNPvlwmaPvBOYfg7L2ZfgGG1hGr1+MFmeWHXTPQT5SXQ327vjIKsMeve
+         wPHhq+QzhxuyZpolzmrMhp3uxO083zodSWQt4DfYZXieNO/6YSEEAHuZgaUPX8I5Kz
+         +v5AxoXgGNeQLCwJN7GH/jJWR65nBMUiq8qn9FVRcqZrQO3KTj64QiIPIMZUmnlXll
+         WuBPQxxxYnrUUi5z90LNPZXyj7RIM3iXzVFeNoEToMQpOindvc9cLa0czfSPcnYIxe
+         Yl0/WoJEyyd0A==
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2809a824bbbso2607731a91.3
+        for <linux-kernel@vger.kernel.org>; Sun, 19 Nov 2023 19:35:54 -0800 (PST)
+X-Gm-Message-State: AOJu0YzILFUh47bm7VzcmX5fw6D+5amvCGKR2OdfHEYeWYWPqOATGO/e
+        9IoqYMHOQTo2nfP86QPPgCrAs36MCoB0T9ieX7JRNg==
+X-Google-Smtp-Source: AGHT+IFUvXLlhgsD7jLkOF1XQH8/mI72vbQ7j6Zc0xfO3seezj0akSl7BHHfUOPtPPKAo3HgVCPtqg4HDTyzUC2s1UQ=
+X-Received: by 2002:a17:90a:191a:b0:27d:c95:b0ad with SMTP id
+ 26-20020a17090a191a00b0027d0c95b0admr4539183pjg.21.1700451353958; Sun, 19 Nov
+ 2023 19:35:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] MAINTAINERS: erofs: add EROFS webpage
-To:     Chao Yu <chao@kernel.org>, linux-erofs@lists.ozlabs.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
-References: <20231117085329.1624223-1-hsiangkao@linux.alibaba.com>
- <4e99d1a3-026f-b5f0-fd15-fba57692d973@kernel.org>
- <056d09c0-eb0d-2092-0766-bf253a9d8751@linux.alibaba.com>
- <43466ecc-7218-e813-7a4f-bcce30f9b3fb@kernel.org>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <43466ecc-7218-e813-7a4f-bcce30f9b3fb@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.6 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-2-ryncsn@gmail.com>
+ <ZVp2UE+MqkifJG4B@casper.infradead.org>
+In-Reply-To: <ZVp2UE+MqkifJG4B@casper.infradead.org>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Sun, 19 Nov 2023 19:35:42 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOGUQNyZesw5BY3dfwBNhL6_RG_=tXc1ZQ4VRGRtGPuMw@mail.gmail.com>
+Message-ID: <CAF8kJuOGUQNyZesw5BY3dfwBNhL6_RG_=tXc1ZQ4VRGRtGPuMw@mail.gmail.com>
+Subject: Re: [PATCH 01/24] mm/swap: fix a potential undefined behavior issue
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Kairui Song <kasong@tencent.com>, linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kairui,
 
+On Sun, Nov 19, 2023 at 12:55=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+>
+> On Mon, Nov 20, 2023 at 03:47:17AM +0800, Kairui Song wrote:
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > When folio is NULL, taking the address of its struct member is an
+> > undefined behavior, the UB is caused by applying -> operator
 
-On 2023/11/20 11:31, Chao Yu wrote:
-> On 2023/11/20 11:23, Gao Xiang wrote:
->>
->>
->> On 2023/11/20 11:18, Chao Yu wrote:
->>> On 2023/11/17 16:53, Gao Xiang wrote:
->>>> Add a new `W:` field of the EROFS entry points to the documentation
->>>> site at <https://erofs.docs.kernel.org>.
->>>>
->>>> In addition, update the in-tree documentation and Kconfig too.
->>>>
->>>> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
->>>
->>> Nice work!
->>>
->>> Reviewed-by: Chao Yu <chao@kernel.org>
->>
->> Hi Chao,
->>
->> Thanks for the time and review! but I've already do a tag this morning
->> for Linus later so it may not contain this tag, sorry about that.
-> 
-> Xiang,
-> 
-> No problem, it seems I replied a little bit late. :-P
+I think dereferencing the NULL pointer is undefined behavior. There is
+no dereferencing here. It is just pointer arithmetic of NULL pointers,
+which is adding offset of page to the NULL pointer, you got NULL.
 
-Yeah, since all commits in principle need to be in -next.  Thanks again!
+> > won't lead to a real issue, still better to fix it, also makes the
+> > code less error-prone, when folio is NULL, page is also NULL,
+> > instead of a meanless offset value.
 
-Thanks,
-Gao Xiang
+I consider your reasoning is invalid. NULL pointer arithmetic should
+be legal. This patch is not needed.
+
+Chris
