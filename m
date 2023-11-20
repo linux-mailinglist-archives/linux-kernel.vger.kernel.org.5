@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8643B7F206B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0997F2079
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 23:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjKTWdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 17:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S229902AbjKTWjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 17:39:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKTWdI (ORCPT
+        with ESMTP id S229476AbjKTWjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 17:33:08 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2C7AA;
-        Mon, 20 Nov 2023 14:33:04 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5c2139492d9so1620878a12.0;
-        Mon, 20 Nov 2023 14:33:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700519584; x=1701124384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gwUXyg7MBmR4xeoVYVivfJ5Bm/G7s4W1J7Z6JZoWHTc=;
-        b=D5FSm8Ec+P9QK18MgaEK6Ua3hbx6eGzyxSvsGa0lioMTkWpEudlAQhDA7MfEQKrayL
-         WzeiQ5cnZuDkCuWxr3WDr56BuDZ05SnQWQ+i6XugProUXbY7uVUfbGQ/1DBgnhjHED0x
-         hMXfW6rAmb0TirMH2btDtmY+4I1JCspDoCgDuA0JfHFds61SwOPQpwfZ9bZ2UA/xdFOB
-         HAX+HpARlAv4PzigYQ1oy7Je9TtYZk2eMHbz/m6bXq042v0/EhzBko1i8wRrAqb+WVv5
-         lRB8sy59CREuwtl+IUvdPaZ/+pKtCFKi+dakOSKJpnG6hXw6pyoA1nbf5HwuOfdRXbJM
-         aozA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700519584; x=1701124384;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gwUXyg7MBmR4xeoVYVivfJ5Bm/G7s4W1J7Z6JZoWHTc=;
-        b=rOME1N/+G98BaaLE2FKU7pIO5pVygKQe/Ho7FN/f1504ZCvjEDihN0j+PMv6jJ2dg0
-         aUoUzo8NNVBMi02mmdk39KZAlZ8xmOJP1t+S99joSH5Thx0Ro/R8HUK5lldzNuPVbcsv
-         yMdoZ1KC+SyEnIxJvdpJTaWA0rNV6STsls7buzlAN4LQKQfcikwv89MVB0wDbqSzbnAO
-         cm+/vyK6k8uV/rJdObbFUEpW71w3tHxo6tOxcaRkkGl1hXeuvT9QHMj+7gaXPP9y8AIS
-         QKmjnEhw59I3VX6rQmNvo1br4f8AezE0uYutRqwzn/45i22YbJQdjjPUM4pbsbYDNWSj
-         ywEQ==
-X-Gm-Message-State: AOJu0Yy5bjhE6r0I7+32ODE4fS6Kdfe8yoXCrDJZwMyIr+15yrND1kbF
-        wrP/L0AXS9azd+qfU7dAntQ=
-X-Google-Smtp-Source: AGHT+IF8aM7kBXwdxWcd5QRBWOgY83+8colpgzLEa0t5kFMKqb+LSLgcbvB3DrS/MP2lq41NucbcnQ==
-X-Received: by 2002:a17:90b:4d0d:b0:27d:c36:e12d with SMTP id mw13-20020a17090b4d0d00b0027d0c36e12dmr6759637pjb.6.1700519583993;
-        Mon, 20 Nov 2023 14:33:03 -0800 (PST)
-Received: from DESKTOP-NK4TH6S.localdomain ([220.72.86.144])
-        by smtp.gmail.com with ESMTPSA id k8-20020a17090a658800b00283a0b0fd39sm4917352pjj.53.2023.11.20.14.32.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 14:33:03 -0800 (PST)
-From:   Paran Lee <p4ranlee@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Li Dong <lidong@vivo.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shjy180909@gmail.com, austindh.kim@gmail.com, honggyu.kp@gmail.com,
-        Paran Lee <p4ranlee@gmail.com>
-Subject: [PATCH V3 RESEND] perf script python: Fail check on dynamic allocation
-Date:   Tue, 21 Nov 2023 07:32:19 +0900
-Message-Id: <20231120223218.9036-1-p4ranlee@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 20 Nov 2023 17:39:53 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3B597;
+        Mon, 20 Nov 2023 14:39:50 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKLvlTp007578;
+        Mon, 20 Nov 2023 22:39:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=f8L9nhtIuJda89+/HgbEISF8b2edhNC6k49x6R/K4ow=;
+ b=Kt0KD54qwEeAg33D+pcYQXBM9nr9fS2HzuCD7j8Wc5cTEsXT0E2S3vtYT6J7xU4qoPRD
+ NcEANm1ciEOwkPcUmAyv0DzYy3thSW2HuF4dk3W0TED8KK7SyJxwbdrqKQQclTJfPBBO
+ r64P5naM0sL5rfSEthp/OObOVkmpD99H4VW69UwVKUviMAYgD8UATehAgUY8HXrGVCsq
+ UIkmUupXSCT9X1FCSkBa12lhS2RQkHml4QewYSM3Nta+W0pigbS7JrM1Zdd1sS43XvRh
+ CnKZN+t/gNAja+Fo6XU2HESqu7LN5dQODArqVC7PTJc0j2rXI0zQyxcocsLLzYEHnq5D uQ== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug37mj0nm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 22:39:35 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AKMdY6Q016666
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 22:39:34 GMT
+Received: from [10.110.29.191] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 14:39:33 -0800
+Message-ID: <bf6c628d-132c-296b-b29a-dc7be4390578@quicinc.com>
+Date:   Mon, 20 Nov 2023 14:39:33 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v1 2/2] dt-bindings: arm: Add remote etm driver
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Mike Leach" <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        "Tao Zhang" <quic_taozha@quicinc.com>
+References: <20231107060939.13449-1-quic_jinlmao@quicinc.com>
+ <20231107060939.13449-3-quic_jinlmao@quicinc.com>
+ <10afe65f-4e86-4127-9f8d-b4e3f5ee8a3a@linaro.org>
+Content-Language: en-US
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <10afe65f-4e86-4127-9f8d-b4e3f5ee8a3a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: M1hrlZSwaz4MWX8VnvJbfsHWvi3NLK-j
+X-Proofpoint-ORIG-GUID: M1hrlZSwaz4MWX8VnvJbfsHWvi3NLK-j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
+ impostorscore=0 clxscore=1011 mlxlogscore=549 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311200166
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,86 +95,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PyList_New() Fail check in get_field_numeric_entry()
-function and dynamic allocation checking for
-set_regs_in_dict(), python_start_script().
+On 11/16/2023 9:22 AM, Krzysztof Kozlowski wrote:
+> On 07/11/2023 07:09, Mao Jinlong wrote:
+>> Add new coresight-remote-etm.yaml file describing the bindings required
+>> to define coresight remote etm in the device trees.
+>>
+>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+> 
+> +Cc Trilok,
+> 
+> Several Qualcomm boards have warnings coming from Coresight bindings.
+> These are big, fat warnings coming usually from ARM bindings (e.g.
+> dynamic funnel, TMC). I don't know Coresight good enough to fix them by
+> myself.
+> 
+> I would prefer not to take any new Qualcomm specific Coresight bindings
+> and definitely no new Coresight device nodes in Qualcomm boards, before
+> these are fixed.
+> 
+> Therefore I kindly ask to fix all warnings in Qualcomm boards coming
+> from existing Coresight bindings.
 
-Signed-off-by: Paran Lee <p4ranlee@gmail.com>
-Reviewed-by: MichelleJin <shjy180909@gmail.com>
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
----
- .../util/scripting-engines/trace-event-python.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 94312741443a..860e1837ba96 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -353,6 +353,8 @@ static PyObject *get_field_numeric_entry(struct tep_event *event,
+Thanks Krzysztof, we can look into it as first thing to fix. 
  
- 	if (is_array) {
- 		list = PyList_New(field->arraylen);
-+		if (!list)
-+			Py_FatalError("couldn't create Python list");
- 		item_size = field->size / field->arraylen;
- 		n_items = field->arraylen;
- 	} else {
-@@ -754,7 +756,7 @@ static void regs_map(struct regs_dump *regs, uint64_t mask, const char *arch, ch
- 	}
- }
- 
--static void set_regs_in_dict(PyObject *dict,
-+static int set_regs_in_dict(PyObject *dict,
- 			     struct perf_sample *sample,
- 			     struct evsel *evsel)
- {
-@@ -770,6 +772,8 @@ static void set_regs_in_dict(PyObject *dict,
- 	 */
- 	int size = __sw_hweight64(attr->sample_regs_intr) * 28;
- 	char *bf = malloc(size);
-+	if (!bf)
-+		return -1;
- 
- 	regs_map(&sample->intr_regs, attr->sample_regs_intr, arch, bf, size);
- 
-@@ -781,6 +785,8 @@ static void set_regs_in_dict(PyObject *dict,
- 	pydict_set_item_string_decref(dict, "uregs",
- 			_PyUnicode_FromString(bf));
- 	free(bf);
-+
-+	return 0;
- }
- 
- static void set_sym_in_dict(PyObject *dict, struct addr_location *al,
-@@ -920,7 +926,8 @@ static PyObject *get_perf_sample_dict(struct perf_sample *sample,
- 			PyLong_FromUnsignedLongLong(sample->cyc_cnt));
- 	}
- 
--	set_regs_in_dict(dict, sample, evsel);
-+	if (set_regs_in_dict(dict, sample, evsel))
-+		Py_FatalError("Failed to setting regs in dict");
- 
- 	return dict;
- }
-@@ -1918,12 +1925,18 @@ static int python_start_script(const char *script, int argc, const char **argv,
- 	scripting_context->session = session;
- #if PY_MAJOR_VERSION < 3
- 	command_line = malloc((argc + 1) * sizeof(const char *));
-+	if (!command_line)
-+		return -1;
-+
- 	command_line[0] = script;
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = argv[i - 1];
- 	PyImport_AppendInittab(name, initperf_trace_context);
- #else
- 	command_line = malloc((argc + 1) * sizeof(wchar_t *));
-+	if (!command_line)
-+		return -1;
-+
- 	command_line[0] = Py_DecodeLocale(script, NULL);
- 	for (i = 1; i < argc + 1; i++)
- 		command_line[i] = Py_DecodeLocale(argv[i - 1], NULL);
 -- 
-2.25.1
+---Trilok Soni
 
