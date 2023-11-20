@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 982187F0E4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 09:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F55C7F0E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 10:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjKTI6y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 20 Nov 2023 03:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S232184AbjKTJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 04:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbjKTI6w (ORCPT
+        with ESMTP id S232165AbjKTJAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 03:58:52 -0500
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A9583;
-        Mon, 20 Nov 2023 00:58:46 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5c9adcaf514so11814867b3.2;
-        Mon, 20 Nov 2023 00:58:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700470726; x=1701075526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=18JbpiPMAEDFj6NXYlnrzta9l+LmgYRwVtYP+eE4AiM=;
-        b=kIqfBCEsBy50pkCwU0QuQeeblaweWR539FfwYYLkSoqaUzENRLFoY52epOChRub0QI
-         nDnYstgdjX7gybF1uHgfZNCR3IVc30gNFrJOTLNz1tW6mmPJ1Tifo3PxHgDENisNJ9Yk
-         97JJJ4PAYB4KwYozM5ll70PEsCyWSPhEyvWgrtkY5LlUt2vgYAfFk4TJkViH9jdSZ3Nn
-         dqqco3CmGjvMUH2ZPgZDIhEUrqWVm+cjzfvDE1QtpKcr89xN9vQU4ihE6wVVtvgNJK5p
-         TSh6bx787h7MUG0tOfL1WiCdo22P/YloHe7dGYqJewY6SY0Aks2DKJu8OeipF5E18sgq
-         CgZA==
-X-Gm-Message-State: AOJu0YyzqPMt9lVz3IhFisoDDBrema9/oAeRwtWkGC0Xppoj4Wx3wkFL
-        7TxJUpO5GQeOX2rgTQzhNXKix1XbNL0AUw==
-X-Google-Smtp-Source: AGHT+IEcAKhmD2Cwhxx2WVp7uxIs04LulpgMIz9grHiBKuB8tFrxBucq43RCBbNt7vZs4H2MyknXxw==
-X-Received: by 2002:a05:690c:2884:b0:5ca:a8b6:3319 with SMTP id ee4-20020a05690c288400b005caa8b63319mr937155ywb.52.1700470725764;
-        Mon, 20 Nov 2023 00:58:45 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id s2-20020a819b02000000b005ca265f0c68sm717128ywg.42.2023.11.20.00.58.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 00:58:43 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da819902678so3874391276.1;
-        Mon, 20 Nov 2023 00:58:43 -0800 (PST)
-X-Received: by 2002:a25:6a55:0:b0:da0:cfca:ed9 with SMTP id
- f82-20020a256a55000000b00da0cfca0ed9mr5235404ybc.12.1700470723057; Mon, 20
- Nov 2023 00:58:43 -0800 (PST)
+        Mon, 20 Nov 2023 04:00:41 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7FDA4;
+        Mon, 20 Nov 2023 01:00:36 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AK7UsT4005271;
+        Mon, 20 Nov 2023 09:00:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ImZ/n8GsSZ5bTYTGhlLv233vn4tN8DfN0BIWCHbNEvk=;
+ b=GPqCbXQQRMT40iAKaF1Hshfsp5TAyOHjtnZSAva9dZ0g/jLDLUi8P53QMeq4q20bogC+
+ u9Lo7Y+Yi0EnA1b3xroxekriDbUBb3kOUiWqDTKPDz4jRlcKMpTBqrS2g/X1K0q49AK2
+ sc4nOt+JqYQEs8Bic23IwUqT/1G9tjD0+/hhF3TsAXp/nr7njhdqZxtKho+QiEhSCelc
+ w1CaBsN2Z9XTyTOqna2AkurRsWXgJkueHNGKW+OeKGxlJqUJlyLzxaBuPG3+6gWdCQzZ
+ n0EbUY+c4B9DmNnM5x5nYCVNfflLkrDDjong1zf8eeAqo0RrIpYXyOFcBpN1er9XTnDI BQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug34u0550-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 09:00:21 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AK90KTi028454
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 20 Nov 2023 09:00:20 GMT
+Received: from [10.253.8.221] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 01:00:15 -0800
+Message-ID: <2d4818f6-3935-4621-bf96-d84747cbefa3@quicinc.com>
+Date:   Mon, 20 Nov 2023 17:00:13 +0800
 MIME-Version: 1.0
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-15-claudiu.beznea.uj@bp.renesas.com> <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
-In-Reply-To: <bd25377b-b191-4d81-b144-2936cb5139d9@app.fastmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 20 Nov 2023 09:58:30 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUkVO7cXpsHd_oGvEpZdJpP6GP+VC8H5GAZ94KJf2joLA@mail.gmail.com>
-Message-ID: <CAMuHMdUkVO7cXpsHd_oGvEpZdJpP6GP+VC8H5GAZ94KJf2joLA@mail.gmail.com>
-Subject: Re: [PATCH 14/14] arm: multi_v7_defconfig: Enable CONFIG_RAVB
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Andrew Davis <afd@ti.com>, Mark Brown <broonie@kernel.org>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        "Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-10-quic_luoj@quicinc.com>
+ <834cbb58-3a88-4ba6-8db6-10440a4d0893@linaro.org>
+ <76e081ba-9d5a-41df-9c1b-d782e5656973@quicinc.com>
+ <2a9bb683-da73-47af-8800-f14a833e8ee4@linaro.org>
+ <386fcee0-1eab-4c0b-8866-a67821a487ee@quicinc.com>
+ <77a194cd-d6a4-4c9b-87f5-373ed335528f@linaro.org>
+ <de4fa95e-4bc7-438a-94bb-4b31b1b89704@quicinc.com>
+ <6e10604f-d463-499b-b00a-57ef22a936bb@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <6e10604f-d463-499b-b00a-57ef22a936bb@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: IZbdL7Cw6EyPK_TPVWMlvGauFNWvvZcm
+X-Proofpoint-GUID: IZbdL7Cw6EyPK_TPVWMlvGauFNWvvZcm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_06,2023-11-17_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=987 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311200059
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 9:44 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Mon, Nov 20, 2023, at 08:00, Claudiu wrote:
-> > From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >
-> > ravb driver is used by RZ/G1H. Enable it in multi_v7_defconfig.
 
-Used by:
-  - iWave-RZ/G1M/G1N Qseven carrier board,
-  - iWave-RZ/G1H Qseven board,
-  - iWave-RZG1E SODIMM carrier board,
-  - iWave-RZ/G1C single board computer.
 
-So I'd write "used by various iWave RZ/G1 development boards".
+On 11/18/2023 11:36 PM, Andrew Lunn wrote:
+>> The clock arguments are provided in the later part as below. i will also
+>> provide more detail clock names for the new added clocks for the ipq5332
+>> platform in description.
+>>
+>>    - if:
+>>
+>>        properties:
+>>
+>>          compatible:
+>>
+>>            contains:
+>>
+>>              enum:
+>>
+>>                - qcom,ipq5332-mdio
+>>
+>>      then:
+>>
+>>        properties:
+>>
+>>          clocks:
+>>
+>>            items:
+>>
+>>              - description: MDIO clock source frequency fixed to 100MHZ
+>>
+>>              - description: UNIPHY0 AHB clock source frequency fixed to
+>> 100MHZ
+>>              - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
+>>              - description: UNIPHY1 AHB clock source frequency fixed to
+>> 100MHZ
+>>              - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
+> 
+> As i said before, the frequency of the clocks does not matter
+> here. That appears to be the drivers problem. I assume every board
+> design, with any sort of PHY, needs the same clock configuration?
+> 
+>        Andrew
 
-> > Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> We have a mix of =y and =m for ethernet drivers, and usually
-> only have drivers built-in when they are frequently tested
-> with NFS root booting.
->
-> Do you need this as well, or could it be =m instead?
+Yes, Andrew, no matter what kind of PHY is connected, these clocks are
+fix clocks, the clock rates are same as mentioned above, which are the 
+SOC clock configurations.
 
-As the default chosen/bootargs for the iWave-RZ/G1M/G1N Qseven carrier
-board contains root=/dev/nfs, builtin is appropriate.
-The iWave-RZ/G1H Qseven board defaults to root=/dev/mmcblk0p1.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
