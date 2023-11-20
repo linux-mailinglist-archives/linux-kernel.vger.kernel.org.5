@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4C67F185A
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501A27F1864
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 17:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbjKTQRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 11:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S233712AbjKTQSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 11:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbjKTQRJ (ORCPT
+        with ESMTP id S233480AbjKTQSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 11:17:09 -0500
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF42188
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 08:17:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1700497022;
-        bh=d6rqLDZNf/QFC9igObHmliF6PZsMbzLwVI6zQhhz1sg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=mny2xXZkFOUjRmzxidnYj/qElPR9IvfrwEpeGh4yPxgShoozyU8QPpS8HZUHn00bx
-         +ayPqqCrWspNW40b16orHLZS13uJ3dZUF7MdsFe/14nvv7sRAKHTpblqLBq0xZMI0b
-         1n8s7RRbwOGkbZ9V7fvKPF8j2VA8m2xvzI9KGzSYlQ/ALe5VMgziPk9v9y718B2Y64
-         9sg1RNpMPJQfNzJGXAIrvxEtn74Bf2u3g2CJZOhAQzA5G+N+ErCry/ibVX5jXWUyfH
-         gSBEP5Bc0JXre4eW7IKfrQcGfIFsff5z/w6xXAOPxlbGm+/k5Tcr5yR6d7XDGhog/n
-         9pdvCQhNpT56g==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SYt1n48m4z1d0X;
-        Mon, 20 Nov 2023 11:17:01 -0500 (EST)
-Message-ID: <1eb9435a-aa1c-4c30-ab1a-9167b73d1b83@efficios.com>
-Date:   Mon, 20 Nov 2023 11:17:32 -0500
+        Mon, 20 Nov 2023 11:18:24 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867E2F5;
+        Mon, 20 Nov 2023 08:18:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6SCBZOZz6Qup6QX990ipAzjI1yY+8rbPKPGIJ6ySC0E=; b=sqnGbTdIP9eiY5KVdCOGH68mSL
+        OorK3g1mxqMHwNbBHJzmZcfhye06oLl9D7b2ucdzEubIu2uN7K/5btywoIHQon63OGbQX4+wib9Y0
+        r9zZuYEbWzRCNaP121etnyiXDueFvlXYvvlkeNTypWFZwyy8op+KMUUZngzSk1XGQ4IxW3ZeMthf8
+        5ixyIDuhokIU0GdZN3HQWBTnwNcHgBq2DUB4cg6QYKA60cU5qbduXITs9IXyoSTZKDlB6In1gUdX0
+        f5Z1V/OzX5wWjziNXN4L1CR1jORspQPJOx6eF2drxgSc3r6HJJ4aGkG8bunfLvS9YbYcUawr3B8ZP
+        5uoezByg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57710)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r56yN-0005rP-1I;
+        Mon, 20 Nov 2023 16:18:07 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r56yN-0003JU-GV; Mon, 20 Nov 2023 16:18:07 +0000
+Date:   Mon, 20 Nov 2023 16:18:07 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jie Luo <quic_luoj@quicinc.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hkallweit1@gmail.com, corbet@lwn.net,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Message-ID: <ZVuGv2005eaw+R6u@shell.armlinux.org.uk>
+References: <20231118062754.2453-1-quic_luoj@quicinc.com>
+ <20231118062754.2453-4-quic_luoj@quicinc.com>
+ <1eb60a08-f095-421a-bec6-96f39db31c09@lunn.ch>
+ <ZVkRkhMHWcAR37fW@shell.armlinux.org.uk>
+ <eee39816-b0b8-475c-aa4a-8500ba488a29@lunn.ch>
+ <fef2ab86-ccd7-4693-8a7e-2dac2c80fd53@quicinc.com>
+ <1d4d7761-6b42-48ec-af40-747cb4b84ca5@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
- __mm_cid_get()
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-5-yury.norov@gmail.com>
- <20231120113105.GR8262@noisy.programming.kicks-ass.net>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231120113105.GR8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d4d7761-6b42-48ec-af40-747cb4b84ca5@lunn.ch>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,196 +69,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-20 06:31, Peter Zijlstra wrote:
-> On Sat, Nov 18, 2023 at 07:50:35AM -0800, Yury Norov wrote:
->> __mm_cid_get() uses a __mm_cid_try_get() helper to atomically acquire a
->> bit in mm cid mask. Now that we have atomic find_and_set_bit(), we can
->> easily extend it to cpumasks and use in the scheduler code.
->>
->> __mm_cid_try_get() has an infinite loop, which may delay forward
->> progress of __mm_cid_get() when the mask is dense. The
->> cpumask_find_and_set() doesn't poll the mask infinitely, and returns as
->> soon as nothing has found after the first iteration, allowing to acquire
->> the lock, and set use_cid_lock faster, if needed.
-> 
-> Methieu, I forgot again, but the comment delete seems to suggest you did
-> this on purpose...
+On Mon, Nov 20, 2023 at 04:34:55PM +0100, Andrew Lunn wrote:
+> Are you saying there is a USXGMII-M level link change status? The link
+> between the SoC and the PHY package is up/down? If it is down, all
+> four MAC-PHY links are down. If it is up, it is possible to carry
+> frames between the SoC and the PHY package, but maybe the PHYs
+> themselves are down?
 
-See comments below.
+It shouldn't do. Each "channel" in the USXGMII-M link has its own
+autoneg block at both ends, each conveys link status independently.
 
-> 
->> cpumask_find_and_set() considers cid mask as a volatile region of memory,
->> as it actually is in this case. So, if it's changed while search is in
->> progress, KCSAN wouldn't fire warning on it.
->>
->> Signed-off-by: Yury Norov <yury.norov@gmail.com>
->> ---
->>   include/linux/cpumask.h | 12 ++++++++++
->>   kernel/sched/sched.h    | 52 ++++++++++++-----------------------------
->>   2 files changed, 27 insertions(+), 37 deletions(-)
->>
->> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
->> index cfb545841a2c..c2acced8be4e 100644
->> --- a/include/linux/cpumask.h
->> +++ b/include/linux/cpumask.h
->> @@ -271,6 +271,18 @@ unsigned int cpumask_next_and(int n, const struct cpumask *src1p,
->>   		small_cpumask_bits, n + 1);
->>   }
->>   
->> +/**
->> + * cpumask_find_and_set - find the first unset cpu in a cpumask and
->> + *			  set it atomically
->> + * @srcp: the cpumask pointer
->> + *
->> + * Return: >= nr_cpu_ids if nothing is found.
->> + */
->> +static inline unsigned int cpumask_find_and_set(volatile struct cpumask *srcp)
->> +{
->> +	return find_and_set_bit(cpumask_bits(srcp), small_cpumask_bits);
->> +}
->> +
->>   /**
->>    * for_each_cpu - iterate over every cpu in a mask
->>    * @cpu: the (optionally unsigned) integer iterator
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index 2e5a95486a42..b2f095a9fc40 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -3345,28 +3345,6 @@ static inline void mm_cid_put(struct mm_struct *mm)
->>   	__mm_cid_put(mm, mm_cid_clear_lazy_put(cid));
->>   }
->>   
->> -static inline int __mm_cid_try_get(struct mm_struct *mm)
->> -{
->> -	struct cpumask *cpumask;
->> -	int cid;
->> -
->> -	cpumask = mm_cidmask(mm);
->> -	/*
->> -	 * Retry finding first zero bit if the mask is temporarily
->> -	 * filled. This only happens during concurrent remote-clear
->> -	 * which owns a cid without holding a rq lock.
->> -	 */
->> -	for (;;) {
->> -		cid = cpumask_first_zero(cpumask);
->> -		if (cid < nr_cpu_ids)
->> -			break;
->> -		cpu_relax();
->> -	}
->> -	if (cpumask_test_and_set_cpu(cid, cpumask))
->> -		return -1;
+The MAC side structure is:
 
-This was split in find / test_and_set on purpose because following
-patches I have (implementing numa-aware mm_cid) have a scan which
-needs to scan sets of two cpumasks in parallel (with "and" and
-and_not" operators).
 
-Moreover, the "mask full" scenario only happens while a concurrent
-remote-clear temporarily owns a cid without rq lock. See
-sched_mm_cid_remote_clear():
+                            +----------+                +-----+
+                    .-XGMII-> Rate     |    PCS         |     |
+MAC1 <-MDI-> PHY <-+        | Adaption <--> Clause 49 <->     |
+                    `-GMII-->          |                |     |
+                            +-----^----+                |     |
+                                  |                     |     |
+                            +-----v---- +               |     |
+                            | Autoneg   |               |     |
+                            | Clause 37 |               |     |
+                            +-----------+               |     |
+                                                        | Mux <--> PMA <-->
+                                                        |     |
+                                                        .......     USXGMII-M
 
-         /*
-          * The cid is unused, so it can be unset.
-          * Disable interrupts to keep the window of cid ownership without rq
-          * lock small.
-          */
-         local_irq_save(flags);
-         if (try_cmpxchg(&pcpu_cid->cid, &lazy_cid, MM_CID_UNSET))
-                 __mm_cid_put(mm, cid);
-         local_irq_restore(flags);
+<------------------------------------------------------>
+      These blocks are repeated for each channel
 
-The proposed patch here turns this scenario into something heavier
-(setting the use_cid_lock) rather than just retrying. I guess the
-question to ask here is whether it is theoretically possible to cause
-__mm_cid_try_get() to fail to have forward progress if we have a high
-rate of sched_mm_cid_remote_clear. If we decide that this is indeed
-a possible progress-failure scenario, then it makes sense to fallback
-to use_cid_lock as soon as a full mask is encountered.
+The spec goes on to state that there must be a USXGMII enable bit that
+defaults to disabled and the PHY should assume normal XGMII/XFI
+operation. When enabled, autoneg follows a slight modification of
+clause 37-6.
 
-However, removing the __mm_cid_try_get() helper will make it harder to
-integrate the following numa-awareness patches I have on top.
-
-I am not against using cpumask_find_and_set, but can we keep the
-__mm_cid_try_get() helper to facilitate integration of future work ?
-We just have to make it use cpumask_find_and_set, which should be
-easy.
-
->> -	return cid;
->> -}
->> -
->>   /*
->>    * Save a snapshot of the current runqueue time of this cpu
->>    * with the per-cpu cid value, allowing to estimate how recently it was used.
->> @@ -3381,25 +3359,25 @@ static inline void mm_cid_snapshot_time(struct rq *rq, struct mm_struct *mm)
->>   
->>   static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
->>   {
->> +	struct cpumask *cpumask = mm_cidmask(mm);
->>   	int cid;
->>   
->> -	/*
->> -	 * All allocations (even those using the cid_lock) are lock-free. If
->> -	 * use_cid_lock is set, hold the cid_lock to perform cid allocation to
->> -	 * guarantee forward progress.
->> -	 */
->> +	/* All allocations (even those using the cid_lock) are lock-free. */
->>   	if (!READ_ONCE(use_cid_lock)) {
->> -		cid = __mm_cid_try_get(mm);
->> -		if (cid >= 0)
->> +		cid = cpumask_find_and_set(cpumask);
->> +		if (cid < nr_cpu_ids)
->>   			goto end;
->> -		raw_spin_lock(&cid_lock);
->> -	} else {
->> -		raw_spin_lock(&cid_lock);
->> -		cid = __mm_cid_try_get(mm);
->> -		if (cid >= 0)
->> -			goto unlock;
->>   	}
->>   
->> +	/*
->> +	 * If use_cid_lock is set, hold the cid_lock to perform cid
->> +	 * allocation to guarantee forward progress.
->> +	 */
->> +	raw_spin_lock(&cid_lock);
->> +	cid = cpumask_find_and_set(cpumask);
->> +	if (cid < nr_cpu_ids)
->> +		goto unlock;
-
-In the !use_cid_lock case where we already failed a lookup above, this change
-ends up doing another attempt at lookup before setting the use_cid_lock and
-attempting again until success. I am not sure what is the motivation for changing
-the code flow here ?
-
-General comment about the rest of the series: please review code comments for
-typos.
-
-Thanks,
-
-Mathieu
-
->> +
->>   	/*
->>   	 * cid concurrently allocated. Retry while forcing following
->>   	 * allocations to use the cid_lock to ensure forward progress.
->> @@ -3415,9 +3393,9 @@ static inline int __mm_cid_get(struct rq *rq, struct mm_struct *mm)
->>   	 * all newcoming allocations observe the use_cid_lock flag set.
->>   	 */
->>   	do {
->> -		cid = __mm_cid_try_get(mm);
->> +		cid = cpumask_find_and_set(cpumask);
->>   		cpu_relax();
->> -	} while (cid < 0);
->> +	} while (cid >= nr_cpu_ids);
->>   	/*
->>   	 * Allocate before clearing use_cid_lock. Only care about
->>   	 * program order because this is for forward progress.
->> -- 
->> 2.39.2
->>
+As far as the USXGMII-M link, I believe 2.7.8 in the USXGMII-M
+documentation covers this, which is "hardware autoneg programming
+sequence". It states that "if 10G link is lost or regained, the
+software is expected to disable autoneg and re-enable autoneg". I
+think "10G link" refers to the USXGMII-M connection, which means
+the loss of that link shold cause software to intervene in each
+of the PCS autoneg blocks. It is, however, rather unclear.
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
