@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502447F1E9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFA27F1EA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 22:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbjKTVSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 16:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
+        id S231745AbjKTVTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 16:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjKTVSv (ORCPT
+        with ESMTP id S230170AbjKTVTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 16:18:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BB3C4;
-        Mon, 20 Nov 2023 13:18:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700515128; x=1732051128;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xYtfmY3EVWUKUBltmFEPvtVvDbJhLP5vaAHjt99/IKw=;
-  b=HYWHvejAYsV4atKsHgJNalI0chJRRNs4nr51JtduVgoFnUFWl8zq3QtZ
-   5aR4hQbQhRbX2Lt/RsZG7PL0Q/9JAsVs1EL8T54ldteSzu+1y6REE6Q8p
-   ADmSz1dneJcPPUQzWOEoPLKcxJb1QpoxtMgJjb6j8vBKMZGZrJrdWfvTy
-   LNnqXQ/1VdTrhM4A6jmB4/cA/CdAovAO0u18LY0qySFykLrhbTbLf6h72
-   2E0R4/92GAEdDJfGoagSWClr0E+W5fUGPCtzcxI8qdcPDTts5484gFHko
-   JgrzM6r7GuisLAMXn1++sK5jZ9Ku2LDc24AWNtbHTGYm9yEwbMns0d3iR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="388860353"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="388860353"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:18:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="716329079"
-X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
-   d="scan'208";a="716329079"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 13:18:42 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 423A911FAC4;
-        Mon, 20 Nov 2023 23:18:40 +0200 (EET)
-Date:   Mon, 20 Nov 2023 21:18:40 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Scally <dan.scally@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 0/5] Add support for DCMIPP camera interface of
- STMicroelectronics STM32 SoC series
-Message-ID: <ZVvNMPfW7OhPByZk@kekkonen.localdomain>
-References: <20231120170809.728941-1-alain.volmat@foss.st.com>
+        Mon, 20 Nov 2023 16:19:36 -0500
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B42DD8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 13:19:31 -0800 (PST)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id 5Bfyrw7Pe67J55BfyrmViA; Mon, 20 Nov 2023 22:19:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1700515169;
+        bh=NDPnmqlk0LUSy3aJ8u4TckgJQVNR/Wz4QBNCWhD8QiM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=IkGePgdiytlmlYIsvLgHrV3QcmXS/XmZfe8oEEncW/6oLcIaWKQwAKWpzyQ9zQ/Eu
+         hDz6csT6bF21q2VmW3PcqwIMOgfxTO98BhNsvUc+k0UeWmX986fXyyFx/+CMcXT2Rk
+         hRM4EGJHHP4+36lKRVCU8okurLB9CgbBgVxto/m/Y5ewNNdTN5FBEqLYadIFPAWCK9
+         86NI8NpjOvX3HyZVWqnyt8dAJsntBlDOG6IO+eyKcxtxWdCtExSOt0Wl2n6Ozzpl9F
+         PsgUKd9KGXe/oQVlSX+syna5KbUox0zWIgekrtfCWQcjoqus4t9DQ2bqr6Y3VKYjJg
+         8/fnGp8CVIoow==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 20 Nov 2023 22:19:29 +0100
+X-ME-IP: 86.243.2.178
+Message-ID: <c29e4d22-78b4-4265-b459-7cee38149084@wanadoo.fr>
+Date:   Mon, 20 Nov 2023 22:19:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120170809.728941-1-alain.volmat@foss.st.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] serial: atmel: convert not to use
+ dma_request_slave_channel()
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Richard Genoud <richard.genoud@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <f2e9790d8b49aeba8b43ce018d30a35b837ac1eb.1700409299.git.christophe.jaillet@wanadoo.fr>
+ <ccfcf2a5-c04b-4781-8658-d63044b9b9c6@tuxon.dev>
+ <5c2ec2ff-459e-4bb7-b287-8a06005c86f5@kernel.org>
+ <e37ce03e-4e41-4262-9f54-bcbab3bb1421@tuxon.dev>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <e37ce03e-4e41-4262-9f54-bcbab3bb1421@tuxon.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,33 +66,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
-
-On Mon, Nov 20, 2023 at 06:07:56PM +0100, Alain Volmat wrote:
-> This patchset introduces support for Digital Camera Memory Interface
-> Pixel Processor (DCMIPP) of STMicroelectronics STM32 SoC series.
+Le 20/11/2023 à 08:12, claudiu beznea a écrit :
 > 
-> This initial support implements a single capture pipe
-> allowing RGB565, YUV, Y, RAW8 and JPEG capture with
-> frame skipping, prescaling and cropping.
 > 
-> DCMIPP is exposed through 3 subdevices:
-> - dcmipp_dump_parallel: parallel interface handling
-> - dcmipp_dump_postproc: frame skipping, prescaling and cropping control
-> - dcmipp_dump_capture: video device capture node
+> On 20.11.2023 09:04, Jiri Slaby wrote:
+>> On 20. 11. 23, 7:14, claudiu beznea wrote:
+>>> Hi, Christophe,
+>>>
+>>> On 19.11.2023 17:55, Christophe JAILLET wrote:
+>>>> dma_request_slave_channel() is deprecated. dma_request_chan() should
+>>>> be used directly instead.
+>>>>
+>>>> Switch to the preferred function and update the error handling accordingly.
+>>>>
+>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>> ---
+>>>> v2: Also update atmel_prepare_rx_dma()
+>>>> ---
+>>>>    drivers/tty/serial/atmel_serial.c | 16 ++++++++++++----
+>>>>    1 file changed, 12 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/tty/serial/atmel_serial.c
+>>>> b/drivers/tty/serial/atmel_serial.c
+>>>> index 1946fafc3f3e..6aeb4648843b 100644
+>>>> --- a/drivers/tty/serial/atmel_serial.c
+>>>> +++ b/drivers/tty/serial/atmel_serial.c
+>>>> @@ -1013,14 +1013,18 @@ static int atmel_prepare_tx_dma(struct uart_port
+>>>> *port)
+>>>>        struct device *mfd_dev = port->dev->parent;
+>>>>        dma_cap_mask_t        mask;
+>>>>        struct dma_slave_config config;
+>>>> +    struct dma_chan *chan;
+>>>
+>>> There is no need for this.
+>>
+>> How'd you avoid crash in here then:
+>>          if (atmel_port->chan_tx)
+>>                  atmel_release_tx_dma(port);
+>> ?
 > 
-> v7:
->   - correct byteproc set_fmt handling and compose/crop/fmt handling
->   - replace few v4l2_subdev_get_try_* into v4l2_subdev_get_pad_*
+> I wanted to say that instead of adding the chan variable the
+> atmel_port->chan_tx would be used instead.
 
-Can you rebase this on my my linuxtv.org tree master branch
-<URL:https://git.linuxtv.org/sailus/media_tree.git/log/>?
+You mean something like:
 
-These will be called v4l2_subdev_state_get_* now.
+-	atmel_port->chan_tx = dma_request_slave_channel(mfd_dev, "tx");
+-	if (atmel_port->chan_tx == NULL)
++	atmel_port->chan_tx = dma_request_chan(mfd_dev, "tx");
++	if (IS_ERR(atmel_port->chan_tx)) {
++		atmel_port->chan_tx = NULL;
 
-Thanks.
+?
 
--- 
-Regards,
+Mostly a mater of taste. I can send a v3 with that if it is the 
+preferred style.
 
-Sakari Ailus
+CJ
+
+> 
+>>
+>> thanks,
+> 
+
