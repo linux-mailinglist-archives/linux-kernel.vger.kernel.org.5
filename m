@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BFE7F15D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8EE7F15D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 20 Nov 2023 15:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbjKTOft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 09:35:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        id S233590AbjKTOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 09:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbjKTOfo (ORCPT
+        with ESMTP id S233483AbjKTOfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 09:35:44 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5724ECA;
+        Mon, 20 Nov 2023 09:35:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34B8131;
         Mon, 20 Nov 2023 06:35:41 -0800 (PST)
 Date:   Mon, 20 Nov 2023 14:35:39 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TXBWR29QKiVuMOe/5cddg5Sksdh/jRTbLXljeI6tL3g=;
-        b=eQezzV3IoLtM/KGep9aOlVbLbj11+BXuqPZJyTNaZGR66te8k3WiXEhs+vmzH02LY7tDQF
-        xzfrU7GumnmKzG0g0rs3/jDX48Zn/5rNWU/uohk51ZiTb0TYibUcDA0z//cXMXTwcNWdiT
-        jmwjZ2nJHN48pYduYPwojVA82XiVQhGV4RkQyhTomSynmzm7IdWFBhJsn5MGX1tmEcVb3r
-        Z1cdQpzio7kYxE1l3KZYbOmlr/Av4ZVO0e5ookIlB2ILJY2J95d94ZbUjgAaXsqhXfsO3v
-        61A3gp8ipr2AHBm2hsP/b3kXdhwb5g/tJPtwZ2qofOhjvjAKFOe75ytGd4ZBNw==
+        bh=9M6sdiqGCwinQGMULaQmGbucsy2SVfpdAMoCHNBDpF0=;
+        b=SbV8qGCSJ60aoBfUWO8zvv/w1riknKDbj9z7udbfzyUOpcTGcnp9lYORiwmu8O9McbEuFa
+        00uMxrq9j8uyojzgAVZVYjUiI6L+JXET/SgulN2V5onjD551FmGdBp4hUOzIYNxQXUrr43
+        i1WpCeyE2k5P30zjJjetuEpjBkMT0EJVdB7XmGrbxzYwJqMFwg5uf3/aOvWWxvPx+h1YNw
+        Nbblpbv8ZZ4VbTFakOZyt2bqxlPOo5l6Buu/SZodUgaSD2tkbb4Kq39uaJNavwbxtwJomG
+        DdBrwBSsV/p8Ru/Beg3N8/aPaGimEI0BmqkupvXLGiHjk5Od3jyTGZfqCYCdEA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1700490940;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TXBWR29QKiVuMOe/5cddg5Sksdh/jRTbLXljeI6tL3g=;
-        b=9Zhfl/0WUyr8mmChJzsKiIPjgu5rKoClPEsXhUQa4V6FkomOqchQSfdNKtNG+mRWaC+2Hk
-        4gY/I3KTAZm1A8Dw==
+        bh=9M6sdiqGCwinQGMULaQmGbucsy2SVfpdAMoCHNBDpF0=;
+        b=Q/zvfwnqv+DNYVXrNV9sr0nIJIvHWnUuwYHh2XYRnHmGFadX/CWeiin8w2Btiy1Ozl0fDO
+        m/Rshz/7w7xyefAw==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] x86/smp: Export symbol cpu_clustergroup_mask()
+Subject: [tip: perf/core] perf/x86/intel/cstate: Cleanup duplicate attr_groups
 Cc:     Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231116142245.1233485-2-kan.liang@linux.intel.com>
-References: <20231116142245.1233485-2-kan.liang@linux.intel.com>
+In-Reply-To: <20231116142245.1233485-1-kan.liang@linux.intel.com>
+References: <20231116142245.1233485-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <170049093932.398.7671603015835084715.tip-bot2@tip-bot2>
+Message-ID: <170049093988.398.3710895579013151635.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,35 +67,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     c3dd1995620cdcd65cf4944c4164b0dbc16e557c
-Gitweb:        https://git.kernel.org/tip/c3dd1995620cdcd65cf4944c4164b0dbc16e557c
+Commit-ID:     243218ca93037631f0224fdbefea045912cb761a
+Gitweb:        https://git.kernel.org/tip/243218ca93037631f0224fdbefea045912cb761a
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Thu, 16 Nov 2023 06:22:43 -08:00
+AuthorDate:    Thu, 16 Nov 2023 06:22:42 -08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 17 Nov 2023 10:54:52 +01:00
 
-x86/smp: Export symbol cpu_clustergroup_mask()
+perf/x86/intel/cstate: Cleanup duplicate attr_groups
 
-Intel cstate PMU driver will invoke the topology_cluster_cpumask() to
-retrieve the CPU mask of a cluster. A modpost error is triggered since
-the symbol cpu_clustergroup_mask is not exported.
+The events of the cstate_core and cstate_pkg PMU have the same format.
+They both need to create a "events" group (with empty attrs). The
+attr_groups can be shared.
+
+Remove the dedicated attr_groups for each cstate PMU. Use the shared
+cstate_attr_groups to replace.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20231116142245.1233485-2-kan.liang@linux.intel.com
+Link: https://lore.kernel.org/r/20231116142245.1233485-1-kan.liang@linux.intel.com
 ---
- arch/x86/kernel/smpboot.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/events/intel/cstate.c | 44 ++++++++-------------------------
+ 1 file changed, 11 insertions(+), 33 deletions(-)
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 2cc2aa1..3f57ce6 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -757,6 +757,7 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
- {
- 	return cpu_l2c_shared_mask(cpu);
- }
-+EXPORT_SYMBOL_GPL(cpu_clustergroup_mask);
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index cbeb6d2..693bdcd 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -189,20 +189,20 @@ static struct attribute *attrs_empty[] = {
+  * "events" group (with empty attrs) before updating
+  * it with detected events.
+  */
+-static struct attribute_group core_events_attr_group = {
++static struct attribute_group cstate_events_attr_group = {
+ 	.name = "events",
+ 	.attrs = attrs_empty,
+ };
  
- static void impress_friends(void)
- {
+-DEFINE_CSTATE_FORMAT_ATTR(core_event, event, "config:0-63");
+-static struct attribute *core_format_attrs[] = {
+-	&format_attr_core_event.attr,
++DEFINE_CSTATE_FORMAT_ATTR(cstate_event, event, "config:0-63");
++static struct attribute *cstate_format_attrs[] = {
++	&format_attr_cstate_event.attr,
+ 	NULL,
+ };
+ 
+-static struct attribute_group core_format_attr_group = {
++static struct attribute_group cstate_format_attr_group = {
+ 	.name = "format",
+-	.attrs = core_format_attrs,
++	.attrs = cstate_format_attrs,
+ };
+ 
+ static cpumask_t cstate_core_cpu_mask;
+@@ -217,9 +217,9 @@ static struct attribute_group cpumask_attr_group = {
+ 	.attrs = cstate_cpumask_attrs,
+ };
+ 
+-static const struct attribute_group *core_attr_groups[] = {
+-	&core_events_attr_group,
+-	&core_format_attr_group,
++static const struct attribute_group *cstate_attr_groups[] = {
++	&cstate_events_attr_group,
++	&cstate_format_attr_group,
+ 	&cpumask_attr_group,
+ 	NULL,
+ };
+@@ -268,30 +268,8 @@ static struct perf_msr pkg_msr[] = {
+ 	[PERF_CSTATE_PKG_C10_RES] = { MSR_PKG_C10_RESIDENCY,	&group_cstate_pkg_c10,	test_msr },
+ };
+ 
+-static struct attribute_group pkg_events_attr_group = {
+-	.name = "events",
+-	.attrs = attrs_empty,
+-};
+-
+-DEFINE_CSTATE_FORMAT_ATTR(pkg_event, event, "config:0-63");
+-static struct attribute *pkg_format_attrs[] = {
+-	&format_attr_pkg_event.attr,
+-	NULL,
+-};
+-static struct attribute_group pkg_format_attr_group = {
+-	.name = "format",
+-	.attrs = pkg_format_attrs,
+-};
+-
+ static cpumask_t cstate_pkg_cpu_mask;
+ 
+-static const struct attribute_group *pkg_attr_groups[] = {
+-	&pkg_events_attr_group,
+-	&pkg_format_attr_group,
+-	&cpumask_attr_group,
+-	NULL,
+-};
+-
+ static ssize_t cstate_get_attr_cpumask(struct device *dev,
+ 				       struct device_attribute *attr,
+ 				       char *buf)
+@@ -478,7 +456,7 @@ static const struct attribute_group *pkg_attr_update[] = {
+ };
+ 
+ static struct pmu cstate_core_pmu = {
+-	.attr_groups	= core_attr_groups,
++	.attr_groups	= cstate_attr_groups,
+ 	.attr_update	= core_attr_update,
+ 	.name		= "cstate_core",
+ 	.task_ctx_nr	= perf_invalid_context,
+@@ -493,7 +471,7 @@ static struct pmu cstate_core_pmu = {
+ };
+ 
+ static struct pmu cstate_pkg_pmu = {
+-	.attr_groups	= pkg_attr_groups,
++	.attr_groups	= cstate_attr_groups,
+ 	.attr_update	= pkg_attr_update,
+ 	.name		= "cstate_pkg",
+ 	.task_ctx_nr	= perf_invalid_context,
