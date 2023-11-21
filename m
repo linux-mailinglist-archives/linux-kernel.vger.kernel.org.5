@@ -2,69 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3736C7F29DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6719A7F29E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbjKUKLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S231419AbjKUKOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjKUKLs (ORCPT
+        with ESMTP id S231923AbjKUKOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:11:48 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0816FC1;
-        Tue, 21 Nov 2023 02:11:45 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso1660090b3a.2;
-        Tue, 21 Nov 2023 02:11:45 -0800 (PST)
+        Tue, 21 Nov 2023 05:14:07 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D688ABA;
+        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b3f6dd612cso3291374b6e.3;
+        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700561504; x=1701166304; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h77UCHBzfS9YsxxGuMxQKATmfaJKyNycbGsrjaUmphU=;
-        b=U1vMUiC7Kj96pVlXogZWS8uk5x5NwUT3uzMVQoIZJSkW0JbbrRSD1ScaoQpW3vDZFl
-         dcSUePPgJkYAQZTcFBkbTs1v1uuub2zheqZTflwUqTzyYPI9EgDKaZ+XkkG/N25KftXk
-         goChYmzJdeQqyZhb+Iqcp1TbKF99L5zH3yMrBrTJwWTc5+/2RhE3ZPYmNe5JLXG/hxnH
-         /4Uq2QNT3YiRO7QAUm5b5oW4f0WIM7cMTJI4cM15lbtzTbIKzI7ZQNPwJPqP9t1b2y0M
-         cdJ62GL5ijKR6Cr+cscL/JwF78/DRNEYmipDOQ8S4R5ALYeEwrl1qLRkjv+AictMLmJ0
-         +BuQ==
+        d=gmail.com; s=20230601; t=1700561642; x=1701166442; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2rBM84BPH3h1OTNeKF8gkahQrwyTUFEFO20bhp2Xhd8=;
+        b=NnrlbR5r2soU9t9TIxVn4YCusKvlrRaEi0T8vpS8rWNE+v5AsTWn9/BZRr0voePTJ5
+         QEHDRO4gXSuBe7Lv4RFCKHi29Z5vzwejmjSltA8PhW9+2wcK0PBxYM3pQ9Q5deSiWnSe
+         2rm7mEjEDuFUGgW2/psCCHo3+trO66a2MGh5zN8/WOs73A25an1jKkzfFKEJcVDR8hGS
+         ATkdtpwRIkdh4IGk+mRCKzB4VwcoBsDSz5c6B7AL3WRBfA4YAmTRJRfY9GfYFgCen6Xk
+         ataR/stE8KyTMbn0X5lY2pjHuXs2lyQZYfY/rJixs7ICYw0a0YowXHzDMuTjkfPX+Z+T
+         9uuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700561504; x=1701166304;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h77UCHBzfS9YsxxGuMxQKATmfaJKyNycbGsrjaUmphU=;
-        b=Ak6H/jwWPzSm8xy6WuE0SI6RvLJ5POoklKNDwIDgTTFl73IedzNH1X8gH1XA/H5uWZ
-         nvH+CC7JJ3qHhg+vJVWweZa442vN6oQqJxQeNx/UyKqmuEUjiN0qJJJ7dYfYOBn+pld/
-         bQ0pN8bDHgnccNw7K9X7HjzALaphnQrZJ9RC3gEDP5jK7UpIWaHngCCabzjG+kziuVWA
-         UdqtqcX1ZRZxLSUzsiCqsPlmXD3+gQoD7lsG/kxdP0LLL4uUVqad8ioJgnXRGVy1miku
-         MyPZEzQivVZ4LT0LO7bOpW/f8phr7jQ1pWuaXMclFPi+e/w/Hm+MtZ1b3jWr/cJNfWoQ
-         ihLg==
-X-Gm-Message-State: AOJu0YxPlTzBPuGS/GdMGIqgetyoBpNdGl8CxD4hYYNQU7vrNBCoVojl
-        WNemgq3mIXkjQmlz4ybjOZRsZWkgeHoper3dI0s=
-X-Google-Smtp-Source: AGHT+IEp8j+Xt8I0EWdsh1ssJvEqhJY59UJ9RwYFSlAvOSHCZgQnKLiiltgHL/5rsbh4MhNNEDWqB0d6Hu9FlWOpSMc=
-X-Received: by 2002:a05:6a21:789d:b0:187:15e2:fdd9 with SMTP id
- bf29-20020a056a21789d00b0018715e2fdd9mr8857392pzc.39.1700561504425; Tue, 21
- Nov 2023 02:11:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700561642; x=1701166442;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2rBM84BPH3h1OTNeKF8gkahQrwyTUFEFO20bhp2Xhd8=;
+        b=lyrUmH7F0xDY6rQw2zatLt4YtEUoB35hleeUWE/o1nC9kevJNk2aD38Xi5ucWSrHlj
+         ViF/vgq7YmyuFTVLp2D/Mm5v3ljqaAm4dfVLIIshRJbUV8U5GX9KBjS8NOLw9i68KUTk
+         /7i2Ce///a1Fha1IjHDCOrfcX7MeaL1lioXj6vxzEXlmrW5YN+HdXRdKW2bnW96NJyCq
+         jQHDkCd4AxkUa+y1Rv4DfeVkAwDYaJ28x63ANGovTsDY7TXpqBoL3eubfAuE/DFUEnPl
+         GkanEsWQbp1+mIVN/nbw0++5v4difDly7S2kZ4Zrj8LJWA3ePCVRLkQ2UwmbaaWlEUkv
+         BPkw==
+X-Gm-Message-State: AOJu0YxBGzATvMOISZ+kPK7dVUoKe/DO/7QFlSjfRcwkKkrbImRu/jJG
+        bjKTGblZ7xUy5Tj7jc5rQCMM3XEDqQbKsg==
+X-Google-Smtp-Source: AGHT+IGhEXVp30ly+W+J0Vq5BReMmqT7YvixSbVC5mluqZTiIrvaPLLb925ROrcuhxW/NFuCjXOCsQ==
+X-Received: by 2002:a05:6871:7b0c:b0:1f5:c7bb:8f2d with SMTP id pf12-20020a0568717b0c00b001f5c7bb8f2dmr12045321oac.35.1700561642127;
+        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
+Received: from ?IPV6:2401:4900:2353:8963:b940:1ac0:2fbc:6b6? ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
+        by smtp.gmail.com with ESMTPSA id f2-20020a056a0022c200b0064fd4a6b306sm7538948pfj.76.2023.11.21.02.13.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 02:14:01 -0800 (PST)
+Message-ID: <4eb9d00a-a672-40a8-a923-d728432b1250@gmail.com>
+Date:   Tue, 21 Nov 2023 15:42:18 +0530
 MIME-Version: 1.0
-References: <1700552255-5364-1-git-send-email-shengjiu.wang@nxp.com>
- <1700552255-5364-14-git-send-email-shengjiu.wang@nxp.com> <0026a04d-8a04-4eeb-9f03-c68be6da5ec5@xs4all.nl>
-In-Reply-To: <0026a04d-8a04-4eeb-9f03-c68be6da5ec5@xs4all.nl>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Tue, 21 Nov 2023 18:11:33 +0800
-Message-ID: <CAA+D8APe+-_Z-vE2rffnF7S6Bss_3bigzb-Z2zHKof-7RARBKg@mail.gmail.com>
-Subject: Re: [PATCH v10 13/14] media: imx-asrc: Add memory to memory driver
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] dt-bindings: iio: chemical: add aosong,ags02ma
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231121095800.2180870-1-anshulusr@gmail.com>
+ <20231121095800.2180870-2-anshulusr@gmail.com>
+ <81149957-0403-4e41-8405-77ef8bfa3c8c@linaro.org>
+Content-Language: en-US
+From:   Anshul Dalal <anshulusr@gmail.com>
+In-Reply-To: <81149957-0403-4e41-8405-77ef8bfa3c8c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,78 +82,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 5:20=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> w=
-rote:
->
-> On 21/11/2023 08:37, Shengjiu Wang wrote:
-> > Implement the ASRC memory to memory function using
-> > the v4l2 framework, user can use this function with
-> > v4l2 ioctl interface.
-> >
-> > User send the output and capture buffer to driver and
-> > driver store the converted data to the capture buffer.
-> >
-> > This feature can be shared by ASRC and EASRC drivers
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  drivers/media/platform/nxp/Kconfig    |   13 +
-> >  drivers/media/platform/nxp/Makefile   |    1 +
-> >  drivers/media/platform/nxp/imx-asrc.c | 1264 +++++++++++++++++++++++++
-> >  3 files changed, 1278 insertions(+)
-> >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> >
->
-> <snip>
->
-> > +static const struct v4l2_ctrl_config asrc_src_rate_off_control =3D {
-> > +     .ops =3D &asrc_m2m_ctrl_ops,
-> > +     .id =3D V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET,
-> > +     .name =3D "Audio Source Sample Rate Offset",
-> > +     .type =3D V4L2_CTRL_TYPE_INTEGER64,
->
-> Do you need this to be INTEGER64? If the actual number of bits
-> of the fixed point value that the hardware uses fits in 32 bits,
-> then you can just use the INTEGER type.
->
-> > +     .min =3D 0xFFFFFF0000000000,
-> > +     .max =3D 0x7fffffffff,
-> > +     .def =3D 0,
-> > +     .step =3D 1,
-> > +     .flags =3D V4L2_CTRL_FLAG_UPDATE,
-> > +     .fraction_bits =3D 32,
->
-> Can't you use the actual number of fraction bits that the hardware
-> uses? I can't imagine that it is actually 32 bits, it is almost
-> certainly less.
->
-From the ratio point view, it is 44bits.  maximum 39 fractional bits.
-
-> I do think that we need a helper function to fill in the min/max values.
-
-what's the helper function look like?  Where can I find an example?
-
-best regards
-wang shengjiu
 
 
->
-> Regards,
->
->         Hans
->
-> > +};
-> > +
-> > +static const struct v4l2_ctrl_config asrc_dst_rate_off_control =3D {
-> > +     .ops =3D &asrc_m2m_ctrl_ops,
-> > +     .id =3D V4L2_CID_M2M_AUDIO_DEST_RATE_OFFSET,
-> > +     .name =3D "Audio Dest Sample Rate Offset",
-> > +     .type =3D V4L2_CTRL_TYPE_INTEGER64,
-> > +     .min =3D 0xFFFFFF0000000000,
-> > +     .max =3D 0x7fffffffff,
-> > +     .def =3D 0,
-> > +     .step =3D 1,
-> > +     .flags =3D V4L2_CTRL_FLAG_UPDATE,
-> > +     .fraction_bits =3D 32,
-> > +};
->
+On 11/21/23 15:33, Krzysztof Kozlowski wrote:
+> On 21/11/2023 10:57, Anshul Dalal wrote:
+>> Add bindings for Aosong AGS02MA TVOC sensor.
+>>
+>> The sensor communicates over i2c with the default address 0x1a.
+>> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
+>>
+>> Datasheet:
+>>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+>> Product-Page:
+>>   http://www.aosong.com/m/en/products-33.html
+>>
+> 
+> 
+>> +---
+>> +$id: http://devicetree.org/schemas/iio/chemical/aosong,ags02ma.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Aosong AGS02MA VOC Sensor
+>> [..]
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>> +    i2c {
+>> +        #address-cells = <1>;
+>> +        #size-cells = <0>;
+>> +
+>> +        light-sensor@1a {
+> 
+> 
+> You called it chemical, so why this is here light-sensor?
+
+I was working on a binding for a light sensor in parallel at that time,
+I probably forgot to change this when copying the example from the light
+sensor.
+
+Would be replaced by "voc-sensor" in the next revision, apologies for
+any inconvenience.
+
+Thanks for the review.
+
+Best Regards,
+Anshul
