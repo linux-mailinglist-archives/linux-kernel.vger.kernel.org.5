@@ -2,72 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFFC7F3234
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7A7F323A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbjKUPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
+        id S234240AbjKUPVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbjKUPTR (ORCPT
+        with ESMTP id S234198AbjKUPVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:19:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28E3BB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:19:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F76AC433C8;
-        Tue, 21 Nov 2023 15:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700579953;
-        bh=K3sSRhtDf+fwZgA5mkg5Iue5aOfsePsvpgVGRWm9MOw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=AJkJFmKTk3kZp2Nhtst+eqRQzgw6PQ+XkIGQaZksdF50rSe4nCfdicUzkfsZ9xj3Y
-         r+9VX2YZLiP0kmij9QHNoR4mehJ7RKvrlJaCXBYFDUAirhyV0HjQMlBTIyNZ/gUS24
-         AHiMYihwNpSIdaFFObrHcIiWNcqh8fAwY9JTzqzkCVc80gqD5MWH/lkd70S9hmVXBp
-         XF3+bipFXYDNPcmzm4TQ7AWvRkRxBTJUVjRRSs7e2N+MS/FJTgmgcH7vlTnMsHPANq
-         gUdAEftCyHnzkcnFYu9YxKTGMgHD93uDwxTZgDWhwOwzHc3deg0o3S/gFwLsVUfPFh
-         c4xbjk7FEa/Hg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 17035CE04BD; Tue, 21 Nov 2023 07:19:13 -0800 (PST)
-Date:   Tue, 21 Nov 2023 07:19:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
-Message-ID: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-48-ankur.a.arora@oracle.com>
- <20231107192703.1c493431@gandalf.local.home>
- <b8c1ae88-5c12-488c-a7af-42119ebd55d2@paulmck-laptop>
- <20231120224356.7e9e5423@gandalf.local.home>
- <29984609-14e1-4ce4-864b-87932ba3245a@paulmck-laptop>
- <20231121100030.3546b702@gandalf.local.home>
+        Tue, 21 Nov 2023 10:21:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAD0DD;
+        Tue, 21 Nov 2023 07:21:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700580099; x=1732116099;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=WijYm8vuHC5ZmFA7w1CK+dl8BooW+FtnuyTe351N948=;
+  b=WtyyA6kNJIK487iSa7UupuvmGmO8r9D/q99CuTjJ9QEzhdPyiuZhWtkU
+   udmB5THW4tBjcSDTDujfQYsmVY19tUX5EE9+zJpWkh+lA720Q84blYhU2
+   GFef7izJl4bquPdWb8UadCdKgj48Sj73mtd6Le8SHi1xF6FqKfOIDskN6
+   54PmnZ9Bude7ciL2zHKyC0Er3y7o9LIaP8JuyVBqT7avQlLJMHH8qifEX
+   h7wYl/0SHFvh/t7VoHyorQrzLhYLO12GBP9tHkr9PAKoSoVEFyPuse364
+   ztG3+rHwbrcz/FzGxHwgrCJINBtDwq4KHeDX0OIKQVksv8yvyT/LLN2If
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="13404500"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="13404500"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:21:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="795824207"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="795824207"
+Received: from azanetti-mobl.ger.corp.intel.com ([10.249.46.144])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:21:35 -0800
+Date:   Tue, 21 Nov 2023 17:21:32 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Re: [PATCH 14/17] tty: srmcons: use 'count' directly in
+ srmcons_do_write()
+In-Reply-To: <20231121092258.9334-15-jirislaby@kernel.org>
+Message-ID: <4f0db52-6430-9122-1ecc-86e337644944@linux.intel.com>
+References: <20231121092258.9334-1-jirislaby@kernel.org> <20231121092258.9334-15-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121100030.3546b702@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,64 +65,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:
-> On Mon, 20 Nov 2023 21:04:28 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Tue, 21 Nov 2023, Jiri Slaby (SUSE) wrote:
+
+> Similarly to 'buf' in the previous patch, there is no need to have a
+> separate counter ('remaining') in srmcons_do_write(). 'count' can be
+> used directly which simplifies the code a bit.
 > 
-> > How about like this, where "Y" means allowed and "N" means not allowed:
-> > 
-> > 			Non-Preemptible RCU	Preemptible RCU
-> > 
-> > NONE:				Y			Y
-> > 
-> > VOLUNTARY:			Y			Y
-> > 
-> > PREEMPT:			N			Y
-> > 
-> > PREEMPT_RT:			N			Y
-> > 
-> > 
-> > We need preemptible RCU for NONE and VOLUNTARY, as you say,
-> > to allow CONFIG_PREEMPT_DYNAMIC to continue to work.  (OK, OK,
-> > CONFIG_PREEMPT_DYNAMIC is no longer, but appears to be unconditional.)
-> > But again, I don't see why anyone would want (much less need)
-> > non-preemptible RCU in the PREEMPT and PREEMPT_RT cases.  And if it is
-> > neither wanted nor needed, there is no point in enabling it, much less
-> > testing it.
-> > 
-> > Or am I missing a use case in there somewhere?
+> Note that the type of the current count ('c') is changed from 'long' to
+> 'size_t' so that:
+> 1) it is prepared for the upcoming change of 'count's type, and
+> 2) is unsigned.
 > 
-> As Ankur replied, this is just an RFC, not the main goal. I'm talking about
-> the end product which will get rid of the PREEMPT_NONE, PREEMPT_VOLUNTARY
-> and PREEMPT conifgs, and there will *only* be the PREEMPT_DYNAMIC and
-> PREEMPT_RT.
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Richard Henderson <richard.henderson@linaro.org>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: linux-alpha@vger.kernel.org
+> ---
+>  arch/alpha/kernel/srmcons.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> And yes, this is going to be a slow and long processes, to find and fix all
-> regressions. I too am concerned about the latency that this may add. I'm
-> thinking we could have NEED_RESCHED_LAZY preempt when there is no mutex or
-> other semi critical section held (like migrate_disable()).
+> diff --git a/arch/alpha/kernel/srmcons.c b/arch/alpha/kernel/srmcons.c
+> index b68c5af083cd..8025e2a882ed 100644
+> --- a/arch/alpha/kernel/srmcons.c
+> +++ b/arch/alpha/kernel/srmcons.c
+> @@ -92,24 +92,24 @@ static int
+>  srmcons_do_write(struct tty_port *port, const char *buf, int count)
+>  {
+>  	static char str_cr[1] = "\r";
+> -	long c, remaining = count;
+> +	size_t c;
+>  	srmcons_result result;
+>  	int need_cr;
+>  
+> -	while (remaining > 0) {
+> +	while (count > 0) {
+>  		need_cr = 0;
+>  		/* 
+>  		 * Break it up into reasonable size chunks to allow a chance
+>  		 * for input to get in
+>  		 */
+> -		for (c = 0; c < min_t(long, 128L, remaining) && !need_cr; c++)
+> +		for (c = 0; c < min_t(size_t, 128U, count) && !need_cr; c++)
+>  			if (buf[c] == '\n')
+>  				need_cr = 1;
+>  		
+>  		while (c > 0) {
+>  			result.as_long = callback_puts(0, buf, c);
+>  			c -= result.bits.c;
+> -			remaining -= result.bits.c;
+> +			count -= result.bits.c;
+>  			buf += result.bits.c;
+>  
+>  			/*
+> 
 
-Indeed.  For one thing, you have a lot of work to do to demonstrate
-that this would actually be a good thing.  For example, what is so
-horribly bad about selecting minimal preemption (NONE and/or VOLUNTARY)
-at build time???
+The patches in the series are in pretty odd order and it was not told 
+anywhere here that the return value is unused by the callers. I'd just 
+reorder the patches.
 
-> Right now, the use of cond_resched() is basically a whack-a-mole game where
-> we need to whack all the mole loops with the cond_resched() hammer. As
-> Thomas said, this is backwards. It makes more sense to just not preempt in
-> areas that can cause pain (like holding a mutex or in an RCU critical
-> section), but still have the general kernel be fully preemptable.
+-- 
+ i.
 
-Which is quite true, but that whack-a-mole game can be ended without
-getting rid of build-time selection of the preemption model.  Also,
-that whack-a-mole game can be ended without eliminating all calls to
-cond_resched().
-
-Additionally, if the end goal is to be fully preemptible as in eventually
-eliminating lazy preemption, you have a lot more convincing to do.
-For but one example, given the high cost of the additional context
-switches that will visit on a number of performance-sensitive workloads.
-
-So what exactly are you guys trying to accomplish here?  ;-)
-
-							Thanx, Paul
