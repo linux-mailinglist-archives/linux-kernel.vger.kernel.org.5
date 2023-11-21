@@ -2,191 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C61E7F2A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4997F2A42
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjKUKbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        id S232964AbjKUKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233832AbjKUKbi (ORCPT
+        with ESMTP id S233789AbjKUKXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:31:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9015D18E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700562117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cfNnWg07vc4dtfhe3jy2IEWts0b85w4zN19C29eJ7XI=;
-        b=WhexbCvX1v3/0nJb/93UuUE9DBcgIltj0iTEHITtABjEZuHrd4c5fCfPQE7fz1Xa/cebtp
-        yBMY81iNjK/VCEU46GDIy2aHl25e3QklecQK3TWnaQZPeWT7+/F72G0MQ/H7icmADG+aCM
-        wlRA+TUkspvZkhKODdlEPEQvNKStXKg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-251-8lwfXGSIM2msIORfI6T1ZA-1; Tue, 21 Nov 2023 05:21:55 -0500
-X-MC-Unique: 8lwfXGSIM2msIORfI6T1ZA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a01a0032b19so44661266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:21:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700562114; x=1701166914;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cfNnWg07vc4dtfhe3jy2IEWts0b85w4zN19C29eJ7XI=;
-        b=ON+/g5o/wbdFsMPfHYBRxB20yU8UaC9OWgLwTdQkw+Pjm3PsbkMOgGGIdUQnK6ZyLX
-         1Q0DAe41sjdP2OKLFydS5v/LOXvUCUaAS4R7fEsEkW/5WSuExRGzAzVsiqqrtTborvNk
-         A+g5ph7reeJhv4bhsGbq0U1M/3juzJ0pb+Fjz8CgcJLfCH4kVvS7nMAypvzpk579Nw3q
-         4RfcKTtddUxT/fQXzlOfd8mkDuo/VyJMCJzFeJdtD0Btq6goRB4tfci/Ff8E4biyb6CV
-         6mtXGktHK2iNcYtCaKCKWVFQI7l41Pg0oLzWGUZwM9z3GBru4laxLPMRym1HehL5MfZq
-         0uuw==
-X-Gm-Message-State: AOJu0YwZL89RMzCv0H+mnRqgrTGhX5gnu/BXSzoCua2Nvc8/gueAvpsy
-        v6676JtCW3dp0qoA9iRr6eE4DANh3LN4uiaNgp9xivoC7q1Ajj0sCfrbjAkFmmAN/PDHNR9TqAR
-        xmQvKSqbiJhwwefkGqXJPaPTc
-X-Received: by 2002:a17:907:1ca8:b0:9e0:dcf:17d5 with SMTP id nb40-20020a1709071ca800b009e00dcf17d5mr7731227ejc.43.1700562114694;
-        Tue, 21 Nov 2023 02:21:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEnHTpYS1U3kUu2OxwPrgQY0GNCk/I3WSIYHNlFXhVd6SF9XinJx3fI1AP0AiDEyfy1o76dMw==
-X-Received: by 2002:a17:907:1ca8:b0:9e0:dcf:17d5 with SMTP id nb40-20020a1709071ca800b009e00dcf17d5mr7731209ejc.43.1700562114388;
-        Tue, 21 Nov 2023 02:21:54 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id g9-20020a170906520900b009faca59cf38sm3718947ejm.182.2023.11.21.02.21.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 02:21:53 -0800 (PST)
-Message-ID: <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
-Date:   Tue, 21 Nov 2023 11:21:53 +0100
-MIME-Version: 1.0
+        Tue, 21 Nov 2023 05:23:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB131716;
+        Tue, 21 Nov 2023 02:23:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700562197; x=1732098197;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=n9L2Z7hxtH76thMSJ8sge0eGAUVpaTfTNaM7+7rPOlw=;
+  b=cbv+w45occ4SZ8VA/RANmAbB7cx37tPkNLq5Mk2Dz8OInRtZ5dslg6Qy
+   JsjAP9r8aVFxWC4U0ElxS5L0XazSX/PHBHaCVJZzzjY7gIjleLwgkzWph
+   7NNE4M/DBhHyE2r7Hueb+1vFSASxtecqHdoTWgRzVI+kVHW8JqsTLql0D
+   d4gRF29hOt4BpWpQVQxElelyBMbeYPlouWZDEa3J0Ci/JZaUt5DTuyc54
+   9V5Ru5rzHsIAJ1t3xADKSJqlLsRigEWpdg26sMnTbju04xEw6ezPS34zK
+   ppMFxZrq52SmpB2T1peomn3tqnPXZmPwAe6lccgc8Pj9UyEMoBF/bFH21
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13353260"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="13353260"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:23:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="884160495"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="884160495"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Nov 2023 02:23:16 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 21 Nov 2023 02:23:15 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BFf72iid4hTJxAsal6K/iL6qxXPsx64gT7uK3u8dKM+dRbBZGDXHWB1y5K0ycIKab5PW/v05rhngDR9nouuV9KtKsYf4mPn0fXUSnwgCNhO615yqmPfkiNUTii7eW/dNVFO1kFT/8dQ9AXuHh6b44cIx7LJx0stXLofXK0wB8DbgROdD/KzfBgP7OypsVrK/PGeNFybcO35P9lLCxAx28U2PJHYjWA318EIERSw15bhyJm9opbElrf2gPKNTvzw8gA6B/h5Py1mSwX6GlRIcYQ1wSJkhEFGq1Wr8WAjI/eR/3n2jCNlYzhYSU3gKC/RTYyTiGgO/mGWn8GgotUqERg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LJ5dxuKmPAHNckdDcznty8XQd0ULaB8QIDHy19nUlxk=;
+ b=EKvxLIFmy2pXXH1b9FjsmvngsRAppjhq92n+WhUaXDDdlMJzzQpSLhUjSPViJAAS0OaUBLgKrESx2CzOfYkas88HpClwFodQ41rcgTYu79kJBTtyEhM/BK9z2YyTac5XJRRZ0rwQz803upWIIWsU9xqLVuXhHGBGDVthQvPhcPN8GLySkOymGsW5tWNsViHWg/q0fuyMu82YgUbUwRnb2R82AGQ2RXSmjVCzpYQH9ADdQKM8OQrFq5O1jcWC/yF24EuqvuE7pEDNX37IqwaPIQeCugU+ICSO2S8UGnECzTefbKdIF26mF81Ps76ALbyzWnWcA64ri6dksbOMu91Q8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
+ by PH7PR11MB6404.namprd11.prod.outlook.com (2603:10b6:510:1f8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
+ 2023 10:23:13 +0000
+Received: from MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::49fc:ba56:787e:1fb3]) by MW4PR11MB5776.namprd11.prod.outlook.com
+ ([fe80::49fc:ba56:787e:1fb3%7]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
+ 10:23:13 +0000
+Message-ID: <8769b63d-f7b2-4bb6-8b91-ffe67805404d@intel.com>
+Date:   Tue, 21 Nov 2023 11:23:06 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: sysfs: cannot create duplicate filename
- .../system76_acpi::kbd_backlight/color
-Content-Language: en-US, nl
-To:     Takashi Iwai <tiwai@suse.de>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux LEDs <linux-leds@vger.kernel.org>,
-        Tim Crawford <tcrawford@system76.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        System76 Product Development <productdev@system76.com>,
-        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        =?UTF-8?Q?Johannes_Pen=C3=9Fel?= <johannes.penssel@gmail.com>
-References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
- <ZT25-gUmLl8MPk93@debian.me>
- <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
- <ZUjnzB2RL2iLzIQG@debian.me> <87sf50pm34.wl-tiwai@suse.de>
- <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
- <87edgjo2kr.wl-tiwai@suse.de>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <87edgjo2kr.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [net-next PATCH v3 2/2] octeontx2-pf: TC flower offload support
+ for mirror
+To:     Suman Ghosh <sumang@marvell.com>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lcherian@marvell.com>,
+        <jerinj@marvell.com>, <horms@kernel.org>
+References: <20231121094346.3621236-1-sumang@marvell.com>
+ <20231121094346.3621236-3-sumang@marvell.com>
+Content-Language: en-US
+From:   Wojciech Drewek <wojciech.drewek@intel.com>
+In-Reply-To: <20231121094346.3621236-3-sumang@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0022.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::9) To MW4PR11MB5776.namprd11.prod.outlook.com
+ (2603:10b6:303:183::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|PH7PR11MB6404:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f664eec-444f-4921-ed23-08dbea7bddfc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y7MkMG49i8kc8xOdJpxJRsfbrNOWKDJKTJRPCGPoQJ5/8yckAKW9vORtdQbbi/ujj/dmQwWMvGbIClXQ0IH7QACzUDQInFq1H/2NGA5CRO7cwx+poLrzmBSGaCXDNGyZzRdDRRV37ajRHUuzkxk4+Akz+9q4z8dMz2CTxMZXqqn3mVkNSW6mdzhDW3l3kZTHdmlmRFhqMFrV/djws/CMYP8e83tNBligLlewH/VWjtUv57HclMl5JeFDL4jLGdeORH8g9YoBY0i5ypTez1OIkt5SGQdze6inxEfAioJovI+CSNFnK/dwlZqgrTUPtq5LJDIZ+X+NCqdk6RvcqNbhnPWyfCzOwl1jrvC0cn8kweZBrbirx7moqsVW9RubZhK2eBxwAnVb/Imu8sQP9S6kdXV35J83CUsBmLxv3PZvju9FYME/DLqt1lUjxUz+hCFPtchyP47EtMGiinF+wjoW5gRF3cOow2cUMKoSwOJs8XkQxC/DLqheESLWC9l+KmofWHchn4qmE4S/uvJGbSiwVoCBvM+E9xylTAgjyLiB4/0iFdDR5rHInsDH+Lh7pBdyBTiL1jEVk6FK5XsdAzHfvxOchW527h/KZxI4w+X84v/7HKk286mK21TJDY39N3F5q8IUxTK9ExjgHsIXOwlnq6REDbPEDsGfPz9BsP6LgV8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(83380400001)(6486002)(6506007)(6512007)(478600001)(31686004)(2616005)(6666004)(26005)(82960400001)(53546011)(38100700002)(66946007)(316002)(66476007)(66556008)(44832011)(31696002)(86362001)(5660300002)(7416002)(2906002)(921008)(41300700001)(8936002)(8676002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnJCL0lJcTVBRGJid2FBdEs5NTY0KzlUbjZEajZ5RWp5R1JzT3dOUENKS1hC?=
+ =?utf-8?B?MHkvc0paUXZ5elpLc2Y1OUVodXVBa1orVUFUNGhOMmhIOXkzWllNbFozL2Zx?=
+ =?utf-8?B?VTVuN01pYUJlbnJzbHp6YkxUZ0VZU2VuZXBrKzdFN3Bvd1JKNDlRVkRRRDk0?=
+ =?utf-8?B?V1JOYW9iU2I5SDA2dnhBNGU0U0hEamU1UC9HcXhpMzNIMGxNTEUvM0d2M1Bk?=
+ =?utf-8?B?U21NRk5BS2N5RE5XZDJUQXlmSmFuUHhFL05mSGREZVBIVEhzM0hoWEl6SVNx?=
+ =?utf-8?B?a3JHVGMrcGVHQ1g5cWovWGxlVlNSR0xPS0dWeW5qQUlWTERKOU94b3I5Yjly?=
+ =?utf-8?B?Ym1oZ093NnJ2cGtJNHJzMlQxdUp2MnM4R1dvL2ZubUpNWUVwNU9KV1NwYjBv?=
+ =?utf-8?B?N1B0K0UzenE2dGg3RW1PZzI3R3N1YlVKcW1sbnlNWDV4OUxGcCtLUUZaalVR?=
+ =?utf-8?B?VDJtb0kxNUdWME9aLzBTVFNmb3BDbVdHRVFhWjkrMExEdG5MSmNQTlE0Y2xx?=
+ =?utf-8?B?ODRnVTJabFBlRXlnbXd3RFpDQW5mV0xFcTlyWnRTOVppZWgyQ3BFMWVxZ0lR?=
+ =?utf-8?B?S3MreWxtc0ZmSCs4V0krdEEzQlV0Q2dabUl4WVo4YWtnQ3g1RmFVb3dacVc2?=
+ =?utf-8?B?TkNIZUxldmpDeDczQUdhVzdtYXJPU0pqSTNkMmVxV3h2OVdKZXdFVEkrbkc3?=
+ =?utf-8?B?eWxJdkRuWlRaUmFSZm5zRmRScG1lR2VZMW8veXY5SElGMDNtNjYvYnh4bWNB?=
+ =?utf-8?B?ellIL2V6WTc3MUtKVDI1RE84eUt4akNIV1ErVEk5TTY0MDlqaVFNamsraWRz?=
+ =?utf-8?B?SVA5SFJnQ2FFRU00NmpBQUlVUHFrdjl1ZWY0aXlaMlcvYmhXajlsRXE2SlVJ?=
+ =?utf-8?B?QmJDb2w5RklvWC85QUdvYkR0MkowWjc0M1NQQmd6c0pPbVFLdHlHZStNR1hP?=
+ =?utf-8?B?LzRGWU1MeS94cTIrZWQxc3FVamtkOTZGZWFPTjhVOFpMNUwybHYvUS93Y050?=
+ =?utf-8?B?K1QzTTRBM2FhOStQb1g1YnVpTXFVOU5YQXkwNmJQWEJkMlQxTkRiSzMvV0t5?=
+ =?utf-8?B?OWJjbGJ5ZjlyS29VMitpQWNodFE1QU15UmUxVW12YVRvSlNCNENrYlJNYlNj?=
+ =?utf-8?B?S2M5N2tSRHpvM1NUdTRzNlVWR3NXL1QvQ0RmUk5Wa1pmTVdiM1ZQaGp1S2Fj?=
+ =?utf-8?B?L1p6OXE1VlA0RlpoRG10QUVYQlFTeXpjNXNpbU9pZ3hacHo5K0R4UUI2M0FC?=
+ =?utf-8?B?L0g4ME82dzd6bStBM0JmWlNxYStLcGU5bURKdGhiemNIL1pvU0E4dEhXRkRW?=
+ =?utf-8?B?QWhZd21SN2ozdGFXQXg5MDZjSFBhZjQvMnNWK2M1d1FvN0J0aVhySlZFQWs0?=
+ =?utf-8?B?ZHptTCtEOXBkYVVZMkFudDI1ODV5azB6QS91YlY5dDNGYzF0TjVDdDZUWUpL?=
+ =?utf-8?B?N2tLRTF4NHhuMEMvUERySmpOaDBLYU04ZUNhaTkreDZlTVNJeWpjMmM5NWVt?=
+ =?utf-8?B?TVY5SnprTDFTeVdyK0MwK1dQYkJFWjZuRTJlZFRPTm4xSzFORXhjcVU1dFVj?=
+ =?utf-8?B?OTc1ZGI2WUluNW9ERGtoYW1ZcWRaaWM5WU1OLzRnK1h1Z3NFN1Z3N0pJdDZj?=
+ =?utf-8?B?YVFLNmQwcy9qblY5Z0lUZEozdW9xVzF3ZTJTN3Z4UGpNczhEc3hpQ29od2pR?=
+ =?utf-8?B?ZUZkMzEwRFdDbk9QbWJkaXdTQUd5RW9pTVpTV2s2Z0E1ci9FOTdCTnZpTlFq?=
+ =?utf-8?B?VG1aM2hTdDlkUWx3T3FTT2tGMFNpRG4vS3lCMzhWVVZhWGU1WGRGQlJJUEo0?=
+ =?utf-8?B?a0RhVmNBU2Q5SlpIZHlLQnNpVUYydm1aUVdpR1I2ZzVweUVVcEQrZjN5dTVw?=
+ =?utf-8?B?T2psd0MzZnRpWFVPUi8xZGVHMjcvYyttZGh1Q2JJNHdZTzVEVjdLc29QNWZ5?=
+ =?utf-8?B?SUJTNVc1Y0tqTUF0NVQwZFozblQ3dlNNZFBsazgzRENlUmIwM0V4bmJEZ0ZF?=
+ =?utf-8?B?cUZkbTZKbHFLQk9jSCtCOUFISkY2cmZwNWVNeW9hZmsvNlp6TEtzVGZLeEtG?=
+ =?utf-8?B?b0ZFSUcyVGtxY1BRVnBzclU1T25pTG8wQmhDdVVCY0wrNm1sV3U5bDFSMnRj?=
+ =?utf-8?B?SHk3dGdRb0VFUUUwM0Zqa1NvVFZCS3RPZUlMd0F0VERHTWFPY0ZDT1F5T3Bl?=
+ =?utf-8?B?Q1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f664eec-444f-4921-ed23-08dbea7bddfc
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 10:23:13.1951
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ayt1A7GyUhZm2N+VvhVFjpP99YiDHpGRdJU0IO3JVs8xkFKohsSPti+OsQ5W5+j5wQP5nPGhArB3xI3Dq0tv+xElSdq+9ITaVB4ZZSYRfMw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6404
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 11/21/23 10:52, Takashi Iwai wrote:
-> On Tue, 21 Nov 2023 10:19:03 +0100,
-> Thorsten Leemhuis wrote:
->>
->> Takashi, Jean-Jacques Hiblot, Lee,
->>
->> On 20.11.23 14:53, Takashi Iwai wrote:
->>> On Mon, 06 Nov 2023 14:19:08 +0100,
->>> Bagas Sanjaya wrote:
->>>> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
->>>>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
->>>>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
->>>>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
->>>>>>
->>>>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
->>>>>> since you authored the culprit?
->>>
->>>>> The offending commit stores the color in struct led_classdev and exposes it
->>>>> via sysfs. It was part of a series that create a RGB leds from multiple
->>>>> single-color LEDs. for this series, we need the color information but we
->>>>> don't really need to expose it it via sysfs. In order to fix the issue, we
->>>>> can remove the 'color' attribute from the sysfs.
->>>>
->>>> OK, see you in the patch!
->>>
->>> Is there a patch available?
->>
->> Not that I know of. Could not find anything on lore either.
->>
->>> This bug hits for a few Logitech keyboard models, too, and it makes
->>> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
->>> this bug:
->>>   https://bugzilla.kernel.org/show_bug.cgi?id=218155
->>>
->>> We need a quick fix for 6.6.x.
->>
->> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
->> committed it and sent it to Linus) know about this for a while already
->> without doing anything about it, I wonder if someone should just send a
->> revert to Linus (unless of course that is likely to introduce a
->> regression on its own).
->>
->> Takashi, could you maybe do this, unless a fix shows up real soon?
+
+On 21.11.2023 10:43, Suman Ghosh wrote:
+> This patch extends TC flower offload support for mirroring
+> ingress/egress traffic to a different PF/VF. Below is an example
+> command,
 > 
-> I can, but we need to decide which way to go.
-> There are several options:
+> 'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
+> skip_sw action mirred ingress mirror dev eth2'
 > 
-> 1. Revert the commit c7d80059b086;
->    this drops led class color sysfs entries.  Also the store of
->    led_cdev->color from fwnode is dropped, too.
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
+> ---
+
+If someone gave you you his tag, please add it to the next version.
+
+>  .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 +++++++++++++++++-
+>  1 file changed, 110 insertions(+), 3 deletions(-)
 > 
-> 2. Drop only led class color sysfs entries;
->    a partial revert of c7d80059b086 above
-
-AFAIK further up in the thread (or a related thread) there
-already was consensus to do this. Someone just needs to
-write the patch.
-
-> 3. Rename conflicting sysfs entries in drivers;
->    e.g. color -> kb_color for hid-lg-g15 and system76_acpi
-> 
-> In either way, we'd break user-space (sysfs).
-
-The new color attribute causing the conflict has only
-been in 6.6 so there likely aren't any users of it yet
-and since dropping it would be backported to 6.6.y
-there shouldn't be any future users of it either, since
-any 6.6 users presumably will use 6.6.y and not 6.6.0
-
-> IMO, 2 would be the least harm, as the class sysfs entry was
-> introduced since 6.6.
-
-Ack.
-
-> I guess this is what Jean-Jacques suggested.
-
-Right.
-
-> But I'm not sure how important this new class sysfs entry is; it has
-> to be clarified from leds people who actually use / wanted the
-> feature.
-
-If I have read the thread correctly it is not important the value
-it represents is used internally in the LED subsystem and userspace
-does not really need it.
-
-Regards,
-
-Hans
-
-
-
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+> index 8a5e3987a482..17a8d9778193 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+> @@ -29,6 +29,8 @@
+>  
+>  #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
+>  
+> +#define MCAST_INVALID_GRP		(-1U)
+> +
+>  struct otx2_tc_flow_stats {
+>  	u64 bytes;
+>  	u64 pkts;
+> @@ -47,6 +49,7 @@ struct otx2_tc_flow {
+>  	bool				is_act_police;
+>  	u32				prio;
+>  	struct npc_install_flow_req	req;
+> +	u32				mcast_grp_idx;
+>  };
+>  
+>  static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
+> @@ -336,22 +339,96 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
+>  	return rc;
+>  }
+>  
+> +static int otx2_tc_update_mcast(struct otx2_nic *nic,
+> +				struct npc_install_flow_req *req,
+> +				struct netlink_ext_ack *extack,
+> +				struct otx2_tc_flow *node,
+> +				struct nix_mcast_grp_update_req *ureq,
+> +				u8 num_intf)
+> +{
+> +	struct nix_mcast_grp_update_req *grp_update_req;
+> +	struct nix_mcast_grp_create_req *creq;
+> +	struct nix_mcast_grp_create_rsp *crsp;
+> +	u32 grp_index;
+> +	int rc;
+> +
+> +	mutex_lock(&nic->mbox.lock);
+> +	creq = otx2_mbox_alloc_msg_nix_mcast_grp_create(&nic->mbox);
+> +	if (!creq) {
+> +		rc = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	creq->dir = NIX_MCAST_INGRESS;
+> +	/* Send message to AF */
+> +	rc = otx2_sync_mbox_msg(&nic->mbox);
+> +	if (rc) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Failed to create multicast group");
+> +		goto error;
+> +	}
+> +
+> +	crsp = (struct nix_mcast_grp_create_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
+> +			0,
+> +			&creq->hdr);
+> +	if (IS_ERR(crsp)) {
+> +		rc = PTR_ERR(crsp);
+> +		goto error;
+> +	}
+> +
+> +	grp_index = crsp->mcast_grp_idx;
+> +	grp_update_req = otx2_mbox_alloc_msg_nix_mcast_grp_update(&nic->mbox);
+> +	if (!grp_update_req) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
+> +		rc = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+> +	ureq->op = NIX_MCAST_OP_ADD_ENTRY;
+> +	ureq->mcast_grp_idx = grp_index;
+> +	ureq->num_mce_entry = num_intf;
+> +	ureq->pcifunc[0] = nic->pcifunc;
+> +	ureq->channel[0] = nic->hw.tx_chan_base;
+> +
+> +	ureq->dest_type[0] = NIX_RX_RSS;
+> +	ureq->rq_rss_index[0] = 0;
+> +	memcpy(&ureq->hdr, &grp_update_req->hdr, sizeof(struct mbox_msghdr));
+> +	memcpy(grp_update_req, ureq, sizeof(struct nix_mcast_grp_update_req));
+> +
+> +	/* Send message to AF */
+> +	rc = otx2_sync_mbox_msg(&nic->mbox);
+> +	if (rc) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
+> +		goto error;
+> +	}
+> +
+> +	mutex_unlock(&nic->mbox.lock);
+> +	req->op = NIX_RX_ACTIONOP_MCAST;
+> +	req->index = grp_index;
+> +	node->mcast_grp_idx = grp_index;
+> +	return 0;
+> +
+> +error:
+> +	mutex_unlock(&nic->mbox.lock);
+> +	return rc;
+> +}
+> +
+>  static int otx2_tc_parse_actions(struct otx2_nic *nic,
+>  				 struct flow_action *flow_action,
+>  				 struct npc_install_flow_req *req,
+>  				 struct flow_cls_offload *f,
+>  				 struct otx2_tc_flow *node)
+>  {
+> +	struct nix_mcast_grp_update_req dummy_grp_update_req = { 0 };
+>  	struct netlink_ext_ack *extack = f->common.extack;
+> +	bool pps = false, mcast = false;
+>  	struct flow_action_entry *act;
+>  	struct net_device *target;
+>  	struct otx2_nic *priv;
+>  	u32 burst, mark = 0;
+>  	u8 nr_police = 0;
+> -	bool pps = false;
+> +	u8 num_intf = 1;
+> +	int err, i;
+>  	u64 rate;
+> -	int err;
+> -	int i;
+>  
+>  	if (!flow_action_has_entries(flow_action)) {
+>  		NL_SET_ERR_MSG_MOD(extack, "no tc actions specified");
+> @@ -423,11 +500,30 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
+>  			req->index = act->rx_queue;
+>  			break;
+>  
+> +		case FLOW_ACTION_MIRRED_INGRESS:
+> +			target = act->dev;
+> +			priv = netdev_priv(target);
+> +			dummy_grp_update_req.pcifunc[num_intf] = priv->pcifunc;
+> +			dummy_grp_update_req.channel[num_intf] = priv->hw.tx_chan_base;
+> +			dummy_grp_update_req.dest_type[num_intf] = NIX_RX_RSS;
+> +			dummy_grp_update_req.rq_rss_index[num_intf] = 0;
+> +			mcast = true;
+> +			num_intf++;
+> +			break;
+> +
+>  		default:
+>  			return -EOPNOTSUPP;
+>  		}
+>  	}
+>  
+> +	if (mcast) {
+> +		err = otx2_tc_update_mcast(nic, req, extack, node,
+> +					   &dummy_grp_update_req,
+> +					   num_intf);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	if (nr_police > 1) {
+>  		NL_SET_ERR_MSG_MOD(extack,
+>  				   "rate limit police offload requires a single action");
+> @@ -1033,6 +1129,7 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
+>  			    struct flow_cls_offload *tc_flow_cmd)
+>  {
+>  	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
+> +	struct nix_mcast_grp_destroy_req *grp_destroy_req;
+>  	struct otx2_tc_flow *flow_node;
+>  	int err;
+>  
+> @@ -1064,6 +1161,15 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
+>  		mutex_unlock(&nic->mbox.lock);
+>  	}
+>  
+> +	/* Remove the multicast/mirror related nodes */
+> +	if (flow_node->mcast_grp_idx != MCAST_INVALID_GRP) {
+> +		mutex_lock(&nic->mbox.lock);
+> +		grp_destroy_req = otx2_mbox_alloc_msg_nix_mcast_grp_destroy(&nic->mbox);
+> +		grp_destroy_req->mcast_grp_idx = flow_node->mcast_grp_idx;
+> +		otx2_sync_mbox_msg(&nic->mbox);
+> +		mutex_unlock(&nic->mbox.lock);
+> +	}
+> +
+>  	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
+>  	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
+>  	kfree_rcu(flow_node, rcu);
+> @@ -1096,6 +1202,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
+>  	spin_lock_init(&new_node->lock);
+>  	new_node->cookie = tc_flow_cmd->cookie;
+>  	new_node->prio = tc_flow_cmd->common.prio;
+> +	new_node->mcast_grp_idx = MCAST_INVALID_GRP;
+>  
+>  	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
+>  
