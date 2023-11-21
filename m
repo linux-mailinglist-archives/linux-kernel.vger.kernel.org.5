@@ -2,77 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B497F2327
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E197F2329
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbjKUBee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        id S233179AbjKUBfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbjKUBe0 (ORCPT
+        with ESMTP id S233060AbjKUBfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:34:26 -0500
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658E1ED;
-        Mon, 20 Nov 2023 17:34:18 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VwqXEiK_1700530455;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VwqXEiK_1700530455)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Nov 2023 09:34:16 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     ilkka@os.amperecomputing.com, kaishen@linux.alibaba.com,
-        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com
-Cc:     chengyou@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, xueshuai@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com
-Subject: [PATCH v11 5/5] MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
-Date:   Tue, 21 Nov 2023 09:34:00 +0800
-Message-Id: <20231121013400.18367-6-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231121013400.18367-1-xueshuai@linux.alibaba.com>
-References: <20231121013400.18367-1-xueshuai@linux.alibaba.com>
+        Mon, 20 Nov 2023 20:35:12 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6FD10CE;
+        Mon, 20 Nov 2023 17:34:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Am/1to/V8gkq755Qh9tO2gkpYjOcdKhlEYTmnGsC1fw=; b=ynCgLiPMN+NFUNWiq84dU/mY51
+        2JQeUI/TsS98fJ3QddRjeKyF5NQpjXlYkJhHw8LZHPnHnJt311d6eVQawVRZlQ4u/G+A40iXdFy5B
+        ToH5wvAyxJQm3oSf7EN38KERrYFpeP4syJJa2R5e7bUznCnEa9KuRaQPprbj+QjjiGJU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5Ff6-000i5g-W8; Tue, 21 Nov 2023 02:34:49 +0100
+Date:   Tue, 21 Nov 2023 02:34:48 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>
+Subject: Re: [RFC PATCH net-next v2 06/10] net: ethtool: Introduce a command
+ to list PHYs on an interface
+Message-ID: <fcb77cb3-e57d-4b66-bb55-63d3b1410e8f@lunn.ch>
+References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
+ <20231117162323.626979-7-maxime.chevallier@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117162323.626979-7-maxime.chevallier@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers for Synopsys DesignWare PCIe PMU driver and driver
-document.
+> diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+> index 2540c70952ff..29ef675f45c0 100644
+> --- a/Documentation/networking/ethtool-netlink.rst
+> +++ b/Documentation/networking/ethtool-netlink.rst
+> @@ -57,6 +57,7 @@ Structure of this header is
+>    ``ETHTOOL_A_HEADER_DEV_INDEX``  u32     device ifindex
+>    ``ETHTOOL_A_HEADER_DEV_NAME``   string  device name
+>    ``ETHTOOL_A_HEADER_FLAGS``      u32     flags common for all requests
+> +  ``ETHTOOL_A_HEADER_PHY_INDEX``  u32     phy device index
+>    ==============================  ======  =============================
+>  
+>  ``ETHTOOL_A_HEADER_DEV_INDEX`` and ``ETHTOOL_A_HEADER_DEV_NAME`` identify the
+> @@ -81,6 +82,12 @@ the behaviour is backward compatible, i.e. requests from old clients not aware
+>  of the flag should be interpreted the way the client expects. A client must
+>  not set flags it does not understand.
+>  
+> +``ETHTOOL_A_HEADER_PHY_INDEX`` identify the ethernet PHY the message relates to.
+> +As there are numerous commands that are related to PHY configuration, and because
+> +we can have more than one PHY on the link, the PHY index can be passed in the
+> +request for the commands that needs it. It is however not mandatory, and if it
+> +is not passed for commands that target a PHY, the net_device.phydev pointer
+> +is used, as a fallback that keeps the legacy behaviour.
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+O.K, you did document it :-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c4cce45a09d..71f363f836ae 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20866,6 +20866,13 @@ L:	linux-mmc@vger.kernel.org
- S:	Maintained
- F:	drivers/mmc/host/dw_mmc*
- 
-+SYNOPSYS DESIGNWARE PCIE PMU DRIVER
-+M:	Shuai Xue <xueshuai@linux.alibaba.com>
-+M:	Jing Zhang <renyu.zj@linux.alibaba.com>
-+S:	Supported
-+F:	Documentation/admin-guide/perf/dwc_pcie_pmu.rst
-+F:	drivers/perf/dwc_pcie_pmu.c
-+
- SYNOPSYS HSDK RESET CONTROLLER DRIVER
- M:	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
- S:	Supported
--- 
-2.39.3
+But i would make this part of the previous patch.
 
+> +Kernel response contents:
+> +
+> +  =================================     ======  ==========================
+> +  ``ETHTOOL_A_PHY_HEADER``              nested  request header
+> +  ``ETHTOOL_A_PHY_INDEX``               u32     the phy's unique index, that can
+> +                                                be used for phy-specific requests
+> +  ``ETHTOOL_A_PHY_DRVNAME``             string  the phy driver name
+> +  ``ETHTOOL_A_PHY_NAME``                string  the phy device name
+> +  ``ETHTOOL_A_PHY_UPSTREAM_TYPE``       u32     the type of device this phy is
+> +                                                connected to
+> +  ``ETHTOOL_A_PHY_UPSTREAM_PHY``        nested  if the phy is connected to another
+> +                                                phy, this nest contains info on
+> +                                                that connection
+> +  ``ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME`` string  if the phy controls an sfp bus,
+> +                                                the name of the sfp bus
+> +  ``ETHTOOL_A_PHY_ID``                  u32     the phy id if the phy is C22
+
+Maybe a future extension. We could make phy_bus_match() set
+phydev->phy_id to the ID it matched to the driver when doing C45. We
+would then always have a value here.
+
+> --- a/include/linux/ethtool_netlink.h
+> +++ b/include/linux/ethtool_netlink.h
+> @@ -118,5 +118,10 @@ static inline bool ethtool_dev_mm_supported(struct net_device *dev)
+>  	return false;
+>  }
+>  
+> +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+
+This is a header file, so should probably be static inline.
+
+     Andrew
