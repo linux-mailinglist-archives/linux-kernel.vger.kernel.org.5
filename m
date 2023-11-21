@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E53C67F2DE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984557F2DE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbjKUNEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S233815AbjKUNEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233760AbjKUNEH (ORCPT
+        with ESMTP id S229566AbjKUNEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 08:04:07 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CC8D54;
-        Tue, 21 Nov 2023 05:04:04 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D5D52;
+        Tue, 21 Nov 2023 05:04:03 -0800 (PST)
 Date:   Tue, 21 Nov 2023 13:04:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1700571842;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vq3mp3VVlbiGiCUiKGAqxyw/3QBEwu1d5DThRFVhkC8=;
-        b=bHS0PTTevS2/7YV7KIHlD3P7E7QJcwQw2yR4dfdlHYZrbVraDW+Oo3/YqAxkn4DFyhzTYF
-        biJwC1V6dyu7HQ1KgJwo/ZHLGDPLPcwlGtCab0XuELuTXmaA2uFlpPlBe0P3bPMprv2d4h
-        JcpaKIITDzREWRaDy/3U2MG/hq24c+xltewfQyW/TItCOQgmC4huBNgJOVGuU++U2lfSoi
-        GnBLXoJjodoKOKp6Ms3oHBhVvN+vagPpS2cpIw9nIDH22j807QZMLH7u8HOtkXAlbISLu/
-        6YTcDUuX4UuxaKLD5Y8q/eFwLu9Qev21ARTte+QWhr1VGUO214AgnJof7krG5g==
+        bh=WBl/px+XRB5UWETJoziXFsofH7eRQgIae/X5SAkBZMM=;
+        b=faSaJPXqt/pIh32JK3jhtnN7Tm+6QyQm3iz9KIlPZgk6kmHWmJbZOc1MS6bcIOMZVUcu2S
+        J1x9uIHyI/3TeI9OldglUXTeGlk97JAlxILYuSe18pjTsbmg6oeu75UNyXa7yYs8qSqlDc
+        oJ/GPbH8pV0YZw+ii9H9DF3h2jDOKc8xgYytKt+pqZnbJkdrwDARqrhVRltGQ7Kr1KORvC
+        pPugPXP2iUNEO7qgmQNgX1pqK2m0zppDLwnYJ0Vo7gTMMQhTypZl53zOYDMvfCP9JFOfpo
+        PC+1MKOiVDyiVLdeSLmaBz7WDXeDDWtFJxcUBuXey/A5PMvtCEQZvLmYquoJbA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1700571842;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vq3mp3VVlbiGiCUiKGAqxyw/3QBEwu1d5DThRFVhkC8=;
-        b=hh9Qu4h9TDSkoFIWm8B74rwTyFGmCXwzQ2FzDF1pNPVRs6MmUbKfAUuLD2w8hujSf4wnrd
-        /XJk1kod2RRstcDA==
+        bh=WBl/px+XRB5UWETJoziXFsofH7eRQgIae/X5SAkBZMM=;
+        b=uQxIQs+RdqXuBnR3ap4aeur7V1qDmA4QIVX+qYDhV0WUufNrej+FYnl88DBddvmiXf4Apk
+        MoF1d6f7Eh8b+xCA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Optimize common_interrupt_return()
+Subject: [tip: x86/entry] x86/entry: Harden return-to-user
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231120143626.638107480@infradead.org>
-References: <20231120143626.638107480@infradead.org>
+In-Reply-To: <20231120143626.753200755@infradead.org>
+References: <20231120143626.753200755@infradead.org>
 MIME-Version: 1.0
-Message-ID: <170057184198.398.10194594429929992769.tip-bot2@tip-bot2>
+Message-ID: <170057184115.398.10717080354798999392.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,31 +68,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     c516213726fb572700cce4a5909aa8d82b77192a
-Gitweb:        https://git.kernel.org/tip/c516213726fb572700cce4a5909aa8d82b77192a
+Commit-ID:     1e4d3001f59fb7a9917cb746544b65e616b5f809
+Gitweb:        https://git.kernel.org/tip/1e4d3001f59fb7a9917cb746544b65e616b5f809
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 20 Nov 2023 15:33:45 +01:00
+AuthorDate:    Mon, 20 Nov 2023 15:33:46 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 21 Nov 2023 13:57:30 +01:00
+CommitterDate: Tue, 21 Nov 2023 13:57:31 +01:00
 
-x86/entry: Optimize common_interrupt_return()
+x86/entry: Harden return-to-user
 
-The code in common_interrupt_return() does a bunch of unconditional
-work that is really only needed on PTI kernels. Specifically it
-unconditionally copies the IRET frame back onto the entry stack,
-swizzles onto the entry stack and does IRET from there.
-
-However, without PTI we can simply IRET from whatever stack we're on.
-
-  ivb-ep, mitigations=off, gettid-1m:
+Make the CONFIG_DEBUG_ENTRY=y check that validates CS is a user segment
+unconditional and move it nearer to IRET.
 
   PRE:
-       140,118,538      cycles:k                                                      ( +-  0.01% )
-       236,692,878      instructions:k            #    1.69  insn per cycle           ( +-  0.00% )
-
-  POST:
        140,026,608      cycles:k                                                      ( +-  0.01% )
        236,696,176      instructions:k            #    1.69  insn per cycle           ( +-  0.00% )
+
+  POST:
+       139,957,681      cycles:k                                                      ( +-  0.01% )
+       236,681,819      instructions:k            #    1.69  insn per cycle           ( +-  0.00% )
 
 (this is with --repeat 100 and the run-to-run variance is bigger than
 the difference shown)
@@ -100,86 +94,52 @@ the difference shown)
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20231120143626.638107480@infradead.org
+Link: https://lore.kernel.org/r/20231120143626.753200755@infradead.org
 ---
- arch/x86/entry/calling.h  | 12 +++++++++---
- arch/x86/entry/entry_64.S | 17 +++++++++++++++--
- 2 files changed, 24 insertions(+), 5 deletions(-)
+ arch/x86/entry/entry_64.S | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
-index f690762..9f1d947 100644
---- a/arch/x86/entry/calling.h
-+++ b/arch/x86/entry/calling.h
-@@ -175,8 +175,7 @@ For 32-bit we have the following conventions - kernel is built with
- #define THIS_CPU_user_pcid_flush_mask   \
- 	PER_CPU_VAR(cpu_tlbstate) + TLB_STATE_user_pcid_flush_mask
- 
--.macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
--	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
-+.macro SWITCH_TO_USER_CR3 scratch_reg:req scratch_reg2:req
- 	mov	%cr3, \scratch_reg
- 
- 	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
-@@ -206,13 +205,20 @@ For 32-bit we have the following conventions - kernel is built with
- 	/* Flip the PGD to the user version */
- 	orq     $(PTI_USER_PGTABLE_MASK), \scratch_reg
- 	mov	\scratch_reg, %cr3
-+.endm
-+
-+.macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
-+	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
-+	SWITCH_TO_USER_CR3 \scratch_reg \scratch_reg2
- .Lend_\@:
- .endm
- 
- .macro SWITCH_TO_USER_CR3_STACK	scratch_reg:req
-+	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
- 	pushq	%rax
--	SWITCH_TO_USER_CR3_NOSTACK scratch_reg=\scratch_reg scratch_reg2=%rax
-+	SWITCH_TO_USER_CR3 scratch_reg=\scratch_reg scratch_reg2=%rax
- 	popq	%rax
-+.Lend_\@:
- .endm
- 
- .macro SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg:req save_reg:req
 diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index de6469d..dfbf799 100644
+index dfbf799..c40f89a 100644
 --- a/arch/x86/entry/entry_64.S
 +++ b/arch/x86/entry/entry_64.S
-@@ -569,7 +569,18 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+@@ -559,13 +559,6 @@ __irqentry_text_end:
+ SYM_CODE_START_LOCAL(common_interrupt_return)
+ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ 	IBRS_EXIT
+-#ifdef CONFIG_DEBUG_ENTRY
+-	/* Assert that pt_regs indicates user mode. */
+-	testb	$3, CS(%rsp)
+-	jnz	1f
+-	ud2
+-1:
+-#endif
  #ifdef CONFIG_XEN_PV
  	ALTERNATIVE "", "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
  #endif
-+#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+	ALTERNATIVE "", "jmp .Lpti_restore_regs_and_return_to_usermode", X86_FEATURE_PTI
-+#endif
+@@ -576,8 +569,14 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ 	STACKLEAK_ERASE
+ 	POP_REGS
+ 	add	$8, %rsp	/* orig_ax */
++	UNWIND_HINT_IRET_REGS
 +
-+	STACKLEAK_ERASE
-+	POP_REGS
-+	add	$8, %rsp	/* orig_ax */
-+	swapgs
-+	jmp	.Lnative_iret
++.Lswapgs_and_iret:
+ 	swapgs
+-	jmp	.Lnative_iret
++	/* Assert that the IRET frame indicates user mode. */
++	testb	$3, 8(%rsp)
++	jnz	.Lnative_iret
++	ud2
  
-+#ifdef CONFIG_PAGE_TABLE_ISOLATION
-+.Lpti_restore_regs_and_return_to_usermode:
- 	POP_REGS pop_rdi=0
- 
- 	/*
-@@ -596,13 +607,15 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
- 	 */
- 	STACKLEAK_ERASE_NOCLOBBER
- 
--	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
-+	push	%rax
-+	SWITCH_TO_USER_CR3 scratch_reg=%rdi scratch_reg2=%rax
-+	pop	%rax
+ #ifdef CONFIG_PAGE_TABLE_ISOLATION
+ .Lpti_restore_regs_and_return_to_usermode:
+@@ -613,8 +612,7 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
  
  	/* Restore RDI. */
  	popq	%rdi
- 	swapgs
- 	jmp	.Lnative_iret
--
-+#endif
+-	swapgs
+-	jmp	.Lnative_iret
++	jmp	.Lswapgs_and_iret
+ #endif
  
  SYM_INNER_LABEL(restore_regs_and_return_to_kernel, SYM_L_GLOBAL)
- #ifdef CONFIG_DEBUG_ENTRY
