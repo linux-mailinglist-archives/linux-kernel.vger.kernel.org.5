@@ -2,44 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0247F34DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8107F34E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbjKURXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S233671AbjKURXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjKURXS (ORCPT
+        with ESMTP id S230052AbjKURX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:23:18 -0500
+        Tue, 21 Nov 2023 12:23:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9452EBA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:23:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D246C433C8;
-        Tue, 21 Nov 2023 17:23:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E31113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:23:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 748E7C433C8;
+        Tue, 21 Nov 2023 17:23:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700587394;
-        bh=A1AiSQpqc9fSmXMRgtqpneZpzFCfm1C+I4tLcYy9+1I=;
+        s=k20201202; t=1700587404;
+        bh=/AUV+T6dC4Jy/S3IQTHApQXK2DkGP6Vfy23a7EuIvPY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rKpUi+HbhkedgyawXuAgVWI8M32Lb0+oSiTHmpElgAGaUGuQZLK/6LQOni/4vFo5L
-         QRfE/wnyvfauMSciswNkc1mumPWA1jh/QqckcBAOFt8cqno538OYYYfULcnChDJgV0
-         midvg34doNwwxtRTKdI+tnsyzChDeDSU6fNYq/myf7/06CuZED0S0yPu2xxdXtwa1X
-         4Gr7Y/L32XSkUtEj8ZJnFWTpcI5OwAQ+94lCyc3DVrOMMjBTuB8Meagra15dBunzYy
-         ie56rkJjkAWF5b0ubvmH65O2PUvC9owO9GobraqpnpqLmxQsED27zCVxj5lOIS/Hqm
-         TvAYrLIwZDlpg==
-Date:   Tue, 21 Nov 2023 17:23:09 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] selftests/kvm: fix compilation on non-x86_64 platforms
-Message-ID: <ZVznfV5SshVSNo5W@finisterre.sirena.org.uk>
-References: <20231121165915.1170987-1-pbonzini@redhat.com>
+        b=tyWpJe5OcyLhfTFF9PqLPR/vnTVJ7yoOnLGeFEtTT25znxVoqK+4d/dJ0dtzqWDNA
+         rdvdL3bjdTlNNQxeL8rP5TToGieiLWX9BoyIG3WmEOBkrr12BvI9rUak6CPmcSTf6c
+         dhgI070/vfz8QdhZORqr1uHKT8h1jZMR4RXX/VWMunzaXCrCtHYnppnCaz45Q40Kph
+         jWP0VYWzr9k3etTsgqixpQbL9ils+kQbsPngzcBIPWJlw5VaTeLdaJMMpxf2gFPGj9
+         ShKIyiEUAPKR4X0yVyqQZ+XUiIqEZXum19BcafJ147FvZ3imDP4jnu3Qk8G+ZPWKcS
+         eYYcr6i/dxrMg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2FD1640094; Tue, 21 Nov 2023 14:23:22 -0300 (-03)
+Date:   Tue, 21 Nov 2023 14:23:22 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Li Dong <lidong@vivo.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf script perl: Fail check on dynamic allocation
+Message-ID: <ZVznim5Grz/biW76@kernel.org>
+References: <20231120112356.8652-1-zhaimingbing@cmss.chinamobile.com>
+ <CAP-5=fU4FBah=S_C7Zwh3MSNjwWtT5WrVB9OCc1jRM3eDCykng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p0jBt5KgZ6HnGNEY"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231121165915.1170987-1-pbonzini@redhat.com>
-X-Cookie: Slow day.  Practice crawling.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fU4FBah=S_C7Zwh3MSNjwWtT5WrVB9OCc1jRM3eDCykng@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -50,35 +63,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, Nov 20, 2023 at 04:30:28PM -0800, Ian Rogers escreveu:
+> On Mon, Nov 20, 2023 at 3:24 AM zhaimingbing
+> <zhaimingbing@cmss.chinamobile.com> wrote:
+> >
+> > Return ENOMEM when dynamic allocation failed.
+> >
+> > Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
 
---p0jBt5KgZ6HnGNEY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, applied to perf-tools-next.
 
-On Tue, Nov 21, 2023 at 11:59:15AM -0500, Paolo Bonzini wrote:
-> MEM_REGION_SLOT and MEM_REGION_GPA are not really needed in
-> test_invalid_memory_region_flags; the VM never runs and there are no
-> other slots, so it is okay to use slot 0 and place it at address
-> zero.  This fixes compilation on architectures that do not
-> define them.
+- Arnaldo
 
-Tested-by: Mark Brown <broonie@kernel.org>
+ 
+> Thanks,
+> Ian
+> 
+> > ---
+> >  tools/perf/util/scripting-engines/trace-event-perl.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
+> > index 603091317..b072ac5d3 100644
+> > --- a/tools/perf/util/scripting-engines/trace-event-perl.c
+> > +++ b/tools/perf/util/scripting-engines/trace-event-perl.c
+> > @@ -490,6 +490,9 @@ static int perl_start_script(const char *script, int argc, const char **argv,
+> >         scripting_context->session = session;
+> >
+> >         command_line = malloc((argc + 2) * sizeof(const char *));
+> > +       if (!command_line)
+> > +               return -ENOMEM;
+> > +
+> >         command_line[0] = "";
+> >         command_line[1] = script;
+> >         for (i = 2; i < argc + 2; i++)
+> > --
+> > 2.33.0
+> >
+> >
+> >
+> >
 
-Thanks, this'll make my CI and work's a lot happer!
+-- 
 
---p0jBt5KgZ6HnGNEY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVc53wACgkQJNaLcl1U
-h9BA3Af/dWbj2WKnUQYaHRAqg4nALwzxtfblwa2g67kTovBfJyYus9h2EBUgIqiI
-yb/glPQ12njZ5sdKFYdQhAHtcIH+wYKbqSDg/Ux7bTCkIhhT8LsSfQ9MS5d2tDCz
-OG9tSD3SFPIgCWAH1kOXuzjwcBStWHy1e23zACSNho8ruZgTJUN5HlYABOIndvKD
-jTxQVFhPDwuZdgZlRuGl7nXXSWS+xH4kBa2NMLD2J7KSfs0QlYoNyHdDP5pBBr9u
-ZD+f82/n8i/WimCsRQBYBjxRZw3sjrJoU8EhAdxTG3GzluRbVd1Gs20Z9Sqty0qq
-FeXklR1hVd+fGDtBT6oHtPesmxvHug==
-=UUpO
------END PGP SIGNATURE-----
-
---p0jBt5KgZ6HnGNEY--
+- Arnaldo
