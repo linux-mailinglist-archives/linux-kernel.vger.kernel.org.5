@@ -2,261 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A143E7F2FE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 258557F2FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:54:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbjKUNyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        id S234402AbjKUNyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUNym (ORCPT
+        with ESMTP id S234391AbjKUNyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:54:42 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1554CD6A;
-        Tue, 21 Nov 2023 05:54:39 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 72E1520B74C0; Tue, 21 Nov 2023 05:54:38 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 72E1520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1700574878;
-        bh=4d/Tj40I/q17k+/4xRhGk5Qv/cyNpSEcakEe1Oqoli0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=F4nAeQAd5kyOcVSyw99btyLgSRxMu13uOqYGPWIWoERH9t4JBazZb6wjLfuc1OScB
-         eRMnIe0A3w5npnpV3XgO2YfH+R++1Yyq8bQ7RJAz//olGn/UoXNdnhCeRSE4v6QM2R
-         5UxTz7+VHkfPQ3jesFSw1IKiQfkJfCUNzj+utm/Q=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     schakrabarti@microsoft.com, paulros@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
-Date:   Tue, 21 Nov 2023 05:54:37 -0800
-Message-Id: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 21 Nov 2023 08:54:52 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1B9D79;
+        Tue, 21 Nov 2023 05:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=iAltbJrZNA/R9xdaEOLVfyowdzRQUxOd0WzcTS+2T0Y=; b=jpJa7ewHbzi7uwU/x7A34+Dy+e
+        YhMklydm+MG8FLwGFegi+1q78SrQQsnrUDSTGVWaJu57Z6ps7j9hnNRC+Vn93A0OkqH7w/WtwZSiU
+        cLyme7RzaC98Bl8YCI6VReYxj/OpZwUfoiLXd2FVvYck+0WTJRliQqLz+OtzPvXJ1vfU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5RD7-000lEM-AC; Tue, 21 Nov 2023 14:54:41 +0100
+Date:   Tue, 21 Nov 2023 14:54:41 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add Marvell MBus driver to Marvell EBU SoCs
+ support
+Message-ID: <432a3d95-4cbe-49a5-a824-89b3ecdabf40@lunn.ch>
+References: <20231121093414.11926-1-lukas.bulwahn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121093414.11926-1-lukas.bulwahn@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing MANA design assigns IRQ to every CPUs, including sibling hyper-threads
-in a core. This causes multiple IRQs to work on same CPU and may reduce the network
-performance with RSS.
+On Tue, Nov 21, 2023 at 10:34:14AM +0100, Lukas Bulwahn wrote:
+> While doing some code cleanup in drivers/bus/, I noticed that the file
+> drivers/bus/mvebu-mbus.c has no maintainer.
+> 
+> Although the file has not been touched a lot lately, the git history tells
+> us that Gregory Clement and Andrew Lunn integrated patches specific to
+> this driver code. Further, the driver's config depends on config
+> PLAT_ORION, and the code for this platform is defined in
+> arch/arm/plat-orion/, which is part of ARM/Marvell Dove/MV78xx0/Orion SOC
+> support with Gregory and Andrew already being its maintainer.
+> 
+> Add drivers/bus/mvebu-mbus.c to ARM/Marvell Dove/MV78xx0/Orion SOC support.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-Improve the performance by adhering the configuration for RSS, which assigns IRQ
-on HT cores.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-V1 -> V2:
-* Simplified the code by removing filter_mask_list and using avail_cpus.
-* Addressed infinite loop issue when there are numa nodes with no CPUs.
-* Addressed uses of local numa node instead of 0 to start.
-* Removed uses of BUG_ON.
-* Placed cpus_read_lock in parent function to avoid num_online_cpus
-  to get changed before function finishes the affinity assignment.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 134 ++++++++++++++++--
- 1 file changed, 123 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0c2c2e..8177502ffbd9 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1243,15 +1243,120 @@ void mana_gd_free_res_map(struct gdma_resource *r)
- 	r->size = 0;
- }
- 
-+static int irq_setup(int *irqs, int nvec, int start_numa_node)
-+{
-+	unsigned int *core_id_list;
-+	cpumask_var_t filter_mask, avail_cpus;
-+	int i, core_count = 0, cpu_count = 0, err = 0, node_count = 0;
-+	unsigned int cpu_first, cpu, irq_start, cores = 0, numa_node = start_numa_node;
-+
-+	if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
-+			     || !alloc_cpumask_var(&avail_cpus, GFP_KERNEL)) {
-+		err = -ENOMEM;
-+		goto free_irq;
-+	}
-+	cpumask_copy(filter_mask, cpu_online_mask);
-+	cpumask_copy(avail_cpus, cpu_online_mask);
-+	/* count the number of cores
-+	 */
-+	for_each_cpu(cpu, filter_mask) {
-+		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
-+		cores++;
-+	}
-+	core_id_list = kcalloc(cores, sizeof(unsigned int), GFP_KERNEL);
-+	cpumask_copy(filter_mask, cpu_online_mask);
-+	/* initialize core_id_list array */
-+	for_each_cpu(cpu, filter_mask) {
-+		core_id_list[core_count] = cpu;
-+		cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
-+		core_count++;
-+	}
-+
-+	/* if number of cpus are equal to max_queues per port, then
-+	 * one extra interrupt for the hardware channel communication.
-+	 */
-+	if (nvec - 1 == num_online_cpus()) {
-+		irq_start = 1;
-+		cpu_first = cpumask_first(cpu_online_mask);
-+		irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
-+	} else {
-+		irq_start = 0;
-+	}
-+
-+	/* reset the core_count and num_node to 0.
-+	 */
-+	core_count = 0;
-+
-+	/* for each interrupt find the cpu of a particular
-+	 * sibling set and if it belongs to the specific numa
-+	 * then assign irq to it and clear the cpu bit from
-+	 * the corresponding avail_cpus.
-+	 * Increase the cpu_count for that node.
-+	 * Once all cpus for a numa node is assigned, then
-+	 * move to different numa node and continue the same.
-+	 */
-+	for (i = irq_start; i < nvec; ) {
-+
-+		/* check if the numa node has cpu or not
-+		 * to avoid infinite loop.
-+		 */
-+		if (cpumask_empty(cpumask_of_node(numa_node))) {
-+			numa_node++;
-+			if (++node_count == num_online_nodes()) {
-+				err = -EAGAIN;
-+				goto free_irq;
-+			}
-+		}
-+		cpu_first = cpumask_first_and(avail_cpus,
-+					     topology_sibling_cpumask(core_id_list[core_count]));
-+		if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) == numa_node) {
-+			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu_first));
-+			cpumask_clear_cpu(cpu_first, avail_cpus);
-+			cpu_count = cpu_count + 1;
-+			i = i + 1;
-+
-+			/* checking if all the cpus are used from the
-+			 * particular node.
-+			 */
-+			if (cpu_count == nr_cpus_node(numa_node)) {
-+				numa_node = numa_node + 1;
-+				if (numa_node == num_online_nodes())
-+					numa_node = 0;
-+
-+				/* wrap around once numa nodes
-+				 * are traversed.
-+				 */
-+				if (numa_node == start_numa_node) {
-+					node_count = 0;
-+					cpumask_copy(avail_cpus, cpu_online_mask);
-+				}
-+				cpu_count = 0;
-+				core_count = 0;
-+				continue;
-+			}
-+		}
-+		if (++core_count == cores)
-+			core_count = 0;
-+	}
-+free_irq:
-+	free_cpumask_var(filter_mask);
-+	free_cpumask_var(avail_cpus);
-+	if (core_id_list)
-+		kfree(core_id_list);
-+	return err;
-+}
-+
- static int mana_gd_setup_irqs(struct pci_dev *pdev)
- {
--	unsigned int max_queues_per_port = num_online_cpus();
-+	unsigned int max_queues_per_port;
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
- 	struct gdma_irq_context *gic;
--	unsigned int max_irqs, cpu;
--	int nvec, irq;
-+	unsigned int max_irqs;
-+	int nvec, *irqs, irq;
- 	int err, i = 0, j;
- 
-+	cpus_read_lock();
-+	max_queues_per_port = num_online_cpus();
- 	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
- 		max_queues_per_port = MANA_MAX_NUM_QUEUES;
- 
-@@ -1261,6 +1366,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
- 	if (nvec < 0)
- 		return nvec;
-+	irqs = kmalloc_array(nvec, sizeof(int), GFP_KERNEL);
-+	if (!irqs) {
-+		err = -ENOMEM;
-+		goto free_irq_vector;
-+	}
- 
- 	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
- 				   GFP_KERNEL);
-@@ -1281,27 +1391,27 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_q%d@pci:%s",
- 				 i - 1, pci_name(pdev));
- 
--		irq = pci_irq_vector(pdev, i);
--		if (irq < 0) {
--			err = irq;
-+		irqs[i] = pci_irq_vector(pdev, i);
-+		if (irqs[i] < 0) {
-+			err = irqs[i];
- 			goto free_irq;
- 		}
- 
--		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-+		err = request_irq(irqs[i], mana_gd_intr, 0, gic->name, gic);
- 		if (err)
- 			goto free_irq;
--
--		cpu = cpumask_local_spread(i, gc->numa_node);
--		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
- 	}
- 
-+	err = irq_setup(irqs, nvec, gc->numa_node);
-+	if (err)
-+		goto free_irq;
- 	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
- 	if (err)
- 		goto free_irq;
- 
- 	gc->max_num_msix = nvec;
- 	gc->num_msix_usable = nvec;
--
-+	cpus_read_unlock();
- 	return 0;
- 
- free_irq:
-@@ -1314,8 +1424,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	}
- 
- 	kfree(gc->irq_contexts);
-+	kfree(irqs);
- 	gc->irq_contexts = NULL;
- free_irq_vector:
-+	cpus_read_unlock();
- 	pci_free_irq_vectors(pdev);
- 	return err;
- }
--- 
-2.34.1
-
+    Andrew
