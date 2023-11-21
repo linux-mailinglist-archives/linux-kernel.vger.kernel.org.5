@@ -2,238 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956767F2B83
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B617F2B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjKULPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
+        id S232465AbjKULPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKULO6 (ORCPT
+        with ESMTP id S229481AbjKULPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:14:58 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B6C098
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:14:54 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6F42FEC;
-        Tue, 21 Nov 2023 03:15:40 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.40.232])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F9493F7A6;
-        Tue, 21 Nov 2023 03:14:52 -0800 (PST)
-Date:   Tue, 21 Nov 2023 11:14:37 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: lockdep + kasan bug?
-Message-ID: <ZVyRHd-MjMdkLp6S@FVFF77S0Q05N>
-References: <20231120233659.e36txv3fedbjn4sx@moria.home.lan>
- <20231121103614.GG8262@noisy.programming.kicks-ass.net>
+        Tue, 21 Nov 2023 06:15:34 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14319C;
+        Tue, 21 Nov 2023 03:15:30 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALA99hm005185;
+        Tue, 21 Nov 2023 11:15:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=M9DOrdJVKMsr8o6F5WAHynnyalc9MnI3i2BK37d48Bs=;
+ b=MqoOrrMPDIgqJAIFe0l3PAOKMehydECbcWJnSVjdnSKQD3rYREO4d76C/Fjy5hJ1MZNv
+ QCuU4w0aAdoEMHyKvJ76Cvk/yT+NHIt2HD5W93EYzeLTVNtiT+lBQvTJPSlqtgS2qTTx
+ Na0x7KYRYgkr2OZxFezfGJF4R3/XDzJ/k/xxDxFdcc5RqWoLtEXJhUk3fG8Xyh5pm1GA
+ B1XKZ3feoQvAl56dBMgbJx3t3E7Lel4OPkNyiNqwWlRMsdrQJVad7NKtRG+nLV3vt3NB
+ 5u7o3QuAsG06XJvKXq+QYUpFxj1eM8pHLDcJ1HLJuiNwZnme7ma2v1vwj6qJ4gCKM742 tQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugge19evg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 11:15:15 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALBFErn009234
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 11:15:14 GMT
+Received: from [10.253.72.26] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
+ 2023 03:15:10 -0800
+Message-ID: <d123cc36-f467-40b4-b792-98fd2104c878@quicinc.com>
+Date:   Tue, 21 Nov 2023 19:15:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121103614.GG8262@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hkallweit1@gmail.com>, <corbet@lwn.net>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>
+References: <20231118062754.2453-1-quic_luoj@quicinc.com>
+ <20231118062754.2453-4-quic_luoj@quicinc.com>
+ <1eb60a08-f095-421a-bec6-96f39db31c09@lunn.ch>
+ <ZVkRkhMHWcAR37fW@shell.armlinux.org.uk>
+ <eee39816-b0b8-475c-aa4a-8500ba488a29@lunn.ch>
+ <fef2ab86-ccd7-4693-8a7e-2dac2c80fd53@quicinc.com>
+ <1d4d7761-6b42-48ec-af40-747cb4b84ca5@lunn.ch>
+ <ZVuGv2005eaw+R6u@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <ZVuGv2005eaw+R6u@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: itCDhuVuSbrHvoLLJx9XAomaO2avh_Rr
+X-Proofpoint-ORIG-GUID: itCDhuVuSbrHvoLLJx9XAomaO2avh_Rr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_04,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=941 phishscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210087
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:36:14AM +0100, Peter Zijlstra wrote:
-> On Mon, Nov 20, 2023 at 06:36:59PM -0500, Kent Overstreet wrote:
-> > I've been seeing a lot of reports like the following in a lot of my
-> > lockdep + kasan tests.
+
+
+On 11/21/2023 12:18 AM, Russell King (Oracle) wrote:
+> On Mon, Nov 20, 2023 at 04:34:55PM +0100, Andrew Lunn wrote:
+>> Are you saying there is a USXGMII-M level link change status? The link
+>> between the SoC and the PHY package is up/down? If it is down, all
+>> four MAC-PHY links are down. If it is up, it is possible to carry
+>> frames between the SoC and the PHY package, but maybe the PHYs
+>> themselves are down?
 > 
-> I'm not aware of any such issues, then again, I rarely run with KASAN
-> enabled myself, I mostly leave that to the robots, who are far more
-> patient than me with slow kernels.
+> It shouldn't do. Each "channel" in the USXGMII-M link has its own
+> autoneg block at both ends, each conveys link status independently.
 > 
-> > Some lockdep patches are in my tree: they don't touch this code path
-> > (except I do have to increase MAX_LOCK_DEPTH from 48 to 63, perhaps that
-> > has unintended side effects?)
-> > 
-> > https://evilpiepirate.org/git/bcachefs.git/log/?id=2f42f415f7573001b4f4887b785d8a8747b3757f
+> The MAC side structure is:
 > 
-> yeah, don't see anything weird there. I mean, sad about the no-recursion
-> thing, esp. after you did those custom order bits.
 > 
-> > bcachefs does take a _large_ number of locks for lockdep to track, also
-> > possibly relevant
-> > 
-> > Have not dug into the lockdep hash table of outstanding locks code yet
-> > but happy to test patches...
-> > 
-> > 04752 ========= TEST   tiering_variable_buckets_replicas
-> > 04752 
-> > 04752 WATCHDOG 3600
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): mounting version 1.3: rebalance_work opts=metadata_replicas=2,data_replicas=2,foreground_target=ssd,background_target=hdd,promote_target=ssd,fsck
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing new filesystem
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): going read-write
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): marking superblocks
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing freespace
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): done initializing freespace
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots table
-> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots done
-> > 04753 WATCHDOG 3600
-> > 04753 randrw: (g=0): rw=randrw, bs=(R) 4096B-1024KiB, (W) 4096B-1024KiB, (T) 4096B-1024KiB, ioengine=libaio, iodepth=64
-> > 04753 fio-3.33
-> > 04753 Starting 1 process
-> > 04753 randrw: Laying out IO file (1 file / 3500MiB)
-> > 05117 Jobs: 1 (f=1)
-> > 05117 BUG: KASAN: global-out-of-bounds in add_chain_block+0x44/0x288
-> > 05117 Read of size 4 at addr ffffffc081b7a8bc by task fio/120528
-> > 05117 
-> > 05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
-> > 05117 Hardware name: linux,dummy-virt (DT)
-> > 05117 Call trace:
-> > 05117  dump_backtrace+0xa8/0xe8
-> > 05117  show_stack+0x1c/0x30
-> > 05117  dump_stack_lvl+0x5c/0xa0
-> > 05117  print_report+0x1e4/0x5a0
-> > 05117  kasan_report+0x80/0xc0
-> > 05117  __asan_load4+0x90/0xb0
-> > 05117  add_chain_block+0x44/0x288
-> > 05117  __lock_acquire+0x1104/0x24f8
-> > 05117  lock_acquire+0x1e0/0x470
-> > 05117  _raw_spin_lock_nested+0x54/0x78
-> > 05117  raw_spin_rq_lock_nested+0x30/0x50
-> > 05117  try_to_wake_up+0x3b4/0x1050
-> > 05117  wake_up_process+0x1c/0x30
-> > 05117  kick_pool+0x104/0x1b0
-> > 05117  __queue_work+0x350/0xa58
-> > 05117  queue_work_on+0x98/0xd0
-> > 05117  __bch2_btree_node_write+0xec0/0x10a0
-> > 05117  bch2_btree_node_write+0x88/0x138
-> > 05117  btree_split+0x744/0x14a0
-> > 05117  bch2_btree_split_leaf+0x94/0x258
-> > 05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
-> > 05117  __bch2_trans_commit+0x1128/0x3010
-> > 05117  bch2_extent_update+0x410/0x570
-> > 05117  bch2_write_index_default+0x404/0x598
-> > 05117  __bch2_write_index+0xb0/0x3b0
-> > 05117  __bch2_write+0x6f0/0x928
-> > 05117  bch2_write+0x368/0x8e0
-> > 05117  bch2_direct_write+0xaa8/0x12c0
-> > 05117  bch2_write_iter+0x2e4/0x1050
-> > 05117  aio_write.constprop.0+0x19c/0x420
-> > 05117  io_submit_one.constprop.0+0xf30/0x17a0
-> > 05117  __arm64_sys_io_submit+0x244/0x388
-> > 05117  invoke_syscall.constprop.0+0x64/0x138
-> > 05117  do_el0_svc+0x7c/0x120
-> > 05117  el0_svc+0x34/0x80
-> > 05117  el0t_64_sync_handler+0xb8/0xc0
-> > 05117  el0t_64_sync+0x14c/0x150
-> > 05117 
-> > 05117 The buggy address belongs to the variable:
-> > 05117  nr_large_chain_blocks+0x3c/0x40
+>                              +----------+                +-----+
+>                      .-XGMII-> Rate     |    PCS         |     |
+> MAC1 <-MDI-> PHY <-+        | Adaption <--> Clause 49 <->     |
+>                      `-GMII-->          |                |     |
+>                              +-----^----+                |     |
+>                                    |                     |     |
+>                              +-----v---- +               |     |
+>                              | Autoneg   |               |     |
+>                              | Clause 37 |               |     |
+>                              +-----------+               |     |
+>                                                          | Mux <--> PMA <-->
+>                                                          |     |
+>                                                          .......     USXGMII-M
 > 
-> This is weird, nr_lage_chain_blocks is a single variable, if the
-> compiler keeps layout according to the source file, this would be
-> chaing_block_bucket[14] or something weird like that.
-
-I think the size here is bogus; IIUC that's determined form the start of the
-next symbol, which happens to be 64 bytes away from the start of
-nr_lage_chain_blocks.
-
-From the memory state dump, there's padding/redzone between two global objects,
-and I think we're accessing a negative offset from the next object. More on
-that below.
-
-> Perhaps figure out what it things the @size argument to
-> add_chain_block() would be?
+> <------------------------------------------------------>
+>        These blocks are repeated for each channel
 > 
-> > 05117 
-> > 05117 The buggy address belongs to the virtual mapping at
-> > 05117  [ffffffc081710000, ffffffc088861000) created by:
-> > 05117  paging_init+0x260/0x820
-> > 05117 
-> > 05117 The buggy address belongs to the physical page:
-> > 05117 page:00000000ce625900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x41d7a
-> > 05117 flags: 0x4000(reserved|zone=0)
-> > 05117 page_type: 0xffffffff()
-> > 05117 raw: 0000000000004000 fffffffe00075e88 fffffffe00075e88 0000000000000000
-> > 05117 raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-> > 05117 page dumped because: kasan: bad access detected
-> > 05117 
-> > 05117 Memory state around the buggy address:
-> > 05117  ffffffc081b7a780: 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
-> > 05117  ffffffc081b7a800: 00 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
-> > 05117 >ffffffc081b7a880: 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
-> > 05117                                         ^
+> The spec goes on to state that there must be a USXGMII enable bit that
+> defaults to disabled and the PHY should assume normal XGMII/XFI
+> operation. When enabled, autoneg follows a slight modification of
+> clause 37-6.
+> 
+> As far as the USXGMII-M link, I believe 2.7.8 in the USXGMII-M
+> documentation covers this, which is "hardware autoneg programming
+> sequence". It states that "if 10G link is lost or regained, the
+> software is expected to disable autoneg and re-enable autoneg". I
+> think "10G link" refers to the USXGMII-M connection, which means
+> the loss of that link shold cause software to intervene in each
+> of the PCS autoneg blocks. It is, however, rather unclear.
+> 
 
-In this dump:
+The link status of PHY is updated, software should do the corresponding
+QXGMII mode configuration per channel for this PHY.
 
-* '00' means all 8 bytes of an 8-byte region areaccessible
-* '04' means the first 4 bytes on an 8-byte region are accessible
-* 'f9' means KASAN_GLOBAL_REDZONE / padding between objects
+The PCS QXGMII configuration reflects the current link status of the 
+connected PHY.
 
-So at 0xffffffc081b7a880 we have a 4-byte object, 60 bytes of padding, then a
-64-byte object.
-
-I think the 4-byte object at 0xffffffc081b7a880 is nr_large_chain_blocks, and
-the later 64-byte object is chain_block_buckets[].
-
-I suspect the dodgy access is to chain_block_buckets[-1], which hits the last 4
-bytes of the redzone and gets (incorrectly/misleadingly) attributed to
-nr_large_chain_blocks.
-
-Mark.
-
-> > 05117  ffffffc081b7a900: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9
-> > 05117  ffffffc081b7a980: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
-> > 05117 ==================================================================
-> > 05117 Kernel panic - not syncing: kasan.fault=panic set ...
-> > 05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
-> > 05117 Hardware name: linux,dummy-virt (DT)
-> > 05117 Call trace:
-> > 05117  dump_backtrace+0xa8/0xe8
-> > 05117  show_stack+0x1c/0x30
-> > 05117  dump_stack_lvl+0x5c/0xa0
-> > 05117  dump_stack+0x18/0x20
-> > 05117  panic+0x3ac/0x408
-> > 05117  kasan_report_invalid_free+0x0/0x90
-> > 05117  kasan_report+0x90/0xc0
-> > 05117  __asan_load4+0x90/0xb0
-> > 05117  add_chain_block+0x44/0x288
-> > 05117  __lock_acquire+0x1104/0x24f8
-> > 05117  lock_acquire+0x1e0/0x470
-> > 05117  _raw_spin_lock_nested+0x54/0x78
-> > 05117  raw_spin_rq_lock_nested+0x30/0x50
-> > 05117  try_to_wake_up+0x3b4/0x1050
-> > 05117  wake_up_process+0x1c/0x30
-> > 05117  kick_pool+0x104/0x1b0
-> > 05117  __queue_work+0x350/0xa58
-> > 05117  queue_work_on+0x98/0xd0
-> > 05117  __bch2_btree_node_write+0xec0/0x10a0
-> > 05117  bch2_btree_node_write+0x88/0x138
-> > 05117  btree_split+0x744/0x14a0
-> > 05117  bch2_btree_split_leaf+0x94/0x258
-> > 05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
-> > 05117  __bch2_trans_commit+0x1128/0x3010
-> > 05117  bch2_extent_update+0x410/0x570
-> > 05117  bch2_write_index_default+0x404/0x598
-> > 05117  __bch2_write_index+0xb0/0x3b0
-> > 05117  __bch2_write+0x6f0/0x928
-> > 05117  bch2_write+0x368/0x8e0
-> > 05117  bch2_direct_write+0xaa8/0x12c0
-> > 05117  bch2_write_iter+0x2e4/0x1050
-> > 05117  aio_write.constprop.0+0x19c/0x420
-> > 05117  io_submit_one.constprop.0+0xf30/0x17a0
-> > 05117  __arm64_sys_io_submit+0x244/0x388
-> > 05117  invoke_syscall.constprop.0+0x64/0x138
-> > 05117  do_el0_svc+0x7c/0x120
-> > 05117  el0_svc+0x34/0x80
-> > 05117  el0t_64_sync_handler+0xb8/0xc0
-> > 05117  el0t_64_sync+0x14c/0x150
-> > 05117 SMP: stopping secondary CPUs
-> > 05117 Kernel Offset: disabled
-> > 05117 CPU features: 0x0,00000000,70000001,1040500b
-> > 05117 Memory Limit: none
-> > 05117 ---[ end Kernel panic - not syncing: kasan.fault=panic set ... ]---
-> > 05122 ========= FAILED TIMEOUT tiering_variable_buckets_replicas in 3600s
