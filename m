@@ -2,223 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A917F29BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A73D27F29A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbjKUKEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S234106AbjKUKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:02:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234213AbjKUKEm (ORCPT
+        with ESMTP id S232257AbjKUKCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:04:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7865110F;
-        Tue, 21 Nov 2023 02:04:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700561078; x=1732097078;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tM/dBdaQqRwyGzQe3I2S/GuZt02ZYBBRQTyGFOMoNS0=;
-  b=DhTGRm9WC5wooj97TWH57KKWSHnRIhOEobfAEGVFloFi568v0tSFhl3p
-   5iQmq5FW5ZCCnv99BWcHeGZ+3BZtJtGeGVHzA6hSaxLut2JOcu/RWNWzj
-   20DynkDkZB2RtZa0D7kmZieKbrGoSL3AOaAEtCtVFA5ZJSMo8nl8bgnmR
-   sw1Kxk8WqlId5o6MF064cPqsjlAw2+GbmpHNg066KZOci92flvhjMAL2Z
-   ix5ab1TMojkzptfUg7KedOgROOvCk4XbcnEMLIY74WcbvpDOWweMNbB0H
-   jAzBtPqe258U6YvsrRd1rdhBNEY4Zu2ym93NkBqDKSFRrmo0UBf8HKVvN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13349948"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="13349948"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:04:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="884154460"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="884154460"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Nov 2023 02:04:34 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5NcO-0007fo-0L;
-        Tue, 21 Nov 2023 10:04:32 +0000
-Date:   Tue, 21 Nov 2023 18:00:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
-        Justin Lai <justinlai0215@realtek.com>
-Subject: Re: [PATCH net-next v11 12/13] net:ethernet:realtek: Update the
- Makefile and Kconfig in the realtek folder
-Message-ID: <202311211750.4FwMt8rx-lkp@intel.com>
-References: <20231115133414.1221480-13-justinlai0215@realtek.com>
+        Tue, 21 Nov 2023 05:02:02 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF6A598
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:01:58 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b26d700a1so5250115e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:01:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700560917; x=1701165717; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y6pAMrXZCsC9+OWXdFpSmvCkHlA/ZfvZjJUb02puI8w=;
+        b=kFyqKSJiROcVCCqud7oMvHT7F4DB8RImz+H0dBN8qrLPW/IDnvHxaZ4qMG77lk4lFi
+         LRel0+SRV3rm3mBbUUspLJYlgLPVcmVYgTai42yr+V0VwJ2XDAgm06x6unyGOjPQ4rfN
+         Wsy9cD5OrfwQLmV5OKNfWvu1fQfgfMeGDx2xkGg9eY1LIWK8HJKf/I2vd5IXloaCxVH8
+         reTUpmN2Qp+5VyJTwtfGM+vQECf/qL4Dr4IMvQ00Oc6tQ43c1sBttsax3UE4kJegAu6M
+         qXgb+agr4oHI8SX1StbYkV6/WtPPbHw+YBJbFECY5YzyWrUhwU9U2ihRf21C97R/KA5H
+         9mCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700560917; x=1701165717;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y6pAMrXZCsC9+OWXdFpSmvCkHlA/ZfvZjJUb02puI8w=;
+        b=QSCJUK1EX45kNcoyXxYyQdLrZenv/uoqqqAXh6d5jf9YteyVfwFd5L+Osmelss6iz8
+         LU5+65Os8QB5ptoeYt61XYGvXv8qQZIL/8lykCxkNJABc25zuiMOlfIMzE49ulEI7rP/
+         4vLBHB+mxRtZOR1d/oaebyiNzR8+sohPV/yBTZwb+a8dFYLihxaeZgYMbnoQp7KlLLWO
+         wjeurtHxesOFqNC2Ka2s0MAVCHgbb2asSS0CsSBMW9ierWjHCir0TtDhY9lq2IJuQ0PE
+         TbLWFNzG4m4rROGq9e1uXrdFEwZ/f2hY8YrgtJZIqyA4sapvYD7OlPZhxHh/qixM6XMb
+         FStA==
+X-Gm-Message-State: AOJu0YwYdFdXWdH4EP/i5DHa1i8AyTEJG7OSulzRi8YdH9Peqg3FTvXV
+        befdOrVLRv8z+Zu8Kcafq32o3g==
+X-Google-Smtp-Source: AGHT+IGWt5NlNLAhrNC/AuSQRmP2bnbVaJFrxzDxhd0d0AXhNycPe643EY1hpVXWh5mmdOrSQEHQKg==
+X-Received: by 2002:a05:600c:3b25:b0:407:3b6d:b561 with SMTP id m37-20020a05600c3b2500b004073b6db561mr6789472wms.9.1700560917051;
+        Tue, 21 Nov 2023 02:01:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id f12-20020adff44c000000b003313e4dddecsm13821903wrp.108.2023.11.21.02.01.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 02:01:56 -0800 (PST)
+Message-ID: <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
+Date:   Tue, 21 Nov 2023 11:01:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115133414.1221480-13-justinlai0215@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B
+ SoC
+Content-Language: en-US
+To:     Jingbao Qiu <qiujingbao.dlmu@gmail.com>, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        chao.wei@sophgo.com, unicorn_wang@outlook.com, conor+dt@kernel.org,
+        robh+dt@kernel.org, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
+ <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
+On 21/11/2023 10:46, Jingbao Qiu wrote:
+> Implement the RTC driver for CV1800B, which able to provide time and
+> alarm functionality.
+> 
+> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> ---
+>  drivers/rtc/Kconfig       |  10 ++
+>  drivers/rtc/Makefile      |   1 +
+>  drivers/rtc/rtc-cv1800b.c | 293 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 304 insertions(+)
+>  create mode 100644 drivers/rtc/rtc-cv1800b.c
 
-kernel test robot noticed the following build warnings:
+Bindings were not tested, so I assume you did not compile the code
+either. Please confirm that you fixed all warnings pointed out by W=1
+builds, smatch and sparse. All of them.
 
-[auto build test WARNING on net-next/main]
+> 
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index 3814e0845e77..2089cceea38c 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1103,6 +1103,16 @@ config RTC_DRV_DS2404
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called rtc-ds2404.
+>  
+> +config RTC_DRV_CV1800B
+> +	tristate "Sophgo CV1800B RTC"
+> +	depends on ARCH_SOPHGO || COMPILE_TEST
+> +	help
+> +	  If you say yes here you will get support for the
+> +	  RTC of the Sophgo CV1800B SOC.
+> +
+> +	  This depend on ARCH_SOPHGO and COMPILE_TEST. Please
+> +	  first config that.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/net-ethernet-realtek-rtase-Add-pci-table-supported-in-this-module/20231115-213811
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231115133414.1221480-13-justinlai0215%40realtek.com
-patch subject: [PATCH net-next v11 12/13] net:ethernet:realtek: Update the Makefile and Kconfig in the realtek folder
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231121/202311211750.4FwMt8rx-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211750.4FwMt8rx-lkp@intel.com/reproduce)
+...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311211750.4FwMt8rx-lkp@intel.com/
+> +static int cv1800b_rtc_probe(struct platform_device *pdev)
+> +{
+> +	struct cv1800b_rtc_priv *rtc;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+> +	if (!rtc)
+> +		return -ENOMEM;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	rtc->core_map = devm_ioremap_resource(&pdev->dev, res);
 
-All warnings (new ones prefixed by >>):
+Use helper combining these two calls.
 
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:1243:2: warning: variable 'csum_cmd' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
-    1243 |         default:
-         |         ^~~~~~~
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1255:2: note: uninitialized use occurs here
-    1255 |         csum_cmd |= u32_encode_bits(skb_transport_offset(skb), TCPHO_MASK);
-         |         ^~~~~~~~
-   drivers/net/ethernet/realtek/rtase/rtase_main.c:1230:14: note: initialize the variable 'csum_cmd' to silence this warning
-    1230 |         u32 csum_cmd;
-         |                     ^
-         |                      = 0
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:1268:6: warning: variable 'pkt_len_cnt' set but not used [-Wunused-but-set-variable]
-    1268 |         u64 pkt_len_cnt = 0;
-         |             ^
-   In file included from drivers/net/ethernet/realtek/rtase/rtase_main.c:47:
-   In file included from include/linux/delay.h:23:
-   In file included from include/linux/sched.h:14:
-   In file included from include/linux/pid.h:5:
-   In file included from include/linux/rculist.h:11:
-   In file included from include/linux/rcupdate.h:26:
-   In file included from include/linux/irqflags.h:17:
-   In file included from arch/arm64/include/asm/irqflags.h:10:
-   In file included from arch/arm64/include/asm/ptrace.h:11:
-   In file included from arch/arm64/include/asm/cpufeature.h:26:
-   In file included from include/linux/cpumask.h:12:
-   In file included from include/linux/bitmap.h:12:
-   In file included from include/linux/string.h:295:
-   include/linux/fortify-string.h:588:4: warning: call to '__read_overflow2_field' declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Wattribute-warning]
-     588 |                         __read_overflow2_field(q_size_field, size);
-         |                         ^
-   3 warnings generated.
+> +	if (IS_ERR(rtc->core_map)) {
+> +		ret = PTR_ERR(rtc->core_map);
+> +		goto err;
+> +	}
+> +
+> +	rtc->irq = platform_get_irq(pdev, 0);
+> +	platform_set_drvdata(pdev, rtc);
+
+Your code has random order. First you get IRQ, then you check its value,
+then you go further.
+
+> +	if (rtc->irq < 0) {
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
+> +
+> +	ret =
+> +	    devm_request_irq(&pdev->dev, rtc->irq, cv1800b_rtc_irq_handler,
+
+Wrong wrapping.
+
+> +			     IRQF_SHARED, "rtc alarm", &pdev->dev);
+
+Why shared?
+
+> +	if (ret)
+> +		goto err;
+> +
+> +	rtc->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (IS_ERR(rtc->clk)) {
+> +		dev_err(&pdev->dev, "no clock");
+
+This code is not ready for upstream. There are multiple things wrong here.
+
+First, syntax is return dev_err_probe.
+
+Second, you do not have clocks and you do not allow them! Just open your
+binding.
+
+Third, use wrapper - devm_clk_get_enable or something like that.
 
 
-vim +/csum_cmd +1243 drivers/net/ethernet/realtek/rtase/rtase_main.c
+> +		ret = PTR_ERR(rtc->clk);
+> +		goto err;
+> +	}
 
-7f5e83b995e2f8 Justin Lai 2023-11-15  1226  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1227  static u32 rtase_tx_csum(struct sk_buff *skb, const struct net_device *dev)
-7f5e83b995e2f8 Justin Lai 2023-11-15  1228  {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1229  	u8 ip_protocol;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1230  	u32 csum_cmd;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1231  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1232  	switch (vlan_get_protocol(skb)) {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1233  	case htons(ETH_P_IP):
-7f5e83b995e2f8 Justin Lai 2023-11-15  1234  		csum_cmd = TX_IPCS_C;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1235  		ip_protocol = ip_hdr(skb)->protocol;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1236  		break;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1237  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1238  	case htons(ETH_P_IPV6):
-7f5e83b995e2f8 Justin Lai 2023-11-15  1239  		csum_cmd = TX_IPV6F_C;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1240  		ip_protocol = ipv6_hdr(skb)->nexthdr;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1241  		break;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1242  
-7f5e83b995e2f8 Justin Lai 2023-11-15 @1243  	default:
-7f5e83b995e2f8 Justin Lai 2023-11-15  1244  		ip_protocol = IPPROTO_RAW;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1245  		break;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1246  	}
-7f5e83b995e2f8 Justin Lai 2023-11-15  1247  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1248  	if (ip_protocol == IPPROTO_TCP)
-7f5e83b995e2f8 Justin Lai 2023-11-15  1249  		csum_cmd |= TX_TCPCS_C;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1250  	else if (ip_protocol == IPPROTO_UDP)
-7f5e83b995e2f8 Justin Lai 2023-11-15  1251  		csum_cmd |= TX_UDPCS_C;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1252  	else
-7f5e83b995e2f8 Justin Lai 2023-11-15  1253  		WARN_ON_ONCE(1);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1254  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1255  	csum_cmd |= u32_encode_bits(skb_transport_offset(skb), TCPHO_MASK);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1256  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1257  	return csum_cmd;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1258  }
-7f5e83b995e2f8 Justin Lai 2023-11-15  1259  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1260  static int rtase_xmit_frags(struct rtase_ring *ring, struct sk_buff *skb,
-7f5e83b995e2f8 Justin Lai 2023-11-15  1261  			    u32 opts1, u32 opts2)
-7f5e83b995e2f8 Justin Lai 2023-11-15  1262  {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1263  	const struct skb_shared_info *info = skb_shinfo(skb);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1264  	const struct rtase_private *tp = ring->ivec->tp;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1265  	const u8 nr_frags = info->nr_frags;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1266  	struct tx_desc *txd = NULL;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1267  	u32 cur_frag, entry;
-7f5e83b995e2f8 Justin Lai 2023-11-15 @1268  	u64 pkt_len_cnt = 0;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1269  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1270  	entry = ring->cur_idx;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1271  	for (cur_frag = 0; cur_frag < nr_frags; cur_frag++) {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1272  		const skb_frag_t *frag = &info->frags[cur_frag];
-7f5e83b995e2f8 Justin Lai 2023-11-15  1273  		dma_addr_t mapping;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1274  		u32 status, len;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1275  		void *addr;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1276  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1277  		entry = (entry + 1) % NUM_DESC;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1278  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1279  		txd = ring->desc + sizeof(struct tx_desc) * entry;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1280  		len = skb_frag_size(frag);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1281  		addr = skb_frag_address(frag);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1282  		mapping = dma_map_single(&tp->pdev->dev, addr, len,
-7f5e83b995e2f8 Justin Lai 2023-11-15  1283  					 DMA_TO_DEVICE);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1284  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1285  		if (unlikely(dma_mapping_error(&tp->pdev->dev, mapping))) {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1286  			if (unlikely(net_ratelimit()))
-7f5e83b995e2f8 Justin Lai 2023-11-15  1287  				netdev_err(tp->dev,
-7f5e83b995e2f8 Justin Lai 2023-11-15  1288  					   "Failed to map TX fragments DMA!\n");
-7f5e83b995e2f8 Justin Lai 2023-11-15  1289  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1290  			goto err_out;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1291  		}
-7f5e83b995e2f8 Justin Lai 2023-11-15  1292  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1293  		if (((entry + 1) % NUM_DESC) == 0)
-7f5e83b995e2f8 Justin Lai 2023-11-15  1294  			status = (opts1 | len | RING_END);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1295  		else
-7f5e83b995e2f8 Justin Lai 2023-11-15  1296  			status = opts1 | len;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1297  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1298  		if (cur_frag == (nr_frags - 1)) {
-7f5e83b995e2f8 Justin Lai 2023-11-15  1299  			ring->skbuff[entry] = skb;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1300  			status |= TX_LAST_FRAG;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1301  		}
-7f5e83b995e2f8 Justin Lai 2023-11-15  1302  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1303  		ring->mis.len[entry] = len;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1304  		txd->addr = cpu_to_le64(mapping);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1305  		txd->opts2 = cpu_to_le32(opts2);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1306  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1307  		/* make sure the operating fields have been updated */
-7f5e83b995e2f8 Justin Lai 2023-11-15  1308  		wmb();
-7f5e83b995e2f8 Justin Lai 2023-11-15  1309  		txd->opts1 = cpu_to_le32(status);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1310  		pkt_len_cnt += len;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1311  	}
-7f5e83b995e2f8 Justin Lai 2023-11-15  1312  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1313  	return cur_frag;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1314  
-7f5e83b995e2f8 Justin Lai 2023-11-15  1315  err_out:
-7f5e83b995e2f8 Justin Lai 2023-11-15  1316  	rtase_tx_clear_range(ring, ring->cur_idx + 1, cur_frag);
-7f5e83b995e2f8 Justin Lai 2023-11-15  1317  	return -EIO;
-7f5e83b995e2f8 Justin Lai 2023-11-15  1318  }
-7f5e83b995e2f8 Justin Lai 2023-11-15  1319  
+Blank line.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +	ret = clk_prepare_enable(rtc->clk);
+> +	if (ret)
+> +		goto err;
+
+Blank line.
+
+> +	ret = cv1800b_rtc_softinit(rtc);
+> +	if (ret)
+> +		goto err;
+> +	cv1800b_rtc_alarm_irq_enable(&pdev->dev, 1);
+> +	rtc->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
+> +	if (IS_ERR(rtc->rtc_dev)) {
+> +		ret = PTR_ERR(rtc->rtc_dev);
+> +		goto err;
+> +	}
+> +	rtc->rtc_dev->range_max = U32_MAX;
+> +	rtc->rtc_dev->ops = &cv800b_rtc_ops;
+> +
+> +	return rtc_register_device(rtc->rtc_dev);
+> +err:
+> +	return dev_err_probe(&pdev->dev, ret, "Failed to init cv1800b rtc\n");
+
+Drop, just return.
+
+Best regards,
+Krzysztof
+
