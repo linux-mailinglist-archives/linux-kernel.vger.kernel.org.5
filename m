@@ -2,114 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1431A7F32FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9538C7F32FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbjKUQAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:00:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        id S234861AbjKUQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:00:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbjKUP76 (ORCPT
+        with ESMTP id S234855AbjKUQAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:59:58 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA0B197;
+        Tue, 21 Nov 2023 11:00:00 -0500
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98561AA;
         Tue, 21 Nov 2023 07:59:55 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cf669b711fso13619515ad.2;
-        Tue, 21 Nov 2023 07:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700582395; x=1701187195; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fq3/SeE6KNYDBQttCmY4nSF67urFZudHZ9zaRpvfJak=;
-        b=awDCcdZ4mkaiRtHxio++m6oTzwWw30ShpEYZd4oCsc7XzvvZ5OMqWTfXUR++QFk+4L
-         iNXo1HMHGkFbtBrnpKrh9PB1pEXf+VV67kqmaGb62EX+ta3Sb1PLYcsxt5hcJXJx9hNp
-         Vxhx1mYi2ljm/lvcYab8LuYOp9Qeeh7e6hRTBZLSrDQPhzx4Ur0q6PiqXor5mnJQoC7g
-         bU+qlnKCzxmeCvQquBxGtiCGf6m6FbGjvqYzZ70SO9zoFF3TufUVHXMLhs/wHW/qe+mv
-         /m6pspBijBSNUof69SPeOiKNm2hMJAkPiztfzlf7TBCD0cNJdW7NMWoSSyPHG167k+UO
-         6j0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700582395; x=1701187195;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fq3/SeE6KNYDBQttCmY4nSF67urFZudHZ9zaRpvfJak=;
-        b=LE6oSJV2TWcMBGoDvKY39s8b9KyQiWxjM86QHsVg/sqUhOrFq81/zmJMzZtrxxjNgS
-         IfyXvGIQv0okYhXKR00rOJy3qHmFaAcZhgRsX/0ObjbmC9i4NTltxIyAOggO1xf9p9fF
-         cQ0d25lvlPWGOs7Q8DI2zJfcvWeBsqIq1aWreKBC2Ts7r/YsorJwc5qC5jH2dySAXroE
-         PfQeMvBRUMo6CtMf9cebipKm7HeQ0ZfU22M+v2Nv6UacCtNgkJaMyPFHw0/nzYpCjZ7e
-         Q43xI7uFPgTPuT4/59aJcn+uZjgGHsHkc7bKYVNamQxNAzCQf7XHFkXwAGnyznb9gpAF
-         uhlQ==
-X-Gm-Message-State: AOJu0Yw8mSPzWJTmd2PSW1ywr27SpvgH0X8JXY08BBJ9jbIoAyiaxZ/W
-        yJ9hCsFWsLmtGEpenReU/gBe+Ey8Wak=
-X-Google-Smtp-Source: AGHT+IGd7CBkN16EspGA4syivW/jO35Ypu5wh51n4ix+l0fo3Rh6XJvYysCbmFkkGBX7E372WmXDSg==
-X-Received: by 2002:a17:903:2301:b0:1cc:5589:7dba with SMTP id d1-20020a170903230100b001cc55897dbamr11433532plh.43.1700582394533;
-        Tue, 21 Nov 2023 07:59:54 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j6-20020a170902da8600b001a98f844e60sm8104668plx.263.2023.11.21.07.59.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 07:59:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 21 Nov 2023 07:59:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Xing Tong Wu <xingtong_wu@163.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xingtong.wu@siemens.com,
-        tobias.schaffner@siemens.com, gerd.haeussler.ext@siemens.com
-Subject: Re: [PATCH v3 2/2] hwmon: (nct6775) Fix fan speed set failure in
- automatic mode
-Message-ID: <f7deda1b-7c47-44b3-9e9f-21300cf43bb4@roeck-us.net>
-References: <20231121081604.2499-1-xingtong_wu@163.com>
- <20231121081604.2499-3-xingtong_wu@163.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1700582394;
+        bh=JmZEJf5RAneAxfKkhrBenzkWIsFalBZLR+8PE1XQg7g=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PJG2hlpytqC9RlLooQ1aDWebO4kuIGaVMyp0oIIq+80TqrSaTtSN1zlDjDrSEILL6
+         gU4ff5QwK08MqH7DWPr7x0dCap5zPI1h6qCwPGXku1E2F1oeTgjPbY0LRPTzU1H4ks
+         MDRVTN3oFBKLEA7HaPCNqxTmQFHbJkWp96r9Dy0olReM2f3dK5iGae3EM2ygzlbK60
+         3chDYLSJvcKTmDPPZJtk4VGX6me9oriIzTzpTLVyKQz/24W/7JmFPBSgC6/32f0qzq
+         +k12r35XGo+wKbxppocMVfys5fm+UYr0SYU6S5hUMRdiBJP6JRgnUlTYPMxLeZSmtL
+         9CaymuEZD5YwA==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZTbZ2wrQz1cv5;
+        Tue, 21 Nov 2023 10:59:54 -0500 (EST)
+Message-ID: <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
+Date:   Tue, 21 Nov 2023 11:00:13 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121081604.2499-3-xingtong_wu@163.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 04:16:04PM +0800, Xing Tong Wu wrote:
-> From: Xing Tong Wu <xingtong.wu@siemens.com>
+On 2023-11-21 10:52, Peter Zijlstra wrote:
+> On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
 > 
-> Setting the fan speed is only valid in manual mode; it is not possible
-> to set the fan's speed in automatic mode.
-> Return error when attempting to set the fan speed in automatic mode.
+>> Why is this such a hard question?
 > 
-> Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+> Anyway, recapping from IRC:
+> 
+> preemptible, SRCU:
+>    counter-array based, GP advances by increasing array index
+>    and waiting for previous index to drop to 0.
+> 
+>    notably, a GP can pass while a task is preempted but not within a
+>    critical section.
+> 
+>    SRCU has smp_mb() in the critical sections to improve GP.
 
-Applied.
+Also:
+
+preemptible only allows blocking when priority inheritance is
+guarantees, which excludes doing I/O, and thus page faults.
+Otherwise a long I/O could cause the system to OOM.
+
+SRCU allows all kind of blocking, as long as the entire SRCU
+domain does not mind waiting for a while before readers complete.
+
+> 
+> tasks:
+>    waits for every task to pass schedule()
+> 
+>    ensures that any pieces of text rendered unreachable before, is
+>    actually unused after.
+> 
+> tasks-rude:
+>    like tasks, but different? build to handle tracing while rcu-idle,
+>    even though that was already deemed bad?
+> 
+> tasks-tracing-rcu:
+>    extention of tasks to have critical-sections ? Should this simply be
+>    tasks?
+
+tasks-trace-rcu is meant to allow tasks to block/take a page fault 
+within the read-side. It is specialized for tracing and has a single 
+domain. It does not need the smp_mb on the read-side, which makes it 
+lower-overhead than SRCU.
 
 Thanks,
-Guenter
 
-> ---
->  drivers/hwmon/nct6775-core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+Mathieu
+
 > 
-> diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
-> index 88300fb99bb9..83f1da5acd22 100644
-> --- a/drivers/hwmon/nct6775-core.c
-> +++ b/drivers/hwmon/nct6775-core.c
-> @@ -2553,6 +2553,13 @@ store_pwm(struct device *dev, struct device_attribute *attr, const char *buf,
->  	int err;
->  	u16 reg;
->  
-> +	/*
-> +	 * The fan control mode should be set to manual if the user wants to adjust
-> +	 * the fan speed. Otherwise, it will fail to set.
-> +	 */
-> +	if (index == 0 && data->pwm_enable[nr] > manual)
-> +		return -EBUSY;
-> +
->  	err = kstrtoul(buf, 10, &val);
->  	if (err < 0)
->  		return err;
+> 
+> Can someone complete, please?
+> 
+> 
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
