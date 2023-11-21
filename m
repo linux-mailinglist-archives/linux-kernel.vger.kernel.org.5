@@ -2,153 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753277F396C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20A97F396F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbjKUWrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:47:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S234662AbjKUWsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:48:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjKUWru (ORCPT
+        with ESMTP id S234584AbjKUWsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:47:50 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF16191;
-        Tue, 21 Nov 2023 14:47:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700606861;
-        bh=NmYq8sL4TNyl8WY1NT+pGuV/gukMxS55GaraCq7CimA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=SIw+QDAGozeYgDDRrx3E5wLtTgzBF6sY9g9N0Fy46VMxrni/d4xypOqFUSS36zwWd
-         cgi6x1SPM58p1+ImPOVxHQK2RmdZpvr4SE4Cjc3mvi3+odn6opzEHiFiimDVQwSifS
-         CcHixpL5xftIltp3siEZm1JHhT0q+FThAL7d+BJ0LWYzCIlN/GuaSvwtV0c2Bj74pb
-         E+Q0pHRNaTXrKWj5M+xa3bUzc57NJiKeIc5Vp88vcfjFZzCXjMQdvWHzQRUvcHOhUO
-         9nJM05auzcLeTwYYnHAlzQIMfls80037SmrJqL/YQWw50j/Toujgpyx6elef5UfTDP
-         A3S6DTCd9Avfg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SZff54ysNz4wy1;
-        Wed, 22 Nov 2023 09:47:41 +1100 (AEDT)
-Date:   Wed, 22 Nov 2023 09:47:39 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kspp-gustavo tree
-Message-ID: <20231122094739.38465ed3@canb.auug.org.au>
+        Tue, 21 Nov 2023 17:48:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A4BB9;
+        Tue, 21 Nov 2023 14:48:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=dgwSa/JL7IWm7GLsGRORTXheIVSr1cCdo7K9omnLAHM=; b=Yd9eZdonDUJHVDHXNZt9mLhqAJ
+        8s9oEEvaoI7ACi6nwZruiK2CDhHyDRzHAdyPQqONFVSIx1dcegfTHbq7WMW4EqL56Vqp5TsllIi6E
+        4AXjM44DsaLhLxSnpGsHL2t6oMCMVGJjMqfftcfFu0ZxvkfazaDH/kX3TS3mSlfkQvB2QNYJ8aLaW
+        GGSq5IMt1r21udrSbePObSErgW5BXJMPZuj0gIaUcrMhtu+xpVBnnPO5D4RPFdWVE84VM38dAyLAW
+        x86XH30U+H8h7u5GbUvyVnfR/re8IsyZYZtK/q1PvP+QcxMAbc/SHht39SnLapvhj81HCgcRx+LKP
+        O+4XnV3g==;
+Received: from [2001:8b0:10b:5:22b8:d80f:1c9c:f188] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r5ZX1-0060Ig-PD; Tue, 21 Nov 2023 22:47:47 +0000
+Message-ID: <ec89ab12288426761ab5bd7d05562a4e8834e5f1.camel@infradead.org>
+Subject: Re: [PATCH v8 08/15] KVM: pfncache: allow a cache to be activated
+ with a fixed (userspace) HVA
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 21 Nov 2023 22:47:47 +0000
+In-Reply-To: <20231121180223.12484-9-paul@xen.org>
+References: <20231121180223.12484-1-paul@xen.org>
+         <20231121180223.12484-9-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-G0Q2x1ML7/fvYCnNz2CT"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fULB/bM7sL6gr_XWM7tBq3a";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fULB/bM7sL6gr_XWM7tBq3a
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+--=-G0Q2x1ML7/fvYCnNz2CT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-After merging the kspp-gustavo tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+T24gVHVlLCAyMDIzLTExLTIxIGF0IDE4OjAyICswMDAwLCBQYXVsIER1cnJhbnQgd3JvdGU6Cj4g
+Cj4gLXN0YXRpYyBpbnQgX19rdm1fZ3BjX3JlZnJlc2goc3RydWN0IGdmbl90b19wZm5fY2FjaGUg
+KmdwYywgZ3BhX3QgZ3BhLAo+ICtzdGF0aWMgaW50IF9fa3ZtX2dwY19yZWZyZXNoKHN0cnVjdCBn
+Zm5fdG9fcGZuX2NhY2hlICpncGMsIHU2NCBhZGRyLCBib29sIGFkZHJfaXNfZ3BhLAo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVuc2ln
+bmVkIGxvbmcgbGVuKQo+IMKgewo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qga3ZtX21lbXNsb3Rz
+ICpzbG90cyA9IGt2bV9tZW1zbG90cyhncGMtPmt2bSk7Cj4gLcKgwqDCoMKgwqDCoMKgdW5zaWdu
+ZWQgbG9uZyBwYWdlX29mZnNldCA9IG9mZnNldF9pbl9wYWdlKGdwYSk7Cj4gK8KgwqDCoMKgwqDC
+oMKgdW5zaWduZWQgbG9uZyBwYWdlX29mZnNldCA9IG9mZnNldF9pbl9wYWdlKGFkZHIpOwo+IMKg
+wqDCoMKgwqDCoMKgwqBib29sIHVubWFwX29sZCA9IGZhbHNlOwo+IMKgwqDCoMKgwqDCoMKgwqBr
+dm1fcGZuX3Qgb2xkX3BmbjsKPiDCoMKgwqDCoMKgwqDCoMKgYm9vbCBodmFfY2hhbmdlID0gZmFs
+c2U7Cj4gQEAgLTI0NCwxMiArMjQ0LDIxIEBAIHN0YXRpYyBpbnQgX19rdm1fZ3BjX3JlZnJlc2go
+c3RydWN0IGdmbl90b19wZm5fY2FjaGUgKmdwYywgZ3BhX3QgZ3BhLAo+IMKgwqDCoMKgwqDCoMKg
+wqBvbGRfcGZuID0gZ3BjLT5wZm47Cj4gwqDCoMKgwqDCoMKgwqDCoG9sZF9raHZhID0gKHZvaWQg
+KilQQUdFX0FMSUdOX0RPV04oKHVpbnRwdHJfdClncGMtPmtodmEpOwo+IMKgCj4gLcKgwqDCoMKg
+wqDCoMKgLyogSWYgdGhlIHVzZXJzcGFjZSBIVkEgaXMgaW52YWxpZCwgcmVmcmVzaCB0aGF0IGZp
+cnN0ICovCj4gLcKgwqDCoMKgwqDCoMKgaWYgKGdwYy0+Z3BhICE9IGdwYSB8fCBncGMtPmdlbmVy
+YXRpb24gIT0gc2xvdHMtPmdlbmVyYXRpb24gfHwKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqAga3Zt
+X2lzX2Vycm9yX2h2YShncGMtPnVodmEpKSB7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoGdmbl90IGdmbiA9IGdwYV90b19nZm4oZ3BhKTsKPiArwqDCoMKgwqDCoMKgwqBpZiAoIWFk
+ZHJfaXNfZ3BhKSB7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdwYy0+Z3BhID0g
+S1ZNX1hFTl9JTlZBTElEX0dQQTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ3Bj
+LT51aHZhID0gUEFHRV9BTElHTl9ET1dOKGdwYy0+dWh2YSk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoGFkZHIgPSBQQUdFX0FMSUdOX0RPV04oYWRkcik7Cj4gKwo+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZ3BjLT51aHZhICE9IGFkZHIpIHsKPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdwYy0+dWh2YSA9IGFkZHI7
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBodmFfY2hh
+bmdlID0gdHJ1ZTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ICvCoMKgwqDC
+oMKgwqDCoH0gZWxzZSBpZiAoZ3BjLT5ncGEgIT0gYWRkciB8fAo+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGdwYy0+Z2VuZXJhdGlvbiAhPSBzbG90cy0+Z2VuZXJhdGlvbiB8
+fAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGt2bV9pc19lcnJvcl9odmEo
+Z3BjLT51aHZhKSkgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnZm5fdCBnZm4g
+PSBncGFfdG9fZ2ZuKGFkZHIpOwo+IMKgCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGdwYy0+Z3BhID0gZ3BhOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBncGMtPmdw
+YSA9IGFkZHI7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBncGMtPmdlbmVyYXRp
+b24gPSBzbG90cy0+Z2VuZXJhdGlvbjsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGdwYy0+bWVtc2xvdCA9IF9fZ2ZuX3RvX21lbXNsb3Qoc2xvdHMsIGdmbik7Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBncGMtPnVodmEgPSBnZm5fdG9faHZhX21lbXNsb3QoZ3Bj
+LT5tZW1zbG90LCBnZm4pOwoKSHJtLCBub3cgdGhhdCBhIHByZXZpb3VzIHBhdGNoIG1lYW5zIHdl
+J3JlIHByZXNlcnZpbmcgdGhlIGxvdyBiaXRzIG9mCmdwYy0+dWh2YSBzdXJlbHkgeW91IGRvbid0
+ICpuZWVkKiB0byBtZXNzIHdpdGggdGhlIGdwYyBzdHJ1Y3Q/IAoKSWYgZ3BjLT5ncGEgPT0gS1ZN
+X1hFTl9JTlZBTElEX0dQQSAoYnV0IGdwYy0+dWh2YSAhPSBLVk1fRVJSX0VSUl9CQUQgJiYKZ3Bj
+LT5hY3RpdmUpIHN1cmVseSB0aGF0J3MgZW5vdWdoIHRvIHNpZ25hbCB0aGF0IGdwYy0+dWh2YSBp
+cyBjYW5vbmljYWwKYW5kIGRvZXNuJ3QgbmVlZCB0byBiZSBsb29rZWQgdXAgZnJvbSB0aGUgR1BB
+PwoKQW5kIEkgdGhpbmsgdGhhdCBtZWFucyB0aGUgJ2Jvb2wgYWRkcl9pc19ncGEnIGFyZ3VtZW50
+IGNhbiBnbyBhd2F5IGZyb20KX19rdm1fZ3BjX3JlZnJlc2goKTsgeW91IGNhbiBzZXQgaXQgdXAg
+aW4ge19fLH1rdm1fZ3BjX2FjdGl2YXRlKigpCmluc3RlYWQ/Cg==
 
-In file included from include/linux/string.h:295,
-                 from include/linux/bitmap.h:12,
-                 from include/linux/cpumask.h:12,
-                 from arch/x86/include/asm/paravirt.h:17,
-                 from arch/x86/include/asm/cpuid.h:62,
-                 from arch/x86/include/asm/processor.h:19,
-                 from arch/x86/include/asm/cpufeature.h:5,
-                 from arch/x86/include/asm/thread_info.h:53,
-                 from include/linux/thread_info.h:60,
-                 from arch/x86/include/asm/preempt.h:9,
-                 from include/linux/preempt.h:79,
-                 from include/linux/spinlock.h:56,
-                 from include/linux/mmzone.h:8,
-                 from include/linux/gfp.h:7,
-                 from include/linux/firmware.h:7,
-                 from drivers/net/wireless/realtek/rtw89/core.h:10,
-                 from drivers/net/wireless/realtek/rtw89/coex.h:8,
-                 from drivers/net/wireless/realtek/rtw89/coex.c:5:
-drivers/net/wireless/realtek/rtw89/coex.c: In function '_append_tdma':
-include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a regio=
-n of size 0 [-Wstringop-overflow=3D]
-   57 | #define __underlying_memcpy     __builtin_memcpy
-      |                                 ^
-include/linux/fortify-string.h:644:9: note: in expansion of macro '__underl=
-ying_memcpy'
-  644 |         __underlying_##op(p, q, __fortify_size);                   =
-     \
-      |         ^~~~~~~~~~~~~
-include/linux/fortify-string.h:689:26: note: in expansion of macro '__forti=
-fy_memcpy_chk'
-  689 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,             =
-     \
-      |                          ^~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/realtek/rtw89/coex.c:1585:17: note: in expansion of ma=
-cro 'memcpy'
- 1585 |                 memcpy(&v3->tdma, &dm->tdma, sizeof(v3->tdma));
-      |                 ^~~~~~
-drivers/net/wireless/realtek/rtw89/core.h:2703:37: note: at offset [5714, 7=
-1249] into destination object 'ver' of size 8
- 2703 |         const struct rtw89_btc_ver *ver;
-      |                                     ^~~
-include/linux/fortify-string.h:57:33: warning: writing 8 bytes into a regio=
-n of size 0 [-Wstringop-overflow=3D]
-   57 | #define __underlying_memcpy     __builtin_memcpy
-      |                                 ^
-include/linux/fortify-string.h:644:9: note: in expansion of macro '__underl=
-ying_memcpy'
-  644 |         __underlying_##op(p, q, __fortify_size);                   =
-     \
-      |         ^~~~~~~~~~~~~
-include/linux/fortify-string.h:689:26: note: in expansion of macro '__forti=
-fy_memcpy_chk'
-  689 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,             =
-     \
-      |                          ^~~~~~~~~~~~~~~~~~~~
-drivers/net/wireless/realtek/rtw89/coex.c:1579:17: note: in expansion of ma=
-cro 'memcpy'
- 1579 |                 memcpy(v, &dm->tdma, sizeof(*v));
-      |                 ^~~~~~
-drivers/net/wireless/realtek/rtw89/core.h:2703:37: note: at offset [5710, 7=
-1245] into destination object 'ver' of size 8
- 2703 |         const struct rtw89_btc_ver *ver;
-      |                                     ^~~
 
-Exposed by commit
+--=-G0Q2x1ML7/fvYCnNz2CT
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-  1b56c90018f0 ("Makefile: Enable -Wstringop-overflow globally")
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIxMjI0NzQ3WjAvBgkqhkiG9w0BCQQxIgQgI7xWzVZ8
+ZIJchrZQVdHU0FaEXwBLh7WTP8ABP2sIsiQwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAHX8Xu3Yj9L4EGQUGVfqwFxmhgcM5ucNq+
+hqUQEqHwmtqziBb166SY1017mJVr/cwzbmS25OnuJuPH6Gd6ZQTYUjW17/XD4G7XIl8Rq9nyMeQw
+sWd276xTc8K8C+S+FERE3UrrQ1WiULlbD3+mD8HEbNFj7kBgqjzwEeyc2Y9b+eiaX+ZVR4uksddU
+6ZtlRq31bFWy7OAkd8UZ4nmwuOLD93A8ubMbKUcu3r/FjyqQoL+uuxVKywly8Tx0GOkFi3JBYWg+
+o+Z+sQiC/16Ns6vNydfW/o/qMtFPbHoNgwGf2d73Kshj0qDvhRS6HqEdkH4rXD9MgcJBoHAN7pVz
+sj3p4LJBPTIqq5DaLl3HHV1QkZN4SztnanKsyF88EV3iUV7WneC72xSl7Trw3teVjJstufxmmZVS
+6EhT1UPAYiSj1sTMHnHDEiro5Q03OcKjOmen4PVq00lTeQYgZnn/hkPpqBm6n2lEyXGwpRHTzUY0
+BiJ1AXybE40cGbvRjb/av8mhZLbZSGT0DhRzgVCDSdGv9mJxzJ2CVzrR5PYqte/LULQNDmDxvY+Y
+1T9vWMhvGO30tUYRNJ1xV95yvGoz986CQvwMAnz1CBu4jatl6uL/tNDB/Uf1AVNoHrfJshbwHM/w
+5/jIedZuMZ+enyGYGHrE1wrk2LleMpkIT3oCqdihngAAAAAAAA==
 
-This is with your tree on top of Linus' tree (and some fix patches but
-nothing that obviously touches anything relevent) and CONFIG_WERROR
-not set.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/fULB/bM7sL6gr_XWM7tBq3a
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVdM4sACgkQAVBC80lX
-0GwEhggAmmje/pPzfhu99sAeO/7k4VUlavWHIqM4NS4fpyegkXjWSK6tNhDd1M10
-0U55hxcxjvs/N3ettK7Pq5bu7ptc6Utlfq2sFVEAYNi2TBHMee3HrFCU7c6Vks87
-ahdNFTlWA3AxqfZ692gUaVlTCie/yUoCecTnA6n9U4wQfH1tJZmc0YFuSZf5X2iT
-bsT+CGN8jbafJr+20xFrTtBoIswXDrT3geXYy4Vl7y2b2lCj1+faha6H084DGoiY
-NXd253hgpW1Bs7RJ+1qm4udieXceOCucqvNRAkktvqImO3f6RwBd8nLEYMC6sP1W
-/CDzovN8kx+HkNdVeZuhUcCpTaqO9A==
-=5qAR
------END PGP SIGNATURE-----
-
---Sig_/fULB/bM7sL6gr_XWM7tBq3a--
+--=-G0Q2x1ML7/fvYCnNz2CT--
