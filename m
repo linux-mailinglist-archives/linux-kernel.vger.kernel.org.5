@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1AF47F384C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095BB7F3851
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbjKUVaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        id S229667AbjKUVax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjKUVaL (ORCPT
+        with ESMTP id S229514AbjKUVav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:30:11 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F418719E;
-        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ce675e45f9so24703295ad.3;
-        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
+        Tue, 21 Nov 2023 16:30:51 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D57DB9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:30:48 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so4549a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700602207; x=1701207007; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1700602246; x=1701207046; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
-        b=LUIjMDrOzR+Yp53XK+6vS3UXU9xRwxbM8v7A8b8bgESRmhnDgRkibOlQIXbCJcBJrz
-         CgUaB49A0JSvHwlWzAVx+subHk3HcIT1WpIC8ZnMagnDbK1QLMwKUntQ69Yp1+nKQKpg
-         XA3gjgtTPRngqs2/Q2pxzn8JGm6SBDJoIdfAZ+R57HfTCfLStKdlCb8cEgNprcfzxrY9
-         q0ivEyAyqCbutiq3NTqZg0HxIZmZIPbbW40b7T+aK1YIZE4swfKKgTIg3d9BjZzrs0iQ
-         ABY4HW/A44KHL1+KFzhAj2u/TQxG4dsZ9b0XtTJjuOyGilKMLizZ3TT0J0ioqfroXTM4
-         2bRA==
+        bh=RXRXOHrIRmnNFfmvROVe8lKDFwRW7hSZ8Iy3oG731k4=;
+        b=xb0FA/oFXLl0fObHs2uSbLZBLLuKviwN+4DhjwkpEhM/jFYxSwnXYudySJUHkbOb8f
+         6jKIO8fT4iVADL0p99BzvqvOcMv1uHhG0T92n7bMnMofnt5zW/tT+Sd5jqj8puddXdZB
+         3IleEXKtd6LhDv2VRdrq8D3LjKJ0r0ImAkvx2oP+vLZaXumXlB7tyh8rnrZMoFLqSkfu
+         BgvRH8xhzVK92fNHO75AQDDza2oJLDb1uOSz+DOn9b8HjV3/svPnI+xRshoqFSYTVCN6
+         Z24PRnNGQcKCK8yejhYmvpNoYtAu9IL3xoFDM8X5cOe2+6eQbgIEHv4wULviuNUxG/uo
+         I2IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700602207; x=1701207007;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700602246; x=1701207046;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
-        b=ABDSwhKxWAYl7DUwKuKgOPtYuFwKm0qNwglFQH7uRKq1TqzgssUXAf1g56HgpdTT+W
-         UFzQb7IeiZpFdbvP6ELfi9VnRgXJ59N37s4e+AAPA/HDKzV7kwPfK9tN1E5sPF9/wzxn
-         ON33S5rdbAWE+3CDTDIV4RiuH9JEYKvmzwLrSsg4SntwgxaV2oaLG/twxpvV5hJ0FN9T
-         iWSCWiLurFavxFf9xBBLVIMyt/AhjOnmpqAVKQfu2EUWqYHn8yRiPqrsLS3+VD9w4Wpi
-         OOaHwd0A/C2saUL2GatMpfpCHUOez79/EQxY7q5RbivmTW01m2YR6nvi7p/orCizT+CK
-         Sq+A==
-X-Gm-Message-State: AOJu0Yxhij8Hx7a3GyY0PIHfPcBKSBvJCuXMVvY6scbdjjDxCnujvx9U
-        i6K4xaxy7B3w+zb3VmY+HAA=
-X-Google-Smtp-Source: AGHT+IG0k767577DEtl9DqETp58uM/MD4C4W6mI4eHWwOiQmbjfCmcbOeVYtVXSVgRTFvKchqFGWeQ==
-X-Received: by 2002:a17:902:ecc6:b0:1cf:6bb1:fcce with SMTP id a6-20020a170902ecc600b001cf6bb1fccemr437108plh.46.1700602207395;
-        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
-Received: from localhost.localdomain (static-198-54-134-172.cust.tzulo.com. [198.54.134.172])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170902d71400b001c726147a45sm8355317ply.190.2023.11.21.13.30.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 13:30:06 -0800 (PST)
-From:   Sam Edwards <cfsworks@gmail.com>
-X-Google-Original-From: Sam Edwards <CFSworks@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?q?Daniel=20Kukie=C5=82a?= <daniel@kukiela.pl>,
-        Sven Rademakers <sven.rademakers@gmail.com>,
-        Lokesh Poovaragan <loki@gimmeapis.com>,
-        Sam Edwards <CFSworks@gmail.com>
-Subject: [PATCH] arm64: dts: rockchip: Fix eMMC Data Strobe PD
-Date:   Tue, 21 Nov 2023 13:29:41 -0800
-Message-ID: <20231121212941.53873-2-CFSworks@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231121212941.53873-1-CFSworks@gmail.com>
-References: <20231121212941.53873-1-CFSworks@gmail.com>
+        bh=RXRXOHrIRmnNFfmvROVe8lKDFwRW7hSZ8Iy3oG731k4=;
+        b=JsXCH1vwFbolN5SdCQPq6A18H/iNqrfLMQBFfCGPBAyUiv5HDEXnD3HqD61EEPyFF+
+         nOK/qGYxhY+cdYUY/wyYk9veAy0L88INXJwP6C3M808O3uGKqN17ba9WauDPYfeCbiXA
+         HtzyLTCVF2GQS6+QxJ+GEB7YgeeOe8TN2x7zEptnLU+fpUfgYNdWdXJFsrsF4/HxWhTB
+         I4GQLa1cWzVAWYLl17yV+ow8wUAlcG9qsV5SBsJ1gohP0a3MHLjIgCa2BOVm+IzFRF7x
+         pqwlIEVDxy8y64Vv8Jq4c5SQ4y52LBDb5tcS9ooHuVejEC6OPlLnl9ldxq0Xy9S/LsyR
+         OxJg==
+X-Gm-Message-State: AOJu0YzxWBUnB1PnLSTn8r4tKPOCCimHsas9AQNooP13yLomrCDgz80J
+        EzFlpa3mpa06ap6rcYMMfXf+n6s/KLTCQfkM27wD
+X-Google-Smtp-Source: AGHT+IHOtAA86g7jwkpaavoDBRqXKPir59yYYqgAnqkDI3hxqIE8E0l3kuP8HHpkUDJfRxjrgyK41yk/p5NeVcpEmRU=
+X-Received: by 2002:a05:6402:27cd:b0:547:e5b:6e17 with SMTP id
+ c13-20020a05640227cd00b005470e5b6e17mr56442ede.2.1700602246100; Tue, 21 Nov
+ 2023 13:30:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com> <CA+icZUXFGp-yoWUHhbowz6YJyoULCgtjSZ-fTpRg8YvVD9V5gg@mail.gmail.com>
+In-Reply-To: <CA+icZUXFGp-yoWUHhbowz6YJyoULCgtjSZ-fTpRg8YvVD9V5gg@mail.gmail.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 21 Nov 2023 13:30:27 -0800
+Message-ID: <CAGG=3QUTLTiD=4aj62YXUvLy0jCufMY_-+G-dYrtqN8i=tcqmA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
+To:     sedat.dilek@gmail.com
+Cc:     ndesaulniers@google.com, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,54 +77,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JEDEC standard JESD84-B51 defines the eMMC Data Strobe line, which is
-currently used only in HS400 mode, as a device->host clock signal that
-"is used only in read operation. The Data Strobe is always High-Z (not
-driven by the device and pulled down by RDS) or Driven Low in write
-operation, except during CRC status response." RDS is a pull-down
-resistor specified in the 10K-100K ohm range. Thus per the standard, the
-Data Strobe is always pulled to ground (by the eMMC and/or RDS) during
-write operations.
+On Tue, Nov 21, 2023 at 2:58=E2=80=AFAM Sedat Dilek <sedat.dilek@gmail.com>=
+ wrote:
+>
+> On Fri, Nov 17, 2023 at 8:24=E2=80=AFPM <ndesaulniers@google.com> wrote:
+> >
+> > As discussed at the ClangBuiltLinux '23 meetup (co-located with Linux P=
+lumbers
+> > Conf '23), I'll be taking a step back from kernel work to focus on my g=
+rowing
+> > family and helping Google figure out its libc story. So I think it's ti=
+me to
+> > formally hand over the reigns to my co-maintainer Nathan.
+> >
+>
+> Hi Nick,
+>
+> WoW (C)lang(B)uilt(L)inux baby coming soon - your best patch well done!
+> (  "Catherine Beatrix Luana" might be a good first-name (my
+> Suggested-by when it's female) ).
+>
+I vote for Ada Grace or Emmy Sophia, in honor of some amazing women
+mathematicians. (I'm trying to get my friends' children to become
+mathematicians!)
 
-Evidently, the eMMC host controller in the RK3588 considers an active
-voltage on the eMMC-DS line during a write to be an error.
-
-The default (i.e. hardware reset, and Rockchip BSP) behavior for the
-RK3588 is to activate the eMMC-DS pin's builtin pull-down. As a result,
-many RK3588 board designers do not bother adding a dedicated RDS
-resistor, instead relying on the RK3588's internal bias. The current
-devicetree, however, disables this bias (`pcfg_pull_none`), breaking
-HS400-mode writes for boards without a dedicated RDS, but with an eMMC
-chip that chooses to High-Z (instead of drive-low) the eMMC-DS line.
-(The Turing RK1 is one such board.)
-
-Fix this by changing the bias in the (common) emmc_data_strobe case to
-reflect the expected hardware/BSP behavior. This is unlikely to cause
-regressions elsewhere: the pull-down is only relevant for High-Z eMMCs,
-and if this is redundant with a (dedicated) RDS resistor, the effective
-result is only a lower resistance to ground -- where the range of
-tolerance is quite high. If it does, it's better fixed in the specific
-devicetrees.
-
-Fixes: d85f8a5c798d5 ("arm64: dts: rockchip: Add rk3588 pinctrl data")
-Signed-off-by: Sam Edwards <CFSworks@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-index 63151d9d2377..30db12c4fc82 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-@@ -369,7 +369,7 @@ emmc_cmd: emmc-cmd {
- 		emmc_data_strobe: emmc-data-strobe {
- 			rockchip,pins =
- 				/* emmc_data_strobe */
--				<2 RK_PA2 1 &pcfg_pull_none>;
-+				<2 RK_PA2 1 &pcfg_pull_down>;
- 		};
- 	};
- 
--- 
-2.41.0
-
+-bw
