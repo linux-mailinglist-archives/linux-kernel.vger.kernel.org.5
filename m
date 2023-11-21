@@ -2,149 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4885C7F2D35
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F1B7F2D37
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbjKUMar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
+        id S234536AbjKUMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:31:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjKUMap (ORCPT
+        with ESMTP id S233753AbjKUMbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:30:45 -0500
-Received: from esa5.hc3370-68.iphmx.com (esa5.hc3370-68.iphmx.com [216.71.155.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D20110
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1700569841;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=OfoVueAJlT4dRW0E9lJhs8DFNbsX126SwsKVxUZs1vM=;
-  b=Hw+QBC64h14vVso/YFbot4/5HQqugvyceaaSdd79WsIsk8IPdXQ6yQi/
-   TzuXKJeZ/2jPG2uHrM5JtM7NR04PbgMUH2EQtYdXAiZPto+s3iT7YyzPB
-   bgCLHmoyqyfJGfoJozvQqaWZlFu4FweXPgKbGG7kc+Sz2/Tl49hFugN9F
-   Q=;
-X-CSE-ConnectionGUID: cz63FxWPTwKsGv/+JsD3aw==
-X-CSE-MsgGUID: AlsNrc4xQm26dA3J7Mc9YQ==
-Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-X-SBRS: 4.0
-X-MesageID: 126809421
-X-Ironport-Server: esa5.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.159.70
-X-Policy: $RELAYED
-X-ThreatScanner-Verdict: Negative
-IronPort-Data: A9a23:5Apvj6zl1a/4qeD0xe96t+fIxirEfRIJ4+MujC+fZmUNrF6WrkUGy
- GIfDGqCbvyNamPyf9AlOtni804C6pKDytdlTgQ/+CAxQypGp/SeCIXCJC8cHc8wwu7rFxs7s
- ppEOrEsCOhuExcwcz/0auCJQUFUjPzOHvykTrecZkidfCc8IA85kxVvhuUltYBhhNm9Emult
- Mj75sbSIzdJ4RYtWo4vw/zF8E8HUMja4mtC5QVnP6kT5TcyqlFOZH4hDfDpR5fHatE88t6SH
- 47r0Ly/92XFyBYhYvvNfmHTKxBirhb6ZGBiu1IOM0SQqkEqSh8ai87XAME0e0ZP4whlqvgqo
- Dl7WT5cfi9yVkHEsLx1vxC1iEiSN4UekFPMCSDXXcB+UyQq2pYjqhljJBheAGEWxgp4KWpcq
- 6c2OA81Ug+gnM2oh/GZUcU3j9t2eaEHPKtH0p1h5TTQDPJgSpHfWaTao9Rf2V/chOgXQ6yYP
- ZBAL2MyPVKfO3WjOX9OYH46tM6uimPybHtzr1WNqLBsy2PS0BZwwP7mN9+9ltmiHJ8Lzh7J+
- jifl4j/KjgeL/qFwmaVy3f22OPmxgGkfYlDJYTto5aGh3XMnzdOWXX6T2CTpfi/l177WN9FL
- UEQ0jQhoLJ090GxSNT5GRqirxasvBkGXPIAGfwm5RrLzbDbiy6CG3INUDNMLsc7qM83RiEuz
- laPns/BDDlj9raSTBq17LCerDX0PDUPNW8TTSYeSE0O5NyLiI0siw2VZtdlHrS8gtD8FXf32
- T/ihCI3gLEOy8oW/6G6+03XxTOqupXNCAUy423/X2Wg6x5RYI++e5fu7Vnd8OYGIIuHJnGev
- XwAs8uT9uYDCdeKjiPlaPVdQpmq6uyDPTmahkRgd7Er7xyk/3+ue9AW7DwWDFtmNtYsfT7vf
- VPJvgVQ9NlfMROXgbRfOtzrTZ5wlO65SIWjCai8gsdyjoZZfx3Zpw9+WnaswEP2v1Zr0oMkF
- cySbpP5ZZoFMpiL3AZaVs9EjudzmnFgnzqNLa0X2ShLxlZ3WZJ0dVvmGAHXBgzBxPnYyDg5C
- v4GXydw9z1RUfflfg7c+pMJIFYBIBATXM+u85EPK7Tfe1M5RgnN7sM9J5t7I+SJeIwPzo/1E
- oyVABcEmDITe1WbQel1VpyTQOy2BssuxZ7KFSctIUypyxAejXWHtc8im28MVeB/roRLlKckJ
- 8Tpju3cWpyjvByboWVCBXQ8xaQ+HCmWafWmZXP/PGdmL8Y7HmQkOLbMJ2PSycXHNQLv3eNWn
- lFq/lqzrUYrL+i6MPvrVQ==
-IronPort-HdrOrdr: A9a23:piF0vatRZjd5HolJTVmXdofB7skDTtV00zEX/kB9WHVpmszxra
- 6TdZMgpHnJYVcqKQkdcL+7WJVoLUmxyXcx2/h1AV7AZniAhILLFvAA0WKK+VSJcEeSygce79
- YFT0EXMqyIMbEQt6fHCWeDfOrIuOP3kpyVuQ==
-X-Talos-CUID: 9a23:I71WkG400JmlZUQbNdss/1xKQe41TUXh01TLDFH/SkRyZOacVgrF
-X-Talos-MUID: =?us-ascii?q?9a23=3A6t1vTwzSTP0z8QrzsxJjyRO3wdmaqI2qE2YXmsk?=
- =?us-ascii?q?WgszeayBZYBXCqT/mc7Zyfw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="6.04,215,1695700800"; 
-   d="scan'208";a="126809421"
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-CC:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
-        <x86@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH RESEND] x86/apic: Further apic::delivery_mode cleanup
-Date:   Tue, 21 Nov 2023 12:30:34 +0000
-Message-ID: <20231121123034.1442059-1-andrew.cooper3@citrix.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231121120411.GDZVycu2OPzz8Jqq4Z@fat_crate.local>
-References: <20231121120411.GDZVycu2OPzz8Jqq4Z@fat_crate.local>
+        Tue, 21 Nov 2023 07:31:44 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348BCD8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:31:40 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALA9TR1011167;
+        Tue, 21 Nov 2023 12:31:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=UT6PJ7wxHz9LTqez0TYiCSC4HK4PIiOlBrnHF6eVSgw=;
+ b=o+Srooa+JAa3gYEL1VkgyaI45ziZ+Pl3SVwKf3nNzCPMjVnMUy3QkalDYElsBqxa+wX7
+ mqalnN8yCov1jhHm3jZUy2KmHpq+Bwjk4UOETdJm+/J0VegsaK4hziNOUwmBT4kkNWjL
+ Dy2LrH93hHh2t+xlIkyNcCl6giGiu77EYoAGOT3lcNvCqv7q/HSfHzHwAjlmPCj5uDuN
+ RhaT2nLDynOOeTOL+nSFPQBALRnLgbY2JFrisr0xyA7WNvQLWNzgjGb1ck73Ejj+hYAC
+ ZgrkUnD+WL0XkTotfjgnUdskAb02u9GUdN3YUz5XNO4LPfaxHRH8nR0TgpsMNp2Wt0Qq eg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugrk20v4x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:31:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALCV98M019727
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:31:09 GMT
+Received: from hu-charante-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 21 Nov 2023 04:31:06 -0800
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+To:     <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <david@redhat.com>, <hannes@cmpxchg.org>,
+        <kirill.shutemov@linux.intel.com>, <shakeelb@google.com>,
+        <n-horiguchi@ah.jp.nec.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Charan Teja Kalla <quic_charante@quicinc.com>
+Subject: [PATCH] [RFC] mm: migrate: rcu stalls because of invalid swap cache entries
+Date:   Tue, 21 Nov 2023 18:00:40 +0530
+Message-ID: <1700569840-17327-1-git-send-email-quic_charante@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Pxa7keu9mkjU_iee9OT6SYcjyyfo_Xfj
+X-Proofpoint-ORIG-GUID: Pxa7keu9mkjU_iee9OT6SYcjyyfo_Xfj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ spamscore=0 lowpriorityscore=0 impostorscore=0 adultscore=0 clxscore=1011
+ bulkscore=0 priorityscore=1501 phishscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311210098
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fold the APIC_DELIVERY_MODE_FIXED constant in more cases now that the apic
-field has disappeared.
+The below race on a folio between reclaim and migration exposed a bug
+of not populating the swap cache with proper folio resulting into the
+rcu stalls:
 
-Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Reclaim                         migration
+			      (from mem offline)
+--------                      ------------------
+1) folio_trylock();
+
+2) add_to_swap():
+   a) get swap_entry to
+     store the thp folio
+     through folio_alloc_swap().
+
+   b) do add_to_swap_cache() on
+      a folio, which fills the xarray
+      with folio corresponding to
+      indexes of swap entries. Also
+      dirty this folio.
+
+   c) try_to_unmap(folio, TTU_SPLIT_HUGE_PMD)
+      which splits the pmd, unmaps the folio
+      and replace the mapped entries with
+      swap entries.
+
+   d) as the folio is dirty do,
+     pageout()::mapping->a_ops->writepage().
+     This calls swap_writepage() which unlock
+     the page from 1) and do submit_bio().
+
+3) Since the page can still be under writeback,
+add the folio added back to the LRU.
+
+				4) As the folio now on LRU,
+				it is visible to migration
+				thus will endup in
+				offline_pages()->migrate_pages():
+				  a) isolate the folio.
+				  b) do __unmap_and_move():
+				     1) lock the folio and wait till
+					writeback is done.
+				     2) Replace the eligible pte entries
+					with migrate and then issue the
+					move_to_new_folio(), which calls
+					migrate_folio()->
+					folio_migrate_mapping(), for the
+					pages on the swap cache which
+					just replace a single swap cache
+					entry source folio with
+					destination folio and can endup
+					in freeing the source folio.
+
+Now A process in parallel can endup in do_swap_page() which will try
+read the stale entry(of source folio) after step4 above and thus will
+endup in the below loop with rcu lock held.
+mapping_get_entry():
+ rcu_read_lock();
+repeat:
+    xas_reset(&xas);
+	folio = xas_load(&xas);
+	if (!folio || xa_is_value(folio))
+		goto out;
+
+	if (!folio_try_get_rcu(folio))
+		goto repeat;
+
+folio_try_get_rcu():
+	if (unlikely(!folio_ref_add_unless(folio, count, 0))) {
+	   /* Either the folio has been freed, or will be freed. */
+	   return false;
+
+Because of the source folio is freed in 4.b.2) The above loop can
+continue till the destination folio too is reclaimed where it is removed
+from the swap cache and then set the swap cache entry to zero where the
+xas_load() return 0 thus exit. And this destination folio can be either
+removed immediately as part of the reclaim or can stay longer in the
+swap cache because of parallel swapin happen between 3) and 4.b.1)(whose
+valid pte mappings, pointing to the source folio, is replaced with the
+destination folio). It is the latter case which is resulted into the rcu
+stalls.
+
+The similar sort of issue also reported sometime back and is fixed in
+[1].
+
+This issue seems to be introduced from the commit 6b24ca4a1a8d ("mm: Use
+multi-index entries in the page cache"), in the function
+folio_migrate_mapping()[2].
+
+Since a large folio to be migrated and present in the swap cache can't
+use the multi-index entries, and migrate code uses the same
+folio_migrate_mapping() for migrating this folio, any inputs you can
+provide to fix this issue, please?
+
+What I have thought is, if the adjacent entry in the xarray is not a
+sibling, then assume that it is not a multi-index entry thus store as
+2^N consecutive entries.
+
+[1] https://lore.kernel.org/all/20180406030706.GA2434@hori1.linux.bs1.fc.nec.co.jp/T/#u
+[2] https://lore.kernel.org/linux-mm/20210715033704.692967-128-willy@infradead.org/#Z31mm:migrate.c
+
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
 ---
-CC: Joerg Roedel <joro@8bytes.org>
-CC: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-CC: Will Deacon <will@kernel.org>
-CC: Robin Murphy <robin.murphy@arm.com>
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: Lu Baolu <baolu.lu@linux.intel.com>
-CC: iommu@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
-CC: x86@kernel.org
-CC: Borislav Petkov <bp@alien8.de>
-CC: Thomas Gleixner <tglx@linutronix.de>
+ mm/migrate.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-RESEND, this time with working x86 maintainer emails.
-
-Does this want a fixes tag?  If so,
-
-Fixes: b5148dfe66f5 ("x86/apic: Drop apic::delivery_mode")
-
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 95bd7c25ba6f..542b823f9827 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -3311,7 +3311,7 @@ static void irq_remapping_prepare_irte(struct amd_ir_data *data,
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 35a8833..05cb4a9b 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -403,6 +403,7 @@ int folio_migrate_mapping(struct address_space *mapping,
+ 	XA_STATE(xas, &mapping->i_pages, folio_index(folio));
+ 	struct zone *oldzone, *newzone;
+ 	int dirty;
++	void *entry;
+ 	int expected_count = folio_expected_refs(mapping, folio) + extra_count;
+ 	long nr = folio_nr_pages(folio);
  
- 	data->irq_2_irte.devid = devid;
- 	data->irq_2_irte.index = index + sub_handle;
--	iommu->irte_ops->prepare(data->entry, apic->delivery_mode,
-+	iommu->irte_ops->prepare(data->entry, APIC_DELIVERY_MODE_FIXED,
- 				 apic->dest_mode_logical, irq_cfg->vector,
- 				 irq_cfg->dest_apicid, devid);
+@@ -454,6 +455,16 @@ int folio_migrate_mapping(struct address_space *mapping,
+ 	}
  
-@@ -3588,7 +3588,7 @@ int amd_iommu_deactivate_guest_mode(void *data)
+ 	xas_store(&xas, newfolio);
++	entry = xas_next(&xas);
++
++	if (nr > 1 && !xa_is_sibling(entry)) {
++		int i;
++
++		for (i = 1; i < nr; ++i) {
++			xas_store(&xas, newfolio);
++			xas_next(&xas);
++		}
++	}
  
- 	entry->lo.fields_remap.valid       = valid;
- 	entry->lo.fields_remap.dm          = apic->dest_mode_logical;
--	entry->lo.fields_remap.int_type    = apic->delivery_mode;
-+	entry->lo.fields_remap.int_type    = APIC_DELIVERY_MODE_FIXED;
- 	entry->hi.fields.vector            = cfg->vector;
- 	entry->lo.fields_remap.destination =
- 				APICID_TO_IRTE_DEST_LO(cfg->dest_apicid);
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index 29b9e55dcf26..566297bc87dd 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -1112,7 +1112,7 @@ static void prepare_irte(struct irte *irte, int vector, unsigned int dest)
- 	 * irq migration in the presence of interrupt-remapping.
- 	*/
- 	irte->trigger_mode = 0;
--	irte->dlvry_mode = apic->delivery_mode;
-+	irte->dlvry_mode = APIC_DELIVERY_MODE_FIXED;
- 	irte->vector = vector;
- 	irte->dest_id = IRTE_DEST(dest);
- 	irte->redir_hint = 1;
+ 	/*
+ 	 * Drop cache reference from old page by unfreezing
+-- 
+2.7.4
+
