@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D89C7F2E4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9137F2E53
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjKUN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:29:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
+        id S233848AbjKUNa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbjKUN3l (ORCPT
+        with ESMTP id S229514AbjKUNa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:29:41 -0500
-Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA204D4C;
-        Tue, 21 Nov 2023 05:29:35 -0800 (PST)
-Received: from [192.168.42.20] (p5b164862.dip0.t-ipconnect.de [91.22.72.98])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by mail.tuxedocomputers.com (Postfix) with ESMTPSA id B65852FC01F9;
-        Tue, 21 Nov 2023 14:29:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
-        s=default; t=1700573374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oJvMBifarv+hJKntJue/VPuBCrrPqYvgBBAEq0tUgBQ=;
-        b=Yt0RXSrB8OTBqGx5lC1udvYoRk+uLncyJ6HykBuza5D5QHxSph0sgH15Zb4V4Uq6Yl7GiT
-        17ChoLECQ+17MS3IN080yzOB8bageGcjIq5h8MWDWwWqA1L50jEY/SZPn/qkuzCEPKGcbQ
-        YGEgcmRpYLyQLZ1VbogozQIxsgZ3gOg=
-Authentication-Results: mail.tuxedocomputers.com;
-        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
-Message-ID: <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
-Date:   Tue, 21 Nov 2023 14:29:33 +0100
+        Tue, 21 Nov 2023 08:30:57 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C977ED4C;
+        Tue, 21 Nov 2023 05:30:53 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ALBtFEP008776;
+        Tue, 21 Nov 2023 14:30:43 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=wH6jj928aqrBjiG1F8WJ2A3tTTsaMSh/zRMWl0Buscg=; b=r5
+        eBZjKJanpHJ0TaPhRtWcmOp6SYS6sQLOgKCuiuwCn0adGr8/R1idgBnIBRJKhD+D
+        U8UgWc2ANNmfe3k+sJ6TMbxyrUVDLuHsYvgbBpPUB2eb9BEdvuMi+XLJ8uG4XoBw
+        5XYWpqfTZcymRXXTsPVZsKUz/zLL3aIwExF5slDAth8b+zt1GLX+59JzPp2+cirg
+        DBZ0Pe/AUFjFCnp54/sVIQLAbArPVVOEU/5615TIFtT4NqtmsGoc1XHy6x1qWUVZ
+        azp6YrI+go26xQRSs7r2fPVtTqLOt/vuaN2tflO9D2Fas4+kqSH3OXVjnnFPgkEF
+        MTJTN/j295qVPigxkAvw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uf7q4ayn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 14:30:43 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 84D0E10002A;
+        Tue, 21 Nov 2023 14:30:42 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7BDFF2207A8;
+        Tue, 21 Nov 2023 14:30:42 +0100 (CET)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 21 Nov
+ 2023 14:30:41 +0100
+Message-ID: <6cbc9758-5142-403a-a6e6-06b334639dba@foss.st.com>
+Date:   Tue, 21 Nov 2023 14:30:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Subject: Re: [PATCH] ARM: dts: stm32: add STM32F746 syscfg clock
 Content-Language: en-US
-To:     Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        linux-input@vger.kernel.org, ojeda@kernel.org,
-        linux-leds@vger.kernel.org
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
- <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-In-Reply-To: <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+References: <20231101155153.2767482-2-ben.wolsieffer@hefring.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20231101155153.2767482-2-ben.wolsieffer@hefring.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,105 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ben
 
-Am 21.11.23 um 13:20 schrieb Hans de Goede:
-> Hi Werner,
->
-> On 11/21/23 12:33, Werner Sembach wrote:
->> Hi,
->>
->> Am 20.11.23 um 21:52 schrieb Pavel Machek:
->>> Hi!
->>>
->>>>>> So... a bit of rationale. The keyboard does not really fit into the
->>>>>> LED subsystem; LEDs are expected to be independent ("hdd led") and not
->>>>>> a matrix of them.
->>>>> Makes sense.
->>>>>
->>>>>> We do see various strange displays these days -- they commonly have
->>>>>> rounded corners and holes in them. I'm not sure how that's currently
->>>>>> supported, but I believe it is reasonable to view keyboard as a
->>>>>> display with slightly weird placing of pixels.
->>>>>>
->>>>>> Plus, I'd really like to play tetris on one of those :-).
->>>>>>
->>>>>> So, would presenting them as auxdisplay be acceptable? Or are there
->>>>>> better options?
->>>>> It sounds like a fair use case -- auxdisplay are typically simple
->>>>> character-based or small graphical displays, e.g. 128x64, that may not
->>>>> be a "main" / usual screen as typically understood, but the concept is
->>>>> a bit fuzzy and we are a bit of a catch-all.
->>>>>
->>>>> And "keyboard backlight display with a pixel/color per-key" does not
->>>>> sound like a "main" screen, and having some cute effects displayed
->>>>> there are the kind of thing that one could do in the usual small
->>>>> graphical ones too. :)
->>>>>
->>>>> But if somebody prefers to create new categories (or subcategories
->>>>> within auxdisplay) to hold these, that could be nice too (in the
->>>>> latter case, I would perhaps suggest reorganizing all of the existing
->>>>> ones while at it).
->>>> One could also reasonably make the argument that controlling the
->>>> individual keyboard key backlights should be part of the input
->>>> subsystem. It's not a display per se. (Unless you actually have small
->>>> displays on the keycaps, and I think that's a thing too.)
->>> While it would not be completely crazy to do that... I believe the
->>> backlight is more of a display and less of a keyboard. Plus input
->>> subystem is very far away from supporting this, and we had no input
->>> from input people here.
->>>
->>> I don't think LED subsystem is right place for this, and I believe
->>> auxdisplay makes slightly more sense than input.
->>>
->>> Unless someone steps up, I'd suggest Werner tries to implement this as
->>> an auxdisplay. [And yes, this will not be simple task. RGB on LED is
->>> different from RGB on display. But there are other LED displays, so
->>> auxdisplay should handle this. Plus pixels are really funnily
->>> shaped. But displays with missing pixels -- aka holes for camera --
->>> are common in phones, and I believe we'll get variable pixel densities
->>> -- less dense over camera -- too. So displays will have to deal with
->>> these in the end.]
->> Another idea I want to throw in the mix:
->>
->> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
->>
->> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
-> That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
->
-> That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
+On 11/1/23 16:51, Ben Wolsieffer wrote:
+> The syscfg syscon was missing its clock, therefore any attempt to
+> read/write it after clk_disable_unused() silently failed. This was
+> preventing external pin interrupts from working if they were initialized
+> after this point.
+> 
+> Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+> ---
+>   arch/arm/boot/dts/st/stm32f746.dtsi | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/boot/dts/st/stm32f746.dtsi b/arch/arm/boot/dts/st/stm32f746.dtsi
+> index 4942753d011e..cce6ab0e4617 100644
+> --- a/arch/arm/boot/dts/st/stm32f746.dtsi
+> +++ b/arch/arm/boot/dts/st/stm32f746.dtsi
+> @@ -501,6 +501,7 @@ sdio1: mmc@40012c00 {
+>   		syscfg: syscon@40013800 {
+>   			compatible = "st,stm32-syscfg", "syscon";
+>   			reg = <0x40013800 0x400>;
+> +			clocks = <&rcc 0 STM32F7_APB2_CLOCK(SYSCFG)>;
+>   		};
+>   
+>   		exti: interrupt-controller@40013c00 {
 
-I would suggest a simple "enable" entry. Default is 1. When set to 0 the kernel 
-driver no longer does anything.
+Applied on stm32-next.
 
-Questions:
-
-- Should the driver try to reset the settings to boot default? Or just leave the 
-device in the current state? With the former I could see issues that they 
-keyboard is flashing when changing from kernelspace control to userspace 
-control. With the later the burden on bringing the device to a know state lies 
-with the userspace driver.
-
-- Should this be a optional entry that only shows up on drivers supporting it, 
-or could this implemented in a generic way affecting all current led entries?
-
-- I guess UPower integration for the userspace driver could be archived with 
-https://www.kernel.org/doc/html/latest/leds/uleds.html however this limited to 
-brightness atm, so when accent colors actually come to UPower this would also 
-need some expansion to be able to pass a preferred color to the userspace driver 
-(regardless of what that driver is then doing with that information).
-
-On a different note: This approach does currently not cover the older EC 
-controlled 3 zone keyboards from clevo. Here only the kernel has access access 
-to the device so the kernel driver has to expose all functionality somehow. 
-Should this be done by an arbitrarily designed platform device?
-
-Kind regards,
-
-Werner
-
->
-> Regards,
->
-> Hans
->
->
+Thanks
+Alex
