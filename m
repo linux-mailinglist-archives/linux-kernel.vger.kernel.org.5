@@ -2,85 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40BC7F2305
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDF67F2311
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjKUBU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
+        id S232792AbjKUBaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:30:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKUBUy (ORCPT
+        with ESMTP id S229954AbjKUBaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:20:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F411291
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:20:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700529650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kCIj+Yck5hQUwyiYPGShSSX7xq3O6mmynZaUoJB6T40=;
-        b=BpNSQjRIRB9TcxoqSB8m7P6F1HKoswoaSXB82Cj/4R7TkV11MIVdmYODKio/aeSBCPtgFH
-        RNghLu4TioYUbgRTnhgGbk1yxhEWmhsL/RNDlh/xKczQOHc/8Av4suJfcwsNhuqabwV43k
-        +44V/gZJfuvTVDyPwUdArYCOwsHeOEs=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-657-VHymjJJfMkGUrowUvIdcvw-1; Mon, 20 Nov 2023 20:20:48 -0500
-X-MC-Unique: VHymjJJfMkGUrowUvIdcvw-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a01991968f5so15749666b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:20:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700529647; x=1701134447;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kCIj+Yck5hQUwyiYPGShSSX7xq3O6mmynZaUoJB6T40=;
-        b=UcxhhFHf9xoolNybsL2oSGEIHqNdWHgrRW59m2kQbUjCud3iN0nR4zwdse8ppko7oi
-         SxzH9jLz0Spjt50pnzCcSMTtELwDDq+PIRfDb8xA5a6n0skgOOH9Tr/CWsppoTiiNqiV
-         tQ8Mc6B7/6jrTpbIvJZoNobiUZ40+fNq895YqGcuKcBACdnuoyb4bXv0nO2QfI5vyRMg
-         3V00D6CX94v3VjOxC/1KoiHDUAng0JIKXXwd8xgi4GGYpVjwSiXwHNEw0ZbPUHb6PkTb
-         yA67Iy+1A1XndZan3nbO8yDVd5Hvj1wIRJDDTZUU/HZZ+vSJ2CtvLUDv7BbfvxFcYZQr
-         iE0w==
-X-Gm-Message-State: AOJu0Ywc5O01Y2Y/Q1DYvJngMcVe7IoLcKYT6VVCvE2xp9cZYoQzl5E8
-        A8EXO8IpnxWgAVZNhgjexBImgsCjFme5fV9B8fER7VFGVRZu2nCPHabiq+2OzWY+ie9bW7N2000
-        6361N7HcFGSkuwV8AoRQ2P6mC
-X-Received: by 2002:a17:907:75c2:b0:a00:5a2:1270 with SMTP id jl2-20020a17090775c200b00a0005a21270mr1978744ejc.21.1700529647770;
-        Mon, 20 Nov 2023 17:20:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEyBCCXNkml7//Jq8+SMQnK5DKpWB+c9i7u+CTdreYkrRUsU87iIOGRCYGYKmhOrD1fz3e5Zg==
-X-Received: by 2002:a17:907:75c2:b0:a00:5a2:1270 with SMTP id jl2-20020a17090775c200b00a0005a21270mr1978732ejc.21.1700529647502;
-        Mon, 20 Nov 2023 17:20:47 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id s2-20020a1709066c8200b009e656ce2930sm4468816ejr.60.2023.11.20.17.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Nov 2023 17:20:46 -0800 (PST)
-Message-ID: <0754e669-8b00-461c-b6fe-79c659bf59a3@redhat.com>
-Date:   Tue, 21 Nov 2023 02:20:45 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] driver: gpu: Fixing warning directly dereferencing a
- rcu pointer
-Content-Language: en-US
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
-        kherbst@redhat.com, lyude@redhat.com, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Mon, 20 Nov 2023 20:30:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6B1BC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:30:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A95C433C8;
+        Tue, 21 Nov 2023 01:30:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700530202;
+        bh=KB6C3AARW98gRsfl4vb5qYka+ApFHo2V74XpC+kmCbE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mC/i3X0/F2o1u4iuo/Gjsn/e3Pl1hvwqaW/PLQLhqvoWZjWSd4rhoEMIPgLlnwj0X
+         RIMfVoKxO7uMuZ6RQcZLtq0qeJW0twNYTBWwPpqZeaIBW8Rr/YNkIGeQ12LaxOC/gE
+         NrCtRn3aGzV8/XZhXL4oMEF6MEG7cqZups9obN4s5G51y03rI0qEo0/3E3dIjW1l+7
+         5iMRaU3aU7xDFH6LjI/V8641PKbhFGN5eBYlt9QpbaMx7XOKbKZks+nOOFWBJe6dPM
+         UvyOCyNl8JPX3I2lO6/K2Zofnk6PPcpV6lMvqh1YUdfl4muEwI+lWo6IdoHYtZATMs
+         N45FbINojK0hQ==
+Date:   Tue, 21 Nov 2023 01:29:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <8e9efe54-2799-4539-a8b0-aa199f8052f6@redhat.com>
- <20231113191303.3277733-1-singhabhinav9051571833@gmail.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <20231113191303.3277733-1-singhabhinav9051571833@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH v5 6/9] slub: Delay freezing of partial slabs
+Message-ID: <ZVwIFNdABN1b+qWC@finisterre.sirena.org.uk>
+References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
+ <20231102032330.1036151-7-chengming.zhou@linux.dev>
+ <4f3bc1bd-ea87-465d-b58a-0ed57b15187b@sirena.org.uk>
+ <c8bb9dd9-ae18-4fab-a664-6ec4b0cb2e30@linux.dev>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YQqyVgGJY78HPdNK"
+Content-Disposition: inline
+In-Reply-To: <c8bb9dd9-ae18-4fab-a664-6ec4b0cb2e30@linux.dev>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,60 +58,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 20:13, Abhinav Singh wrote:
-> This patch fixes a sparse warning with this message
-> "warning:dereference of noderef expression". In this context it means we
-> are dereferencing a __rcu tagged pointer directly.
-> 
-> We should not be directly dereferencing a rcu pointer. To get a normal
-> (non __rcu tagged pointer) from a __rcu tagged pointer we are using the
-> function unrcu_pointer(...). The non __rcu tagged pointer then can be
-> dereferenced just like a normal pointer.
-> 
-> I tested with qemu with this command
-> qemu-system-x86_64 \
-> 	-m 2G \
-> 	-smp 2 \
-> 	-kernel bzImage \
-> 	-append "console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0" \
-> 	-drive file=bullseye.img,format=raw \
-> 	-net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \
-> 	-net nic,model=e1000 \
-> 	-enable-kvm \
-> 	-nographic \
-> 	-pidfile vm.pid \
-> 	2>&1 | tee vm.log
-> with lockdep enabled.
-> 
-> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
 
-Applied, thanks!
+--YQqyVgGJY78HPdNK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There are a few more such occurrences. [1][2] Plan to fix them as well?
+On Tue, Nov 21, 2023 at 08:58:40AM +0800, Chengming Zhou wrote:
+> On 2023/11/21 02:49, Mark Brown wrote:
+> > On Thu, Nov 02, 2023 at 03:23:27AM +0000, chengming.zhou@linux.dev wrot=
+e:
 
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/nouveau/nv10_fence.c#L35
-[2] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/nouveau/nv84_fence.c#L88
+> > When we see problems we see RCU stalls while logging in, for example:
 
-> ---
-> v1 -> v2 : Replaced the rcu_dereference(...) with unrcu_pointer(...) and
->             also removed the rcu locking and unlocking function call.
-> v2 -> v3 : Changed the description of the patch to match it with the actual
-> 	   implementation.
-> 
->   drivers/gpu/drm/nouveau/nv04_fence.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nv04_fence.c b/drivers/gpu/drm/nouveau/nv04_fence.c
-> index 5b71a5a5cd85..cdbc75e3d1f6 100644
-> --- a/drivers/gpu/drm/nouveau/nv04_fence.c
-> +++ b/drivers/gpu/drm/nouveau/nv04_fence.c
-> @@ -39,7 +39,7 @@ struct nv04_fence_priv {
->   static int
->   nv04_fence_emit(struct nouveau_fence *fence)
->   {
-> -	struct nvif_push *push = fence->channel->chan.push;
-> +	struct nvif_push *push = unrcu_pointer(fence->channel)->chan.push;
->   	int ret = PUSH_WAIT(push, 2);
->   	if (ret == 0) {
->   		PUSH_NVSQ(push, NV_SW, 0x0150, fence->base.seqno);
+> > [   46.453323] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> > [   46.459361] rcu: 	3-...0: (1 GPs behind) idle=3Ddef4/1/0x40000000 so=
+ftirq=3D1304/1304 fqs=3D951
+> > [   46.467669] rcu: 	(detected by 0, t=3D2103 jiffies, g=3D1161, q=3D49=
+9 ncpus=3D4)
+> > [   46.474472] Sending NMI from CPU 0 to CPUs 3:
 
+> IIUC, here should print the backtrace of CPU 3, right? It looks like CPU =
+3 is the cause,
+> but we couldn't see what it's doing from the log.
+
+AIUI yes, but it looks like we've just completely lost the CPU - there's
+more attempts to talk to it visible in the log:
+
+> > A full log for that run can be seen at:
+> >=20
+> >    https://validation.linaro.org/scheduler/job/4017095
+
+but none of them appear to cause CPU 3 to respond.  Note that 32 bit ARM
+is just using a regular IPI rather than something that's actually a NMI
+so this isn't hugely out of the ordinary, I'd guess it's stuck with
+interrupts masked.
+
+--YQqyVgGJY78HPdNK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVcCBEACgkQJNaLcl1U
+h9BY3gf/Yva03binr9nZWNKW+uopqvbdwWrBq7OeqsCiZhC+0HySXIFBScCUneTJ
+aggO36Ya9Yl7jtV0K9xShKamayOfpWQWOreEP+K1BDQnxdr6/z0i0lW4qT62Ix9c
+agOVYX8IQxPaiSuoF7SELhMMvtuC1LkYoAFN9f9NtD3FpGCu2j6ZPv/h7njxUwHl
+3omiMObUyuScdEs0O7Bg1SwEcRpVIBuS2ybIvy+rSp4ni8NHBkN/4f0fZZrACH5o
+gIQ5PAwFXR0XHhOxWSWnQjfEa4q5M7+y2KRofmtT44OD/7st3xxdbWU33tvnSycK
+NQZPR9zoGXInFDz1PsNwwABL1y7AbA==
+=OEUv
+-----END PGP SIGNATURE-----
+
+--YQqyVgGJY78HPdNK--
