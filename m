@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A057F35ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A037F362D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjKUS3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:29:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
+        id S234221AbjKUSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjKUS3k (ORCPT
+        with ESMTP id S234440AbjKUSiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:29:40 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7120D12E;
-        Tue, 21 Nov 2023 10:29:37 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALGv1Tp013725;
-        Tue, 21 Nov 2023 18:29:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vG3SezDCYdIrXFGfXmFE+x/MXOvguDKneXltb/Dvw+g=;
- b=RRpmmxdFIfyV8sEAJLOrFChD0W4qpxdp0YQuaDTMrpROjnu6DWwRFWx0BJyOEENoorDs
- 45orMk4v8ae88bK34aGrDpcTV6UyvoBjXC8MQTI/EJ1dzroMG2o5TNG7NU8+CC0OEeI5
- 8gAoLlZ0FnP76FIe97fvsu2a1PCilwakZKSGjVgns3pyuQjtPshKnwYKziahtXfpQLxm
- 7vq9U183wbKN4AMxs6G6lVUyuZcUxCeTQAhvYZna8xUu0/QsJjwwWDYYZdd6SmN4lsXB
- oBJUzKufaNtRIhxWBRSuK2zHKsUTw0pXz3ZsnPeH5QIaannocI7cI/xxJNNlU5FB8mZe wA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugu549g21-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 18:29:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALITPEY021725
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 18:29:25 GMT
-Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 21 Nov 2023 10:29:25 -0800
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     <freedreno@lists.freedesktop.org>,
-        Jonathan Marek <jonathan@marek.ca>
-CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Vinod Koul <vkoul@kernel.org>, Robert Foss <rfoss@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
-Date:   Tue, 21 Nov 2023 10:29:03 -0800
-Message-ID: <170059072153.29644.6387537767336695325.b4-ty@quicinc.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231110000216.29979-1-jonathan@marek.ca>
-References: <20231110000216.29979-1-jonathan@marek.ca>
+        Tue, 21 Nov 2023 13:38:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D491BF1;
+        Tue, 21 Nov 2023 10:37:34 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 16A2E2193C;
+        Tue, 21 Nov 2023 18:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700591853;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=17fwntM2BUitSmxQD/3FyPFXOrLp/EyPR6vZWAaaNbQ=;
+        b=Xu29vfSyPH6Eni6Cs9SzWD9p605UHUxKACQ+5hDZfVAu+7leM1yvOFLiHaE18lKQ4JM7ZC
+        +XrC53eXRtzjQiWQm1bwhffS9jIvYxyVR9yq6cclbU57w8v/GXF8hXOei/XkV9IETQ26iZ
+        kco44U0LucS+ijLAX2hqyoOyqsnTRuA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700591853;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=17fwntM2BUitSmxQD/3FyPFXOrLp/EyPR6vZWAaaNbQ=;
+        b=n2waHFKBO1bfFzM+WK+4BnrNsCq2g4jzVkxQB/wIVXrvp7NAyTtpbdb/TWDS2nJ60JNFP/
+        5RZxxSM2ELYF4aBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1B7D138E3;
+        Tue, 21 Nov 2023 18:37:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1yd/Nuz4XGXfUQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 21 Nov 2023 18:37:32 +0000
+Date:   Tue, 21 Nov 2023 19:30:23 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 2/6] tty: ipwireless: remove unused
+ ipw_dev::attribute_memory
+Message-ID: <20231121183023.GV11264@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20231121103626.17772-1-jirislaby@kernel.org>
+ <20231121103626.17772-3-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: PvQBdut0lXxlf4nWVQaud8WOdkgd3nJl
-X-Proofpoint-ORIG-GUID: PvQBdut0lXxlf4nWVQaud8WOdkgd3nJl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_10,2023-11-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- bulkscore=0 phishscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 mlxlogscore=379 adultscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210144
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121103626.17772-3-jirislaby@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.73
+X-Spamd-Result: default: False [-7.73 / 50.00];
+         ARC_NA(0.00)[];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.73)[98.82%];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         REPLY(-4.00)[];
+         RCPT_COUNT_FIVE(0.00)[6];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Thu, 09 Nov 2023 19:02:14 -0500, Jonathan Marek wrote:
-> Use the same value as the downstream driver. This change is needed for CPHY
-> mode to work correctly.
+On Tue, Nov 21, 2023 at 11:36:22AM +0100, Jiri Slaby (SUSE) wrote:
+> clang-struct [1] found ipw_dev::attribute_memory unused.
 > 
+> As far as I can see it was never used since the driver merge. Drop it.
 > 
+> [1] https://github.com/jirislaby/clang-struct
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: David Sterba <dsterba@suse.com>
 
-Applied, thanks!
-
-[1/1] drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
-      https://gitlab.freedesktop.org/drm/msm/-/commit/b3e0f94d1570
-
-Best regards,
--- 
-Abhinav Kumar <quic_abhinavk@quicinc.com>
+Acked-by: David Sterba <dsterba@suse.com>
