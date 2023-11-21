@@ -2,146 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB9A7F2A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6C37F2A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbjKUKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S232073AbjKUK1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:27:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbjKUKZS (ORCPT
+        with ESMTP id S230256AbjKUK1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:25:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62613B9
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:25:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700562314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kv793GlpUAibpHSviUbIOlEfqFoGFgwrV0FjBE/F+mY=;
-        b=etl9qQsNc7CIAUWcXmAMM7yIqPAqEfCMezyRKfqOzkwqJFL4DH2B/QU9RrF7z9lpTtfrgL
-        LrjCuq+9eFi6upBD3jFBYy1+XYdOu+cPdkAoVrFiVKaS1N4KIBeQN+fuDcpqVoPPvdQ/Rm
-        br7nVaKHpu9R/cGk5Lbq1Ta+YOnfypQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-livLJK9INJ6-cGEo2E10Tg-1; Tue, 21 Nov 2023 05:25:13 -0500
-X-MC-Unique: livLJK9INJ6-cGEo2E10Tg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9ff9b339e8cso15800566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:25:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700562312; x=1701167112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kv793GlpUAibpHSviUbIOlEfqFoGFgwrV0FjBE/F+mY=;
-        b=jhQqoKgBUyGDNcb4lfRyX/T96NwtxC88j4LPdhWjc9m/KHlotnUSHoegpUqKW9wUL9
-         x4sy7hj4FDkQxId0eER0StVNPzLL7S8/NggujsjX465Q1ANWqfPMMw04oCQsBhCNqGhO
-         PfFVsNgv4v+AawI1MNcwv+gCStHoJmkuq+87lvKdquyfVsdi5wzsOCTyeHwwyFhmEq5g
-         +ysp2VXrnHIl/Vm1Ob/qhjUCSy5aCgmRE5Gcfg6KtLCClOxrntTsgbX6IxckiJZkh65N
-         tkdGutgM9uub2lwUNrKM4fOIPC7n72DplzQfxFtCSYYbWFDkDNVWJkvox+jHqGM4a0+k
-         5csA==
-X-Gm-Message-State: AOJu0YwJQ9KkWfHURM1XIr2m0y4QUT71+6Q0eAbBSEPLA05QpBQXAzRY
-        txcKEVAxg7RGLLQz/2Ezr+XIfvRWby/2fluav7iiZbYGTT/mk/e/Wz9uJaJ28EjMM5N2qYupCHf
-        mDpmjywi0/U7pIkI14owmhiCf
-X-Received: by 2002:a17:906:20d7:b0:9b2:bf2d:6b65 with SMTP id c23-20020a17090620d700b009b2bf2d6b65mr6470907ejc.4.1700562312008;
-        Tue, 21 Nov 2023 02:25:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH+UJk+zZlK5NUPrng8ZM0MjQUSFGh7RXz8MfiFQKiFHg+caQVnu7yUEILkX7uCjm3wmWC4VA==
-X-Received: by 2002:a17:906:20d7:b0:9b2:bf2d:6b65 with SMTP id c23-20020a17090620d700b009b2bf2d6b65mr6470882ejc.4.1700562311351;
-        Tue, 21 Nov 2023 02:25:11 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-234-2.dyn.eolo.it. [146.241.234.2])
-        by smtp.gmail.com with ESMTPSA id i26-20020a170906a29a00b00a01892903d6sm866248ejz.47.2023.11.21.02.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 02:25:10 -0800 (PST)
-Message-ID: <f8c1979e2c71d871998aec0126dd87adb5e76cce.camel@redhat.com>
-Subject: Re: [PATCH 1/2] r8152: Hold the rtnl_lock for all of reset
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Grant Grundler <grundler@chromium.org>,
-        Simon Horman <horms@kernel.org>,
-        Edward Hill <ecgh@chromium.org>, linux-usb@vger.kernel.org,
-        Laura Nao <laura.nao@collabora.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        =?ISO-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Date:   Tue, 21 Nov 2023 11:25:09 +0100
-In-Reply-To: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
-References: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 21 Nov 2023 05:27:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8ADB9;
+        Tue, 21 Nov 2023 02:27:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700562450; x=1732098450;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Qh3fdjbbMdJuENlB0cjZTsBrtO692dC9NzB07N0J9LI=;
+  b=JvTTUpVdS6DwCxMK+subBsIeLWaPvBBju2s/Q7rBqGGFh7tdGOGdTma/
+   U6B1ofeNMx6BowhSqSrFvDbsTkYSp348TJRsialAb5+5uWMfSj4a99vJ7
+   0OZAdFVFotnXcQw5mwvdaOgtLKzj73VhgBdsexPw6MBHyWNd+ZfG99Tim
+   9wJYk7ghGCCKve6GIArkSJImeBRWISeRPk8te+Y0NU39qnyISrnQQ95s+
+   5MvQduaspMk+ZqZP4Uz8bI07j19UtoUIFHA7mZOUM8ZlY9oGmF/xMuhK9
+   z1GrfUhaQd/aqaEp9oZlC7XN04+T2sLsIQn0l6xiXuJ8yLeXtjOIB/463
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="391587948"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="391587948"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:27:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="760061390"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="760061390"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:27:23 -0800
+Date:   Tue, 21 Nov 2023 02:27:23 -0800
+From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v6 09/16] KVM: TDX: Pass desired page level in err code
+ for page fault handler
+Message-ID: <20231121102723.GG1109547@ls.amr.corp.intel.com>
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <71943490df987be8a3a3e131b12750e8c6d82afc.1699368363.git.isaku.yamahata@intel.com>
+ <815d893b-63fc-4dec-8c04-6580344c7eef@linux.intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <815d893b-63fc-4dec-8c04-6580344c7eef@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-17 at 13:08 -0800, Douglas Anderson wrote:
-> As of commit d9962b0d4202 ("r8152: Block future register access if
-> register access fails") there is a race condition that can happen
-> between the USB device reset thread and napi_enable() (not) getting
-> called during rtl8152_open(). Specifically:
-> * While rtl8152_open() is running we get a register access error
->   that's _not_ -ENODEV and queue up a USB reset.
-> * rtl8152_open() exits before calling napi_enable() due to any reason
->   (including usb_submit_urb() returning an error).
->=20
-> In that case:
-> * Since the USB reset is perform in a separate thread asynchronously,
->   it can run at anytime USB device lock is not held - even before
->   rtl8152_open() has exited with an error and caused __dev_open() to
->   clear the __LINK_STATE_START bit.
-> * The rtl8152_pre_reset() will notice that the netif_running() returns
->   true (since __LINK_STATE_START wasn't cleared) so it won't exit
->   early.
-> * rtl8152_pre_reset() will then hang in napi_disable() because
->   napi_enable() was never called.
->=20
-> We can fix the race by making sure that the r8152 reset routines don't
-> run at the same time as we're opening the device. Specifically we need
-> the reset routines in their entirety rely on the return value of
-> netif_running(). The only way to reliably depend on that is for them
-> to hold the rntl_lock() mutex for the duration of reset.
+On Mon, Nov 20, 2023 at 07:24:51PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-Acquiring the rtnl_lock in a callback and releasing it in a different
-one, with the latter called depending on the configuration, looks
-fragile and possibly prone to deadlock issues.
+> 
+> 
+> On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
+> > From: Xiaoyao Li <xiaoyao.li@intel.com>
+> > 
+> > For TDX, EPT violation can happen when TDG.MEM.PAGE.ACCEPT.
+> > And TDG.MEM.PAGE.ACCEPT contains the desired accept page level of TD guest.
+> > 
+> > 1. KVM can map it with 4KB page while TD guest wants to accept 2MB page.
+> > 
+> >    TD geust will get TDX_PAGE_SIZE_MISMATCH and it should try to accept
+> >    4KB size.
+> > 
+> > 2. KVM can map it with 2MB page while TD guest wants to accept 4KB page.
+> > 
+> >    KVM needs to honor it because
+> >    a) there is no way to tell guest KVM maps it as 2MB size. And
+> >    b) guest accepts it in 4KB size since guest knows some other 4KB page
+> >       in the same 2MB range will be used as shared page.
+> > 
+> > For case 2, it need to pass desired page level to MMU's
+> > page_fault_handler. Use bit 29:31 of kvm PF error code for this purpose.
+> The shortlog is the same as patch 7/16..., I am a bit confused by the
+> structure of this patch series...
+> Can this patch be squashed into 7/16?
 
-Have you tested your patch with lockdep enabled?
+Patch 7 should include the changes to arch/x86/include/asm/kvm_host.h and
+arch/x86/kvm/mmu/mmu.c. and use PFERR_LEVEL().
+Patch 9 should include the changes arch/x86/kvm/vmx/*.
 
-Can you instead acquire the rtnl lock only for pre_reset/post_rest and
-in rtl8152_open() do something alike:
-
-	for (i =3D 0; i < MAX_WAIT; ++i) {
-		if (usb_lock_device_for_reset(udev, NULL))
-			goto error;
-
-		wait_again =3D udev->reset_in_progress;
-		usb_unlock_device(udev);
-		if (!wait_again)
-			break;
-
-		usleep(1);
-	}
-	if (i =3D=3D MAX_WAIT)
-		goto error;
-
-which should be more polite to other locks?
+I'll fix them.
 
 
-Thanks,
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index eed36c1eedb7..c16823f3326e 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -285,6 +285,8 @@ enum x86_intercept_stage;
+> >   				 PFERR_WRITE_MASK |		\
+> >   				 PFERR_PRESENT_MASK)
+> > +#define PFERR_LEVEL(err_code)	(((err_code) & PFERR_LEVEL_MASK) >> PFERR_LEVEL_START_BIT)
+> It's defined, but never used?
 
-Paolo
+I'll make kvm_tdp_page_fault() use it.
 
+
+> > diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
+> > index 9f93250d22b9..ba41fefa47ee 100644
+> > --- a/arch/x86/kvm/vmx/tdx_arch.h
+> > +++ b/arch/x86/kvm/vmx/tdx_arch.h
+> > @@ -218,4 +218,23 @@ union tdx_sept_level_state {
+> >   	u64 raw;
+> >   };
+> > +union tdx_ext_exit_qualification {
+> > +	struct {
+> > +		u64 type		:  4;
+> > +		u64 reserved0		: 28;
+> > +		u64 req_sept_level	:  3;
+> > +		u64 err_sept_level	:  3;
+> > +		u64 err_sept_state	:  8;
+> > +		u64 err_sept_is_leaf	:  1;
+> > +		u64 reserved1		: 17;
+> > +	};
+> > +	u64 full;
+> > +};
+> > +
+> > +enum tdx_ext_exit_qualification_type {
+> > +	EXT_EXIT_QUAL_NONE = 0,
+> > +	EXT_EXIT_QUAL_ACCEPT,
+> Since this value should be fixed to 1, maybe better to initialize it to 1
+> for future proof?
+
+ok.
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
