@@ -2,124 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D63477F2332
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECF07F234C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbjKUBjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:39:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
+        id S233014AbjKUBsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:48:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjKUBjA (ORCPT
+        with ESMTP id S229679AbjKUBsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:39:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D0FA2;
-        Mon, 20 Nov 2023 17:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700530736; x=1732066736;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+7VvbUVCHmTCIcY7kK6/rBlQv5zQw4GkO8xAr+x002c=;
-  b=ByJ82N8k7Bv/lD8U7DTuW/9QMijrijQnTpZamwsel9cuLVaLYXdEHyU5
-   Y+u1g3zAvhIf+QYaUlyMdutAv4ovqcTK5x1QCLRW/XXVLyOHR2BsZ9h6u
-   Ez8URu/ZwEgGB5hlUVoAyhwsdH0n/Ck1OJnvWZQ0D44mpvipJLCTQXlZ6
-   JJBaCTomoFEPhkC7aofFBM/zLpUHB/H2nTUro0QqLPTUCAhfkedmzOP/7
-   vEVLPK2Ub9DsmB9bJs7x3Mwpb6U1TftP1qO3tQFCduO/Sc+EQ5mrSbqnZ
-   oNunWAulJdHAWVBeIgZ9GazSWzPAdxymd1cu+FjThujjrqphwg7KEUb4L
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="458235181"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="458235181"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 17:38:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="770087205"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="770087205"
-Received: from dmi-pnp-i7.sh.intel.com ([10.239.159.155])
-  by fmsmga007.fm.intel.com with ESMTP; 20 Nov 2023 17:38:53 -0800
-From:   Dapeng Mi <dapeng1.mi@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>, stable@vger.kernel.org
-Subject: [PATCH] perf/x86/intel: Correct wrong 'or' operation for pmu capabilities
-Date:   Tue, 21 Nov 2023 09:46:28 +0800
-Message-Id: <20231121014628.729989-1-dapeng1.mi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 20 Nov 2023 20:48:42 -0500
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66BDC3;
+        Mon, 20 Nov 2023 17:48:36 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vwqn1AR_1700531311;
+Received: from 30.240.112.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vwqn1AR_1700531311)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Nov 2023 09:48:33 +0800
+Message-ID: <57bd6874-35df-48b0-90d8-45077396b44f@linux.alibaba.com>
+Date:   Tue, 21 Nov 2023 09:48:28 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
+ with proper si_code
+Content-Language: en-US
+To:     rafael@kernel.org, wangkefeng.wang@huawei.com,
+        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
+        linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
+        gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
+        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
+        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
+        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
+        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
+        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
+        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
+References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
+ <20231007072818.58951-1-xueshuai@linux.alibaba.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20231007072818.58951-1-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running perf-stat command on Intel hybrid platform, perf-stat
-reports the following errors.
+Hi, ALL,
 
-sudo taskset -c 7 ./perf stat -vvvv -e cpu_atom/instructions/ sleep 1
+Gentle ping.
 
-Opening: cpu/cycles/:HG
-------------------------------------------------------------
-perf_event_attr:
-  type                             0 (PERF_TYPE_HARDWARE)
-  config                           0xa00000000
-  disabled                         1
-------------------------------------------------------------
-sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
-sys_perf_event_open failed, error -16
+Best Regards,
+Shuai
 
- Performance counter stats for 'sleep 1':
-
-     <not counted>      cpu_atom/instructions/
-
-It looks the cpu_atom/instructions/ event can't be enabled on atom pmu
-even the process is pinned on atom core. The investigation shows that
-exclusive_event_init() helper always returns -EBUSY error in the perf
-event creation. That's strange since the atom pmu should not be a
-exclusive PMU.
-
-Further investigation shows the issue is introduced by commit 97588df87b56
-("perf/x86/intel: Add common intel_pmu_init_hybrid()"). The commit
-originally intents to clear the bit PERF_PMU_CAP_AUX_OUTPUT from pmu
-capabilities if intel_cap.pebs_output_pt_available is not set, but it
-incorrectly uses 'or' operation and leads to all pmu capabilities bits
-are set to 1 except bit PERF_PMU_CAP_AUX_OUTPUT.
-
-Testing this fix on Intel hybrid platforms, the observed issues
-disappear.
-
-Fixes: 97588df87b56 ("perf/x86/intel: Add common intel_pmu_init_hybrid()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
----
- arch/x86/events/intel/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index a08f794a0e79..ce1c777227b4 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -4660,7 +4660,7 @@ static void intel_pmu_check_hybrid_pmus(struct x86_hybrid_pmu *pmu)
- 	if (pmu->intel_cap.pebs_output_pt_available)
- 		pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
- 	else
--		pmu->pmu.capabilities |= ~PERF_PMU_CAP_AUX_OUTPUT;
-+		pmu->pmu.capabilities &= ~PERF_PMU_CAP_AUX_OUTPUT;
- 
- 	intel_pmu_check_event_constraints(pmu->event_constraints,
- 					  pmu->num_counters,
-
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
--- 
-2.34.1
-
+On 2023/10/7 15:28, Shuai Xue wrote:
+> Hi, ALL,
+> 
+> I have rewritten the cover letter with the hope that the maintainer will truly
+> understand the necessity of this patch. Both Alibaba and Huawei met the same
+> issue in products, and we hope it could be fixed ASAP.
+> 
+> ## Changes Log
+> 
+> changes since v8:
+> - remove the bug fix tag of patch 2 (per Jarkko Sakkinen)
+> - remove the declaration of memory_failure_queue_kick (per Naoya Horiguchi)
+> - rewrite the return value comments of memory_failure (per Naoya Horiguchi)
+> 
+> changes since v7:
+> - rebase to Linux v6.6-rc2 (no code changed)
+> - rewritten the cover letter to explain the motivation of this patchset
+> 
+> changes since v6:
+> - add more explicty error message suggested by Xiaofei
+> - pick up reviewed-by tag from Xiaofei
+> - pick up internal reviewed-by tag from Baolin
+> 
+> changes since v5 by addressing comments from Kefeng:
+> - document return value of memory_failure()
+> - drop redundant comments in call site of memory_failure() 
+> - make ghes_do_proc void and handle abnormal case within it
+> - pick up reviewed-by tag from Kefeng Wang 
+> 
+> changes since v4 by addressing comments from Xiaofei:
+> - do a force kill only for abnormal sync errors
+> 
+> changes since v3 by addressing comments from Xiaofei:
+> - do a force kill for abnormal memory failure error such as invalid PA,
+> unexpected severity, OOM, etc
+> - pcik up tested-by tag from Ma Wupeng
+> 
+> changes since v2 by addressing comments from Naoya:
+> - rename mce_task_work to sync_task_work
+> - drop ACPI_HEST_NOTIFY_MCE case in is_hest_sync_notify()
+> - add steps to reproduce this problem in cover letter
+> 
+> changes since v1:
+> - synchronous events by notify type
+> - Link: https://lore.kernel.org/lkml/20221206153354.92394-3-xueshuai@linux.alibaba.com/
+> 
+> 
+> ## Cover Letter
+> 
+> There are two major types of uncorrected recoverable (UCR) errors :
+> 
+> - Action Required (AR): The error is detected and the processor already
+>   consumes the memory. OS requires to take action (for example, offline
+>   failure page/kill failure thread) to recover this error.
+> 
+> - Action Optional (AO): The error is detected out of processor execution
+>   context. Some data in the memory are corrupted. But the data have not
+>   been consumed. OS is optional to take action to recover this error.
+> 
+> The main difference between AR and AO errors is that AR errors are synchronous
+> events, while AO errors are asynchronous events. Synchronous exceptions, such as
+> Machine Check Exception (MCE) on X86 and Synchronous External Abort (SEA) on
+> Arm64, are signaled by the hardware when an error is detected and the memory
+> access has architecturally been executed.
+> 
+> Currently, both synchronous and asynchronous errors are queued as AO errors and
+> handled by a dedicated kernel thread in a work queue on the ARM64 platform. For
+> synchronous errors, memory_failure() is synced using a cancel_work_sync trick to
+> ensure that the corrupted page is unmapped and poisoned. Upon returning to
+> user-space, the process resumes at the current instruction, triggering a page
+> fault. As a result, the kernel sends a SIGBUS signal to the current process due
+> to VM_FAULT_HWPOISON.
+> 
+> However, this trick is not always be effective, this patch set improves the
+> recovery process in three specific aspects:
+> 
+> 1. Handle synchronous exceptions with proper si_code
+> 
+> ghes_handle_memory_failure() queue both synchronous and asynchronous errors with
+> flag=0. Then the kernel will notify the process by sending a SIGBUS signal in
+> memory_failure() with wrong si_code: BUS_MCEERR_AO to the actual user-space
+> process instead of BUS_MCEERR_AR. The user-space processes rely on the si_code
+> to distinguish to handle memory failure.
+> 
+> For example, hwpoison-aware user-space processes use the si_code:
+> BUS_MCEERR_AO for 'action optional' early notifications, and BUS_MCEERR_AR
+> for 'action required' synchronous/late notifications. Specifically, when a
+> signal with SIGBUS_MCEERR_AR is delivered to QEMU, it will inject a vSEA to
+> Guest kernel. In contrast, a signal with SIGBUS_MCEERR_AO will be ignored
+> by QEMU.[1]
+> 
+> Fix it by seting memory failure flags as MF_ACTION_REQUIRED on synchronous events. (PATCH 1)
+> 
+> 2. Handle memory_failure() abnormal fails to avoid a unnecessary reboot
+> 
+> If process mapping fault page, but memory_failure() abnormal return before
+> try_to_unmap(), for example, the fault page process mapping is KSM page.
+> In this case, arm64 cannot use the page fault process to terminate the
+> synchronous exception loop.[4]
+> 
+> This loop can potentially exceed the platform firmware threshold or even trigger
+> a kernel hard lockup, leading to a system reboot. However, kernel has the
+> capability to recover from this error.
+> 
+> Fix it by performing a force kill when memory_failure() abnormal fails or when
+> other abnormal synchronous errors occur. These errors can include situations
+> such as invalid PA, unexpected severity, no memory failure config support,
+> invalid GUID section, OOM, etc. (PATCH 2)
+> 
+> 3. Handle memory_failure() in current process context which consuming poison
+> 
+> When synchronous errors occur, memory_failure() assume that current process
+> context is exactly that consuming poison synchronous error.
+> 
+> For example, kill_accessing_process() holds mmap locking of current->mm, does
+> pagetable walk to find the error virtual address, and sends SIGBUS to the
+> current process with error info. However, the mm of kworker is not valid,
+> resulting in a null-pointer dereference. I have fixed this in[3].
+> 
+>     commit 77677cdbc2aa mm,hwpoison: check mm when killing accessing process
+> 
+> Another example is that collect_procs()/kill_procs() walk the task list, only
+> collect and send sigbus to task which consuming poison. But memory_failure() is
+> queued and handled by a dedicated kernel thread on arm64 platform.
+> 
+> Fix it by queuing memory_failure() as a task work which runs in current
+> execution context to synchronously send SIGBUS before ret_to_user. (PATCH 2)
+> 
+> ** In summary, this patch set handles synchronous errors in task work with
+> proper si_code so that hwpoison-aware process can recover from errors, and
+> fixes (potentially) abnormal cases. **
+> 
+> Lv Ying and XiuQi from Huawei also proposed to address similar problem[2][4].
+> Acknowledge to discussion with them.
+> 
+> ## Steps to Reproduce This Problem
+> 
+> To reproduce this problem:
+> 
+> 	# STEP1: enable early kill mode
+> 	#sysctl -w vm.memory_failure_early_kill=1
+> 	vm.memory_failure_early_kill = 1
+> 
+> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
+> 	#einj_mem_uc single
+> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
+> 	injecting ...
+> 	triggering ...
+> 	signal 7 code 5 addr 0xffffb0d75000
+> 	page not present
+> 	Test passed
+> 
+> The si_code (code 5) from einj_mem_uc indicates that it is BUS_MCEERR_AO error
+> and it is not fact.
+> 
+> After this patch set:
+> 
+> 	# STEP1: enable early kill mode
+> 	#sysctl -w vm.memory_failure_early_kill=1
+> 	vm.memory_failure_early_kill = 1
+> 
+> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
+> 	#einj_mem_uc single
+> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
+> 	injecting ...
+> 	triggering ...
+> 	signal 7 code 4 addr 0xffffb0d75000
+> 	page not present
+> 	Test passed
+> 
+> The si_code (code 4) from einj_mem_uc indicates that it is BUS_MCEERR_AR error
+> as we expected.
+> 
+> [1] Add ARMv8 RAS virtualization support in QEMU https://patchew.org/QEMU/20200512030609.19593-1-gengdongjiu@huawei.com/
+> [2] https://lore.kernel.org/lkml/20221205115111.131568-3-lvying6@huawei.com/
+> [3] https://lkml.kernel.org/r/20220914064935.7851-1-xueshuai@linux.alibaba.com
+> [4] https://lore.kernel.org/lkml/20221209095407.383211-1-lvying6@huawei.com/
+> 
+> Shuai Xue (2):
+>   ACPI: APEI: set memory failure flags as MF_ACTION_REQUIRED on
+>     synchronous events
+>   ACPI: APEI: handle synchronous exceptions in task work
+> 
+>  arch/x86/kernel/cpu/mce/core.c |   9 +--
+>  drivers/acpi/apei/ghes.c       | 113 ++++++++++++++++++++++-----------
+>  include/acpi/ghes.h            |   3 -
+>  include/linux/mm.h             |   1 -
+>  mm/memory-failure.c            |  22 ++-----
+>  5 files changed, 82 insertions(+), 66 deletions(-)
+> 
