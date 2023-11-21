@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CB77F340F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5895F7F3412
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbjKUQmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:42:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
+        id S231287AbjKUQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjKUQmA (ORCPT
+        with ESMTP id S230340AbjKUQmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:42:00 -0500
+        Tue, 21 Nov 2023 11:42:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB9CE7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:41:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3CDC433C8;
-        Tue, 21 Nov 2023 16:41:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D453E8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:42:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000F9C433A9;
+        Tue, 21 Nov 2023 16:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700584916;
-        bh=GA5cVgxVxFnsICwvLexb6iEuW/gfAj83suuz969sIis=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IoHNeeUSDJO1JlkHUfNVI4gvYxREiQjrTPMCpEOjyHuAF9b3xCiEVgxpmx5hSQzjs
-         DKWF8JCjAEqAEYMYhYKj4bks9WRYWXzi53pKDF8kVDWQgS9SfovbAsrWWwIHk/xWNn
-         h2GETJFxru8kBvRGRo/a2pAtEToSx7NjmuBMAChMQWTXpw8FE3yilI80YBWel6GXJr
-         nGg3MZrP2GLAe9veDlXLNj1UUfSCPvlJ1vjB7kIQpIRYy0ot+srfS1J5mwbE5EpS/g
-         hYfCGJSYJUij6I/vcbIoi6pS0FBjn5y16vaSjLmjXLIzPlsbZzFssbn+hg3GUhNaTp
-         5icqFEcMLJqhQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 164D8CE04C0; Tue, 21 Nov 2023 08:41:56 -0800 (PST)
-Date:   Tue, 21 Nov 2023 08:41:56 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <e3721b80-4dfb-4914-acfb-b315b8cc45b8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
- <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
- <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+        s=k20201202; t=1700584933;
+        bh=aFR/mFQKExXAv/nb9N19ON2XLkx59yXepa2exX1U6mQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Pe7fdDHCYkc7KSUUeoKGd+0k8Upqv5tT863pJGU6nom4MjmioYRNKbeeU0LYigqZq
+         mMoZQ3vR4gUYsV+BP9oBU4OcW/h49OyCHzx3buepvFUai6rwRi0xUoAubDBLKYTfiF
+         x2sEZ4+vPSgTUkOumnqe4Clb6jiycxpkF9ZKDfBJhdSvdEzoEJR6iMuaMYN+nrphmO
+         e4cyi62ZvttrtqkKx3rGbj0qL+rlTQXDv8NkAOoqv8abis72OenhUfPRZeO38ntXpw
+         WEIoTkiwOhGFOwsZGqT0zIdnUwC23hQ0e2dmCHM3KERmpmJUJYHdfojukPCpmwdbJm
+         cjJszLlSX6B5g==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso72057671fa.3;
+        Tue, 21 Nov 2023 08:42:12 -0800 (PST)
+X-Gm-Message-State: AOJu0YzfltrG1BNxAEZMQuA8PWtOEFPjiUL4aGpQWKap8etok/rbE2G3
+        TQ/WgemQoVqc4YCRwmRVPWdzbKPiFoWqZh09Uis=
+X-Google-Smtp-Source: AGHT+IE1BtBBQXH8IhaD0lfThsj9OIMHKzDOIxlPBJGUB9DukWvY41yZhOqj18nk5W7PFyAXHxOdAkbW6vA0h7iKYww=
+X-Received: by 2002:a2e:8e63:0:b0:2bb:a28b:58e1 with SMTP id
+ t3-20020a2e8e63000000b002bba28b58e1mr7794383ljk.41.1700584931089; Tue, 21 Nov
+ 2023 08:42:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
+ <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
+ <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
+ <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
+In-Reply-To: <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 21 Nov 2023 11:41:59 -0500
+X-Gmail-Original-Message-ID: <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
+Message-ID: <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
+To:     Simon Glass <sjg@chromium.org>
+Cc:     "Chiu, Chasel" <chasel.chiu@intel.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        "Tan, Lean Sheng" <sheng.tan@9elements.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Dhaval Sharma <dhaval@rivosinc.com>,
+        "Brune, Maximilian" <maximilian.brune@9elements.com>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        "Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
+        ron minnich <rminnich@gmail.com>,
+        "Guo, Gua" <gua.guo@intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,68 +74,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 04:52:56PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
-> 
-> > Why is this such a hard question?
+On Mon, 20 Nov 2023 at 21:12, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi,
+>
+> On Mon, 13 Nov 2023 at 11:09, Chiu, Chasel <chasel.chiu@intel.com> wrote:
+> >
+> >
+> > Hi Ard,
+> >
+> > Please see my reply below inline.
+> >
+> > Thanks,
+> > Chasel
+> >
+> >
+> > > -----Original Message-----
+> > > From: Ard Biesheuvel <ardb@kernel.org>
+> > > Sent: Saturday, November 11, 2023 3:04 AM
+> > > To: Chiu, Chasel <chasel.chiu@intel.com>
+> > > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mark =
+Rutland
+> > > <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan, Lean Shen=
+g
+> > > <sheng.tan@9elements.com>; lkml <linux-kernel@vger.kernel.org>; Dhava=
+l
+> > > Sharma <dhaval@rivosinc.com>; Brune, Maximilian
+> > > <maximilian.brune@9elements.com>; Yunhui Cui <cuiyunhui@bytedance.com=
+>;
+> > > Dong, Guo <guo.dong@intel.com>; Tom Rini <trini@konsulko.com>; ron mi=
+nnich
+> > > <rminnich@gmail.com>; Guo, Gua <gua.guo@intel.com>; linux-
+> > > acpi@vger.kernel.org; U-Boot Mailing List <u-boot@lists.denx.de>
+> > > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
+> > > usages
+> > >
+> > > On Sat, 11 Nov 2023 at 04:20, Chiu, Chasel <chasel.chiu@intel.com> wr=
+ote:
+> > > >
+> > > >
+> > > > Just sharing some usage examples from UEFI/EDK2 scenario.
+> > > > To support ACPI S4/Hibernation, memory map must be consistent befor=
+e
+> > > > entering and after resuming from S4, in this case payload may need =
+to
+> > > > know previous memory map from bootloader (currently generic payload
+> > > > cannot access platform/bootloader specific non-volatile data, thus
+> > > > could not save/restore memory map information)
+> > >
+> > > So how would EDK2 reconstruct the entire EFI memory map from just the=
+se
+> > > unannotated /reserved-memory nodes? The EFI memory map contains much
+> > > more information than that, and all of it has to match the pre-hibern=
+ate situation,
+> > > right? Can you given an example?
+> >
+> >
+> > Here we listed only typically memory types that may change cross differ=
+ent platforms.
+> > Reserved memory type already can be handled by reserved-memory node, an=
+d rest of the types usually no need to change cross platforms thus currentl=
+y we could rely on default in generic payload.
+> > In the future if we see a need to add new memory types we will discuss =
+and add it to FDT schema.
+> >
+> >
+> >
+> > >
+> > > > Another usage is to support binary model which generic payload is a=
+ prebuilt
+> > > binary compatible for all platforms/configurations, however the paylo=
+ad default
+> > > memory map might not always work for all the configurations and we wa=
+nt to
+> > > allow bootloader to override payload default memory map without recom=
+piling.
+> > > >
+> > >
+> > > Agreed. But can you explain how a EDK2 payload might make meaningful =
+use of
+> > > 'runtime-code' regions provided via DT  by the non-EDK2 platform init=
+? Can you
+> > > give an example?
+> >
+> >
+> > Runtime-code/data is used by UEFI payload for booting UEFI OS which req=
+uired UEFI runtime services.
+> > Platform Init will select some regions from the usable memory and assig=
+n it to runtime-code/data for UPL to consume. Or assign same runtime-code/d=
+ata from previous boot.
+> > If UEFI OS is not supported, PlatformInit may not need to provide runti=
+me-code/data regions to payload. (always providing runtime-code/data should=
+ be supported too)
+> >
+> >
+> > >
+> > > > Under below assumption:
+> > > >         FDT OS impact has been evaluated and taken care by relevant
+> > > experts/stakeholders.
+> > > > Reviewed-by: Chasel Chiu <chasel.chiu@intel.com>
+> > > >
+> > >
+> > > I am sorry but I don't know what 'FDT OS impact' means. We are talkin=
+g about a
+> > > firmware-to-firmware abstraction that has the potential to leak into =
+the OS
+> > > visible interface.
+> > >
+> > > I am a maintainer in the Tianocore project myself, so it would help i=
+f you could
+> > > explain who these relevant experts and stakeholders are. Was this dis=
+cussed on
+> > > the edk2-devel mailing list? If so, apologies for missing it but I ma=
+y not have been
+> > > cc'ed perhaps?
+> >
+> >
+> >
+> >
+> > I'm not familiar with FDT OS, also I do not know if who from edk2-devel=
+ were supporting FDT OS, I think Simon might be able to connect FDT OS expe=
+rts/stakeholders.
+> > We are mostly focusing on payload firmware phase implementation in edk2=
+ (and other payloads too), however, since we have aligned the payload FDT a=
+nd OS FDT months ago, I'm assuming FDT OS impact must be there and we need =
+(or already done?) FDT OS experts to support it. (again, maybe Simon could =
+share more information about FDT OS)
+> >
+> > In edk2 such FDT schema is UefiPayloadPkg internal usage only and paylo=
+ad entry will convert FDT into HOB thus we expected the most of the edk2 ge=
+neric code are no-touch/no impact, that's why we only had small group (Uefi=
+PayloadPkg) discussion.
+> > Ard, if you are aware of any edk2 code that's for supporting FDT OS, pl=
+ease let us know and we can discuss if those code were impacted or not.
+>
+> We discussed this and just to clarify, 'FDT OS' is not a special OS,
+> it is just Linux.
+>
+> So, with the above, are we all on the same page? Can the patch be
+> applied, perhaps? If not, what other discussion is needed?
+>
 
-The place to look is here:
-
-https://docs.kernel.org/RCU/Design/Requirements/Requirements.html
-
-Or, if you prefer, Documentation/RCU/Design/Requirements/Requirements.rst.
-
-> Anyway, recapping from IRC:
-> 
-> preemptible, SRCU:
->   counter-array based, GP advances by increasing array index
->   and waiting for previous index to drop to 0.
-> 
->   notably, a GP can pass while a task is preempted but not within a
->   critical section.
-> 
->   SRCU has smp_mb() in the critical sections to improve GP.
-
-https://docs.kernel.org/RCU/Design/Requirements/Requirements.html#sleepable-rcu
-
-Allows general blocking in SRCU readers, which it tolerates by giving
-each user its own SRCU via DEFINE_SRCU(), DEFINE_STATIC_SRCU() or
-a srcu_struct structure.  Users blocking too much in SRCU read-side
-critical sections hurt only themselves.  Yes, heavy-weight readers.
-
-> tasks:
->   waits for every task to pass schedule()
-> 
->   ensures that any pieces of text rendered unreachable before, is
->   actually unused after.
-
-But does not wait for tasks where RCU is not watching, including the
-idle loop.
-
-> tasks-rude:
->   like tasks, but different? build to handle tracing while rcu-idle,
->   even though that was already deemed bad?
-
-This waits for the tasks that RCU Tasks cannot wait for.  If noinstr
-is fully fixed, RCU Tasks Rude can go away.
-
-> tasks-tracing-rcu:
->   extention of tasks to have critical-sections ? Should this simply be
->   tasks?
-
-Tasks Trace RCU is its own thing.  It uses rcu_read_lock_trace() and
-rcu_read_unlock_trace() to mark its readers.  It can detect quiescent
-states even when the task in question does not call schedule().
-Unlike Tasks RCU, Tasks Trace RCU does not scan the full task list.
-(It used to, but that caused latency blows on non-realtime workloads.)
-Tasks Trace RCU allows preemption and blocking for page faults in
-its readers.  Also blocking on non-raw spinlocks in PREEMPT_RT, but I
-am not sure that anyone cares.  If you want to block on anything else,
-you need to talk to the current Tasks Trace RCU users.
-
-							Thanx, Paul
-
-> Can someone complete, please?
-> 
-> 
-> 
+An example of how a platform-init/payload combination would make
+meaningful use of such runtime-code/data regions.
