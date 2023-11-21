@@ -2,149 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 418CA7F2847
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659D87F26F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjKUJCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        id S229492AbjKUIIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjKUJCN (ORCPT
+        with ESMTP id S229441AbjKUIIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:02:13 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A65CA;
-        Tue, 21 Nov 2023 01:02:09 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7ba170ac211so1931030241.2;
-        Tue, 21 Nov 2023 01:02:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700557328; x=1701162128; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vySVtlxZasL8ujz46d4j31n+R/7yltOZRIzr3n9abgM=;
-        b=lIckEBX9cdnwHccw/j1P9Vab8LpjlU3l63/9P2jH4wym4fOEt0sM+CM0/TXRygT/7+
-         4l0LZ4vkCAoPmhm+pXTWH6qy7YFMsyUdrIotTbaMUkktRPQXDnjpopv4wQG0n9uKjUdQ
-         Z/H9wm6TT4jB1kXUV2oVzds97hboe4eIPgj+ti9J3jiZA6AdBGqMgPHiI8VMHoxL1XBK
-         jGoVD5d9jPbS8osx3vI6BGGGCK+pLQIYg7TgZeEz2R7vtZUPUhh8Gudmoo1glLmf1gXE
-         zh5coqB67jjVzGGT9U54E48W2q2I9iGbrdYIKpg5d5Lwiyp4Z88L2rH2rnDA8UPE3Db+
-         JIwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700557328; x=1701162128;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vySVtlxZasL8ujz46d4j31n+R/7yltOZRIzr3n9abgM=;
-        b=OAHlVWzt39CrM57iKJ+mRagXzsiiUTKvj5i+PXdr6ZH5c91oEAyQzdY6hxl0mM+7ck
-         zwyKXR4Fqqavw9d/ziaAnWQYVmz1u6ao2kXQyrz0BC6Hj3m1CKIFKXH/hkgjTY8B3QaU
-         DcSxibrvdX7Vz6TVkXDZri5a/kZqtNjPuLOceEGRQ0ND+Jm3mDeNX35fWblw/vYbZ2Zj
-         Z2LHebbyMtHKTHlE+4IJxycnZ5ZrQgSMEAZdXV6YD0YXHwrdeNnbkJ0Fd0ghId43BLLq
-         3EMYeo+chW6QDFehppO+h9OPSr60glLjgGl6MSBxn0ku9cOx5Qh1KZkPbzrpSVDcEbJi
-         MddQ==
-X-Gm-Message-State: AOJu0YygDFAlQfQS4kFzOBMWhqOVdaIWkjdVcTp9MgbSXd0aBV3uXJlV
-        /N8LTjXs+RTEyy/qk2puX8ETyIb1Y9Rxh/cduEw=
-X-Google-Smtp-Source: AGHT+IFc+3mDgcjtqb/7aZD84LfT9fY0MiwdUWtRt4/j8EHWdIVuAoKJFJBTNJIKOAFXIiL4CwjNKbdcw3VxpVy01tM=
-X-Received: by 2002:a67:bb10:0:b0:45d:b889:3770 with SMTP id
- m16-20020a67bb10000000b0045db8893770mr7404679vsn.1.1700557328478; Tue, 21 Nov
- 2023 01:02:08 -0800 (PST)
+        Tue, 21 Nov 2023 03:08:13 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D70BB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:08:08 -0800 (PST)
+Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SZH3B6frYz1P8cb;
+        Tue, 21 Nov 2023 16:04:38 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemd200004.china.huawei.com
+ (7.185.36.141) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Tue, 21 Nov
+ 2023 16:08:05 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
+Date:   Tue, 21 Nov 2023 17:06:24 +0800
+Message-ID: <20231121090624.1814733-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231120091214.150502-1-sxwjean@me.com> <20231120091214.150502-5-sxwjean@me.com>
-In-Reply-To: <20231120091214.150502-5-sxwjean@me.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 21 Nov 2023 18:01:57 +0900
-Message-ID: <CAB=+i9RUP+Ar3x63sbDTq8+=nkygp2bJ1Py962U7ATyNU6Npvw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mm/slab: move slab merge from slab_common.c to slub.c
-To:     sxwjean@me.com
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        corbet@lwn.net, linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 6:13=E2=80=AFPM <sxwjean@me.com> wrote:
->
-> From: Xiongwei Song <xiongwei.song@windriver.com>
->
-> Since slab allocator has been removed. There is no users about slab
-> merge except slub. This commit is almost to revert
-> commit 423c929cbbec ("mm/slab_common: commonize slab merge logic").
->
-> Also change all prefix of slab merge related functions, variables and
-> definitions from "slab/SLAB" to"slub/SLUB".
->
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> ---
->  mm/slab.h        |   3 --
->  mm/slab_common.c |  98 ----------------------------------------------
->  mm/slub.c        | 100 ++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 99 insertions(+), 102 deletions(-)
-[...]
-> +/*
-> + * Merge control. If this is set then no merging of slab caches will occ=
-ur.
-> + */
-> +static bool slub_nomerge =3D !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
-> +
-> +static int __init setup_slub_nomerge(char *str)
-> +{
-> +       slub_nomerge =3D true;
-> +       return 1;
-> +}
-> +
-> +static int __init setup_slub_merge(char *str)
-> +{
-> +       slub_nomerge =3D false;
-> +       return 1;
-> +}
-> +
-> +__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-> +__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
+When spaces of swap devices are exhausted, only file pages can be
+reclaimed.  But there are still some swapcache pages in anon lru list.
+This can lead to a premature out-of-memory.
 
-FYI This hunk breaks kernel builds:
+The problem is found with such step:
 
-In file included from ./include/linux/printk.h:6,
-                 from ./include/asm-generic/bug.h:22,
-                 from ./arch/x86/include/asm/bug.h:87,
-                 from ./include/linux/bug.h:5,
-                 from ./include/linux/mmdebug.h:5,
-                 from ./include/linux/mm.h:6,
-                 from mm/slub.c:13:
-mm/slub.c:748:45: error: =E2=80=98setup_slab_nomerge=E2=80=99 undeclared he=
-re (not in
-a function); did you mean =E2=80=98setup_slub_nomerge=E2=80=99?
-  748 | __setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-      |                                             ^~~~~~~~~~~~~~~~~~
-./include/linux/init.h:340:32: note: in definition of macro =E2=80=98__setu=
-p_param=E2=80=99
-  340 |   =3D { __setup_str_##unique_id, fn, early }
-      |                                ^~
-mm/slub.c:749:41: error: =E2=80=98setup_slab_merge=E2=80=99 undeclared here=
- (not in a
-function); did you mean =E2=80=98setup_slub_merge=E2=80=99?
-  749 | __setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
-      |                                         ^~~~~~~~~~~~~~~~
-./include/linux/init.h:340:32: note: in definition of macro =E2=80=98__setu=
-p_param=E2=80=99
-  340 |   =3D { __setup_str_##unique_id, fn, early }
-      |                                ^~
-  CC      kernel/time/ntp.o
-mm/slub.c:742:19: warning: =E2=80=98setup_slub_merge=E2=80=99 defined but n=
-ot used
-[-Wunused-function]
-  742 | static int __init setup_slub_merge(char *str)
-      |                   ^~~~~~~~~~~~~~~~
-mm/slub.c:736:19: warning: =E2=80=98setup_slub_nomerge=E2=80=99 defined but=
- not used
-[-Wunused-function]
-  736 | static int __init setup_slub_nomerge(char *str)
-      |                   ^~~~~~~~~~~~~~~~~~
+ Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+ memory limit, then runs an program to allocates about 15MB memory.
+
+The problem occurs occasionally, which may need about 100 times [1].
+
+Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+If the number is not zero, return true and set swapcache_only to 1.
+When scan anon lru list in swapcache_only mode, non-swapcache pages will
+be skipped to isolate in order to accelerate reclaim efficiency.
+
+However, in swapcache_only mode, the scan count still increased when scan
+non-swapcache pages because there are large number of non-swapcache pages
+and rare swapcache pages in swapcache_only mode, and if the non-swapcache
+is skipped and do not count, the scan of pages in isolate_lru_folios() can
+eventually lead to hung task, just as Sachin reported [2].
+
+By the way, since there are enough times of memory reclaim before OOM, it
+is not need to isolate too much swapcache pages in one times.
+
+[1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
+[2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
+
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Tested-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+---
+v9->v10: Use per-node swapcache suggested by Yu Zhao.
+v8->v9: Move the swapcache check after can_demote() and refector 
+	can_reclaim_anon_pages() a bit.
+v7->v8: Reset swapcache_only at the beginning of can_reclaim_anon_pages().
+v6->v7: Reset swapcache_only to zero after there are swap spaces.
+v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
+
+ mm/vmscan.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 49 insertions(+), 1 deletion(-)
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 506f8220c5fe..1fcc94717370 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -136,6 +136,9 @@ struct scan_control {
+ 	/* Always discard instead of demoting to lower tier memory */
+ 	unsigned int no_demotion:1;
+ 
++	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
++	unsigned int swapcache_only:1;
++
+ 	/* Allocation order */
+ 	s8 order;
+ 
+@@ -308,10 +311,36 @@ static bool can_demote(int nid, struct scan_control *sc)
+ 	return true;
+ }
+ 
++#ifdef CONFIG_SWAP
++static bool can_reclaim_swapcache(struct mem_cgroup *memcg, int nid)
++{
++	struct pglist_data *pgdat = NODE_DATA(nid);
++	unsigned long nr_swapcache;
++
++	if (!memcg) {
++		nr_swapcache = node_page_state(pgdat, NR_SWAPCACHE);
++	} else {
++		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
++
++		nr_swapcache = lruvec_page_state_local(lruvec, NR_SWAPCACHE);
++	}
++
++	return nr_swapcache > 0;
++}
++#else
++static bool can_reclaim_swapcache(struct mem_cgroup *memcg, int nid)
++{
++	return false;
++}
++#endif
++
+ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+ 					  int nid,
+ 					  struct scan_control *sc)
+ {
++	if (sc)
++		sc->swapcache_only = 0;
++
+ 	if (memcg == NULL) {
+ 		/*
+ 		 * For non-memcg reclaim, is there
+@@ -330,7 +359,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+ 	 *
+ 	 * Can it be reclaimed from this node via demotion?
+ 	 */
+-	return can_demote(nid, sc);
++	if (can_demote(nid, sc))
++		return true;
++
++	/* Is there any swapcache pages to reclaim in this node? */
++	if (can_reclaim_swapcache(memcg, nid)) {
++		if (sc)
++			sc->swapcache_only = 1;
++		return true;
++	}
++
++	return false;
+ }
+ 
+ /*
+@@ -1642,6 +1681,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+ 		 */
+ 		scan += nr_pages;
+ 
++		/*
++		 * Count non-swapcache too because the swapcache pages may
++		 * be rare and it takes too much times here if not count
++		 * the non-swapcache pages.
++		 */
++		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
++		    !folio_test_swapcache(folio)))
++			goto move;
++
+ 		if (!folio_test_lru(folio))
+ 			goto move;
+ 		if (!sc->may_unmap && folio_mapped(folio))
+-- 
+2.25.1
+
