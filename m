@@ -2,149 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C62257F2B09
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 446047F2B0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjKUKzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S233895AbjKUKzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjKUKzS (ORCPT
+        with ESMTP id S232965AbjKUKzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:55:18 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA4911C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:55:14 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28397a2c402so2808307a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:55:14 -0800 (PST)
+        Tue, 21 Nov 2023 05:55:33 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5154CA;
+        Tue, 21 Nov 2023 02:55:26 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507cd62472dso6752846e87.0;
+        Tue, 21 Nov 2023 02:55:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700564114; x=1701168914; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MzKhOUKLZx+pr4SVfAMWtXoFfmy98an63KyE2M6t84k=;
-        b=XgSV4SHMNAUCMicuOlSC3Ue+eIOT4uw3mBv0wXdpVmkEA1S6fWvKK937eb8bYnRaIo
-         lYcn/K/eA7j7QNkeyx+IgAyS7sVgPXJ//8aolU1bkSI5tVFUYmaMU4YTENjV+YOQHpzM
-         FC2cSmexK5dbsQ2nfJWJh4Ifqq5QP6zGOGyAdsHkUQrMjuoA6WwXjk2MEPzuzMwEBy9x
-         6EceSVgtL+tk+1308yb+xMBZeYk3XtuCiu1V9mj+YlW0LhajLq5sk/PEBMx4gFusvx0d
-         p5ZT3VTNjIQOh2jx+7k7WW1DqKsfYKJvYKFpM1gjfNJlpej5+50A+a30UaiJGN3mW2x/
-         Lgxg==
+        d=gmail.com; s=20230601; t=1700564125; x=1701168925; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=f2/S1llZHvvLIHKm122xsgCS2RIget7hRyW8qLwZ7ko=;
+        b=C3VmgU9hdt70XM7CdHoFJwadDy7MeEFhZ7ZV79GfKP6Z9MDCPEATJczDVLj81FoIh8
+         oXBG2WDujh5CBPHf1Rb8Kk71cCtVcQY4pBWSlKQCSZiw6uYBkN2oe3DawYQ0luSRILAz
+         8qlY6kq+5xz44B/BexRajzn8/cie3krfxcl0JtGlqus0lgt4Adtcz8KP1RS4NzxjmfNI
+         Hp8ybJXh+hPp4TDveDZDUISSSwzO4oMnWz1nEZgTG5xo0i9tlVAhiwDq2nB4K0Kzt3Mo
+         CfeTrr6MsPhPqUn6vCN3wz+WUPk/YMwaCvjISkX3wr8PQcN+PIfV+yi4JVbMp9MEWHdx
+         XlIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700564114; x=1701168914;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MzKhOUKLZx+pr4SVfAMWtXoFfmy98an63KyE2M6t84k=;
-        b=whlCePIufJN/FeXMbMCrXXpnmeEMgnPDIt/Barww3U2N6rnaQceqKK9Vj5ea/+Niwp
-         c+j5Q7cIThaYg2O+6Fm/HI2yGQ8/5IL44kW9hEQauY+oeK9jaQv5KceU3EYHTwWbKSb7
-         GQZkdYeme80ZyFDKUu2VNPIHUlJynBSXvzpjCVGgPx32A2JsaDArJ4Mmlz4TgtMxcnq1
-         rtgH/XmyObVBOZTpTd5mB1Ts/BBG50F6RVqEyoxujGD8TfHjllRD3e9gFUX4ohMGtZ2m
-         TkH18jBOahf9rBlMQfFdh1sbEtxKelXMqYtRZusYQO+QGXyzci+NJdEworOQp3lZcVJC
-         iAvA==
-X-Gm-Message-State: AOJu0YzlIRplOMvY8NScF4ay0FBCuOb78hyyMRKAL+VZR9lJLDjRBb3v
-        zE9tuN5dRwNKAtccFD1gsQwdzg==
-X-Google-Smtp-Source: AGHT+IGpo4GmETcpbWDFdme7zudYwMnFovLtMACr2PLZcHekMbKtafj/QTIGaeb+fzIx1InGwWUNwA==
-X-Received: by 2002:a17:90b:3ec2:b0:27e:31a:2ab2 with SMTP id rm2-20020a17090b3ec200b0027e031a2ab2mr7901807pjb.34.1700564113881;
-        Tue, 21 Nov 2023 02:55:13 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:5aed:1852:f03:f8df:692b? ([2402:7500:4ce:5aed:1852:f03:f8df:692b])
-        by smtp.gmail.com with ESMTPSA id g21-20020a17090a579500b002777001ee76sm8937627pji.18.2023.11.21.02.55.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Nov 2023 02:55:13 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH 12/12] RISC-V: crypto: add Zvkb accelerated ChaCha20
- implementation
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231120191856.GA964@sol.localdomain>
-Date:   Tue, 21 Nov 2023 18:55:07 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9724E3A5-F43C-4239-9031-2B33B72C4EF4@sifive.com>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-13-jerry.shih@sifive.com>
- <20231102054327.GH1498@sol.localdomain>
- <90E2B1B4-ACC1-4316-81CD-E919D3BD03BA@sifive.com>
- <20231120191856.GA964@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
+        d=1e100.net; s=20230601; t=1700564125; x=1701168925;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f2/S1llZHvvLIHKm122xsgCS2RIget7hRyW8qLwZ7ko=;
+        b=BG0fmjqAaayMpCtaVefQ5NKDX6wQG8LEW5dM0alyorSqTZVN0dJZM4bDOJOZemu2PZ
+         jqU4cNJrOKdbV5zmH+xC9oyX4x7+2g4pcfhUgbj+Pi80X1/CY0DX3puSQ9wJfkXhE+6x
+         5p97DUDPDANGwCmdcD4Ddy7b7iSqiLm5BNKTkZWxwvwBFo+G7SG6zB14hq5VQzPa8mui
+         HbUxMkagqK9xetKo1wn/7TBR71WxlPT4UTq1JopIZLMEz4VWJ5+fGy/7FYRBdsFzz+qC
+         l0nDY89IQuxrFz6DXwyQhm6xa7061/fRxafwB394V6Fy+ZhrsR2rMiywz5NFgDWIY5wE
+         l9Mg==
+X-Gm-Message-State: AOJu0YwPcsDDvgms/FK2p/X4jh4sEve65snO9v+tTPGP0FLgSjjWxYa/
+        GFcKcQvc+H3ltgF2Z3FMUic=
+X-Google-Smtp-Source: AGHT+IE3e2ZL/XJPgYOysbMx3oskqnrP6wW9vghbONMzCPL1lixksnEQv/+aEJh2lbAn6+Znd3txAA==
+X-Received: by 2002:a05:6512:e9c:b0:506:8b41:7e31 with SMTP id bi28-20020a0565120e9c00b005068b417e31mr851408lfb.6.1700564124765;
+        Tue, 21 Nov 2023 02:55:24 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id e13-20020ac24e0d000000b0050a3e7e718dsm1471530lfr.189.2023.11.21.02.55.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 02:55:24 -0800 (PST)
+Date:   Tue, 21 Nov 2023 13:55:22 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Kory Maincent <kory.maincent@bootlin.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Message-ID: <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
+References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
+ <20231121062629.GA3315@thinkpad>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231121062629.GA3315@thinkpad>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 21, 2023, at 03:18, Eric Biggers <ebiggers@kernel.org> wrote:
-> First, I can see your updated patchset at branch
-> "dev/jerrys/vector-crypto-upstream-v2" of =
-https://github.com/JerryShih/linux,
-> but I haven't seen it on the mailing list yet.  Are you planning to =
-send it out?
+Hi Mani
 
-I will send it out soon.
+On Tue, Nov 21, 2023 at 11:56:29AM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Nov 17, 2023 at 11:03:48AM +0100, Kory Maincent wrote:
+> > This patch series fix the support of dw-edma HDMA NATIVE IP.
+> > I can only test it in remote HDMA IP setup with single dma transfer, but
+> > with these fixes it works properly.
+> > 
+> > Few fixes has also been added for eDMA version. Similarly to HDMA I have
+> > tested only eDMA in remote setup.
+> > 
+> 
+> Just out of curiosity, can you share how you are setting EDMA_MF_HDMA_NATIVE?
 
-> Second, with your updated patchset, I'm not seeing any of the RISC-V =
-optimized
-> algorithms be registered when I boot the kernel in QEMU.  This is =
-caused by the
-> new check 'riscv_isa_extension_available(NULL, ZICCLSM)' not passing.  =
-Is
-> checking for "Zicclsm" the correct way to determine whether unaligned =
-memory
-> accesses are supported?
->=20
-> I'm using 'qemu-system-riscv64 -cpu max -machine virt', with the very =
-latest
-> QEMU commit (af9264da80073435), so it should have all the CPU =
-features.
->=20
-> - Eric
+This topic has already been concerned on v1 (in another context
+though):
+https://lore.kernel.org/dmaengine/20230621151948.36125997@kmaincent-XPS-13-7390/
 
-Sorry, I just use my `internal` qemu with vector-crypto and rva22 =
-patches.
+Here is the repo with the out-of-tree driver Kory said he was using
+together with the kernel's version of the DW eDMA/hDMA driver:
+https://github.com/Brainchip-Inc/akida_dw_edma
 
-The public qemu haven't supported rva22 profiles. Here is the qemu =
-patch[1] for
-that. But here is the discussion why the qemu doesn't export these
-`named extensions`(e.g. Zicclsm).
-I try to add Zicclsm in DT in the v2 patch set. Maybe we will have more =
-discussion
-about the rva22 profiles in kernel DT.
+-Serge(y)
 
-[1]
-LINK: =
-https://lore.kernel.org/all/d1d6f2dc-55b2-4dce-a48a-4afbbf6df526@ventanami=
-cro.com/#t
-
-I don't know whether it's a good practice to check unaligned access =
-using
-`Zicclsm`.=20
-
-Here is another related cpu feature for unaligned access:
-RISCV_HWPROBE_MISALIGNED_*
-But it looks like it always be initialized with =
-`RISCV_HWPROBE_MISALIGNED_SLOW`[2].
-It implies that linux kernel always supports unaligned access. But we =
-have the
-actual HW which doesn't support unaligned access for vector unit.
-
-[2]
-LINK: =
-https://github.com/torvalds/linux/blob/98b1cc82c4affc16f5598d4fa14b1858671=
-b2263/arch/riscv/kernel/cpufeature.c#L575
-
-I will still use `Zicclsm` checking in this stage for reviewing. And I =
-will create qemu
-branch with Zicclsm enabled feature for testing.
-
--Jerry=
+> 
+> - Mani
+> 
+> > Changes in v2:
+> > - Update comments and fix typos.
+> > - Removed patches that tackle hypothetical bug and then were not pertinent.
+> > - Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
+> > 
+> > Changes in v3:
+> > - Fix comment style.
+> > - Split a patch in two to differ bug fix and simple harmless typo.
+> > 
+> > Changes in v4:
+> > - Update patch git commit message.
+> > - Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
+> > 
+> > Changes in v5:
+> > - No change
+> > - Rebase to mainline 6.7-rc1
+> > - Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
+> > 
+> > Changes in v6:
+> > - Fix several commit messages and comments.
+> > - Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
+> > 
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> > Kory Maincent (6):
+> >       dmaengine: dw-edma: Fix the ch_count hdma callback
+> >       dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
+> >       dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
+> >       dmaengine: dw-edma: Add HDMA remote interrupt configuration
+> >       dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
+> >       dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
+> > 
+> >  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
+> >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
+> >  drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
+> >  3 files changed, 44 insertions(+), 14 deletions(-)
+> > ---
+> > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> > change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
+> > 
+> > Best regards,
+> > -- 
+> > Köry Maincent, Bootlin
+> > Embedded Linux and kernel engineering
+> > https://bootlin.com
+> > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
