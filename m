@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FD07F263F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 664917F2662
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbjKUHV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:21:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S229573AbjKUHd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKUHVy (ORCPT
+        with ESMTP id S229468AbjKUHd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:21:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE22BC;
-        Mon, 20 Nov 2023 23:21:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700551310; x=1732087310;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jCXKtnvivDQbJ6SpXxPkCXlrZyVHbDspRUsHIuxVp9U=;
-  b=eCsSql3TC41eJySl0WzlGTSsk7YXRFvUUzZPWRFToIRezM3KuZ1LZrbU
-   5DjSzHzdljGuj/t54PFXhsuLYzvOwh9kwsQnTz7we1b6bEfiGwcXwbb74
-   w/lnUwxte53jUt54z9eNKvy5L+sW25ZzYi7sRqsHOI4Bwcx6dVEbr3Z9f
-   JevKbH0vg+dHBca9EAks42K7EwzC9nH2uN15/0pH9CXZuHF6T8W0P3u0l
-   9CkJn+Zntx5+2XbE4Tll3Kri8DpcjWQE4pkJPB3Rhbq6NRAlDv7LthOms
-   I0fY7vkw6QsWM5d5nMMuJf+GpEiO+QkLhvFNoydNS+2eBHMgDUa8Qf9Vz
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="395710891"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="395710891"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 23:21:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="1097976516"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="1097976516"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 20 Nov 2023 23:21:43 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5L4Y-0007Uj-2D;
-        Tue, 21 Nov 2023 07:21:30 +0000
-Date:   Tue, 21 Nov 2023 15:20:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <202311211558.cMYA5imi-lkp@intel.com>
-References: <20231120215945.52027-3-pstanner@redhat.com>
+        Tue, 21 Nov 2023 02:33:27 -0500
+Received: from correo.hgj.gob.ec (correo.hgj.gob.ec [181.196.185.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27E5B9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:33:21 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.hgj.gob.ec (Postfix) with ESMTP id 579B3406F3168;
+        Tue, 21 Nov 2023 02:21:54 -0500 (-05)
+Received: from correo.hgj.gob.ec ([127.0.0.1])
+        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id jlcaT9Xk7y6P; Tue, 21 Nov 2023 02:21:53 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.hgj.gob.ec (Postfix) with ESMTP id 42D23406F3186;
+        Tue, 21 Nov 2023 02:21:47 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 correo.hgj.gob.ec 42D23406F3186
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hgj.gob.ec;
+        s=AE113AC8-D929-11ED-97A4-E896B0C4411E; t=1700551307;
+        bh=2BTlIpH6UQ1NSxcJLAqYG4qEsL+l0axzX/Pd1l7ubY0=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=OhHNO4r47rEFt5R1RpsYfhkAfw10NUVE3EUEAESDnTKh1e3rmSgOrpP7VGAxKluN2
+         LNGJkyIKCPu8HoZQmPYIMICT1nv7bcVTaT7trqbFOUouEaO3Lv8vdEHmSnsqeuTaQQ
+         vzBUcIleodzLsLR92e/XK93DBfkOVEsbi3KdDnXDPk9Vho5a1putnWacjyKdeifZ08
+         nOiYJtoo+POGs5zvh7xonkVeRkTwhMOi0i26lz2uMapyu6Xv0WezLX91HbqPC8xqHL
+         JTmXansVYFDay6zUgU+mQUDaA5K3kA4JzDimIySOmW8PXmIoDNDr+ZiR/8yptqBoDz
+         0lOpJIW7Fqv6g==
+X-Virus-Scanned: amavisd-new at correo.hgj.gob.ec
+Received: from correo.hgj.gob.ec ([127.0.0.1])
+        by localhost (correo.hgj.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Mr36JcNpgrcE; Tue, 21 Nov 2023 02:21:47 -0500 (-05)
+Received: from [23.146.243.12] (unknown [23.146.243.12])
+        by correo.hgj.gob.ec (Postfix) with ESMTPSA id 221524040CA80;
+        Tue, 21 Nov 2023 02:21:37 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Se requiere respuesta urgente.
+To:     Recipients <ronald.lopez@hgj.gob.ec>
+From:   "@zimbra" <ronald.lopez@hgj.gob.ec>
+Date:   Mon, 20 Nov 2023 23:22:03 -0800
+Reply-To: webmasterzimbra1@gmail.com
+Message-Id: <20231121072138.221524040CA80@correo.hgj.gob.ec>
+X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_50,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_CSS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+Atenci=F3n:
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-20231121]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Le hemos estado enviando una serie de correos electr=F3nicos con respecto a=
+ la actualizaci=F3n de su cuenta de correo web. Has estado demostrando ser =
+fuerte. Te damos 24 horas o desactivas tu cuenta.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-move-pci_iomap-c-to-drivers-pci/20231121-060258
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40redhat.com
-patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-config: alpha-kismet-CONFIG_GENERIC_PCI_IOMAP-CONFIG_ALPHA-0-0 (https://download.01.org/0day-ci/archive/20231121/202311211558.cMYA5imi-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231121/202311211558.cMYA5imi-lkp@intel.com/reproduce)
+1) Contrase=F1a:
+2) Vuelva a escribir la contrase=F1a:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311211558.cMYA5imi-lkp@intel.com/
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP when selected by ALPHA
-   
-   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
-     Depends on [n]: PCI [=n]
-     Selected by [y]:
-     - ALPHA [=y]
+Env=EDe la informaci=F3n de la contrase=F1a lo antes posible para evitar la=
+ desactivaci=F3n.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+Se=F1al
+
+Gesti=F3n de correo web.
