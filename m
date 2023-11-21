@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4A27F3A2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD4A7F3A2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233024AbjKUXOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 18:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S234878AbjKUXOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 18:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUXOA (ORCPT
+        with ESMTP id S229527AbjKUXON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 18:14:00 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A585210C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:13:55 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-507bd19eac8so8084995e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:13:55 -0800 (PST)
+        Tue, 21 Nov 2023 18:14:13 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE314191
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:14:08 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-548d4fc9579so536645a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:14:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1700608434; x=1701213234; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=u2L9dMn1KKZ1/ioo/PFLD/+csdsIYO11PXlZaQcONvA=;
-        b=UrhZivy+aWLPCYn01YylneFCyNnCmHQPFU3Z+FE5NdzJIlzsy4NFY7CjA+mL9DN+x3
-         cwi2EjoSus+VqH/lJqQEBW1Q6rVkR7jpmO2a4+B2wNkIGTZ+nj1cxzKxgLgFZBYUh1q4
-         WrV4TPKzIO71hTBGdN9OeMSAAIq/ChucF+EUsBqn05OOITFu54Y7/exkbeyNS9IFoMMA
-         CNGGCURT1HlL6e7GO6miO0IlJZ+OFwXtIkhsRM7jmg/mEocCa6bvV6beTsldmK6Kj65L
-         EgikIh2OzrdJFqsrBJNrovBlZgUaQ1Ay1mFa3WXg6jiiJwQ5xDVYthIk8oZXy5R4wLLL
-         4+fQ==
+        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1700608447; x=1701213247; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GZ+OWvH5/CFA7FeA4X2r+g0PzIL9HC5yDJCChVi7III=;
+        b=ihahlgjyWsx5JIWJR50Hhgkxqqe2Axrd7647apWGiaZ5HpIUik+MIRTkZclULBmpqX
+         OigZ5KMYoMPo9Ld0l+mg7nr9zhYWmJLxU7Oj0ThysFGx8dH0/OHpux9z6j88z38Ab77j
+         2Fh+LwKTvpqBbIIrYVRqVMkV8h+peqKVqxgrVtQObqwCoCNMuoiSfxO5hMysSt5msrH6
+         sLReWj+/WRo/dVIRe0sG8ttkl2WuwzwsAV54Nsty/vOKWkg66eysdzcDamVxDbzvSNwH
+         DLHnjvv9+55OJJnWq0Sk87lA1I8lC1GLZ59oGZ+wTufJzqp8FIiOjQEOu+CK5rmTK1DG
+         WRMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700608434; x=1701213234;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u2L9dMn1KKZ1/ioo/PFLD/+csdsIYO11PXlZaQcONvA=;
-        b=L7FRvhbb6OiJ9FJ8B0UqATo/8ZKtXvsMXAgEQDMB7L0NEriZwMo916TiQ66e99THz+
-         RmXeG4q6b8iW41HIP42/lnladWiph5bvvNprapftF2V2ZEU0RA2GTvkBfFQEFUjaq+jP
-         lzxn72KQi6I/91YL5F178hAa9C5uinNkEK76eecLHdu0vX+xHrJG4bsX0JFnzjhTBKKr
-         N4l15iRJ6kTUKoO7psd9PqkJTbm2umLx369X0RDfM6s601d5s3SGW3flBjtsignb3lNb
-         JEAk8mEzYA4kzk/U5kkyDfyfRdFZu02P7aL9DJiEZa/3dKnwnCASer/WXrwHUcsTwug6
-         V+mw==
-X-Gm-Message-State: AOJu0YxKvuUOjvETMEItQQsHbo9ikdljtH+s13qjOsJ7BEXcSz6LdIsR
-        WDGbY4mVt06wsOcOrOW/xO9dJYzHMmqMiA8D/I/A4Q==
-X-Google-Smtp-Source: AGHT+IGzoE9Xi3DNYnZmDz9A9quolYK8vYTtGs8wEdYPIG/XZ9fpu3ISkdssMCsgH1AREisL0bn9gg==
-X-Received: by 2002:a05:6512:10cd:b0:500:b2f6:592 with SMTP id k13-20020a05651210cd00b00500b2f60592mr526356lfg.50.1700608433760;
-        Tue, 21 Nov 2023 15:13:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700608447; x=1701213247;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GZ+OWvH5/CFA7FeA4X2r+g0PzIL9HC5yDJCChVi7III=;
+        b=kKCqM6AHlt9WT6B4GhbYau+Dr5XTaxYG0M+XVaLzMOlgjf0PiNBkqS4fJod2WJVZ33
+         1r7D6iDM93O8VlLKpYgVznSxPxjnB2OL3eX6cfZFZqoSTIRW/EH+IYpu8+4xYjqW5cqx
+         vuLmoaP2AVPWYbU473zrezSK/odstkwL9woE3HSUwxmrrfXHReilPIXzZ6rkTPSkwKa9
+         XRjETrIDYMjYnncXuTdqfktvXBJpEXxHFMZ4fEJsTOXIFD+473pDHcpyRlaiA4cM/X0q
+         qxHxUkbbQ2Sics7cutgbsAIyql49gcps5NMlcj8DVH8yY2b4l73yqy7mfmX1CbkMfKOT
+         tS6g==
+X-Gm-Message-State: AOJu0YwbwxTAAPnck6sAKj9CtVxh4BDPLvfjhiwatFYJePcY09Asdf1B
+        cUpZUvB3wRF/sTugl9gCkrYX/+qKhm1JMwfQA9DaXQ==
+X-Google-Smtp-Source: AGHT+IGYVIHtjz0ANAA3vqyPD38onWbZfza/FOZMRhjwFln6bdD/hBUP4q0DbkicZPNtr+uU5v5pbw==
+X-Received: by 2002:a05:6402:5022:b0:546:d6e1:fbf3 with SMTP id p34-20020a056402502200b00546d6e1fbf3mr4565575eda.1.1700608447246;
+        Tue, 21 Nov 2023 15:14:07 -0800 (PST)
 Received: from ntb.lan ([193.86.118.65])
-        by smtp.googlemail.com with ESMTPSA id f7-20020a056402160700b00548b6175881sm2964840edv.77.2023.11.21.15.13.52
+        by smtp.googlemail.com with ESMTPSA id f7-20020a056402160700b00548b6175881sm2964840edv.77.2023.11.21.15.14.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 15:13:53 -0800 (PST)
+        Tue, 21 Nov 2023 15:14:06 -0800 (PST)
 From:   Petr Malat <oss@malat.biz>
 To:     linux-kernel@vger.kernel.org
 Cc:     mhiramat@kernel.org, paulmck@kernel.org, rostedt@goodmis.org,
         oss@malat.biz
-Subject: [PATCH 0/2] bootconfig: Support early options in embedded config
-Date:   Wed, 22 Nov 2023 00:13:40 +0100
-Message-Id: <20231121231342.193646-1-oss@malat.biz>
+Subject: [PATCH 1/2] bootconfig: Support appending initrd config to embedded one
+Date:   Wed, 22 Nov 2023 00:13:41 +0100
+Message-Id: <20231121231342.193646-2-oss@malat.biz>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231121231342.193646-1-oss@malat.biz>
+References: <20231121231342.193646-1-oss@malat.biz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,19 +71,402 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These 2 patches add a support for specifying early options in embedded
-bootconfig and merging embedded and initrd bootconfig into one.
+When both embedded and initrd boot configs are present, initrd config is
+preferred. Introduce CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD option, which
+allows appending the initrd config to the embedded one.
 
-To allow handling of early options, it's necessary to eliminate allocations
-from embedded bootconfig handling, which can be done by parsing the config
-data in place and allocating xbc_nodes array statically.
+We handle embedded boot config in-place to avoid allocations, which will
+be handy for early parameters support.
 
-Later, when initrd is available, it either replaces embedded data or is
-appended to them. To append initrd data, it's necessary to relocate already
-parsed data to a bigger memory chunk, but that's not a problem, because
-xbc_node structure uses offsets and not absolute pointers.
+Signed-off-by: Petr Malat <oss@malat.biz>
+---
+ include/linux/bootconfig.h |  10 ++-
+ init/Kconfig               |   9 +++
+ init/main.c                |  62 ++++++++++--------
+ lib/bootconfig-data.S      |   3 +-
+ lib/bootconfig.c           | 129 +++++++++++++++++++++++++++----------
+ 5 files changed, 146 insertions(+), 67 deletions(-)
 
-Also, update the documentation to make users aware early options can't be
-configured in the initrd.
-
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index ca73940e26df..88bbcffa82d5 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -281,7 +281,10 @@ static inline int __init xbc_node_compose_key(struct xbc_node *node,
+ }
+ 
+ /* XBC node initializer */
+-int __init xbc_init(const char *buf, size_t size, const char **emsg, int *epos);
++int __init xbc_init(char *buf, size_t size, const char **emsg, int *epos);
++
++/* Append XBC data */
++int __init xbc_append(const char *data, size_t size, const char **emsg, int *epos);
+ 
+ /* XBC node and size information */
+ int __init xbc_get_info(int *node_size, size_t *data_size);
+@@ -291,10 +294,11 @@ void __init xbc_exit(void);
+ 
+ /* XBC embedded bootconfig data in kernel */
+ #ifdef CONFIG_BOOT_CONFIG_EMBED
+-const char * __init xbc_get_embedded_bootconfig(size_t *size);
++char * __init xbc_get_embedded_bootconfig(size_t *size);
+ #else
+-static inline const char *xbc_get_embedded_bootconfig(size_t *size)
++static inline char *xbc_get_embedded_bootconfig(size_t *size)
+ {
++	*size = 0;
+ 	return NULL;
+ }
+ #endif
+diff --git a/init/Kconfig b/init/Kconfig
+index 6d35728b94b2..9161d2dbad0c 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1339,6 +1339,15 @@ config BOOT_CONFIG_EMBED
+ 
+ 	  If unsure, say N.
+ 
++config BOOT_CONFIG_EMBED_APPEND_INITRD
++	bool "Append initrd bootconfig to the embedded one"
++	depends on BOOT_CONFIG_EMBED && BLK_DEV_INITRD
++	default n
++	help
++	  By default if both embedded bootconfig and initrd bootconfig are
++	  found, initrd bootconfig is preferred. If this option is set, initrd
++	  bootconfig gets appended to the embedded one.
++
+ config BOOT_CONFIG_EMBED_FILE
+ 	string "Embedded bootconfig file path"
+ 	depends on BOOT_CONFIG_EMBED
+diff --git a/init/main.c b/init/main.c
+index 436d73261810..0cd738f7f0cf 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -267,6 +267,9 @@ static void * __init get_boot_config_from_initrd(size_t *_size)
+ 	u32 *hdr;
+ 	int i;
+ 
++	if (_size)
++		*_size = 0;
++
+ 	if (!initrd_end)
+ 		return NULL;
+ 
+@@ -309,6 +312,8 @@ static void * __init get_boot_config_from_initrd(size_t *_size)
+ #else
+ static void * __init get_boot_config_from_initrd(size_t *_size)
+ {
++	if (_size)
++		*_size = 0;
+ 	return NULL;
+ }
+ #endif
+@@ -404,16 +409,16 @@ static int __init warn_bootconfig(char *str)
+ static void __init setup_boot_config(void)
+ {
+ 	static char tmp_cmdline[COMMAND_LINE_SIZE] __initdata;
+-	const char *msg, *data;
++	const char *msg, *initrd_data;
+ 	int pos, ret;
+-	size_t size;
+-	char *err;
++	size_t initrd_size, embeded_size = 0;
++	char *err, *embeded_data = NULL;
+ 
+ 	/* Cut out the bootconfig data even if we have no bootconfig option */
+-	data = get_boot_config_from_initrd(&size);
++	initrd_data = get_boot_config_from_initrd(&initrd_size);
+ 	/* If there is no bootconfig in initrd, try embedded one. */
+-	if (!data)
+-		data = xbc_get_embedded_bootconfig(&size);
++	if (!initrd_data || IS_ENABLED(CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD))
++		embeded_data = xbc_get_embedded_bootconfig(&embeded_size);
+ 
+ 	strscpy(tmp_cmdline, boot_command_line, COMMAND_LINE_SIZE);
+ 	err = parse_args("bootconfig", tmp_cmdline, NULL, 0, 0, 0, NULL,
+@@ -426,7 +431,7 @@ static void __init setup_boot_config(void)
+ 	if (err)
+ 		initargs_offs = err - tmp_cmdline;
+ 
+-	if (!data) {
++	if (!initrd_data && !embeded_data) {
+ 		/* If user intended to use bootconfig, show an error level message */
+ 		if (bootconfig_found)
+ 			pr_err("'bootconfig' found on command line, but no bootconfig found\n");
+@@ -435,28 +440,29 @@ static void __init setup_boot_config(void)
+ 		return;
+ 	}
+ 
+-	if (size >= XBC_DATA_MAX) {
+-		pr_err("bootconfig size %ld greater than max size %d\n",
+-			(long)size, XBC_DATA_MAX);
+-		return;
+-	}
+-
+-	ret = xbc_init(data, size, &msg, &pos);
+-	if (ret < 0) {
+-		if (pos < 0)
+-			pr_err("Failed to init bootconfig: %s.\n", msg);
+-		else
+-			pr_err("Failed to parse bootconfig: %s at %d.\n",
+-				msg, pos);
+-	} else {
+-		xbc_get_info(&ret, NULL);
+-		pr_info("Load bootconfig: %ld bytes %d nodes\n", (long)size, ret);
+-		/* keys starting with "kernel." are passed via cmdline */
+-		extra_command_line = xbc_make_cmdline("kernel");
+-		/* Also, "init." keys are init arguments */
+-		extra_init_args = xbc_make_cmdline("init");
+-	}
++	ret = xbc_init(embeded_data, embeded_size, &msg, &pos);
++	if (ret < 0)
++		goto err0;
++
++	/* Call append even if no data are there as embedded bootconfig is in .init */
++	ret = xbc_append(initrd_data, initrd_size, &msg, &pos);
++	if (ret < 0)
++		goto err0;
++
++	xbc_get_info(&ret, NULL);
++	pr_info("Load bootconfig: %ld bytes %d nodes\n", (long)(embeded_size + initrd_size), ret);
++	/* keys starting with "kernel." are passed via cmdline */
++	extra_command_line = xbc_make_cmdline("kernel");
++	/* Also, "init." keys are init arguments */
++	extra_init_args = xbc_make_cmdline("init");
+ 	return;
++
++err0:	if (pos < 0)
++		pr_err("Failed to init bootconfig: %s.\n", msg);
++	else
++		pr_err("Failed to parse %s bootconfig: %s at %zu.\n",
++				pos < embeded_size ? "embedded" : "initrd",
++				msg, pos < embeded_size ? pos : pos - embeded_size);
+ }
+ 
+ static void __init exit_boot_config(void)
+diff --git a/lib/bootconfig-data.S b/lib/bootconfig-data.S
+index ef85ba1a82f4..f447e24eb8fa 100644
+--- a/lib/bootconfig-data.S
++++ b/lib/bootconfig-data.S
+@@ -2,9 +2,10 @@
+ /*
+  * Embed default bootconfig in the kernel.
+  */
+-	.section .init.rodata, "aw"
++	.section .init.data, "aw"
+ 	.global embedded_bootconfig_data
+ embedded_bootconfig_data:
+ 	.incbin "lib/default.bconf"
++	.byte 0
+ 	.global embedded_bootconfig_data_end
+ embedded_bootconfig_data_end:
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index c59d26068a64..841163ce5313 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -15,13 +15,13 @@
+ 
+ #ifdef CONFIG_BOOT_CONFIG_EMBED
+ /* embedded_bootconfig_data is defined in bootconfig-data.S */
+-extern __visible const char embedded_bootconfig_data[];
+-extern __visible const char embedded_bootconfig_data_end[];
++extern __visible char embedded_bootconfig_data[];
++extern __visible char embedded_bootconfig_data_end[];
+ 
+-const char * __init xbc_get_embedded_bootconfig(size_t *size)
++char * __init xbc_get_embedded_bootconfig(size_t *size)
+ {
+ 	*size = embedded_bootconfig_data_end - embedded_bootconfig_data;
+-	return (*size) ? embedded_bootconfig_data : NULL;
++	return *size ? embedded_bootconfig_data : NULL;
+ }
+ #endif
+ 
+@@ -48,6 +48,7 @@ const char * __init xbc_get_embedded_bootconfig(size_t *size)
+ static struct xbc_node *xbc_nodes __initdata;
+ static int xbc_node_num __initdata;
+ static char *xbc_data __initdata;
++static bool xbc_data_allocated __initdata;
+ static size_t xbc_data_size __initdata;
+ static struct xbc_node *last_parent __initdata;
+ static const char *xbc_err_msg __initdata;
+@@ -846,13 +847,14 @@ static int __init xbc_verify_tree(void)
+ }
+ 
+ /* Need to setup xbc_data and xbc_nodes before call this. */
+-static int __init xbc_parse_tree(void)
++static int __init xbc_parse_tree(int offset)
+ {
+ 	char *p, *q;
+ 	int ret = 0, c;
+ 
+-	last_parent = NULL;
+-	p = xbc_data;
++	if (!offset)
++		last_parent = NULL;
++	p = xbc_data + offset;
+ 	do {
+ 		q = strpbrk(p, "{}=+;:\n#");
+ 		if (!q) {
+@@ -906,18 +908,42 @@ static int __init xbc_parse_tree(void)
+  */
+ void __init xbc_exit(void)
+ {
+-	xbc_free_mem(xbc_data, xbc_data_size);
++	if (xbc_data_allocated)
++		xbc_free_mem(xbc_data, xbc_data_size);
+ 	xbc_data = NULL;
+ 	xbc_data_size = 0;
++	xbc_data_allocated = 0;
+ 	xbc_node_num = 0;
+ 	xbc_free_mem(xbc_nodes, sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 	xbc_nodes = NULL;
+ 	brace_index = 0;
+ }
+ 
++static int xbc_parse_and_verify_tree(int offset, int *epos, const char **emsg)
++{
++	int ret;
++
++	ret = xbc_parse_tree(offset);
++	if (!ret) {
++		ret = xbc_verify_tree();
++		if (!ret)
++			return xbc_node_num;
++	}
++
++	if (epos)
++		*epos = xbc_err_pos;
++	if (emsg)
++		*emsg = xbc_err_msg;
++
++	xbc_exit();
++	return ret;
++}
++
+ /**
+  * xbc_init() - Parse given XBC file and build XBC internal tree
+- * @data: The boot config text original data
++ * @data: Null terminated boot config data, that can be directly
++ *        modified by the parser and will exist till xbc_exit()
++ *        or xbc_append() is called.
+  * @size: The size of @data
+  * @emsg: A pointer of const char * to store the error message
+  * @epos: A pointer of int to store the error position
+@@ -930,10 +956,8 @@ void __init xbc_exit(void)
+  * @epos will be updated with the error position which is the byte offset
+  * of @buf. If the error is not a parser error, @epos will be -1.
+  */
+-int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
++int __init xbc_init(char *data, size_t size, const char **emsg, int *epos)
+ {
+-	int ret;
+-
+ 	if (epos)
+ 		*epos = -1;
+ 
+@@ -942,44 +966,79 @@ int __init xbc_init(const char *data, size_t size, const char **emsg, int *epos)
+ 			*emsg = "Bootconfig is already initialized";
+ 		return -EBUSY;
+ 	}
+-	if (size > XBC_DATA_MAX || size == 0) {
++	if (size > XBC_DATA_MAX || (size == 0 && data != NULL)) {
+ 		if (emsg)
+ 			*emsg = size ? "Config data is too big" :
+ 				"Config data is empty";
+ 		return -ERANGE;
+ 	}
+ 
+-	xbc_data = xbc_alloc_mem(size + 1);
+-	if (!xbc_data) {
+-		if (emsg)
+-			*emsg = "Failed to allocate bootconfig data";
+-		return -ENOMEM;
+-	}
+-	memcpy(xbc_data, data, size);
+-	xbc_data[size] = '\0';
+-	xbc_data_size = size + 1;
+-
+ 	xbc_nodes = xbc_alloc_mem(sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 	if (!xbc_nodes) {
+ 		if (emsg)
+ 			*emsg = "Failed to allocate bootconfig nodes";
+-		xbc_exit();
+ 		return -ENOMEM;
+ 	}
+ 	memset(xbc_nodes, 0, sizeof(struct xbc_node) * XBC_NODE_MAX);
+ 
+-	ret = xbc_parse_tree();
+-	if (!ret)
+-		ret = xbc_verify_tree();
++	if (!data)
++		return 0;
++	xbc_data = data;
++	xbc_data_size = size;
++	return xbc_parse_and_verify_tree(0, epos, emsg);
++}
+ 
+-	if (ret < 0) {
+-		if (epos)
+-			*epos = xbc_err_pos;
++/**
++ * xbc_append() - Append data to already existing XBC tree
++ * @data: Boot config data, which are copied by the function.
++ * @size: The size of @data
++ * @emsg: A pointer of const char * to store the error message
++ * @epos: A pointer of int to store the error position
++ */
++int __init xbc_append(const char *data, size_t size, const char **emsg, int *epos)
++{
++	size_t new_size, parse_start;
++	char *new_data;
++
++	new_size = xbc_data_size + size;
++	if (new_size > XBC_DATA_MAX) {
+ 		if (emsg)
+-			*emsg = xbc_err_msg;
+-		xbc_exit();
+-	} else
+-		ret = xbc_node_num;
++			*emsg = "Merged config data is too big";
++		return -ERANGE;
++	}
++	if (new_size == 0) {
++		if (data) {
++			if (emsg)
++				*emsg = "Appended data is empty";
++			return -ERANGE;
++		}
++		return 0;
++	}
+ 
+-	return ret;
++	new_data = xbc_alloc_mem(new_size);
++	if (!new_data) {
++		if (emsg)
++			*emsg = "Failed to allocate bootconfig data";
++		return -ENOMEM;
++	}
++
++	if (xbc_data_size) {
++		memcpy(new_data, xbc_data, xbc_data_size - 1);
++		new_data[xbc_data_size - 1] = '\n';
++		parse_start = xbc_data_size - 1;
++	} else {
++		parse_start = 0;
++	}
++	memcpy(new_data + xbc_data_size, data, size);
++	new_data[new_size - 1] = 0;
++	if (xbc_data_allocated)
++		xbc_free_mem(xbc_data, xbc_data_size);
++	xbc_data_allocated = 1;
++	xbc_data = new_data;
++	xbc_data_size = new_size;
++
++	if (!data)
++		return 0;
++
++	return xbc_parse_and_verify_tree(parse_start, epos, emsg);
+ }
+-- 
+2.30.2
 
