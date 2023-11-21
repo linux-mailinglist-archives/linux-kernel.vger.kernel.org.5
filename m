@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1723E7F308D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 280037F31AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbjKUOUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S234801AbjKUOw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:52:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233912AbjKUOUL (ORCPT
+        with ESMTP id S234009AbjKUOwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:20:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01A9D7E;
-        Tue, 21 Nov 2023 06:20:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700576406; x=1732112406;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N0wFReOzgNDh2Uw8c3ueRDTaTSNzFrAmGUI7D1PGMVM=;
-  b=kkQgLeMVL7RTSonUefRoFXrx9FUnD3NYCWnOfH3lEAWr7xeMpKt/X8oS
-   L0NGI7Vo31zC7yhaF4dkS4AeWOMQzPn11BunuTRDAH7Ei9Iqbql6Fil9V
-   y0k91fV38Sb/0WDUh6bQGc/TQ8UlWlaLAMvm7lEWNV06nX49UTBuLk8fU
-   Ux4HdDP2RDtadtJgYOgCdM+P1vEVK9FezWeOLxp4RC/bGALUSU1KW5U21
-   9vqkE8j7DscKjVXvWdM8Gcc3mqA9pSGhz+0YjVBT4KjdaP25gEcwuGhH9
-   qckU/paRKcBu4E61axGT1GsS9Q3Hi79eU/irjZ5Ns9aWaG2/A8BTm2AeP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="372022143"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="372022143"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:20:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="760114797"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="760114797"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga007.jf.intel.com with SMTP; 21 Nov 2023 06:20:01 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 21 Nov 2023 16:20:00 +0200
-Date:   Tue, 21 Nov 2023 16:20:00 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tue, 21 Nov 2023 09:52:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E68D186
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:52:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B304C433C8;
+        Tue, 21 Nov 2023 14:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1700578369;
+        bh=rNlyvCw5x32s1ebD0KePvpkxtBbyfn+ji6MmU3mcRAQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T2gHM6UFMFzRmutgrsyf7yRC2fXIRsiO8maYams1+wZMPHMO132ZRWU8UqpmhJAm1
+         VLfKVCJWme3hWCFx0juIA9I6is/9qxQs1s2d/HqfKuDn+y27guJ9W8MQphMUufpkfL
+         hugawSjsZFnRhjCVBGSZ7Hnr/TgIWcwyT06bG8fg=
+Date:   Tue, 21 Nov 2023 15:21:34 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
         Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
         linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix software node leak on probe
- errors
-Message-ID: <ZVy7z5ZAm+IqzvM/@kuha.fi.intel.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] USB: dwc3: qcom: fix resource leaks on probe deferral
+Message-ID: <2023112124-duckling-absinthe-2167@gregkh>
 References: <20231117173650.21161-1-johan+linaro@kernel.org>
- <20231117173650.21161-3-johan+linaro@kernel.org>
+ <041f239f-7b40-4681-8c6c-2268f9c2c684@linaro.org>
+ <74cswe5tivcctmnty3gfavzsxdvjz5m4rktyj5auzwvrndninm@dah4h2fdj3zv>
+ <ZVuO9qj3SRHAS4qm@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231117173650.21161-3-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZVuO9qj3SRHAS4qm@hovoldconsulting.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 06:36:49PM +0100, Johan Hovold wrote:
-> Make sure to remove the software node also on (ACPI) probe errors to
-> avoid leaking the underlying resources.
+On Mon, Nov 20, 2023 at 05:53:10PM +0100, Johan Hovold wrote:
+> On Mon, Nov 20, 2023 at 09:22:54AM -0600, Andrew Halaney wrote:
+> > On Sat, Nov 18, 2023 at 12:47:30AM +0100, Konrad Dybcio wrote:
+> > > On 17.11.2023 18:36, Johan Hovold wrote:
+> > > > When reviewing the recently submitted series which reworks the dwc3 qcom
+> > > > glue implementation [1], I noticed that the driver's tear down handling
+> > > > is currently broken, something which can lead to memory leaks and
+> > > > potentially use-after-free issues on probe deferral and on driver
+> > > > unbind.
+> > > > 
+> > > > Let's get this sorted before reworking driver.
+> > > > 
+> > > > Note that the last patch has only been compile tested as I don't have
+> > > > access to a sdm845 device.
 > 
-> Note that the software node is only used for ACPI probe so the driver
-> unbind tear down is updated to match probe.
+> > > I'll sound like a broken record, but:
+> > > 
+> > > is there anyone in the world that is actively benefiting from this failed
+> > > experiment of using the ACPI tables that were shipped with these SoCs?
+> > > 
+> > > There are so so so many shortcomings associated with it due to how Windows
+> > > drivers on these platforms know waaaay too much and largely use ACPI to
+> > > "bind driver x" and I simply think it doesn't make sense to continue
+> > > carrying this code forward given little use and no testing.
 > 
-> Fixes: 8dc6e6dd1bee ("usb: dwc3: qcom: Constify the software node")
-> Cc: stable@vger.kernel.org      # 5.12
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
+> > For what it is worth, I have agreed with your opinion on this every time
+> > I've read it. I am not the target audience of the question, but I'll at
+> > least give my personal (interpreted: uneducated? undesired?) opinion
+> > that the ACPI support in here adds little value and extra burden.
+> > 
+> > Of course that topic is a bit independent of this series, but I'd be
+> > curious if a patchset removing the support would be welcomed or not by
+> > maintainers, so I'm stirring the pot by replying here :)
 > 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 00c3021b43ce..0703f9b85cda 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -932,10 +932,12 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  interconnect_exit:
->  	dwc3_qcom_interconnect_exit(qcom);
->  depopulate:
-> -	if (np)
-> +	if (np) {
->  		of_platform_depopulate(&pdev->dev);
-> -	else
-> +	} else {
-> +		device_remove_software_node(&qcom->dwc3->dev);
->  		platform_device_del(qcom->dwc3);
-> +	}
->  	platform_device_put(qcom->dwc3);
->  clk_disable:
->  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
-> @@ -955,11 +957,12 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	int i;
->  
-> -	device_remove_software_node(&qcom->dwc3->dev);
-> -	if (np)
-> +	if (np) {
->  		of_platform_depopulate(&pdev->dev);
-> -	else
-> +	} else {
-> +		device_remove_software_node(&qcom->dwc3->dev);
->  		platform_device_del(qcom->dwc3);
-> +	}
->  	platform_device_put(qcom->dwc3);
->  
->  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
-> -- 
-> 2.41.0
+> I agree that if we can remove the ACPI hacks in here, we should try do
+> so (e.g. given that no one really uses it anymore).
+> 
+> As Andrew already mentioned, that is a separate issue not directly
+> related to this series, though.
+> 
+> Removing it before reworking the dwc3 binding [1] and adding multiport
+> support [2] should simplify both of those series quite a bit, however.
+> 
+> Johan
+> 
+> [1] https://lore.kernel.org/all/20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com/
+> [2] https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
+> 
 
--- 
-heikki
+So should I apply this series now or not?
+
+confused,
+
+greg k-h
