@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C695A7F345A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905F07F3457
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbjKUQ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49442 "EHLO
+        id S230235AbjKUQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:56:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjKUQ5C (ORCPT
+        with ESMTP id S230202AbjKUQ4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:57:02 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F69191;
-        Tue, 21 Nov 2023 08:56:57 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALG4vrG014135;
-        Tue, 21 Nov 2023 08:56:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=8etlXbF3LquEpSBVzWF1QWiK8n94DXI6bzbKmMyzZO8=;
- b=BPBZdqwo51wIGkTYYLrEQxMN4lJT4TkCLrOjMVuGABHve/9J0MOKb+ayjOHAGMpktHFT
- rLUy2TFF/ZpAJuzqUgjiTkBtCwRWf2wWDpcvQaSIqJXxtTdNS0uKndy1zV9RKo41lukt
- M9rynanRWZ4JT3JoAXRgl/1uyHF26XYM4hOF7ey0Z1bLGw4YWz3mMUycGz+T0R55iZIk
- 3Du3yTsBOafx6d/p3Rl02dkVgkKE5Ol/kppyAsGMPeRIYJuh3Ceo77h9JI0uUU3kcdxS
- ptetRLe1JkDRLViIa7jvOhBChDsoSX8/de55s5kON7XYdXAP0xcl9jjP7KYIcLd5qxXT XA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uewnw1qe7-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 08:56:48 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 21 Nov
- 2023 08:56:31 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 21 Nov 2023 08:56:31 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 655F93F7082;
-        Tue, 21 Nov 2023 08:56:27 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>,
-        <wojciech.drewek@intel.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net PATCH v2] octeontx2-pf: Fix ntuple rule creation to direct packet to VF with higher Rx queue than its PF
-Date:   Tue, 21 Nov 2023 22:26:24 +0530
-Message-ID: <20231121165624.3664182-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Nov 2023 11:56:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867E712A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:56:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700585793;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gQOGGvubIB0d7jv6GMFlL2V2ZixcZ6Nkog9MxbOiw8Q=;
+        b=Q5wShMmolaHlDwT1zpnlniUuLIRSkoe77AZe6owsyNazTzoZ4MDMm8rKxj7Wfm8wvnsVe8
+        1gB10VpLylTGeWoUMi70fIjMuhY57Qsp2rG1VNQ+mxF7eAwskSB481BwplDuL3hEpaO+Wl
+        uTcn7r1V+Z70feTlZPhZfE4/oH7M+mE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-482-VMAhaveaP3qtMb4asbhKVA-1; Tue,
+ 21 Nov 2023 11:56:32 -0500
+X-MC-Unique: VMAhaveaP3qtMb4asbhKVA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DE50029ABA39;
+        Tue, 21 Nov 2023 16:56:31 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B8C801C060AE;
+        Tue, 21 Nov 2023 16:56:31 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     drjones@redhat.com
+Subject: [PATCH] selftests/kvm: Fix issues with $(SPLIT_TESTS)
+Date:   Tue, 21 Nov 2023 11:56:31 -0500
+Message-Id: <20231121165631.1170797-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: bbFYwpA2hPiJ8KtBot0En0xNdVGK_eKx
-X-Proofpoint-ORIG-GUID: bbFYwpA2hPiJ8KtBot0En0xNdVGK_eKx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_10,2023-11-21_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible to add a ntuple rule which would like to direct packet to
-a VF whose number of queues are greater/less than its PF's queue numbers.
-For example a PF can have 2 Rx queues but a VF created on that PF can have
-8 Rx queues. As of today, ntuple rule will reject rule because it is
-checking the requested queue number against PF's number of Rx queues.
-As a part of this fix if the action of a ntuple rule is to move a packet
-to a VF's queue then the check is removed. Also, a debug information is
-printed to aware user that it is user's responsibility to cross check if
-the requested queue number on that VF is a valid one.
+The introduction of $(SPLIT_TESTS) also introduced a warning when
+building selftests on architectures that include get-reg-lists:
 
-Fixes: f0a1913f8a6f ("octeontx2-pf: Add support for ethtool ntuple filters")
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
+    make: Entering directory '/root/kvm/tools/testing/selftests/kvm'
+    Makefile:272: warning: overriding recipe for target '/root/kvm/tools/testing/selftests/kvm/get-reg-list'
+    Makefile:267: warning: ignoring old recipe for target '/root/kvm/tools/testing/selftests/kvm/get-reg-list'
+    make: Leaving directory '/root/kvm/tools/testing/selftests/kvm'
+
+In addition, the rule for $(SPLIT_TESTS_TARGETS) includes _all_
+the $(SPLIT_TESTS_OBJS), which only works because there is just one.
+So fix both by adjusting the rules:
+
+- remove $(SPLIT_TESTS_TARGETS) from the $(TEST_GEN_PROGS) rules,
+  and rename it to $(SPLIT_TEST_GEN_PROGS)
+
+- fix $(SPLIT_TESTS_OBJS) so that it plays well with $(OUTPUT),
+  rename it to $(SPLIT_TEST_GEN_OBJ), and list the object file
+  explicitly in the $(SPLIT_TEST_GEN_PROGS) link rule
+
+Fixes: 17da79e009c3 ("KVM: arm64: selftests: Split get-reg-list test code", 2023-08-09)
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-v2 changes:
-- Removed 'goto' and added the new condition to existing if check.
+ tools/testing/selftests/kvm/Makefile | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
- .../marvell/octeontx2/nic/otx2_flows.c        | 20 ++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-index 4762dbea64a1..97a71e9b8563 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-@@ -1088,6 +1088,7 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
- 	struct ethhdr *eth_hdr;
- 	bool new = false;
- 	int err = 0;
-+	u64 vf_num;
- 	u32 ring;
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 69ce8e06b3a3..c9c6458b34db 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -253,32 +253,36 @@ LIBKVM_C_OBJ := $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_C))
+ LIBKVM_S_OBJ := $(patsubst %.S, $(OUTPUT)/%.o, $(LIBKVM_S))
+ LIBKVM_STRING_OBJ := $(patsubst %.c, $(OUTPUT)/%.o, $(LIBKVM_STRING))
+ LIBKVM_OBJS = $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ) $(LIBKVM_STRING_OBJ)
+-SPLIT_TESTS_TARGETS := $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
+-SPLIT_TESTS_OBJS := $(patsubst %, $(ARCH_DIR)/%.o, $(SPLIT_TESTS))
++SPLIT_TEST_GEN_PROGS := $(patsubst %, $(OUTPUT)/%, $(SPLIT_TESTS))
++SPLIT_TEST_GEN_OBJ := $(patsubst %, $(OUTPUT)/$(ARCH_DIR)/%.o, $(SPLIT_TESTS))
  
- 	if (!flow_cfg->max_flows) {
-@@ -1100,7 +1101,21 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
- 	if (!(pfvf->flags & OTX2_FLAG_NTUPLE_SUPPORT))
- 		return -ENOMEM;
+ TEST_GEN_OBJ = $(patsubst %, %.o, $(TEST_GEN_PROGS))
+ TEST_GEN_OBJ += $(patsubst %, %.o, $(TEST_GEN_PROGS_EXTENDED))
+ TEST_DEP_FILES = $(patsubst %.o, %.d, $(TEST_GEN_OBJ))
+ TEST_DEP_FILES += $(patsubst %.o, %.d, $(LIBKVM_OBJS))
+-TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TESTS_OBJS))
++TEST_DEP_FILES += $(patsubst %.o, %.d, $(SPLIT_TEST_GEN_OBJ))
+ -include $(TEST_DEP_FILES)
  
--	if (ring >= pfvf->hw.rx_queues && fsp->ring_cookie != RX_CLS_FLOW_DISC)
-+	/* Number of queues on a VF can be greater or less than
-+	 * the PF's queue. Hence no need to check for the
-+	 * queue count. Hence no need to check queue count if PF
-+	 * is installing for its VF. Below is the expected vf_num value
-+	 * based on the ethtool commands.
-+	 *
-+	 * e.g.
-+	 * 1. ethtool -U <netdev> ... action -1  ==> vf_num:255
-+	 * 2. ethtool -U <netdev> ... action <queue_num>  ==> vf_num:0
-+	 * 3. ethtool -U <netdev> ... vf <vf_idx> queue <queue_num>  ==>
-+	 *    vf_num:vf_idx+1
-+	 */
-+	vf_num = ethtool_get_flow_spec_ring_vf(fsp->ring_cookie);
-+	if (!is_otx2_vf(pfvf->pcifunc) && !vf_num &&
-+	    ring >= pfvf->hw.rx_queues && fsp->ring_cookie != RX_CLS_FLOW_DISC)
- 		return -EINVAL;
+-$(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): %: %.o
++x := $(shell mkdir -p $(sort $(OUTPUT)/$(ARCH_DIR) $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
++
++$(filter-out $(SPLIT_TEST_GEN_PROGS), $(TEST_GEN_PROGS)) \
++$(TEST_GEN_PROGS_EXTENDED): %: %.o
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $< $(LIBKVM_OBJS) $(LDLIBS) -o $@
+ $(TEST_GEN_OBJ): $(OUTPUT)/%.o: %.c
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
  
- 	if (fsp->location >= otx2_get_maxflows(flow_cfg))
-@@ -1182,6 +1197,9 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct ethtool_rxnfc *nfc)
- 		flow_cfg->nr_flows++;
- 	}
+-$(SPLIT_TESTS_TARGETS): %: %.o $(SPLIT_TESTS_OBJS)
++$(SPLIT_TEST_GEN_PROGS): $(OUTPUT)/%: $(OUTPUT)/%.o $(OUTPUT)/$(ARCH_DIR)/%.o
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH) $^ $(LDLIBS) -o $@
++$(SPLIT_TEST_GEN_OBJ): $(OUTPUT)/$(ARCH_DIR)/%.o: $(ARCH_DIR)/%.c
++	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
  
-+	if (flow->is_vf)
-+		netdev_info(pfvf->netdev,
-+			    "Make sure that VF's queue number is within its queue limit\n");
- 	return 0;
- }
+ EXTRA_CLEAN += $(GEN_HDRS) \
+ 	       $(LIBKVM_OBJS) \
+-	       $(SPLIT_TESTS_OBJS) \
++	       $(SPLIT_TEST_GEN_OBJ) \
+ 	       $(TEST_DEP_FILES) \
+ 	       $(TEST_GEN_OBJ) \
+ 	       cscope.*
  
+-x := $(shell mkdir -p $(sort $(dir $(LIBKVM_C_OBJ) $(LIBKVM_S_OBJ))))
+ $(LIBKVM_C_OBJ): $(OUTPUT)/%.o: %.c $(GEN_HDRS)
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+ 
+@@ -292,7 +296,7 @@ $(LIBKVM_STRING_OBJ): $(OUTPUT)/%.o: %.c
+ 	$(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c -ffreestanding $< -o $@
+ 
+ x := $(shell mkdir -p $(sort $(dir $(TEST_GEN_PROGS))))
+-$(SPLIT_TESTS_OBJS): $(GEN_HDRS)
++$(SPLIT_TEST_GEN_OBJ): $(GEN_HDRS)
+ $(TEST_GEN_PROGS): $(LIBKVM_OBJS)
+ $(TEST_GEN_PROGS_EXTENDED): $(LIBKVM_OBJS)
+ $(TEST_GEN_OBJ): $(GEN_HDRS)
 -- 
-2.25.1
+2.39.1
 
