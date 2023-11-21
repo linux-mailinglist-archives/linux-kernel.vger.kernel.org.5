@@ -2,93 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33267F2CFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6517F2CFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbjKUMUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        id S234716AbjKUMUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233895AbjKUMUM (ORCPT
+        with ESMTP id S233895AbjKUMU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:20:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6D0185
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:20:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700569206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0lxOA43UTP/R6zFUk37R+i+jJVYEbt1d8xZiecNyn/E=;
-        b=dnbfuPlU0W/gPa6/yQJH9Gfd5NZ4qLBlK5Cwr1+nCyWx4Gl7KSkUm5sWZM3vzW5MTdycbx
-        kKXbUsbXNCzBUDQctLRmzLeoJ8Ay3P//cZD4F/rCO/xlpGEmkrPOuyyUbo9S6Y7Wtdw9ut
-        X0rQjnjOWeVqps0A+Lo3zkSsrf3kdxM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-510-V5yaX18EP5eTNB-5six-9A-1; Tue, 21 Nov 2023 07:20:05 -0500
-X-MC-Unique: V5yaX18EP5eTNB-5six-9A-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a02da20c311so21641766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:20:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700569204; x=1701174004;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0lxOA43UTP/R6zFUk37R+i+jJVYEbt1d8xZiecNyn/E=;
-        b=UwRT9CQCGxh5Sxa+qx31kUV0+DZXjFCO7wt18ogtixwJi/ImMlxRmbczGNHNsQUhxi
-         7n7G746ZoYhJj19Njf/BOAZi7RgDrcIDZsgunVd+/K4NyS9gs2F5zGz6rvnNZb+xKLOC
-         oH0rwpiFhVTdVgdVtR3WTMyRtL4JBqUqrAWLGSFSz1iigArGSYCRTE8Zjgpwdsd1v2Bi
-         Us5ZrWPWVYJQyKhp6HYQrj/O9mtm5BnB1l45lOYNfr3SAg0P4pb+CK1kEN1Hw8F/SLWN
-         6QWDM2mwyJJ6msPrqFmdJ+0HZwRHYzC3JPPxNDZ5lqG16jvZpdeeTqMvBanFWUzoSmde
-         FKbw==
-X-Gm-Message-State: AOJu0Ywq0Pl8hV8YTyBEVup7QncnTlGzH2oUKljG0gDsjW2Eni1Q6n1B
-        g+/5j6QM8gIDD92NY6NhU5O1Si9I22RiQ2Kltj1wkV2IWd4okhqonBspOHbWz6agBchOXUFacfo
-        bRaFA8x1Mrjtlzh8ZYRNxJp1j
-X-Received: by 2002:a17:906:2e85:b0:9c7:5667:5643 with SMTP id o5-20020a1709062e8500b009c756675643mr6684062eji.72.1700569203964;
-        Tue, 21 Nov 2023 04:20:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE92EhPr1HPBGhXFRPyS78A/cFsflqXUs5leyf965m9/E+JG/G4eTF6Hlli+Hm2DJ2NWAwGIQ==
-X-Received: by 2002:a17:906:2e85:b0:9c7:5667:5643 with SMTP id o5-20020a1709062e8500b009c756675643mr6684039eji.72.1700569203641;
-        Tue, 21 Nov 2023 04:20:03 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id l20-20020a1709060e1400b009ff783d892esm1938300eji.146.2023.11.21.04.20.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 04:20:03 -0800 (PST)
-Message-ID: <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
-Date:   Tue, 21 Nov 2023 13:20:01 +0100
+        Tue, 21 Nov 2023 07:20:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57597137
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:20:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E82EDC433C7;
+        Tue, 21 Nov 2023 12:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700569224;
+        bh=yQOaPm61GV3Mm5JVJVeShLYhMtyr0KKQXZu6Fb8eSqU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bLA89/NiF6DDvYabq6kNw5fFtzEEK2FP/tRf7MYtsALi8v7nexakB29K8lSZBctMR
+         prQJ7jF0D86vSg/LKTbwbE2WS75DivZxEQCmC74TqFbVgnyoy9zr6Zzs+aof8klcFv
+         miGzrT7T9q6Wrrcu9dhpqC2/TAXUQ+GqMGisQ3LGMyIKoPvvAPBWbeW3sYXxH4PHCz
+         xndpwSACxSk14GW1KT7m1pDX3pkPdoszufGUrAfzlPMrodJrkjYSuhi/OnthZinwnu
+         //6taz0hMdfFBeAFqjkMNb46rrOhMRk/jkjlNQ3GU2AKtsMbo++oZaIE4kY+UOwLk2
+         GvXVRd9AQEkaw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C5017EAA95F;
+        Tue, 21 Nov 2023 12:20:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Implement per-key keyboard backlight as auxdisplay?
-To:     Werner Sembach <wse@tuxedocomputers.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        linux-input@vger.kernel.org, ojeda@kernel.org,
-        linux-leds@vger.kernel.org
-References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
- <ZSe1GYLplZo5fsAe@duo.ucw.cz>
- <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
- <ZSf9QneKO/8IzWhd@duo.ucw.cz>
- <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
- <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
- <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
- <ZSmg4tqXiYiX18K/@duo.ucw.cz>
- <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
- <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
- <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net,v5, 0/3] hv_netvsc: fix race of netvsc, VF register,
+ and slave bit
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170056922379.17536.3153244680248688483.git-patchwork-notify@kernel.org>
+Date:   Tue, 21 Nov 2023 12:20:23 +0000
+References: <1700411023-14317-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1700411023-14317-1-git-send-email-haiyangz@microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        stephen@networkplumber.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,75 +56,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Werner,
+Hello:
 
-On 11/21/23 12:33, Werner Sembach wrote:
-> Hi,
+This series was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Sun, 19 Nov 2023 08:23:40 -0800 you wrote:
+> There are some races between netvsc probe, set notifier, VF register,
+> and slave bit setting.
+> This patch set fixes them.
 > 
-> Am 20.11.23 um 21:52 schrieb Pavel Machek:
->> Hi!
->>
->>>>> So... a bit of rationale. The keyboard does not really fit into the
->>>>> LED subsystem; LEDs are expected to be independent ("hdd led") and not
->>>>> a matrix of them.
->>>> Makes sense.
->>>>
->>>>> We do see various strange displays these days -- they commonly have
->>>>> rounded corners and holes in them. I'm not sure how that's currently
->>>>> supported, but I believe it is reasonable to view keyboard as a
->>>>> display with slightly weird placing of pixels.
->>>>>
->>>>> Plus, I'd really like to play tetris on one of those :-).
->>>>>
->>>>> So, would presenting them as auxdisplay be acceptable? Or are there
->>>>> better options?
->>>> It sounds like a fair use case -- auxdisplay are typically simple
->>>> character-based or small graphical displays, e.g. 128x64, that may not
->>>> be a "main" / usual screen as typically understood, but the concept is
->>>> a bit fuzzy and we are a bit of a catch-all.
->>>>
->>>> And "keyboard backlight display with a pixel/color per-key" does not
->>>> sound like a "main" screen, and having some cute effects displayed
->>>> there are the kind of thing that one could do in the usual small
->>>> graphical ones too. :)
->>>>
->>>> But if somebody prefers to create new categories (or subcategories
->>>> within auxdisplay) to hold these, that could be nice too (in the
->>>> latter case, I would perhaps suggest reorganizing all of the existing
->>>> ones while at it).
->>> One could also reasonably make the argument that controlling the
->>> individual keyboard key backlights should be part of the input
->>> subsystem. It's not a display per se. (Unless you actually have small
->>> displays on the keycaps, and I think that's a thing too.)
->> While it would not be completely crazy to do that... I believe the
->> backlight is more of a display and less of a keyboard. Plus input
->> subystem is very far away from supporting this, and we had no input
->> from input people here.
->>
->> I don't think LED subsystem is right place for this, and I believe
->> auxdisplay makes slightly more sense than input.
->>
->> Unless someone steps up, I'd suggest Werner tries to implement this as
->> an auxdisplay. [And yes, this will not be simple task. RGB on LED is
->> different from RGB on display. But there are other LED displays, so
->> auxdisplay should handle this. Plus pixels are really funnily
->> shaped. But displays with missing pixels -- aka holes for camera --
->> are common in phones, and I believe we'll get variable pixel densities
->> -- less dense over camera -- too. So displays will have to deal with
->> these in the end.]
+> Haiyang Zhang (2):
+>   hv_netvsc: fix race of netvsc and VF register_netdevice
+>   hv_netvsc: Fix race of register_netdevice_notifier and VF register
 > 
-> Another idea I want to throw in the mix:
-> 
-> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
-> 
-> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
+> [...]
 
-That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
+Here is the summary with links:
+  - [net,v5,1/3] hv_netvsc: fix race of netvsc and VF register_netdevice
+    https://git.kernel.org/netdev/net/c/d30fb712e529
+  - [net,v5,2/3] hv_netvsc: Fix race of register_netdevice_notifier and VF register
+    https://git.kernel.org/netdev/net/c/85520856466e
+  - [net,v5,3/3] hv_netvsc: Mark VF as slave before exposing it to user-mode
+    https://git.kernel.org/netdev/net/c/c807d6cd089d
 
-That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
-
-Regards,
-
-Hans
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
