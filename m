@@ -2,132 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117147F330C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D518D7F330F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjKUQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
+        id S234846AbjKUQC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:02:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbjKUQBx (ORCPT
+        with ESMTP id S234105AbjKUQCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:01:53 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0001A19A
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:01:48 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1ce5e76912aso35845825ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:01:48 -0800 (PST)
+        Tue, 21 Nov 2023 11:02:24 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53EC139;
+        Tue, 21 Nov 2023 08:02:19 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cf5901b4c8so23924615ad.1;
+        Tue, 21 Nov 2023 08:02:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1700582508; x=1701187308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=94uiKCc8mVHzfD5hMHo+ipsMG0R6MKAPs1S03wUwkTY=;
-        b=F3kLBalVg0ZTxwyzHv2jZBM3n0dBSB+bkjtFCFupnk+2GBG8uvUvZV38H+Z0lbA9P4
-         VW04jdNhDTtd2P8J9U87vB8841OxMNv+PUYed2oOfItJqQ2yUWZWmH3yLyY984YvsUZ4
-         rCdzFc/4CoI6ZdhUjJBQPoVJWtJb2JRcog57MhdSUgAeiK+dsXUUWju7cG/F/1uXUz6s
-         d7CKHHjb+fCbBDmcAqnK/uy/d/rYNGKDhLzzvD+davd/PiJC27rzAbnT2NwRzWR94i6h
-         /v6lUOscYWVzWG5HYYNcgNlAB/6nEKcWSP5NVnf0pwa8U48Op3AsYJPdyal+F+GNSphm
-         CLCQ==
+        d=gmail.com; s=20230601; t=1700582539; x=1701187339; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2qy5Dfsz7iJUnGTOgtQyaiSgxb//sn5YOg4PtxMP/GQ=;
+        b=W0MKkOjno/s72HVORNNzEYnM0/SrknTXbtiNRhjgLlkUaohdoWHK1+LVDTD/WCBGFZ
+         8uMhMimTrLrhUcaVLWjvbsXafPzD0oxweKqXjnksu11yQJ7nhl7vwYYLBgSOSbuq5UrV
+         sIb6+QPEqjPW1yVkC1hzf8X5dAwqB+s/jk4QTxNhet1f8E0GnFXiBpOk2CsSGqLFsTyK
+         +TXeMyo3gzXjldUTZ4JpUv+0qOFsFYCQy/RU0P/zc7luX1+vrxFAzbvCkaI1XrLR8jen
+         pF7wWnryQMr58TBePQZR2XzJWHoxV5bl0logT2WSMW4CKMTdmRWcWi6Y80WMWfwAmt2K
+         H8tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700582508; x=1701187308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700582539; x=1701187339;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=94uiKCc8mVHzfD5hMHo+ipsMG0R6MKAPs1S03wUwkTY=;
-        b=CoGbJSZTuWfuqngFtzQkeoJ4X7CYg9few2+1SorHsOq8EvYsKvoFJ4ZKMmg5TwvQ7e
-         avEI4zGKa5oyegtE2slphm9U2NLU+es5CviRAhstpoqQgoH2XWtiFvgiqfVhFpKqyCLQ
-         SmYNPO4Ucg6PSL8XzzlRKIrqcd85WkEbRldLKi8mwXn3MPwJDumN8P8QXqa27pr6IeR3
-         B5S+MtSWaM/QLCJNBqK2WwE4gIwy7dZTNPBFjzVl/G3a4EfRygAoslVtGoFxo+nv4eii
-         CxRgWeFh8sk2X6N0wDbyWKa3bq7rXiu+dpomPyjOUUc3gf/ooL69/CEhdN7lKB+FLKHC
-         MgJw==
-X-Gm-Message-State: AOJu0YwbHMijh7hx+hry7tdKqN3+NJB/POlXJk8/x9E2Ew+JGxZnVqLK
-        Cx9IMdC98cpShJmJ3Q/XU2YKKQAEErQSTvd17iWifQ==
-X-Google-Smtp-Source: AGHT+IFr6SofnB98KDklqVgcIdirU+mIhOxh+1ZfP/9TavcPxVQ3b7d+I75tL/HOikpoDFRayVr+Lz2I1ZPSTX8a/Bs=
-X-Received: by 2002:a17:902:e5ca:b0:1cf:6373:b8a5 with SMTP id
- u10-20020a170902e5ca00b001cf6373b8a5mr6074879plf.25.1700582508194; Tue, 21
- Nov 2023 08:01:48 -0800 (PST)
+        bh=2qy5Dfsz7iJUnGTOgtQyaiSgxb//sn5YOg4PtxMP/GQ=;
+        b=DsvtxYnnX2pllGRP6I7JRUIuCnJb3Ua7UY+PxgnXP1+ja2KvHLG3RI+KsuJ9Hqjpxi
+         hkuD3Mxv4Qd3dO7tJ7jMMrw9BUFSqOZI2zIqUsv8wQzgrKVD9YgGvys0+Z1NjspYpF+c
+         gga8UWHJlwYvn97aZZjnIZJXpacni1kE1bw/dqvLUiQo+OfqJyey6F7KqaRgdVD5K9No
+         KnyktJxMhpvWQQ22bGPM6QhaxyjNaudHjGxondMZtGdm3AgtR5EaYJjzH52gUsl3CA5m
+         Dw5mwWHPK7gfUoVGtouI3Ifcj/tGUhC7FBUsI0jab6pnu0JgmfUJbcV8qslgNOg8j0dl
+         S79w==
+X-Gm-Message-State: AOJu0YxUKoLn2jKvhJeYobNI0tG5BaVdTPwN7ZhXHuD5+g9ycyHsh91G
+        X9qkkK4wSiOkCpPFPrNK8Nml1SI17s0=
+X-Google-Smtp-Source: AGHT+IEKX7/Mja+9fgkO/8fYSDetN+HHm9BEObrNhsfsW7Tvl6OsUxP7n0dF4LDS9qw+BDawGnZcPg==
+X-Received: by 2002:a17:903:c3:b0:1cc:630d:8a5e with SMTP id x3-20020a17090300c300b001cc630d8a5emr10570338plc.48.1700582539190;
+        Tue, 21 Nov 2023 08:02:19 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id jd22-20020a170903261600b001c61901ed37sm8142990plb.191.2023.11.21.08.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 08:02:18 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 21 Nov 2023 08:02:17 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     James Seo <james@equiv.tech>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Armin Wolf <W_Armin@gmx.de>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2] hwmon: (hp-wmi-sensors) Fix failure to load on
+ EliteDesk 800 G6
+Message-ID: <28f9d22d-83af-4f70-9bc3-40f00a50f60a@roeck-us.net>
+References: <20231105192054.24833-1-james@equiv.tech>
 MIME-Version: 1.0
-References: <20230914114521.1491390-1-naresh.solanki@9elements.com>
- <20230920130528.GG13143@google.com> <CABqG17j_gCr8xw65qjn4Kh7ChdraZbLsyGOsCmFEEWG3txjE4A@mail.gmail.com>
- <20230921103156.GB3449785@google.com> <CABqG17ibzHiYmzCZ6ZpAa8BZhj5N+0dQ0aa1yebtCk0YYVdsFQ@mail.gmail.com>
- <CABqG17h8hxgmMA=G5hitzgjNSX_BZ2utFsMZni9evn0Nogu0GA@mail.gmail.com>
- <20231117121531.GC137434@google.com> <CABqG17hPnx465dRKdMdSd2s38_T6DQFn5hsx1SL0RtA+r4JFZQ@mail.gmail.com>
- <20231121153302.GD173820@google.com>
-In-Reply-To: <20231121153302.GD173820@google.com>
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-Date:   Tue, 21 Nov 2023 21:31:37 +0530
-Message-ID: <CABqG17hufcNS5-wLEEpZniSE2MAfEeN9Ljhs5MPGeu-2xZP+HQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v3] leds: max5970: Add support for max5970
-To:     Lee Jones <lee@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231105192054.24833-1-james@equiv.tech>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Sun, Nov 05, 2023 at 11:20:54AM -0800, James Seo wrote:
+> The EliteDesk 800 G6 stores a raw WMI string within the ACPI object in its
+> BIOS corresponding to one instance of HPBIOS_PlatformEvents.Name. This is
+> evidently a valid way of representing a WMI data item as far as the Microsoft
+> ACPI-WMI mapper is concerned, but is preventing the driver from loading.
+> 
+> This seems quite rare, but add support for such strings. Treating this as a
+> quirk pretty much means adding that support anyway.
+> 
+> Also clean up an oversight in update_numeric_sensor_from_wobj() in which the
+> result of hp_wmi_strdup() was being used without error checking.
+> 
+> Reported-by: Lukasz Stelmach <l.stelmach@samsung.com>
+> Closes: https://lore.kernel.org/linux-hwmon/7850a0bd-60e7-88f8-1d6c-0bb0e3234fdc@roeck-us.net/
+> Signed-off-by: James Seo <james@equiv.tech>
+> Tested-by: Lukasz Stelmach <l.stelmach@samsung.com>
 
-Thank you for your insights. I appreciate your guidance on the matter.
-Yes will rewrite the change as below:
+I get several checkpatch warnings when trying to apply this patch.
+Please run checkpatch --strict and fix what it reports.
 
-        regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
-        if (!regmap)
-                return -ENODEV;
-
-I believe this modification aligns with your suggestion. Please let me
-know if this meets the requirements or if you have any further
-suggestions or adjustments
-
-Regards,
-Naresh
-
-
-On Tue, 21 Nov 2023 at 21:03, Lee Jones <lee@kernel.org> wrote:
->
-> On Mon, 20 Nov 2023, Naresh Solanki wrote:
->
-> > Hi
-> >
-> > On Fri, 17 Nov 2023 at 17:45, Lee Jones <lee@kernel.org> wrote:
-> > >
-> > > On Thu, 09 Nov 2023, Naresh Solanki wrote:
-> > >
-> > > > Hey Lee,
-> > > >
-> > > > Is there anything specific you'd suggest changing in the current
-> > > > patchset, or are we good to proceed?
-> > >
-> > > What do you mean by proceed?
-> > >
-> > > You are good to make changes and submit a subsequent version.
-> > >
-> > > Not entirely sure what you're asking.
-> >
-> > As a follow up on previous discussion regarding use of DEFER on probe
-> > if regmap isn't initialized, the implementation was based on other simi=
-lar
-> > drivers & hence it was retained although its not needed due to dependen=
-cies.
-> >
-> > I'm not entirely sure to keep the regmap check or make another
-> > patch revision with regmap check removed ?
->
-> You tell me.
->
-> You should understand the device you're attempting to support along with
-> the code you're authoring and its subsequent implications.  If you don't
-> know what a section of code does or whether/why it's required, why did
-> you write it?
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+Thanks,
+Guenter
