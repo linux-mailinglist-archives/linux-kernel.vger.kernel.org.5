@@ -2,168 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4918B7F3872
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA197F3873
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbjKUVjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:39:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
+        id S234581AbjKUVj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUVjm (ORCPT
+        with ESMTP id S234574AbjKUVjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:39:42 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4523ABB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:39:39 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6be0277c05bso5459319b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:39:39 -0800 (PST)
+        Tue, 21 Nov 2023 16:39:54 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCAE1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:39:50 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-332c0c32d19so2400391f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:39:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700602779; x=1701207579; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DGLCUVDuNtxWVmydf8Y4yiFiZ2xJ6VoxgSulj+ZJDp4=;
-        b=Dzw9o8G9C6786YxrwE6mmX5m4M/1lJg/jMK/OVHTDZfT9gFLuCJPtiJ3OucYKbvkEv
-         XjiJQfAtF1HDniOkezSjLGnjnGeDFFLibQPw2oPQn7B367r4oO+wH7AyuSo7lc2yN1E9
-         NSUE6dhJ+oIWqMLIpzKeqyO5CRifWNXG5i1mM/Bew5JEY9V5aDfHV+nVNXAB+ne0RJ9w
-         kbJynUmZz1il3UHf0+fGPXDzEEMsojd9dWFjYSlcOWl68dSnPkddjkC6pt/OJ4fTOi5p
-         nrHgbBDGN2UgtkHbkr+LUqo1o9BBvL1+LDsjmFOYwyDMNk0wQqeZ6Ei+GJwZavYpsUDT
-         AB+w==
+        d=citrix.com; s=google; t=1700602788; x=1701207588; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oMnYhJxbataMikTBoJULk1+mgkHXuKMVfYl9DIo5qMs=;
+        b=dx3FzTng9XOx/1klbrKb5ho84FmMKHLb9Ys9+m/5o9Nyjp55grKy16s+5Smaq64vom
+         sWHpfhgXLodKJJeX5BQZz3oI2ugutjmd1PN+reM7mjJPDWg09KtXjevu3fbLrkcjzplc
+         YL6uYMgBzSvO6l5FBnmW+LetRc3R6e0R/7d6g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700602779; x=1701207579;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DGLCUVDuNtxWVmydf8Y4yiFiZ2xJ6VoxgSulj+ZJDp4=;
-        b=tvl8uCZZQolldyuiMogPNR5qmzISrFTxRURDbuUOi5I4JDlPjyb78VqksjrRA9HNQc
-         yS7U8b463zM7isQGMfhmhmj+uqKGhVSwkqjrWjv+Mdxprs+Rrt8SidmnXqm+0F7oAX0K
-         dfl9VoGLTW6Y3xGnQGo2lTDIhk1mtedrOh73lguWmaY8y6yazPkpNDkDbayWtMU/+kXT
-         BnA4l3awAO0EUh0TxNwSw2l84c+jsQjF3aPsMbs7pqs2CA1wi1MB5LismpJG72M7ny3D
-         vYD1qrXjRZEvijD4E7pp+5X+KaRIr4RdaoZv3KVGMBp208H91fvTznLpuTdmslg0Dfor
-         Qdig==
-X-Gm-Message-State: AOJu0Yz5RAqlMJUuJM4nF7bsH2RRP4qUi9UqyDmSZfyyZ9hxfzWPMldd
-        RJro1H7gFTf5dg9VIWlQ3StXT/Bc1XxJvQ==
-X-Google-Smtp-Source: AGHT+IHiKcXGReso5iga9bRity172uSu8G+KnPkCku9tNcuCoEJVTBvH9YLqNJqLMq1FP3ijlvUaew==
-X-Received: by 2002:a05:6a20:2585:b0:188:c44:5e5 with SMTP id k5-20020a056a20258500b001880c4405e5mr369268pzd.30.1700602778400;
-        Tue, 21 Nov 2023 13:39:38 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id h10-20020a63df4a000000b0059d219cb359sm8424240pgj.9.2023.11.21.13.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 13:39:37 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 21 Nov 2023 11:39:36 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     zhuangel570 <zhuangel570@gmail.com>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] workqueue: Make sure that wq_unbound_cpumask is never empty
-Message-ID: <ZV0jmGSismObVncD@slm.duckdns.org>
-References: <20231120121623.119780-1-alexyonghe@tencent.com>
- <ZVuudtAtDqHqYJr8@slm.duckdns.org>
- <CANZk6aTS9BODJiqtDSHxwhz2dV3RmaxRautR8WZfH5aYYhcQJw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1700602788; x=1701207588;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMnYhJxbataMikTBoJULk1+mgkHXuKMVfYl9DIo5qMs=;
+        b=vd2lH1ehJLRVJI/FcnOmI9+wqiDfrEg7q8ybAJD4Y+SfYKF8cnYilQ3wUzFan/IuId
+         kGPcAz+qPKAK2gEmNpWGSoE8NW75eytl+ibAzMfIc6Rj2uhq05LJut3DIzIOWq2pk2fr
+         M5vhBxngFHLz+L1i8wpftQAFiNSZEd2FLINHjnOmP5OA825GBZBdFjBunvuRAWdFg87A
+         0XtUsz42hQKrhwl17Ixz0Hg0SAgE5lgiTNJ9RXYw6c7/yClq7JTL590A2u4H73D7q4zl
+         LZGOjdGznJKQX1fw0V2kkxALI2zlCJf5p2TvhByuq7kSZFwNkJSv7FhKyQfliJjp8W0g
+         j7DA==
+X-Gm-Message-State: AOJu0YwnXtC3Sdq6ZG7FwuqX3XuMX9S1Ufysm+L8YwhBFEGZ2GGbbI4p
+        GTSPGz9npENQq+Yed1YpBF4iwQ==
+X-Google-Smtp-Source: AGHT+IEaLQwFZt8qvwQnwWpNSgEHD3qTvvusgxj0nHCVkeqM+jQvgfQiZqE2HIlBhYcha6mE+tlCJg==
+X-Received: by 2002:a05:6000:1881:b0:32d:a10d:90dd with SMTP id a1-20020a056000188100b0032da10d90ddmr194458wri.50.1700602788574;
+        Tue, 21 Nov 2023 13:39:48 -0800 (PST)
+Received: from [192.168.1.10] (host-92-26-107-252.as13285.net. [92.26.107.252])
+        by smtp.gmail.com with ESMTPSA id x11-20020adfffcb000000b003316b8607cesm14520842wrs.1.2023.11.21.13.39.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 13:39:48 -0800 (PST)
+Message-ID: <da12ea3e-8fef-49d4-aea1-40a46a5ae056@citrix.com>
+Date:   Tue, 21 Nov 2023 21:39:47 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANZk6aTS9BODJiqtDSHxwhz2dV3RmaxRautR8WZfH5aYYhcQJw@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 10/13] x86/bugs: Rename RETHUNK to MITIGATION_RETHUNK
+Content-Language: en-GB
+To:     Breno Leitao <leitao@debian.org>, jpoimboe@kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Cc:     leit@meta.com, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sven Joachim <svenjoac@gmx.de>, Ian Kent <raven@themaw.net>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jinghao Jia <jinghao@linux.ibm.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+References: <20231121160740.1249350-1-leitao@debian.org>
+ <20231121160740.1249350-11-leitao@debian.org>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20231121160740.1249350-11-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During boot, depending on how the housekeeping and workqueue.unbound_cpus
-masks are set, wq_unbound_cpumask can end up empty. Since 8639ecebc9b1
-("workqueue: Implement non-strict affinity scope for unbound workqueues"),
-this may end up feeding -1 as a CPU number into scheduler leading to oopses.
+On 21/11/2023 4:07 pm, Breno Leitao wrote:
+> CPU mitigations config entries are inconsistent, and names are hard to
+> related. There are concrete benefits for both users and developers of
+> having all the mitigation config options living in the same config
+> namespace.
+>
+> The mitigation options should have consistency and start with
+> MITIGATION.
+>
+> Rename the Kconfig entry from RETHUNK to MITIGATION_RETHUNK.
+>
+> Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-  BUG: unable to handle page fault for address: ffffffff8305e9c0
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  ...
-  Call Trace:
-   <TASK>
-   select_idle_sibling+0x79/0xaf0
-   select_task_rq_fair+0x1cb/0x7b0
-   try_to_wake_up+0x29c/0x5c0
-   wake_up_process+0x19/0x20
-   kick_pool+0x5e/0xb0
-   __queue_work+0x119/0x430
-   queue_work_on+0x29/0x30
-  ...
+(I'm CC'd on only this single patch so I can't see what's going on, but)
 
-An empty wq_unbound_cpumask is a clear misconfiguration and already
-disallowed once system is booted up. Let's warn on and ignore
-unbound_cpumask restrictions which lead to no unbound cpus. While at it,
-also remove now unncessary empty check on wq_unbound_cpumask in
-wq_select_unbound_cpu().
+Really?  Rethunk[sic] isn't a mitigation.  It's just a compiler
+transformation for return instructions upon which various mitigations
+depend.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Yong He <alexyonghe@tencent.com>
-Link: http://lkml.kernel.org/r/20231120121623.119780-1-alexyonghe@tencent.com
-Fixes: 8639ecebc9b1 ("workqueue: Implement non-strict affinity scope for unbound workqueues")
-Cc: stable@vger.kernel.org # v6.6+
----
-Hello,
-
-Yong He, zhuangel570, can you please verify that this patch makes the oops
-go away? Waiman, this touches code that you've recently worked on. AFAICS,
-they shouldn't interact or cause conflicts. cc'ing just in case.
-
-Thanks.
-
- kernel/workqueue.c |   22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 6e578f576a6f..0295291d54bc 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1684,9 +1684,6 @@ static int wq_select_unbound_cpu(int cpu)
- 		pr_warn_once("workqueue: round-robin CPU selection forced, expect performance impact\n");
- 	}
- 
--	if (cpumask_empty(wq_unbound_cpumask))
--		return cpu;
--
- 	new_cpu = __this_cpu_read(wq_rr_cpu_last);
- 	new_cpu = cpumask_next_and(new_cpu, wq_unbound_cpumask, cpu_online_mask);
- 	if (unlikely(new_cpu >= nr_cpu_ids)) {
-@@ -6515,6 +6512,17 @@ static inline void wq_watchdog_init(void) { }
- 
- #endif	/* CONFIG_WQ_WATCHDOG */
- 
-+static void __init restrict_unbound_cpumask(const char *name, const struct cpumask *mask)
-+{
-+	if (!cpumask_intersects(wq_unbound_cpumask, mask)) {
-+		pr_warn("workqueue: Restricting unbound_cpumask (%*pb) with %s (%*pb) leaves no CPU, ignoring\n",
-+			cpumask_pr_args(wq_unbound_cpumask), name, cpumask_pr_args(mask));
-+		return;
-+	}
-+
-+	cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, mask);
-+}
-+
- /**
-  * workqueue_init_early - early init for workqueue subsystem
-  *
-@@ -6534,11 +6542,11 @@ void __init workqueue_init_early(void)
- 	BUILD_BUG_ON(__alignof__(struct pool_workqueue) < __alignof__(long long));
- 
- 	BUG_ON(!alloc_cpumask_var(&wq_unbound_cpumask, GFP_KERNEL));
--	cpumask_copy(wq_unbound_cpumask, housekeeping_cpumask(HK_TYPE_WQ));
--	cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, housekeeping_cpumask(HK_TYPE_DOMAIN));
--
-+	cpumask_copy(wq_unbound_cpumask, cpu_possible_mask);
-+	restrict_unbound_cpumask("HK_TYPE_WQ", housekeeping_cpumask(HK_TYPE_WQ));
-+	restrict_unbound_cpumask("HK_TYPE_DOMAIN", housekeeping_cpumask(HK_TYPE_DOMAIN));
- 	if (!cpumask_empty(&wq_cmdline_cpumask))
--		cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, &wq_cmdline_cpumask);
-+		restrict_unbound_cpumask("workqueue.unbound_cpus", &wq_cmdline_cpumask);
- 
- 	pwq_cache = KMEM_CACHE(pool_workqueue, SLAB_PANIC);
- 
+~Andrew
