@@ -2,60 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE80F7F32D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB3A7F32D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbjKUPzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
+        id S234670AbjKUPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjKUPzU (ORCPT
+        with ESMTP id S234657AbjKUPzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:55:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D09132
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:55:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 659A4C433C9;
-        Tue, 21 Nov 2023 15:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700582117;
-        bh=WXTh9KkihGvv02JqYKRZ1ui0JyrCN72YLog0gJ1noz0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5/NHoEiLsn0t2mf51cbLXNrcJmuefxFzAW3+DI2UFV7qU6M6LLlOQeZDpqM7jeOk
-         nisp1AJaakUo8egWB/JDrcsZnP1hwCh2CZWsVou8rlPkCif6mnXxECkpa32tShr7iO
-         7HzSpbN4yfmQiAKLtf9DEgVFj/OIQo4Kvx7VwmetA+5GKxjrN1TpCAOSeXg5o9DBU+
-         TDbYCyUPmrbCK4XT+ewK0mwaAukG9zVslk4UtrnsKB4eWBxO+QkJU9dqcgL2224Ob7
-         wIaBWFxV5Ux455tWtbbbW3hpMA0dbS6+VA2s+xNR/Ujq5hEeYO3nM9d1RX4/PzaQff
-         gFmw54MWUUOiw==
-Date:   Tue, 21 Nov 2023 15:55:11 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     Wojciech Drewek <wojciech.drewek@intel.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXT] Re: [net PATCH] octeontx2-pf: Fix ntuple rule creation to
- direct packet to VF with higher Rx queue than its PF
-Message-ID: <20231121155511.GC269041@kernel.org>
-References: <20231120055138.3602102-1-sumang@marvell.com>
- <745e6518-6253-4ef0-8f05-1421ee4e1fef@intel.com>
- <SJ0PR18MB52164E2721E056366EC30139DBBBA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+        Tue, 21 Nov 2023 10:55:35 -0500
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903C218C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:55:31 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so4140467a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:55:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700582130; x=1701186930;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Dhh+jYPrKA9bHQpIhkyY8luyQfeiRtmNUIIuX4AcKs=;
+        b=uMINHEBUTq/fwo4VkUmNdxg0/H3FieqoVm6BtN2gwx/6QVNTYe9+wDUPcvnZYLtXUW
+         vWxEtbdbq20wAl+Xnx8EMTW/ofv/Go+JnqGJ8lkunIrzfyF8vgJlP0EKVBNVY8sNTq7W
+         rz5ByJt7u7Glgg3GwbDvmCPrKDF1UtjGTRv6LXGnGVxAmcQZTkeusu6XlXzrv2TOk+mt
+         D1VbnAMvvowsFmFGGxrpUq+xBBozsgia3/BHKIn0dbUVMOB1d3r/n1k4wDRxcn1aqoUH
+         BgP42vlT7qY0ivfY31RGpyz5YAQlbGn9dVr/EIJcM7quGr+LHeCUj6KkNlcxJsMJe1gG
+         t0Ag==
+X-Gm-Message-State: AOJu0YyU7ClJJpbj5WHi4/JMMDqj3LTjlDgSv3ESkGI/7pzUOAV2d6Qt
+        v+K16BiC2OSY1iqc6sfatfo=
+X-Google-Smtp-Source: AGHT+IEGOjc9gVRMKuvMdXUVKpJvYT78Axx1hFaQ5Qe0Ixi0llhgONlsORxP2Hj7xjb7TX7KSbrldg==
+X-Received: by 2002:a17:906:221c:b0:9c7:5a14:ecf2 with SMTP id s28-20020a170906221c00b009c75a14ecf2mr8928160ejs.56.1700582129853;
+        Tue, 21 Nov 2023 07:55:29 -0800 (PST)
+Received: from gmail.com (fwdproxy-cln-014.fbsv.net. [2a03:2880:31ff:e::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cm28-20020a170906f59c00b009fcb5fcfbe6sm3215439ejd.220.2023.11.21.07.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 07:55:29 -0800 (PST)
+Date:   Tue, 21 Nov 2023 07:55:25 -0800
+From:   Breno Leitao <leitao@debian.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, leit@meta.com,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 12/12] x86/bugs: Add a separate config for missing
+ mitigation
+Message-ID: <ZVzS7W8qNs5TKqfn@gmail.com>
+References: <20231019181158.1982205-1-leitao@debian.org>
+ <20231019181158.1982205-13-leitao@debian.org>
+ <20231025162906.abnyb7xum7cpjwxy@treble>
+ <ZTqdPc59HWBdP269@gmail.com>
+ <20231109224356.diks3jws5ezfldzy@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SJ0PR18MB52164E2721E056366EC30139DBBBA@SJ0PR18MB5216.namprd18.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231109224356.diks3jws5ezfldzy@treble>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,FSL_HELO_FAKE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,72 +71,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 09:54:00AM +0000, Suman Ghosh wrote:
-> >> Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> >> ---
-> >>  .../marvell/octeontx2/nic/otx2_flows.c        | 21
-> >+++++++++++++++++++
-> >>  1 file changed, 21 insertions(+)
-> >>
-> >> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-> >> b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-> >> index 4762dbea64a1..4200f2d387f6 100644
-> >> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-> >> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-> >> @@ -1088,6 +1088,7 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct
-> >ethtool_rxnfc *nfc)
-> >>  	struct ethhdr *eth_hdr;
-> >>  	bool new = false;
-> >>  	int err = 0;
-> >> +	u64 vf_num;
-> >>  	u32 ring;
-> >>
-> >>  	if (!flow_cfg->max_flows) {
-> >> @@ -1100,9 +1101,26 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct
-> >ethtool_rxnfc *nfc)
-> >>  	if (!(pfvf->flags & OTX2_FLAG_NTUPLE_SUPPORT))
-> >>  		return -ENOMEM;
-> >>
-> >> +	/* Number of queues on a VF can be greater or less than
-> >> +	 * the PF's queue. Hence no need to check for the
-> >> +	 * queue count. Hence no need to check queue count if PF
-> >> +	 * is installing for its VF. Below is the expected vf_num value
-> >> +	 * based on the ethtool commands.
-> >> +	 *
-> >> +	 * e.g.
-> >> +	 * 1. ethtool -U <netdev> ... action -1  ==> vf_num:255
-> >> +	 * 2. ethtool -U <netdev> ... action <queue_num>  ==> vf_num:0
-> >> +	 * 3. ethtool -U <netdev> ... vf <vf_idx> queue <queue_num>  ==>
-> >> +	 *    vf_num:vf_idx+1
-> >> +	 */
-> >> +	vf_num = ethtool_get_flow_spec_ring_vf(fsp->ring_cookie);
-> >> +	if (!is_otx2_vf(pfvf->pcifunc) && vf_num)
-> >> +		goto bypass_queue_check;
-> >
-> >Let's just add this condition to the next if, no need for goto.
-> [Suman] I kept it a separate check to make the code more readable. Otherwise the next if condition will be complicated.
+On Thu, Nov 09, 2023 at 02:43:56PM -0800, Josh Poimboeuf wrote:
+> On Thu, Oct 26, 2023 at 10:09:17AM -0700, Breno Leitao wrote:
+> > > I'm thinking CONFIG_MITIGATION_SPECTRE_V2 should also affect whether the spectre v2 user
+> > > mitigation gets enabled.
+> > 
+> > Makes sense, would something like this be enough?
+> 
+> Looks good to me.
+> 
+> While you're at it, for consistency can you add a cpu_mitigations_off()
+> check to spectre_v2_parse_user_cmdline()?
 
-Readability is subjective, but, FWIIW, I'd also prefer
-to avoid a goto here.
+Good catch. I think we might want to do it in
+`spectre_v2_user_select_mitigation()`, but let me test better and send it.
 
-> >> +
-> >>  	if (ring >= pfvf->hw.rx_queues && fsp->ring_cookie !=
-> >RX_CLS_FLOW_DISC)
-> >>  		return -EINVAL;
-> >>
-> >> +bypass_queue_check:
-> >>  	if (fsp->location >= otx2_get_maxflows(flow_cfg))
-> >>  		return -EINVAL;
-> >>
-> >> @@ -1182,6 +1200,9 @@ int otx2_add_flow(struct otx2_nic *pfvf, struct
-> >ethtool_rxnfc *nfc)
-> >>  		flow_cfg->nr_flows++;
-> >>  	}
-> >>
-> >> +	if (flow->is_vf)
-> >> +		netdev_info(pfvf->netdev,
-> >> +			    "Make sure that VF's queue number is within its queue
-> >> +limit\n");
-> >>  	return 0;
-> >>  }
-> >>
+Since this is not dependent on this patch series, I will send this as an
+idividual patch, to avoiding growing this patchset much (currently at 13
+patches).
+
+Thanks
