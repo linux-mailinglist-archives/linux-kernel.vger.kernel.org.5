@@ -2,158 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675A47F26F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6B37F26FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjKUIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
+        id S229626AbjKUIJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjKUIJI (ORCPT
+        with ESMTP id S229620AbjKUIJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:09:08 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5F8112
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:09:04 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-548db776f6cso6735a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:09:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700554143; x=1701158943; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HKicp15faTy9dxr+lo3vJn4RmNCBFdNPH9aMUCXaj3A=;
-        b=COEgIEDEqYeeTZAhnrdzaWBpwGIcQGx/OrLX5I+ZGW7BBzOGRa1KgP+YLh+UVpJ0TB
-         yA2g/2jQ5kl1gjltZwGHDWB5sVCz703V1J0vkWMQD6Xpa+K/FYKlNjt7xE9iPH5pcxG7
-         KGH4BREMUO3FEK4fTA2lPXwhgpMHZ1IF6e0WSWr2OtYF3+sVaE/QIBn19zr6YbmZF9ZC
-         gU+9JKODmbTOf9VQVRP4TqfQICzUbuX7wxIaqwiOEoQDChRJSkw4zcCImL0oXu7fASdp
-         o2+jA+qPjx4seSSvZLMHL/vnJ45hwN/U6WV3ubC87i/wZfhk2TLrFYJEluqsRp9AruLq
-         l58g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700554143; x=1701158943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HKicp15faTy9dxr+lo3vJn4RmNCBFdNPH9aMUCXaj3A=;
-        b=KgcGFqyPOVi+0jTOmkMGmzS8NJNSHKcaAy+alYGNI4pH6nWF3TCXj9te8EFpo+3jie
-         hyRu2cPel+xM/31RLNeXi/T385EoZ8ql61+P/KktihkuDD4xP3S3n9MDwcyHkvIEPV8c
-         rI0o7Ieh0BIngqotb8JmjUkKdU81Twe17d8Rm23qznKWv9LLM+TehRKGS2fwtjsQ7XXM
-         fdpD7zJpejybBrWOu6wgGhdK1Rt8sVDhZcHAxbnvVqXKk5vtbyS7m03z6rgY4qUhlY0x
-         6zeyXeRGCvgkVSx/+WbljRx0JN+Ff4iklyzpecipfbz/VwKCCOG3JGGrFG6hqsB1YOYw
-         Y2Kw==
-X-Gm-Message-State: AOJu0YzAO1dvEXlldDCeEk9oDEBzL4lMwe/fjN52EO/XlWDt6vjtYTDA
-        /DOL9n9UpKdFXjWeScCDYORfQsFAVcV60QTGoZSqD1SoYLePn7h6i6OVuQ==
-X-Google-Smtp-Source: AGHT+IFk7rTNn469v7x2wpKCPVaSegxVKameTngvf3SmEjxXVkO7FQ2gV5Q2EICNAOLjWO6335FnMrlK5knzBXdZPJY=
-X-Received: by 2002:a05:6402:12:b0:547:e5b:6e17 with SMTP id
- d18-20020a056402001200b005470e5b6e17mr502485edu.2.1700554142874; Tue, 21 Nov
- 2023 00:09:02 -0800 (PST)
+        Tue, 21 Nov 2023 03:09:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 603D210F;
+        Tue, 21 Nov 2023 00:09:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700554167; x=1732090167;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tGsju0ngCw+aQSwQpD5Iav/LAYk+iS8Jk1rUYC5r/Ew=;
+  b=Tnnt7KuKmkAG/P0Qwro/K0PnENU6o1X/iGtfNDx6W2fQL2NiIKpnU3Gl
+   ZwrdDcIj1xwiOycEFzhnUQZlt/X0phwfSUYzaJJAJbsU3LgqzhR0kkXhr
+   GpY+mgTeSP7hvC1pOZzFVabllf9SINNI/ug2cRNtSIJQGpAHZRGAXtWuK
+   AX+OKURRYTku7gR3t1J2e9Ffwv/Kyl6uff/Twni9PUa6vkRVvMN6RBPSR
+   0iGHVA+VRX9yeURkNqR/PCqf/3KHK4KlhIo6Oz8RbkHDuqwLeSqpNdFV0
+   6p3F4NL556MHQNMNnUs4zW7jhtDMY/jwLjILzDDc/f2+k/S96pDFtZ9l9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="390644773"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="390644773"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 00:09:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="8004754"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.56.230])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 00:08:55 -0800
+Message-ID: <02251b86-d0ae-4e4a-af3c-b508a92e517f@intel.com>
+Date:   Tue, 21 Nov 2023 10:08:51 +0200
 MIME-Version: 1.0
-References: <20231121020111.1143180-1-dima@arista.com> <20231121020111.1143180-7-dima@arista.com>
-In-Reply-To: <20231121020111.1143180-7-dima@arista.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 21 Nov 2023 09:08:49 +0100
-Message-ID: <CANn89iLEANNvZ45PaPL8miZeyMUTAcLoVR4WS55gbtfiMPbueQ@mail.gmail.com>
-Subject: Re: [PATCH 6/7] net/tcp: ACCESS_ONCE() on snd/rcv SNEs
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-dwcmshc: Enable timeout quirk for
+ BlueField-3 SoC
+Content-Language: en-US
+To:     Liming Sun <limings@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <6082b74cbc681e8c24354828941361f4f4294242.1700315051.git.limings@nvidia.com>
+ <47367cdc-f512-4f0d-958f-2d8fbe450cbf@intel.com>
+ <BN9PR12MB50688354602B03E9E637C02FD3B4A@BN9PR12MB5068.namprd12.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <BN9PR12MB50688354602B03E9E637C02FD3B4A@BN9PR12MB5068.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 3:01=E2=80=AFAM Dmitry Safonov <dima@arista.com> wr=
-ote:
->
-> SNEs need READ_ONCE()/WRITE_ONCE() for access as they can be written and
-> read at the same time.
->
-> This is actually a shame: I planned to send it in TCP-AO patches, but
-> it seems I've chosen a wrong commit to git-commit-fixup some time ago.
-> It ended up in a commit that adds a selftest. Human factor.
->
-> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  net/ipv4/tcp_ao.c    | 4 ++--
->  net/ipv4/tcp_input.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-> index 122ff58168ee..9b7f1970c2e9 100644
-> --- a/net/ipv4/tcp_ao.c
-> +++ b/net/ipv4/tcp_ao.c
-> @@ -956,8 +956,8 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_=
-buff *skb,
->                 if (unlikely(th->syn && !th->ack))
->                         goto verify_hash;
->
-> -               sne =3D tcp_ao_compute_sne(info->rcv_sne, tcp_sk(sk)->rcv=
-_nxt,
-> -                                        ntohl(th->seq));
-> +               sne =3D tcp_ao_compute_sne(READ_ONCE(info->rcv_sne),
-> +                                        tcp_sk(sk)->rcv_nxt, ntohl(th->s=
-eq));
+On 20/11/23 17:18, Liming Sun wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Adrian Hunter <adrian.hunter@intel.com>
+>> Sent: Monday, November 20, 2023 1:49 AM
+>> To: Liming Sun <limings@nvidia.com>; Ulf Hansson <ulf.hansson@linaro.org>;
+>> David Thompson <davthompson@nvidia.com>
+>> Cc: linux-mmc@vger.kernel.org; linux-kernel@vger.kernel.org
+>> Subject: Re: [PATCH v1 1/1] mmc: sdhci-of-dwcmshc: Enable timeout quirk for
+>> BlueField-3 SoC
+>>
+>> On 18/11/23 15:46, Liming Sun wrote:
+>>> This commit enables SDHCI_QUIRK_BROKEN_TIMEOUT_VAL to solve the
+>>> intermittent eMMC timeout issue reported on some cards under eMMC
+>>> stress test.
+>>>
+>>> Reported error message:
+>>>   dwcmshc MLNXBF30:00: __mmc_blk_ioctl_cmd: data error -110
+>>
+>> Were you able to determine the root cause?  For example,
+>> is the host controller timeout correct, is the eMMC
+>> providing correct timeout values, is the mmc subsystem
+>> calculating a correct value, is sdhci programming a correct
+>> value?
+>>
+>> If there are problems outside the host controller then we
+>> need to address them also.
+> 
+> It is caused by the host controller timeout, but is hard to tell whether the
+> configuration provided by the card is good enough since it's
+> intermittent under stress test the SoC needs to work with different eMMC vendors. 
+> In UEFI eMMC driver similar max timeout (0xe) is used to avoid such
+> issue. This commit tries to use existing quirk, which I think that it would work 
+> if there is another way to adjust the TOUT_CNT register. Any concern or suggestions?
 
+If cards are providing timeout values that are too low under stress,
+it would be better to fix it in the mmc subsystem so that all host
+controllers can benefit.
 
-I think this is a wrong fix. Something is definitely fishy here.
+> 
+>>
+>>>
+>>> Signed-off-by: Liming Sun <limings@nvidia.com>
+>>
+>> Fixes tag?
+> 
+> Will update it in v2.
+> 
+>>
+>>> ---
+>>>  drivers/mmc/host/sdhci-of-dwcmshc.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c
+>> b/drivers/mmc/host/sdhci-of-dwcmshc.c
+>>> index 3a3bae6948a8..3c8fe8aec558 100644
+>>> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+>>> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+>>> @@ -365,7 +365,8 @@ static const struct sdhci_pltfm_data
+>> sdhci_dwcmshc_pdata = {
+>>>  #ifdef CONFIG_ACPI
+>>>  static const struct sdhci_pltfm_data sdhci_dwcmshc_bf3_pdata = {
+>>>  	.ops = &sdhci_dwcmshc_ops,
+>>> -	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
+>>> +	.quirks = SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
+>>> +		  SDHCI_QUIRK_BROKEN_TIMEOUT_VAL,
+>>>  	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN |
+>>>  		   SDHCI_QUIRK2_ACMD23_BROKEN,
+>>>  };
+> 
 
-Update side should only happen for an established socket ?
-
-And the read side should have locked the socket before calling
-tcp_inbound_ao_hash(),
-otherwise reading other fields (like tcp_sk(sk)->rcv_nxt) would be racy any=
-way.
-
-
->                 /* Established socket, traffic key are cached */
->                 traffic_key =3D rcv_other_key(key);
->                 err =3D tcp_ao_verify_hash(sk, skb, family, info, aoh, ke=
-y,
-> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-> index bcb55d98004c..78896c8be0d4 100644
-> --- a/net/ipv4/tcp_input.c
-> +++ b/net/ipv4/tcp_input.c
-
-tcp_snd_sne_update() definitely only deals with full sockets
-(TCP_AO_ESTABLISHED)
-
-> @@ -3583,7 +3583,7 @@ static void tcp_snd_sne_update(struct tcp_sock *tp,=
- u32 ack)
->         ao =3D rcu_dereference_protected(tp->ao_info,
->                                        lockdep_sock_is_held((struct sock =
-*)tp));
->         if (ao && ack < tp->snd_una)
-> -               ao->snd_sne++;
-> +               WRITE_ONCE(ao->snd_sne, ao->snd_sne + 1);
->  #endif
->  }
->
-> @@ -3609,7 +3609,7 @@ static void tcp_rcv_sne_update(struct tcp_sock *tp,=
- u32 seq)
->         ao =3D rcu_dereference_protected(tp->ao_info,
->                                        lockdep_sock_is_held((struct sock =
-*)tp));
->         if (ao && seq < tp->rcv_nxt)
-> -               ao->rcv_sne++;
-> +               WRITE_ONCE(ao->rcv_sne, ao->rcv_sne + 1);
->  #endif
->  }
->
-> --
-> 2.42.0
->
