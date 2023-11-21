@@ -2,160 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E967F22CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDC97F22D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbjKUBEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:04:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
+        id S232896AbjKUBFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjKUBEl (ORCPT
+        with ESMTP id S230107AbjKUBFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:04:41 -0500
-Received: from gentwo.org (gentwo.org [IPv6:2a02:4780:10:3cd9::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609B1D9
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:04:36 -0800 (PST)
-Received: by gentwo.org (Postfix, from userid 1003)
-        id 8C6B648F42; Mon, 20 Nov 2023 17:04:35 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 8B98E48F40;
-        Mon, 20 Nov 2023 17:04:35 -0800 (PST)
-Date:   Mon, 20 Nov 2023 17:04:35 -0800 (PST)
-From:   "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To:     linux-arm-kernel@lists.infradead.org
-cc:     linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
-        Valentin.Schneider@arm.com,
-        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Matteo Carlini <Matteo.Carlini@arm.com>
-Subject: [PATCH ARM64]: Introduce CONFIG_MAXSMP to allow up to 512 cpus
-Message-ID: <6a854175-5f89-c754-17b8-deda18447f1f@gentwo.org>
+        Mon, 20 Nov 2023 20:05:23 -0500
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D2A2;
+        Mon, 20 Nov 2023 17:05:20 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VwqVgP7_1700528717;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VwqVgP7_1700528717)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Nov 2023 09:05:18 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     kent.overstreet@linux.dev, bfoster@redhat.com
+Cc:     linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] bcachefs: clean up one inconsistent indenting
+Date:   Tue, 21 Nov 2023 09:05:15 +0800
+Message-Id: <20231121010515.89897-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ampere Computing develops high end ARM processors that support an ever
-increasing number of processors. The current default of 256 processors is
-not enough for our newer products. The default is used by Linux
-distros and therefore our customers cannot use distro kernels because
-the number of processors is not supported.
+fs/bcachefs/journal_io.c:1843 bch2_journal_write_pick_flush() warn: inconsistent indenting
 
-The x86 arch has support for a "CONFIG_MAXSMP" configuration option that
-enables support for the largest known configurations. This usually means
-hundreds or thousands of processors. For those sizes it is no longer
-practical to allocate bitmaps of cpus on the kernel stack. There is
-a kernel option CONFIG_CPUMASK_OFFSTACK that makes the kernel allocate
-and free bitmaps for cpu masks from slab memory instead of keeping it
-on the stack etc.
-
-With that is becomes possible to dynamically size the allocation of
-the bitmap depending on the quantity of processors detected on
-bootup.
-
-This patch enables that logic if CONFIG_MAXSMP is enabled.
-
-If CONFIG_MAXSMP is disabled then a default of 64 processors
-is supported. A bitmap for 64 processors fits into one word and
-therefore can be efficiently handled on the stack. Using a pointer
-to a bitmap would be overkill.
-
-The number of processors can be manually configured if
-CONFIG_MAXSMP is not set.
-
-Currently the default for CONFIG_MAXSMP is 512 processors.
-This will have to be increased if ARM processor vendors start
-supporting more processors.
-
-Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
-
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7585
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
-NR_CPU limits on ARM64 were discussed before at
-https://lore.kernel.org/all/20210110053615.3594358-1-vanshikonda@os.amperecomputing.com/
+ fs/bcachefs/journal_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/fs/bcachefs/journal_io.c b/fs/bcachefs/journal_io.c
+index b061d77b2430..85f780796ac6 100644
+--- a/fs/bcachefs/journal_io.c
++++ b/fs/bcachefs/journal_io.c
+@@ -1839,7 +1839,7 @@ static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *
+ 	    (!w->must_flush &&
+ 	     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
+ 	     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
+-		     w->noflush = true;
++		w->noflush = true;
+ 		SET_JSET_NO_FLUSH(w->data, true);
+ 		w->data->last_seq	= 0;
+ 		w->last_seq		= 0;
+-- 
+2.20.1.7.g153144c
 
-Index: linux/arch/arm64/Kconfig
-===================================================================
---- linux.orig/arch/arm64/Kconfig
-+++ linux/arch/arm64/Kconfig
-@@ -1402,10 +1402,56 @@ config SCHED_SMT
-   	  MultiThreading at a cost of slightly increased overhead in some
-   	  places. If unsure say N here.
-
-+
-+config MAXSMP
-+	bool "Compile kernel with support for the maximum number of SMP Processors"
-+	depends on SMP && DEBUG_KERNEL
-+	select CPUMASK_OFFSTACK
-+	help
-+	  Enable maximum number of CPUS and NUMA Nodes for this architecture.
-+	  If unsure, say N.
-+
-+#
-+# The maximum number of CPUs supported:
-+#
-+# The main config value is NR_CPUS, which defaults to NR_CPUS_DEFAULT,
-+# and which can be configured interactively in the
-+# [NR_CPUS_RANGE_BEGIN ... NR_CPUS_RANGE_END] range.
-+#
-+# ( If MAXSMP is enabled we just use the highest possible value and disable
-+#   interactive configuration. )
-+#
-+
-+config NR_CPUS_RANGE_BEGIN
-+	int
-+	default NR_CPUS_RANGE_END if MAXSMP
-+	default    1 if !SMP
-+	default    2
-+
-+config NR_CPUS_RANGE_END
-+	int
-+	default 8192 if  SMP && CPUMASK_OFFSTACK
-+	default  512 if  SMP && !CPUMASK_OFFSTACK
-+	default    1 if !SMP
-+
-+config NR_CPUS_DEFAULT
-+	int
-+	default  512 if  MAXSMP
-+	default   64 if  SMP
-+	default    1 if !SMP
-+
-   config NR_CPUS
--	int "Maximum number of CPUs (2-4096)"
--	range 2 4096
--	default "256"
-+	int "Set maximum number of CPUs" if SMP && !MAXSMP
-+	range NR_CPUS_RANGE_BEGIN NR_CPUS_RANGE_END
-+	default NR_CPUS_DEFAULT
-+	help
-+	  This allows you to specify the maximum number of CPUs which this
-+	  kernel will support.  If CPUMASK_OFFSTACK is enabled, the maximum
-+	  supported value is 8192, otherwise the maximum value is 512.  The
-+	  minimum value which makes sense is 2.
-+
-+	  This is purely to save memory: each supported CPU adds about 8KB
-+	  to the kernel image.
-
-   config HOTPLUG_CPU
-   	bool "Support for hot-pluggable CPUs"
-Index: linux/arch/arm64/configs/defconfig
-===================================================================
---- linux.orig/arch/arm64/configs/defconfig
-+++ linux/arch/arm64/configs/defconfig
-@@ -15,6 +15,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
-   CONFIG_IKCONFIG=y
-   CONFIG_IKCONFIG_PROC=y
-   CONFIG_NUMA_BALANCING=y
-+CONFIG_MAXSMP=y
-   CONFIG_MEMCG=y
-   CONFIG_BLK_CGROUP=y
-   CONFIG_CGROUP_PIDS=y
