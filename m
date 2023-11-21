@@ -2,64 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037357F3840
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690207F3842
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjKUV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:26:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
+        id S229513AbjKUV0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKUV0N (ORCPT
+        with ESMTP id S229728AbjKUV0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:26:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08881DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700601970; x=1732137970;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=yWltos9U073xVdxGr9Xw4dPqFUsPE1sLwJOtk0Fu1Io=;
-  b=Oq4WxujUpxFi8xgBtZAhfBRDdoyORljuMoT9TWzrzgywcs33gnHpvbS2
-   hFrG5or/a9zenY7vrOAzYG9ut5NwUTsEtZq/4N5AQf01QnWcyuQ9raaNL
-   ysLkeXbNJf0GHbIIRUufSblS7yYXVfCue8LOjanyuYYiRvlWQIQxbLVcG
-   1XR/wL+EVtph+frHFJAK+5c8oIKNUuIouWa5MKgt8T6fNo9k1lGCQFF39
-   HfpxTKrAxeRh9iRsg9PPMRaPj0nM7fbZD3a128AMr3bfxuFKd7E5PNo7c
-   VAy5PkZL92ycFvlz2U9/KPevJSaC0x3OLTrE4VAXuPUEeorQ6RpRdoiqp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="456265165"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="456265165"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 13:26:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098163044"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="1098163044"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Nov 2023 13:26:01 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5YFr-0008Gw-0O;
-        Tue, 21 Nov 2023 21:25:59 +0000
-Date:   Wed, 22 Nov 2023 05:25:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Andy Moreton <andy.moreton@amd.com>,
-        Simon Horman <simon.horman@corigine.com>
-Subject: drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within
- 'struct efx_loopback_payload::(anonymous at
- drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct
- iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous a...
-Message-ID: <202311220537.geMTr31W-lkp@intel.com>
+        Tue, 21 Nov 2023 16:26:21 -0500
+X-Greylist: delayed 337 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 21 Nov 2023 13:26:16 PST
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB161AA;
+        Tue, 21 Nov 2023 13:26:16 -0800 (PST)
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id F3F631F506;
+        Tue, 21 Nov 2023 22:26:14 +0100 (CET)
+Date:   Tue, 21 Nov 2023 22:26:13 +0100
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFT PATCH 5/6] arm64: dts: qcom: sm6125: add interrupts to DWC3
+ USB controller
+Message-ID: <pmkna4ckmm67kf6uuetwprbl4eiv4v7wluv4c7wosbsk557cnl@afkmfljmfloa>
+References: <20231111164229.63803-1-krzysztof.kozlowski@linaro.org>
+ <20231111164229.63803-5-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231111164229.63803-5-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,67 +51,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Edward,
+Maybe this should CC the people that have most recently worked on SM6125 and
+related hardware?
 
-FYI, the error/warning still remains.
+On 2023-11-11 17:42:28, Krzysztof Kozlowski wrote:
+> Add interrupts to SM6125 DWC3 USB controller, based on downstream/vendor
+> code of Trinket DTSI from Xiaomi Laurel device, to fix dtbs_check
+> warnings:
+> 
+>   sm6125-xiaomi-laurel-sprout.dtb: usb@4ef8800: 'interrupt-names' is a required property
+>   sm6125-xiaomi-laurel-sprout.dtb: usb@4ef8800: 'oneOf' conditional failed, one must be fixed:
+>     'interrupts' is a required property
+>     'interrupts-extended' is a required property
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Not tested on HW.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
-commit: 55c1528f9b97ff3b7efad73e8f79627fc2efb298 sfc: fix field-spanning memcpy in selftest
-date:   4 months ago
-config: arm-randconfig-003-20231122 (https://download.01.org/0day-ci/archive/20231122/202311220537.geMTr31W-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220537.geMTr31W-lkp@intel.com/reproduce)
+I have had an identical patch [1] on my tree for over one and a half years, but
+recall not submitting it because of not being sure where to pull dm_hs_phy_irq /
+dp_hs_phy_irq from.  I think you are right (in the dt-bindings fixup) that it is
+not available on this platform.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311220537.geMTr31W-lkp@intel.com/
+Fixes: cff4bbaf2a2d ("arm64: dts: qcom: Add support for SM6125")
+Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
 
-All warnings (new ones prefixed by >>):
+(and obviously tested)
 
->> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-      48 |                 struct iphdr ip;
-         |                              ^
->> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-   2 warnings generated.
---
->> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-      45 |                 struct iphdr ip;
-         |                              ^
->> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-   2 warnings generated.
+[1]: https://github.com/somainline/linux/commit/b57f7fa80cb3f5cd2db3db2d79548cbf063056d9
 
-
-vim +48 drivers/net/ethernet/sfc/selftest.c
-
-93e5dfa59b0e26 drivers/net/ethernet/sfc/selftest.c Ben Hutchings   2012-02-28  37  
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  38  /*
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  39   * Loopback test packet structure
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  40   *
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  41   * The self-test should stress every RSS vector, and unfortunately
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  42   * Falcon only performs RSS on TCP/UDP packets.
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  43   */
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  44  struct efx_loopback_payload {
-cf60ed46962992 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  45  	char pad[2]; /* Ensures ip is 4-byte aligned */
-55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  46  	struct_group_attr(packet, __packed,
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  47  		struct ethhdr header;
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07 @48  		struct iphdr ip;
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  49  		struct udphdr udp;
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  50  		__be16 iteration;
-1d20a16062e771 drivers/net/ethernet/sfc/selftest.c David S. Miller 2015-04-17  51  		char msg[64];
-55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  52  	);
-cf60ed46962992 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  53  } __packed __aligned(4);
-55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  54  #define EFX_LOOPBACK_PAYLOAD_LEN	\
-55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  55  		sizeof_field(struct efx_loopback_payload, packet)
-3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  56  
-
-:::::: The code at line 48 was first introduced by commit
-:::::: 3273c2e8c66a21ae1c53b0c730ee937c6efde7e2 [netdrvr] sfc: sfc: Add self-test support
-
-:::::: TO: Ben Hutchings <bhutchings@solarflare.com>
-:::::: CC: Jeff Garzik <jgarzik@redhat.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  arch/arm64/boot/dts/qcom/sm6125.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+> index eb07eca3a48d..1dd3a4056e26 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6125.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+> @@ -1185,6 +1185,10 @@ usb3: usb@4ef8800 {
+>  					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+>  			assigned-clock-rates = <19200000>, <66666667>;
+>  
+> +			interrupts = <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "hs_phy_irq", "ss_phy_irq";
+> +
+>  			power-domains = <&gcc USB30_PRIM_GDSC>;
+>  			qcom,select-utmi-as-pipe-clk;
+>  			status = "disabled";
+> -- 
+> 2.34.1
+> 
