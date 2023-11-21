@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5087F2C22
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DCE7F2D6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbjKULyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
+        id S234470AbjKULzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233685AbjKULys (ORCPT
+        with ESMTP id S233997AbjKULzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:54:48 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78170122;
-        Tue, 21 Nov 2023 03:54:43 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BBD48FEC;
-        Tue, 21 Nov 2023 03:55:29 -0800 (PST)
-Received: from arm.com (e121798.cambridge.arm.com [10.1.197.44])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DD1103F7A6;
-        Tue, 21 Nov 2023 03:54:38 -0800 (PST)
-Date:   Tue, 21 Nov 2023 11:54:36 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, steven.price@arm.com,
-        anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
-        david@redhat.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 20/37] mm: compaction: Reserve metadata storage in
- compaction_alloc()
-Message-ID: <ZVyafCOxqfa7T130@arm.com>
-References: <20230823131350.114942-1-alexandru.elisei@arm.com>
- <20230823131350.114942-21-alexandru.elisei@arm.com>
- <CAMn1gO67Lz_Xw5SCrq3fF4rOCSw3sXYK8qC77TTGnJeWd0b0Sg@mail.gmail.com>
+        Tue, 21 Nov 2023 06:55:36 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A673612E;
+        Tue, 21 Nov 2023 03:55:32 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1cf6373ce31so13277735ad.0;
+        Tue, 21 Nov 2023 03:55:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700567732; x=1701172532; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SUS5AAycUPra3QRb1a1l2OTUftQ2VV1hu5zt1uUQBW0=;
+        b=b517btZruh6n8FTnOx8hf5CGFi8f+43DZhjblYLvPEkjDoOrrBSI5Eo94IeGXgvVAm
+         DgWM2BfpdMbgRK7HyfRWwpEs67d2vxtTuPS8adcNveGJ0k6vpKdFkOWooaiBgp2RElFQ
+         +00VslggcQM6IZ9mgqeRKFAvAdN0zir/gEMQvLE5F3afj6qG5Lu4+Y+xVrgij7tjB0wE
+         seBiL0ewKEkbmZ7bd5FRf6v1JkTlUVssmUgIE1ymFWJMVvdjvKodirZug9G8/RHELEKW
+         NwOT1/+FR3vQ3cmA3PPLvbBGXCY0yUOHyyz14lJxG6vuaYPEC9WbooScVCyiHhL9KmfR
+         MXNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700567732; x=1701172532;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SUS5AAycUPra3QRb1a1l2OTUftQ2VV1hu5zt1uUQBW0=;
+        b=ZCxwrvmYak+YG5edyrm/cnGcRCOSFF0moQOOqNyiM8XQXipKZAI1QeB9i5PL+yOtrr
+         GV6vp+VRsfC88GzyGvkX22pQB/0AVarkV4vlzhsOkDXnSHln5mrlJdPT/aTZUG1J9NFg
+         tPgAopT7Nef03BzukrHa0rKyXAY2phK8ZZh+VHHql5EIs24nT242l2rcxXbC2RQSArTc
+         HTUsRptNkugZsiwjqJyfEuxV05ramPmkiCA5ztT7BPAG5ZEsiDU8BN8qktljMe9E8WIF
+         wkBir5qjPElB9E8cxGJ1DGkfQA5VnR4b4ymRTsLkKbyRjlukzxA3BaynrCptxom7snn/
+         BMuA==
+X-Gm-Message-State: AOJu0YwNeoG/lDpy/S7iUqa2rHTL51h0ijGOUDOKPftFyFJ+/II3/1B7
+        8+Zw7NXMnORoTEKL2KrD3Do=
+X-Google-Smtp-Source: AGHT+IEjX1mBAAiTKr/KwPp1IPlnEypAJpeTZHK8MfhxHZUG5Q8grbkq+YAZIUMkNNWRiGHslBePuw==
+X-Received: by 2002:a17:902:d4c6:b0:1cf:5806:564f with SMTP id o6-20020a170902d4c600b001cf5806564fmr3678872plg.10.1700567732047;
+        Tue, 21 Nov 2023 03:55:32 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id g10-20020a170902740a00b001cc1dff5b86sm7685431pll.244.2023.11.21.03.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 03:55:31 -0800 (PST)
+From:   Jinrong Liang <ljr.kernel@gmail.com>
+X-Google-Original-From: Jinrong Liang <cloudliang@tencent.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Jinrong Liang <ljr.kernel@gmail.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] Test the consistency of AMD PMU counters and their features
+Date:   Tue, 21 Nov 2023 19:54:48 +0800
+Message-Id: <20231121115457.76269-1-cloudliang@tencent.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMn1gO67Lz_Xw5SCrq3fF4rOCSw3sXYK8qC77TTGnJeWd0b0Sg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,84 +75,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi,
 
-On Mon, Nov 20, 2023 at 08:49:32PM -0800, Peter Collingbourne wrote:
-> Hi Alexandru,
-> 
-> On Wed, Aug 23, 2023 at 6:16 AM Alexandru Elisei
-> <alexandru.elisei@arm.com> wrote:
-> >
-> > If the source page being migrated has metadata associated with it, make
-> > sure to reserve the metadata storage when choosing a suitable destination
-> > page from the free list.
-> >
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >  mm/compaction.c | 9 +++++++++
-> >  mm/internal.h   | 1 +
-> >  2 files changed, 10 insertions(+)
-> >
-> > diff --git a/mm/compaction.c b/mm/compaction.c
-> > index cc0139fa0cb0..af2ee3085623 100644
-> > --- a/mm/compaction.c
-> > +++ b/mm/compaction.c
-> > @@ -570,6 +570,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
-> >         bool locked = false;
-> >         unsigned long blockpfn = *start_pfn;
-> >         unsigned int order;
-> > +       int ret;
-> >
-> >         /* Strict mode is for isolation, speed is secondary */
-> >         if (strict)
-> > @@ -626,6 +627,11 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
-> >
-> >                 /* Found a free page, will break it into order-0 pages */
-> >                 order = buddy_order(page);
-> > +               if (metadata_storage_enabled() && cc->reserve_metadata) {
-> > +                       ret = reserve_metadata_storage(page, order, cc->gfp_mask);
-> 
-> At this point the zone lock is held and preemption is disabled, which
-> makes it invalid to call reserve_metadata_storage.
+This series is an addition to below patch set:
+KVM: x86/pmu: selftests: Fixes and new tests
+https://lore.kernel.org/all/20231110021306.1269082-1-seanjc@google.com/
 
-You are correct, I missed that. I dropped reserving tag storage during
-compaction in the next iteration, so fortunately I unintentionally fixed
-it.
+Add selftests for AMD PMU counters, including tests for basic functionality
+of AMD PMU counters, numbers of counters, AMD PMU versions, PerfCtrExtCore
+and AMD PerfMonV2 features. Also adds PMI tests for Intel gp and fixed counters.
 
-Thanks,
-Alex
+All patches have been tested on both Intel and AMD machines, with one exception
+AMD Guest PerfMonV2 has not been tested on my AMD machine, as does not support
+PerfMonV2.
 
-> 
-> Peter
-> 
-> > +                       if (ret)
-> > +                               goto isolate_fail;
-> > +               }
-> >                 isolated = __isolate_free_page(page, order);
-> >                 if (!isolated)
-> >                         break;
-> > @@ -1757,6 +1763,9 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
-> >         struct compact_control *cc = (struct compact_control *)data;
-> >         struct folio *dst;
-> >
-> > +       if (metadata_storage_enabled())
-> > +               cc->reserve_metadata = folio_has_metadata(src);
-> > +
-> >         if (list_empty(&cc->freepages)) {
-> >                 isolate_freepages(cc);
-> >
-> > diff --git a/mm/internal.h b/mm/internal.h
-> > index d28ac0085f61..046cc264bfbe 100644
-> > --- a/mm/internal.h
-> > +++ b/mm/internal.h
-> > @@ -492,6 +492,7 @@ struct compact_control {
-> >                                          */
-> >         bool alloc_contig;              /* alloc_contig_range allocation */
-> >         bool source_has_metadata;       /* source pages have associated metadata */
-> > +       bool reserve_metadata;
-> >  };
-> >
-> >  /*
-> > --
-> > 2.41.0
-> >
+If Sean fixed the issue of not enabling forced emulation to generate #UD when
+applying the "KVM: x86/pmu: selftests: Fixes and new tests" patch set, then the
+patch "KVM: selftests: Add forced emulation check to fix #UD" can be dropped.
+
+Any feedback or suggestions are greatly appreciated.
+
+Sincerely,
+
+Jinrong
+
+Jinrong Liang (9):
+  KVM: selftests: Add forced emulation check to fix #UD
+  KVM: selftests: Test gp counters overflow interrupt handling
+  KVM: selftests: Test fixed counters overflow interrupt handling
+  KVM: selftests: Add x86 feature and properties for AMD PMU in
+    processor.h
+  KVM: selftests: Test AMD PMU performance counters basic functions
+  KVM: selftests: Test consistency of AMD PMU counters num
+  KVM: selftests: Test consistency of PMU MSRs with AMD PMU version
+  KVM: selftests: Test AMD Guest PerfCtrExtCore
+  KVM: selftests: Test AMD Guest PerfMonV2
+
+ .../selftests/kvm/include/x86_64/processor.h  |   3 +
+ .../selftests/kvm/x86_64/pmu_counters_test.c  | 446 ++++++++++++++++--
+ 2 files changed, 400 insertions(+), 49 deletions(-)
+
+
+base-commit: c076acf10c78c0d7e1aa50670e9cc4c91e8d59b4
+prerequisite-patch-id: e33e3cd1ff495ffdccfeca5c8247dc8af9996b08
+prerequisite-patch-id: a46a885c36e440f09701b553d5b27cb53f6b660f
+prerequisite-patch-id: a9ac79bbf777b3824f0c61c45a68f1308574ab79
+prerequisite-patch-id: cd7b82618866160b5ac77199b681148dfb96e341
+prerequisite-patch-id: df5d1c23dd98d83ba3606e84eb5f0a4cd834f52c
+prerequisite-patch-id: e374d7ce66c66650f23c066690ab816f81e6c3e3
+prerequisite-patch-id: 11f133be9680787fe69173777ef1ae448b23168c
+prerequisite-patch-id: eea75162480ca828fb70395d5c224003ea5ae246
+prerequisite-patch-id: 6b7b22b6b56dd28bd80404e1a295abef60ecfa9a
+prerequisite-patch-id: 2a078271ce109bb526ded7d6eec12b4adbe26cff
+prerequisite-patch-id: e51c5c2f34fc9fe587ce0eea6f11dc84af89a946
+prerequisite-patch-id: 8c1c276fc6571a99301d18aa00ad8280d5a29faf
+prerequisite-patch-id: 37d2f2895e22bae420401e8620410cd628e4fb39
+prerequisite-patch-id: 1abba01ee49d71c38386afa9abf1794130e32a2c
+prerequisite-patch-id: a7486fd15be405a864527090d473609d44a99c3b
+prerequisite-patch-id: 41993b2eef8d1e2286ec04b3c1aa1a757792bafe
+prerequisite-patch-id: 9442b1b4c370b1a68c32eaa6ce3ee4c5d549efd0
+prerequisite-patch-id: 89b2e89917a89713d6a63cbd594f6979f4d06578
+prerequisite-patch-id: 1e9fe564790f41cfd52ebafc412434608187d8db
+prerequisite-patch-id: 7d0b2b4af888fe09eae85ebfe56b4daed71aa08c
+prerequisite-patch-id: 4e6910c90ae769b7556f6aec40f5d600285fe4d0
+prerequisite-patch-id: 5248bc19b00c94188b803a4f41fa19172701d7b0
+prerequisite-patch-id: f9310c716dbdcbe9e3672e29d9e576064845d917
+prerequisite-patch-id: 21b2c6b4878d2ce5a315627efa247240335ede1e
+prerequisite-patch-id: e01570f8ff40aacba38f86454572803bd68a1d59
+prerequisite-patch-id: 65eea4f11ce5e8f9836651c593b7e563b0404459
+-- 
+2.39.3
+
