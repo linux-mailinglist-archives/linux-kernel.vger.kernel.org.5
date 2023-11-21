@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBF07F2DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515A77F2DB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbjKUMvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        id S234152AbjKUMvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233792AbjKUMvR (ORCPT
+        with ESMTP id S233916AbjKUMvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 07:51:17 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6F810CE;
-        Tue, 21 Nov 2023 04:51:06 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1133F10D4;
+        Tue, 21 Nov 2023 04:51:08 -0800 (PST)
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0706D6607319;
-        Tue, 21 Nov 2023 12:51:04 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0D8436607326;
+        Tue, 21 Nov 2023 12:51:05 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700571065;
-        bh=EEiAga7/PEKFwq5/KS3naIy5UuB1z5wjPE5byYQKsG4=;
+        s=mail; t=1700571066;
+        bh=mvDbP9LsG0x+WjQA4KRWvixfVCE355+sCyiuJX+FpKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S8cSzG/X6sVcxBU+LFBQPQo4ord4Kb0pxgC80dEAGKNPFNKt7rDi9gUVx3j6Phz4B
-         tdvXfuvXkR79/mWGKI8OyldNZh0km9cKaTiQmwZaSO4/JHR8m9eRNguFw9DPQIYe4Q
-         metDVDPU0oOF3/3npZcWvjlnbVJT1epWsIvi96+ODzyxFEDiKQkbkTKLiWlbPPNoSg
-         quIxJh5r/dKeQk7uBaYISnLiRqrbkDTt3wipYLOFQmtqFZKyeYlwiyqPCfDRj6tZlJ
-         hpjfy583jyRDUwYMHMocfhmth+i9KfKn7ByZzGU3+BGUZkjh6jtzMzfBNKyScL7EL8
-         pnVYeS28bsWLA==
+        b=Tn4Icet19uVB5GgfkjB4A6lrS8zxXD51rMrmLc0MVNJWKcFYpgIIKvtFqDGzt/0nz
+         VL4CEsm4Y5nl8tuAM8uk4PEq3PZatsGGPWKv5aIMPf/HbZCFrPaDLaSrvLFGmpLJ5q
+         juOqcwuOp9CPdj6Qk2Y19FPA8uc58emAAPWyRoUEu/yQbiMlEfqeSwaGVRXftl2jDO
+         0IaFa8JhRlE68KfqwnWCX23/UYQTmJSYM09DtqSV+XQGUdJI5t6LcYgYRRa/AD+5W/
+         QvGhNrsuLRH/owcPn4lTN6lhY4nmN/uab8E/IOz8pwDojB3zuREERC7YuxUL/GyH45
+         cW9LBq8sEen4g==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     matthias.bgg@gmail.com
@@ -41,9 +41,9 @@ Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, kernel@collabora.com,
         wenst@chromium.org
-Subject: [PATCH v3 14/20] soc: mediatek: mtk-svs: Compress of_device_id entries
-Date:   Tue, 21 Nov 2023 13:50:38 +0100
-Message-ID: <20231121125044.78642-15-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v3 15/20] soc: mediatek: mtk-svs: Cleanup of svs_probe() function
+Date:   Tue, 21 Nov 2023 13:50:39 +0100
+Message-ID: <20231121125044.78642-16-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231121125044.78642-1-angelogioacchino.delregno@collabora.com>
 References: <20231121125044.78642-1-angelogioacchino.delregno@collabora.com>
@@ -58,49 +58,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compress each entry to one line, as they fit in 84 columns, which
-is acceptable.
-While at it, also change the capital 'S' to 's' in 'sentinel'.
+Cleanup the svs_probe() function: use dev_err_probe() where possible,
+change some efuse read failure gotos and then remove now impossible
+IS_ERR_OR_NULL() checks (as they will never return true) for nvmem
+(efuse read) failures.
+Also remove some unnecessary blank lines.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/soc/mediatek/mtk-svs.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+ drivers/soc/mediatek/mtk-svs.c | 32 +++++++++++---------------------
+ 1 file changed, 11 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
-index 5fd9884dd20f..ac36c2efcafa 100644
+index ac36c2efcafa..ae0cc22a2941 100644
 --- a/drivers/soc/mediatek/mtk-svs.c
 +++ b/drivers/soc/mediatek/mtk-svs.c
-@@ -2731,24 +2731,12 @@ static const struct svs_platform_data svs_mt8183_platform_data = {
- };
+@@ -2775,14 +2775,13 @@ static int svs_probe(struct platform_device *pdev)
+ 	}
  
- static const struct of_device_id svs_of_match[] = {
--	{
--		.compatible = "mediatek,mt8195-svs",
--		.data = &svs_mt8195_platform_data,
--	}, {
--		.compatible = "mediatek,mt8192-svs",
--		.data = &svs_mt8192_platform_data,
--	}, {
--		.compatible = "mediatek,mt8188-svs",
--		.data = &svs_mt8188_platform_data,
--	}, {
--		.compatible = "mediatek,mt8186-svs",
--		.data = &svs_mt8186_platform_data,
--	}, {
--		.compatible = "mediatek,mt8183-svs",
--		.data = &svs_mt8183_platform_data,
--	}, {
--		/* Sentinel */
--	},
-+	{ .compatible = "mediatek,mt8195-svs", .data = &svs_mt8195_platform_data },
-+	{ .compatible = "mediatek,mt8192-svs", .data = &svs_mt8192_platform_data },
-+	{ .compatible = "mediatek,mt8188-svs", .data = &svs_mt8188_platform_data },
-+	{ .compatible = "mediatek,mt8186-svs", .data = &svs_mt8186_platform_data },
-+	{ .compatible = "mediatek,mt8183-svs", .data = &svs_mt8183_platform_data },
-+	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, svs_of_match);
+ 	if (!svsp_data->efuse_parsing(svsp, svsp_data)) {
+-		dev_err(svsp->dev, "efuse data parsing failed\n");
+-		ret = -EPERM;
++		ret = dev_err_probe(svsp->dev, -EINVAL, "efuse data parsing failed\n");
+ 		goto svs_probe_free_tefuse;
+ 	}
+ 
+ 	ret = svs_bank_resource_setup(svsp);
+ 	if (ret) {
+-		dev_err(svsp->dev, "svs bank resource setup fail: %d\n", ret);
++		dev_err_probe(svsp->dev, ret, "svs bank resource setup fail\n");
+ 		goto svs_probe_free_tefuse;
+ 	}
+ 
+@@ -2794,43 +2793,40 @@ static int svs_probe(struct platform_device *pdev)
+ 
+ 	svsp->main_clk = devm_clk_get(svsp->dev, "main");
+ 	if (IS_ERR(svsp->main_clk)) {
+-		dev_err(svsp->dev, "failed to get clock: %ld\n",
+-			PTR_ERR(svsp->main_clk));
+-		ret = PTR_ERR(svsp->main_clk);
++		ret = dev_err_probe(svsp->dev, PTR_ERR(svsp->main_clk),
++				    "failed to get clock\n");
+ 		goto svs_probe_free_tefuse;
+ 	}
+ 
+ 	ret = clk_prepare_enable(svsp->main_clk);
+ 	if (ret) {
+-		dev_err(svsp->dev, "cannot enable main clk: %d\n", ret);
++		dev_err_probe(svsp->dev, ret, "cannot enable main clk\n");
+ 		goto svs_probe_free_tefuse;
+ 	}
+ 
+ 	svsp->base = of_iomap(svsp->dev->of_node, 0);
+ 	if (IS_ERR_OR_NULL(svsp->base)) {
+-		dev_err(svsp->dev, "cannot find svs register base\n");
+-		ret = -EINVAL;
++		ret = dev_err_probe(svsp->dev, -EINVAL, "cannot find svs register base\n");
+ 		goto svs_probe_clk_disable;
+ 	}
+ 
+ 	ret = devm_request_threaded_irq(svsp->dev, svsp_irq, NULL, svs_isr,
+ 					IRQF_ONESHOT, svsp_data->name, svsp);
+ 	if (ret) {
+-		dev_err(svsp->dev, "register irq(%d) failed: %d\n",
+-			svsp_irq, ret);
++		dev_err_probe(svsp->dev, ret, "register irq(%d) failed\n", svsp_irq);
+ 		goto svs_probe_iounmap;
+ 	}
+ 
+ 	ret = svs_start(svsp);
+ 	if (ret) {
+-		dev_err(svsp->dev, "svs start fail: %d\n", ret);
++		dev_err_probe(svsp->dev, ret, "svs start fail\n");
+ 		goto svs_probe_iounmap;
+ 	}
+ 
+ #ifdef CONFIG_DEBUG_FS
+ 	ret = svs_create_debug_cmds(svsp);
+ 	if (ret) {
+-		dev_err(svsp->dev, "svs create debug cmds fail: %d\n", ret);
++		dev_err_probe(svsp->dev, ret, "svs create debug cmds fail\n");
+ 		goto svs_probe_iounmap;
+ 	}
+ #endif
+@@ -2839,18 +2835,12 @@ static int svs_probe(struct platform_device *pdev)
+ 
+ svs_probe_iounmap:
+ 	iounmap(svsp->base);
+-
+ svs_probe_clk_disable:
+ 	clk_disable_unprepare(svsp->main_clk);
+-
+ svs_probe_free_tefuse:
+-	if (!IS_ERR_OR_NULL(svsp->tefuse))
+-		kfree(svsp->tefuse);
+-
++	kfree(svsp->tefuse);
+ svs_probe_free_efuse:
+-	if (!IS_ERR_OR_NULL(svsp->efuse))
+-		kfree(svsp->efuse);
+-
++	kfree(svsp->efuse);
+ 	return ret;
+ }
  
 -- 
 2.42.0
