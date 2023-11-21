@@ -2,121 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7277F29EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D92127F29E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjKUKQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
+        id S230328AbjKUKNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:13:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjKUKQN (ORCPT
+        with ESMTP id S230274AbjKUKNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:16:13 -0500
-Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3CE9114;
-        Tue, 21 Nov 2023 02:16:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ovQAt
-        sQI9l5UyjC1/OJ9at0KgrMCeX296IrfvFS0X/g=; b=HDGFJub0GNmQXCCKSGMx5
-        weiQj8gIlj5HeIYc5W9+1tTzV+qDteBb23U6SnrJ/dQ3SPelyD7G7atnSAhPpxAf
-        ZZvLKHDw/NvSZZzRjjHVqlke77AUQpu2DteHuL8tdj/Q911VtpqvhzZNZoSM4EfO
-        nwA/rHVlJtag2L4RYKyYbQ=
-Received: from ubuntu.localdomain (unknown [111.222.250.119])
-        by zwqz-smtp-mta-g3-1 (Coremail) with SMTP id _____wD3X_ybglxlh7GhCw--.38475S2;
-        Tue, 21 Nov 2023 18:12:53 +0800 (CST)
-From:   Shifeng Li <lishifeng1992@126.com>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        leon@kernel.org, gustavoars@kernel.org
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dinghui@sangfor.com.cn, Shifeng Li <lishifeng1992@126.com>
-Subject: [PATCH v3] RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
-Date:   Tue, 21 Nov 2023 02:12:36 -0800
-Message-Id: <20231121101236.581694-1-lishifeng1992@126.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Nov 2023 05:13:30 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A12EBA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:13:25 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a877e0f0d8so49421297b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:13:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700561604; x=1701166404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vvvVHM7viL1Jmzkz/E4yhNDYNAPR+6Zga/hBjsBolp0=;
+        b=c9ZypsVhnRqU0Y4NFy0A2r1lwHD4nUnaUDssND9bcPtiXVBc+Imc1hiA3iT7UPSIvn
+         Jx56+XIoNqcLEzODhkGmvoe859RHsL9xJg/mliyXGv7wt84oiUV6v1t8MTZeqbZ5AiIy
+         OpF25nAH6QLDHMiuYHL7P1epee2FHGd0R9/44q/Y5vIIRfuqb8XrV1LGXSUKc+pH9jNO
+         Mq7YqUgUdLkSW/lre4BuR6Sqh3+3BDlwb9DaedfQqrCMGyjwZLr6Vp91G926JSHALDv9
+         vncpnOZlldAwxItDe0IgOYYHMqCphs3q6P4CExAdqnl3NLtaJgblWjjJMgrCFAsZFTWM
+         xreQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700561604; x=1701166404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vvvVHM7viL1Jmzkz/E4yhNDYNAPR+6Zga/hBjsBolp0=;
+        b=xHZ71AZTHUgWOyUHVBX9+Ec5mZNkW0RKE/zroqQ/F6b7bSmyEpJT76c3b36/pHe3a/
+         pJ/hd2IVI8tm1dLNoEuhBFc0ac9X2cRhanJbcjB0Hq1HPQZ4CrtdK61wcoi8lbsh7mbk
+         d1xh1NjyUfXgWtUsL6G1RCLp/NkzZ3PN+r3F6zNu/iGnBhGsQ2S8b0yk1moVveqgLeL0
+         4gaQmlRfMXmp082mN8yEa3XbwiVHZ6/PdZG59FT0HeXHO/Ja7015gIbo16yY53i1LamT
+         7l2UgxqqUNTIn7Ntjwo0dHcCN0m53j4qHvbN117oul++WvAZX2TMfnmiJlUkhjtdDghY
+         AtpQ==
+X-Gm-Message-State: AOJu0YyRkT49rMu/m4jZtyLqUyAzKaBTxkAwVRKy4wPCixVnZw6iEwwW
+        QguxcKlm1dRWbRBxHk7EivHVSc2dCTnbCOsr1C8kTw==
+X-Google-Smtp-Source: AGHT+IGyl+3FXfVMW5/uo6prZ2T+50NtUsg/gYXLA7xT5MJNgeqZIoadaWE6u0rFfAURccalW4ny9xhVD7fTcYc7HiY=
+X-Received: by 2002:a25:6088:0:b0:d9a:5f53:1732 with SMTP id
+ u130-20020a256088000000b00d9a5f531732mr1584303ybb.18.1700561604504; Tue, 21
+ Nov 2023 02:13:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wD3X_ybglxlh7GhCw--.38475S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXFy5tF1kCFy7GFyrJF4kXrb_yoW5WFyxpa
-        45Gw1jvrZrJw42qayFy3WUKF98JFs8tF9F9a4Sk34fCr43Z3WFvF47KrW09FW5ua43Jr17
-        JF1jgFn3ur45GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_38nUUUUUU=
-X-Originating-IP: [111.222.250.119]
-X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1wYvr153c2EsXgAAsY
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <19358871-009d-4498-9c13-90d5338b1e9f@amd.com> <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
+ <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
+ <acfdce81-f117-4a1a-a9fe-e2b4b8922adb@linaro.org> <bd49f17c-7ebf-4e19-b77b-b5ec95375f7d@amd.com>
+ <b48293f3-16e3-4980-b900-add0cb7d69f6@linaro.org> <CAMuHMdV_gqmf2=cXmZmYgE3aLxvPBr1DVp0cz0C+YrfBVG-8mg@mail.gmail.com>
+In-Reply-To: <CAMuHMdV_gqmf2=cXmZmYgE3aLxvPBr1DVp0cz0C+YrfBVG-8mg@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 21 Nov 2023 12:13:13 +0200
+Message-ID: <CAA8EJpo6w9N_opJkfDaF-20zwZmn6JHrYYhakqzLFqVtgXaV=Q@mail.gmail.com>
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When removing the irdma driver or unplugging its aux device, the ccq
-queue is released before destorying the cqp_cmpl_wq queue.
-But in the window, there may still be completion events for wqes. That
-will cause a UAF in irdma_sc_ccq_get_cqe_info().
+On Tue, 21 Nov 2023 at 10:09, Geert Uytterhoeven <geert@linux-m68k.org> wro=
+te:
+>
+> Hi Krzysztof,
+>
+> On Tue, Nov 21, 2023 at 8:47=E2=80=AFAM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> > On 21/11/2023 08:33, Michal Simek wrote:
+> > > On 11/20/23 20:31, Krzysztof Kozlowski wrote:
+> > >> On 20/11/2023 20:18, Geert Uytterhoeven wrote:
+> > >>> On Mon, Nov 20, 2023 at 3:53=E2=80=AFPM Krzysztof Kozlowski
+> > >>> <krzysztof.kozlowski@linaro.org> wrote:
+> > >>>> On 20/11/2023 15:01, Michal Simek wrote:> >
+> > >>>>> On 11/20/23 09:40, Krzysztof Kozlowski wrote:
+> > >>>>>> Document preferred coding style for Devicetree sources (DTS and =
+DTSI),
+> > >>>>>> to bring consistency among all (sub)architectures and ease in re=
+views.
+> > >>>
+> > >>>>>> +Organizing DTSI and DTS
+> > >>>>>> +-----------------------
+> > >>>>>> +
+> > >>>>>> +The DTSI and DTS files should be organized in a way representin=
+g the common
+> > >>>>>> +(and re-usable) parts of the hardware.  Typically this means or=
+ganizing DTSI
+> > >>>>>> +and DTS files into several files:
+> > >>>>>> +
+> > >>>>>> +1. DTSI with contents of the entire SoC (without nodes for hard=
+ware not present
+> > >>>>>> +   on the SoC).
+> > >>>>>> +2. If applicable: DTSI with common or re-usable parts of the ha=
+rdware (e.g.
+> > >>>>>> +   entire System-on-Module).
+> > >>>>>
+> > >>>>> DTS/DTSI - SOMs can actually run as they are that's why it is fai=
+r to say that
+> > >>>>> there doesn't need to be DTS representing the board.
+> > >>>>
+> > >>>> I have never seen a SoM which can run without elaborate hardware-h=
+acking
+> > >>>> (e.g. connecting multiple wires to the SoM pins). The definition o=
+f the
+> > >>>> SoM is that it is a module. Module can be re-used, just like SoC.
+> > >>>
+> > >>> /me looks at his board farm...
+>
+> > >>> I guess there are (many) other examples...
+> > >>
+> > >> OK, I never had such in my hands. Anyway, the SoM which can run
+> > >> standalone  has a meaning of a board, so how exactly you want to
+> > >> rephrase the paragraph?
+> > >
+> > > What about?
+> > >
+> > > 2. If applicable: DTSI with common or re-usable parts of the hardware=
+ (e.g.
+> > > entire System-on-Module). DTS if runs standalone.
+> >
+> > OK, but then it's duplicating the option 3. It also suggests that SoM
+> > should be a DTS, which is not what we want for such case. Such SoMs mus=
+t
+> > have DTSI+DTS.
+>
+> So you want us to have a one-line <SoM>.dts, which just includes <SoM>.dt=
+si?
 
-[34693.333191] BUG: KASAN: use-after-free in irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-[34693.333194] Read of size 8 at addr ffff889097f80818 by task kworker/u67:1/26327
-[34693.333194]
-[34693.333199] CPU: 9 PID: 26327 Comm: kworker/u67:1 Kdump: loaded Tainted: G           O     --------- -t - 4.18.0 #1
-[34693.333200] Hardware name: SANGFOR Inspur/NULL, BIOS 4.1.13 08/01/2016
-[34693.333211] Workqueue: cqp_cmpl_wq cqp_compl_worker [irdma]
-[34693.333213] Call Trace:
-[34693.333220]  dump_stack+0x71/0xab
-[34693.333226]  print_address_description+0x6b/0x290
-[34693.333238]  ? irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-[34693.333240]  kasan_report+0x14a/0x2b0
-[34693.333251]  irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
-[34693.333264]  ? irdma_free_cqp_request+0x151/0x1e0 [irdma]
-[34693.333274]  irdma_cqp_ce_handler+0x1fb/0x3b0 [irdma]
-[34693.333285]  ? irdma_ctrl_init_hw+0x2c20/0x2c20 [irdma]
-[34693.333290]  ? __schedule+0x836/0x1570
-[34693.333293]  ? strscpy+0x83/0x180
-[34693.333296]  process_one_work+0x56a/0x11f0
-[34693.333298]  worker_thread+0x8f/0xf40
-[34693.333301]  ? __kthread_parkme+0x78/0xf0
-[34693.333303]  ? rescuer_thread+0xc50/0xc50
-[34693.333305]  kthread+0x2a0/0x390
-[34693.333308]  ? kthread_destroy_worker+0x90/0x90
-[34693.333310]  ret_from_fork+0x1f/0x40
+Well, I think it is impossible to run SoM directly. There is a carrier
+board anyway, which includes at least regulators. So, I guess, the
+SoM.dts will not be a oneline file.
 
-Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
-Signed-off-by: Shifeng Li <lishifeng1992@126.com>
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/irdma/hw.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
----
-v1->v2: add Fixes line.
----
-v2->v3: fix code conflicts.
+> IMHO that adds more files for no much gain.
+> Users of a SoM can easily include <SoM>.dts.
+> 'git grep "#include .*dts\>"' tells you we have plenty of users of that s=
+cheme.
 
-diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-index 8fa7e4a18e73..6b950926949e 100644
---- a/drivers/infiniband/hw/irdma/hw.c
-+++ b/drivers/infiniband/hw/irdma/hw.c
-@@ -581,9 +581,6 @@ static void irdma_destroy_cqp(struct irdma_pci_f *rf)
- 	struct irdma_cqp *cqp = &rf->cqp;
- 	int status = 0;
- 
--	if (rf->cqp_cmpl_wq)
--		destroy_workqueue(rf->cqp_cmpl_wq);
--
- 	status = irdma_sc_cqp_destroy(dev->cqp);
- 	if (status)
- 		ibdev_dbg(to_ibdev(dev), "ERR: Destroy CQP failed %d\n", status);
-@@ -748,6 +745,9 @@ static void irdma_destroy_ccq(struct irdma_pci_f *rf)
- 	struct irdma_ccq *ccq = &rf->ccq;
- 	int status = 0;
- 
-+	if (rf->cqp_cmpl_wq)
-+		destroy_workqueue(rf->cqp_cmpl_wq);
-+
- 	if (!rf->reset)
- 		status = irdma_sc_ccq_destroy(dev->ccq, 0, true);
- 	if (status)
--- 
-2.25.1
 
+--=20
+With best wishes
+Dmitry
