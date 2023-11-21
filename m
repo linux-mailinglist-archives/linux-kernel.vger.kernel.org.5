@@ -2,206 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 242CA7F26A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6667F268B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjKUHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S231384AbjKUHlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbjKUHkk (ORCPT
+        with ESMTP id S230417AbjKUHl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:40:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C752F116
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700552434;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=btk5PFJVEM3+qQpJy98Ir5AUr2+WhihqrbyG2lX5mHg=;
-        b=M2znojdqoTKr3r0b3EY1U7ns53PzYoRl2LlAz4GK+0v22cMUpIgipls2F8GlAEGX59WjBc
-        fHQXyOB7Op7ztQGmxaYXode07aD4QlBBE5rGH4rKHQEshbwmJsmBnKJRn0xwp7NGNDIUSx
-        2dvN7/khIvkcGgXuzby7KeplLyECvAk=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-217-Z3NPIQIvNROhyewsTo932Q-1; Tue, 21 Nov 2023 02:40:30 -0500
-X-MC-Unique: Z3NPIQIvNROhyewsTo932Q-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c6f33ee403so48548591fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:40:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700552428; x=1701157228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=btk5PFJVEM3+qQpJy98Ir5AUr2+WhihqrbyG2lX5mHg=;
-        b=P/pU1yqgjOT8OFjTztfGO/rrOmlyl8LsCMcUZYdfBZLObU1rf1TPv6qpCPVR/6LDrl
-         8IaudeilhGNPKLxNlgv2PQCS6gKhhRP4ZtLczZUk+p+xT6DMPjIEbUy5NY4G976Kqk7B
-         cnseTCiYvhJtXBkhfwZTkUCHrteIP/YL0EP2E65mE62CG8fr8OaLc0CEN4zE1fDepS/+
-         igMD40DMrOiz7hAASYD3VBfIe1UkO0eIGbkLZyCARMVXbdJAQQ7yLPaS2S5AN3Y4keQc
-         fFFnXHWma7i4iLn/UvaF4GhTzbNi2fjlXHEIiJzIRtqwDeyld3UkbmzvXm2WEtoVHN+K
-         MIRw==
-X-Gm-Message-State: AOJu0YwHcu2K/FndLaboOVhUTdNYuZ5B+tShhb5n2i+iqbYa9/InVCgD
-        Z+pGz4TIbPX/UYBHRqexagtkNkz3MEsNfMX8c19apmBHHNYMXd5s6sJhMOlPl4SiX1/gDBaWyyU
-        JvV7OfuEa7WM7wZtixq/2RP998kWMBNmTpvZ8edti
-X-Received: by 2002:a19:7519:0:b0:503:1913:ed8e with SMTP id y25-20020a197519000000b005031913ed8emr6576763lfe.61.1700552428778;
-        Mon, 20 Nov 2023 23:40:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE5quDDF1etAkYKHklDT6zvb0Svk8HaZiN9UE0iQ/R2AzTEf4symv9gLPlpcMPRS0tNeNfz9EFNUyYy60x5xwY=
-X-Received: by 2002:a19:7519:0:b0:503:1913:ed8e with SMTP id
- y25-20020a197519000000b005031913ed8emr6576752lfe.61.1700552428474; Mon, 20
- Nov 2023 23:40:28 -0800 (PST)
+        Tue, 21 Nov 2023 02:41:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB4FC1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:41:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1842C433D9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700552481;
+        bh=CkcDYqgQRoD2zoMrak1bNuzvj1Qcym8S5XxjpFCbSWg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LNt7ZCGsnJVbhRdfReUmJH9nfTWH+zr404o5lp6kK2fA9m51t4NfZcsPpRT1WYeKQ
+         xfP5dJEsK8slDV13CpyatNGNnxUv8HYP2gARMWj7i06PTER71RqGkOU2QTzWYBUcPy
+         CnjONGTSd1oFi6fXGwxFKvqXkJlZA/W2mgtVYR5QwcvCkAlVbY76J8mUE8mFA2BSfq
+         2Fp/Hp5Vby1WJR0UbZBRH/XptnQRHJC14s4zwGNNL02uZWqqbEVwXgSTEq3897pWQ/
+         WGvhcqiXLxtilzW66GNTvzPiayxfwSPS/c6cGTXMU+kGcY+draGGQSkMVvl2jNyxD+
+         Oa53qN0qoYz4Q==
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-28039ee1587so3561191a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:41:21 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxe1tvJmECttVpA21FdfNA4raKAKoRbWHdRdDOiS/IY63E60kUb
+        R0Bj6Zi1hYgHYrKZr/YEvlP/loTf6Rk0pZESZV8CmQ==
+X-Google-Smtp-Source: AGHT+IG607BAXAWtwI4XGxPpyU0UKUvlanBHdhsBttKjjENgvW00PUrgWjPmXLV4b6YB9xSB6n/mmKkDhUmdKriB97s=
+X-Received: by 2002:a17:90b:344a:b0:27d:4ab9:fcd9 with SMTP id
+ lj10-20020a17090b344a00b0027d4ab9fcd9mr8271422pjb.21.1700552481234; Mon, 20
+ Nov 2023 23:41:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121073050.287080-1-lulu@redhat.com> <20231121073050.287080-3-lulu@redhat.com>
-In-Reply-To: <20231121073050.287080-3-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 21 Nov 2023 15:40:16 +0800
-Message-ID: <CACGkMEsSAvUpkxCutX69fPS5B5ChEUP+KutP1OtgcWE6Job61g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] vduse: Add file operation for mmap
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, xieyongji@bytedance.com,
-        linux-kernel@vger.kernel.org, maxime.coquelin@redhat.com
+References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-6-ryncsn@gmail.com>
+ <CAF8kJuMx5HbSRogY4mVoZ1EELHbmZpOnwv5fRdOE7xvNhjZDbA@mail.gmail.com> <CAMgjq7Bo8=gTe2LTtwVruakvj2RLjMHkqxDC3bY0gwpEPKjzRw@mail.gmail.com>
+In-Reply-To: <CAMgjq7Bo8=gTe2LTtwVruakvj2RLjMHkqxDC3bY0gwpEPKjzRw@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Mon, 20 Nov 2023 23:41:09 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMoiGe3e98Lx0NWmb25vVx0s3SdKqR3yiiG2rQKk0ztNQ@mail.gmail.com>
+Message-ID: <CAF8kJuMoiGe3e98Lx0NWmb25vVx0s3SdKqR3yiiG2rQKk0ztNQ@mail.gmail.com>
+Subject: Re: [PATCH 05/24] mm/swap: move readahead policy checking into swapin_readahead
+To:     Kairui Song <ryncsn@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 3:31=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+On Mon, Nov 20, 2023 at 10:35=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wro=
+te:
 >
-> Add the operation for mmap, The user space APP will
-> use this function to map the pages to userspace
+> Chris Li <chrisl@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=8821=E6=97=A5=
+=E5=91=A8=E4=BA=8C 14:18=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com>=
+ wrote:
+> > >
+> > > From: Kairui Song <kasong@tencent.com>
+> > >
+> > > This makes swapin_readahead a main entry for swapin pages,
+> > > prepare for optimizations in later commits.
+> > >
+> > > This also makes swapoff able to make use of readahead checking
+> > > based on entry. Swapping off a 10G ZRAM (lzo-rle) is faster:
+> > >
+> > > Before:
+> > > time swapoff /dev/zram0
+> > > real    0m12.337s
+> > > user    0m0.001s
+> > > sys     0m12.329s
+> > >
+> > > After:
+> > > time swapoff /dev/zram0
+> > > real    0m9.728s
+> > > user    0m0.001s
+> > > sys     0m9.719s
+> > >
+> > > And what's more, because now swapoff will also make use of no-readahe=
+ad
+> > > swapin helper, this also fixed a bug for no-readahead case (eg. ZRAM)=
+:
+> > > when a process that swapped out some memory previously was moved to a=
+ new
+> > > cgroup, and the original cgroup is dead, swapoff the swap device will
+> > > make the swapped in pages accounted into the process doing the swapof=
+f
+> > > instead of the new cgroup the process was moved to.
+> > >
+> > > This can be easily reproduced by:
+> > > - Setup a ramdisk (eg. ZRAM) swap.
+> > > - Create memory cgroup A, B and C.
+> > > - Spawn process P1 in cgroup A and make it swap out some pages.
+> > > - Move process P1 to memory cgroup B.
+> > > - Destroy cgroup A.
+> > > - Do a swapoff in cgroup C.
+> > > - Swapped in pages is accounted into cgroup C.
+
+In a strange way it makes sense to charge to C.
+Swap out =3D=3D free up memory.
+Swap in =3D=3D consume memory.
+C turn off swap, effectively this behavior will consume a lot of memory.
+C gets charged, so if the C is out of memory, it will punish C.
+C will not be able to continue swap in memory. The problem gets under contr=
+ol.
+
+> > >
+> > > This patch will fix it make the swapped in pages accounted in cgroup =
+B.
+
+One problem I can see with your fix is that. C is the one doing the
+bad deeds, causing consumption of system memory. Punish B is not going
+to stop C continuing doing the bad deeds. If you let C run in B's
+context limit, things get complicated very quickly.
+
+> > Can you help me understand where the code makes this behavior change?
+> > As far as I can tell, the patch just allows swap off to use the code
+> > path to avoid read ahead and avoid swap cache path. I haven't figured
+> > out where the code makes the swapin charge to B.
 >
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 79 ++++++++++++++++++++++++++++++
->  1 file changed, 79 insertions(+)
+> Yes, swapoff always call swapin_readahead to swapin pages. Before this
+> patch, the page allocate/charge path is like this:
+> (Here we assume there ia only a ZRAM device so VMA readahead is used)
+> swapoff
+>   swapin_readahead
+>     swap_vma_readahead
+>       __read_swap_cache_async
+>         alloc_pages_mpol
+>         // *** Page charge happens here, and
+>         // note the second argument is NULL
+>         mem_cgroup_swapin_charge_folio(folio, NULL, gfp_mask, entry)
 >
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
-vduse_dev.c
-> index 6209e2f00278..ccb30e98bab5 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -1376,6 +1376,83 @@ static struct vduse_dev *vduse_dev_get_from_minor(=
-int minor)
->         return dev;
->  }
+> After the patch:
+> swapoff
+>   swapin_readahead
+>     swapin_no_readahead
+>       vma_alloc_folio
+>         // *** Page charge happens here, and
+>         // note the second argument is vma->mm
+>       mem_cgroup_swapin_charge_folio(folio, vma->vm_mm, GFP_KERNEL, entry=
+)
+
+I see. Thanks for the detailed explanation. With that information, let
+me go over your patch again.
+
+> In the previous callpath (swap_vma_readahead), the mm struct info is
+> not passed to the final allocation/charge.
+> But now swapin_no_readahead can simply pass the mm struct to the
+> allocation/charge.
 >
-> +static vm_fault_t vduse_vm_fault(struct vm_fault *vmf)
-> +{
-> +       struct vduse_dev *dev =3D vmf->vma->vm_file->private_data;
-> +       struct vm_area_struct *vma =3D vmf->vma;
-> +       u16 index =3D vma->vm_pgoff;
-> +       struct vduse_virtqueue *vq;
-> +       struct vdpa_reconnect_info *info;
-> +
-> +       /* index 0  page reserved for vduse status*/
-> +       if (index =3D=3D 0) {
-> +               info =3D &dev->reconnect_info;
-> +       } else {
-> +               /* index 1+vq_number page reserved for vduse vqs*/
-> +               vq =3D &dev->vqs[index - 1];
-> +               info =3D &vq->reconnect_info;
-> +       }
-> +       if (remap_pfn_range(vma, vmf->address & PAGE_MASK,
-> +                           PFN_DOWN(virt_to_phys((void *)info->vaddr)),
-> +                           PAGE_SIZE, vma->vm_page_prot))
-> +               return VM_FAULT_SIGBUS;
-> +       return VM_FAULT_NOPAGE;
-> +}
-> +
-> +static const struct vm_operations_struct vduse_vm_ops =3D {
-> +       .fault =3D vduse_vm_fault,
-> +};
-> +
-> +static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +       struct vduse_dev *dev =3D file->private_data;
-> +       struct vdpa_reconnect_info *info;
-> +       unsigned long index =3D vma->vm_pgoff;
-> +       struct vduse_virtqueue *vq;
-> +
-> +       if (vma->vm_end - vma->vm_start !=3D PAGE_SIZE)
-> +               return -EINVAL;
-> +       if ((vma->vm_flags & VM_SHARED) =3D=3D 0)
-> +               return -EINVAL;
-> +
-> +       /*check if Userspace App map the page number larger than kernel a=
-llocated*/
-> +       if (index > dev->vq_num + 1)
-> +               return -EINVAL;
-> +
-> +       /* index 0  page reserved for vduse status*/
-> +       if (index =3D=3D 0) {
-> +               info =3D &dev->reconnect_info;
-> +       } else {
-> +               /* index 1+vq_number page reserved for vduse vqs*/
-> +               vq =3D &dev->vqs[index - 1];
-> +               info =3D &vq->reconnect_info;
-> +       }
-> +       /*check if map pages was allocated and inited by kernel */
-> +       if (info->vaddr =3D=3D 0)
-> +               return -EOPNOTSUPP;
-> +
-> +       /* check if the address is page aligned, if not,
-> +        * this address maybe damaged
-> +        */
-> +       if (virt_to_phys((void *)info->vaddr) & (PAGE_SIZE - 1))
-> +               return -EINVAL;
-> +
-> +       /* check if Userspace App mapped the correct size
-> +        * the userspace App should map one page each time
-> +        */
-> +       if (vma->vm_end - vma->vm_start !=3D PAGE_SIZE)
-> +               return -EOPNOTSUPP;
-> +       /* VM_IO: set as a memory-mapped I/O region,This will for vq info=
-rmation
-> +        * VM_PFNMAP: only need  the pure PFN
-> +        * VM_DONTEXPAND: do not need to use mremap() in this function
-> +        * VM_DONTDUMP:Do not include in the core dump
-> +        */
-
-Instead of duplicating the semantic, you need to explain why it is needed.
-
-For example I don't see how the following is useful:
-
-VM_IO: the page is not backed by any I/O page
-VM_PFNMAP: we need map it to usespace for sure, for it's not a pure PFN
-VM_DONTDUMP: including this in core dump may help to debug the
-userspace process for sure
-
-Thanks
-
-> +       vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP=
-);
-> +       vma->vm_ops =3D &vduse_vm_ops;
-> +
-> +       return 0;
-> +}
-> +
->  static int vduse_dev_open(struct inode *inode, struct file *file)
->  {
->         int ret;
-> @@ -1408,6 +1485,8 @@ static const struct file_operations vduse_dev_fops =
-=3D {
->         .unlocked_ioctl =3D vduse_dev_ioctl,
->         .compat_ioctl   =3D compat_ptr_ioctl,
->         .llseek         =3D noop_llseek,
-> +       .mmap           =3D vduse_dev_mmap,
-> +
->  };
+> mem_cgroup_swapin_charge_folio will take the memcg of the mm_struct as
+> the charge target when the entry memcg is not online.
 >
->  static struct vduse_dev *vduse_dev_create(void)
-> --
-> 2.34.3
+> > Does it need to be ZRAM? Will zswap or SSD work in your example?
 >
+> The "swapoff moves memory charge out of a dying cgroup" issue exists
 
+There is a whole class of zombie memcg issues the current memory
+cgroup model can't handle well.
+
+> for all swap devices, just this patch changed the behavior for ZRAM
+> (which bypass swapcache and uses swapin_no_readahead).
+
+Thanks for the clarification.
+
+Chris
+
+>
+> >
+> > >
+> > > The same bug exists for readahead path too, we'll fix it in later
+> > > commits.
+> >
+> > As discussed in another email, this behavior change is against the
+> > current memcg memory charging model.
+> > Better separate out this behavior change with code clean up.
+>
+> Good suggestion.
+>
+> >
+> > >
+> > > Signed-off-by: Kairui Song <kasong@tencent.com>
+> > > ---
+> > >  mm/memory.c     | 22 +++++++---------------
+> > >  mm/swap.h       |  6 ++----
+> > >  mm/swap_state.c | 33 ++++++++++++++++++++++++++-------
+> > >  mm/swapfile.c   |  2 +-
+> > >  4 files changed, 36 insertions(+), 27 deletions(-)
+> > >
+> > > diff --git a/mm/memory.c b/mm/memory.c
+> > > index fba4a5229163..f4237a2e3b93 100644
+> > > --- a/mm/memory.c
+> > > +++ b/mm/memory.c
+> > > @@ -3792,6 +3792,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> > >         rmap_t rmap_flags =3D RMAP_NONE;
+> > >         bool exclusive =3D false;
+> > >         swp_entry_t entry;
+> > > +       bool swapcached;
+> > >         pte_t pte;
+> > >         vm_fault_t ret =3D 0;
+> > >
+> > > @@ -3855,22 +3856,13 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> > >         swapcache =3D folio;
+> > >
+> > >         if (!folio) {
+> > > -               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+> > > -                   __swap_count(entry) =3D=3D 1) {
+> > > -                       /* skip swapcache and readahead */
+> > > -                       page =3D swapin_no_readahead(entry, GFP_HIGHU=
+SER_MOVABLE,
+> > > -                                               vmf);
+> > > -                       if (page)
+> > > -                               folio =3D page_folio(page);
+> > > +               page =3D swapin_readahead(entry, GFP_HIGHUSER_MOVABLE=
+,
+> > > +                                       vmf, &swapcached);
+> > > +               if (page) {
+> > > +                       folio =3D page_folio(page);
+> > > +                       if (swapcached)
+> > > +                               swapcache =3D folio;
+> > >                 } else {
+> > > -                       page =3D swapin_readahead(entry, GFP_HIGHUSER=
+_MOVABLE,
+> > > -                                               vmf);
+> > > -                       if (page)
+> > > -                               folio =3D page_folio(page);
+> > > -                       swapcache =3D folio;
+> > > -               }
+> > > -
+> > > -               if (!folio) {
+> > >                         /*
+> > >                          * Back out if somebody else faulted in this =
+pte
+> > >                          * while we released the pte lock.
+> > > diff --git a/mm/swap.h b/mm/swap.h
+> > > index ea4be4791394..f82d43d7b52a 100644
+> > > --- a/mm/swap.h
+> > > +++ b/mm/swap.h
+> > > @@ -55,9 +55,7 @@ struct page *__read_swap_cache_async(swp_entry_t en=
+try, gfp_t gfp_mask,
+> > >  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
+> > >                                     struct mempolicy *mpol, pgoff_t i=
+lx);
+> > >  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
+> > > -                             struct vm_fault *vmf);
+> > > -struct page *swapin_no_readahead(swp_entry_t entry, gfp_t flag,
+> > > -                                struct vm_fault *vmf);
+> > > +                             struct vm_fault *vmf, bool *swapcached)=
+;
+> > >
+> > >  static inline unsigned int folio_swap_flags(struct folio *folio)
+> > >  {
+> > > @@ -89,7 +87,7 @@ static inline struct page *swap_cluster_readahead(s=
+wp_entry_t entry,
+> > >  }
+> > >
+> > >  static inline struct page *swapin_readahead(swp_entry_t swp, gfp_t g=
+fp_mask,
+> > > -                       struct vm_fault *vmf)
+> > > +                       struct vm_fault *vmf, bool *swapcached)
+> > >  {
+> > >         return NULL;
+> > >  }
+> > > diff --git a/mm/swap_state.c b/mm/swap_state.c
+> > > index 45dd8b7c195d..fd0047ae324e 100644
+> > > --- a/mm/swap_state.c
+> > > +++ b/mm/swap_state.c
+> > > @@ -316,6 +316,11 @@ void free_pages_and_swap_cache(struct encoded_pa=
+ge **pages, int nr)
+> > >         release_pages(pages, nr);
+> > >  }
+> > >
+> > > +static inline bool swap_use_no_readahead(struct swap_info_struct *si=
+, swp_entry_t entry)
+> > > +{
+> > > +       return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_co=
+unt(entry) =3D=3D 1;
+> > > +}
+> > > +
+> > >  static inline bool swap_use_vma_readahead(void)
+> > >  {
+> > >         return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_ro=
+tate_swap);
+> > > @@ -861,8 +866,8 @@ static struct page *swap_vma_readahead(swp_entry_=
+t targ_entry, gfp_t gfp_mask,
+> > >   * Returns the struct page for entry and addr after the swap entry i=
+s read
+> > >   * in.
+> > >   */
+> > > -struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp_mask,
+> > > -                                struct vm_fault *vmf)
+> > > +static struct page *swapin_no_readahead(swp_entry_t entry, gfp_t gfp=
+_mask,
+> > > +                                       struct vm_fault *vmf)
+> > >  {
+> > >         struct vm_area_struct *vma =3D vmf->vma;
+> > >         struct page *page =3D NULL;
+> > > @@ -904,6 +909,8 @@ struct page *swapin_no_readahead(swp_entry_t entr=
+y, gfp_t gfp_mask,
+> > >   * @entry: swap entry of this memory
+> > >   * @gfp_mask: memory allocation flags
+> > >   * @vmf: fault information
+> > > + * @swapcached: pointer to a bool used as indicator if the
+> > > + *              page is swapped in through swapcache.
+> > >   *
+> > >   * Returns the struct page for entry and addr, after queueing swapin=
+.
+> > >   *
+> > > @@ -912,17 +919,29 @@ struct page *swapin_no_readahead(swp_entry_t en=
+try, gfp_t gfp_mask,
+> > >   * or vma-based(ie, virtual address based on faulty address) readahe=
+ad.
+> > >   */
+> > >  struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+> > > -                               struct vm_fault *vmf)
+> > > +                             struct vm_fault *vmf, bool *swapcached)
+> >
+> > At this point the function name "swapin_readahead" does not match what
+> > it does any more. Because readahead is just one of the behaviors it
+> > does. It also can do without readahead. It needs a better name. This
+> > function becomes a generic swapin_entry.
+>
+> I renamed this function in later commits, I can rename it here to
+> avoid confusion.
+>
+> >
+> > >  {
+> > >         struct mempolicy *mpol;
+> > > -       pgoff_t ilx;
+> > >         struct page *page;
+> > > +       pgoff_t ilx;
+> > > +       bool cached;
+> > >
+> > >         mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+> > > -       page =3D swap_use_vma_readahead() ?
+> > > -               swap_vma_readahead(entry, gfp_mask, mpol, ilx, vmf) :
+> > > -               swap_cluster_readahead(entry, gfp_mask, mpol, ilx);
+> > > +       if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
+> > > +               page =3D swapin_no_readahead(entry, gfp_mask, vmf);
+> > > +               cached =3D false;
+> > > +       } else if (swap_use_vma_readahead()) {
+> > > +               page =3D swap_vma_readahead(entry, gfp_mask, mpol, il=
+x, vmf);
+> > > +               cached =3D true;
+> > > +       } else {
+> >
+> > Notice that which flavor of swapin_read is actually a property of the
+> > swap device.
+> > For that device, it always calls the same swapin_entry function.
+> >
+> > One idea is to have a VFS-like API for swap devices. This can be a
+> > swapin_entry function callback from the swap_ops struct. Difference
+> > swap devices just register different swapin_entry hooks. That way we
+> > don't need to look at the device flags to decide what to do. We can
+> > just call the VFS like swap_ops->swapin_entry(), the function pointer
+> > will point to the right implementation. Then we don't need these three
+> > levels if/else block. It is more flexible to register custom
+> > implementations of swap layouts as well. Something to consider for the
+> > future, you don't have to implement it in this series.
+>
+> Interesting idea, we may look into this later.
+>
+> >
+> > > +               page =3D swap_cluster_readahead(entry, gfp_mask, mpol=
+, ilx);
+> > > +               cached =3D true;
+> > > +       }
+> > >         mpol_cond_put(mpol);
+> > > +
+> > > +       if (swapcached)
+> > > +               *swapcached =3D cached;
+> > > +
+> > >         return page;
+> > >  }
+> > >
+> > > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > > index 756104ebd585..0142bfc71b81 100644
+> > > --- a/mm/swapfile.c
+> > > +++ b/mm/swapfile.c
+> > > @@ -1874,7 +1874,7 @@ static int unuse_pte_range(struct vm_area_struc=
+t *vma, pmd_t *pmd,
+> > >                         };
+> > >
+> > >                         page =3D swapin_readahead(entry, GFP_HIGHUSER=
+_MOVABLE,
+> > > -                                               &vmf);
+> > > +                                               &vmf, NULL);
+> > >                         if (page)
+> > >                                 folio =3D page_folio(page);
+> > >                 }
+> > > --
+> > > 2.42.0
+> > >
+> > >
+>
+> Thanks!
+>
