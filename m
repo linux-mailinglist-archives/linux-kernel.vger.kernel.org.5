@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6977F24BE
+	by mail.lfdr.de (Postfix) with ESMTP id 68C937F24BD
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 05:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbjKUEBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 23:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
+        id S233311AbjKUECQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 23:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKUEBD (ORCPT
+        with ESMTP id S229447AbjKUECM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 23:01:03 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81AD0BE;
-        Mon, 20 Nov 2023 20:00:59 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AL40cih051202;
-        Mon, 20 Nov 2023 22:00:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700539239;
-        bh=NpKEUHQuhk1S1PC4cZuWT6Fcnm4AYXb8QD+XB4CAJEo=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=y2ONs/Q2VVSDEuzJxacMm+mDAvaZmrtunUuuhV5Ed15/tv6Pi/BSSnmP5Fo8MTzA2
-         KoAbkojWA5o5b9h2SxJ0aOxSRL2GR7cqbVaY9tEWggwY1V8X/NY/L6HA1n9swuIwoe
-         1deC1t68Q+RW6BMidJVgqsFVg2ZKipCgl9BkacWk=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AL40c1o068392
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Nov 2023 22:00:38 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 20
- Nov 2023 22:00:38 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 20 Nov 2023 22:00:38 -0600
-Received: from [172.24.227.94] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AL40ZVO123866;
-        Mon, 20 Nov 2023 22:00:36 -0600
-Message-ID: <0f3277cc-0e4a-42c9-920c-87e1e6d6c0ca@ti.com>
-Date:   Tue, 21 Nov 2023 09:30:34 +0530
+        Mon, 20 Nov 2023 23:02:12 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC76BE
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 20:02:09 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-28098ebd5aeso4132908a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 20:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700539329; x=1701144129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Alddf/rfwkWuk73xrqt9x2cn9i/amVeo+Vu17tmfqls=;
+        b=K1AYMHurLKjvxH+ZwpeJjQfrjdPjwLYYCWTfHNWHQpssW3C2FTaPcUlyv/wmhqKsxy
+         /ouCOWWFQi1N7fTYXmgWby8U9UsZYMgkNp0qpgrlEOpJyg11LstQQMF4HRSOgXyFL+d9
+         80aI10HvfRdo/0TRDuJaqLswg0O3BR5wySK4sgFGwaaQjpdetH7X04l4f7eOFUT8QL2D
+         uVf38ZQLGnZFFRVKQMcT/iWOyR2irPmHqLNyMHhZ5OqD86a4aWAt8s0O1lzqfTynRsit
+         NgB48ioRTZR2k2N5dnpiZXWDeQBsXWYyj88rrEWSoMEfTsw0xuGnzEwkF+v9ISyQPkXh
+         B6gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700539329; x=1701144129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Alddf/rfwkWuk73xrqt9x2cn9i/amVeo+Vu17tmfqls=;
+        b=OkwRQFwn5fLzr5X0wNpsGUCVHYNgs3UaMYFmNhTS70HEAQ+4vQvdoJeb/g+mwT4IwV
+         0oFX+x8jtY+MSeUIklEz/zsodFPhRM8z8CwUxNOnpHAv5p3Xv0Hn1ireueotGXu4jwx6
+         s8jmB9uwEpYd9RUgReZyqcKGmGYZwBIKWG374VRDFDAkPU3fsPbmpfI+JLhqq6EPPZIK
+         9ol1bGaWM+8PzZ/MpGkqRnFw0YJxSregCb+OqSAq4GDrE+kr4MbEEcYwo96XT0vcS/nq
+         a1bhVxs4aWJ5t9fpHUxFhZ0MRR1svba39N5WDrqvv5wgkTqgrzXUZ5/d7dDg9fQ2knZU
+         qbMQ==
+X-Gm-Message-State: AOJu0Yxnswh8RGbdLtZM226HasBAPJhUTjCMxnNidvzIwuHIx3io5yVK
+        fCUqiZJdGFgNMlC0s1+0p18ydUDHWY6//S/zcR8=
+X-Google-Smtp-Source: AGHT+IGNmQam00kiTPR9dc3DdUnBMVg1na3qetNi9zgurXE6FlpBpUkAjxGctybkYdkNqLUj5eJEp4y29GefjULwjTY=
+X-Received: by 2002:a17:90a:4941:b0:27d:a0e5:2a67 with SMTP id
+ c59-20020a17090a494100b0027da0e52a67mr9452482pjh.18.1700539328767; Mon, 20
+ Nov 2023 20:02:08 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] watchdog: rti_wdt: Use managed APIs to handle runtime
- PM
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-CC:     Tero Kristo <t-kristo@kernel.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>,
-        <n-francis@ti.com>
-References: <20231110100726.2930218-1-vigneshr@ti.com>
- <20231110100726.2930218-2-vigneshr@ti.com>
- <40590367-0a38-4c4c-a608-1174a5ecd5ae@roeck-us.net>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <40590367-0a38-4c4c-a608-1174a5ecd5ae@roeck-us.net>
+References: <20231120121623.119780-1-alexyonghe@tencent.com> <ZVuudtAtDqHqYJr8@slm.duckdns.org>
+In-Reply-To: <ZVuudtAtDqHqYJr8@slm.duckdns.org>
+From:   zhuangel570 <zhuangel570@gmail.com>
+Date:   Tue, 21 Nov 2023 12:01:56 +0800
+Message-ID: <CANZk6aTS9BODJiqtDSHxwhz2dV3RmaxRautR8WZfH5aYYhcQJw@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: fix invalid cpu in kick_pool
+To:     Tejun Heo <tj@kernel.org>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,75 +68,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks, I have uploaded my configuration and console logs to the following
+links, please check.
 
-On 10/11/23 20:33, Guenter Roeck wrote:
-> On 11/10/23 02:07, Vignesh Raghavendra wrote:
->> Switch to devm_pm_runtime_enable() to simplify error handling in driver
->> probe.
->>
-> 
-> This also replaces the call to pm_runtime_resume_and_get() without
-> explanation.
-> Worse, the next patch conditionally re-introduces pm_runtime_put_sync()
-> on the probe function.
-> 
->> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
->> ---
->>   drivers/watchdog/rti_wdt.c | 30 ++++++++----------------------
->>   1 file changed, 8 insertions(+), 22 deletions(-)
->>
->> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
->> index 8e1be7ba0103..163bdeb6929a 100644
->> --- a/drivers/watchdog/rti_wdt.c
->> +++ b/drivers/watchdog/rti_wdt.c
->> @@ -236,12 +236,8 @@ static int rti_wdt_probe(struct platform_device
->> *pdev)
->>       if (wdt->freq < 32768)
->>           wdt->freq = wdt->freq * 9 / 10;
->>   -    pm_runtime_enable(dev);
->> -    ret = pm_runtime_resume_and_get(dev);
->> -    if (ret < 0) {
->> -        pm_runtime_disable(&pdev->dev);
->> -        return dev_err_probe(dev, ret, "runtime pm failed\n");
->> -    }
->> +    devm_pm_runtime_enable(dev);
-> 
-> devm_pm_runtime_enable() returns an error code. I don't think ignoring it
-> is a good idea.
-> 
+https://raw.githubusercontent.com/zhuangel/misc/main/debug/workqueue/consol=
+e.log
+https://raw.githubusercontent.com/zhuangel/misc/main/debug/workqueue/config=
+-6.7.rc1
+https://raw.githubusercontent.com/zhuangel/misc/main/debug/workqueue/config=
+-4.18.0-348.el8.x86_64
 
+The issue was first discovered in my BM machine and for ease of debugging,
+I ran a virtual machine of the same case and reproduced it. My test virtual
+machine was installed from centos 8.5.2111 DVD (origin kernel is 4.18.0-348=
+)
+and then the kernel was updated from the 6.7.rc1 source code. The virtual
+machine ran on 4 CPU, 8G memory and some virtio devices.
 
-Oops, yes...
+My investigation show, when "workqueue.unbound_cpus" and "isolcpus" are
+configured as same cpuset, this will make the "wq_unbound_cpumask" as an
+empty set, when some idle work task try to set "wake_cpu" from
+"cpumask_any_distribute", an invalid CPU will be set, then may trigger
+panic.
 
->> +    pm_runtime_get_noresume(dev);
-> 
-> Is this functionally identical to pm_runtime_resume_and_get() ?
-> That would require further explanation. Why is it not necessary
-> to resume here ?
+To be honestly, I am not really known why there is a "not-present page"
+exception, after I remove "workqueue.unbound_cpus" from command line or
+apply this patch to the running kernel, the system could boot successfully.
 
-include/linux/pm_runtime.h ::
- pm_runtime_resume_and_get - Bump up usage counter of a device and
-resume it.
-
-vs
-
-pm_runtime_get_noresume - Bump up runtime PM usage counter of a device.
-
-During probe, device is already active. Hence, there is really no need
-to call driver level runtime_resume() callback as there is really no
-context to resume from. Driver currently doesnt have runtime_pm calls
-which I intend to add as a later patch. I guess, its probably better to
-move this patch to same series.
-
-Also, missed a call to pm_runtime_put_noidle() in the error path.
+On Tue, Nov 21, 2023 at 3:07=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Mon, Nov 20, 2023 at 08:16:23PM +0800, Yong He wrote:
+> > With incorrect unbound workqueue configurations, this may introduce ker=
+nel
+> > panic, because cpumask_any_distribute() will not always return a valid =
+cpu,
+> > such as one set the 'isolcpus' and 'workqueue.unbound_cpus' into the sa=
+me
+> > cpuset, and this will make the @pool->attrs->__pod_cpumask an empty set=
+,
+> > then trigger panic like this:
+>
+> This shouldn't have happened. Can you share the configuration and the ful=
+l
+> dmesg? Let's fix the problem at the source.
+>
+> Thanks.
+>
+> --
+> tejun
 
 
-So for now I will respin 2/2 as standalone fix and repost along with
-runtime_pm support.
 
-Apologies, for the delayed response!
-
--- 
-Regards
-Vignesh
+--=20
+=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=
+=80=94=E2=80=94
+   zhuangel570
+=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=
+=80=94=E2=80=94
