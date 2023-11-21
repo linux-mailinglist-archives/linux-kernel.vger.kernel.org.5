@@ -2,136 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8527F3371
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3027F3372
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbjKUQPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S229780AbjKUQQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:16:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbjKUQPn (ORCPT
+        with ESMTP id S229749AbjKUQQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:15:43 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01olkn2055.outbound.protection.outlook.com [40.92.66.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110A3D5C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:15:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rz2IIS9VT+vNNypS5OTm+GAxfq2rx2j635xrLr1MEhveBspw3FziVv5XEHACPVdN5CJ6kepfgft2yNr2HSB+pC44flHv3t4GdqqDhCQHC2cv4Wcg09uxKqEGN5j9HtCRJnR0zbC7DVIBpfQy0YzE4ukcjXy6og42LzG+xFO36GEtS0ugSxLOpQgfCNipx87JGEI1vf+hPFXs4rV4rUEeHRMNr7kZSnGN+Iske/YW8y420McR1JZUvL3O8EZEvUi1k4LbgUsD03xuL6CzCkLtGLuJp+usKMsLGf3guZN0+88sqFS8VqRWfAnQUItaiPHicYBczOlh0Vh6FwEX+NEwBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yUzNLr+cwGdy045lqg+bNpl3hY3ODB4hHXj2I01kkIw=;
- b=GxErmJjo2MhJkE5u3WE6CAdE93PmEpmf4/gNIMCjyxZholD6UyBLjx5875FubrUQ20xraY8+nsxHf7wVjWVUZq3cLjkRAp6F7B6v11Kz/hQATf2RlDlv3zwr3NQEueXtTTlVQl1Ss+U0KxTMuX9YrgOjt0t9E/r9q16+2AMdTGGa9QYqadJQSSVq/tbL5SEhBZ8l/eqhNHxzUyjcnYjG6y9fpe5jhB+yjb3dioHruKmICnnR4jtzl6ytoQ4ZyABy4ZsLS6n8i0kN1fMknaMoKxmG5LkQz89IKO74iec7IxLuVZbX4VVwJux7V6SXqnNTc9arJq0tO2vNNGO9DZQonw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yUzNLr+cwGdy045lqg+bNpl3hY3ODB4hHXj2I01kkIw=;
- b=nCTJJq/Q5nwnnjeHJdRktWGhBt1E6TFAVf0pHTw48gRcdcFBs9n+CsV+FmL9DSqmE6nIwURWhsKLSLRYKGanBQk9TBl36V3/1cHNqrnnz+YV1cTBXcFyGc8b471bnnqfn2w2HallWGABMAyUYYNTxPQ7k9Qa2PGW2uuzda024sxjuYy8W+5cHJCrgcLv+hAdHvsRR9GGz1r3BHuAMhPEMS8CyNezb/E3aBGZbCwyaKQ+jeh+ulVukwWz+wXa9ERjV4iS2w7dA0hHOE0COqDi2BY7TkHAfwoS+INtoKRWZSIIDqFyp9ElYKAD8arnsyEYtxtXeX3LLvGxQ55PmabGIg==
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
- by PR3P193MB1117.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:a4::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
- 2023 16:15:38 +0000
-Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::fdd2:7dbf:e16c:f4a4]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- ([fe80::fdd2:7dbf:e16c:f4a4%4]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 16:15:38 +0000
-Message-ID: <VI1P193MB07527A880D3276B6415F29E499BBA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-Date:   Wed, 22 Nov 2023 00:15:36 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] kasan: Improve free meta storage in Generic KASAN
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev@googlegroups.com, ryabinin.a.a@gmail.com,
-        glider@google.com, vincenzo.frascino@arm.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <202311212204.c9c64d29-oliver.sang@intel.com>
- <VI1P193MB07520067C14EFDFECCC0B4C399BBA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
- <CA+fCnZfTJwfmO-OYcUst0fsWhRa+MzDtkv1N_bMob9_1BivdJA@mail.gmail.com>
-From:   Juntong Deng <juntong.deng@outlook.com>
-In-Reply-To: <CA+fCnZfTJwfmO-OYcUst0fsWhRa+MzDtkv1N_bMob9_1BivdJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [qJuxwt9riZ4A+iesZwU7TztC3P0OFlIS]
-X-ClientProxiedBy: LO2P123CA0004.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:a6::16) To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:800:32::19)
-X-Microsoft-Original-Message-ID: <29437f37-f64b-4d40-be3f-3dd5f568a53e@outlook.com>
+        Tue, 21 Nov 2023 11:16:18 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC22194
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:16:15 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9beb865a40so5379676276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:16:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700583374; x=1701188174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=X7132CXfUB1dIK7Gmp7xy1yfmtHIvsYahpiV3MBz0a0=;
+        b=GP/UPil69kydzqFR/hqtFscKDaQbzKReKFtFme1qlG2Yxy+1vPzF6cxPT40968hAn+
+         Fsa9jfaRM0B7V0mYD1nQljQEW0DXDAgnvdeatlX4az6frMQdM026ofn9PF3GllanBx+o
+         aqX8bTFJ8Qhnrp+37EN1S/XXzjpawnUPb6ldq5c6tU56Ku38wcLmPCWO9Wfyw6boGNTv
+         jju4IOfTwPoeCqgwO39pQFE/HYubslzIHTs6MyZk2BOEIZB7JsCCa6UE60KLyKCl/RvV
+         ALEF6E55HzSHasOBzAjnzehFyHrvjY9RZGH3BuzxvVXMHV4VKZYqfDSaNBsPUyiCEVC/
+         gPxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700583374; x=1701188174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X7132CXfUB1dIK7Gmp7xy1yfmtHIvsYahpiV3MBz0a0=;
+        b=QuNN7g11PaU13YNpq+M+ZgRAevMDO9/7Qd60UCft/msN951JQVBN6QAEBPTMJeRg/4
+         ztpO7p3f38MpXbpMNUvA6iHyXesMa2xRvbAJq1KomA25mXhtdlR8Yb4ow1aSNIYBzNMB
+         W0RzG3GQqqfLLU/93G6u0XgmJy3epst42BE6xk2A1yKlQXsrb7YyjcmJu+NmpHsnd6uJ
+         UobTlNC81CqhCYzhRr/hN2HxNFDOp8e73oa6MtOGdIqbdFjR6pvpDhSL5tgirwaXH+oA
+         LPrSmkIGbdR04eFPTXQswRddldCLnLHbH98NzgQbtfidVGh/mHQILNOCJkYvmjVEoLsp
+         2btQ==
+X-Gm-Message-State: AOJu0Ywh47GoMevP4niJO8OcpwiqQB8zTSN19rqc4RUr8Vuhfyhyiw5E
+        eDYiDO/PvkxBEJfHIyH43qd1oHWaFLV1bw==
+X-Google-Smtp-Source: AGHT+IGi9uK16aYMAYQhI90N2Dt00CS1k9ov+suyCQkx5en9XvS7iOSQ5LAGauyh7JBmkqcgxMMsew==
+X-Received: by 2002:a5b:351:0:b0:daf:686c:4919 with SMTP id q17-20020a5b0351000000b00daf686c4919mr10494867ybp.18.1700583374213;
+        Tue, 21 Nov 2023 08:16:14 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
+        by smtp.gmail.com with ESMTPSA id j4-20020a258b84000000b00d9a3fe483cfsm773101ybl.23.2023.11.21.08.16.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 08:16:13 -0800 (PST)
+Date:   Tue, 21 Nov 2023 08:16:13 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH 07/34] perf/arm: optimize opencoded atomic find_bit() API
+Message-ID: <ZVzXzbbQq2QEYtgs@yury-ThinkPad>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+ <20231118155105.25678-8-yury.norov@gmail.com>
+ <20231121155344.GB1938@willie-the-truck>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|PR3P193MB1117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6610bd59-392c-44d5-0d4a-08dbeaad193b
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: G7il+3OTQjRSM4i0SxyTbBIytEMqcR6eWkSPbzrmC4JDOU32nhJmH24275QT5dRXysby6hqbyGcXO6yzlWrMg4DgNV8ue2vypL4NFiZE9xcjlBzfFCnIm5o0YD9TE65kCn1LlDNVjUaAVxm3qsd9FZ7bQcoaJ+Wylh+Vuxr5q0NefIE4F6bp7va/NAYFrRZVAJVdZOur3uvdFPH57ChC8dWrYuCnZGJdscTgsddWEETXIyDNOI7cqYfhdn7G3b5PfcRRTXgC8399cqnPtRyUseWxzDxfi7TaDDmho6ErvIe9sIYP2qX7ZUxDtpWzxsq7iGjoCjnWN6FB/Iawglkyv84XcRJ9pTk3cE4cQe+ZNbI5gBz+xP7QDsk/mWOcFfEPfcwAUWn1uBngQu84986fJL1tfeKh5+T/iZ37zEyRGevwAXoII4NuvTi2aQjJiXPGTs4jS2ge67MMYb+eC3UcTxzetxqRaOcDSFeII1sYLtkM9YzjLMG1ylTaMI+e7atvA2WcDqNUSCUIWLvDcxY1sdXcqQMn1UzGqC1F6FimZjwyhys6hG3vYt5tfQwePRVO
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q25rbWNIc0tUR2hESGVvVTU4a2hhd0NjQ1ZYYlFGaW1ock9uSWV1S1hWWk14?=
- =?utf-8?B?R3pZNlA1alFPTnZIS3MrbWJwZUVQRDVML3ZlY3V3bzN5R05YU1ZnKzkwTUFs?=
- =?utf-8?B?MEpNY2JiVDBzR3lZckVCVC9iR2I2RVRtZkxuNmE0Q2gyRnJDTHEvdGE2c2dn?=
- =?utf-8?B?V1JtQUJXWUlBd2xkamJzVGRBUWNxbW8yODQ0YnViTDNZTDBSSXhVTGlYRHNZ?=
- =?utf-8?B?UWZ6eVZTTW14c0tLOWZ2dUlWUlM4RnQwOUlEYzhpZnU0cDRITC9RTTVCSmcx?=
- =?utf-8?B?Qld0VnBtNG9DdEtreWRSVWNxc0VhREYvMUZucGFrTU9DU09Ha2JFNzExYjkz?=
- =?utf-8?B?YXNaK0VrTVNzQ1RlaXNUM2JRblRxR0VIOFV6ck5LUmdMY1JxbWZEcTA2UGRm?=
- =?utf-8?B?eEpvbW9KQngxOVloZ2NuY2JPaVhHQWhTMWxZdEhNcVN0WDNkOGcvN2ZibCtG?=
- =?utf-8?B?c1pqa0VrVFE3K2RrL1NVZTc5K1ZwT1lMVEtySjdEek83ZFdTTFV6ZUx5NGVO?=
- =?utf-8?B?ZjQwbjZ6K3N3WHZTTGdMUlVNSzhxWkJzWmM0RFA1d2NZTG9LRkdSbnF2NnhW?=
- =?utf-8?B?SjVZYTZxcDZKVG1zRXZuRmEvQko1cWNhSDFNdDRKcnpXek1zZDJiOVpua0I2?=
- =?utf-8?B?Vk55NVN4bzhIamtSZGI1Mmp2R2NIbVhNamtYLzBZU2dEWWkwZW1CUlpKU3Fj?=
- =?utf-8?B?VGtkMGZSam1ONHg3c1pQeDNsaDFFWnY4U2ZyM0tUcFVtOVJSVDhNOTNNczY3?=
- =?utf-8?B?eDVqbjZ5QnlyTncrU3VRRVpOdzZkcnJod1VKeDVzYU05OHZ0WFB1dzQvVWQx?=
- =?utf-8?B?SGsyNXZzN2Z5VFFEZ2dwUUJuOEVqdG9oREhyYnltVXI3NGt5WGtJcWl2S21J?=
- =?utf-8?B?aEhyVTVJM2hHUW9yK2ZCeUtZWVcyb0UvSlhXQ1hnY2MzZUlGMFpwVVFlU2dq?=
- =?utf-8?B?SFVnbUl4SFpzRVErMXFZY3FOVHZELzV2NDluZ29KUjhIc0dkNW5wa2tuNTNw?=
- =?utf-8?B?clczTEc0NUVQSGROWm5DTVZOQW1LVVdNdVMySVd2a2ZOMlBNblFLYkxiUito?=
- =?utf-8?B?UE0xcmVhc1dCd3o3eTJoQTNtNlJPaXByaS9PdGIxbk9WbTl4aElGUGlhSzEw?=
- =?utf-8?B?bUQ4WUxyTGNUVFZnUFdFRUNiY1lNaTlVQjR5cXcycDQwQ2xnV0JYUkp5dkVG?=
- =?utf-8?B?c1RKTzRUTXAyK0duaGNCcFZSVytlNHdmckZoN3V6b2lHVDZvc2lxNVZwU0dx?=
- =?utf-8?B?Z3FIWUZaQjhoc1dJNnlKZ1hqZjAyK3JJKzNHUE9wSUpUYmFia0FOM29ya2FY?=
- =?utf-8?B?M05zUnBydmxHVG15UURrdy9Ua3NLVlJ1UGNyZGpwUlpTOTlQcmtLVWxKNE5u?=
- =?utf-8?B?eGtQemdSZ2dIWnBGaHdScUdYaUR1a1hkdHRkZVFCZFlwdEpLT3ZDbU1JYVJs?=
- =?utf-8?B?MUxBWVRLKy8xalNSVE1kcWMyTDlBMFIwZ1BxOExsOGdEbmRDQ3BjR2tBTm00?=
- =?utf-8?B?YVFXd2hzeE5RUmZKZGx5ZWlvTkdrWXFSRmtOd0RZaE9iUzhZVkMwajZXcUlM?=
- =?utf-8?B?QzFDVEVFOFA0YVVlZlc0dS9OZ0pvS3FFTm1PbysrWXpyVTVIU2thY3FkdEF0?=
- =?utf-8?Q?FYcXP8rzkChSWAJNGoVJl82Sh8fFdtO3nveJToDJX7VU=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6610bd59-392c-44d5-0d4a-08dbeaad193b
-X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 16:15:37.9322
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3P193MB1117
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121155344.GB1938@willie-the-truck>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/22 0:05, Andrey Konovalov wrote:
-> On Tue, Nov 21, 2023 at 5:03 PM Juntong Deng <juntong.deng@outlook.com> wrote:
->>
->> This bug is caused by the fact that after improving the free meta
->> storage, kasan_metadata_size() continues to calculate the metadata
->> size according to the previous storage method.
->>
->> I will fix this in a separate patch.
+On Tue, Nov 21, 2023 at 03:53:44PM +0000, Will Deacon wrote:
+> On Sat, Nov 18, 2023 at 07:50:38AM -0800, Yury Norov wrote:
+> > Switch subsystem to use atomic find_bit() or atomic iterators as
+> > appropriate.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  drivers/perf/arm-cci.c        | 23 +++++------------------
+> >  drivers/perf/arm-ccn.c        | 10 ++--------
+> >  drivers/perf/arm_dmc620_pmu.c |  9 ++-------
+> >  drivers/perf/arm_pmuv3.c      |  8 ++------
+> >  4 files changed, 11 insertions(+), 39 deletions(-)
+> > 
+> > diff --git a/drivers/perf/arm-cci.c b/drivers/perf/arm-cci.c
+> > index 61de861eaf91..70fbf9d09d37 100644
+> > --- a/drivers/perf/arm-cci.c
+> > +++ b/drivers/perf/arm-cci.c
+> > @@ -320,12 +320,8 @@ static int cci400_get_event_idx(struct cci_pmu *cci_pmu,
+> >  		return CCI400_PMU_CYCLE_CNTR_IDX;
+> >  	}
+> >  
+> > -	for (idx = CCI400_PMU_CNTR0_IDX; idx <= CCI_PMU_CNTR_LAST(cci_pmu); ++idx)
+> > -		if (!test_and_set_bit(idx, hw->used_mask))
+> > -			return idx;
+> > -
+> > -	/* No counters available */
+> > -	return -EAGAIN;
+> > +	idx = find_and_set_bit(hw->used_mask, CCI_PMU_CNTR_LAST(cci_pmu) + 1);
 > 
-> Hi,
-> 
-> Please send a v2 with the fix folded in instead.
-> 
-> Thanks!
+> CCI400_PMU_CNTR0_IDX is defined as 1, so isn't this wrong?
 
-OK, I will send patch V2.
+You're right. Will fix in v2
+ 
+> [...]
+> 
+> > diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+> > index 30cea6859574..e41c84dabc3e 100644
+> > --- a/drivers/perf/arm_dmc620_pmu.c
+> > +++ b/drivers/perf/arm_dmc620_pmu.c
+> > @@ -303,13 +303,8 @@ static int dmc620_get_event_idx(struct perf_event *event)
+> >  		end_idx = DMC620_PMU_MAX_COUNTERS;
+> >  	}
+> >  
+> > -	for (idx = start_idx; idx < end_idx; ++idx) {
+> > -		if (!test_and_set_bit(idx, dmc620_pmu->used_mask))
+> > -			return idx;
+> > -	}
+> > -
+> > -	/* The counters are all in use. */
+> > -	return -EAGAIN;
+> > +	idx = find_and_set_next_bit(dmc620_pmu->used_mask, end_idx, start_idx);
+> 
+> It might just be me, but I'd find this a tonne easier to read if you swapped
+> the last two arguments around so that the offset came before the limit in
+> the new function.
+
+I personally agree, but we already have find_next_*_bit(addr, nbits, offset)
+functions, and having atomic versions of the same with different order
+of arguments will make it even more messy...
+
+Thanks,
+        Yury
