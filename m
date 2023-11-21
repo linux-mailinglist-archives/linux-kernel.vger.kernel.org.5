@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C65C7F2E7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECDF7F2E74
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbjKUNjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:39:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S234255AbjKUNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbjKUNi7 (ORCPT
+        with ESMTP id S233728AbjKUNiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:38:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B031AA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:38:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700573935; x=1732109935;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=MSzyROW+eg8j5VdX5osOYn/JezMBvb/pBdbyg2NLhRo=;
-  b=POIsoRT8LzD2cIDmK2KzOfHqjQwUVaGlIJ3d/za7PmxPYCjI8z5zbczn
-   0xa6vAtVLGlg1aBpcJpslT3l0lu5cLfCNkw5Yx8oAifsW/fx/be+nf2JD
-   R64Ph2m3ySpyKoxA8DwFLLQSOKIA//fP5g+oETDx5erasb+dybVYx6+P5
-   Cisigvxsl4+WGtV4vz5no4rbEwgGqdeePaRJRB4gFKK/hUJ5N6ywGiLL7
-   mY+mXYhaGmGj6M0nvrPr+DCeajo7XWxvU2vVMannRJ/Xo7eIHJ/gip4dJ
-   424cY9EWXkPeHAY9OGa9/upA86q2k+Iz6xbsAU2t64oqLOuwEJ2zUx3ir
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="390696969"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="390696969"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 05:38:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="766650343"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="766650343"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 Nov 2023 05:38:18 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5QxD-0007ph-10;
-        Tue, 21 Nov 2023 13:38:15 +0000
-Date:   Tue, 21 Nov 2023 21:37:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Foley <pefoley2@pefoley.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-Subject: arch/um/drivers/pcap_kern.c:18:6: sparse: sparse: symbol
- 'pcap_init_kern' was not declared. Should it be static?
-Message-ID: <202311212152.kqZWYPEr-lkp@intel.com>
+        Tue, 21 Nov 2023 08:38:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8902CD52
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:37:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 746AAC433C9;
+        Tue, 21 Nov 2023 13:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700573877;
+        bh=dM931tHIvx5PgNza4hqCxEgSnaT/GM+RuhzruNQGcQs=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=sR3ePWLZlRHca+ae7IPYtfSGqAr0/bHVAEqyfaDO2CzV+1wt9BrIgYtWnTv0+Kx/r
+         N341b6KrUP6Vmukg2st+9QUzrJefvybEWb8tD4G50EXn2shObI+eXkvp4525Gbm0fs
+         cmSgYPw9EM/WrUUeiWhn384sL2hLAb4tqZOu3fZE03IAYi/PKtKkJEgNXMK7Tc61nh
+         zt3Kaag7f/XOZhN20FSBRD3ainOgbo1Qgka96I26IeyV8B6Y91nny6F+orzA04dzL+
+         CmqCyKlwzCuavAC8afoYMjJUTXO+qCacucfx8M2QZb8JzFjru3+XKuVm3GSNQsp+Lh
+         jERuwSl9YY8+Q==
+Date:   Tue, 21 Nov 2023 14:37:52 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Input Devices <linux-input@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Mavroudis Chatzilazaridis <mavchatz@protonmail.com>,
+        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        LinuxCat <masch77.linuxcat@gmail.com>,
+        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
+In-Reply-To: <ZVyr-of1X4RudpWG@archie.me>
+Message-ID: <nycvar.YFH.7.76.2311211435050.29220@cbobk.fhfr.pm>
+References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com> <ZVyr-of1X4RudpWG@archie.me>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,43 +59,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
-commit: 2c4d3841a82b88ae8a7b518dc6206f84f68e705a um: Avoid pcap multiple definition errors
-date:   9 months ago
-config: um-randconfig-r133-20231121 (https://download.01.org/0day-ci/archive/20231121/202311212152.kqZWYPEr-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311212152.kqZWYPEr-lkp@intel.com/reproduce)
+On Tue, 21 Nov 2023, Bagas Sanjaya wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311212152.kqZWYPEr-lkp@intel.com/
+> Hi Thorsten and all,
+> 
+> On Thu, Nov 02, 2023 at 09:11:42PM +0700, Bagas Sanjaya wrote:
+> > Hi,
+> > 
+> > I notice a regression report on Bugzilla [1]. Quoting from it:
+> > 
+> > > Hello,
+> > > After upgrading from 6.5.9 to 6.6.0, my keyboard started acting really weird in its wireless mode, key actions sent are completely wrong, see video attached. 
+> > > 
+> > > Most keys are perceived as either E, 3 or F7, with F8 and <, as well. 
+> > > 
+> > > Modifier keys (CTRL, ALT, ALT GR, Shift and Super) are working normally, as well as media control keys (pause/play, previous, next, mute and sound up/down).
+> > > 
+> > > The keyboard works as expected if it's wired.
+> > 
+> > Another reporter bisected the regression:
+> > 
+> > > Bisected to 
+> > > 
+> > > 9d1bd9346241cd6963b58da7ffb7ed303285f684 is the first bad commit
+> > > commit 9d1bd9346241cd6963b58da7ffb7ed303285f684
+> > > Author: Mavroudis Chatzilazaridis <mavchatz@protonmail.com>
+> > > Date: Sun Jul 16 18:23:44 2023 +0000
+> > > 
+> > > HID: logitech-dj: Add support for a new lightspeed receiver iteration
+> > > 
+> > > The lightspeed receiver for the Pro X Superlight uses 13 byte mouse reports
+> > > without a report id. The workaround for such cases has been adjusted to
+> > > handle these larger packets.
+> > > 
+> > > The device now reports the status of its battery in wireless mode and
+> > > libratbag now recognizes the device and it can be configured with Piper.
+> > > 
+> > > https://github.com/libratbag/libratbag/pull/1122
+> > > 
+> > > Co-developed-by: Filipe Laíns <lains@riseup.net>
+> > > Signed-off-by: Filipe Laíns <lains@riseup.net>
+> > > Signed-off-by: Mavroudis Chatzilazaridis <mavchatz@protonmail.com>
+> > > Reviewed-by: Bastien Nocera <hadess@hadess.net>
+> > > Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+> > > 
+> > > drivers/hid/hid-ids.h | 1 +
+> > > drivers/hid/hid-logitech-dj.c | 11 ++++++++---
+> > > 2 files changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > See Bugzilla for the full thread.
+> > 
+> > Anyway, I'm adding this regression to regzbot:
+> > 
+> > #regzbot introduced: 9d1bd9346241cd https://bugzilla.kernel.org/show_bug.cgi?id=218094
+> > #regzbot title: Logitech G915 Wireless Keyboard key event only detects few key codes
+> > #regzbot link: https://streamable.com/ac6l8u
+> > 
+> 
+> There's no reply from culprit author nor linux-input people (did they miss
+> this regression?). And on Bugzilla, other reporters replied that reverting
+> the culprit fixed the regression.
+> 
+> FYI, there's similar Bugzilla report on [1].
 
-sparse warnings: (new ones prefixed by >>)
->> arch/um/drivers/pcap_kern.c:18:6: sparse: sparse: symbol 'pcap_init_kern' was not declared. Should it be static?
-   arch/um/drivers/pcap_kern.c:53:5: sparse: sparse: symbol 'pcap_setup' was not declared. Should it be static?
+As there was no reaction from Mavroudis in order to figure out why he is 
+not observing the issues the other reporters do and what to do to fix 
+those, I already do have revert in my queue for -rc3.
 
-vim +/pcap_init_kern +18 arch/um/drivers/pcap_kern.c
+My first guess would be that the extra buttons in the extended report are 
+not properly reflected in the emulated report descriptor, but that 
+wouldn't explain why it worked for the author of the commit.
 
-    17	
-  > 18	void pcap_init_kern(struct net_device *dev, void *data)
-    19	{
-    20		struct uml_net_private *pri;
-    21		struct pcap_data *ppri;
-    22		struct pcap_init *init = data;
-    23	
-    24		pri = netdev_priv(dev);
-    25		ppri = (struct pcap_data *) pri->user;
-    26		ppri->host_if = init->host_if;
-    27		ppri->promisc = init->promisc;
-    28		ppri->optimize = init->optimize;
-    29		ppri->filter = init->filter;
-    30	
-    31		printk("pcap backend, host interface %s\n", ppri->host_if);
-    32	}
-    33	
+So revert it is, and once Marvoudis resurfaces, we can try again for some 
+of later releases.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jiri Kosina
+SUSE Labs
+
