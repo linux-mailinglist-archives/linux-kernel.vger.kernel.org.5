@@ -2,51 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620177F2E34
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742247F2E3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbjKUNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S233593AbjKUN1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjKUNZT (ORCPT
+        with ESMTP id S229514AbjKUN1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:25:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8B71BB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:25:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1E16C433C8;
-        Tue, 21 Nov 2023 13:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700573115;
-        bh=5h1dRKlWyHsnS2iAX+ZBjDivjot+UuM0uKEgmm27lSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mb6XfF2Au4nWSAJGBsxKS/vMcj+cqXxZ/8Xau5tFbJUk54vS5AHF5pdMlnBHdjJK0
-         FOhcdSvbpwK3y7lfPGWA4fyp+/SHtW5M4eV3eAwpDQyGBYzfZS7zF5t78cRw7HKGMs
-         MwKk794GUPEOTmemKRUE3bd6p3wVxAto/VFBFW31qPZN2Zgdr8lhXsD1fCtH7486of
-         EtJGrTL3onmt/tZ4jW6Uty6talm+6Wj5EcOMT0jbCB+NTWQ2VWQpWr4EtJLJlJuj0p
-         00YVYBlaol8ec2holPUtIDPLpPCI5kmTuvyLQl4+k6D8p/0y60fLZ5RdH4nNysYsXS
-         WJdbJToZ/i7KQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r5Qkn-0000u4-1j;
-        Tue, 21 Nov 2023 14:25:26 +0100
-Date:   Tue, 21 Nov 2023 14:25:25 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Puliang Lu <puliang.lu@fibocom.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: option: modify Fibocom to DELL custom modem
- FM101R-GL
-Message-ID: <ZVyvxbrCxSos0B6W@hovoldconsulting.com>
-References: <20231026123506.26453-1-puliang.lu@fibocom.com>
+        Tue, 21 Nov 2023 08:27:21 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AC11A3;
+        Tue, 21 Nov 2023 05:27:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rH4XXg0XG5JBDQqriE53B4ksPcxyNMkV8utydydYqlE=; b=GptbOphakDgWkgtVyn9kVmSZut
+        2zdws9QRSTONl2GEr2a+OIBZrE3jJeI0D17zlWvHurC71V/x0OEPF6ffv784k7DLlc2aBOLE19Z4o
+        c0tv6/9S+iTe2UkhfYWBVaiamG9EJTPv9gb0UnQ2E+mlufTRS4ZpZA3hqA7HZlRX89aSKzHu3MJ1l
+        WcQbFRHumzI7PayZveu3slicUkYT4CsYU60SPqpcv75Ku2ucJtsjbZP45akWiW287IkZ3VbUy79a4
+        0dZN0gESalrlMs8ThicaN1EXR0io2uxwvg6b/yBrH8ePzb7FDP5MvhbzHS0L7bDI0qET3jb0ExwyI
+        bdYgIQPw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33300)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r5QmU-00073r-1c;
+        Tue, 21 Nov 2023 13:27:10 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r5QmS-0004DC-UA; Tue, 21 Nov 2023 13:27:08 +0000
+Date:   Tue, 21 Nov 2023 13:27:08 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH RFC 10/22] drivers: base: Move cpu_dev_init() after
+ node_dev_init()
+Message-ID: <ZVywLPwhILp083Jk@shell.armlinux.org.uk>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLV-00CTxS-QB@rmk-PC.armlinux.org.uk>
+ <095c2d24-735b-4ce2-ba2e-9ec2164f2237@redhat.com>
+ <ZVHXk9JG7gUjtERt@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026123506.26453-1-puliang.lu@fibocom.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZVHXk9JG7gUjtERt@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,34 +73,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 08:35:06PM +0800, Puliang Lu wrote:
-> Modify the definition of Fibocom USB serial option driver
-> FM101R-GL different variants
+On Mon, Nov 13, 2023 at 08:00:19AM +0000, Russell King (Oracle) wrote:
+> On Mon, Nov 13, 2023 at 10:58:46AM +1000, Gavin Shan wrote:
+> > 
+> > 
+> > On 11/7/23 20:30, Russell King (Oracle) wrote:
+> > > From: James Morse <james.morse@arm.com>
+> > > 
+> > > NUMA systems require the node descriptions to be ready before CPUs are
+> > > registered. This is so that the node symlinks can be created in sysfs.
+> > > 
+> > > Currently no NUMA platform uses GENERIC_CPU_DEVICES, meaning that CPUs
+> > > are registered by arch code, instead of cpu_dev_init().
+> > > 
+> > > Move cpu_dev_init() after node_dev_init() so that NUMA architectures
+> > > can use GENERIC_CPU_DEVICES.
+> > > 
+> > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > ---
+> > > Note: Jonathan's comment still needs addressing - see
+> > >    https://lore.kernel.org/r/20230914121612.00006ac7@Huawei.com
+> > > ---
+> > >   drivers/base/init.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > 
+> > With Jonathan's comments addressed:
 > 
-> - VID:PID 413C:8213, FM101R-GL ESIM are laptop M.2 cards (with
->   MBIM interfaces for Linux)
-> 
-> - VID:PID 413C:8215, FM101R-GL are laptop M.2 cards (with
->   MBIM interface for Linux)
-> 
-> 0x8213: mbim, tty
-> 0x8215: mbim, tty
-> 
-> Signed-off-by: Puliang Lu <puliang.lu@fibocom.com>
- 
-> -#define DELL_PRODUCT_FM101R			0x8213
-> -#define DELL_PRODUCT_FM101R_ESIM		0x8215
-> +#define DELL_PRODUCT_FM101R_ESIM		0x8213
-> +#define DELL_PRODUCT_FM101R				0x8215
+> That needs James' input, which is why I made the note on the patch.
 
-You have an extra tab here so that the values are no longer aligned.
+I'm going to be posting the series without RFC soon, and it will be
+with Jonathan's comment unaddressed - because as I've said several
+times it needs James' input and we have sadly not yet received that.
 
->  
->  #define KYOCERA_VENDOR_ID			0x0c88
->  #define KYOCERA_PRODUCT_KPC650			0x17da
+Short of waiting until James can respond, I don't think there are
+any other alternatives.
 
-Now applied with a slightly updated commit message:
+I do hope we can get this queued up for v6.8 though.
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-linus&id=a1092619dd28ac0fcf23016160a2fdccd98ef935
-
-Johan
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
