@@ -2,357 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA837F347D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDEE7F3482
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbjKURGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:06:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S230424AbjKURI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:08:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjKURGO (ORCPT
+        with ESMTP id S230019AbjKURIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:06:14 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E5C12A;
-        Tue, 21 Nov 2023 09:06:09 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59b5484fbe6so60756267b3.1;
-        Tue, 21 Nov 2023 09:06:08 -0800 (PST)
+        Tue, 21 Nov 2023 12:08:55 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCE1113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:08:48 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-548c548c40aso4105137a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:08:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700586368; x=1701191168; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7yvtQ4Ebo/Kb44aEbWh7yd1BLC9SYBFw1dHgRjmsTHQ=;
-        b=i2tz4qIVWVkOJ6TDKRMadqmHcJ283aprr/uBoHXtSSwKjHb2G2ng2V6oH4WL2sm+z7
-         pq7feLAoECK+gfj9//495/2aV/dZHHpHTGLQ8OkOgzeXD5HofRzt2jjqpYLdkh33fq+B
-         up7fDiv1tG7F95MLKtiaSdUUkl9UaWNbz8Ds7wRxvkqnZQXx2Lev2jSgvqfc1tgWYq3n
-         GjrPc6JnqONJfbf+tfCDjfm8XaXARnafMIXpQChpKuNoR2wzFaUrQeZI7imAmRyFIz33
-         BQJxWn9YiNkIgJ/8ZaU7nurYq4WdPUYTlEneRtWyKCk8d9cjeqSkCUF2Jnjt+g4hl/Jt
-         oYgQ==
+        d=linaro.org; s=google; t=1700586527; x=1701191327; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2Z8Oswmnv5l8+iIKs5J+rFuuGNL4BAW7e05DiFReYg=;
+        b=xVqMFvJa6iZTr3zwkqoEhgdIkHtDwTLDV1+ezRVqmK56VxiGkEZ5s6fDs4nEKxJSLN
+         4jNrLd5LlxYL8fJfoWoDbxTtUd0tq6mCS2CQeY5CbWPOqlcMMPM/NYD3W0L+8spNwRwn
+         aV8iNoeyrCeexDgL5+16bT6oSHNHZhS0shXcMHFwhzFvaS7GM/QtWq/9t4driV0UZNP6
+         qpa2HM5peO/x92Epez4ymmIy//7Y4fYtB/wR9pR6d37f4GXBtgdU4lPviTDlusOwCxiy
+         gVhFUS/rVjjbuPs323kiU5wJoW3j4R6v22GQG9+YE2mCv684AkM2TTxALx+O03n5I7UP
+         FdOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700586368; x=1701191168;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7yvtQ4Ebo/Kb44aEbWh7yd1BLC9SYBFw1dHgRjmsTHQ=;
-        b=RoHNim6wFdSI+BF6bMcO8ELm3pRnwSqWBQyBF5h6XlgnpW3r+lAEM1kYFkq9MAHYfl
-         R2rVebFjL8sWrxH8nbIW5XrJ+XZVM3kCPjLVEXJaWnslB9Px7hsa3Vi93SNiFwULitSR
-         3pUtIcNC9UuWDCzMxZeBkkhdYZuCxETGInPoCnHCvK43GFGrQqk2LpP5qwiR7gscy3Tp
-         kVFSWDPbuSFPZLsRYEk8iGzFd+4rpjpot9/H/UC+lQKC0Iu7Ds7uGjou5JiN+K5kSXbM
-         CSjfPnyS+rIYfEODttq2eUxuWUSMTH87uWQtZl9mxxWbbkNAA5LTBqqeYuvxk79WO44C
-         ngkQ==
-X-Gm-Message-State: AOJu0YyC5kYCsYzlHWyDdaLQ5e0f3hJgU965DjrLgXs04WZe4GGnpNZf
-        vcRB04qUFhx+WBlhdb/26bE=
-X-Google-Smtp-Source: AGHT+IGgYGW74+xEboeRnBl++DsL5KBqe1zC/1Rgzefx/B1dmv/vwJy33R/2Fsyv4huD1plo9vANQQ==
-X-Received: by 2002:a05:690c:b19:b0:5ca:d579:52f with SMTP id cj25-20020a05690c0b1900b005cad579052fmr5902440ywb.35.1700586368016;
-        Tue, 21 Nov 2023 09:06:08 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
-        by smtp.gmail.com with ESMTPSA id o81-20020a817354000000b005b37c6e01f9sm3122576ywc.90.2023.11.21.09.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 09:06:07 -0800 (PST)
-Date:   Tue, 21 Nov 2023 09:06:06 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>, David.Laight@aculab.com,
-        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>
-Subject: Re: [PATCH 22/30] lib: Implement
- find_{first,next,nth}_notandnot_bit, find_first_andnot_bit
-Message-ID: <ZVzjfpEfT2mz6B59@yury-ThinkPad>
-References: <20221122203932.231377-1-mathieu.desnoyers@efficios.com>
- <20221122203932.231377-23-mathieu.desnoyers@efficios.com>
+        d=1e100.net; s=20230601; t=1700586527; x=1701191327;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2Z8Oswmnv5l8+iIKs5J+rFuuGNL4BAW7e05DiFReYg=;
+        b=H8CeRFAocM2Ij4ojofyEAJTysE17cgjpLdIMTAwQW4V4ZrlOUYl2uq31XQL12rPxgI
+         sMmG7/yTEVb8LH11eP4xp1rJLNnoqZD/2tv04ozS/nGVe/5bH2bearc6tW27jTe/+t8q
+         wvvjHeiV2p//gj0DLRjG2TJypsdkCzNXSImMDDgCrDYrA40CsI+4NFyfH37qQOyyqzOP
+         jhSmUNG/Rl7/mqG29+nrp8hmqWVBKxf2Y7djYzTMntwSCO/lSR6Sx8SeFdJEZazaDooL
+         FPRok7QH7hlhgSTdanzV+ru7sNu2u/0jTBx5VB2yZCH5AM1gkXLzlQ/k/fPqBkS1BJr3
+         eFbg==
+X-Gm-Message-State: AOJu0Yz+KB7145R3aP2iZt8ijmOPJF5YennZi5aeQSnCbn0VXyub4YKS
+        87ga0Ga1s05L0tXiT8mDQhajrA==
+X-Google-Smtp-Source: AGHT+IFU+ucUurpD3NInIELWrMjSq/3YnWFAmOoNBFAmW6JPS743rtRV3AJeTDeclL+9mxrOC242qQ==
+X-Received: by 2002:a17:906:3c17:b0:9ad:8a9e:23ee with SMTP id h23-20020a1709063c1700b009ad8a9e23eemr2994699ejg.13.1700586526782;
+        Tue, 21 Nov 2023 09:08:46 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id ka13-20020a170907990d00b009a9fbeb15f2sm5481360ejc.62.2023.11.21.09.08.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 09:08:46 -0800 (PST)
+Message-ID: <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
+Date:   Tue, 21 Nov 2023 18:08:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221122203932.231377-23-mathieu.desnoyers@efficios.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, mripard@kernel.org,
+        dri-devel@lists.freedesktop.org, wenst@chromium.org,
+        kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+ <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+ <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+ <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+ <20231121175531.085809f5@collabora.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231121175531.085809f5@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 22, 2022 at 03:39:24PM -0500, Mathieu Desnoyers wrote:
-> Allow finding the first, next, or nth bit within two input bitmasks
-> which is zero in both masks.
+On 21/11/2023 17:55, Boris Brezillon wrote:
+> On Tue, 21 Nov 2023 17:11:42 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
 > 
-> Allow fiding the first bit within two input bitmasks which is set in
-> first mask and cleared in the second mask. find_next_andnot_bit and
-> find_nth_andnot_bit already exist, so find the first bit appears to be
-> missing.
+>> Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto:
+>>> On 08/11/2023 14:20, Steven Price wrote:  
+>>>> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote:  
+>>>>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
+>>>>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
+>>>>> this means that in order to request poweroff of cores, we are supposed
+>>>>> to write a bitmask of cores that should be powered off!
+>>>>> This means that the panfrost_gpu_power_off() function has always been
+>>>>> doing nothing.
+>>>>>
+>>>>> Fix powering off the GPU by writing a bitmask of the cores to poweroff
+>>>>> to the relevant PWROFF_LO registers and then check that the transition
+>>>>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+>>>>> registers.
+>>>>>
+>>>>> While at it, in order to avoid code duplication, move the core mask
+>>>>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+>>>>> function, used in both poweron and poweroff.
+>>>>>
+>>>>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>  
+>>>
+>>>
+>>> Hi,
+>>>
+>>> This commit was added to next recently but it causes "external abort on
+>>> non-linefetch" during boot of my Odroid HC1 board.
+>>>
+>>> At least bisect points to it.
+>>>
+>>> If fixed, please add:
+>>>
+>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>
+>>> [    4.861683] 8<--- cut here ---
+>>> [    4.863429] Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c8802c
+>>> [    4.871018] [f0c8802c] *pgd=433ed811, *pte=11800653, *ppte=11800453
+>>> ...
+>>> [    5.164010]  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
+>>> [    5.171276]  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+>>> [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+>>> [    5.183743]  handle_fasteoi_irq from generic_handle_domain_irq+0x28/0x38
+>>> [    5.190417]  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
+>>> [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+>>> [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+>>>
+>>> Full log:
+>>> https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
+>>>   
+>>
+>> Hey Krzysztof,
+>>
+>> This is interesting. It might be about the cores that are missing from the partial
+>> core_mask raising interrupts, but an external abort on non-linefetch is strange to
+>> see here.
 > 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> ---
->  include/linux/find.h | 123 +++++++++++++++++++++++++++++++++++++++++--
->  lib/find_bit.c       |  42 +++++++++++++++
->  2 files changed, 161 insertions(+), 4 deletions(-)
+> I've seen such external aborts in the past, and the fault type has
+> often been misleading. It's unlikely to have anything to do with a
+
+Yeah, often accessing device with power or clocks gated.
+
+> non-linefetch access, but it might be caused by a register access after
+> the clock or power domain driving the register bank has been disabled.
+> The following diff might help validate this theory. If that works, we
+> probably want to make sure we synchronize IRQs before disabling in the
+> suspend path.
 > 
-> diff --git a/include/linux/find.h b/include/linux/find.h
-> index ccaf61a0f5fd..43c3db92a096 100644
-> --- a/include/linux/find.h
-> +++ b/include/linux/find.h
-> @@ -14,6 +14,8 @@ unsigned long _find_next_and_bit(const unsigned long *addr1, const unsigned long
->  					unsigned long nbits, unsigned long start);
->  unsigned long _find_next_andnot_bit(const unsigned long *addr1, const unsigned long *addr2,
->  					unsigned long nbits, unsigned long start);
-> +unsigned long _find_next_notandnot_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +					unsigned long nbits, unsigned long start);
->  unsigned long _find_next_zero_bit(const unsigned long *addr, unsigned long nbits,
->  					 unsigned long start);
->  extern unsigned long _find_first_bit(const unsigned long *addr, unsigned long size);
-> @@ -22,8 +24,14 @@ unsigned long __find_nth_and_bit(const unsigned long *addr1, const unsigned long
->  				unsigned long size, unsigned long n);
->  unsigned long __find_nth_andnot_bit(const unsigned long *addr1, const unsigned long *addr2,
->  					unsigned long size, unsigned long n);
-> +unsigned long __find_nth_notandnot_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +					unsigned long size, unsigned long n);
->  extern unsigned long _find_first_and_bit(const unsigned long *addr1,
->  					 const unsigned long *addr2, unsigned long size);
-> +extern unsigned long _find_first_andnot_bit(const unsigned long *addr1,
-> +					 const unsigned long *addr2, unsigned long size);
-> +extern unsigned long _find_first_notandnot_bit(const unsigned long *addr1,
-> +					 const unsigned long *addr2, unsigned long size);
->  extern unsigned long _find_first_zero_bit(const unsigned long *addr, unsigned long size);
->  extern unsigned long _find_last_bit(const unsigned long *addr, unsigned long size);
->  
-> @@ -95,15 +103,14 @@ unsigned long find_next_and_bit(const unsigned long *addr1,
->  
->  #ifndef find_next_andnot_bit
->  /**
-> - * find_next_andnot_bit - find the next set bit in *addr1 excluding all the bits
-> - *                        in *addr2
-> + * find_next_andnot_bit - find the next bit set in *addr1, cleared in *addr2
->   * @addr1: The first address to base the search on
->   * @addr2: The second address to base the search on
->   * @size: The bitmap size in bits
->   * @offset: The bitnumber to start searching at
->   *
-> - * Returns the bit number for the next set bit
-> - * If no bits are set, returns @size.
-> + * Returns the bit number for the next bit set in *addr1, cleared in *addr2
-> + * If no such bits are found, returns @size.
->   */
->  static inline
->  unsigned long find_next_andnot_bit(const unsigned long *addr1,
-> @@ -124,6 +131,37 @@ unsigned long find_next_andnot_bit(const unsigned long *addr1,
->  }
->  #endif
->  
-> +#ifndef find_next_notandnot_bit
+> --->8---
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
+> index 55ec807550b3..98df66e5cc9b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_regs.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
+> @@ -34,8 +34,6 @@
+>           (GPU_IRQ_FAULT                        |\
+>            GPU_IRQ_MULTIPLE_FAULT               |\
+>            GPU_IRQ_RESET_COMPLETED              |\
+> -          GPU_IRQ_POWER_CHANGED                |\
+> -          GPU_IRQ_POWER_CHANGED_ALL            |\
 
-You don't need ifdefs for new functions. If arch people will add their
-implementations, they will protect generic version themself.
+This helped, at least for this issue (next-20231121). Much later in
+user-space boot I have lockups:
+watchdog: BUG: soft lockup - CPU#4 stuck for 26s! [kworker/4:1:61]
 
-> +/**
-> + * find_next_notandnot_bit - find the next bit cleared in both *addr1 and *addr2
-> + * @addr1: The first address to base the search on
-> + * @addr2: The second address to base the search on
-> + * @size: The bitmap size in bits
-> + * @offset: The bitnumber to start searching at
-> + *
-> + * Returns the bit number for the next bit cleared in both *addr1 and *addr2
-> + * If no such bits are found, returns @size.
-> + */
-> +static inline
-> +unsigned long find_next_notandnot_bit(const unsigned long *addr1,
-> +		const unsigned long *addr2, unsigned long size,
-> +		unsigned long offset)
+[   56.329224]  smp_call_function_single from
+__sync_rcu_exp_select_node_cpus+0x29c/0x78c
+[   56.337111]  __sync_rcu_exp_select_node_cpus from
+sync_rcu_exp_select_cpus+0x334/0x878
+[   56.344995]  sync_rcu_exp_select_cpus from wait_rcu_exp_gp+0xc/0x18
+[   56.351231]  wait_rcu_exp_gp from process_one_work+0x20c/0x620
+[   56.357038]  process_one_work from worker_thread+0x1d0/0x488
+[   56.362668]  worker_thread from kthread+0x104/0x138
+[   56.367521]  kthread from ret_from_fork+0x14/0x28
 
-This should be find_next_zero_or_bit(). That way you'll avoid
-negation for both maps and be consistent with existing API.
+But anyway the external abort does not appear.
 
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val;
-> +
-> +		if (unlikely(offset >= size))
-> +			return size;
-> +
-> +		val = ~*addr1 & ~*addr2 & GENMASK(size - 1, offset);
-> +		return val ? __ffs(val) : size;
-> +	}
-> +
-> +	return _find_next_notandnot_bit(addr1, addr2, size, offset);
-> +}
-> +#endif
-> +
-> +
->  #ifndef find_next_zero_bit
->  /**
->   * find_next_zero_bit - find the next cleared bit in a memory region
-> @@ -255,6 +293,32 @@ unsigned long find_nth_andnot_bit(const unsigned long *addr1, const unsigned lon
->  	return __find_nth_andnot_bit(addr1, addr2, size, n);
->  }
->  
-> +/**
-> + * find_nth_notandnot_bit - find N'th cleared bit in 2 memory regions.
-> + * @addr1: The 1st address to start the search at
-> + * @addr2: The 2nd address to start the search at
-> + * @size: The maximum number of bits to search
-> + * @n: The number of set bit, which position is needed, counting from 0
-> + *
-> + * Returns the bit number of the N'th cleared bit.
-> + * If no such, returns @size.
-> + */
-> +static inline
-> +unsigned long find_nth_notandnot_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +				unsigned long size, unsigned long n)
+Best regards,
+Krzysztof
 
-Same here. find_nth_zero_or_bit()
-
-Thanks,
-Yury
-
-> +{
-> +	if (n >= size)
-> +		return size;
-> +
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val =  (~*addr1) & (~*addr2) & GENMASK(size - 1, 0);
-> +
-> +		return val ? fns(val, n) : size;
-> +	}
-> +
-> +	return __find_nth_notandnot_bit(addr1, addr2, size, n);
-> +}
-> +
->  #ifndef find_first_and_bit
->  /**
->   * find_first_and_bit - find the first set bit in both memory regions
-> @@ -280,6 +344,57 @@ unsigned long find_first_and_bit(const unsigned long *addr1,
->  }
->  #endif
->  
-> +#ifndef find_first_andnot_bit
-> +/**
-> + * find_first_andnot_bit - find first set bit in 2 memory regions,
-> + *			   flipping bits in 2nd region
-> + * @addr1: The first address to base the search on
-> + * @addr2: The second address to base the search on
-> + * @size: The bitmap size in bits
-> + *
-> + * Returns the bit number for the next set bit
-> + * If no bits are set, returns @size.
-> + */
-> +static inline
-> +unsigned long find_first_andnot_bit(const unsigned long *addr1,
-> +				 const unsigned long *addr2,
-> +				 unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = *addr1 & (~*addr2) & GENMASK(size - 1, 0);
-> +
-> +		return val ? __ffs(val) : size;
-> +	}
-> +
-> +	return _find_first_andnot_bit(addr1, addr2, size);
-> +}
-> +#endif
-> +
-> +#ifndef find_first_notandnot_bit
-> +/**
-> + * find_first_notandnot_bit - find first cleared bit in 2 memory regions
-> + * @addr1: The first address to base the search on
-> + * @addr2: The second address to base the search on
-> + * @size: The bitmap size in bits
-> + *
-> + * Returns the bit number for the next cleared bit
-> + * If no bits are set, returns @size.
-> + */
-> +static inline
-> +unsigned long find_first_notandnot_bit(const unsigned long *addr1,
-> +				 const unsigned long *addr2,
-> +				 unsigned long size)
-> +{
-> +	if (small_const_nbits(size)) {
-> +		unsigned long val = (~*addr1) & (~*addr2) & GENMASK(size - 1, 0);
-> +
-> +		return val ? __ffs(val) : size;
-> +	}
-> +
-> +	return _find_first_notandnot_bit(addr1, addr2, size);
-> +}
-> +#endif
-> +
->  #ifndef find_first_zero_bit
->  /**
->   * find_first_zero_bit - find the first cleared bit in a memory region
-> diff --git a/lib/find_bit.c b/lib/find_bit.c
-> index 18bc0a7ac8ee..a1f592f2437e 100644
-> --- a/lib/find_bit.c
-> +++ b/lib/find_bit.c
-> @@ -116,6 +116,32 @@ unsigned long _find_first_and_bit(const unsigned long *addr1,
->  EXPORT_SYMBOL(_find_first_and_bit);
->  #endif
->  
-> +#ifndef find_first_andnot_bit
-> +/*
-> + * Find the first set bit in two memory regions, flipping bits in 2nd region.
-> + */
-> +unsigned long _find_first_andnot_bit(const unsigned long *addr1,
-> +				  const unsigned long *addr2,
-> +				  unsigned long size)
-> +{
-> +	return FIND_FIRST_BIT(addr1[idx] & ~addr2[idx], /* nop */, size);
-> +}
-> +EXPORT_SYMBOL(_find_first_andnot_bit);
-> +#endif
-> +
-> +#ifndef find_first_notandnot_bit
-> +/*
-> + * Find the first cleared bit in two memory regions.
-> + */
-> +unsigned long _find_first_notandnot_bit(const unsigned long *addr1,
-> +				  const unsigned long *addr2,
-> +				  unsigned long size)
-> +{
-> +	return FIND_FIRST_BIT(~addr1[idx] & ~addr2[idx], /* nop */, size);
-> +}
-> +EXPORT_SYMBOL(_find_first_notandnot_bit);
-> +#endif
-> +
->  #ifndef find_first_zero_bit
->  /*
->   * Find the first cleared bit in a memory region.
-> @@ -155,6 +181,13 @@ unsigned long __find_nth_andnot_bit(const unsigned long *addr1, const unsigned l
->  }
->  EXPORT_SYMBOL(__find_nth_andnot_bit);
->  
-> +unsigned long __find_nth_notandnot_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +				 unsigned long size, unsigned long n)
-> +{
-> +	return FIND_NTH_BIT(~addr1[idx] & ~addr2[idx], size, n);
-> +}
-> +EXPORT_SYMBOL(__find_nth_notandnot_bit);
-> +
->  #ifndef find_next_and_bit
->  unsigned long _find_next_and_bit(const unsigned long *addr1, const unsigned long *addr2,
->  					unsigned long nbits, unsigned long start)
-> @@ -173,6 +206,15 @@ unsigned long _find_next_andnot_bit(const unsigned long *addr1, const unsigned l
->  EXPORT_SYMBOL(_find_next_andnot_bit);
->  #endif
->  
-> +#ifndef find_next_notandnot_bit
-> +unsigned long _find_next_notandnot_bit(const unsigned long *addr1, const unsigned long *addr2,
-> +					unsigned long nbits, unsigned long start)
-> +{
-> +	return FIND_NEXT_BIT(~addr1[idx] & ~addr2[idx], /* nop */, nbits, start);
-> +}
-> +EXPORT_SYMBOL(_find_next_notandnot_bit);
-> +#endif
-> +
->  #ifndef find_next_zero_bit
->  unsigned long _find_next_zero_bit(const unsigned long *addr, unsigned long nbits,
->  					 unsigned long start)
-> -- 
-> 2.25.1
-> 
