@@ -2,141 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2597F24AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6478C7F24B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233263AbjKUDk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 22:40:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
+        id S233116AbjKUDnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 22:43:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKUDk5 (ORCPT
+        with ESMTP id S229447AbjKUDnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 22:40:57 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6ABA7;
-        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so4119437b3a.1;
-        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700538051; x=1701142851; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IZoBJdbZp36CmyvB8Khs+7svIVR+I1y53CDxKBQCWdg=;
-        b=lK9ornm2E2bqBCgk5CAwDrZm3TqWQu1sxZkjvApiYfR9o6RmydQ9omDpfVRlhiPm43
-         Cf4KmhurMKeQ0TokRCcRpGduSEvn81fkzho75HqS8ph2/K+2kBuruaiZ1RK4if4f99Pj
-         j1jJWJJqtshUClOrlB19m1uGnjF8sC6XPHBiADJNtxUtgfd+Co/rMfAnO2QdbTP2X7cG
-         +LnPUeXiboMlGywJYrvxFwM0IHmbhC+1WDx3pvd5tGbjf8K61jSqsfYp3Qnej5pOYB+N
-         R9297Jbk16Jx7c4RRXdqbxIHjKaaTagO2Vccd4hZJpKHuys+ebtQIhmhPkgHGVuRNHHB
-         PRAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700538051; x=1701142851;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IZoBJdbZp36CmyvB8Khs+7svIVR+I1y53CDxKBQCWdg=;
-        b=bhnAqL12B/7q4gx0ZbJnzZeF6YL9iKVcpN7DaQQlNbxOyKkF0M/9ycjnGiqE3KIqqE
-         1uhQ+67D5B3A04+tq0XsK0dW7JrCjeebg5fe6wgAzwf9vR6cY3PdpeR2cPR74LDyt0Cr
-         6RIoN1/eAEtrVnuwvLbDvQvudeqi5wSpMHt2n++Zq0ijA8dYSLRRu18j9g60NJuRLFH0
-         OIYf3bOtTrlZAxJWVTR2wtO2VRPVS5K9usJKrx4BjBuWQlZLITkKj/FFIhl5Cw/F++BP
-         pOFb/QztCYJpBE/ZmZ4OEq9UTJF6QVju6je0rwHjwxSLTBgbAwWhpwto/EvJxQ6iayDx
-         16sw==
-X-Gm-Message-State: AOJu0Yxeck4mhTp+jp38mRmRTcW+J54RMdz8CQOJtaN8BfDd2je0i1qr
-        iqdDez/WdNE6l3a5d8v6NqgdAetZjRq8kA==
-X-Google-Smtp-Source: AGHT+IFa3t8GraPV4UkdOb+JpXKEhE/IcU4J6HGAQT8ZBsEJNgfkoK6EaFNXIxTkbtYjYbsx8mDvQg==
-X-Received: by 2002:a05:6a21:1446:b0:17d:f127:d435 with SMTP id oc6-20020a056a21144600b0017df127d435mr5724123pzb.45.1700538051158;
-        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
-Received: from localhost.localdomain ([154.85.51.139])
-        by smtp.gmail.com with ESMTPSA id w16-20020a170902d71000b001c61acd5bd2sm6753152ply.112.2023.11.20.19.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 19:40:50 -0800 (PST)
-From:   Yusong Gao <a869920004@gmail.com>
-To:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
-        dwmw2@infradead.org, juergh@proton.me, zohar@linux.ibm.com,
-        herbert@gondor.apana.org.au, lists@sapience.com,
-        dimitri.ledkov@canonical.com
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v3] sign-file: Fix incorrect return values check
-Date:   Tue, 21 Nov 2023 03:40:44 +0000
-Message-Id: <20231121034044.847642-1-a869920004@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 20 Nov 2023 22:43:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144A5E8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 19:43:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99CE1C433C7;
+        Tue, 21 Nov 2023 03:43:41 +0000 (UTC)
+Date:   Mon, 20 Nov 2023 22:43:56 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+Message-ID: <20231120224356.7e9e5423@gandalf.local.home>
+In-Reply-To: <b8c1ae88-5c12-488c-a7af-42119ebd55d2@paulmck-laptop>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+        <20231107215742.363031-48-ankur.a.arora@oracle.com>
+        <20231107192703.1c493431@gandalf.local.home>
+        <b8c1ae88-5c12-488c-a7af-42119ebd55d2@paulmck-laptop>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some wrong return values check in sign-file when call OpenSSL
-API. The ERR() check cond is wrong because of the program only check the
-return value is < 0 instead of <= 0. For example:
-1. CMS_final() return 1 for success or 0 for failure.
-2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
-3. i2d_TYPEbio() return 1 for success and 0 for failure.
-4. BIO_free() return 1 for success and 0 for failure.
+On Mon, 20 Nov 2023 16:28:50 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Link: https://www.openssl.org/docs/manmaster/man3/
-Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing with a raw signature")
+> On Tue, Nov 07, 2023 at 07:27:03PM -0500, Steven Rostedt wrote:
+> > On Tue,  7 Nov 2023 13:57:33 -0800
+> > Ankur Arora <ankur.a.arora@oracle.com> wrote:
+> >   
+> > > With PREEMPTION being always-on, some configurations might prefer
+> > > the stronger forward-progress guarantees provided by PREEMPT_RCU=n
+> > > as compared to PREEMPT_RCU=y.
+> > > 
+> > > So, select PREEMPT_RCU=n for PREEMPT_VOLUNTARY and PREEMPT_NONE and
+> > > enabling PREEMPT_RCU=y for PREEMPT or PREEMPT_RT.
+> > > 
+> > > Note that the preemption model can be changed at runtime (modulo
+> > > configurations with ARCH_NO_PREEMPT), but the RCU configuration
+> > > is statically compiled.  
+> > 
+> > I wonder if we should make this a separate patch, and allow PREEMPT_RCU=n
+> > when PREEMPT=y?  
+> 
+> You mean independent of this series?  If so, I am not all that excited
+> about allowing a new option due to the effect on testing.  With this full
+> series, the number of test scenarios is preserved.
+> 
+> Actually, that is not exactly true, is it?  It would be if we instead had
+> something like this:
+> 
+> config PREEMPT_RCU
+> 	bool
+> 	default y if PREEMPT || PREEMPT_RT
+> 	depends on !PREEMPT_NONE && !PREEMPT_VOLUNTARY
+> 	select TREE_RCU
+> 
+> Any reason why this would be a problem?
 
-Signed-off-by: Yusong Gao <a869920004@gmail.com>
----
-V1, V2: Clarify the description of git message.
----
- scripts/sign-file.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Yes, because with this series, there isn't going to be PREEMPT_NONE,
+PREEMPT_VOLUNTARY and PREEMPT as a config option. I mean, you could define
+the preference you want at boot up. But it could change at run time.
 
-diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-index 598ef5465f82..dcebbcd6bebd 100644
---- a/scripts/sign-file.c
-+++ b/scripts/sign-file.c
-@@ -322,7 +322,7 @@ int main(int argc, char **argv)
- 				     CMS_NOSMIMECAP | use_keyid |
- 				     use_signed_attrs),
- 		    "CMS_add1_signer");
--		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
-+		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) <= 0,
- 		    "CMS_final");
- 
- #else
-@@ -341,10 +341,10 @@ int main(int argc, char **argv)
- 			b = BIO_new_file(sig_file_name, "wb");
- 			ERR(!b, "%s", sig_file_name);
- #ifndef USE_PKCS7
--			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
-+			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) <= 0,
- 			    "%s", sig_file_name);
- #else
--			ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
-+			ERR(i2d_PKCS7_bio(b, pkcs7) <= 0,
- 			    "%s", sig_file_name);
- #endif
- 			BIO_free(b);
-@@ -374,9 +374,9 @@ int main(int argc, char **argv)
- 
- 	if (!raw_sig) {
- #ifndef USE_PKCS7
--		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
-+		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) <= 0, "%s", dest_name);
- #else
--		ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
-+		ERR(i2d_PKCS7_bio(bd, pkcs7) <= 0, "%s", dest_name);
- #endif
- 	} else {
- 		BIO *b;
-@@ -396,7 +396,7 @@ int main(int argc, char **argv)
- 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
- 	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
- 
--	ERR(BIO_free(bd) < 0, "%s", dest_name);
-+	ERR(BIO_free(bd) <= 0, "%s", dest_name);
- 
- 	/* Finally, if we're signing in place, replace the original. */
- 	if (replace_orig)
--- 
-2.34.1
+> 
+> Or to put it another way, do you know of anyone who really wants
+> a preemptible kernel (CONFIG_PREEMPT=y, CONFIG_PREEMPT_NONE=n
+> and CONFIG_PREEMPT_VOLUNTARY=n) but also non-preemptible RCU
+> (CONFIG_PREEMPT_RCU=y)?  If so, why?  I am having some difficulty seeing
+> how this combination could be at all helpful.  And if it is not helpful,
+> we should not allow people to shoot themselves in the foot with it.
 
+With the new preemption model, NONE, VOLUNTARY and PREEMPT are now going to
+determine when NEED_RESCHED is set as supposed to NEED_RESCHED_LAZY. As
+NEED_RESCHED_LAZY only schedules at kernel / user space transaction, and
+NEED_RESCHED will schedule when possible (non-preempt disable section).
+
+ Key: L - NEED_RESCHED_LAZY - schedule only at kernel/user boundary
+      N - NEED_RESCHED - schedule whenever possible (like PREEMPT does today)
+
+			SCHED_OTHER	REAL-TIME/DL
+			  Schedule	  Schedule
+
+NONE:			      L		     L
+
+VOLUNTARY:		      L		     N
+
+PREEMPT:		      N		     N
+
+
+So on NONE, NEED_RESCHED_LAZY is set only on scheduling SCHED_OTHER and RT.
+Which means, it will not schedule until it goes into user space (*).
+
+On VOLUNTARY, NEED_RESCHED is set on RT/DL tasks, and LAZY on SCHED_OTHER.
+So that RT and DL get scheduled just like PREEMPT does today.
+
+On PREEMPT, NEED_RESCHED is always set on all scheduling.
+
+(*) - caveat - After the next tick, if NEED_RESCHED_LAZY is set, then
+NEED_RESCHED will be set and the kernel will schedule at the next available
+moment, this is true for all three models!
+
+There may be more details to work out, but the above is basically the gist
+of the idea. Now, what do you want to do with RCU_PREEMPT? At run time, we
+can go from NONE to PREEMPT full! But there may be use cases that do not
+want the overhead of always having RCU_PREEMPT, and will want RCU to be a
+preempt_disable() section no matter what.
+
+Unless we can switch between RCU_PREEMPT and !RCU_PREEMPT at run time, the
+dependency on RCU_PREEMPT tied to PREEMPT doesn't make sense anymore.
+
+> 
+> > This could allow us to test this without this having to be part of this
+> > series.  
+> 
+> OK, if you mean for testing purposes but not to go to mainline without
+> the rest of the series, I am good with that idea.
+> 
+> And thank you to Ankur for preserving non-preemptible RCU for those of us
+> using system that are adequately but not generously endowed with memory!
+
+Exactly. It sounds like having non-preempt RCU is agnostic to the
+preemption model of the system, which is why I think we need to make them
+disjoint.
+
+-- Steve
