@@ -2,150 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFACC7F39FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E7E7F39FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbjKUXCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 18:02:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        id S234775AbjKUXC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 18:02:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbjKUXCC (ORCPT
+        with ESMTP id S234727AbjKUXCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 18:02:02 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37F7DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:01:58 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-28396793876so3993721a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:01:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700607718; x=1701212518; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q274GXv74+m8N7WixAqPtztHuSezd+UPyNtaPdOC9ws=;
-        b=bYvJCVoxA0rNkHGpfPGECOPagqBCKIl/2G6uLxM4zE+g99RdmXdzjSmfO9z8f73Nyk
-         4jHwIr7oWUWPpir+xc1NXaNz1COCzDYL+21RdNMxJQmdJ/takOyPfCvN0oEsWQ81x7s9
-         g4WWFduBxgndAkS8f8TYh3+eRhCNT7wG77IGLpKJlhVoztA4YFOdjSVrvCcLXhVW8GN/
-         tm5To+QGGWvXGjjmZJH0z617qwpqalHb/fv8tfM9JiJUdP1J93zHfLNbSE99x8W2pzIX
-         9RxogWNBu6M311iJEv/u7bPqKPhkmLUzFkDrebThA0rKvxlyal2l3FIVVJPg2hpheqvg
-         DuVg==
+        Tue, 21 Nov 2023 18:02:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1B8D40
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:02:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700607741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=35Vx+tN6z+QqmLpji6c9JPBO8+KdiIzwgrs9kWGJbWw=;
+        b=GTAJiTzPWY5N4+vv9rEherPEx/KRuyw8wk6bGp+pv7OipwlNsqh9GahGHeqDMn8vJu+JtY
+        CZAdGpa0V+jwr+L/yO/xXWsGAhlnPapsg8H0amAInkVn5Wtea2LEKv3BmHnp3mVghlFaS0
+        Dgm5F+vBSZ9ss9+72saTX/3+rh6uaNI=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-336-Az5llB5LO1yk1phc6CuFDg-1; Tue, 21 Nov 2023 18:02:19 -0500
+X-MC-Unique: Az5llB5LO1yk1phc6CuFDg-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc2be064b8so2700185ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:02:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607718; x=1701212518;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1700607738; x=1701212538;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q274GXv74+m8N7WixAqPtztHuSezd+UPyNtaPdOC9ws=;
-        b=Kv+0AP6IhWzvc2wHdQF+OpDQFFbBBxH1yVua5/0VEASqQhhAMp8v9StvWBIZNYRYlY
-         uPdsGFpsBs06bm9Cb5/fbVQl4zdhLNzmM2FTN1HwXIpN1IFvMvP+BhFDQ6miAe9wV8J1
-         Zx3j9xkGoGwvOIaooUI2456T9uISm4qz0ODIHS0rIB7jDzb40I2fL9jF6jTTGmcxFyhW
-         CJW/hZOcXuEyXWs4na7zxhAhXNC7cIgNgF2VC7/TVtwVcQKwxHBOzkTpyOkc1wtRetQA
-         LF92JSAOKmdbKSme/fTGVuk/p5BKlFCoLGNaOz3g5J506BlqXZ8ZozYHRoiuQed7Y3YK
-         FESA==
-X-Gm-Message-State: AOJu0YxY7GMw8i+aFneV+6TsC6f2zhMF/t+aklaMXMD0Ycltn7o/C8Hn
-        GFAy1zae1FnHEZm9keEOGOs2KQ==
-X-Google-Smtp-Source: AGHT+IF4uzhe1PzbxwaRnrKdideD6jqUSRCFck+9VbyO0iaOVvG1KziLM3y7sB3tdsbSvhW8QV4jXw==
-X-Received: by 2002:a17:90a:eb8a:b0:280:5e8:58be with SMTP id o10-20020a17090aeb8a00b0028005e858bemr571458pjy.48.1700607717789;
-        Tue, 21 Nov 2023 15:01:57 -0800 (PST)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id h1-20020a17090acf0100b002791d5a3e29sm55269pju.6.2023.11.21.15.01.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 15:01:57 -0800 (PST)
-Date:   Tue, 21 Nov 2023 23:01:53 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [PATCH 1/3] perf/core: Update perf_adjust_freq_unthr_context()
-Message-ID: <ZV024X0VKUwExQio@google.com>
-References: <20231120221932.213710-1-namhyung@kernel.org>
- <CAP-5=fWFeqEK4woCj2ngjxMi4B4EZ3y0gLN+qNu4oNfp4wG8xA@mail.gmail.com>
- <ZVvqj0pR2ZebBF3L@google.com>
- <CAM9d7cgAPxyNxMTz-uoPExcg4e1h5iXCuR5ZOy7UUt5gjbd2VA@mail.gmail.com>
+        bh=35Vx+tN6z+QqmLpji6c9JPBO8+KdiIzwgrs9kWGJbWw=;
+        b=Dlmo6cj/ugR2ZFDGpneJ0eY85Lk326pCXf1mf7uzYhj02NEvnhNWhH5qEAU6dJl46r
+         8Xb1qbwwPVLy3BL3xN6s36dTorZnNkKDefxNEWJPa7K9b0mEBu0q49V4XeZDcv4790Tb
+         Mvk60vz45klmC9+/UJkX/iyKCffrJWeafhQ+Fo/DwX9uNXD8awb3gAERah2BoDVGd77B
+         PhbbF1Rrh1DOjdJE1hiawrjKwyM0aGhq7CwkSEjb4JhDkFpsd6yPccRim0Gf8tQHJN/s
+         TtF/INmaZepZseVKNGR4vNt5U+fE8zs6YUwsRtkO5fdpQBxqr0ZmwoHItMW4JF5eMFn8
+         wcFA==
+X-Gm-Message-State: AOJu0Yxt5Ahc4DBcnaRn7nWYh9IrxsO6ZsBU2dNMORc67HjhUfdkQYtg
+        ejTz8de1tT2og4j4I+qmeI0qWerYqVJ/YLVlDelqx1rPvaLMxhnkj6AHZFF3MCFlcALv0bUBJQ2
+        ycS0cyfBm2etCjj6vUJaM/cbj
+X-Received: by 2002:a17:903:2341:b0:1cf:6832:46c with SMTP id c1-20020a170903234100b001cf6832046cmr903762plh.6.1700607738117;
+        Tue, 21 Nov 2023 15:02:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQxNfDN/exMbNG8sxIbSIBwzNNSjvkEf3+l7v4sDzQROVAcylsUK1QJbli5gsAuBDSBNwd9g==
+X-Received: by 2002:a17:903:2341:b0:1cf:6832:46c with SMTP id c1-20020a170903234100b001cf6832046cmr903742plh.6.1700607737739;
+        Tue, 21 Nov 2023 15:02:17 -0800 (PST)
+Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
+        by smtp.gmail.com with ESMTPSA id l14-20020a170902f68e00b001ca4ad86357sm8421321plg.227.2023.11.21.15.02.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 15:02:17 -0800 (PST)
+Message-ID: <647efdf8-66aa-4ea3-8625-bf657839f6f0@redhat.com>
+Date:   Wed, 22 Nov 2023 09:02:13 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgAPxyNxMTz-uoPExcg4e1h5iXCuR5ZOy7UUt5gjbd2VA@mail.gmail.com>
-X-Spam-Status: No, score=-16.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/kvm: fix compilation on non-x86_64 platforms
+Content-Language: en-US
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     broonie@kernel.org
+References: <20231121165915.1170987-1-pbonzini@redhat.com>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20231121165915.1170987-1-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023, Namhyung Kim wrote:
 
-
-Hi Namhyung,
-
-> Hi Mingwei,
+On 11/22/23 02:59, Paolo Bonzini wrote:
+> MEM_REGION_SLOT and MEM_REGION_GPA are not really needed in
+> test_invalid_memory_region_flags; the VM never runs and there are no
+> other slots, so it is okay to use slot 0 and place it at address
+> zero.  This fixes compilation on architectures that do not
+> define them.
 > 
-> On Mon, Nov 20, 2023 at 3:24 PM Mingwei Zhang <mizhang@google.com> wrote:
-> >
-> > On Mon, Nov 20, 2023, Ian Rogers wrote:
-> > > On Mon, Nov 20, 2023 at 2:19 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >
-> > > > It was unnecessarily disabling and enabling PMUs for each event.  It
-> > > > should be done at PMU level.  Add pmu_ctx->nr_freq counter to check it
-> > > > at each PMU.  As pmu context has separate active lists for pinned group
-> > > > and flexible group, factor out a new function to do the job.
-> > > >
-> > > > Another minor optimization is that it can skip PMUs w/ CAP_NO_INTERRUPT
-> > > > even if it needs to unthrottle sampling events.
-> > > >
-> > > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > >
-> > > Series:
-> > > Reviewed-by: Ian Rogers <irogers@google.com>
-> > >
-> > > Thanks,
-> > > Ian
-> > >
-> >
-> > Can we have "Cc: stable@vger.kernel.org" for the whole series? This
-> > series should have a great performance improvement for all VMs in which
-> > perf sampling events without specifying period.
-> 
-> I was not sure if it's ok to have this performance fix in the stable series.
+> Fixes: 5d74316466f4 ("KVM: selftests: Add a memory region subtest to validate invalid flags", 2023-11-14)
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>   tools/testing/selftests/kvm/set_memory_region_test.c | 12 ++++++------
+>   1 files changed, 6 insertions(+), 6 deletions(-)
 > 
 
-Critical performance bug fix is ok to be added to stable tree, as the
-requirements are mentioned here:
-
-https://www.kernel.org/doc/Documentation/process/stable-kernel-rules.rst
-
-In particular, this patch satisfies the 2nd sub-bullet of the forth
-bullet.
-
-But let me step back. Only this patch is needed with stable tag instead
-of the whole series. This patch impact 69 lines of code. It satisfies
-the rule of within 100 lines (bullet 3).
-
-I will give a try and test it today or tomorrow and make sure we satisfy
-bullet 2.
-
-Once it gets in, bullet 1 will be satisfied as well.
-
-Overall, the intention is to improve PMU performance in VM as early as
-we can since we don't control the schedule of distro kernel upgrade and
-we don't control when end customers upgrade their running kernel. So I
-presume even adding to the stable tree may take years to see the result
-change. But if we don't do it, it may take way longer (since it does not
-contain a "Fixes" tag as well).
-
-Thanks.
--Mingwei
-
-> Thanks,
-> Namhyung
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
