@@ -2,119 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D747F288F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCB57F2891
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjKUJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54956 "EHLO
+        id S231546AbjKUJUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjKUJT1 (ORCPT
+        with ESMTP id S230126AbjKUJUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:19:27 -0500
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F085E8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:19:23 -0800 (PST)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AL41oP9001074;
-        Tue, 21 Nov 2023 10:19:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=Se6slwyvr1tGOsCXIQtaS5Bx9pGKNzcVmVzimZG4nYM=; b=be
-        VenTppvhYkI7aVVtpv/yj4ylY70HOoTx9b2epMWw/ZlEVPFD7m8P4IUkstOEDh3W
-        WVxVXwgrhn3+8Usw8mjGocKQR+Vo1XIF6WUGHewUlZRJQCQ2akUiPnTkX6bJAOo3
-        s1b0bTRnMuAhrqfXplI/dJHhWa1yWJQBE3mMGuDMvaGVhceET6msVKC2+esUyO2k
-        Gi2fdQmdFRXu3pxRUgCXeRbvFbkCbKTOHpI+DH9XeljeAF+Ul5vnspaTw5PUrOoU
-        EX7bbpYXpKZysUn+wraRCvR69gSaFb64ksUg1bpu//sr6eEzmmlkuWmkbrBA44HA
-        auJ54z/VIB+x4S8ndLzg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ugn5q1e5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 10:19:11 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C71CC10002A;
-        Tue, 21 Nov 2023 10:19:10 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2B6ED21512C;
-        Tue, 21 Nov 2023 10:19:10 +0100 (CET)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 21 Nov
- 2023 10:19:09 +0100
-Message-ID: <16304f9a-fbbb-497f-917a-c2e2b8d67d9e@foss.st.com>
-Date:   Tue, 21 Nov 2023 10:19:08 +0100
+        Tue, 21 Nov 2023 04:20:08 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A56FA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:20:03 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da41acaea52so4971874276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:20:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700558402; x=1701163202; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e0GnsYSjmMnnlfj2CWEXFz1CqUs2uGzKvSRcvkw5bjs=;
+        b=JCKgJlqfNrr/Kd0IbU4DXNllY54+Wjs3TBNKIPViw27VRn7QzfehGURVE/BCq6khIH
+         SRFGCXovd0ZCX5fdajIY4jn2R6KVA2Yx193y33q8+SX8Iw7mv5yK/Y47Iu4Ybdi1yG0R
+         pL9ySpMhZLFXOtY8CaqreGe9URFLWEKvUmQlsB7/OXAR8nOQtyp5H96H4lg7XfnDlbEG
+         h9LoMTmNnROteLbb/WjWYHDRpOjYq+nTt4yRyB+ljOP0SCfBvO29CC+nyAhX6hGNlDu0
+         VOARcusWCH3R6sdUGQ2na0xqZOItV+Y9E3deHI94trQ3mYYOsvdXFAv31d0ORwlxGzRT
+         7nFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700558402; x=1701163202;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e0GnsYSjmMnnlfj2CWEXFz1CqUs2uGzKvSRcvkw5bjs=;
+        b=ijE2CZK5ggwj84OLoTTh7Jof7blnUtyS4DoHxnj6ttnP66fLomWVSkhEbwJNxaok3r
+         PlfMHfpA3ApMtTqXQzwOpGQHVZ5sXhqd0/tiYEG2//4Q3G2CMnfVYL8j1lVrHnoKDrGX
+         1/zqDN88Yty3l97CJ6JTE/35DuZOOtvoJPvScWjnBsIIgchuEsIq4BiBnGb/QvEnoDTk
+         XYjsFQrApRI5/wRJBnRbEXsWUwSg/fUqWsjs+ECVFgzddY+nwRRCZieKSICEFsq+n4+1
+         P7Nfkuj+dylZM2xZlbB0U8HDrcMveeebAgSJvqAqtRDc/uGFtDx6W2jLu46Q+QU2BpQr
+         9lmw==
+X-Gm-Message-State: AOJu0YwzalGBawiFVnwEQE/fLJiby/TiAzLhA4HEVoOpanHcBL2q4/Cm
+        UulSQAxgi22fi5FsL8kzRYpBSYHPGqDKSwgk/wpbuQ==
+X-Google-Smtp-Source: AGHT+IGGKp46rrXxTxtTOtiXmo2Li35FgNeYDd8e5HO6aCQZjqPditR2ptVz6cb2AzXxBDV7hw/hT+XOKdph+CuSf5Y=
+X-Received: by 2002:a25:ae03:0:b0:db0:2161:5950 with SMTP id
+ a3-20020a25ae03000000b00db021615950mr10361703ybj.63.1700558402174; Tue, 21
+ Nov 2023 01:20:02 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: multi_v7_defconfig: Add SCMI reset support
-Content-Language: en-US
-To:     Etienne Carriere <etienne.carriere@foss.st.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Kevin Hilman <khilman@baylibre.com>, <soc@kernel.org>,
-        <arm@kernel.org>
-References: <20231103085400.2924282-1-etienne.carriere@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20231103085400.2924282-1-etienne.carriere@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120224919.2293730-1-dmitry.baryshkov@linaro.org>
+ <20231120224919.2293730-2-dmitry.baryshkov@linaro.org> <ac3f3304-6dcd-470a-907c-32a63d3c39cf@linaro.org>
+In-Reply-To: <ac3f3304-6dcd-470a-907c-32a63d3c39cf@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 21 Nov 2023 11:19:50 +0200
+Message-ID: <CAA8EJppOGsc1+iw-YB9FBEm2UPpyAB_4cQg94Ob4swPzXheQ7A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: connector: usb: add altmodes description
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Etienne
+On Tue, 21 Nov 2023 at 10:31, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 20/11/2023 23:00, Dmitry Baryshkov wrote:
+> > Add description of the USB-C AltModes supported on the particular USB-C
+> > connector. This is required for devices like Qualcomm Robotics RB5,
+> > which have no other way to express alternative modes supported by the
+> > hardware platform.
+> >
+> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > ---
+> >  .../bindings/connector/usb-connector.yaml     | 29 +++++++++++++++++++
+> >  1 file changed, 29 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > index 7c8a3e8430d3..c1aaac861d9d 100644
+> > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> > @@ -171,6 +171,28 @@ properties:
+> >        offer the power, Capability Mismatch is set. Required for power sink and
+> >        power dual role.
+> >
+> > +  altmodes:
+> > +    type: object
+> > +    description: List of Alternative Modes supported by the schematics on the
+> > +      particular device. This is only necessary if there are no other means to
+> > +      discover supported alternative modes (e.g. through the UCSI firmware
+> > +      interface).
+> > +
+> > +    patternProperties:
+> > +      "^(displayport)$":
+>
+> This is just a property, so should be under "properties:".
 
-On 11/3/23 09:54, Etienne Carriere wrote:
-> SCMI reset controllers are used in the ARMv7 STMicroelectronics stm32mp
-> boards:
-> - for STM32MP13: stm32mp135f-dk
-> - for STM32MP15 boards with SCMI variant, introduced by commit 5b7e58313a77
->    ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1)")
->    * stm32mp157c-ev1-scmi
->    * stm32mp157c-ed1-scmi
->    * stm32mp157c-dk2-scmi
->    * stm32mp157a-dk1-scmi
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
-> ---
->   arch/arm/configs/multi_v7_defconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-> index 23fc49f23d25..01b3797f9317 100644
-> --- a/arch/arm/configs/multi_v7_defconfig
-> +++ b/arch/arm/configs/multi_v7_defconfig
-> @@ -1189,6 +1189,7 @@ CONFIG_PWM_TEGRA=y
->   CONFIG_PWM_VT8500=y
->   CONFIG_KEYSTONE_IRQ=y
->   CONFIG_RESET_MCHP_SPARX5=y
-> +CONFIG_RESET_SCMI=y
->   CONFIG_PHY_SUN4I_USB=y
->   CONFIG_PHY_SUN9I_USB=y
->   CONFIG_PHY_BRCM_USB=m
+Having it under properties would make adding new altmodes harder.
 
-Just one question before to apply this patch. CONFIG_RESET_SCMI is set 
-by the following dependency in drivers/reset/Kconfig:
+Inherently it should become something like
+"^(displayport|virtuallink|thunderbolt)$".
 
-RESET_CONTROLLER [=y] && (ARM_SCMI_PROTOCOL [=y] || COMPILE_TEST [=n])
+>
+> The rest looks good to me, but I don't know USB that much to judge.
+>
+> Best regards,
+> Krzysztof
+>
 
-CONFIG_ARM_SCMI is already set in multi_v7_defconfig.
-CONFIG_RESET_CONTROLLER seems to be set in each platform Kconfig.
 
-So not sure we need to force CONFIG_RESET_SCMI in the multi_v7_defconfig.
-
-Regards
-Alex
+-- 
+With best wishes
+Dmitry
