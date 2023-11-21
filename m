@@ -2,368 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4997F2A42
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192E97F2A46
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbjKUKXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S231977AbjKUKZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbjKUKXV (ORCPT
+        with ESMTP id S230304AbjKUKZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:23:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB131716;
-        Tue, 21 Nov 2023 02:23:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700562197; x=1732098197;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=n9L2Z7hxtH76thMSJ8sge0eGAUVpaTfTNaM7+7rPOlw=;
-  b=cbv+w45occ4SZ8VA/RANmAbB7cx37tPkNLq5Mk2Dz8OInRtZ5dslg6Qy
-   JsjAP9r8aVFxWC4U0ElxS5L0XazSX/PHBHaCVJZzzjY7gIjleLwgkzWph
-   7NNE4M/DBhHyE2r7Hueb+1vFSASxtecqHdoTWgRzVI+kVHW8JqsTLql0D
-   d4gRF29hOt4BpWpQVQxElelyBMbeYPlouWZDEa3J0Ci/JZaUt5DTuyc54
-   9V5Ru5rzHsIAJ1t3xADKSJqlLsRigEWpdg26sMnTbju04xEw6ezPS34zK
-   ppMFxZrq52SmpB2T1peomn3tqnPXZmPwAe6lccgc8Pj9UyEMoBF/bFH21
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13353260"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="13353260"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:23:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="884160495"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="884160495"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Nov 2023 02:23:16 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 21 Nov 2023 02:23:15 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 21 Nov 2023 02:23:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BFf72iid4hTJxAsal6K/iL6qxXPsx64gT7uK3u8dKM+dRbBZGDXHWB1y5K0ycIKab5PW/v05rhngDR9nouuV9KtKsYf4mPn0fXUSnwgCNhO615yqmPfkiNUTii7eW/dNVFO1kFT/8dQ9AXuHh6b44cIx7LJx0stXLofXK0wB8DbgROdD/KzfBgP7OypsVrK/PGeNFybcO35P9lLCxAx28U2PJHYjWA318EIERSw15bhyJm9opbElrf2gPKNTvzw8gA6B/h5Py1mSwX6GlRIcYQ1wSJkhEFGq1Wr8WAjI/eR/3n2jCNlYzhYSU3gKC/RTYyTiGgO/mGWn8GgotUqERg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LJ5dxuKmPAHNckdDcznty8XQd0ULaB8QIDHy19nUlxk=;
- b=EKvxLIFmy2pXXH1b9FjsmvngsRAppjhq92n+WhUaXDDdlMJzzQpSLhUjSPViJAAS0OaUBLgKrESx2CzOfYkas88HpClwFodQ41rcgTYu79kJBTtyEhM/BK9z2YyTac5XJRRZ0rwQz803upWIIWsU9xqLVuXhHGBGDVthQvPhcPN8GLySkOymGsW5tWNsViHWg/q0fuyMu82YgUbUwRnb2R82AGQ2RXSmjVCzpYQH9ADdQKM8OQrFq5O1jcWC/yF24EuqvuE7pEDNX37IqwaPIQeCugU+ICSO2S8UGnECzTefbKdIF26mF81Ps76ALbyzWnWcA64ri6dksbOMu91Q8Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
- by PH7PR11MB6404.namprd11.prod.outlook.com (2603:10b6:510:1f8::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
- 2023 10:23:13 +0000
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3]) by MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3%7]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
- 10:23:13 +0000
-Message-ID: <8769b63d-f7b2-4bb6-8b91-ffe67805404d@intel.com>
-Date:   Tue, 21 Nov 2023 11:23:06 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next PATCH v3 2/2] octeontx2-pf: TC flower offload support
- for mirror
-To:     Suman Ghosh <sumang@marvell.com>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lcherian@marvell.com>,
-        <jerinj@marvell.com>, <horms@kernel.org>
-References: <20231121094346.3621236-1-sumang@marvell.com>
- <20231121094346.3621236-3-sumang@marvell.com>
-Content-Language: en-US
-From:   Wojciech Drewek <wojciech.drewek@intel.com>
-In-Reply-To: <20231121094346.3621236-3-sumang@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0022.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:14::9) To MW4PR11MB5776.namprd11.prod.outlook.com
- (2603:10b6:303:183::9)
+        Tue, 21 Nov 2023 05:25:16 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CB9E8;
+        Tue, 21 Nov 2023 02:25:11 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4D2AB66072F1;
+        Tue, 21 Nov 2023 10:25:08 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700562309;
+        bh=xTDhw6B0torqkaxxO598WkuvO21AtWGiswLnga/6zdw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WrcKpvdVBH/n5k5OgsCeo8xOMDk8RIGxlRxe3NurIBFzCktrdr9D0jHmLSLYqoPD8
+         1n0t/46YZw3z/j2hdIodpPo7n/pEoDNi6rWtNIWgEFG/eeZyk23AFE26M/oHyGlEXt
+         am4BYfbfibdkv/pTSpuPiPYrvLydTv53JXxtTQGktdxpQm/Dv1oxRBTCPSCpDZX1WK
+         CxCAROV+vBHAYaysnfp20LNugcx0Ta+gvlrjP4UdxXzd+LtJeoopGYJDP+889o29yR
+         gJCLA5EJczarAQTH4PdHhzuVo6iyUiMQFtUamu2TUXpOTjcXGgDacTZwCkg4GYEaEN
+         BIAX7PykJsh4A==
+Message-ID: <947c4a52-6688-46ef-9e37-087164971da5@collabora.com>
+Date:   Tue, 21 Nov 2023 11:25:05 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|PH7PR11MB6404:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f664eec-444f-4921-ed23-08dbea7bddfc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y7MkMG49i8kc8xOdJpxJRsfbrNOWKDJKTJRPCGPoQJ5/8yckAKW9vORtdQbbi/ujj/dmQwWMvGbIClXQ0IH7QACzUDQInFq1H/2NGA5CRO7cwx+poLrzmBSGaCXDNGyZzRdDRRV37ajRHUuzkxk4+Akz+9q4z8dMz2CTxMZXqqn3mVkNSW6mdzhDW3l3kZTHdmlmRFhqMFrV/djws/CMYP8e83tNBligLlewH/VWjtUv57HclMl5JeFDL4jLGdeORH8g9YoBY0i5ypTez1OIkt5SGQdze6inxEfAioJovI+CSNFnK/dwlZqgrTUPtq5LJDIZ+X+NCqdk6RvcqNbhnPWyfCzOwl1jrvC0cn8kweZBrbirx7moqsVW9RubZhK2eBxwAnVb/Imu8sQP9S6kdXV35J83CUsBmLxv3PZvju9FYME/DLqt1lUjxUz+hCFPtchyP47EtMGiinF+wjoW5gRF3cOow2cUMKoSwOJs8XkQxC/DLqheESLWC9l+KmofWHchn4qmE4S/uvJGbSiwVoCBvM+E9xylTAgjyLiB4/0iFdDR5rHInsDH+Lh7pBdyBTiL1jEVk6FK5XsdAzHfvxOchW527h/KZxI4w+X84v/7HKk286mK21TJDY39N3F5q8IUxTK9ExjgHsIXOwlnq6REDbPEDsGfPz9BsP6LgV8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(39860400002)(396003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(83380400001)(6486002)(6506007)(6512007)(478600001)(31686004)(2616005)(6666004)(26005)(82960400001)(53546011)(38100700002)(66946007)(316002)(66476007)(66556008)(44832011)(31696002)(86362001)(5660300002)(7416002)(2906002)(921008)(41300700001)(8936002)(8676002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnJCL0lJcTVBRGJid2FBdEs5NTY0KzlUbjZEajZ5RWp5R1JzT3dOUENKS1hC?=
- =?utf-8?B?MHkvc0paUXZ5elpLc2Y1OUVodXVBa1orVUFUNGhOMmhIOXkzWllNbFozL2Zx?=
- =?utf-8?B?VTVuN01pYUJlbnJzbHp6YkxUZ0VZU2VuZXBrKzdFN3Bvd1JKNDlRVkRRRDk0?=
- =?utf-8?B?V1JOYW9iU2I5SDA2dnhBNGU0U0hEamU1UC9HcXhpMzNIMGxNTEUvM0d2M1Bk?=
- =?utf-8?B?U21NRk5BS2N5RE5XZDJUQXlmSmFuUHhFL05mSGREZVBIVEhzM0hoWEl6SVNx?=
- =?utf-8?B?a3JHVGMrcGVHQ1g5cWovWGxlVlNSR0xPS0dWeW5qQUlWTERKOU94b3I5Yjly?=
- =?utf-8?B?Ym1oZ093NnJ2cGtJNHJzMlQxdUp2MnM4R1dvL2ZubUpNWUVwNU9KV1NwYjBv?=
- =?utf-8?B?N1B0K0UzenE2dGg3RW1PZzI3R3N1YlVKcW1sbnlNWDV4OUxGcCtLUUZaalVR?=
- =?utf-8?B?VDJtb0kxNUdWME9aLzBTVFNmb3BDbVdHRVFhWjkrMExEdG5MSmNQTlE0Y2xx?=
- =?utf-8?B?ODRnVTJabFBlRXlnbXd3RFpDQW5mV0xFcTlyWnRTOVppZWgyQ3BFMWVxZ0lR?=
- =?utf-8?B?S3MreWxtc0ZmSCs4V0krdEEzQlV0Q2dabUl4WVo4YWtnQ3g1RmFVb3dacVc2?=
- =?utf-8?B?TkNIZUxldmpDeDczQUdhVzdtYXJPU0pqSTNkMmVxV3h2OVdKZXdFVEkrbkc3?=
- =?utf-8?B?eWxJdkRuWlRaUmFSZm5zRmRScG1lR2VZMW8veXY5SElGMDNtNjYvYnh4bWNB?=
- =?utf-8?B?ellIL2V6WTc3MUtKVDI1RE84eUt4akNIV1ErVEk5TTY0MDlqaVFNamsraWRz?=
- =?utf-8?B?SVA5SFJnQ2FFRU00NmpBQUlVUHFrdjl1ZWY0aXlaMlcvYmhXajlsRXE2SlVJ?=
- =?utf-8?B?QmJDb2w5RklvWC85QUdvYkR0MkowWjc0M1NQQmd6c0pPbVFLdHlHZStNR1hP?=
- =?utf-8?B?LzRGWU1MeS94cTIrZWQxc3FVamtkOTZGZWFPTjhVOFpMNUwybHYvUS93Y050?=
- =?utf-8?B?K1QzTTRBM2FhOStQb1g1YnVpTXFVOU5YQXkwNmJQWEJkMlQxTkRiSzMvV0t5?=
- =?utf-8?B?OWJjbGJ5ZjlyS29VMitpQWNodFE1QU15UmUxVW12YVRvSlNCNENrYlJNYlNj?=
- =?utf-8?B?S2M5N2tSRHpvM1NUdTRzNlVWR3NXL1QvQ0RmUk5Wa1pmTVdiM1ZQaGp1S2Fj?=
- =?utf-8?B?L1p6OXE1VlA0RlpoRG10QUVYQlFTeXpjNXNpbU9pZ3hacHo5K0R4UUI2M0FC?=
- =?utf-8?B?L0g4ME82dzd6bStBM0JmWlNxYStLcGU5bURKdGhiemNIL1pvU0E4dEhXRkRW?=
- =?utf-8?B?QWhZd21SN2ozdGFXQXg5MDZjSFBhZjQvMnNWK2M1d1FvN0J0aVhySlZFQWs0?=
- =?utf-8?B?ZHptTCtEOXBkYVVZMkFudDI1ODV5azB6QS91YlY5dDNGYzF0TjVDdDZUWUpL?=
- =?utf-8?B?N2tLRTF4NHhuMEMvUERySmpOaDBLYU04ZUNhaTkreDZlTVNJeWpjMmM5NWVt?=
- =?utf-8?B?TVY5SnprTDFTeVdyK0MwK1dQYkJFWjZuRTJlZFRPTm4xSzFORXhjcVU1dFVj?=
- =?utf-8?B?OTc1ZGI2WUluNW9ERGtoYW1ZcWRaaWM5WU1OLzRnK1h1Z3NFN1Z3N0pJdDZj?=
- =?utf-8?B?YVFLNmQwcy9qblY5Z0lUZEozdW9xVzF3ZTJTN3Z4UGpNczhEc3hpQ29od2pR?=
- =?utf-8?B?ZUZkMzEwRFdDbk9QbWJkaXdTQUd5RW9pTVpTV2s2Z0E1ci9FOTdCTnZpTlFq?=
- =?utf-8?B?VG1aM2hTdDlkUWx3T3FTT2tGMFNpRG4vS3lCMzhWVVZhWGU1WGRGQlJJUEo0?=
- =?utf-8?B?a0RhVmNBU2Q5SlpIZHlLQnNpVUYydm1aUVdpR1I2ZzVweUVVcEQrZjN5dTVw?=
- =?utf-8?B?T2psd0MzZnRpWFVPUi8xZGVHMjcvYyttZGh1Q2JJNHdZTzVEVjdLc29QNWZ5?=
- =?utf-8?B?SUJTNVc1Y0tqTUF0NVQwZFozblQ3dlNNZFBsazgzRENlUmIwM0V4bmJEZ0ZF?=
- =?utf-8?B?cUZkbTZKbHFLQk9jSCtCOUFISkY2cmZwNWVNeW9hZmsvNlp6TEtzVGZLeEtG?=
- =?utf-8?B?b0ZFSUcyVGtxY1BRVnBzclU1T25pTG8wQmhDdVVCY0wrNm1sV3U5bDFSMnRj?=
- =?utf-8?B?SHk3dGdRb0VFUUUwM0Zqa1NvVFZCS3RPZUlMd0F0VERHTWFPY0ZDT1F5T3Bl?=
- =?utf-8?B?Q1E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f664eec-444f-4921-ed23-08dbea7bddfc
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 10:23:13.1951
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ayt1A7GyUhZm2N+VvhVFjpP99YiDHpGRdJU0IO3JVs8xkFKohsSPti+OsQ5W5+j5wQP5nPGhArB3xI3Dq0tv+xElSdq+9ITaVB4ZZSYRfMw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6404
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Andrew Davis <afd@ti.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <92cf3bcc-18e7-40ba-a082-1b8b6bea0dee@collabora.com>
+ <e8483375-cace-473c-aba7-1cd60feae242@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <e8483375-cace-473c-aba7-1cd60feae242@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21.11.2023 10:43, Suman Ghosh wrote:
-> This patch extends TC flower offload support for mirroring
-> ingress/egress traffic to a different PF/VF. Below is an example
-> command,
+Il 20/11/23 15:57, Krzysztof Kozlowski ha scritto:
+> On 20/11/2023 12:43, AngeloGioacchino Del Regno wrote:
+>> Il 20/11/23 09:40, Krzysztof Kozlowski ha scritto:
+>>> Document preferred coding style for Devicetree sources (DTS and DTSI),
+>>> to bring consistency among all (sub)architectures and ease in reviews.
+>>>
+>>> Cc: Andrew Davis <afd@ti.com>
+>>> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>> Cc: Bjorn Andersson <andersson@kernel.org>
+>>> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+>>> Cc: Heiko Stuebner <heiko@sntech.de>
+>>> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+>>> Cc: Michal Simek <michal.simek@amd.com>
+>>> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+>>> Cc: Nishanth Menon <nm@ti.com>
+>>> Cc: Olof Johansson <olof@lixom.net>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>
+>>> ---
+>>>
+>>> Merging idea: Rob/DT bindings
+>>>
+>>> Changes in v2
+>>> =============
+>>> 1. Hopefully incorporate entire feedback from comments:
+>>> a. Fix \ { => / { (Rob)
+>>> b. Name: dts-coding-style (Rob)
+>>> c. Exceptions for ordering nodes by name for Renesas and pinctrl (Geert,
+>>>      Konrad)
+>>> d. Ordering properties by common/vendor (Rob)
+>>> e. Array entries in <> (Rob)
+>>>
+>>> 2. New chapter: Organizing DTSI and DTS
+>>>
+>>> 3. Several grammar fixes (missing articles)
+>>>
+>>> Cc: linux-rockchip@lists.infradead.org
+>>> Cc: linux-mediatek@lists.infradead.org
+>>> Cc: linux-samsung-soc@vger.kernel.org
+>>> Cc: linux-amlogic@lists.infradead.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-arm-msm@vger.kernel.org
+>>> ---
+>>>    .../devicetree/bindings/dts-coding-style.rst  | 163 ++++++++++++++++++
+>>>    Documentation/devicetree/bindings/index.rst   |   1 +
+>>>    2 files changed, 164 insertions(+)
+>>>    create mode 100644 Documentation/devicetree/bindings/dts-coding-style.rst
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/dts-coding-style.rst b/Documentation/devicetree/bindings/dts-coding-style.rst
+>>> new file mode 100644
+>>> index 000000000000..cc7e3b4d1b92
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/dts-coding-style.rst
+>>> @@ -0,0 +1,163 @@
+>>> +.. SPDX-License-Identifier: GPL-2.0
+>>> +.. _dtscodingstyle:
+>>> +
+>>> +=====================================
+>>> +Devicetree Sources (DTS) Coding Style
+>>> +=====================================
+>>> +
+>>> +When writing Devicetree Sources (DTS) please observe below guidelines.  They
+>>> +should be considered complementary to any rules expressed already in Devicetree
+>>> +Specification and dtc compiler (including W=1 and W=2 builds).
+>>> +
+>>> +Individual architectures and sub-architectures can add additional rules, making
+>>> +the style stricter.
+>>> +
+>>> +Naming and Valid Characters
+>>> +---------------------------
+>>> +
+>>> +1. Node and property names are allowed to use only:
+>>> +
+>>> +   * lowercase characters: [a-z]
+>>> +   * digits: [0-9]
+>>> +   * dash: -
+>>> +
+>>> +2. Labels are allowed to use only:
+>>> +
+>>> +   * lowercase characters: [a-z]
+>>> +   * digits: [0-9]
+>>> +   * underscore: _
+>>> +
+>>> +3. Unit addresses should use lowercase hex, without leading zeros (padding).
+>>
+>> This is imperative, so: s/should/shall/g
 > 
-> 'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
-> skip_sw action mirred ingress mirror dev eth2'
+> Sure, fine.
 > 
-> Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> ---
-
-If someone gave you you his tag, please add it to the next version.
-
->  .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 +++++++++++++++++-
->  1 file changed, 110 insertions(+), 3 deletions(-)
+>>
+>>> +
+>>> +4. Hex values in properties, e.g. "reg", should use lowercase hex.  The address
+>>> +   part can be padded with leading zeros.
+>>> +
+>>
+>> Same here, I'd say.... :-)
+>>
+>>> +Example::
+>>> +
+>>> +	gpi_dma2: dma-controller@800000 {
+>>> +		compatible = "qcom,sm8550-gpi-dma", "qcom,sm6350-gpi-dma";
+>>> +		reg = <0x0 0x00800000 0x0 0x60000>;
+>>> +	}
+>>> +
+>>> +Order of Nodes
+>>> +--------------
+>>> +
+>>> +1. Nodes within any bus, thus using unit addresses for children, shall be
+>>> +   ordered incrementally by unit address.
+>>> +   Alternatively for some sub-architectures, nodes of the same type can be
+>>> +   grouped together (e.g. all I2C controllers one after another even if this
+>>> +   breaks unit address ordering).
+>>> +
+>>> +2. Nodes without unit addresses should be ordered alpha-numerically by the node
+>>> +   name.  For a few types of nodes, they can be ordered by the main property
+>>> +   (e.g. pin configuration states ordered by value of "pins" property).
+>>> +
+>>> +3. When extending nodes in the board DTS via &label, the entries should be
+>>> +   ordered alpha-numerically.
+>>> +
+>>> +Example::
+>>> +
+>>
+>> Hmm, comments!
+>>
+>>> +	// SoC DTSI
+>>
+>> ....speaking of commenting, should we at least suggest to use C-style comments?
+>>
+>> 	/* SoC DTSI */
 > 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-> index 8a5e3987a482..17a8d9778193 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-> @@ -29,6 +29,8 @@
->  
->  #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
->  
-> +#define MCAST_INVALID_GRP		(-1U)
-> +
->  struct otx2_tc_flow_stats {
->  	u64 bytes;
->  	u64 pkts;
-> @@ -47,6 +49,7 @@ struct otx2_tc_flow {
->  	bool				is_act_police;
->  	u32				prio;
->  	struct npc_install_flow_req	req;
-> +	u32				mcast_grp_idx;
->  };
->  
->  static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
-> @@ -336,22 +339,96 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
->  	return rc;
->  }
->  
-> +static int otx2_tc_update_mcast(struct otx2_nic *nic,
-> +				struct npc_install_flow_req *req,
-> +				struct netlink_ext_ack *extack,
-> +				struct otx2_tc_flow *node,
-> +				struct nix_mcast_grp_update_req *ureq,
-> +				u8 num_intf)
-> +{
-> +	struct nix_mcast_grp_update_req *grp_update_req;
-> +	struct nix_mcast_grp_create_req *creq;
-> +	struct nix_mcast_grp_create_rsp *crsp;
-> +	u32 grp_index;
-> +	int rc;
-> +
-> +	mutex_lock(&nic->mbox.lock);
-> +	creq = otx2_mbox_alloc_msg_nix_mcast_grp_create(&nic->mbox);
-> +	if (!creq) {
-> +		rc = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	creq->dir = NIX_MCAST_INGRESS;
-> +	/* Send message to AF */
-> +	rc = otx2_sync_mbox_msg(&nic->mbox);
-> +	if (rc) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to create multicast group");
-> +		goto error;
-> +	}
-> +
-> +	crsp = (struct nix_mcast_grp_create_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
-> +			0,
-> +			&creq->hdr);
-> +	if (IS_ERR(crsp)) {
-> +		rc = PTR_ERR(crsp);
-> +		goto error;
-> +	}
-> +
-> +	grp_index = crsp->mcast_grp_idx;
-> +	grp_update_req = otx2_mbox_alloc_msg_nix_mcast_grp_update(&nic->mbox);
-> +	if (!grp_update_req) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-> +		rc = -ENOMEM;
-> +		goto error;
-> +	}
-> +
-> +	ureq->op = NIX_MCAST_OP_ADD_ENTRY;
-> +	ureq->mcast_grp_idx = grp_index;
-> +	ureq->num_mce_entry = num_intf;
-> +	ureq->pcifunc[0] = nic->pcifunc;
-> +	ureq->channel[0] = nic->hw.tx_chan_base;
-> +
-> +	ureq->dest_type[0] = NIX_RX_RSS;
-> +	ureq->rq_rss_index[0] = 0;
-> +	memcpy(&ureq->hdr, &grp_update_req->hdr, sizeof(struct mbox_msghdr));
-> +	memcpy(grp_update_req, ureq, sizeof(struct nix_mcast_grp_update_req));
-> +
-> +	/* Send message to AF */
-> +	rc = otx2_sync_mbox_msg(&nic->mbox);
-> +	if (rc) {
-> +		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-> +		goto error;
-> +	}
-> +
-> +	mutex_unlock(&nic->mbox.lock);
-> +	req->op = NIX_RX_ACTIONOP_MCAST;
-> +	req->index = grp_index;
-> +	node->mcast_grp_idx = grp_index;
-> +	return 0;
-> +
-> +error:
-> +	mutex_unlock(&nic->mbox.lock);
-> +	return rc;
-> +}
-> +
->  static int otx2_tc_parse_actions(struct otx2_nic *nic,
->  				 struct flow_action *flow_action,
->  				 struct npc_install_flow_req *req,
->  				 struct flow_cls_offload *f,
->  				 struct otx2_tc_flow *node)
->  {
-> +	struct nix_mcast_grp_update_req dummy_grp_update_req = { 0 };
->  	struct netlink_ext_ack *extack = f->common.extack;
-> +	bool pps = false, mcast = false;
->  	struct flow_action_entry *act;
->  	struct net_device *target;
->  	struct otx2_nic *priv;
->  	u32 burst, mark = 0;
->  	u8 nr_police = 0;
-> -	bool pps = false;
-> +	u8 num_intf = 1;
-> +	int err, i;
->  	u64 rate;
-> -	int err;
-> -	int i;
->  
->  	if (!flow_action_has_entries(flow_action)) {
->  		NL_SET_ERR_MSG_MOD(extack, "no tc actions specified");
-> @@ -423,11 +500,30 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
->  			req->index = act->rx_queue;
->  			break;
->  
-> +		case FLOW_ACTION_MIRRED_INGRESS:
-> +			target = act->dev;
-> +			priv = netdev_priv(target);
-> +			dummy_grp_update_req.pcifunc[num_intf] = priv->pcifunc;
-> +			dummy_grp_update_req.channel[num_intf] = priv->hw.tx_chan_base;
-> +			dummy_grp_update_req.dest_type[num_intf] = NIX_RX_RSS;
-> +			dummy_grp_update_req.rq_rss_index[num_intf] = 0;
-> +			mcast = true;
-> +			num_intf++;
-> +			break;
-> +
->  		default:
->  			return -EOPNOTSUPP;
->  		}
->  	}
->  
-> +	if (mcast) {
-> +		err = otx2_tc_update_mcast(nic, req, extack, node,
-> +					   &dummy_grp_update_req,
-> +					   num_intf);
-> +		if (err)
-> +			return err;
-> +	}
-> +
->  	if (nr_police > 1) {
->  		NL_SET_ERR_MSG_MOD(extack,
->  				   "rate limit police offload requires a single action");
-> @@ -1033,6 +1129,7 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
->  			    struct flow_cls_offload *tc_flow_cmd)
->  {
->  	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
-> +	struct nix_mcast_grp_destroy_req *grp_destroy_req;
->  	struct otx2_tc_flow *flow_node;
->  	int err;
->  
-> @@ -1064,6 +1161,15 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
->  		mutex_unlock(&nic->mbox.lock);
->  	}
->  
-> +	/* Remove the multicast/mirror related nodes */
-> +	if (flow_node->mcast_grp_idx != MCAST_INVALID_GRP) {
-> +		mutex_lock(&nic->mbox.lock);
-> +		grp_destroy_req = otx2_mbox_alloc_msg_nix_mcast_grp_destroy(&nic->mbox);
-> +		grp_destroy_req->mcast_grp_idx = flow_node->mcast_grp_idx;
-> +		otx2_sync_mbox_msg(&nic->mbox);
-> +		mutex_unlock(&nic->mbox.lock);
-> +	}
-> +
->  	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
->  	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
->  	kfree_rcu(flow_node, rcu);
-> @@ -1096,6 +1202,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
->  	spin_lock_init(&new_node->lock);
->  	new_node->cookie = tc_flow_cmd->cookie;
->  	new_node->prio = tc_flow_cmd->common.prio;
-> +	new_node->mcast_grp_idx = MCAST_INVALID_GRP;
->  
->  	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
->  
+> I can switch it to C-style in the example, but we are going with Linux
+> Coding Style which soon will allow // judging by Linus' statements.
+> 
+
+Right. That wasn't a strong opinion anyway, so it's totally okay as well.
+
+>>
+>>> +
+>>> +	/ {
+>>> +		cpus {
+>>> +			// ...
+>>> +		};
+>>> +
+>>> +		psci {
+>>> +			// ...
+>>> +		};
+>>> +
+>>> +		soc@ {
+>>> +			dma: dma-controller@10000 {
+>>> +				// ...
+>>> +			};
+>>> +
+>>> +			clk: clock-controller@80000 {
+>>> +				// ...
+>>> +			};
+>>> +		};
+>>> +	};
+>>> +
+>>> +	// Board DTS
+>>> +
+>>> +	&clk {
+>>> +		// ...
+>>> +	};
+>>> +
+>>> +	&dma {
+>>> +		// ...
+>>> +	};
+>>> +
+>>> +
+>>> +Order of Properties in Device Node
+>>> +----------------------------------
+>>> +
+>>> +Following order of properties in device nodes is preferred:
+>>> +
+>>> +1. compatible
+>>> +2. reg
+>>> +3. ranges
+>>> +4. Standard/common properties (defined by common bindings, e.g. without
+>>> +   vendor-prefixes)
+>>> +5. Vendor-specific properties
+>>> +6. status (if applicable)
+>>> +7. Child nodes, where each node is preceded with a blank line
+>>> +
+>>> +The "status" property is by default "okay", thus it can be omitted.
+>>> +
+>>> +Example::
+>>> +
+>>> +	// SoC DTSI
+>>> +
+>>> +	usb_1_hsphy: phy@88e3000 {
+>>> +		compatible = "qcom,sm8550-snps-eusb2-phy";
+>>> +		reg = <0x0 0x088e3000 0x0 0x154>;
+>>> +		#phy-cells = <0>;
+>>> +		resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
+>>> +		status = "disabled";
+>>> +	};
+>>
+>> Since this describes vendor-specific properties and vendor prefixes as well
+>> as standard properties, I think it would be clearer if we use something more
+>> complex that actually contains those as an example.
+>>
+>> There's a few. One is MediaTek:
+>>
+>> 	vdo1_rdma0: dma-controller@1c104000 {
+>> 		compatible = "mediatek,mt8195-vdo1-rdma";
+>> 		reg = <0 0x1c104000 0 0x1000>;
+>> 		#dma-cells = <1>;
+>> 		clocks = <&vdosys1 CLK_VDO1_MDP_RDMA0>;
+>> 		interrupts = <GIC_SPI 495 IRQ_TYPE_LEVEL_HIGH 0>;
+>> 		iommus = <&iommu_vdo M4U_PORT_L2_MDP_RDMA0>;
+>> 		power-domains = <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
+>> 		mediatek,gce-client-reg = <&gce0 SUBSYS_1c10XXXX 0x4000 0x1000>;
+>> 	};
+>>
+>> ...or other one can be nVidia:
+>>
+>> 	mipi: mipi@700e3000 {
+>> 		compatible = "nvidia,tegra210-mipi";
+>> 		reg = <0x0 0x700e3000 0x0 0x100>;
+>> 		clocks = <&tegra_car TEGRA210_CLK_MIPI_CAL>;
+>> 		clock-names = "mipi-cal";
+>> 		power-domains = <&pd_sor>;
+>> 		#nvidia,mipi-calibrate-cells = <1>;
+>> 	};
+>>
+>> ...or we could make an example out of fantasy, which could work even better
+>> as far as describing goes.
+>>
+>> 	/* SoC DTSI */
+>>
+>> 	device_node: device-class@6789abc {
+>> 		compatible = "vendor,device";
+> 
+> Yep. I'll use this, unless checkpatch complains about undocumented
+> compatible. :) This allows to show the child node.
+> 
+
+If checkpatch complains about undocumented compatible, could we perhaps use one
+that does actually exist, while still retaining the actual mockup examples?
+
+I understand the eventual concern about somewhat wrongly documenting said device,
+but it's also true that this is documentation about something else that is not
+related to a specific device (so perhaps a "warning: this is for representation
+purposes only, and may contain properties that the devices pointed by the currently
+used compatible string may not accept" might work to avoid confusion?).
+
+>> 		reg = <0 0x06789abc 0 0xa123>;
+>> 		ranges = <0 0 0x6789abc 0x1000>;
+>> 		#dma-cells = <1>;
+>> 		clocks = <&clock_controller SOC_CLOCK>;
+>> 		clock-names = "dev-clk";
+>> 		#vendor,custom-cells = <2>;
+>> 		status = "disabled";
+>>
+>> 		child_node: child-class@100 {
+>> 			reg = <0x100 0x200>;
+>> 			/* ... */
+>> 		};
+>> 	};
+>>
+>> 	/* Board DTS */
+>>
+>> 	&device_node {
+>> 		device-supply = <&board_vreg1>;
+>> 		status = "okay";
+>> 	}
+>>
+>>> +
+>>> +	// Board DTS
+>>> +
+>>> +	&usb_1_hsphy {
+>>> +		clocks = <&tcsr TCSR_USB2_CLKREF_EN>;
+>>> +		clock-names = "ref";
+>>> +		status = "okay";
+>>> +	};
+>>> +
+>>> +
+>>> +Indentation
+>>> +-----------
+>>> +
+>>> +1. Use indentation according to :ref:`codingstyle`.
+>>> +2. For arrays spanning across lines, it is preferred to align the continued
+>>> +   entries with opening < from the first line.
+>>> +3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
+>>> +   should be enclosed in <>.
+>>> +
+>>> +Example::
+>>> +
+>>> +	thermal-sensor@c271000 {
+>>> +		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
+>>> +		reg = <0x0 0x0c271000 0x0 0x1000>,
+>>> +		      <0x0 0x0c222000 0x0 0x1000>;
+>>> +	};
+>>> +
+>>> +Organizing DTSI and DTSthat 
+>>> +-----------------------
+>>> +
+>>> +The DTSI and DTS files should be organized in a way representing the common
+>>> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
+>>
+>>                                           ^^^^
+>> There's a double space here, it was probably unintentional.
+> 
+> I think I used everywhere double-spaces. At least this was my intention,
+> so I will fix single-spaces :)
+> 
+
+Oh! Okay, yeah, that also works :-D
+
+Cheers,
+Angelo
+
