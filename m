@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE2C7F3716
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFBF7F3717
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjKUUFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 15:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
+        id S231126AbjKUUFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 15:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbjKUUFV (ORCPT
+        with ESMTP id S230508AbjKUUFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 15:05:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFE11A2;
-        Tue, 21 Nov 2023 12:05:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700597117; x=1732133117;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UCGmiu1nxzeNn+cEKPR0gIi35/992X5/vdcGhHlBNsM=;
-  b=kQLDQnTYg/OEBUl5BOXwzL6Ucey77hOaP5ke717dgAS1mCBDwm6ZMFf/
-   i+kGRxJSN+kr/BHKuzyZb/SduE9ri57oZ7c/tqxh7yOl5NGDJKmeEa/bI
-   yPOD6+oa5r6Bs/9fx/sFol0NHDGDFrxenh0EUejMtgFY2XlxU5t2Tp+w9
-   /YDYFS9JxW09o/OospAR6KU+vinTC0WEClYE6x/XOQoOkT09vs/AqtqJf
-   VWuJPmgVlYppiazlX4CAuKj+s58vWvyWe9Dnt18ZKfLXT5lnFGLrY8QVs
-   iBm2H5PQwGuXGaDZk/HdJ3QvMXZWhyenZbAcIQDthx/XlU9SHLEOvgzBk
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5046569"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="5046569"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 12:05:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="801660239"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="801660239"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 21 Nov 2023 12:05:12 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5Wzd-0008Cu-2v;
-        Tue, 21 Nov 2023 20:05:09 +0000
-Date:   Wed, 22 Nov 2023 04:04:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Kernel Workflows <workflows@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Charles Han <hanchunchao@inspur.com>
-Subject: Re: [PATCH] Documentation: xfs: consolidate XFS docs into its own
- subdirectory
-Message-ID: <202311220333.acL7LwXY-lkp@intel.com>
-References: <20231121095658.28254-1-bagasdotme@gmail.com>
+        Tue, 21 Nov 2023 15:05:52 -0500
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE9BD45
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:05:48 -0800 (PST)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1f5da5df68eso1971551fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:05:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700597147; x=1701201947; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gOM9RKHgmvEognuoT2mihAVZYGmbf7+DM5clLXjwU9Q=;
+        b=BOuFVD7fADDqrgn4G2OHVptKHm+nXE6k3t6NfWYNt2kltbw4m5ZcxC4Jowm8cOgv5m
+         ie0rzz4wd0pj6HbzTF3r/Pdp2b7YXzuzIlX3NcgM/TgQE/iGa1US6vhdRMCi9v2XpBZo
+         M0SYX/SLKtKPmcKExZppZgoEvy8KRSGx1WlmE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700597147; x=1701201947;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gOM9RKHgmvEognuoT2mihAVZYGmbf7+DM5clLXjwU9Q=;
+        b=Iqcdylg7hxWjSWx34Lmb9qdMfmEUfgPgodUzgX8CMzpiajvlxnAIwKzS/82cXU9deJ
+         RQ3tGm2/vzTMosYJ1iHGJDRPIW2/0V4IwY9eFCanyeH5HKX4YpHwighlmU+ASccjjJKr
+         D8C+aa2SrZQSso3fFpIiCCB3yEPC5TBjSSVKqfYX1wtgztukrJ4FPm3+LMQZ8G5vFEOo
+         Gjg7LxnY8JPJJny23A1GuXaI3EKgflavrelnGrQaYfnpLcI07VudZnGAQla636ArMnjp
+         FUHfnBqPmfsUPZENy6oDpW8F+HcxMFbX31DT8+f7z1t0YMHt7ObfCp3epaHOpaBR0d0a
+         0QZA==
+X-Gm-Message-State: AOJu0Yy5T08w9bFGrfkk3mSTPKEvWZIZTe+jxk2XA+bDUs0xCtgn1PZy
+        Re1cTh1Nlax7MnSJaMII2TIuRZGX2E4v0cVV5OzKJw==
+X-Google-Smtp-Source: AGHT+IG2Lzvp5y+3jot3b1hYmuCVyGCugXehBZHf+1LhhLvxsT3oTh+/4GJ1qxqx2rLL+cVDTTLjJg==
+X-Received: by 2002:a05:6870:4d13:b0:1e9:b0fa:de48 with SMTP id pn19-20020a0568704d1300b001e9b0fade48mr413485oab.47.1700597147305;
+        Tue, 21 Nov 2023 12:05:47 -0800 (PST)
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com. [209.85.160.44])
+        by smtp.gmail.com with ESMTPSA id l17-20020a05683016d100b006b87f593877sm1610241otr.37.2023.11.21.12.05.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 12:05:46 -0800 (PST)
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1f5d2e4326fso2056495fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:05:46 -0800 (PST)
+X-Received: by 2002:a05:6871:4417:b0:1d5:8fb8:98ef with SMTP id
+ nd23-20020a056871441700b001d58fb898efmr450576oab.31.1700597145898; Tue, 21
+ Nov 2023 12:05:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121095658.28254-1-bagasdotme@gmail.com>
+References: <20230111-uvc_privacy_subdev-v1-0-f859ac9a01e3@chromium.org>
+In-Reply-To: <20230111-uvc_privacy_subdev-v1-0-f859ac9a01e3@chromium.org>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Tue, 21 Nov 2023 21:05:30 +0100
+X-Gmail-Original-Message-ID: <CANiDSCvxZyFqR06a6eb22duyBMEt8yroo8H_Hpmid2vOy7ucVw@mail.gmail.com>
+Message-ID: <CANiDSCvxZyFqR06a6eb22duyBMEt8yroo8H_Hpmid2vOy7ucVw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] meida: uvcvideo: reimplement privacy gpio as a
+ separate subdevice
+To:     Yunke Cao <yunkec@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,30 +78,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bagas,
+Hi Sakari
 
-kernel test robot noticed the following build warnings:
+Could you take a look at this RFC? Would be great to have your opinion
+from a subdevice point of view.
 
-[auto build test WARNING on 98b1cc82c4affc16f5598d4fa14b1858671b2263]
+Thanks!
+On Wed, 11 Jan 2023 at 09:52, Yunke Cao <yunkec@chromium.org> wrote:
+>
+> privacy_gpio in uvc were added as V4L2_CID_PRIVACY in uvc video node in
+> https://lore.kernel.org/all/20201223133528.55014-1-ribalda@chromium.org/
+>
+> Userspace applications often require to constantly poll privacy control.
+> Currently, polling privacy control requires keeping the video node open,
+> which prevents the camera from autosuspending.
+>
+> This patchset adds a separate v4l2 subdevice. Userspace access the gpio
+> via V4L2_CID_PRIVACY in the new subdevice. Applications can poll the
+> privacy control status without opening the video node and activate the
+> camera.
+>
+> The non-gpio V4L2_CID_PRIVACY in uvc is not affected.
+>
+> Suggested-by: Ricardo Ribalda <ribalda@chromium.org>
+> Signed-off-by: Yunke Cao <yunkec@chromium.org>
+> ---
+> Yunke Cao (3):
+>       media: v4l2-ctrls: Expose v4l2_ctrl_fill_event()
+>       media: uvcvideo: remove entity privacy control in the uvc video node
+>       media: uvcvideo: reimplement privacy GPIO as a separate subdevice
+>
+>  drivers/media/usb/uvc/uvc_ctrl.c          | 17 -------
+>  drivers/media/usb/uvc/uvc_driver.c        | 44 ++----------------
+>  drivers/media/usb/uvc/uvc_entity.c        | 76 +++++++++++++++++++++++++++++++
+>  drivers/media/usb/uvc/uvcvideo.h          | 19 +++++---
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c |  9 ++--
+>  include/media/v4l2-ctrls.h                | 12 +++++
+>  6 files changed, 111 insertions(+), 66 deletions(-)
+> ---
+> base-commit: 7dd4b804e08041ff56c88bdd8da742d14b17ed25
+> change-id: 20230111-uvc_privacy_subdev-1e7a167e86eb
+>
+> Best regards,
+> --
+> Yunke Cao <yunkec@chromium.org>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bagas-Sanjaya/Documentation-xfs-consolidate-XFS-docs-into-its-own-subdirectory/20231121-180057
-base:   98b1cc82c4affc16f5598d4fa14b1858671b2263
-patch link:    https://lore.kernel.org/r/20231121095658.28254-1-bagasdotme%40gmail.com
-patch subject: [PATCH] Documentation: xfs: consolidate XFS docs into its own subdirectory
-reproduce: (https://download.01.org/0day-ci/archive/20231122/202311220333.acL7LwXY-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311220333.acL7LwXY-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Warning: Documentation/filesystems/xfs/xfs-online-fsck-design.rst references a file that doesn't exist: Documentation/filesystems/xfs-self-describing-metadata.rst
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-maintainer-entry-profile.rst
->> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-*
->> MAINTAINERS:53207: WARNING: unknown document: ../filesystems/xfs-maintainer-entry-profile
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Ricardo Ribalda
