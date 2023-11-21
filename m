@@ -2,176 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BB77F235E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8064D7F237E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 03:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjKUB6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
+        id S229522AbjKUCDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 21:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbjKUB6S (ORCPT
+        with ESMTP id S229679AbjKUCCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:58:18 -0500
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2079.outbound.protection.outlook.com [40.107.13.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329C4CA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:58:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LD5EoDKZwR8/uQx/rPMEwZo6adi9pJ3kGWmpzDncQnIM2jzYjJrmNgLiS1pXNLjn0xZ7lv2RDRZlMRQj30rjqYUHSPS/1KBHmKSlSbWKs0KnR2DXanlBUIgF6K9NhpUaUBuzCts2sj8xcQJ7gSgGsuJ4m5mKrRMn5cRCiS71tYCbqs59S7p2++dqrQ7/Ep7rwt3wwCbXhJ1LPFGY+F/jCTrSexKYCzr9nMU3QId1H2CTtGPMsixiN/K4NsxA8+inxyI5SffwtSOTDjJbLvLl22h5mxII9+oEryHZofpKlhPWubCB2ez31tfcOd+ZBZBc79C1LYbKJaDrTtgsYHuwTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RhN46VtuI332/54GNvso3x1Qrb9wrjvFifIr8Ivp7G0=;
- b=SfmnWuK9ZLZvmaLeN5LRao2bfcIQaASJ21nGUt6Gv872YsY6ETJksvKVKk4d+GnS5pUFN/4VfjawxiaKWCHqkau0QsOt2Fjz01z2CykE6cvg1JTJHQtmyjKXH6gPACcQmdQy2arWwu//eT45YpD/O3ochzu2pjiGUTDXk5odAVR+TcBxfPESvnH+7zbfCNKa5ToyxMEPocttQE8dlAAFumgziUrGT3h7+ovYyQJiMXO5QN+NbdYN1hm/EnB3hW4GyBtKoyn/6JbE7uDK3IbewnhC++mp4EZdUOzuDQo44q+RcW+aI35s0fJOyjfdAw2RxFXI0Zfy3MqUY+klsU7slA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RhN46VtuI332/54GNvso3x1Qrb9wrjvFifIr8Ivp7G0=;
- b=QNJKr4fcsypRgIVZQgPb3i3r5bNc3pC9Pi3ZBt4N/pe1GyZSdXGACxvhsfV458Lp2K7ZlGxDjTeLxyvE9yYQm8oNpqbgkxMK2QtMsC0RrccrUzniBuTOibMbL7nP3SilhiqjU4/U7123GY+uMjosc8ZppQkrNH9GmwfCCogVUlg=
-Received: from DB9PR08MB7511.eurprd08.prod.outlook.com (2603:10a6:10:302::21)
- by DB5PR08MB10113.eurprd08.prod.outlook.com (2603:10a6:10:4a6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
- 2023 01:58:09 +0000
-Received: from DB9PR08MB7511.eurprd08.prod.outlook.com
- ([fe80::ed8d:8ab6:c458:5b29]) by DB9PR08MB7511.eurprd08.prod.outlook.com
- ([fe80::ed8d:8ab6:c458:5b29%6]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
- 01:58:09 +0000
-From:   Jianyong Wu <Jianyong.Wu@arm.com>
-To:     Salil Mehta <salil.mehta@huawei.com>,
-        Cornelia Huck <cohuck@redhat.com>
-CC:     "rmk@armlinux.org.uk" <rmk@armlinux.org.uk>,
-        Suzuki Poulose <Suzuki.Poulose@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Justin He <Justin.He@arm.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        James Morse <James.Morse@arm.com>,
-        "will@kernel.org" <will@kernel.org>
-Subject: RE: [PATCH] arm64/kvm: Introduce feature extension for SMCCC filter
-Thread-Topic: [PATCH] arm64/kvm: Introduce feature extension for SMCCC filter
-Thread-Index: AQHaGIJU1EOztFCd60Gb0pK7SioEprB86xkAgAAP84CABw85QA==
-Date:   Tue, 21 Nov 2023 01:58:08 +0000
-Message-ID: <DB9PR08MB751167EA104871F81D7E9ECFF4BBA@DB9PR08MB7511.eurprd08.prod.outlook.com>
-References: <20231116114152.912344-1-jianyong.wu@arm.com>
- <877cmhq1zp.fsf@redhat.com> <2ea495b04a7d484aa570059298e20862@huawei.com>
-In-Reply-To: <2ea495b04a7d484aa570059298e20862@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ts-tracking-id: B5B4C96FF5F0F9478A95E2302DB73AA9.0
-x-checkrecipientchecked: true
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB9PR08MB7511:EE_|DB5PR08MB10113:EE_
-x-ms-office365-filtering-correlation-id: 18ad5ff7-58d6-412b-18dd-08dbea354f78
-nodisclaimer: true
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2DVQgFKRsvrBtD656s+y5bbbTf2ko0QrBanbgEc3iO7HIarMpuME61sE99d653M16GbMz2aLBd2PXRgw4u/lMiba7jMuw668WCUGjApXQho+ETJw4+xgFK4OkAhtJ3sfgqc9Kx2piDgXARGzgC3dWlCl+KZbNYQ0W6abV07bBrOMUw/t7XWSEneDRwioXRu5vzb3w3swVfstLVFiCaV8ZdwfkN4sPAKYky2AW/4jywQMlRbc/wI3Ca3GQQsdvqeFT1WjKY8ymJT9y37rUIKmO1A6yNovtfnL62P28njAwj3aUNz2Rp6w3NxLQhZo+8CmiY7WvUcrTBT/GLAjtYgD5lYLnqBjvY1NUWp407gPSRYklpQtLkBss5k7LUkpvlF8mVxsTJd8g5USAj2NMFnp61OVInB0bNVG4RSviqVGP7tDVK2VITzfBfkUUNybSeYW299TGJNvYUsjvDPBFXgvKIERmw/wO+b0Gv1cwQJvkBC4RDsPDgd7MqF1agzxwum8a0cPG7YwJCbh9FaqOjjxoprFjklKHXStsjc4VqVIRBLN+8Bn/YcUgYNbxL2pmMJnAedk4nqAvUZF64pFMQx2D7mDyOZevagpcFFAF0eYyee/O97XyMzXJj3r+FdjY/F0
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7511.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39850400004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6506007)(7696005)(53546011)(26005)(71200400001)(9686003)(55016003)(316002)(478600001)(122000001)(83380400001)(66946007)(66556008)(110136005)(66476007)(54906003)(64756008)(76116006)(66446008)(52536014)(8676002)(8936002)(4326008)(86362001)(38100700002)(5660300002)(2906002)(33656002)(41300700001)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?bGtaS3lrVWIwVnBSWHg1aGVPUXhnOUoyZWJWV2RRVlFicTRQK2N1L2VVbXNO?=
- =?gb2312?B?b1ZpNUgvU0hmd3kvUFNET2lORWl4NTEySVRPbFFCV2dBQUZockZNUk45Qlpt?=
- =?gb2312?B?WEZJeDVPbEQ5eG0wSXdhdW1WRzBEUG5xc2xGcHVIc3FHckNDVzNtWmxucDV0?=
- =?gb2312?B?djhhYktMellpMVdjdnFENVpNV1h6UUhWK2grN2RZNWNzSTU3SzAzVkZDTVlt?=
- =?gb2312?B?MFp2aHR1ZnZvaVAzRUZ5QkVVSzJyczVFV2JXM1NaaWdKTzNMZklHNE1rT3k2?=
- =?gb2312?B?Ykd2ODE1ZWMwenBEQjNqQ2hKaGpZWEpkZWt4bFpzWFhOYkp0R2N0TjAydndq?=
- =?gb2312?B?ZmZMa0xCQzF1bmgySlI4UjA5alhUTk12K3p3VGQwRmlxQjVSU1RNREhqWGt2?=
- =?gb2312?B?NURaYXQ0ZTRTU1ZrR1liZWpzcGJLMjAzRUFzemV6cFBYc2dOTEhpNGVRMktE?=
- =?gb2312?B?dkZjallzZ09jMlJ3Vnh3bDJjbFRJckhaajVXTnBZYkRYL1VSTThGSHQ4bmFa?=
- =?gb2312?B?Z3RZOUlzVDJHbTd2OTJZc1pJYnJHdUlTd3NYVjc0a1REQUpzczVGOWhrb3hR?=
- =?gb2312?B?SUZwenNUc0ovWWZNN0UrSVJhc21QeUxzRVA3NSt0WnJwbXI0VmRCWlNxY3Uz?=
- =?gb2312?B?N0ZSdTBxMHpKNmFWQk1UeFdadzl4VXhiYnFtaHZqbGRKaU5JVnVZZXdOL0p1?=
- =?gb2312?B?NEp1OWdUY0lKT0dIQjRQMldTNzdCbms1ejI3V0dQK3JCbXUxRlkxTzAxV0h1?=
- =?gb2312?B?NFFoSDh3SWRRRHBGeWx1L200NUJLZzg0T2R6L3kxSW11Q3FsS2VMYmF2Nm4z?=
- =?gb2312?B?cDZ5OEJqK0daaTJpdmtsbzZDOHd5V01ZdDVHcTlVMjNDU3JMc0VkYkd3OUF6?=
- =?gb2312?B?dk1yNE45ckErbGMxQXRTMHB6ZFR3dmZpaXBiZG5vUjd2WGVZazVjNmNvRm55?=
- =?gb2312?B?dUMwKzRCdktMWHBYdjRjb3paZTZPb2E2Vjc5RG1OeFRhSmRSZ2VsZWdZblVW?=
- =?gb2312?B?bmZwdnErMVhPdmMyeVl5TGZHU2MyTkNqZmkyd0x5aytId1N5TDFOMytIUHJx?=
- =?gb2312?B?Vy81b0tOQ1BLVkgzWDNtV1BDcFE1U2RwTlhwazFCRTc2Z3FFUllINHduOWVE?=
- =?gb2312?B?dWlVM1drLy9PUWJ2dWFCenMxT2hDSlBEdjlWZDRkcXJleUNvMURmK1dNOFU0?=
- =?gb2312?B?SUpwY3NieGptWFhqekdtOWJIUjhta2Jpa050Ukx3ZTRqRDlBVXNBZEw1M1Y2?=
- =?gb2312?B?ZTdiMEJNbDNqOVpMMGZpT3E1RXdmdE5KcFVtMnczMzNsVW5Rb0VtbndJT281?=
- =?gb2312?B?NmVUTlBxR0oybDRqVkYzMUgwL3N0aXRKMU90V09VTEJ3L2xYOHQxMWxrN2NH?=
- =?gb2312?B?M2o4RUlVS0ZKZjlaM3BTa3RkNzhsZkpuSTRieWpRdUwxU2E3YnVQUG1KbHUx?=
- =?gb2312?B?NTZXYUpLQ01obU1URE45OHoyTTR4Si9kNytFMWFmSWNLNUhNenQ3cUg2KzBm?=
- =?gb2312?B?MGpybFB5ZXdEcm9JRVhOalVPWUEzbXFIczR6K200U0wrUGVGUUw0VUtydnJj?=
- =?gb2312?B?NXB0a05WeHZad1BVYVpuYWo4cEFKNG9MUmVVWVhDQlpnd1prUmsrWTdJZG5z?=
- =?gb2312?B?WFV2Q2ZPRUlRQkUwaStsVFZBL1IvU1BNTGJkVlJ2TlU2enBRQnNzajVEZk0r?=
- =?gb2312?B?RVdvU29pS3g1b3BDNlRNd2kzd0p0bGdVaFBhNGR5bTNldWpjU0JKZ3B2RW1H?=
- =?gb2312?B?YnB5anVMMnJGcGJvWHZ1Umk3NFIvWUQ5NHNXSnVVOWN1WGFyOWsrWlVnYmIz?=
- =?gb2312?B?RFpjOHpVMFFCVkZISnk4MWVJQlJyMXZpWHBOYUdacHdiUGx2WXkzSzFzQjFB?=
- =?gb2312?B?aHlNVzRVWUFzQXUzc001dkt6c3cwbzdaUWtuWmZqay9kRzRUUXF0Zmt5NXBF?=
- =?gb2312?B?RE1rTHd1a2s2UVFDQ2RXVXByL1lxbkJhQXN2c21kc0NuSDlFTUY3VDN3YzJl?=
- =?gb2312?B?cktkODZOeHF1NWdoYWx4ME9VaFU3OC9GTDJPd2RjRGNRVTdML1Z4NWlmZC9W?=
- =?gb2312?B?eDBRU1hrSG9NY0hMektUUE1WaTdYTk01Zm95Zit6VVB6cGVxM1EwR0NhSUhG?=
- =?gb2312?Q?op89byj5ALgOUptuIB7aQ/Xmp?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Mon, 20 Nov 2023 21:02:52 -0500
+Received: from m15.mail.126.com (m15.mail.126.com [45.254.50.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2923ECF;
+        Mon, 20 Nov 2023 18:02:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=JGU6K
+        FKruZOeFPVjR6IpK0hLwoBGgsH3T/tqFT/aOhU=; b=LGktvv6AGKieT73AWCqGb
+        dT1GP1D4TZ3yWgg/ZgH18DRqGn9NWEhQ4fLsK9w28fFPRRbQwJfB+WGrB3DNuIPT
+        jAIrj0hJJRf155ZpRLbYvNQCpjiabFPPsKjuKioKzKrGrud7jql0MqTIvovFYPq/
+        L6UI47JWP840pROXz5hIro=
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wB3_9UnD1xltn6HAw--.26642S2;
+        Tue, 21 Nov 2023 10:00:16 +0800 (CST)
+From:   Shifeng Li <lishifeng1992@126.com>
+To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        eli@mellanox.com, ogerlitz@mellanox.com, jackm@dev.mellanox.co.il,
+        roland@purestorage.com
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinghui@sangfor.com.cn,
+        Shifeng Li <lishifeng1992@126.com>
+Subject: [PATCH] net/mlx5e: Fix a race in command alloc flow
+Date:   Mon, 20 Nov 2023 18:00:04 -0800
+Message-Id: <20231121020004.115815-1-lishifeng1992@126.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR08MB7511.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18ad5ff7-58d6-412b-18dd-08dbea354f78
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2023 01:58:08.9954
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: myUjvJ/kLRV6Fqr3soTDf7SRhUEs0MD8DmA/gD4FpCUSSwd6BFC2UO6iT3XEkczwzZoxABynyM2Um/LiTHxHBQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR08MB10113
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wB3_9UnD1xltn6HAw--.26642S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWrWkKw1kKFy5GF1UZryDAwb_yoWrtFWrpF
+        W7W343AF4kGa1q9r40vF40v3W8A39Fg3srGF1I93Z3W3Z8A34kAa4DJFyjgryUuFW8tFy7
+        JFWDt3W8Ars3XF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-zVbUUUUU=
+X-Originating-IP: [111.222.250.119]
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1xsur153c1R7WAABsh
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2FsaWwgTWVodGEgPHNh
-bGlsLm1laHRhQGh1YXdlaS5jb20+DQo+IFNlbnQ6IDIwMjPE6jEx1MIxNsjVIDIyOjA2DQo+IFRv
-OiBDb3JuZWxpYSBIdWNrIDxjb2h1Y2tAcmVkaGF0LmNvbT47IEppYW55b25nIFd1DQo+IDxKaWFu
-eW9uZy5XdUBhcm0uY29tPjsgbWF6QGtlcm5lbC5vcmc7IEphbWVzIE1vcnNlDQo+IDxKYW1lcy5N
-b3JzZUBhcm0uY29tPjsgd2lsbEBrZXJuZWwub3JnDQo+IENjOiBybWtAYXJtbGludXgub3JnLnVr
-OyBTdXp1a2kgUG91bG9zZSA8U3V6dWtpLlBvdWxvc2VAYXJtLmNvbT47DQo+IG9saXZlci51cHRv
-bkBsaW51eC5kZXY7IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4ga3Zt
-YXJtQGxpc3RzLmxpbnV4LmRldjsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgSnVzdGlu
-IEhlDQo+IDxKdXN0aW4uSGVAYXJtLmNvbT47IEppYW55b25nIFd1IDxKaWFueW9uZy5XdUBhcm0u
-Y29tPg0KPiBTdWJqZWN0OiBSRTogW1BBVENIXSBhcm02NC9rdm06IEludHJvZHVjZSBmZWF0dXJl
-IGV4dGVuc2lvbiBmb3IgU01DQ0MgZmlsdGVyDQo+IA0KPiA+IEZyb206IENvcm5lbGlhIEh1Y2sg
-PGNvaHVja0ByZWRoYXQuY29tPg0KPiA+IFNlbnQ6IFRodXJzZGF5LCBOb3ZlbWJlciAxNiwgMjAy
-MyAxOjA5IFBNDQo+ID4gVG86IEppYW55b25nIFd1IDxqaWFueW9uZy53dUBhcm0uY29tPjsgbWF6
-QGtlcm5lbC5vcmc7DQo+ID4gamFtZXMubW9yc2VAYXJtLmNvbTsgd2lsbEBrZXJuZWwub3JnDQo+
-ID4NCj4gPiBPbiBUaHUsIE5vdiAxNiAyMDIzLCBKaWFueW9uZyBXdSA8amlhbnlvbmcud3VAYXJt
-LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiA+IDgyMWQ5MzVjODdiIGludHJvZHVjZXMgc3VwcG9ydCBm
-b3IgdXNlcnNwYWNlIFNNQ0NDIGZpbHRlcmluZywgYnV0DQo+ID4gPiBsYWNrIG9mIGEgd2F5IHRv
-IHRlbGwgdXNlcnNwYWNlIGlmIHdlIGhhdmUgdGhpcyBmZWF0dXJlLiBBZGQgYQ0KPiA+ID4gY29y
-cmVzcG9uZGluZyBmZWF0dXJlIGV4dGVuc2lvbiBjYW4gcmVzb2x2ZSB0aGlzIGlzc3VlLg0KPiA+
-ID4NCj4gPiA+IEZvciBleGFtcGxlLCB0aGUgaW5jb21pbmcgZmVhdHVyZSBWY3B1IEhvdHBsdWcg
-bmVlZHMgdGhlIFNNQ0NDIGZpbHRlci4NCj4gPiA+IEFzIHRoZXJlIGlzIG5vIHdheSB0byBjaGVj
-ayB0aGlzIGZlYXR1cmUsIFZNTSB3aWxsIHJ1biBpbnRvIGVycm9yDQo+ID4gPiB3aGVuIGl0IGNh
-bGxzIHRoaXMgZmVhdHVyZSBvbiBhbiBvbGQga2VybmVsLiBJdCdzIGJhZCBmb3IgYmFja3dhcmQg
-Y29tcGF0aWJsZS4NCj4gPg0KPiA+IENhbid0IHlvdSBzaW1wbHkgcXVlcnkgdmlhIEtWTV9IQVNf
-REVWSUNFX0FUVFIgd2hldGhlciB0aGUgU01DQ0MNCj4gPiBmaWx0ZXJpbmcgY29udHJvbHMgZXhp
-c3Q/DQo+IA0KPiANCj4gQWdyZWVkLiBJbiBmYWN0LCB0aGlzIGlzIHdoYXQgSSBoYWQgZWFybGll
-ciBpbnRlbmRlZCB0byBkbyBidXQgZGVmZXJyZWQgdGhpcyBjaGFuZ2UuDQo+IEFzIG9mIG5vdywg
-UkZDIFYyIG9mIHZDUFUgSG90cGx1ZyBzZXJpZXMgZG9lcyBub3QgaGF2ZSB0aGlzIGNoZWNrIHll
-dCB3aGlsZQ0KPiBpbnN0YWxsaW5nIHRoZSBTTUNDQyBmaWx0ZXJzIGluIEtWTSBIb3N0Lg0KPiAN
-Cg0KWWVzLCB3ZSBjYW4gdXNlIEtWTV9IQVNfREVWSUNFX0FUVFIgdG8gZG8gdGhlIGNoZWNrIGlu
-IHVzZXJzcGFjZS4gVGhhbmtzIENvcm5lbGlhLg0KDQpUaGFua3MNCkppYW55b25nDQoNCj4gVGhh
-bmtzDQo+IA0KPiA+ID4gU2lnbmVkLW9mZi1ieTogSmlhbnlvbmcgV3UgPGppYW55b25nLnd1QGFy
-bS5jb20+DQo+ID4gPiAtLS0NCj4gPiA+ICBEb2N1bWVudGF0aW9uL3ZpcnQva3ZtL2FwaS5yc3Qg
-fCAzICsrLQ0KPiA+ID4gIGFyY2gvYXJtNjQva3ZtL2FybS5jICAgICAgICAgICB8IDEgKw0KPiA+
-ID4gIGluY2x1ZGUvdWFwaS9saW51eC9rdm0uaCAgICAgICB8IDEgKw0KPiA+ID4gIDMgZmlsZXMg
-Y2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gPg0KDQo=
+Fix a cmd->ent use after free due to a race on command entry.
+Such race occurs when one of the commands releases its last refcount and
+frees its index and entry while another process running command flush
+flow takes refcount to this command entry. The process which handles
+commands flush may see this command as needed to be flushed if the other
+process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+the spin lock.
+
+[70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+[70013.081968]
+[70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
+[70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
+[70013.082028] Workqueue: events aer_isr
+[70013.082053] Call Trace:
+[70013.082067]  dump_stack+0x8b/0xbb
+[70013.082086]  print_address_description+0x6a/0x270
+[70013.082102]  kasan_report+0x179/0x2c0
+[70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
+[70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
+[70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+[70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+[70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+[70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+[70013.082390]  ? __pm_runtime_resume+0x58/0x70
+[70013.082409]  pci_device_remove+0xf3/0x280
+[70013.082426]  ? pcibios_free_irq+0x10/0x10
+[70013.082439]  device_release_driver_internal+0x1c3/0x470
+[70013.082453]  pci_stop_bus_device+0x109/0x160
+[70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+[70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+[70013.082493]  aer_isr+0x7d2/0x960
+[70013.082510]  ? aer_get_device_error_info+0x420/0x420
+[70013.082526]  ? __schedule+0x821/0x2040
+[70013.082536]  ? strscpy+0x85/0x180
+[70013.082543]  process_one_work+0x65f/0x12d0
+[70013.082556]  worker_thread+0x87/0xb50
+[70013.082563]  ? __kthread_parkme+0x82/0xf0
+[70013.082569]  ? process_one_work+0x12d0/0x12d0
+[70013.082571]  kthread+0x2e9/0x3a0
+[70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
+[70013.082592]  ret_from_fork+0x1f/0x40
+
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Shifeng Li <lishifeng1992@126.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index d3ca745d107d..1f9c09065249 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -115,15 +115,18 @@ static u8 alloc_token(struct mlx5_cmd *cmd)
+ 	return token;
+ }
+ 
+-static int cmd_alloc_index(struct mlx5_cmd *cmd)
++static int cmd_alloc_index(struct mlx5_cmd *cmd, struct mlx5_cmd_work_ent *ent)
+ {
+ 	unsigned long flags;
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&cmd->alloc_lock, flags);
+ 	ret = find_first_bit(&cmd->bitmask, cmd->max_reg_cmds);
+-	if (ret < cmd->max_reg_cmds)
++	if (ret < cmd->max_reg_cmds) {
+ 		clear_bit(ret, &cmd->bitmask);
++		ent->idx = ret;
++		cmd->ent_arr[ent->idx] = ent;
++	}
+ 	spin_unlock_irqrestore(&cmd->alloc_lock, flags);
+ 
+ 	return ret < cmd->max_reg_cmds ? ret : -ENOMEM;
+@@ -957,7 +960,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 	sem = ent->page_queue ? &cmd->pages_sem : &cmd->sem;
+ 	down(sem);
+ 	if (!ent->page_queue) {
+-		alloc_ret = cmd_alloc_index(cmd);
++		alloc_ret = cmd_alloc_index(cmd, ent);
+ 		if (alloc_ret < 0) {
+ 			mlx5_core_err_rl(dev, "failed to allocate command entry\n");
+ 			if (ent->callback) {
+@@ -972,15 +975,14 @@ static void cmd_work_handler(struct work_struct *work)
+ 			up(sem);
+ 			return;
+ 		}
+-		ent->idx = alloc_ret;
+ 	} else {
+ 		ent->idx = cmd->max_reg_cmds;
+ 		spin_lock_irqsave(&cmd->alloc_lock, flags);
+ 		clear_bit(ent->idx, &cmd->bitmask);
++		cmd->ent_arr[ent->idx] = ent;
+ 		spin_unlock_irqrestore(&cmd->alloc_lock, flags);
+ 	}
+ 
+-	cmd->ent_arr[ent->idx] = ent;
+ 	lay = get_inst(cmd, ent->idx);
+ 	ent->lay = lay;
+ 	memset(lay, 0, sizeof(*lay));
+-- 
+2.25.1
+
