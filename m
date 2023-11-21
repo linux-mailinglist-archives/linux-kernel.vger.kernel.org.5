@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1917F2586
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 06:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0622C7F258E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 06:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjKUFwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 00:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
+        id S233374AbjKUF6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 00:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjKUFwl (ORCPT
+        with ESMTP id S230243AbjKUF6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 00:52:41 -0500
-Received: from m13134.mail.163.com (m13134.mail.163.com [220.181.13.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A746AA0;
-        Mon, 20 Nov 2023 21:52:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=2NitR18A+vWxuiDpuLVtoiDeai6ma9yuIj9A/5fN3Kg=; b=X
-        evxNjxcljsb4NEenaR8R2ZFFMgiUMRtSfGGa4LHGgp1zo+SmC5d8zW+RsnB4mCcT
-        agDAR22ylV02bHLY1KcxFLy4DAfmaUpgg69cRwrmfBGLumy6+Uq/ABCqxUPjLHvF
-        1ugps0BRCY+VebYo+gT1+ZwRvurAz4m9JceWFy0USE=
-Received: from 00107082$163.com ( [111.35.185.43] ) by ajax-webmail-wmsvr134
- (Coremail) ; Tue, 21 Nov 2023 13:51:11 +0800 (CST)
-X-Originating-IP: [111.35.185.43]
-Date:   Tue, 21 Nov 2023 13:51:11 +0800 (CST)
-From:   "David Wang" <00107082@163.com>
-To:     "Namhyung Kim" <namhyung@kernel.org>
-Cc:     "Peter Zijlstra" <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed
- for aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <CAM9d7chFQ1L0h0av7ziXU4ja_j1FMRgwd-CHULnOB5YuH9yo2w@mail.gmail.com>
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com>
- <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com>
- <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
- <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
- <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com>
- <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
- <1da1b7f.564.18be01bd6ce.Coremail.00107082@163.com>
- <CAM9d7chFQ1L0h0av7ziXU4ja_j1FMRgwd-CHULnOB5YuH9yo2w@mail.gmail.com>
-X-NTES-SC: AL_Qu2bAvmfukAs5yKdYOkZnEYQheY4XMKyuPkg1YJXOp80iivx0yEfQFFuOHDN/8eXOi6qnja3aSBw1eR0UYdzcaP8V0/TtCdaxQihuzpMWW/m
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Tue, 21 Nov 2023 00:58:02 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491DAE7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 21:57:58 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso2900689e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 21:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700546276; x=1701151076; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7qlehtsZYfebpFdFAY73VV/paYzz6daNRXMckCDPI1Q=;
+        b=LrYQybniTuoVmqlTcvQlF8ANVs8Z93Othbttao1VuFiDH9g9QIJKbgWhIocFpSJPKQ
+         KwpCArSFOhUgMcH183gaGFvMJyuvWE4d7bdsSRzYLAE3xr9iwqlnZQgcC8gLcVBG93Ep
+         4theNBc1PrNIlEwT6S9DVK2GDt+oLAZ46a6a8w6dMPXW+oht8VANVQQnDe0HmA4lkYWz
+         wOl2GwBDFErY7ODKFQyum6D91KT9Y6gtyum7UUEo/l5/lehm+M3sKl/kmEFTslX/xYko
+         aG6CRsj7WlcFvK+So6p/wwie79JmpS6TPN9UcPPv17T9NEYhhWfHolRgtkGVDIVtGjjY
+         qkQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700546276; x=1701151076;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qlehtsZYfebpFdFAY73VV/paYzz6daNRXMckCDPI1Q=;
+        b=SZ9EHV9DgBDaRU3WcG6+m8rKxRCLBinZe2Wj50zRI4tujMcFO0pPDMXJpPs6uOxQir
+         EusLnVg6P5FO8OCLF69aBv1Lal4PHrPCbG3rKseXyxtGEsa2AJxXpJR9VliclTAl3Vdo
+         hkW58pzvYyfj7pZmbcc5uwyK0Z5ThEsdiBy7ZEye3PAmhOn+8MAw1XDTCmmlLrnRKPc/
+         DjM7zFxihmC0uPNAJ8SnowDtEJllhAuJ/wYFWWztKes1v1JGVwZiAYri/a3VbVE6Jm8W
+         TkJ0eAUC/bU80G60ZODqsSfSRVcTudfJf2YfgxIxlfeD9QxgVWEmc9fn7QrPey7P74A9
+         1oyg==
+X-Gm-Message-State: AOJu0YxIrriU0qYjkjVv9pkQHuLZLKMG+xYow+J8wf0o2AgbSaf2XlRv
+        nbUw/FBkcHCqwOT9u58tzRM8sQ==
+X-Google-Smtp-Source: AGHT+IEYL7tOmd1RZpAcsqf+lMzTOJfDHXI7QPhJmLWCzGt6NCj2voH5dnbxu1YvRCITJXwXNJuZCQ==
+X-Received: by 2002:ac2:5191:0:b0:50a:7868:d3c0 with SMTP id u17-20020ac25191000000b0050a7868d3c0mr5423864lfi.23.1700546276378;
+        Mon, 20 Nov 2023 21:57:56 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.3])
+        by smtp.gmail.com with ESMTPSA id s21-20020aa7d795000000b00548679e4884sm3504193edq.46.2023.11.20.21.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 21:57:56 -0800 (PST)
+Message-ID: <33a44057-eefa-44ba-8e06-b6eb8bd79e59@tuxon.dev>
+Date:   Tue, 21 Nov 2023 07:57:54 +0200
 MIME-Version: 1.0
-Message-ID: <b5426dd.4bb8.18bf06ebd99.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: hsGowADnL7JQRVxlOgkKAA--.9382W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiFgAvql44X66aqgALs-
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/13] net: ravb: Use pm_runtime_resume_and_get()
+Content-Language: en-US
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
+        geert+renesas@glider.be, wsa+renesas@sang-engineering.com,
+        biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        sergei.shtylyov@cogentembedded.com,
+        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com
+Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-3-claudiu.beznea.uj@bp.renesas.com>
+ <a465e1fb-6ef8-0e10-1dc9-c6a17b955d11@omp.ru>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <a465e1fb-6ef8-0e10-1dc9-c6a17b955d11@omp.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMTEtMjEgMDY6NTk6MTgsICJOYW1oeXVuZyBLaW0iIDxuYW1oeXVuZ0BrZXJuZWwu
-b3JnPiB3cm90ZToKPk9uIEZyaSwgTm92IDE3LCAyMDIzIGF0IDU6NDjigK9QTSBEYXZpZCBXYW5n
-IDwwMDEwNzA4MkAxNjMuY29tPiB3cm90ZToKPj4KCj4+ID5BbmQgaXMgdGhlcmUgYW55IGNoYW5j
-ZSBpZiBpdCdzIGltcHJvdmVkIGJlY2F1c2Ugb2YgdGhlIGNoYW5nZT8KPj4gPkFyZSB0aGUgbnVt
-YmVycyBpbiA2LjcgYmV0dGVyIG9yIHdvcnNlPwo+PiA+Cj4+IEkgaGF2ZSBubyBpZGVhIHdoZXRo
-ZXIgdGhlIGNoYW5nZSBvZiBleHBlY3RlZCB0b3RhbCBzYW1wbGUgY291bnQgYSBidWcgb3IgYSBm
-aXgsICBidXQsICB0aGUgb2JzZXJ2ZWQgcmVzdWx0IHRoYXQgdG90YWwgc2FtcGxlIGNvdW50IGRy
-aWZ0IGEgbG90IChiaWdnZXIgc3RhbmRhcmQgZGV2aWF0aW9uKSwgSSB0aGluayAsICBpcyBhIGJh
-ZCB0aGluZy4KPgo+UmlnaHQuICBDYW4geW91IHJ1biBwZXJmIHN0YXQgdG8gbWVhc3VyZSB0aGUg
-bnVtYmVyIG9mIGNvbnRleHQKPnN3aXRjaGVzIGFuZCBjZ3JvdXAgc3dpdGNoZXMsIHRoZW4/Cj4K
-PiAgc3VkbyBwZXJmIHN0YXQgLWEgLWUgY29udGV4dC1zd2l0Y2hlcyxjZ3JvdXAtc3dpdGNoZXMg
-LS0gc2xlZXAgMTAKPgoKSSB1cGdyYWRlZCB0byA2LjctcmMyLCAgbm93IEkgYW0gdGVzdGluZyB2
-Ni43LXJjMiBhZ2FpbnN0IHY2LjctcmMyIHdpdGggZjA2Y2M2NiByZXZlcnRlZCB3aXRoIGZvbGxv
-d2luZyBjb21tYW5kOgokIGZvciBpIGluIHsxLi42fTsgZG8gc3VkbyAuL3BlcmYgc3RhdCAtYSAt
-ZSBjb250ZXh0LXN3aXRjaGVzLGNncm91cC1zd2l0Y2hlcyAtRyBteXRlc3QgLS0gc2xlZXAgMTA7
-IHNsZWVwIDE7IGRvbmUKd2hpbGUgYGZpbyAtLXJhbmRyZXBlYXQ9MSAtLWlvZW5naW5lPWxpYmFp
-byAtLWRpcmVjdD0xIC0tbmFtZT10ZXN0ICAtLWJzPTRrIC0taW9kZXB0aD02NCAtLXNpemU9MUcg
-LS1yZWFkd3JpdGU9cmFuZHJ3ICAtLXJ1bnRpbWU9MzAwIC0tbnVtam9icz00IC0tdGltZV9iYXNl
-ZD0xYCB3YXMgcnVubmluZyBpbiBjZ3JvdXAgbXl0ZXN0LgogCnY2LjctcmMyCistLS0tKy0tLS0t
-LS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tKwp8ICAgIHwgY29udGV4
-dC1zd2l0Y2hlcyB8IGNncm91cC1zd2l0Y2hlcyB8ICByYXRpbyAgIHwKKy0tLS0rLS0tLS0tLS0t
-LS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0rCnwgIzEgfCAgICAgIDUwNTE2
-OCAgICAgIHwgICAgICA1MDM0OTQgICAgIHwgMTowLjk5NjcgfAp8ICMyIHwgICAgICA1MDM2Mjcg
-ICAgICB8ICAgICAgNTAxOTMyICAgICB8IDE6MC45OTY2IHwKfCAjMyB8ICAgICAgNTA5MzUyICAg
-ICAgfCAgICAgIDUwNzM5NyAgICAgfCAxOjAuOTk2MiB8CnwgIzQgfCAgICAgIDUxMDI3NCAgICAg
-IHwgICAgICA1MDgzNTcgICAgIHwgMTowLjk5NjIgfAp8ICM1IHwgICAgICA1MDg4NzIgICAgICB8
-ICAgICAgNTA3MDYzICAgICB8IDE6MC45OTY0IHwKfCAjNiB8ICAgICAgNTA2MTM4ICAgICAgfCAg
-ICAgIDUwNDIwNSAgICAgfCAxOjAuOTk2MiB8CistLS0tKy0tLS0tLS0tLS0tLS0tLS0tLSstLS0t
-LS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tKwoKdjYuNy1yYzIgd2l0aCBmMDZjYzY2IHJldmVydGVk
-OgorLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLSsK
-fCAgICB8IGNvbnRleHQtc3dpdGNoZXMgfCBjZ3JvdXAtc3dpdGNoZXMgfCAgcmF0aW8gICB8Cist
-LS0tKy0tLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLSstLS0tLS0tLS0tKwp8ICMx
-IHwgICAgICA0NjI1MDQgICAgICB8ICAgICAgNDYwNzMzICAgICB8IDE6MC45OTYyIHwKfCAjMiB8
-ICAgICAgNDY0NzE3ICAgICAgfCAgICAgIDQ2MzAzNiAgICAgfCAxOjAuOTk2NCB8CnwgIzMgfCAg
-ICAgIDQ2MjI0NSAgICAgIHwgICAgICA0NjAzNjEgICAgIHwgMTowLjk5NTkgfAp8ICM0IHwgICAg
-ICA0NjM1MjIgICAgICB8ICAgICAgNDYxNzgzICAgICB8IDE6MC45OTYyIHwKfCAjNSB8ICAgICAg
-NDU5NzYwICAgICAgfCAgICAgIDQ1ODAwNSAgICAgfCAxOjAuOTk2MiB8CnwgIzYgfCAgICAgIDQ1
-Nzg2MyAgICAgIHwgICAgICA0NTYwMjQgICAgIHwgMTowLjk5NjAgfAorLS0tLSstLS0tLS0tLS0t
-LS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLS0tLSsKCiBUaGUgZGlmZmVyZW50IG1l
-YW4gdmFsdWUgaXMgYXBwYXJlbnQsIGJ1dCBubyB3aWRlciBkZXZpYXRpb24gb2JzZXJ2ZWQsIG1h
-eWJlIHRoZSBsYXJnZXIgc3RhbmRhcmQgZGV2aWF0aW9uIG9ic2VydmVkIGluIG15IGxhc3QgbWFp
-bCBpcyBjYXVzZWQgYnkgb3RoZXIgZmFjdG9ycyBkdXJpbmcgZmlvIHNlc3Npb24uIAoKClRoYW5r
-cwpEYXZpZCBXYW5nCgoKCg==
+
+
+On 20.11.2023 21:23, Sergey Shtylyov wrote:
+> On 11/20/23 11:45 AM, Claudiu wrote:
+> 
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> pm_runtime_get_sync() may return with error. In case it returns with error
+>> dev->power.usage_count needs to be decremented. pm_runtime_resume_and_get()
+>> takes care of this. Thus use it.
+>>
+>> Along with this pm_runtime_resume_and_get() and reset_control_deassert()
+>> were moved before alloc_etherdev_mqs() to simplify the error path.
+> 
+>    I don't see how it simplifies the error path...
+
+By not changing it... Actually, I took the other approach: you suggested in
+patch 1 to re-arrange the error path, I did it the other way around:
+changed the initialization path...
+
+>    Re-ordering the statements at the end of the error path seems cheaper than
+> what you do.
+> 
+>> Also, in case pm_runtime_resume_and_get() returns error the reset signal
+>> is deasserted and runtime PM is disabled (by jumping to the proper
+>> error handling label).
+>>
+>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> [...]
+> 
+> MBR, Sergey
