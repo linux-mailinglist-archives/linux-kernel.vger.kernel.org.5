@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6317F2B40
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39827F2B51
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234263AbjKULBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
+        id S233798AbjKULCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjKULBZ (ORCPT
+        with ESMTP id S234200AbjKULCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:01:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854F610F9;
-        Tue, 21 Nov 2023 03:00:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700564447; x=1732100447;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NcRwqwQTwQ6onun3MTTPMLU8sOfAkpxdSQyc+TxerF0=;
-  b=ZFoI5/zTlJWERs04X0S9hDE0/8EAzzUIV0jN9FOXzp71pI9DPIwvGwtN
-   evK/mjVNjVArwvWskLhtPDuGLOu542EcBJfbPgLaOuuy2bmUtULy78cJX
-   BOOxc99KLqMbhAud5DR1hCkn6XDUqMECxdofADMpnHuHvtFeCmX/u/lCy
-   woxGYpDzstAszbgWEvXfLhqEpN2m1arLXyMT/SaJa4jRwRVfoR0nbkpj6
-   RjTQWQ/v8wcs7iml42+1lCRg2oImLlhoZG61kiWYwXDMd3oGrnWEUDrM5
-   Q+KixSdTb9nWm+CGDIwbapwJ5mwGE/TTz27tEk7237EuN+DyhciEEVVRx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="382209974"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="382209974"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 03:00:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="766607182"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="766607182"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 03:00:46 -0800
-Date:   Tue, 21 Nov 2023 03:00:45 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v6 11/16] KVM: x86/tdp_mmu: Split the large page when zap
- leaf
-Message-ID: <20231121110045.GH1109547@ls.amr.corp.intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
- <5d9aadbd-975b-4c4d-ba18-ac6e0fb07ba1@linux.intel.com>
+        Tue, 21 Nov 2023 06:02:23 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD66D10FA;
+        Tue, 21 Nov 2023 03:01:57 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALA9geK006337;
+        Tue, 21 Nov 2023 11:01:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vOWhqG9rjugWBRBwG5uUjztH4X9sdpkjoV0aEkoYeyY=;
+ b=Gtp1Pjn8rND6RE0GYpSP3EgyUA7aa+ktUeroUlCWwOYv+5u+LcVxZaBmcZQfMhxew1a3
+ MDMXXt6aRDE25pUUV2hUrdfuSiKf53s6ThnlmE86RqV/DcCzkdJcXKQYqeg7l8r5Avao
+ M4ic7yGJRAKdWfgK07VKA6JF+1xDCY+X99nOh6vvtz+W62naB9hCxk27QzodLrlSyoY2
+ WiH1TAc7Vh0wsMm6otN+0yj+TnZ5fLhJdpDI7QnPNlXYjlaDxcqVM3LJDM2B5X7JpQgI
+ Y2H/UwtA4uo73hhfnfyMg7PDZDevgp3UEds6U23H44cpK6aiSRtykb+ycGRxr+D+KA8k Zw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugge19d2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 11:01:43 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALB18UT004551
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 11:01:08 GMT
+Received: from [10.253.72.26] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
+ 2023 03:01:04 -0800
+Message-ID: <cde29373-b341-454a-867c-f6bed051ca95@quicinc.com>
+Date:   Tue, 21 Nov 2023 19:01:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5d9aadbd-975b-4c4d-ba18-ac6e0fb07ba1@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>, <corbet@lwn.net>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+References: <20231118062754.2453-1-quic_luoj@quicinc.com>
+ <20231118062754.2453-4-quic_luoj@quicinc.com>
+ <1eb60a08-f095-421a-bec6-96f39db31c09@lunn.ch>
+ <ZVkRkhMHWcAR37fW@shell.armlinux.org.uk>
+ <eee39816-b0b8-475c-aa4a-8500ba488a29@lunn.ch>
+ <fef2ab86-ccd7-4693-8a7e-2dac2c80fd53@quicinc.com>
+ <ZVsnFWzi6KMXpJOj@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <ZVsnFWzi6KMXpJOj@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: hFbGFThDHljuFobQ52L8YK5KPHMgYd9I
+X-Proofpoint-ORIG-GUID: hFbGFThDHljuFobQ52L8YK5KPHMgYd9I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_04,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210086
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,152 +87,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 05:57:28PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-> > diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> > index 7873e9ee82ad..a209a67decae 100644
-> > --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> > +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> > @@ -964,6 +964,14 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
-> >   	return true;
-> >   }
-> > +
-> > +static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
-> > +						       struct tdp_iter *iter,
-> > +						       bool shared);
-> > +
-> > +static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
-> > +				   struct kvm_mmu_page *sp, bool shared);
-> > +
-> >   /*
-> >    * If can_yield is true, will release the MMU lock and reschedule if the
-> >    * scheduler needs the CPU or there is contention on the MMU lock. If this
-> > @@ -975,13 +983,15 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
-> >   			      gfn_t start, gfn_t end, bool can_yield, bool flush,
-> >   			      bool zap_private)
-> >   {
-> > +	bool is_private = is_private_sp(root);
-> > +	struct kvm_mmu_page *split_sp = NULL;
-> >   	struct tdp_iter iter;
-> >   	end = min(end, tdp_mmu_max_gfn_exclusive());
-> >   	lockdep_assert_held_write(&kvm->mmu_lock);
-> > -	WARN_ON_ONCE(zap_private && !is_private_sp(root));
-> > +	WARN_ON_ONCE(zap_private && !is_private);
-> >   	if (!zap_private && is_private_sp(root))
-> Can use is_private instead of is_private_sp(root) here as well.
 
-I'll update it.
+On 11/20/2023 5:29 PM, Russell King (Oracle) wrote:
+> On Mon, Nov 20, 2023 at 04:49:59PM +0800, Jie Luo wrote:
+>>
+>>
+>> On 11/19/2023 4:19 AM, Andrew Lunn wrote:
+>>>> 10G_QXGMII is defined in the Cisco USXGMII multi-port document as one
+>>>> of several possibilities for a USXGMII-M link. The Cisco document can
+>>>> be a little confusing beause it states that 10G_QXGMII supports 10M,
+>>>> 100M, 1G and 2.5G, and then only talks about a 10G and 100M/1G MAC.
+>>>>
+>>>> For 10G_QXGMII, there are 4 MAC interfaces. These are connected to a
+>>>> rate "adaption" through symbol replication block, and then on to a
+>>>> clause 49 PCS block.
+>>>>
+>>>> There is then a port MUX and framing block, followed by the PMA
+>>>> serdes which communicates with the remote end over a single pair of
+>>>> transmit/receive serdes lines.
+>>>>
+>>>> Each interface also has its own clause 37 autoneg block.
+>>>>
+>>>> So, for an interface to operate in SGMII mode, it would have to be
+>>>> muxed to a different path before being presented to the USXGMII-M
+>>>> block since each interface does not have its own external data lane
+>>>> - thus that's out of scope of USXGMII-M as documented by Cisco.
+>>>
+>>> Hi Russell
+>>>
+>>> I think it helps.
+>>>
+>>> Where i'm having trouble is deciding if this is actually an interface
+>>> mode. Interface mode is a per PHY property. Where as it seems
+>>> 10G_QXGMII is a property of the USXGMII-M link? Should we be
+>>> representing the package with 4 PHYs in it, and specify the package
+>>> has a PMA which is using 10G_QXGMII over USXGMII-M? The PHY interface
+>>> mode is then internal? Its just the link between the PHY and the MUX?
+>>>
+>>> By saying the interface mode is 10G_QXGMII and not describing the PMA
+>>> mode, are we setting ourselves up for problems in the future? Could
+>>> there be a PMA interface which could carry different PHY interface
+>>> modes?
+>>>
+>>> If we decide we do want to use 10G_QXGMII as an interface made, i
+>>> think the driver should be doing some validation. If asked to do
+>>> anything else, it should return -EINVAL.
+>>>
+>>> And i don't yet understand how it can also do 1000BaseX and 2500BaseX
+>>> and SGMII?
+>>>
+>>>       Andrew
+>>
+>> Hi Andrew,
+>> The interface mode 10G_QXGMII is a type of USXGMII-M, the other modes
+>> such as 20G-QXGMII, 20G-OXGMII...
+>>
+>> As for the interface mode 10G-QXGMII, there is a multiplexer for 4 PHYs,
+>> then do 66bit/68bit encode in xpcs and pass to PMA, the link topology:
+>> quad PHY --- multiplexer ---XPCS --- PMA.
+>> the 10G-QXGMII interface block includes multiplexer, XPCS and PMA.
+> 
+> Note that phylink_pcs does *not* cover any PCS on the PHY device side
+> of the link. It only covers a PCS on the MAC side.
+
+Ok, even there is only one XPCS multiplex with 4 MACs, we should create
+4 PCS instances for 4 MACs.
 
 > 
-> >   		return false;
-> > @@ -1006,12 +1016,66 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
-> >   		    !is_last_spte(iter.old_spte, iter.level))
-> >   			continue;
-> > +		if (is_private && kvm_gfn_shared_mask(kvm) &&
-> > +		    is_large_pte(iter.old_spte)) {
-> > +			gfn_t gfn = iter.gfn & ~kvm_gfn_shared_mask(kvm);
-> > +			gfn_t mask = KVM_PAGES_PER_HPAGE(iter.level) - 1;
-> > +			struct kvm_memory_slot *slot;
-> > +			struct kvm_mmu_page *sp;
-> > +
-> > +			slot = gfn_to_memslot(kvm, gfn);
-> > +			if (kvm_hugepage_test_mixed(slot, gfn, iter.level) ||
-> > +			    (gfn & mask) < start ||
-> > +			    end < (gfn & mask) + KVM_PAGES_PER_HPAGE(iter.level)) {
-> > +				WARN_ON_ONCE(!can_yield);
-> > +				if (split_sp) {
-> > +					sp = split_sp;
-> > +					split_sp = NULL;
-> > +					sp->role = tdp_iter_child_role(&iter);
-> > +				} else {
-> > +					WARN_ON(iter.yielded);
-> > +					if (flush && can_yield) {
-> > +						kvm_flush_remote_tlbs(kvm);
-> > +						flush = false;
-> > +					}
-> Is it necessary to do the flush here?
-
-Because tdp_mmu_alloc_sp_for_split() may unlock mmu_lock and block.
-While blocking, other thread operates on KVM MMU and gets confused due to
-remaining TLB cache.
-
-
-> > +					sp = tdp_mmu_alloc_sp_for_split(kvm, &iter, false);
-> > +					if (iter.yielded) {
-> > +						split_sp = sp;
-> > +						continue;
-> > +					}
-> > +				}
-> > +				KVM_BUG_ON(!sp, kvm);
-> > +
-> > +				tdp_mmu_init_sp(sp, iter.sptep, iter.gfn);
-> > +				if (tdp_mmu_split_huge_page(kvm, &iter, sp, false)) {
-> > +					kvm_flush_remote_tlbs(kvm);
-> > +					flush = false;
-> Why it needs to flush TLB immediately if tdp_mmu_split_huge_page() fails?
-
-Hmm, we don't need it.  When breaking up page table, we need to tlb flush
-before issuing TDH.MEM.PAGE.DEMOTE(), not after it.  Will remove those two lines.
-
-
-> Also, when KVM MMU write lock is held, it seems tdp_mmu_split_huge_page()
-> will not fail.
-
-This can happen with TDX_OPERAND_BUSY with secure-ept tree lock with other
-vcpus TDH.VP.ENTER(). TDH.VP.ENTER() can take exclusive lock of secure-EPT.
-
-
-> But let's assume this condition can be triggered, since sp is
-> local
-> variable, it will lost its value after continue, and split_sp is also NULL,
-> it will try to allocate a new sp, memory leakage here?
-
-Nice catch. I'll add split_sp = sp;
-
-
-> > +					/* force retry on this gfn. */
-> > +					iter.yielded = true;
-> > +				} else
-> > +					flush = true;
-> > +				continue;
-> > +			}
-> > +		}
-> > +
-> >   		tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
-> >   		flush = true;
-> >   	}
-> >   	rcu_read_unlock();
-> > +	if (split_sp) {
-> > +		WARN_ON(!can_yield);
-> > +		if (flush) {
-> > +			kvm_flush_remote_tlbs(kvm);
-> > +			flush = false;
-> > +		}
-> Same here, why we need to do the flush here?
-> Can we delay it till the caller do the flush?
-
-No. Because we unlock mmu_lock and may block when freeing memory.
-
-
-> > +
-> > +		write_unlock(&kvm->mmu_lock);
-> > +		tdp_mmu_free_sp(split_sp);
-> > +		write_lock(&kvm->mmu_lock);
-> > +	}
-> > +
-> >   	/*
-> >   	 * Because this flow zaps _only_ leaf SPTEs, the caller doesn't need
-> >   	 * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
-> > @@ -1606,8 +1670,6 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
-> >   	KVM_BUG_ON(kvm_mmu_page_role_is_private(role) !=
-> >   		   is_private_sptep(iter->sptep), kvm);
-> > -	/* TODO: Large page isn't supported for private SPTE yet. */
-> > -	KVM_BUG_ON(kvm_mmu_page_role_is_private(role), kvm);
-> >   	/*
-> >   	 * Since we are allocating while under the MMU lock we have to be
+>> Here is a problem as Russell mentioned earlier, we need to know which PHY
+>> device is changing the link status when the 10G-QXGMII mode is used,
+>> since there are 4 PHYs, when one of them has the link change, there is no
+>> PHY device information passed to the PHYLINK, so the PCS driver don't
+>> which PHY is changing link status and 10G-QXGMII mode don't know which
+>> channel(mapped to PHY) should be configured.
+>>
+>> would we add a field such as (int channel) in the struct phy_device?
+>> so we can pass this information to PCS driver when the PHY link changed.
 > 
+> Nothing in phylink nor phylib is setup to deal with "channels" within
+> a PHY. The model assumes that a network interface consists of exactly
+> one MAC associated with one active PHY.
 > 
-
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+> As there are 4 PHYs, phylib will expect there to be four PHY devices,
+> and there will be expected to be four phylink instances.
+> 
+make sense, thanks Russell.
