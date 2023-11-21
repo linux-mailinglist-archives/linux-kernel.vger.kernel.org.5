@@ -2,57 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ACB7F3881
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A17A7F3880
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbjKUVuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
+        id S229672AbjKUVuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234548AbjKUVuV (ORCPT
+        with ESMTP id S229513AbjKUVuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:50:21 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDAD19E;
-        Tue, 21 Nov 2023 13:50:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tR6u49LQ1LBhM925V/eXh7AlqbxrgxNMGgBmHoJqNsA=; b=q8AqtD05udavs43p3x+GJBnGlL
-        VBYJjP3FGtNBkN4lj2p+k1L9ArjLfxAfovzbDJhIVA/RVEX4gdFWyKUs2p3fZG8yMP3OYrSBfEAcq
-        KK2HIhWxvAZnWuXXlrwZ6OYNh1qh0rLeTm2Q83IFDdjqe3RmlS/jVEJKqV3toDMsuWwTSSAaC20iY
-        e6qVcFpUiTj4wCV43sVDMez3DNCtPV9y/dEAo9si0LysLUWB3Vigul6unfNoHJ1kDXmA9cgIHfYvp
-        chl9tg0xMzs3W9yKXtXHuKl0yAl/wQ0A+WovRcyrRVNp/aOJVFPKZ2npXGgUI7gAEifOmYlgLcG/r
-        M004/28A==;
-Received: from [2001:8b0:10b:5:22b8:d80f:1c9c:f188] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r5Ycz-005xpi-Ao; Tue, 21 Nov 2023 21:49:53 +0000
-Message-ID: <a5fe536e045adb1c94bba39a47cb125740f079ca.camel@infradead.org>
-Subject: Re: [PATCH v8 03/15] KVM: xen: mark guest pages dirty with the
- pfncache lock held
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Paul Durrant <paul@xen.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 21 Nov 2023 21:49:52 +0000
-In-Reply-To: <20231121180223.12484-4-paul@xen.org>
-References: <20231121180223.12484-1-paul@xen.org>
-         <20231121180223.12484-4-paul@xen.org>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-abamlw54pBPXz+RrOZFU"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Tue, 21 Nov 2023 16:50:01 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF09C100;
+        Tue, 21 Nov 2023 13:49:57 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cb55001124so170554b3a.0;
+        Tue, 21 Nov 2023 13:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700603397; x=1701208197; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+Gtgz9FsdyKFDL5tR7CMd1m/DpQtkGweBHqoxGbzpzs=;
+        b=bHFXBErdI6rUujSrnFKKd+E+xs7e7aaBJKybZpJJ2PYYPkH4CjIXabg+bCu316GKjL
+         V2+S9a1kriQCekSdZjn5ikDIdl02JCFSPgiMxOPIFoXxSqkLItpKC93aPjECc330tWqv
+         UcHO3mxwa9vGdXKL5ijmFQuaPkkv1qxDRgNBuCzC4buEG1x9+CzRPwFHbRFimpzbhcxV
+         iJcJdOv3boJRFQcX2TT4ZlZKFoGaD6ll+H0elIKDXdZ8w4eDzyW24J4/vyMpElPFwNqZ
+         lKTtmJJTmXVUGHmFQLsHwJFi0gvinLCkeV+wSL+Kh2Of9SiUrLszLNcVSpClXv93WxIr
+         ISNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700603397; x=1701208197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Gtgz9FsdyKFDL5tR7CMd1m/DpQtkGweBHqoxGbzpzs=;
+        b=t9mvU6sbkpMPgxIwXMgX9mdpGX5qOa8lpmHPJ3hSRNf6WNi7jI2KU6fb7bmDyqK1wz
+         Tc3zzHG9bR/EvqgBz+z08+m+7ysjjvv52icBLWOC6eYirUmQn9fXrnnEuV1vX5Ot9IiO
+         rqAoMrWUBWP7LWcFUjknS6aKyz33I2FRefMW4ZSEu4TIUFXfcOWhvt6tnd+5swCPdmx8
+         zPDdiri8WuJ2BSZL+MnHmuacy0vefUVIe/1mdx/ipy42teMVDzjHk07a/OMCCHSqDRG/
+         eWzNvOX6kAIv/Qp1MoxeK+PJIZFFE60dfVH8asVHlsVNWvseDMTPZ5lE3BlNJzqA8QRD
+         NWbQ==
+X-Gm-Message-State: AOJu0Yw+Q6GYyxn5nDh1IpgsCnIQbXA3eaXeRsXuWF2fDNl2jaPzyA+9
+        AzJxMrz/L++tbTwvHy2A7+o=
+X-Google-Smtp-Source: AGHT+IGvhU9AXpv6DkrhrnepHN3HLJircjSluq81o11W8qfsOoNA0iOUwKAD0D6E1evrcgiZsgbd7Q==
+X-Received: by 2002:a05:6a21:a59b:b0:187:962d:746b with SMTP id gd27-20020a056a21a59b00b00187962d746bmr1015699pzc.9.1700603397092;
+        Tue, 21 Nov 2023 13:49:57 -0800 (PST)
+Received: from [10.64.107.252] (static-198-54-134-172.cust.tzulo.com. [198.54.134.172])
+        by smtp.gmail.com with ESMTPSA id 9-20020a630b09000000b005b92d3cb4c2sm8385412pgl.58.2023.11.21.13.49.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 13:49:56 -0800 (PST)
+Message-ID: <7e4038d8-ef60-f943-a7ba-db59ce9a2aa7@gmail.com>
+Date:   Tue, 21 Nov 2023 13:49:54 -0800
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] acpi: Fix ARM32 platforms compile issue introduced by
+ fw_table changes
+Content-Language: en-US
+To:     Dave Jiang <dave.jiang@intel.com>, linus.walleij@linaro.org,
+        rafael@kernel.org
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
+        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <170058229266.2356592.11579977558324549374.stgit@djiang5-mobl3>
+From:   Sam Edwards <cfsworks@gmail.com>
+In-Reply-To: <170058229266.2356592.11579977558324549374.stgit@djiang5-mobl3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,134 +81,127 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-abamlw54pBPXz+RrOZFU
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
-> From: Paul Durrant <pdurrant@amazon.com>
->=20
-> Sampling gpa and memslot from an unlocked pfncache may yield inconsistent
-> values so, since there is no problem with calling mark_page_dirty_in_slot=
-()
-> with the pfncache lock held, relocate the calls in
-> kvm_xen_update_runstate_guest() and kvm_xen_inject_pending_events()
-> accordingly.
->=20
-> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+On 11/21/23 07:58, Dave Jiang wrote:
+> Linus reported that:
+> After commit a103f46633fd the kernel stopped compiling for
+> several ARM32 platforms that I am building with a bare metal
+> compiler. Bare metal compilers (arm-none-eabi-) don't
+> define __linux__.
+> 
+> This is because the header <acpi/platform/acenv.h> is now
+> in the include path for <linux/irq.h>:
+> 
+>    CC      arch/arm/kernel/irq.o
+>    CC      kernel/sysctl.o
+>    CC      crypto/api.o
+> In file included from ../include/acpi/acpi.h:22,
+>                   from ../include/linux/fw_table.h:29,
+>                   from ../include/linux/acpi.h:18,
+>                   from ../include/linux/irqchip.h:14,
+>                   from ../arch/arm/kernel/irq.c:25:
+> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+>    218 | #error Unknown target environment
+>        |  ^~~~~
+> 
+> The issue is caused by the introducing of splitting out the ACPI code to
+> support the new generic fw_table code.
+> 
+> Rafael suggested moving the fw_table.h include in linux/acpi.h to below
+> the asm/acpi.h. The move also helped with eliminating the inclusion of
+> acpi/acpi.h in fw_table.h. The unfortunate circular inclusion of
+> linux/acpi.h is needed for fw_table.h due fw_table code needing the
+> defined acpi structs in order to build.
+> 
+> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
+> Reported-by: Linus Walleij <linus.walleij@linaro.org>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>   include/linux/acpi.h     |   23 ++++++++++++-----------
+>   include/linux/fw_table.h |    1 -
+>   2 files changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 54189e0e5f41..2789beb26138 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -15,7 +15,6 @@
+>   #include <linux/mod_devicetable.h>
+>   #include <linux/property.h>
+>   #include <linux/uuid.h>
+> -#include <linux/fw_table.h>
+>   
+>   struct irq_domain;
+>   struct irq_domain_ops;
+> @@ -25,16 +24,6 @@ struct irq_domain_ops;
+>   #endif
+>   #include <acpi/acpi.h>
+>   
+> -#ifdef CONFIG_ACPI_TABLE_LIB
+> -#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
+> -#define __init_or_acpilib
+> -#define __initdata_or_acpilib
+> -#else
+> -#define EXPORT_SYMBOL_ACPI_LIB(x)
+> -#define __init_or_acpilib __init
+> -#define __initdata_or_acpilib __initdata
+> -#endif
+> -
+>   #ifdef	CONFIG_ACPI
+>   
+>   #include <linux/list.h>
+> @@ -48,6 +37,18 @@ struct irq_domain_ops;
+>   #include <acpi/acpi_io.h>
+>   #include <asm/acpi.h>
+>   
+> +#include <linux/fw_table.h>
+> +
+> +#ifdef CONFIG_ACPI_TABLE_LIB
+> +#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
+> +#define __init_or_acpilib
+> +#define __initdata_or_acpilib
+> +#else
+> +#define EXPORT_SYMBOL_ACPI_LIB(x)
+> +#define __init_or_acpilib __init
+> +#define __initdata_or_acpilib __initdata
+> +#endif
+> +
+>   static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
+>   {
+>   	return adev ? adev->handle : NULL;
+> diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
+> index ff8fa58d5818..a722300c215b 100644
+> --- a/include/linux/fw_table.h
+> +++ b/include/linux/fw_table.h
+> @@ -26,7 +26,6 @@ struct acpi_subtable_proc {
+>   };
+>   
+>   #include <linux/acpi.h>
+> -#include <acpi/acpi.h>
 
-Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
+Hi Dave,
 
---=-abamlw54pBPXz+RrOZFU
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+Seems to me that the #include <linux/acpi.h> should go too, to break the 
+circular including cycle. If it remains, I fear that there could be 
+subtle problems in the future depending on which header is included 
+first in a compilation unit. It sounds now like the only correct way to 
+get fw_table.h included is transitively via linux/acpi.h (of note: 
+lib/fw_table.c will have to be updated; it's the only file that 
+currently breaks this rule) so that removal will just help enforce this. 
+Plus, includes in the middle of non-preprocessor declarations are a 
+(sometimes necessary, definitely not here) code smell, in my view.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIxMjE0OTUyWjAvBgkqhkiG9w0BCQQxIgQg5wSTRcap
-O7Sbk3OtskUmhYR1JHdEwUERofg2Tm12TUQwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBQ5U9Mi4bZH7k8KIqVFMLH2XXAlheYd+Jd
-L8687AgxjHT1RPyw9RDtcuh2b0k5OGA1xr7CQIDPmA9+3o8CysCH7nlyWpPVuYp334gvvpJCucBY
-/fPWe9jLev71DCEjqDje0YwjBLj1/v16bS/9q/Yn8CrRhW61fyS3ct8A7fbckIXoU1KyJyTn4Jwo
-K8s5ufmcSoVPXRQV3NJoEMRaB44/UMQIZJF6BaHD5QroYyyVN6IB86x2gqJpAggHrLZpPkPTynJk
-Sh3p6NuV3aC1MuvGmGtcaEOQnMnSgT0tFIOJGYWsviQrO1k/xqz7psWW0XPWTFg6Q0fsL9221Bwe
-RsHPJH9bCFeWWHG4wXq5IvsOoMmJVsQfRCWVnh+GbwB5RRPL1DeF93/7JRM5XIliIMaj22W8zW7i
-Ix99AAB0hbORggMaGF6Sid9OeZX/V37bafpNN6eokZiuXCkzBJcuozvs5HpzElIeBJmyUl4zVRn3
-L5nLf/Ho6JaWDe9g3NQFVAcNs/vxoeDLheCUtUpxJIEfZj1Rg8Wfd2GgfdFVFMtajP5QozelZ1BA
-0ynHNI0xmQsxSjWafFHOUd1p4zDqFi9GWvzW3PUsOX5g3YE2hg4edwSP7/yU7lXsUzdrb3efy/V2
-IZW5YIfx1QQfNbsOc1QdQhvYWuVEVao5zZO6W5DLDQAAAAAAAA==
+If this include must remain for some reason, perhaps a comment should be 
+added to call attention to the circular situation and provide justification?
 
+Cheers,
+Sam
 
---=-abamlw54pBPXz+RrOZFU--
+>   
+>   union acpi_subtable_headers {
+>   	struct acpi_subtable_header common;
+> 
+> 
+> 
+> 
