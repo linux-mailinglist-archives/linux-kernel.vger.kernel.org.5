@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B02D7F36BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9EE7F36C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjKUTT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        id S231126AbjKUTU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:20:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUTT5 (ORCPT
+        with ESMTP id S229514AbjKUTU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:19:57 -0500
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A616188
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:19:54 -0800 (PST)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-28011e1cdcbso7750402a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:19:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700594393; x=1701199193;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FUBkvtKlljNw5RGXfShx1sdDMysH6AQ2CmAfAVALdNU=;
-        b=dhJmqOKjUH7/S6T0ej/SY7EW0W+PU93sLPrZX1cHqIPMMG7LJrSDyWnrkBmgytjkJY
-         cwZVhP4agc2862XG70VjZV6qaA17vqgH22cPa1z1O3tkypKgI+WLrqMlPfOiIAmqG2RB
-         /p3sHIpU7CsH6oATfvpOUdxkUJzuwxgUigYFCLYsppw3ecCzLXPfVyJuTWe0cobOAKH6
-         MzqXZWGRLqSL6TI8Qif4h9iGwiiKVEvJc8VD20jlkr4ajeU+lRyPWVx2RXep1Ws33VLv
-         EPnFMolIZuoPA7GUdJVRMNiu94yo81cdY2oc0I9iwIVvHKq2C+lBsYigfDY5/N8QdBVL
-         Nz5g==
-X-Gm-Message-State: AOJu0YzqzHJNnAM7DL7ruLik4LlwFXX33ZwdOeXeLUD2okp/z8Ng8mmV
-        2ZxYlIx9BMNPdHcJbAAnv2e0uc2ev0jinuBy119tdTcHUhwhJjE=
-X-Google-Smtp-Source: AGHT+IGWNaPAGyEf+h3ROvpObYlG5kLp0q8Q1YP7m3lQWLR/xmBe+EjayCcHdvuNVMj/uFkIzJ2bZK3eew2BMWW/JPhuf5t2JCDM
+        Tue, 21 Nov 2023 14:20:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA409113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:20:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6769AC433C7;
+        Tue, 21 Nov 2023 19:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700594424;
+        bh=EBK1q+oe+c4i9o37VMayPNOAfNEEFOG6EZD0cEsQE6s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=tp3D93Lofo2iLhrKTpzTvy2Y8ywhNK52/c6y9RRmvNYZCMC9Y3JoFYGjIkwisKgPq
+         KN/M2WIFrZZAsN17x8ZALH6HO0f04RP4XKt7CA8RUMSJ41fPJbGQVxAGioUqdAHtGO
+         ZpAnt5ungxlKyIihIaC4W0YU5JJjHg5cemDgF6xEsnECnlU9jkhL31WSuHjJA11Aj/
+         wB1LTkj6dcSCS9C4MfZV4vfs1OXLWnWjJ08U7CJ6NWx2WhTNvkg/2x3cidHqwp3How
+         Wkz73CpK3rAAllzssxyU1vank8G3+FxeaWmkh/giH8nmeyfu141LjfcyZO9f5B8ZkP
+         dP4RiH2HSKpig==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 505ECEAA955;
+        Tue, 21 Nov 2023 19:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:8986:b0:27d:e1c:533e with SMTP id
- v6-20020a17090a898600b0027d0e1c533emr37550pjn.3.1700594393855; Tue, 21 Nov
- 2023 11:19:53 -0800 (PST)
-Date:   Tue, 21 Nov 2023 11:19:53 -0800
-In-Reply-To: <000000000000d330500607d85a5f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0be0d060aae7c5b@google.com>
-Subject: Re: [syzbot] [PATCH] Tried to correct
-From:   syzbot <syzbot+c52569baf0c843f35495@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 0/4] selftests/bpf: Update multiple prog_tests to
+ use ASSERT_ macros
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170059442432.1779.10625462603877960408.git-patchwork-notify@kernel.org>
+Date:   Tue, 21 Nov 2023 19:20:24 +0000
+References: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+To:     Yuran Pereira <yuran.pereira@hotmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
+        shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hello:
 
-***
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Subject: [PATCH] Tried to correct
-Author: tintinm2017@gmail.com
+On Tue, 21 Nov 2023 05:33:14 +0530 you wrote:
+> Multiple files/programs in `tools/testing/selftests/bpf/prog_tests/` still
+> heavily use the `CHECK` macro, even when better `ASSERT_` alternatives are
+> available.
+> 
+> As it was already pointed out by Yonghong Song [1] in the bpf selftests the use
+> of the ASSERT_* series of macros is preferred over the CHECK macro.
+> 
+> [...]
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Here is the summary with links:
+  - [bpf-next,v3,1/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
+    https://git.kernel.org/bpf/bpf-next/c/b0e2a0395312
+  - [bpf-next,v3,2/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bind_perm
+    https://git.kernel.org/bpf/bpf-next/c/3ec1114a9745
+  - [bpf-next,v3,3/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bpf_obj_id
+    https://git.kernel.org/bpf/bpf-next/c/f125d09b99fc
+  - [bpf-next,v3,4/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in vmlinux
+    https://git.kernel.org/bpf/bpf-next/c/3ece0e85f679
 
-Signed-off-by: attreyee-muk <tintinm2017@gmail.com>
----
- drivers/hid/usbhid/hid-core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index a90ed2ceae84..582ddbef448f 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -1021,6 +1021,8 @@ static int usbhid_parse(struct hid_device *hid)
- 	       (hdesc->bLength - offset) / sizeof(struct hid_class_descriptor));
- 
- 	for (n = 0; n < num_descriptors; n++)
-+		if (n >= ARRAY_SIZE(hdesc->desc))
-+			break;
- 		if (hdesc->desc[n].bDescriptorType == HID_DT_REPORT)
- 			rsize = le16_to_cpu(hdesc->desc[n].wDescriptorLength);
- 
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
