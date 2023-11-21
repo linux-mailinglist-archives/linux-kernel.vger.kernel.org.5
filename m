@@ -2,156 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143717F295A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAAC7F295D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjKUJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:51:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        id S234095AbjKUJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjKUJvT (ORCPT
+        with ESMTP id S233621AbjKUJv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:51:19 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340AE10C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:51:15 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso20065335e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:51:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700560273; x=1701165073; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gp2TNSI1Gs2EmPQurEidEEep2Vv4EbZ/khjCjjp1jWY=;
-        b=pqYNozjj9hZKvmDxdKVcFuzgCwQ4MfYiF5NrC+oxQH6LFcHVJAgZbkzlDxB1JpOuBP
-         ZVpjsa4xTWZ3aJXFtbJlVKNlKJ/jiM11tOkWT95BImoI3IS9VuBqt6EydDzpCVzGoIFP
-         3UAWGU3gfW8JwRsmu28xaxtN55P4ujbSJldE+RaK7lnahvX95NBMIz3VeXLc/m2GaiFC
-         fpnLiREIFTyc72hT2Qz5cMZmyEdRYf45vFT2aEvDgv5w5hoS0aW4y91a/R55l7n+i1WA
-         9F4faLFDuAT4nE7/nFu+/9DpiShfgX/7ku/8kD5rcWunsxLDed7TwTas5O0yYEJO7LCr
-         mbiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700560273; x=1701165073;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Gp2TNSI1Gs2EmPQurEidEEep2Vv4EbZ/khjCjjp1jWY=;
-        b=g06TZQFqgS56qsEBG2ie1msJ18POzTdNHeNIlctVFu0u48KFjDoCMglOD9LUACfDMF
-         8O/kLr8Ap8ikMbWEfFfiU+OhLSPopL1VptS/T9Ov+sxdpVvjJZcLx6cOPjw47sph2kZS
-         UDLc3sYow8PcPDB3aaPxR/5yrt0ZIl/QtzXLTrVezEX5pxHTiVp26WzP3eXBpM/keE3k
-         5O1vR7AwBms5IUIMf/m50YDtPZrg5UHbIEeAkv3lUYDCQcCAr2rb1CUEdAXRGR9XIEiJ
-         +I3x8ju8aNObHhJShT41y0eyJ+7ZANvO5qp0RibM6JpcoEndUJti4p+TaWKWKy8lIape
-         FwIw==
-X-Gm-Message-State: AOJu0YwP2RnZfl6oyNQHYuDwJeAKLGczZ2Jb+djH4go7rVEPVBgJ5/Fd
-        SQtNIFfLOPHZ1RRDbXPmurmLJA==
-X-Google-Smtp-Source: AGHT+IEqchWEaRf3vJf2eHIgK1W8abA02a8geVzEjClI8ifbluQO1t7DjZuFrXzY4FpXunUKLKJj/Q==
-X-Received: by 2002:a05:600c:358c:b0:405:7b92:453e with SMTP id p12-20020a05600c358c00b004057b92453emr7881425wmq.37.1700560273592;
-        Tue, 21 Nov 2023 01:51:13 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id z16-20020a05600c221000b0040472ad9a3dsm16105068wml.14.2023.11.21.01.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 01:51:13 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Tue, 21 Nov 2023 10:51:11 +0100
-Subject: [PATCH] arm64: deconfig: enable Qualcomm SM8650 SoC drivers
+        Tue, 21 Nov 2023 04:51:59 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2076.outbound.protection.outlook.com [40.107.215.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C028C1;
+        Tue, 21 Nov 2023 01:51:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OiKxN+Zwk2S6YfwaFk4ZEZ/ySMC899NKIc8+/NO8U4VW7ZhYr9QEwYN7SVq2hWChzzzB/fmgSsF0YlZugWdttiuWep3d2RtDGMI+ZchuDm6oN4lVDpyTu/4TODbbACsV4p19kGHh80LqGpLgT0EFUcvZChqUdlaTydf1jaw8OIJJLs5n6TvV/uVkbVgLbeB1l+8tQdN9FGwondiukuftceL8Iy6LOvW+LiOOIIsjW1rjEzvdPAJgI4pfsB1v/P+/TgUiwtrkYtcv0va9FyplE35s6LZOJs2fZqYMKnmNyH6NCpbHCX4TigXUpaMhUYXyR3yW/H5ZkTSG1nURiPzKpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b3s66eWT2SqKIOaifRv3YMVQCZgQNEUywU9IpCcp5VY=;
+ b=IVC4IxTUIoBoGNKVVhboQUdZkgMtjBagYCvZfYT8QlB6V99g+UQ8ndSwQUkVMjVteteZdhnnX5HSbAyGeRifRoohIN4PQVyy4FUQuJ8WZq+xt3pEW/UWVd3sc3/UGdAhnh76egruAzSDO3nonkRnmdWo25H7GRRnFDDBmycp03vnCaLG7C83ksL5Q+gwWgQdbS3ddF3HLRrY/57vGALXt3uP6gTjkWaNFstAcq3wTxcRt+drlF/7BzcqP0SZA4dLTpwwAGcAULxtqLoN2OtuasRhoyr99rFrW0HrzyxW2btXXxWFj4RIEUqLlk9sZEuPepfnIvSbM5Z7wUxqB0ZVTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b3s66eWT2SqKIOaifRv3YMVQCZgQNEUywU9IpCcp5VY=;
+ b=L0+AKpYlrAjCm+EIJvSkouHoZNbaWaQxONzq6Bdxg57tRYCpcHh7ilqj7cRtwAtetJIdDyj+QFIjzKRUuu9vSVhCXowJBeRnt9b4aMTAP5IshX0Ixh5V/kwZ7vIJGaneOzUAmeyy5/pzog/YYxWKQtjEP7lkciZpUeTLacSpJgI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:d8::6) by TYZPR01MB5602.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:425::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
+ 2023 09:51:50 +0000
+Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
+ ([fe80::a480:d88f:100:3a92]) by SEYPR01MB5387.apcprd01.prod.exchangelabs.com
+ ([fe80::a480:d88f:100:3a92%7]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
+ 09:51:50 +0000
+From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: [PATCH v5] tty: serial: Add RS422 flag to struct serial_rs485
+Date:   Tue, 21 Nov 2023 17:51:22 +0800
+Message-Id: <20231121095122.15948-1-crescentcy.hsieh@moxa.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0104.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b4::20) To SEYPR01MB5387.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:d8::6)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231121-topic-sm8650-upstream-defconfig-v1-1-2500565fc21b@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAI59XGUC/x3NQQqEMAxA0atI1gbaDhZnriIupE00C9vS6DAg3
- n2Ky7f5/wKlKqTw6S6o9BWVnBps30HYlrQSSmwGZ9zLWmfxyEUC6j76weBZ9Ki07BiJQ04sK0Z
- m8mze3gcDrVIqsfyewzTf9x+k/hgOcQAAAA==
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2066;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=duoOtpjsw8oDmAagwU+LZ25wk3WFADYydw5Bw8RpyHw=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlXH2QHLIE9nmslVg2Ia/r5d1ICCytU9AjNhX2Ieqn
- oWg0xMiJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZVx9kAAKCRB33NvayMhJ0WVXEA
- Cjw6+Eo3bg1Wr8n87y1cN9ktauAR3wIYl9CsKRmbvOGjbpGWKk5yeNsctI7dFBL3ABYKLIUZRhgYGe
- iVOnsLY4B3Lg4li1nSIatXseI1PF3u7HaH6VlPRZaE4zGZbRpJyPvlk/BdJM0En/hNtUKXHjJfPjNs
- 5Utdx8XNrfcw58WQFklm22bmXV28S3AmlM0DlTHXAcuUrvTKjH3/XL+POoRq3OekVL3jIeYpW/ehTP
- r+Tl3GbzgmjCW3oLHA8nkUxF8x/TSPywKFnANGU1h7vg5Cyx0Co72lHYyhG76ipl6vYeEEKlptgDY5
- 0/kc/ciai9SbD3df+wEN0747+0ucElWbxu0Z7yufTT/2VFWVjFf9DwzBLxaPhaXCkp7bUjGN/2gsEu
- DZ+Zlm4c+ug8pPU//8U67uJi9LhPSWfIY2IDI2xDM//mUfVXoukIs617DUesbC8fGYd7LDsWOLy9+l
- I/rwktaM6GbQOokeCkr0pmn3xbA5T/0yzHPk1vJKpn0GesbygxFWNbrh8f6ZLwuM/CVkMxB8sBikbf
- lTRrShvopgnrlLP1g86164aFBQPzXQpo5qWK2f6M3GzOgQ528c4FubLEaaW+nXK/OO59gP/kNgBcBN
- K7DsZQxvpQ/u0mDQnmn7ZTgXsS2TUuxaIHxjzVWzkFUXya1ocnuHpXv88WMA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEYPR01MB5387:EE_|TYZPR01MB5602:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd9ab74b-3b3a-413c-9721-08dbea777b41
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wS7an9/eePkiiWT/D6IJUD5IDC362x+/9Kns1oAzRQyJ4jnbweQjnkg0d+TUMAwd6h9+qXnPLqkNsARAUWspYwlaiYy1oyh3WY3SIlwOXn1sCjev+YCghvqxIj29pZQhSHB6uhpbeCtQ9H9g58Vn7OPRB+//PESxf5WinGDVcbYCnYgAeVS1xYIW1sEpRtbpICXgQi1Q1RofVCTpDsVR1Hl1IR6OUg2GbVa7T4J83SxgFvgTr9S+Mo8v3mrONwJF3MPpQLAWJy9JGcVi968GS5HAknf4FQGdGOW/2VarktlvSIaS7C9+uxqZNQcCgVnpEp/hTdYz52nVj8sQ/nE9McWPZajfiunnIvOXQuADiRifFaF41q06zR9xsLmEmb56pn8KOiWyX4e5amZZ/vI6KI8VRmjpAFpjMcA/Ej2xAEV3SgoThZg/zgfjh5z2yBO5a27XVF8wkNWFSl1B8xKc1tX8g26DIisRwIwrj9S3bZ68fgtgHLkWeKotIQ4xM1kxHoEjTjlMTOW85AYsdTVjAV541IiO047jtDN8ogCA8NnTkHQkiF7G4jpL8V9Ijiv2SSQWpc148yvSc28VsvqWR1SwpftkkUEN2I5gT/h5Jec=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR01MB5387.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(366004)(396003)(136003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(2616005)(86362001)(110136005)(6486002)(966005)(6666004)(6506007)(66476007)(66556008)(316002)(66946007)(36756003)(38350700005)(107886003)(1076003)(52116002)(6512007)(26005)(83380400001)(2906002)(478600001)(5660300002)(38100700002)(8936002)(8676002)(4326008)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0ad0j/2RzYBrlF5kkEigqQBHmFOXiFwj7QnCHXVi9Isr8pCf2ICVKjCaC89e?=
+ =?us-ascii?Q?yUuojezjfEPY2SJASkH70sC+FoCmRRklPn3yu6xU6mvBKNtQPBZamTFebuwu?=
+ =?us-ascii?Q?HUOAX0eCV9ZNgvqX/xXtgacMnuv3bBuH1wAB8cRK8pGJT6+jOhQqJq92Aypa?=
+ =?us-ascii?Q?bAmwmqjV1S/WqaDKApH5WiNm+q1wDgbRQxZmVMh05Fj1qq6cE0LPnQst8iNl?=
+ =?us-ascii?Q?P67D/uO4rF+BMS2B/KkgzZLOtpCNFBEOdgkV+GRCyCpSUalLakDbG1BcjjIs?=
+ =?us-ascii?Q?wnUFmPfeOQZPuZP0h5YLj2T5lKLPLQYCtmys0iFR4eMmCuLB+zvf0BOHTWXn?=
+ =?us-ascii?Q?PNsoDR2jYY6wkbr/GW944jseJnhSy5WmZKckH+sMzjVZzkqi7Y7hRwl8jEaG?=
+ =?us-ascii?Q?cuKQuekfauWXotGTjGiNR36TiRr6j796wxYGwc55PyVhE6YfJ71OzmKBy3l1?=
+ =?us-ascii?Q?2HWMhQ81CXk8+bLmEqtBNTNp6qztaGM0qrWACMdt3l7k7RceRF24SRbBsqfp?=
+ =?us-ascii?Q?J6+ZWlp3a4pF3Fnx3En2JESamf8ow7jxCxgxRTeuz/3WbABwvJsgx8ocuFgG?=
+ =?us-ascii?Q?OUZ1yTJsExTn3n//xAFnBrrCFD9h57Zq4Al650rn9kymkezKGIdXERXZilBG?=
+ =?us-ascii?Q?OQQs5VUIA00iRIsd88jp5dn7Tkt8nq0itd3Ij3erAkkZ4Birg75hI9mQ8+7q?=
+ =?us-ascii?Q?5cNcx3AhyHIqD6GuIidAyyBRkkKgVy8PbEmWH8xVLm0oxdidim0fk+7JbjJm?=
+ =?us-ascii?Q?8vhzXy+4+uw5LHlHtlMoViZibSJJVV2DpS9oUbTW4q+m30tZZLt7b9uH4K8R?=
+ =?us-ascii?Q?umbsmakhErO6q9BaVIj3WLsgQyEvdcxLzfvFwYhzBCIkU695zqSZa5egMKMr?=
+ =?us-ascii?Q?eP9v99+0E/LjN+r96vQoMeBabKk+EsdaPocZt0Wbj3d2udmSxvg7nu5z12r6?=
+ =?us-ascii?Q?Mc+pMuViTg5OCfVvd9bNmyqZlQ2DppO4QBjZJzjNl/G5W4kAYcU2mu6u8slQ?=
+ =?us-ascii?Q?v9jNrB3rJBuDmM6DZvXlmq3jXxU0b3AVkBfbfvJ371zkKEN9vFBF7s48WAfT?=
+ =?us-ascii?Q?Z7Yo1cCxGnfv1S6wX9mBc4+P4ttIGWHZuZBW3EqPkiyup3uzuJfw++PH+vdt?=
+ =?us-ascii?Q?JisfGqf9HWPuVTUFQED7CJydb4AU85Q3rT6gmgG84Z4sURK7yvU1lGDtBu/o?=
+ =?us-ascii?Q?oVdontJrA/CYPdMvbnis1FjxR5nuOQkQ0rBRHYMUn+SPP9QmBl1MRn3xpV7O?=
+ =?us-ascii?Q?0dvBk1Zi74Jd4PVC7pmCsak0jnu6kjRJj0HNL6qujsWWKI6iDY2rLFd/f/Ml?=
+ =?us-ascii?Q?QehFr0kZD32dcGei/ILpSmJEMv9vMl8VcXuLcR7Ai8T+6CcWlvm2IvoARC86?=
+ =?us-ascii?Q?I9QYXHDNpWwutMsuxUcBNeNdAwgIOUYZQdrGXppQV34ZKr67aV94CkqyP7Qt?=
+ =?us-ascii?Q?IAMqxM87//JHS9C7Cv3skoJbpeW2cCVNHGvJBIsPsVdb26PlAT3v/bPS3eD7?=
+ =?us-ascii?Q?WubHZtOmsjlaYvpLKdcn5pl+izbBuIBIPNZe+Y4Ywd/jdh9/BQ6Ijbc7cUuX?=
+ =?us-ascii?Q?aCDnPZ9xqUkwpKDQmnug3SUzc+6yog7EBD+Wxn7UOULZ7Nto0+dpl6nIodwm?=
+ =?us-ascii?Q?Ig=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd9ab74b-3b3a-413c-9721-08dbea777b41
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR01MB5387.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 09:51:49.6182
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b3+GR6gf3XR24aCkG7bj4V1LpcK4vNx2ewePqxUBBLACcqesov/y6RiDTUOlLHqEM2wUL8l20qAEzXRQEeOcVBDPe5tQUYK3JfsrM8ffhoA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR01MB5602
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable Clocks, Pinctrl and Interconnect drivers in the ARM64
-defconfig for the Qualcomm SM8650 SoC to boot the SM8650 MTP
-(Mobile Test Platform) and QRD (Qualcomm Reference Device) boards.
+Add "SER_RS485_MODE_RS422" flag to struct serial_rs485, so that serial
+port can switch interface into RS422 if supported by using ioctl command
+"TIOCSRS485".
 
-TCSRCC, GCC, Interconnect, and Pinctrl config are marked as builtin and
-not modules due to boot dependencies.
+By treating RS422 as a mode of RS485, which means while enabling RS422
+there are two flags need to be set (SER_RS485_ENABLED and
+SER_RS485_MODE_RS422), it would make things much easier. For example
+some places that checks for "SER_RS485_ENABLED" won't need to be rewritten.
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
-For convenience, a regularly refreshed linux-next based git tree containing
-all the SM8650 related work is available at:
-https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
----
- arch/arm64/configs/defconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b60aa1f89343..55a196a49c34 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -613,6 +613,7 @@ CONFIG_PINCTRL_SM8450=y
- CONFIG_PINCTRL_SM8450_LPASS_LPI=m
- CONFIG_PINCTRL_SC8280XP_LPASS_LPI=m
- CONFIG_PINCTRL_SM8550=y
-+CONFIG_PINCTRL_SM8650=y
- CONFIG_PINCTRL_SM8550_LPASS_LPI=m
- CONFIG_PINCTRL_LPASS_LPI=m
- CONFIG_GPIO_AGGREGATOR=m
-@@ -1257,14 +1258,18 @@ CONFIG_SM_DISPCC_6115=m
- CONFIG_SM_DISPCC_8250=y
- CONFIG_SM_DISPCC_8450=m
- CONFIG_SM_DISPCC_8550=m
-+CONFIG_SM_DISPCC_8650=m
- CONFIG_SM_GCC_6115=y
- CONFIG_SM_GCC_8350=y
- CONFIG_SM_GCC_8450=y
- CONFIG_SM_GCC_8550=y
-+CONFIG_SM_GCC_8650=y
- CONFIG_SM_TCSRCC_8550=y
-+CONFIG_SM_TCSRCC_8650=y
- CONFIG_SM_GPUCC_6115=m
- CONFIG_SM_GPUCC_8150=y
- CONFIG_SM_GPUCC_8250=y
-+CONFIG_SM_GPUCC_8650=m
- CONFIG_SM_VIDEOCC_8250=y
- CONFIG_QCOM_HFPLL=y
- CONFIG_CLK_GFM_LPASS_SM8250=m
-@@ -1524,6 +1529,7 @@ CONFIG_INTERCONNECT_QCOM_SM8250=m
- CONFIG_INTERCONNECT_QCOM_SM8350=m
- CONFIG_INTERCONNECT_QCOM_SM8450=y
- CONFIG_INTERCONNECT_QCOM_SM8550=y
-+CONFIG_INTERCONNECT_QCOM_SM8650=y
- CONFIG_COUNTER=m
- CONFIG_RZ_MTU3_CNT=m
- CONFIG_HTE=y
+Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
 
 ---
-base-commit: 07b677953b9dca02928be323e2db853511305fa9
-change-id: 20231121-topic-sm8650-upstream-defconfig-dffe6f0966c0
+Changes from v4 to v5:
+- Revise commit message.
+- Delete RS422 checks within uart_set_rs485_termination().
 
-Best regards,
+Changes from v3 to v4:
+- Include 'linux/const.h' header in '/include/uapi/linux/serial.h'
+- Replace BIT() with _BITUL() which defined in
+  '/include/uapi/linux/const.h'
+
+Changes from v2 to v3:
+- Remove "SER_RS422_ENABLED" flag from legacy flags.
+- Revise "SER_RS422_ENABLED" into "SER_RS485_MODE_RS422".
+- Remove the code which checks the conflicts between SER_RS485_ENABLED
+  and SER_RS422_ENABLED.
+- Add return check in uart_set_rs485_termination().
+
+Changes from v1 to v2:
+- Revise the logic that checks whether RS422/RS485 are enabled
+  simultaneously.
+
+v4: https://lore.kernel.org/all/20231113094136.52003-1-crescentcy.hsieh@moxa.com/
+v3: https://lore.kernel.org/all/20231108060719.11775-1-crescentcy.hsieh@moxa.com/
+v2: https://lore.kernel.org/all/20231101064404.45711-1-crescentcy.hsieh@moxa.com/
+v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@moxa.com/
+
+---
+ drivers/tty/serial/serial_core.c |  7 +++++++
+ include/uapi/linux/serial.h      | 19 +++++++++++--------
+ 2 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index 831d03361..db1ebed7f 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1376,6 +1376,13 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
+ 		return;
+ 	}
+ 
++	/* Clear other RS485 flags and return if enabling RS422 */
++	if (rs485->flags & SER_RS485_MODE_RS422) {
++		memset(rs485, 0, sizeof(*rs485));
++		rs485->flags |= (SER_RS485_ENABLED | SER_RS485_MODE_RS422);
++		return;
++	}
++
+ 	/* Pick sane settings if the user hasn't */
+ 	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND)) &&
+ 	    !(rs485->flags & SER_RS485_RTS_ON_SEND) ==
+diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
+index 53bc1af67..9086367db 100644
+--- a/include/uapi/linux/serial.h
++++ b/include/uapi/linux/serial.h
+@@ -11,6 +11,7 @@
+ #ifndef _UAPI_LINUX_SERIAL_H
+ #define _UAPI_LINUX_SERIAL_H
+ 
++#include <linux/const.h>
+ #include <linux/types.h>
+ 
+ #include <linux/tty_flags.h>
+@@ -137,17 +138,19 @@ struct serial_icounter_struct {
+  * * %SER_RS485_ADDRB		- Enable RS485 addressing mode.
+  * * %SER_RS485_ADDR_RECV - Receive address filter (enables @addr_recv). Requires %SER_RS485_ADDRB.
+  * * %SER_RS485_ADDR_DEST - Destination address (enables @addr_dest). Requires %SER_RS485_ADDRB.
++ * * %SER_RS485_MODE_RS422	- Enable RS422. Requires %SER_RS485_ENABLED.
+  */
+ struct serial_rs485 {
+ 	__u32	flags;
+-#define SER_RS485_ENABLED		(1 << 0)
+-#define SER_RS485_RTS_ON_SEND		(1 << 1)
+-#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
+-#define SER_RS485_RX_DURING_TX		(1 << 4)
+-#define SER_RS485_TERMINATE_BUS		(1 << 5)
+-#define SER_RS485_ADDRB			(1 << 6)
+-#define SER_RS485_ADDR_RECV		(1 << 7)
+-#define SER_RS485_ADDR_DEST		(1 << 8)
++#define SER_RS485_ENABLED		_BITUL(0)
++#define SER_RS485_RTS_ON_SEND		_BITUL(1)
++#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
++#define SER_RS485_RX_DURING_TX		_BITUL(3)
++#define SER_RS485_TERMINATE_BUS		_BITUL(4)
++#define SER_RS485_ADDRB			_BITUL(5)
++#define SER_RS485_ADDR_RECV		_BITUL(6)
++#define SER_RS485_ADDR_DEST		_BITUL(7)
++#define SER_RS485_MODE_RS422		_BITUL(8)
+ 
+ 	__u32	delay_rts_before_send;
+ 	__u32	delay_rts_after_send;
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.34.1
 
