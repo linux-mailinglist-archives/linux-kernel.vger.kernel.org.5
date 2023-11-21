@@ -2,168 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EC87F259F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47BE7F25A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjKUGIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:08:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52146 "EHLO
+        id S230207AbjKUGOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:14:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjKUGId (ORCPT
+        with ESMTP id S229512AbjKUGOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:08:33 -0500
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2054.outbound.protection.outlook.com [40.107.241.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB4A9F;
-        Mon, 20 Nov 2023 22:08:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UdfkiiixDYAYh7c6DggRZsUIqAnWVSXK8rVdCR7CpfRSKDgQzpcbz1IP67LLyChpQDjCV1LiaBwq9ZGv+8JbkRqnRV7/6r5653bbGzL2hDOvpBOZGLNGeacbssTIw1SmV3Cm7UviKjmf9SddLi6M5cFVaQwvPdt+Zs1V5BYRTx8IK4GFmsGVTCxVIJEcW74xhP7a6j4YUAjwgtXkoZrHTVVtbHikjfiIaAIhQVb1uMOa8JqaAtPcUFcGadHh9xoGX93mCoVf2OPX1H25+NKnvq52B5Y6i0iNwlldikSfC0BPMos14ilLhGNjl4JXXhIBN1lf7Dy1j6mnCYydpP/WGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jI1iVIAAIAx5g4ur18Q3TviJnaQ5l+tBkzKb+8V+yWc=;
- b=oNzKy0JN1r/x79QoqPobNR6K67Yvb0EyKX7Z/wwzZ2LeXMUJSrWJRq+/sN/UsoMkwneqBSTo1bn4IQFYmaFIL0zieBqTJa5gtxeQwCShsvp9fxg3pj539bMDb58bMD5c378vDOSghxwSe7GpQb9mb78WvM7TStAqghxZ5lBU3EEtlUn5doHx5kEtiHrufRnwX6MFW89P2eYOLTmYxnIS+x/wOyD1bzzE1orzUoe9KYd0Hf77WxkvX3YQvF2dgqj8ZmG/hydkMUH1ogJPU5tSygIkm5uwTPN8jUgePzwTNcAWu0gAEU4y5NliB6ZLxWfzpzDPypK4IKVqvGxi5W9sBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jI1iVIAAIAx5g4ur18Q3TviJnaQ5l+tBkzKb+8V+yWc=;
- b=qc74lNZjK32+RGO1RElnFCwfu+4jxq9K7GxGoJcPDM0s5vaJYMdvqWo0uIPwHRiTtKs6dfl9a59bCm5Ai8DHz8lxQJ2ZDBOZZf2gLUDukb79v1V8tDuQtICk6ZiHevXR7gdG8irSvRgAfe+tSsFZcC/Y/lQI59/1dc3n9W+vKTo=
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com (2603:10a6:10:360::21)
- by DB9PR04MB8218.eurprd04.prod.outlook.com (2603:10a6:10:24a::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.17; Tue, 21 Nov
- 2023 06:08:25 +0000
-Received: from DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::dffc:1d:4398:7768]) by DB9PR04MB9498.eurprd04.prod.outlook.com
- ([fe80::dffc:1d:4398:7768%6]) with mapi id 15.20.7025.015; Tue, 21 Nov 2023
- 06:08:25 +0000
-From:   Chancel Liu <chancel.liu@nxp.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Subject: RE: Re: [RESEND v2 3/3] ASoC: dt-bindings: fsl,mqs: Convert format to
- json-schema
-Thread-Topic: Re: [RESEND v2 3/3] ASoC: dt-bindings: fsl,mqs: Convert format
- to json-schema
-Thread-Index: AQHaHEEjio/GDyW+FE6fMt7o6TsBuA==
-Date:   Tue, 21 Nov 2023 06:08:25 +0000
-Message-ID: <DB9PR04MB9498926086E27ECBA09CB142E3BBA@DB9PR04MB9498.eurprd04.prod.outlook.com>
-References: <20231120084905.664-1-chancel.liu@nxp.com>
- <20231120084905.664-4-chancel.liu@nxp.com>
- <2fec766b-dd75-4b96-8114-394ff16c63a7@linaro.org>
-In-Reply-To: <2fec766b-dd75-4b96-8114-394ff16c63a7@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DB9PR04MB9498:EE_|DB9PR04MB8218:EE_
-x-ms-office365-filtering-correlation-id: c5bb5dd9-fe4d-4c72-473e-08dbea5845c2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lLOYtT47vksrO3r6BR9NBS3lYGPgiUTSqO5XHeCKPz4Hc8LHb5/6ybFARu4cw/JK2sWlKO1RxG7rAVgoDP8gbVzhw8jRkPWs1QjRN0eLFwYLyOZf+mCROjh6y26MpkobdkJeGP58GYzsF9oUODo49glNGKIuSb6RLFKjOyxU2pGhuT594pWXeQHQCBl4+uditc1am2rDwrvNDEAdySbl0GPQMRusGoAcwVgnK4LY5KG61RNTKk5b8HVFeAgjnCwSYBRZDrpFCiu4gOIO/PS0z25rILpHN3Mfn1zTOB52ycTRtM00cmlAE0/xzpG8hn/5jb59QaVxtowtPVhBYw6ok9GYhd5ID3ZYg3A/64VQ3kx3qs7jkVUe+eY6BUADYznhUSkjHY7aFFwZ8Tnfkf4452qN670drs6rtgeyYQwQGQCTZnWc2rYgRZAEXcS9Lbwj4z/tqw0HXMu1CwLNpRVFKV/VOlupCxnYNSahTae2z+Wl8g7DVn7+ZzbFT+P1kd5kReT62QF8HR44MUw3h7GOGC3v+gvisIixGU6J15ZtuC4N3Yci0Yixb+RyjYwMABsnMHTdyrg6jIaZhLRZ9UrzgGOGIve2vXvQKeOQoeGVFXdOUfbjUJC+Z8adigoYXTDXBBot6QTpNkogyNC3OFT7Tw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9498.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(44832011)(2906002)(55016003)(8936002)(52536014)(41300700001)(8676002)(7416002)(5660300002)(316002)(64756008)(66556008)(66946007)(66476007)(66446008)(76116006)(110136005)(86362001)(478600001)(26005)(38070700009)(71200400001)(9686003)(7696005)(6506007)(122000001)(83380400001)(33656002)(38100700002)(921008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T21GU1JDQ1pMV1Bqdm52eHZJSTdBMWpnOGRHblpLb2RsclBham1ncjNTQ253?=
- =?utf-8?B?a3NIRk1rT3BxTGFEMjVLbDZKb3hENUpiS2kzZzQ1ZGJ4elhMakQ5R3NPNzcv?=
- =?utf-8?B?ZlFSdGU3Q011SG1QRzJJQ1VieXcwbm9ZK0FkVWlqQ1orZlF3YjRONk5QR0h1?=
- =?utf-8?B?U2U1enExa3ZzT0RUSTNSZ0RqbnR2T21nOTRHLzZpa3FqenFnK0Y5SHhSNDdN?=
- =?utf-8?B?ZDBHb3JPSnFXU0tNR1FtVXQ4enJGY2NnbW55bFJ6QVpWWFY2SWxtRXljVlRu?=
- =?utf-8?B?T2ZzT1NtR1k2Qll0SmhlOVFoendVWkNBTVNxLzh4WVFuYXFRcC9zM1pvUFd5?=
- =?utf-8?B?MVpsWm1sVEdFa3piZHFuUXh3ekt3QW9XR0lFRzFTWXVtYTJOZ1NSc2FnT3ZC?=
- =?utf-8?B?VzVIbytmaGZmSThhVjZPY1ZlTUJLaXU1WlE5dW40QmY5T05RRGdVUkxIYklX?=
- =?utf-8?B?c2F4aWM2UEdWcFU2RWxqWStEdTVrSmd5MGdFR0R0TGZuaDZIdGxudDQra05J?=
- =?utf-8?B?VTFaNVFobkNobmlicE55cytHZU9uVWJPTW41dnU5MFlqUXhRczVKNXZJcVJG?=
- =?utf-8?B?RTVzVzFoV1JpellERk5lRkVlQlZuMFRjNUh0c3JxbmRCSEZaQnVWOGp5SkFi?=
- =?utf-8?B?TUlnbWllRVhxalIreEdxS0lSVFJSdGh0aTFKRWVEZk03NGtXSWY0dE9Nak5K?=
- =?utf-8?B?anptUEplM2dvS3N4N0Fkb2JCbXhHd2REenVDMVhPUWp5UEtRWFgweVpMMlNN?=
- =?utf-8?B?T0JZdkZIbkhQSlNSd1ozRlFPc3BrUkE5dnBnWWRrSmc3WnNlMmRkcXhtUVB5?=
- =?utf-8?B?bDFvQlo5OWZZR3JiWkE3Nm0vM0lxbGNzUmhqcTcvTEI4OThYdFl5VDJPYkk1?=
- =?utf-8?B?VmMwNWFuRlFsV0pBTG1MVDlIeGhOZitBN1JOTVVKNjZwbDg5TjFwSnVLMXVm?=
- =?utf-8?B?WU9DaGQ3L01sL2VkODZsdGhzTG5idm1kOTlDa3hDVVFsMTJJWUZ6bW5lNHRQ?=
- =?utf-8?B?bVpzSlRYS1BtODdpTDQybC9BWU82UmxBK2JtTksxSUl1S0JpZ3Q3V0xHWW9U?=
- =?utf-8?B?c25iZmY3SWpjWlNKMWxiOXpUS2drYXhDWU5XM2FrSTBNTXFnY0lPT0c0eUpC?=
- =?utf-8?B?L3NKdDYzSHNGazRIa2RGbGE2STZLVnR6b3Arbng0bFNIWldwZ01BZTI2WkFv?=
- =?utf-8?B?OUNzNnVGY3M1Z2pJbExMRGgwNGlLK2JMR2N4NlBIWGNTTmhDeW1KY1AxQmhx?=
- =?utf-8?B?QXEvMnU3ZGtsdmRGVVRpd2J1WHhiRnF3VE1IZk55UmZ3QUNHdS8zWnVvSU9V?=
- =?utf-8?B?K3NhdEpnYVhERHFCVU5yaHFoUXBma2ZJWUw1QzNNek42WEdkV2V1VUdKOUVj?=
- =?utf-8?B?VXZleVVia2o1ZzUvbUZIOSswUmV5VWVZRkdRckh6MjdqcFI3NXROdGZPT2Nz?=
- =?utf-8?B?aExLTDBBMEt6VzVMbE5ETU5YTnBzWW9QVkhqY0UzeXJuTjNZMHRQeUIxQllh?=
- =?utf-8?B?NDQyRFlnaHRtWGsxUExPUHh3aEpOTWdZamJHdHNXRGNIdk1nZGp1VjNUcjg2?=
- =?utf-8?B?VWtweHdxYXdXT1FmT0tkTTJ1YzhYVlplUzdleWpqQ0oxbHl1LysyZXpaRFU1?=
- =?utf-8?B?WlVkSmo3TWQzS2Z5MDB0bmlEOUZzK1BTTkVFd2x2R0wvMXJtQ2FrNThPd2Zw?=
- =?utf-8?B?NjgrTzJ3TlJRbDF2UFEzVFdYNy9BZ2MrOWFQc3EzUWsvM2RPZ2N6N095NGtD?=
- =?utf-8?B?VHpzRHljR042R1g1TEFCNVlxcXVlbXluaVVpOGRmeER0cFpaQlpjVlNDMFJ5?=
- =?utf-8?B?RDQ0VnA5azh4MWdvVmJUdXlBNzNoVFBYMkRBSURnMCtLdVJ4OUI3OHJwaUlk?=
- =?utf-8?B?NEliZWJUMER0NFZ4UERrWC82OXRpeVAxQjN6RU1ObUtjZ0JzNUpMa0RVcTFX?=
- =?utf-8?B?L2xNS3puZGZESFp4QWxSWTBJMHFIbkxCd2RyU2oyTnpOVzh5MXpSNnVzdzRw?=
- =?utf-8?B?dDBNWVJGNXdlb0ZlSjJQZUJ1U3NUSVdvTy9DNTZnSmZBMmxuWVZjQ2l5SlV0?=
- =?utf-8?B?cngxUm5zUnhkeXlzSkRCdEQwTjhiUG5pZGk4NWJtcTFHTi9STEVmcGdiWXc2?=
- =?utf-8?Q?XwSQigNsP3BdEbWeYHuXT0DTM?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 21 Nov 2023 01:14:11 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A547CA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:14:07 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso1524640b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:14:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700547245; x=1701152045; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GOIjomM++7B1dIn3OS6W7wRGVNhGN6yLF0JTgK8dl3k=;
+        b=AYW66h7UUNtlp6fRYmIWp8YqodscOmBC+d/T08UUMP69WZPi/eAzo5s+ZsAVHG4/wD
+         HS3m4h0owXrp0QE2Mz30px07n32QqdY+qTyV9GSqAhSYYAgGGYsLcqXjIimo0m5P+Wpi
+         StLfeXofKppZCJ6HA+68pNjT8jx2X5M9IDx3h5tVFbjawk8cd5tKoq9ajX4l3yjyLURN
+         rziL61t4XbrglXCNxhNLKQsS0Z73dyth3rO/ihGvIST2tU3N0ldlVzD6xlwpvZuPKneM
+         xkQc5z87kb9rmMnRMgnO4qKkI/zkdtOu/02KoC6ASJ0zVh/q9clIiUn+oBNYpDaPI7qs
+         lvcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700547245; x=1701152045;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GOIjomM++7B1dIn3OS6W7wRGVNhGN6yLF0JTgK8dl3k=;
+        b=qx7Aqklm6Q71p7GNw1fqLAhBHQS9p3Pnr8WldwgyFZHVZZS/Y5ZmvFstAFvvmZ8Bzc
+         sIePaCe58vMsAHm/XwiXQwAzOFneOy4KNGeDZDe0dnmzzviGe4HcUt32sPpq5C5TaIeV
+         MLjtLxqEKomTIIK1imFXkWWkZTgirxTXsKSoQwLYdaKZkvlOFj6s8CHpuCe/S6S2H9A1
+         qcEhu0bqIB90W3v/7epgUy2w1AJBUlKARRmCb8PpCmSrzFhS4YS/iwMEZRnZApZkJ6Bd
+         pACZmncgmkn8sKWH6043a/V9gzkgSZYeryx05lGGl6/f0nKe+hro/dh9+9RkuO3C/unj
+         3yxg==
+X-Gm-Message-State: AOJu0Yx5pQnkRCLJmjGAmW9u2w5UcO6rFd1sfOEpc3cmk9juUSYZ3pIv
+        QhTzc1qXtJYRnhlS7zKe3U3dUVoqH9qO9Aw14vQ=
+X-Google-Smtp-Source: AGHT+IGJ64FKYoidr21UYJBEOTHCWOxj+FVl4SiGFG9fbWplDSe8yYqQvT3VpG9ZLulT/tiA3Eb7ZppAX3UNvEou5n4=
+X-Received: by 2002:a05:6a20:e609:b0:186:5265:ed1c with SMTP id
+ my9-20020a056a20e60900b001865265ed1cmr8147665pzb.6.1700547245543; Mon, 20 Nov
+ 2023 22:14:05 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9498.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5bb5dd9-fe4d-4c72-473e-08dbea5845c2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2023 06:08:25.1373
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wM2i8cQb79gGPullPCi02LpN7nxaCGN4kdKNLS/42eZfSYOx+TM2T9ewlmjRvf+gXGdXUrsOnPyRUPpAgB1HcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8218
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-49-ankur.a.arora@oracle.com> <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
+ <87lear4wj6.fsf@oracle.com> <46a4c47a-ba1c-4776-a6f8-6c2146cbdd0d@paulmck-laptop>
+ <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
+In-Reply-To: <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Tue, 21 Nov 2023 14:13:53 +0800
+Message-ID: <CALm+0cX2muokt4CCMwyGc2o-LGBOReJ+erBM031XuUOw8Z-Fvg@mail.gmail.com>
+Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
+To:     paulmck@kernel.org
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+ICthbGxPZjoNCj4gPiArICAtIGlmOg0KPiA+ICsgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsg
-ICAgICAgIGNvbXBhdGlibGU6DQo+ID4gKyAgICAgICAgICBjb250YWluczoNCj4gPiArICAgICAg
-ICAgICAgY29uc3Q6IGZzbCxpbXg4cW0tbXFzDQo+ID4gKyAgICB0aGVuOg0KPiA+ICsgICAgICBw
-cm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgIGNsb2NrczoNCj4gPiArICAgICAgICAgIGl0ZW1zOg0K
-PiA+ICsgICAgICAgICAgICAtIGRlc2NyaXB0aW9uOiBNYXN0ZXIgY2xvY2sNCj4gPiArICAgICAg
-ICAgICAgLSBkZXNjcmlwdGlvbjogQ2xvY2sgZm9yIHJlZ2lzdGVyIGFjY2Vzcw0KPiA+ICsgICAg
-ICAgIGNsb2NrLW5hbWVzOg0KPiA+ICsgICAgICAgICAgaXRlbXM6DQo+ID4gKyAgICAgICAgICAg
-IC0gY29uc3Q6IG1jbGsNCj4gPiArICAgICAgICAgICAgLSBjb25zdDogY29yZQ0KPiA+ICsgICAg
-ICByZXF1aXJlZDoNCj4gPiArICAgICAgICAtIHJlZw0KPiA+ICsgICAgICAgIC0gcG93ZXItZG9t
-YWlucw0KPiA+ICsgICAgZWxzZToNCj4gPiArICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAg
-ICBjbG9ja3M6DQo+ID4gKyAgICAgICAgICBpdGVtczoNCj4gPiArICAgICAgICAgICAgLSBkZXNj
-cmlwdGlvbjogTWFzdGVyIGNsb2NrDQo+ID4gKyAgICAgICAgY2xvY2stbmFtZXM6DQo+ID4gKyAg
-ICAgICAgICBpdGVtczoNCj4gPiArICAgICAgICAgICAgLSBjb25zdDogbWNsaw0KPiA+ICsNCj4g
-PiArICAtIGlmOg0KPiA+ICsgICAgICBwcm9wZXJ0aWVzOg0KPiA+ICsgICAgICAgIGNvbXBhdGli
-bGU6DQo+ID4gKyAgICAgICAgICBjb250YWluczoNCj4gPiArICAgICAgICAgICAgZW51bToNCj4g
-PiArICAgICAgICAgICAgICAtIGZzbCxpbXg2c3gtbXFzDQo+ID4gKyAgICAgICAgICAgICAgLSBm
-c2wsaW14OTMtbXFzDQo+ID4gKyAgICB0aGVuOg0KPiA+ICsgICAgICByZXF1aXJlZDoNCj4gPiAr
-ICAgICAgICAtIGdwcg0KPiANCj4gVGhpcyBpcyBhIGJpdCBjb25mdXNpbmcuIE9ubHkgImZzbCxp
-bXg4cW0tbXFzIiByZXF1aXJlcyAodXNlcz8pIHJlZy4NCj4gaW14NnN4IGFuZCBpbXg5MyB1c2Ug
-Z3ByLiBUaGVuIHdoYXQgZG8gdGhlIG90aGVyIHZhcmlhbnRzIHVzZT8NCj4gDQo+IEJlc3QgcmVn
-YXJkcywNCj4gS3J6eXN6dG9mDQoNClRoYW5rcyB0byB5b3VyIHBvaW50aW5nIG91dC4gSSBjaGVj
-a2VkIHRoZSBoaXN0b3J5IGFuZCBmb3VuZCB0aGUgbGVnYWN5IA0KImZzbCxjb2RlYy1tcXMiIGlz
-IG5vdCB1c2VkIGFueW1vcmUuIEkgd2lsbCBkcm9wIGl0IGFuZCBhbHNvICJmc2wsaW14OHF4cC1t
-cXMiDQppcyBjb21wbGV0ZWQgd2hpY2ggdXNlcyByZWcuDQoNClJlZ2FyZHMsIA0KQ2hhbmNlbCBM
-aXUNCg==
+>
+> On Mon, Nov 20, 2023 at 09:17:57PM -0800, Paul E. McKenney wrote:
+> > On Mon, Nov 20, 2023 at 07:26:05PM -0800, Ankur Arora wrote:
+> > >
+> > > Paul E. McKenney <paulmck@kernel.org> writes:
+> > > > On Tue, Nov 07, 2023 at 01:57:34PM -0800, Ankur Arora wrote:
+> > > >> cond_resched() is used to provide urgent quiescent states for
+> > > >> read-side critical sections on PREEMPT_RCU=n configurations.
+> > > >> This was necessary because lacking preempt_count, there was no
+> > > >> way for the tick handler to know if we were executing in RCU
+> > > >> read-side critical section or not.
+> > > >>
+> > > >> An always-on CONFIG_PREEMPT_COUNT, however, allows the tick to
+> > > >> reliably report quiescent states.
+> > > >>
+> > > >> Accordingly, evaluate preempt_count() based quiescence in
+> > > >> rcu_flavor_sched_clock_irq().
+> > > >>
+> > > >> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > > >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> > > >> ---
+> > > >>  kernel/rcu/tree_plugin.h |  3 ++-
+> > > >>  kernel/sched/core.c      | 15 +--------------
+> > > >>  2 files changed, 3 insertions(+), 15 deletions(-)
+> > > >>
+> > > >> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > > >> index f87191e008ff..618f055f8028 100644
+> > > >> --- a/kernel/rcu/tree_plugin.h
+> > > >> +++ b/kernel/rcu/tree_plugin.h
+> > > >> @@ -963,7 +963,8 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
+> > > >>   */
+> > > >>  static void rcu_flavor_sched_clock_irq(int user)
+> > > >>  {
+> > > >> -        if (user || rcu_is_cpu_rrupt_from_idle()) {
+> > > >> +        if (user || rcu_is_cpu_rrupt_from_idle() ||
+> > > >> +            !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
+> > > >
+> > > > This looks good.
+> > > >
+> > > >>                  /*
+> > > >>                   * Get here if this CPU took its interrupt from user
+> > > >> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > >> index bf5df2b866df..15db5fb7acc7 100644
+> > > >> --- a/kernel/sched/core.c
+> > > >> +++ b/kernel/sched/core.c
+> > > >> @@ -8588,20 +8588,7 @@ int __sched _cond_resched(void)
+> > > >>                  preempt_schedule_common();
+> > > >>                  return 1;
+> > > >>          }
+> > > >> -        /*
+> > > >> -         * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
+> > > >> -         * whether the current CPU is in an RCU read-side critical section,
+> > > >> -         * so the tick can report quiescent states even for CPUs looping
+> > > >> -         * in kernel context.  In contrast, in non-preemptible kernels,
+> > > >> -         * RCU readers leave no in-memory hints, which means that CPU-bound
+> > > >> -         * processes executing in kernel context might never report an
+> > > >> -         * RCU quiescent state.  Therefore, the following code causes
+> > > >> -         * cond_resched() to report a quiescent state, but only when RCU
+> > > >> -         * is in urgent need of one.
+> > > >> -         *      /
+> > > >> -#ifndef CONFIG_PREEMPT_RCU
+> > > >> -        rcu_all_qs();
+> > > >> -#endif
+> > > >
+> > > > But...
+> > > >
+> > > > Suppose we have a long-running loop in the kernel that regularly
+> > > > enables preemption, but only momentarily.  Then the added
+> > > > rcu_flavor_sched_clock_irq() check would almost always fail, making
+> > > > for extremely long grace periods.
+> > >
+> > > So, my thinking was that if RCU wants to end a grace period, it would
+> > > force a context switch by setting TIF_NEED_RESCHED (and as patch 38 mentions
+> > > RCU always uses the the eager version) causing __schedule() to call
+> > > rcu_note_context_switch().
+> > > That's similar to the preempt_schedule_common() case in the
+> > > _cond_resched() above.
+> >
+> > But that requires IPIing that CPU, correct?
+> >
+> > > But if I see your point, RCU might just want to register a quiescent
+> > > state and for this long-running loop rcu_flavor_sched_clock_irq() does
+> > > seem to fall down.
+> > >
+> > > > Or did I miss a change that causes preempt_enable() to help RCU out?
+> > >
+> > > Something like this?
+> > >
+> > > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+> > > index dc5125b9c36b..e50f358f1548 100644
+> > > --- a/include/linux/preempt.h
+> > > +++ b/include/linux/preempt.h
+> > > @@ -222,6 +222,8 @@ do { \
+> > >         barrier(); \
+> > >         if (unlikely(preempt_count_dec_and_test())) \
+> > >                 __preempt_schedule(); \
+> > > +       if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
+> > > +               rcu_all_qs(); \
+> > >  } while (0)
+> >
+> > Or maybe something like this to lighten the load a bit:
+> >
+> > #define preempt_enable() \
+> > do { \
+> >       barrier(); \
+> >       if (unlikely(preempt_count_dec_and_test())) { \
+> >               __preempt_schedule(); \
+> >               if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
+> >                   !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
+> >                       rcu_all_qs(); \
+> >       } \
+> > } while (0)
+> >
+> > And at that point, we should be able to drop the PREEMPT_MASK, not
+> > that it makes any difference that I am aware of:
+> >
+> > #define preempt_enable() \
+> > do { \
+> >       barrier(); \
+> >       if (unlikely(preempt_count_dec_and_test())) { \
+> >               __preempt_schedule(); \
+> >               if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
+> >                   !(preempt_count() & SOFTIRQ_MASK)) \
+> >                       rcu_all_qs(); \
+> >       } \
+> > } while (0)
+> >
+> > Except that we can migrate as soon as that preempt_count_dec_and_test()
+> > returns.  And that rcu_all_qs() disables and re-enables preemption,
+> > which will result in undesired recursion.  Sigh.
+> >
+> > So maybe something like this:
+> >
+> > #define preempt_enable() \
+> > do { \
+> >       if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
+> >           !(preempt_count() & SOFTIRQ_MASK)) \
+>
+> Sigh.  This needs to include (PREEMPT_MASK | SOFTIRQ_MASK),
+> but check for equality to something like (1UL << PREEMPT_SHIFT).
+>
+
+For PREEMPT_RCU=n and CONFIG_PREEMPT_COUNT=y kernels
+for report QS in preempt_enable(),  we can refer to this:
+
+void rcu_read_unlock_strict(void)
+{
+        struct rcu_data *rdp;
+
+        if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
+                return;
+        rdp = this_cpu_ptr(&rcu_data);
+        rdp->cpu_no_qs.b.norm = false;
+        rcu_report_qs_rdp(rdp);
+        udelay(rcu_unlock_delay);
+}
+
+The rcu critical section may be in the NMI handler  needs to be considered.
+
+
+Thanks
+Zqiang
+
+
+
+>
+> Clearly time to sleep.  :-/
+>
+>                                                         Thanx, Paul
+>
+> >               rcu_all_qs(); \
+> >       barrier(); \
+> >       if (unlikely(preempt_count_dec_and_test())) { \
+> >               __preempt_schedule(); \
+> >       } \
+> > } while (0)
+> >
+> > Then rcu_all_qs() becomes something like this:
+> >
+> > void rcu_all_qs(void)
+> > {
+> >       unsigned long flags;
+> >
+> >       /* Load rcu_urgent_qs before other flags. */
+> >       if (!smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs)))
+> >               return;
+> >       this_cpu_write(rcu_data.rcu_urgent_qs, false);
+> >       if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
+> >               local_irq_save(flags);
+> >               rcu_momentary_dyntick_idle();
+> >               local_irq_restore(flags);
+> >       }
+> >       rcu_qs();
+> > }
+> > EXPORT_SYMBOL_GPL(rcu_all_qs);
+> >
+> > > Though I do wonder about the likelihood of hitting the case you describe
+> > > and maybe instead of adding the check on every preempt_enable()
+> > > it might be better to instead force a context switch in the
+> > > rcu_flavor_sched_clock_irq() (as we do in the PREEMPT_RCU=y case.)
+> >
+> > Maybe.  But rcu_all_qs() is way lighter weight than a context switch.
+> >
+> >                                                       Thanx, Paul
