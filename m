@@ -2,113 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C693D7F22CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E967F22CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbjKUBEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
+        id S232814AbjKUBEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbjKUBEp (ORCPT
+        with ESMTP id S230107AbjKUBEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:04:45 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2EADA2;
-        Mon, 20 Nov 2023 17:04:41 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0xXWb028483;
-        Tue, 21 Nov 2023 01:04:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EFUmDAAQJOnJ9Hr7n7zXq0aoNTgaGGAl6nM3RPDiDXc=;
- b=n/Bm+hcTlTIItnm+qLwbv2HoTs7EeX9aulcFtdZxHZJEBaqYL81Z0A9p+kN6flwPpC/S
- CYyJ0AaknkIu30a5vfvPgv/2Us6FZoQxs8+uwGl3N9miBRU4uu1KaJ1YbswwypeOWA//
- XHt0SjQgGu+ToIR80qZ/uJciLXc7qgnAa90SS75zCrNzMI9m7QLmLOi38RuqzaitlKwh
- f/jn9dBglgT2+5u1HEYfLJ58aaIoWdA9jH52Lab8m02k/DngjiLyFTt52k34Rgz283tN
- ceaPC4Z7dLCpmUDCCV6GOK7E1j1SZ02fNEnAXgyQ6uwOg3R1f2grEpai4Sry/T/DzEoS uQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugdxmgg9r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:04:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL14aAd021372
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:04:36 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 17:04:31 -0800
-Message-ID: <f4c74809-3da0-4620-aba4-8fa08145beac@quicinc.com>
-Date:   Tue, 21 Nov 2023 09:04:31 +0800
+        Mon, 20 Nov 2023 20:04:41 -0500
+Received: from gentwo.org (gentwo.org [IPv6:2a02:4780:10:3cd9::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609B1D9
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:04:36 -0800 (PST)
+Received: by gentwo.org (Postfix, from userid 1003)
+        id 8C6B648F42; Mon, 20 Nov 2023 17:04:35 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 8B98E48F40;
+        Mon, 20 Nov 2023 17:04:35 -0800 (PST)
+Date:   Mon, 20 Nov 2023 17:04:35 -0800 (PST)
+From:   "Christoph Lameter (Ampere)" <cl@gentwo.org>
+To:     linux-arm-kernel@lists.infradead.org
+cc:     linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
+        Valentin.Schneider@arm.com,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Matteo Carlini <Matteo.Carlini@arm.com>
+Subject: [PATCH ARM64]: Introduce CONFIG_MAXSMP to allow up to 512 cpus
+Message-ID: <6a854175-5f89-c754-17b8-deda18447f1f@gentwo.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/16] arm64: dts: qcom: sm8550-aim300: add sound card
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-15-quic_tengfan@quicinc.com>
- <6b2b9ea8-d771-4d7a-88c6-a75b70804139@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <6b2b9ea8-d771-4d7a-88c6-a75b70804139@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: V-p58a836mRC8zNVCbBiZ4KIamcKD7aZ
-X-Proofpoint-ORIG-GUID: V-p58a836mRC8zNVCbBiZ4KIamcKD7aZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 spamscore=0 adultscore=0 impostorscore=0
- mlxlogscore=743 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311210004
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ampere Computing develops high end ARM processors that support an ever
+increasing number of processors. The current default of 256 processors is
+not enough for our newer products. The default is used by Linux
+distros and therefore our customers cannot use distro kernels because
+the number of processors is not supported.
+
+The x86 arch has support for a "CONFIG_MAXSMP" configuration option that
+enables support for the largest known configurations. This usually means
+hundreds or thousands of processors. For those sizes it is no longer
+practical to allocate bitmaps of cpus on the kernel stack. There is
+a kernel option CONFIG_CPUMASK_OFFSTACK that makes the kernel allocate
+and free bitmaps for cpu masks from slab memory instead of keeping it
+on the stack etc.
+
+With that is becomes possible to dynamically size the allocation of
+the bitmap depending on the quantity of processors detected on
+bootup.
+
+This patch enables that logic if CONFIG_MAXSMP is enabled.
+
+If CONFIG_MAXSMP is disabled then a default of 64 processors
+is supported. A bitmap for 64 processors fits into one word and
+therefore can be efficiently handled on the stack. Using a pointer
+to a bitmap would be overkill.
+
+The number of processors can be manually configured if
+CONFIG_MAXSMP is not set.
+
+Currently the default for CONFIG_MAXSMP is 512 processors.
+This will have to be increased if ARM processor vendors start
+supporting more processors.
+
+Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
+
+---
+NR_CPU limits on ARM64 were discussed before at
+https://lore.kernel.org/all/20210110053615.3594358-1-vanshikonda@os.amperecomputing.com/
 
 
-在 11/17/2023 6:33 PM, Krzysztof Kozlowski 写道:
-> On 17/11/2023 11:18, Tengfei Fan wrote:
->> Add the sound card node with tested playback over WSA8845 speakers and
->> WCD9385 headset over USB Type-C.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 82 ++++++++++++++++++++++
->>   1 file changed, 82 insertions(+)
->>
-> 
-> NAK, it's initial submission.
-> 
-> Stop useless splitting of work which is done. You cannot have "release
-> late, release often". The rule is: "release early, release often".
-> 
-> Best regards,
-> Krzysztof
-> 
+Index: linux/arch/arm64/Kconfig
+===================================================================
+--- linux.orig/arch/arm64/Kconfig
++++ linux/arch/arm64/Kconfig
+@@ -1402,10 +1402,56 @@ config SCHED_SMT
+   	  MultiThreading at a cost of slightly increased overhead in some
+   	  places. If unsure say N here.
 
-Hi Krzysztof,
-In next version patch series, I'm going to combine all the splited 
-functions into one patch.
++
++config MAXSMP
++	bool "Compile kernel with support for the maximum number of SMP Processors"
++	depends on SMP && DEBUG_KERNEL
++	select CPUMASK_OFFSTACK
++	help
++	  Enable maximum number of CPUS and NUMA Nodes for this architecture.
++	  If unsure, say N.
++
++#
++# The maximum number of CPUs supported:
++#
++# The main config value is NR_CPUS, which defaults to NR_CPUS_DEFAULT,
++# and which can be configured interactively in the
++# [NR_CPUS_RANGE_BEGIN ... NR_CPUS_RANGE_END] range.
++#
++# ( If MAXSMP is enabled we just use the highest possible value and disable
++#   interactive configuration. )
++#
++
++config NR_CPUS_RANGE_BEGIN
++	int
++	default NR_CPUS_RANGE_END if MAXSMP
++	default    1 if !SMP
++	default    2
++
++config NR_CPUS_RANGE_END
++	int
++	default 8192 if  SMP && CPUMASK_OFFSTACK
++	default  512 if  SMP && !CPUMASK_OFFSTACK
++	default    1 if !SMP
++
++config NR_CPUS_DEFAULT
++	int
++	default  512 if  MAXSMP
++	default   64 if  SMP
++	default    1 if !SMP
++
+   config NR_CPUS
+-	int "Maximum number of CPUs (2-4096)"
+-	range 2 4096
+-	default "256"
++	int "Set maximum number of CPUs" if SMP && !MAXSMP
++	range NR_CPUS_RANGE_BEGIN NR_CPUS_RANGE_END
++	default NR_CPUS_DEFAULT
++	help
++	  This allows you to specify the maximum number of CPUs which this
++	  kernel will support.  If CPUMASK_OFFSTACK is enabled, the maximum
++	  supported value is 8192, otherwise the maximum value is 512.  The
++	  minimum value which makes sense is 2.
++
++	  This is purely to save memory: each supported CPU adds about 8KB
++	  to the kernel image.
 
--- 
-Thx and BRs,
-Tengfei Fan
+   config HOTPLUG_CPU
+   	bool "Support for hot-pluggable CPUs"
+Index: linux/arch/arm64/configs/defconfig
+===================================================================
+--- linux.orig/arch/arm64/configs/defconfig
++++ linux/arch/arm64/configs/defconfig
+@@ -15,6 +15,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
+   CONFIG_IKCONFIG=y
+   CONFIG_IKCONFIG_PROC=y
+   CONFIG_NUMA_BALANCING=y
++CONFIG_MAXSMP=y
+   CONFIG_MEMCG=y
+   CONFIG_BLK_CGROUP=y
+   CONFIG_CGROUP_PIDS=y
