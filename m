@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC677F25D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE047F25D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233485AbjKUGhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57588 "EHLO
+        id S230207AbjKUGin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:38:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKUGhe (ORCPT
+        with ESMTP id S229539AbjKUGil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:37:34 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2089.outbound.protection.outlook.com [40.107.14.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B504D90;
-        Mon, 20 Nov 2023 22:37:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iGaohcLuTVt/WqPkpHh3eHvCM2GFpxB9WZXMdllWEO+lOvSibENIIgEHyltZW1S3/J2Y6CQDOtIAGwJy/0PIzyrDf17iQGHP+V1ldMvLbvZDEy05oURFUlxwk6Y7CbsltzKOlvKyFLS7mm50kqDMdj12Z8AZqPHUS6C6jDfxkY65cCub66UKKhIyvLSt9KHoBtnp79aOgombtTmzNCz1UCebEoO2EJvjMjbmpq8T78ps+MyQGtTyEVeuydZGaLAz//+GUFLigWwZr9enfEfpBgSsL5s4BpUHSRkiVWZ3tuukuv0IED71Mwj1xJ7BM/Q0pZR4gozkN/TrYlHr7kL4cQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xIOM3J9S6qlOxaY+IoDnx8WHXTf6rCsKwucVDL6ZlDs=;
- b=YiVGHgjl6QAvszAB2S8ucAQ9hFvoTklmT2V2P8eqdZefpzCZoE3lESiNWDXeoxn7TZLPSuiVgp/xdyKxs+NAJFU79MuI1C8TBikIHjbQeiqevQikeN5Te3zZI3Uay+XQL/x6Nv4zI9ECoglu8xLN5eu2Ddl90H/UPv+dvMBBDzVqJZiJXSYIFharEY09j0nyc6vFLIQb12t1jfMnWls0ZvxeOUv1AIff1Y2/rQ2TylKTtI0HT9mLvYqifdwHZNx6KCag+ir1CQpee8N0OaYSHU6b8LVbexSfm+bxLNfjw1om87U2muC/XTKY1OA23cJ2FMbTCIsUOMouYfp9v2Pr9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xIOM3J9S6qlOxaY+IoDnx8WHXTf6rCsKwucVDL6ZlDs=;
- b=ZBREU7ShOrtoaiUjNf2++DFvBw+///uTrael99RuHP3RkBtfCZoQME/hkE+u6pCfXBO/35bB75Etxi2af4g/1JfXSiXidXPN2anRZAC98TZrnXOxhYOF4BjOJDnPxEsWRXlvDIuN4SaaIUG+gjBZUv7Ed0lfob2SWk6WIfSLVzc=
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
- by AM8PR04MB7409.eurprd04.prod.outlook.com (2603:10a6:20b:1c5::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.17; Tue, 21 Nov
- 2023 06:37:28 +0000
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::ebf4:e8bc:d3a7:a51a]) by AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::ebf4:e8bc:d3a7:a51a%4]) with mapi id 15.20.7025.017; Tue, 21 Nov 2023
- 06:37:28 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH] serial: imx: also enable Transmit Complete interrupt in
- rs232 mode
-Thread-Topic: [PATCH] serial: imx: also enable Transmit Complete interrupt in
- rs232 mode
-Thread-Index: AQHaG7S1fEEL5y4CnEW9ieW91W6zVLCEULEQ
-Date:   Tue, 21 Nov 2023 06:37:27 +0000
-Message-ID: <AS8PR04MB8404D066C247F5B2979CBD1F92BBA@AS8PR04MB8404.eurprd04.prod.outlook.com>
-References: <20231120132256.136625-1-rasmus.villemoes@prevas.dk>
-In-Reply-To: <20231120132256.136625-1-rasmus.villemoes@prevas.dk>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR04MB8404:EE_|AM8PR04MB7409:EE_
-x-ms-office365-filtering-correlation-id: 1750b270-6893-4342-cc45-08dbea5c549c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gIvPIOHU37Dew1URBZBVOhQs7f6MN5eiIUAuGNOnmyVF83kI3GT1wAsug0jQbOETkwHyL431kd0GG8GmX8Marm0Mu5DSmCHYYfPZAP5b9FSNzsF+8pDACBLK/WrZOPXF1G/oDypp5ORXCoiqswDNSzDfggM1QvI3Kb7mXFn7DT7ELB4L5JSRCpb3VOTt8qKrnx4fhoUzKbTrTYqX2PA33kxuoGlhuFu5aQjZZLX37izAVl+QANZozS7tjnp5J6J/fY3oVXkxwjEgjqI3q5z75o2Kx3Jji7w9icFyPWUSarCJKThmoxHyvIQ+ierp6amrR2Xo15fRXu9wiaHb+MuTOGj3aOc9q+pLlr4hGvZ73Uz+ylxFNbrig4RLNMQ2ap151RldvH2misfO6D7nNCID8k20Wq9XWLtECV9UmK6zc90l8mQIqw+NG9XP7i32z4tBcqRRYFKsrvSyPnKXNhXFitTMw0fnZDTUxfBLUTptbBG/rS91L6u+brtNLIzMPHB5yftp8+O0Aul5R3VDkijR/6r2VTOCzh+40ZoDSXgznvFf1609ch4j9zmxfpp0aGZY2lAWpUeTL3HdMBA+CiP+k+9LlQLSHCGATtmv7snpnC3/Pa8tH4G4CREDExJ7tefE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(396003)(366004)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(66946007)(54906003)(66476007)(66446008)(66556008)(64756008)(110136005)(76116006)(316002)(6636002)(6506007)(7696005)(53546011)(9686003)(71200400001)(26005)(38070700009)(478600001)(38100700002)(122000001)(83380400001)(33656002)(86362001)(2906002)(44832011)(52536014)(5660300002)(7416002)(55016003)(4326008)(8936002)(41300700001)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?WXhOQzRPWmVvbjQ2ek1IVlNwU0dUQkpoY0lOVXFpdjVhTGk3SnpRR09hVE0r?=
- =?gb2312?B?OHM2czYxMnMzQWpxRW4yeWpwQ0FUU3VlWVpRb2l0WTNCdUdlb2h1Smo5aDNi?=
- =?gb2312?B?UDVGSEl0aWdWUEtGL1pPRUhQQ2s0U0VLa1NmM08vdHJ3VXV0Rnk2Uk1WOWhP?=
- =?gb2312?B?K3FFTFhYb3AwNTAwQ0ozdUF6TjA3TXJjbTQ0ZzFYUitPNlpTbXBZYm1GWGxR?=
- =?gb2312?B?K0VhdzVnb29MbmR0aDNMUnZWZ3BlcUJsMHpjdnNkTlhGdHdWZ09PN2s3Z0VG?=
- =?gb2312?B?dEIxbmxFZ1g1WFVGZ1gzOTRrbmMrRWVQL0FYc2VkTmh3ZWdYbWZYWWhIU1Jm?=
- =?gb2312?B?THZmeXpGRE1TWGVUcUMrRUJxR3ZwQzhVZEJlN2xUY1dzZlhWdGc2d3d0N3Zq?=
- =?gb2312?B?OTlvbUUvZFY1K09rT0pvOXZvcDJaVmxJbUc1RmFBT0NXNGYzOVRTZDZXd0pD?=
- =?gb2312?B?cEs4bVYvWlUySXhPUGM1WEpoTk8zVjdURks4c0ZLc3hoR3hLZWRCT3ZBa281?=
- =?gb2312?B?NEUzbllhY3NCbFpoQ0p6SEFzampKWXYwa2RpcnM4T21DTmFMUlpZQ1R3bDBB?=
- =?gb2312?B?L2MvZi81d1BRekdZZmhJRzcyZjk4SnpjLzhuaTJXZzNhU2JOQUZFa0x3N2Nq?=
- =?gb2312?B?MzhLVjFFaEtVQStBTGhMVWNpWTAvNWEwQ0x4c0dJSFp3VyttMTFva09WcHZp?=
- =?gb2312?B?WnJQeHNwSU9VdXM0aFJuczhNa2p0U3JPZE9FbHBNbjc0VmgwMGhhUW9seFp5?=
- =?gb2312?B?eklIbzJzTTRJdlR2ZHFvd1Z1eE1mSGdVMHVIYW1PWTlDVHNvQUxvdkprcFJF?=
- =?gb2312?B?OWRPWExtSkh6cHI5MmY5UU5tUnpuL1dqcFJyRTE4cjY1OUNWVEVBUDZiWjF6?=
- =?gb2312?B?L09rZWxndndIYlZQYjYrWTUvRkIyay9abWJkbkNmQnl5M3MyYysvNzJTSkVQ?=
- =?gb2312?B?WjVwS1dHQjhXb1FpOURrcDQ3U0lJZmZ1NllQeFFwUmRnT3pJdVRHbm1YQzRK?=
- =?gb2312?B?Q0VWSFVWZ09PVkV6SVZ1cDdLUXRTQVBWNmcxckptencrMW9tU1dQRUxBRG5B?=
- =?gb2312?B?SFlsOHJITlNwcmk0Qjh2V2FhVnBWOFVaTllMaXNHdzZrU1dzOC9aRmhtL3c5?=
- =?gb2312?B?N09MekVtVTc4c1pKbmlpVDFReGFZcDRTdm5ncVFjZU0rYldwRjBmNzAyTDl6?=
- =?gb2312?B?L3A2dTVxMHd3SWwzNUR0YjNEb202VnlBZlkvekpUVXJ3OHR2SE9TelZQVnFr?=
- =?gb2312?B?UlhUb1c2SGY3VGFXVGk0YjJ1RkcrU2dPaGxEb3M4aEZyT2FEbTBGUDhLaFkz?=
- =?gb2312?B?d2pjZ08vbFFJUE5nVEd5TzhVbTB1S2x1SndZM0dKMUFZNHUxYlNsNXB3WXdl?=
- =?gb2312?B?cHpnWjZkeC9Dam1XU0dsN1NXZGY2V1FlMkcvTTN5bFN1VnJiL25DUmdYWmI5?=
- =?gb2312?B?N2VRMEhtcDdUaW1OKzBoc0E2Z3pCVThiUUJDdG8zSHUrMFJBOEdVOGlLQWRr?=
- =?gb2312?B?TElPN2ZyTlJYaWt3U2Q4WTBBQ1NvRU1kZVJlUnVSeStXZHZhbHhKall3N1JS?=
- =?gb2312?B?UGJBMHNNQ1ZONmVicVF1UVF5dU5OcGUzam10Q1ZGVm9LQ01ub0cwWE1JTEY0?=
- =?gb2312?B?dUJ1YWluYXdiZm51ZVhrNm81RHVOenBiVTg5anRZZWh3Zm5yVE5yMmZwdzha?=
- =?gb2312?B?WUNPOHc1cE05WTBHRy91M2pLVldiVUxXMkl6aTR2SjNFV0tERXVpNVI2LzJP?=
- =?gb2312?B?YTBvZCtUaW1naHdTL09va05tRVBsUm5KWmZaN0prTWVVcmNDQjl1anFHOTFs?=
- =?gb2312?B?d3NoNGlxSU5XYW02a2s4bndlL1lpYm9WUlZKY2NlOEt5L1cxWGRldXp2ZXQ4?=
- =?gb2312?B?cVZ1NkF2RXo3OEpaRHphUXJsdFlqdFVtb3VYa3RmUXhzRjZRckJhN252bDFK?=
- =?gb2312?B?eENMS2VNQ24wUGtZcE1uMVplTzdYankvQVZDYms2U1EranlKa09yZFN2eSs5?=
- =?gb2312?B?a1JRNlMrMStMQS9LbkN0SndjNm9vQWpGVnEvd2F4MWRRV2VjNk43aUt6Nzhu?=
- =?gb2312?B?dlBiYnRXVEpvaHAweC9BYjhNR2VJVkRLODQ4Z0VIcHplUFBieFdjdTZZZ1lC?=
- =?gb2312?Q?Fo+g=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Tue, 21 Nov 2023 01:38:41 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E59C8;
+        Mon, 20 Nov 2023 22:38:38 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL6JMFp007993;
+        Tue, 21 Nov 2023 06:38:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=z+YCvibVm8plErXJG0HascOzJXLQFGebjM+tlOVqG8E=;
+ b=S3x9+wa2EBt0NDCDmPYjglSL0f/zk4Q6I8WM+6vP/XpvshqXKz79NdaQdiFsErXWyPyR
+ H6AY8NzDxz/kjZH3Ih6b5xz2tIoE39Wo4SsTUyIaCpZAS/UU8PJd/G6+Q8EBQdi+9KHS
+ nsPhAgj/ShzET+5Bmj8OHdfD5ToJP6p9oc02jEYR+WbUT2U4AFgdTM1y6wTQhmwzFU2W
+ qD57MB7CP9Q74D3eY4vW1K+nNCZzne46jX9tFtQYWcOFFIDxYDFzKfKeaAIIewBVIPwp
+ mPDz++5xeYx7E78WHXErmqDhERGL382UTx/O83U6iIzmQXvtaxkzEhUIf9AIycu5FRPt lg== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs19t3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 06:38:30 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL6cTmW009932
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 06:38:29 GMT
+Received: from [10.110.10.93] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 22:38:21 -0800
+Message-ID: <9315c8f1-19b8-9b11-8eb4-32b498f91659@quicinc.com>
+Date:   Mon, 20 Nov 2023 22:38:21 -0800
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1750b270-6893-4342-cc45-08dbea5c549c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2023 06:37:28.0435
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sMR3jTxVWmVElBiSc+x2mcBbFtH+753G6E6+WHGlY/vPFGtYaqomc1936QI/hZN9pDKinuZnLMsC05hH7k4f1g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7409
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RESEND PATCH v5 03/12] firmware: qcom: scm: smc: switch to using
+ the SCM allocator
+Content-Language: en-US
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        "Maximilian Luz" <luzmaximilian@gmail.com>,
+        Alex Elder <elder@linaro.org>,
+        "Srini Kandagatla" <srinivas.kandagatla@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kernel@quicinc.com>,
+        "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>
+References: <20231120132118.30473-1-brgl@bgdev.pl>
+ <20231120132118.30473-4-brgl@bgdev.pl>
+From:   Prasad Sodagudi <quic_psodagud@quicinc.com>
+In-Reply-To: <20231120132118.30473-4-brgl@bgdev.pl>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 2PSceWSW3rNft2sfjKVAi1vvPxTyBoKh
+X-Proofpoint-GUID: 2PSceWSW3rNft2sfjKVAi1vvPxTyBoKh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210050
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,65 +92,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUmFzbXVzIFZpbGxlbW9l
-cyA8cmFzbXVzLnZpbGxlbW9lc0BwcmV2YXMuZGs+DQo+IFNlbnQ6IDIwMjPE6jEx1MIyMMjVIDIx
-OjIzDQo+IFRvOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3Jn
-PjsgSmlyaSBTbGFieQ0KPiA8amlyaXNsYWJ5QGtlcm5lbC5vcmc+OyBTaGF3biBHdW8gPHNoYXdu
-Z3VvQGtlcm5lbC5vcmc+OyBTYXNjaGEgSGF1ZXINCj4gPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+
-OyBQZW5ndXRyb25peCBLZXJuZWwgVGVhbQ0KPiA8a2VybmVsQHBlbmd1dHJvbml4LmRlPjsgRmFi
-aW8gRXN0ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPjsgZGwtbGludXgtDQo+IGlteCA8bGludXgt
-aW14QG54cC5jb20+DQo+IENjOiBSYXNtdXMgVmlsbGVtb2VzIDxyYXNtdXMudmlsbGVtb2VzQHBy
-ZXZhcy5kaz47IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1zZXJpYWxA
-dmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0tDQo+IGtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-DQo+IFN1YmplY3Q6IFtQQVRDSF0gc2VyaWFsOiBpbXg6IGFsc28gZW5hYmxlIFRyYW5zbWl0IENv
-bXBsZXRlIGludGVycnVwdCBpbg0KPiByczIzMiBtb2RlDQo+IA0KPiBDdXJyZW50bHksIGlmIG9u
-ZSBzd2l0Y2hlcyB0byByczIzMiBtb2RlLCB3cml0ZXMgc29tZXRoaW5nIHRvIHRoZSBkZXZpY2Us
-IGFuZA0KPiB0aGVuIHN3aXRjaGVzIHRvIHJzNDg1IG1vZGUsIHRoZSBpbXhfcG9ydCdzIC0+dHhf
-c3RhdGUgaXMgbGVmdCBhcyBTRU5ELiBUaGlzDQo+IHRoZW4gcHJldmVudHMgYSBzdWJzZXF1ZW50
-IHdyaXRlIGluIHJzNDg1IG1vZGUgZnJvbSBwcm9wZXJseSBhc3NlcnRpbmcgdGhlDQo+IHJ0cyBw
-aW4gKGkuZS4gZW5hYmxpbmcgdGhlIHRyYW5zY2VpdmVyKSwgYmVjYXVzZSBpbXhfdWFydF9zdGFy
-dF9yeCgpIGRvZXMgbm90DQo+IGVudGVyIHRoZSAiaWYgKHNwb3J0LT50eF9zdGF0ZSA9PSBPRkYp
-IiBicmFuY2guIEhlbmNlIG5vdGhpbmcgaXMgYWN0dWFsbHkNCj4gdHJhbnNtaXR0ZWQuDQo+IA0K
-PiBUaGUgcHJvYmxlbSBpcyB0aGF0IGluIHJzMjMyIG1vZGUsIC0+dHhfc3RhdGUgbmV2ZXIgZ2V0
-cyBzZXQgdG8gT0ZGLCBkdWUgdG8NCj4gDQo+IAl1c3IyID0gaW14X3VhcnRfcmVhZGwoc3BvcnQs
-IFVTUjIpOw0KPiAJaWYgKCEodXNyMiAmIFVTUjJfVFhEQykpIHsNCj4gCQkvKiBUaGUgc2hpZnRl
-ciBpcyBzdGlsbCBidXN5LCBzbyByZXRyeSBvbmNlIFRDIHRyaWdnZXJzICovDQo+IAkJcmV0dXJu
-Ow0KPiAJfQ0KPiANCj4gaW4gaW14X3VhcnRfc3RvcF90eCgpLCBhbmQgVEMgbmV2ZXIgdHJpZ2dl
-cnMgYmVjYXVzZSB0aGUgVHJhbnNtaXQgQ29tcGxldGUNCj4gaW50ZXJydXB0IGlzIG5vdCBlbmFi
-bGVkIGZvciByczIzMi4NCg0KSGkgUmFzbXVzLA0KSSBhbSBhZnJhaWQgdGhpcyBpcyBub3Qgcmln
-aHQsIFVTUjJfVFhEQyBpcyBqdXN0IGEgZmxhZywgaXQgaXMgbm90IGFmZmVjdGVkIGJ5IHdoZXRo
-ZXIgVUNSNF9UQ0VOIGlzIHNldCBvciBub3QsIFVDUjRfVENFTiBvbmx5IGRldGVybWluZXMgaWYg
-VVNSMl9UWERDIGZsYWcgY2FuIGdlbmVyYXRlIGEgaW50ZXJydXB0IG9yIG5vdC4NCkkgdHJpZWQg
-b24gaW14OG1wLWV2ayBib2FyZCwgZm9yIHJzMjMyLCBzcG9ydC0+dHhfc3RhdGUgY2FuIGdldCBz
-ZXQgdG8gT0ZGIGV2ZW4gd2UgZG9uoa90IHNldCBVQ1I0X1RDRU4uDQoNCkJlc3QgUmVnYXJkcw0K
-U2hlcnJ5DQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJhc211cyBWaWxsZW1vZXMgPHJhc211cy52
-aWxsZW1vZXNAcHJldmFzLmRrPg0KPiAtLS0NCj4gSSdtIG5vdCBzdXJlIHRoaXMgaXMgdGhlIGJl
-c3QgZml4Lg0KPiANCj4gQXQgZmlyc3QgSSBjb25zaWRlcmVkIGRvaW5nIHNvbWV0aGluZyBtdWNo
-IG1vcmUgdGFyZ2V0ZWQsIGJ1dCBkZWZpbml0ZWx5IGFsc28NCj4gbW9yZSBoYWNreTogSW4gaW14
-X3VhcnRfcnM0ODVfY29uZmlnKCksIGlmIHN3aXRjaGluZyBvbiByczQ4NSBtb2RlLCBzaW1wbHkN
-Cj4gYWRkICJzcG9ydC0+dHhfc3RhdGUgPSBPRkY7Ii4NCj4gDQo+IElmIHNvbWVvbmUgaGFzIGEg
-YmV0dGVyIHN1Z2dlc3Rpb24sIEknbSBhbGwgZWFycy4NCj4gDQo+ICBkcml2ZXJzL3R0eS9zZXJp
-YWwvaW14LmMgfCAyNCArKysrKysrKystLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCA5IGluc2VydGlvbnMoKyksIDE1IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvdHR5L3NlcmlhbC9pbXguYyBiL2RyaXZlcnMvdHR5L3NlcmlhbC9pbXguYyBpbmRleA0K
-PiA3MzQxZDA2MGY4NWMuLmZmZWUxNTdlMTNjZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy90dHkv
-c2VyaWFsL2lteC5jDQo+ICsrKyBiL2RyaXZlcnMvdHR5L3NlcmlhbC9pbXguYw0KPiBAQCAtNzA4
-LDI1ICs3MDgsMTkgQEAgc3RhdGljIHZvaWQgaW14X3VhcnRfc3RhcnRfdHgoc3RydWN0IHVhcnRf
-cG9ydA0KPiAqcG9ydCkNCj4gIAkJICAgIHx8IHNwb3J0LT50eF9zdGF0ZSA9PSBXQUlUX0FGVEVS
-X1JUUykgew0KPiANCj4gIAkJCWhydGltZXJfdHJ5X3RvX2NhbmNlbCgmc3BvcnQtPnRyaWdnZXJf
-c3RvcF90eCk7DQo+IC0NCj4gLQkJCS8qDQo+IC0JCQkgKiBFbmFibGUgdHJhbnNtaXR0ZXIgYW5k
-IHNoaWZ0ZXIgZW1wdHkgaXJxIG9ubHkgaWYNCj4gRE1BDQo+IC0JCQkgKiBpcyBvZmYuICBJbiB0
-aGUgRE1BIGNhc2UgdGhpcyBpcyBkb25lIGluIHRoZQ0KPiAtCQkJICogdHgtY2FsbGJhY2suDQo+
-IC0JCQkgKi8NCj4gLQkJCWlmICghc3BvcnQtPmRtYV9pc19lbmFibGVkKSB7DQo+IC0JCQkJdTMy
-IHVjcjQgPSBpbXhfdWFydF9yZWFkbChzcG9ydCwgVUNSNCk7DQo+IC0JCQkJdWNyNCB8PSBVQ1I0
-X1RDRU47DQo+IC0JCQkJaW14X3VhcnRfd3JpdGVsKHNwb3J0LCB1Y3I0LCBVQ1I0KTsNCj4gLQkJ
-CX0NCj4gLQ0KPiAtCQkJc3BvcnQtPnR4X3N0YXRlID0gU0VORDsNCj4gIAkJfQ0KPiAtCX0gZWxz
-ZSB7DQo+IC0JCXNwb3J0LT50eF9zdGF0ZSA9IFNFTkQ7DQo+ICAJfQ0KPiANCj4gKwlzcG9ydC0+
-dHhfc3RhdGUgPSBTRU5EOw0KPiArDQo+ICsJLyoNCj4gKwkgKiBFbmFibGUgdHJhbnNtaXR0ZXIg
-YW5kIHNoaWZ0ZXIgZW1wdHkgaXJxIG9ubHkgaWYgRE1BIGlzDQo+ICsJICogb2ZmLiAgSW4gdGhl
-IERNQSBjYXNlIHRoaXMgaXMgZG9uZSBpbiB0aGUgdHgtY2FsbGJhY2suDQo+ICsJICovDQo+ICAJ
-aWYgKCFzcG9ydC0+ZG1hX2lzX2VuYWJsZWQpIHsNCj4gKwkJdTMyIHVjcjQgPSBpbXhfdWFydF9y
-ZWFkbChzcG9ydCwgVUNSNCk7DQo+ICsJCXVjcjQgfD0gVUNSNF9UQ0VOOw0KPiArCQlpbXhfdWFy
-dF93cml0ZWwoc3BvcnQsIHVjcjQsIFVDUjQpOw0KPiAgCQl1Y3IxID0gaW14X3VhcnRfcmVhZGwo
-c3BvcnQsIFVDUjEpOw0KPiAgCQlpbXhfdWFydF93cml0ZWwoc3BvcnQsIHVjcjEgfCBVQ1IxX1RS
-RFlFTiwgVUNSMSk7DQo+ICAJfQ0KPiAtLQ0KPiAyLjQwLjEuMS5nMWM2MGI5MzM1ZA0KDQo=
+
+On 11/20/2023 5:21 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> We need to allocate, map and pass a buffer to the trustzone if we have
+> more than 4 arguments for a given SCM calls. Let's use the new TrustZone
+> allocator for that memory and shrink the code in process.
+>
+> As this code lives in a different compilation unit than the rest of the
+> SCM code, we need to provide a helper in the form of
+> qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
+> access the SCM memory pool.
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+> Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
+> ---
+>   drivers/firmware/qcom/qcom_scm-smc.c | 30 ++++++++--------------------
+>   drivers/firmware/qcom/qcom_scm.c     |  5 +++++
+>   drivers/firmware/qcom/qcom_scm.h     |  3 +++
+>   3 files changed, 16 insertions(+), 22 deletions(-)
+>
+> diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
+> index 16cf88acfa8e..dca5f3f1883b 100644
+> --- a/drivers/firmware/qcom/qcom_scm-smc.c
+> +++ b/drivers/firmware/qcom/qcom_scm-smc.c
+> @@ -2,6 +2,7 @@
+>   /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
+>    */
+>   
+> +#include <linux/cleanup.h>
+>   #include <linux/io.h>
+>   #include <linux/errno.h>
+>   #include <linux/delay.h>
+> @@ -9,6 +10,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/types.h>
+>   #include <linux/firmware/qcom/qcom_scm.h>
+> +#include <linux/firmware/qcom/qcom_tzmem.h>
+>   #include <linux/arm-smccc.h>
+>   #include <linux/dma-mapping.h>
+>   
+> @@ -150,11 +152,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>   		   enum qcom_scm_convention qcom_convention,
+>   		   struct qcom_scm_res *res, bool atomic)
+>   {
+> +	struct qcom_tzmem_pool *mempool = qcom_scm_get_tzmem_pool();
+>   	int arglen = desc->arginfo & 0xf;
+>   	int i, ret;
+> -	dma_addr_t args_phys = 0;
+> -	void *args_virt = NULL;
+> -	size_t alloc_len;
+> +	void *args_virt __free(qcom_tzmem) = NULL;
+>   	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
+>   	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
+>   	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
+> @@ -172,9 +173,9 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>   		smc.args[i + SCM_SMC_FIRST_REG_IDX] = desc->args[i];
+>   
+>   	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
+> -		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
+> -		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
+> -
+> +		args_virt = qcom_tzmem_alloc(mempool,
+> +					     SCM_SMC_N_EXT_ARGS * sizeof(u64),
+> +					     flag);
+
+I remember seeing page alignment for this memory allocation in 
+downstream code too.
+
+I think, after moving to qcom_tzmem_alloc page alignment is not 
+followed. Is this cross checked with firmware requirements?
+
+>   		if (!args_virt)
+>   			return -ENOMEM;
+>   
+> @@ -192,25 +193,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+>   						      SCM_SMC_FIRST_EXT_IDX]);
+>   		}
+>   
+> -		args_phys = dma_map_single(dev, args_virt, alloc_len,
+> -					   DMA_TO_DEVICE);
+> -
+> -		if (dma_mapping_error(dev, args_phys)) {
+> -			kfree(args_virt);
+> -			return -ENOMEM;
+> -		}
+> -
+> -		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
+> +		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
+>   	}
+>   
+> -	/* ret error check follows after args_virt cleanup*/
+>   	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
+> -
+> -	if (args_virt) {
+> -		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
+> -		kfree(args_virt);
+> -	}
+> -
+>   	if (ret)
+>   		return ret;
+>   
+> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> index 0d4c028be0c1..71e98b666391 100644
+> --- a/drivers/firmware/qcom/qcom_scm.c
+> +++ b/drivers/firmware/qcom/qcom_scm.c
+> @@ -201,6 +201,11 @@ static void qcom_scm_bw_disable(void)
+>   enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
+>   static DEFINE_SPINLOCK(scm_query_lock);
+>   
+> +struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void)
+> +{
+> +	return __scm->mempool;
+> +}
+> +
+>   static enum qcom_scm_convention __get_convention(void)
+>   {
+>   	unsigned long flags;
+> diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
+> index 4532907e8489..aa7d06939f8e 100644
+> --- a/drivers/firmware/qcom/qcom_scm.h
+> +++ b/drivers/firmware/qcom/qcom_scm.h
+> @@ -5,6 +5,7 @@
+>   #define __QCOM_SCM_INT_H
+>   
+>   struct device;
+> +struct qcom_tzmem_pool;
+>   
+>   enum qcom_scm_convention {
+>   	SMC_CONVENTION_UNKNOWN,
+> @@ -78,6 +79,8 @@ int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
+>   int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
+>   		    struct qcom_scm_res *res);
+>   
+> +struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
+> +
+>   #define QCOM_SCM_SVC_BOOT		0x01
+>   #define QCOM_SCM_BOOT_SET_ADDR		0x01
+>   #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
