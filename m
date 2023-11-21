@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA75C7F3108
+	by mail.lfdr.de (Postfix) with ESMTP id 95E187F3107
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbjKUOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S234419AbjKUOf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234301AbjKUOf2 (ORCPT
+        with ESMTP id S234014AbjKUOf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:35:28 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888B81A3;
+        Tue, 21 Nov 2023 09:35:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD8FD56;
         Tue, 21 Nov 2023 06:35:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=QKGUm3YOEgFjR/qZttfUWApAFjwkLqqdBvdeGQxH6vg=; b=h54+mbZFXArzqshetgeGPPBTIF
-        o5gpQfR4+aIlRkUd1ZHanwKfUHyipyyh7QdK/sSDK2hoUIeSx9i3EN0OxBG5fIhnYwhcLa5lGE5zw
-        T2tSAFDwADYzcG6h1b1F718eG0L7CUgX2FTS3dNrhpgx90M0fCqfknvu5JI+EBbaYzSc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5RqR-000lXq-O1; Tue, 21 Nov 2023 15:35:19 +0100
-Date:   Tue, 21 Nov 2023 15:35:19 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [RFC PATCH net-next v2 03/10] net: phy: add helpers to handle
- sfp phy connect/disconnect
-Message-ID: <cd66774b-701a-43c8-9677-d3d7fd13b059@lunn.ch>
-References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
- <20231117162323.626979-4-maxime.chevallier@bootlin.com>
- <ac7d9aa6-e403-482b-a12a-d5821787dd4c@lunn.ch>
- <ZVyBgNcFrSubz2jn@shell.armlinux.org.uk>
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9156CC433C7;
+        Tue, 21 Nov 2023 14:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700577323;
+        bh=lzjdq+xR1tjd5//XRTySWMSukAT4qx2YCGmo6ZbzhGQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GXydgTaEmXbfaj7JDcggt+Bmu+BXvOM6FORELUn5GgCT9o2pfn+AgeulbjOZoVnC+
+         7hZGdDBsd8q5EUCHWfWm7ZB8NSSRRr1qDELwQCSkXRDQvVP6Efa3cjQCFm92hYXJEL
+         zPqzyaIU+kCTMnauyAQ0P2qfld2mFrXTi7z32RJQGyC9zxQHx60mKxQN2rDM0FoCCH
+         tZZJDLv/+fSH71lA58r14TXL5FG1I7N+5kjD6KRub3cEUsl2fmPmaC6NI9fdtW1Vmd
+         gdsaoIqqARCGnpLNH+7rjCdmx9JO6gLvZulebdC1IG5HvnYDUxH2NvP7Krg6g+kwPS
+         6XRUtHBa09OTQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5Rqh-0005lu-0x;
+        Tue, 21 Nov 2023 15:35:35 +0100
+Date:   Tue, 21 Nov 2023 15:35:35 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Message-ID: <ZVzANwndkuzhBOiO@hovoldconsulting.com>
+References: <20231120161607.7405-1-johan+linaro@kernel.org>
+ <20231120161607.7405-3-johan+linaro@kernel.org>
+ <pgmtla6j3dshuq5zdxstszbkkssxcthtzelv2etcbrlstdw4nu@wixz6v5dfpum>
+ <3ff65t36p6n3k7faw2z75t2vfi6rb5p64x7wqosetsksbhhwli@5xaxnm7zz4tu>
+ <ZVx1wRefjNaN0byk@hovoldconsulting.com>
+ <0b627853-78fb-4320-84e4-f88695ac6a9e@quicinc.com>
+ <ZVy1kAslWYOQ6n9q@hovoldconsulting.com>
+ <ac838113-501a-4f2b-b858-c59f586a9f35@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVyBgNcFrSubz2jn@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ac838113-501a-4f2b-b858-c59f586a9f35@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,32 +72,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 10:08:00AM +0000, Russell King (Oracle) wrote:
-> On Tue, Nov 21, 2023 at 01:57:24AM +0100, Andrew Lunn wrote:
-> > > +/**
-> > > + * phy_sfp_connect_phy - Connect the SFP module's PHY to the upstream PHY
-> > > + * @upstream: pointer to the upstream phy device
-> > > + * @phy: pointer to the SFP module's phy device
-> > > + *
-> > > + * This helper allows keeping track of PHY devices on the link. It adds the
-> > > + * SFP module's phy to the phy namespace of the upstream phy
-> > > + */
-> > > +int phy_sfp_connect_phy(void *upstream, struct phy_device *phy)
-> > > +{
-> > > +	struct phy_device *phydev = upstream;
+On Tue, Nov 21, 2023 at 07:38:18PM +0530, Krishna Kurapati PSSNV wrote:
+> >>    Just one query. Even if it wakes up after closing the lid and removing
+> >> the mouse, wouldn't pm suspend be triggered again later by the system
+> >> once it sees that usb is also good to be suspended again ? I presume a
+> >> laptop form factor would be having this facility of re-trigerring
+> >> suspend. Let me know if this is not the case.
 > > 
-> > Will this function only ever be called from a PHY driver? If so, we
-> > know upstream is PHY. So we can avoid using void * and make it a
-> > struct phy_device *. 
-> 
-> No. This function is hooked into the .connect_phy method of
-> sfp_upstream_ops, and the SFP bus layer has no idea what the
-> "upstream" is. In this case, it's a PHY. In the case of phylink,
-> it's the phylink struct. So no, "struct phy_device *" here will
-> cause build errors.
+> > No, we generally don't use opportunistic suspend (e.g. unlike android)
+> > so the laptop will not suspend again.
+> > 
+> > So this is an actual bug affecting, for example, the Lenovo ThinkPad
+> > X13s.
 
-O.K, thanks for checking this. It would of been nice to have some
-compile time checking what is passed is what we expect in terms of
-type, but C does not allow that in this case.
+> Thanks for the clarification. I was thinking in android perspective 
+> only. But if we don't wake up the system upon disconnect, wouldn't the 
+> controller still be under the assumption that device is connected when 
+> it is actually not and only realise this when we resume later ?
 
-	 Andrew
+Correct.
+
+Johan
