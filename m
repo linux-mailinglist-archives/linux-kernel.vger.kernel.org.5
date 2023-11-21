@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEBD7F3968
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7FC7F3969
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbjKUWqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S234619AbjKUWq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjKUWp5 (ORCPT
+        with ESMTP id S229495AbjKUWq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:45:57 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F805DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:45:53 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a66aa8ebb7so240603439f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:45:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700606753; x=1701211553; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7iA+kWZUEVLsdUBXgt5tCOpWMD0Y1GKECDIJZh9fHq4=;
-        b=UZr8Dgb+BSFkZev0z0UBVkTSSjqphrlM04f0oWAyGm4QQbcZ1bMvz52iUmoRp1E/Xk
-         ALT6YM6uBkYvNXIvPx0g+F8C3FXi973DOmH8bDp3mN8J4O/qOhQcSSQ/L00g4uLSz5kA
-         yeXT+5AcL5bWNNvkngmtFA0SnxM3oylufc88V6Y+C3Hr8Ub+6kwiwnJCClwVaWuaULuD
-         24OwamcZA4RXeUcdZ/hXLBoyipb2PY/Fg5Of8iMUGNT1/sJ/HvzDB3xwMi9cSZk/ZRW+
-         I4gWhpNlQPVC5zrQYQSvXcNuAgUF+xC/1DsTnztrrqbkrBtdW70JGlqHx4L4y4EfHgxl
-         iSrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700606753; x=1701211553;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7iA+kWZUEVLsdUBXgt5tCOpWMD0Y1GKECDIJZh9fHq4=;
-        b=oNzgFSAdvqPtwTkCfuesDKrso0mzOoYvVpy7QNY2xznQvreO2CwZIsYvSahTpYKoJO
-         qjU2kPCLRmGIKB7hm0dDczWQ80l/ZZjMONX2A56fqScU5FPJ0yMSWZrtJSseJcDT/2V6
-         ZngW6Zd65kX8qJ7VffV4sx9wltn3Ti22cOefS6XsluHdZOmNzZtcvFOmsJb/aJc+7D8J
-         atbfVZSacK1visaLwft09Bg0DRRpdo00fn38iHGQppcDP6BSWXKcKoZmZXAGLkXRMmKM
-         upy/ZUhlXQtXqnkeRDB2zCgm7JufoFCuYDf6RrXuZqy9Ur43r7AUnwS7xh4rQ8+AOVNI
-         YDdw==
-X-Gm-Message-State: AOJu0YxduZRAcOLoPNLJm9FlPR2GVEjHMvT2/YL60VWEuDchUoClnIPR
-        Nac0i93nVbtEzifAf/F4DpS3UQ==
-X-Google-Smtp-Source: AGHT+IGhfz2kelvWRYhxoS/GC2I/AI6SPzGv2+DveMsAbESr2DRqPpVwoYyjSVjW8igCCV35ZmqdBw==
-X-Received: by 2002:a6b:c812:0:b0:7a6:a089:572c with SMTP id y18-20020a6bc812000000b007a6a089572cmr316749iof.21.1700606752801;
-        Tue, 21 Nov 2023 14:45:52 -0800 (PST)
-Received: from ?IPV6:2605:a601:adae:4500:3d43:c8e2:1496:e620? ([2605:a601:adae:4500:3d43:c8e2:1496:e620])
-        by smtp.gmail.com with ESMTPSA id p33-20020a056638192100b004664ef1a3c6sm1930255jal.155.2023.11.21.14.45.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 14:45:52 -0800 (PST)
-Message-ID: <adf2a8f4-f675-4d27-8b46-5d80d3251b6c@sifive.com>
-Date:   Tue, 21 Nov 2023 16:45:51 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/5] RISC-V: Add SBI debug console helper routines
-Content-Language: en-US
-To:     Anup Patel <apatel@ventanamicro.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tue, 21 Nov 2023 17:46:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BA0B9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:46:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F06C4C433C8;
+        Tue, 21 Nov 2023 22:46:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700606814;
+        bh=yX4V4UGoITqpk2E1osXCSh2pJPJMs14QJsfn88pDby8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S9Dj90iNyNJiGjwxGEgEQI6//qEfXkeHJdrw7XtEFmYzzsqC2w5HYdPrLm92GRn9J
+         rsAKUG0TD7aPK5og8lcHcuyVipvDL4Mg7hZOBEmlLd8cuw6BLqYTQikGAOUdSnUmlW
+         DXBJLM5iqvUWd3qbjsZeXRzVBRmiMANdZM7ZiB0oXveNwcNGUrR4LDDjvr5cADxqiC
+         +JwnF28pLxCJFKecIYA7v4azz+dgPrzNpdTBBjHg0oHmu55Hy8kji9h2WjrLAm8mxa
+         J0/ac4apq60YIupBPTIZILdb02aP2rV3JvYbtDjxwCCg1W+wZ9n0dO1+liPesAbK1e
+         pz/M6p3yI9P2w==
+Date:   Tue, 21 Nov 2023 14:46:52 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20231118033859.726692-1-apatel@ventanamicro.com>
- <20231118033859.726692-3-apatel@ventanamicro.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231118033859.726692-3-apatel@ventanamicro.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 5/5] misc: mlx5ctl: Add umem reg/unreg ioctl
+Message-ID: <ZV0zXBmINtopBvLQ@x130>
+References: <20231121070619.9836-1-saeed@kernel.org>
+ <20231121070619.9836-6-saeed@kernel.org>
+ <20231121124456.7a6388c6@kernel.org>
+ <ZV0bRpnhu/zWieTT@x130>
+ <7ae9adff-5a6a-4ca6-983b-1d866dae9199@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <7ae9adff-5a6a-4ca6-983b-1d866dae9199@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,83 +59,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup,
+On 21 Nov 14:18, David Ahern wrote:
+>On 11/21/23 1:04 PM, Saeed Mahameed wrote:
+>> On 21 Nov 12:44, Jakub Kicinski wrote:
+>>> On Mon, 20 Nov 2023 23:06:19 -0800 Saeed Mahameed wrote:
+>>>> high frequency diagnostic counters
+>>>
+>>> So is it a debug driver or not a debug driver?
+>>>
+>>
+>> High frequency _diagnostic_ counters are a very useful tool for
+>> debugging a high performance chip. So yes this is for diagnostics/debug.
+>>
+>>> Because I'm pretty sure some people want to have access to high freq
+>>> counters in production, across their fleet. What's worse David Ahern
+>>> has been pitching a way of exposing device counters which would be
+>>> common across netdev.
+>.
+>
+>For context on the `what's worse ...` comment for those who have not
+>seen the netconf slides:
+>https://netdev.bots.linux.dev/netconf/2023/david.pdf
+>
+>and I am having a hard time parsing Kuba's intent with that comment here
+>(knowing you did not like the pitch I made at netconf :-))
+>
+>
+>>
+>> This is not netdev, this driver is to support ConnectX chips and SoCs
+>> with any stack, netdev/rdma/vdpa/virtio and internal chip units and
+>> acceleration engines, add to that ARM core diagnostics in case of
+>> Blue-Field DPUs.
+>> I am not looking for counting netdev ethernet packets in this driver.
+>>
+>> I am also pretty sure David will also want an interface to access other
+>> than netdev counters, to get more visibility on how a specific chip is
+>> behaving.
+>
+>yes, and h/w counters were part of the proposal. One thought is to
+>leverage userspace registered memory with the device vs mapping bar
+>space, but we have not moved beyond a theoretical discussion at this point.
+>
+>>
+>>> Definite nack on this patch.
+>>
+>> Based on what ?
+>
+>It's a generic interface argument?
+>
 
-On 2023-11-17 9:38 PM, Anup Patel wrote:
-> Let us provide SBI debug console helper routines which can be
-> shared by serial/earlycon-riscv-sbi.c and hvc/hvc_riscv_sbi.c.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/asm/sbi.h |  5 +++++
->  arch/riscv/kernel/sbi.c      | 43 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 66f3933c14f6..ee7aef5f6233 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -334,6 +334,11 @@ static inline unsigned long sbi_mk_version(unsigned long major,
->  }
->  
->  int sbi_err_map_linux_errno(int err);
-> +
-> +extern bool sbi_debug_console_available;
-> +int sbi_debug_console_write(unsigned int num_bytes, phys_addr_t base_addr);
-> +int sbi_debug_console_read(unsigned int num_bytes, phys_addr_t base_addr);
-> +
->  #else /* CONFIG_RISCV_SBI */
->  static inline int sbi_remote_fence_i(const struct cpumask *cpu_mask) { return -1; }
->  static inline void sbi_init(void) {}
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 5a62ed1da453..73a9c22c3945 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -571,6 +571,44 @@ long sbi_get_mimpid(void)
->  }
->  EXPORT_SYMBOL_GPL(sbi_get_mimpid);
->  
-> +bool sbi_debug_console_available;
-> +
-> +int sbi_debug_console_write(unsigned int num_bytes, phys_addr_t base_addr)
-> +{
-> +	struct sbiret ret;
-> +
-> +	if (!sbi_debug_console_available)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				num_bytes, lower_32_bits(base_addr),
-> +				upper_32_bits(base_addr), 0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE,
-> +				num_bytes, base_addr, 0, 0, 0, 0);
-> +
-> +	return ret.error ? sbi_err_map_linux_errno(ret.error) : ret.value;
-> +}
-> +
-> +int sbi_debug_console_read(unsigned int num_bytes, phys_addr_t base_addr)
-> +{
-> +	struct sbiret ret;
-> +
-> +	if (!sbi_debug_console_available)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (IS_ENABLED(CONFIG_32BIT))
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				num_bytes, lower_32_bits(base_addr),
-> +				upper_32_bits(base_addr), 0, 0, 0);
-> +	else
-> +		ret = sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_READ,
-> +				num_bytes, base_addr, 0, 0, 0, 0);
-> +
-> +	return ret.error ? sbi_err_map_linux_errno(ret.error) : ret.value;
-> +}
+For this driver the diagnostic counters is only a small part of the debug
+utilities the driver provides, so it is not fair to nak this patch based
+on one use-case, we need this driver to also dump other stuff like
+core dumps, FW contexts, internal objects, register dumps, resource dumps,
+etc ..
 
-Since every place that calls these functions will need to do the vmalloc lookup,
-would it make sense to do it here, and have these take a pointer instead?
+This patch original purpose was to allow core dumps, since core dump can go
+up to 2MB of memory, without this patch we won't have core dump ability
+which is more important for debugging than diagnostic counters.
 
-Regards,
-Samuel
+You can find more here:
+https://github.com/saeedtx/mlx5ctl#mlx5ctl-userspace-linux-debug-utilities-for-mlx5-connectx-devices
+
+For diagnostic counters we can continue the discussion to have a generic
+interface I am all for it, but it's irrelevant for this submission.
 
