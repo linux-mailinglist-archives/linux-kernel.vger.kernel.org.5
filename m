@@ -2,67 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 992847F297B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FEA7F297D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbjKUJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S234076AbjKUJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234176AbjKUJ5m (ORCPT
+        with ESMTP id S234099AbjKUJ55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:57:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE899112;
-        Tue, 21 Nov 2023 01:57:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700560654; x=1732096654;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qFch2I4wb3I5lzRPVl9RrDhRU6eftq6hKyzQM7XrNCw=;
-  b=PhXR/yPzzYYtVRB4z0ZIw6dBPviBXyq+hN7yPL0dbXgiCWLXYHAwanIL
-   UvDJsbdJQbTmB3hd9/pFJfn7AEWMNhDLTqIeWMDv/MX0dqWD1WOC+s9CU
-   PcH3dsKlKh6WF12udZlic8LMrlmF/WrbP6BgdEU6dD3MDgtC2q3889VJT
-   M1eLzJDE5xu1ryV0poS4eYaZitj134RRE2TWz3L2Zcz5Q2CIO1byPqYLZ
-   qgp8Y/l81SFFZCk1Sy58ZCahXq2ANONWM62z3ziA9YZOmM2fzyi9E3z6v
-   3H0otck6KSSk3TaXFJedAJHRHHltJQxmkLfS2klQD23pxi/+ZhzRceaT6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13349006"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="13349006"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:57:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="14867587"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:57:30 -0800
-Message-ID: <5d9aadbd-975b-4c4d-ba18-ac6e0fb07ba1@linux.intel.com>
-Date:   Tue, 21 Nov 2023 17:57:28 +0800
+        Tue, 21 Nov 2023 04:57:57 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFFC114
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:57:51 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40859c466efso23726555e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700560669; x=1701165469; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ya3n3aXDnBMpa9iCsGsDw/lmArvm/c671drEFUNQoo=;
+        b=f0f4/oIAQqebDHWVkydaOtoZ7DLL4dVAAIfY0zSvYqMTN9Md4omqWNXW9+vQD72dgN
+         YL+ABS4NbcNk5rmLbJ+kK5FWPgzgn/v/gmV2K1Yka73gVMlZjyWHhwEKhxWal2ZI3NDJ
+         ZKF9ZRcHbU8jboGkvTYp5sbYAiD7gTd01ARCHmUgh12Vy/zZ4GAsnI9FksVkManSn06i
+         ftqdrMfciFMaoEnKdO0ZAN1W2Q3HECGigxXRgu/Otrk5zOAsZC3Zur7av3g8wsSMoLyz
+         u5u4yo8JM8GzvcWocfRK/FGO7y6U0ydZLPDsnq97zpmzntRPeV7m55OCn6mO4fZXrBzr
+         ONSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700560669; x=1701165469;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5ya3n3aXDnBMpa9iCsGsDw/lmArvm/c671drEFUNQoo=;
+        b=VB7Dvg38BUm8Fivzi6861Gmu9i70DrzqZNJnurIXPJdruFZydPkX6xNTKzNbppYbvH
+         CqW5bXNyEdK1sayLc/aECQB2QSJ8+MtVqSJWMP97swxGpPztmVFRbH8ftRkyd1WW3hz5
+         mi1SlLQJnZQpnIWmG5SR/6uxa+1SwPNeqsd6erGv+/P67arVh0pJblvaJbXTMJL/1N2m
+         pkwMYHqgX37kQTehsVku1RvZULBWB52KrPy/ifRK7lcheFuuLNtokIInI8qMmVvMP3aU
+         Kajwqtdu6JMo/An2explHZU05TtL5zgIiBvhmXLw6HIu4Er9/Jw1XtR1W3PeE5rDuE12
+         oLBQ==
+X-Gm-Message-State: AOJu0YzDeq8ICOq1uvifQYxc+PE6H2GoRusaAMskugl92q3QvSeWxMHH
+        nxp35i0Zk47vWQxcV5V6tgQfQw==
+X-Google-Smtp-Source: AGHT+IF5jKaAaWuAYYIRaovptlC1ZuGRLPzcyaZZ1TLyF9C2pvMBO3pkBU9sYd5hnyBTx/DGMQAeWA==
+X-Received: by 2002:a5d:558d:0:b0:332:cbe4:110 with SMTP id i13-20020a5d558d000000b00332cbe40110mr2068623wrv.33.1700560669375;
+        Tue, 21 Nov 2023 01:57:49 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id m17-20020adfe0d1000000b0033130644c87sm13954510wri.54.2023.11.21.01.57.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 01:57:48 -0800 (PST)
+Message-ID: <84a12a2c-3f64-4517-8d38-14c8516e70d0@linaro.org>
+Date:   Tue, 21 Nov 2023 10:57:46 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 11/16] KVM: x86/tdp_mmu: Split the large page when zap
- leaf
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 1/3] dt-bindings: rtc: add binding for Sophgo CV1800B rtc
+ controller
+To:     Jingbao Qiu <qiujingbao.dlmu@gmail.com>, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        chao.wei@sophgo.com, unicorn_wang@outlook.com, conor+dt@kernel.org,
+        robh+dt@kernel.org, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
+ <20231121094642.2973795-2-qiujingbao.dlmu@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231121094642.2973795-2-qiujingbao.dlmu@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,201 +125,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21/11/2023 10:46, Jingbao Qiu wrote:
+> Add devicetree binding for Sophgo CV1800B SoC rtc controller.
 
+A nit, subject: drop second/last, redundant "binding for". The
+"dt-bindings" prefix is already stating that these are bindings.
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> When TDX enabled, a large page cannot be zapped if it contains mixed
-> pages. In this case, it has to split the large page.
->
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> 
+> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
 > ---
->   arch/x86/kvm/Kconfig            |  1 +
->   arch/x86/kvm/mmu/mmu.c          |  6 +--
->   arch/x86/kvm/mmu/mmu_internal.h |  9 +++++
->   arch/x86/kvm/mmu/tdp_mmu.c      | 68 +++++++++++++++++++++++++++++++--
->   4 files changed, 78 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index b0f103641547..557479737962 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -93,6 +93,7 @@ config KVM_INTEL
->   	tristate "KVM for Intel (and compatible) processors support"
->   	depends on KVM && IA32_FEAT_CTL
->   	select KVM_SW_PROTECTED_VM if INTEL_TDX_HOST
-> +	select KVM_GENERIC_MEMORY_ATTRIBUTES if INTEL_TDX_HOST
->   	select KVM_PRIVATE_MEM if INTEL_TDX_HOST
->   	help
->   	  Provides support for KVM on processors equipped with Intel's VT
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 265177cedf37..0bf043812644 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -7463,8 +7463,8 @@ bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
->   	return kvm_unmap_gfn_range(kvm, range);
->   }
->   
-> -static bool hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
-> -				int level)
-> +bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
-> +			     int level)
->   {
->   	return lpage_info_slot(gfn, slot, level)->disallow_lpage & KVM_LPAGE_MIXED_FLAG;
->   }
-> @@ -7491,7 +7491,7 @@ static bool hugepage_has_attrs(struct kvm *kvm, struct kvm_memory_slot *slot,
->   		return kvm_range_has_memory_attributes(kvm, start, end, attrs);
->   
->   	for (gfn = start; gfn < end; gfn += KVM_PAGES_PER_HPAGE(level - 1)) {
-> -		if (hugepage_test_mixed(slot, gfn, level - 1) ||
-> +		if (kvm_hugepage_test_mixed(slot, gfn, level - 1) ||
->   		    attrs != kvm_get_memory_attributes(kvm, gfn))
->   			return false;
->   	}
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 1da98be74ad2..653e96769956 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -460,4 +460,13 @@ void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
->   void track_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
->   void untrack_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
->   
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn, int level);
-> +#else
-> +static inline bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn, int level)
-> +{
-> +	return false;
-> +}
-> +#endif
+>  .../bindings/rtc/sophgo,cv1800b-rtc.yaml      | 37 +++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> new file mode 100644
+> index 000000000000..fefb1e70c45c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> @@ -0,0 +1,37 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/sophgo,cv1800b-rtc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->   #endif /* __KVM_X86_MMU_INTERNAL_H */
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 7873e9ee82ad..a209a67decae 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -964,6 +964,14 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
->   	return true;
->   }
->   
-> +
-> +static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
-> +						       struct tdp_iter *iter,
-> +						       bool shared);
-> +
-> +static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
-> +				   struct kvm_mmu_page *sp, bool shared);
-> +
->   /*
->    * If can_yield is true, will release the MMU lock and reschedule if the
->    * scheduler needs the CPU or there is contention on the MMU lock. If this
-> @@ -975,13 +983,15 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
->   			      gfn_t start, gfn_t end, bool can_yield, bool flush,
->   			      bool zap_private)
->   {
-> +	bool is_private = is_private_sp(root);
-> +	struct kvm_mmu_page *split_sp = NULL;
->   	struct tdp_iter iter;
->   
->   	end = min(end, tdp_mmu_max_gfn_exclusive());
->   
->   	lockdep_assert_held_write(&kvm->mmu_lock);
->   
-> -	WARN_ON_ONCE(zap_private && !is_private_sp(root));
-> +	WARN_ON_ONCE(zap_private && !is_private);
->   	if (!zap_private && is_private_sp(root))
-Can use is_private instead of is_private_sp(root) here as well.
+> +title: Sophgo CV1800B SoC RTC Controller
 
->   		return false;
->   
-> @@ -1006,12 +1016,66 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
->   		    !is_last_spte(iter.old_spte, iter.level))
->   			continue;
->   
-> +		if (is_private && kvm_gfn_shared_mask(kvm) &&
-> +		    is_large_pte(iter.old_spte)) {
-> +			gfn_t gfn = iter.gfn & ~kvm_gfn_shared_mask(kvm);
-> +			gfn_t mask = KVM_PAGES_PER_HPAGE(iter.level) - 1;
-> +			struct kvm_memory_slot *slot;
-> +			struct kvm_mmu_page *sp;
-> +
-> +			slot = gfn_to_memslot(kvm, gfn);
-> +			if (kvm_hugepage_test_mixed(slot, gfn, iter.level) ||
-> +			    (gfn & mask) < start ||
-> +			    end < (gfn & mask) + KVM_PAGES_PER_HPAGE(iter.level)) {
-> +				WARN_ON_ONCE(!can_yield);
-> +				if (split_sp) {
-> +					sp = split_sp;
-> +					split_sp = NULL;
-> +					sp->role = tdp_iter_child_role(&iter);
-> +				} else {
-> +					WARN_ON(iter.yielded);
-> +					if (flush && can_yield) {
-> +						kvm_flush_remote_tlbs(kvm);
-> +						flush = false;
-> +					}
-Is it necessary to do the flush here?
-
-> +					sp = tdp_mmu_alloc_sp_for_split(kvm, &iter, false);
-> +					if (iter.yielded) {
-> +						split_sp = sp;
-> +						continue;
-> +					}
-> +				}
-> +				KVM_BUG_ON(!sp, kvm);
-> +
-> +				tdp_mmu_init_sp(sp, iter.sptep, iter.gfn);
-> +				if (tdp_mmu_split_huge_page(kvm, &iter, sp, false)) {
-> +					kvm_flush_remote_tlbs(kvm);
-> +					flush = false;
-Why it needs to flush TLB immediately if tdp_mmu_split_huge_page() fails?
-
-Also, when KVM MMU write lock is held, it seems tdp_mmu_split_huge_page()
-will not fail. But let's assume this condition can be triggered, since 
-sp is local
-variable, it will lost its value after continue, and split_sp is also NULL,
-it will try to allocate a new sp, memory leakage here?
-
-> +					/* force retry on this gfn. */
-> +					iter.yielded = true;
-> +				} else
-> +					flush = true;
-> +				continue;
-> +			}
-> +		}
-> +
->   		tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
->   		flush = true;
->   	}
->   
->   	rcu_read_unlock();
->   
-> +	if (split_sp) {
-> +		WARN_ON(!can_yield);
-> +		if (flush) {
-> +			kvm_flush_remote_tlbs(kvm);
-> +			flush = false;
-> +		}
-Same here, why we need to do the flush here?
-Can we delay it till the caller do the flush?
+What is a RTC Controller? You have multiple RTCs there?
 
 > +
-> +		write_unlock(&kvm->mmu_lock);
-> +		tdp_mmu_free_sp(split_sp);
-> +		write_lock(&kvm->mmu_lock);
-> +	}
+> +maintainers:
+> +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
 > +
->   	/*
->   	 * Because this flow zaps _only_ leaf SPTEs, the caller doesn't need
->   	 * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
-> @@ -1606,8 +1670,6 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
->   
->   	KVM_BUG_ON(kvm_mmu_page_role_is_private(role) !=
->   		   is_private_sptep(iter->sptep), kvm);
-> -	/* TODO: Large page isn't supported for private SPTE yet. */
-> -	KVM_BUG_ON(kvm_mmu_page_role_is_private(role), kvm);
->   
->   	/*
->   	 * Since we are allocating while under the MMU lock we have to be
+
+Missing ref to rtc.yaml. Unless it is not applicable but then why?
+
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sophgo,cv1800b-rtc
+
+Blank line
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+
+unevaluatedProperties instead
+
+> +
+> +examples:
+> +  - |
+> +    rtc-controller@05026000{
+
+The names is always "rtc", unless this is not RTC. If it isn't, please
+add full description of the hardware.
+
+> +      compatible = "sophgo,cv800b-rtc";
+> +      reg = <0x05026000 0x1000>;
+> +      interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+> +      interrupt-parent = <&plic0>;
+> +      clocks = <&osc>;
+
+Why do you send untested bindings? Review costs significant amount of
+effort. Code was also not compiled? Warnings not fixed?
+
+Best regards,
+Krzysztof
 
