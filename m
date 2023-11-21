@@ -2,50 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6867F3392
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4377F3397
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjKUQXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S230424AbjKUQYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKUQXN (ORCPT
+        with ESMTP id S229514AbjKUQYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:23:13 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 21F45198
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:23:09 -0800 (PST)
-Received: (qmail 1493358 invoked by uid 1000); 21 Nov 2023 11:23:08 -0500
-Date:   Tue, 21 Nov 2023 11:23:07 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
+        Tue, 21 Nov 2023 11:24:18 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CCB112;
+        Tue, 21 Nov 2023 08:24:15 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7E67C1F8C0;
+        Tue, 21 Nov 2023 16:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700583853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M6aD2LqNot/ZwhMqOK5TUK0lLS9Vd5khhGJ3ybOVaiQ=;
+        b=cnRKQJp9FrLJESaatg94BB1TOfNYhVZjQxtbISN3+pQr+iJWQqzi+oKjAXJD7cVREndo9X
+        RJQJiEAYRl7Js/8hJruqtlfrCWbUZ1AHX31wT3LYje0BBspFqGZU1kBGGvKn4YRBFBRNSa
+        3p4l1UWr0kmdajpFXHcgYgqUtYs5lL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700583853;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M6aD2LqNot/ZwhMqOK5TUK0lLS9Vd5khhGJ3ybOVaiQ=;
+        b=xaoy7gfZMFFtWN4wgBvHyYdLaXu+hS75ty+RrdRUTAdKqq+DLPSvPu979izCeALucIv7Oj
+        p5cuQNVnCVVqxjCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 480AD138E3;
+        Tue, 21 Nov 2023 16:24:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id C8VPEK3ZXGVsFgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 16:24:13 +0000
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Lee Jones <lee@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?q?Johannes=20Pen=C3=9Fel?= <johannes.penssel@gmail.com>,
+        Jeremy Soller <jeremy@system76.com>,
         Hans de Goede <hdegoede@redhat.com>,
-        Mike Jones <mike@mjones.io>,
-        Rocky Liao <quic_rjliao@quicinc.com>
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
-Message-ID: <fd84c14a-1866-4643-8ce9-0d6da5c4b82e@rowland.harvard.edu>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
- <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
- <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
- <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
- <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
- <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
- <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
- <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH] leds: class: Don't expose color sysfs entry
+Date:   Tue, 21 Nov 2023 17:23:59 +0100
+Message-Id: <20231121162359.9332-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
+         RCVD_TLS_ALL(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-0.999];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[ucw.cz,traphandler.com,vger.kernel.org,gmail.com,system76.com,redhat.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,106 +99,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 11:05:04PM +0100, Paul Menzel wrote:
-> [Cc: +Rocky Liao as Qualcomm developer]
+The commit c7d80059b086 ("leds: class: Store the color index in struct
+led_classdev") introduced a new sysfs entry "color" that is commonly
+created for the led classdev.  Unfortunately, this conflicts with the
+"color" sysfs entry of already existing drivers such as Logitech HID
+or System76 ACPI drivers.  The driver probe fails due to the conflict,
+hence it leads to a severe regression with the missing keyboard, for
+example.
 
-> Am 20.11.23 um 19:10 schrieb Alan Stern:
-> > Again, nothing out of the ordinary.  Maybe dynamic debugging will give
-> > us a clue.  Try doing this:
-> > 
-> > 	Unload the btusb module.
-> > 
-> > 	echo module usbcore +p >/sys/kernel/debug/dynamic_debug/control
-> > 
-> > 	Load the btusb module
-> > 
-> > 	Make sure that Bluetooth is turned off in Gnome
-> > 
-> > 	Wait a few seconds
-> > 
-> > 	echo module usbcore -p >/sys/kernel/debug/dynamic_debug/control
-> > 
-> > Then let's see what the dmesg log contains for that time period.
-> 
-> 
-> ```
-> $ sudo modprobe -r btusb
-> $ sudo dmesg | tail -1
-> [340309.272439] usbcore: deregistering interface driver btusb
-> $ echo module usbcore +p | sudo tee /sys/kernel/debug/dynamic_debug/control
-> module usbcore +p
-> $ sudo modprobe btusb
-> $ /sbin/rfkill
-> ID TYPE      DEVICE      SOFT      HARD
->  1 wlan      phy0   unblocked unblocked
-> 36 bluetooth hci0     blocked unblocked
-> $ echo module usbcore -p | sudo tee /sys/kernel/debug/dynamic_debug/control
-> module usbcore -p
-> $ sudo modprobe -r btusb
-> $ sudo dmesg | tail -1
-> [340608.761313] usbcore: deregistering interface driver btusb
-> $ sudo dmesg
-> […]
-> [340309.272439] usbcore: deregistering interface driver btusb
-> [340560.326182] xhci_hcd 0000:00:14.0: hcd_pci_runtime_resume: 0
-> [340560.326214] usb usb1: usb auto-resume
-> [340560.326258] hub 1-0:1.0: hub_resume
-> [340560.326381] usb usb1-port3: status 0107 change 0000
-> [340560.326418] usb usb1-port4: status 0107 change 0000
-> [340560.326451] usb usb1-port5: status 0507 change 0000
-> [340560.326650] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
-> [340560.326807] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
-> [340560.373988] usb 1-3: usb auto-resume
-> [340560.373998] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0008
-> [340560.441936] usb 1-3: Waited 0ms for CONNECT
-> [340560.441957] usb 1-3: finish reset-resume
-> [340560.570940] usb 1-3: reset full-speed USB device number 2 using xhci_hcd
+This patch reverts partially the change in the commit above for
+removing the led class color sysfs entries again for addressing the
+regressions.  The newly introduced led_classdev.color field is kept as
+it's already used by other driver.
 
-Those two lines are unexpected.  Why does the device need to be reset?
-While the btusb module is loaded, does anything show up in
-/sys/bus/usb/devices/1-3/quirks?
+Fixes: c7d80059b086 ("leds: class: Store the color index in struct led_classdev")
+Reported-by: Johannes Penßel <johannes.penssel@gmail.com>
+Closes: https://lore.kernel.org/r/b5646db3-acff-45aa-baef-df3f660486fb@gmail.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218045
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218155
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1217172
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
 
-> > Also, please post the output from "lsusb -v" for the Bluetooth device.
-> 
-> ```
-> $ sudo lsusb -d 0cf3:e300 -v
-> 
-> Bus 001 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications QCA61x4
-> Bluetooth 4.0
-> Device Descriptor:
->   bLength                18
->   bDescriptorType         1
->   bcdUSB               2.01
->   bDeviceClass          224 Wireless
->   bDeviceSubClass         1 Radio Frequency
->   bDeviceProtocol         1 Bluetooth
->   bMaxPacketSize0        64
->   idVendor           0x0cf3 Qualcomm Atheros Communications
->   idProduct          0xe300 QCA61x4 Bluetooth 4.0
->   bcdDevice            0.01
->   iManufacturer           0
->   iProduct                0
->   iSerial                 0
->   bNumConfigurations      1
->   Configuration Descriptor:
->     bLength                 9
->     bDescriptorType         2
->     wTotalLength       0x00b1
->     bNumInterfaces          2
->     bConfigurationValue     1
->     iConfiguration          0
->     bmAttributes         0xe0
->       Self Powered
->       Remote Wakeup
+This is a sort of v2 patch, as it turned out that the full revert
+leads to a build error.
 
-That's what I was interested in.  The device does support remote wakeup.
+ Documentation/ABI/testing/sysfs-class-led |  9 ---------
+ drivers/leds/led-class.c                  | 14 --------------
+ 2 files changed, 23 deletions(-)
 
-> PPS: Looking through the commit log/history for `drivers/bluetooth/btusb.c`,
-> I found commit 7ecacafc2406 (Bluetooth: btusb: Disable runtime suspend on
-> Realtek devices) [1] authored on December 5th, 2019. This is for Realtek
-> devices though, and not Qualcomm.
+diff --git a/Documentation/ABI/testing/sysfs-class-led b/Documentation/ABI/testing/sysfs-class-led
+index b2ff0012c0f2..2e24ac3bd7ef 100644
+--- a/Documentation/ABI/testing/sysfs-class-led
++++ b/Documentation/ABI/testing/sysfs-class-led
+@@ -59,15 +59,6 @@ Description:
+ 		brightness. Reading this file when no hw brightness change
+ 		event has happened will return an ENODATA error.
+ 
+-What:		/sys/class/leds/<led>/color
+-Date:		June 2023
+-KernelVersion:	6.5
+-Description:
+-		Color of the LED.
+-
+-		This is a read-only file. Reading this file returns the color
+-		of the LED as a string (e.g: "red", "green", "multicolor").
+-
+ What:		/sys/class/leds/<led>/trigger
+ Date:		March 2006
+ KernelVersion:	2.6.17
+diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
+index 974b84f6bd6a..ba1be15cfd8e 100644
+--- a/drivers/leds/led-class.c
++++ b/drivers/leds/led-class.c
+@@ -75,19 +75,6 @@ static ssize_t max_brightness_show(struct device *dev,
+ }
+ static DEVICE_ATTR_RO(max_brightness);
+ 
+-static ssize_t color_show(struct device *dev,
+-		struct device_attribute *attr, char *buf)
+-{
+-	const char *color_text = "invalid";
+-	struct led_classdev *led_cdev = dev_get_drvdata(dev);
+-
+-	if (led_cdev->color < LED_COLOR_ID_MAX)
+-		color_text = led_colors[led_cdev->color];
+-
+-	return sysfs_emit(buf, "%s\n", color_text);
+-}
+-static DEVICE_ATTR_RO(color);
+-
+ #ifdef CONFIG_LEDS_TRIGGERS
+ static BIN_ATTR(trigger, 0644, led_trigger_read, led_trigger_write, 0);
+ static struct bin_attribute *led_trigger_bin_attrs[] = {
+@@ -102,7 +89,6 @@ static const struct attribute_group led_trigger_group = {
+ static struct attribute *led_class_attrs[] = {
+ 	&dev_attr_brightness.attr,
+ 	&dev_attr_max_brightness.attr,
+-	&dev_attr_color.attr,
+ 	NULL,
+ };
+ 
+-- 
+2.35.3
 
-Furthermore the driver has changed considerably since 2019.  See
-commits 8274db0776d1, 895915226a59, 7bd9fb058d77, and 34ec58b9fd1c.
-
-Alan Stern
