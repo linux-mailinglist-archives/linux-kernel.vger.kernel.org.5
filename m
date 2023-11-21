@@ -2,73 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C02F7F315C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788DE7F316A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234740AbjKUOoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33914 "EHLO
+        id S234747AbjKUOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbjKUOof (ORCPT
+        with ESMTP id S234535AbjKUOqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:44:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40559E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:44:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5174C433C8;
-        Tue, 21 Nov 2023 14:44:29 +0000 (UTC)
-Date:   Tue, 21 Nov 2023 09:44:44 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <20231121094444.04701bdc@gandalf.local.home>
-In-Reply-To: <20231121143647.GI8262@noisy.programming.kicks-ass.net>
-References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
-        <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
-        <20231120214742.GC8262@noisy.programming.kicks-ass.net>
-        <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
-        <20231120222311.GE8262@noisy.programming.kicks-ass.net>
-        <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
-        <20231121084706.GF8262@noisy.programming.kicks-ass.net>
-        <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
-        <20231121143647.GI8262@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 21 Nov 2023 09:46:13 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFF4BB;
+        Tue, 21 Nov 2023 06:46:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=rDpezqQdQaLT4CGpJbEeOjZaDXdZOg3FLrrLbck5N8I=; b=DvP6nPbXSXy/bP5AKovigePjF1
+        42JqELH5UGNNxciyp5MPZTtIH86Rmce8YKEy8t74xYBQOYtz3D9g+uUlzIE1NqW+H0PrpxBxu0YK5
+        FI883lJ5A/SKVZ1+SB8alGwy6moQ0eMddnBWI7F0qdxYfeXWgVqZPOELM8y6e0Zo0PPQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5S0U-000lcX-VO; Tue, 21 Nov 2023 15:45:42 +0100
+Date:   Tue, 21 Nov 2023 15:45:42 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next RFC PATCH 03/14] dt-bindings: net: document ethernet
+ PHY package nodes
+Message-ID: <a85d6d0a-1fc9-4c8e-9f91-5054ca902cd1@lunn.ch>
+References: <20231120135041.15259-1-ansuelsmth@gmail.com>
+ <20231120135041.15259-4-ansuelsmth@gmail.com>
+ <c21ff90d-6e05-4afc-b39c-2c71d8976826@lunn.ch>
+ <20231121144244.GA1682395-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121144244.GA1682395-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 15:36:47 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+> > I do think we need somewhere to put package properties. But i don't
+> > think phy-mode is such a property. At the moment, i don't have a good
+> > example of a package property.
 > 
-> Still utterly confused about what task-tracing rcu is and how it is
-> different from preemptible rcu.
+> What about power supplies and reset/enable lines?
 
-Is this similar to synchronize_rcu_tasks()? As I understand that one (grace
-period continues until all tasks have voluntarily scheduled or gone into
-user space). But I'm a bit confused by synchronize_rcu_tasks_trace()?
+Yes, good point. I can imagine some packages sharing regulators. Reset
+might also be shared, but it makes things messy to handle.
 
-Note, that for syncronize_rcu_tasks() the critical sections must not call
-schedule (although it is OK to be preempted).
-
--- Steve
+      Andrew
