@@ -2,311 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5717F2966
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5B27F296F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjKUJy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
+        id S233540AbjKUJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbjKUJyZ (ORCPT
+        with ESMTP id S231876AbjKUJ4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:54:25 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 200C5126;
-        Tue, 21 Nov 2023 01:54:18 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.183])
-        by gateway (Coremail) with SMTP id _____8AxJuhHflxl_4M7AA--.59056S3;
-        Tue, 21 Nov 2023 17:54:15 +0800 (CST)
-Received: from [10.20.42.183] (unknown [10.20.42.183])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxzdxCflxl80tIAA--.27825S3;
-        Tue, 21 Nov 2023 17:54:12 +0800 (CST)
-Subject: Re: [PATCH v1 1/2] LoongArch: KVM: Add lsx support
-To:     WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20231115091921.85516-1-zhaotianrui@loongson.cn>
- <20231115091921.85516-2-zhaotianrui@loongson.cn>
- <28c11122-4433-4302-bb09-95b3d458b457@xen0n.name>
-From:   zhaotianrui <zhaotianrui@loongson.cn>
-Message-ID: <b5b11901-a19c-4b88-4c1a-c8b8c708a788@loongson.cn>
-Date:   Tue, 21 Nov 2023 17:56:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <28c11122-4433-4302-bb09-95b3d458b457@xen0n.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: AQAAf8DxzdxCflxl80tIAA--.27825S3
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3CF4rGr43AF1xAw4DAFWkGrX_yoWDuFy3pr
-        ykArZ8JrWUGrn3tr1UJr1DXFy5Zr18Kw17XFy8XFy5JF1Utryjqr18WrWqgFyUJw48JF1I
-        qF18XrnxZFyUJ3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUU
-        UU=
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 21 Nov 2023 04:56:39 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318C1100;
+        Tue, 21 Nov 2023 01:56:36 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D8E66218F2;
+        Tue, 21 Nov 2023 09:56:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700560594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lWy9/Zt27yG3I1aWH6nlTCFa/Z3H/E1EvhVboDRGdA=;
+        b=AjUWH0fpH4X2UofDmbZ9NsDburJHUIQTVpaZAZY80l2esNJeBZ1o8Q5JBLMqTyqlFVeceP
+        Yv+Y9L1wgSe5FCT7UPsmKe1j5E+7RnH9FspkNwrhq1Vm9KJ2s7s2ikdlSNdD+zDiseIk7F
+        FL2p6doK37m37iZAQYGSKgzGN3wOZQQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700560594;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+lWy9/Zt27yG3I1aWH6nlTCFa/Z3H/E1EvhVboDRGdA=;
+        b=sLeLiJgo88HArU015/4F/zJnaY2skvgd5k6e5eflB6OA4djIQXXLEbUDdkYVdtUv7AwWAF
+        njNKCnEfEWHwoPCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81C56138E3;
+        Tue, 21 Nov 2023 09:56:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id mra8HtJ+XGXYOAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 09:56:34 +0000
+Date:   Tue, 21 Nov 2023 10:56:34 +0100
+Message-ID: <87bkbno2el.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Johannes =?ISO-8859-1?Q?Pe?= =?ISO-8859-1?Q?n=DFel?= 
+        <johannes.penssel@gmail.com>
+Subject: Re: Fwd: sysfs: cannot create duplicate filename .../system76_acpi::kbd_backlight/color
+In-Reply-To: <87edgjo2kr.wl-tiwai@suse.de>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+        <ZT25-gUmLl8MPk93@debian.me>
+        <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+        <ZUjnzB2RL2iLzIQG@debian.me>
+        <87sf50pm34.wl-tiwai@suse.de>
+        <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+        <87edgjo2kr.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.80
+X-Spamd-Result: default: False [-5.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         TO_DN_ALL(0.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[suse.de,traphandler.com,gmail.com,vger.kernel.org,lists.linux.dev,system76.com,kernel.org,ucw.cz];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Nov 2023 10:52:52 +0100,
+Takashi Iwai wrote:
+> 
+> On Tue, 21 Nov 2023 10:19:03 +0100,
+> Thorsten Leemhuis wrote:
+> > 
+> > Takashi, Jean-Jacques Hiblot, Lee,
+> > 
+> > On 20.11.23 14:53, Takashi Iwai wrote:
+> > > On Mon, 06 Nov 2023 14:19:08 +0100,
+> > > Bagas Sanjaya wrote:
+> > >> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+> > >>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+> > >>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+> > >>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+> > >>>>
+> > >>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+> > >>>> since you authored the culprit?
+> > >
+> > >>> The offending commit stores the color in struct led_classdev and exposes it
+> > >>> via sysfs. It was part of a series that create a RGB leds from multiple
+> > >>> single-color LEDs. for this series, we need the color information but we
+> > >>> don't really need to expose it it via sysfs. In order to fix the issue, we
+> > >>> can remove the 'color' attribute from the sysfs.
+> > >>
+> > >> OK, see you in the patch!
+> > > 
+> > > Is there a patch available?
+> > 
+> > Not that I know of. Could not find anything on lore either.
+> > 
+> > > This bug hits for a few Logitech keyboard models, too, and it makes
+> > > 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+> > > this bug:
+> > >   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+> > > 
+> > > We need a quick fix for 6.6.x.
+> > 
+> > Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+> > committed it and sent it to Linus) know about this for a while already
+> > without doing anything about it, I wonder if someone should just send a
+> > revert to Linus (unless of course that is likely to introduce a
+> > regression on its own).
+> > 
+> > Takashi, could you maybe do this, unless a fix shows up real soon?
+> 
+> I can, but we need to decide which way to go.
+> There are several options:
+> 
+> 1. Revert the commit c7d80059b086;
+>    this drops led class color sysfs entries.  Also the store of
+>    led_cdev->color from fwnode is dropped, too.
+> 
+> 2. Drop only led class color sysfs entries;
+>    a partial revert of c7d80059b086 above
+> 
+> 3. Rename conflicting sysfs entries in drivers;
+>    e.g. color -> kb_color for hid-lg-g15 and system76_acpi
 
-在 2023/11/16 下午3:15, WANG Xuerui 写道:
->
-> On 11/15/23 17:19, Tianrui Zhao wrote:
->> This patch adds LSX support for LoongArch KVM. The LSX means
->> LoongArch 128-bits vector instruction.
-> Maybe we don't need to explain what "LSX" is; people working on 
-> LoongArch kernel should already know this through the kernel docs and 
-> the various occurrences in the code.
-Thanks, I will remove the explain about "LSX, LASX".
->> There will be LSX exception in KVM when guest use the LSX
->> instruction. KVM will enable LSX and restore the vector
->> registers for guest then return to guest to continue running.
->>
-> One more extra line that should get removed.
-Thanks, I will remove the extra line.
->> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->> ---
->>   arch/loongarch/include/asm/kvm_host.h |  6 ++++
->>   arch/loongarch/include/asm/kvm_vcpu.h | 12 +++++++
->>   arch/loongarch/kvm/exit.c             | 18 ++++++++++
->>   arch/loongarch/kvm/switch.S           | 22 +++++++++++++
->>   arch/loongarch/kvm/trace.h            |  4 ++-
->>   arch/loongarch/kvm/vcpu.c             | 47 +++++++++++++++++++++++++--
->>   6 files changed, 105 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/loongarch/include/asm/kvm_host.h 
->> b/arch/loongarch/include/asm/kvm_host.h
->> index 11328700d4..6c65c25169 100644
->> --- a/arch/loongarch/include/asm/kvm_host.h
->> +++ b/arch/loongarch/include/asm/kvm_host.h
->> @@ -94,6 +94,7 @@ enum emulation_result {
->>   #define KVM_LARCH_FPU        (0x1 << 0)
->>   #define KVM_LARCH_SWCSR_LATEST    (0x1 << 1)
->>   #define KVM_LARCH_HWCSR_USABLE    (0x1 << 2)
->> +#define KVM_LARCH_LSX        (0x1 << 3)
->>     struct kvm_vcpu_arch {
->>       /*
->> @@ -175,6 +176,11 @@ static inline void writel_sw_gcsr(struct 
->> loongarch_csrs *csr, int reg, unsigned
->>       csr->csrs[reg] = val;
->>   }
->>   +static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
->> +{
->> +    return arch->cpucfg[2] & CPUCFG2_LSX;
->> +}
->> +
->>   /* Debug: dump vcpu state */
->>   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
->>   diff --git a/arch/loongarch/include/asm/kvm_vcpu.h 
->> b/arch/loongarch/include/asm/kvm_vcpu.h
->> index 553cfa2b2b..c629771e12 100644
->> --- a/arch/loongarch/include/asm/kvm_vcpu.h
->> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
->> @@ -55,6 +55,18 @@ void kvm_save_fpu(struct loongarch_fpu *fpu);
->>   void kvm_restore_fpu(struct loongarch_fpu *fpu);
->>   void kvm_restore_fcsr(struct loongarch_fpu *fpu);
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +void kvm_own_lsx(struct kvm_vcpu *vcpu);
->> +void kvm_save_lsx(struct loongarch_fpu *fpu);
->> +void kvm_restore_lsx(struct loongarch_fpu *fpu);
->> +void kvm_restore_lsx_upper(struct loongarch_fpu *fpu);
->> +#else
->> +static inline void kvm_own_lsx(struct kvm_vcpu *vcpu) { }
->> +static inline void kvm_save_lsx(struct loongarch_fpu *fpu) { }
->> +static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
->> +static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
->> +#endif
->> +
->>   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
->>   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
->>   void kvm_reset_timer(struct kvm_vcpu *vcpu);
->> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
->> index ce8de3fa47..1b1c58ccc8 100644
->> --- a/arch/loongarch/kvm/exit.c
->> +++ b/arch/loongarch/kvm/exit.c
->> @@ -659,6 +659,23 @@ static int kvm_handle_fpu_disabled(struct 
->> kvm_vcpu *vcpu)
->>       return RESUME_GUEST;
->>   }
->>   +/*
->> + * kvm_handle_lsx_disabled() - Guest used LSX while disabled in root.
->> + * @vcpu:      Virtual CPU context.
->> + *
->> + * Handle when the guest attempts to use LSX when it is disabled in 
->> the root
->> + * context.
->> + */
->> +static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
->> +{
->> +    if (!kvm_guest_has_lsx(&vcpu->arch))
->> +        kvm_queue_exception(vcpu, EXCCODE_INE, 0);
->> +    else
->> +        kvm_own_lsx(vcpu);
->> +
->> +    return RESUME_GUEST;
->> +}
->> +
->>   /*
->>    * LoongArch KVM callback handling for unimplemented guest exiting
->>    */
->> @@ -687,6 +704,7 @@ static exit_handle_fn 
->> kvm_fault_tables[EXCCODE_INT_START] = {
->>       [EXCCODE_TLBS]            = kvm_handle_write_fault,
->>       [EXCCODE_TLBM]            = kvm_handle_write_fault,
->>       [EXCCODE_FPDIS]            = kvm_handle_fpu_disabled,
->> +    [EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
->>       [EXCCODE_GSPR]            = kvm_handle_gspr,
->>   };
->>   diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
->> index 0ed9040307..32ba092a44 100644
->> --- a/arch/loongarch/kvm/switch.S
->> +++ b/arch/loongarch/kvm/switch.S
->> @@ -245,6 +245,28 @@ SYM_FUNC_START(kvm_restore_fpu)
->>       jr                 ra
->>   SYM_FUNC_END(kvm_restore_fpu)
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +SYM_FUNC_START(kvm_save_lsx)
->> +    fpu_save_csr    a0 t1
->> +    fpu_save_cc     a0 t1 t2
->> +    lsx_save_data   a0 t1
->> +    jirl            zero, ra, 0
-> "jr ra" for consistency (e.g. with the function immediately above); 
-> similarly for other such usages.
-Thanks, I will use "jr ra" there.
+... and
 
-Tianrui Zhao
->> +SYM_FUNC_END(kvm_save_lsx)
->> +
->> +SYM_FUNC_START(kvm_restore_lsx)
->> +    lsx_restore_data a0 t1
->> +    fpu_restore_cc   a0 t1 t2
->> +    fpu_restore_csr  a0 t1
->> +    jirl             zero, ra, 0
->> +SYM_FUNC_END(kvm_restore_lsx)
->> +
->> +SYM_FUNC_START(kvm_restore_lsx_upper)
->> +    lsx_restore_all_upper a0 t0 t1
->> +
->> +    jirl                  zero, ra, 0
->> +SYM_FUNC_END(kvm_restore_lsx_upper)
->> +#endif
->> +
->>       .section ".rodata"
->>   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
->>   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - 
->> kvm_enter_guest)
->> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
->> index a1e35d6554..7da4e230e8 100644
->> --- a/arch/loongarch/kvm/trace.h
->> +++ b/arch/loongarch/kvm/trace.h
->> @@ -102,6 +102,7 @@ TRACE_EVENT(kvm_exit_gspr,
->>   #define KVM_TRACE_AUX_DISCARD        4
->>     #define KVM_TRACE_AUX_FPU        1
->> +#define KVM_TRACE_AUX_LSX        2
->>     #define kvm_trace_symbol_aux_op                \
->>       { KVM_TRACE_AUX_SAVE,        "save" },    \
->> @@ -111,7 +112,8 @@ TRACE_EVENT(kvm_exit_gspr,
->>       { KVM_TRACE_AUX_DISCARD,    "discard" }
->>     #define kvm_trace_symbol_aux_state            \
->> -    { KVM_TRACE_AUX_FPU,     "FPU" }
->> +    { KVM_TRACE_AUX_FPU,     "FPU" },        \
->> +    { KVM_TRACE_AUX_LSX,     "LSX" }
->>     TRACE_EVENT(kvm_aux,
->>           TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
->> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
->> index 73d0c2b9c1..f0bb583353 100644
->> --- a/arch/loongarch/kvm/vcpu.c
->> +++ b/arch/loongarch/kvm/vcpu.c
->> @@ -378,9 +378,13 @@ static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
->>           break;
->>       case KVM_REG_LOONGARCH_CPUCFG:
->>           id = KVM_GET_IOC_CPUCFG_IDX(reg->id);
->> -        if (id >= 0 && id < KVM_MAX_CPUCFG_REGS)
->> +        if (id >= 0 && id < KVM_MAX_CPUCFG_REGS) {
->>               vcpu->arch.cpucfg[id] = (u32)v;
->> -        else
->> +            if (id == 2 && v & CPUCFG2_LSX && !cpu_has_lsx) {
->> +                vcpu->arch.cpucfg[id] &= ~CPUCFG2_LSX;
->> +                ret = -EINVAL;
->> +            }
->> +        } else
->>               ret = -EINVAL;
->>           break;
->>       case KVM_REG_LOONGARCH_KVM:
->> @@ -561,12 +565,49 @@ void kvm_own_fpu(struct kvm_vcpu *vcpu)
->>       preempt_enable();
->>   }
->>   +#ifdef CONFIG_CPU_HAS_LSX
->> +/* Enable LSX for guest and restore context */
->> +void kvm_own_lsx(struct kvm_vcpu *vcpu)
->> +{
->> +    preempt_disable();
->> +
->> +    /* Enable LSX for guest */
->> +    set_csr_euen(CSR_EUEN_LSXEN | CSR_EUEN_FPEN);
->> +    switch (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->> +    case KVM_LARCH_FPU:
->> +        /*
->> +         * Guest FPU state already loaded,
->> +         * only restore upper LSX state
->> +         */
->> +        kvm_restore_lsx_upper(&vcpu->arch.fpu);
->> +        break;
->> +    default:
->> +        /* Neither FP or LSX already active,
->> +         * restore full LSX state
->> +         */
->> +        kvm_restore_lsx(&vcpu->arch.fpu);
->> +    break;
->> +    }
->> +
->> +    trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LSX);
->> +    vcpu->arch.aux_inuse |= KVM_LARCH_LSX | KVM_LARCH_FPU;
->> +    preempt_enable();
->> +}
->> +#endif
->> +
->>   /* Save context and disable FPU */
->>   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
->>   {
->>       preempt_disable();
->>   -    if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->> +    if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
->> +        kvm_save_lsx(&vcpu->arch.fpu);
->> +        vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
->> +        trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
->> +
->> +        /* Disable LSX & FPU */
->> +        clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN);
->> +    } else if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->>           kvm_save_fpu(&vcpu->arch.fpu);
->>           vcpu->arch.aux_inuse &= ~KVM_LARCH_FPU;
->>           trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_FPU);
->
+4. Rename conflicting sysfs class color entry
 
+> In either way, we'd break user-space (sysfs).
+
+It still holds :)
+
+
+Takashi
