@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8E77F28F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FE17F28F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbjKUJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S233228AbjKUJ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjKUJ3c (ORCPT
+        with ESMTP id S232033AbjKUJ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 04:29:32 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4929123
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DFF122
         for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:29:24 -0800 (PST)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SZJrw6gJ3z1P8k5;
-        Tue, 21 Nov 2023 17:25:52 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SZJwT4GGSzvQwK;
+        Tue, 21 Nov 2023 17:28:57 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ CC:     <dietmar.eggemann@arm.com>, <gregkh@linuxfoundation.org>,
         <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
         <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
         <yangyicong@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/4] arch_topology: Support SMT control for OF based system
-Date:   Tue, 21 Nov 2023 17:26:00 +0800
-Message-ID: <20231121092602.47792-3-yangyicong@huawei.com>
+Subject: [PATCH v4 3/4] arm64: topology: Support SMT control on ACPI based system
+Date:   Tue, 21 Nov 2023 17:26:01 +0800
+Message-ID: <20231121092602.47792-4-yangyicong@huawei.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20231121092602.47792-1-yangyicong@huawei.com>
 References: <20231121092602.47792-1-yangyicong@huawei.com>
@@ -53,33 +53,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yicong Yang <yangyicong@hisilicon.com>
 
-On building the topology from the devicetree, we've already
-gotten the SMT thread number of each core. Update the largest
-SMT thread number to enable the SMT control.
+For ACPI we'll build the topology from PPTT and we cannot directly
+get the SMT number of each core. Instead using a temporary xarray
+to record the SMT number of each core when building the topology
+and we can know the largest SMT number in the system. Then we can
+notify the arch_topology for supporting SMT control.
 
 Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- drivers/base/arch_topology.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/kernel/topology.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 3ed6bdf9460e..252a436e0c1b 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -526,6 +526,13 @@ static int __init parse_core(struct device_node *core, int package_id,
- 		i++;
- 	} while (t);
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 817d788cd866..0dc360c32ec8 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -17,6 +17,7 @@
+ #include <linux/cpufreq.h>
+ #include <linux/init.h>
+ #include <linux/percpu.h>
++#include <linux/xarray.h>
  
-+	/*
-+	 * We've already gotten threads number in this core, update the SMT
-+	 * threads number when necessary.
-+	 */
-+	if (i > topology_smt_get_num_threads())
-+		topology_smt_set_num_threads(i);
+ #include <asm/cpu.h>
+ #include <asm/cputype.h>
+@@ -43,11 +44,16 @@ static bool __init acpi_cpu_is_threaded(int cpu)
+  */
+ int __init parse_acpi_topology(void)
+ {
++	int thread_num, max_smt_thread_num = 1;
++	struct xarray core_threads;
+ 	int cpu, topology_id;
++	void *entry;
+ 
+ 	if (acpi_disabled)
+ 		return 0;
+ 
++	xa_init(&core_threads);
 +
- 	cpu = get_cpu_for_node(core);
- 	if (cpu >= 0) {
- 		if (!leaf) {
+ 	for_each_possible_cpu(cpu) {
+ 		topology_id = find_acpi_cpu_topology(cpu, 0);
+ 		if (topology_id < 0)
+@@ -57,6 +63,20 @@ int __init parse_acpi_topology(void)
+ 			cpu_topology[cpu].thread_id = topology_id;
+ 			topology_id = find_acpi_cpu_topology(cpu, 1);
+ 			cpu_topology[cpu].core_id   = topology_id;
++
++			entry = xa_load(&core_threads, topology_id);
++			if (!entry) {
++				xa_store(&core_threads, topology_id,
++					 xa_mk_value(1), GFP_KERNEL);
++			} else {
++				thread_num = xa_to_value(entry);
++				thread_num++;
++				xa_store(&core_threads, topology_id,
++					 xa_mk_value(thread_num), GFP_KERNEL);
++
++				if (thread_num > max_smt_thread_num)
++					max_smt_thread_num = thread_num;
++			}
+ 		} else {
+ 			cpu_topology[cpu].thread_id  = -1;
+ 			cpu_topology[cpu].core_id    = topology_id;
+@@ -67,6 +87,9 @@ int __init parse_acpi_topology(void)
+ 		cpu_topology[cpu].package_id = topology_id;
+ 	}
+ 
++	topology_smt_set_num_threads(max_smt_thread_num);
++
++	xa_destroy(&core_threads);
+ 	return 0;
+ }
+ #endif
 -- 
 2.24.0
 
