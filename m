@@ -2,231 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91B87F2E67
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C90E7F2E6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbjKUNfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        id S234256AbjKUNf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbjKUNfH (ORCPT
+        with ESMTP id S229514AbjKUNfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:35:07 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524E2D52
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:35:02 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b6ce6fac81so3382901b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:35:02 -0800 (PST)
+        Tue, 21 Nov 2023 08:35:54 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DF191BC;
+        Tue, 21 Nov 2023 05:35:49 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-59b5484fbe6so58247757b3.1;
+        Tue, 21 Nov 2023 05:35:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700573701; x=1701178501; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6MY2K55T3AL113OT68/uR3JKQvn787TdJqWAGDdahms=;
-        b=2hJu6q6za6/4pGjs6xmaXJJYPjrt/2Gqy+y+RoAuJGR056hEOhG8uT1eYIjbv1gyDE
-         HTydjgSgqNWRjyLwp6xsvJ/qyGQFXpVnuwhLQYu+P8rZIzNKO1Zc7QOSnRTvfOhAqSuW
-         CLk+EZ8In/yy+1iqsCiFLE3wqPH0VmcA2MNHEXL4NyFF5pJmS4QT+dt27NlfIqedCQMe
-         GbmWOIai7F/8UfJNVlotkWDnXwTx5F+9QLEomwmN8IrDwuH+LbLpYouKoGgpazs9tIcz
-         SsHqFQlzRN2PJxqbYMFxqtltJwqjqtNpZ8Icl0CaE/Xrx4KpAXAKbWOx083D3/MGVukH
-         iX6Q==
+        d=gmail.com; s=20230601; t=1700573748; x=1701178548; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1bgJgAbUzXysVXnmrbWD/Bln1YuJzIlRZNnYx7qdOA=;
+        b=GpsCAZboO6YGBYOUOgz+KS6unTVVh58N2qaugm3gwnFsiHvqzlA2KRpPNhwjIWnXLW
+         JFMKsIHNZgO7DB7svu6gmsTcpWphB/RACdepAtp7gLhjQJcu1K4avXdIr15Giq/zf910
+         zqW0JygpM/SEjmwqqkuhJ5k+NmrPOlhqxVaOGWyX0k/VNFuSloSo5BHlDJmsiq7VFKlL
+         IiMAw5PFibbX4XCLopd/yIvT/wCgVpMStXc2v3T4E2jIKTa/4P4IkCcwNMx9xrCLsbu7
+         uYOYhZg2I03olFUAF/TXFgOLCKlaVxWI3zcuYpNUlkTuWnbHc2Cd5sYMmJa90KwzTavn
+         8cFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700573701; x=1701178501;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6MY2K55T3AL113OT68/uR3JKQvn787TdJqWAGDdahms=;
-        b=aLLlfii9NMe15pyu5ydLIB3m/n+6IkulC/mMtDApp5KVu+klCgV/51bXwat6j1Jo8S
-         hZJaEVvHX4gh3+5DiygGxe/aOx87rM/tEQ2zkmrq4WjfsJstY8vbNl6eB5uka0dHXFrR
-         uYzmvQk/nln3BWYfBPs8q3XZ9IfiU+NpxXpTyKgn5S3q0SDjJKSiaHFPSk/E/45qRPFn
-         xj3IADbjBQ3qkBgsqa+qA5ON9o9cCjn8r7aXxEBbRpokEASpAFlk79/hWczf2s4IfP4E
-         gtv2fCdOnBIPhXYoELu85qePDUyH1CRifRhhoG55Af3y59arqqgV9nm3Ml/S/NLEXoGL
-         HyIg==
-X-Gm-Message-State: AOJu0YyA4RNfvzUPTKtSl974VpQXR3UNrhObk0jHI+PcVXjBDIYr2Rc3
-        7yOvRv34cOcZ0Gg49g/cBef+MlHolJ6Q+rY/GssXhw==
-X-Google-Smtp-Source: AGHT+IEuq/4l2EC6hU2bhPDWBD2ljhmUiFZ11GWCSZCTRQCRWYQ7rzJQtdzSxl3Cj5iU8cAoMg8ryxpjUvZm+wUP9xA=
-X-Received: by 2002:a05:6358:52c2:b0:16b:ac0b:3b16 with SMTP id
- z2-20020a05635852c200b0016bac0b3b16mr14238339rwz.19.1700573701259; Tue, 21
- Nov 2023 05:35:01 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700573748; x=1701178548;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z1bgJgAbUzXysVXnmrbWD/Bln1YuJzIlRZNnYx7qdOA=;
+        b=X+g68FcgokBxlgAR9UaqBzEmLlm7Wb9eS3/gptaM23fgB4d4GqdRGTDFAGVC7KhLRz
+         F5g2Ots0ad8CdGfe0CDIEMZqzLhKpxABrblcAxHd9kHqtjIrE+XURjQg6WQAhaQ5pgEl
+         kIF0omFy7F33wP/MP2BdnDHqWiZPQT5x2brz02YZvnSFnI2l9/ckGkko4HYH8mk/7gDD
+         C4dq/qTSjpF1nxp+OU9xVU+592vLLAIClVHVg8cYq8nE/DlFFPrPh0mznw/L/ekcOK13
+         xnCSbaN8BHnaTjx7vfA4SisyTKfY3IHTKG0oe3USdAywqMIB/+pBt0HiAR039D4RtdiT
+         sCMA==
+X-Gm-Message-State: AOJu0YyRJUIgGGHHbK83Z691Q9O6BtBGxp+jmfs21FvlwA1fJ0lTed16
+        y0Vz+qUJbhFHfCwDKpznhfA=
+X-Google-Smtp-Source: AGHT+IEL90mHMqgVQ28KIc1rABP+1ecwT8HRZ7oWNV+r45XFFS8JiwR8yRPw1PcVuYOVV+JKu0LmBQ==
+X-Received: by 2002:a05:690c:b19:b0:5ca:d579:52f with SMTP id cj25-20020a05690c0b1900b005cad579052fmr5118531ywb.35.1700573748564;
+        Tue, 21 Nov 2023 05:35:48 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
+        by smtp.gmail.com with ESMTPSA id i78-20020a819151000000b005a7bf9749c8sm3013199ywg.4.2023.11.21.05.35.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 05:35:48 -0800 (PST)
+Date:   Tue, 21 Nov 2023 05:35:47 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH 13/34] KVM: x86: hyper-v: optimize and cleanup
+ kvm_hv_process_stimers()
+Message-ID: <ZVyyM4974UQtzoCX@yury-ThinkPad>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+ <20231118155105.25678-14-yury.norov@gmail.com>
+ <877cmcqz5r.fsf@redhat.com>
 MIME-Version: 1.0
-References: <CAMRc=MfvrqyAXYS0Q_ko9sYycnb-1n4Q+KjGUYBLig0BX9vDQA@mail.gmail.com>
- <CAGETcx8MNrLhoE8c0=VMc_bW0313zt+8B9w69ziYNV5ynkK8Gg@mail.gmail.com>
- <CAGETcx_fXa6Zt_gkTQKw8Wt11EmSt8ZQ6TxKi5P+5ii3EvwsdA@mail.gmail.com> <CAMRc=Mey2DR3_gv8q1WeeuxCuwwCVeb_StvPLTzFMJ2dgK44LA@mail.gmail.com>
-In-Reply-To: <CAMRc=Mey2DR3_gv8q1WeeuxCuwwCVeb_StvPLTzFMJ2dgK44LA@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 21 Nov 2023 14:34:50 +0100
-Message-ID: <CAMRc=MdmYpH7g9LQYPr-nKC3VK2-nEEd49nAB0TfSguew8GatA@mail.gmail.com>
-Subject: Re: Device links between providers and consumers
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877cmcqz5r.fsf@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:05=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> On Tue, Nov 21, 2023 at 5:53=E2=80=AFAM Saravana Kannan <saravanak@google=
-.com> wrote:
+On Mon, Nov 20, 2023 at 03:26:08PM +0100, Vitaly Kuznetsov wrote:
+> Yury Norov <yury.norov@gmail.com> writes:
+> 
+> > The function traverses stimer_pending_bitmap n a for-loop bit by bit.
+> > We can do it faster by using atomic find_and_set_bit().
 > >
-> > Hi Bartosz,
+> > While here, refactor the logic by decreasing indentation level
+> > and dropping 2nd check for stimer->config.enable.
 > >
-> > Adding LKML so that others are aware of what the issue is and it'll be
-> > easier when I get to my TODO patches and send them out. I'm hoping
-> > that's okay with you because we didn't discuss anything confidential
-> > here.
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > ---
+> >  arch/x86/kvm/hyperv.c | 39 +++++++++++++++++++--------------------
+> >  1 file changed, 19 insertions(+), 20 deletions(-)
 > >
->
-> That's alright, thanks for starting the public conversation.
->
-> > On Mon, Nov 20, 2023 at 2:21=E2=80=AFPM Saravana Kannan <saravanak@goog=
-le.com> wrote:
-> > >
-> > > On Mon, Nov 20, 2023 at 12:38=E2=80=AFPM Bartosz Golaszewski <brgl@bg=
-dev.pl> wrote:
-> > > >
-> > > > Hi Saravana,
-> > > >
-> > > > As I suspected, I couldn't observe the behavior you described durin=
-g
-> > > > our discussion at the LPC event. I have a DT GPIO provider and a
-> > > > consumer referencing it by phandle. I'm unbinding the provider and =
-the
-> > > > consumer keeps on living, if it tries to use the GPIO, then it will
-> > > > enter the regular code path in GPIO for checking if the provider is
-> > > > there or not.
-> > > >
-> > > > Could you point me in the right direction here?
-> > >
-> > > Thanks for trying it out! Based on the code it should unbind the
-> > > consumers. I haven't ever tried it myself (no need for it).
-> >
-> > I took a closer look to show you where the consumer unbind is supposed
-> > to be done, but in doing so I think I know what issue you are hitting.
-> > One of my TODO items for device links should fix your problem.
-> >
-> > The force unbinding of consumers when the supplier is unbound is
-> > supposed to happen here:
-> > device_driver_detach()
-> > -> device_release_driver_internal()
-> > -> __device_release_driver()
-> > -> device_links_unbind_consumers()
-> > -> for all "active" consumer -> device_release_driver_internal()
-> >
-> > However the problem is the "if (drv)" check in __device_release_driver(=
-).
-> >
-> > This problem also exists for "class" device suppliers that don't have
-> > a drv. Fixing managed device links for "class" suppliers (and now, bus
-> > suppliers without drv) has been in my TODO list for a while.
-> >
-> > The gpio device is one of the cases of a "bus" device probing without
-> > a driver. A while ago, I implemented a gpio_bus_match() that'll probe
-> > the gpio device (so consumer probing isn't blocked) and I was trying
-> > to keep the boilerplate code minimalistic. So, for your test case, a
-> > quick test hack would be to implement an actual stub driver instead of
-> > using a stub bus match. That should fix your problem with the
-> > consumers not unbinding. I'll put up a proper fix sometime soon
-> > (hopefully over the holiday lulls).
-> >
->
-> But I don't even see any code referring to device_link in
-> drivers/gpio/. I see that if you get a regulator, there is a link
-> created between the regulator device and the consumer device in
-> _regulator_get() but nothing like that in GPIO.
->
-> > Btw, when we were talking in person at the LPC dinner, you were asking
-> > "what would you do if the supplier was an optional supplier but you
-> > forcefully unbound the consumer?" I have a nice answer now:
-> >
->
-> Actually, my question was: "what if a resource is optional and the
-> provider of that resource gets unbound". But below you still did
-> answer this question. :)
->
-> > After a force unbind, we need to add all these consumers to the
-> > deferred probe list and trigger another deferred probe attempt. If the
-> > supplier was optional, the consumer would probe again. This also has
-> > the nice property that the consumer doesn't advertise something to
-> > userspace that it can't deliver (because the supplier has gone
-> > missing) and it makes the error handling easier for drivers. They
-> > don't have to worry about suppliers vanishing in every part of their
-> > code. Once they get the supplier and probe successfully, they
-> > shouldn't have to worry about it vanishing underneath them.
-> >
->
-> Let me rephrase it to see if I understand it:
->
-> 1. Provider is probed.
-> 2. Consumer is probed and gets the resource from provider.
-> 3. Provider is unbound.
-> 4. As a result, the consumer is unbound.
-> 5. Consumer is put into the deferred probe list.
-> 6. Consumer binds again to its driver but this time doesn't get the resou=
-rce.
->
-> It makes some sense I guess but then you have to deal with the device
-> disappearing for a brief moment in whatever code uses it so it's not
-> like it has no price over handling the provider unbind in consumers.
-> If you're exposing anything to user-space, you're offloading that
-> handling to it.
->
-> There are also two approaches to handling the providers unbinding:
-> returning an error from API calls vs returning 0 and doing nothing in
-> which case most of the consumer code can remain the same. This is what
-> GPIO does ATM.
->
-> > Cheers,
-> > Saravana
-> >
->
-> Is there a way for a driver to alter the behavior? For instance tell
-> the device core that it should not unbind it if the provider is
-> detached?
->
-> The behavior in general makes sense but it only applies to platform
-> devices on DT systems and has some corner-cases that would need to be
-> ironed out. What I proposed is more generic as it also covers
-> resources exposed to drivers or user-space from discoverable devices.
->
+> > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> > index 238afd7335e4..460e300b558b 100644
+> > --- a/arch/x86/kvm/hyperv.c
+> > +++ b/arch/x86/kvm/hyperv.c
+> > @@ -870,27 +870,26 @@ void kvm_hv_process_stimers(struct kvm_vcpu *vcpu)
+> >  	if (!hv_vcpu)
+> >  		return;
+> >  
+> > -	for (i = 0; i < ARRAY_SIZE(hv_vcpu->stimer); i++)
+> > -		if (test_and_clear_bit(i, hv_vcpu->stimer_pending_bitmap)) {
+> > -			stimer = &hv_vcpu->stimer[i];
+> > -			if (stimer->config.enable) {
+> > -				exp_time = stimer->exp_time;
+> > -
+> > -				if (exp_time) {
+> > -					time_now =
+> > -						get_time_ref_counter(vcpu->kvm);
+> > -					if (time_now >= exp_time)
+> > -						stimer_expiration(stimer);
+> > -				}
+> > -
+> > -				if ((stimer->config.enable) &&
+> > -				    stimer->count) {
+> > -					if (!stimer->msg_pending)
+> > -						stimer_start(stimer);
+> > -				} else
+> > -					stimer_cleanup(stimer);
+> > -			}
+> > +	for_each_test_and_clear_bit(i, hv_vcpu->stimer_pending_bitmap,
+> > +					ARRAY_SIZE(hv_vcpu->stimer)) {
+> > +		stimer = &hv_vcpu->stimer[i];
+> > +		if (!stimer->config.enable)
+> > +			continue;
+> > +
+> > +		exp_time = stimer->exp_time;
+> > +
+> > +		if (exp_time) {
+> > +			time_now = get_time_ref_counter(vcpu->kvm);
+> > +			if (time_now >= exp_time)
+> > +				stimer_expiration(stimer);
+> >  		}
+> > +
+> > +		if (stimer->count) {
+> 
+> You can't drop 'stimer->config.enable' check here as stimer_expiration()
+> call above actually changes it. This is done on purpose: oneshot timers
+> fire only once so 'config.enable' is reset to 0.
 
-Actually the two are largely orthogonal so can be developed independently.
-
-One more thing: the device link mechanism will never work for
-interrupts as the interrupt subsystem doesn't use struct device. Same
-for clk but that's less of a problem as they are rarely detachable.
-
-Bart
-
-> Bart
->
-> >
-> > >
-> > > Let's start with making sure the basic functionality is working in yo=
-ur case.
-> > >
-> > > Can you check /sys/class/devlink to see if you see a folder with the
-> > > following name?
-> > > <bus:supplier>--<bus:consumer>
-> > >
-> > > Once you find it, can you cat all the file contents and tell me what
-> > > it says before you unbind it?
-> > >
-> > > The "status" should be "available". And "sync_state_only" should be f=
-alse.
-> > >
-> > > Also, how are you unbinding the supplier? And does the board you are
-> > > playing with something that's upstream? Should we take this discussio=
-n
-> > > to LKML?
-> > >
-> > > -Saravana
+Ok, I see. Will fix in v2
