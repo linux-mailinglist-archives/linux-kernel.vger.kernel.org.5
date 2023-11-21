@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C527F3914
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE237F3917
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjKUWVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S229733AbjKUWXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUWU7 (ORCPT
+        with ESMTP id S229498AbjKUWXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:20:59 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE507113
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:20:55 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35b2144232bso3333985ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700605255; x=1701210055; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Z8WXu/fiJNNXFNteHhgEV4qN2i0FU5wTM5NTjIv1Ec=;
-        b=Rze1fUY5Jzt23UzDcdDj8R8XbFikSyPBT4kbZT5jL87HXwOoACdc8it/vZPso5TMK4
-         t9xZ8u9u/iQZuO2Sib/+5ecZ01OVOrjTpOjEB7Dpl6wvxib7HJEP5zjSjbiU5m653qzq
-         haXXQ3TZmbVNKZm7kBx33uBCzVSb6suDP3awUa/FGma5lSZW7BnQNfQOhe5/sireXGZV
-         xL1YO1GdHTkmHNv7d4uONJva0OturzW8aBfGCKy7T1PM7FN2YwvIHNsdI4vq14xhBanJ
-         Cki3v4mL+GyysPWha4wnoHLKBKOjjDEXWgqJ84eQoU35yLcS0Vp94PG9Klksn8sLFwBt
-         plHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700605255; x=1701210055;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Z8WXu/fiJNNXFNteHhgEV4qN2i0FU5wTM5NTjIv1Ec=;
-        b=nqFOLqWt9TrdUzdLUl3O9YswUb9en+a4patbhTIisLAdy9FP0ue5G40Og1SedoMB1D
-         Xkhw4OhT2C9grZA/370/50pD7G9dGgyheoMEWI3DA6QZ964f1zNNMSlqEMPbO41vYT6l
-         JcGNYoACwRB1DCokYo6kGDVBlw19pO20g2Sw3jLQZQEtYPDxOeLp8IpKwvYKyu3wALY4
-         pEgAmWZZ5rFRNFnkZZRapizoSsypUeZ8QxHjOzT/nsom26VCwAqKy/cQ+HPAlzTQBWLe
-         L1oUz0vDnuokvUdmW8alMZCKoOQ+eU8jjhqq6VDnSSeIQBlf4kFsemwgUAYG5UMbefGm
-         VsyQ==
-X-Gm-Message-State: AOJu0YwWQXhS8q4TZlfVihnwWz50XF1eLpa/zlkWlWlzDayMujfjlG6X
-        LsU69OU3MXL8XfY05PFGCzn+dI3JH6dwwHOl6AA=
-X-Google-Smtp-Source: AGHT+IHnEzmXNMqVmbAle3y5pw8fBSNlcSrzJYfQGkwCwmsEPf93tuSlpeOlgv47mg2chlhnMyjDeQ==
-X-Received: by 2002:a05:6e02:2146:b0:359:50f2:88b with SMTP id d6-20020a056e02214600b0035950f2088bmr407808ilv.11.1700605255051;
-        Tue, 21 Nov 2023 14:20:55 -0800 (PST)
-Received: from ?IPV6:2605:a601:adae:4500:9465:402f:4b0a:1116? ([2605:a601:adae:4500:9465:402f:4b0a:1116])
-        by smtp.gmail.com with ESMTPSA id bc23-20020a056e02009700b0035742971dd3sm3505623ilb.16.2023.11.21.14.20.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 14:20:54 -0800 (PST)
-Message-ID: <ddb9d0cb-5f78-4242-b431-878d0372884b@sifive.com>
-Date:   Tue, 21 Nov 2023 16:20:54 -0600
+        Tue, 21 Nov 2023 17:23:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF0C113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:23:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4497AC433C8;
+        Tue, 21 Nov 2023 22:23:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700605407;
+        bh=yDGhoyYN7O13RtyxLMKEk9K+AYdzCA8ZJvlLQmLrGa8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=U81xuoRrfse1IXY4EQDKJ7urwN00Qj6C/nWIBsLpw70KefSTQmfjc2ssfyoZC7zAN
+         1z+fyiLg2uKB/E2nuXSxDc6x2h293eBsBG2YS3+0xt45PLEMtYGG7bQLfH9SxiJh7z
+         Zd5awGMCZu1h7N6NPzzE8rCoaGPAMEF2jYuFgQU5jajSFDDUCU36OmWUUw2apk+36+
+         ujLVgzd6G779e9cbuoN4lagSOPrxnSi6jjDq3ChhehPyQDPQoFvIzwU5z6c05pGB8E
+         2P9KAYq6JPB0e5b5zh0DXGJUl/9x5bRtQY5Yv11A7DgyRrq5cdXKGjPDbIf0yYRHMR
+         Xho78yQ44vR9A==
+Date:   Tue, 21 Nov 2023 16:23:25 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+Cc:     ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, skinsburskii@gmail.com
+Subject: Re: [PATCH] PCI: mediatek: Fix sparse warning caused to
+ virt_to_phys() prototype change
+Message-ID: <20231121222325.GA260057@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: select ARCH_HAS_FAST_MULTIPLIER
-Content-Language: en-US
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231121144340.3492-1-jszhang@kernel.org>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231121144340.3492-1-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121220556.GA21969@skinsburskii.>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,40 +53,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 8:43 AM, Jisheng Zhang wrote:
-> Currently, riscv linux requires at least IMA, so all platforms have a
-> multiplier. And I assume the 'mul' efficiency is comparable or better
-> than a sequence of five or so register-dependent arithmetic
-> instructions. Select ARCH_HAS_FAST_MULTIPLIER to get slightly nicer
-> codegen. Refer to commit f9b4192923fa ("[PATCH] bitops: hweight()
-> speedup") for more details.
+On Tue, Nov 21, 2023 at 02:05:56PM -0800, Stanislav Kinsburskii wrote:
+> On Tue, Nov 21, 2023 at 03:37:55PM -0600, Bjorn Helgaas wrote:
+> > On Mon, Nov 20, 2023 at 03:40:33PM -0800, Stanislav Kinsburskii wrote:
+> > > Explicitly cast __iomem pointer to const void* with __force to fix the
+> > > following warning:
+> > > 
+> > >   warning: incorrect type in argument 1 (different address spaces)
+> > >      expected void const volatile *address
+> > >      got void [noderef] __iomem *
+> > 
+> > I have two questions about this:
+> > 
+> >   1) There's no other use of __force in drivers/pci, so I don't know
+> >   what's special about pcie-mediatek.c.  There should be a way to fix
+> >   the types so it's not needed.
 > 
-> In a simple benchmark test calling hweight64() in a loop, it got:
-> about 14% preformance improvement on JH7110, tested on Milkv Mars.
-
-typo: performance
-
-> about 23% performance improvement on TH1520 and SG2042, tested on
-> Sipeed LPI4A and SG2042 platform.
+> __force suppreses the following sparse warning:
 > 
-> a slight performance drop on CV1800B, tested on milkv duo. Among all
-> riscv platforms in my hands, this is the only one which sees a slight
-> performance drop. It means the 'mul' isn't quick enough. However, the
-> situation exists on x86 too, for example, P4 doesn't have fast
-> integer multiplies as said in the above commit, x86 also selects
-> ARCH_HAS_FAST_MULTIPLIER. So let's select ARCH_HAS_FAST_MULTIPLIER
-> which can benefit almost riscv platforms.
+>     warning: cast removes address space '__iomem' of expression
 
-On Unmatched: 20% speedup for __sw_hweight32 and 30% speedup for __sw_hweight64.
-On D1: 8% speedup for __sw_hweight32 and 8% slowdown for __sw_hweight64.
+I'm suggesting that the cast is a band-aid that covers up a type
+mismatch, and there shouldn't be a mismatch in the first place.
 
-So overall still an improvement.
+> >   2) virt_to_phys() is not quite right to begin with because what we
+> >   want is a *bus* address, not the CPU physical address we get from
+> >   virt_to_phys().  Obviously the current platforms that use this must
+> >   not apply any offset between bus and CPU physical addresses, but
+> >   it's not something we should rely on.
+> > 
+> >   There are only three drivers (pci-aardvark.c, pcie-xilinx.c, and
+> >   this one) that use virt_to_phys(), and they're all slightly wrong
+> >   here.
+> > 
+> > The *_compose_msi_msg() methods could use a little more consistency
+> > across the board.
+> 
+> Could you elaborate on what do you suggest?
+> Should virt_to_phys() be simply removed?
 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+The DMA API (Documentation/core-api/dma-api.rst) is the usual way to
+get bus addresses, since an MSI is basically a DMA on the PCI bus.
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Tested-by: Samuel Holland <samuel.holland@sifive.com>
+https://lore.kernel.org/linux-pci/20230914203146.GA77870@bhelgaas/
 
+Nobody is very motivated to fix these, I guess ;)  I sort of hate to
+just throw in a cast to shut up the warning because it doesn't really
+solve the problem.
+
+> > > Signed-off-by: Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+> > > ---
+> > >  drivers/pci/controller/pcie-mediatek.c |    4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pcie-mediatek.c b/drivers/pci/controller/pcie-mediatek.c
+> > > index 66a8f73296fc..27f0f79810a1 100644
+> > > --- a/drivers/pci/controller/pcie-mediatek.c
+> > > +++ b/drivers/pci/controller/pcie-mediatek.c
+> > > @@ -397,7 +397,7 @@ static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+> > >  	phys_addr_t addr;
+> > >  
+> > >  	/* MT2712/MT7622 only support 32-bit MSI addresses */
+> > > -	addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
+> > > +	addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
+> > >  	msg->address_hi = 0;
+> > >  	msg->address_lo = lower_32_bits(addr);
+> > >  
+> > > @@ -520,7 +520,7 @@ static void mtk_pcie_enable_msi(struct mtk_pcie_port *port)
+> > >  	u32 val;
+> > >  	phys_addr_t msg_addr;
+> > >  
+> > > -	msg_addr = virt_to_phys(port->base + PCIE_MSI_VECTOR);
+> > > +	msg_addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
+> > >  	val = lower_32_bits(msg_addr);
+> > >  	writel(val, port->base + PCIE_IMSI_ADDR);
