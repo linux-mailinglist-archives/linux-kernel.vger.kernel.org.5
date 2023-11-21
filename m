@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9538C7F32FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8AD7F3308
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbjKUQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41242 "EHLO
+        id S234847AbjKUQB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234855AbjKUQAA (ORCPT
+        with ESMTP id S234507AbjKUQB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:00:00 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98561AA;
-        Tue, 21 Nov 2023 07:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1700582394;
-        bh=JmZEJf5RAneAxfKkhrBenzkWIsFalBZLR+8PE1XQg7g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PJG2hlpytqC9RlLooQ1aDWebO4kuIGaVMyp0oIIq+80TqrSaTtSN1zlDjDrSEILL6
-         gU4ff5QwK08MqH7DWPr7x0dCap5zPI1h6qCwPGXku1E2F1oeTgjPbY0LRPTzU1H4ks
-         MDRVTN3oFBKLEA7HaPCNqxTmQFHbJkWp96r9Dy0olReM2f3dK5iGae3EM2ygzlbK60
-         3chDYLSJvcKTmDPPZJtk4VGX6me9oriIzTzpTLVyKQz/24W/7JmFPBSgC6/32f0qzq
-         +k12r35XGo+wKbxppocMVfys5fm+UYr0SYU6S5hUMRdiBJP6JRgnUlTYPMxLeZSmtL
-         9CaymuEZD5YwA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZTbZ2wrQz1cv5;
-        Tue, 21 Nov 2023 10:59:54 -0500 (EST)
-Message-ID: <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
-Date:   Tue, 21 Nov 2023 11:00:13 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tue, 21 Nov 2023 11:01:28 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2704E139;
+        Tue, 21 Nov 2023 08:01:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=aZVSbYQtEsrPqaqCsxCo31rNgSiygRJ3cLDc3knYFXU=; b=bl/aQJrfTUHDANhv3Dm5Ml7ZlX
+        okOdikl4AvtMqEPCYzdztmNsTVsVk54SMW+rRWhtfEdvZIL45Bq24Hiq59b/Sdqw/RhiBP96bZzgr
+        A4kORTZ2Boqv7A76JCAy1UhWdqd0PYSbFYBy8O1c0KYzzbRX6IJRtyCjZZPIY4IshspA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r5TBF-000m1v-SN; Tue, 21 Nov 2023 17:00:53 +0100
+Date:   Tue, 21 Nov 2023 17:00:53 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     davem@davemloft.net, edumazet@google.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, alexandre.torgue@foss.st.com,
+        peppe.cavallaro@st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, avifishman70@gmail.com,
+        tali.perry1@gmail.com, joel@jms.id.au, andrew@codeconstruct.com.au,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-References: <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
- <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
- <20231121155256.GN4779@noisy.programming.kicks-ass.net>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
+Message-ID: <6aeb28f5-04c2-4723-9da2-d168025c307c@lunn.ch>
+References: <20231121151733.2015384-1-tmaimon77@gmail.com>
+ <20231121151733.2015384-3-tmaimon77@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121151733.2015384-3-tmaimon77@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,64 +58,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 10:52, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
-> 
->> Why is this such a hard question?
-> 
-> Anyway, recapping from IRC:
-> 
-> preemptible, SRCU:
->    counter-array based, GP advances by increasing array index
->    and waiting for previous index to drop to 0.
-> 
->    notably, a GP can pass while a task is preempted but not within a
->    critical section.
-> 
->    SRCU has smp_mb() in the critical sections to improve GP.
+> +void npcm_dwmac_pcs_init(struct npcm_dwmac *dwmac, struct device *dev,
+> +			 struct plat_stmmacenet_data *plat_dat)
+> +{
+> +	u16 val;
+> +
+> +	iowrite16((u16)(SR_MII_CTRL >> 9), dwmac->reg + IND_AC_BA_REG);
+> +	val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
+> +	val |= PCS_RST;
+> +	iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
+> +
+> +	while (val & PCS_RST)
+> +		val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
+> +
+> +	val &= ~(PCS_AN_ENABLE);
+> +	iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
+> +}
 
-Also:
+Is this a licensed PCS implementation? Or home grown? If its been
+licensed from somebody, it maybe should live in driver/net/pcs, so
+others can reuse it when they license the same core.
 
-preemptible only allows blocking when priority inheritance is
-guarantees, which excludes doing I/O, and thus page faults.
-Otherwise a long I/O could cause the system to OOM.
-
-SRCU allows all kind of blocking, as long as the entire SRCU
-domain does not mind waiting for a while before readers complete.
-
-> 
-> tasks:
->    waits for every task to pass schedule()
-> 
->    ensures that any pieces of text rendered unreachable before, is
->    actually unused after.
-> 
-> tasks-rude:
->    like tasks, but different? build to handle tracing while rcu-idle,
->    even though that was already deemed bad?
-> 
-> tasks-tracing-rcu:
->    extention of tasks to have critical-sections ? Should this simply be
->    tasks?
-
-tasks-trace-rcu is meant to allow tasks to block/take a page fault 
-within the read-side. It is specialized for tracing and has a single 
-domain. It does not need the smp_mb on the read-side, which makes it 
-lower-overhead than SRCU.
-
-Thanks,
-
-Mathieu
-
-> 
-> 
-> Can someone complete, please?
-> 
-> 
-> 
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+       Andrew
