@@ -2,174 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408C67F356F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFDB7F356C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbjKUSAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:00:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
+        id S233972AbjKUR6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:58:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjKUSAC (ORCPT
+        with ESMTP id S231236AbjKUR6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:00:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3392197;
-        Tue, 21 Nov 2023 09:59:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700589598; x=1732125598;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HajNcANzS8KHjONWzavIj/4wpkVTaBzXzzIAQEqc5MU=;
-  b=aXPgOJI0oC7xUaDkTkvb2wElPOfZPZkKJT1NXRRaIAEYXsv9wW9PVEQF
-   8npqSnSWtFmOSgwzH2KhaNHEQ1U/T4Ix2MMC3zid/hwskNjU1iPI9S3k0
-   s5N0zXj2oKu9R8WqfM89VCwBJyKuILvWshECuE8yOCCU1asLxUhwECszm
-   u7zwhMhP8z662Ad/J7cpEN1X041aQbTF583B3g0L9brJ2B/1vD9jauCJZ
-   FQ6GWz45L7ijePon+X5DWjD/0MuywUqo7lcGrnEjLPfgHLsnx2YMADLL+
-   fgO2gHpMoijDfincr7srDxydyzlsbbMS+CBf0rXrQmG080eQdUzq4Av9p
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="422990035"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="422990035"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 09:59:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="760171994"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="760171994"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 21 Nov 2023 09:59:53 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5V2E-00086K-00;
-        Tue, 21 Nov 2023 17:59:45 +0000
-Date:   Wed, 22 Nov 2023 01:58:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jingbao Qiu <qiujingbao.dlmu@gmail.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
-        chao.wei@sophgo.com, unicorn_wang@outlook.com, conor+dt@kernel.org,
-        robh+dt@kernel.org, conor@kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     oe-kbuild-all@lists.linux.dev, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B
- SoC
-Message-ID: <202311220129.aOYelwJQ-lkp@intel.com>
-References: <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
+        Tue, 21 Nov 2023 12:58:35 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680F218C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:58:31 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6cd09663b1cso3847082a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:58:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700589510; x=1701194310; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=77qERLs0OaQrBVtVqKqY8REeDJgJr05nxeZrsBFakuY=;
+        b=C/ZEMiJFlpYDHxuW1leUupyS6vNzdkfSumXePhGeFDhDCLK1cdurDgDjkbAhPXNUdR
+         qkMPqpti0sv8HqkMMkuHCSYzgNvFI0Ov90tBF4Nv6cg5+5OqPKZXvlTRuq9K+WbzYN5k
+         WMvrVAd5hyRH07yloQ5Oy095mdEMhN2JY5mXdGF9lG4G9LABX5tSNMEsaz38TfU7Sh9J
+         5cbpvt0c92/hkvgReLQ9ijmal1MfBpcJEVdZP89dgqYwOHpNzxNhrva/oCM8Zk9zYnoO
+         zBoqtlosoI7ovoSMcVOjXLZNV6ag4AhMV/oE/HzcRuLUAhMhWr7Th3SZ2Dqq+Mst6+wy
+         +q7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700589510; x=1701194310;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=77qERLs0OaQrBVtVqKqY8REeDJgJr05nxeZrsBFakuY=;
+        b=QL1gOd853WRWZnzgRDcTCcAuiDzSj2mAHpTnxIJyESFsYSC2CTz+QFWF4WeVACHZ/O
+         eFvzq6d4fTzrv1bSaZacYadXw0SwhgK+beeTvZOQBOU6En7WEpyiUyPyFuAdJLeE3FKN
+         PR0C9jL2mcVASRzotg0Fa98G5JPbYTP1h188TzVyQ09rtTZtbKCS2mU+PD6MNB1zjnIq
+         CI7GZVxCzQ1iR/r7cW+EjifJPWk73exrTX9ggxFqxgMZRk925DGyxuLpxBbd22wijVTb
+         hGJr8FkoYO48LNo5fcTzOzBbHXAdhDjDyUgZK9yVmBkXHzey8FAJGnvEWaqmVo415gIL
+         z+kQ==
+X-Gm-Message-State: AOJu0YymljmHRiMqHDIFJeKqZ7qktivfoQZHwt25wy0hk6HGlQ6plJVT
+        0suK0ve6XEehZPy1r1piG/CESg==
+X-Google-Smtp-Source: AGHT+IH2kHEJhg1L+w3IKpHNOng3FayS3H19pAQ9FtKcBKGQIPjhcoraxZrC/R/qsT/fQHVTmFyF/Q==
+X-Received: by 2002:a05:6870:46a9:b0:1e9:b0fa:de48 with SMTP id a41-20020a05687046a900b001e9b0fade48mr7101338oap.47.1700589510707;
+        Tue, 21 Nov 2023 09:58:30 -0800 (PST)
+Received: from [172.20.7.39] ([187.217.227.247])
+        by smtp.gmail.com with ESMTPSA id j25-20020a9d7699000000b006b74bea76c0sm1648610otl.47.2023.11.21.09.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 09:58:30 -0800 (PST)
+Message-ID: <885063ee-b0da-42cc-b836-da2117d4d3aa@linaro.org>
+Date:   Tue, 21 Nov 2023 11:58:27 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 17/17] tty: srmcons: make 'str_cr' const and non-array
+Content-Language: en-US
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+References: <20231121092258.9334-1-jirislaby@kernel.org>
+ <20231121092258.9334-18-jirislaby@kernel.org>
+From:   Richard Henderson <richard.henderson@linaro.org>
+In-Reply-To: <20231121092258.9334-18-jirislaby@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingbao,
+On 11/21/23 03:22, Jiri Slaby (SUSE) wrote:
+> 'str_cr' contains a single character: \n. There is no need to declare it
+> as array. Declare it as a variable, make it const and pass a pointer to
+> it to callback_puts().
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Richard Henderson <richard.henderson@linaro.org>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: linux-alpha@vger.kernel.org
+> ---
+>   arch/alpha/kernel/srmcons.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/alpha/kernel/srmcons.c b/arch/alpha/kernel/srmcons.c
+> index c6b821afbfd3..a6cff61706b5 100644
+> --- a/arch/alpha/kernel/srmcons.c
+> +++ b/arch/alpha/kernel/srmcons.c
+> @@ -91,7 +91,7 @@ srmcons_receive_chars(struct timer_list *t)
+>   static void
+>   srmcons_do_write(struct tty_port *port, const char *buf, int count)
+>   {
+> -	static char str_cr[1] = "\r";
+> +	static const char str_cr = '\r';
 
-kernel test robot noticed the following build errors:
+Best to remove this entirely...
 
-[auto build test ERROR on abelloni/rtc-next]
-[also build test ERROR on linus/master v6.7-rc2 next-20231121]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>   	size_t c;
+>   	srmcons_result result;
+>   
+> @@ -119,7 +119,7 @@ srmcons_do_write(struct tty_port *port, const char *buf, int count)
+>   		}
+>   
+>   		while (need_cr) {
+> -			result.as_long = callback_puts(0, str_cr, 1);
+> +			result.as_long = callback_puts(0, &str_cr, 1);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jingbao-Qiu/dt-bindings-rtc-add-binding-for-Sophgo-CV1800B-rtc-controller/20231121-174927
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-patch link:    https://lore.kernel.org/r/20231121094642.2973795-3-qiujingbao.dlmu%40gmail.com
-patch subject: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B SoC
-config: parisc-allmodconfig (https://download.01.org/0day-ci/archive/20231122/202311220129.aOYelwJQ-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220129.aOYelwJQ-lkp@intel.com/reproduce)
+... and simply use "\r" here.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311220129.aOYelwJQ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/rtc/rtc-cv1800b.c: In function 'cv1800b_rtc_probe':
->> drivers/rtc/rtc-cv1800b.c:246:16: error: implicit declaration of function 'rtc_register_device'; did you mean 'devm_rtc_register_device'? [-Werror=implicit-function-declaration]
-     246 |         return rtc_register_device(rtc->rtc_dev);
-         |                ^~~~~~~~~~~~~~~~~~~
-         |                devm_rtc_register_device
-   cc1: some warnings being treated as errors
+Logically it adds one '\0' of const data, but it is virtually certain that even more bytes 
+of padding are present anyway.  As a string literal it will be placed into .rodata.str1.1 
+and packed with other strings.
 
 
-vim +246 drivers/rtc/rtc-cv1800b.c
-
-   189	
-   190	static int cv1800b_rtc_probe(struct platform_device *pdev)
-   191	{
-   192		struct cv1800b_rtc_priv *rtc;
-   193		struct resource *res;
-   194		int ret;
-   195	
-   196		rtc = devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
-   197		if (!rtc)
-   198			return -ENOMEM;
-   199	
-   200		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-   201		if (!res) {
-   202			ret = -ENODEV;
-   203			goto err;
-   204		}
-   205	
-   206		rtc->core_map = devm_ioremap_resource(&pdev->dev, res);
-   207		if (IS_ERR(rtc->core_map)) {
-   208			ret = PTR_ERR(rtc->core_map);
-   209			goto err;
-   210		}
-   211	
-   212		rtc->irq = platform_get_irq(pdev, 0);
-   213		platform_set_drvdata(pdev, rtc);
-   214		if (rtc->irq < 0) {
-   215			ret = -EINVAL;
-   216			goto err;
-   217		}
-   218	
-   219		ret =
-   220		    devm_request_irq(&pdev->dev, rtc->irq, cv1800b_rtc_irq_handler,
-   221				     IRQF_SHARED, "rtc alarm", &pdev->dev);
-   222		if (ret)
-   223			goto err;
-   224	
-   225		rtc->clk = devm_clk_get(&pdev->dev, NULL);
-   226		if (IS_ERR(rtc->clk)) {
-   227			dev_err(&pdev->dev, "no clock");
-   228			ret = PTR_ERR(rtc->clk);
-   229			goto err;
-   230		}
-   231		ret = clk_prepare_enable(rtc->clk);
-   232		if (ret)
-   233			goto err;
-   234		ret = cv1800b_rtc_softinit(rtc);
-   235		if (ret)
-   236			goto err;
-   237		cv1800b_rtc_alarm_irq_enable(&pdev->dev, 1);
-   238		rtc->rtc_dev = devm_rtc_allocate_device(&pdev->dev);
-   239		if (IS_ERR(rtc->rtc_dev)) {
-   240			ret = PTR_ERR(rtc->rtc_dev);
-   241			goto err;
-   242		}
-   243		rtc->rtc_dev->range_max = U32_MAX;
-   244		rtc->rtc_dev->ops = &cv800b_rtc_ops;
-   245	
- > 246		return rtc_register_device(rtc->rtc_dev);
-   247	err:
-   248		return dev_err_probe(&pdev->dev, ret, "Failed to init cv1800b rtc\n");
-   249	}
-   250	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+r~
