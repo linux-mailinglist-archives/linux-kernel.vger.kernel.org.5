@@ -2,152 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D292F7F34B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802317F34B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbjKURQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S233952AbjKURQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKURQF (ORCPT
+        with ESMTP id S230182AbjKURQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:16:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B2418C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:16:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B39A2C433CD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:16:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700586961;
-        bh=C2o6Du8XtSWYB4gbq77qkTzMSqsl//9Xx/hGvIH9cJI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dPoMeaIf6+HEqOv8P3GDpkfza+aXvuy1cRAG5921pE3EusZ0JkMjwnWq8VAUKmOMK
-         e72/S/zdceQ5tzVOCGvzjxiVix2nLbvB68AcxodbYt7J8ojHV/idr73o2K7EMFfPH9
-         GAtu+lsOVzWKtjFQENnDEL8ND9ftKIvgBIYKH/w1EkBcKAcHNEqqpOFp1hbskBjcZD
-         dKrU882xe1tLnQeH2JABE7GfdW7FiOF24EESLVKLOK9l2BlDKYmB5wf/rOUZfBPvj/
-         Uhh7ehd3eMTPLEZxOKjKrBFfqSSXcp9F4c7y4s+l7f4OtWhIXGhO+uZo5BmWdNY81W
-         MAOJN201ViAiA==
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-28035cf6a30so4538220a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:16:01 -0800 (PST)
-X-Gm-Message-State: AOJu0YyEZQO78vJwoT3cJFl5jHE7tTMChr6jUkAz0w+lggRw0JBmOSAQ
-        ajT+1TP/bo2+8dqJPdplIkqnAA/14doB1LuBRe2vFg==
-X-Google-Smtp-Source: AGHT+IH/Jim9Fey3EiHvbDawPJNw5h8OgyvTVFblOywnUJCMzMkU4OccUtDTcvFWeAi5rp7XQT0XwSIcyW5EU5b2f98=
-X-Received: by 2002:a17:90b:3b4b:b0:280:2823:6612 with SMTP id
- ot11-20020a17090b3b4b00b0028028236612mr8785203pjb.35.1700586961111; Tue, 21
- Nov 2023 09:16:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-16-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-16-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 09:15:50 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
-Message-ID: <CAF8kJuM3Czmr1Up9mYGK9k9HH8r0CHkXvZ8rWyqniM4vtExF+Q@mail.gmail.com>
-Subject: Re: [PATCH 15/24] mm/swap: avoid an duplicated swap cache lookup for
- SYNCHRONOUS_IO device
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+        Tue, 21 Nov 2023 12:16:52 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3BD12A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:16:48 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-daa2684f67eso4544673276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700587007; x=1701191807; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jM7XBxZIdIQFnI3Em7K4YQrm7oT5I43ipyduUgFQ+MA=;
+        b=GVh17TNWuas6TS28Ma3ChKSsOyji8jaRRYtlv86hNS7C4EMKLiaMj9rcAnRMVp/nMj
+         BH4NbQymzT5qwevhhalLVNGTZ4ah7I0Yyyft24YCpaINzi7TNUqdABxtfUD+AEbBH3CN
+         4jS4BDgeaq9r1GrHjxp8y9ze+9pBnVJz6lD6Fv7s7CXKYpG+nXd6k3NVjJYW2iq+uwqh
+         Yo3XLnK6XoD+71T/HHdbCGIommIzS1mbZePoxguUMmqKeQReTTl6J0RPG77/pNgekKG+
+         fDAvbPjnihsHvJdhWRzbu3/ss06aV9mUGuWhXG7kLQqvL4pV9FWYdkGAodHqGx4u5EPe
+         vDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700587007; x=1701191807;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jM7XBxZIdIQFnI3Em7K4YQrm7oT5I43ipyduUgFQ+MA=;
+        b=Hq1dE3GfKk4NYn48C+9y4NZsqjUlB4kSVX9mQrzoG4jXDOVsvo+qhctWPy2It9u0ud
+         MtwdETlKXWFL5AFDJ7YjOms5IW5uytXPud4IncgYvRMTsdM1HDkrnFSL3l/bL6B3Klsu
+         z0EeOLJC5PJiHxEoOacD7k0h9zsAYqDWrzgDD1wxpTgGkk7COM59Grg00PLQFhrCsA9j
+         p69J+ZIxOrSlBNdS1H/wjA6i/lPGuOlaBN9FkFkyP3o1142KCA96NX3Lg0vPuJCk5WDR
+         fqdXzPeV+c3FPRn8D0mIk26OPvIGfa9e0H0T7dcm0QTzVeInlqS4NbeRFp0urAfYb4Lw
+         WGZQ==
+X-Gm-Message-State: AOJu0YwEofPBNDQUP5/LnJ2wEKSyH/HFIqVf4QLyHyTMqtXYIJ9RN/f5
+        mCVhGvSN7cddchSN0eGOTKCFWihuLAg=
+X-Google-Smtp-Source: AGHT+IFqboCvwPHQtX7cCJPOYR6+OPn7Jj/tG7no88TpQkFNSfK4t9ha8o0yTwTy7v2M2vtmHrTy83rrpPo=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:2045:f6d2:f01d:3fff])
+ (user=surenb job=sendgmr) by 2002:a25:4a44:0:b0:d89:42d7:e72d with SMTP id
+ x65-20020a254a44000000b00d8942d7e72dmr88654yba.3.1700587007306; Tue, 21 Nov
+ 2023 09:16:47 -0800 (PST)
+Date:   Tue, 21 Nov 2023 09:16:33 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231121171643.3719880-1-surenb@google.com>
+Subject: [PATCH v5 0/5] userfaultfd move option
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        david@redhat.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, jannh@google.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, surenb@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> When a xa_value is returned by the cache lookup, keep it to be used
-> later for workingset refault check instead of doing the looking up again
-> in swapin_no_readahead.
->
-> This does have a side effect of making swapoff also triggers workingset
-> check, but should be fine since swapoff does effect the workload in many
-> ways already.
+This patch series introduces UFFDIO_MOVE feature to userfaultfd, which
+has long been implemented and maintained by Andrea in his local tree [1],
+but was not upstreamed due to lack of use cases where this approach would
+be better than allocating a new page and copying the contents. Previous
+upstraming attempts could be found at [6] and [7].
 
-I need to sleep on it a bit to see if this will create another problem or n=
-ot.
+UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
+needs pages to be allocated [2]. However, with UFFDIO_MOVE, if pages are
+available (in userspace) for recycling, as is usually the case in heap
+compaction algorithms, then we can avoid the page allocation and memcpy
+(done by UFFDIO_COPY). Also, since the pages are recycled in the
+userspace, we avoid the need to release (via madvise) the pages back to
+the kernel [3].
+We see over 40% reduction (on a Google pixel 6 device) in the compacting
+thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This=
+ was
+measured using a benchmark that emulates a heap compaction implementation
+using userfaultfd (to allow concurrent accesses by application threads).
+More details of the usecase are explained in [3].
 
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/swap_state.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index e057c79fb06f..51de2a0412df 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -872,7 +872,6 @@ static struct page *swapin_no_readahead(swp_entry_t e=
-ntry, gfp_t gfp_mask,
->  {
->         struct folio *folio;
->         struct page *page;
-> -       void *shadow =3D NULL;
->
->         page =3D alloc_pages_mpol(gfp_mask, 0, mpol, ilx, numa_node_id())=
-;
->         folio =3D (struct folio *)page;
-> @@ -888,10 +887,6 @@ static struct page *swapin_no_readahead(swp_entry_t =
-entry, gfp_t gfp_mask,
->
->                 mem_cgroup_swapin_uncharge_swap(entry);
->
-> -               shadow =3D get_shadow_from_swap_cache(entry);
-> -               if (shadow)
-> -                       workingset_refault(folio, shadow);
-> -
->                 folio_add_lru(folio);
->
->                 /* To provide entry to swap_readpage() */
-> @@ -922,11 +917,12 @@ struct page *swapin_readahead(swp_entry_t entry, gf=
-p_t gfp_mask,
->         enum swap_cache_result cache_result;
->         struct swap_info_struct *si;
->         struct mempolicy *mpol;
-> +       void *shadow =3D NULL;
->         struct folio *folio;
->         struct page *page;
->         pgoff_t ilx;
->
-> -       folio =3D swap_cache_get_folio(entry, vmf, NULL);
-> +       folio =3D swap_cache_get_folio(entry, vmf, &shadow);
->         if (folio) {
->                 page =3D folio_file_page(folio, swp_offset(entry));
->                 cache_result =3D SWAP_CACHE_HIT;
-> @@ -938,6 +934,8 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_=
-t gfp_mask,
->         if (swap_use_no_readahead(si, swp_offset(entry))) {
->                 page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx, =
-vmf->vma->vm_mm);
->                 cache_result =3D SWAP_CACHE_BYPASS;
-> +               if (shadow)
-> +                       workingset_refault(page_folio(page), shadow);
+Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
+touching them within the same vma. Today, it can only be done by mremap,
+however it forces splitting the vma.
 
-It is inconsistent why other flavors of readahead do not do the
-workingset_refault here.
-I suggest keeping the workingset_refault in swapin_no_readahead() and
-pass the shadow argument in.
 
-Chris
+TODOs for follow-up improvements:
+- cross-mm support. Known differences from single-mm and missing pieces:
+	- memcg recharging (might need to isolate pages in the process)
+	- mm counters
+	- cross-mm deposit table moves
+	- cross-mm test
+	- document the address space where src and dest reside in struct
+	  uffdio_move
 
->         } else if (swap_use_vma_readahead(si)) {
->                 page =3D swap_vma_readahead(entry, gfp_mask, mpol, ilx, v=
-mf);
->                 cache_result =3D SWAP_CACHE_MISS;
-> --
-> 2.42.0
->
->
+- TLB flush batching. Will require extensive changes to PTL locking in
+move_pages_pte(). OTOH that might let us reuse parts of mremap code.
+
+Changes since v4 [9]:
+- added Acked-by in patch 1, per Peter Xu
+- added description for ctx, mm and mode parameters of move_pages(),
+per kernel test robot
+- added Reviewed-by's, per Peter Xu and Axel Rasmussen
+- removed unused operations in uffd_test_case_ops
+- refactored uffd-unit-test changes to avoid using global variables and
+handle pmd moves without page size overrides, per Peter Xu
+
+Changes since v3 [8]:
+- changed retry path in folio_lock_anon_vma_read() to unlock and then
+relock RCU, per Peter Xu
+- removed cross-mm support from initial patchset, per David Hildenbrand
+- replaced BUG_ONs with VM_WARN_ON or WARN_ON_ONCE, per David Hildenbrand
+- added missing cache flushing, per Lokesh Gidra and Peter Xu
+- updated manpage text in the patch description, per Peter Xu
+- renamed internal functions from "remap" to "move", per Peter Xu
+- added mmap_changing check after taking mmap_lock, per Peter Xu
+- changed uffd context check to ensure dst_mm is registered onto uffd we
+are operating on, Peter Xu and David Hildenbrand
+- changed to non-maybe variants of maybe*_mkwrite(), per David Hildenbrand
+- fixed warning for CONFIG_TRANSPARENT_HUGEPAGE=3Dn, per kernel test robot
+- comments cleanup, per David Hildenbrand and Peter Xu
+- checks for VM_IO,VM_PFNMAP,VM_HUGETLB,..., per David Hildenbrand
+- prevent moving pinned pages, per Peter Xu
+- changed uffd tests to call move uffd_test_ctx_clear() at the end of the
+test run instead of in the beginning of the next run
+- added support for testcase-specific ops
+- added test for moving PMD-aligned blocks
+
+Changes since v2 [5]:
+- renamed UFFDIO_REMAP to UFFDIO_MOVE, per David Hildenbrand
+- rebase over mm-unstable to use folio_move_anon_rmap(),
+per David Hildenbrand
+- added text for manpage explaining DONTFORK and KSM requirements for this
+feature, per David Hildenbrand
+- check for anon_vma changes in the fast path of folio_lock_anon_vma_read,
+per Peter Xu
+- updated the title and description of the first patch,
+per David Hildenbrand
+- updating comments in folio_lock_anon_vma_read() explaining the need for
+anon_vma checks, per David Hildenbrand
+- changed all mapcount checks to PageAnonExclusive, per Jann Horn and
+David Hildenbrand
+- changed counters in remap_swap_pte() from MM_ANONPAGES to MM_SWAPENTS,
+per Jann Horn
+- added a check for PTE change after folio is locked in remap_pages_pte(),
+per Jann Horn
+- added handling of PMD migration entries and bailout when pmd_devmap(),
+per Jann Horn
+- added checks to ensure both src and dst VMAs are writable, per Peter Xu
+- added UFFD_FEATURE_MOVE, per Peter Xu
+- removed obsolete comments, per Peter Xu
+- renamed remap_anon_pte to remap_present_pte, per Peter Xu
+- added a comment for folio_get_anon_vma() explaining the need for
+anon_vma checks, per Peter Xu
+- changed error handling in remap_pages() to make it more clear,
+per Peter Xu
+- changed EFAULT to EAGAIN to retry when a hugepage appears or disappears
+from under us, per Peter Xu
+- added links to previous upstreaming attempts, per David Hildenbrand
+
+Changes since v1 [4]:
+- add mmget_not_zero in userfaultfd_remap, per Jann Horn
+- removed extern from function definitions, per Matthew Wilcox
+- converted to folios in remap_pages_huge_pmd, per Matthew Wilcox
+- use PageAnonExclusive in remap_pages_huge_pmd, per David Hildenbrand
+- handle pgtable transfers between MMs, per Jann Horn
+- ignore concurrent A/D pte bit changes, per Jann Horn
+- split functions into smaller units, per David Hildenbrand
+- test for folio_test_large in remap_anon_pte, per Matthew Wilcox
+- use pte_swp_exclusive for swapcount check, per David Hildenbrand
+- eliminated use of mmu_notifier_invalidate_range_start_nonblock,
+per Jann Horn
+- simplified THP alignment checks, per Jann Horn
+- refactored the loop inside remap_pages, per Jann Horn
+- additional clarifying comments, per Jann Horn
+
+Main changes since Andrea's last version [1]:
+- Trivial translations from page to folio, mmap_sem to mmap_lock
+- Replace pmd_trans_unstable() with pte_offset_map_nolock() and handle its
+possible failure
+- Move pte mapping into remap_pages_pte to allow for retries when source
+page or anon_vma is contended. Since pte_offset_map_nolock() start RCU
+read section, we can't block anymore after mapping a pte, so have to unmap
+the ptesm do the locking and retry.
+- Add and use anon_vma_trylock_write()  to avoid blocking while in RCU
+read section.
+- Accommodate changes in mmu_notifier_range_init() API, switch to
+mmu_notifier_invalidate_range_start_nonblock() to avoid blocking while in
+RCU read section.
+- Open-code now removed __swp_swapcount()
+- Replace pmd_read_atomic() with pmdp_get_lockless()
+- Add new selftest for UFFDIO_MOVE
+
+[1] https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4=
+b1fc19e92
+[2] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@r=
+edhat.com/
+[3] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqx=
+RCyjniNVjp0Aw@mail.gmail.com/
+[4] https://lore.kernel.org/all/20230914152620.2743033-1-surenb@google.com/
+[5] https://lore.kernel.org/all/20230923013148.1390521-1-surenb@google.com/
+[6] https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@=
+redhat.com/
+[7] https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorad=
+o.edu/
+[8] https://lore.kernel.org/all/20231009064230.2952396-1-surenb@google.com/
+[9] https://lore.kernel.org/all/20231028003819.652322-1-surenb@google.com/
+
+Andrea Arcangeli (2):
+  mm/rmap: support move to different root anon_vma in
+    folio_move_anon_rmap()
+  userfaultfd: UFFDIO_MOVE uABI
+
+Suren Baghdasaryan (3):
+  selftests/mm: call uffd_test_ctx_clear at the end of the test
+  selftests/mm: add uffd_test_case_ops to allow test case-specific
+    operations
+  selftests/mm: add UFFDIO_MOVE ioctl test
+
+ Documentation/admin-guide/mm/userfaultfd.rst |   3 +
+ fs/userfaultfd.c                             |  72 +++
+ include/linux/rmap.h                         |   5 +
+ include/linux/userfaultfd_k.h                |  11 +
+ include/uapi/linux/userfaultfd.h             |  29 +-
+ mm/huge_memory.c                             | 122 ++++
+ mm/khugepaged.c                              |   3 +
+ mm/rmap.c                                    |  30 +
+ mm/userfaultfd.c                             | 599 +++++++++++++++++++
+ tools/testing/selftests/mm/uffd-common.c     |  39 +-
+ tools/testing/selftests/mm/uffd-common.h     |   9 +
+ tools/testing/selftests/mm/uffd-stress.c     |   5 +-
+ tools/testing/selftests/mm/uffd-unit-tests.c | 192 ++++++
+ 13 files changed, 1115 insertions(+), 4 deletions(-)
+
+--=20
+2.43.0.rc1.413.gea7ed67945-goog
+
