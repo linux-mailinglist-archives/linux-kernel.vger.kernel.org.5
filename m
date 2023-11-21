@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2EE7F2C6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA807F2C6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbjKUL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        id S234816AbjKUL6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbjKUL4x (ORCPT
+        with ESMTP id S234616AbjKUL4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:56:53 -0500
+        Tue, 21 Nov 2023 06:56:54 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D6A1A2;
-        Tue, 21 Nov 2023 03:56:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F29713D;
+        Tue, 21 Nov 2023 03:56:50 -0800 (PST)
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 852916607324;
-        Tue, 21 Nov 2023 11:56:47 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8D74B6607326;
+        Tue, 21 Nov 2023 11:56:48 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700567808;
-        bh=XEVVBoXHkUpKz+mYu2BhuD+v7qTvXaba6bcEiQ5SYSg=;
+        s=mail; t=1700567809;
+        bh=P8X/98SRN6b58tyqRku7rqXinlOozOu5V7sRiK56qy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GYYbo9QldXFXkudLNK5rBpyLOm3Syq0rkmS15Dw5elqhdCQEjLJ8kZzlIAH/9feSQ
-         fKlAppZeczG0BvHBMcVMzFWOKlTqcdLR38gs+mDI8TFzbgqxnvL3+7ke7vlfaIarOE
-         WD4+zgmW1iKsLDiocSUyAnRL7xZwxGw2tTmygpebAcSBxHok6hcBdGsl3UxPU4RhG9
-         8XEQk0x8kv80N5b4iMA7KyObYnlaCUOR78JlP1dzoe2MuBlgaduv01uzC1TJkOv2/K
-         NbRxwgmUpxDmArQm49ItmhnUMfHWIiHPkJZFJP92lDNXXN9DWJqILJhvwM+4X/RRD7
-         +oX/uQYLfW/Jg==
+        b=dHgS1RJq0Qde42IELsuCTHqSQUUMs2O5o3pr6jsaRfeWgucPLnjDnNFC+734Mq2l8
+         ev3lxVepD9nZeneSZtjzM9cCNvo0vLgJh5rTGhiRsh/Aq1XNMzckz1syPTnrmkvOeN
+         badIDZ0WLaQGPbm9sRVl+I3MSUE/LrPj14tQEQOccy6XJqFy8x3KQW0RAaMX9uwumR
+         OGX/i75TqF4MZ8mlRJrzvgpeVRXxowj0odh5PX8/dK85bg6ds3rLu47pz12MGAV9a9
+         WWpEf6mwTIHCnv3Y4fXFfUmJz6iQlnQH1reXh2BtjImAQiFaxF7DnCTU8bIrmoCw2R
+         tICxMBVJU6E+Q==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     matthias.bgg@gmail.com
@@ -41,9 +41,9 @@ Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, kernel@collabora.com,
         wenst@chromium.org
-Subject: [PATCH v2 16/20] soc: mediatek: mtk-svs: Check if SVS mode is available in the beginning
-Date:   Tue, 21 Nov 2023 12:56:20 +0100
-Message-ID: <20231121115624.56855-17-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2 17/20] soc: mediatek: mtk-svs: Use ULONG_MAX to compare floor frequency
+Date:   Tue, 21 Nov 2023 12:56:21 +0100
+Message-ID: <20231121115624.56855-18-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231121115624.56855-1-angelogioacchino.delregno@collabora.com>
 References: <20231121115624.56855-1-angelogioacchino.delregno@collabora.com>
@@ -59,61 +59,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The svs_init01() and svs_init02() functions are already checking if the
-INIT01 and INIT02 modes are available - but that's done in for loops and
-for each SVS bank.
-
-Give those a shortcut to get out early if no SVS bank features the
-desired init mode: this is especially done to avoid some locking in
-the svs_init01(), but also to avoid multiple for loops to check the
-same, when no bank supports a specific mode.
+The `freq` variable is of type unsigned long and, even though it does
+currently work with u32 because no frequency is higher than U32_MAX,
+it is not guaranteed that in the future we will see one.
+Initialize the freq variable with ULONG_MAX instead of U32_MAX.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/soc/mediatek/mtk-svs.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/soc/mediatek/mtk-svs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
-index ae0cc22a2941..16a16c5a3f24 100644
+index 16a16c5a3f24..df39e7430ba9 100644
 --- a/drivers/soc/mediatek/mtk-svs.c
 +++ b/drivers/soc/mediatek/mtk-svs.c
-@@ -1400,6 +1400,16 @@ static irqreturn_t svs_isr(int irq, void *data)
- 	return IRQ_HANDLED;
- }
+@@ -1804,7 +1804,7 @@ static int svs_bank_resource_setup(struct svs_platform *svsp)
+ 			return count;
+ 		}
  
-+static bool svs_mode_available(struct svs_platform *svsp, u8 mode)
-+{
-+	int i;
-+
-+	for (i = 0; i < svsp->bank_max; i++)
-+		if (svsp->banks[i].mode_support & mode)
-+			return true;
-+	return false;
-+}
-+
- static int svs_init01(struct svs_platform *svsp)
- {
- 	struct svs_bank *svsb;
-@@ -1408,6 +1418,9 @@ static int svs_init01(struct svs_platform *svsp)
- 	int ret = 0, r;
- 	u32 opp_freq, opp_vboot, buck_volt, idx, i;
- 
-+	if (!svs_mode_available(svsp, SVSB_MODE_INIT01))
-+		return 0;
-+
- 	/* Keep CPUs' core power on for svs_init01 initialization */
- 	cpuidle_pause_and_lock();
- 
-@@ -1575,6 +1588,9 @@ static int svs_init02(struct svs_platform *svsp)
- 	int ret;
- 	u32 idx;
- 
-+	if (!svs_mode_available(svsp, SVSB_MODE_INIT02))
-+		return 0;
-+
- 	for (idx = 0; idx < svsp->bank_max; idx++) {
- 		svsb = &svsp->banks[idx];
- 
+-		for (i = 0, freq = U32_MAX; i < svsb->opp_count; i++, freq--) {
++		for (i = 0, freq = ULONG_MAX; i < svsb->opp_count; i++, freq--) {
+ 			opp = dev_pm_opp_find_freq_floor(svsb->opp_dev, &freq);
+ 			if (IS_ERR(opp)) {
+ 				dev_err(svsb->dev, "cannot find freq = %ld\n",
 -- 
 2.42.0
 
