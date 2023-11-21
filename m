@@ -2,55 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C8D7F36D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F29987F36D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjKUTfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:35:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
+        id S229749AbjKUTgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjKUTfx (ORCPT
+        with ESMTP id S229461AbjKUTgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:35:53 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFF6191;
-        Tue, 21 Nov 2023 11:35:49 -0800 (PST)
-Received: from [100.117.177.39] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4B2AA6602F3D;
-        Tue, 21 Nov 2023 19:35:47 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700595348;
-        bh=/VVJWABCA7OL+A9POx+GinmD39+Xcj9nJKZjqipf/BM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FXyvXTAY5u5vyGIr9fOEpnrHF2cv5bq9yC3SaO0eKxQZosbVe5MW9BQ/mxuRsaBQj
-         9K/WM8nrvt9Z8lHOz+9JKYBtQVGjsA9ZTVLJD7a8a6vw+Jdohsp1BVtuZIJ4m1X3kH
-         Qug3PUYCRChei4tWj8eW8otT5kwtNhHh9Q3X7qXXLYQoqIfof0Gy6FvKT8w8mKtDpd
-         +Bd23TWMx7WrWnx5QHrddDoySQCRTMag753bpIVXYbx8/Q6n1RG95jviuPyFsRyokC
-         upnWkL3JNdEHyUmP2xtgAvty5imYK7H52y82pLRaq8beacvoeVoY7LkP5IPSamKwq0
-         f86E78pJjLEUA==
-Message-ID: <06d3c2f7-50b4-b44d-fa75-8ca6a1a26d89@collabora.com>
-Date:   Wed, 22 Nov 2023 01:05:41 +0530
+        Tue, 21 Nov 2023 14:36:14 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9DC198;
+        Tue, 21 Nov 2023 11:36:08 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4E59E5C09CA;
+        Tue, 21 Nov 2023 14:36:05 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Tue, 21 Nov 2023 14:36:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1700595365; x=1700681765; bh=Jf
+        CLQ8+7RDc/ys9Dqiv8ksmZfU6vufRcp+bQh8DNeJ0=; b=j59pbpDDMH8vqiwt9P
+        nW0aRLGyKi3RX23NeVMCIwVcJ9DUbRD9T/w7kSLj5oa+xi5RiHFMdZZfIs6CTaWf
+        acM9LcF+THVCnt6j1IkpCA1pBpGzXENlx4ut0/InWC2QLlxXxZB0u2u0X4+wkiq3
+        8Q+f8QisrigiGc9WIw+9HfTYbt9cipfs4kXoCNfGxKKP7L973N5Vty7y1M1OxgRw
+        HtRyTszVMWVS6Jk3NtRF5KxOmrKzJnZkFGDJwJZNa9hvnl5HsJL/6WtwLQu4zsOp
+        1536tY6PcO15y+7KupCf5CF6qf6DsDcIErCmHggaTFmbO89MKTECdKNq72rMueZB
+        6ErA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700595365; x=1700681765; bh=JfCLQ8+7RDc/y
+        s9Dqiv8ksmZfU6vufRcp+bQh8DNeJ0=; b=ruprUrYUeyI0kBQftKiG9GF70rm0u
+        JSjksjOcdUpA0p5Plg6lcWBMWSsCBho299A7JEE+G5b3/Opwf0XN4c5Xi5JDTiP7
+        Xck/y3dJg2nmblO0DzYxRmYSpq7saNLjANYCmFaHtOn74pDi/K9uRhFLvgRiulsa
+        Yl64KpvAnjMCjf0GmYZMivb94vP7Cm/j9Z1vpfpCgFgQicSv0lPQxf68fsxdETNa
+        s8CRUFR05Rz+g1aU/Zb3rBH2gmqzxFM7z3TFqjrSUyyWkFNJuyWYB48H6gh7bTkM
+        tW813/wvnCqGvTzdexbVyCzxIxPZQCpryaICNVWqlLjbQb8ZOfgS2tR7A==
+X-ME-Sender: <xms:pQZdZXaBtQ8RxX_fSIgh082j-Y4rwyJ8f_n4qpZQE5Cfb8FjK-OWdg>
+    <xme:pQZdZWY_VrcUw8CoKNjN6c82YPzwCadqwFMLvnLp1YxwuajaoQseBlcnOnEjyJmxv
+    Y-gRhnZxpkHjlJFGd8>
+X-ME-Received: <xmr:pQZdZZ_6FmoEXQKBm7rTEzih32gUK4VONsV-Q0fKcP3VufKHgXu0TexLAjC6wQABDrkwEjeU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddvtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhk
+    vgculfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrh
+    hnpedvvdegledtheefieejgfevgeefiefhtdevteefteduhfevtdefleethfetgeeluden
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
+    eslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:pQZdZdr7agJcq5g0A0tx7UGjMbFQ_vbA9UwiT24_Opw0ITVgZ8UHog>
+    <xmx:pQZdZSrcDptk4QVOBwwEtONXhrz9voRO33Lt2aHUUSHKbmq209Zjhw>
+    <xmx:pQZdZTQWwEKFp4pG4yNTYd-F1BWjj6eWMqumep24pWHLY9VPwXIazA>
+    <xmx:pQZdZZ2EhdzzvxOaNNpkW8S6NAqCN1-YapE_EqjTc-rv2J7gzDdx-A>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 21 Nov 2023 14:36:01 -0500 (EST)
+Date:   Wed, 22 Nov 2023 08:35:46 +1300
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH 0/2] hid-asus: reset the backlight brightness level on
+ resume
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Denis Benato <benato.denis96@gmail.com>,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <MRNH4S.965MCNIAPCDV2@ljones.dev>
+In-Reply-To: <nycvar.YFH.7.76.2311210951340.29220@cbobk.fhfr.pm>
+References: <20231117011556.13067-1-luke@ljones.dev>
+        <b4356286-368a-49ec-b1f8-d7e5e4afdc25@gmail.com>
+        <nycvar.YFH.7.76.2311210951340.29220@cbobk.fhfr.pm>
+X-Mailer: geary/44.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] iio: light: ltrf216a: Return floating point values
-To:     jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de
-References: <20231107192005.285534-1-shreeya.patel@collabora.com>
-Content-Language: en-US
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-In-Reply-To: <20231107192005.285534-1-shreeya.patel@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,61 +90,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 08/11/23 00:50, Shreeya Patel wrote:
-> For better precision of input light intesity, return floating point
-> values through sysfs instead of an integer value
+On Tue, Nov 21 2023 at 09:52:11 AM +01:00:00, Jiri Kosina 
+<jikos@kernel.org> wrote:
+> On Fri, 17 Nov 2023, Denis Benato wrote:
+> 
+>>  > From: Denis Benato <benato.denis96@gmail.com>
+>> 
+>>  I want to express my gratitude toward Luke for his guidance and his 
+>> help
+>>  in submitting this fix.
+>> 
+>>  I confirm those patches were sent in my behalf.
+> 
+> Luke, as you were in the supply chain of the patches, could you please
+> provide Signed-off-by: tags so that I can add them into the chain?
 
-Hi Jonathan,
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
 
-Gentle ping for this patch. I am not sure if you got time to look at the 
-patches
-after LPC but just making sure it doesn't get lost between bunch of 
-others :)
-
-
-Thanks,
-Shreeya Patel
-
->
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
->   drivers/iio/light/ltrf216a.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/iio/light/ltrf216a.c b/drivers/iio/light/ltrf216a.c
-> index 8de4dd849936..68dc48420a88 100644
-> --- a/drivers/iio/light/ltrf216a.c
-> +++ b/drivers/iio/light/ltrf216a.c
-> @@ -234,7 +234,7 @@ static int ltrf216a_read_data(struct ltrf216a_data *data, u8 addr)
->   static int ltrf216a_get_lux(struct ltrf216a_data *data)
->   {
->   	int ret, greendata;
-> -	u64 lux, div;
-> +	u64 lux;
->   
->   	ret = ltrf216a_set_power_state(data, true);
->   	if (ret)
-> @@ -246,10 +246,9 @@ static int ltrf216a_get_lux(struct ltrf216a_data *data)
->   
->   	ltrf216a_set_power_state(data, false);
->   
-> -	lux = greendata * 45 * LTRF216A_WIN_FAC * 100;
-> -	div = data->als_gain_fac * data->int_time_fac * 100;
-> +	lux = greendata * 45 * LTRF216A_WIN_FAC;
->   
-> -	return div_u64(lux, div);
-> +	return lux;
->   }
->   
->   static int ltrf216a_read_raw(struct iio_dev *indio_dev,
-> @@ -279,7 +278,8 @@ static int ltrf216a_read_raw(struct iio_dev *indio_dev,
->   		if (ret < 0)
->   			return ret;
->   		*val = ret;
-> -		return IIO_VAL_INT;
-> +		*val2 = data->als_gain_fac * data->int_time_fac;
-> +		return IIO_VAL_FRACTIONAL;
->   	case IIO_CHAN_INFO_INT_TIME:
->   		mutex_lock(&data->lock);
->   		ret = ltrf216a_get_int_time(data, val, val2);
 
