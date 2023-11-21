@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD11D7F3644
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F737F3646
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232326AbjKUSkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
+        id S234445AbjKUSky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:40:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjKUSkj (ORCPT
+        with ESMTP id S234541AbjKUSkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:40:39 -0500
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912EA193
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:40:35 -0800 (PST)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5cc3dd21b0cso430227b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:40:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700592034; x=1701196834; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VJi+hwHIFMEK75b+gn7N3ATHUD4KW+X7YkfL5jpJno0=;
-        b=hrdgv90scQ4yUIzJlsUMbmA1tgnuWnWqJ3sYXRRFDGbKkXTFir4Y0zukJEBb/+tIBP
-         iakgS1Y48/wLMYv96yupuakHMN3TG3ATE3QhdhgE9/MCB09bBXDQRo2ykZIUIFLVdK8g
-         D4P0sOk+sby4avP9UBgxkHrAVELIT+U2cspg9Hpadtafk/h/IdZd7kh+R1Jd2/iQK618
-         EhO3zYhtYQi3fF8n3gg3VyNKa6QZ14JSdG9+5Ig8OuAtfp89foyKHi7oAWDjiyiXdkWS
-         fCV6oyEx1trE4s9I6qi2e2eZiO5WVMJ8pmeRA3L5Jh+HtDzK1GUpGGLb4v6VpQ3rOeQK
-         87Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700592034; x=1701196834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VJi+hwHIFMEK75b+gn7N3ATHUD4KW+X7YkfL5jpJno0=;
-        b=DsD4o4U1cofrDyijEhHPuUo0nLs5tqO1NpU6+Im+4p8u6zhIr0nClQhCHCUTBZvJ6f
-         maWq+h7VigMWj+NQfXhMX2ez4fP9KCjZpEBF4Brh7ttTJDh5p00AQqJYNsqqJdu5znuJ
-         ocwSwF942ol79qm+D/FR2HucCov16QjSIZ8kyOvlhs/aRciUjKcY+OsaHnL6Pza2f9ZC
-         EOiR7fuWeT/FVIgXOrgLqMZnACsGnjO/EkYzwe++5RievEulb0sEggLlOqzF5QVPedH7
-         vbUjSffZXlu4IStL/F1mRnFiFthruoGnHH4IZclfkPBFE0TTCTzJhaOzjMa36Drk2dPa
-         LR2w==
-X-Gm-Message-State: AOJu0YxxA5Is49VkwmqWVROkEgXBYUODoqQ6pErnQYOEgrtdu7wmUfQO
-        dmPUhhaOJ6mk4xKbAiIOukZ+6nie9rZkH0uTfErIUg==
-X-Google-Smtp-Source: AGHT+IGo9pi90+0YW1WgYDu2cpBw4ag/fwWszyzluW/acVk/pI4XfP2FVzn6cSZRSsVDe7lfiSGR4LwIsnI7Xd5IyxA=
-X-Received: by 2002:a0d:dc43:0:b0:59b:ec85:54ee with SMTP id
- f64-20020a0ddc43000000b0059bec8554eemr13643015ywe.39.1700592034763; Tue, 21
- Nov 2023 10:40:34 -0800 (PST)
+        Tue, 21 Nov 2023 13:40:49 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E7C18C;
+        Tue, 21 Nov 2023 10:40:45 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALI8I5L025601;
+        Tue, 21 Nov 2023 18:40:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/BDvp/+M7FtxKsx5CnIFoAzu3HuceD6Uf8E03fkbYkA=;
+ b=i/Rk3o69ico5qI1Tig/uqM4BYf7psKCNrG5hpYwkiiGXyOuH98L3f8ewszv6hLvtb61L
+ eJEPRtOep6O+7uX+bEEVs7LYzSyRNV+Qp5LHQ2iad2AVtDZXDknY7hIJh4YAqtQpfw9I
+ RqlGymSfgzGp+vj5umrg+0XAS7zyvQTz4Y6nPLmKHambrsp4nCPGjFxo4EgcMwJXKOen
+ CBM3hKQ/apJ36m1KA523dHDsOTZBJbxpXyZotYUAMNkX8Wk6wSXxJZqO1s5y3sZrqqL1
+ VYwPy+nmBVcRSzw9gYRcjGxt2C7+KiPPcjKBZI/aUI7cZmXWTiqy83CqhOyxK4nFwqc+ sQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugu549grx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 18:40:35 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALIeYnZ003920
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 18:40:34 GMT
+Received: from abhinavk-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 21 Nov 2023 10:40:34 -0800
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+To:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Kuogee Hsieh" <quic_khsieh@quicinc.com>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+CC:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Johan Hovold <johan@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Doug Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>
+Subject: Re: [PATCH] drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
+Date:   Tue, 21 Nov 2023 10:40:23 -0800
+Message-ID: <170059186277.16750.2750065361264739153.b4-ty@quicinc.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231030-sc8280xp-dpu-safe-lut-v1-1-6d485d7b428f@quicinc.com>
+References: <20231030-sc8280xp-dpu-safe-lut-v1-1-6d485d7b428f@quicinc.com>
 MIME-Version: 1.0
-References: <1700577493-18538-1-git-send-email-quic_msarkar@quicinc.com> <1700577493-18538-2-git-send-email-quic_msarkar@quicinc.com>
-In-Reply-To: <1700577493-18538-2-git-send-email-quic_msarkar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 21 Nov 2023 20:40:23 +0200
-Message-ID: <CAA8EJprOwxFUk_=uE+5788+N5bSKTMa1=t77nRWVu9M7xnjJ3w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: z8cXBg5gRK5Y5TZnNLPlm5OXcrOHnwPd
+X-Proofpoint-ORIG-GUID: z8cXBg5gRK5Y5TZnNLPlm5OXcrOHnwPd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_10,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ bulkscore=0 phishscore=0 impostorscore=0 priorityscore=1501 spamscore=0
+ lowpriorityscore=0 mlxlogscore=782 adultscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210146
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,30 +89,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 at 16:38, Mrinmay Sarkar <quic_msarkar@quicinc.com> wro=
-te:
->
-> In a multiprocessor system cache snooping maintains the consistency
-> of caches. Snooping logic is disabled from HW on this platform.
-> Cache coherency doesn=E2=80=99t work without enabling this logic.
->
-> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
-> platform. Assign no_snoop_override flag into struct qcom_pcie_cfg and
-> set it true in cfg_1_34_0 and enable cache snooping if this particular
-> flag is true.
 
-Thank you!
+On Mon, 30 Oct 2023 16:23:20 -0700, Bjorn Andersson wrote:
+> During USB transfers on the SC8280XP __arm_smmu_tlb_sync() is seen to
+> typically take 1-2ms to complete. As expected this results in poor
+> performance, something that has been mitigated by proposing running the
+> iommu in non-strict mode (boot with iommu.strict=0).
+> 
+> This turns out to be related to the SAFE logic, and programming the QOS
+> SAFE values in the DPU (per suggestion from Rob and Doug) reduces the
+> TLB sync time to below 10us, which means significant less time spent
+> with interrupts disabled and a significant boost in throughput.
+> 
+> [...]
 
->
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
+Applied, thanks!
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+[1/1] drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
+      https://gitlab.freedesktop.org/drm/msm/-/commit/a33b2431d11b
 
-
-
---=20
-With best wishes
-Dmitry
+Best regards,
+-- 
+Abhinav Kumar <quic_abhinavk@quicinc.com>
