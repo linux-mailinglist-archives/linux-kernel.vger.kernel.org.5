@@ -2,288 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B47BE7F25A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C867C7F25A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbjKUGOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
+        id S230273AbjKUGPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjKUGOL (ORCPT
+        with ESMTP id S230083AbjKUGP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:14:11 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A547CA
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:14:07 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cb74a527ceso1524640b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:14:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700547245; x=1701152045; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOIjomM++7B1dIn3OS6W7wRGVNhGN6yLF0JTgK8dl3k=;
-        b=AYW66h7UUNtlp6fRYmIWp8YqodscOmBC+d/T08UUMP69WZPi/eAzo5s+ZsAVHG4/wD
-         HS3m4h0owXrp0QE2Mz30px07n32QqdY+qTyV9GSqAhSYYAgGGYsLcqXjIimo0m5P+Wpi
-         StLfeXofKppZCJ6HA+68pNjT8jx2X5M9IDx3h5tVFbjawk8cd5tKoq9ajX4l3yjyLURN
-         rziL61t4XbrglXCNxhNLKQsS0Z73dyth3rO/ihGvIST2tU3N0ldlVzD6xlwpvZuPKneM
-         xkQc5z87kb9rmMnRMgnO4qKkI/zkdtOu/02KoC6ASJ0zVh/q9clIiUn+oBNYpDaPI7qs
-         lvcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700547245; x=1701152045;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GOIjomM++7B1dIn3OS6W7wRGVNhGN6yLF0JTgK8dl3k=;
-        b=qx7Aqklm6Q71p7GNw1fqLAhBHQS9p3Pnr8WldwgyFZHVZZS/Y5ZmvFstAFvvmZ8Bzc
-         sIePaCe58vMsAHm/XwiXQwAzOFneOy4KNGeDZDe0dnmzzviGe4HcUt32sPpq5C5TaIeV
-         MLjtLxqEKomTIIK1imFXkWWkZTgirxTXsKSoQwLYdaKZkvlOFj6s8CHpuCe/S6S2H9A1
-         qcEhu0bqIB90W3v/7epgUy2w1AJBUlKARRmCb8PpCmSrzFhS4YS/iwMEZRnZApZkJ6Bd
-         pACZmncgmkn8sKWH6043a/V9gzkgSZYeryx05lGGl6/f0nKe+hro/dh9+9RkuO3C/unj
-         3yxg==
-X-Gm-Message-State: AOJu0Yx5pQnkRCLJmjGAmW9u2w5UcO6rFd1sfOEpc3cmk9juUSYZ3pIv
-        QhTzc1qXtJYRnhlS7zKe3U3dUVoqH9qO9Aw14vQ=
-X-Google-Smtp-Source: AGHT+IGJ64FKYoidr21UYJBEOTHCWOxj+FVl4SiGFG9fbWplDSe8yYqQvT3VpG9ZLulT/tiA3Eb7ZppAX3UNvEou5n4=
-X-Received: by 2002:a05:6a20:e609:b0:186:5265:ed1c with SMTP id
- my9-20020a056a20e60900b001865265ed1cmr8147665pzb.6.1700547245543; Mon, 20 Nov
- 2023 22:14:05 -0800 (PST)
+        Tue, 21 Nov 2023 01:15:28 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2082.outbound.protection.outlook.com [40.107.93.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984F0E7
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:15:24 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UqCMM7CBOwmSXVTHx2KM+dao0wRRK0U2HCkUtSBzdMXebYO7mxqQE+V7gl0xO8CdfZ6gH+j1nXvLD+73TrZes44lAcbALJ1iP67mYGcyW0kwCk1x66Dbdht437kaSOyLts5RGOvcQug7aMkF5Y4dK9E5553QebdJGnep/Z6M8/El3tmo8K4S60u65uJLLa9Ewk8silKdk5cpBQOYJGt5JQy5PCU4YCuFyE5bIOaWc17Wxxosy9uOGT/oEpJbHCvdvF8fDGTtJIz0KsTfq25aA9gZWzO3nl6VUje9qSq0LHxi3fRDbrWgRihldyntxNgoje6VVMNDlr0bFC/HnJqhgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tEJ/0jhiLlAj5NKKVmbg6DnSqk+YY1VVE/Zsj54CHRQ=;
+ b=X0z7HW2Xe3xvcKBZ6aNWXsgJCuPw8ySykO50uk3++RbdRdamo66kPYetUM4UiaCHgCYyA69vThx1NCinfHmuDdQqD1S4nFvGCTwFB0xNfTMgseCJEoWuwqKc3cwTMxsec3vNxwTjBbu+DLYHciKGox/FxFcMLEHXKSedIJAoM8dA/t+0D0BMzIgIBCIlzQuzm7NdGmTJIcbVlLR9q1VL3IVD0WHLGVDL2G/cH8aGE4sYoyfBX5e1vCugfvyW8WO7DHHqpz0RQiVdvVK1uUVPWGzloOzC+ayQ+/a8pBQzAzQfLxXlhtOu1GeAG0dxD5pdB0BrRFmLt12PnkaWesukPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tEJ/0jhiLlAj5NKKVmbg6DnSqk+YY1VVE/Zsj54CHRQ=;
+ b=iYNrkBcP8/CTHXqEElvV9RmmrK8IjC/TuLCAl6rCXQguAtPelg2NaC6uVcY4ZQNnPZlK6gjJt9YzpoerBcjabcEPPO+Tt3CAKZf6FV0VBZjWqEStN0Wj3OUtXJWSZPYPMgGF03pMRJFHXH7MJUvAXe/UiYRlIrrQLMspWHK6Vzs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com (2603:10b6:8:9f::5) by
+ PH0PR12MB7908.namprd12.prod.outlook.com (2603:10b6:510:28e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.25; Tue, 21 Nov
+ 2023 06:15:20 +0000
+Received: from DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::befc:daea:28e6:32af]) by DS7PR12MB6048.namprd12.prod.outlook.com
+ ([fe80::befc:daea:28e6:32af%3]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
+ 06:15:20 +0000
+Message-ID: <2c8daf55-22f8-f79e-ae02-6fc8d505ade2@amd.com>
+Date:   Tue, 21 Nov 2023 11:45:11 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH] iommu/amd: Set variable amd_dirty_ops to static
+Content-Language: en-US
+To:     Kunwu Chan <chentao@kylinos.cn>, joro@8bytes.org,
+        suravee.suthikulpanit@amd.com, will@kernel.org,
+        robin.murphy@arm.com
+Cc:     kunwu.chan@hotmail.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231120095342.1102999-1-chentao@kylinos.cn>
+From:   Vasant Hegde <vasant.hegde@amd.com>
+In-Reply-To: <20231120095342.1102999-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0224.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:ea::19) To DS7PR12MB6048.namprd12.prod.outlook.com
+ (2603:10b6:8:9f::5)
 MIME-Version: 1.0
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-49-ankur.a.arora@oracle.com> <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
- <87lear4wj6.fsf@oracle.com> <46a4c47a-ba1c-4776-a6f8-6c2146cbdd0d@paulmck-laptop>
- <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
-In-Reply-To: <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Tue, 21 Nov 2023 14:13:53 +0800
-Message-ID: <CALm+0cX2muokt4CCMwyGc2o-LGBOReJ+erBM031XuUOw8Z-Fvg@mail.gmail.com>
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
-To:     paulmck@kernel.org
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6048:EE_|PH0PR12MB7908:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4187f003-e97e-404b-5b95-08dbea593d04
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T2BGyR64IftisJJu+TGbF7QsvHT5wLsWTA0u9bYRNyAQ8ATjJ5rwp0/RWmAa8tmf8te8UXU4nfr8rRYRu9hIOhlsHCEffyol6dTZ4nL9pbIrsPMU79DhXnX6OxH1cTY+uZ1hQEUcBCabp2pk75EfL4T4EgvAUH0GFMv6nuRJ/wO2YwdB1ExRgVFn6hJzH7m6jFlvdLlTbcYtFT7wEwQHTBD0eO07S+kz8iXY53wf/svPThPY6TNv+EkDs6hYpbsnGRNYOdAK1++uEBAYdXSuY1cJXiK2aFpwi1sJQUaiGLoMrgH0PSUOC7zDlgAsKiLUE4YByWaVmsN4Ewe5KNSsq/2Uvg3pUTTpfjbr1A/MjDSccjPn2PPo7hhtiOcu93q4OJdF1BMHFFMF9IFkHvgWgH/ryXynCuRCkawWIVku2fxDWDqfWc3eeUsPPVvaUY1ab88GJ6PvHnKYwOk3vefQkljz/FWW+ahQ0P6PWSEanmO2f4wpJjHIbRluI8ZW0ENRToVQ0o+lnPc2Px8hoX7vh9PaJ9t5DqW3j83UxzKEtCoeIBIyLS+kXQ1oLuhAeEsGfL+X11fUFSZ0qrk+/UDVLQd3HZzPNYZI5VZz2n455scB1jxQSx+O8ujAcM2d8X5sv35ttchambUfw2jXbpqg1nHBJ1MIMVVrpmJDddqYc6rM09rL4VKeIDkIQmd0PgG31bt+CMykdS0EgDAtvutOcQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6048.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(346002)(396003)(230173577357003)(230922051799003)(230273577357003)(186009)(1800799012)(64100799003)(451199024)(31696002)(31686004)(86362001)(6486002)(6666004)(6506007)(66946007)(66556008)(66476007)(316002)(36756003)(2616005)(53546011)(6512007)(26005)(41300700001)(83380400001)(478600001)(44832011)(2906002)(5660300002)(4326008)(38100700002)(8676002)(8936002)(14143004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXhXZndpT3NLMnB5eVMzU3J3eVRCeGpuZjg4M1BNeGtVeDFORUxBZ0ZQR0Rn?=
+ =?utf-8?B?OCs3eUhFSDBMZkVycHo3dnN1ellVRjljeGNVcEhCbGJ3RGk2QUtQYlU5VXFF?=
+ =?utf-8?B?cGk5UHFSd1dVTTU2OGovTncxTFBvVEZDUVVwck5ZQ0Q0RHZlMlpPY0hnYmI5?=
+ =?utf-8?B?OW1DVkVEVUM5S29IemNuckREakY3azd3Vkt3Y3U5R3Evb3l6amMrL3B6OUpu?=
+ =?utf-8?B?ODBoYzZVdHdjOFR2QXByYnI3Zzc0RHVvMUlpRWtHcEdOUm8yQzlzT1Jsc285?=
+ =?utf-8?B?dDVoRE9CcVFYNjhRYUEvMnJpWGVzOHpZSGozVXovUTBwanJ4a1lCWDJyck43?=
+ =?utf-8?B?eG8xaitpNk55UE1IWGhPZ1VXMlZ4d0VWN1BvRHMxbDM1Tk1TRW8yTUlobGJP?=
+ =?utf-8?B?MW93UnBQRUhvNEo0N1RVbFVOWm9oNzRDYUhXMFJhUnRHOWc3aFk0NzhPUThw?=
+ =?utf-8?B?RmJyOTlSWjdpdFN1aXNkOUtQK0lDbHBlOUs3SW51Ti8wVGdnQzhKMXRXVnl5?=
+ =?utf-8?B?Vmp3V1NQZVZBY3Z0N0R4bVViZHdNaGZJVno4Q2dtSFJTa3RYdEEva21aeGRL?=
+ =?utf-8?B?OUtOWnJjNytlODRlNVIyRXFyNFQwbXVoTm9QRVRsa0pkdkpVSmdNMWRtbkto?=
+ =?utf-8?B?LzdOeXFLVWxhb25RQytwZFh3MVFtdERnOEFSVHBFT2R6OWFWZWtRNXcyR1Fh?=
+ =?utf-8?B?djlHUEU2Ykh0Rnk1YWdQVGtYUTdneFFFSkVUcmd0cUNvSmI0Yjk3Njd2QVVk?=
+ =?utf-8?B?Z1Q4cFVRdU5PWWhTYnE3YWMwa2ZLcmF3OVZhL1h0VjMzVk8yTHk3a0N5OUhF?=
+ =?utf-8?B?czdEbm5vbU9BbWtaVk0xS3grQ1NvdVB4SlFSNWtZYXZWREFWOHBwS21xSW0x?=
+ =?utf-8?B?ak9oSituQndKenhXNGhtNDRRSU1QdzZ2WHppQXNMcXRlTEttN2pWeGo1TnJq?=
+ =?utf-8?B?RGczcm9kU3hZc250eUtoOG9PU2dUNmtEVExCZTFxZUl3S3R6OHBvcGJiQ3Zz?=
+ =?utf-8?B?Zm1Gc0gxb0dBSGNJdVBTODlQRHJSdTNmZkxHVndaTkVxL1pQYzlWYy84RFc4?=
+ =?utf-8?B?UTkwNTZZSW50ejZrWDA0bmdQdUN5QmZSNExEaTBPSkZsaGNqRHVGdXA2MVVq?=
+ =?utf-8?B?STdPdmx1eFp0N2JucXRjcHY4RnZ1N1JrRHNSc1ZKRUxtbTlKS3VkU29hWS9J?=
+ =?utf-8?B?OEZIZHlQaEVKSkE0bmhRUzZaTHpPaEpMZUdmQzA4b1ZjTkVLUFhtaHZvOVZL?=
+ =?utf-8?B?UC80QWpjMWdGbzEzek5VMXZDbzRxL1VmZG5QZzdlaUVVb2pyQTd1SEFlcmRm?=
+ =?utf-8?B?MkN2czE2ek1vOWQzUlM1bTBPeFdjTjBNSjUyN3JzWGRrMEl0K0ljWkVqNGZK?=
+ =?utf-8?B?NmJCTTVueXF4SlJXNy9yY1lIOWpqWG43SFR4Rm1GNzRJK3RVcGpXTWJqOU9R?=
+ =?utf-8?B?TExwUXkveGh3VkNBL3hIT0ptRlN2b3NvMEREb3FLb1pzRUFlMDZXM2Fxc0I3?=
+ =?utf-8?B?TFFLL0pWYWJiOG15ZWJudDlVWmM3TzJHQk14K3gzVXlVdDZLVXRuRWJIck9P?=
+ =?utf-8?B?V0ZIOGs4UGYwUlNrMFppanRmcmVqN0R2eWFETlhLc09kNy9IeklZUk0ydzVs?=
+ =?utf-8?B?TDJUcytaeXI3TWNodTQ0bkQrZG1lMVdSb2x1WUZQNzFEZVdGWDRPYU5xL3Zr?=
+ =?utf-8?B?dUpiRllJTHhOdUxSVFRVQjJhQU0ybTlyS3JTd3FZOHZPMEw3WjNudlhhVmZF?=
+ =?utf-8?B?TTg4N3JsM291YjdrbzJsUGpTWW5Wa2lMblB1cEtuUGUwMkFkNURYNHBLQnlp?=
+ =?utf-8?B?eVNUYmV0UGlxNFk4Y285cWlrd0l0Si9Hb1puUWJvNXBnQ3lHUkhyODY0aHRI?=
+ =?utf-8?B?NEYrUlNrZzVzNUVhVUp6YXYxZ2trUTN0TFhkVytmUHBOUW56YkRNd1h5ZHUx?=
+ =?utf-8?B?K3RtQngzNk9MVUFBNlZaaXlEbnZDTGxmcFFIamdCS0orNHJqYmJ3ZzNwSE8y?=
+ =?utf-8?B?L0ZaQnB6eW1NVVY3dTYxcjh6bFRSNW9QN002NEVhYW05RjJaclF4OU1yS001?=
+ =?utf-8?B?STl2cG1MT0M1dndiS1FYSm9qVmZWRzhtZWNHN3Fzc0NLRUc4RGk2QVB6aXdN?=
+ =?utf-8?Q?fpYbTZQgWGS156Tqm0Rw6U6Ev?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4187f003-e97e-404b-5b95-08dbea593d04
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6048.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 06:15:20.4534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Wh61lM0dnE/v1oyyWHZuTyy9aF9u1lXHIaE7Pb2FNd7U18uSCOlWamltguPrk5q4hTugGWTCNafYXYxOXV9jFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7908
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> On Mon, Nov 20, 2023 at 09:17:57PM -0800, Paul E. McKenney wrote:
-> > On Mon, Nov 20, 2023 at 07:26:05PM -0800, Ankur Arora wrote:
-> > >
-> > > Paul E. McKenney <paulmck@kernel.org> writes:
-> > > > On Tue, Nov 07, 2023 at 01:57:34PM -0800, Ankur Arora wrote:
-> > > >> cond_resched() is used to provide urgent quiescent states for
-> > > >> read-side critical sections on PREEMPT_RCU=n configurations.
-> > > >> This was necessary because lacking preempt_count, there was no
-> > > >> way for the tick handler to know if we were executing in RCU
-> > > >> read-side critical section or not.
-> > > >>
-> > > >> An always-on CONFIG_PREEMPT_COUNT, however, allows the tick to
-> > > >> reliably report quiescent states.
-> > > >>
-> > > >> Accordingly, evaluate preempt_count() based quiescence in
-> > > >> rcu_flavor_sched_clock_irq().
-> > > >>
-> > > >> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> > > >> ---
-> > > >>  kernel/rcu/tree_plugin.h |  3 ++-
-> > > >>  kernel/sched/core.c      | 15 +--------------
-> > > >>  2 files changed, 3 insertions(+), 15 deletions(-)
-> > > >>
-> > > >> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > >> index f87191e008ff..618f055f8028 100644
-> > > >> --- a/kernel/rcu/tree_plugin.h
-> > > >> +++ b/kernel/rcu/tree_plugin.h
-> > > >> @@ -963,7 +963,8 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
-> > > >>   */
-> > > >>  static void rcu_flavor_sched_clock_irq(int user)
-> > > >>  {
-> > > >> -        if (user || rcu_is_cpu_rrupt_from_idle()) {
-> > > >> +        if (user || rcu_is_cpu_rrupt_from_idle() ||
-> > > >> +            !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
-> > > >
-> > > > This looks good.
-> > > >
-> > > >>                  /*
-> > > >>                   * Get here if this CPU took its interrupt from user
-> > > >> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > >> index bf5df2b866df..15db5fb7acc7 100644
-> > > >> --- a/kernel/sched/core.c
-> > > >> +++ b/kernel/sched/core.c
-> > > >> @@ -8588,20 +8588,7 @@ int __sched _cond_resched(void)
-> > > >>                  preempt_schedule_common();
-> > > >>                  return 1;
-> > > >>          }
-> > > >> -        /*
-> > > >> -         * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
-> > > >> -         * whether the current CPU is in an RCU read-side critical section,
-> > > >> -         * so the tick can report quiescent states even for CPUs looping
-> > > >> -         * in kernel context.  In contrast, in non-preemptible kernels,
-> > > >> -         * RCU readers leave no in-memory hints, which means that CPU-bound
-> > > >> -         * processes executing in kernel context might never report an
-> > > >> -         * RCU quiescent state.  Therefore, the following code causes
-> > > >> -         * cond_resched() to report a quiescent state, but only when RCU
-> > > >> -         * is in urgent need of one.
-> > > >> -         *      /
-> > > >> -#ifndef CONFIG_PREEMPT_RCU
-> > > >> -        rcu_all_qs();
-> > > >> -#endif
-> > > >
-> > > > But...
-> > > >
-> > > > Suppose we have a long-running loop in the kernel that regularly
-> > > > enables preemption, but only momentarily.  Then the added
-> > > > rcu_flavor_sched_clock_irq() check would almost always fail, making
-> > > > for extremely long grace periods.
-> > >
-> > > So, my thinking was that if RCU wants to end a grace period, it would
-> > > force a context switch by setting TIF_NEED_RESCHED (and as patch 38 mentions
-> > > RCU always uses the the eager version) causing __schedule() to call
-> > > rcu_note_context_switch().
-> > > That's similar to the preempt_schedule_common() case in the
-> > > _cond_resched() above.
-> >
-> > But that requires IPIing that CPU, correct?
-> >
-> > > But if I see your point, RCU might just want to register a quiescent
-> > > state and for this long-running loop rcu_flavor_sched_clock_irq() does
-> > > seem to fall down.
-> > >
-> > > > Or did I miss a change that causes preempt_enable() to help RCU out?
-> > >
-> > > Something like this?
-> > >
-> > > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-> > > index dc5125b9c36b..e50f358f1548 100644
-> > > --- a/include/linux/preempt.h
-> > > +++ b/include/linux/preempt.h
-> > > @@ -222,6 +222,8 @@ do { \
-> > >         barrier(); \
-> > >         if (unlikely(preempt_count_dec_and_test())) \
-> > >                 __preempt_schedule(); \
-> > > +       if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
-> > > +               rcu_all_qs(); \
-> > >  } while (0)
-> >
-> > Or maybe something like this to lighten the load a bit:
-> >
-> > #define preempt_enable() \
-> > do { \
-> >       barrier(); \
-> >       if (unlikely(preempt_count_dec_and_test())) { \
-> >               __preempt_schedule(); \
-> >               if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> >                   !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
-> >                       rcu_all_qs(); \
-> >       } \
-> > } while (0)
-> >
-> > And at that point, we should be able to drop the PREEMPT_MASK, not
-> > that it makes any difference that I am aware of:
-> >
-> > #define preempt_enable() \
-> > do { \
-> >       barrier(); \
-> >       if (unlikely(preempt_count_dec_and_test())) { \
-> >               __preempt_schedule(); \
-> >               if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> >                   !(preempt_count() & SOFTIRQ_MASK)) \
-> >                       rcu_all_qs(); \
-> >       } \
-> > } while (0)
-> >
-> > Except that we can migrate as soon as that preempt_count_dec_and_test()
-> > returns.  And that rcu_all_qs() disables and re-enables preemption,
-> > which will result in undesired recursion.  Sigh.
-> >
-> > So maybe something like this:
-> >
-> > #define preempt_enable() \
-> > do { \
-> >       if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> >           !(preempt_count() & SOFTIRQ_MASK)) \
->
-> Sigh.  This needs to include (PREEMPT_MASK | SOFTIRQ_MASK),
-> but check for equality to something like (1UL << PREEMPT_SHIFT).
->
+On 11/20/2023 3:23 PM, Kunwu Chan wrote:
+> Fix the followng warning:
+> drivers/iommu/amd/iommu.c:67:30: warning: symbol
+>  'amd_dirty_ops' was not declared. Should it be static?
+> 
+> This variable is only used in its defining file, so it should be static.
+> 
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 
-For PREEMPT_RCU=n and CONFIG_PREEMPT_COUNT=y kernels
-for report QS in preempt_enable(),  we can refer to this:
+Thanks for the fix. Looks good to me.
 
-void rcu_read_unlock_strict(void)
-{
-        struct rcu_data *rdp;
+Reviewed-by: Vasant Hegde <vasant.hegde@amd.com>
 
-        if (irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
-                return;
-        rdp = this_cpu_ptr(&rcu_data);
-        rdp->cpu_no_qs.b.norm = false;
-        rcu_report_qs_rdp(rdp);
-        udelay(rcu_unlock_delay);
-}
+-Vasant
 
-The rcu critical section may be in the NMI handler  needs to be considered.
+> ---
+>  drivers/iommu/amd/iommu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+> index fcc987f5d4ed..9f7064360828 100644
+> --- a/drivers/iommu/amd/iommu.c
+> +++ b/drivers/iommu/amd/iommu.c
+> @@ -64,7 +64,7 @@ LIST_HEAD(hpet_map);
+>  LIST_HEAD(acpihid_map);
+>  
+>  const struct iommu_ops amd_iommu_ops;
+> -const struct iommu_dirty_ops amd_dirty_ops;
+> +static const struct iommu_dirty_ops amd_dirty_ops;
+>  
+>  int amd_iommu_max_glx_val = -1;
+>  
+> @@ -2635,7 +2635,7 @@ static bool amd_iommu_enforce_cache_coherency(struct iommu_domain *domain)
+>  	return true;
+>  }
+>  
+> -const struct iommu_dirty_ops amd_dirty_ops = {
+> +static const struct iommu_dirty_ops amd_dirty_ops = {
+>  	.set_dirty_tracking = amd_iommu_set_dirty_tracking,
+>  	.read_and_clear_dirty = amd_iommu_read_and_clear_dirty,
+>  };
 
-
-Thanks
-Zqiang
-
-
-
->
-> Clearly time to sleep.  :-/
->
->                                                         Thanx, Paul
->
-> >               rcu_all_qs(); \
-> >       barrier(); \
-> >       if (unlikely(preempt_count_dec_and_test())) { \
-> >               __preempt_schedule(); \
-> >       } \
-> > } while (0)
-> >
-> > Then rcu_all_qs() becomes something like this:
-> >
-> > void rcu_all_qs(void)
-> > {
-> >       unsigned long flags;
-> >
-> >       /* Load rcu_urgent_qs before other flags. */
-> >       if (!smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs)))
-> >               return;
-> >       this_cpu_write(rcu_data.rcu_urgent_qs, false);
-> >       if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
-> >               local_irq_save(flags);
-> >               rcu_momentary_dyntick_idle();
-> >               local_irq_restore(flags);
-> >       }
-> >       rcu_qs();
-> > }
-> > EXPORT_SYMBOL_GPL(rcu_all_qs);
-> >
-> > > Though I do wonder about the likelihood of hitting the case you describe
-> > > and maybe instead of adding the check on every preempt_enable()
-> > > it might be better to instead force a context switch in the
-> > > rcu_flavor_sched_clock_irq() (as we do in the PREEMPT_RCU=y case.)
-> >
-> > Maybe.  But rcu_all_qs() is way lighter weight than a context switch.
-> >
-> >                                                       Thanx, Paul
