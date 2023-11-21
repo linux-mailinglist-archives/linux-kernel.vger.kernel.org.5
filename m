@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 411EC7F3549
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998117F354B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbjKURuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
+        id S234042AbjKURvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:51:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKURuW (ORCPT
+        with ESMTP id S230182AbjKURvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:50:22 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1132212C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:50:18 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b2979a74eso6970485e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:50:17 -0800 (PST)
+        Tue, 21 Nov 2023 12:51:13 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F8912C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:51:09 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7a98fdeaac7so233337039f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:51:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1700589016; x=1701193816; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1700589068; x=1701193868; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=V7eEoEaHBgdi9fm5W+Qi0cAzvT8Gw9lGqubNWJJvxtI=;
-        b=Fk1Xyu8F2FvFgnGIOHt8t8detzN/SNukWQ9ymhZbpIrDN+Cd9NjAj8UBdcSjak0uV6
-         n+VkkBvvCqAyEWapLuEkFIIcc3yY+07d4OwcSzrHG2IZvVYuWXQy/jrmDW2jyxF9Viba
-         ZTfH1Ie9l1R2dnGQ1YvsikmnLP+Nmw6UCH6o6X+WKYNOaQdsyT5aF1cYl34yIuzyiUlp
-         79huflY5r9pSRErlLWL0hqMINlke25ECmFaQ6eoVE8ILrRzX5QCQfmGnR+cAkbOHPFbD
-         l7QzXPucLhdY91TXxNPfG8t1Jvek0Ir+7ud1HZhKGIbtZnfyywkPKmYZLV1UkB4FEIiT
-         sZNQ==
+        bh=F3VZHmlNlu0O99ZtiO5dO2f9VsPMxl7hcUKuMcRux78=;
+        b=AAdhhZrGqtO9WX/0FJiROZuuVxqztoHrrSFtt+2EpVaGInKdHxws/PoOYU2IsaOInz
+         hGBl/OuVtxzzGzrfbSYTqmia6mywEVuhl1HQtSw5h3+7ydK7fIK3WKvZkdlH27VmqDlJ
+         zV//3P5p51mo48JT+JZeH3fCKjTtSaILwEHwoxAOpZOBzuVDJl9zkm0GpeMryT0QNAU7
+         uGH8WCu9cqfFfgQWBt4SDGKLB08+7UWZZosv3kKzEydhTcI6YTFBTRMwzlOrKR0gZtlv
+         3te1yyRC0hfjEwnStAXjVLzjibVChSauDsEl4Ueu9c0Cobi+r7vOZE3HEQWZyx6W3lBD
+         yJaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700589016; x=1701193816;
+        d=1e100.net; s=20230601; t=1700589068; x=1701193868;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V7eEoEaHBgdi9fm5W+Qi0cAzvT8Gw9lGqubNWJJvxtI=;
-        b=wJrls9m03479WSvs9a2N0Mo6rzf9iL3YcrgxJ+BaKYGISz7qY6gxkoJR7llfShe3xx
-         FBAfnZ82zwlP8VcpFoOpr9l0eI/OdXBLYjasey8tO01Wq0AwdCCu8dCXZyhsLEZLmDR1
-         uuqtkMGdOrwUqRsmnPhB9fWm4oxCzkHnHwfo61gENuqvsZH7gjVo5O9YnCvYHUPRPAHh
-         ZmL5C6wiqSX4T87wq0u/Zw/+OjFSGwbANjo3qcAwqYDxoz2sSv/PvASCq/TJt9E/sMn3
-         Mzo8ahHyMIl4BvlNJajGqm+yVTwBqX+RJhQtoTFJluQIhhY0J7tMVg8I3855T+BXb8jD
-         JJhg==
-X-Gm-Message-State: AOJu0YyJW+aAKqxN6eBZDL2/CGF860B5Lnpm8JDsQi/cIVx6dC0L9vH8
-        KWJ+KSkEEkpJFN/6iqavfm2B7Q==
-X-Google-Smtp-Source: AGHT+IEpTAg+2Gdi3b5o9hbskbgTV/96r1yf487agp5DGQ9tqg02GcM0PNTAzeuJrdNRubxG04UqxQ==
-X-Received: by 2002:a05:600c:ce:b0:401:38dc:8916 with SMTP id u14-20020a05600c00ce00b0040138dc8916mr68648wmm.10.1700589016483;
-        Tue, 21 Nov 2023 09:50:16 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id z17-20020a1c4c11000000b0040a44179a88sm21635907wmf.42.2023.11.21.09.50.14
+        bh=F3VZHmlNlu0O99ZtiO5dO2f9VsPMxl7hcUKuMcRux78=;
+        b=dDl7TSHtFNw/KDLHDurknaAWZEEdBLOYkondz+Yo3BAmHDE9XhSojIyQFoFR+2f+mk
+         lGbA6m52s/NLyj2yJpp/hjUZ+axyP8dhNBAGU80Ki5p5kUhuohd1g/MGS1AXshZuYNFA
+         RKyUsNDaO9IKzKlRNXa+QBYUY06x6lRaCCZyrBRvL6tHxWM2ph96M4phfc5bzcDCHz4N
+         nIbcNennkSJ0gXgY2xMsY4MM6964CQREFjrBwiM2HALzoR4suOsiz1BRmq3vw2AxuBcF
+         WRN0BqH6rFYUCWzCTsEYnXNYHdA1g+UYjHhY6CaJpAPmJhDaB2BFETkdF3B26qUEgXxf
+         yKyQ==
+X-Gm-Message-State: AOJu0YwESCdO5K0QVCICXHl2lWyq9qoS0N5hbbFX/p8kICw03lOF/oul
+        d4Nfa9eEOUfJmjwCzYxuvr45CVFRv7RIwL88WwU=
+X-Google-Smtp-Source: AGHT+IEIMVbZd/opiVLMX9t1gte/ruLkANfduOCEUWfGVPu+dBFO4cz1YKq267xfZYCyskPVuqaPog==
+X-Received: by 2002:a05:6602:4f44:b0:79f:d4e6:5175 with SMTP id gm4-20020a0566024f4400b0079fd4e65175mr69374iob.16.1700589068654;
+        Tue, 21 Nov 2023 09:51:08 -0800 (PST)
+Received: from ?IPV6:2605:a601:adae:4500:9465:402f:4b0a:1116? ([2605:a601:adae:4500:9465:402f:4b0a:1116])
+        by smtp.gmail.com with ESMTPSA id t5-20020a056638204500b00466526e1e02sm1663632jaj.135.2023.11.21.09.51.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 09:50:15 -0800 (PST)
-Message-ID: <793d71be-5164-4943-b18d-7038492b45ea@arista.com>
-Date:   Tue, 21 Nov 2023 17:50:14 +0000
+        Tue, 21 Nov 2023 09:51:08 -0800 (PST)
+Message-ID: <218f068c-40b5-4f93-b26a-c300054be11e@sifive.com>
+Date:   Tue, 21 Nov 2023 11:51:04 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] net/tcp: Limit TCP_AO_REPAIR to non-listen sockets
+Subject: Re: [PATCH v2] riscv: add dependency among Image(.gz), loader(.bin),
+ and vmlinuz.efi
 Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-References: <20231121020111.1143180-1-dima@arista.com>
- <20231121020111.1143180-4-dima@arista.com>
- <CANn89i+2xLv=bR5u0iGcmZhZ8WZjPHyzaqAe3cZAhmc95KSVag@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89i+2xLv=bR5u0iGcmZhZ8WZjPHyzaqAe3cZAhmc95KSVag@mail.gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Simon Glass <sjg@chromium.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org
+References: <20231119100024.2370992-1-masahiroy@kernel.org>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20231119100024.2370992-1-masahiroy@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,58 +80,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 08:21, Eric Dumazet wrote:
-> On Tue, Nov 21, 2023 at 3:01 AM Dmitry Safonov <dima@arista.com> wrote:
->>
->> Listen socket is not an established TCP connection, so
->> setsockopt(TCP_AO_REPAIR) doesn't have any impact.
->>
->> Restrict this uAPI for listen sockets.
->>
->> Fixes: faadfaba5e01 ("net/tcp: Add TCP_AO_REPAIR")
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
->> ---
->>  net/ipv4/tcp.c | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
->> index 53bcc17c91e4..2836515ab3d7 100644
->> --- a/net/ipv4/tcp.c
->> +++ b/net/ipv4/tcp.c
->> @@ -3594,6 +3594,10 @@ int do_tcp_setsockopt(struct sock *sk, int level, int optname,
->>                 break;
->>
->>         case TCP_AO_REPAIR:
->> +               if (sk->sk_state == TCP_LISTEN) {
->> +                       err = -ENOSTR;
+On 2023-11-19 4:00 AM, Masahiro Yamada wrote:
+> A common issue in Makefile is a race in parallel building.
 > 
-> ENOSTR is not used a single time in linux.
+> You need to be careful to prevent multiple threads from writing to the
+> same file simultaneously.
 > 
-> I suggest you use tcp_can_repair_sock() helper (and return -EPERM as
-> other TCP_REPAIR options)
-
-Sounds good to me. Unsure why I didn't use tcp_can_repair_sock() in the
-first place. Will do in v2.
-
+> Commit 3939f3345050 ("ARM: 8418/1: add boot image dependencies to not
+> generate invalid images") addressed such a bad scenario.
 > 
->> +                       break;
->> +               }
->>                 err = tcp_ao_set_repair(sk, optval, optlen);
->>                 break;
->>  #ifdef CONFIG_TCP_AO
->> @@ -4293,6 +4297,8 @@ int do_tcp_getsockopt(struct sock *sk, int level,
->>         }
->>  #endif
->>         case TCP_AO_REPAIR:
->> +               if (sk->sk_state == TCP_LISTEN)
->> +                       return -ENOSTR;
->>                 return tcp_ao_get_repair(sk, optval, optlen);
->>         case TCP_AO_GET_KEYS:
->>         case TCP_AO_INFO: {
->> --
->> 2.42.0
->>
+> A similar symptom occurs with the following command:
+> 
+>   $ make -j$(nproc) ARCH=riscv Image Image.gz loader loader.bin vmlinuz.efi
+>     [ snip ]
+>     SORTTAB vmlinux
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     GZIP    arch/riscv/boot/Image.gz
+>     AS      arch/riscv/boot/loader.o
+>     AS      arch/riscv/boot/loader.o
+>     Kernel: arch/riscv/boot/Image is ready
+>     PAD     arch/riscv/boot/vmlinux.bin
+>     GZIP    arch/riscv/boot/vmlinuz
+>     Kernel: arch/riscv/boot/loader is ready
+>     OBJCOPY arch/riscv/boot/loader.bin
+>     Kernel: arch/riscv/boot/loader.bin is ready
+>     Kernel: arch/riscv/boot/Image.gz is ready
+>     OBJCOPY arch/riscv/boot/vmlinuz.o
+>     LD      arch/riscv/boot/vmlinuz.efi.elf
+>     OBJCOPY arch/riscv/boot/vmlinuz.efi
+>     Kernel: arch/riscv/boot/vmlinuz.efi is ready
+> 
+> The log "OBJCOPY arch/riscv/boot/Image" is displayed 5 times.
+> (also "AS      arch/riscv/boot/loader.o" twice.)
+> 
+> It indicates that 5 threads simultaneously enter arch/riscv/boot/
+> and write to arch/riscv/boot/Image.
+> 
+> It occasionally leads to a build failure:
+> 
+>   $ make -j$(nproc) ARCH=riscv Image Image.gz loader loader.bin vmlinuz.efi
+>     [ snip ]
+>     SORTTAB vmlinux
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     OBJCOPY arch/riscv/boot/Image
+>     PAD     arch/riscv/boot/vmlinux.bin
+>   truncate: Invalid number: 'arch/riscv/boot/vmlinux.bin'
+>   make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13: arch/riscv/boot/vmlinux.bin] Error 1
+>   make[2]: *** Deleting file 'arch/riscv/boot/vmlinux.bin'
+>   make[1]: *** [arch/riscv/Makefile:167: vmlinuz.efi] Error 2
+>   make[1]: *** Waiting for unfinished jobs....
+>     Kernel: arch/riscv/boot/Image is ready
+>     GZIP    arch/riscv/boot/Image.gz
+>     AS      arch/riscv/boot/loader.o
+>     AS      arch/riscv/boot/loader.o
+>     Kernel: arch/riscv/boot/loader is ready
+>     OBJCOPY arch/riscv/boot/loader.bin
+>     Kernel: arch/riscv/boot/loader.bin is ready
+>     Kernel: arch/riscv/boot/Image.gz is ready
+>   make: *** [Makefile:234: __sub-make] Error 2
+> 
+> Image.gz, loader, vmlinuz.efi depend on Image. loader.bin depends
+> on loader. Such dependencies are not specified in arch/riscv/Makefile.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> Changes in v2:
+>   - Fix commit log
+> 
+>  arch/riscv/Makefile | 2 ++
+>  1 file changed, 2 insertions(+)
 
-Thanks,
-             Dmitry
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
 
