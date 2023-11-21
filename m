@@ -2,66 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB8C7F30C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942E97F30CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbjKUOa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        id S234149AbjKUObZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:31:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjKUOaY (ORCPT
+        with ESMTP id S229997AbjKUObX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:30:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD30790;
-        Tue, 21 Nov 2023 06:30:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700577020; x=1732113020;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=EYbERcSH0gLOBcfmdnbFd03o8uUuoWmbxlspp5sE7vw=;
-  b=VLtDj+9zr2+SI3JwG1kbtzDFe+jdQA7C/rYUg9JbWv0ZvKjtPquwPuAQ
-   O8SPm7gf/6VPox2UXVpRY05pD9nSovcQ0GmtYAiaaT95tymZKv6xaUmie
-   JKJyOuzY1WZSRfpUk0R4XtuhO0MrrCVVQDfUFVMFtv7+RZyNiebANIf8b
-   PZ9U1Kys5mw5rVBqTY0JaKX+Xc4YCHNuBDvfQ2OO9XrDYCQi0A4pAD7MR
-   ovoxbwfQj4Txi0n5qp9xvOHj6SQDySMZEaWZb0hINyc22nVkL1R+LCsfL
-   s6j2d1GPXPoR9zP4qgGgMuRoP/vk/NYAg/knt7QV9VFYmVkNicIw0gLCh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="390705860"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="390705860"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:30:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="766666125"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="766666125"
-Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
-  by orsmga002.jf.intel.com with ESMTP; 21 Nov 2023 06:30:16 -0800
-Message-ID: <480142d3-c3f3-45b6-af2f-6aecd2039b15@linux.intel.com>
-Date:   Tue, 21 Nov 2023 16:30:15 +0200
+        Tue, 21 Nov 2023 09:31:23 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA86E90;
+        Tue, 21 Nov 2023 06:31:19 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALE2LG1024641;
+        Tue, 21 Nov 2023 14:31:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : subject :
+ date : message-id : mime-version : content-type :
+ content-transfer-encoding : to : cc; s=qcppdkim1;
+ bh=mS5lpO1pQal3MndLWJq7JlecLvEPze68AS+UktMGphA=;
+ b=RRqmT+chsmkCLIjqq4O/5Ikar+e3jPjVaq6yLtFmxTK5Sqpade/KR03pLk00DMRIKxkB
+ 3fHA4s7/PZRjQIsySy0nydTZTbyQq5xi5r/PzndkkxisCyMK6JpUqTMaPfl5zERHqeTI
+ KR4gvL+KRJhZiHTaFieap8XHx4WjMV7xoKlYKTyPBZ2WZ/nC8YG9aKq0x5fXhBCHcHGC
+ tREzy1A8++sHSvlFb4EagexpGO4l3YYiIE8B8xAEOLeadiiwO5S6+GQ2LMB3uybBNs3h
+ mr3tu7gyjwiAE5IRM8bH4xr5ufot04Z4GqzjwH7tEI+P9zA/0CUH2ZApEUlxsFHUSnlb dg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugdxmjknm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 14:31:08 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALEV6O0027329
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 14:31:06 GMT
+Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 21 Nov 2023 06:31:01 -0800
+From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Subject: [PATCH v2 0/9] Add NSS clock controller support for Qualcomm
+ IPQ5332
+Date:   Tue, 21 Nov 2023 20:00:42 +0530
+Message-ID: <20231121-ipq5332-nsscc-v2-0-a7ff61beab72@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/24] i2c: designware: code consolidation & cleanups
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-B4-Tracking: v=1; b=H4sIABK/XGUC/3XMQQ7CIBCF4as0sxYDg5DoynuYLsg4tbOQtlCJp
+ uHuYvcu/5e8b4PMSTjDpdsgcZEsU2yBhw5oDPHBSu6tATVao61WMi/OWlQxZyIVONCZjbP65KB
+ 95sSDvHfv1rceJa9T+ux8wd/6TypGaeWNx4Dk3aDDdXkJSaQjTU/oa61fCwFL1qwAAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        "Kathiravan Thirumoorthy" <quic_kathirav@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700577061; l=2190;
+ i=quic_kathirav@quicinc.com; s=20230906; h=from:subject:message-id;
+ bh=V3e9HOo0Prh+0sVYu6OBkKtzBPya9k/mvTsnXsdzeBQ=;
+ b=092KjIA5Vs8qRQVNaXEaZ41a3/A47dax2I/FKKYeXpok7/16wTnAVmhSbhzOXYn2iETsF6T72
+ hnMDTWbjdP8AsPds5oDXvVUYvrNzw0sCeqWnHQv9n0B6K4MYM4lZUJs
+X-Developer-Key: i=quic_kathirav@quicinc.com; a=ed25519;
+ pk=xWsR7pL6ch+vdZ9MoFGEaP61JUaRf0XaZYWztbQsIiM=
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7B7Si-JmLaceIE4wPKn33xd8EEVAOSWw
+X-Proofpoint-ORIG-GUID: 7B7Si-JmLaceIE4wPKn33xd8EEVAOSWw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_07,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ phishscore=0 clxscore=1011 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311210114
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,78 +99,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 16:41, Andy Shevchenko wrote:
-> The series now consists the following groups of patches:
-> - fixing cleanup order in error path and remove (patches 1-4)
-> - refactoring i2c_dw_*_lock_support() (patches 5-6)
-> - refactoring module alias and device ID tables (patches 7-10)
-> - unifying firmware parsing and configuring code (patches 11-15)
-> - miscellaneous cleanups (patches 16-17,21-24)
-> - consolidating PM ops (patch 18)
-> - using device_set_node() for all drivers (patches 19-20)
-> 
-> The "Consolidate PM ops" might be considered as rft, however I don't think
-> we have any hardware where the behaviour will be changed, anyways, good
-> to test.
-> 
-> Changelog v4:
-> - dropped first patch as controversial (Jarkko)
-> - dropped Fixes tag from a few patches (Jarkko)
-> - moved a hunk in patch 1 to patch 2 where it belongs (Jarkko)
-> - exported i2c_dw_disable() for modular building (Jarkko)
-> - added tags (Mario, Jarkko)
-> 
-> v3: https://lore.kernel.org/r/20231110182304.3894319-1-andriy.shevchenko@linux.intel.com
-> 
-> Changelog v3:
-> - doubled the size of the series
-> - fixed compilation error (LKP)
-> - added tags (Andi)
-> 
-> v2: https://lore.kernel.org/r/20231109182823.3531846-1-andriy.shevchenko@linux.intel.com
-> 
-> Changelog v2:
-> - reworked the series to make it less twisted (Jarkko, Andi)
-> - added tags to the patches that have been rebased (Andi, Mario, Jarkko)
-> - introduced a few new changes (PM ops, export namespace)
-> 
-> v1: https://lore.kernel.org/r/20230725143023.86325-1-andriy.shevchenko@linux.intel.com
-> 
-> Andy Shevchenko (24):
->    i2c: designware: Fix PM calls order in dw_i2c_plat_probe()
->    i2c: designware: Fix reset call order in dw_i2c_plat_probe()
->    i2c: designware: Let PCI core to take care about interrupt vectors
->    i2c: designware: Fix lock probe call order in dw_i2c_plat_probe()
->    i2c: designware: Replace a while-loop by for-loop
->    i2c: designware: Save pointer to semaphore callbacks instead of index
->    i2c: designware: Add missing 'c' into PCI IDs variable name
->    i2c: designware: Replace MODULE_ALIAS() with MODULE_DEVICE_TABLE()
->    i2c: designware: Unify terminator in device ID tables
->    i2c: designware: Always provide device ID tables
->    i2c: designware: Drop return value from i2c_dw_acpi_configure()
->    i2c: designware: Drop return value from dw_i2c_of_configure()
->    i2c: designware: Rename dw_i2c_of_configure() -> i2c_dw_of_configure()
->    i2c: designware: Consolidate firmware parsing and configuring code
->    i2c: designware: Unify the firmware type checks
->    i2c: designware: Move exports to I2C_DW namespaces
->    i2c: designware: Remove ->disable() callback
->    i2c: designware: Consolidate PM ops
->    i2c: designware: Uninline i2c_dw_probe()
->    i2c: designware: Propagate firmware node
->    i2c: designware: Use pci_get_drvdata()
->    i2c: designware: Use temporary variable for struct device
->    i2c: designware: Get rid of redundant 'else'
->    i2c: designware: Fix spelling and other issues in the comments
-> 
->   drivers/i2c/busses/i2c-designware-amdpsp.c  |  10 +-
->   drivers/i2c/busses/i2c-designware-common.c  | 167 +++++++++-
->   drivers/i2c/busses/i2c-designware-core.h    |  47 +--
->   drivers/i2c/busses/i2c-designware-master.c  |  19 +-
->   drivers/i2c/busses/i2c-designware-pcidrv.c  | 114 ++-----
->   drivers/i2c/busses/i2c-designware-platdrv.c | 337 +++++++-------------
->   drivers/i2c/busses/i2c-designware-slave.c   |  12 +-
->   7 files changed, 337 insertions(+), 369 deletions(-)
-> 
-To all (some I've ack'ed already):
+Add bindings, driver and devicetree node for networking sub system clock
+controller on IPQ5332. Some of the nssnoc clocks present in GCC driver is
+enabled by default and its RCG is configured by bootloaders, so enable
+those clocks in driver probe.
 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+The NSS clock controller driver depends on the below patchset which adds
+support for multiple configurations for same frequency.
+https://lore.kernel.org/linux-arm-msm/20230531222654.25475-1-ansuelsmth@gmail.com/
+
+Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+---
+Changes in v2:
+- Change logs are in respective patches
+- Link to v1: https://lore.kernel.org/r/20231030-ipq5332-nsscc-v1-0-6162a2c65f0a@quicinc.com
+
+---
+Kathiravan Thirumoorthy (9):
+      clk: qcom: ipq5332: add const qualifier to the clk_init_data structure
+      clk: qcom: ipq5332: enable few nssnoc clocks in driver probe
+      dt-bindings: clock: ipq5332: drop the few nss clocks definition
+      dt-bindings: clock: ipq5332: add definition for GPLL0_OUT_AUX clock
+      clk: qcom: ipq5332: add gpll0_out_aux clock
+      dt-bindings: clock: add Qualcomm IPQ5332 NSSCC clock and reset definitions
+      clk: qcom: add NSS clock Controller driver for Qualcomm IPQ5332
+      arm64: dts: qcom: ipq5332: add support for the NSSCC
+      arm64: defconfig: build NSS Clock Controller driver for Qualcomm IPQ5332
+
+ .../bindings/clock/qcom,ipq5332-nsscc.yaml         |   60 ++
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi              |   28 +
+ arch/arm64/configs/defconfig                       |    1 +
+ drivers/clk/qcom/Kconfig                           |    7 +
+ drivers/clk/qcom/Makefile                          |    1 +
+ drivers/clk/qcom/gcc-ipq5332.c                     |  122 +--
+ drivers/clk/qcom/nsscc-ipq5332.c                   | 1035 ++++++++++++++++++++
+ include/dt-bindings/clock/qcom,ipq5332-gcc.h       |    4 +-
+ include/dt-bindings/clock/qcom,ipq5332-nsscc.h     |   86 ++
+ 9 files changed, 1264 insertions(+), 80 deletions(-)
+---
+base-commit: 07b677953b9dca02928be323e2db853511305fa9
+change-id: 20231030-ipq5332-nsscc-aeac9e153045
+
+Best regards,
+-- 
+Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+
