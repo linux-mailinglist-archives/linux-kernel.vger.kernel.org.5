@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47647F2DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC637F2DAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbjKUMvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
+        id S234016AbjKUMv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjKUMvE (ORCPT
+        with ESMTP id S233758AbjKUMvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:51:04 -0500
+        Tue, 21 Nov 2023 07:51:05 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B53D69;
-        Tue, 21 Nov 2023 04:51:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AAA1AA;
+        Tue, 21 Nov 2023 04:51:01 -0800 (PST)
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BA65B6607319;
-        Tue, 21 Nov 2023 12:50:58 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C8E4F6607314;
+        Tue, 21 Nov 2023 12:50:59 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700571059;
-        bh=n+I9YOPDM99MnwpUCp/Jyp5QiCWQ9S9IzP9LXdnM4XE=;
+        s=mail; t=1700571060;
+        bh=YAm2XwYefU2Wi2EmslwaPruVfwk8nKNQAa35BFgYSvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dy8nGXWdvPSsM5zqAHNWXFtkPY/CD+8TDJ2WuIQR9lA0ZWOv00MoLYVOgZz0vsC9u
-         VE10qlW9gQereyffjew/gDsiCsH8lmSZSA7aAdVWf0PbEPr+C8Bwjeo0cRNIhWAJr7
-         r0JsNv9fC1IBlvvR+Fm9jW8/p2yRO9GnNMuAP4xI+ROp68uKwjvzR+XL358m7Sbfxz
-         bJg9u7ozDj7Nyeli27vVe74BouUZmuKGK672lWp8sUSCNkGehPMDoFtPRETcm3jHL0
-         pcuEuerVqQCbLbwVP3EDPn5Cb5nDTOjRgF5z7GmGQwNWa2yqvqtM1tXav4pcbZd4/h
-         qiY11JeHYz2HQ==
+        b=QXtid+ivp1dSih09MgnuxB4/ZRA4pjGsxDuGrhSKwwYcVK0UMLDH0eWsBzpUYBULB
+         XkPzk17UGPJj9qII/QGy1AKPOVKl+k72O6cbbYaYsz6/S4b9lpuCJ632A6PYH659ZU
+         LT5Lz5/KwXwbw326hHl0PO4uNsgCwNdxwoI1IiBmqgYAjyWUWN9VmMuYrW7Qv1kaRA
+         hX2aEmUc5WgzHTf59V/Q8Ydty51DJ1ig8+cPlNb20L2uS21/kHxClGt+Hi+EreKmin
+         OyvnPwbiaOb2uQs6pYcvDtn+X7oaV5EEn8v8GvJwv+i18NYdLuvx+H8PxOeNlkLqei
+         xBuD6EZCNjuog==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     matthias.bgg@gmail.com
@@ -41,9 +41,9 @@ Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, kernel@collabora.com,
         wenst@chromium.org
-Subject: [PATCH v3 08/20] soc: mediatek: mtk-svs: Add SVS-Thermal coefficient to SoC platform data
-Date:   Tue, 21 Nov 2023 13:50:32 +0100
-Message-ID: <20231121125044.78642-9-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v3 09/20] soc: mediatek: mtk-svs: Move t-calibration-data retrieval to svs_probe()
+Date:   Tue, 21 Nov 2023 13:50:33 +0100
+Message-ID: <20231121125044.78642-10-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231121125044.78642-1-angelogioacchino.delregno@collabora.com>
 References: <20231121125044.78642-1-angelogioacchino.delregno@collabora.com>
@@ -59,99 +59,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for commonizing the efuse parsing function, add the
-SVS-Thermal coefficients for all SoCs for which said function can be
-commonized (MT8186, MT8188, MT8192, MT8195) and assign those to their
-platform data structure.
-That will be used to calculate the MTS parameter with the equation
-                     MTS = (ts_coeff * 2) / 1000
-
-This commit brings no functional changes.
+The t-calibration-data (SVS-Thermal calibration data) shall exist for
+all SoCs or SVS won't work anyway: move it to the common svs_probe()
+function and remove it from all of the per-SoC efuse_parsing() probe
+callbacks.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/soc/mediatek/mtk-svs.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/soc/mediatek/mtk-svs.c | 32 ++++++--------------------------
+ 1 file changed, 6 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
-index 6c6f133c327f..ab564d48092b 100644
+index ab564d48092b..1042af2aee3f 100644
 --- a/drivers/soc/mediatek/mtk-svs.c
 +++ b/drivers/soc/mediatek/mtk-svs.c
-@@ -118,6 +118,10 @@
- #define SVSB_VOPS_FLD_VOP2_6		GENMASK(23, 16)
- #define SVSB_VOPS_FLD_VOP3_7		GENMASK(31, 24)
- 
-+/* SVS Thermal Coefficients */
-+#define SVSB_TS_COEFF_MT8195		250460
-+#define SVSB_TS_COEFF_MT8186		204650
-+
- /* svs bank related setting */
- #define BITS8				8
- #define MAX_OPP_ENTRIES			16
-@@ -374,6 +378,7 @@ struct svs_fusemap {
-  * @bank_max: total number of svs banks
-  * @efuse: svs efuse data received from NVMEM framework
-  * @tefuse: thermal efuse data received from NVMEM framework
-+ * @ts_coeff: thermal sensors coefficient
-  */
- struct svs_platform {
- 	void __iomem *base;
-@@ -388,6 +393,7 @@ struct svs_platform {
- 	u32 bank_max;
- 	u32 *efuse;
- 	u32 *tefuse;
-+	u32 ts_coeff;
- };
- 
- struct svs_platform_data {
-@@ -398,6 +404,7 @@ struct svs_platform_data {
- 	const struct svs_fusemap *glb_fuse_map;
- 	const u32 *regs;
- 	u32 bank_max;
-+	u32 ts_coeff;
- };
- 
- /**
-@@ -2926,6 +2933,7 @@ static const struct svs_platform_data svs_mt8195_platform_data = {
- 	.probe = svs_mt8192_platform_probe,
- 	.regs = svs_regs_v2,
- 	.bank_max = ARRAY_SIZE(svs_mt8195_banks),
-+	.ts_coeff = SVSB_TS_COEFF_MT8195,
- 	.glb_fuse_map = (const struct svs_fusemap[GLB_MAX]) {
- 		{ 0, 0 }, { 19, 4 }
+@@ -1884,11 +1884,6 @@ static bool svs_mt8195_efuse_parsing(struct svs_platform *svsp)
+ 		svsb->vmax += svsb->dvt_fixed;
  	}
-@@ -2938,6 +2946,7 @@ static const struct svs_platform_data svs_mt8192_platform_data = {
- 	.probe = svs_mt8192_platform_probe,
- 	.regs = svs_regs_v2,
- 	.bank_max = ARRAY_SIZE(svs_mt8192_banks),
-+	.ts_coeff = SVSB_TS_COEFF_MT8195,
- 	.glb_fuse_map = (const struct svs_fusemap[GLB_MAX]) {
- 		/* FT_PGM not present */
- 		{ -1, 0 }, { 19, 4 }
-@@ -2951,6 +2960,7 @@ static const struct svs_platform_data svs_mt8188_platform_data = {
- 	.probe = svs_mt8192_platform_probe,
- 	.regs = svs_regs_v2,
- 	.bank_max = ARRAY_SIZE(svs_mt8188_banks),
-+	.ts_coeff = SVSB_TS_COEFF_MT8195,
- 	.glb_fuse_map = (const struct svs_fusemap[GLB_MAX]) {
- 		/* FT_PGM and VMIN not present */
- 		{ -1, 0 }, { -1, 0 }
-@@ -2964,6 +2974,7 @@ static const struct svs_platform_data svs_mt8186_platform_data = {
- 	.probe = svs_mt8186_platform_probe,
- 	.regs = svs_regs_v2,
- 	.bank_max = ARRAY_SIZE(svs_mt8186_banks),
-+	.ts_coeff = SVSB_TS_COEFF_MT8186,
- 	.glb_fuse_map = (const struct svs_fusemap[GLB_MAX]) {
- 		/* FT_PGM and VMIN not present */
- 		{ -1, 0 }, { -1, 0 }
-@@ -3021,6 +3032,7 @@ static int svs_probe(struct platform_device *pdev)
- 	svsp->banks = svsp_data->banks;
- 	svsp->regs = svsp_data->regs;
- 	svsp->bank_max = svsp_data->bank_max;
-+	svsp->ts_coeff = svsp_data->ts_coeff;
  
- 	ret = svsp_data->probe(svsp);
- 	if (ret)
+-	ret = svs_get_efuse_data(svsp, "t-calibration-data",
+-				 &svsp->tefuse, &svsp->tefuse_max);
+-	if (ret)
+-		return false;
+-
+ 	for (i = 0; i < svsp->tefuse_max; i++)
+ 		if (svsp->tefuse[i] != 0)
+ 			break;
+@@ -1949,11 +1944,6 @@ static bool svs_mt8192_efuse_parsing(struct svs_platform *svsp)
+ 		svsb->vmax += svsb->dvt_fixed;
+ 	}
+ 
+-	ret = svs_get_efuse_data(svsp, "t-calibration-data",
+-				 &svsp->tefuse, &svsp->tefuse_max);
+-	if (ret)
+-		return false;
+-
+ 	for (i = 0; i < svsp->tefuse_max; i++)
+ 		if (svsp->tefuse[i] != 0)
+ 			break;
+@@ -2009,11 +1999,6 @@ static bool svs_mt8188_efuse_parsing(struct svs_platform *svsp)
+ 		svsb->vmax += svsb->dvt_fixed;
+ 	}
+ 
+-	ret = svs_get_efuse_data(svsp, "t-calibration-data",
+-				 &svsp->tefuse, &svsp->tefuse_max);
+-	if (ret)
+-		return false;
+-
+ 	for (i = 0; i < svsp->tefuse_max; i++)
+ 		if (svsp->tefuse[i] != 0)
+ 			break;
+@@ -2097,11 +2082,6 @@ static bool svs_mt8186_efuse_parsing(struct svs_platform *svsp)
+ 		svsb->vmax += svsb->dvt_fixed;
+ 	}
+ 
+-	ret = svs_get_efuse_data(svsp, "t-calibration-data",
+-				 &svsp->tefuse, &svsp->tefuse_max);
+-	if (ret)
+-		return false;
+-
+ 	golden_temp = (svsp->tefuse[0] >> 24) & GENMASK(7, 0);
+ 	if (!golden_temp)
+ 		golden_temp = 50;
+@@ -2198,11 +2178,6 @@ static bool svs_mt8183_efuse_parsing(struct svs_platform *svsp)
+ 		}
+ 	}
+ 
+-	ret = svs_get_efuse_data(svsp, "t-calibration-data",
+-				 &svsp->tefuse, &svsp->tefuse_max);
+-	if (ret)
+-		return false;
+-
+ 	/* Thermal efuse parsing */
+ 	adc_ge_t = (svsp->tefuse[1] >> 22) & GENMASK(9, 0);
+ 	adc_oe_t = (svsp->tefuse[1] >> 12) & GENMASK(9, 0);
+@@ -3040,8 +3015,13 @@ static int svs_probe(struct platform_device *pdev)
+ 
+ 	ret = svs_get_efuse_data(svsp, "svs-calibration-data",
+ 				 &svsp->efuse, &svsp->efuse_max);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "Cannot read SVS calibration\n");
++
++	ret = svs_get_efuse_data(svsp, "t-calibration-data",
++				 &svsp->tefuse, &svsp->tefuse_max);
+ 	if (ret) {
+-		ret = -EPERM;
++		dev_err_probe(&pdev->dev, ret, "Cannot read SVS-Thermal calibration\n");
+ 		goto svs_probe_free_efuse;
+ 	}
+ 
 -- 
 2.42.0
 
