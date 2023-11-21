@@ -2,213 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0271D7F24AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2597F24AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjKUDht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 22:37:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        id S233263AbjKUDk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 22:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjKUDhr (ORCPT
+        with ESMTP id S229447AbjKUDk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 22:37:47 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F97C1
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 19:37:43 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9f27af23443so689859066b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 19:37:43 -0800 (PST)
+        Mon, 20 Nov 2023 22:40:57 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6ABA7;
+        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so4119437b3a.1;
+        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700537862; x=1701142662; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D6JP77IJAFcT7qYQ8fIPmy5AeO6uJhz8/ThBZXngqfQ=;
-        b=vjnhcDSo0wsep1jyNGbAfgkzI/5fd6zEiXuTVd6yfPJPrL1/pYoIK/9HzV/4Q5ef+j
-         VuxtO/Ptax8LXY21zq80byn/65la1b9iDXw+v6rZVROIlVA7rSUC/6NSkkFqOFobWn2F
-         eMYP0thrjRwPGYxZBHVdcg0q8dVmddo0oZP9m7F/5zW5GrTlgjEYHnbqD5mYnBmgqUaf
-         fQ4OLmkd/8x8DV9uxt6cFugU7gp84NIWoMvfMGc1ZSIjhIaRQj7WL394x1pgQosDadVV
-         UQLgX4AhlPkpIJv1pCM8wPXJo0+PP3zmJJHkTAIRLV4AUqzEJnF+ODuY73XX4dT7bqAq
-         5ihg==
+        d=gmail.com; s=20230601; t=1700538051; x=1701142851; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IZoBJdbZp36CmyvB8Khs+7svIVR+I1y53CDxKBQCWdg=;
+        b=lK9ornm2E2bqBCgk5CAwDrZm3TqWQu1sxZkjvApiYfR9o6RmydQ9omDpfVRlhiPm43
+         Cf4KmhurMKeQ0TokRCcRpGduSEvn81fkzho75HqS8ph2/K+2kBuruaiZ1RK4if4f99Pj
+         j1jJWJJqtshUClOrlB19m1uGnjF8sC6XPHBiADJNtxUtgfd+Co/rMfAnO2QdbTP2X7cG
+         +LnPUeXiboMlGywJYrvxFwM0IHmbhC+1WDx3pvd5tGbjf8K61jSqsfYp3Qnej5pOYB+N
+         R9297Jbk16Jx7c4RRXdqbxIHjKaaTagO2Vccd4hZJpKHuys+ebtQIhmhPkgHGVuRNHHB
+         PRAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700537862; x=1701142662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D6JP77IJAFcT7qYQ8fIPmy5AeO6uJhz8/ThBZXngqfQ=;
-        b=d39CFSFh+DQIAwKJzv66mPgGx3Rr4GhiWfDXJMjq201J/efFzCJUHVzPI8e5aQg6IC
-         suMLCjkOBT3945N1nguKcp+/8E/4eu+gmoicZ1y4W6aDWMYyhPMdmAiGti8+23JAbSwV
-         Q80eEjXNP/iu9RMbpQK357u13cR9ykTHS74/dasOi23DmDizgNRXE+acoURiXoWUHdtd
-         +VW0djQ4r37OMUgshQW3qKFiHNp9mtmO8p9SY/n/kR7RUlpj4gP1/vm7nKAHGCVzlc/G
-         pyN6+Gshyn4UtLjYH6Yk81zbzrtvmCzNoCwh+fRHM+CqZrMPJ7JtG5B2lIy0lAfzaHfH
-         sfmQ==
-X-Gm-Message-State: AOJu0YzS7XACpT7Ud8k3oN8EtXy19lmYcOQt8rm4VgRGo/24RAX5F7wt
-        QLOp5Et8YJKVrJ6H37gdlFwpD3oZu0NTGzeVyXfPag==
-X-Google-Smtp-Source: AGHT+IFSVsiy9K7Vb1LpBknGoBKKIsCYVMduksOP0PyaPxHgTyui5kGNuohqFfHP60cDN3HGY1EfEQ2m/n2viXtGiLE=
-X-Received: by 2002:a17:906:29ca:b0:a00:231a:92f8 with SMTP id
- y10-20020a17090629ca00b00a00231a92f8mr2231136eje.15.1700537861827; Mon, 20
- Nov 2023 19:37:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700538051; x=1701142851;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IZoBJdbZp36CmyvB8Khs+7svIVR+I1y53CDxKBQCWdg=;
+        b=bhnAqL12B/7q4gx0ZbJnzZeF6YL9iKVcpN7DaQQlNbxOyKkF0M/9ycjnGiqE3KIqqE
+         1uhQ+67D5B3A04+tq0XsK0dW7JrCjeebg5fe6wgAzwf9vR6cY3PdpeR2cPR74LDyt0Cr
+         6RIoN1/eAEtrVnuwvLbDvQvudeqi5wSpMHt2n++Zq0ijA8dYSLRRu18j9g60NJuRLFH0
+         OIYf3bOtTrlZAxJWVTR2wtO2VRPVS5K9usJKrx4BjBuWQlZLITkKj/FFIhl5Cw/F++BP
+         pOFb/QztCYJpBE/ZmZ4OEq9UTJF6QVju6je0rwHjwxSLTBgbAwWhpwto/EvJxQ6iayDx
+         16sw==
+X-Gm-Message-State: AOJu0Yxeck4mhTp+jp38mRmRTcW+J54RMdz8CQOJtaN8BfDd2je0i1qr
+        iqdDez/WdNE6l3a5d8v6NqgdAetZjRq8kA==
+X-Google-Smtp-Source: AGHT+IFa3t8GraPV4UkdOb+JpXKEhE/IcU4J6HGAQT8ZBsEJNgfkoK6EaFNXIxTkbtYjYbsx8mDvQg==
+X-Received: by 2002:a05:6a21:1446:b0:17d:f127:d435 with SMTP id oc6-20020a056a21144600b0017df127d435mr5724123pzb.45.1700538051158;
+        Mon, 20 Nov 2023 19:40:51 -0800 (PST)
+Received: from localhost.localdomain ([154.85.51.139])
+        by smtp.gmail.com with ESMTPSA id w16-20020a170902d71000b001c61acd5bd2sm6753152ply.112.2023.11.20.19.40.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 19:40:50 -0800 (PST)
+From:   Yusong Gao <a869920004@gmail.com>
+To:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
+        dwmw2@infradead.org, juergh@proton.me, zohar@linux.ibm.com,
+        herbert@gondor.apana.org.au, lists@sapience.com,
+        dimitri.ledkov@canonical.com
+Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v3] sign-file: Fix incorrect return values check
+Date:   Tue, 21 Nov 2023 03:40:44 +0000
+Message-Id: <20231121034044.847642-1-a869920004@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
- <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
- <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
- <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com>
- <8734x1cdtr.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAJD7tkbfjhC8SHZ=KspVfrTECZyY8BYrPGcLVLJcJRwXXdYDrw@mail.gmail.com>
- <87edgkapsz.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAJD7tkamaGjmP0anhez+JHxJx++UQcykyxRDieQxcTt5Q4+YuQ@mail.gmail.com>
- <875y1vc1n7.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAJD7tkbeN3X7e2ErYeYAAkd41p8DUsCVh7DhrwQ55+ip1eQrQA@mail.gmail.com>
- <871qcjbx20.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <871qcjbx20.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 20 Nov 2023 19:37:05 -0800
-Message-ID: <CAJD7tkYw5K2s9RGFDnbmP-ChcQ-GrnWudRdKYeym2bwzB47ScA@mail.gmail.com>
-Subject: Re: [PATCH] mm:zswap: fix zswap entry reclamation failure in two scenarios
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Chris Li <chriscli@google.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 7:35=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Yosry Ahmed <yosryahmed@google.com> writes:
->
-> > On Mon, Nov 20, 2023 at 5:55=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
-om> wrote:
-> >>
-> >> Yosry Ahmed <yosryahmed@google.com> writes:
-> >>
-> >> > On Mon, Nov 20, 2023 at 4:57=E2=80=AFPM Huang, Ying <ying.huang@inte=
-l.com> wrote:
-> >> >>
-> >> >> Yosry Ahmed <yosryahmed@google.com> writes:
-> >> >>
-> >> >> > On Sun, Nov 19, 2023 at 7:20=E2=80=AFPM Huang, Ying <ying.huang@i=
-ntel.com> wrote:
-> >> >> >>
-> >> >> >> Chris Li <chriscli@google.com> writes:
-> >> >> >>
-> >> >> >> > On Thu, Nov 16, 2023 at 12:19=E2=80=AFPM Yosry Ahmed <yosryahm=
-ed@google.com> wrote:
-> >> >> >> >>
-> >> >> >> >> Not bypassing the swap slot cache, just make the callbacks to
-> >> >> >> >> invalidate the zswap entry, do memg uncharging, etc when the =
-slot is
-> >> >> >> >> no longer used and is entering the swap slot cache (i.e. when
-> >> >> >> >> free_swap_slot() is called), instead of when draining the swa=
-p slot
-> >> >> >> >> cache (i.e. when swap_range_free() is called). For all parts =
-of MM
-> >> >> >> >> outside of swap, the swap entry is freed when free_swap_slot(=
-) is
-> >> >> >> >> called. We don't free it immediately because of caching, but =
-this
-> >> >> >> >> should be transparent to other parts of MM (e.g. zswap, memcg=
-, etc).
-> >> >> >> >
-> >> >> >> > That will cancel the batching effect on the swap slot free, ma=
-king the
-> >> >> >> > common case for  swapping  faults take longer to complete, rig=
-h?
-> >> >> >> > If I recall correctly, the uncharge is the expensive part of t=
-he swap
-> >> >> >> > slot free operation.
-> >> >> >> > I just want to figure out what we are trading off against. Thi=
-s is not
-> >> >> >> > one side wins all situations.
-> >> >> >>
-> >> >> >> Per my understanding, we don't batch memcg uncharging in
-> >> >> >> swap_entry_free() now.  Although it's possible and may improve
-> >> >> >> performance.
-> >> >> >
-> >> >> > Yes. It actually causes a long tail in swapin fault latency as Ch=
-ris
-> >> >> > discovered in our prod. I am wondering if doing the memcg uncharg=
-ing
-> >> >> > outside the slots cache will actually amortize the cost instead.
-> >> >> >
-> >> >> > Regardless of memcg charging, which is more complicated, I think =
-we
-> >> >> > should at least move the call to zswap_invalidate() before the sl=
-ots
-> >> >> > cache. I would prefer that we move everything non-swapfile specif=
-ic
-> >> >> > outside the slots cache layer (zswap_invalidate(),
-> >> >> > arch_swap_invalidate_page(),  clear_shadow_from_swap_cache(),
-> >> >> > mem_cgroup_uncharge_swap(), ..).  However, if some of those are
-> >> >> > controversial, we can move some of them for now.
-> >> >>
-> >> >> That makes sense for me.
-> >> >>
-> >> >> > When draining free swap slots from the cache, swap_range_free() i=
-s
-> >> >> > called with nr_entries =3D=3D 1 anyway, so I can't see how any ba=
-tching is
-> >> >> > going on. If anything it should help amortize the cost.
-> >> >>
-> >> >> In swapcache_free_entries(), the sis->lock will be held to free mul=
-tiple
-> >> >> swap slots via swap_info_get_cont() if possible.  This can reduce
-> >> >> sis->lock contention.
-> >> >
-> >> > Ah yes that's a good point. Since most of these callbacks don't
-> >> > actually access sis, but use the swap entry value itself, I am
-> >> > guessing the reason we need to hold the lock for all these callbacks
-> >> > is to prevent swapoff and swapon reusing the same swap entry on a
-> >> > different swap device, right?
-> >>
-> >> In,
-> >>
-> >> swapcache_free_entries()
-> >>   swap_entry_free()
-> >>     swap_range_free()
-> >>
-> >> Quite some sis fields will be accessed.
-> >
-> > I wasn't referring to this code. I was what's preventing us from
-> > moving the callbacks I mentioned outside the lock (zswap_invalidate(),
-> > arch_swap_invalidate_page(),  clear_shadow_from_swap_cache(),
-> > mem_cgroup_uncharge_swap(), ..). I think most or all of them don't
-> > really access sis, but perhaps they need the lock to ensure the swap
-> > entry value does not get reused?
->
-> In fact, the swap entries to be freed by swapcache_free_entries() is in
-> a state that can not be freed by other path (including swapoff()).  It's
-> swap_map value is SWAP_HAS_CACHE, but we can not find folio in
-> swap_address_space().
+There are some wrong return values check in sign-file when call OpenSSL
+API. The ERR() check cond is wrong because of the program only check the
+return value is < 0 instead of <= 0. For example:
+1. CMS_final() return 1 for success or 0 for failure.
+2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
+3. i2d_TYPEbio() return 1 for success and 0 for failure.
+4. BIO_free() return 1 for success and 0 for failure.
 
-Interesting, it would be even nicer if we can move them outside the lock.
+Link: https://www.openssl.org/docs/manmaster/man3/
+Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing with a raw signature")
 
->
-> To be honest, I don't know whether there are dependencies on sis->lock
-> in these callbacks.  You need to investigate them one by one.
+Signed-off-by: Yusong Gao <a869920004@gmail.com>
+---
+V1, V2: Clarify the description of git message.
+---
+ scripts/sign-file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Yeah moving these callbacks outside batching and the lock is very
-intriguing but needs to be done carefully. We don't need to do it all
-at once, we can start with zswap_invalidate() and move them as we see
-fit. It would be nice if the code is refactored such that it's clear
-what callbacks are made immediately when the entry is no longer used
-and what callbacks are made when the swap slot is being freed.
+diff --git a/scripts/sign-file.c b/scripts/sign-file.c
+index 598ef5465f82..dcebbcd6bebd 100644
+--- a/scripts/sign-file.c
++++ b/scripts/sign-file.c
+@@ -322,7 +322,7 @@ int main(int argc, char **argv)
+ 				     CMS_NOSMIMECAP | use_keyid |
+ 				     use_signed_attrs),
+ 		    "CMS_add1_signer");
+-		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
++		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) <= 0,
+ 		    "CMS_final");
+ 
+ #else
+@@ -341,10 +341,10 @@ int main(int argc, char **argv)
+ 			b = BIO_new_file(sig_file_name, "wb");
+ 			ERR(!b, "%s", sig_file_name);
+ #ifndef USE_PKCS7
+-			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
++			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) <= 0,
+ 			    "%s", sig_file_name);
+ #else
+-			ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
++			ERR(i2d_PKCS7_bio(b, pkcs7) <= 0,
+ 			    "%s", sig_file_name);
+ #endif
+ 			BIO_free(b);
+@@ -374,9 +374,9 @@ int main(int argc, char **argv)
+ 
+ 	if (!raw_sig) {
+ #ifndef USE_PKCS7
+-		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
++		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) <= 0, "%s", dest_name);
+ #else
+-		ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
++		ERR(i2d_PKCS7_bio(bd, pkcs7) <= 0, "%s", dest_name);
+ #endif
+ 	} else {
+ 		BIO *b;
+@@ -396,7 +396,7 @@ int main(int argc, char **argv)
+ 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
+ 	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
+ 
+-	ERR(BIO_free(bd) < 0, "%s", dest_name);
++	ERR(BIO_free(bd) <= 0, "%s", dest_name);
+ 
+ 	/* Finally, if we're signing in place, replace the original. */
+ 	if (replace_orig)
+-- 
+2.34.1
 
->
-> --
-> Best Regards,
-> Huang, Ying
