@@ -2,77 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB687F3563
+	by mail.lfdr.de (Postfix) with ESMTP id 077517F3562
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbjKUR4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:56:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbjKUR4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231290AbjKUR4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 21 Nov 2023 12:56:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0962F18E;
-        Tue, 21 Nov 2023 09:56:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700589407; x=1732125407;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2/r5O9ktbRjHHos+aJ5yv6QP/Ema933SZY47PqTAdhM=;
-  b=dhszuT5bveA8GlC+AZJUPYnOFeuWaFObdzngxxxnYCo/gqi6CJdO61fN
-   Pheux+uRRM58BsBL987var1Pi4PSQEhdpdZeIH/RmEj8JJhAiK1smxLdM
-   aoj44Rc6heylnevq2dcjFDuss98fFzMb8yrYHnodryU7Ww03OzpGSI4TB
-   2kP7vAyGmc36Lled+LiprSaXUBm5sbI4JqL4iY93XMmIxeXBjCEFAZkJ1
-   ZYvVwnTAPTmJOttvJuPxO+gBCoesq607m8j+6NeBR3oLfyClAWyJ/E/wE
-   fwm4hstnLTvglkwtrCVGPmr19YL8Zb9Hl+SfbpQ7PZy/DYLq5HQm1kC4J
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="382289970"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="382289970"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 09:56:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="766716011"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="766716011"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 09:56:42 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1r5UzH-0000000Fshq-0kmd;
-        Tue, 21 Nov 2023 19:56:39 +0200
-Date:   Tue, 21 Nov 2023 19:56:38 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbjKUR4t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 21 Nov 2023 12:56:49 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD212C;
+        Tue, 21 Nov 2023 09:56:45 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EDBBF1F8B8;
+        Tue, 21 Nov 2023 17:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1700589403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BRUlXAJOlgJyfK030JbpQyqs8hbHXrZ60DaHyZm0foM=;
+        b=Aa0nTlqoq8GQwGFbCKlcATI6TKWypBO1S8mLSDWoN1QWlYgPTnoZPEgKGgQeUdH/mNfxfL
+        tOnDSnshswlu1ORBBjUaWdxvsCrXMNDjE9F6LYCTYnlPQiQMj01cvaFzhnOcBlXSZkNX9Z
+        8qoKsMQvqPXf7OGRwxGPZYdTS0PB//0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9221C139FD;
+        Tue, 21 Nov 2023 17:56:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id O3x5IlrvXGW1QAAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 21 Nov 2023 17:56:42 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
         "David S . Miller" <davem@davemloft.net>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] serial: core: Add support for DEVNAME:0.0 style
- naming for kernel console
-Message-ID: <ZVzvVpuMrWqjnqUC@smile.fi.intel.com>
-References: <20231121113203.61341-1-tony@atomide.com>
- <20231121113203.61341-3-tony@atomide.com>
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
+        Martin Wilck <mwilck@suse.com>
+Subject: [PATCH] net/sched: cls: Load net classifier modules via alias
+Date:   Tue, 21 Nov 2023 18:56:40 +0100
+Message-ID: <20231121175640.9981-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121113203.61341-3-tony@atomide.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         BAYES_HAM(-3.00)[100.00%];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[24];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[mojatatu.com,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,iogearbox.net,linux.dev,suse.cz,suse.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,70 +104,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 01:31:56PM +0200, Tony Lindgren wrote:
-> We can now add hardware based addressing for serial ports. Starting with
-> commit 84a9582fd203 ("serial: core: Start managing serial controllers to
-> enable runtime PM"), and all the related fixes to this commit, the serial
-> core now knows to which serial port controller the ports are connected.
-> 
-> The serial ports can be addressed with DEVNAME:0.0 style naming. The names
-> are something like 00:04:0.0 for a serial port on qemu, and something like
-> 2800000.serial:0.0 on platform device using systems like ARM64 for example.
-> 
-> The DEVNAME is the unique serial port hardware controller device name, AKA
-> the name for port->dev. The 0.0 are the serial core controller id and port
-> id.
-> 
-> Typically 0.0 are used for each controller and port instance unless the
-> serial port hardware controller has multiple controllers or ports.
-> 
-> Using DEVNAME:0.0 style naming actually solves two long term issues for
-> addressing the serial ports:
-> 
-> 1. According to Andy Shevchenko, using DEVNAME:0.0 style naming fixes an
->    issue where depending on the BIOS settings, the kernel serial port ttyS
->    instance number may change if HSUART is enabled
-> 
-> 2. Device tree using architectures no longer necessarily need to specify
->    aliases to find a specific serial port, and we can just allocate the
->    ttyS instance numbers dynamically in whatever probe order
-> 
-> To do this, let's match the hardware addressing style console name to
-> the character device name used, and add a preferred console using the
-> character device device name.
+The classifier modules may be loaded lazily without user's awareness and
+control. Add respective aliases to modules and request them under these
+aliases so that modprobe's blacklisting mechanism works also for
+classifier modules. (The same pattern exists e.g. for filesystem
+modules.)
 
-...
+Original module names remain unchanged.
 
-> +int serial_base_add_preferred_console(struct uart_driver *drv,
-> +				      struct uart_port *port)
-> +{
-> +	const char *port_match __free(kfree);
-> +	int ret;
-> +
-> +	port_match = kasprintf(GFP_KERNEL, "%s:%i.%i", dev_name(port->dev),
-> +			       port->ctrl_id, port->port_id);
-> +	if (!port_match)
-> +		return -ENOMEM;
-> +
-> +	/* Translate a hardware addressing style console=DEVNAME:0.0 */
-> +	ret = add_preferred_console_match(port_match, drv->dev_name, port->line);
-> +	if (ret && ret != -ENOENT)
-> +		return ret;
-> +
-> +	return 0;
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ include/net/pkt_cls.h    | 1 +
+ net/sched/cls_api.c      | 2 +-
+ net/sched/cls_basic.c    | 1 +
+ net/sched/cls_bpf.c      | 1 +
+ net/sched/cls_cgroup.c   | 1 +
+ net/sched/cls_flow.c     | 1 +
+ net/sched/cls_flower.c   | 1 +
+ net/sched/cls_fw.c       | 1 +
+ net/sched/cls_matchall.c | 1 +
+ net/sched/cls_route.c    | 1 +
+ net/sched/cls_u32.c      | 1 +
+ 11 files changed, 11 insertions(+), 1 deletion(-)
 
-Maybe
+This is primarily for TC subsystem maintainers where the
+request_module() resides but Cc list is large because of touches in
+various classifier modules.
 
-	ret = add_preferred_console_match(port_match, drv->dev_name, port->line);
-	if (ret == -ENOENT)
-		return 0;
-
-	return ret;
-
-> +}
-
+diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+index a76c9171db0e..424b4f889feb 100644
+--- a/include/net/pkt_cls.h
++++ b/include/net/pkt_cls.h
+@@ -24,6 +24,7 @@ struct tcf_walker {
+ 
+ int register_tcf_proto_ops(struct tcf_proto_ops *ops);
+ void unregister_tcf_proto_ops(struct tcf_proto_ops *ops);
++#define MODULE_ALIAS_TCF(kind)	MODULE_ALIAS("tcf-" __stringify(kind))
+ 
+ struct tcf_block_ext_info {
+ 	enum flow_block_binder_type binder_type;
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index 1976bd163986..02fdcceee083 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -257,7 +257,7 @@ tcf_proto_lookup_ops(const char *kind, bool rtnl_held,
+ #ifdef CONFIG_MODULES
+ 	if (rtnl_held)
+ 		rtnl_unlock();
+-	request_module("cls_%s", kind);
++	request_module("tcf-%s", kind);
+ 	if (rtnl_held)
+ 		rtnl_lock();
+ 	ops = __tcf_proto_lookup_ops(kind);
+diff --git a/net/sched/cls_basic.c b/net/sched/cls_basic.c
+index a1f56931330c..a3500ac7fc1a 100644
+--- a/net/sched/cls_basic.c
++++ b/net/sched/cls_basic.c
+@@ -328,6 +328,7 @@ static struct tcf_proto_ops cls_basic_ops __read_mostly = {
+ 	.bind_class	=	basic_bind_class,
+ 	.owner		=	THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("basic");
+ 
+ static int __init init_basic(void)
+ {
+diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+index 382c7a71f81f..8d57ac155c0c 100644
+--- a/net/sched/cls_bpf.c
++++ b/net/sched/cls_bpf.c
+@@ -693,6 +693,7 @@ static struct tcf_proto_ops cls_bpf_ops __read_mostly = {
+ 	.dump		=	cls_bpf_dump,
+ 	.bind_class	=	cls_bpf_bind_class,
+ };
++MODULE_ALIAS_TCF("bpf");
+ 
+ static int __init cls_bpf_init_mod(void)
+ {
+diff --git a/net/sched/cls_cgroup.c b/net/sched/cls_cgroup.c
+index 7ee8dbf49ed0..0ded7d79894c 100644
+--- a/net/sched/cls_cgroup.c
++++ b/net/sched/cls_cgroup.c
+@@ -209,6 +209,7 @@ static struct tcf_proto_ops cls_cgroup_ops __read_mostly = {
+ 	.dump		=	cls_cgroup_dump,
+ 	.owner		=	THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("cgroup");
+ 
+ static int __init init_cgroup_cls(void)
+ {
+diff --git a/net/sched/cls_flow.c b/net/sched/cls_flow.c
+index 6ab317b48d6c..2806aa1254e1 100644
+--- a/net/sched/cls_flow.c
++++ b/net/sched/cls_flow.c
+@@ -702,6 +702,7 @@ static struct tcf_proto_ops cls_flow_ops __read_mostly = {
+ 	.walk		= flow_walk,
+ 	.owner		= THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("flow");
+ 
+ static int __init cls_flow_init(void)
+ {
+diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+index e5314a31f75a..739e09e0fa57 100644
+--- a/net/sched/cls_flower.c
++++ b/net/sched/cls_flower.c
+@@ -3633,6 +3633,7 @@ static struct tcf_proto_ops cls_fl_ops __read_mostly = {
+ 	.owner		= THIS_MODULE,
+ 	.flags		= TCF_PROTO_OPS_DOIT_UNLOCKED,
+ };
++MODULE_ALIAS_TCF("flower");
+ 
+ static int __init cls_fl_init(void)
+ {
+diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
+index afc534ee0a18..86c833885a2d 100644
+--- a/net/sched/cls_fw.c
++++ b/net/sched/cls_fw.c
+@@ -433,6 +433,7 @@ static struct tcf_proto_ops cls_fw_ops __read_mostly = {
+ 	.bind_class	=	fw_bind_class,
+ 	.owner		=	THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("fw");
+ 
+ static int __init init_fw(void)
+ {
+diff --git a/net/sched/cls_matchall.c b/net/sched/cls_matchall.c
+index c4ed11df6254..21ba73978c6a 100644
+--- a/net/sched/cls_matchall.c
++++ b/net/sched/cls_matchall.c
+@@ -398,6 +398,7 @@ static struct tcf_proto_ops cls_mall_ops __read_mostly = {
+ 	.bind_class	= mall_bind_class,
+ 	.owner		= THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("matchall");
+ 
+ static int __init cls_mall_init(void)
+ {
+diff --git a/net/sched/cls_route.c b/net/sched/cls_route.c
+index 12a505db4183..a4701c0752df 100644
+--- a/net/sched/cls_route.c
++++ b/net/sched/cls_route.c
+@@ -671,6 +671,7 @@ static struct tcf_proto_ops cls_route4_ops __read_mostly = {
+ 	.bind_class	=	route4_bind_class,
+ 	.owner		=	THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("route");
+ 
+ static int __init init_route4(void)
+ {
+diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+index d5bdfd4a7655..a969adbd7423 100644
+--- a/net/sched/cls_u32.c
++++ b/net/sched/cls_u32.c
+@@ -1453,6 +1453,7 @@ static struct tcf_proto_ops cls_u32_ops __read_mostly = {
+ 	.bind_class	=	u32_bind_class,
+ 	.owner		=	THIS_MODULE,
+ };
++MODULE_ALIAS_TCF("u32");
+ 
+ static int __init init_u32(void)
+ {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.42.1
 
