@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC687F247A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1EA7F247F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjKUDHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 22:07:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
+        id S233116AbjKUDKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 22:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKUDHW (ORCPT
+        with ESMTP id S229618AbjKUDKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 22:07:22 -0500
-Received: from mail-108-mta197.mxroute.com (mail-108-mta197.mxroute.com [136.175.108.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C4BD2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 19:07:17 -0800 (PST)
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta197.mxroute.com (ZoneMTA) with ESMTPSA id 18befd89f01000190b.002
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Tue, 21 Nov 2023 03:07:13 +0000
-X-Zone-Loop: 2fb9a435ca6667e22c665c078c2ec673d79e28685d6a
-X-Originating-IP: [136.175.111.2]
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kelvie.ca;
-        s=x; h=Content-Transfer-Encoding:Content-Type:Cc:To:Subject:Message-ID:Date:
-        From:In-Reply-To:References:MIME-Version:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=yv3ur+VJgPZw5HSVfRVyxfBSzyF5tf8z7FkRU5st0L8=; b=oDbnF1ZC4la1YdwywqU+G9G6Qe
-        88QaVloZ0eYUc3Q8326JwRDRR9L7KpUQDUeJHaBpl6vvrw9TPp9mLGogorfxAA8ocY3E2oYaW9fPM
-        nqi6zTnljzLw/5sdUQRGM4YlPHb3sfFtlco5NTPNlx5uaXx5K+//rWwp2R2EXRRvdJey09ucj6AHv
-        w7AJbKxjX+iQIzgqN2rqYHrSYku+Iuq/ONlfFCv1aQnZUqsfUM+KOlsNCQFN3X+OpRF8tbPgj6O9q
-        n/1zy96mP0v3cVtBYBw62qqaRj2s9V7iOUz4fEjBLC66aeRJ2CoiS+hN3CAC8/yrxY+phHLYLTT81
-        zhqqziwg==;
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2851b271e51so1416788a91.1;
-        Mon, 20 Nov 2023 19:07:11 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx7tyGV0qyJbexqXA/sKLzQoyKaLi1uOh8nh69fys8AIvAxm1vc
-        wIXG1Wj5hPZEIYwEm189QkFjwT3Lf9BYZuF36qQ=
-X-Google-Smtp-Source: AGHT+IHon8FUuNWN6OAvDXiT56AU977GCXjbZnY29yNHWhPtGrU+rTKXg7n8CadQaTmdi00890/QXuJBCYzK0xTkkfk=
-X-Received: by 2002:a17:90a:6881:b0:280:a4a1:5d03 with SMTP id
- a1-20020a17090a688100b00280a4a15d03mr2108500pjd.4.1700536030830; Mon, 20 Nov
- 2023 19:07:10 -0800 (PST)
+        Mon, 20 Nov 2023 22:10:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63AFBC;
+        Mon, 20 Nov 2023 19:10:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700536226; x=1732072226;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=+P9oonEPLwebJ2u+rmYI9E5ttIAiBdzIFEWcnlkvP0U=;
+  b=fFPRvxZloSQxNv/nw9SBQ5VfPH/+sETd9Jm9lRvYXIljuXFBH4ZA3P6G
+   UDwHJbj6KmsKXhEprnOJ3Dy/xSU/GcBLKlYPHP0xQFtiASK3SLrhBzQ4O
+   Oewta5Bgl3xXAvHO4Bf1WfSO/7R+nW/5IOA+HyPzxtvXaQ4skrm+8HoM1
+   EYXZbp/16H8JvDxdCvbsyVni8hegNrtvrtRH07Rb3RWTt33DbAbBkSxCn
+   JPNelM3dkPGJpGnMDEez6SO7GdrlnjdhH8sY0kmUWHu5yHezupb1cLY+i
+   ffxcCsZng7G4/4wEcYRIFEl8nsrBZh0yVA1WKb/lFOFOru1/NLLAL5+lx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="390609584"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="390609584"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 19:10:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="7921020"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by fmviesa002.fm.intel.com with ESMTP; 20 Nov 2023 19:10:24 -0800
+Date:   Tue, 21 Nov 2023 11:10:24 +0800
+From:   Yuan Yao <yuan.yao@linux.intel.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: Re: [PATCH 3/9] KVM: x86: Initialize guest cpu_caps based on guest
+ CPUID
+Message-ID: <20231121031024.gxghavohrkgh7psd@yy-desk-7060>
+References: <20231110235528.1561679-1-seanjc@google.com>
+ <20231110235528.1561679-4-seanjc@google.com>
+ <c9f65fc1-ab55-4959-a8ec-390aee51ee3a@intel.com>
+ <ZVaXroTZQi1IcTvm@google.com>
+ <c9401dbf-88a0-404d-a8d3-33f0e712cda3@intel.com>
 MIME-Version: 1.0
-References: <20231114022503.6310-1-kelvie@kelvie.ca> <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
- <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com>
-In-Reply-To: <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com>
-From:   Kelvie Wong <kelvie@kelvie.ca>
-Date:   Mon, 20 Nov 2023 19:06:59 -0800
-X-Gmail-Original-Message-ID: <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
-Message-ID: <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
-Subject: Re: [PATCH RFC] Add a lockdown_hibernate parameter
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Authenticated-Id: kelvie@kelvie.ca
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c9401dbf-88a0-404d-a8d3-33f0e712cda3@intel.com>
+User-Agent: NeoMutt/20171215
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 at 13:12, Paul Moore <paul@paul-moore.com> wrote:
-> On Mon, Nov 13, 2023 at 11:01=E2=80=AFPM Randy Dunlap <rdunlap@infradead.=
-org> wrote:
+On Fri, Nov 17, 2023 at 04:33:27PM +0800, Yang, Weijiang wrote:
+> On 11/17/2023 6:29 AM, Sean Christopherson wrote:
+> > On Thu, Nov 16, 2023, Weijiang Yang wrote:
+> > > On 11/11/2023 7:55 AM, Sean Christopherson wrote:
+> > >
+> > > [...]
+> > >
+> > > > -static __always_inline void guest_cpu_cap_check_and_set(struct kvm_vcpu *vcpu,
+> > > > -							unsigned int x86_feature)
+> > > > +static __always_inline void guest_cpu_cap_clear(struct kvm_vcpu *vcpu,
+> > > > +						unsigned int x86_feature)
+> > > >    {
+> > > > -	if (kvm_cpu_cap_has(x86_feature) && guest_cpuid_has(vcpu, x86_feature))
+> > > > +	unsigned int x86_leaf = __feature_leaf(x86_feature);
+> > > > +
+> > > > +	reverse_cpuid_check(x86_leaf);
+> > > > +	vcpu->arch.cpu_caps[x86_leaf] &= ~__feature_bit(x86_feature);
+> > > > +}
+> > > > +
+> > > > +static __always_inline void guest_cpu_cap_change(struct kvm_vcpu *vcpu,
+> > > > +						 unsigned int x86_feature,
+> > > > +						 bool guest_has_cap)
+> > > > +{
+> > > > +	if (guest_has_cap)
+> > > >    		guest_cpu_cap_set(vcpu, x86_feature);
+> > > > +	else
+> > > > +		guest_cpu_cap_clear(vcpu, x86_feature);
+> > > > +}
+> > > I don't see any necessity to add 3 functions, i.e., guest_cpu_cap_{set, clear, change}, for
+> > I want to have equivalents to the cpuid_entry_*() APIs so that we don't end up
+> > with two different sets of names.  And the clear() API already has a second user.
 > >
-> > [add security & dhowells]
+> > > guest_cpu_cap update. IMHO one function is enough, e.g,:
+> > Hrm, I open coded the OR/AND logic in cpuid_entry_change() to try to force CMOV
+> > instead of Jcc.  That honestly seems like a pointless optimization.  I would
+> > rather use the helpers, which is less code.
 > >
-> > On 11/13/23 18:23, Kelvie Wong wrote:
-> > > This allows the user to tell the kernel that they know better (namely=
-,
-> > > they secured their swap properly), and that it can enable hibernation=
-.
+> > > static __always_inline void guest_cpu_cap_update(struct kvm_vcpu *vcpu,
+> > >                                                   unsigned int x86_feature,
+> > >                                                   bool guest_has_cap)
+> > > {
+> > >          unsigned int x86_leaf = __feature_leaf(x86_feature);
 > > >
-> > > I've been using this for about a year now, as it doesn't seem like
-> > > proper secure hibernation was going to be implemented back then, and
-> > > it's now been a year since I've been building my own kernels with thi=
-s
-> > > patch, so getting this upstreamed would save some CO2 from me buildin=
-g
-> > > my own kernels every upgrade.
+> > > reverse_cpuid_check(x86_leaf);
+> > >          if (guest_has_cap)
+> > >                  vcpu->arch.cpu_caps[x86_leaf] |= __feature_bit(x86_feature);
+> > > else
+> > >                  vcpu->arch.cpu_caps[x86_leaf] &= ~__feature_bit(x86_feature);
+> > > }
 > > >
-> > > Some other not-me users have also tested the patch:
+> > > > +
+> > > > +static __always_inline void guest_cpu_cap_restrict(struct kvm_vcpu *vcpu,
+> > > > +						   unsigned int x86_feature)
+> > > > +{
+> > > > +	if (!kvm_cpu_cap_has(x86_feature))
+> > > > +		guest_cpu_cap_clear(vcpu, x86_feature);
+> > > >    }
+> > > _restrict is not clear to me for what the function actually does -- it
+> > > conditionally clears guest cap depending on KVM support of the feature.
 > > >
-> > > https://community.frame.work/t/guide-fedora-36-hibernation-with-enabl=
-ed-secure-boot-and-full-disk-encryption-fde-decrypting-over-tpm2/25474/17
-> > >
-> > > Signed-off-by: Kelvie Wong <kelvie@kelvie.ca>
+> > > How about renaming it to guest_cpu_cap_sync()?
+> > "sync" isn't correct because it's not synchronizing with KVM's capabilitiy, e.g.
+> > the guest capability will remaing unset if the guest CPUID bit is clear but the
+> > KVM capability is available.
+> >
+> > How about constrain()?
+> I don't know, just feel we already have guest_cpu_cap_{set, clear, change}, here the name cannot exactly match the behavior of the function, maybe guest_cpu_cap_filter()? But just ignore the nit, up to you to decide the name :-)
+
+How about guest_cpu_cap_kvm_restrict or guest_cpu_cap_kvm_constrain ?
+
 >
-> I would feel a lot better about this if there was a way to verify that
-> the swap was protected as opposed to leaving that as a note in a doc
-> that the majority of users will never see, read, or understand.
-
-I'd argue that this wouldn't even be necessary if we detect the swap was
-protected -- hibernation should just be enabled in that case without settin=
-g
-any parameters.
-
-My understanding is that it was disabled waiting for this
-functionality, and it's been
-at least a couple of years now [1], so it looks like it's not such an
-easy problem.
-
-Anyway, my argument is that the majority of users will never use this kerne=
-l
-parameter anyway, so I think it's a fair assumption that the power users th=
-at
-*do* use this will educate themselves on why this parameter even exists.
-
-[1] https://lwn.net/Articles/847042/
-
---=20
-Kelvie
+>
