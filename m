@@ -2,128 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6719A7F29E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7277F29EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjKUKOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
+        id S231977AbjKUKQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231923AbjKUKOH (ORCPT
+        with ESMTP id S230304AbjKUKQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:14:07 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D688ABA;
-        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b3f6dd612cso3291374b6e.3;
-        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700561642; x=1701166442; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2rBM84BPH3h1OTNeKF8gkahQrwyTUFEFO20bhp2Xhd8=;
-        b=NnrlbR5r2soU9t9TIxVn4YCusKvlrRaEi0T8vpS8rWNE+v5AsTWn9/BZRr0voePTJ5
-         QEHDRO4gXSuBe7Lv4RFCKHi29Z5vzwejmjSltA8PhW9+2wcK0PBxYM3pQ9Q5deSiWnSe
-         2rm7mEjEDuFUGgW2/psCCHo3+trO66a2MGh5zN8/WOs73A25an1jKkzfFKEJcVDR8hGS
-         ATkdtpwRIkdh4IGk+mRCKzB4VwcoBsDSz5c6B7AL3WRBfA4YAmTRJRfY9GfYFgCen6Xk
-         ataR/stE8KyTMbn0X5lY2pjHuXs2lyQZYfY/rJixs7ICYw0a0YowXHzDMuTjkfPX+Z+T
-         9uuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700561642; x=1701166442;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rBM84BPH3h1OTNeKF8gkahQrwyTUFEFO20bhp2Xhd8=;
-        b=lyrUmH7F0xDY6rQw2zatLt4YtEUoB35hleeUWE/o1nC9kevJNk2aD38Xi5ucWSrHlj
-         ViF/vgq7YmyuFTVLp2D/Mm5v3ljqaAm4dfVLIIshRJbUV8U5GX9KBjS8NOLw9i68KUTk
-         /7i2Ce///a1Fha1IjHDCOrfcX7MeaL1lioXj6vxzEXlmrW5YN+HdXRdKW2bnW96NJyCq
-         jQHDkCd4AxkUa+y1Rv4DfeVkAwDYaJ28x63ANGovTsDY7TXpqBoL3eubfAuE/DFUEnPl
-         GkanEsWQbp1+mIVN/nbw0++5v4difDly7S2kZ4Zrj8LJWA3ePCVRLkQ2UwmbaaWlEUkv
-         BPkw==
-X-Gm-Message-State: AOJu0YxBGzATvMOISZ+kPK7dVUoKe/DO/7QFlSjfRcwkKkrbImRu/jJG
-        bjKTGblZ7xUy5Tj7jc5rQCMM3XEDqQbKsg==
-X-Google-Smtp-Source: AGHT+IGhEXVp30ly+W+J0Vq5BReMmqT7YvixSbVC5mluqZTiIrvaPLLb925ROrcuhxW/NFuCjXOCsQ==
-X-Received: by 2002:a05:6871:7b0c:b0:1f5:c7bb:8f2d with SMTP id pf12-20020a0568717b0c00b001f5c7bb8f2dmr12045321oac.35.1700561642127;
-        Tue, 21 Nov 2023 02:14:02 -0800 (PST)
-Received: from ?IPV6:2401:4900:2353:8963:b940:1ac0:2fbc:6b6? ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
-        by smtp.gmail.com with ESMTPSA id f2-20020a056a0022c200b0064fd4a6b306sm7538948pfj.76.2023.11.21.02.13.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 02:14:01 -0800 (PST)
-Message-ID: <4eb9d00a-a672-40a8-a923-d728432b1250@gmail.com>
-Date:   Tue, 21 Nov 2023 15:42:18 +0530
+        Tue, 21 Nov 2023 05:16:13 -0500
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3CE9114;
+        Tue, 21 Nov 2023 02:16:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ovQAt
+        sQI9l5UyjC1/OJ9at0KgrMCeX296IrfvFS0X/g=; b=HDGFJub0GNmQXCCKSGMx5
+        weiQj8gIlj5HeIYc5W9+1tTzV+qDteBb23U6SnrJ/dQ3SPelyD7G7atnSAhPpxAf
+        ZZvLKHDw/NvSZZzRjjHVqlke77AUQpu2DteHuL8tdj/Q911VtpqvhzZNZoSM4EfO
+        nwA/rHVlJtag2L4RYKyYbQ=
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+        by zwqz-smtp-mta-g3-1 (Coremail) with SMTP id _____wD3X_ybglxlh7GhCw--.38475S2;
+        Tue, 21 Nov 2023 18:12:53 +0800 (CST)
+From:   Shifeng Li <lishifeng1992@126.com>
+To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
+        leon@kernel.org, gustavoars@kernel.org
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinghui@sangfor.com.cn, Shifeng Li <lishifeng1992@126.com>
+Subject: [PATCH v3] RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
+Date:   Tue, 21 Nov 2023 02:12:36 -0800
+Message-Id: <20231121101236.581694-1-lishifeng1992@126.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: chemical: add aosong,ags02ma
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-References: <20231121095800.2180870-1-anshulusr@gmail.com>
- <20231121095800.2180870-2-anshulusr@gmail.com>
- <81149957-0403-4e41-8405-77ef8bfa3c8c@linaro.org>
-Content-Language: en-US
-From:   Anshul Dalal <anshulusr@gmail.com>
-In-Reply-To: <81149957-0403-4e41-8405-77ef8bfa3c8c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3X_ybglxlh7GhCw--.38475S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXFy5tF1kCFy7GFyrJF4kXrb_yoW5WFyxpa
+        45Gw1jvrZrJw42qayFy3WUKF98JFs8tF9F9a4Sk34fCr43Z3WFvF47KrW09FW5ua43Jr17
+        JF1jgFn3ur45GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_38nUUUUUU=
+X-Originating-IP: [111.222.250.119]
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbi1wYvr153c2EsXgAAsY
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When removing the irdma driver or unplugging its aux device, the ccq
+queue is released before destorying the cqp_cmpl_wq queue.
+But in the window, there may still be completion events for wqes. That
+will cause a UAF in irdma_sc_ccq_get_cqe_info().
 
+[34693.333191] BUG: KASAN: use-after-free in irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333194] Read of size 8 at addr ffff889097f80818 by task kworker/u67:1/26327
+[34693.333194]
+[34693.333199] CPU: 9 PID: 26327 Comm: kworker/u67:1 Kdump: loaded Tainted: G           O     --------- -t - 4.18.0 #1
+[34693.333200] Hardware name: SANGFOR Inspur/NULL, BIOS 4.1.13 08/01/2016
+[34693.333211] Workqueue: cqp_cmpl_wq cqp_compl_worker [irdma]
+[34693.333213] Call Trace:
+[34693.333220]  dump_stack+0x71/0xab
+[34693.333226]  print_address_description+0x6b/0x290
+[34693.333238]  ? irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333240]  kasan_report+0x14a/0x2b0
+[34693.333251]  irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333264]  ? irdma_free_cqp_request+0x151/0x1e0 [irdma]
+[34693.333274]  irdma_cqp_ce_handler+0x1fb/0x3b0 [irdma]
+[34693.333285]  ? irdma_ctrl_init_hw+0x2c20/0x2c20 [irdma]
+[34693.333290]  ? __schedule+0x836/0x1570
+[34693.333293]  ? strscpy+0x83/0x180
+[34693.333296]  process_one_work+0x56a/0x11f0
+[34693.333298]  worker_thread+0x8f/0xf40
+[34693.333301]  ? __kthread_parkme+0x78/0xf0
+[34693.333303]  ? rescuer_thread+0xc50/0xc50
+[34693.333305]  kthread+0x2a0/0x390
+[34693.333308]  ? kthread_destroy_worker+0x90/0x90
+[34693.333310]  ret_from_fork+0x1f/0x40
 
-On 11/21/23 15:33, Krzysztof Kozlowski wrote:
-> On 21/11/2023 10:57, Anshul Dalal wrote:
->> Add bindings for Aosong AGS02MA TVOC sensor.
->>
->> The sensor communicates over i2c with the default address 0x1a.
->> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
->>
->> Datasheet:
->>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
->> Product-Page:
->>   http://www.aosong.com/m/en/products-33.html
->>
-> 
-> 
->> +---
->> +$id: http://devicetree.org/schemas/iio/chemical/aosong,ags02ma.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Aosong AGS02MA VOC Sensor
->> [..]
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +    i2c {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        light-sensor@1a {
-> 
-> 
-> You called it chemical, so why this is here light-sensor?
+Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
+Signed-off-by: Shifeng Li <lishifeng1992@126.com>
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/irdma/hw.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+---
+v1->v2: add Fixes line.
+---
+v2->v3: fix code conflicts.
 
-I was working on a binding for a light sensor in parallel at that time,
-I probably forgot to change this when copying the example from the light
-sensor.
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index 8fa7e4a18e73..6b950926949e 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -581,9 +581,6 @@ static void irdma_destroy_cqp(struct irdma_pci_f *rf)
+ 	struct irdma_cqp *cqp = &rf->cqp;
+ 	int status = 0;
+ 
+-	if (rf->cqp_cmpl_wq)
+-		destroy_workqueue(rf->cqp_cmpl_wq);
+-
+ 	status = irdma_sc_cqp_destroy(dev->cqp);
+ 	if (status)
+ 		ibdev_dbg(to_ibdev(dev), "ERR: Destroy CQP failed %d\n", status);
+@@ -748,6 +745,9 @@ static void irdma_destroy_ccq(struct irdma_pci_f *rf)
+ 	struct irdma_ccq *ccq = &rf->ccq;
+ 	int status = 0;
+ 
++	if (rf->cqp_cmpl_wq)
++		destroy_workqueue(rf->cqp_cmpl_wq);
++
+ 	if (!rf->reset)
+ 		status = irdma_sc_ccq_destroy(dev->ccq, 0, true);
+ 	if (status)
+-- 
+2.25.1
 
-Would be replaced by "voc-sensor" in the next revision, apologies for
-any inconvenience.
-
-Thanks for the review.
-
-Best Regards,
-Anshul
