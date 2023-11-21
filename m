@@ -2,456 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CAA7F29A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A917F29BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234171AbjKUKA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
+        id S234189AbjKUKEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:04:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbjKUKAy (ORCPT
+        with ESMTP id S234213AbjKUKEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:00:54 -0500
-Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8787DFA;
-        Tue, 21 Nov 2023 02:00:50 -0800 (PST)
-Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AL8dklK013722;
-        Tue, 21 Nov 2023 05:00:36 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3ugs83ra66-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 05:00:36 -0500 (EST)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 3ALA0Zb4019877
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 21 Nov 2023 05:00:35 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Tue, 21 Nov
- 2023 05:00:34 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 21 Nov 2023 05:00:34 -0500
-Received: from KPALLER2-L02.ad.analog.com (KPALLER2-L02.ad.analog.com [10.117.220.24])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3ALA0HI3012212;
-        Tue, 21 Nov 2023 05:00:27 -0500
-From:   Kim Seer Paller <kimseer.paller@analog.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kim Seer Paller <kimseer.paller@analog.com>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] iio: frequency: admfm2000: New driver
-Date:   Tue, 21 Nov 2023 18:00:12 +0800
-Message-ID: <20231121100012.112861-2-kimseer.paller@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231121100012.112861-1-kimseer.paller@analog.com>
-References: <20231121100012.112861-1-kimseer.paller@analog.com>
+        Tue, 21 Nov 2023 05:04:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7865110F;
+        Tue, 21 Nov 2023 02:04:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700561078; x=1732097078;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tM/dBdaQqRwyGzQe3I2S/GuZt02ZYBBRQTyGFOMoNS0=;
+  b=DhTGRm9WC5wooj97TWH57KKWSHnRIhOEobfAEGVFloFi568v0tSFhl3p
+   5iQmq5FW5ZCCnv99BWcHeGZ+3BZtJtGeGVHzA6hSaxLut2JOcu/RWNWzj
+   20DynkDkZB2RtZa0D7kmZieKbrGoSL3AOaAEtCtVFA5ZJSMo8nl8bgnmR
+   sw1Kxk8WqlId5o6MF064cPqsjlAw2+GbmpHNg066KZOci92flvhjMAL2Z
+   ix5ab1TMojkzptfUg7KedOgROOvCk4XbcnEMLIY74WcbvpDOWweMNbB0H
+   jAzBtPqe258U6YvsrRd1rdhBNEY4Zu2ym93NkBqDKSFRrmo0UBf8HKVvN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13349948"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="13349948"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:04:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="884154460"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="884154460"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 21 Nov 2023 02:04:34 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5NcO-0007fo-0L;
+        Tue, 21 Nov 2023 10:04:32 +0000
+Date:   Tue, 21 Nov 2023 18:00:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: Re: [PATCH net-next v11 12/13] net:ethernet:realtek: Update the
+ Makefile and Kconfig in the realtek folder
+Message-ID: <202311211750.4FwMt8rx-lkp@intel.com>
+References: <20231115133414.1221480-13-justinlai0215@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: tbvC4MUJ_tZUEW5cQVC5H1YsDZg31mVK
-X-Proofpoint-GUID: tbvC4MUJ_tZUEW5cQVC5H1YsDZg31mVK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- clxscore=1015 impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311060001 definitions=main-2311210078
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115133414.1221480-13-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dual microwave down converter module with input RF and LO frequency
-ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
-8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
-for each down conversion path.
+Hi Justin,
 
-Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
----
-V1 -> V2: No changes.
+kernel test robot noticed the following build warnings:
 
- MAINTAINERS                       |   1 +
- drivers/iio/frequency/Kconfig     |  10 +
- drivers/iio/frequency/Makefile    |   1 +
- drivers/iio/frequency/admfm2000.c | 309 ++++++++++++++++++++++++++++++
- 4 files changed, 321 insertions(+)
- create mode 100644 drivers/iio/frequency/admfm2000.c
+[auto build test WARNING on net-next/main]
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a5d18864519e..5df3aa39d1f5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1253,6 +1253,7 @@ L:	linux-iio@vger.kernel.org
- S:	Supported
- W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
-+F:	drivers/iio/frequency/admfm2000.c
- 
- ANALOG DEVICES INC ADMV1013 DRIVER
- M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
-diff --git a/drivers/iio/frequency/Kconfig b/drivers/iio/frequency/Kconfig
-index 9e85dfa58508..c455be7d4a1c 100644
---- a/drivers/iio/frequency/Kconfig
-+++ b/drivers/iio/frequency/Kconfig
-@@ -60,6 +60,16 @@ config ADF4377
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called adf4377.
- 
-+config ADMFM2000
-+	tristate "Analog Devices ADMFM2000 Dual Microwave Down Converter"
-+	depends on GPIOLIB
-+	help
-+	  Say yes here to build support for Analog Devices ADMFM2000 Dual
-+	  Microwave Down Converter.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called admfm2000.
-+
- config ADMV1013
- 	tristate "Analog Devices ADMV1013 Microwave Upconverter"
- 	depends on SPI && COMMON_CLK
-diff --git a/drivers/iio/frequency/Makefile b/drivers/iio/frequency/Makefile
-index b616c29b4a08..70d0e0b70e80 100644
---- a/drivers/iio/frequency/Makefile
-+++ b/drivers/iio/frequency/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_AD9523) += ad9523.o
- obj-$(CONFIG_ADF4350) += adf4350.o
- obj-$(CONFIG_ADF4371) += adf4371.o
- obj-$(CONFIG_ADF4377) += adf4377.o
-+obj-$(CONFIG_ADMFM2000) += admfm2000.o
- obj-$(CONFIG_ADMV1013) += admv1013.o
- obj-$(CONFIG_ADMV1014) += admv1014.o
- obj-$(CONFIG_ADMV4420) += admv4420.o
-diff --git a/drivers/iio/frequency/admfm2000.c b/drivers/iio/frequency/admfm2000.c
-new file mode 100644
-index 000000000000..e0b5edce7f79
---- /dev/null
-+++ b/drivers/iio/frequency/admfm2000.c
-@@ -0,0 +1,309 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ADMFM2000 Dual Microwave Down Converter
-+ *
-+ * Copyright 2023 Analog Devices Inc.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/iio/iio.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+
-+#define ADMFM2000_MIXER_MODE		0
-+#define ADMFM2000_DIRECT_IF_MODE	1
-+#define ADMF20000_DSA_GPIOS		5
-+#define ADMF20000_MODE_GPIOS		2
-+#define ADMF20000_MAX_GAIN		0
-+#define ADMF20000_MIN_GAIN		-31000
-+#define ADMF20000_DEFAULT_GAIN		-0x20
-+
-+struct admfm2000_state {
-+	struct mutex			lock; /* protect sensor state */
-+	struct gpio_descs		*sw_ch[2];
-+	struct gpio_descs		*dsa_gpios[2];
-+	u32				gain[2];
-+};
-+
-+static int admfm2000_mode(struct iio_dev *indio_dev, u32 reg, u32 mode)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	DECLARE_BITMAP(values, 2);
-+
-+	switch (mode) {
-+	case ADMFM2000_MIXER_MODE:
-+		values[0] = (reg == 0) ? 1 : 2;
-+		gpiod_set_array_value_cansleep(st->sw_ch[reg]->ndescs,
-+					       st->sw_ch[reg]->desc,
-+					       NULL, values);
-+		break;
-+	case ADMFM2000_DIRECT_IF_MODE:
-+		values[0] = (reg == 0) ? 2 : 1;
-+		gpiod_set_array_value_cansleep(st->sw_ch[reg]->ndescs,
-+					       st->sw_ch[reg]->desc,
-+					       NULL, values);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int admfm2000_attenuation(struct iio_dev *indio_dev, u32 chan,
-+				 u32 value)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	DECLARE_BITMAP(values, BITS_PER_TYPE(value));
-+
-+	values[0] = value;
-+
-+	gpiod_set_array_value_cansleep(st->dsa_gpios[chan]->ndescs,
-+				       st->dsa_gpios[chan]->desc,
-+				       NULL, values);
-+	return 0;
-+}
-+
-+static int admfm2000_read_raw(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan, int *val,
-+			      int *val2, long mask)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int gain;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		mutex_lock(&st->lock);
-+		gain = ~(st->gain[chan->channel]) * -1000;
-+		*val = gain / 1000;
-+		*val2 = (gain % 1000) * 1000;
-+		mutex_unlock(&st->lock);
-+
-+		return  IIO_VAL_INT_PLUS_MICRO_DB;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int admfm2000_write_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan, int val,
-+			     int val2, long mask)
-+{
-+	struct admfm2000_state *st = iio_priv(indio_dev);
-+	int gain, ret;
-+
-+	if (val < 0)
-+		gain = (val * 1000) - (val2 / 1000);
-+	else
-+		gain = (val * 1000) + (val2 / 1000);
-+
-+	if (gain > ADMF20000_MAX_GAIN || gain < ADMF20000_MIN_GAIN)
-+		return -EINVAL;
-+
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		mutex_lock(&st->lock);
-+		st->gain[chan->channel] = ~((abs(gain) / 1000) & 0x1F);
-+
-+		ret = admfm2000_attenuation(indio_dev, chan->channel,
-+					    st->gain[chan->channel]);
-+
-+		mutex_unlock(&st->lock);
-+		if (ret)
-+			return ret;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int admfm2000_write_raw_get_fmt(struct iio_dev *indio_dev,
-+				       struct iio_chan_spec const *chan,
-+				       long mask)
-+{
-+	switch (mask) {
-+	case IIO_CHAN_INFO_HARDWAREGAIN:
-+		return IIO_VAL_INT_PLUS_MICRO_DB;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static const struct iio_info admfm2000_info = {
-+	.read_raw = &admfm2000_read_raw,
-+	.write_raw = &admfm2000_write_raw,
-+	.write_raw_get_fmt = &admfm2000_write_raw_get_fmt,
-+};
-+
-+#define ADMFM2000_CHAN(_channel) {					\
-+	.type = IIO_VOLTAGE,						\
-+	.output = 1,							\
-+	.indexed = 1,							\
-+	.channel = _channel,						\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_HARDWAREGAIN),		\
-+}
-+
-+static const struct iio_chan_spec admfm2000_channels[] = {
-+	ADMFM2000_CHAN(0),
-+	ADMFM2000_CHAN(1),
-+};
-+
-+static int admfm2000_channel_config(struct admfm2000_state *st,
-+				    struct iio_dev *indio_dev)
-+{
-+	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
-+	struct device *dev = &pdev->dev;
-+	struct fwnode_handle *child;
-+	u32 reg, mode;
-+	int ret;
-+
-+	device_for_each_child_node(dev, child) {
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get reg property\n");
-+		}
-+
-+		if (reg >= indio_dev->num_channels) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, -EINVAL, "reg bigger than: %d\n",
-+					     indio_dev->num_channels);
-+		}
-+
-+		ret = fwnode_property_read_u32(child, "adi,mode", &mode);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get mode property\n");
-+		}
-+
-+		if (mode >= 2) {
-+			fwnode_handle_put(child);
-+			return dev_err_probe(dev, -EINVAL, "mode bigger than: 1\n");
-+		}
-+
-+		ret = admfm2000_mode(indio_dev, reg, mode);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int admfm2000_setup(struct admfm2000_state *st,
-+			   struct iio_dev *indio_dev)
-+{
-+	struct platform_device *pdev = to_platform_device(indio_dev->dev.parent);
-+	struct device *dev = &pdev->dev;
-+
-+	st->sw_ch[0] = devm_gpiod_get_array(dev, "switch1", GPIOD_OUT_LOW);
-+	if (IS_ERR(st->sw_ch[0]))
-+		return dev_err_probe(dev, PTR_ERR(st->sw_ch[0]),
-+				     "Failed to get gpios\n");
-+
-+	if (st->sw_ch[0]->ndescs != ADMF20000_MODE_GPIOS) {
-+		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-+			      ADMF20000_MODE_GPIOS);
-+		return -ENODEV;
-+	}
-+
-+	st->sw_ch[1] = devm_gpiod_get_array(dev, "switch2", GPIOD_OUT_LOW);
-+	if (IS_ERR(st->sw_ch[1]))
-+		return dev_err_probe(dev, PTR_ERR(st->sw_ch[1]),
-+				     "Failed to get gpios\n");
-+
-+	if (st->sw_ch[1]->ndescs != ADMF20000_MODE_GPIOS) {
-+		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-+			      ADMF20000_MODE_GPIOS);
-+		return -ENODEV;
-+	}
-+
-+	st->dsa_gpios[0] = devm_gpiod_get_array(dev, "attenuation1",
-+						GPIOD_OUT_LOW);
-+	if (IS_ERR(st->dsa_gpios[0]))
-+		return dev_err_probe(dev, PTR_ERR(st->dsa_gpios[0]),
-+				     "Failed to get gpios\n");
-+
-+	if (st->dsa_gpios[0]->ndescs != ADMF20000_DSA_GPIOS) {
-+		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-+			      ADMF20000_DSA_GPIOS);
-+		return -ENODEV;
-+	}
-+
-+	st->dsa_gpios[1] = devm_gpiod_get_array(dev, "attenuation2",
-+						GPIOD_OUT_LOW);
-+	if (IS_ERR(st->dsa_gpios[1]))
-+		return dev_err_probe(dev, PTR_ERR(st->dsa_gpios[1]),
-+				     "Failed to get gpios\n");
-+
-+	if (st->dsa_gpios[1]->ndescs != ADMF20000_DSA_GPIOS) {
-+		dev_err_probe(dev, -ENODEV, "%d GPIOs needed to operate\n",
-+			      ADMF20000_DSA_GPIOS);
-+	}
-+
-+	return 0;
-+}
-+
-+static int admfm2000_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct iio_dev *indio_dev;
-+	struct admfm2000_state *st;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	st = iio_priv(indio_dev);
-+
-+	indio_dev->name = "admfm2000";
-+	indio_dev->num_channels = ARRAY_SIZE(admfm2000_channels);
-+	indio_dev->channels = admfm2000_channels;
-+	indio_dev->info = &admfm2000_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+
-+	st->gain[0] = ADMF20000_DEFAULT_GAIN;
-+	st->gain[1] = ADMF20000_DEFAULT_GAIN;
-+
-+	mutex_init(&st->lock);
-+
-+	ret = admfm2000_setup(st, indio_dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = admfm2000_channel_config(st, indio_dev);
-+	if (ret)
-+		return ret;
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+
-+static const struct of_device_id admfm2000_of_match[] = {
-+	{ .compatible = "adi,admfm2000" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, admfm2000_of_match);
-+
-+static struct platform_driver admfm2000_driver = {
-+	.driver = {
-+		.name = "admfm2000",
-+		.of_match_table = admfm2000_of_match,
-+	},
-+	.probe = admfm2000_probe,
-+};
-+module_platform_driver(admfm2000_driver);
-+
-+MODULE_AUTHOR("Kim Seer Paller <kimseer.paller@analog.com>");
-+MODULE_DESCRIPTION("ADMFM2000 Dual Microwave Down Converter");
-+MODULE_LICENSE("GPL");
+url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/net-ethernet-realtek-rtase-Add-pci-table-supported-in-this-module/20231115-213811
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231115133414.1221480-13-justinlai0215%40realtek.com
+patch subject: [PATCH net-next v11 12/13] net:ethernet:realtek: Update the Makefile and Kconfig in the realtek folder
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231121/202311211750.4FwMt8rx-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211750.4FwMt8rx-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311211750.4FwMt8rx-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:1243:2: warning: variable 'csum_cmd' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+    1243 |         default:
+         |         ^~~~~~~
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1255:2: note: uninitialized use occurs here
+    1255 |         csum_cmd |= u32_encode_bits(skb_transport_offset(skb), TCPHO_MASK);
+         |         ^~~~~~~~
+   drivers/net/ethernet/realtek/rtase/rtase_main.c:1230:14: note: initialize the variable 'csum_cmd' to silence this warning
+    1230 |         u32 csum_cmd;
+         |                     ^
+         |                      = 0
+>> drivers/net/ethernet/realtek/rtase/rtase_main.c:1268:6: warning: variable 'pkt_len_cnt' set but not used [-Wunused-but-set-variable]
+    1268 |         u64 pkt_len_cnt = 0;
+         |             ^
+   In file included from drivers/net/ethernet/realtek/rtase/rtase_main.c:47:
+   In file included from include/linux/delay.h:23:
+   In file included from include/linux/sched.h:14:
+   In file included from include/linux/pid.h:5:
+   In file included from include/linux/rculist.h:11:
+   In file included from include/linux/rcupdate.h:26:
+   In file included from include/linux/irqflags.h:17:
+   In file included from arch/arm64/include/asm/irqflags.h:10:
+   In file included from arch/arm64/include/asm/ptrace.h:11:
+   In file included from arch/arm64/include/asm/cpufeature.h:26:
+   In file included from include/linux/cpumask.h:12:
+   In file included from include/linux/bitmap.h:12:
+   In file included from include/linux/string.h:295:
+   include/linux/fortify-string.h:588:4: warning: call to '__read_overflow2_field' declared with 'warning' attribute: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Wattribute-warning]
+     588 |                         __read_overflow2_field(q_size_field, size);
+         |                         ^
+   3 warnings generated.
+
+
+vim +/csum_cmd +1243 drivers/net/ethernet/realtek/rtase/rtase_main.c
+
+7f5e83b995e2f8 Justin Lai 2023-11-15  1226  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1227  static u32 rtase_tx_csum(struct sk_buff *skb, const struct net_device *dev)
+7f5e83b995e2f8 Justin Lai 2023-11-15  1228  {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1229  	u8 ip_protocol;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1230  	u32 csum_cmd;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1231  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1232  	switch (vlan_get_protocol(skb)) {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1233  	case htons(ETH_P_IP):
+7f5e83b995e2f8 Justin Lai 2023-11-15  1234  		csum_cmd = TX_IPCS_C;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1235  		ip_protocol = ip_hdr(skb)->protocol;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1236  		break;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1237  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1238  	case htons(ETH_P_IPV6):
+7f5e83b995e2f8 Justin Lai 2023-11-15  1239  		csum_cmd = TX_IPV6F_C;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1240  		ip_protocol = ipv6_hdr(skb)->nexthdr;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1241  		break;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1242  
+7f5e83b995e2f8 Justin Lai 2023-11-15 @1243  	default:
+7f5e83b995e2f8 Justin Lai 2023-11-15  1244  		ip_protocol = IPPROTO_RAW;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1245  		break;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1246  	}
+7f5e83b995e2f8 Justin Lai 2023-11-15  1247  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1248  	if (ip_protocol == IPPROTO_TCP)
+7f5e83b995e2f8 Justin Lai 2023-11-15  1249  		csum_cmd |= TX_TCPCS_C;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1250  	else if (ip_protocol == IPPROTO_UDP)
+7f5e83b995e2f8 Justin Lai 2023-11-15  1251  		csum_cmd |= TX_UDPCS_C;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1252  	else
+7f5e83b995e2f8 Justin Lai 2023-11-15  1253  		WARN_ON_ONCE(1);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1254  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1255  	csum_cmd |= u32_encode_bits(skb_transport_offset(skb), TCPHO_MASK);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1256  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1257  	return csum_cmd;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1258  }
+7f5e83b995e2f8 Justin Lai 2023-11-15  1259  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1260  static int rtase_xmit_frags(struct rtase_ring *ring, struct sk_buff *skb,
+7f5e83b995e2f8 Justin Lai 2023-11-15  1261  			    u32 opts1, u32 opts2)
+7f5e83b995e2f8 Justin Lai 2023-11-15  1262  {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1263  	const struct skb_shared_info *info = skb_shinfo(skb);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1264  	const struct rtase_private *tp = ring->ivec->tp;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1265  	const u8 nr_frags = info->nr_frags;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1266  	struct tx_desc *txd = NULL;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1267  	u32 cur_frag, entry;
+7f5e83b995e2f8 Justin Lai 2023-11-15 @1268  	u64 pkt_len_cnt = 0;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1269  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1270  	entry = ring->cur_idx;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1271  	for (cur_frag = 0; cur_frag < nr_frags; cur_frag++) {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1272  		const skb_frag_t *frag = &info->frags[cur_frag];
+7f5e83b995e2f8 Justin Lai 2023-11-15  1273  		dma_addr_t mapping;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1274  		u32 status, len;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1275  		void *addr;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1276  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1277  		entry = (entry + 1) % NUM_DESC;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1278  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1279  		txd = ring->desc + sizeof(struct tx_desc) * entry;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1280  		len = skb_frag_size(frag);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1281  		addr = skb_frag_address(frag);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1282  		mapping = dma_map_single(&tp->pdev->dev, addr, len,
+7f5e83b995e2f8 Justin Lai 2023-11-15  1283  					 DMA_TO_DEVICE);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1284  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1285  		if (unlikely(dma_mapping_error(&tp->pdev->dev, mapping))) {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1286  			if (unlikely(net_ratelimit()))
+7f5e83b995e2f8 Justin Lai 2023-11-15  1287  				netdev_err(tp->dev,
+7f5e83b995e2f8 Justin Lai 2023-11-15  1288  					   "Failed to map TX fragments DMA!\n");
+7f5e83b995e2f8 Justin Lai 2023-11-15  1289  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1290  			goto err_out;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1291  		}
+7f5e83b995e2f8 Justin Lai 2023-11-15  1292  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1293  		if (((entry + 1) % NUM_DESC) == 0)
+7f5e83b995e2f8 Justin Lai 2023-11-15  1294  			status = (opts1 | len | RING_END);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1295  		else
+7f5e83b995e2f8 Justin Lai 2023-11-15  1296  			status = opts1 | len;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1297  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1298  		if (cur_frag == (nr_frags - 1)) {
+7f5e83b995e2f8 Justin Lai 2023-11-15  1299  			ring->skbuff[entry] = skb;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1300  			status |= TX_LAST_FRAG;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1301  		}
+7f5e83b995e2f8 Justin Lai 2023-11-15  1302  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1303  		ring->mis.len[entry] = len;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1304  		txd->addr = cpu_to_le64(mapping);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1305  		txd->opts2 = cpu_to_le32(opts2);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1306  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1307  		/* make sure the operating fields have been updated */
+7f5e83b995e2f8 Justin Lai 2023-11-15  1308  		wmb();
+7f5e83b995e2f8 Justin Lai 2023-11-15  1309  		txd->opts1 = cpu_to_le32(status);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1310  		pkt_len_cnt += len;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1311  	}
+7f5e83b995e2f8 Justin Lai 2023-11-15  1312  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1313  	return cur_frag;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1314  
+7f5e83b995e2f8 Justin Lai 2023-11-15  1315  err_out:
+7f5e83b995e2f8 Justin Lai 2023-11-15  1316  	rtase_tx_clear_range(ring, ring->cur_idx + 1, cur_frag);
+7f5e83b995e2f8 Justin Lai 2023-11-15  1317  	return -EIO;
+7f5e83b995e2f8 Justin Lai 2023-11-15  1318  }
+7f5e83b995e2f8 Justin Lai 2023-11-15  1319  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
