@@ -2,97 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA2E7F2313
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABDB7F2318
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbjKUBb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
+        id S229679AbjKUBc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjKUBb4 (ORCPT
+        with ESMTP id S229490AbjKUBc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:31:56 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE30A2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:31:52 -0800 (PST)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231121013148epoutp0114b194f19a3f34ef1e7004b401576d53~Zf0402WYL2917729177epoutp013
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:31:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231121013148epoutp0114b194f19a3f34ef1e7004b401576d53~Zf0402WYL2917729177epoutp013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700530308;
-        bh=r7FUgwAb5MWY8DmPizGyFQBrKuzR2qlvMD2L01WpRUU=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=rOdNLa5+qmIMPep1oXJSbiw4L7VJfSwZ2d2Y2DIJhS1qp/B2//B0BMctafTNqp/rx
-         iMyk+Q/1tAjmAyiuKAMQQq5HEQCJjkzwcwqC3pleGLYQapJ2Ug1cDUmd2vRTEW3kkk
-         XljQMOOcTxw/o520eqX9gCCdlOcD/ZxkkJhDPXqA=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231121013147epcas2p4287f4c07f8f51285a02e63583d91304d~Zf04b9Buo1419714197epcas2p4V;
-        Tue, 21 Nov 2023 01:31:47 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.36.90]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SZ6Kv1LX2z4x9QH; Tue, 21 Nov
-        2023 01:31:47 +0000 (GMT)
-X-AuditID: b6c32a48-bcdfd70000002587-cc-655c08834f57
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5D.23.09607.3880C556; Tue, 21 Nov 2023 10:31:47 +0900 (KST)
-Mime-Version: 1.0
-Subject: Re: [PATCH] nfc: virtual_ncidev: Add variable to check if ndev is
- running
-Reply-To: bongsu.jeon@samsung.com
-Sender: Bongsu Jeon <bongsu.jeon@samsung.com>
-From:   Bongsu Jeon <bongsu.jeon@samsung.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Nguyen Dinh Phi <phind.uet@gmail.com>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com" 
-        <syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <b2bd6689-5161-483a-a05c-811927831082@linaro.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20231121013146epcms2p1587bebc341f17406625e8b0490b6ab1a@epcms2p1>
-Date:   Tue, 21 Nov 2023 10:31:46 +0900
-X-CMS-MailID: 20231121013146epcms2p1587bebc341f17406625e8b0490b6ab1a
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmhW4zR0yqwdarnBZbmiexW+x9vZXd
-        4vKuOWwWxxaIWcx78ZrJYvOcO0wObB47Z91l97hzbQ+bR9+WVYweM9+qeXzeJBfAGpVtk5Ga
-        mJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuWmQO0X0mhLDGnFCgU
-        kFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYF6gV5yYW1yal66Xl1piZWhgYGQKVJiQnbH/31mm
-        gh1sFe+/qjYwzmDtYuTkkBAwkZi5aBJzFyMXh5DADkaJI9+Ws3cxcnDwCghK/N0hDFIjLBAi
-        MWP/YxYQW0hAUeJ/xzk2iLiuxIu/R8FsNgFtibVHG5lA5ogIdDBKbNj0DcxhFnjNKHGu5Rwz
-        xDZeiRntT1kgbGmJ7cu3MoIs4xSwk7iyTQYirCHxY1kvVLmoxM3Vb9lh7PfH5jNC2CISrffO
-        QtUISjz4uRsqLiXx6eEZVpCREgLZEt/72EBOkBBoYJS48/Yu1Fp9iWn3FoDZvAK+Eu82LgOb
-        wyKgKjH35gYmiBoXifnvXoLNZBaQl9j+dg4zyExmAU2J9bv0IcYrSxy5xQJRwSfRcfgvO8yD
-        O+Y9gZqiKtHb/IUJ5tnJs1ugrvSQWLptAdsERsVZiICehWTXLIRdCxiZVzGKpRYU56anFhsV
-        mMCjNjk/dxMjOCFqeexgnP32g94hRiYOxkOMEhzMSiK8W9hjUoV4UxIrq1KL8uOLSnNSiw8x
-        mgJ9OZFZSjQ5H5iS80riDU0sDUzMzAzNjUwNzJXEee+1zk0REkhPLEnNTk0tSC2C6WPi4JRq
-        YAoTb9JIunzx0VkrPq23bzayVjeGG56Xub9A1fzc5et/2JkzGmQC7fMPTlx6JOP5Zw45x1tL
-        3WavTbyp65q/2PaR3u2ejckrBJSeVh9q0P06I4/v9Lf3rg81lpskLD8u8O15f/imsOB+04OV
-        q/8u+K+wd88O7R7dNZoHfzLdeFooPv2ptX6NxvL4OL4J+6UKrzl3TQgJ0SnUqb6Rdn1+R5Dy
-        Pa/LP7/71EhNnuD+3Dme5dO7z/wdscvYgn54393X+lHT6HBe0/1DlUcrmw5ez5WVeDwnzca4
-        w0JfM+92m56oON+8NDO3uwXCO19vytrMknFwgX95m3PldF+G896xBuo/Uq69jmjXsXv5Ytms
-        eiWW4oxEQy3mouJEALyijjMRBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231120184433epcas2p23e9f5db776d46ad8dd77a16dd326c1bc
-References: <b2bd6689-5161-483a-a05c-811927831082@linaro.org>
-        <20231119164705.1991375-1-phind.uet@gmail.com>
-        <CGME20231120184433epcas2p23e9f5db776d46ad8dd77a16dd326c1bc@epcms2p1>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Mon, 20 Nov 2023 20:32:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE164BC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:32:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D5AFC433CD;
+        Tue, 21 Nov 2023 01:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700530372;
+        bh=MgA2L3AjHphGyfK8GPBa2xn0Jwg5gkiGiIeE3G9xY4E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h5VuxMPM/OimVDCsN/AE1dpWTgAsBmt6J9+DZGy7SfBVfd8AU5NSGl2AfXT7DU9nV
+         WHStAPRZONID1muiYi5Qqu/aQ1jDYV/cVYFNIcfm4mr5bthoXGGGmrBGj0FCb7DDVM
+         P2AvsPvC7FxcSrqImicermj31k469tDfNov5cK4zqP+zIJPcRLU1ca4udIDIT7YW3N
+         kWDdlAgZhCsSc9W6H2q8WCCRFIl3v8tOhqfmeSfbi4L4IHU/YURPnUCNmV/u4EOonG
+         t6grZ6eYYrUIR9/+WdGBF1UZlrY4uRbJMPVOWxgcyhPReHlOvZhO3DzMpy5xw9iP80
+         yVrC73JEus2aw==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9c603e2354fso950766466b.1;
+        Mon, 20 Nov 2023 17:32:52 -0800 (PST)
+X-Gm-Message-State: AOJu0YzpCKb6dhI+Az6r1WCM17YKszplEMUGqysNCvNMPtdbn/bYbXcz
+        97646IvZCPTiFKtIuCXrUa37qxE57jX8XhZg+Lw=
+X-Google-Smtp-Source: AGHT+IHQ//yd2NAdWXmNVsZcGtdgZJwZbXFwxtS3hDn2Brzdx0CH9BCAaRj1zmVI8KKvYZZIkFSnbYzsi6am60h0UbU=
+X-Received: by 2002:a17:906:2da:b0:9fd:78:8b2f with SMTP id
+ 26-20020a17090602da00b009fd00788b2fmr1071131ejk.7.1700530370721; Mon, 20 Nov
+ 2023 17:32:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20231116130331.241395-1-wangrui@loongson.cn> <20231120230817.GA2116806@dev-arch.thelio-3990X>
+In-Reply-To: <20231120230817.GA2116806@dev-arch.thelio-3990X>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 21 Nov 2023 09:32:37 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7tUKiJVR=9YxwnaSk3Ru1k=4Nd-TUgaMDBCq+xGnLkrA@mail.gmail.com>
+Message-ID: <CAAhV-H7tUKiJVR=9YxwnaSk3Ru1k=4Nd-TUgaMDBCq+xGnLkrA@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Record pc instead of offset in la-abs relocation
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     WANG Rui <wangrui@loongson.cn>, WANG Xuerui <kernel@xen0n.name>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Xi Ruoyao <xry111@xry111.site>, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,21 +61,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 19:23, Phi Nguyen wrote:
+Applied to loongarch-fixes, thanks.
 
-> The issue arises when an skb is added to the send_buff after invoking 
-> ndev->ops->close() but before unregistering the device. In such cases, 
-> the virtual device will generate a copy of skb, but with no consumer 
-> thereafter. Consequently, this object persists indefinitely.
-> 
-> This problem seems to stem from the existence of time gaps between 
-> ops->close() and the destruction of the workqueue. During this interval, 
-> incoming requests continue to trigger the send function.
+Huacai
 
-Dear Krzysztof,
-
-Even though i agree on this patch, i think that NFC subsystem could handle this scenario not to trigger the send function after close.
-Do you think it would be better that each nci driver has the responsibility to handle this scenario?
-
-Best regards,
-Bongsu
+On Tue, Nov 21, 2023 at 7:08=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> Hi Rui,
+>
+> On Thu, Nov 16, 2023 at 09:03:31PM +0800, WANG Rui wrote:
+> > To clarify, the previous version functioned flawlessly. However, it's
+> > worth noting that the LLVM's LoongArch backend currently lacks support
+> > for cross-section label calculations. With this patch, we enable the us=
+e
+> > of clang to compile relocatable kernels.
+> >
+> > Signed-off-by: WANG Rui <wangrui@loongson.cn>
+>
+> Thanks a lot for the patch! This fixes the CONFIG_RELOCATABLE build for
+> me as well.
+>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+>
+> Something I noticed while testing is that a kernel linked with ld.lld
+> does not boot while one linked with ld.bfd did. I think this might be
+> the same issue that Xuerui filed on our issue tracker but I figured I
+> would mention it in case not:
+> https://github.com/ClangBuiltLinux/linux/issues/1883
+>
+> Cheers,
+> Nathan
+>
+> > ---
+> >  arch/loongarch/include/asm/asmmacro.h | 3 +--
+> >  arch/loongarch/include/asm/setup.h    | 2 +-
+> >  arch/loongarch/kernel/relocate.c      | 2 +-
+> >  3 files changed, 3 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/loongarch/include/asm/asmmacro.h b/arch/loongarch/inc=
+lude/asm/asmmacro.h
+> > index c9544f358c33..655db7d7a427 100644
+> > --- a/arch/loongarch/include/asm/asmmacro.h
+> > +++ b/arch/loongarch/include/asm/asmmacro.h
+> > @@ -609,8 +609,7 @@
+> >       lu32i.d \reg, 0
+> >       lu52i.d \reg, \reg, 0
+> >       .pushsection ".la_abs", "aw", %progbits
+> > -     768:
+> > -     .dword  768b-766b
+> > +     .dword  766b
+> >       .dword  \sym
+> >       .popsection
+> >  #endif
+> > diff --git a/arch/loongarch/include/asm/setup.h b/arch/loongarch/includ=
+e/asm/setup.h
+> > index a0bc159ce8bd..ee52fb1e9963 100644
+> > --- a/arch/loongarch/include/asm/setup.h
+> > +++ b/arch/loongarch/include/asm/setup.h
+> > @@ -25,7 +25,7 @@ extern void set_merr_handler(unsigned long offset, vo=
+id *addr, unsigned long len
+> >  #ifdef CONFIG_RELOCATABLE
+> >
+> >  struct rela_la_abs {
+> > -     long offset;
+> > +     long pc;
+> >       long symvalue;
+> >  };
+> >
+> > diff --git a/arch/loongarch/kernel/relocate.c b/arch/loongarch/kernel/r=
+elocate.c
+> > index 6c3eff9af9fb..288b739ca88d 100644
+> > --- a/arch/loongarch/kernel/relocate.c
+> > +++ b/arch/loongarch/kernel/relocate.c
+> > @@ -52,7 +52,7 @@ static inline void __init relocate_absolute(long rand=
+om_offset)
+> >       for (p =3D begin; (void *)p < end; p++) {
+> >               long v =3D p->symvalue;
+> >               uint32_t lu12iw, ori, lu32id, lu52id;
+> > -             union loongarch_instruction *insn =3D (void *)p - p->offs=
+et;
+> > +             union loongarch_instruction *insn =3D (void *)p->pc;
+> >
+> >               lu12iw =3D (v >> 12) & 0xfffff;
+> >               ori    =3D v & 0xfff;
+> > --
+> > 2.42.1
+> >
+> >
