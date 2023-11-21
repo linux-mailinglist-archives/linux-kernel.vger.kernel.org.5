@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3608B7F389D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223D57F38C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjKUV5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S234718AbjKUWDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKUV5P (ORCPT
+        with ESMTP id S234638AbjKUWDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:57:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8FD113
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:57:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700603829;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=H07C20s2TDfR/sNQMAMtbpycAkdXquM7amrlSJ1/Yl0=;
-        b=N+Mwwt/8n+M8BzIEugYTbI/PXuI4FboBcon6shOEZHgqKqISexQpvhvJ/NOJCjsl04RiX/
-        RMfrOBcQUklvdpCHtNU2XFdMiIzErc1BNd2NBBtCHQ+Ph2ZZLviFlTzeeC9p0CEq//DYIq
-        krqvwCO0PgcfbfSu8AfXYllqoRX1TJA=
-Received: from mail-ua1-f70.google.com (mail-ua1-f70.google.com
- [209.85.222.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-138-fbcTmF1OMMWAsqGKkaDxFw-1; Tue, 21 Nov 2023 16:57:08 -0500
-X-MC-Unique: fbcTmF1OMMWAsqGKkaDxFw-1
-Received: by mail-ua1-f70.google.com with SMTP id a1e0cc1a2514c-7bb4120b962so1998546241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:57:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700603828; x=1701208628;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H07C20s2TDfR/sNQMAMtbpycAkdXquM7amrlSJ1/Yl0=;
-        b=ohgIU7kyNC9UATIWCEGh5smloXQyvYkwogAaMLpkEw7f/pvEbiPRhqi7YN7CXe7OO8
-         +ZyLjeqiCNp0ZMnWA1is+pnHI98HEV7i+k332d84hOq9Ni/DxMjGyLMJKRYD5V5MadhR
-         HOSbeRUkY8kmAxME8FSMdiqG8gdSWAVh9yKpZeQqNeK+YcH8FAR7V6oq05M79SJzaNHZ
-         OQoIkMmqU1+Us3kl0iEqsekYikrA+5AjebrPqEm59XqPjyV8IbYfe0xTvWBTwlY4kCQN
-         PFFBLkq/uz/MsjQuyn0OlsFZorKQFdwL4hWzD+fLYwTLGy+TN9G6qZTWs+GtzeND5y++
-         GjbA==
-X-Gm-Message-State: AOJu0Yzxh+3iSkDzBDpkAYfIT/nCctaD18AbNiz8S4qMjw473jNGv4w+
-        OcZRuatEaBodTqlG8tODdFkwU0fPQIxGzECy5EBPdbBrM6AzQ1LoWpVZnD34apZz0fKbcktrw6X
-        Eiy3GeQQgDzaIAZskUgKflzs9
-X-Received: by 2002:a67:e98a:0:b0:460:3dd3:a068 with SMTP id b10-20020a67e98a000000b004603dd3a068mr688729vso.13.1700603827816;
-        Tue, 21 Nov 2023 13:57:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEQ+sXt9eDhCW427AVf1l7OEwets+4rFidxjW61hBhHErbUK1U+Zw/1qnAs2IyoA6SKb49c5w==
-X-Received: by 2002:a67:e98a:0:b0:460:3dd3:a068 with SMTP id b10-20020a67e98a000000b004603dd3a068mr688713vso.13.1700603827569;
-        Tue, 21 Nov 2023 13:57:07 -0800 (PST)
-Received: from thinkpad-p1.localdomain (cpe00fc8d79db03-cm00fc8d79db00.cpe.net.fido.ca. [72.137.118.218])
-        by smtp.gmail.com with ESMTPSA id jv24-20020a05622aa09800b00407906a4c6fsm3912537qtb.71.2023.11.21.13.57.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 13:57:07 -0800 (PST)
-Message-ID: <89c13962f5502a89d48f1efb7a6203d155a7e18d.camel@redhat.com>
-Subject: Re: [PATCH 1/1] PCI: dwc: Use regular interrupt instead of chained
-From:   Radu Rendec <rrendec@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 21 Nov 2023 16:57:05 -0500
-In-Reply-To: <20230629183019.1992819-2-rrendec@redhat.com>
-References: <20230629183019.1992819-1-rrendec@redhat.com>
-         <20230629183019.1992819-2-rrendec@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 21 Nov 2023 17:03:20 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCE11707;
+        Tue, 21 Nov 2023 14:03:03 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALLNPPt004548;
+        Tue, 21 Nov 2023 22:02:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=RjV0VmLpgTE5xRgs1VZtKHdQWOiG339HDEHFOroOwi0=;
+ b=iiGY++jxVINq5YYdnTCnhfTJ0ajRDPJ66VGkcJRUnZu4y19FRF8fHLho3FXXsxbAjTPX
+ 6PyH06VUEPiV1PqbHYdgJ3iMJxCDealu5I/ZKL5DZq6ArbjP+LQx2ftqnTuGIopCvmdT
+ ioUn2WtQ6XYxJqrvx3NFOJ5SfSEdKygFFklODd/aiu+GOq4UQuzkgfH4fzD7cjLO4NBR
+ U+Q0wYtDqtJyJXTYvNrDErrddGtNbW+firVIAap80JA/bWW+DK1m74rRB9auFTefXiMM
+ bWBoJ3FG/uYF6Lj9KQvHrNBVnQT2pUAKlwKCWft6d5XZqrkTiu3TlLzMOr9UkYMIKomH Iw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uh4dw0vq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 22:02:36 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ALLcJr7014500;
+        Tue, 21 Nov 2023 22:02:35 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uh4dw0vcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 22:02:35 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALLnQNN022908;
+        Tue, 21 Nov 2023 22:02:05 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uf7kt3yyb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 22:02:04 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ALM22eL40108430
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Nov 2023 22:02:02 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1122220065;
+        Tue, 21 Nov 2023 22:02:02 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 923EB20063;
+        Tue, 21 Nov 2023 22:02:00 +0000 (GMT)
+Received: from heavy.boeblingen.de.ibm.com (unknown [9.179.23.98])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 21 Nov 2023 22:02:00 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v2 00/33] kmsan: Enable on s390
+Date:   Tue, 21 Nov 2023 23:00:54 +0100
+Message-ID: <20231121220155.1217090-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ueXSjJJuaiHBGWPQrdyNp8xXxndxHB57
+X-Proofpoint-ORIG-GUID: luvmym5bCCb5oBro4vkAQpcqqUvW6UFi
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_12,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=963
+ spamscore=0 suspectscore=0 phishscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 impostorscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311210172
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,103 +109,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gVGhvbWFzLAoKT24gVGh1LCAyMDIzLTA2LTI5IGF0IDE0OjMwIC0wNDAwLCBSYWR1IFJl
-bmRlYyB3cm90ZToKPiBUaGUgRGVzaWduV2FyZSBQQ0llIGhvc3QgZHJpdmVyIHVzZXMgYSBjaGFp
-bmVkIGludGVycnVwdCB0byBkZW11bHRpcGxleAo+IHRoZSBkb3duc3RyZWFtIE1TSSBpbnRlcnJ1
-cHRzLiBPbiBRdWFsY29tbSBTQTg1NDBQIFJpZGUsIGVuYWJsaW5nIGJvdGgKPiBwY2llMmEgYW5k
-IHBjaWUzYSBhdCB0aGUgc2FtZSB0aW1lIGNhbiBjcmVhdGUgYW4gaW50ZXJydXB0IHN0b3JtIHdo
-ZXJlCj4gdGhlIHBhcmVudCBpbnRlcnJ1cHQgZmlyZXMgY29udGludW91c2x5LCBldmVuIHRob3Vn
-aCByZWFkaW5nIHRoZSBQQ0llCj4gaG9zdCByZWdpc3RlcnMgZG9lc24ndCBpZGVudGlmeSBhbnkg
-Y2hpbGQgTVNJIGludGVycnVwdCBzb3VyY2UuIFRoaXMKPiBlZmZlY3RpdmVseSBsb2NrcyB1cCBD
-UFUwLCB3aGljaCBzcGVuZHMgYWxsIHRoZSB0aW1lIHNlcnZpY2luZyB0aGVzZQo+IGludGVycnVw
-dHMuCj4gCj4gVGhpcyBpcyBhIGNsZWFyIGV4YW1wbGUgb2YgaG93IGJ5cGFzc2luZyB0aGUgaW50
-ZXJydXB0IGNvcmUgYnkgdXNpbmcKPiBjaGFpbmVkIGludGVycnVwdHMgY2FuIGJlIHZlcnkgZGFu
-Z2Vyb3VzIGlmIHRoZSBoYXJkd2FyZSBtaXNiZWhhdmVzLgo+IAo+IENvbnZlcnQgdGhlIGRyaXZl
-ciB0byB1c2UgYSByZWd1bGFyIGludGVycnVwdCBmb3IgdGhlIGRlbXVsdGlwbGV4Cj4gaGFuZGxl
-ci4gVGhpcyBhbGxvd3MgdGhlIGludGVycnVwdCBzdG9ybSBkZXRlY3RvciB0byBkZXRlY3QgdGhl
-IGZhdWx0eQo+IGludGVycnVwdCBhbmQgZGlzYWJsZSBpdCwgYWxsb3dpbmcgdGhlIHN5c3RlbSB0
-byBydW4gbm9ybWFsbHkuCgpLaW5kbHkgYnJpbmdpbmcgdGhlIGNoYWluZWQgaW50ZXJydXB0cyBp
-c3N1ZSBiYWNrIHRvIHlvdXIgYXR0ZW50aW9uLgpMYXN0IHdlZWsgYXQgUGx1bWJlcnMsIEJyaWFu
-IE1hc25leSBzcG9rZSB0byB5b3UgYWJvdXQgdGhpcywgYW5kIHlvdQphZ3JlZWQgdG8gaGF2ZSBt
-ZSBzZW5kIGFub3RoZXIgcmVwbHkgdG8gdGhpcyB0aHJlYWQgdG8gYnVtcCBpdCB0byB0aGUKdG9w
-IG9mIHlvdXIgaW5ib3guIEhlcmUgaXQgaXMuCgpFc3NlbnRpYWxseSwgeW91IG1hZGUgaXQgdmVy
-eSBjbGVhciBpbiBhIGRpZmZlcmVudCB0aHJlYWQgWzFdIHRoYXQgeW91CndhbnRlZCB0byBnZXQg
-cmlkIG9mIGNoYWluZWQgaW50ZXJydXB0cyBhbHRvZ2V0aGVyLiBIb3dldmVyLCB0aGF0IHdvdWxk
-CmhhdmUgdGhlIHNpZGUgZWZmZWN0IG9mIGV4cG9zaW5nIHRoZSBwYXJlbnQgaW50ZXJydXB0IGFm
-ZmluaXR5IGNvbnRyb2wKaW4gcHJvY2ZzLCB3aGljaCBpbiBNYXJjJ3Mgb3BpbmlvbiBbMl0gd291
-bGQgYnJlYWsgdGhlIHVzZXJzcGFjZSBBQkkuCgpJIGRyYWZ0ZWQgYSBwcm9wb3NhbCBbM10gdGhh
-dCB0cmllcyB0byBzb2x2ZSBib3RoIHByb2JsZW1zLiBCdXQgd2UKcmVhbGx5IG5lZWQgc29tZSBt
-YWludGFpbmVyIGd1aWRhbmNlIGhlcmUsIHRvIGF0IGxlYXN0IGFncmVlIG9uIGEgaGlnaApsZXZl
-bCBkZXNjcmlwdGlvbiBvZiB3aGF0IHRoZSBzb2x1dGlvbiB3b3VsZCBsb29rIGxpa2UuIFdvcmtp
-bmcgb24KcGF0Y2hlcyB0aGF0IGdldCByZWplY3RlZCBiZWNhdXNlIHRoZSBhcHByb2FjaCBpcyBj
-b25jZXB0dWFsbHkgd3JvbmcKaXMgbm90IHZlcnkgcHJhY3RpY2FsIG9yIHByb2R1Y3RpdmUuIFRo
-YW5rcyBpbiBhZHZhbmNlIQoKQmVzdCByZWdhcmRzLApSYWR1CgpbMV0gaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvYWxsLzg3N2Nzb2hjbGwuZmZzQHRnbHgvClsyXSBodHRwczovL2xvcmUua2VybmVs
-Lm9yZy9hbGwvODc0azBiZjdmNy53bC1tYXpAa2VybmVsLm9yZy8KWzNdIGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2FsbC8zNjVkYmI2MTkyMWZmMzc4NjJjOTE4NjJkMzFkNzVmZWMyYTUxMTg1LmNh
-bWVsQHJlZGhhdC5jb20vCgo+IFNpZ25lZC1vZmYtYnk6IFJhZHUgUmVuZGVjIDxycmVuZGVjQHJl
-ZGhhdC5jb20+Cj4gLS0tCj4gwqAuLi4vcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2Fy
-ZS1ob3N0LmMgfCAzNSArKysrKysrKystLS0tLS0tLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMTcg
-aW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-cGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS1ob3N0LmMgYi9kcml2ZXJzL3BjaS9j
-b250cm9sbGVyL2R3Yy9wY2llLWRlc2lnbndhcmUtaG9zdC5jCj4gaW5kZXggOTk1MjA1N2M4ODE5
-Yy4uYjYwMzc5NmQ0MTVkNyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3
-Yy9wY2llLWRlc2lnbndhcmUtaG9zdC5jCj4gKysrIGIvZHJpdmVycy9wY2kvY29udHJvbGxlci9k
-d2MvcGNpZS1kZXNpZ253YXJlLWhvc3QuYwo+IEBAIC04MywxOCArODMsOSBAQCBpcnFyZXR1cm5f
-dCBkd19oYW5kbGVfbXNpX2lycShzdHJ1Y3QgZHdfcGNpZV9ycCAqcHApCj4gwqDCoMKgwqDCoMKg
-wqDCoHJldHVybiByZXQ7Cj4gwqB9Cj4gwqAKPiAtLyogQ2hhaW5lZCBNU0kgaW50ZXJydXB0IHNl
-cnZpY2Ugcm91dGluZSAqLwo+IC1zdGF0aWMgdm9pZCBkd19jaGFpbmVkX21zaV9pc3Ioc3RydWN0
-IGlycV9kZXNjICpkZXNjKQo+ICtzdGF0aWMgaXJxcmV0dXJuX3QgZHdfcGNpZV9tc2lfaXNyKGlu
-dCBpcnEsIHZvaWQgKmRldl9pZCkKPiDCoHsKPiAtwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgaXJxX2No
-aXAgKmNoaXAgPSBpcnFfZGVzY19nZXRfY2hpcChkZXNjKTsKPiAtwqDCoMKgwqDCoMKgwqBzdHJ1
-Y3QgZHdfcGNpZV9ycCAqcHA7Cj4gLQo+IC3CoMKgwqDCoMKgwqDCoGNoYWluZWRfaXJxX2VudGVy
-KGNoaXAsIGRlc2MpOwo+IC0KPiAtwqDCoMKgwqDCoMKgwqBwcCA9IGlycV9kZXNjX2dldF9oYW5k
-bGVyX2RhdGEoZGVzYyk7Cj4gLcKgwqDCoMKgwqDCoMKgZHdfaGFuZGxlX21zaV9pcnEocHApOwo+
-IC0KPiAtwqDCoMKgwqDCoMKgwqBjaGFpbmVkX2lycV9leGl0KGNoaXAsIGRlc2MpOwo+ICvCoMKg
-wqDCoMKgwqDCoHJldHVybiBkd19oYW5kbGVfbXNpX2lycShkZXZfaWQpOwo+IMKgfQo+IMKgCj4g
-wqBzdGF0aWMgdm9pZCBkd19wY2lfc2V0dXBfbXNpX21zZyhzdHJ1Y3QgaXJxX2RhdGEgKmQsIHN0
-cnVjdCBtc2lfbXNnICptc2cpCj4gQEAgLTI1NCwyMCArMjQ1LDIxIEBAIGludCBkd19wY2llX2Fs
-bG9jYXRlX2RvbWFpbnMoc3RydWN0IGR3X3BjaWVfcnAgKnBwKQo+IMKgwqDCoMKgwqDCoMKgwqBy
-ZXR1cm4gMDsKPiDCoH0KPiDCoAo+IC1zdGF0aWMgdm9pZCBkd19wY2llX2ZyZWVfbXNpKHN0cnVj
-dCBkd19wY2llX3JwICpwcCkKPiArc3RhdGljIHZvaWQgX19kd19wY2llX2ZyZWVfbXNpKHN0cnVj
-dCBkd19wY2llX3JwICpwcCwgdTMyIG51bV9jdHJscykKPiDCoHsKPiDCoMKgwqDCoMKgwqDCoMKg
-dTMyIGN0cmw7Cj4gwqAKPiAtwqDCoMKgwqDCoMKgwqBmb3IgKGN0cmwgPSAwOyBjdHJsIDwgTUFY
-X01TSV9DVFJMUzsgY3RybCsrKSB7Cj4gK8KgwqDCoMKgwqDCoMKgZm9yIChjdHJsID0gMDsgY3Ry
-bCA8IG51bV9jdHJsczsgY3RybCsrKSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBpZiAocHAtPm1zaV9pcnFbY3RybF0gPiAwKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgaXJxX3NldF9jaGFpbmVkX2hhbmRsZXJfYW5kX2RhdGEocHAt
-Pm1zaV9pcnFbY3RybF0sCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIE5VTEwsIE5VTEwpOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgZnJlZV9pcnEocHAtPm1zaV9pcnFbY3RybF0sIHBwKTsKPiDC
-oMKgwqDCoMKgwqDCoMKgfQo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGlycV9kb21haW5fcmVtb3Zl
-KHBwLT5tc2lfZG9tYWluKTsKPiDCoMKgwqDCoMKgwqDCoMKgaXJxX2RvbWFpbl9yZW1vdmUocHAt
-PmlycV9kb21haW4pOwo+IMKgfQo+IMKgCj4gKyNkZWZpbmUgZHdfcGNpZV9mcmVlX21zaShwcCkg
-X19kd19wY2llX2ZyZWVfbXNpKHBwLCBNQVhfTVNJX0NUUkxTKQo+ICsKPiDCoHN0YXRpYyB2b2lk
-IGR3X3BjaWVfbXNpX2luaXQoc3RydWN0IGR3X3BjaWVfcnAgKnBwKQo+IMKgewo+IMKgwqDCoMKg
-wqDCoMKgwqBzdHJ1Y3QgZHdfcGNpZSAqcGNpID0gdG9fZHdfcGNpZV9mcm9tX3BwKHBwKTsKPiBA
-QCAtMzYxLDkgKzM1MywxNiBAQCBzdGF0aWMgaW50IGR3X3BjaWVfbXNpX2hvc3RfaW5pdChzdHJ1
-Y3QgZHdfcGNpZV9ycCAqcHApCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1
-cm4gcmV0Owo+IMKgCj4gwqDCoMKgwqDCoMKgwqDCoGZvciAoY3RybCA9IDA7IGN0cmwgPCBudW1f
-Y3RybHM7IGN0cmwrKykgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAocHAt
-Pm1zaV9pcnFbY3RybF0gPiAwKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaXJxX3NldF9jaGFpbmVkX2hhbmRsZXJfYW5kX2RhdGEocHAtPm1zaV9pcnFb
-Y3RybF0sCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZHdf
-Y2hhaW5lZF9tc2lfaXNyLCBwcCk7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlm
-IChwcC0+bXNpX2lycVtjdHJsXSA+IDApIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IHJlcXVlc3RfaXJxKHBwLT5tc2lfaXJxW2N0cmxdLCBk
-d19wY2llX21zaV9pc3IsIDAsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGRldl9uYW1lKGRl
-diksIHBwKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oGlmIChyZXQpIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGRldiwgIkZhaWxlZCB0byByZXF1ZXN0IGlycSAl
-ZDogJWRcbiIsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBwLT5tc2lfaXJxW2N0cmxdLCByZXQp
-Owo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoF9fZHdfcGNpZV9mcmVlX21zaShwcCwgY3RybCk7Cj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHJl
-dDsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDCoMKgwqB9Cj4gwqAK
-PiDCoMKgwqDCoMKgwqDCoMKgLyoKCg==
+v1: https://lore.kernel.org/lkml/20231115203401.2495875-1-iii@linux.ibm.com/
+v1 -> v2: Add comments, sort #includes, introduce
+          memset_no_sanitize_memory() and use it to avoid unpoisoning
+          of redzones, change vmalloc alignment to _REGION3_SIZE, add
+          R-bs (Alexander P.).
+
+          Fix building
+          [PATCH 28/33] s390/string: Add KMSAN support
+          with FORTIFY_SOURCE.
+          Reported-by: kernel test robot <lkp@intel.com>
+          Closes: https://lore.kernel.org/oe-kbuild-all/202311170550.bSBo44ix-lkp@intel.com/
+
+Hi,
+
+This series provides the minimal support for Kernel Memory Sanitizer on
+s390. Kernel Memory Sanitizer is clang-only instrumentation for finding
+accesses to uninitialized memory. The clang support for s390 has already
+been merged [1].
+
+With this series, I can successfully boot s390 defconfig and
+debug_defconfig with kmsan.panic=1. The tool found one real
+s390-specific bug (fixed in master).
+
+Best regards,
+Ilya
+
+[1] https://reviews.llvm.org/D148596
+
+Ilya Leoshkevich (33):
+  ftrace: Unpoison ftrace_regs in ftrace_ops_list_func()
+  kmsan: Make the tests compatible with kmsan.panic=1
+  kmsan: Disable KMSAN when DEFERRED_STRUCT_PAGE_INIT is enabled
+  kmsan: Increase the maximum store size to 4096
+  kmsan: Fix is_bad_asm_addr() on arches with overlapping address spaces
+  kmsan: Fix kmsan_copy_to_user() on arches with overlapping address
+    spaces
+  kmsan: Remove a useless assignment from
+    kmsan_vmap_pages_range_noflush()
+  kmsan: Remove an x86-specific #include from kmsan.h
+  kmsan: Introduce kmsan_memmove_metadata()
+  kmsan: Expose kmsan_get_metadata()
+  kmsan: Export panic_on_kmsan
+  kmsan: Allow disabling KMSAN checks for the current task
+  kmsan: Introduce memset_no_sanitize_memory()
+  kmsan: Support SLAB_POISON
+  kmsan: Use ALIGN_DOWN() in kmsan_get_metadata()
+  mm: slub: Let KMSAN access metadata
+  mm: kfence: Disable KMSAN when checking the canary
+  lib/string: Add KMSAN support to strlcpy() and strlcat()
+  lib/zlib: Unpoison DFLTCC output buffers
+  kmsan: Accept ranges starting with 0 on s390
+  s390: Turn off KMSAN for boot, vdso and purgatory
+  s390: Use a larger stack for KMSAN
+  s390/boot: Add the KMSAN runtime stub
+  s390/checksum: Add a KMSAN check
+  s390/cpacf: Unpoison the results of cpacf_trng()
+  s390/ftrace: Unpoison ftrace_regs in kprobe_ftrace_handler()
+  s390/mm: Define KMSAN metadata for vmalloc and modules
+  s390/string: Add KMSAN support
+  s390/traps: Unpoison the kernel_stack_overflow()'s pt_regs
+  s390/uaccess: Add KMSAN support to put_user() and get_user()
+  s390/unwind: Disable KMSAN checks
+  s390: Implement the architecture-specific kmsan functions
+  kmsan: Enable on s390
+
+ Documentation/dev-tools/kmsan.rst   |   4 +-
+ arch/s390/Kconfig                   |   1 +
+ arch/s390/Makefile                  |   2 +-
+ arch/s390/boot/Makefile             |   3 +
+ arch/s390/boot/kmsan.c              |   6 ++
+ arch/s390/boot/startup.c            |   8 ++
+ arch/s390/boot/string.c             |  16 ++++
+ arch/s390/include/asm/checksum.h    |   2 +
+ arch/s390/include/asm/cpacf.h       |   2 +
+ arch/s390/include/asm/kmsan.h       |  36 +++++++++
+ arch/s390/include/asm/pgtable.h     |  10 +++
+ arch/s390/include/asm/string.h      |  20 +++--
+ arch/s390/include/asm/thread_info.h |   2 +-
+ arch/s390/include/asm/uaccess.h     | 110 ++++++++++++++++++++--------
+ arch/s390/kernel/ftrace.c           |   1 +
+ arch/s390/kernel/traps.c            |   6 ++
+ arch/s390/kernel/unwind_bc.c        |   4 +
+ arch/s390/kernel/vdso32/Makefile    |   3 +-
+ arch/s390/kernel/vdso64/Makefile    |   3 +-
+ arch/s390/purgatory/Makefile        |   2 +
+ include/linux/kmsan-checks.h        |  26 +++++++
+ include/linux/kmsan.h               |  23 ++++++
+ include/linux/kmsan_types.h         |   2 +-
+ kernel/trace/ftrace.c               |   1 +
+ lib/string.c                        |   6 ++
+ lib/zlib_dfltcc/dfltcc.h            |   1 +
+ lib/zlib_dfltcc/dfltcc_util.h       |  23 ++++++
+ mm/Kconfig                          |   1 +
+ mm/kfence/core.c                    |   5 +-
+ mm/kmsan/core.c                     |   2 +-
+ mm/kmsan/hooks.c                    |  30 +++++++-
+ mm/kmsan/init.c                     |   5 +-
+ mm/kmsan/instrumentation.c          |  11 +--
+ mm/kmsan/kmsan.h                    |   9 +--
+ mm/kmsan/kmsan_test.c               |   5 ++
+ mm/kmsan/report.c                   |   7 +-
+ mm/kmsan/shadow.c                   |   9 +--
+ mm/slub.c                           |  12 ++-
+ 38 files changed, 345 insertions(+), 74 deletions(-)
+ create mode 100644 arch/s390/boot/kmsan.c
+ create mode 100644 arch/s390/include/asm/kmsan.h
+
+-- 
+2.41.0
 
