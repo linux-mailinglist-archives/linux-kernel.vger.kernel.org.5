@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9555D7F2D0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2D77F2D73
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbjKUMZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:25:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
+        id S233671AbjKUMm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:42:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbjKUMZG (ORCPT
+        with ESMTP id S234731AbjKUMZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:25:06 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F69519F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:25:02 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-db3a09e96daso1848259276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:25:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700569501; x=1701174301; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y7DbtpzK1w4tm0MAmW+BGPDlzSNx3OWVKQWgUITDxBs=;
-        b=PitmgaUKxW3UkwX2TzLdo6kVDmlY2ZB2gsxUdv9uh0H1R5yf1+VDHOj+dYFHHDnbvl
-         1cACAaNP80opv53jdRHbcOoqL2zItp4Ik1tENDmdle9tWD/0E+0SNKwzvxfV3k0d/wRr
-         ALyECvytj22hsZoQQlpZouf1ZT/ZS0cPjPOPTDJI266EblbUGuQsAiUUdavcmZKSD0fN
-         npcEaNyM/z9pRDQbQblQDwpHmpUkFApDB3rSIlQNGn4guVO72Cl1EC2OQnESudPbPO9a
-         ETAwGR0v0QvxSG+GMCe1gugUqu6ZaSbrF7aJpjdeMSkF05U8GdbEo7mSi8cqp4YwNZv9
-         PP2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700569501; x=1701174301;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y7DbtpzK1w4tm0MAmW+BGPDlzSNx3OWVKQWgUITDxBs=;
-        b=ii7AH1iK4TkMv2fpCq13v4ehSjEBJNaRwOM2rmH5z7fz8h5sG8SWOB+prtk5X/k2oB
-         r2G4nmthqiFkSkXiJT/piA5OQKn/ZFLAmwxS++CEXKcl4tAmwqKK/BMGdrqK44CSOcIH
-         P4EGVuKMWqGjVdbQf0WY+mIfUkw6MqnSlSxlfeuDqI7B2H78u1Iv/lc3N2mAlpL6VG43
-         lp5xB1Kk0Fw7zyunHwPpTQoH7tnvYRt2uQeo9TVXJYIBISeoTPGKJ0nmexzBV8uM2/73
-         VKvy67LmEguz4szWKUxnM9DVC+1As8S/xI6moKAPKcmAXhfrSkQDr6r3MKq8LcKUZonX
-         8ZSg==
-X-Gm-Message-State: AOJu0Ywp0IUBeeeaFCGYUUTgrX5OBwT0cVkIg4XX8tZFHxb5Q4ZJYYOZ
-        0kRutRXu5RcUDqeZKn4XXp35Kh2G5wLSkmhh7uWp4g==
-X-Google-Smtp-Source: AGHT+IHO9SI0g8jKJS+nrXiKFU2C6WTzZGogCn6Twc/6jcAlzKSJQF7xfIjxeV6WHAHDe/RecHXy2FlYGEl64dmPgLo=
-X-Received: by 2002:a25:8907:0:b0:da0:400e:750c with SMTP id
- e7-20020a258907000000b00da0400e750cmr9033029ybl.27.1700569501269; Tue, 21 Nov
- 2023 04:25:01 -0800 (PST)
+        Tue, 21 Nov 2023 07:25:46 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8AA136
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:25:43 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALB9NaZ009930;
+        Tue, 21 Nov 2023 12:25:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=MbhGWsApsD/LUIroLWUz2V7v0ub0+Q6g1AnObLHT9PA=;
+ b=DMSgh77WvljN5S+h+e850R/avJMsC4zgPoqBSvh5920ZJOzbhwP70qxLHS2VIyX28/9h
+ k3KgriGePR9/gNfYRcPzAO02K5+kIzeF8YoANeY6lAz19784A8LAQd8/1LZxwN5CTVAm
+ Qw5eR7QV9AXUNtN+48ZhzrmK/hsVCsNflTYA4EVUoGyb34uqNpGSGwwpzSdKa/fYCHaK
+ EGyXctGJUqb5mT0mHyFsCEXm2v149l+2Yqa2pRra7pk44Vm4YnxWQT/DRzVHjJJ/cdU3
+ qV6eqVPHnxFc0J5LD2F0+XojM2Hl18ZDgTiUVJ1gC1B/Y6oxrTn/M2RRTK+g3cS7mewy jA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uekv2vxk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Nov 2023 12:25:29 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALBNLXe023548;
+        Tue, 21 Nov 2023 12:25:28 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uekq6w929-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Nov 2023 12:25:27 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ALCPR32036011;
+        Tue, 21 Nov 2023 12:25:27 GMT
+Received: from sridara-source.osdevelopmeniad.oraclevcn.com (sridara-source.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.239])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uekq6w91q-1;
+        Tue, 21 Nov 2023 12:25:27 +0000
+From:   Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        ailiop@suse.com
+Cc:     srivathsa.d.dara@oracle.com, rajesh.sivaramasubramaniom@oracle.com,
+        junxiao.bi@oracle.com, ocfs2-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, gautham.ananthakrishna@oracle.com
+Subject: [PATCH v2] ocfs2: call ocfs2_abort when journal abort
+Date:   Tue, 21 Nov 2023 12:25:23 +0000
+Message-Id: <20231121122523.1859827-1-srivathsa.d.dara@oracle.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20231120115726.1569323-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20231120115726.1569323-1-martin.blumenstingl@googlemail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 21 Nov 2023 13:24:25 +0100
-Message-ID: <CAPDyKFoncctOOCu1Gam4dQJh0mhekxj=5V0aAhrWKfPF0NW=1A@mail.gmail.com>
-Subject: Re: [PATCH v3] wifi: rtw88: sdio: Honor the host max_req_size in the
- RX path
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jernej.skrabec@gmail.com, pkshih@realtek.com, kvalo@kernel.org,
-        tony0620emma@gmail.com, lukas@mntre.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311210097
+X-Proofpoint-GUID: OUrioSaDep2pGoVU_BWqoZofVzb3cBW9
+X-Proofpoint-ORIG-GUID: OUrioSaDep2pGoVU_BWqoZofVzb3cBW9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,138 +75,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 at 12:57, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Lukas reports skb_over_panic errors on his Banana Pi BPI-CM4 which comes
-> with an Amlogic A311D (G12B) SoC and a RTL8822CS SDIO wifi/Bluetooth
-> combo card. The error he observed is identical to what has been fixed
-> in commit e967229ead0e ("wifi: rtw88: sdio: Check the HISR RX_REQUEST
-> bit in rtw_sdio_rx_isr()") but that commit didn't fix Lukas' problem.
->
-> Lukas found that disabling or limiting RX aggregation works around the
-> problem for some time (but does not fully fix it). In the following
-> discussion a few key topics have been discussed which have an impact on
-> this problem:
-> - The Amlogic A311D (G12B) SoC has a hardware bug in the SDIO controller
->   which prevents DMA transfers. Instead all transfers need to go through
->   the controller SRAM which limits transfers to 1536 bytes
-> - rtw88 chips don't split incoming (RX) packets, so if a big packet is
->   received this is forwarded to the host in it's original form
-> - rtw88 chips can do RX aggregation, meaning more multiple incoming
->   packets can be pulled by the host from the card with one MMC/SDIO
->   transfer. This Depends on settings in the REG_RXDMA_AGG_PG_TH
->   register (BIT_RXDMA_AGG_PG_TH limits the number of packets that will
->   be aggregated, BIT_DMA_AGG_TO_V1 configures a timeout for aggregation
->   and BIT_EN_PRE_CALC makes the chip honor the limits more effectively)
->
-> Use multiple consecutive reads in rtw_sdio_read_port() and limit the
-> number of bytes which are copied by the host from the card in one
-> MMC/SDIO transfer. This allows receiving a buffer that's larger than
-> the hosts max_req_size (number of bytes which can be transferred in
-> one MMC/SDIO transfer). As a result of this the skb_over_panic error
-> is gone as the rtw88 driver is now able to receive more than 1536 bytes
-> from the card (either because the incoming packet is larger than that
-> or because multiple packets have been aggregated).
->
-> In case of an receive errors (-EILSEQ has been observed by Lukas) we
-> need to drain the remaining data from the card's buffer, otherwise the
-> card will return corrupt data for the next rtw_sdio_read_port() call.
->
-> Fixes: 65371a3f14e7 ("wifi: rtw88: sdio: Add HCI implementation for SDIO based chipsets")
-> Reported-by: Lukas F. Hartmann <lukas@mntre.com>
-> Closes: https://lore.kernel.org/linux-wireless/CAFBinCBaXtebixKbjkWKW_WXc5k=NdGNaGUjVE8NCPNxOhsb2g@mail.gmail.com/
-> Suggested-by: Ping-Ke Shih <pkshih@realtek.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Ryan Ding <ryan.ding@oracle.com>
 
-From the SDIO interface point of view, feel free to add:
+Journal can not recover from abort state, so we should panic. Because we
+can not release lock resource in this state, other node will hung when it
+require a lock owned by this node. So, panic and remaster is a reasonable
+choice.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+ocfs2_abort() will do above work.
 
-Kind regards
-Uffe
+Co-Developed-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+Signed-off-by: Ryan Ding <ryan.ding@oracle.com>
+Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+---
+v1-> v2: Remove redundant code and comments related to local mount.
+ fs/ocfs2/journal.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-> ---
->
-> Changes since v2 at [2]:
-> - Don't initialize err to zero as that intiial value is never used.
->   Thanks Ping-Ke for spotting this!
-> - Add a comment explaning why we need to continue reading but still
->   have to return an error to the caller of rtw_sdio_read_port()
->
-> Changes since v1 at [0]:
-> - We need to read all bytes if we split the transaction into multiple
->   smaller reads. This is even the case when one of N reads reports an
->   error. Otherwise the next read port call will return garbage (partially
->   containing zeros, ...). A similar-ish approach can be found in the
->   vendor driver, see [1] (specifically the call to sdio_recv_and_drop())
-> - Update the patch description accordingly
->
-> With a preliminary version of this updated patch Lukas reported off-
-> list: "i've been using this laptop for almost 3 hours with heavy wifi
-> usage and so far no problems"
->
->
-> [0] https://lore.kernel.org/lkml/169089906853.212423.17095176293160428610.kvalo@kernel.org/T/
-> [1] https://github.com/chewitt/RTL8822CS/blob/ad1391e219b59314485739a499fb442d5bbc069e/hal/rtl8822c/sdio/rtl8822cs_io.c#L468-L477
-> [2] https://lore.kernel.org/linux-wireless/20230806181656.2072792-1-martin.blumenstingl@googlemail.com/
->
->
->  drivers/net/wireless/realtek/rtw88/sdio.c | 35 ++++++++++++++++++-----
->  1 file changed, 28 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/wireless/realtek/rtw88/sdio.c b/drivers/net/wireless/realtek/rtw88/sdio.c
-> index 2c1fb2dabd40..0cae5746f540 100644
-> --- a/drivers/net/wireless/realtek/rtw88/sdio.c
-> +++ b/drivers/net/wireless/realtek/rtw88/sdio.c
-> @@ -500,19 +500,40 @@ static u32 rtw_sdio_get_tx_addr(struct rtw_dev *rtwdev, size_t size,
->  static int rtw_sdio_read_port(struct rtw_dev *rtwdev, u8 *buf, size_t count)
->  {
->         struct rtw_sdio *rtwsdio = (struct rtw_sdio *)rtwdev->priv;
-> +       struct mmc_host *host = rtwsdio->sdio_func->card->host;
->         bool bus_claim = rtw_sdio_bus_claim_needed(rtwsdio);
->         u32 rxaddr = rtwsdio->rx_addr++;
-> -       int ret;
-> +       int ret = 0, err;
-> +       size_t bytes;
->
->         if (bus_claim)
->                 sdio_claim_host(rtwsdio->sdio_func);
->
-> -       ret = sdio_memcpy_fromio(rtwsdio->sdio_func, buf,
-> -                                RTW_SDIO_ADDR_RX_RX0FF_GEN(rxaddr), count);
-> -       if (ret)
-> -               rtw_warn(rtwdev,
-> -                        "Failed to read %zu byte(s) from SDIO port 0x%08x",
-> -                        count, rxaddr);
-> +       while (count > 0) {
-> +               bytes = min_t(size_t, host->max_req_size, count);
-> +
-> +               err = sdio_memcpy_fromio(rtwsdio->sdio_func, buf,
-> +                                        RTW_SDIO_ADDR_RX_RX0FF_GEN(rxaddr),
-> +                                        bytes);
-> +               if (err) {
-> +                       rtw_warn(rtwdev,
-> +                                "Failed to read %zu byte(s) from SDIO port 0x%08x: %d",
-> +                                bytes, rxaddr, err);
-> +
-> +                        /* Signal to the caller that reading did not work and
-> +                         * that the data in the buffer is short/corrupted.
-> +                         */
-> +                       ret = err;
-> +
-> +                       /* Don't stop here - instead drain the remaining data
-> +                        * from the card's buffer, else the card will return
-> +                        * corrupt data for the next rtw_sdio_read_port() call.
-> +                        */
-> +               }
-> +
-> +               count -= bytes;
-> +               buf += bytes;
-> +       }
->
->         if (bus_claim)
->                 sdio_release_host(rtwsdio->sdio_func);
-> --
-> 2.42.1
->
+diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+index ce215565d061..52d71e9ded2e 100644
+--- a/fs/ocfs2/journal.c
++++ b/fs/ocfs2/journal.c
+@@ -14,7 +14,6 @@
+ #include <linux/kthread.h>
+ #include <linux/time.h>
+ #include <linux/random.h>
+-#include <linux/delay.h>
+ #include <linux/writeback.h>
+ 
+ #include <cluster/masklog.h>
+@@ -2326,7 +2325,7 @@ static int __ocfs2_wait_on_mount(struct ocfs2_super *osb, int quota)
+ 
+ static int ocfs2_commit_thread(void *arg)
+ {
+-	int status;
++	int status = 0;
+ 	struct ocfs2_super *osb = arg;
+ 	struct ocfs2_journal *journal = osb->journal;
+ 
+@@ -2343,18 +2342,11 @@ static int ocfs2_commit_thread(void *arg)
+ 
+ 		status = ocfs2_commit_cache(osb);
+ 		if (status < 0) {
+-			static unsigned long abort_warn_time;
+-
+-			/* Warn about this once per minute */
+-			if (printk_timed_ratelimit(&abort_warn_time, 60*HZ))
+-				mlog(ML_ERROR, "status = %d, journal is "
+-						"already aborted.\n", status);
+ 			/*
+-			 * After ocfs2_commit_cache() fails, j_num_trans has a
+-			 * non-zero value.  Sleep here to avoid a busy-wait
+-			 * loop.
++			 * Journal can not recover from abort state, there is
++			 * no need to keep commit cache. So, we should panic.
+ 			 */
+-			msleep_interruptible(1000);
++			ocfs2_abort(osb->sb, "Detected aborted journal");
+ 		}
+ 
+ 		if (kthread_should_stop() && atomic_read(&journal->j_num_trans)){
+-- 
+2.39.3
+
