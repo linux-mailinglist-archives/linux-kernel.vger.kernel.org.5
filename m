@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F1B7F35C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B5C7F35C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbjKUSPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:15:08 -0500
+        id S234551AbjKUSPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:15:16 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234438AbjKUSPE (ORCPT
+        with ESMTP id S234485AbjKUSPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:15:04 -0500
+        Tue, 21 Nov 2023 13:15:07 -0500
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A07D54
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBD0D63
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:03 -0800 (PST)
 Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id ADA2E3201926;
-        Tue, 21 Nov 2023 13:14:59 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id C9C9D320196C;
+        Tue, 21 Nov 2023 13:15:02 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 21 Nov 2023 13:15:00 -0500
+  by compute1.internal (MEProxy); Tue, 21 Nov 2023 13:15:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700590499; x=
-        1700676899; bh=yt9x+GFYOOcz+oCAtF66VyzySg0BOpnmmsYizNQZV7o=; b=T
-        x6OyUJ6siGMgLCOSlmMPRlcgewz5t6hllwuUkz31sW6YbxKQnQcLEXxU2OTol58x
-        ADSE55fjgZJSM1xaQk924oyU9AOCfKQnJP6uwV7GBIzXpB4+CMDSKGyzmeOOp8Yl
-        jCTY9qJ3MC5IzcY0stT6Jcvm/JDK6nbt8zQWSFrr9kvrVZcvnMSTd6Kdf1ZAores
-        sJvw3RZ5EFHOmWdYTiyefeEbbEarAvMsxnZx7Cf1WifUVRHD2hmIn89611Ju6OgP
-        sQer1t6TIHUFvioXnUZQ5z4dMQE6BCsQJMtaq4bszIKCl6+058NsaVPobkqxNJk/
-        1OfFy51seUH9vG4x55aQA==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700590502; x=
+        1700676902; bh=hopG2M/LEQ0YkzvfYVZfqXAwYlgWV1Hj2Np8CK+F5ww=; b=g
+        R/ySh5TOZ2cD0s6r3IFnbpB+nDDZ+U6i53mlyjhEuGLieJ4zK8nRonItdeJDjIm8
+        VkmQ/EQBO0b1dzlhvvq3vpGtBTLQgiaQtv8gVkPXeKFRheRyvkIz8Q7/0xqv1WBJ
+        Q1hlVLbVnOG3Wd0hOaJBtxUCpmCyEYnRLNWtLB3vJUjyhXYChwenbKxPxY8+ooI4
+        FqSrHe8g8TqGX4fa3uE6EdyFp3bbI5B2rPjpA5EiNAo7HTZVYTao/AwpteFlTLOn
+        FQiptDqlp3hFgSqHbgV7H/CL1RfTGbreBa04y6j1NgmAzRmRFlB+0O9GXew6UU/6
+        RmzFu/cFrL2SfmjCQ4whg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700590499; x=
-        1700676899; bh=yt9x+GFYOOcz+oCAtF66VyzySg0BOpnmmsYizNQZV7o=; b=J
-        dTrRogRjZog6Npk/fbuHWmNvQ+yXoM/hVJddWN3g47j1QhftGeW1Q6Wpr4TPzYoI
-        XCe+mPfRT/brI2EXx6HKoZfoYh3xxRTkphSmjrrobOiFUMtKweEnem+inJYR9D3G
-        3lH3wM0cI5Sid5O6XQnbhRVfusW5GRFUrQ5S6IAUEb81ltZyMx+xYuKZ38s/fTmy
-        1TItTanJjtNrRLXaKjUaxXXftZkZg3myiL33PN0tF2jlLd0jgHm2X6nZTUjodqWi
-        XKy8iH35lMVlpIdo4ffznSCDIXqujYPZzYQLJgyXtBlhe7jjUCzJqUhQs+oOMlHZ
-        Yxtzo87lvaM+prTx0mW3g==
-X-ME-Sender: <xms:o_NcZc5Flqt9IOM9xVpyxeYCze2ix-_tWWE5SuQaYbSgIWST6sF-FQ>
-    <xme:o_NcZd7okFciI0Mml9oz0ESVJ88A53kevkcUnfMYkywmzAauBIAEmaqkJUHTyq8CX
-    -iFBFsFKnWwOtQbCY4>
-X-ME-Received: <xmr:o_NcZbfy8qFMoTu1KbWh-jgR2mHufJ0jngNJLSoD8UX3n-foNW-tMOLX3IiqjNukoyjTT1fEA1l33r4cQwzsOWDYSOzmNCmlz65wPO5FWLpr>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700590502; x=
+        1700676902; bh=hopG2M/LEQ0YkzvfYVZfqXAwYlgWV1Hj2Np8CK+F5ww=; b=A
+        pqtVPLK5EKbjVcy6HjQn57ywNYTt+xafH4V3TvLS5IAjhmoaIBFMV9k4Yqs+DuvH
+        LU0GOLIlwcktsS9pKAKCwsM5mqVg2Cz1vkbbThtIFCq5UgdGtS/7Uh0RWdQ5LIEG
+        8B2sJLP7rAoPwd9nYi5qvG+JQtFrXQ3GM/BfnXYCx4k5th7hfHBCzQu8gUyJP6j+
+        tQeS30pbs2ksFy1ns+6CC4i1wxp9D/15e8cdomnKvGMr2EjY2uJB3UIVdmJ1KbbJ
+        mnYq1fOd/GmBLwfhkNUsgpQQ2EB0YfpM8/Qhw7126Wk7fTAsNVkSOfwJFeCuuVhN
+        3fhcaPZR5elJKDph/JccQ==
+X-ME-Sender: <xms:pfNcZbYNrsVUmxMvBIxnvs_WlD5wqinMjSjEGdJOHDXFjzWMhO6naA>
+    <xme:pfNcZaZ2K0scmmgtRjoUMjgFIXQWMD585Tb-dEIDJ-QgfBNQdhpVncPxy8Mx5VJSh
+    o8sXteslIxl-tfx5rA>
+X-ME-Received: <xmr:pfNcZd8Ag1pmEW8OrrCR2MALnKVwfKI08qdF600ksdQ1bD0cDtXfUkFUmXRS_-Ssd6S5uZ69POtWGFIdbsNQ-9_EkVwcj1nigDW92C6NrIuo>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddtfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
@@ -56,20 +56,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddtfecutefuodetgg
     ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
     ufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
     hfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:o_NcZRIuGfI0t64dL_UntwC0yD9eMUmXVNqQPn-7gSOOZ5GbURnxyw>
-    <xmx:o_NcZQKO-AQJ5U7k4PDVZjMn2bOi13HLbXuTkyaJIhhXXNsLAJ8c7w>
-    <xmx:o_NcZSzfKJSH2bgPGRrAzvQRV3AeDKu0JRWTsXKf2w4fQbfJUsvO3g>
-    <xmx:o_NcZU1-5fZ-u5SBCNGsPrQAqGBkej2gT6CsMXMThbe6CeCocUJ51Q>
+X-ME-Proxy: <xmx:pfNcZRolB7ERTNpn5xEN6EyxfkDsc9GLaFYKF-1plDCaL3UgMuHnnQ>
+    <xmx:pfNcZWrsm8cE4BBJIfUE3celJOYncXuVbYyJGihVg_QUi7U8LmAYIA>
+    <xmx:pfNcZXSBaXKMkos3P8nq_6p4HpwVSUShGKh-lEDcEercK_bxJQf_6Q>
+    <xmx:pvNcZZUhbe7cLSiHTj-fqyUn0cBJycVX7OVnQX5vhsEXl0DwfOYarw>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Nov 2023 13:14:58 -0500 (EST)
+ 21 Nov 2023 13:15:01 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 3/5] staging: rtl8192e: renamed variable IsHTHalfNmodeAPs
-Date:   Tue, 21 Nov 2023 13:14:33 -0500
-Message-ID: <20231121181435.9337-4-garyrookard@fastmail.org>
+Subject: [PATCH 4/5] staging: rtl8192e: renamed variable HTIOTPeerDetermine
+Date:   Tue, 21 Nov 2023 13:14:34 -0500
+Message-ID: <20231121181435.9337-5-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231121181435.9337-1-garyrookard@fastmail.org>
 References: <20231121181435.9337-1-garyrookard@fastmail.org>
@@ -87,58 +87,39 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Renamed from Pascal/CamelCase to Snake case the variable
-IsHTHalfNmodeAPs.
-ISHTHalfNmodeAPs -> is_ht_half_nmode_aps
+HTIOTPeerDetermine.
+HTIOTPeerDetermine -> ht_iot_peer_determine
 
 Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
 Driver/module rtl8192e compiles.
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h         | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index fb8294f31a60..0993263c13d3 100644
+index 0993263c13d3..0873c19ca051 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -139,7 +139,7 @@ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
- 	return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
+@@ -164,7 +164,7 @@ bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
+ 	return retValue;
  }
  
--bool IsHTHalfNmodeAPs(struct rtllib_device *ieee)
-+bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
+-static void HTIOTPeerDetermine(struct rtllib_device *ieee)
++static void ht_iot_peer_determine(struct rtllib_device *ieee)
  {
- 	bool			retValue = false;
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
  	struct rtllib_network *net = &ieee->current_network;
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 0226a69f40c3..6b549629087b 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1782,7 +1782,7 @@ extern u8 MCS_FILTER_ALL[];
- extern u16 MCS_DATA_RATE[2][2][77];
- u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
- void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
--bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
-+bool is_ht_half_nmode_aps(struct rtllib_device *ieee);
- u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
- int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
- int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 42d652fe8601..89bc38774fa7 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1872,7 +1872,7 @@ static void rtllib_rx_auth_resp(struct rtllib_device *ieee, struct sk_buff *skb)
- 		ieee->softmac_stats.rx_auth_rs_ok++;
- 		if (!(ieee->ht_info->iot_action & HT_IOT_ACT_PURE_N_MODE)) {
- 			if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
--				if (IsHTHalfNmodeAPs(ieee)) {
-+				if (is_ht_half_nmode_aps(ieee)) {
- 					bSupportNmode = true;
- 					bHalfSupportNmode = true;
- 				} else {
+@@ -672,7 +672,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
+ 			ht_info->RT2RT_HT_Mode = (enum rt_ht_capability)0;
+ 		}
+ 
+-		HTIOTPeerDetermine(ieee);
++		ht_iot_peer_determine(ieee);
+ 
+ 		ht_info->iot_action = 0;
+ 		bIOTAction = HTIOTActIsMgntUseCCK6M(ieee, pNetwork);
 -- 
 2.41.0
 
