@@ -2,169 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F09C7F30B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10037F30B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbjKUO0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:26:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        id S234196AbjKUO0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjKUO00 (ORCPT
+        with ESMTP id S233608AbjKUO01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:26:26 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0662010D1;
-        Tue, 21 Nov 2023 06:26:20 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 21 Nov 2023 09:26:27 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A2B1A3;
+        Tue, 21 Nov 2023 06:26:23 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A828561E5FE01;
-        Tue, 21 Nov 2023 15:26:00 +0100 (CET)
-Message-ID: <2bfe2311-27a6-46b5-8662-ba3cbb409f81@molgen.mpg.de>
-Date:   Tue, 21 Nov 2023 15:25:59 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Unplugging USB-C charger cable causes `ucsi_acpi USBC000:00:
- ucsi_handle_connector_change: ACK failed (-110)`
-Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-References: <b2466bc2-b62c-4328-94a4-b60af4135ba7@molgen.mpg.de>
- <ZVy5+AxnOZNmUZ15@kuha.fi.intel.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <ZVy5+AxnOZNmUZ15@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 0D1AF1F8BF;
+        Tue, 21 Nov 2023 14:26:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700576782; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rEuossM4JQY9JZ11rmGjFmuYHEzbTy8cDDjv1mfs8ps=;
+        b=Ow3glYItRxjzgdERrVcWs2t1URa3x43jhS++pNSWgBQj8Qki8lxkgIRw1tg43fqiz0hFCM
+        WMDmBBqE9WoqMddg0GOcY92geB10jOzP32k9+NW2qgvT3cY0T4qT6IjJEEyVLPhY7bGQQa
+        WtWGAPDisyzCpfNpPj0ChJHE7uEruMc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700576782;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rEuossM4JQY9JZ11rmGjFmuYHEzbTy8cDDjv1mfs8ps=;
+        b=D1An8EjuY83yk7KfZIv+/C3MztaF9sHChe2a+wLweUqwV5R2lcYDWQ7mlL4vpzlvy2z/mO
+        LwsvEZv0i1szmNBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BABCC138E3;
+        Tue, 21 Nov 2023 14:26:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9J+4LA2+XGUXUgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 14:26:21 +0000
+Date:   Tue, 21 Nov 2023 15:26:21 +0100
+Message-ID: <87fs0zmbci.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Johannes =?ISO-8859-1?Q?Pe?= =?ISO-8859-1?Q?n=DFel?= 
+        <johannes.penssel@gmail.com>
+Subject: Re: Fwd: sysfs: cannot create duplicate filename .../system76_acpi::kbd_backlight/color
+In-Reply-To: <37f6aa8e-8cab-4194-8493-8e39819ed608@redhat.com>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+        <ZT25-gUmLl8MPk93@debian.me>
+        <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+        <ZUjnzB2RL2iLzIQG@debian.me>
+        <87sf50pm34.wl-tiwai@suse.de>
+        <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+        <87edgjo2kr.wl-tiwai@suse.de>
+        <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
+        <874jhfo0oc.wl-tiwai@suse.de>
+        <37f6aa8e-8cab-4194-8493-8e39819ed608@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.80
+X-Spamd-Result: default: False [-5.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         TO_DN_ALL(0.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[suse.de,leemhuis.info,traphandler.com,gmail.com,vger.kernel.org,lists.linux.dev,system76.com,kernel.org,ucw.cz];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Heikki,
-
-
-Thank you for your prompt reply.
-
-Am 21.11.23 um 15:08 schrieb Heikki Krogerus:
-> On Tue, Nov 21, 2023 at 12:50:43PM +0100, Paul Menzel wrote:
-
->> On the Dell XPS 13, BIOS 2.21.0 06/02/2022, with Debian sid/unstable and
->> Linux 6.5.10, when unplugging the (Dell) USB Type-C charger cable, Linux
->> logs the error below:
->>
->>      ucsi_acpi USBC000:00: ucsi_handle_connector_change: ACK failed (-110)
->>
->> As this is logged with level error, can this be somehow fixed?
->>
->>      drivers/usb/typec/ucsi/ucsi.c: dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
->>
->> Please find the output of `dmesg` attached.
+On Tue, 21 Nov 2023 13:23:20 +0100,
+Hans de Goede wrote:
 > 
-> Thanks. The firmware not reacting to the ACK command is weird, but I'm
-> not sure if it's critical. Does the interface continue working after
-> that? Do you see the partner devices appearing under /sys/class/typec/
-> when you plug them, and disappearing when you unplug them?
+> Hi,
+> 
+> On 11/21/23 11:33, Takashi Iwai wrote:
+> > On Tue, 21 Nov 2023 11:21:53 +0100,
+> > Hans de Goede wrote:
+> >>
+> >> Hi,
+> >>
+> >> On 11/21/23 10:52, Takashi Iwai wrote:
+> >>> On Tue, 21 Nov 2023 10:19:03 +0100,
+> >>> Thorsten Leemhuis wrote:
+> >>>>
+> >>>> Takashi, Jean-Jacques Hiblot, Lee,
+> >>>>
+> >>>> On 20.11.23 14:53, Takashi Iwai wrote:
+> >>>>> On Mon, 06 Nov 2023 14:19:08 +0100,
+> >>>>> Bagas Sanjaya wrote:
+> >>>>>> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+> >>>>>>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+> >>>>>>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+> >>>>>>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+> >>>>>>>>
+> >>>>>>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+> >>>>>>>> since you authored the culprit?
+> >>>>>
+> >>>>>>> The offending commit stores the color in struct led_classdev and exposes it
+> >>>>>>> via sysfs. It was part of a series that create a RGB leds from multiple
+> >>>>>>> single-color LEDs. for this series, we need the color information but we
+> >>>>>>> don't really need to expose it it via sysfs. In order to fix the issue, we
+> >>>>>>> can remove the 'color' attribute from the sysfs.
+> >>>>>>
+> >>>>>> OK, see you in the patch!
+> >>>>>
+> >>>>> Is there a patch available?
+> >>>>
+> >>>> Not that I know of. Could not find anything on lore either.
+> >>>>
+> >>>>> This bug hits for a few Logitech keyboard models, too, and it makes
+> >>>>> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+> >>>>> this bug:
+> >>>>>   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+> >>>>>
+> >>>>> We need a quick fix for 6.6.x.
+> >>>>
+> >>>> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+> >>>> committed it and sent it to Linus) know about this for a while already
+> >>>> without doing anything about it, I wonder if someone should just send a
+> >>>> revert to Linus (unless of course that is likely to introduce a
+> >>>> regression on its own).
+> >>>>
+> >>>> Takashi, could you maybe do this, unless a fix shows up real soon?
+> >>>
+> >>> I can, but we need to decide which way to go.
+> >>> There are several options:
+> >>>
+> >>> 1. Revert the commit c7d80059b086;
+> >>>    this drops led class color sysfs entries.  Also the store of
+> >>>    led_cdev->color from fwnode is dropped, too.
+> >>>
+> >>> 2. Drop only led class color sysfs entries;
+> >>>    a partial revert of c7d80059b086 above
+> >>
+> >> AFAIK further up in the thread (or a related thread) there
+> >> already was consensus to do this. Someone just needs to
+> >> write the patch.
+> > 
+> > Well, is there any user of this new led_classdev.color field?
+> > The value read from fwnode is stored there, but as far as I see, there
+> > seems no real user, so far.  If it's still unused, we can do the whole
+> > revert -- which is cleaner.
+> 
+> I honestly don't know. I've mostly just been reading along. I think
+> there may be some future in kernel use planned (not sure at all though).
+> 
+> If there are no current in kernel users then I agree we should just
+> go with a full revert now to fix the regression. If some later
+> in kernel users do come along then they can always re-introduce
+> the change minus the sysfs attr addition.
 
-```
-$ LANG= grep . 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000\:001/*
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_max:0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_now:0
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/device: 
-Is a directory
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/hwmon7: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/online:0
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/power: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/scope:System
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/subsystem: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/type:USB
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_NAME=ucsi-source-psy-USBC000:001
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_TYPE=USB
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_USB_TYPE=[C] 
-PD PD_PPS
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_ONLINE=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_MIN=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_MAX=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_NOW=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_CURRENT_MAX=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_CURRENT_NOW=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_SCOPE=System
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/usb_type:[C] 
-PD PD_PPS
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_max:5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_min:5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_now:5000000
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/wakeup49: 
-Is a directory
-```
-
-Now I unplugged the device, and the error is *not* logged. (I had a USB 
-Type-C port replicator plugged in during the day before.)
-
-The directory is still there:
-
-```
-$ LANG= grep . 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000\:001/*
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_max:0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/current_now:0
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/device: 
-Is a directory
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/hwmon7: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/online:0
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/power: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/scope:System
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/subsystem: 
-Is a directory
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/type:USB
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_NAME=ucsi-source-psy-USBC000:001
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_TYPE=USB
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_USB_TYPE=[C] 
-PD PD_PPS
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_ONLINE=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_MIN=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_MAX=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_VOLTAGE_NOW=5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_CURRENT_MAX=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_CURRENT_NOW=0
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/uevent:POWER_SUPPLY_SCOPE=System
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/usb_type:[C] 
-PD PD_PPS
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_max:5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_min:5000000
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/voltage_now:5000000
-grep: 
-/sys/class/typec/port0/device/power_supply/ucsi-source-psy-USBC000:001/wakeup49: 
-Is a directory
-```
-
-I guess, that is the wrong directory I look at though?
-
-(I am going to monitor the logs over the next days.)
+Sounds reasonable.
+OK, let me pitch the revert patch.
 
 
-Kind regards,
+thanks,
 
-Paul
-```
+Takashi
