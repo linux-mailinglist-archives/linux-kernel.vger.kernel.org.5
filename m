@@ -2,276 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852BF7F397A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B207F3989
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbjKUWut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:50:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S234740AbjKUWwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:52:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbjKUWuq (ORCPT
+        with ESMTP id S234752AbjKUWwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:50:46 -0500
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412D51BC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:50:42 -0800 (PST)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1f9601fd9b1so127734fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:50:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700607041; x=1701211841; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DUyHc0j6Ju2SfAIga/ld56HvjwbN/U3s1rsaQ7X5kEY=;
-        b=wp+If7pALqTqDsawYixQveY1G23oCiVSzSK79Zazqlapm6zXN+XKea4Y0DhaKU1mMC
-         r3jzDkF2cPeNU1HNJL4BoXzctFaYaoQenElMgrBSC/Q5RdJJrtzbFqFEQArO5+xpis6N
-         G4z2Kp++say7z3918OycjM6MRvDDde+59EqL5CstvbjypSEuD7vA9Zhe1ZulaRI4ktAr
-         /sgMBimn4EumNjyp+d1tW1LR74xacryVPmTB4wmuy4N5aXEktZd3A1nVqocs8jtGB7+/
-         u5uZDyM9S6F2OLg/5acFznHDPypE4gniRFN80C6/BJulorhG4bT91Ny7PyqwQB1phrq5
-         nYsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607041; x=1701211841;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DUyHc0j6Ju2SfAIga/ld56HvjwbN/U3s1rsaQ7X5kEY=;
-        b=oKEzOWBp0kqxdPniVjlbGzYiacrLx3GubFhbHflA8msO5FBb8+YdKnmeTu3HTXla9Q
-         eimi9F+UvUofEr9a+1gAGxwD/mhzC70hNW84GmGf8L5YIdjO84FwWHKhll8N2DQsCEh5
-         pMCMKfxgRFuKQpPKgqDqY6kJoZd6NZb+DTTTr5z1Cp9tOf/6pQ/2N2nUloUu1di0WeDd
-         FHuCC0SNpjghdf3DEvKktVlXrV587JQuI46RNdkSek21DDeOY7rstFuo/KM0mv9Fe/OT
-         RiPU8zjpF3/jlXxt0UnoMt0shSptjPIq+FNrqFJN4JCfZRBap1oQ+jQz7Dit3nv+8lN5
-         22gQ==
-X-Gm-Message-State: AOJu0Yxt85CyAa4jn7rovduSj5UzUILjW2pdxazZRDFCcrXxHPZBIuQo
-        gD3+YbfYW3bUWuBmBPe7f9bL/lE7uk5JvpglRHw=
-X-Google-Smtp-Source: AGHT+IGMIBWqRvMREzONSNPjvDKkKSJ4l9c+zeFDM9OJ5MF1Lsu7kknkgcAeKdMOtQd/CTHfWvVeHQ==
-X-Received: by 2002:a05:6870:aa94:b0:1f9:5310:90ab with SMTP id gr20-20020a056870aa9400b001f9531090abmr388557oab.3.1700607041535;
-        Tue, 21 Nov 2023 14:50:41 -0800 (PST)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id z2-20020a056870384200b001f40abd9fdbsm1924965oal.2.2023.11.21.14.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 14:50:41 -0800 (PST)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Tue, 21 Nov 2023 14:50:37 -0800
-Subject: [PATCH v2] riscv: Safely remove entries from relocation list
+        Tue, 21 Nov 2023 17:52:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D0ED51;
+        Tue, 21 Nov 2023 14:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700607146; x=1732143146;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Td2JHfbNsKOAb89T6hM4eAx8IpnMCzx9WqWHq/PDql4=;
+  b=h5UhmADJQTvEteGaP30lVbl6fGOg8w50009t+RBhfEpu3oNxcE3nrWCu
+   wMFqIwiOdkwZiIf/0ECy0cuMBlFRSQRmS/bATmATzJMqMu5RJtCyyqClR
+   OBi3F2BtY7Nvg1jGw3/tBun8dgeCbcIws9ykpIaDKcYo2IP/Lgy5MA8/R
+   4UoN8b1lgiwaGVUHWvI6f4S0XxG3gLclcvOX8oPAtUHi/WUNEpFQV9wD5
+   T0xeZlZdbzbdS7B3eSrwNnEE4PG795UOqcH3OCywQ8mLnU8CKN9j4NDp6
+   /hDWgf9kuy4s77hi7//wwk4pXTnIpfBJu+xEgGW/MLse2GyRdS+lfUG08
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="371290752"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="371290752"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:52:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="837191861"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="837191861"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Nov 2023 14:52:20 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5ZbO-0008Mt-1Y;
+        Tue, 21 Nov 2023 22:52:18 +0000
+Date:   Wed, 22 Nov 2023 06:51:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        schakrabarti@microsoft.com, paulros@microsoft.com,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Subject: Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <202311220507.k0uewCr0-lkp@intel.com>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231121-module_linking_freeing-v2-1-974bfcd3664e@rivosinc.com>
-X-B4-Tracking: v=1; b=H4sIADw0XWUC/4WNUQrCMBBEr1L220izJVj98h5SSpNu2sU2kUSDU
- nJ3Yy/g1/AG5s0GkQJThEu1QaDEkb0rgIcKzDy4iQSPhQFrbKTEWqx+fC3UL+zu7KbeBqKSArU
- aGo1KaUVQxo9Alt+7+NYVnjk+ffjsP0n+2r/KJIUU1tpWjidsz9ZcAycf2Zmj8St0Oecv4suSS
- b8AAAA=
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700607040; l=7292;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=BPxSfHiD/1CoNWAadGRWfCiIZVum0NpgMbJUCXfSyxQ=;
- b=OSv5WsCH1yJPN+gH6kzzLT3/R3XxrdSfng66ZLM1H5O7KATPtJ9oBxNDt6QdxKQHjbE1pFmX1
- yOWFSEG6iL8AvxpARIRUmFe2hWe03M2aKE5bF3SJcZQB6DhK5AdGN1g
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the safe versions of list and hlist iteration to safely remove
-entries from the module relocation lists. To allow mutliple threads to
-load modules concurrently, move relocation list pointers onto the stack
-rather than using global variables.
+Hi Souradeep,
 
-Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
-Reported-by: Ron Economos <re@w6rz.net>
-Closes: https://lore.kernel.org/linux-riscv/444de86a-7e7c-4de7-5d1d-c1c40eefa4ba@w6rz.net
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
----
-Changes in v2:
-- Support linking modules concurrently across threads.
-- Link to v1: https://lore.kernel.org/r/20231120-module_linking_freeing-v1-1-fff81d7289fc@rivosinc.com
----
- arch/riscv/kernel/module.c | 76 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 51 insertions(+), 25 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 56a8c78e9e21..f53e82b70dff 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -40,14 +40,17 @@ struct relocation_handlers {
- 				  long buffer);
- };
- 
--unsigned int initialize_relocation_hashtable(unsigned int num_relocations);
--void process_accumulated_relocations(struct module *me);
-+unsigned int
-+initialize_relocation_hashtable(unsigned int num_relocations,
-+				struct hlist_head **relocation_hashtable,
-+				struct list_head *used_buckets_list);
-+void process_accumulated_relocations(struct module *me,
-+				     struct hlist_head **relocation_hashtable,
-+				     struct list_head *used_buckets_list);
- int add_relocation_to_accumulate(struct module *me, int type, void *location,
--				 unsigned int hashtable_bits, Elf_Addr v);
--
--struct hlist_head *relocation_hashtable;
--
--struct list_head used_buckets_list;
-+				 unsigned int hashtable_bits, Elf_Addr v,
-+				struct hlist_head **relocation_hashtable,
-+				struct list_head *used_buckets_list);
- 
- /*
-  * The auipc+jalr instruction pair can reach any PC-relative offset
-@@ -604,7 +607,9 @@ static const struct relocation_handlers reloc_handlers[] = {
- 	/* 192-255 nonstandard ABI extensions  */
- };
- 
--void process_accumulated_relocations(struct module *me)
-+void process_accumulated_relocations(struct module *me,
-+				     struct hlist_head **relocation_hashtable,
-+				     struct list_head *used_buckets_list)
- {
- 	/*
- 	 * Only ADD/SUB/SET/ULEB128 should end up here.
-@@ -624,18 +629,25 @@ void process_accumulated_relocations(struct module *me)
- 	 *	- Each relocation entry for a location address
- 	 */
- 	struct used_bucket *bucket_iter;
-+	struct used_bucket *bucket_iter_tmp;
- 	struct relocation_head *rel_head_iter;
-+	struct hlist_node *rel_head_iter_tmp;
- 	struct relocation_entry *rel_entry_iter;
-+	struct relocation_entry *rel_entry_iter_tmp;
- 	int curr_type;
- 	void *location;
- 	long buffer;
- 
--	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
--		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
-+	list_for_each_entry_safe(bucket_iter, bucket_iter_tmp,
-+				 used_buckets_list, head) {
-+		hlist_for_each_entry_safe(rel_head_iter, rel_head_iter_tmp,
-+					  bucket_iter->bucket, node) {
- 			buffer = 0;
- 			location = rel_head_iter->location;
--			list_for_each_entry(rel_entry_iter,
--					    rel_head_iter->rel_entry, head) {
-+			list_for_each_entry_safe(rel_entry_iter,
-+						 rel_entry_iter_tmp,
-+						 rel_head_iter->rel_entry,
-+						 head) {
- 				curr_type = rel_entry_iter->type;
- 				reloc_handlers[curr_type].reloc_handler(
- 					me, &buffer, rel_entry_iter->value);
-@@ -648,11 +660,13 @@ void process_accumulated_relocations(struct module *me)
- 		kfree(bucket_iter);
- 	}
- 
--	kfree(relocation_hashtable);
-+	kfree(*relocation_hashtable);
- }
- 
- int add_relocation_to_accumulate(struct module *me, int type, void *location,
--				 unsigned int hashtable_bits, Elf_Addr v)
-+				 unsigned int hashtable_bits, Elf_Addr v,
-+				struct hlist_head **relocation_hashtable,
-+				struct list_head *used_buckets_list)
- {
- 	struct relocation_entry *entry;
- 	struct relocation_head *rel_head;
-@@ -667,7 +681,7 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 
- 	hash = hash_min((uintptr_t)location, hashtable_bits);
- 
--	current_head = &relocation_hashtable[hash];
-+	current_head = &((*relocation_hashtable)[hash]);
- 
- 	/* Find matching location (if any) */
- 	bool found = false;
-@@ -693,7 +707,7 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 				kmalloc(sizeof(struct used_bucket), GFP_KERNEL);
- 			INIT_LIST_HEAD(&bucket->head);
- 			bucket->bucket = current_head;
--			list_add(&bucket->head, &used_buckets_list);
-+			list_add(&bucket->head, used_buckets_list);
- 		}
- 		hlist_add_head(&rel_head->node, current_head);
- 	}
-@@ -704,7 +718,10 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 	return 0;
- }
- 
--unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
-+unsigned int
-+initialize_relocation_hashtable(unsigned int num_relocations,
-+				struct hlist_head **relocation_hashtable,
-+				struct list_head *used_buckets_list)
- {
- 	/* Can safely assume that bits is not greater than sizeof(long) */
- 	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
-@@ -720,12 +737,12 @@ unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
- 
- 	hashtable_size <<= should_double_size;
- 
--	relocation_hashtable = kmalloc_array(hashtable_size,
--					     sizeof(*relocation_hashtable),
--					     GFP_KERNEL);
--	__hash_init(relocation_hashtable, hashtable_size);
-+	*relocation_hashtable = kmalloc_array(hashtable_size,
-+					      sizeof(*relocation_hashtable),
-+					      GFP_KERNEL);
-+	__hash_init(*relocation_hashtable, hashtable_size);
- 
--	INIT_LIST_HEAD(&used_buckets_list);
-+	INIT_LIST_HEAD(used_buckets_list);
- 
- 	return hashtable_bits;
- }
-@@ -742,7 +759,13 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 	Elf_Addr v;
- 	int res;
- 	unsigned int num_relocations = sechdrs[relsec].sh_size / sizeof(*rel);
--	unsigned int hashtable_bits = initialize_relocation_hashtable(num_relocations);
-+	struct hlist_head *relocation_hashtable;
-+	struct list_head used_buckets_list;
-+	unsigned int hashtable_bits;
-+
-+	hashtable_bits = initialize_relocation_hashtable(num_relocations,
-+							 &relocation_hashtable,
-+							 &used_buckets_list);
- 
- 	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       sechdrs[relsec].sh_info);
-@@ -823,14 +846,17 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 		}
- 
- 		if (reloc_handlers[type].accumulate_handler)
--			res = add_relocation_to_accumulate(me, type, location, hashtable_bits, v);
-+			res = add_relocation_to_accumulate(
-+				me, type, location, hashtable_bits, v,
-+				&relocation_hashtable, &used_buckets_list);
- 		else
- 			res = handler(me, location, v);
- 		if (res)
- 			return res;
- 	}
- 
--	process_accumulated_relocations(me);
-+	process_accumulated_relocations(me, &relocation_hashtable,
-+					&used_buckets_list);
- 
- 	return 0;
- }
+[auto build test WARNING on net-next/main]
 
----
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
-change-id: 20231120-module_linking_freeing-2b5a3b255b5e
+url:    https://github.com/intel-lab-lkp/linux/commits/Souradeep-Chakrabarti/net-mana-Assigning-IRQ-affinity-on-HT-cores/20231121-215912
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/1700574877-6037-1-git-send-email-schakrabarti%40linux.microsoft.com
+patch subject: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on HT cores
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231122/202311220507.k0uewCr0-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220507.k0uewCr0-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311220507.k0uewCr0-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'avail_cpus' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1343:19: note: uninitialized use occurs here
+           free_cpumask_var(avail_cpus);
+                            ^~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: note: remove the '||' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1249:39: note: initialize the variable 'avail_cpus' to silence this warning
+           cpumask_var_t filter_mask, avail_cpus;
+                                                ^
+                                                 = NULL
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'core_id_list' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1344:6: note: uninitialized use occurs here
+           if (core_id_list)
+               ^~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:2: note: remove the 'if' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: warning: variable 'core_id_list' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1344:6: note: uninitialized use occurs here
+           if (core_id_list)
+               ^~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1253:5: note: remove the '||' if its condition is always false
+           if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/net/ethernet/microsoft/mana/gdma_main.c:1248:28: note: initialize the variable 'core_id_list' to silence this warning
+           unsigned int *core_id_list;
+                                     ^
+                                      = NULL
+   3 warnings generated.
+
+
+vim +1253 drivers/net/ethernet/microsoft/mana/gdma_main.c
+
+  1245	
+  1246	static int irq_setup(int *irqs, int nvec, int start_numa_node)
+  1247	{
+  1248		unsigned int *core_id_list;
+  1249		cpumask_var_t filter_mask, avail_cpus;
+  1250		int i, core_count = 0, cpu_count = 0, err = 0, node_count = 0;
+  1251		unsigned int cpu_first, cpu, irq_start, cores = 0, numa_node = start_numa_node;
+  1252	
+> 1253		if(!alloc_cpumask_var(&filter_mask, GFP_KERNEL)
+  1254				     || !alloc_cpumask_var(&avail_cpus, GFP_KERNEL)) {
+  1255			err = -ENOMEM;
+  1256			goto free_irq;
+  1257		}
+  1258		cpumask_copy(filter_mask, cpu_online_mask);
+  1259		cpumask_copy(avail_cpus, cpu_online_mask);
+  1260		/* count the number of cores
+  1261		 */
+  1262		for_each_cpu(cpu, filter_mask) {
+  1263			cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
+  1264			cores++;
+  1265		}
+  1266		core_id_list = kcalloc(cores, sizeof(unsigned int), GFP_KERNEL);
+  1267		cpumask_copy(filter_mask, cpu_online_mask);
+  1268		/* initialize core_id_list array */
+  1269		for_each_cpu(cpu, filter_mask) {
+  1270			core_id_list[core_count] = cpu;
+  1271			cpumask_andnot(filter_mask, filter_mask, topology_sibling_cpumask(cpu));
+  1272			core_count++;
+  1273		}
+  1274	
+  1275		/* if number of cpus are equal to max_queues per port, then
+  1276		 * one extra interrupt for the hardware channel communication.
+  1277		 */
+  1278		if (nvec - 1 == num_online_cpus()) {
+  1279			irq_start = 1;
+  1280			cpu_first = cpumask_first(cpu_online_mask);
+  1281			irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
+  1282		} else {
+  1283			irq_start = 0;
+  1284		}
+  1285	
+  1286		/* reset the core_count and num_node to 0.
+  1287		 */
+  1288		core_count = 0;
+  1289	
+  1290		/* for each interrupt find the cpu of a particular
+  1291		 * sibling set and if it belongs to the specific numa
+  1292		 * then assign irq to it and clear the cpu bit from
+  1293		 * the corresponding avail_cpus.
+  1294		 * Increase the cpu_count for that node.
+  1295		 * Once all cpus for a numa node is assigned, then
+  1296		 * move to different numa node and continue the same.
+  1297		 */
+  1298		for (i = irq_start; i < nvec; ) {
+  1299	
+  1300			/* check if the numa node has cpu or not
+  1301			 * to avoid infinite loop.
+  1302			 */
+  1303			if (cpumask_empty(cpumask_of_node(numa_node))) {
+  1304				numa_node++;
+  1305				if (++node_count == num_online_nodes()) {
+  1306					err = -EAGAIN;
+  1307					goto free_irq;
+  1308				}
+  1309			}
+  1310			cpu_first = cpumask_first_and(avail_cpus,
+  1311						     topology_sibling_cpumask(core_id_list[core_count]));
+  1312			if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) == numa_node) {
+  1313				irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu_first));
+  1314				cpumask_clear_cpu(cpu_first, avail_cpus);
+  1315				cpu_count = cpu_count + 1;
+  1316				i = i + 1;
+  1317	
+  1318				/* checking if all the cpus are used from the
+  1319				 * particular node.
+  1320				 */
+  1321				if (cpu_count == nr_cpus_node(numa_node)) {
+  1322					numa_node = numa_node + 1;
+  1323					if (numa_node == num_online_nodes())
+  1324						numa_node = 0;
+  1325	
+  1326					/* wrap around once numa nodes
+  1327					 * are traversed.
+  1328					 */
+  1329					if (numa_node == start_numa_node) {
+  1330						node_count = 0;
+  1331						cpumask_copy(avail_cpus, cpu_online_mask);
+  1332					}
+  1333					cpu_count = 0;
+  1334					core_count = 0;
+  1335					continue;
+  1336				}
+  1337			}
+  1338			if (++core_count == cores)
+  1339				core_count = 0;
+  1340		}
+  1341	free_irq:
+  1342		free_cpumask_var(filter_mask);
+  1343		free_cpumask_var(avail_cpus);
+  1344		if (core_id_list)
+  1345			kfree(core_id_list);
+  1346		return err;
+  1347	}
+  1348	
+
 -- 
-- Charlie
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
