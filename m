@@ -2,80 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F127F32E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B807F32EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbjKUP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        id S234851AbjKUP6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234843AbjKUP6J (ORCPT
+        with ESMTP id S234854AbjKUP6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:58:09 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19A1D40
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:58:05 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6bd5730bef9so6811307b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:58:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700582285; x=1701187085;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mtd40gvVZOgliZlu2JdNIeTyUfDE7Z/9wGS/OB7/wxc=;
-        b=mMjXnsBMppWrVZ/sjrnLm4RnP8anghLkYRmqjDDRs0kIYUBEkNnyaC3P56pXD7P29d
-         A8I8+CQQyWXgWlhQCVk/K6xR9nTH5bbKfGiOp0LJCD83ttyvAXKNeOTg4CFgsrjpB7UZ
-         SmujbTuD0gbX3idvGZemcoyAEDPcdyiA3ouq6lv/BimA7vRkuH960RM8xdanAeQQ2yq/
-         EUfZ/tG3zYIpDJwy78vIbWHiopFKqQDY3mUs/k2Z73cIesCT/W9ghiYX50Eb+uCHpxkC
-         Ws4h1WfGWJ2poIKLH9XWi7tfxwNLfkJ1kZ780/B+JeMb75bddTvHdvun+6sr/g8Vxrav
-         0p1g==
-X-Gm-Message-State: AOJu0YyKGyrRh5wA3YrgevkbsR37Tp6/AFXTFS2FxeviWti9cg5BMOEm
-        c62BOWecSyWSubbQ/bbIw3fbMQ2uq9hQaoNMwCkxFfL4Rm8O
-X-Google-Smtp-Source: AGHT+IHELjvdHTY2zj4TwvzBjmYjsWI+xOBCOLYeJxvpvDnYxDNJqankuMtl8QGZRNJdh1bCLF9cVLeOAEq8HhRNWKvvoyLJKEAC
+        Tue, 21 Nov 2023 10:58:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41799D49;
+        Tue, 21 Nov 2023 07:58:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700582294; x=1732118294;
+  h=subject:from:to:cc:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=itjj7X5Il/CLPzOHoOlkC+igDSCWB8zI/FawmL7Ca+8=;
+  b=CDQ/VY2bHU+sws+4qlWk996SRaQynOckojutQMgxDBjtpIB3wtILIulW
+   flEQrZOPgTfiSyDcbFy4ffPExTvdg88/jzE7n3GQKIlXVcVZ9xQRUvNad
+   h4dOHKK5xdMdE3PaFXH88oFECpfKxfOWsCgp5CqzT6b0HQ/2Ffmk2x3b6
+   ujyW1ZzhoiMXx4gW6CQDhdLwBcwguE/ko4Da3DCH/yJGow6gtcm9p2X2b
+   fJYPFazW7vAvzYKON3LdpyH5pFE00mOZ42KlMPKy6kgrC7kh08y+kiLrS
+   dC3GZ0IriVw8S3+ZkGrRdZ1ITTdM8aBkj6gN60FgzR92gBuEJhLPhrCxD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="391640571"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="391640571"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:58:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="837090201"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="837090201"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [192.168.1.177]) ([10.212.123.89])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:58:13 -0800
+Subject: [PATCH] acpi: Fix ARM32 platforms compile issue introduced by
+ fw_table changes
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     linus.walleij@linaro.org, rafael@kernel.org
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
+        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 21 Nov 2023 08:58:12 -0700
+Message-ID: <170058229266.2356592.11579977558324549374.stgit@djiang5-mobl3>
+User-Agent: StGit/1.5
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:10c1:b0:690:bc3f:4fe2 with SMTP id
- d1-20020a056a0010c100b00690bc3f4fe2mr1005253pfu.1.1700582285241; Tue, 21 Nov
- 2023 07:58:05 -0800 (PST)
-Date:   Tue, 21 Nov 2023 07:58:05 -0800
-In-Reply-To: <000000000000b0cabf05f90bcb15@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005f3f6060aabab28@google.com>
-Subject: Re: [syzbot] [ntfs3?] general protection fault in ni_readpage_cmpr
-From:   syzbot <syzbot+af224b63e76b2d869bc3@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org,
-        almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        neilb@suse.de, ntfs3@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Linus reported that:
+After commit a103f46633fd the kernel stopped compiling for
+several ARM32 platforms that I am building with a bare metal
+compiler. Bare metal compilers (arm-none-eabi-) don't
+define __linux__.
 
-commit 013ff63b649475f0ee134e2c8d0c8e65284ede50
-Author: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Date:   Fri Jun 30 12:17:02 2023 +0000
+This is because the header <acpi/platform/acenv.h> is now
+in the include path for <linux/irq.h>:
 
-    fs/ntfs3: Add more attributes checks in mi_enum_attr()
+  CC      arch/arm/kernel/irq.o
+  CC      kernel/sysctl.o
+  CC      crypto/api.o
+In file included from ../include/acpi/acpi.h:22,
+                 from ../include/linux/fw_table.h:29,
+                 from ../include/linux/acpi.h:18,
+                 from ../include/linux/irqchip.h:14,
+                 from ../arch/arm/kernel/irq.c:25:
+../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+  218 | #error Unknown target environment
+      |  ^~~~~
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14b8bcbf680000
-start commit:   1b29d271614a Merge tag 'staging-6.4-rc7' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ac246111fb601aec
-dashboard link: https://syzkaller.appspot.com/bug?extid=af224b63e76b2d869bc3
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1241fd03280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1476e8f3280000
+The issue is caused by the introducing of splitting out the ACPI code to
+support the new generic fw_table code.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Rafael suggested moving the fw_table.h include in linux/acpi.h to below
+the asm/acpi.h. The move also helped with eliminating the inclusion of
+acpi/acpi.h in fw_table.h. The unfortunate circular inclusion of
+linux/acpi.h is needed for fw_table.h due fw_table code needing the
+defined acpi structs in order to build.
 
-#syz fix: fs/ntfs3: Add more attributes checks in mi_enum_attr()
+Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
+Reported-by: Linus Walleij <linus.walleij@linaro.org>
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
+ include/linux/acpi.h     |   23 ++++++++++++-----------
+ include/linux/fw_table.h |    1 -
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 54189e0e5f41..2789beb26138 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -15,7 +15,6 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/property.h>
+ #include <linux/uuid.h>
+-#include <linux/fw_table.h>
+ 
+ struct irq_domain;
+ struct irq_domain_ops;
+@@ -25,16 +24,6 @@ struct irq_domain_ops;
+ #endif
+ #include <acpi/acpi.h>
+ 
+-#ifdef CONFIG_ACPI_TABLE_LIB
+-#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
+-#define __init_or_acpilib
+-#define __initdata_or_acpilib
+-#else
+-#define EXPORT_SYMBOL_ACPI_LIB(x)
+-#define __init_or_acpilib __init
+-#define __initdata_or_acpilib __initdata
+-#endif
+-
+ #ifdef	CONFIG_ACPI
+ 
+ #include <linux/list.h>
+@@ -48,6 +37,18 @@ struct irq_domain_ops;
+ #include <acpi/acpi_io.h>
+ #include <asm/acpi.h>
+ 
++#include <linux/fw_table.h>
++
++#ifdef CONFIG_ACPI_TABLE_LIB
++#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
++#define __init_or_acpilib
++#define __initdata_or_acpilib
++#else
++#define EXPORT_SYMBOL_ACPI_LIB(x)
++#define __init_or_acpilib __init
++#define __initdata_or_acpilib __initdata
++#endif
++
+ static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
+ {
+ 	return adev ? adev->handle : NULL;
+diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
+index ff8fa58d5818..a722300c215b 100644
+--- a/include/linux/fw_table.h
++++ b/include/linux/fw_table.h
+@@ -26,7 +26,6 @@ struct acpi_subtable_proc {
+ };
+ 
+ #include <linux/acpi.h>
+-#include <acpi/acpi.h>
+ 
+ union acpi_subtable_headers {
+ 	struct acpi_subtable_header common;
+
+
