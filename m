@@ -2,103 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7435E7F30BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB8C7F30C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjKUO3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        id S234019AbjKUOa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:30:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjKUO3v (ORCPT
+        with ESMTP id S231210AbjKUOaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:29:51 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAF694
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:29:47 -0800 (PST)
-Received: from notapiano.myfiosgateway.com (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A4BE76607314;
-        Tue, 21 Nov 2023 14:29:42 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700576986;
-        bh=5REf8+1qSAKeSFYSM/vLqpdzS7hrFNmkWP0nRiEB5h8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jvN8W1ew3AdczFCVEQhQUsivssXtNz+fUumVKei73te07h7RAbtR3bCUWH2aGI09x
-         YVb/yGlRLVFmkr+4Run+wZg+eY94dz3sMOan0Sl+kZhu8n0qkI3LJvNzRvsDvO7tAR
-         6aoPYDtsNQmyQW2UzFLPvv4D79sXAkhS7ZN6zNv3DcxY9l339xpKIBj13WaflXEMyH
-         op0yemRLAV6wMggWkDoror+JQnuolnuinVRElXXSzgVb/GSdeFxFYiTNADeQAyOhTa
-         PcIgguoRtgUzbFYikOiWTSoKWp9Aub9C0uBi0pMfla2rLLOxfMgMuR7Bf1PlwpoPmE
-         u38NSnrci9mrQ==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Bo-Chen Chen <rex-bc.chen@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Guillaume Ranquet <granquet@baylibre.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2] drm/mediatek: dp: Add phy_mtk_dp module as pre-dependency
-Date:   Tue, 21 Nov 2023 09:29:27 -0500
-Message-ID: <20231121142938.460846-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.1
+        Tue, 21 Nov 2023 09:30:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD30790;
+        Tue, 21 Nov 2023 06:30:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700577020; x=1732113020;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=EYbERcSH0gLOBcfmdnbFd03o8uUuoWmbxlspp5sE7vw=;
+  b=VLtDj+9zr2+SI3JwG1kbtzDFe+jdQA7C/rYUg9JbWv0ZvKjtPquwPuAQ
+   O8SPm7gf/6VPox2UXVpRY05pD9nSovcQ0GmtYAiaaT95tymZKv6xaUmie
+   JKJyOuzY1WZSRfpUk0R4XtuhO0MrrCVVQDfUFVMFtv7+RZyNiebANIf8b
+   PZ9U1Kys5mw5rVBqTY0JaKX+Xc4YCHNuBDvfQ2OO9XrDYCQi0A4pAD7MR
+   ovoxbwfQj4Txi0n5qp9xvOHj6SQDySMZEaWZb0hINyc22nVkL1R+LCsfL
+   s6j2d1GPXPoR9zP4qgGgMuRoP/vk/NYAg/knt7QV9VFYmVkNicIw0gLCh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="390705860"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="390705860"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:30:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="766666125"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="766666125"
+Received: from mylly.fi.intel.com (HELO [10.237.72.161]) ([10.237.72.161])
+  by orsmga002.jf.intel.com with ESMTP; 21 Nov 2023 06:30:16 -0800
+Message-ID: <480142d3-c3f3-45b6-af2f-6aecd2039b15@linux.intel.com>
+Date:   Tue, 21 Nov 2023 16:30:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/24] i2c: designware: code consolidation & cleanups
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mtk_dp driver registers a phy device which is handled by the
-phy_mtk_dp driver and assumes that the phy probe will complete
-synchronously, proceeding to make use of functionality exposed by that
-driver right away. This assumption however is false when the phy driver
-is built as a module, causing the mtk_dp driver to fail probe in this
-case.
+On 11/20/23 16:41, Andy Shevchenko wrote:
+> The series now consists the following groups of patches:
+> - fixing cleanup order in error path and remove (patches 1-4)
+> - refactoring i2c_dw_*_lock_support() (patches 5-6)
+> - refactoring module alias and device ID tables (patches 7-10)
+> - unifying firmware parsing and configuring code (patches 11-15)
+> - miscellaneous cleanups (patches 16-17,21-24)
+> - consolidating PM ops (patch 18)
+> - using device_set_node() for all drivers (patches 19-20)
+> 
+> The "Consolidate PM ops" might be considered as rft, however I don't think
+> we have any hardware where the behaviour will be changed, anyways, good
+> to test.
+> 
+> Changelog v4:
+> - dropped first patch as controversial (Jarkko)
+> - dropped Fixes tag from a few patches (Jarkko)
+> - moved a hunk in patch 1 to patch 2 where it belongs (Jarkko)
+> - exported i2c_dw_disable() for modular building (Jarkko)
+> - added tags (Mario, Jarkko)
+> 
+> v3: https://lore.kernel.org/r/20231110182304.3894319-1-andriy.shevchenko@linux.intel.com
+> 
+> Changelog v3:
+> - doubled the size of the series
+> - fixed compilation error (LKP)
+> - added tags (Andi)
+> 
+> v2: https://lore.kernel.org/r/20231109182823.3531846-1-andriy.shevchenko@linux.intel.com
+> 
+> Changelog v2:
+> - reworked the series to make it less twisted (Jarkko, Andi)
+> - added tags to the patches that have been rebased (Andi, Mario, Jarkko)
+> - introduced a few new changes (PM ops, export namespace)
+> 
+> v1: https://lore.kernel.org/r/20230725143023.86325-1-andriy.shevchenko@linux.intel.com
+> 
+> Andy Shevchenko (24):
+>    i2c: designware: Fix PM calls order in dw_i2c_plat_probe()
+>    i2c: designware: Fix reset call order in dw_i2c_plat_probe()
+>    i2c: designware: Let PCI core to take care about interrupt vectors
+>    i2c: designware: Fix lock probe call order in dw_i2c_plat_probe()
+>    i2c: designware: Replace a while-loop by for-loop
+>    i2c: designware: Save pointer to semaphore callbacks instead of index
+>    i2c: designware: Add missing 'c' into PCI IDs variable name
+>    i2c: designware: Replace MODULE_ALIAS() with MODULE_DEVICE_TABLE()
+>    i2c: designware: Unify terminator in device ID tables
+>    i2c: designware: Always provide device ID tables
+>    i2c: designware: Drop return value from i2c_dw_acpi_configure()
+>    i2c: designware: Drop return value from dw_i2c_of_configure()
+>    i2c: designware: Rename dw_i2c_of_configure() -> i2c_dw_of_configure()
+>    i2c: designware: Consolidate firmware parsing and configuring code
+>    i2c: designware: Unify the firmware type checks
+>    i2c: designware: Move exports to I2C_DW namespaces
+>    i2c: designware: Remove ->disable() callback
+>    i2c: designware: Consolidate PM ops
+>    i2c: designware: Uninline i2c_dw_probe()
+>    i2c: designware: Propagate firmware node
+>    i2c: designware: Use pci_get_drvdata()
+>    i2c: designware: Use temporary variable for struct device
+>    i2c: designware: Get rid of redundant 'else'
+>    i2c: designware: Fix spelling and other issues in the comments
+> 
+>   drivers/i2c/busses/i2c-designware-amdpsp.c  |  10 +-
+>   drivers/i2c/busses/i2c-designware-common.c  | 167 +++++++++-
+>   drivers/i2c/busses/i2c-designware-core.h    |  47 +--
+>   drivers/i2c/busses/i2c-designware-master.c  |  19 +-
+>   drivers/i2c/busses/i2c-designware-pcidrv.c  | 114 ++-----
+>   drivers/i2c/busses/i2c-designware-platdrv.c | 337 +++++++-------------
+>   drivers/i2c/busses/i2c-designware-slave.c   |  12 +-
+>   7 files changed, 337 insertions(+), 369 deletions(-)
+> 
+To all (some I've ack'ed already):
 
-Add the phy_mtk_dp module as a pre-dependency to the mtk_dp module to
-ensure the phy module has been loaded before the dp, so that the phy
-probe happens synchrounously and the mtk_dp driver can probe
-successfully even with the phy driver built as a module.
-
-Suggested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
----
-
-Changes in v2:
-- Added missing Suggested-by tag
-
- drivers/gpu/drm/mediatek/mtk_dp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index e4c16ba9902d..2136a596efa1 100644
---- a/drivers/gpu/drm/mediatek/mtk_dp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -2818,3 +2818,4 @@ MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
- MODULE_AUTHOR("Bo-Chen Chen <rex-bc.chen@mediatek.com>");
- MODULE_DESCRIPTION("MediaTek DisplayPort Driver");
- MODULE_LICENSE("GPL");
-+MODULE_SOFTDEP("pre: phy_mtk_dp");
--- 
-2.42.1
-
+Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
