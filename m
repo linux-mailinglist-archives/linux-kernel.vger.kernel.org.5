@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0627F246F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 03:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66777F2478
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbjKUC7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 21:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S233171AbjKUDEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 22:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKUC7b (ORCPT
+        with ESMTP id S229539AbjKUDEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 21:59:31 -0500
-Received: from cmccmta1.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8553DC;
-        Mon, 20 Nov 2023 18:59:24 -0800 (PST)
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-        by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee2655c1d09f85-7c2b4;
-        Tue, 21 Nov 2023 10:59:21 +0800 (CST)
-X-RM-TRANSID: 2ee2655c1d09f85-7c2b4
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from ubuntu.localdomain (unknown[10.54.5.255])
-        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee7655c1d082ed-c5454;
-        Tue, 21 Nov 2023 10:59:21 +0800 (CST)
-X-RM-TRANSID: 2ee7655c1d082ed-c5454
-From:   zhujun2 <zhujun2@cmss.chinamobile.com>
-To:     kernel-janitors@vger.kernel.org
-Cc:     mathieu.desnoyers@efficios.com, ivan.orlov0322@gmail.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, zhujun2@cmss.chinamobile.com
-Subject: [PATCH] selftests/media_tests: fix a resource leak
-Date:   Mon, 20 Nov 2023 18:59:18 -0800
-Message-Id: <20231121025918.2570-1-zhujun2@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <8431b227-d053-4a9a-a278-2a43753fdaf7@efficios.com>
-References: <8431b227-d053-4a9a-a278-2a43753fdaf7@efficios.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 20 Nov 2023 22:04:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89042BA
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 19:04:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700535870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2grcs2rWzHb9qBsJYwUc4VAquVR8IwPBKlprjizeaOU=;
+        b=K4eYr0LTCT2tvXWBPaM8sOKCvannABm4y+VIs1UFkY61p42ajFnRQ7Pw4g8/oU+sn2xsnw
+        3N+Q0dZqxcOMpBus4/PZSJRs4KYTvowqiOK+CrMYhfc7BkYaEYE+CO6l/lzxGxDrM8ncdh
+        Cawxu7gWq4XWfuqMHH493rLma1ij840=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-xIZaviGINzC9ovKbejFUAw-1; Mon, 20 Nov 2023 22:04:24 -0500
+X-MC-Unique: xIZaviGINzC9ovKbejFUAw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E22D185A780;
+        Tue, 21 Nov 2023 03:04:24 +0000 (UTC)
+Received: from [10.22.8.109] (unknown [10.22.8.109])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4450BC1596F;
+        Tue, 21 Nov 2023 03:04:24 +0000 (UTC)
+Message-ID: <569119a8-f6f2-4e00-bfcc-5b804447320f@redhat.com>
+Date:   Mon, 20 Nov 2023 22:04:24 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel/cgroup/debug.c:1: warning: no structured comments found
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+References: <202311211005.Qwt1FHrO-lkp@intel.com>
+Content-Language: en-US
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <202311211005.Qwt1FHrO-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opened file should be closed in main(), otherwise resource
-leak will occur that this problem was discovered by code reading
 
-Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
----
- tools/testing/selftests/media_tests/media_device_open.c | 3 +++
- tools/testing/selftests/media_tests/media_device_test.c | 3 +++
- 2 files changed, 6 insertions(+)
+On 11/20/23 21:32, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+> commit: a28f8f5e995fe5964ae304444913536058f26e37 cgroup: Move debug cgroup to its own file
+> date:   6 years ago
+> config: i386-buildonly-randconfig-005-20231120 (https://download.01.org/0day-ci/archive/20231121/202311211005.Qwt1FHrO-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211005.Qwt1FHrO-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311211005.Qwt1FHrO-lkp@intel.com/
+>
+> All warnings (new ones prefixed by >>):
+>
+>>> kernel/cgroup/debug.c:1: warning: no structured comments found
+>
+> vim +1 kernel/cgroup/debug.c
+>
+>     > 1	#include <linux/ctype.h>
+>       2	#include <linux/mm.h>
+>       3	#include <linux/slab.h>
+>       4	
 
-diff --git a/tools/testing/selftests/media_tests/media_device_open.c b/tools/testing/selftests/media_tests/media_device_open.c
-index 93183a37b133..2dfb2a11b148 100644
---- a/tools/testing/selftests/media_tests/media_device_open.c
-+++ b/tools/testing/selftests/media_tests/media_device_open.c
-@@ -70,6 +70,7 @@ int main(int argc, char **argv)
- 	fd = open(media_device, O_RDWR);
- 	if (fd == -1) {
- 		printf("Media Device open errno %s\n", strerror(errno));
-+		close(fd);
- 		exit(-1);
- 	}
- 
-@@ -79,4 +80,6 @@ int main(int argc, char **argv)
- 	else
- 		printf("Media device model %s driver %s\n",
- 			mdi.model, mdi.driver);
-+
-+	close(fd);
- }
-diff --git a/tools/testing/selftests/media_tests/media_device_test.c b/tools/testing/selftests/media_tests/media_device_test.c
-index 4b9953359e40..7cabb62535a7 100644
---- a/tools/testing/selftests/media_tests/media_device_test.c
-+++ b/tools/testing/selftests/media_tests/media_device_test.c
-@@ -79,6 +79,7 @@ int main(int argc, char **argv)
- 	fd = open(media_device, O_RDWR);
- 	if (fd == -1) {
- 		printf("Media Device open errno %s\n", strerror(errno));
-+		close(fd);
- 		exit(-1);
- 	}
- 
-@@ -100,4 +101,6 @@ int main(int argc, char **argv)
- 		sleep(10);
- 		count--;
- 	}
-+
-+	close(fd);
- }
--- 
-2.17.1
+Yes, there is no function in this file with structure comments. This 
+debug controller is used for debugging only and is not supposed to be 
+used on production systems anyway. Its interface is unstable and so I 
+don't see a need to properly document its interface.
 
+I will leave this file as it is for now.
 
+Cheers,
+Longman
 
