@@ -2,73 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C35567F2C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE167F2C7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbjKUMC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S233997AbjKUMDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:03:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233846AbjKUMCY (ORCPT
+        with ESMTP id S233846AbjKUMDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:02:24 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB68123;
-        Tue, 21 Nov 2023 04:02:21 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cf52e5e07eso18633505ad.0;
-        Tue, 21 Nov 2023 04:02:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700568141; x=1701172941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Hd1DC/SqNOv5a5eH+xtl1lsGhhPk+8w1do5bp5KGmWs=;
-        b=e1vzJnPU0E80j8bBGBm8nBwvp9TmymWYNZd39gCfUpXNH+TJSwybKCYBW3e9EWnX2v
-         I4oMK4TXIbOFbL5qeos9fWK0ZV/zJTMID52U1mlBm/8e+QuhhI8c9d4Yt7Pz6GRoFCS4
-         cY89mPDO/jRLZ7onzoLUf7Cz+vBhGbChiRDTdhPDtk8gJdsLcp8v3M/RGZFfJOIqmpDO
-         THqeMBC1lwa2MuM/rZUEJfVH1cDUiB32w5yUwf4wkTGVbcEWLqOrlYQ17BFRdpu+317U
-         No49zwFCieATScqyWKWQqO0CdlBxh5O2QQ31+7QxeuGA9SzmbqAQA31WiJTTVrBxgoA8
-         0jgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700568141; x=1701172941;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hd1DC/SqNOv5a5eH+xtl1lsGhhPk+8w1do5bp5KGmWs=;
-        b=ctEZQFiZhcYbgJENrNsG4c7kSobwOYO462cT7RtN3soKrtW71/ns8g1XPZubH/m3NP
-         xoXk41YDBhulItgpUzm23HbaD5wy48c2qujz4U55fX6Dv0Gsdfz/7rhp/hZimBZjBFlE
-         Er91T9WzuWht0kBtBfsVouTcWQah+24xcHKSgdbNbtTnEbJf26DK2jEQLI1RkQUAHGLm
-         c267LIFXe7/HiZhrg7RBhdVjLqrFW99UdFnX9aqAkQpqu2XaHia/fuKMBv1+ywD+Pho4
-         ncvwEIypV0pVQAXHdCfMsq/pNynsKZnlXX372v+8kt2EFaVc8mKKR2sgznmjEdrXDcgz
-         OYjw==
-X-Gm-Message-State: AOJu0Yw89+bHYHakFuiqfs4/PHKOUMgE7/x/eLoP2b0A/8Yj8woDCnrb
-        R6c/y4mfH9zxOjr6ko6pjtLxId80oSOPSWNHPfI=
-X-Google-Smtp-Source: AGHT+IFfzMWNbwZCuBHDaSiZ7b4+mx4ysuNLrWPkMxwMSPRUr0axr+pHhWZb4NUwxeHGeS2KDiyOMQ==
-X-Received: by 2002:a17:902:e748:b0:1bc:edd:e891 with SMTP id p8-20020a170902e74800b001bc0edde891mr3543732plf.1.1700568140782;
-        Tue, 21 Nov 2023 04:02:20 -0800 (PST)
-Received: from [172.24.5.154] ([119.8.44.69])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170902d38400b001cc2c6cc39asm7726317pld.243.2023.11.21.04.02.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 04:02:20 -0800 (PST)
-From:   SpriteOvO <spriteovo@gmail.com>
-X-Google-Original-From: SpriteOvO <SpriteOvO@gmail.com>
-Message-ID: <7bdf5f7a-cdcd-46cc-88df-8bc0706ec9e9@gmail.com>
-Date:   Tue, 21 Nov 2023 20:02:17 +0800
+        Tue, 21 Nov 2023 07:03:22 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634609C;
+        Tue, 21 Nov 2023 04:03:19 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALBc2v1023436;
+        Tue, 21 Nov 2023 12:03:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=UbI3gRx2z11WJvUL9FqBRaWO2/YxaKCV9eYngKPduqY=;
+ b=a3e0xRg0LtYV+rUXxM0fFf/nmsd9WAnKkD6Z/1WZ2zPez5g2YH1K9LXFkBJ/d1SQbkpI
+ gNzZ3MirvbMIJoBdWcUdJLJrypKmosyJJSKIEyNY6u+yQGIBy1LRSUW2E5WOe0n2/0H0
+ +FJ2LXtgHK9daJgcCFDl0Rd3COC5hKNpmoiohyiDhqnUTlFIE+fiBYPomkN5+Irk8z3t
+ lJXk/utmJolm19/gIQ0QljqjekAcHXg3UVlBBNkt65as+0MLUb2tgQwgl8ZUQfSdzquT
+ 76BC3BkqrLyeXBmSxJ+zHr7zPiIdklEKhQ2+VhJI/LQJ8SSvWhyTHWOx6jF2O555Vmko lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uguuj0ns6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:03:15 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ALBugM3015000;
+        Tue, 21 Nov 2023 12:03:14 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uguuj0nrq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:03:14 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALBnHvF015865;
+        Tue, 21 Nov 2023 12:03:14 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf8knrd03-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:03:13 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ALC3AA217564168
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Nov 2023 12:03:10 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B050E200CC;
+        Tue, 21 Nov 2023 12:03:10 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A0C2E200CB;
+        Tue, 21 Nov 2023 12:03:10 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 21 Nov 2023 12:03:10 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+        id 65D3DE0320; Tue, 21 Nov 2023 13:03:10 +0100 (CET)
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Vishal Moola <vishal.moola@gmail.com>
+Cc:     linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH] pgtable: do not expose _refcount field via ptdesc
+Date:   Tue, 21 Nov 2023 13:03:10 +0100
+Message-Id: <20231121120310.696335-1-agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] USB: serial: option: add Luat Air72*U series products
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yangyu Chen <cyy@cyyself.name>
-References: <20231121111626.64804-1-SpriteOvO@gmail.com>
- <2023112128-spinach-quit-0d8a@gregkh>
-Content-Language: en-US
-In-Reply-To: <2023112128-spinach-quit-0d8a@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: YznpofG2GbqLlI3z4KWXDiYITvyETh0y
+X-Proofpoint-ORIG-GUID: hT0Li9jmuNkQcOhBZADPauH-OGkCMEb_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 mlxlogscore=994 clxscore=1015 adultscore=0
+ spamscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311210094
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,24 +92,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've been using that name for a long time in open source communities, 
-here's my GitHub profile:
+Since commit d08d4e7cd6bf ("s390/mm: use full 4KB page for 2KB PTE")
+_refcount field is not used for fragmented page tracking on s390 and
+there is no other code left that accesses this field explicitly.
 
-https://github.com/SpriteOvO
+Suggested-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+---
+ include/linux/mm_types.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Linux has allowed pseudonymous contributions since earlier this year, 
-does this apply to me? If you are concerned that "Sprite" will cause 
-confusion, I can use "Asuna", which is the name I used on IM chats and 
-social media platforms.
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 957ce38768b2..0330e0ddca11 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -401,11 +401,10 @@ FOLIO_MATCH(compound_head, _head_2a);
+  * @pmd_huge_pte:     Protected by ptdesc->ptl, used for THPs.
+  * @__page_mapping:   Aliases with page->mapping. Unused for page tables.
+  * @pt_mm:            Used for x86 pgds.
+- * @pt_frag_refcount: For fragmented page table tracking. Powerpc and s390 only.
++ * @pt_frag_refcount: For fragmented page table tracking. Powerpc only.
+  * @_pt_pad_2:        Padding to ensure proper alignment.
+  * @ptl:              Lock for the page table.
+  * @__page_type:      Same as page->page_type. Unused for page tables.
+- * @_refcount:        Same as page refcount. Used for s390 page tables.
+  * @pt_memcg_data:    Memcg data. Tracked for page tables here.
+  *
+  * This struct overlays struct page for now. Do not modify without a good
+@@ -438,7 +437,7 @@ struct ptdesc {
+ #endif
+ 	};
+ 	unsigned int __page_type;
+-	atomic_t _refcount;
++	unsigned int _pt_pad_3;
+ #ifdef CONFIG_MEMCG
+ 	unsigned long pt_memcg_data;
+ #endif
+@@ -452,7 +451,6 @@ TABLE_MATCH(compound_head, _pt_pad_1);
+ TABLE_MATCH(mapping, __page_mapping);
+ TABLE_MATCH(rcu_head, pt_rcu_head);
+ TABLE_MATCH(page_type, __page_type);
+-TABLE_MATCH(_refcount, _refcount);
+ #ifdef CONFIG_MEMCG
+ TABLE_MATCH(memcg_data, pt_memcg_data);
+ #endif
+-- 
+2.39.2
 
-I apologize for the confusion.
-
-On 11/21/23 19:25, Greg KH wrote:
->> Co-developed-by: Yangyu Chen <cyy@cyyself.name>
->> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->> Signed-off-by: Sprite <SpriteOvO@gmail.com>
-> "Sprite" is an odd name, is that how things are signed by you?
->
-> thanks,
->
-> greg k-h
