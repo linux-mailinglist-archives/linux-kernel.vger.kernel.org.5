@@ -2,215 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C860D7F30B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E5F7F30B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbjKUO1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        id S234105AbjKUO3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbjKUO1D (ORCPT
+        with ESMTP id S231210AbjKUO3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:27:03 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1870D51;
-        Tue, 21 Nov 2023 06:26:59 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4C7FE1F8B4;
-        Tue, 21 Nov 2023 14:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700576818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iDJD3nBwjF/DIlBZV59XVtrBbRd1y5o1pq/WEwKhe/g=;
-        b=ng/YBky5C7EViuhHN9Fe2UXwFFhgnzjbrzpwu8HkT2xElYbDXBo3OUdX7yl4zusl/SvHuC
-        QUl155MbMS944yvVStWWdBfNK+txmXRNXixcuV6e6geDS1F/G3XN8aCoDDzn1E6K+9uVKL
-        IfDP6W+U2IbuSM/KNjoa52+Du9Zguo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700576818;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iDJD3nBwjF/DIlBZV59XVtrBbRd1y5o1pq/WEwKhe/g=;
-        b=BQoJEXDxOAkADh2LDACfR1XW4sJbFa/TIR2PligyOGxAZCwGqSA7E1qFnMqCZLIScvcbVw
-        A3PIXpCdzIWgENAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0762F138E3;
-        Tue, 21 Nov 2023 14:26:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id zSLbADK+XGVnUgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 14:26:57 +0000
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
-Cc:     Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        =?UTF-8?q?Johannes=20Pen=C3=9Fel?= <johannes.penssel@gmail.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH] Revert "leds: class: Store the color index in struct led_classdev"
-Date:   Tue, 21 Nov 2023 15:26:29 +0100
-Message-Id: <20231121142629.27083-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+        Tue, 21 Nov 2023 09:29:20 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1923890
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:29:16 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0F4A76000D;
+        Tue, 21 Nov 2023 14:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700576955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MxWe3zt1b36C0+KRQ6v8yf2cKpPI8F5PGpIu/HRQudw=;
+        b=R0Rce0aGsk7OBhkV4DtVZCNxc0YAWubhv6MR2/9305gOTIc7x7K6CnqDksnIQonEpFI/YV
+        bwk0gt1ppAa3LYgMB70R38ko58FQIVHvDI7Qt3fj2JElY3Pm6JDnwLWW0PqbUS7yST3Y6W
+        izyaHzgQ6VvClwtrJRAZIfw3nj46btr5DyczR95Y+sf7M6Ek+bYuCL5PrU7tRTc5X4N5ja
+        DE96YFQkNOKHqv8neYgoM8FBBOWew7MS2hiwn1GGYF1Mzbhnk+vkbbSurgvDy7+HDMRRgE
+        C85DZvFHMWqMyY5DpEhtGvgAjTyMCvZyHphbcOJCHd9CCV+AhXFvPCFa16/OIg==
+Date:   Tue, 21 Nov 2023 15:29:14 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH 1/2] drm/logicvc: Avoid possible overflow in layer buffer
+ setup variables
+Message-ID: <ZVy-uuMnNktDnepS@aptenodytes>
+References: <20231025130946.119957-1-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.80
-X-Spamd-Result: default: False [-1.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         BAYES_HAM(-3.00)[100.00%];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[traphandler.com,vger.kernel.org,gmail.com,system76.com,redhat.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Maw3DNwEx0ys9J+Y"
+Content-Disposition: inline
+In-Reply-To: <20231025130946.119957-1-paul.kocialkowski@bootlin.com>
+X-GND-Sasl: paul.kocialkowski@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c7d80059b086c4986cd994a1973ec7a5d75f8eea.
 
-The commit caused regressions to a few drivers (such as Logitech
-keyboard or System76 ACPI) that already had "color" leds sysfs entry;
-now they conflict with the commonly created sysfs of led class.
+--Maw3DNwEx0ys9J+Y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-For addressing the regression, we revert the commit, so that the
-conflicting "color" sysfs entry is removed.
+Hi folks,
 
-Note that the revert also removes the newly introduced
-led_classdev.color field, too.  Since there is no user for that field
-yet, it should be OK to revert the whole.  If this field is supposed
-to be used in future, only the necessary part can be re-applied
-later.
+On Wed 25 Oct 23, 15:09, Paul Kocialkowski wrote:
+> The buffer_sel, voffset and hoffset values are calculated from u32
+> values and might overflow under certain conditions.
+>=20
+> Move them to u32 definitions instead of u8/u16 to avoid the issue.
 
-Fixes: c7d80059b086 ("leds: class: Store the color index in struct led_classdev")
-Reported-by: Johannes Penßel <johannes.penssel@gmail.com>
-Closes: https://lore.kernel.org/r/b5646db3-acff-45aa-baef-df3f660486fb@gmail.com
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218045
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218155
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1217172
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- Documentation/ABI/testing/sysfs-class-led |  9 ---------
- drivers/leds/led-class.c                  | 21 ---------------------
- include/linux/leds.h                      |  1 -
- 3 files changed, 31 deletions(-)
+Any chance to get a quick review on this simple fixup (and the next one)?
+I can certainly push them myself after that.
 
-diff --git a/Documentation/ABI/testing/sysfs-class-led b/Documentation/ABI/testing/sysfs-class-led
-index b2ff0012c0f2..2e24ac3bd7ef 100644
---- a/Documentation/ABI/testing/sysfs-class-led
-+++ b/Documentation/ABI/testing/sysfs-class-led
-@@ -59,15 +59,6 @@ Description:
- 		brightness. Reading this file when no hw brightness change
- 		event has happened will return an ENODATA error.
- 
--What:		/sys/class/leds/<led>/color
--Date:		June 2023
--KernelVersion:	6.5
--Description:
--		Color of the LED.
--
--		This is a read-only file. Reading this file returns the color
--		of the LED as a string (e.g: "red", "green", "multicolor").
--
- What:		/sys/class/leds/<led>/trigger
- Date:		March 2006
- KernelVersion:	2.6.17
-diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-index 974b84f6bd6a..4b3f1d49c625 100644
---- a/drivers/leds/led-class.c
-+++ b/drivers/leds/led-class.c
-@@ -75,19 +75,6 @@ static ssize_t max_brightness_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(max_brightness);
- 
--static ssize_t color_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
--{
--	const char *color_text = "invalid";
--	struct led_classdev *led_cdev = dev_get_drvdata(dev);
--
--	if (led_cdev->color < LED_COLOR_ID_MAX)
--		color_text = led_colors[led_cdev->color];
--
--	return sysfs_emit(buf, "%s\n", color_text);
--}
--static DEVICE_ATTR_RO(color);
--
- #ifdef CONFIG_LEDS_TRIGGERS
- static BIN_ATTR(trigger, 0644, led_trigger_read, led_trigger_write, 0);
- static struct bin_attribute *led_trigger_bin_attrs[] = {
-@@ -102,7 +89,6 @@ static const struct attribute_group led_trigger_group = {
- static struct attribute *led_class_attrs[] = {
- 	&dev_attr_brightness.attr,
- 	&dev_attr_max_brightness.attr,
--	&dev_attr_color.attr,
- 	NULL,
- };
- 
-@@ -505,10 +491,6 @@ int led_classdev_register_ext(struct device *parent,
- 			fwnode_property_read_u32(init_data->fwnode,
- 				"max-brightness",
- 				&led_cdev->max_brightness);
--
--			if (fwnode_property_present(init_data->fwnode, "color"))
--				fwnode_property_read_u32(init_data->fwnode, "color",
--							 &led_cdev->color);
- 		}
- 	} else {
- 		proposed_name = led_cdev->name;
-@@ -518,9 +500,6 @@ int led_classdev_register_ext(struct device *parent,
- 	if (ret < 0)
- 		return ret;
- 
--	if (led_cdev->color >= LED_COLOR_ID_MAX)
--		dev_warn(parent, "LED %s color identifier out of range\n", final_name);
--
- 	mutex_init(&led_cdev->led_access);
- 	mutex_lock(&led_cdev->led_access);
- 	led_cdev->dev = device_create_with_groups(&leds_class, parent, 0,
-diff --git a/include/linux/leds.h b/include/linux/leds.h
-index aa16dc2a8230..8740b4e47f88 100644
---- a/include/linux/leds.h
-+++ b/include/linux/leds.h
-@@ -100,7 +100,6 @@ struct led_classdev {
- 	const char		*name;
- 	unsigned int brightness;
- 	unsigned int max_brightness;
--	unsigned int color;
- 	int			 flags;
- 
- 	/* Lower 16 bits reflect status */
--- 
-2.35.3
+Thanks,
 
+Paul
+
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Fixes: efeeaefe9be5 ("drm: Add support for the LogiCVC display controller=
+")
+> ---
+>  drivers/gpu/drm/logicvc/logicvc_layer.c | 6 +++---
+>  drivers/gpu/drm/logicvc/logicvc_layer.h | 6 +++---
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/logicvc/logicvc_layer.c b/drivers/gpu/drm/lo=
+gicvc/logicvc_layer.c
+> index 464000aea765..eea22379d042 100644
+> --- a/drivers/gpu/drm/logicvc/logicvc_layer.c
+> +++ b/drivers/gpu/drm/logicvc/logicvc_layer.c
+> @@ -268,9 +268,9 @@ int logicvc_layer_buffer_find_setup(struct logicvc_dr=
+m *logicvc,
+>  	u32 layer_stride =3D layer_bytespp * logicvc->config.row_stride;
+>  	u32 base_offset =3D layer->config.base_offset * layer_stride;
+>  	u32 buffer_offset =3D layer->config.buffer_offset * layer_stride;
+> -	u8 buffer_sel =3D 0;
+> -	u16 voffset =3D 0;
+> -	u16 hoffset =3D 0;
+> +	u32 buffer_sel =3D 0;
+> +	u32 voffset =3D 0;
+> +	u32 hoffset =3D 0;
+>  	phys_addr_t fb_addr;
+>  	u32 fb_offset;
+>  	u32 gap;
+> diff --git a/drivers/gpu/drm/logicvc/logicvc_layer.h b/drivers/gpu/drm/lo=
+gicvc/logicvc_layer.h
+> index 4a4b02e9b819..a06feeda3abf 100644
+> --- a/drivers/gpu/drm/logicvc/logicvc_layer.h
+> +++ b/drivers/gpu/drm/logicvc/logicvc_layer.h
+> @@ -18,9 +18,9 @@
+>  #define LOGICVC_LAYER_ALPHA_PIXEL		1
+> =20
+>  struct logicvc_layer_buffer_setup {
+> -	u8 buffer_sel;
+> -	u16 voffset;
+> -	u16 hoffset;
+> +	u32 buffer_sel;
+> +	u32 voffset;
+> +	u32 hoffset;
+>  };
+> =20
+>  struct logicvc_layer_config {
+> --=20
+> 2.42.0
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--Maw3DNwEx0ys9J+Y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVcvroACgkQ3cLmz3+f
+v9G7cgf/dc7VF8HvefPTOkiRgDycHW6ArFSDEgPMQQ4BCvllErH3T9aoTJwBsi2q
+tiSh7ZZJ2aJluhTVjUaI5zdDmBovpfU0Lx/sRpiqkwCh4Qx/L/p/KULzlsTjE8Sf
+rrutaDzSQ/zd6f5TIwEdZyX67JNzbyCNcXwckKlGTtBOpb9XwyjYxZNZ5+nEuxG5
+2KYIUZaw7QNNH4PkQucFi1bZyaZfTjQwvI31JFTcwFGZkWm1VbZnz7EHaiQ4bqNb
+HETWwejxIN0IgCdpjdoMOmo1rTJzE5CjUzRDveUdpIKB68+1ytKDBJwtdPSDhLtH
+TAmkFajL5HYsJcgd/xcy4Ycxw/6EgA==
+=5TT0
+-----END PGP SIGNATURE-----
+
+--Maw3DNwEx0ys9J+Y--
