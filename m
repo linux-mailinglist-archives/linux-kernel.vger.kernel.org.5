@@ -2,118 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0387F3536
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF7A7F3539
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjKURsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
+        id S234084AbjKURss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjKURs2 (ORCPT
+        with ESMTP id S231305AbjKURsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:48:28 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F65E8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:48:24 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5be30d543c4so3916435a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:48:24 -0800 (PST)
+        Tue, 21 Nov 2023 12:48:45 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE794D54
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:48:40 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6c4cf0aea06so5559152b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:48:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700588904; x=1701193704; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BQpzfrYGsE+0PTDTiL34gs/OkqhZ2Wyj6iaH/gbK9pA=;
-        b=x2A3Cbh47sHuNGHBg/J7MDKyUfI9sMsj7PdzqyW2ayIIV3Ozs0iybHayy15D5OyDpm
-         mL3ChPDjdkXqPCUDo2Ck4L2gCqXk1GGkK6lO54isvvW2//0iVW8wJfROrTN0AVTH/5FF
-         sp5K6dmV1+HQwrpfOwavtUhswCvYvR11Ab8f+WcpIUrKQ2rfr+NlzUjHXqzQVrYyEKzn
-         7fU9IZkKigzFZynGqYWOU4L8zngOIEFWnV84Z9ibm9FPB9MdcBapmm9M5dKvGW6vCDph
-         /ZtMsS+hX9SvyLtYIPr8Po082uDCvf316AzfhxXBOqQuzVmXUXvbWiTWMSfkPb9+i7oz
-         I+fA==
+        d=linaro.org; s=google; t=1700588920; x=1701193720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EAK/ItuSDRPVMNR15AwNhdUvFP+x071LcAQ3w3yTJs0=;
+        b=kGIlfsuWV9pc67/zTpkfc8YdnXt2hAE3qr+ewTild/gLqpQ9CS9/PsmFolWYr0Re20
+         baGlZQTup9TPCYqBz2blkdq7pSK2JrFq6643iRt+jfyw1R/jU798ExGNdjQXWkJtUOc+
+         qJnOczBjgR6QdFJFMGCdoA+BEVkKXTRoWaMW/G4wWJimH1PmmJllb4EBPaJ4HdT/rB3w
+         feCv3oNiWOGIeuLqszBBQ/1EzYEuPo6unTnYDCBMkMCP5apxWosN8AjWCGqNfRhObimy
+         uOPX0fJ8KpyF0HfQ+M4Ub5D875vEt23/jIXPzBu9mL0he8lpXtR+EGB8ZiIM5FrlHbli
+         Pprw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700588904; x=1701193704;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BQpzfrYGsE+0PTDTiL34gs/OkqhZ2Wyj6iaH/gbK9pA=;
-        b=oaP7nzdxcynls9mo8BdfiGISvaox/TH/Iw5Wvm87gwggOYQJPd4rxCMYqa+tbqHw6l
-         23mV/VPph4c2kPHKwK2zUThQ0uxEFggKc1LbvXmbsapseYuzJj13F+6WVtuaPqKV4ASP
-         7sVxBsMoQ/5BiEagT7loW278zzEQq0VLOt1HDYiIODXDn2neykyiMfrwNOHyTXdsbHKN
-         /OVKFY9VICtNGXHlCaU363RF2noFZQ3YPm9vVxcT1i5FaWoZER2ZqhMeR7FlT5eICH2v
-         NUeKQMUfjvz9GUrkdFvj9aUsj5eXa0JUWMjMWeSXPeg1nW1KUvmbSE5QY4bAT34ugZL4
-         tvWA==
-X-Gm-Message-State: AOJu0YxXRK2rGUbJyOdO79FgG5TrM7jTcnhE0QUniyybeH6I76odPYlQ
-        OgP+oW9Z64/HU4wDTalqrRMrTQ==
-X-Google-Smtp-Source: AGHT+IH5+zyRERABCW680nOLtro7a4MXSzHErXwyD79vgIKV1PgOl18oHlnP03UVvOvNUqMpg8KYLQ==
-X-Received: by 2002:a05:6a20:1604:b0:138:2fb8:6c48 with SMTP id l4-20020a056a20160400b001382fb86c48mr9735361pzj.8.1700588903961;
-        Tue, 21 Nov 2023 09:48:23 -0800 (PST)
-Received: from [172.20.7.39] ([187.217.227.247])
-        by smtp.gmail.com with ESMTPSA id b11-20020a056a000ccb00b006cb69ff0444sm5547127pfv.151.2023.11.21.09.48.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 09:48:23 -0800 (PST)
-Message-ID: <2773db23-b897-48f4-8529-5cb70480e40e@linaro.org>
-Date:   Tue, 21 Nov 2023 11:48:21 -0600
+        d=1e100.net; s=20230601; t=1700588920; x=1701193720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EAK/ItuSDRPVMNR15AwNhdUvFP+x071LcAQ3w3yTJs0=;
+        b=TebYrG/5Umqxi8Kfe8nJbdzRmMO/P/v6mMUZBX3HLGEt6yh1J1nYx0CzoyKQLAVpx7
+         pAhvkUTsrhubT2NUQje6TCteTe/HiUTRpb+7JI0E6aoOKQQlsxvygJ0iF1AibZwUSf+w
+         lsT/TNtEtEH4B1uFd6K0r6oz/+TORxOLd0jYVbFNAlf9SuquzUfXHoDxOE7QRW8ovwX1
+         u/kBltUiCpWQ2tjlqHOX15CXB/6wHiIO9+kApWx+Js/6Ujor8zwscjmQSWzYSwx4uJyq
+         imfrHuIUWIN35/V1s9V6hs2OoHdWqQLdvVZWqLk7mxpIyZAlSldf9H73Cn0mjSmGrAmG
+         ebuw==
+X-Gm-Message-State: AOJu0YwVto02jqSBF9iBsHWIyHfYNEXiEXyzZCXUAq/m01+2Sy7ybYPM
+        i5oxLnu9dAZUqsZk9hJ0P0ka7VcdkBdYFopx6DVGAg==
+X-Google-Smtp-Source: AGHT+IGsVYAziCjXoCBHiftycTLKlFRj+F3xZDSfXKxIguYqxWX7xqT/er/I16AqY0h4UFWzZ5qHqodRZyjJQpRXSA8=
+X-Received: by 2002:a05:6a20:4306:b0:187:5be4:67e2 with SMTP id
+ h6-20020a056a20430600b001875be467e2mr16406256pzk.53.1700588920073; Tue, 21
+ Nov 2023 09:48:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/17] tty: srmcons: make srmcons_do_write() return void
-Content-Language: en-US
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <20231121092258.9334-1-jirislaby@kernel.org>
- <20231121092258.9334-16-jirislaby@kernel.org>
-From:   Richard Henderson <richard.henderson@linaro.org>
-In-Reply-To: <20231121092258.9334-16-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org> <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231108104343.24192-17-krzysztof.kozlowski@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Tue, 21 Nov 2023 11:48:29 -0600
+Message-ID: <CAPLW+4nkrMwc9GiQyn7ojaPz_50NQ3vAcMt9+tOzpHfq7G7+Tg@mail.gmail.com>
+Subject: Re: [PATCH 16/17] arm64: dts: exynos850: add specific compatibles to
+ several blocks
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 03:22, Jiri Slaby (SUSE) wrote:
-> The return value of srmcons_do_write() is ignored as all characters are
-> pushed. So make srmcons_do_write() to return void.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Richard Henderson <richard.henderson@linaro.org>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: linux-alpha@vger.kernel.org
+On Wed, Nov 8, 2023 at 4:44=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Exynos850 reuses several devices from older designs, thus historically
+> we kept the old (block's) compatible only.  This works fine and there is
+> no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
+>
+> Add compatibles specific to Exynos850 in front of all old-SoC-like
+> compatibles.  This will also help reviews of new code using existing
+> DTS as template.  No functional impact on Linux drivers behavior.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->   arch/alpha/kernel/srmcons.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/alpha/kernel/srmcons.c b/arch/alpha/kernel/srmcons.c
-> index 8025e2a882ed..32bc098de7da 100644
-> --- a/arch/alpha/kernel/srmcons.c
-> +++ b/arch/alpha/kernel/srmcons.c
-> @@ -88,7 +88,7 @@ srmcons_receive_chars(struct timer_list *t)
->   }
->   
->   /* called with callback_lock held */
-> -static int
-> +static void
->   srmcons_do_write(struct tty_port *port, const char *buf, int count)
->   {
->   	static char str_cr[1] = "\r";
-> @@ -125,7 +125,6 @@ srmcons_do_write(struct tty_port *port, const char *buf, int count)
->   				need_cr = 0;
->   		}
->   	}
-> -	return count;
->   }
->   
->   static ssize_t
 
-Reviewed-by: Richard Henderson <richard.henderson@linaro.org>
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-
-r~
+>  arch/arm64/boot/dts/exynos/exynos850.dtsi | 34 +++++++++++++----------
+>  1 file changed, 20 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/exynos850.dtsi b/arch/arm64/boot/=
+dts/exynos/exynos850.dtsi
+> index 53104e65b9c6..df5ea43ebcad 100644
+> --- a/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynos850.dtsi
+> @@ -396,7 +396,7 @@ pinctrl_aud: pinctrl@14a60000 {
+>                 };
+>
+>                 rtc: rtc@11a30000 {
+> -                       compatible =3D "samsung,s3c6410-rtc";
+> +                       compatible =3D "samsung,exynos850-rtc", "samsung,=
+s3c6410-rtc";
+>                         reg =3D <0x11a30000 0x100>;
+>                         interrupts =3D <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>,
+>                                      <GIC_SPI 58 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -406,7 +406,8 @@ rtc: rtc@11a30000 {
+>                 };
+>
+>                 mmc_0: mmc@12100000 {
+> -                       compatible =3D "samsung,exynos7-dw-mshc-smu";
+> +                       compatible =3D "samsung,exynos850-dw-mshc-smu",
+> +                                    "samsung,exynos7-dw-mshc-smu";
+>                         reg =3D <0x12100000 0x2000>;
+>                         interrupts =3D <GIC_SPI 452 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -419,7 +420,7 @@ mmc_0: mmc@12100000 {
+>                 };
+>
+>                 i2c_0: i2c@13830000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13830000 0x100>;
+>                         interrupts =3D <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -432,7 +433,7 @@ i2c_0: i2c@13830000 {
+>                 };
+>
+>                 i2c_1: i2c@13840000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13840000 0x100>;
+>                         interrupts =3D <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -445,7 +446,7 @@ i2c_1: i2c@13840000 {
+>                 };
+>
+>                 i2c_2: i2c@13850000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13850000 0x100>;
+>                         interrupts =3D <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -458,7 +459,7 @@ i2c_2: i2c@13850000 {
+>                 };
+>
+>                 i2c_3: i2c@13860000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13860000 0x100>;
+>                         interrupts =3D <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -471,7 +472,7 @@ i2c_3: i2c@13860000 {
+>                 };
+>
+>                 i2c_4: i2c@13870000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13870000 0x100>;
+>                         interrupts =3D <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -485,7 +486,7 @@ i2c_4: i2c@13870000 {
+>
+>                 /* I2C_5 (also called CAM_PMIC_I2C in TRM) */
+>                 i2c_5: i2c@13880000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13880000 0x100>;
+>                         interrupts =3D <GIC_SPI 201 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -499,7 +500,7 @@ i2c_5: i2c@13880000 {
+>
+>                 /* I2C_6 (also called MOTOR_I2C in TRM) */
+>                 i2c_6: i2c@13890000 {
+> -                       compatible =3D "samsung,s3c2440-i2c";
+> +                       compatible =3D "samsung,exynos850-i2c", "samsung,=
+s3c2440-i2c";
+>                         reg =3D <0x13890000 0x100>;
+>                         interrupts =3D <GIC_SPI 202 IRQ_TYPE_LEVEL_HIGH>;
+>                         #address-cells =3D <1>;
+> @@ -640,7 +641,8 @@ usi_hsi2c_0: usi@138a00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_0: i2c@138a0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138a0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 193 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -668,7 +670,8 @@ usi_hsi2c_1: usi@138b00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_1: i2c@138b0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138b0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 194 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -696,7 +699,8 @@ usi_hsi2c_2: usi@138c00c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_2: i2c@138c0000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x138c0000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 195 IRQ_TYPE_LEVE=
+L_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -738,7 +742,8 @@ usi_cmgp0: usi@11d000c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_3: i2c@11d00000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x11d00000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 62 IRQ_TYPE_LEVEL=
+_HIGH>;
+>                                 #address-cells =3D <1>;
+> @@ -778,7 +783,8 @@ usi_cmgp1: usi@11d200c0 {
+>                         status =3D "disabled";
+>
+>                         hsi2c_4: i2c@11d20000 {
+> -                               compatible =3D "samsung,exynosautov9-hsi2=
+c";
+> +                               compatible =3D "samsung,exynos850-hsi2c",
+> +                                            "samsung,exynosautov9-hsi2c"=
+;
+>                                 reg =3D <0x11d20000 0xc0>;
+>                                 interrupts =3D <GIC_SPI 63 IRQ_TYPE_LEVEL=
+_HIGH>;
+>                                 #address-cells =3D <1>;
+> --
+> 2.34.1
+>
