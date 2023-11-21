@@ -2,86 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5757F398A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2047F398D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234852AbjKUWw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32838 "EHLO
+        id S234752AbjKUWxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:53:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbjKUWwu (ORCPT
+        with ESMTP id S229495AbjKUWxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:52:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF0319E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:52:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA010C433C7;
-        Tue, 21 Nov 2023 22:52:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700607162;
-        bh=lcd1kaNfal9twfdUVMZrLx4fsueilicX3t4phDi7yXE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GDBbps2gtwzo6uL2nHWSrvpUo/BPqGgOMVM9oxt5jgW+G2Qcd+pQKefBFTQvW+veP
-         kC2oD5UgdrFjr4mm17/LNIuliKGnsUTLjnTjz1lA/x77iKCd1e1HwcHf6iPo/T1kdA
-         5YxfP6jjau6jvJV5ZA/112PrdEznjBA9U+HLsWAjzBf4KN9QT6gmjLK2fZD5egQnOh
-         XRnLinwvWwtRAmuhDHYk/S9ZVAINmmGD/+6g8XSsS6mjAlbfJd4EfSJRzkjJsGY563
-         nelLqBx4EDHvEl4OqH0joxKK0f2/KTwI0sZhfGLJA2LzKwHKr5cK3IWk+oNKRU6sMh
-         JtfOwxZr3R/KQ==
-Date:   Tue, 21 Nov 2023 14:52:42 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH V3 5/5] misc: mlx5ctl: Add umem reg/unreg ioctl
-Message-ID: <ZV00ushZBMpkUb02@x130>
-References: <20231121070619.9836-1-saeed@kernel.org>
- <20231121070619.9836-6-saeed@kernel.org>
- <20231121124456.7a6388c6@kernel.org>
- <ZV0bRpnhu/zWieTT@x130>
- <20231121141053.6133e069@kernel.org>
+        Tue, 21 Nov 2023 17:53:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36DD10EA;
+        Tue, 21 Nov 2023 14:53:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:To:From:Subject:Message-ID:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H8N+oCSoC+H0ZODoe9Cu2j8t3Kw63Cr3ppY3F2+Oq3w=; b=g8KfYtXrDCSyp9IcK6l7Qc0ttU
+        reyKxgPhOM2ad08dx6wISloa8F+mcKLLVopdWcgXuiPeX8s0pzwtkLXCUGLrlJjmpTCqbfwbBSTG/
+        pq1mwQNmA/Yg2SrXfJuIpqNpCTDpT27fmH5qa8d+CsbDMBmZdlQfv20J+EOXMU9tetxQI1iLhJgXs
+        89OmgE2NShtsnGH6UjIL/laciQ/9268J7wF6r3Kyzk9YuA2YHjKxgnwKDJZqlSXRoRscQ71U3iRpd
+        +HnYTVMXV1ZKH7rrxjUIanzBYTQhWoulD4YK0Cq5u3iG6KAXyWZhEcm2y00AJLIlV/h34U9dK22S0
+        yt+vnrpw==;
+Received: from [2001:8b0:10b:5:22b8:d80f:1c9c:f188] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r5ZcA-0060X8-Gh; Tue, 21 Nov 2023 22:53:06 +0000
+Message-ID: <4a76b7dc9055485d9e2592b395e60221dc349abf.camel@infradead.org>
+Subject: Re: [PATCH v8 15/15] KVM: xen: allow vcpu_info content to be
+ 'safely' copied
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 21 Nov 2023 22:53:05 +0000
+In-Reply-To: <20231121180223.12484-16-paul@xen.org>
+References: <20231121180223.12484-1-paul@xen.org>
+         <20231121180223.12484-16-paul@xen.org>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-Sg32XlDwjZW/KftOP1NZ"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231121141053.6133e069@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21 Nov 14:10, Jakub Kicinski wrote:
->On Tue, 21 Nov 2023 13:04:06 -0800 Saeed Mahameed wrote:
->> On 21 Nov 12:44, Jakub Kicinski wrote:
->>> On Mon, 20 Nov 2023 23:06:19 -0800 Saeed Mahameed wrote:
->>>> high frequency diagnostic counters
->>>
->>> So is it a debug driver or not a debug driver?
->>
->> High frequency _diagnostic_ counters are a very useful tool for
->> debugging a high performance chip. So yes this is for diagnostics/debug.
->
->You keep saying debugging but if it's expected to run on all servers in
->the fleet _monitoring_ performance, then it's a very different thing.
->To me it certainly moves this driver from "debug thing loaded when
->things fail" to the "always loaded in production" category.
 
-Exactly, only when things fails or the user want to debug something.
-  
-For your example, you can monitor network performance via standard netdev
-tools, once you start experiencing hiccups, you can use this driver and
-the corresponding tools to quickly grab HW debug information, useful to
-further root cause and analyze the network hiccups. 
+--=-Sg32XlDwjZW/KftOP1NZ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Again this is only one use-case, the driver is intended to provide any
-debug information, not only diagnostic counters or monitoring tools.
-The goal of this driver is not the one use case you have in mind.
+On Tue, 2023-11-21 at 18:02 +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
+>=20
+> If the guest sets an explicit vcpu_info GPA then, for any of the first 32
+> vCPUs, the content of the default vcpu_info in the shared_info page must =
+be
+> copied into the new location. Because this copy may race with event
+> delivery (which updates the 'evtchn_pending_sel' field in vcpu_info) ther=
+e
+> needs to be a way to defer that until the copy is complete.
+> Happily there is already a shadow of 'evtchn_pending_sel' in kvm_vcpu_xen
+> that is used in atomic context if the vcpu_info PFN cache has been
+> invalidated so that the update of vcpu_info can be deferred until the
+> cache can be refreshed (on vCPU thread's the way back into guest context)=
+.
+>=20
+> Also use this shadow if the vcpu_info cache has been *deactivated*, so th=
+at
+> the VMM can safely copy the vcpu_info content and then re-activate the
+> cache with the new GPA. To do this, stop considering an inactive vcpu_inf=
+o
+> cache as a hard error in kvm_xen_set_evtchn_fast().
+>=20
+> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+> Reviewed-by: David Woodhouse <dwmw@amazon.co.uk>
 
+Wait, didn't we realise that this leaves the bits set in the shadow
+evtchn_pending_sel that get lost on migration?
+
+The point in your previous patch which split out a shiny new
+set_shinfo_evtchn_pending() function was that you could then *call*
+that function to ensure that the corresponding index bit was set on the
+destination host after migration, if the bit in the shinfo is.
+
+So we'd do that from kvm_xen_setup_evtchn(), kvm_xen_eventfd_assign(),
+and when setting KVM_XEN_VCPU_ATTR_TYPE_TIMER.
+
+ if (bit_is_set_in_shinfo)
+   set_shinfo_evtchn_pending()
+
+
+
+--=-Sg32XlDwjZW/KftOP1NZ
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTIxMjI1MzA1WjAvBgkqhkiG9w0BCQQxIgQgx8sdU1Dp
+ARPWRIRbfwEkNd92OqbdzvBfTOx7wdAFGYIwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgC0EGvrrdwHftiLldK2B/qjCOYJsL/LDEyt
+oAvjY8ZRT996LVJQC1gJ7abxva59MYmd8AKE3iD6WiFxRSNpnMunKhWbYOFkkEZfThaDaOAe0nCd
+7rj9ktdBIz4vj2PkUcGz5ATChCPgsRSo4lZcTG5aB6y0pHHcgQxgk3+aNlWpKRSZwO73XTNMRpBK
+wMu6Uf4cUEZ1TltmwWgaLQ5FI0zgvZUc2WIJ8EBjRF3KJxLYPnQUJ30zlcABYJzXBJOReF+KJowE
++WeiwLDOXZxOvh9DtlGTxw7otZ9ToQmys8zfQuVw6NLJevEqB8KAEkjXjV1k/zk+XVHK2j6235pa
+xxMHrUpwG2Po4+wkiRsiiNsSGJRk7rB+Sk4B1acGuTOmEmf5BBHmqHWtjlXlWoaf7R0hjwu39hKB
+jWCxUO2ZzEob473JVCRAcfRaA03w4rhv4RtgZBtn83esavzKAg6AjIRAZpLPedS1fF6M6AQZF2UQ
+V3tUauHYoosiBGz4CbUXMYGAR8ODrPaoJE1IpRJ+qEpG1rx6U3RUs2wgu7RY+kBDAQxYdqITnqaE
+S2mLlVVsQFdNmfxrtpkGZAAEVn6br+p3sG/JLvTz6+j1rvRRPEfoW/KOzlO7eLIPO48TbgWd4QBs
+QHqj42V04n2mScwmgww+Lkbst1+9ueSttu64Ti4cWgAAAAAAAA==
+
+
+--=-Sg32XlDwjZW/KftOP1NZ--
