@@ -2,83 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CE67F226C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDE87F2276
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjKUAlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
+        id S232749AbjKUAqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbjKUAlT (ORCPT
+        with ESMTP id S229496AbjKUAqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:41:19 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD81410F1;
-        Mon, 20 Nov 2023 16:41:10 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0Zd8O016973;
-        Tue, 21 Nov 2023 00:41:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=X8xZvS6shZckfz0tektajGeeKEM/8ral5kfB64Bb0jE=;
- b=VYD4rZazIwewET3s7EeayauIg2O/Dkc029yQE9TyMlkgf/9uifEgCjsnZggyqbm+cSH9
- 88wr1nmx+wlqdTcdi2yyW7sr9z+Sb257OBUiI6o35mni+mZfIiFt/y8+9GSRTxhJQecr
- lwvujBfCWDiTnw0RKBScAh6IYGr71XAAY0SbK00rpujCM0iJeQVO+CY1/OsVTRARXAIO
- eF35+61ZgqygRw9Uw02LvUOFxd3BSgWJnE1acSl5JgfZkRWEtxCXclAZH8bPphsJYu/N
- rbH+EGJS3qfyvbYxjAhq3gxU5X9wI6ur8yh2hGkkJCaDzt9vEFICvLcaGpDbQ1hGsBjs lg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug5371vme-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:41:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL0f2Hr022514
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:41:02 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 16:40:56 -0800
-Message-ID: <5a98975e-d11c-43b8-ad95-1a2633733a19@quicinc.com>
-Date:   Tue, 21 Nov 2023 08:40:54 +0800
+        Mon, 20 Nov 2023 19:46:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D53A91
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:45:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A5D8C433C7;
+        Tue, 21 Nov 2023 00:45:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700527558;
+        bh=7ITtsMr3bGAuekf6mH52bfGLbeQOxBb4WvruWUP+jT8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=GEhEQKFi84qpoygDqVA5aG1BtFAA18v55zAnBg31Nn9mQklTdwnwuqoZyUPpkR7UU
+         tfIl3zVZKT5Occ1ud0QwQ93dGJC6znGLlhL8GaiVRbSJj01MlUuk5wjbNESkENOYGH
+         SYnuFHCerdtboi27/+nn1YUtl2RUt/GH9h9ddkpVKmlGCzZnKkJD3jehwm/F0HQOBh
+         o7RGT0QxSdQfiArw8DtRu9vHZY6Lbtk2wx1Z/kbCFPyJG1zCSWegHlHNCCUM82SHS7
+         mg9oGTK7L8dlDzr24vwA0AdrBrP9s4gZOaZQo47dje9l2NvS/IkSAJNVjoWAJK2esp
+         tM+kleucCPwcg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BF132CE1390; Mon, 20 Nov 2023 16:45:57 -0800 (PST)
+Date:   Mon, 20 Nov 2023 16:45:57 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Subject: Re: [RFC PATCH 57/86] coccinelle: script to remove cond_resched()
+Message-ID: <7d85fbde-fc8d-44b4-802e-376a475891e6@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/16] arm64: dts: qcom: sm8550-aim300: add PCIe0
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-8-quic_tengfan@quicinc.com>
- <37a3a407-07e7-49d8-bbce-b1dac8cfcf5a@linaro.org>
- <247f4654-ec65-4857-8b35-1a79088e8b87@linaro.org>
- <1ae2da80-77e8-487a-a94d-b329e6f48360@linaro.org>
- <26df42ac-edb0-ac72-d5cb-4a4ae6819736@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <26df42ac-edb0-ac72-d5cb-4a4ae6819736@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BcXLPgx7PBaSS9C0AX8IGK_-WW4j0xW5
-X-Proofpoint-GUID: BcXLPgx7PBaSS9C0AX8IGK_-WW4j0xW5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 suspectscore=0 adultscore=0
- mlxlogscore=927 spamscore=0 malwarescore=0 mlxscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210001
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107230822.371443-1-ankur.a.arora@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,57 +67,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 07, 2023 at 03:07:53PM -0800, Ankur Arora wrote:
+> Rudimentary script to remove the straight-forward subset of
+> cond_resched() and allies:
+> 
+> 1)  if (need_resched())
+> 	  cond_resched()
+> 
+> 2)  expression*;
+>     cond_resched();  /* or in the reverse order */
+> 
+> 3)  if (expression)
+> 	statement
+>     cond_resched();  /* or in the reverse order */
+> 
+> The last two patterns depend on the control flow level to ensure
+> that the complex cond_resched() patterns (ex. conditioned ones)
+> are left alone and we only pick up ones which are only minimally
+> related the neighbouring code.
 
+This series looks to get rid of stall warnings for long in-kernel
+preempt-enabled code paths, which is of course a very good thing.
+But removing all of the cond_resched() calls can actually increase
+scheduling latency compared to the current CONFIG_PREEMPT_NONE=y state,
+correct?
 
-在 11/20/2023 1:59 AM, Neil Armstrong 写道:
-> Le 18/11/2023 à 01:08, Konrad Dybcio a écrit :
->> On 17.11.2023 11:41, neil.armstrong@linaro.org wrote:
->>> On 17/11/2023 11:29, Dmitry Baryshkov wrote:
->>>> On 17/11/2023 12:18, Tengfei Fan wrote:
->>>>> Add PCIe0 nodes used with WCN7851 device.  The PCIe1 is not connected,
->>>>> thus skip pcie_1_phy_aux_clk input clock to GCC.
->>>>>
->>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>>> ---
->>>>>    arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 32 
->>>>> ++++++++++++++++++++++
->>>>>    1 file changed, 32 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts 
->>>>> b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->>>>> index 202b979da8ca..3aca0a433a00 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->>>>> +++ b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->>>>> @@ -393,6 +393,38 @@
->>>>>        };
->>>>>    };
->>>>> +&gcc {
->>>>> +    clocks = <&bi_tcxo_div2>, <&sleep_clk>,
->>>>> +         <&pcie0_phy>,
->>>>> +         <&pcie1_phy>,
->>>>> +         <0>,
->>>>> +         <&ufs_mem_phy 0>,
->>>>> +         <&ufs_mem_phy 1>,
->>>>> +         <&ufs_mem_phy 2>,
->>>>> +         <&usb_dp_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
->>>>> +};
->>>>
->>>> NAK, this should go to sm8550.dtsi unless there is a good reason.
->>>
->>> Actually this is how QRD8550 was designed, so it's fine to mimic.
->> Does CCF not handle this gracefully?
-> 
-> CCF handles this very gracefully and it's a perfectly valid DT in regard
-> to the bindings...
-> 
-> neil
-> 
->>
->> Konrad
-> 
-Thanks Konrad and Neil comments and disscusion this patch, I also will 
-confirm this with internal team.
+If so, it would be good to take a measured approach.  For example, it
+is clear that a loop that does a cond_resched() every (say) ten jiffies
+can remove that cond_resched() without penalty, at least in kernels built
+with either CONFIG_NO_HZ_FULL=n or CONFIG_PREEMPT=y.  But this is not so
+clear for a loop that does a cond_resched() every (say) ten microseconds.
 
--- 
-Thx and BRs,
-Tengfei Fan
+Or am I missing something here?
+
+							Thanx, Paul
+
+> Cc: Julia Lawall <Julia.Lawall@inria.fr>
+> Cc: Nicolas Palix <nicolas.palix@imag.fr>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> ---
+>  scripts/coccinelle/api/cond_resched.cocci | 53 +++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>  create mode 100644 scripts/coccinelle/api/cond_resched.cocci
+> 
+> diff --git a/scripts/coccinelle/api/cond_resched.cocci b/scripts/coccinelle/api/cond_resched.cocci
+> new file mode 100644
+> index 000000000000..bf43768a8f8c
+> --- /dev/null
+> +++ b/scripts/coccinelle/api/cond_resched.cocci
+> @@ -0,0 +1,53 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/// Remove naked cond_resched() statements
+> +///
+> +//# Remove cond_resched() statements when:
+> +//#   - executing at the same control flow level as the previous or the
+> +//#     next statement (this lets us avoid complicated conditionals in
+> +//#     the neighbourhood.)
+> +//#   - they are of the form "if (need_resched()) cond_resched()" which
+> +//#     is always safe.
+> +//#
+> +//# Coccinelle generally takes care of comments in the immediate neighbourhood
+> +//# but might need to handle other comments alluding to rescheduling.
+> +//#
+> +virtual patch
+> +virtual context
+> +
+> +@ r1 @
+> +identifier r;
+> +@@
+> +
+> +(
+> + r = cond_resched();
+> +|
+> +-if (need_resched())
+> +-	cond_resched();
+> +)
+> +
+> +@ r2 @
+> +expression E;
+> +statement S,T;
+> +@@
+> +(
+> + E;
+> +|
+> + if (E) S
+> +|
+> + if (E) S else T
+> +|
+> +)
+> +-cond_resched();
+> +
+> +@ r3 @
+> +expression E;
+> +statement S,T;
+> +@@
+> +-cond_resched();
+> +(
+> + E;
+> +|
+> + if (E) S
+> +|
+> + if (E) S else T
+> +)
+> -- 
+> 2.31.1
+> 
