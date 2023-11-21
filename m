@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD397F37EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EBA7F37F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjKUVR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        id S229841AbjKUVRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:17:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKUVR1 (ORCPT
+        with ESMTP id S229464AbjKUVRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:17:27 -0500
+        Tue, 21 Nov 2023 16:17:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDF0DD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:17:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E044EC433C7;
-        Tue, 21 Nov 2023 21:17:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5FADD
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:17:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62E2AC433C7;
+        Tue, 21 Nov 2023 21:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700601443;
-        bh=64R9kZykc4uPmmWYiruAQb246jsaatupVICtxfjMGrc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=USrHtx/1czRsI3Lr0sNTdfpfuUETiOD3FnawXRS8xeU9f2IJucC1X6v8hZr7Ptv8O
-         GOyy4mHCrr5j3KFYvLv2Mx8Cv30fm+WFTpdRItuoNJBBJMAHJwGoWFstabYFQQx0Ke
-         ng3O3+//YJoiqPS/Sr0rs12eqntJQKXXYb7XpGNQVKiUSLTHVQNPiRF14YkPbYpIoF
-         VUd+4bvAsKMBReHc0nElSZzXi0aqcHyMAZsPtPF1N7pW4q/c8ndFXgP31SbJw0Gkj1
-         dkzGJn+20ALlnSmanywNkZJzGtHIME1Fwszj6Kzpf+ICN0wnuRY7zvBiTbSPlpExMX
-         WEkJPmB931VUg==
+        s=k20201202; t=1700601447;
+        bh=Y56AO+jdgKKv2wjrPycIECDNz6SB1qKX+7if35pK/Gw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BQ4e5epJyW3aR5whtW4leKfPnGJnYCPiNISJ0YfMzDZYILtpkdWM/bUxRq3v0smjr
+         En0oDQo97bauZH0FKctmxBrd5mccn+S6CzWteM6PJL45PMJmBwJz65T9VfttVRyKaA
+         qqEwIwysk3C1eSJbDEpt8Q+x+K7DwT8Z5Y1Tm62CspgOe9CJ0CiCdEdrEdpEpdqbrV
+         V/DoDaX6zxqxxeta1p4d13NtHWoqEx5QnivPxsjmD1TvEVx+kGVXn+ZpPafm4quoJN
+         w9lDAeWofVjEtpAPo6x7gIrSuXIoBHA//a/MULYRxX4uPOWjIP2nbLHW3GW01YSUpS
+         QAue6S8eB3OHA==
 From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     linux-integrity@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
@@ -44,10 +44,12 @@ Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
         James Morris <jmorris@namei.org>,
         "Serge E. Hallyn" <serge@hallyn.com>,
         Julien Gomes <julien@arista.com>
-Subject: [PATCH v4 0/8] Extend struct tpm_buf to support sized buffers (TPM2B)
-Date:   Tue, 21 Nov 2023 23:17:09 +0200
-Message-ID: <20231121211717.31681-1-jarkko@kernel.org>
+Subject: [PATCH v4 1/8] tpm: Remove unused tpm_buf_tag()
+Date:   Tue, 21 Nov 2023 23:17:10 +0200
+Message-ID: <20231121211717.31681-2-jarkko@kernel.org>
 X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231121211717.31681-1-jarkko@kernel.org>
+References: <20231121211717.31681-1-jarkko@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -60,65 +62,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set extends struct tpm_buf to support TPM2 sized buffers, and
-adds reader functions for parsing more complex response data.  It is
-implemented to support smooth landing of [2]. Sealing of the TPM2 trusted
-keys is updated to utilize the new functionality, and thus provides a
-legit test case for it.
+The helper function has no call sites. Thus, remove it.
 
-TPM2 sized buffer, i.e. the buffers in TPM2 format, are defined in the
-section 10.4 of the TPM2 Structures [1] specification.
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+v1 [2023-11-21]: A new patch.
+---
+ include/linux/tpm.h | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Here's the smoke test that I've run for TPM2:
-
-/usr/lib/kselftests/run_kselftest.sh
-tpm2_createprimary --hierarchy o -G rsa2048 -c key.ctxt
-tpm2_evictcontrol -c key.ctxt 0x81000001
-keyctl add trusted kmk "new 32 keyhandle=0x81000001" @u
-keyctl add encrypted 1000100010001000 "new ecryptfs trusted:kmk 64" @u
-
-[1] https://trustedcomputinggroup.org/resource/tpm-library-specification/
-[2] https://lore.kernel.org/linux-integrity/20230403214003.32093-1-James.Bottomley@HansenPartnership.com/
-
-v4:
-- Cleaned up the bit too spread code changes based on the v3 review.
-- For testing instructions see the previous cover letter, and use
-  linux-v6.6.y branch:
-  https://lore.kernel.org/linux-integrity/20231024011531.442587-1-jarkko@kernel.org/
-v3:
-- Resend with rebase to the latest upstream.
-
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: William Roberts <bill.c.roberts@gmail.com> 
-Cc: Stefan Berger <stefanb@linux.ibm.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Jerry Snitselaar <jsnitsel@redhat.com>
-
-James Bottomley (1):
-  tpm: Move buffer handling from static inlines to real functions
-
-Jarkko Sakkinen (7):
-  tpm: Remove unused tpm_buf_tag()
-  tpm: Remove tpm_send()
-  tpm: Update &tpm_buf documentation
-  tpm: Store the length of the tpm_buf data separately.
-  tpm: TPM2B formatted buffers
-  tpm: Add tpm_buf_read_{u8,u16,u32}
-  KEYS: trusted: tpm2: Use struct tpm_buf for sized buffers
-
- drivers/char/tpm/Makefile                 |   1 +
- drivers/char/tpm/tpm-buf.c                | 220 ++++++++++++++++++++++
- drivers/char/tpm/tpm-interface.c          |  26 +--
- include/keys/trusted_tpm.h                |   2 -
- include/linux/tpm.h                       | 112 +++--------
- security/keys/trusted-keys/trusted_tpm1.c |  23 ++-
- security/keys/trusted-keys/trusted_tpm2.c |  54 +++---
- 7 files changed, 293 insertions(+), 145 deletions(-)
- create mode 100644 drivers/char/tpm/tpm-buf.c
-
+diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+index 4ee9d13749ad..6588ca87cf93 100644
+--- a/include/linux/tpm.h
++++ b/include/linux/tpm.h
+@@ -358,13 +358,6 @@ static inline u32 tpm_buf_length(struct tpm_buf *buf)
+ 	return be32_to_cpu(head->length);
+ }
+ 
+-static inline u16 tpm_buf_tag(struct tpm_buf *buf)
+-{
+-	struct tpm_header *head = (struct tpm_header *)buf->data;
+-
+-	return be16_to_cpu(head->tag);
+-}
+-
+ static inline void tpm_buf_append(struct tpm_buf *buf,
+ 				  const unsigned char *new_data,
+ 				  unsigned int new_len)
 -- 
 2.42.1
 
