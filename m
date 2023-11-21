@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0C47F35DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5667F35DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbjKUSVz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 13:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
+        id S231130AbjKUSVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234308AbjKUSVv (ORCPT
+        with ESMTP id S231178AbjKUSVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:21:51 -0500
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B127C97
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:21:47 -0800 (PST)
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5bd5809f63aso3385688a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:21:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700590907; x=1701195707;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mjqukWY1TJRl2un3A3Zmwy+nQrqrkLFwF1K5Ugh7bto=;
-        b=AGXn5FNnWLhuLPwtkk05tNpFkgtSGXwt/dc/2U7jsFtxiBOvONyVL73pMrYmPLu4w2
-         CiPcy6V18MJkPzhei/YDW6btb70N/Z01eBqQbZ6yGwdABnE3Ma+ggIrbZZ6HJwPqTShy
-         NpB5FUJpY4Ibq/dqKsDsNqEyWFEaYXajsbiLuMX+dRv0q2DHZLAKGvaexJ+oGVehFaWo
-         6ILQ0Zcf/rmqo1TNrqpDCCeje5hOZ4eNgekm9EicmIAedQ+raqUO23qpf5i6k+ZG4uAH
-         imABlMf62mlueoBukaCq7E7NcR0MlEvik0uA01fKbVmgXyFySBjIR8ZFh3pjmPEE6Sp/
-         zy4Q==
-X-Gm-Message-State: AOJu0YyULzANRcAj/PfJTSkhwkRvtb5Y1mNxa1xfgOoJGuAfpyTumdYS
-        QE0mF+hSHoqI/JVReg6vr4WnJRqLn3BuOk9QUEo=
-X-Google-Smtp-Source: AGHT+IGS8CF8o4jrtTN3gzjZVQq2KuBz1RFbrYXRMpN9bD3qC9J1yABAf1SAGSnPwY61X6+lJf+VHtyISNiR8k4q41Q=
-X-Received: by 2002:a17:90b:3e85:b0:280:25ce:58f with SMTP id
- rj5-20020a17090b3e8500b0028025ce058fmr9353930pjb.43.1700590907025; Tue, 21
- Nov 2023 10:21:47 -0800 (PST)
+        Tue, 21 Nov 2023 13:21:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCC318C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:21:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D59C433C8;
+        Tue, 21 Nov 2023 18:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700590904;
+        bh=uuSp4UF93Yu6TM00YqGBR4qOIe80QpXkm4wokphvd1E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sEBUPdjrYlsUWvimRMfCFE3WHRzscOhraRcrNbVFUR6mTLCbtLCntqo06sA1GuEvA
+         l2pYNJuiPrLYgivEa+Ss49EjguoP0BAmwU/viDR4Akckk5W5xeFw8fNzESBGo7F0ug
+         9K1uLJHb0SjNQZEufhUbFCf/QwocGl8n/QyXzRkzUGSokVKe64I7yc0qr/bvyErfbx
+         MGA1L/FIE/4b0y6/6QJTGwvUKBeIzkCq/7rLHBmUAKiiu+0KJaJPgIlFuHdxc5inCg
+         OQ0BF8vS+1kh/IgjNb0lUOYp+us+t6TUsrT8eA0+nARM/zuusZof3q92pa+pK1MRk+
+         6JgSB/n4AC0LA==
+Date:   Tue, 21 Nov 2023 18:21:39 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, roman.gushchin@linux.dev,
+        42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH v5 6/9] slub: Delay freezing of partial slabs
+Message-ID: <ZVz1M9AYRepPRBxm@finisterre.sirena.org.uk>
+References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
+ <20231102032330.1036151-7-chengming.zhou@linux.dev>
+ <4f3bc1bd-ea87-465d-b58a-0ed57b15187b@sirena.org.uk>
+ <c8bb9dd9-ae18-4fab-a664-6ec4b0cb2e30@linux.dev>
+ <ZVwIFNdABN1b+qWC@finisterre.sirena.org.uk>
+ <b3bc868f-bf83-4b86-bcf0-13e99d0b7c7e@linux.dev>
 MIME-Version: 1.0
-References: <20231120221932.213710-1-namhyung@kernel.org> <CAP-5=fWFeqEK4woCj2ngjxMi4B4EZ3y0gLN+qNu4oNfp4wG8xA@mail.gmail.com>
- <ZVvqj0pR2ZebBF3L@google.com>
-In-Reply-To: <ZVvqj0pR2ZebBF3L@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 21 Nov 2023 10:21:36 -0800
-Message-ID: <CAM9d7cgAPxyNxMTz-uoPExcg4e1h5iXCuR5ZOy7UUt5gjbd2VA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] perf/core: Update perf_adjust_freq_unthr_context()
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ExGtKKkUwz4hb5lM"
+Content-Disposition: inline
+In-Reply-To: <b3bc868f-bf83-4b86-bcf0-13e99d0b7c7e@linux.dev>
+X-Cookie: Slow day.  Practice crawling.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mingwei,
 
-On Mon, Nov 20, 2023 at 3:24 PM Mingwei Zhang <mizhang@google.com> wrote:
->
-> On Mon, Nov 20, 2023, Ian Rogers wrote:
-> > On Mon, Nov 20, 2023 at 2:19 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > It was unnecessarily disabling and enabling PMUs for each event.  It
-> > > should be done at PMU level.  Add pmu_ctx->nr_freq counter to check it
-> > > at each PMU.  As pmu context has separate active lists for pinned group
-> > > and flexible group, factor out a new function to do the job.
-> > >
-> > > Another minor optimization is that it can skip PMUs w/ CAP_NO_INTERRUPT
-> > > even if it needs to unthrottle sampling events.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> >
-> > Series:
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> >
-> > Thanks,
-> > Ian
-> >
->
-> Can we have "Cc: stable@vger.kernel.org" for the whole series? This
-> series should have a great performance improvement for all VMs in which
-> perf sampling events without specifying period.
+--ExGtKKkUwz4hb5lM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I was not sure if it's ok to have this performance fix in the stable series.
+On Tue, Nov 21, 2023 at 11:47:26PM +0800, Chengming Zhou wrote:
 
-Thanks,
-Namhyung
+> Ah yes, there is no NMI on ARM, so CPU 3 maybe running somewhere with
+> interrupts disabled. I searched the full log, but still haven't a clue.
+> And there is no any WARNING or BUG related to SLUB in the log.
+
+Yeah, nor anything else particularly.  I tried turning on some debug
+options:
+
+CONFIG_SOFTLOCKUP_DETECTOR=y
+CONFIG_DETECT_HUNG_TASK=y
+CONFIG_WQ_WATCHDOG=y
+CONFIG_DEBUG_PREEMPT=y
+CONFIG_DEBUG_LOCKING=y
+CONFIG_DEBUG_ATOMIC_SLEEP=y
+
+https://validation.linaro.org/scheduler/job/4017828
+
+which has some additional warnings related to clock changes but AFAICT
+those come from today's -next rather than the debug stuff:
+
+https://validation.linaro.org/scheduler/job/4017823
+
+so that's not super helpful.
+
+> I wonder how to reproduce it locally with a Qemu VM since I don't have
+> the ARM machine.
+
+There's sample qemu jobs available from for example KernelCI:
+
+   https://storage.kernelci.org/next/master/next-20231120/arm/multi_v7_defconfig/gcc-10/lab-baylibre/baseline-qemu_arm-virt-gicv3.html
+
+(includes the command line, though it's not using Debian testing like my
+test was).  Note that I'm testing a bunch of platforms with the same
+kernel/rootfs combination and it was only the Raspberry Pi 3 which blew
+up.  It is a bit tight for memory which might have some influence?
+
+I'm really suspecting this may have made some underlying platform bug
+more obvious :/
+
+--ExGtKKkUwz4hb5lM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVc9TIACgkQJNaLcl1U
+h9Bhawf+OS9uDdyEyyKar5CBTjXlEF4S1z7TlKgi+GADx/qa8waOCJwrzBE07ro2
+OticnnKATaKpYyX2QL1oLw4fyjklvi7xKyXl6/5bnROvXnHLRiTqS3Hvi9+Pp6MO
+uutb44QpQfYqJUG40C0RyENJO+TkxgIR0OsEqS9CtAKLqx8dQqfiRZzy4pF33nqK
+sxBTIld16BVKOSl8SJLTP/jHOVgGiH0Ug1uE+j+KDtpFO40xQNaJFcq5NLxZGSQF
+cPQhJagc14fUB+juA0zwoBvFvwzHg6Q+IsKFuCuK0vW9i8UTow+vfcCWCgzsVg3T
+T0TSQ2qrVibbUhsK7RQMMYYRi4txLg==
+=K1+p
+-----END PGP SIGNATURE-----
+
+--ExGtKKkUwz4hb5lM--
