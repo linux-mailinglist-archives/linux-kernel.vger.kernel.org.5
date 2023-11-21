@@ -2,365 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4623B7F2819
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D84BF7F27D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbjKUIyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57400 "EHLO
+        id S229840AbjKUIqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKUIyw (ORCPT
+        with ESMTP id S230207AbjKUIqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:54:52 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E99795;
-        Tue, 21 Nov 2023 00:54:48 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-45da062101bso1850428137.2;
-        Tue, 21 Nov 2023 00:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700556887; x=1701161687; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3QLs44ZYfikKflEsGu3/LjCRwKrWuU/zW4Qq8PcgIOs=;
-        b=HlAaGf5kdy4u/L+VB3ahmFZO8K+GSrs6K4Nf4wHQpHEmSbBjJmI7vqG4bdp/s0ROBo
-         8e+8FkxwQ9QaIu3fOuHbT+Q5POhiJj6I3OfCuRdQ7nmvoIz8EhEzk+BN3cA08GsJixR0
-         W+z15MtiDpZZCHLkIwOHSxH4lqKK3XIQYkkMQl9GsRSWwRBD4I4Ixr9o9vVvL/sh6Mx1
-         4DC1y6guAWx3lqyQ4OxNqEKK7J8Nm/M/V3Gw0MOUy5hkT6bk87XZeR7XtLhH1gmm5zbc
-         YYxpY9MDkDRUiKceZ1U3Cm1+/hWE+dbVY/N1awWBrdAyx/YTA85KIwQ2iQIm6aNy7SDY
-         WzwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700556887; x=1701161687;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3QLs44ZYfikKflEsGu3/LjCRwKrWuU/zW4Qq8PcgIOs=;
-        b=BJpWBubgtkR6aeNFBsBgYvkrNm53uqFOheBiyxsi7Dg+0t0xRmgXWQ5rFeXyyQ9fl/
-         2bQYRF2ZwbMBc3bDBBbGL6sarFOdzU98D6Lqf2D3ry2VhigVwlMkErcHmzgqtfOnMcV0
-         NOoGuxRoIAARNK8afgwPfRVQmIyh4GeIGwOATCDEPLiFbxHmGtYlnLIGowXCYkQigU1k
-         fFotl0lflpbBr/R7NqiyJSm+HKB4efIQxaSgfDMnrp1QWirlI3Fqzrd25cF7pdPeGh4P
-         RA1yTOvKlNiUnMP7oafpedOeE0ToIpVNjV71mkupGmekPeYkbmQc3QhSCA8QRMv46ZJW
-         mLhw==
-X-Gm-Message-State: AOJu0YxVdxp353AcBst23RFlXfGUSfncQP/hzW2hhsTaerGL31Ap+Tzb
-        2Nqe7+H61k248OtM2jTuv2bgT8B4go82idYcloY=
-X-Google-Smtp-Source: AGHT+IHvKvtNElxV6l2/0QrTgPeTdb5xUNcFO1zWzTkpB2f18bCYzj/+mcWlU1gk0ASyfwwpUGB/OmWVzmxJqJ/XATs=
-X-Received: by 2002:a05:6102:2086:b0:462:9f1d:258b with SMTP id
- h6-20020a056102208600b004629f1d258bmr5812196vsr.28.1700556887486; Tue, 21 Nov
- 2023 00:54:47 -0800 (PST)
+        Tue, 21 Nov 2023 03:46:46 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2095.outbound.protection.outlook.com [40.107.255.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B768BD
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:46:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gHLjfZphRJ+AKHb0p9XW9uuOF+j7ObEK9fYoJO2APwbNu9XfspyvgvtEZ1b9pVcy8PsPgbPcUj6Hfs0Y/lHtojf78ZPTsSQAsKpF2/A9NtHAPYZuu7EQACd/mdis1z7vl2JimdKoi7eIkZ3HkfgqOlsszmmK2WK+g6yz3cv+OKb3l7ynzfujlu+OaNKSIQMRrdu1ofNJ2VRFKIKwYiptwkr8M2GnjfkzZWYWv8YEYuukbgvQGkmsTPKxsqmQUqDwCh9+Z7s/IKhpgz6TUw5rCUOGQtMvuq6HYwbBQLxqogGhjMWm7xxN6EyyhDBhGrO+r31qljD0cKA2r4TNDS7F0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iaqQTlkIaJaCsKu2tp3KzrgrAGDXof2uu+Eep6sGojU=;
+ b=GzHHOlG+l2iSAmMBXlfKoHCw/1mpOlfDtEQEjABKvk/oTs2E9xozFUc+nNbGCnAhtd9SEQXjCZNcYcwBVIpLeyBn0cufhvvnSsxVKiNsV/fBJPnigt5iTX6tN29qrbdd4+qXpIdC8b7dolyx+EPjpgx+CoipYlfcUtfIGKsitwGkztxYcRbUNxpoNrfKChwsxMD1V3gwQHSioJUvMDG1O+AHaJ4f5PHxZFl3ffxl+SdzfpTAqkxW5rgC/5gPAgqZoxdwukU57U+5ys4fxmQrmODMSCpG1LRUvIMUWQc8LuOb4dDUW4/52Wn0IfaSeQbUqYddz+4cikLWh6BMF7Lo0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iaqQTlkIaJaCsKu2tp3KzrgrAGDXof2uu+Eep6sGojU=;
+ b=QQYDIQaplwqf7PEJ/J5tAp0sfReONv317FiqFsp1sduMv0+r6wYHVbKXCDndN4zDCWdAsEr7v4rqfcsQVjyYdjLgACvZCuHbD2LR/FRIpXU56FY6x9BlrRMaxtyOHNWoMJY0qhoufYAmHH32U0qAJ+sUnM4Qo5wQ5hoen83yVRxjZRtSINhXH97zBu401/iTcQ9BTH5Vd5YF8lNmKpIqo1vI4ps55M4gGDOOcaAK6mp4EY9aIseld9kCE+6kh1uPEJaz0frA2FxJ3d4rkez50x/PuIEEPTqiJncdV91xZd7frK/lGUcKP2e0z1yrqZgpqLcG+o7BIoABZuN/iYPMdA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PS2PR06MB3509.apcprd06.prod.outlook.com (2603:1096:300:67::17)
+ by TYZPR06MB4127.apcprd06.prod.outlook.com (2603:1096:400:6::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
+ 2023 08:46:36 +0000
+Received: from PS2PR06MB3509.apcprd06.prod.outlook.com
+ ([fe80::863b:f0a1:3066:24d]) by PS2PR06MB3509.apcprd06.prod.outlook.com
+ ([fe80::863b:f0a1:3066:24d%6]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
+ 08:46:36 +0000
+From:   Wu Bo <bo.wu@vivo.com>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        Mikulas Patocka <mpatocka@redhat.com>
+Cc:     dm-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Wu Bo <wubo.oduw@gmail.com>, Wu Bo <bo.wu@vivo.com>
+Subject: [PATCH 0/2] dm verity: fix FEC stuck during lower dm suspend
+Date:   Tue, 21 Nov 2023 01:55:27 -0700
+Message-Id: <cover.1700555778.git.bo.wu@vivo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI1PR02CA0047.apcprd02.prod.outlook.com
+ (2603:1096:4:1f5::15) To PS2PR06MB3509.apcprd06.prod.outlook.com
+ (2603:1096:300:67::17)
 MIME-Version: 1.0
-References: <20231120091214.150502-1-sxwjean@me.com> <20231120091214.150502-5-sxwjean@me.com>
-In-Reply-To: <20231120091214.150502-5-sxwjean@me.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 21 Nov 2023 17:54:36 +0900
-Message-ID: <CAB=+i9RFxqFg2jz3ULbmmswqp0K7SK8O9Uv1=wpUZMQUtSGB1Q@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mm/slab: move slab merge from slab_common.c to slub.c
-To:     sxwjean@me.com
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, vbabka@suse.cz, roman.gushchin@linux.dev,
-        corbet@lwn.net, linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PS2PR06MB3509:EE_|TYZPR06MB4127:EE_
+X-MS-Office365-Filtering-Correlation-Id: dcaa383b-1135-4ffa-e623-08dbea6e5e68
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GeGJy0+o1qIUTlH0oZVJYnvmYqNVqN92CMgyLzAEq5Z8fJluPhi0Qo1steBwUXgxiq2xm02/IUig/pkN1HkQXqVIDKlOXbX6SrFSZbf/PgPtGiyoxUSRCa0X5ne3lO7rlddGycaE3bto7Ai9rFM9NFVR0ByCqZP99Extmd8qRXx69I56cMlpfxntgEFK2XYj5DUU0kNmqMM32oyIvfodpknzoGWeBWdVZB6s/W8H4PWjUJhhvet53QZIu0tciapXxBG+dK4iPjEjMnZ9ZaKvKK2PQ4qNiar5Az1NL7GquoIRK8LbhwYTnwU+09nbmOkHTHjXVUeU82c1b1rf70GG9VoTuANqiKlSm9ct/c3ns3NWd6uyaQ/zzw8xD1s7VRaVOYi7Q2EFR34wPQoK1w77cEq5eh0yW1r5Wc4YoF9hKbpd+8cqWXM6gMgOA9+xlDYpNxdn1c6NvTu/THq1JLptGEoKVlVVnW0XVa/xBuMf3p+z+IAywysZYqtden0xm5onoFjzY2JhJvSplOUT+DdgyAkmEhbjNr+fU+LHYpT4PK5B8RaQWIij1aOH6KAwOEy/Z/Zymw2rjPa6RCyo5Kre7VAlGcsLIlYW+zzeU2jMCgCDH9VH5tH2Vi1DV15aKEd3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS2PR06MB3509.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39850400004)(136003)(396003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(316002)(110136005)(54906003)(66946007)(66476007)(66556008)(36756003)(52116002)(6512007)(6666004)(6506007)(2616005)(26005)(107886003)(6486002)(478600001)(38350700005)(38100700002)(83380400001)(86362001)(2906002)(4744005)(5660300002)(8936002)(4326008)(8676002)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Je89Ud2RFmGYQ8bOjO8JyxgRrY/OW05Muz7w2VpPMiNGpMw2a6B9/ioRdshl?=
+ =?us-ascii?Q?dRhSI8s30PejM/3bcOdc8LqwSCBy1ZMQxlcKzWc+da21KulBgbfxAAERK9uU?=
+ =?us-ascii?Q?S+y0Q02xEmcJQFth6E3iB6ZXGcadfCIdMoakI2801/W9AjfJD7I+J84GPcTx?=
+ =?us-ascii?Q?z8eD3rtHG4FDWAwKYPZtbZCytE0PjKNmzqqJezCBepl2h4Tem1Z9I1hmWWJ/?=
+ =?us-ascii?Q?7ZnlUvoO10fRiZYb86rmdHkKtQJ82A9h9WcV+C+vYaalBYmCGm911whS+kLc?=
+ =?us-ascii?Q?C9zg4Loag60uGUKTFBX4P4Xt46mNE3N9NzJrVdf7aOjhpkBwQxtxrnMrdo4A?=
+ =?us-ascii?Q?dkqwzJRJVWno3GrZh/rWK7ov6m102nE0+kEBssyItnt6+xWWxl4tmgjE3NMD?=
+ =?us-ascii?Q?PGuTN+0P3kzrXtvfTEzDkRhpWF7AnTJHe4SJkVg5H7+aHlzu5ipa5g15lvaH?=
+ =?us-ascii?Q?56ExMhnzMhurkIa2mP14xGBV81OcT8EHhHGPYzS//iJATZxSS9D4KMB4siCe?=
+ =?us-ascii?Q?qJamAJv4xYsAzaNIS65nnh4dnlgoWXW033TKep+3rVNKFz56K5cYy9thOqt7?=
+ =?us-ascii?Q?JYwLk/NNJigEv53ti55v7Opy6YVa4JiNuJRevuQ1rNHCpD6KKKvv+fF4JTEv?=
+ =?us-ascii?Q?+5WwCRtFsZmuRynNN8uuVvQJQuhlS/P8zCIvxA7OSYKIM6TJEVDy5DXwLaI1?=
+ =?us-ascii?Q?p7BbPHkHjge0X8w94+hVPXgcvQDYuQA7gjrt73GChrLM5uv3Mlq2seYDZLsf?=
+ =?us-ascii?Q?UWcWVqESSjQI1hMAtZjAywxyD0SX5VCXaUaS9RJnwqGUqnLMf1pWCeHUJ270?=
+ =?us-ascii?Q?p9cEW1RSosLfIy4jIhpue8vOlPEEL3SyYgP/vWdWuXMaYykOnkcsiQ4RlLbd?=
+ =?us-ascii?Q?hCNmtQIG9CGOVZZx9mR2uwT8oqGZagZvk2OmJh+eX1OYxSprfqrAPQuuxK1P?=
+ =?us-ascii?Q?MN3pJ3d0IS64ArO+M5rclNrp8Rw16zrnXmvf//Re6Zu6BNHDmskqmjIN7Ipu?=
+ =?us-ascii?Q?DoTpIn/u9d9mRyfXA6DmRP+/jmcYFugAIyKlazzNqJcJwhQIVz5+grT2pu6D?=
+ =?us-ascii?Q?wmL3wI2B0DMQAkHYVTh6a2ZOJRzXUbVC6cigLUYaneC5gVnRhnlLiEdJDWMU?=
+ =?us-ascii?Q?GSM6M2NBuoPz+TfXxSf04KFm9aqNyQ6HPNFSZUGJBX1Y/YxnXQ61lT5IoZhz?=
+ =?us-ascii?Q?sNNCXiMnh3hmPsL++0H+Ui4pKWrMEXOlrVcVCXFVl4JJ9Kt5DpQgibVljyqn?=
+ =?us-ascii?Q?6dLmY3+j0vNm29d/THF/rqNLYug1ts23MwlC3ho+mpXO/PJrXvQMTCh1Modw?=
+ =?us-ascii?Q?uDyTJHI0XONTEzYt+skeF2QEQ0eNFLA7RX/4xeOgg2i1L4EmWHPzPseq+05O?=
+ =?us-ascii?Q?RXEWQKMi0mMaSFhlf0jmKoBHUIw89M79ztTv42wCEWqgoFKl43e7HHtBrwsb?=
+ =?us-ascii?Q?ZthuDIZOaOYNibPp17xOZPPsWr7VjJ+Fhby9N8ky87vS7O13Pi8xjzkEgkcL?=
+ =?us-ascii?Q?SSTvWujUHUfXeDZomEBx1Q0zwmq5CkIGc3wZWp7PNPlejoTrR8KtZbudrxQ2?=
+ =?us-ascii?Q?UTdRikyKUQA9XfBhueQGDPfWJ42KRI4LUcUqbFg8?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcaa383b-1135-4ffa-e623-08dbea6e5e68
+X-MS-Exchange-CrossTenant-AuthSource: PS2PR06MB3509.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 08:46:36.5129
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G19+tr77f/oJjeQLnDU3ObApVc0T3fb2PH2kPi/K4+OvWcf4zJLNOc7u/p1qPBgzGAbuWzadllIQeSp/RdIJzQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4127
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 6:13=E2=80=AFPM <sxwjean@me.com> wrote:
->
-> From: Xiongwei Song <xiongwei.song@windriver.com>
->
-> Since slab allocator has been removed. There is no users about slab
-> merge except slub. This commit is almost to revert
-> commit 423c929cbbec ("mm/slab_common: commonize slab merge logic").
->
-> Also change all prefix of slab merge related functions, variables and
-> definitions from "slab/SLAB" to"slub/SLUB".
+Hi,
 
-Could you please elaborate a little bit?
-I am not sure if I understand what the last two patches of this series
-are useful for.
+We found an issue under Android OTA scenario that many readahead BIOs have
+to do FEC and caused system stuck. These 2 patches try to fix this issue.
 
-- Why rename variable/function/macro names?
-- Why move merge related functions from slab_common.c to slub.c?
-  (I mean merging slab_common.c and slub.c into single file might make sens=
-e
-   but why move only some parts of one into the other?)
+Thanks
 
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> ---
->  mm/slab.h        |   3 --
->  mm/slab_common.c |  98 ----------------------------------------------
->  mm/slub.c        | 100 ++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 99 insertions(+), 102 deletions(-)
->
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 8d20f8c6269d..cd52e705ce28 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -429,9 +429,6 @@ extern void create_boot_cache(struct kmem_cache *, co=
-nst char *name,
->
->  unsigned int calculate_alignment(slab_flags_t flags,
->                 unsigned int align, unsigned int size);
-> -int slab_unmergeable(struct kmem_cache *s);
-> -struct kmem_cache *find_mergeable(unsigned size, unsigned align,
-> -               slab_flags_t flags, const char *name, void (*ctor)(void *=
-));
->  struct kmem_cache *
->  __kmem_cache_alias(const char *name, unsigned int size, unsigned int ali=
-gn,
->                    slab_flags_t flags, void (*ctor)(void *));
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 62eb77fdedf2..6960ae5c35ee 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -45,36 +45,6 @@ static void slab_caches_to_rcu_destroy_workfn(struct w=
-ork_struct *work);
->  static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
->                     slab_caches_to_rcu_destroy_workfn);
->
-> -/*
-> - * Set of flags that will prevent slab merging
-> - */
-> -#define SLAB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER =
-| \
-> -               SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-> -               SLAB_FAILSLAB | SLAB_NO_MERGE | kasan_never_merge())
-> -
-> -#define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
-> -                        SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
-> -
-> -/*
-> - * Merge control. If this is set then no merging of slab caches will occ=
-ur.
-> - */
-> -static bool slub_nomerge =3D !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
-> -
-> -static int __init setup_slab_nomerge(char *str)
-> -{
-> -       slub_nomerge =3D true;
-> -       return 1;
-> -}
-> -
-> -static int __init setup_slab_merge(char *str)
-> -{
-> -       slub_nomerge =3D false;
-> -       return 1;
-> -}
-> -
-> -__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-> -__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
-> -
->  /*
->   * Determine the size of a slab object
->   */
-> @@ -130,74 +100,6 @@ unsigned int calculate_alignment(slab_flags_t flags,
->         return ALIGN(align, sizeof(void *));
->  }
->
-> -/*
-> - * Find a mergeable slab cache
-> - */
-> -int slab_unmergeable(struct kmem_cache *s)
-> -{
-> -       if (slub_nomerge || (s->flags & SLAB_NEVER_MERGE))
-> -               return 1;
-> -
-> -       if (s->ctor)
-> -               return 1;
-> -
-> -#ifdef CONFIG_HARDENED_USERCOPY
-> -       if (s->usersize)
-> -               return 1;
-> -#endif
-> -
-> -       /*
-> -        * We may have set a slab to be unmergeable during bootstrap.
-> -        */
-> -       if (s->refcount < 0)
-> -               return 1;
-> -
-> -       return 0;
-> -}
-> -
-> -struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
-> -               slab_flags_t flags, const char *name, void (*ctor)(void *=
-))
-> -{
-> -       struct kmem_cache *s;
-> -
-> -       if (slub_nomerge)
-> -               return NULL;
-> -
-> -       if (ctor)
-> -               return NULL;
-> -
-> -       size =3D ALIGN(size, sizeof(void *));
-> -       align =3D calculate_alignment(flags, align, size);
-> -       size =3D ALIGN(size, align);
-> -       flags =3D kmem_cache_flags(size, flags, name);
-> -
-> -       if (flags & SLAB_NEVER_MERGE)
-> -               return NULL;
-> -
-> -       list_for_each_entry_reverse(s, &slab_caches, list) {
-> -               if (slab_unmergeable(s))
-> -                       continue;
-> -
-> -               if (size > s->size)
-> -                       continue;
-> -
-> -               if ((flags & SLAB_MERGE_SAME) !=3D (s->flags & SLAB_MERGE=
-_SAME))
-> -                       continue;
-> -               /*
-> -                * Check if alignment is compatible.
-> -                * Courtesy of Adrian Drzewiecki
-> -                */
-> -               if ((s->size & ~(align - 1)) !=3D s->size)
-> -                       continue;
-> -
-> -               if (s->size - size >=3D sizeof(void *))
-> -                       continue;
-> -
-> -               return s;
-> -       }
-> -       return NULL;
-> -}
-> -
->  static struct kmem_cache *create_cache(const char *name,
->                 unsigned int object_size, unsigned int align,
->                 slab_flags_t flags, unsigned int useroffset,
-> diff --git a/mm/slub.c b/mm/slub.c
-> index ae1e6e635253..435d9ed140e4 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -709,6 +709,104 @@ static inline bool slab_update_freelist(struct kmem=
-_cache *s, struct slab *slab,
->         return false;
->  }
->
-> +/*
-> + * Set of flags that will prevent slab merging
-> + */
-> +#define SLUB_NEVER_MERGE (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER =
-| \
-> +               SLAB_TRACE | SLAB_TYPESAFE_BY_RCU | SLAB_NOLEAKTRACE | \
-> +               SLAB_FAILSLAB | SLAB_NO_MERGE | kasan_never_merge())
-> +
-> +#define SLUB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
-> +                        SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
-> +
-> +/*
-> + * Merge control. If this is set then no merging of slab caches will occ=
-ur.
-> + */
-> +static bool slub_nomerge =3D !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
-> +
-> +static int __init setup_slub_nomerge(char *str)
-> +{
-> +       slub_nomerge =3D true;
-> +       return 1;
-> +}
-> +
-> +static int __init setup_slub_merge(char *str)
-> +{
-> +       slub_nomerge =3D false;
-> +       return 1;
-> +}
-> +
-> +__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
-> +__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
-> +
-> +/*
-> + * Find a mergeable slab cache
-> + */
-> +static inline int slub_unmergeable(struct kmem_cache *s)
-> +{
-> +       if (slub_nomerge || (s->flags & SLUB_NEVER_MERGE))
-> +               return 1;
-> +
-> +       if (s->ctor)
-> +               return 1;
-> +
-> +#ifdef CONFIG_HARDENED_USERCOPY
-> +       if (s->usersize)
-> +               return 1;
-> +#endif
-> +
-> +       /*
-> +        * We may have set a slab to be unmergeable during bootstrap.
-> +        */
-> +       if (s->refcount < 0)
-> +               return 1;
-> +
-> +       return 0;
-> +}
-> +
-> +static struct kmem_cache *find_mergeable(unsigned int size, unsigned int=
- align,
-> +               slab_flags_t flags, const char *name, void (*ctor)(void *=
-))
-> +{
-> +       struct kmem_cache *s;
-> +
-> +       if (slub_nomerge)
-> +               return NULL;
-> +
-> +       if (ctor)
-> +               return NULL;
-> +
-> +       size =3D ALIGN(size, sizeof(void *));
-> +       align =3D calculate_alignment(flags, align, size);
-> +       size =3D ALIGN(size, align);
-> +       flags =3D kmem_cache_flags(size, flags, name);
-> +
-> +       if (flags & SLUB_NEVER_MERGE)
-> +               return NULL;
-> +
-> +       list_for_each_entry_reverse(s, &slab_caches, list) {
-> +               if (slub_unmergeable(s))
-> +                       continue;
-> +
-> +               if (size > s->size)
-> +                       continue;
-> +
-> +               if ((flags & SLUB_MERGE_SAME) !=3D (s->flags & SLUB_MERGE=
-_SAME))
-> +                       continue;
-> +               /*
-> +                * Check if alignment is compatible.
-> +                * Courtesy of Adrian Drzewiecki
-> +                */
-> +               if ((s->size & ~(align - 1)) !=3D s->size)
-> +                       continue;
-> +
-> +               if (s->size - size >=3D sizeof(void *))
-> +                       continue;
-> +
-> +               return s;
-> +       }
-> +       return NULL;
-> +}
-> +
->  #ifdef CONFIG_SLUB_DEBUG
->  static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
->  static DEFINE_SPINLOCK(object_map_lock);
-> @@ -6679,7 +6777,7 @@ static int sysfs_slab_add(struct kmem_cache *s)
->         int err;
->         const char *name;
->         struct kset *kset =3D cache_kset(s);
-> -       int unmergeable =3D slab_unmergeable(s);
-> +       int unmergeable =3D slub_unmergeable(s);
->
->         if (!unmergeable && disable_higher_order_debug &&
->                         (slub_debug & DEBUG_METADATA_FLAGS))
-> --
-> 2.34.1
->
+Wu Bo (2):
+  dm verity: init fec io before cleaning it
+  dm verity: don't verity if readahead failed
+
+ drivers/md/dm-verity-target.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
