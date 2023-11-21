@@ -2,150 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF1A7F3284
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 707F17F3287
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjKUPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:41:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37998 "EHLO
+        id S234474AbjKUPla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjKUPlV (ORCPT
+        with ESMTP id S231235AbjKUPl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:41:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C4A11A;
-        Tue, 21 Nov 2023 07:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700581278; x=1732117278;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=hp2/itkYHGLatqqut+LfjX0mAXpYpgJyMjjE1s8y8h4=;
-  b=QliQtl2Y6WuVOM0q9MGMmcdl2H7TmopyZlS72zqH3prqAfgRzSt5+A5g
-   2W9G6VmGbvsvmWgG1q2K5TsjVlq86xd8wxltXC+qN/B4GbleB1ItQx2G9
-   0Ksk96TkTT5HdTyc6VdtYvB9xJSk2JzmyHC/TBkLtV3L/+yl9Vdflg3tL
-   rCRCYvb1SaKjLdm7KD/JwzPIa3BSQMH2QyMxaiBYpGHPEA7IKNGDqKTZE
-   Z0FGyYDElvG0UKHLd8Gw4dqBnFKSLgpUj6Apr+lKX0MI/51Pwaxtb6OiK
-   /ElBPdmRe/JrdUMALmohv+CtgBaNxLk+fOhc4ibfObt15nanpWgb0jFMH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="458357690"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="458357690"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:41:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="8119408"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 21 Nov 2023 07:41:11 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5Ss8-0007y0-17;
-        Tue, 21 Nov 2023 15:41:08 +0000
-Date:   Tue, 21 Nov 2023 23:40:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <202311212322.TOIJ8Pcg-lkp@intel.com>
-References: <20231120215945.52027-3-pstanner@redhat.com>
+        Tue, 21 Nov 2023 10:41:26 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C0C99;
+        Tue, 21 Nov 2023 07:41:22 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5SsI-0003vD-Qs; Tue, 21 Nov 2023 16:41:18 +0100
+Message-ID: <0a594a11-d345-48c3-a651-08ea80ab76a1@leemhuis.info>
+Date:   Tue, 21 Nov 2023 16:41:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: inet6_sock_destruct->inet_sock_destruct trigger Call Trace
+Content-Language: en-US, de-DE
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Linux Networking <netdev@vger.kernel.org>,
+        Linux BPF <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <8bfaee54-3117-65d3-d723-6408edf93961@gmail.com>
+ <c3a5d08e-9c7c-4888-916a-ba4bd22a3319@collabora.com>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <c3a5d08e-9c7c-4888-916a-ba4bd22a3319@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700581283;bc6798bc;
+X-HE-SMSGID: 1r5SsI-0003vD-Qs
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On 29.08.23 15:07, Muhammad Usama Anjum wrote:
+> On 6/16/23 5:43 PM, Bagas Sanjaya wrote:
+>> I notice a regression report on Bugzilla [1]. Quoting from it:
+> [...]
+>>> When the IPv6 address or NIC configuration changes, the following kernel warnings may be triggered:
+> [...]
+>>> Thu Jun 15 09:02:31 2023 daemon.info : 09[KNL] interface utun deleted
+> [...]
+>> #regzbot introduced: v6.1.27..v6.1.32 https://bugzilla.kernel.org/show_bug.cgi?id=217555
+>> #regzbot title: kernel warning (oops) at inet_sock_destruct
+> The same warning has been seen on 4.14, 5.15, 6.1 and latest mainline.
+>
+> This WARN_ON is present from 2008.
 
-kernel test robot noticed the following build warnings:
+Hmmm, the commit that according to syzkaller's bisection caused this is
+not in those series. So I assume the bisection went sideways.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-202311=
-21]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+And the reporter of the bugzilla ticket never bisected this either.
+Wondering if it started to show up there due to small unrelated timing
+changes.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-=
-move-pci_iomap-c-to-drivers-pci/20231121-060258
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40=
-redhat.com
-patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-config: parisc-kismet-CONFIG_GENERIC_PCI_IOMAP-CONFIG_PARISC-0-0 (https://d=
-ownload.01.org/0day-ci/archive/20231121/202311212322.TOIJ8Pcg-lkp@intel.com=
-/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231121/202311212322.T=
-OIJ8Pcg-lkp@intel.com/reproduce)
+Not totally sure, but it seems like this in the end is not a real
+regression or one we can't do anything about. Thus removing this from
+the tracking; if anyone disagrees, please holler.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new versio=
-n of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311212322.TOIJ8Pcg-lkp@i=
-ntel.com/
+#regzbot inconclusive: likely an older problem
+#regzbot ignore-activity
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMA=
-P when selected by PARISC
-   /usr/bin/grep: /db/releases/20231121182703/kernel-tests/etc/kcflags: No =
-such file or directory
-   {"timestamp":"2023-11-21 21:16:41 +0800", "level":"WARN", "event":"kbuil=
-d.sh:3942:in `add_etc_kcflags': grep exit 2 (ShellError)", "detail":"cmd: '=
-/usr/bin/grep' '-v' '-e' '^#' '-e' '^$' '/db/releases/20231121182703/kernel=
--tests/etc/kcflags' \nstderr: /usr/bin/grep: /db/releases/20231121182703/ke=
-rnel-tests/etc/kcflags: No such file or directory\n\n", "hostname":"communi=
-ty-kbuild-consumer-161", "host_hostname":"lkp-worker22", "call_stack":"/zda=
-y/kernel-tests/lib/kbuild.sh:3942:in `add_etc_kcflags': /usr/bin/grep: /db/=
-releases/20231121182703/kernel-tests/etc/kcflags: No such file or directory=
- (ShellError 2)\n  from /zday/kernel-tests/lib/kbuild.sh:3971: setup_kcflag=
-s\n  from /zday/kernel-tests/lib/kbuild.sh:4016: invoke_make\n  from /zday/=
-kernel-tests/lib/kbuild.sh:4122: make\n  from /zday/kernel-tests/lib/kbuild=
-=2Esh:5623: make_config_allyes\n  from /zday/kernel-tests/common.sh:209: re=
-direct_error_to_screen\n  from /zday/kernel-tests/common.sh:217: redirect_c=
-ommand_errors\n  from /zday/kernel-tests/lib/kbuild.sh:5630: make_config\n =
- from /zday/kernel-tests/lib/builder/kismet.sh:156: generate_make_olddefcon=
-fig_warnings\n  from /zday/kernel-tests/lib/builder/kismet.sh:297: builder_=
-compile\n  from /zday/kernel-tests/bisect-test-build-error.sh:94: main\n"}
-  =20
-   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
-     Depends on [n]: PCI [=3Dn]
-     Selected by [y]:
-     - PARISC [=3Dy]
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
---=20
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
