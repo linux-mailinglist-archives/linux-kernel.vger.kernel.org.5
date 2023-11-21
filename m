@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A277F35CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5077F35C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbjKUSPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        id S234438AbjKUSPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:15:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234504AbjKUSPK (ORCPT
+        with ESMTP id S234467AbjKUSPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 13:15:10 -0500
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE73D54
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:06 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.west.internal (Postfix) with ESMTP id 9C6283201993;
-        Tue, 21 Nov 2023 13:15:05 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 21 Nov 2023 13:15:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700590505; x=
-        1700676905; bh=0Lp9mqeAz/6pwwL4dTxdUdXhfanY55hRrrW5uod0AVg=; b=Y
-        itlP8QeWpnQBU3apMda2NVWRUmKiBAzFTovUrlG5mOp3xxJGJHfIoEN47OywEb/p
-        cB7853DVyWInzN/MS4r4RWDvXtnHZNzDkYnSRtj913FbhvlOnreWft2O/OJPn/1q
-        1aPJSyIjss44EjM1XvxvlVKDYdXXcQrt7JF7Y2uPaq4XHnfkpr3jUEiDBCDVxdEE
-        mhVAOnJQJNRTwkjLOYttPLYqOWS2cWu6ny61Y4tXwjyIAsIIUJw5gnjfhhMLkWXd
-        orhX0+tQ9RxLxsJKA8SlSN2uC1JPBGtNPILn5jS5KzePQhk1FxtCqiVf57+TgsyE
-        EqLHe10xbrRkJZx6TUIPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700590505; x=
-        1700676905; bh=0Lp9mqeAz/6pwwL4dTxdUdXhfanY55hRrrW5uod0AVg=; b=C
-        FDoL82AjOZderFEBZFP0+2wGH4uiZhqNJjBi7x3oxORAsEcHhVUMjDIQPI75TwWY
-        k7dD9ssmfmBVzxcYXHJO2ejxjwkAi8hLiGY62t8HB4ftwynZRddcTLSTwS9QZtWX
-        8rlmOhEqTlN79Qb0FyK2imN1QsvJ/afSHubEM3p76ZjL8CkdrJpcZ77ScDvhtKac
-        JYe1To6BM7wmlJpTpAql0mG1w4+650JGN6HnwFodTBKtXkU+bm4wN46URNYmT3Lv
-        DZT/gZFLZ1/a+O6hOp98wrdxkETqZXzlcErt1CczwJJ701VEfjQnrH77oLQVLqTz
-        VuaNpwcV7Wl5PMivX6FmQ==
-X-ME-Sender: <xms:qPNcZVKIhUvGqChFehOfa7RczkV_RH7P-ahDg6Q_fBsbLceBsKPNqQ>
-    <xme:qPNcZRLT4i_1MmPzcGHlZarJfa-blJ8bD1U0gYbtDmjQaCYPsCz-5sW0InDwtQTZm
-    EzZba4YG-lJaeMoEgA>
-X-ME-Received: <xmr:qPNcZdtiLlVVwGyXg3lzM12VqT0-Us9qWAV-uBHbPB0QMvz1Edq2aCd1X_tBU2i4lJCdFkWL0Iv5U1wiGnQIkGhjwFzXrCXSpVhAnweyNm5R>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
-    ekredtredttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhk
-    rghrugesfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeekuedvffeuud
-    ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
-    hfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:qPNcZWZFWEIBlpc9ol4VXvSbTTsXeeO1M3rZEGgdsvtit0Cs2Zem6w>
-    <xmx:qPNcZcb0OjiQ09xdLp29lZrockQCjoavpro6eb90WAc_Zfael-dPfg>
-    <xmx:qPNcZaC4csT-JFLJFd7_85CM9wXNkXptVy-U-bBtCZVPcGOlNNSMHw>
-    <xmx:qfNcZUGSPYgHLaEeDr56Io9la_D2AnOd9Z9iV8PiQsogM15v5hSk1A>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Nov 2023 13:15:04 -0500 (EST)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 5/5] staging: rtl8192e: renamed variable HTIOTActIsMgntUseCCK6M
-Date:   Tue, 21 Nov 2023 13:14:35 -0500
-Message-ID: <20231121181435.9337-6-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231121181435.9337-1-garyrookard@fastmail.org>
-References: <20231121181435.9337-1-garyrookard@fastmail.org>
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4613193
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:05 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00191363c1so280376966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700590502; x=1701195302; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k3jeSqyUsXuR0G429BNK/7gdoytWLHrpF12cSBcFFIQ=;
+        b=JpuSryqdWS3kojgFyrDjtNfGRvYuLAmu6btqMswLLZ1Tm2wZkGK/PSCT+FB+dBHVd9
+         +pyrjEee4u4qv5bb/t276w0xueaqCapfTr6EFA8b9Z6ppW4b2K2ofKhzyjzyNfGFwhdW
+         /VTV7iMsfglDYgGt/iLAYfXBXH0DxHo4Vks6c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700590502; x=1701195302;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k3jeSqyUsXuR0G429BNK/7gdoytWLHrpF12cSBcFFIQ=;
+        b=r/IpwdWQEBtVHXskJm2Ucpsp6suJ5nr3v/iVELARteomsTiuZPjJAzLcqxrSKeWsFu
+         M3AczqvBJOC7jN35c3jVVGbCScY8N8S8Ik8AxevdIeKMZbN1qgbgO0i9y9YMp0tdhc7K
+         4a3zkQRFLqC4meBAtyCxlLh0H68m/8AL7GfEGS6/TOPmJS+bV29RHY58hb27x4E5uJf1
+         POTiVtdQbnpUpoU44gRXHVWpBUVmWa4UrUCmEWfioBpkWqytMQHqSNjIuns6LVsi5uYw
+         8kUamd7OOtd9wrE63RWCVM/1TK+/8TY1ekWv7sVWpl7uPFcdaW2/GSwQjX+o6hJ0q6MB
+         Wy8w==
+X-Gm-Message-State: AOJu0YzYQCYWSVR4UGyPVdBV0WlSODSQXnOYxxgUYU+AowLUgMmqeoOa
+        dG11La4UPr3CsDjbejpZrDTh/tlwajXD4XQ7PDpnZ+U+
+X-Google-Smtp-Source: AGHT+IHfC7gn2MRNkjn2il9R8QnxyoY53T9qcrrMxli6tD/ej8rj70o8BQkbFbhtr+KDg3FBIeKXHA==
+X-Received: by 2002:a17:906:2253:b0:a00:4162:5d98 with SMTP id 19-20020a170906225300b00a0041625d98mr3487086ejr.19.1700590502000;
+        Tue, 21 Nov 2023 10:15:02 -0800 (PST)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id k13-20020a170906158d00b009920e9a3a73sm5559886ejd.115.2023.11.21.10.15.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 10:15:01 -0800 (PST)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40b2993e167so5575e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:01 -0800 (PST)
+X-Received: by 2002:a05:600c:1c1f:b0:3f4:fb7:48d4 with SMTP id
+ j31-20020a05600c1c1f00b003f40fb748d4mr3601wms.3.1700590500881; Tue, 21 Nov
+ 2023 10:15:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120020109.3216343-1-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=WKMrnAqYNHpcKw4=X75Ts_cCkoXZKQ+b7G1pXstUCMRg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WKMrnAqYNHpcKw4=X75Ts_cCkoXZKQ+b7G1pXstUCMRg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 21 Nov 2023 10:14:43 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UxN9vgWM9e1n_1pqcOJqzhhVtE7H2h+XMf0o_Mo7Jz5g@mail.gmail.com>
+Message-ID: <CAD=FV=UxN9vgWM9e1n_1pqcOJqzhhVtE7H2h+XMf0o_Mo7Jz5g@mail.gmail.com>
+Subject: Re: [PATCH V3] drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+ panel HFP and HBP
+To:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@google.com>, zhouruihai@huaqin.com,
+        David Airlie <airlied@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renamed from Pascal/CamelCase to Snake case the variable
-HTIOTActIsMgntUseCCK6M.
-HTIOTActIsMgntUseCCK6M -> ht_iot_act_is_mgnt_use_cck_6m
+Hi,
 
-Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-Driver/module rtl8192e compiles.
+On Mon, Nov 20, 2023 at 10:05=E2=80=AFAM Doug Anderson <dianders@google.com=
+> wrote:
+>
+> Hi,
+>
+> On Sun, Nov 19, 2023 at 6:01=E2=80=AFPM Cong Yang
+> <yangcong5@huaqin.corp-partner.google.com> wrote:
+> >
+> > The refresh reported by modetest is 60.46Hz, and the actual measurement
+> > is 60.01Hz, which is outside the expected tolerance. Adjust hporch and
+> > pixel clock to fix it. After repair, modetest and actual measurement we=
+re
+> > all 60.01Hz.
+> >
+> > Modetest refresh =3D Pixel CLK/ htotal* vtotal, but measurement frame r=
+ate
+> > is HS->LP cycle time(Vblanking). Measured frame rate is not only affect=
+e
+> > by Htotal/Vtotal/pixel clock, also affected by Lane-num/PixelBit/LineTi=
+me
+> > /DSI CLK. Assume that the DSI controller could not make the mode that w=
+e
+> > requested(presumably it's PLL couldn't generate the exact pixel clock?)=
+.
+> > If you use a different DSI controller, you may need to readjust these
+> > parameters. Now this panel looks like it's only used by me on the MTK
+> > platform, so let's change this set of parameters.
+> >
+> > Fixes: 1bc2ef065f13 ("drm/panel: Support for Starry-himax83102-j02 TDDI=
+ MIPI-DSI panel")
+> > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> > Chage since V2:
+> >
+> > - Update commit message.
+> >
+> > V2: https://lore.kernel.org/all/20231117032500.2923624-1-yangcong5@huaq=
+in.corp-partner.google.com
+> >
+> > Chage since V1:
+> >
+> > - Update commit message.
+> >
+> > V1: https://lore.kernel.org/all/20231110094553.2361842-1-yangcong5@huaq=
+in.corp-partner.google.com
+> > ---
+> >  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> As per previous discussions, this seems OK to me. I'll give it one
+> more day for anyone to speak up and then plan to land it.
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Pushed to drm-misc-fixes:
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 0873c19ca051..f43249fd78d7 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -207,7 +207,7 @@ static void ht_iot_peer_determine(struct rtllib_device *ieee)
- 	netdev_dbg(ieee->dev, "IOTPEER: %x\n", ht_info->IOTPeer);
- }
- 
--static u8 HTIOTActIsMgntUseCCK6M(struct rtllib_device *ieee,
-+static u8 ht_iot_act_is_mgnt_use_cck_6m(struct rtllib_device *ieee,
- 				 struct rtllib_network *network)
- {
- 	u8	retValue = 0;
-@@ -675,7 +675,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 		ht_iot_peer_determine(ieee);
- 
- 		ht_info->iot_action = 0;
--		bIOTAction = HTIOTActIsMgntUseCCK6M(ieee, pNetwork);
-+		bIOTAction = ht_iot_act_is_mgnt_use_cck_6m(ieee, pNetwork);
- 		if (bIOTAction)
- 			ht_info->iot_action |= HT_IOT_ACT_MGNT_USE_CCK_6M;
- 		bIOTAction = HTIOTActIsCCDFsync(ieee);
--- 
-2.41.0
-
+cea7008190ad drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+panel HFP and HBP
