@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF097F3462
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6257F3465
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232960AbjKURAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
+        id S233504AbjKURBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbjKURAO (ORCPT
+        with ESMTP id S229566AbjKURBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:00:14 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4B1D4B
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:00:10 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59b5484fbe6so60685687b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:00:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700586009; x=1701190809; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NwIj+KbJ7PvCuBNGXgfvFvqUe/IcvSlmM6N9QvJC8BI=;
-        b=DrBiEdv0Yimn4zkyUhBMPxnBBoAs+eZ5uVmACEjeb99WgLKlWalKQh2GwAISBL92sP
-         p9kCI3CUCLI9aq0GCMVXScgCECuIeb6gGN/XnL9OD8GM9JOItmL9kU3UDSSQmRt+i695
-         ARR8m6YRkpQNfSxgD05WnkWO+kJGrXQmQVEeeWkFIwcnrIN9T6ymKN7pvjvDbJK4yNGX
-         LO4bDJ7kEjL/oDIcm73mt0cShUaTG/OV5vxU+PZvatCbQ68Fbn2i4KDR8skzskjlpELS
-         cdBesW3S/rmZELJFiQYgo4P36sNl9vSrHlUZ8MssHT9PEZwfZ5KEoYtOAc0QY+qa8t15
-         QE2Q==
+        Tue, 21 Nov 2023 12:01:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA55122
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700586071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v93FwVXoTzkwCTHloTDbAyzgq12DcyzYpNvU8V0mZJE=;
+        b=BukZWAwWoMzDnykIthbpTWJ20Htab7d/JFNhjEAivJgpF3MMFRDqTHDhczlSz2nbrasmOl
+        CP5KoyjwzSoZflizWQkJ9+l4zkgBPebSWM3Mk/Uw9WW+xY9j/B+00EQqza+Y3qb+FXjhw5
+        E+5MM7FENi3MCmp+ollVwLNwi6F5AaQ=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-27-2YSTarNPNHq5jA6u4bByNA-1; Tue, 21 Nov 2023 12:01:09 -0500
+X-MC-Unique: 2YSTarNPNHq5jA6u4bByNA-1
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-587ac1e8eb1so6093208eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:01:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700586009; x=1701190809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NwIj+KbJ7PvCuBNGXgfvFvqUe/IcvSlmM6N9QvJC8BI=;
-        b=fw6f/U0KHGH/5t8Tl+vbf57DpKU84QTjJNvQDMYmtd6wvcr9xtRvDHzC8fwvKvbrp9
-         qDHfg/ewRbatxek8W9QO6rFbjuzy3CxFMcKzlAohtp9ArypHJ8Qwi03Ok1SzACJQJetq
-         oRxdGPO2d8LcgN6WbTLwGHZ9TDBLZNqPemnQxSWn+AiPwjQM0VVnSt0n+RwSo0A0A6+x
-         2+fiqMVFEq1r+S04/xFX+ZKo5UyRQglQobF5QYgK/i7JWBoTYkA4inKIKM+1kWjswCQm
-         0qZLglKmLPoJFBr4xz5eig0gGRwdU53uHJCQVj+MlD0kfE6YybwcUbj76QTdwbjlFQDg
-         QX9Q==
-X-Gm-Message-State: AOJu0Yyj/Yx9cQ9IS2CjkeWw3Mxc0bAT9r6/PJIY2aQACZ3sSbEr1VLr
-        5x86hTYoMHtfXp5gMI0W2g4=
-X-Google-Smtp-Source: AGHT+IFKHJ10XhorcfTO+RXaMwjjgAn1HCiRI6yoc10rnpZTOOHRaIBRoQaBzxf5zMv7/t/if+Vspw==
-X-Received: by 2002:a81:c803:0:b0:5cb:4404:49c4 with SMTP id n3-20020a81c803000000b005cb440449c4mr4157340ywi.43.1700586009340;
-        Tue, 21 Nov 2023 09:00:09 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
-        by smtp.gmail.com with ESMTPSA id g4-20020a81d444000000b005cb0d7c2e46sm936191ywl.19.2023.11.21.09.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 09:00:08 -0800 (PST)
-Date:   Tue, 21 Nov 2023 09:00:08 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
- __mm_cid_get()
-Message-ID: <ZVziGOcUW0ljEZZr@yury-ThinkPad>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-5-yury.norov@gmail.com>
- <20231120113105.GR8262@noisy.programming.kicks-ass.net>
- <1eb9435a-aa1c-4c30-ab1a-9167b73d1b83@efficios.com>
- <ZVyxMrisyuBtQ+2Y@yury-ThinkPad>
- <985aff40-97cc-4234-98c5-84dd21c324b7@efficios.com>
+        d=1e100.net; s=20230601; t=1700586069; x=1701190869;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v93FwVXoTzkwCTHloTDbAyzgq12DcyzYpNvU8V0mZJE=;
+        b=QUEDVGzz1MjntgD5qeRvxGOnc6QOEsW9KnurSGi3PUZgcfsLqMkyMF3L680hi7i43s
+         cWBRYrfu54B8oGC7y/SqT4Y2aXhYL9y4A3joque1eiO7SvJ0HBggelMmheeLeObSHQSP
+         D02L7lhALbBD4Q9hYLjAV3zj0R0JFJbihmo3HMQf+UZAGSB5ZsHA3IKEC0D3ix0Zfq3p
+         kO0GF2fHc1PD0z7AImhl0BOt8PRgLSPMBuO8cAA7S4/MmmELT+u7oL0uTrwdoO7vwgoL
+         Z2Mdlz/uE36vQR1Fvz6cR+0B4vjIDt9gBq6TeNhn/PeuhzY4whBtrCx0kEtRMLJVtLHV
+         X7gQ==
+X-Gm-Message-State: AOJu0Yyrkdmg+alhbJ8uZINbvgL0LessZztmNz+EKjAmTzTbOQLNrw27
+        PQB2wPpkDuzIKmLtsw3cuJxOu3w16rbIon5DFmqBdjUbWErhUEpJSzIUHChuSENdVz7hKfAODYe
+        ij4wgVdB9Pc8iKSTqNjRWWSfOjAfgkJlHhRiA0EJW
+X-Received: by 2002:a05:6358:7e47:b0:169:a9d4:3faf with SMTP id p7-20020a0563587e4700b00169a9d43fafmr12581500rwm.11.1700586069064;
+        Tue, 21 Nov 2023 09:01:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHzwqwXTcQOMVq6+W/ToO1AFQnqdGCzNKV3DK3CezCKFyIOZTTVBddsfYxnVHAme/q2N84DW6rxhPtI5xPi31c=
+X-Received: by 2002:a05:6358:7e47:b0:169:a9d4:3faf with SMTP id
+ p7-20020a0563587e4700b00169a9d43fafmr12581454rwm.11.1700586068588; Tue, 21
+ Nov 2023 09:01:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <985aff40-97cc-4234-98c5-84dd21c324b7@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-35-pbonzini@redhat.com>
+ <CAF7b7mpmuYLTY6OQfRRoOryfO-2e1ZumQ6SCQDHHPD5XFyhFTQ@mail.gmail.com> <13677ced-e464-4cdb-82ae-4236536e169c@sirena.org.uk>
+In-Reply-To: <13677ced-e464-4cdb-82ae-4236536e169c@sirena.org.uk>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Tue, 21 Nov 2023 18:00:56 +0100
+Message-ID: <CABgObfZdk9Jn60QLJGweVZMN_yWsxo1d7W3Mu-NNTPZVO0uCnw@mail.gmail.com>
+Subject: Re: [PATCH 34/34] KVM: selftests: Add a memory region subtest to
+ validate invalid flags
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Anish Moorthy <amoorthy@google.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 08:44:17AM -0500, Mathieu Desnoyers wrote:
-> On 2023-11-21 08:31, Yury Norov wrote:
-> > On Mon, Nov 20, 2023 at 11:17:32AM -0500, Mathieu Desnoyers wrote:
-> > 
-> [...]
-> > 
-> > Sure, I can. Can you point me to the work you mention here?
-> 
-> It would have to be updated now, but here is the last version that was posted:
-> 
-> https://lore.kernel.org/lkml/20221122203932.231377-1-mathieu.desnoyers@efficios.com/
-> 
-> Especially those patches:
-> 
-> 2022-11-22 20:39 ` [PATCH 22/30] lib: Implement find_{first,next,nth}_notandnot_bit, find_first_andnot_bit Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 23/30] cpumask: Implement cpumask_{first,next}_{not,}andnot Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 24/30] sched: NUMA-aware per-memory-map concurrency ID Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 25/30] rseq: Extend struct rseq with per-memory-map NUMA-aware Concurrency ID Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 26/30] selftests/rseq: x86: Implement rseq_load_u32_u32 Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 27/30] selftests/rseq: Implement mm_numa_cid accessors in headers Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 28/30] selftests/rseq: Implement numa node id vs mm_numa_cid invariant test Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 29/30] selftests/rseq: Implement mm_numa_cid tests Mathieu Desnoyers
-> 2022-11-22 20:39 ` [PATCH 30/30] tracing/rseq: Add mm_numa_cid field to rseq_update Mathieu Desnoyers
+On Mon, Nov 20, 2023 at 3:09=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Wed, Nov 08, 2023 at 05:08:01PM -0800, Anish Moorthy wrote:
+> > Applying [1] and [2] reveals that this also breaks non-x86 builds- the
+> > MEM_REGION_GPA/SLOT definitions are guarded behind an #ifdef
+> > __x86_64__, while the usages introduced here aren't.
+> >
+> > Should
+> >
+> > On Sun, Nov 5, 2023 at 8:35=E2=80=AFAM Paolo Bonzini <pbonzini@redhat.c=
+om> wrote:
+> > >
+> > > +       test_invalid_memory_region_flags();
+> >
+> > be #ifdef'd, perhaps? I'm not quite sure what the intent is.
+>
+> This has been broken in -next for a week now, do we have any progress
+> on a fix or should we just revert the patch?
 
-OK, I'll take a look.
+Sorry, I was away last week. I have now posted a patch.
 
-Thanks,
-Yury
+Paolo
+
