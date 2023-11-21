@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B357F37E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E1D7F37E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjKUVNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
+        id S229690AbjKUVNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKUVNK (ORCPT
+        with ESMTP id S229669AbjKUVNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:13:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241631AA
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:13:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700601187; x=1732137187;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=yjJ553Y+4myjUDZDcFzbklN6xBWg/BjAN5ZYJ8061jg=;
-  b=FJ2UtmDCmlv7y1kGY+YSw9ZAX8d/0uCHpeLKQM0lp6FjdvPUOBQrv3yc
-   irfpO4LEW6TDkE4FQNtVZ63t4xMZfRSzx2DZrfzbVE8hIosZDD1wO7rrF
-   +EHCQPipOlaVXw4PIU64l3WGVL97WPP72VeFL/p1o2YOTGR3JMboFGX4K
-   ecP09+4YQevloNxQ7uyQYTTt4XaB6Q7Zfr+Svg6FtzcNqVQj+ocNzqZcF
-   /YmojdNeLBwAKtVCdhdShbA06YgDoRnipOy95hcCcSzUJ9Waq7UPhPklX
-   obbOfzcEUhccyGhlGYBnTSwCQwNfW8vdnV5I7WCmHKtHNPET9lwofwMrs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="456263880"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="456263880"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 13:13:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="884332583"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="884332583"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 21 Nov 2023 13:13:04 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5Y3K-0008Fq-1I;
-        Tue, 21 Nov 2023 21:13:02 +0000
-Date:   Wed, 22 Nov 2023 05:12:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.co.uk>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: drivers/pinctrl/pinctrl-mcp23s08.c:1: warning: no structured
- comments found
-Message-ID: <202311220421.xKye7ZRO-lkp@intel.com>
+        Tue, 21 Nov 2023 16:13:19 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEA31AC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:13:15 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc2786a8ebso87364365ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:13:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700601195; x=1701205995;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZWvcvFWT3P94ESec92OyEYUrt6Ss1wkXtTKq4rDYxM=;
+        b=mN9t3kxsVYTzjcKuI62ouPQoX5i8fmp8ogpF/ESQ8gxLKc3DQKmj0nSELFk+W5UMGP
+         DY0wiIYqiShX14qdQY3FCK89kUsJFtuxLdLVbmYbLDdUwI2ql3Pgd7YLGoOBfnhmeeLP
+         AOGkUobsOHkBbxarIQfvaR+DmmsYLwzEamajgh//2bmuHAuhiSNwZMJshj121f6Pc5L4
+         TBn6ENTOeiZlrumgMkacMGWpUXDhZXR8Amnjf0a/nmTWmBUNVE66Bx2qdVieS7db/DO7
+         yJcwYZF2eDm6BLwacM6HlexwHf+lW6A6OvGyCLX447iAcWcsYHNrRv/myod2x8Biq9Qq
+         JRTg==
+X-Gm-Message-State: AOJu0YzmEF0Zb6+qA5arYSIqu41ThWs5pwL2neQGr0yKLq2JBtjcBOBe
+        MBao1M6hIdRXRckp41ZMJ2WPDtUblFKqEpHX/uEo5hSBjwY8
+X-Google-Smtp-Source: AGHT+IHM9W+C7Oq0Uv4PwRYXwS33JJ9uK/HjdaAoEujXz7jU6ukhsoO+N83LgpXYrU44Q8AnLhnEdLDIby2oGWjGRHsGykut9M7s
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f688:b0:1cc:fd93:ab34 with SMTP id
+ l8-20020a170902f68800b001ccfd93ab34mr79222plg.1.1700601195534; Tue, 21 Nov
+ 2023 13:13:15 -0800 (PST)
+Date:   Tue, 21 Nov 2023 13:13:15 -0800
+In-Reply-To: <0000000000003ee3610599d20096@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002a1fec060ab0120c@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in __media_entity_remove_links
+From:   syzbot <syzbot+0b0095300dfeb8a83dc8@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, nogikh@google.com,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
-commit: d8f4494e70ae5fef159719bfbb6abedc53619bf1 pinctrl: mcp23s08: drop comment about missing irq support
-date:   7 years ago
-config: i386-randconfig-002-20231120 (https://download.01.org/0day-ci/archive/20231122/202311220421.xKye7ZRO-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220421.xKye7ZRO-lkp@intel.com/reproduce)
+This bug is marked as fixed by commit:
+media: uvcvideo: Avoid cyclic entity chains due to malformed USB descriptors
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311220421.xKye7ZRO-lkp@intel.com/
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-All warnings (new ones prefixed by >>):
+#syz fix: exact-commit-title
 
-   drivers/pinctrl/pinctrl-mcp23s08.c: In function 'mcp_pinconf_set':
-   drivers/pinctrl/pinctrl-mcp23s08.c:282:6: warning: variable 'val' set but not used [-Wunused-but-set-variable]
-     u16 val;
-         ^~~
-   drivers/pinctrl/pinctrl-mcp23s08.c:281:11: warning: variable 'mask' set but not used [-Wunused-but-set-variable]
-     u32 arg, mask;
-              ^~~~
->> drivers/pinctrl/pinctrl-mcp23s08.c:1: warning: no structured comments found
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=0b0095300dfeb8a83dc8
 
-vim +1 drivers/pinctrl/pinctrl-mcp23s08.c
+---
+[1] I expect the commit to be present in:
 
-   > 1	/* MCP23S08 SPI/I2C GPIO driver */
-     2	
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
