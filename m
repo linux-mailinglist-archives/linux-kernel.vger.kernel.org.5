@@ -2,163 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6639A7F33C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92AC7F33CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbjKUQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S233066AbjKUQcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbjKUQba (ORCPT
+        with ESMTP id S231168AbjKUQcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:31:30 -0500
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5070C1A2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:31:19 -0800 (PST)
-Received: from eig-obgw-5007a.ext.cloudfilter.net ([10.0.29.141])
-        by cmsmtp with ESMTPS
-        id 5TAWrTCudjtZ35Telrch2p; Tue, 21 Nov 2023 16:31:23 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id 5TefrZCSNqkaT5Tefr3SK2; Tue, 21 Nov 2023 16:31:18 +0000
-X-Authority-Analysis: v=2.4 cv=bY547cDB c=1 sm=1 tr=0 ts=655cdb56
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10
- a=el_zaujX9iDH7R9aTdgA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7CrKRXxwaxc41PDQ+3XM7MTcEtfrLzQtzjAt/JtViAY=; b=FwqPqpsbVsD/zWAVItmkLhZ8H8
-        WR9QrGmhfDb6RrzvWl4sZ+eW7MmBbgBY6/YK4SvgGM/IquCEnXdBv5Bf2BJ+wlUnwNEGN8d37SMx5
-        Qvnke2MiE8FpG4L5COIa6J3SDs6qsZoaLp2+GgW4NTnfBl5vAMqnX3kslwOjkBzus5cCrEBStbyu5
-        lUTv8/oGz7g72855qHaj9ysBbUki6vc9ENWtHbulMP8U7QZEiUKd09P2sJrZv99iEVaaM2VbHVHCY
-        Bz0Jk/jEUF6ppQTb4qF42mrfkcy6Ay+JAKSiOkuKX9pacqjxOfcdN+tTkL2wBNtGGNg/0DzvPyKLA
-        sX23VM8w==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:57028 helo=[192.168.15.10])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1r5Tef-002iJo-0f;
-        Tue, 21 Nov 2023 10:31:17 -0600
-Message-ID: <26671a7a-c3ed-448e-a220-108516a50deb@embeddedor.com>
-Date:   Tue, 21 Nov 2023 10:31:16 -0600
+        Tue, 21 Nov 2023 11:32:42 -0500
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6B2197;
+        Tue, 21 Nov 2023 08:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1700584358; x=1732120358;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=a0hiW0ugZ3WPuFUH975iQYWx7zRQJgHR8z77ikQEbyE=;
+  b=ojamMJT2u6v3rA0/92PTjhqD/kp12S+z9gu2sSVs/lDf/k7h86njj5hr
+   Dw+wTMGfHZ0Z6jDal7D9sHxcb4tmPAIllPwHRE9qjZiZiA2m7+aQMrmgw
+   RlOv8ukkJSyB3bdTxNmoN0hF70wFpwl+YmwqQbPcW2T/EbJiApw8KReZe
+   nA/tPkg1DHVkmzJCPvpCcdvLDh/86L5FR3N0Mz6zZHDQ7Rh31FJnYXWDr
+   i/42+KZoW7myFoQlCkSDHWBAy0QraETRpgcrgSEc6x+yU9vtiZJvmHTjy
+   nR7aEM3tT66A71qDImWxXtWa3LePEvoTBSSHnCaXBDtE7ngP3IyquDxYT
+   Q==;
+X-CSE-ConnectionGUID: vo7YZa9KRpuG7MJM9qH6Gw==
+X-CSE-MsgGUID: 0bZVuSChRxSruo+u2KkS3g==
+X-IronPort-AV: E=Sophos;i="6.04,216,1695657600"; 
+   d="scan'208";a="3076032"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Nov 2023 00:32:35 +0800
+IronPort-SDR: ihIXLt1ZSRxOPc4fPfNU/Ps569USj2QLcwiEve60FLuWXmA+ENIeaIiu9q4sXwf14bVPO9P5Ur
+ IwuhJI+CYHjiGx1BKEa+JmNYGTWPsTvzq5qOKfG0zfkAPeaA+OKp98dkMGeWx82RJRQ40bX0QH
+ jIWfH82/IjzSLQitiqxbxrEeuXb9fHZBCzgQs+Q+Ms96oTe50TqpxBZSnr1euthdFMUvUis1B/
+ Or7W6UHzIP1AVPefSU/xiia5bqDK7UgcCVyQC0bDqejMa2mGhpKY0nMm5sXWDouZYre4FDMtep
+ fm4=
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Nov 2023 07:38:14 -0800
+IronPort-SDR: /h2oYavbxuBGrvAIhs5CjIcL2bCLulOjB9A3zzOQzQFnbvMLQFKpsRPU1UDw4zToEalirEELWh
+ 6+E7niVyQt4YKV5MOjAa5w0XwKaB24gg8d3Th+dPksOpXka1LU/SgI1WBDGdCDffjVtUOZl5jA
+ mD+BmavJQKsrosva49MRbkUQzIyLaQH4H1r5gNsYC3oyBN7ZoTA3A7QBayt3w9FFSVShQgTg8d
+ dJI7l6sygkPvamjmkZjN65H39qGW2bVRmvFSmKD8/PKqRvHgD9S5J4EL3Ee8g4fmYlq3+AWTZy
+ EkE=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun91.ssa.fujisawa.hgst.com) ([10.149.66.6])
+  by uls-op-cesaip02.wdc.com with ESMTP; 21 Nov 2023 08:32:35 -0800
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/5] btrfs: zoned: remove extent_buffer redirtying
+Date:   Tue, 21 Nov 2023 08:32:29 -0800
+Message-Id: <20231121-josef-generic-163-v1-0-049e37185841@wdc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: build failure after merge of the kspp-gustavo tree
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231121131903.68a37932@canb.auug.org.au>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231121131903.68a37932@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1r5Tef-002iJo-0f
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:57028
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfP2owLanUoxGhbcPyzJdn45OefiSrKzDMkCvEqbWrHbKSgJvM7UBL/MC23sGImZclOILI9Zi2qp4bxJk05zK5xp0Aav5rgrWsKiHQFg6n71YX0oQNxg+
- aR60Eg12joSsxVNMmjJBa0VEqYIrLfVO2TB1a53BcvdmNJwt+43vTeCmeVs3SFrPslVTZttpQtpzX2kgn51z72uU/lWLn4OzuJIHjfe+QlS7OgPvk54JFRF9
+X-B4-Tracking: v=1; b=H4sIAJ3bXGUC/x3MTQqAIBBA4avErBvwj6iuEi1MR5sWFgoRSHdPW
+ r7F9yoUykwF5q5CppsLn6mF7Dtwu02RkH1rUEJpKZXA4ywUMFJqzqEcNAbjgyG7KTeN0NyVKfD
+ zP5f1fT/H+dmoYwAAAA==
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700584354; l=1650;
+ i=johannes.thumshirn@wdc.com; s=20230613; h=from:subject:message-id;
+ bh=a0hiW0ugZ3WPuFUH975iQYWx7zRQJgHR8z77ikQEbyE=;
+ b=nOE9SVbTJpXa0DAaj/6VwVfin9C7x/pPFeEgobBSeM7kam8Odx70p7GS+T8XAL7gGxHumZCAy
+ 6BRRL//62EnAXIjhiUY/ekt0++TEM6q4aaYC6czH/N240Z6Pa8YH9tF
+X-Developer-Key: i=johannes.thumshirn@wdc.com; a=ed25519;
+ pk=TGmHKs78FdPi+QhrViEvjKIGwReUGCfa+3LEnGoR2KM=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Since the beginning of zoned mode, I've promised Josef to get rid of the
+extent_buffer redirtying, but never actually got around to doing so.
 
-On 11/20/23 20:19, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the kspp-gustavo tree, today's linux-next build (powerpc
-> pseries_le_defconfig) failed like this:
-> 
-> arch/powerpc/crypto/aes-gcm-p10-glue.c: In function 'gcmp10_init':
-> arch/powerpc/crypto/aes-gcm-p10-glue.c:120:9: error: 'gcm_init_htable' accessing 256 bytes in a region of size 224 [-Werror=stringop-overflow=]
->    120 |         gcm_init_htable(hash->Htable+32, hash->H);
->        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/crypto/aes-gcm-p10-glue.c:120:9: note: referencing argument 1 of type 'unsigned char[256]'
-> arch/powerpc/crypto/aes-gcm-p10-glue.c:120:9: note: referencing argument 2 of type 'unsigned char[16]'
-> arch/powerpc/crypto/aes-gcm-p10-glue.c:40:17: note: in a call to function 'gcm_init_htable'
->     40 | asmlinkage void gcm_init_htable(unsigned char htable[256], unsigned char Xi[16]);
->        |                 ^~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
-> 
-> Caused by commit
-> 
->    167820dd258d ("Makefile: Enable -Wstringop-overflow globally")
-> 
-> I have used the kspp-gustavo tree from next-20231120 for today.
-> 
+Then 2 weeks ago our CI has hit an ASSERT() in this area and I started to look
+into it again. After some discussion with Christoph we came to the conclusion
+to finally take the time and get rid of the extent_buffer redirtying once and
+for all.
 
-Thanks a lot for the report, again!
+Patch one renames EXTENT_BUFFER_NO_CHECK into EXTENT_BUFFER_CANCELLED, because
+this fits the new model somewhat better.
 
-We are pretty close to enabling this compiler option, and it seems you
-are catching issues that neither 0-day folks nor I have caught before.
+Number two sets the cancel bit instead of clearing the dirty bit from a zoned
+extent_buffer.
 
-I wonder if you could help me catch the rest of these issues by disabling
-WERROR (so we can get all the warnings) and letting your builds run with the
-following patch on top:
+Number three removes the last remaining bits of btrfs_redirty_list_add().
 
-diff --git a/Makefile b/Makefile
-index ede0bd241056..596c33e6319b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -982,6 +982,8 @@ NOSTDINC_FLAGS += -nostdinc
-  # perform bounds checking.
-  KBUILD_CFLAGS += $(call cc-option, -fstrict-flex-arrays=3)
+The last two patches in this series are just trivial cleanups I came across
+while looking at the code.
 
-+KBUILD_CFLAGS += $(call cc-option, -Wstringop-overflow)
-+
-  # disable invalid "can't wrap" optimizations for signed / pointers
-  KBUILD_CFLAGS  += -fno-strict-overflow
+---
+Johannes Thumshirn (5):
+      btrfs: rename EXTENT_BUFFER_NO_CHECK to EXTENT_BUFFER_CANCELLED
+      btrfs: zoned: don't clear dirty flag of extent buffer
+      btrfs: remove now unneeded btrfs_redirty_list_add
+      btrfs: use memset_page instead of opencoding it
+      btrfs: reflow btrfs_free_tree_block
 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 2fe6f2828d37..1527199161d7 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -106,7 +106,6 @@ KBUILD_CFLAGS += $(call cc-option, -Wunused-const-variable)
-  KBUILD_CFLAGS += $(call cc-option, -Wpacked-not-aligned)
-  KBUILD_CFLAGS += $(call cc-option, -Wformat-overflow)
-  KBUILD_CFLAGS += $(call cc-option, -Wformat-truncation)
--KBUILD_CFLAGS += $(call cc-option, -Wstringop-overflow)
-  KBUILD_CFLAGS += $(call cc-option, -Wstringop-truncation)
+ fs/btrfs/disk-io.c     |   4 +-
+ fs/btrfs/extent-tree.c | 102 ++++++++++++++++++++++++-------------------------
+ fs/btrfs/extent_io.c   |   9 +++--
+ fs/btrfs/extent_io.h   |   3 +-
+ fs/btrfs/tree-log.c    |   1 -
+ fs/btrfs/zoned.c       |  16 --------
+ fs/btrfs/zoned.h       |   5 ---
+ 7 files changed, 60 insertions(+), 80 deletions(-)
+---
+base-commit: 592afe8e8b7ceee58107757fd29ff3290e6539e3
+change-id: 20231120-josef-generic-163-f4df4eab2c98
 
-  KBUILD_CPPFLAGS += -Wundef
-@@ -122,7 +121,6 @@ KBUILD_CFLAGS += $(call cc-disable-warning, restrict)
-  KBUILD_CFLAGS += $(call cc-disable-warning, packed-not-aligned)
-  KBUILD_CFLAGS += $(call cc-disable-warning, format-overflow)
-  KBUILD_CFLAGS += $(call cc-disable-warning, format-truncation)
--KBUILD_CFLAGS += $(call cc-disable-warning, stringop-overflow)
-  KBUILD_CFLAGS += $(call cc-disable-warning, stringop-truncation)
-
-  ifdef CONFIG_CC_IS_CLANG
-
-
-Thank you!
---
-Gustavo
+Best regards,
+-- 
+Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
