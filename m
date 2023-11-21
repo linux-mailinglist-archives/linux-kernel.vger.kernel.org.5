@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 382547F3029
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6DE7F3031
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbjKUOEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        id S234023AbjKUOEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbjKUOEF (ORCPT
+        with ESMTP id S234006AbjKUOEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:04:05 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFFBCA;
-        Tue, 21 Nov 2023 06:04:01 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c398717726so4682045b3a.2;
-        Tue, 21 Nov 2023 06:04:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700575441; x=1701180241; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXE/wSY7rxsEQtyGCU8Vo4ysURLqqemytpp2DMRejDM=;
-        b=cSD+AuGjhMVw7N29qTboHDk2feCfvK0fIr4GfsOIug5MjAvvop2pNZ2yxqNEbGGspS
-         slSJrduRSeg5kxMg7fx0xXG5RWY+52WstxmQ07KY/qnBGB/Ifl25gnGm+yy8nSxwstaX
-         HLLqNVQn2BmRD430PUHXn6l2nbBc9oJXf0fKrVcwDP2omuHIoUhsRZOIuu/vRFLNeH9C
-         xhVLIlzTgSLoDfEIkk5fiMTWXgd1EMcZ9JSIxgFx2QUeC+PFiHb/xaNubvMd5MrJqpDL
-         xtKTPymz3yiaBCIk+8GYa4Ik9ononY6Zmc+sMIVQUvOp3YKNj6L2+WE0mrP2OUpG+GGq
-         bLuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700575441; x=1701180241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YXE/wSY7rxsEQtyGCU8Vo4ysURLqqemytpp2DMRejDM=;
-        b=MZrt2CNM77pbgCsXbIawtTJVhXR682Ej+rLQx/mdFYlZg13NnO/6h1CBKqMhiZNHUT
-         WOkgqNs8MPVOr58HFuFBh8NCbJRzG0ewv1eODH3ww6uzTbYMQRpqXL4VL8dpqA58BXhl
-         7WDwb436Zjij4mR5V9UAVeC0Ps0My1cjeNg6SBO727/gpIkopxCYSnzEYwHD3q6tsYza
-         YEPIPJHmPHJhTqVTMt3RFwC7WACK3xfmx1vJv884+iNHab2D6J5UAVjnA2wqFtFjk6iQ
-         mXzJTMPodCszNiLF/orNLBnH80ZR0CQ3hJ79florJGHhQ+mZeBGPzC5nCM/X8gKVljjz
-         GUbw==
-X-Gm-Message-State: AOJu0YzPwPA0ovI27iEQhFKMszgD4hIe/jj/C1oJbYUxWX3y4R2OQIdn
-        Avfngw6eTV3qXU991Zp3fAo=
-X-Google-Smtp-Source: AGHT+IEh4zH4UY4YdBn32K7s1Y6nH6BG5UROVv7myOkk8sqazLdYJs4o3x7Qu/siDjrbnw+khPLUgQ==
-X-Received: by 2002:a05:6a00:4286:b0:6cb:835a:8606 with SMTP id bx6-20020a056a00428600b006cb835a8606mr7433156pfb.4.1700575440845;
-        Tue, 21 Nov 2023 06:04:00 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id j12-20020a056a00130c00b0068fece22469sm7906337pfu.4.2023.11.21.06.04.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 06:04:00 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 1E86010207145; Tue, 21 Nov 2023 21:03:56 +0700 (WIB)
-Date:   Tue, 21 Nov 2023 21:03:55 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Input Devices <linux-input@vger.kernel.org>,
-        Mavroudis Chatzilazaridis <mavchatz@protonmail.com>,
-        Filipe =?utf-8?B?TGHDrW5z?= <lains@riseup.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        LinuxCat <masch77.linuxcat@gmail.com>,
-        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
-Message-ID: <ZVy4yzbN6-ak-TPI@archie.me>
-References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com>
- <ZVyr-of1X4RudpWG@archie.me>
- <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info>
- <nycvar.YFH.7.76.2311211458030.29220@cbobk.fhfr.pm>
+        Tue, 21 Nov 2023 09:04:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627A7D7F;
+        Tue, 21 Nov 2023 06:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700575488; x=1732111488;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XZP4lfw1143zghvYLcKoFwr5cIz7iQ/mX6yCIhP2bbY=;
+  b=QUTWQv9/IdhRz1wW1AaaA10Bu3n/7/cA0NocRpaZsRxjyE8o0w1mdbc/
+   fMQrPdf2YmDoU84WVxjDtkE9W880E9wIOrwe14Gvk/XllKlTKXqJZS4P0
+   GTsbMdxt3PRzcPkkU8nMpY/2Fhc+A8LD4MI/tVmUmgsaqqLcbAnwiTyhj
+   IVPZvd+kZq7KgIsIUCQ8mGMCZHLvQkkrPQYNnjjhWdPYf1f5gsfn0e+RM
+   5R0KRaZx+D+RAieTF54KkUsXHgtZ6sygiYmfgImfb9IPjAiN7IomjDDx/
+   KsFvPmKwbMQJ+KOGnOCMxtlXfDvnUPcBL+swgur1KT2qqQECyeVilbTYB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="422939290"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="422939290"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:04:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="890261425"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="890261425"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 21 Nov 2023 06:04:39 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5RMj-0007ta-09;
+        Tue, 21 Nov 2023 14:04:37 +0000
+Date:   Tue, 21 Nov 2023 22:03:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, catalin.marinas@arm.com,
+        ulf.hansson@linaro.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
+        j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        lpieralisi@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: Add base X1E80100 dtsi and the
+ QCP dts
+Message-ID: <202311212100.eIdoZhGN-lkp@intel.com>
+References: <20231117113931.26660-4-quic_sibis@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="82F1+VoXxx3lD9u8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2311211458030.29220@cbobk.fhfr.pm>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231117113931.26660-4-quic_sibis@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sibi,
 
---82F1+VoXxx3lD9u8
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build errors:
 
-On Tue, Nov 21, 2023 at 03:00:50PM +0100, Jiri Kosina wrote:
-> On Tue, 21 Nov 2023, Linux regression tracking (Thorsten Leemhuis) wrote:
->=20
-> > I guess part of the problem is that Bastien got reassigned and might not
-> > care about the kernel anymore.
-> >=20
-> > Another part of it is that Jiri was CCed, but Benjamin was not.
-> >=20
-> > Ideally of course Mavroudis Chatzilazaridis, the culprit's author would
-> > look into this, but from a quick search on lore it looks like Mavroudis
-> > is not a regular kernel contributor and thus might not even know how we
-> > expect situations like this to be handled.
->=20
-> A comment from Mavroudis just appeared in
->=20
-> 	https://bugzilla.kernel.org/show_bug.cgi?id=3D218172
->=20
-> pointing out that indeed the report descriptor of the device he is workin=
-g=20
-> on is different than the ones from the reporter.
->=20
-> Until this mess gets figured out, I am now pretty sure revert is the way=
-=20
-> to go for 6.7.
->=20
+[auto build test ERROR on v6.7-rc1]
+[also build test ERROR on linus/master next-20231121]
+[cannot apply to robh/for-next arm64/for-next/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-OK, thanks!
+url:    https://github.com/intel-lab-lkp/linux/commits/Sibi-Sankar/dt-bindings-arm-cpus-Add-qcom-oryon-compatible/20231117-194253
+base:   v6.7-rc1
+patch link:    https://lore.kernel.org/r/20231117113931.26660-4-quic_sibis%40quicinc.com
+patch subject: [PATCH V2 3/5] arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts
+config: arm64-allmodconfig (https://download.01.org/0day-ci/archive/20231121/202311212100.eIdoZhGN-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311212100.eIdoZhGN-lkp@intel.com/reproduce)
 
---=20
-An old man doll... just what I always wanted! - Clara
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311212100.eIdoZhGN-lkp@intel.com/
 
---82F1+VoXxx3lD9u8
-Content-Type: application/pgp-signature; name="signature.asc"
+All errors (new ones prefixed by >>):
 
------BEGIN PGP SIGNATURE-----
+   In file included from arch/arm64/boot/dts/qcom/x1e80100-qcp.dts:10:
+>> arch/arm64/boot/dts/qcom/x1e80100.dtsi:7:10: fatal error: 'dt-bindings/clock/qcom,x1e80100-gcc.h' file not found
+       7 | #include <dt-bindings/clock/qcom,x1e80100-gcc.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1 error generated.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVy4ywAKCRD2uYlJVVFO
-o5QtAQCvCeR2G8h32Yb8lh3PpeX+7/ey4sJROo4PU4Pa445r0QD/ZUL1oS6lFhFw
-UN6HQu7S0B6JJCnknxUk9dV8J/hzgQQ=
-=42xF
------END PGP SIGNATURE-----
 
---82F1+VoXxx3lD9u8--
+vim +7 arch/arm64/boot/dts/qcom/x1e80100.dtsi
+
+   > 7	#include <dt-bindings/clock/qcom,x1e80100-gcc.h>
+     8	#include <dt-bindings/dma/qcom-gpi.h>
+     9	#include <dt-bindings/interconnect/qcom,icc.h>
+    10	#include <dt-bindings/interconnect/qcom,x1e80100-rpmh.h>
+    11	#include <dt-bindings/interrupt-controller/arm-gic.h>
+    12	#include <dt-bindings/power/qcom,rpmhpd.h>
+    13	#include <dt-bindings/power/qcom-rpmpd.h>
+    14	#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+    15	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
