@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BE27F385B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488AC7F385C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjKUVdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:33:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45796 "EHLO
+        id S234455AbjKUVe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjKUVdw (ORCPT
+        with ESMTP id S229495AbjKUVe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:33:52 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA88FF4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:33:48 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-359d559766cso21902745ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:33:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700602428; x=1701207228; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LPztFbk4Qh4+TpFn00idAb8rtvrdHgK3UzVmP62xEfo=;
-        b=e9kQc4bWz1eueHnQlEmAdcbVKNbmsum3vaUhqsDCHum7lipuIBzKN/i+H5TvQW/cI8
-         oP7jJYIf3m4Qj4P50+XscS+SZrvVIk4ip8pxT3V8Yo7OAK5wZl+ZhFqU3fi0GKsB8JuM
-         Pfcxi2k1OSpDsnd9j9jsSRuOQliTDD+HuFhd41enJqE/kQJ4ExWczscGlKhM5lLksgf6
-         FcvS3M/pyU6ajayXYK05zImDssImJWbgB3RdhNqCATAN/qNtIVIfL5dk/vD/UPj4Rs6Z
-         IAlISYeb0Dq3BIS2YlQni7E4TSoc17fqy1FOY5PiZfdd5bDSv4AXZZ3/6LE86tu4qN21
-         Jhhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700602428; x=1701207228;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LPztFbk4Qh4+TpFn00idAb8rtvrdHgK3UzVmP62xEfo=;
-        b=FxDs2xJ9JoQN1XzpR95yU1NZcoGdAFBNPleQMO8qjCJrQJ/3+Uds+XX2FVMNg09frP
-         Eboubkl8orqi7HmJMICGo2kDiwsREOujZfy3b96oyZm4wlIT01KTxVUbSVtDv5W0PGnJ
-         787sK7DcIWthhLHrQm9J7UfqdbF+yhz+SIEZoov0lWyN4qFKKT5kdVwPDe9sFPyi5br5
-         ybNItRLfvTWV2w9VDEokXGaB7gNy04503R4LwrFyuXPAdxRN1QQ4QNGCmZ3+vY5S1DUv
-         mFrMsRsVRSLyACxZ5xatXl0yGzpe9Rg4Vlq699Eevwt65IWbMi2bqhBQeWltUwpSeG3J
-         m/Gw==
-X-Gm-Message-State: AOJu0Yw/Y2lhDmwh+G5drUdqMv0abCKa7voyHIp+26oBhae4hmirTlM1
-        Gr5ZjCRQ/kfkxHdpXe//R68Xug==
-X-Google-Smtp-Source: AGHT+IHKzUB89PXmzmxg0SBTE7Y7V3/XjTJPY5gtt8nLPa5ZqRByXXPMB3TdlqkpHQoScoPBVhoi2A==
-X-Received: by 2002:a05:6e02:1d13:b0:359:c24b:9ee1 with SMTP id i19-20020a056e021d1300b00359c24b9ee1mr242798ila.14.1700602428216;
-        Tue, 21 Nov 2023 13:33:48 -0800 (PST)
-Received: from ?IPV6:2605:a601:adae:4500:9465:402f:4b0a:1116? ([2605:a601:adae:4500:9465:402f:4b0a:1116])
-        by smtp.gmail.com with ESMTPSA id cn16-20020a056e02389000b00359c464b632sm3413438ilb.52.2023.11.21.13.33.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 13:33:47 -0800 (PST)
-Message-ID: <c5c11a56-7aec-48ae-b3cb-ae72f2352c28@sifive.com>
-Date:   Tue, 21 Nov 2023 15:33:47 -0600
+        Tue, 21 Nov 2023 16:34:26 -0500
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0FCF4;
+        Tue, 21 Nov 2023 13:34:22 -0800 (PST)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ALGQcPe024636;
+        Tue, 21 Nov 2023 16:34:09 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3ueu275ev1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 16:34:09 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3ALLY7D8056886
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 21 Nov 2023 16:34:07 -0500
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 21 Nov 2023 16:34:07 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Tue, 21 Nov 2023 16:34:06 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Tue, 21 Nov 2023 16:34:06 -0500
+Received: from work.ad.analog.com (HYB-hERzalRezfV.ad.analog.com [10.65.205.129])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3ALLXrCV019788;
+        Tue, 21 Nov 2023 16:33:55 -0500
+From:   <marcelo.schmitt@analog.com>
+To:     <beniamin.bia@analog.com>, <paul.cercueil@analog.com>,
+        <Michael.Hennerich@analog.com>, <lars@metafoo.de>,
+        <jic23@kernel.org>, <marcelo.schmitt1@gmail.com>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/7] Add support for AD7091R-2/-4/-8
+Date:   Tue, 21 Nov 2023 18:33:49 -0300
+Message-ID: <cover.1700595310.git.marcelo.schmitt1@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] Correct type casting in module loading
-Content-Language: en-US
-To:     Charlie Jenkins <charlie@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Randy Dunlap <rdunlap@infradead.org>
-References: <20231117-module_fixup-v1-0-62bb777f6825@rivosinc.com>
- <20231117-module_fixup-v1-2-62bb777f6825@rivosinc.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231117-module_fixup-v1-2-62bb777f6825@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: AI8lvFFjUVhbewESITz-PYV-jsJFqTD2
+X-Proofpoint-GUID: AI8lvFFjUVhbewESITz-PYV-jsJFqTD2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_11,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 spamscore=0 adultscore=0 suspectscore=0 clxscore=1011
+ malwarescore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=975 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311060001 definitions=main-2311210168
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-17 1:56 PM, Charlie Jenkins wrote:
-> Make static variables static and use __le16.
-> 
-> Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/kernel/module.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+From: Marcelo Schmitt <marcelo.schmitt1@gmail.com>
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Tested-by: Samuel Holland <samuel.holland@sifive.com>
+This series adds support for AD7091R-2/-4/-8 ADCs which can do single shot
+or sequenced readings. Threshold events are also supported.
+Overall, AD7091R-2/-4/-8 are very similar to AD7091R-5 except they use SPI interface.
+
+This has been tested with raspberrypi and eval board on kernel 6.1 from ADI fork.
+Link: https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/ad7091r8
+
+Marcelo Schmitt (7):
+  iio: adc: ad7091r-base: Set alert config and drvdata
+  MAINTAINERS: Add MAINTAINERS entry for AD7091R
+  iio: adc: ad7091r: Move defines to header file
+  iio: adc: ad7091r: Alloc IIO device before generic probe
+  dt-bindings: iio: Add binding documentation for AD7091R-8
+  iio: adc: Add support for AD7091R-8
+  iio: adc: ad7091r-base: Add debugfs reg access
+
+ .../bindings/iio/adc/adi,ad7091r8.yaml        | 101 +++++++
+ MAINTAINERS                                   |  12 +
+ drivers/iio/adc/Kconfig                       |  16 ++
+ drivers/iio/adc/Makefile                      |   4 +-
+ drivers/iio/adc/ad7091r-base.c                |  98 ++++---
+ drivers/iio/adc/ad7091r-base.h                |  82 +++++-
+ drivers/iio/adc/ad7091r5.c                    |  55 ++--
+ drivers/iio/adc/ad7091r8.c                    | 272 ++++++++++++++++++
+ 8 files changed, 551 insertions(+), 89 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7091r8.yaml
+ create mode 100644 drivers/iio/adc/ad7091r8.c
+
+-- 
+2.42.0
 
