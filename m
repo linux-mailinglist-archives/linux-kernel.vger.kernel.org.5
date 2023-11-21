@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9247F52EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CC37F5363
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344138AbjKVWB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:01:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        id S233586AbjKVW2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbjKVWB0 (ORCPT
+        with ESMTP id S232195AbjKVW2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:01:26 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FCE1B9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:01:22 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40839652b97so1325165e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:01:21 -0800 (PST)
+        Wed, 22 Nov 2023 17:28:16 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED6121A5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:28:11 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-32fe1a29010so165336f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:28:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1700690480; x=1701295280; darn=vger.kernel.org;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1700692090; x=1701296890; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Co9LVBS9UVls7Yfkp1g/G/0zm2miePVKqu+VmR9GULg=;
-        b=CUUhkC3aCNRMDb7cJsp1Oyp8W6ggrDS9JgXsHVHKqv+tKKoOTr8pcHEK8//WWQUhrU
-         /YVjA70bMuYOW30W9zyOc+nXyCwfiIF8New3QYQz6Ge3DhwEe4c+kMxFQNks1ip7SAz4
-         zRW3rJRKomcseyprsbdRPDE/0bCDSX5am7pztquxlUMPjqLTor0OC7Uc+t6ZsbUbz2wL
-         giV44mkKIaHH9Il5jSLgAni47wYvwJuXIBba4eAGl8rmidmvszjuBiMdKZpiuSfP5PNs
-         ymoOO3Il3fZ9WvxZ9uITDn4+IRUq4x/zMu2yJHKlHy1U/NVA9XcZWO3DPAOmPMY5AU2+
-         iGRg==
+        bh=7Bmd3pdVrVWxilawrCu/zkEt8Cb8PfyWRAOKjsXYIYo=;
+        b=EZGZuI3HLzDa4kZp4yyYRxeYWzBmeY8KqtFtqihYF7QXYWtL7O2X2tQdCaRXb5OgPV
+         oY58+n5BSe2mf0IXxYQrXxTDmTsH1fVrm6Jwfq/iktzPw5wvAbyqxq6aMzaYj71p68dh
+         5uTuh0Aycv4dtH5w3Mst8Fxph2Y8e2pdmilil1GQ9JAzzKgoPkCZ+pgO5ok73rnZvT2E
+         TGqf9DYVRtZexsNnuqg0AoveKioYO3UHrcPEq1MyYkv74f6/WENuANoYyWt30S+q+Ur6
+         ZtgIDroosDazlHk8EgvBDsaqVOp4d/RP5s4iBxeugNXbFoQQEGU0RoxI2EyiK24G284r
+         sdRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700690480; x=1701295280;
+        d=1e100.net; s=20230601; t=1700692090; x=1701296890;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Co9LVBS9UVls7Yfkp1g/G/0zm2miePVKqu+VmR9GULg=;
-        b=lkMpAIN5xHOtQG1Aen5XIPBWM4NUJ0K03HmSHxgXqfay+z0ZY3SKH/PFmxrEgefhfM
-         XzrZsFCnwKt6UbmdsJhVDNnDMN59ilJ53n/yiwvAwAe5H4s/oF86DDbNcfEBdI12jGx+
-         NuxS/1y3JUvYqakG37QASTE/c46xHqffWKeRuf+269C+A87dcSpNXYXsnwTWDpsJPDSw
-         FH2xGNcPeDEJsQV3wCYpuGS7nniMUJv8+0lEt38GXUnTcJB3v7CfS5BYGX4822sz/tp0
-         t7SUrVnbXsT10VljzK+NiZ8+T2GfCfv0wwpjLI9tlTdDBBRj/KWP4hq+DXQx/UBfX3L1
-         blYg==
-X-Gm-Message-State: AOJu0Yy7ZG7Jk3zMaOQjY9PlqWdo8sSPURkwN2akjxhGWdIjqJlzcdVC
-        A4tjt8Ys+oqIsSDloW0b9vSdHw==
-X-Google-Smtp-Source: AGHT+IH4rB5Gnc+aWlXBbdw4olewehGSvln615Pk9fVGk663855Rnwjbt7cGY19KNvWtTEqtko92WA==
-X-Received: by 2002:a05:600c:4514:b0:409:787b:5ab5 with SMTP id t20-20020a05600c451400b00409787b5ab5mr2834278wmo.23.1700690480328;
-        Wed, 22 Nov 2023 14:01:20 -0800 (PST)
+        bh=7Bmd3pdVrVWxilawrCu/zkEt8Cb8PfyWRAOKjsXYIYo=;
+        b=pJjd1u1KflGpHlrsWTtAZOy6vEi7zHevG0FxlzUSzvvfSmZPIb0z+aPMXXyXIEFdqI
+         2JWu06mpFWYlnNMBJKTng9LAjwv70Wwts6Yb/LMDPTeQEeMCkfJ/KDXnsri5DrTg17I/
+         DyDGSz4+sJAh6P40XnkniFSjqSxOnAY8FI6eDOhwMGrz/aTyyPW8eQVJ/Ck1p2Cr7pBg
+         v7SaCkqtOg5dBL1O8RpiUOoPd2bnyBKrOTinuTV6PQjKFeVhZ5P65wRtihauaRQMXSUO
+         5YS2CIPg8lFcpbvC+30mfnHpWQ7XQQdLiVsAFgDYk48lYnRCbeU2PUWoOF2Am8Cv3Ddv
+         tfjA==
+X-Gm-Message-State: AOJu0YwP77k3j40/Rj3cknTYpecl+VKShBpgJ4zcVYVP+feP/n77TaLg
+        nznGYgu0h6LlLIYTKbS+HvAADQ==
+X-Google-Smtp-Source: AGHT+IFG65CfgN+Vv5uDIw1RAb+kqcAw0igfFtjUwEnZOAqH73CaCQxU9uj32XjQnkhzfU3yzx3hGw==
+X-Received: by 2002:a05:6000:184c:b0:332:c646:2e8 with SMTP id c12-20020a056000184c00b00332c64602e8mr2654791wri.44.1700692090224;
+        Wed, 22 Nov 2023 14:28:10 -0800 (PST)
 Received: from airbuntu (host109-151-228-202.range109-151.btcentralplus.com. [109.151.228.202])
-        by smtp.gmail.com with ESMTPSA id u11-20020a05600c19cb00b0040a507f546fsm709634wmq.8.2023.11.22.14.01.19
+        by smtp.gmail.com with ESMTPSA id u9-20020a5d4349000000b003316d1a3b05sm449100wrr.78.2023.11.22.14.28.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 14:01:19 -0800 (PST)
-Date:   Tue, 21 Nov 2023 21:17:25 +0000
+        Wed, 22 Nov 2023 14:28:09 -0800 (PST)
+Date:   Tue, 21 Nov 2023 21:44:15 +0000
 From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
-Subject: Re: [PATCH v3 1/2] sched/schedutil: Rework performance estimation
-Message-ID: <20231121211725.gaekv6svnqdiq5l4@airbuntu>
-References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
- <20231103131821.1176294-2-vincent.guittot@linaro.org>
- <20231114205422.k5m6y4m5vnw7dvzj@airbuntu>
- <CAKfTPtDMEes6V2xRHavAwWrVuiZBdFAsaaxv9=-psAZCTPQWKg@mail.gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH] rcu: Provide a boot time parameter to enable lazy RCU
+Message-ID: <20231121214415.ovoskvbjarzpxi6e@airbuntu>
+References: <20231121205304.315146-1-qyousef@layalina.io>
+ <811b2157-1009-4339-8ff2-0433512f3094@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtDMEes6V2xRHavAwWrVuiZBdFAsaaxv9=-psAZCTPQWKg@mail.gmail.com>
+In-Reply-To: <811b2157-1009-4339-8ff2-0433512f3094@paulmck-laptop>
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_24_48,
         DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
@@ -77,99 +81,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 08:38, Vincent Guittot wrote:
-
-> > > +unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
-> > > +                              unsigned long min,
-> > > +                              unsigned long max)
-> > > +{
-> > > +     struct rq *rq = cpu_rq(cpu);
-> > > +
-> > > +     if (rt_rq_is_runnable(&rq->rt))
-> > > +             return max;
-> >
-> > I think this breaks old behavior. When uclamp_is_used() the frequency of the RT
-> > task is determined by uclamp_min; but you revert this to the old behavior where
-> > we always return max, no? You should check for !uclamp_is_used(); otherwise let
-> > the rest of the function exec as usual.
+On 11/22/23 14:00, Paul E. McKenney wrote:
+> On Tue, Nov 21, 2023 at 08:53:04PM +0000, Qais Yousef wrote:
+> > To allow more flexible opt-in arrangements while still provide a single
+> > kernel for distros, provide a boot time parameter to enable lazy RCU.
+> > 
+> > Specify:
+> > 
+> > 	rcutree.enable_rcu_lazy
+> > 
+> > Which also requires
+> > 
+> > 	rcu_nocbs=all
+> > 
+> > at boot time to enable lazy RCU assuming CONFIG_RCU_LAZY=y. The
+> > parameter will be ignored if CONFIG_RCU_LAZY is not set.
+> > 
+> > With this change now lazy RCU is disabled by default if the boot
+> > parameter is not set even when CONFIG_RCU_LAZY is enabled.
+> > 
+> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+> > ---
+> > 
+> > Makes sense to remove the CONFIG_RCU_LAZY now we have a boot time param?
+> > 
+> > We can make it a static key too if it *really* matters.
+> > 
+> > Thanks to Joel for helping initially in reviewing this patch which was intended
+> > originally for Android.
+> > 
+> > I got some requests to make this a runtime modifiable for init scripts; but
+> > Paul suggested there shall be dragons. So RO it is.
 > 
-> Yes, I made a shortcut assuming that max would be adjusted to the max
-> allowed freq for RT task whereas it's the min freq that is adjusted by
-> uclamp and that should also be adjusted without uclamp. Let me fix
-> that in effective_cpu_util and remove this early return from
-> sugov_effective_cpu_perf()
+> I must defer to the people using this, but my experience is that kernel
+> boot parameters work for some people but not others.  For example,
+> I tried making rcu_nocbs be the only way to say that all CPUs were
+> going to be offloaded, but popular demand resulted in my adding a
+> CONFIG_RCU_NOCB_CPU_DEFAULT_ALL.
+
+Speak of pleasing a crowd.. There's always someone who wants something else :-)
+
+I imagine the difficulty is in some environments it is easier to switch a sysfs
+knob than add a new boot time parameter. And in the absence of a writable sysfs
+node, I can imagine some folks think having a Kconfig to force a default at
+compile time is the 2nd best compared to modifying their boot time parameters..
+
+Either way; I'll follow what the crowd wants too :-)
+
+> 
+> If we cannot be sure that we know everyone using CONFIG_RCU_LAZY=y
+> and expecting full laziness, the safe approach is to make another
+> Kconfig option that defaults to off, but with either setting allowing
+> rcutree.enable_rcu_lazy to override at boot time.
+> 
+> If you can be sure that you know everyone using CONFIG_RCU_LAZY=y
+> is OK with this change, I must confess that I am curious as to how
+> you found them all.
+
+If you let it break and no one shouts..
+
+/me hides
+
+Jokes aside, all options work for me. I'll wait to hear from the other rcu
+gurus what they'd like.
+
+> 
+> Thoughts?
+> 
+> 							Thanx, Paul
+> 
+> >  .../admin-guide/kernel-parameters.txt         |  5 ++++
+> >  kernel/rcu/tree.c                             | 26 ++++++++++++++++++-
+> >  2 files changed, 30 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> > index 65731b060e3f..2f0386a12aa7 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5021,6 +5021,11 @@
+> >  			this kernel boot parameter, forcibly setting it
+> >  			to zero.
+> >  
+> > +	rcutree.enable_rcu_lazy= [KNL]
+> > +			To save power, batch RCU callbacks and flush after
+> > +			delay, memory pressure or callback list growing too
+> > +			big.
+> > +
+> >  	rcuscale.gp_async= [KNL]
+> >  			Measure performance of asynchronous
+> >  			grace-period primitives such as call_rcu().
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index 3ac3c846105f..e0885905b3f6 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -2718,7 +2718,30 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+> >  	}
+> >  }
+> >  
+> > +static bool enable_rcu_lazy;
+> >  #ifdef CONFIG_RCU_LAZY
+> > +/* Enable lazy rcu at boot time */
+> > +static int param_set_rcu_lazy(const char *val, const struct kernel_param *kp)
+> > +{
+> > +	int ret;
+> > +
+> > +	/*
+> > +	 * Make sure a grace period has passed before and after flipping the
+> > +	 * switch.
+> > +	 */
+> > +	rcu_barrier();
+> > +	ret = param_set_bool(val, kp);
+> > +	rcu_barrier();
+> > +
+> > +	return ret;
+> > +}
+> > +static const struct kernel_param_ops rcu_lazy_ops = {
+> > +	.flags = KERNEL_PARAM_OPS_FL_NOARG,
+> > +	.set = param_set_rcu_lazy,
+> > +	.get = param_get_bool,
+> > +};
+> > +module_param_cb(enable_rcu_lazy, &rcu_lazy_ops, &enable_rcu_lazy, 0444);
+> 
+> OK, I will bite...
+> 
+> Given that this is to be set only at boot time, why not replace everything
+> from "#ifdef CONFIG_RCU_LAZY" to here with this?
+> 
+> module_param(enable_rcu_lazy, bool, 0444);
+
+No need for the rcu_barrier() then? Only reason why we use the _cb flavour
+
+> And then maybe also a __read_mostly on the definition of enable_rcu_lazy?
 
 +1
 
-> > Can we rename this function please? It is not mapping anything, but applying
-> > a dvfs headroom (I suggest apply_dvfs_headroom()). Which would make the comment
-> > also unnecessary ;-)
-> 
-> I didn't want to add unnecessary renaming which often confuses
-> reviewers so I kept  the current function name. But this can the be
-> rename in a follow up patch
-
-Okay.
-
-> > >  static void sugov_get_util(struct sugov_cpu *sg_cpu)
-> > >  {
-> > > -     unsigned long util = cpu_util_cfs_boost(sg_cpu->cpu);
-> > > -     struct rq *rq = cpu_rq(sg_cpu->cpu);
-> > > +     unsigned long min, max, util = cpu_util_cfs_boost(sg_cpu->cpu);
-> > >
-> > > -     sg_cpu->bw_dl = cpu_bw_dl(rq);
-> > > -     sg_cpu->util = effective_cpu_util(sg_cpu->cpu, util,
-> > > -                                       FREQUENCY_UTIL, NULL);
-> > > +     util = effective_cpu_util(sg_cpu->cpu, util, &min, &max);
-> > > +     sg_cpu->bw_min = map_util_perf(min);
-> >
-> > Hmm. I don't think we need to apply_dvfs_headroom() to min here. What's the
-> > rationale to give headroom for min perf requirement? I think the headroom is
-> > only required for actual util.
-> 
-> This headroom only applies for bw_min that is used with
-> cpufreq_driver_adjust_perf(). Currently it only takes cpu_bw_dl()
-
-It is also used in ignore_dl_rate_limit() - which is the user that caught my
-eyes more.
-
-I have to admit, I always get caught out with the new adjust_perf stuff. The
-down side of working on older LTS kernels for prolonged time :p
-
-> which seems too low because IRQ can preempt DL. So I added the average
-> irq utilization into bw_min which is only an estimate and needs some
-> headroom. That being said I can probably stay with current behavior
-> for now and remove headroom
-
-I think this is more logical IMHO. DL should never need any headroom. And irq
-needing headroom is questionable everytime I think about it. Does an irq storm
-need a dvfs headroom? I don't think it's a clear cut answer, but I tend towards
-no.
-
-> > And is it right to mix irq and uclamp_min with bw_min which is for DL? We might
-> 
-> cpu_bw_dl() is not the actual utilization by DL task but the computed
-> bandwidth which can be seen as min performance level
-
-Yep. That's why I am not in favour of a dvfs headroom for DL.
-
-But what I meant here is that in effective_cpu_util(), where we populate min
-and max we have
-
-	if (min) {
-	        /*
-	         * The minimum utilization returns the highest level between:
-	         * - the computed DL bandwidth needed with the irq pressure which
-	         *   steals time to the deadline task.
-	         * - The minimum performance requirement for CFS and/or RT.
-	         */
-	        *min = max(irq + cpu_bw_dl(rq), uclamp_rq_get(rq, UCLAMP_MIN));
-
-So if there was an RT/CFS task requesting a UCLAMP_MIN of 1024 for example,
-bw_min will end up being too high, no?
-
-Should we add another arg to sugov_effective_cpu_perf() to populate bw_min too
-for the single user who wants it?
+I think the READ_ONCE() was unnecessary too.
 
 
 Thanks!
