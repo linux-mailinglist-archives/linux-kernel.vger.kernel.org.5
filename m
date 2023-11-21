@@ -2,266 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD6A7F27C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 097A97F27C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjKUInY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
+        id S230240AbjKUIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUInV (ORCPT
+        with ESMTP id S231546AbjKUInh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:43:21 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B33DBD;
-        Tue, 21 Nov 2023 00:43:16 -0800 (PST)
-Date:   Tue, 21 Nov 2023 08:43:13 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700556194;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/3qHMjH7PN5+aoDWymVoSkp5TqnmTcRNXzTOGo5U5b8=;
-        b=gB+cgj9J5qOGtZXXuRC/HqfixbziG2FE8D1hlLhqFEo+1XVZdWbpPTdoiabVCrzzJYuQfO
-        FCjiNFxrZqZHVJrs3i6P75Y9qpXmfnFHeoiBq3FiU2gr/bgPV07ObFUoBHyDA+UQju+i2R
-        sgsQRvksxP+k6D62/c2orT3/F5b0wKIjENsqOBRSfX0jeNinsOY9ob/jzCH1enPGD4FKCy
-        ozEpOqYIfakko03lvYN6fk7n7GArXOfL2Tb2s144qV/Eiek0iMSfUx1yhog9YgmkTK+o2b
-        DZEn9uxoKE4eZazi6JTNOIFLAulLzRQxfM/DTIPSwjqIf3apRgX7GkfnsCv0hw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700556194;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/3qHMjH7PN5+aoDWymVoSkp5TqnmTcRNXzTOGo5U5b8=;
-        b=L4Axm/Kwk/J0BQCKxY02NYtbF/5gDdkuGSOcEEMDzIlBBHFubJj3120O9rZ7RJVbD+QYEk
-        C0aHWBrHG3KijPCw==
-From:   "tip-bot2 for Andrew Cooper" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/apic] x86/apic: Drop apic::delivery_mode
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231102-x86-apic-v1-1-bf049a2a0ed6@citrix.com>
-References: <20231102-x86-apic-v1-1-bf049a2a0ed6@citrix.com>
+        Tue, 21 Nov 2023 03:43:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB41D4B
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:43:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700556210; x=1732092210;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZvXdjvxl4OFx/rOJ2HyXP09UhjsWaOEHhJzpQc00a48=;
+  b=UWgXUeZPPDsQ5cxEDHQLg3nDj+BlYtgr6YnEhGKGoRpT6ALE1fU2UaAL
+   4+Dr9wH0/dsRa4lLua2WQ5r+hS7YoaAgsHu6LwofrGX6u0yGtB7pb+LmH
+   RtHPUZAYYILtTwUyfTqANvUkc+mciN0PvYxm/dwMVZPkf3XzMfvCOFKnn
+   FLwGzsxEQzS+IOg3TyD9YoHhL4X6JSqPXugsGtZrPvyW+l4yFcMqlVG1s
+   106tDb0uM67aznLNbJY94IMPp8YArVN/QJ3ZbkdJQlCASHLgtvAhz2V0F
+   SxRKgdbgOamtcYmDeOMRQSzzmJvvSrTdTXGqSgPyp0fsqmD8nqX55mxJB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="4919947"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="4919947"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 00:43:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="1097998545"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="1097998545"
+Received: from ikosarev-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.40.84])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 00:43:24 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 7AD2510A36E; Tue, 21 Nov 2023 11:43:21 +0300 (+03)
+Date:   Tue, 21 Nov 2023 11:43:21 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, ltao@redhat.com,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 00/14] x86/tdx: Add kexec support
+Message-ID: <20231121084321.t44ntae5ohslgrme@box.shutemov.name>
+References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+ <ZVYGx1EwzjXbTEyX@MiWiFi-R3L-srv>
+ <20231116125612.daxettqcapled7ac@box.shutemov.name>
+ <ZVYkdI74X8acDtTq@MiWiFi-R3L-srv>
+ <ZVYrA+Ks0DGFo/0p@MiWiFi-R3L-srv>
+ <20231117124748.umfuc3no2qvh4shj@box.shutemov.name>
+ <ZVeApN4lDqTLu7ma@MiWiFi-R3L-srv>
+ <20231117154632.zvi6g6lblmtvikzt@box>
+ <ZVxRBLsQcv8KRasA@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-Message-ID: <170055619380.398.4920358369820385873.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZVxRBLsQcv8KRasA@MiWiFi-R3L-srv>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/apic branch of tip:
+On Tue, Nov 21, 2023 at 02:41:08PM +0800, Baoquan He wrote:
+> > > 
+> > > Still failed. And I found the normal reboot does't work either. I will
+> > > do more testing tomorrow, e.g use the tdx-tools's own rhel9 kernel
+> > > config and rebuild, and update host kernel too.
+> 
+> I did more tests, resuls are summarized as below: 
+> 
+> 1) kexec reboot works, but always fallback to 1 cpu even though multiple
+> cpus are specified;
 
-Commit-ID:     b5148dfe66f5b04fdf85fbd3d0954e83792fa36c
-Gitweb:        https://git.kernel.org/tip/b5148dfe66f5b04fdf85fbd3d0954e83792fa36c
-Author:        Andrew Cooper <andrew.cooper3@citrix.com>
-AuthorDate:    Thu, 02 Nov 2023 12:26:19 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 21 Nov 2023 09:37:30 +01:00
+That's expected. Until you have new BIOS. See below.
 
-x86/apic: Drop apic::delivery_mode
+> 2) kdump kernel need more crashkernel memory to boot up,
+>    crashkernel=512M works well in our case.
 
-This field is set to APIC_DELIVERY_MODE_FIXED in all cases, and is read
-exactly once.  Fold the constant in uv_program_mmr() and drop the field.
+I guess it is due to SWIOTLB memory which requres at least 64M.
 
-Searching for the origin of the stale HyperV comment reveals commit
-a31e58e129f7 ("x86/apic: Switch all APICs to Fixed delivery mode") which
-notes:
+>  But it failed in vmcore
+>    saving process, either makedumpfile or cp can't access the 1st
+>    kernel's old memory;
 
-  As a consequence of this change, the apic::irq_delivery_mode field is
-  now pointless, but this needs to be cleaned up in a separate patch.
+Will look into it.
 
-6 years is long enough for this technical debt to have survived.
+> 3) Normal reboot always failed;
 
-Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
-Link: https://lore.kernel.org/r/20231102-x86-apic-v1-1-bf049a2a0ed6@citrix.com
+It is expected. TD vCPUs are not resettable. So we need to destroy TD and
+construct a new one to emulate "reboot".
 
+I guess we can try to add some glue on QEMU side to make reboot more
+seamless.
 
----
- arch/x86/include/asm/apic.h           | 2 --
- arch/x86/kernel/apic/apic_flat_64.c   | 2 --
- arch/x86/kernel/apic/apic_noop.c      | 1 -
- arch/x86/kernel/apic/apic_numachip.c  | 2 --
- arch/x86/kernel/apic/bigsmp_32.c      | 1 -
- arch/x86/kernel/apic/probe_32.c       | 1 -
- arch/x86/kernel/apic/x2apic_cluster.c | 1 -
- arch/x86/kernel/apic/x2apic_phys.c    | 1 -
- arch/x86/kernel/apic/x2apic_uv_x.c    | 1 -
- arch/x86/platform/uv/uv_irq.c         | 2 +-
- drivers/pci/controller/pci-hyperv.c   | 7 -------
- 11 files changed, 1 insertion(+), 20 deletions(-)
+> My colleague Tao helped to double check this, he got the same testing result.
+> Plesae 
+> 1) what can we do to enable the multiple cpu support for kexec reboot?
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index d21f48f..9d159b7 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -272,8 +272,6 @@ struct apic {
- 	void	(*send_IPI_all)(int vector);
- 	void	(*send_IPI_self)(int vector);
- 
--	enum apic_delivery_modes delivery_mode;
--
- 	u32	disable_esr		: 1,
- 		dest_mode_logical	: 1,
- 		x2apic_set_max_apicid	: 1,
-diff --git a/arch/x86/kernel/apic/apic_flat_64.c b/arch/x86/kernel/apic/apic_flat_64.c
-index 7139867..b295a05 100644
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -82,7 +82,6 @@ static struct apic apic_flat __ro_after_init = {
- 	.acpi_madt_oem_check		= flat_acpi_madt_oem_check,
- 	.apic_id_registered		= default_apic_id_registered,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= true,
- 
- 	.disable_esr			= 0,
-@@ -154,7 +153,6 @@ static struct apic apic_physflat __ro_after_init = {
- 	.acpi_madt_oem_check		= physflat_acpi_madt_oem_check,
- 	.apic_id_registered		= default_apic_id_registered,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/apic_noop.c b/arch/x86/kernel/apic/apic_noop.c
-index b00d52a..9f1d553 100644
---- a/arch/x86/kernel/apic/apic_noop.c
-+++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -47,7 +47,6 @@ static void noop_apic_write(u32 reg, u32 val)
- struct apic apic_noop __ro_after_init = {
- 	.name				= "noop",
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= true,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/apic_numachip.c b/arch/x86/kernel/apic/apic_numachip.c
-index 456a14c..7d0c51b 100644
---- a/arch/x86/kernel/apic/apic_numachip.c
-+++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -222,7 +222,6 @@ static const struct apic apic_numachip1 __refconst = {
- 	.probe				= numachip1_probe,
- 	.acpi_madt_oem_check		= numachip1_acpi_madt_oem_check,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 0,
-@@ -259,7 +258,6 @@ static const struct apic apic_numachip2 __refconst = {
- 	.probe				= numachip2_probe,
- 	.acpi_madt_oem_check		= numachip2_acpi_madt_oem_check,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/bigsmp_32.c b/arch/x86/kernel/apic/bigsmp_32.c
-index 7ee3c48..5a0d60b 100644
---- a/arch/x86/kernel/apic/bigsmp_32.c
-+++ b/arch/x86/kernel/apic/bigsmp_32.c
-@@ -80,7 +80,6 @@ static struct apic apic_bigsmp __ro_after_init = {
- 	.name				= "bigsmp",
- 	.probe				= probe_bigsmp,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 1,
-diff --git a/arch/x86/kernel/apic/probe_32.c b/arch/x86/kernel/apic/probe_32.c
-index 5eb3fbe..c0f7805 100644
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -45,7 +45,6 @@ static struct apic apic_default __ro_after_init = {
- 	.probe				= probe_default,
- 	.apic_id_registered		= default_apic_id_registered,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= true,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/x2apic_cluster.c b/arch/x86/kernel/apic/x2apic_cluster.c
-index a830608..28a7d3f 100644
---- a/arch/x86/kernel/apic/x2apic_cluster.c
-+++ b/arch/x86/kernel/apic/x2apic_cluster.c
-@@ -227,7 +227,6 @@ static struct apic apic_x2apic_cluster __ro_after_init = {
- 	.probe				= x2apic_cluster_probe,
- 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= true,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/x2apic_phys.c b/arch/x86/kernel/apic/x2apic_phys.c
-index 558a4a8..409815a 100644
---- a/arch/x86/kernel/apic/x2apic_phys.c
-+++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -145,7 +145,6 @@ static struct apic apic_x2apic_phys __ro_after_init = {
- 	.probe				= x2apic_phys_probe,
- 	.acpi_madt_oem_check		= x2apic_acpi_madt_oem_check,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index 1b0d733..f1766b1 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -805,7 +805,6 @@ static struct apic apic_x2apic_uv_x __ro_after_init = {
- 	.probe				= uv_probe,
- 	.acpi_madt_oem_check		= uv_acpi_madt_oem_check,
- 
--	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
- 	.dest_mode_logical		= false,
- 
- 	.disable_esr			= 0,
-diff --git a/arch/x86/platform/uv/uv_irq.c b/arch/x86/platform/uv/uv_irq.c
-index 4221259..a379501 100644
---- a/arch/x86/platform/uv/uv_irq.c
-+++ b/arch/x86/platform/uv/uv_irq.c
-@@ -35,7 +35,7 @@ static void uv_program_mmr(struct irq_cfg *cfg, struct uv_irq_2_mmr_pnode *info)
- 	mmr_value = 0;
- 	entry = (struct uv_IO_APIC_route_entry *)&mmr_value;
- 	entry->vector		= cfg->vector;
--	entry->delivery_mode	= apic->delivery_mode;
-+	entry->delivery_mode	= APIC_DELIVERY_MODE_FIXED;
- 	entry->dest_mode	= apic->dest_mode_logical;
- 	entry->polarity		= 0;
- 	entry->trigger		= 0;
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 30c7dfe..1eaffff 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -650,13 +650,6 @@ static void hv_arch_irq_unmask(struct irq_data *data)
- 			   PCI_FUNC(pdev->devfn);
- 	params->int_target.vector = hv_msi_get_int_vector(data);
- 
--	/*
--	 * Honoring apic->delivery_mode set to APIC_DELIVERY_MODE_FIXED by
--	 * setting the HV_DEVICE_INTERRUPT_TARGET_MULTICAST flag results in a
--	 * spurious interrupt storm. Not doing so does not seem to have a
--	 * negative effect (yet?).
--	 */
--
- 	if (hbus->protocol_version >= PCI_PROTOCOL_VERSION_1_2) {
- 		/*
- 		 * PCI_PROTOCOL_VERSION_1_2 supports the VP_SET version of the
+You would need a patched BIOS image. I've hacked one[1] for my testing.
+But it only works if kernel runs in 4-level paging mode (specify no5lvl in
+kernel command line).
+
+BIOS folks work on proper patch, but it is not ready yet.
+
+[1] https://gist.github.com/kiryl/e1dc1719e0c990b3ceee5d8de8dbf332
+
+> 2) anything missing to allow makedumpfile/cp access 1st kernel's memory?
+
+It worked before for us, but I have not checked for a while.
+
+I expected you've dropped my "if (crash) return;" debug patch I asked you
+to tested before, right? If not, failure is expected.
+
+> 3) not sure if this is particular case on the system we tested on.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
