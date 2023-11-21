@@ -2,174 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D6A7F2A6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C61E7F2A6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjKUKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S232960AbjKUKbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:31:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233821AbjKUKbh (ORCPT
+        with ESMTP id S233832AbjKUKbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:31:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8239A191
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:21:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B75AC433CD;
-        Tue, 21 Nov 2023 10:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700562110;
-        bh=nqEMNBsAq/aTxYyPQlr2WLtFqb7Pl5m3A4FfNF84E8g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HEqYYQMBl03x5OuP94qI3xfFCQr5Oa5dmhEyrfHTXy+17YLKFqhNNj+IrZAqEcW1G
-         HNS/gbo06qEIM23PbXQV55+3j/OZw71FooAo30OXXOojU6lABzjVRunpQjGNKjcLJA
-         X5lRH2ppBoFuxdkPfSBq9YXDyciTGNuFHFxgwdCxsmCENDlC077yIvTIDpMYdBzoSJ
-         MsHUZRhPUbs1fmRXS/MdQcvLIs2mhAogSJTV2X+tnWPRfL9Z+JtIyxmhf414jrVvvQ
-         5k0FO/W58+NOzLYUWlHBI0o5OtOIBKFM37cD5iupgQ8ntb3ZiZLAKOnZS/uwly5zcB
-         xLkF6UCpyP+0w==
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ce322b62aeso2881086a34.3;
-        Tue, 21 Nov 2023 02:21:50 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxf6WBjXCEu3L03LD9hCWID4cyc3J1yGSDHQK8dryuWA7ZN/4Fp
-        YJ2hPHHzVdRvnHhL5MB2Hz0hkbubd0rH+Jl3Cns=
-X-Google-Smtp-Source: AGHT+IE0VzmuYiYA+diTPNkp5V/jzc7Rz44WQqSAJOeWjWPJG72xt/yM1+V68Kh1Hop+Qb5PpmHga87IbgrZSU5E6T8=
-X-Received: by 2002:a05:6871:b415:b0:1e9:68b5:d418 with SMTP id
- br21-20020a056871b41500b001e968b5d418mr8549006oac.34.1700562109483; Tue, 21
- Nov 2023 02:21:49 -0800 (PST)
+        Tue, 21 Nov 2023 05:31:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9015D18E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700562117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cfNnWg07vc4dtfhe3jy2IEWts0b85w4zN19C29eJ7XI=;
+        b=WhexbCvX1v3/0nJb/93UuUE9DBcgIltj0iTEHITtABjEZuHrd4c5fCfPQE7fz1Xa/cebtp
+        yBMY81iNjK/VCEU46GDIy2aHl25e3QklecQK3TWnaQZPeWT7+/F72G0MQ/H7icmADG+aCM
+        wlRA+TUkspvZkhKODdlEPEQvNKStXKg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-251-8lwfXGSIM2msIORfI6T1ZA-1; Tue, 21 Nov 2023 05:21:55 -0500
+X-MC-Unique: 8lwfXGSIM2msIORfI6T1ZA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a01a0032b19so44661266b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:21:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700562114; x=1701166914;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cfNnWg07vc4dtfhe3jy2IEWts0b85w4zN19C29eJ7XI=;
+        b=ON+/g5o/wbdFsMPfHYBRxB20yU8UaC9OWgLwTdQkw+Pjm3PsbkMOgGGIdUQnK6ZyLX
+         1Q0DAe41sjdP2OKLFydS5v/LOXvUCUaAS4R7fEsEkW/5WSuExRGzAzVsiqqrtTborvNk
+         A+g5ph7reeJhv4bhsGbq0U1M/3juzJ0pb+Fjz8CgcJLfCH4kVvS7nMAypvzpk579Nw3q
+         4RfcKTtddUxT/fQXzlOfd8mkDuo/VyJMCJzFeJdtD0Btq6goRB4tfci/Ff8E4biyb6CV
+         6mtXGktHK2iNcYtCaKCKWVFQI7l41Pg0oLzWGUZwM9z3GBru4laxLPMRym1HehL5MfZq
+         0uuw==
+X-Gm-Message-State: AOJu0YwZL89RMzCv0H+mnRqgrTGhX5gnu/BXSzoCua2Nvc8/gueAvpsy
+        v6676JtCW3dp0qoA9iRr6eE4DANh3LN4uiaNgp9xivoC7q1Ajj0sCfrbjAkFmmAN/PDHNR9TqAR
+        xmQvKSqbiJhwwefkGqXJPaPTc
+X-Received: by 2002:a17:907:1ca8:b0:9e0:dcf:17d5 with SMTP id nb40-20020a1709071ca800b009e00dcf17d5mr7731227ejc.43.1700562114694;
+        Tue, 21 Nov 2023 02:21:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEnHTpYS1U3kUu2OxwPrgQY0GNCk/I3WSIYHNlFXhVd6SF9XinJx3fI1AP0AiDEyfy1o76dMw==
+X-Received: by 2002:a17:907:1ca8:b0:9e0:dcf:17d5 with SMTP id nb40-20020a1709071ca800b009e00dcf17d5mr7731209ejc.43.1700562114388;
+        Tue, 21 Nov 2023 02:21:54 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id g9-20020a170906520900b009faca59cf38sm3718947ejm.182.2023.11.21.02.21.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 02:21:53 -0800 (PST)
+Message-ID: <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
+Date:   Tue, 21 Nov 2023 11:21:53 +0100
 MIME-Version: 1.0
-References: <20231120222832.4063882-1-masahiroy@kernel.org> <20231120222832.4063882-2-masahiroy@kernel.org>
-In-Reply-To: <20231120222832.4063882-2-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 21 Nov 2023 19:21:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATK3BVDZ88v7MWjzOk3Kv8CR4Tz_k77yi1OO=zc+71j=g@mail.gmail.com>
-Message-ID: <CAK7LNATK3BVDZ88v7MWjzOk3Kv8CR4Tz_k77yi1OO=zc+71j=g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: pinconf-generic: resize the pin config array directly
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>, linux-gpio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: sysfs: cannot create duplicate filename
+ .../system76_acpi::kbd_backlight/color
+Content-Language: en-US, nl
+To:     Takashi Iwai <tiwai@suse.de>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        =?UTF-8?Q?Johannes_Pen=C3=9Fel?= <johannes.penssel@gmail.com>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+ <ZT25-gUmLl8MPk93@debian.me>
+ <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+ <ZUjnzB2RL2iLzIQG@debian.me> <87sf50pm34.wl-tiwai@suse.de>
+ <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+ <87edgjo2kr.wl-tiwai@suse.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <87edgjo2kr.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 7:28=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> pinconf_generic_parse_dt_config() allocates memory that is large enough
-> to contain all the config parameters. Then, kmemdup() copies the found
-> configs to the memory with the exact size.
->
-> There is no need to allocate memory twice; you can directly resize the
-> initial memory using krealloc_array().
->
-> I also changed kcalloc() to kmalloc_array() to keep the consistency with
-> krealloc_array(). This change has no impact because you do not need to
-> zero out the 'cfg' array.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi,
+
+On 11/21/23 10:52, Takashi Iwai wrote:
+> On Tue, 21 Nov 2023 10:19:03 +0100,
+> Thorsten Leemhuis wrote:
+>>
+>> Takashi, Jean-Jacques Hiblot, Lee,
+>>
+>> On 20.11.23 14:53, Takashi Iwai wrote:
+>>> On Mon, 06 Nov 2023 14:19:08 +0100,
+>>> Bagas Sanjaya wrote:
+>>>> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+>>>>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+>>>>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+>>>>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+>>>>>>
+>>>>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+>>>>>> since you authored the culprit?
+>>>
+>>>>> The offending commit stores the color in struct led_classdev and exposes it
+>>>>> via sysfs. It was part of a series that create a RGB leds from multiple
+>>>>> single-color LEDs. for this series, we need the color information but we
+>>>>> don't really need to expose it it via sysfs. In order to fix the issue, we
+>>>>> can remove the 'color' attribute from the sysfs.
+>>>>
+>>>> OK, see you in the patch!
+>>>
+>>> Is there a patch available?
+>>
+>> Not that I know of. Could not find anything on lore either.
+>>
+>>> This bug hits for a few Logitech keyboard models, too, and it makes
+>>> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+>>> this bug:
+>>>   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+>>>
+>>> We need a quick fix for 6.6.x.
+>>
+>> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+>> committed it and sent it to Linus) know about this for a while already
+>> without doing anything about it, I wonder if someone should just send a
+>> revert to Linus (unless of course that is likely to introduce a
+>> regression on its own).
+>>
+>> Takashi, could you maybe do this, unless a fix shows up real soon?
+> 
+> I can, but we need to decide which way to go.
+> There are several options:
+> 
+> 1. Revert the commit c7d80059b086;
+>    this drops led class color sysfs entries.  Also the store of
+>    led_cdev->color from fwnode is dropped, too.
+> 
+> 2. Drop only led class color sysfs entries;
+>    a partial revert of c7d80059b086 above
+
+AFAIK further up in the thread (or a related thread) there
+already was consensus to do this. Someone just needs to
+write the patch.
+
+> 3. Rename conflicting sysfs entries in drivers;
+>    e.g. color -> kb_color for hid-lg-g15 and system76_acpi
+> 
+> In either way, we'd break user-space (sysfs).
+
+The new color attribute causing the conflict has only
+been in 6.6 so there likely aren't any users of it yet
+and since dropping it would be backported to 6.6.y
+there shouldn't be any future users of it either, since
+any 6.6 users presumably will use 6.6.y and not 6.6.0
+
+> IMO, 2 would be the least harm, as the class sysfs entry was
+> introduced since 6.6.
+
+Ack.
+
+> I guess this is what Jean-Jacques suggested.
+
+Right.
+
+> But I'm not sure how important this new class sysfs entry is; it has
+> to be clarified from leds people who actually use / wanted the
+> feature.
+
+If I have read the thread correctly it is not important the value
+it represents is used internally in the LED subsystem and userspace
+does not really need it.
+
+Regards,
+
+Hans
 
 
 
-Sorry, I retract this patch set.
-
-krealloc() does not save any memory
-when the new_size is smaller than the current size.
-
-
-
-
-
-
-
-
-
-
-
-
-
-> ---
->
->  drivers/pinctrl/pinconf-generic.c | 25 ++++++++-----------------
->  1 file changed, 8 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/pinctrl/pinconf-generic.c b/drivers/pinctrl/pinconf-=
-generic.c
-> index 8313cb5f3b3c..ba4fe2466e78 100644
-> --- a/drivers/pinctrl/pinconf-generic.c
-> +++ b/drivers/pinctrl/pinconf-generic.c
-> @@ -247,7 +247,6 @@ int pinconf_generic_parse_dt_config(struct device_nod=
-e *np,
->  {
->         unsigned long *cfg;
->         unsigned int max_cfg, ncfg =3D 0;
-> -       int ret;
->
->         if (!np)
->                 return -EINVAL;
-> @@ -256,7 +255,7 @@ int pinconf_generic_parse_dt_config(struct device_nod=
-e *np,
->         max_cfg =3D ARRAY_SIZE(dt_params);
->         if (pctldev)
->                 max_cfg +=3D pctldev->desc->num_custom_params;
-> -       cfg =3D kcalloc(max_cfg, sizeof(*cfg), GFP_KERNEL);
-> +       cfg =3D kmalloc_array(max_cfg, sizeof(*cfg), GFP_KERNEL);
->         if (!cfg)
->                 return -ENOMEM;
->
-> @@ -266,30 +265,22 @@ int pinconf_generic_parse_dt_config(struct device_n=
-ode *np,
->                 parse_dt_cfg(np, pctldev->desc->custom_params,
->                              pctldev->desc->num_custom_params, cfg, &ncfg=
-);
->
-> -       ret =3D 0;
-> -
->         /* no configs found at all */
->         if (ncfg =3D=3D 0) {
-> +               kfree(cfg);
->                 *configs =3D NULL;
->                 *nconfigs =3D 0;
-> -               goto out;
-> +               return 0;
->         }
->
-> -       /*
-> -        * Now limit the number of configs to the real number of
-> -        * found properties.
-> -        */
-> -       *configs =3D kmemdup(cfg, ncfg * sizeof(unsigned long), GFP_KERNE=
-L);
-> -       if (!*configs) {
-> -               ret =3D -ENOMEM;
-> -               goto out;
-> -       }
-> +       /* Now resize the array to store the real number of found propert=
-ies. */
-> +       *configs =3D krealloc_array(cfg, ncfg, sizeof(unsigned long), GFP=
-_KERNEL);
-> +       if (!*configs)
-> +               return -ENOMEM;
->
->         *nconfigs =3D ncfg;
->
-> -out:
-> -       kfree(cfg);
-> -       return ret;
-> +       return 0;
->  }
->  EXPORT_SYMBOL_GPL(pinconf_generic_parse_dt_config);
->
-> --
-> 2.40.1
->
-
-
---=20
-Best Regards
-Masahiro Yamada
