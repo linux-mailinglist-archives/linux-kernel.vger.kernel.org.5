@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B177F28CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3ED27F28D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbjKUJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        id S233661AbjKUJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233597AbjKUJXl (ORCPT
+        with ESMTP id S233617AbjKUJXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:23:41 -0500
+        Tue, 21 Nov 2023 04:23:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263B510C0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:23:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50BFFC433BD;
-        Tue, 21 Nov 2023 09:23:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D511A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:23:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06674C43391;
+        Tue, 21 Nov 2023 09:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700558603;
-        bh=+5n2mUpG4q3myzhvyd7KfFL/hxg0CFLJ/PmuTSTaY6A=;
+        s=k20201202; t=1700558605;
+        bh=422VxiK87dzWUOJytz3EHqN1a+RdqnMf/xYBks1K7os=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ljq1V0RC2KP6ws3XfIFi2ZR28B0v5Bfu38nZAOFsLytKLElqcxHwreJJQLxWZ+fri
-         mWSMDDvPs64Aof9bEcPnM6TRuWBTy6YOzLt5yZUy3MqiUdh74Iyne4CQryja0MK6DC
-         WW+HJ6KY+9qIRLpdDaiBqHyNQgxwzYbL+77WrZM2DtKVU824khjepG0Sfqt/9BCMb6
-         Up2caehfFcZlTOCyI9KomPdNrrUHfY9h8wDItDtRiHa/2GIAw5UGnOtwrcUJh4Q1+j
-         u/WCFpblEnv7exzQktl2l7+Y04/Xlv/eIRTeaQsfQh8IoFf1+L9BdNJg/d1Pcljsn/
-         +rohHZM+ihVlg==
+        b=WIeSXUZT5Zd5gFDKfkN2dEKBartK8soImgPbg3Uw3mVQJGUDkMXZjRr1FVhiWsEBf
+         mI01vMF8t9qicENnYiI8BcFj0H5r9gHIPA6fM3DLtQTboflHR77aRN8HXEWwBiduvJ
+         EwhIrWEMWNmKMAy476pHRxEUgq/PNfx3VwHRkuYdplHm7VmlqcCuGr6eJq8i6Mg9v3
+         XAPHv9sA7Gi7FqPgIusC9aKm3YX1piTyGc+IqlITUw3N3u4DGEBlNG15EUpkBsGS4j
+         tP6mb8x8tSnUy84ZCeDHhxXkUFHFS0MV7FPHmCc9fb604bzuiQr998K6BHVcQiipxh
+         cOAWxcm3u32cA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 11/17] tty: hvc_console: use flexible array for outbuf
-Date:   Tue, 21 Nov 2023 10:22:52 +0100
-Message-ID: <20231121092258.9334-12-jirislaby@kernel.org>
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Subject: [PATCH 12/17] tty: nozomi: remove unused debugging DUMP()
+Date:   Tue, 21 Nov 2023 10:22:53 +0100
+Message-ID: <20231121092258.9334-13-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231121092258.9334-1-jirislaby@kernel.org>
 References: <20231121092258.9334-1-jirislaby@kernel.org>
@@ -50,66 +49,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This means:
-* move outbuf to the end of struct hvc_struct and convert from pointer
-  to flexible array (the structure is smaller now)
-* use struct_size() at the allocation site
-* align outbuf in the struct instead of ALIGN() at kzalloc()
-
-And apart from the above, use u8 instead of char (which are the same
-thanks to -funsigned-char). The former is now preferred over the latter.
-
-It makes the code easier to understand.
+DUMP()'s only use is commented out. Remove the macro completely along
+with this unused use.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org
 ---
- drivers/tty/hvc/hvc_console.c | 4 +---
- drivers/tty/hvc/hvc_console.h | 2 +-
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/tty/nozomi.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
 
-diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-index 959fae54ca39..93b613e1f176 100644
---- a/drivers/tty/hvc/hvc_console.c
-+++ b/drivers/tty/hvc/hvc_console.c
-@@ -922,8 +922,7 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
- 			return ERR_PTR(err);
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index 02cd40147b3a..b247341bd12f 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -65,24 +65,8 @@ do {							\
+ #define DBG3(args...) DBG_(0x04, ##args)
+ #define DBG4(args...) DBG_(0x08, ##args)
+ 
+-/* TODO: rewrite to optimize macros... */
+-
+ #define TMP_BUF_MAX 256
+ 
+-#define DUMP(buf__, len__)						\
+-	do {								\
+-		char tbuf[TMP_BUF_MAX] = {0};				\
+-		if (len__ > 1) {					\
+-			u32 data_len = min_t(u32, len__, TMP_BUF_MAX);	\
+-			strscpy(tbuf, buf__, data_len);			\
+-			if (tbuf[data_len - 2] == '\r')			\
+-				tbuf[data_len - 2] = 'r';		\
+-			DBG1("SENDING: '%s' (%d+n)", tbuf, len__);	\
+-		} else {						\
+-			DBG1("SENDING: '%s' (%d)", tbuf, len__);	\
+-		}							\
+-	} while (0)
+-
+ /*    Defines */
+ #define NOZOMI_NAME		"nozomi"
+ #define NOZOMI_NAME_TTY		"nozomi_tty"
+@@ -754,8 +738,6 @@ static int send_data(enum port_type index, struct nozomi *dc)
+ 		return 0;
  	}
  
--	hp = kzalloc(ALIGN(sizeof(*hp), sizeof(long)) + outbuf_size,
--			GFP_KERNEL);
-+	hp = kzalloc(struct_size(hp, outbuf, outbuf_size), GFP_KERNEL);
- 	if (!hp)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -931,7 +930,6 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
- 	hp->data = data;
- 	hp->ops = ops;
- 	hp->outbuf_size = outbuf_size;
--	hp->outbuf = &((char *)hp)[ALIGN(sizeof(*hp), sizeof(long))];
- 
- 	tty_port_init(&hp->port);
- 	hp->port.ops = &hvc_port_ops;
-diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
-index 9668f821db01..b718714bf399 100644
---- a/drivers/tty/hvc/hvc_console.h
-+++ b/drivers/tty/hvc/hvc_console.h
-@@ -37,7 +37,6 @@ struct hvc_struct {
- 	spinlock_t lock;
- 	int index;
- 	int do_wakeup;
--	char *outbuf;
- 	int outbuf_size;
- 	int n_outbuf;
- 	uint32_t vtermno;
-@@ -48,6 +47,7 @@ struct hvc_struct {
- 	struct work_struct tty_resize;
- 	struct list_head next;
- 	unsigned long flags;
-+	u8 outbuf[] __aligned(sizeof(long));
- };
- 
- /* implemented by a low level driver */
+-	/* DUMP(buf, size); */
+-
+ 	/* Write length + data */
+ 	write_mem32(addr, (u32 *) &size, 4);
+ 	write_mem32(addr + 4, (u32 *) dc->send_buf, size);
 -- 
 2.42.1
 
