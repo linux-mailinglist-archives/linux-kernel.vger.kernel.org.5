@@ -2,154 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAC07F26F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675A47F26F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjKUII6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 03:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
+        id S229886AbjKUIJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:09:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKUIIz (ORCPT
+        with ESMTP id S229620AbjKUIJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:08:55 -0500
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4759FBB;
-        Tue, 21 Nov 2023 00:08:52 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-507a55302e0so7610638e87.0;
-        Tue, 21 Nov 2023 00:08:52 -0800 (PST)
+        Tue, 21 Nov 2023 03:09:08 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5F8112
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:09:04 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-548db776f6cso6735a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:09:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700554143; x=1701158943; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HKicp15faTy9dxr+lo3vJn4RmNCBFdNPH9aMUCXaj3A=;
+        b=COEgIEDEqYeeTZAhnrdzaWBpwGIcQGx/OrLX5I+ZGW7BBzOGRa1KgP+YLh+UVpJ0TB
+         yA2g/2jQ5kl1gjltZwGHDWB5sVCz703V1J0vkWMQD6Xpa+K/FYKlNjt7xE9iPH5pcxG7
+         KGH4BREMUO3FEK4fTA2lPXwhgpMHZ1IF6e0WSWr2OtYF3+sVaE/QIBn19zr6YbmZF9ZC
+         gU+9JKODmbTOf9VQVRP4TqfQICzUbuX7wxIaqwiOEoQDChRJSkw4zcCImL0oXu7fASdp
+         o2+jA+qPjx4seSSvZLMHL/vnJ45hwN/U6WV3ubC87i/wZfhk2TLrFYJEluqsRp9AruLq
+         l58g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700554126; x=1701158926;
+        d=1e100.net; s=20230601; t=1700554143; x=1701158943;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oeOErr72GGCTbFniaP00vmRzQcGaVer6knTx1tHa9Zo=;
-        b=gkkKTx/qmI/gQOtXrl3G7QAtgBsE7O+gmrBQpnp4ilsbufpkEl8b+3cjV+0MQKx4e2
-         enWwxcxCi3Jd36w6KUrOZhll2NL3hro62Xa/SUVvCmiFq31k7RQ1HHXObMIKmEYHqMJv
-         +6cQgIO+bwH6u2TL2TqZwO4c3z6aQ8aXvqJzNZsygRyrRYLsFyLO8Z6eoBNmkNuBrtDz
-         f0fG8GV0waZkx9UQpWNt3bbnkcXPAEbgDtFLBXVB1bvefdF06KPPTSNs31uuDXZSVGsJ
-         /fNZhyM2fOagdzh1ge+BpPMOxQ/3M96w6Cf8hkerZd+X+G48VpDnD8NX33sCejtNTe1X
-         hJ+A==
-X-Gm-Message-State: AOJu0YxW8D71LyI3Im6RlLeWNNaUEwqAch0s2gjNycKMP2M2aDm7UMuE
-        CxmucjQwnFt2E6dPwKu/Sf3DkYIHhifQZQKq
-X-Google-Smtp-Source: AGHT+IEVN6jgghK023lj1dADIueLibsq3V1q6B9ZoAcDCxCKfmhvd6C2PN+SCh/MFFH0Knt6dgBOIg==
-X-Received: by 2002:a19:8c57:0:b0:507:9777:7a7 with SMTP id i23-20020a198c57000000b00507977707a7mr6634310lfj.17.1700554125562;
-        Tue, 21 Nov 2023 00:08:45 -0800 (PST)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id u23-20020a197917000000b00507a68e637bsm1430968lfc.205.2023.11.21.00.08.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 00:08:45 -0800 (PST)
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50970c2115eso7578843e87.1;
-        Tue, 21 Nov 2023 00:08:45 -0800 (PST)
-X-Received: by 2002:ac2:599b:0:b0:507:a5e7:724 with SMTP id
- w27-20020ac2599b000000b00507a5e70724mr6535084lfn.38.1700554124979; Tue, 21
- Nov 2023 00:08:44 -0800 (PST)
+        bh=HKicp15faTy9dxr+lo3vJn4RmNCBFdNPH9aMUCXaj3A=;
+        b=KgcGFqyPOVi+0jTOmkMGmzS8NJNSHKcaAy+alYGNI4pH6nWF3TCXj9te8EFpo+3jie
+         hyRu2cPel+xM/31RLNeXi/T385EoZ8ql61+P/KktihkuDD4xP3S3n9MDwcyHkvIEPV8c
+         rI0o7Ieh0BIngqotb8JmjUkKdU81Twe17d8Rm23qznKWv9LLM+TehRKGS2fwtjsQ7XXM
+         fdpD7zJpejybBrWOu6wgGhdK1Rt8sVDhZcHAxbnvVqXKk5vtbyS7m03z6rgY4qUhlY0x
+         6zeyXeRGCvgkVSx/+WbljRx0JN+Ff4iklyzpecipfbz/VwKCCOG3JGGrFG6hqsB1YOYw
+         Y2Kw==
+X-Gm-Message-State: AOJu0YzAO1dvEXlldDCeEk9oDEBzL4lMwe/fjN52EO/XlWDt6vjtYTDA
+        /DOL9n9UpKdFXjWeScCDYORfQsFAVcV60QTGoZSqD1SoYLePn7h6i6OVuQ==
+X-Google-Smtp-Source: AGHT+IFk7rTNn469v7x2wpKCPVaSegxVKameTngvf3SmEjxXVkO7FQ2gV5Q2EICNAOLjWO6335FnMrlK5knzBXdZPJY=
+X-Received: by 2002:a05:6402:12:b0:547:e5b:6e17 with SMTP id
+ d18-20020a056402001200b005470e5b6e17mr502485edu.2.1700554142874; Tue, 21 Nov
+ 2023 00:09:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
- <19358871-009d-4498-9c13-90d5338b1e9f@amd.com> <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
- <CAMuHMdW4WPJT0Km7w8RWrGJaztk6QDGoFAn0bdGbrEsw81R1FA@mail.gmail.com>
- <acfdce81-f117-4a1a-a9fe-e2b4b8922adb@linaro.org> <bd49f17c-7ebf-4e19-b77b-b5ec95375f7d@amd.com>
- <b48293f3-16e3-4980-b900-add0cb7d69f6@linaro.org>
-In-Reply-To: <b48293f3-16e3-4980-b900-add0cb7d69f6@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Nov 2023 09:08:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV_gqmf2=cXmZmYgE3aLxvPBr1DVp0cz0C+YrfBVG-8mg@mail.gmail.com>
-Message-ID: <CAMuHMdV_gqmf2=cXmZmYgE3aLxvPBr1DVp0cz0C+YrfBVG-8mg@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Michal Simek <michal.simek@amd.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231121020111.1143180-1-dima@arista.com> <20231121020111.1143180-7-dima@arista.com>
+In-Reply-To: <20231121020111.1143180-7-dima@arista.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 21 Nov 2023 09:08:49 +0100
+Message-ID: <CANn89iLEANNvZ45PaPL8miZeyMUTAcLoVR4WS55gbtfiMPbueQ@mail.gmail.com>
+Subject: Re: [PATCH 6/7] net/tcp: ACCESS_ONCE() on snd/rcv SNEs
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On Tue, Nov 21, 2023 at 8:47 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 21/11/2023 08:33, Michal Simek wrote:
-> > On 11/20/23 20:31, Krzysztof Kozlowski wrote:
-> >> On 20/11/2023 20:18, Geert Uytterhoeven wrote:
-> >>> On Mon, Nov 20, 2023 at 3:53 PM Krzysztof Kozlowski
-> >>> <krzysztof.kozlowski@linaro.org> wrote:
-> >>>> On 20/11/2023 15:01, Michal Simek wrote:> >
-> >>>>> On 11/20/23 09:40, Krzysztof Kozlowski wrote:
-> >>>>>> Document preferred coding style for Devicetree sources (DTS and DTSI),
-> >>>>>> to bring consistency among all (sub)architectures and ease in reviews.
-> >>>
-> >>>>>> +Organizing DTSI and DTS
-> >>>>>> +-----------------------
-> >>>>>> +
-> >>>>>> +The DTSI and DTS files should be organized in a way representing the common
-> >>>>>> +(and re-usable) parts of the hardware.  Typically this means organizing DTSI
-> >>>>>> +and DTS files into several files:
-> >>>>>> +
-> >>>>>> +1. DTSI with contents of the entire SoC (without nodes for hardware not present
-> >>>>>> +   on the SoC).
-> >>>>>> +2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
-> >>>>>> +   entire System-on-Module).
-> >>>>>
-> >>>>> DTS/DTSI - SOMs can actually run as they are that's why it is fair to say that
-> >>>>> there doesn't need to be DTS representing the board.
-> >>>>
-> >>>> I have never seen a SoM which can run without elaborate hardware-hacking
-> >>>> (e.g. connecting multiple wires to the SoM pins). The definition of the
-> >>>> SoM is that it is a module. Module can be re-used, just like SoC.
-> >>>
-> >>> /me looks at his board farm...
-
-> >>> I guess there are (many) other examples...
-> >>
-> >> OK, I never had such in my hands. Anyway, the SoM which can run
-> >> standalone  has a meaning of a board, so how exactly you want to
-> >> rephrase the paragraph?
-> >
-> > What about?
-> >
-> > 2. If applicable: DTSI with common or re-usable parts of the hardware (e.g.
-> > entire System-on-Module). DTS if runs standalone.
+On Tue, Nov 21, 2023 at 3:01=E2=80=AFAM Dmitry Safonov <dima@arista.com> wr=
+ote:
 >
-> OK, but then it's duplicating the option 3. It also suggests that SoM
-> should be a DTS, which is not what we want for such case. Such SoMs must
-> have DTSI+DTS.
+> SNEs need READ_ONCE()/WRITE_ONCE() for access as they can be written and
+> read at the same time.
+>
+> This is actually a shame: I planned to send it in TCP-AO patches, but
+> it seems I've chosen a wrong commit to git-commit-fixup some time ago.
+> It ended up in a commit that adds a selftest. Human factor.
+>
+> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  net/ipv4/tcp_ao.c    | 4 ++--
+>  net/ipv4/tcp_input.c | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
+> index 122ff58168ee..9b7f1970c2e9 100644
+> --- a/net/ipv4/tcp_ao.c
+> +++ b/net/ipv4/tcp_ao.c
+> @@ -956,8 +956,8 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_=
+buff *skb,
+>                 if (unlikely(th->syn && !th->ack))
+>                         goto verify_hash;
+>
+> -               sne =3D tcp_ao_compute_sne(info->rcv_sne, tcp_sk(sk)->rcv=
+_nxt,
+> -                                        ntohl(th->seq));
+> +               sne =3D tcp_ao_compute_sne(READ_ONCE(info->rcv_sne),
+> +                                        tcp_sk(sk)->rcv_nxt, ntohl(th->s=
+eq));
 
-So you want us to have a one-line <SoM>.dts, which just includes <SoM>.dtsi?
-IMHO that adds more files for no much gain.
-Users of a SoM can easily include <SoM>.dts.
-'git grep "#include .*dts\>"' tells you we have plenty of users of that scheme.
 
-Gr{oetje,eeting}s,
+I think this is a wrong fix. Something is definitely fishy here.
 
-                        Geert
+Update side should only happen for an established socket ?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+And the read side should have locked the socket before calling
+tcp_inbound_ao_hash(),
+otherwise reading other fields (like tcp_sk(sk)->rcv_nxt) would be racy any=
+way.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+>                 /* Established socket, traffic key are cached */
+>                 traffic_key =3D rcv_other_key(key);
+>                 err =3D tcp_ao_verify_hash(sk, skb, family, info, aoh, ke=
+y,
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index bcb55d98004c..78896c8be0d4 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+
+tcp_snd_sne_update() definitely only deals with full sockets
+(TCP_AO_ESTABLISHED)
+
+> @@ -3583,7 +3583,7 @@ static void tcp_snd_sne_update(struct tcp_sock *tp,=
+ u32 ack)
+>         ao =3D rcu_dereference_protected(tp->ao_info,
+>                                        lockdep_sock_is_held((struct sock =
+*)tp));
+>         if (ao && ack < tp->snd_una)
+> -               ao->snd_sne++;
+> +               WRITE_ONCE(ao->snd_sne, ao->snd_sne + 1);
+>  #endif
+>  }
+>
+> @@ -3609,7 +3609,7 @@ static void tcp_rcv_sne_update(struct tcp_sock *tp,=
+ u32 seq)
+>         ao =3D rcu_dereference_protected(tp->ao_info,
+>                                        lockdep_sock_is_held((struct sock =
+*)tp));
+>         if (ao && seq < tp->rcv_nxt)
+> -               ao->rcv_sne++;
+> +               WRITE_ONCE(ao->rcv_sne, ao->rcv_sne + 1);
+>  #endif
+>  }
+>
+> --
+> 2.42.0
+>
