@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037597F26E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852017F26E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjKUICc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:02:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        id S229721AbjKUIDf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 03:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKUICa (ORCPT
+        with ESMTP id S229441AbjKUIDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:02:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4114C3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:02:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72D1FC43391
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700553746;
-        bh=Aphf+mDirAunLvOeekhNKcmKUP/49vVxIizS90M1uzs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Fmz3BH2Dx2URmDTm44twbm+qhDWnu1JktNcKnTMAQxSO0BRNXJgKQPoq+4JHFROTA
-         o+UiMWZKIyNapr8WpIR2GttO9r2JrPqBhV52DuKIufi44ktpW14DlxoesUtOp/u5F9
-         kxUtAcfsvqGLNZp8+NSECKiWFsdeRZRYEUoYh8xS4J6Vy2SMD6PSFzZGjxa+tN3olD
-         7JDj/OtM1lWLvZnT4Utd1o7L0/y9UkyKPygCju4Bgsivbrc5BOW9xySy9+XfzHmVWZ
-         RRgfB/j0L7IKp0tQnJimDltsUTycJ3/9bBtELZHIZm16rafZLbJkPWYsiTqICHMKED
-         jfLOvWkPraBTQ==
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6cbb71c3020so764415b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:02:26 -0800 (PST)
-X-Gm-Message-State: AOJu0YyvdPirck2FowqCFkTrpB/PITAkcFqrCsx9Q/CcurVUeXUozxSv
-        iwinEmAIygnE8Eb8NKN3bOOCH7dgTW5qugaXZMPDZQ==
-X-Google-Smtp-Source: AGHT+IE6S7yndqjFyS51Kwja50fGAsdQyD8/0l6/IDiUeB8LhOjnae6kUqLxTWCK+Ur9OQkGskCEayDL/drdzaEi3QU=
-X-Received: by 2002:a17:90b:783:b0:280:29df:747e with SMTP id
- l3-20020a17090b078300b0028029df747emr2785910pjz.1.1700553745798; Tue, 21 Nov
- 2023 00:02:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-10-ryncsn@gmail.com>
- <87il5wc1nr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87il5wc1nr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 00:02:14 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuOwPMJSsR2+q53gQTjWT9b0XS+AMZGJMOq1veut1OogWA@mail.gmail.com>
-Message-ID: <CAF8kJuOwPMJSsR2+q53gQTjWT9b0XS+AMZGJMOq1veut1OogWA@mail.gmail.com>
-Subject: Re: [PATCH 09/24] mm/swap: inline __swap_count
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org,
-        Kairui Song <kasong@tencent.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+        Tue, 21 Nov 2023 03:03:32 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B8FC1;
+        Tue, 21 Nov 2023 00:03:26 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SZGfX3kqzz9xwwV;
+        Tue, 21 Nov 2023 15:46:44 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDHxF4lZFxlaQoRAQ--.59449S2;
+        Tue, 21 Nov 2023 09:02:58 +0100 (CET)
+Message-ID: <ce13d72a471af5049e538620fb5e9051e94fe32b.camel@huaweicloud.com>
+Subject: Re: [PATCH v6 19/25] ima: Move to LSM infrastructure
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Tue, 21 Nov 2023 09:02:42 +0100
+In-Reply-To: <20231120173318.1132868-20-roberto.sassu@huaweicloud.com>
+References: <20231120173318.1132868-1-roberto.sassu@huaweicloud.com>
+         <20231120173318.1132868-20-roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
+X-CM-TRANSID: GxC2BwDHxF4lZFxlaQoRAQ--.59449S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfuFWfZw18GFyrGr1rtF48Crg_yoW5GF4kCo
+        WIqwsxJr4FqF13GayakF1SyFsxWws8K3yrArWa9rZ8W3W2yw1Ut34jvF47Aa4UXF4fK3WU
+        G3s7J3yFva1ktw1rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+        0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj5atQAABsG
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,106 +71,749 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 11:43=E2=80=AFPM Huang, Ying <ying.huang@intel.com>=
- wrote:
->
-> Kairui Song <ryncsn@gmail.com> writes:
->
-> > From: Kairui Song <kasong@tencent.com>
-> >
-> > There is only one caller in swap subsystem now, where it can be inline
-> > smoothly, avoid the memory access and function call overheads.
-> >
-> > Signed-off-by: Kairui Song <kasong@tencent.com>
-> > ---
-> >  include/linux/swap.h | 6 ------
-> >  mm/swap_state.c      | 6 +++---
-> >  mm/swapfile.c        | 8 --------
-> >  3 files changed, 3 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index 2401990d954d..64a37819a9b3 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -485,7 +485,6 @@ int swap_type_of(dev_t device, sector_t offset);
-> >  int find_first_swap(dev_t *device);
-> >  extern unsigned int count_swap_pages(int, int);
-> >  extern sector_t swapdev_block(int, pgoff_t);
-> > -extern int __swap_count(swp_entry_t entry);
-> >  extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t ent=
-ry);
-> >  extern int swp_swapcount(swp_entry_t entry);
-> >  extern struct swap_info_struct *page_swap_info(struct page *);
-> > @@ -559,11 +558,6 @@ static inline void put_swap_folio(struct folio *fo=
-lio, swp_entry_t swp)
-> >  {
-> >  }
-> >
-> > -static inline int __swap_count(swp_entry_t entry)
-> > -{
-> > -     return 0;
-> > -}
-> > -
-> >  static inline int swap_swapcount(struct swap_info_struct *si, swp_entr=
-y_t entry)
-> >  {
-> >       return 0;
-> > diff --git a/mm/swap_state.c b/mm/swap_state.c
-> > index fb78f7f18ed7..d87c20f9f7ec 100644
-> > --- a/mm/swap_state.c
-> > +++ b/mm/swap_state.c
-> > @@ -316,9 +316,9 @@ void free_pages_and_swap_cache(struct encoded_page =
-**pages, int nr)
-> >       release_pages(pages, nr);
-> >  }
-> >
-> > -static inline bool swap_use_no_readahead(struct swap_info_struct *si, =
-swp_entry_t entry)
-> > +static inline bool swap_use_no_readahead(struct swap_info_struct *si, =
-pgoff_t offset)
-> >  {
-> > -     return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count(=
-entry) =3D=3D 1;
-> > +     return data_race(si->flags & SWP_SYNCHRONOUS_IO) && swap_count(si=
-->swap_map[offset]) =3D=3D 1;
-> >  }
-> >
-> >  static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
-> > @@ -928,7 +928,7 @@ struct page *swapin_readahead(swp_entry_t entry, gf=
-p_t gfp_mask,
-> >
-> >       si =3D swp_swap_info(entry);
-> >       mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
-> > -     if (swap_use_no_readahead(si, entry)) {
-> > +     if (swap_use_no_readahead(si, swp_offset(entry))) {
-> >               page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx, =
-vmf->vma->vm_mm);
-> >               cached =3D false;
-> >       } else if (swap_use_vma_readahead(si)) {
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index a8ae472ed2b6..e15a6c464a38 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -1431,14 +1431,6 @@ void swapcache_free_entries(swp_entry_t *entries=
-, int n)
-> >               spin_unlock(&p->lock);
-> >  }
-> >
-> > -int __swap_count(swp_entry_t entry)
-> > -{
-> > -     struct swap_info_struct *si =3D swp_swap_info(entry);
-> > -     pgoff_t offset =3D swp_offset(entry);
-> > -
-> > -     return swap_count(si->swap_map[offset]);
-> > -}
-> > -
->
-> I'd rather keep __swap_count() in the original place together with other
-> swap count related functions.  And si->swap_map[] was hided in
-> swapfile.c before.  I don't think the change will have any real
-> performance improvement.
+On Mon, 2023-11-20 at 18:33 +0100, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Move hardcoded IMA function calls (not appraisal-specific functions) from
+> various places in the kernel to the LSM infrastructure, by introducing a
+> new LSM named 'ima' (at the end of the LSM list and always enabled like
+> 'integrity').
+> 
+> Make moved functions as static (except ima_post_key_create_or_update(),
+> which is not in ima_main.c), and register them as implementation of the
+> respective hooks in the new function init_ima_lsm(). Conditionally register
+> ima_post_path_mknod() if CONFIG_SECURITY_PATH is enabled, otherwise the
+> path_post_mknod hook won't be available.
+> 
+> Move integrity_kernel_module_request() to IMA (renamed to
+> ima_kernel_module_request()), and conditionally register it as
+> implementation of the kernel_module_request LSM hook (if
+> CONFIG_INTEGRITY_ASYMMETRIC_KEYS is enabled).
+> 
+> Define the 'ima' LSM, and initialize it with init_ima_lsm(). Consequently,
+> assign the LSM_ID_IMA ID to IMA in include/uapi/linux/lsm.h.
+> 
+> Still rely on the existing 'integrity' subsystem to be enabled and to
+> manage integrity metadata.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> ---
+>  fs/file_table.c                        |   2 -
+>  fs/namei.c                             |   6 --
+>  fs/nfsd/vfs.c                          |   7 --
+>  fs/open.c                              |   1 -
+>  include/linux/ima.h                    |  94 ---------------------
+>  include/linux/integrity.h              |  13 ---
+>  include/uapi/linux/lsm.h               |   1 +
+>  security/integrity/digsig_asymmetric.c |  22 -----
+>  security/integrity/iint.c              |   2 +-
+>  security/integrity/ima/ima.h           |   6 ++
+>  security/integrity/ima/ima_main.c      | 108 ++++++++++++++++++++-----
+>  security/integrity/integrity.h         |   1 +
+>  security/keys/key.c                    |   9 +--
+>  security/security.c                    |  63 +++------------
+>  14 files changed, 110 insertions(+), 225 deletions(-)
+> 
+> diff --git a/fs/file_table.c b/fs/file_table.c
+> index c72dc75f2bd3..0401ac98281c 100644
+> --- a/fs/file_table.c
+> +++ b/fs/file_table.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/percpu_counter.h>
+>  #include <linux/percpu.h>
+>  #include <linux/task_work.h>
+> -#include <linux/ima.h>
+>  #include <linux/swap.h>
+>  #include <linux/kmemleak.h>
+>  
+> @@ -386,7 +385,6 @@ static void __fput(struct file *file)
+>  	locks_remove_file(file);
+>  
+>  	security_file_release(file);
+> -	ima_file_free(file);
+>  	if (unlikely(file->f_flags & FASYNC)) {
+>  		if (file->f_op->fasync)
+>  			file->f_op->fasync(-1, file, 0);
+> diff --git a/fs/namei.c b/fs/namei.c
+> index adb3ab27951a..37cc0988308f 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -27,7 +27,6 @@
+>  #include <linux/fsnotify.h>
+>  #include <linux/personality.h>
+>  #include <linux/security.h>
+> -#include <linux/ima.h>
+>  #include <linux/syscalls.h>
+>  #include <linux/mount.h>
+>  #include <linux/audit.h>
+> @@ -3622,8 +3621,6 @@ static int do_open(struct nameidata *nd,
+>  		error = vfs_open(&nd->path, file);
+>  	if (!error)
+>  		error = security_file_post_open(file, op->acc_mode);
+> -	if (!error)
+> -		error = ima_file_check(file, op->acc_mode);
+>  	if (!error && do_truncate)
+>  		error = handle_truncate(idmap, file);
+>  	if (unlikely(error > 0)) {
+> @@ -3687,7 +3684,6 @@ static int vfs_tmpfile(struct mnt_idmap *idmap,
+>  		spin_unlock(&inode->i_lock);
+>  	}
+>  	security_inode_post_create_tmpfile(idmap, inode);
+> -	ima_post_create_tmpfile(idmap, inode);
+>  	return 0;
+>  }
+>  
+> @@ -4036,8 +4032,6 @@ static int do_mknodat(int dfd, struct filename *name, umode_t mode,
+>  		case 0: case S_IFREG:
+>  			error = vfs_create(idmap, path.dentry->d_inode,
+>  					   dentry, mode, true);
+> -			if (!error)
+> -				ima_post_path_mknod(idmap, dentry);
+>  			break;
+>  		case S_IFCHR: case S_IFBLK:
+>  			error = vfs_mknod(idmap, path.dentry->d_inode,
+> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> index b0c3f07a8bba..e491392a1243 100644
+> --- a/fs/nfsd/vfs.c
+> +++ b/fs/nfsd/vfs.c
+> @@ -25,7 +25,6 @@
+>  #include <linux/posix_acl_xattr.h>
+>  #include <linux/xattr.h>
+>  #include <linux/jhash.h>
+> -#include <linux/ima.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/slab.h>
+>  #include <linux/uaccess.h>
+> @@ -883,12 +882,6 @@ __nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type,
+>  		goto out;
+>  	}
+>  
+> -	host_err = ima_file_check(file, may_flags);
+> -	if (host_err) {
+> -		fput(file);
+> -		goto out;
+> -	}
+> -
+>  	if (may_flags & NFSD_MAY_64BIT_COOKIE)
+>  		file->f_mode |= FMODE_64BITHASH;
+>  	else
+> diff --git a/fs/open.c b/fs/open.c
+> index 02dc608d40d8..c8bb9bd5259f 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -29,7 +29,6 @@
+>  #include <linux/audit.h>
+>  #include <linux/falloc.h>
+>  #include <linux/fs_struct.h>
+> -#include <linux/ima.h>
+>  #include <linux/dnotify.h>
+>  #include <linux/compat.h>
+>  #include <linux/mnt_idmapping.h>
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 31ef6c3c3207..23ae24b60ecf 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -16,24 +16,6 @@ struct linux_binprm;
+>  
+>  #ifdef CONFIG_IMA
+>  extern enum hash_algo ima_get_current_hash_algo(void);
+> -extern int ima_bprm_check(struct linux_binprm *bprm);
+> -extern int ima_file_check(struct file *file, int mask);
+> -extern void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -				    struct inode *inode);
+> -extern void ima_file_free(struct file *file);
+> -extern int ima_file_mmap(struct file *file, unsigned long reqprot,
+> -			 unsigned long prot, unsigned long flags);
+> -extern int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> -			     unsigned long prot);
+> -extern int ima_load_data(enum kernel_load_data_id id, bool contents);
+> -extern int ima_post_load_data(char *buf, loff_t size,
+> -			      enum kernel_load_data_id id, char *description);
+> -extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+> -			 bool contents);
+> -extern int ima_post_read_file(struct file *file, char *buf, loff_t size,
+> -			      enum kernel_read_file_id id);
+> -extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -				struct dentry *dentry);
+>  extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
+>  extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
+>  extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+> @@ -58,68 +40,6 @@ static inline enum hash_algo ima_get_current_hash_algo(void)
+>  	return HASH_ALGO__LAST;
+>  }
+>  
+> -static inline int ima_bprm_check(struct linux_binprm *bprm)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_file_check(struct file *file, int mask)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -					   struct inode *inode)
+> -{
+> -}
+> -
+> -static inline void ima_file_free(struct file *file)
+> -{
+> -	return;
+> -}
+> -
+> -static inline int ima_file_mmap(struct file *file, unsigned long reqprot,
+> -				unsigned long prot, unsigned long flags)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_file_mprotect(struct vm_area_struct *vma,
+> -				    unsigned long reqprot, unsigned long prot)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_load_data(enum kernel_load_data_id id, bool contents)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_post_load_data(char *buf, loff_t size,
+> -				     enum kernel_load_data_id id,
+> -				     char *description)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_read_file(struct file *file, enum kernel_read_file_id id,
+> -				bool contents)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_post_read_file(struct file *file, char *buf, loff_t size,
+> -				     enum kernel_read_file_id id)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry)
+> -{
+> -	return;
+> -}
+> -
+>  static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
+>  {
+>  	return -EOPNOTSUPP;
+> @@ -170,20 +90,6 @@ static inline void ima_add_kexec_buffer(struct kimage *image)
+>  {}
+>  #endif
+>  
+> -#ifdef CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS
+> -extern void ima_post_key_create_or_update(struct key *keyring,
+> -					  struct key *key,
+> -					  const void *payload, size_t plen,
+> -					  unsigned long flags, bool create);
+> -#else
+> -static inline void ima_post_key_create_or_update(struct key *keyring,
+> -						 struct key *key,
+> -						 const void *payload,
+> -						 size_t plen,
+> -						 unsigned long flags,
+> -						 bool create) {}
+> -#endif  /* CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS */
+> -
+>  #ifdef CONFIG_IMA_APPRAISE
+>  extern bool is_ima_appraise_enabled(void);
+>  extern void ima_inode_post_setattr(struct mnt_idmap *idmap,
+> diff --git a/include/linux/integrity.h b/include/linux/integrity.h
+> index 2ea0f2f65ab6..ef0f63ef5ebc 100644
+> --- a/include/linux/integrity.h
+> +++ b/include/linux/integrity.h
+> @@ -42,17 +42,4 @@ static inline void integrity_load_keys(void)
+>  }
+>  #endif /* CONFIG_INTEGRITY */
+>  
+> -#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
+> -
+> -extern int integrity_kernel_module_request(char *kmod_name);
+> -
+> -#else
+> -
+> -static inline int integrity_kernel_module_request(char *kmod_name)
+> -{
+> -	return 0;
+> -}
+> -
+> -#endif /* CONFIG_INTEGRITY_ASYMMETRIC_KEYS */
+> -
+>  #endif /* _LINUX_INTEGRITY_H */
+> diff --git a/include/uapi/linux/lsm.h b/include/uapi/linux/lsm.h
+> index f0386880a78e..ee7d034255a9 100644
+> --- a/include/uapi/linux/lsm.h
+> +++ b/include/uapi/linux/lsm.h
+> @@ -61,6 +61,7 @@ struct lsm_ctx {
+>  #define LSM_ID_LOCKDOWN		108
+>  #define LSM_ID_BPF		109
+>  #define LSM_ID_LANDLOCK		110
+> +#define LSM_ID_IMA		111
+>  
+>  /*
+>   * LSM_ATTR_XXX definitions identify different LSM attributes
+> diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
+> index 895f4b9ce8c6..4d11c622fabd 100644
+> --- a/security/integrity/digsig_asymmetric.c
+> +++ b/security/integrity/digsig_asymmetric.c
+> @@ -133,25 +133,3 @@ int asymmetric_verify(struct key *keyring, const char *sig,
+>  	return ret;
+>  }
+>  
+> -/**
+> - * integrity_kernel_module_request - prevent crypto-pkcs1pad(rsa,*) requests
+> - * @kmod_name: kernel module name
+> - *
+> - * We have situation, when public_key_verify_signature() in case of RSA
+> - * algorithm use alg_name to store internal information in order to
+> - * construct an algorithm on the fly, but crypto_larval_lookup() will try
+> - * to use alg_name in order to load kernel module with same name.
+> - * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
+> - * we are safe to fail such module request from crypto_larval_lookup().
+> - *
+> - * In this way we prevent modprobe execution during digsig verification
+> - * and avoid possible deadlock if modprobe and/or it's dependencies
+> - * also signed with digsig.
+> - */
+> -int integrity_kernel_module_request(char *kmod_name)
+> -{
+> -	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
+> -		return -EINVAL;
+> -
+> -	return 0;
+> -}
+> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> index d4419a2a1e24..6cbf2aa5540e 100644
+> --- a/security/integrity/iint.c
+> +++ b/security/integrity/iint.c
+> @@ -200,13 +200,13 @@ static int __init integrity_iintcache_init(void)
+>  			      0, SLAB_PANIC, iint_init_once);
+>  	return 0;
+>  }
+> +
+>  DEFINE_LSM(integrity) = {
+>  	.name = "integrity",
+>  	.init = integrity_iintcache_init,
+>  	.order = LSM_ORDER_LAST,
+>  };
+>  
+> -
+>  /*
+>   * integrity_kernel_read - read data from the file
+>   *
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index c29db699c996..c0412100023e 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -127,6 +127,12 @@ void ima_load_kexec_buffer(void);
+>  static inline void ima_load_kexec_buffer(void) {}
+>  #endif /* CONFIG_HAVE_IMA_KEXEC */
+>  
+> +#ifdef CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS
+> +void ima_post_key_create_or_update(struct key *keyring, struct key *key,
+> +				   const void *payload, size_t plen,
+> +				   unsigned long flags, bool create);
+> +#endif
+> +
+>  /*
+>   * The default binary_runtime_measurements list format is defined as the
+>   * platform native format.  The canonical format is defined as little-endian.
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 02021ee467d3..af213bece9b8 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -189,7 +189,7 @@ static void ima_check_last_writer(struct integrity_iint_cache *iint,
+>   *
+>   * Flag files that changed, based on i_version
+>   */
+> -void ima_file_free(struct file *file)
+> +static void ima_file_free(struct file *file)
+>  {
+>  	struct inode *inode = file_inode(file);
+>  	struct integrity_iint_cache *iint;
+> @@ -427,8 +427,8 @@ static int process_measurement(struct file *file, const struct cred *cred,
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_file_mmap(struct file *file, unsigned long reqprot,
+> -		  unsigned long prot, unsigned long flags)
+> +static int ima_file_mmap(struct file *file, unsigned long reqprot,
+> +			 unsigned long prot, unsigned long flags)
+>  {
+>  	u32 secid;
+>  	int ret;
+> @@ -466,8 +466,8 @@ int ima_file_mmap(struct file *file, unsigned long reqprot,
+>   *
+>   * On mprotect change success, return 0.  On failure, return -EACESS.
+>   */
+> -int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> -		      unsigned long prot)
+> +static int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+> +			     unsigned long prot)
+>  {
+>  	struct ima_template_desc *template = NULL;
+>  	struct file *file;
+> @@ -525,7 +525,7 @@ int ima_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_bprm_check(struct linux_binprm *bprm)
+> +static int ima_bprm_check(struct linux_binprm *bprm)
+>  {
+>  	int ret;
+>  	u32 secid;
+> @@ -551,7 +551,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_file_check(struct file *file, int mask)
+> +static int ima_file_check(struct file *file, int mask)
+>  {
+>  	u32 secid;
+>  
+> @@ -560,7 +560,6 @@ int ima_file_check(struct file *file, int mask)
+>  				   mask & (MAY_READ | MAY_WRITE | MAY_EXEC |
+>  					   MAY_APPEND), FILE_CHECK);
+>  }
+> -EXPORT_SYMBOL_GPL(ima_file_check);
+>  
+>  static int __ima_inode_hash(struct inode *inode, struct file *file, char *buf,
+>  			    size_t buf_size)
+> @@ -685,8 +684,9 @@ EXPORT_SYMBOL_GPL(ima_inode_hash);
+>   * Skip calling process_measurement(), but indicate which newly, created
+>   * tmpfiles are in policy.
+>   */
+> -void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -			     struct inode *inode)
+> +static void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> +				    struct inode *inode)
+> +
+>  {
+>  	struct integrity_iint_cache *iint;
+>  	int must_appraise;
+> @@ -717,8 +717,8 @@ void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+>   * Mark files created via the mknodat syscall as new, so that the
+>   * file data can be written later.
+>   */
+> -void ima_post_path_mknod(struct mnt_idmap *idmap,
+> -			 struct dentry *dentry)
+> +static void __maybe_unused
+> +ima_post_path_mknod(struct mnt_idmap *idmap, struct dentry *dentry)
+>  {
+>  	struct integrity_iint_cache *iint;
+>  	struct inode *inode = dentry->d_inode;
+> @@ -753,8 +753,8 @@ void ima_post_path_mknod(struct mnt_idmap *idmap,
+>   *
+>   * For permission return 0, otherwise return -EACCES.
+>   */
+> -int ima_read_file(struct file *file, enum kernel_read_file_id read_id,
+> -		  bool contents)
+> +static int ima_read_file(struct file *file, enum kernel_read_file_id read_id,
+> +			 bool contents)
+>  {
+>  	enum ima_hooks func;
+>  	u32 secid;
+> @@ -803,8 +803,8 @@ const int read_idmap[READING_MAX_ID] = {
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_post_read_file(struct file *file, char *buf, loff_t size,
+> -		       enum kernel_read_file_id read_id)
+> +static int ima_post_read_file(struct file *file, char *buf, loff_t size,
+> +			      enum kernel_read_file_id read_id)
+>  {
+>  	enum ima_hooks func;
+>  	u32 secid;
+> @@ -837,7 +837,7 @@ int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>   *
+>   * For permission return 0, otherwise return -EACCES.
+>   */
+> -int ima_load_data(enum kernel_load_data_id id, bool contents)
+> +static int ima_load_data(enum kernel_load_data_id id, bool contents)
+>  {
+>  	bool ima_enforce, sig_enforce;
+>  
+> @@ -891,9 +891,9 @@ int ima_load_data(enum kernel_load_data_id id, bool contents)
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_post_load_data(char *buf, loff_t size,
+> -		       enum kernel_load_data_id load_id,
+> -		       char *description)
+> +static int ima_post_load_data(char *buf, loff_t size,
+> +			      enum kernel_load_data_id load_id,
+> +			      char *description)
+>  {
+>  	if (load_id == LOADING_FIRMWARE) {
+>  		if ((ima_appraise & IMA_APPRAISE_FIRMWARE) &&
+> @@ -1122,4 +1122,72 @@ static int __init init_ima(void)
+>  	return error;
+>  }
+>  
+> +/**
+> + * ima_kernel_module_request - prevent crypto-pkcs1pad(rsa,*) requests
+> + * @kmod_name: kernel module name
+> + *
+> + * We have situation, when public_key_verify_signature() in case of RSA
+> + * algorithm use alg_name to store internal information in order to
+> + * construct an algorithm on the fly, but crypto_larval_lookup() will try
+> + * to use alg_name in order to load kernel module with same name.
+> + * Since we don't have any real "crypto-pkcs1pad(rsa,*)" kernel modules,
+> + * we are safe to fail such module request from crypto_larval_lookup().
+> + *
+> + * In this way we prevent modprobe execution during digsig verification
+> + * and avoid possible deadlock if modprobe and/or it's dependencies
+> + * also signed with digsig.
+> + */
+> +static int __maybe_unused ima_kernel_module_request(char *kmod_name)
+> +{
+> +	if (strncmp(kmod_name, "crypto-pkcs1pad(rsa,", 20) == 0)
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct security_hook_list ima_hooks[] __ro_after_init = {
+> +	LSM_HOOK_INIT(bprm_check_security, ima_bprm_check),
+> +	LSM_HOOK_INIT(file_post_open, ima_file_check),
+> +	LSM_HOOK_INIT(inode_post_create_tmpfile, ima_post_create_tmpfile),
+> +	LSM_HOOK_INIT(file_release, ima_file_free),
+> +	LSM_HOOK_INIT(mmap_file, ima_file_mmap),
+> +	LSM_HOOK_INIT(file_mprotect, ima_file_mprotect),
+> +	LSM_HOOK_INIT(kernel_load_data, ima_load_data),
+> +	LSM_HOOK_INIT(kernel_post_load_data, ima_post_load_data),
+> +	LSM_HOOK_INIT(kernel_read_file, ima_read_file),
+> +	LSM_HOOK_INIT(kernel_post_read_file, ima_post_read_file),
+> +#ifdef CONFIG_SECURITY_PATH
+> +	LSM_HOOK_INIT(path_post_mknod, ima_post_path_mknod),
+> +#endif
+> +#ifdef CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS
+> +	LSM_HOOK_INIT(key_post_create_or_update, ima_post_key_create_or_update),
+> +#endif
+> +#ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
+> +	LSM_HOOK_INIT(kernel_module_request, ima_kernel_module_request),
+> +#endif
+> +};
+> +
+> +static const struct lsm_id ima_lsmid = {
+> +	.name = "ima",
+> +	.id = LSM_ID_IMA,
+> +};
+> +
+> +/*
+> + * Since with the LSM_ORDER_LAST there is no guarantee about the ordering
+> + * within the .lsm_info.init section, ensure that IMA hooks are before EVM
+> + * ones, by letting the 'integrity' LSM call init_ima_lsm() to initialize the
+> + * 'ima' and 'evm' LSMs in this sequence.
+> + */
 
-I agree with Ying here. Does not seem to have value high enough to
-justify a patch by itself.
+Sorry, leftover from the previous version (also for EVM).
 
-Chris
+> +int __init init_ima_lsm(void)
+
+Will make this as static (reported by kernel robot).
+
+Roberto
+
+> +{
+> +	security_add_hooks(ima_hooks, ARRAY_SIZE(ima_hooks), &ima_lsmid);
+> +	return 0;
+> +}
+> +
+> +DEFINE_LSM(ima) = {
+> +	.name = "ima",
+> +	.init = init_ima_lsm,
+> +	.order = LSM_ORDER_LAST,
+> +};
+> +
+>  late_initcall(init_ima);	/* Start IMA after the TPM is available */
+> diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
+> index 9561db7cf6b4..59eaddd84434 100644
+> --- a/security/integrity/integrity.h
+> +++ b/security/integrity/integrity.h
+> @@ -18,6 +18,7 @@
+>  #include <crypto/hash.h>
+>  #include <linux/key.h>
+>  #include <linux/audit.h>
+> +#include <linux/lsm_hooks.h>
+>  
+>  /* iint action cache flags */
+>  #define IMA_MEASURE		0x00000001
+> diff --git a/security/keys/key.c b/security/keys/key.c
+> index f75fe66c2f03..80fc2f203a0c 100644
+> --- a/security/keys/key.c
+> +++ b/security/keys/key.c
+> @@ -13,7 +13,6 @@
+>  #include <linux/security.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/random.h>
+> -#include <linux/ima.h>
+>  #include <linux/err.h>
+>  #include "internal.h"
+>  
+> @@ -937,8 +936,6 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
+>  
+>  	security_key_post_create_or_update(keyring, key, payload, plen, flags,
+>  					   true);
+> -	ima_post_key_create_or_update(keyring, key, payload, plen,
+> -				      flags, true);
+>  
+>  	key_ref = make_key_ref(key, is_key_possessed(keyring_ref));
+>  
+> @@ -970,13 +967,9 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
+>  
+>  	key_ref = __key_update(key_ref, &prep);
+>  
+> -	if (!IS_ERR(key_ref)) {
+> +	if (!IS_ERR(key_ref))
+>  		security_key_post_create_or_update(keyring, key, payload, plen,
+>  						   flags, false);
+> -		ima_post_key_create_or_update(keyring, key,
+> -					      payload, plen,
+> -					      flags, false);
+> -	}
+>  
+>  	goto error_free_prep;
+>  }
+> diff --git a/security/security.c b/security/security.c
+> index 423d53092604..e18953ee4a97 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -50,7 +50,8 @@
+>  	(IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
+>  	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+> -	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
+> +	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_IMA) ? 1 : 0))
+>  
+>  /*
+>   * These are descriptions of the reasons that can be passed to the
+> @@ -1182,12 +1183,7 @@ int security_bprm_creds_from_file(struct linux_binprm *bprm, const struct file *
+>   */
+>  int security_bprm_check(struct linux_binprm *bprm)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(bprm_check_security, 0, bprm);
+> -	if (ret)
+> -		return ret;
+> -	return ima_bprm_check(bprm);
+> +	return call_int_hook(bprm_check_security, 0, bprm);
+>  }
+>  
+>  /**
+> @@ -2883,13 +2879,8 @@ static inline unsigned long mmap_prot(struct file *file, unsigned long prot)
+>  int security_mmap_file(struct file *file, unsigned long prot,
+>  		       unsigned long flags)
+>  {
+> -	unsigned long prot_adj = mmap_prot(file, prot);
+> -	int ret;
+> -
+> -	ret = call_int_hook(mmap_file, 0, file, prot, prot_adj, flags);
+> -	if (ret)
+> -		return ret;
+> -	return ima_file_mmap(file, prot, prot_adj, flags);
+> +	return call_int_hook(mmap_file, 0, file, prot, mmap_prot(file, prot),
+> +			     flags);
+>  }
+>  
+>  /**
+> @@ -2918,12 +2909,7 @@ int security_mmap_addr(unsigned long addr)
+>  int security_file_mprotect(struct vm_area_struct *vma, unsigned long reqprot,
+>  			   unsigned long prot)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(file_mprotect, 0, vma, reqprot, prot);
+> -	if (ret)
+> -		return ret;
+> -	return ima_file_mprotect(vma, reqprot, prot);
+> +	return call_int_hook(file_mprotect, 0, vma, reqprot, prot);
+>  }
+>  
+>  /**
+> @@ -3232,12 +3218,7 @@ int security_kernel_create_files_as(struct cred *new, struct inode *inode)
+>   */
+>  int security_kernel_module_request(char *kmod_name)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(kernel_module_request, 0, kmod_name);
+> -	if (ret)
+> -		return ret;
+> -	return integrity_kernel_module_request(kmod_name);
+> +	return call_int_hook(kernel_module_request, 0, kmod_name);
+>  }
+>  
+>  /**
+> @@ -3253,12 +3234,7 @@ int security_kernel_module_request(char *kmod_name)
+>  int security_kernel_read_file(struct file *file, enum kernel_read_file_id id,
+>  			      bool contents)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(kernel_read_file, 0, file, id, contents);
+> -	if (ret)
+> -		return ret;
+> -	return ima_read_file(file, id, contents);
+> +	return call_int_hook(kernel_read_file, 0, file, id, contents);
+>  }
+>  EXPORT_SYMBOL_GPL(security_kernel_read_file);
+>  
+> @@ -3278,12 +3254,7 @@ EXPORT_SYMBOL_GPL(security_kernel_read_file);
+>  int security_kernel_post_read_file(struct file *file, char *buf, loff_t size,
+>  				   enum kernel_read_file_id id)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(kernel_post_read_file, 0, file, buf, size, id);
+> -	if (ret)
+> -		return ret;
+> -	return ima_post_read_file(file, buf, size, id);
+> +	return call_int_hook(kernel_post_read_file, 0, file, buf, size, id);
+>  }
+>  EXPORT_SYMBOL_GPL(security_kernel_post_read_file);
+>  
+> @@ -3298,12 +3269,7 @@ EXPORT_SYMBOL_GPL(security_kernel_post_read_file);
+>   */
+>  int security_kernel_load_data(enum kernel_load_data_id id, bool contents)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(kernel_load_data, 0, id, contents);
+> -	if (ret)
+> -		return ret;
+> -	return ima_load_data(id, contents);
+> +	return call_int_hook(kernel_load_data, 0, id, contents);
+>  }
+>  EXPORT_SYMBOL_GPL(security_kernel_load_data);
+>  
+> @@ -3325,13 +3291,8 @@ int security_kernel_post_load_data(char *buf, loff_t size,
+>  				   enum kernel_load_data_id id,
+>  				   char *description)
+>  {
+> -	int ret;
+> -
+> -	ret = call_int_hook(kernel_post_load_data, 0, buf, size, id,
+> -			    description);
+> -	if (ret)
+> -		return ret;
+> -	return ima_post_load_data(buf, size, id, description);
+> +	return call_int_hook(kernel_post_load_data, 0, buf, size, id,
+> +			     description);
+>  }
+>  EXPORT_SYMBOL_GPL(security_kernel_post_load_data);
+>  
+
