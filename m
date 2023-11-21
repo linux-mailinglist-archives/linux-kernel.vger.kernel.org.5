@@ -2,43 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FCC7F2BC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 938097F2BDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbjKULel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
+        id S234461AbjKULgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKULej (ORCPT
+        with ESMTP id S231469AbjKULfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:34:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D51319C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:34:35 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C139EFEC;
-        Tue, 21 Nov 2023 03:35:21 -0800 (PST)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9CD303F7A6;
-        Tue, 21 Nov 2023 03:34:33 -0800 (PST)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     Junhao He <hejunhao3@huawei.com>, james.clark@arm.com
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, prime.zeng@hisilicon.com,
-        jonathan.cameron@huawei.com, u.kleine-koenig@pengutronix.de,
-        yangyicong@huawei.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH v3 0/4] Fixed some issues and cleanup of ultrasoc-smb
-Date:   Tue, 21 Nov 2023 11:34:25 +0000
-Message-Id: <170056635762.1849067.1328149375461591438.b4-ty@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231114133346.30489-1-hejunhao3@huawei.com>
-References: <20231114133346.30489-1-hejunhao3@huawei.com>
+        Tue, 21 Nov 2023 06:35:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2F597;
+        Tue, 21 Nov 2023 03:35:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5ED4FC433C7;
+        Tue, 21 Nov 2023 11:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700566534;
+        bh=67+DSJqXxA2UA336zXwDJ/QssykzMEvCiGED8qs+5oo=;
+        h=From:Subject:Date:To:Cc:Reply-To:From;
+        b=JuwTgTPpdtMpveppX5TgUAmP4Ks+/fq1j6Fpd1vV0apmSN+YFJ46W3lni/f05H3Iu
+         qd68cMxx5keE8z74jB+tK5oePbRJAH4RgZ4FR2uZzLtWla9LJEzR4jFkyu7QRGbick
+         cEkyMJ+YizC8zMU1pmzuPRw24vEcTOZcXe3KSjiUySI9WNuk8qOSPxWLfpo0q8ysBu
+         9WmCjl9uzmvd3UCdQprj9PSIohzfFmdMzsKV822bJ7i2Nzu/R0WsBu0VaROFhUvEtr
+         cOgg0lbhtX5i51nTt6O3cEpdHqd92fXnK2x0uQ3NdXrqF5o/fnq1QCur+P83wJYK75
+         lJsOX7JOG4M5g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 3B10BC54FB9;
+        Tue, 21 Nov 2023 11:35:34 +0000 (UTC)
+From:   Joel Granados via B4 Relay 
+        <devnull+j.granados.samsung.com@kernel.org>
+Subject: [PATCH v2 0/4] sysctl: Remove sentinel elements from fs dir
+Date:   Tue, 21 Nov 2023 12:35:10 +0100
+Message-Id: <20231121-jag-sysctl_remove_empty_elem_fs-v2-0-39eab723a034@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO6VXGUC/42NQQ6DIBAAv2L2XBrBVNue+o/GEMRFaQQMa0mN8
+ e+lvqDHmcPMBoTRIsG92CBismSDzyBOBehR+QGZ7TODKEXFedmwlxoYraSXSUZ0IaFENy+rxAm
+ dNMT6rtemvly56RByZY5o7Oc4PNvMo6UlxPUYJv6z/7cTZyVreFPXlTCobuZBytHbD2cdHLT7v
+ n8BFJmDm9AAAAA=
+To:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Matthew Bobrowski <repnop@google.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu
+Cc:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
+        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, Joel Granados <j.granados@samsung.com>
+X-Mailer: b4 0.13-dev-86aa5
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11974;
+ i=j.granados@samsung.com; h=from:subject:message-id;
+ bh=RgpU80zlwXRyPTcs9gNHkDrh5022I2wJtp3ZI7/hHhA=;
+ b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBlXJYDgW3DTViMxHmZA5TpZABdyD+uwRpu7xH28
+ 6jLZDKLLz+JAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZVyWAwAKCRC6l81St5ZB
+ T0adC/wIGmSaf3rE0+DRrmLRTJ19zKO7UuwcMEVz/sEENR0KZo7GjSEpEkm81VTqfjNSpPhOHfK
+ QmhMHX0QWFlIlF1Ot0S1gLD0q2l3/FCGrZ0Pfj9RaUGA/GL7lqyoX5gpBYZh7Ut9LOxLWzWSZhf
+ V/9JPSzZXhpQeaPO1R0wABfHqHnFNPA1IO7unVa/XlEaXZSmgiD7tmpxRKc+thnjvF/z2Xf5obi
+ ZHj66xGko55jJJ5FDsQ+S/GZIcjW5DfFOq3HR1X4l1WIfp0yp81qwfWylD3YgbtxiFSmaOiRr/k
+ urnhTjtJh9yh2k1htKhucXCg7GnjEjWqhUWC8aI2nZYOgtfaA1Pqy5fizRtMH9lE9heXZwlXOzj
+ jxsK8o2AbY6RAML3NhSzZX18x9uy+l4/zCgBxlb7S3QrK2+/La07iI0bA2rtJOcNRRRz/S48DMM
+ VjhyT8ceub8b2x/oRM6XxG6VekSHmTZLtSE1shfy+fsuUkgzAVCAZkae2sT4e/NRbDIeM=
+X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
+ fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
+X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with auth_id=70
+X-Original-From: Joel Granados <j.granados@samsung.com>
+Reply-To: <j.granados@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,31 +102,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023 21:33:42 +0800, Junhao He wrote:
-> Fix the Three issues listed below and use guards to cleanup
-> a) Fixed the BUG of atomic-sleep
-> b) Fixed uninitialized before use buf_hw_base
-> c) Fixed use unreset SMB buffer
-> 
-> Changes since V2:
->  * Ignore the return value of smb_config_inport()
-> 
-> [...]
+From: Joel Granados <j.granados@samsung.com>
 
-Applied, first 3 patches to fixes
+What?
+These commits remove the sentinel element (last empty element) from the
+sysctl arrays of all the files under the "fs/" directory that use a
+sysctl array for registration. The merging of the preparation patches
+(in https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+to mainline allows us to just remove sentinel elements without changing
+behavior (more info here [1]).
 
-[1/4] coresight: ultrasoc-smb: Fix sleep while close preempt in enable_smb
-      https://git.kernel.org/coresight/c/b8411287aef4
-[2/4] coresight: ultrasoc-smb: Config SMB buffer before register sink
-      https://git.kernel.org/coresight/c/830a7f54db10
-[3/4] coresight: ultrasoc-smb: Fix uninitialized before use buf_hw_base
-      https://git.kernel.org/coresight/c/862c135bde8b
+These commits are part of a bigger set (here
+https://github.com/Joelgranados/linux/tree/tag/sysctl_remove_empty_elem_V5)
+that remove the ctl_table sentinel. We make the review process easier by
+chunking the commits into manageable pieces. Each chunk can be reviewed
+separately without noise from parallel sets.
 
-And the last one to next branch
+Sending the "fs/*" chunk now that the "drivers/" has been mostly
+reviewed [6]. After this and the "kernel/*" are reviewed we only have 2 more
+chunks ("net/*" and miscellaneous) to complete the sentinel removal.
+Hurray!!!
 
-[4/4] coresight: ultrasoc-smb: Use guards to cleanup
-      https://git.kernel.org/coresight/c/60e5f23dc5d6
+Why?
+By removing the sysctl sentinel elements we avoid kernel bloat as
+ctl_table arrays get moved out of kernel/sysctl.c into their own
+respective subsystems. This move was started long ago to avoid merge
+conflicts; the sentinel removal bit came after Mathew Wilcox suggested
+it to avoid bloating the kernel by one element as arrays moved out. This
+patchset will reduce the overall build time size of the kernel and run
+time memory bloat by about ~64 bytes per declared ctl_table array. I
+have consolidated some links that shed light on the history of this
+effort [2].
+
+Testing:
+* Ran sysctl selftests (./tools/testing/selftests/sysctl/sysctl.sh)
+* Ran this through 0-day with no errors or warnings
+
+Size saving after this patchset:
+    * bloat-o-meter
+        - The "yesall" config saves 1920 bytes [4]
+        - The "tiny" config saves 576 bytes [5]
+    * If you want to know how many bytes are saved after all the chunks
+      are merged see [3]
+
+Base commit:
+tag: sysctl-6.7-rc1 (8b793bcda61f)
+
+Comments/feedback greatly appreciated
+
+Best
+
+Joel
+
+---
+Changes in v2:
+- changed commit message from "aio: *" to "fs: *"
+- We now register fsverity_sysctl_table with one call instead of
+  selecting a call based CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+- Link to v1: https://lore.kernel.org/r/20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com
+
+[1]
+We are able to remove a sentinel table without behavioral change by
+introducing a table_size argument in the same place where procname is
+checked for NULL. The idea is for it to keep stopping when it hits
+->procname == NULL, while the sentinel is still present. And when the
+sentinel is removed, it will stop on the table_size. You can go to 
+(https://lore.kernel.org/all/20230809105006.1198165-1-j.granados@samsung.com/)
+for more information.
+
+[2]
+Links Related to the ctl_table sentinel removal:
+* E-mail threads that summarize the sentinel effort
+  https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/
+  https://lore.kernel.org/all/ZMFizKFkVxUFtSqa@bombadil.infradead.org/
+* Replacing the register functions:
+  https://lore.kernel.org/all/20230302204612.782387-1-mcgrof@kernel.org/
+  https://lore.kernel.org/all/20230302202826.776286-1-mcgrof@kernel.org/
+* E-mail threads discussing prposal
+  https://lore.kernel.org/all/20230321130908.6972-1-frank.li@vivo.com
+  https://lore.kernel.org/all/20220220060626.15885-1-tangmeng@uniontech.com
+
+[3]
+Size saving after removing all sentinels:
+  These are the bytes that we save after removing all the sentinels
+  (this plus all the other chunks). I included them to get an idea of
+  how much memory we are talking about.
+    * bloat-o-meter:
+        - The "yesall" configuration results save 9158 bytes
+          https://lore.kernel.org/all/20230621091000.424843-1-j.granados@samsung.com/
+        - The "tiny" config + CONFIG_SYSCTL save 1215 bytes
+          https://lore.kernel.org/all/20230809105006.1198165-1-j.granados@samsung.com/
+    * memory usage:
+        In memory savings are measured to be 7296 bytes. (here is how to
+        measure [7])
+
+[4]
+add/remove: 0/0 grow/shrink: 0/30 up/down: 0/-1920 (-1920)
+Function                                     old     new   delta
+xfs_table                                   1024     960     -64
+vm_userfaultfd_table                         128      64     -64
+test_table_unregister                        128      64     -64
+test_table                                   576     512     -64
+root_table                                   128      64     -64
+pty_table                                    256     192     -64
+ocfs2_nm_table                               128      64     -64
+ntfs_sysctls                                 128      64     -64
+nlm_sysctls                                  448     384     -64
+nfs_cb_sysctls                               192     128     -64
+nfs4_cb_sysctls                              192     128     -64
+namei_sysctls                                320     256     -64
+locks_sysctls                                192     128     -64
+inotify_table                                256     192     -64
+inodes_sysctls                               192     128     -64
+fsverity_sysctl_table                        128      64     -64
+fs_stat_sysctls                              256     192     -64
+fs_shared_sysctls                            192     128     -64
+fs_pipe_sysctls                              256     192     -64
+fs_namespace_sysctls                         128      64     -64
+fs_exec_sysctls                              128      64     -64
+fs_dqstats_table                             576     512     -64
+fs_dcache_sysctls                            128      64     -64
+fanotify_table                               256     192     -64
+epoll_table                                  128      64     -64
+dnotify_sysctls                              128      64     -64
+coredump_sysctls                             256     192     -64
+coda_table                                   256     192     -64
+cachefiles_sysctls                           128      64     -64
+aio_sysctls                                  192     128     -64
+Total: Before=429912331, After=429910411, chg -0.00%
+
+[5]
+add/remove: 0/0 grow/shrink: 0/9 up/down: 0/-576 (-576)
+Function                                     old     new   delta
+root_table                                   128      64     -64
+namei_sysctls                                320     256     -64
+inodes_sysctls                               192     128     -64
+fs_stat_sysctls                              256     192     -64
+fs_shared_sysctls                            192     128     -64
+fs_pipe_sysctls                              256     192     -64
+fs_namespace_sysctls                         128      64     -64
+fs_exec_sysctls                              128      64     -64
+fs_dcache_sysctls                            128      64     -64
+Total: Before=1886645, After=1886069, chg -0.03%
+
+[6]
+https://lore.kernel.org/all/20231002-jag-sysctl_remove_empty_elem_drivers-v2-0-02dd0d46f71e@samsung.com
+
+[7]
+To measure the in memory savings apply this on top of this patchset.
+
+"
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index c88854df0b62..e0073a627bac 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -976,6 +976,8 @@ static struct ctl_dir *new_dir(struct ctl_table_set *set,
+        table[0].procname = new_name;
+        table[0].mode = S_IFDIR|S_IRUGO|S_IXUGO;
+        init_header(&new->header, set->dir.header.root, set, node, table, 1);
++       // Counts additional sentinel used for each new dir.
++       printk("%ld sysctl saved mem kzalloc \n", sizeof(struct ctl_table));
+
+        return new;
+ }
+@@ -1199,6 +1201,9 @@ static struct ctl_table_header *new_links(struct ctl_dir *dir, struct ctl_table_
+                link_name += len;
+                link++;
+        }
++       // Counts additional sentinel used for each new registration
++       //
++               printk("%ld sysctl saved mem kzalloc \n", sizeof(struct ctl_table));
+        init_header(links, dir->header.root, dir->header.set, node, link_table,
+                    head->ctl_table_size);
+        links->nreg = nr_entries;
+"
+and then run the following bash script in the kernel:
+
+accum=0
+for n in $(dmesg | grep kzalloc | awk '{print $3}') ; do
+    echo $n
+    accum=$(calc "$accum + $n")
+done
+echo $accum
+
+To: Luis Chamberlain <mcgrof@kernel.org>
+To: willy@infradead.org
+To: josh@joshtriplett.org
+To: Kees Cook <keescook@chromium.org>
+To: David Howells <dhowells@redhat.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+To: Christian Brauner <brauner@kernel.org>
+To: Benjamin LaHaise <bcrl@kvack.org>
+To: Eric Biederman <ebiederm@xmission.com>
+To: Trond Myklebust <trond.myklebust@hammerspace.com>
+To: Anna Schumaker <anna@kernel.org>
+To: Chuck Lever <chuck.lever@oracle.com>
+To: Jeff Layton <jlayton@kernel.org>
+To: Neil Brown <neilb@suse.de>
+To: Olga Kornievskaia <kolga@netapp.com>
+To: Dai Ngo <Dai.Ngo@oracle.com>
+To: Tom Talpey <tom@talpey.com>
+To: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+To: Matthew Bobrowski <repnop@google.com>
+To: Anton Altaparmakov <anton@tuxera.com>
+To: Namjae Jeon <linkinjeon@kernel.org>
+To: Mark Fasheh <mark@fasheh.com>
+To: Joel Becker <jlbec@evilplan.org>
+To: Joseph Qi <joseph.qi@linux.alibaba.com>
+To: Iurii Zaikin <yzaikin@google.com>
+To: Eric Biggers <ebiggers@kernel.org>
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+To: Chandan Babu R <chandan.babu@oracle.com>
+To: "Darrick J. Wong" <djwong@kernel.org>
+To: Jan Harkes <jaharkes@cs.cmu.edu>
+To: coda@cs.cmu.edu
+Cc: linux-cachefs@redhat.com
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-aio@kvack.org
+Cc: linux-mm@kvack.org
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-ntfs-dev@lists.sourceforge.net
+Cc: ocfs2-devel@lists.linux.dev
+Cc: fsverity@lists.linux.dev
+Cc: linux-xfs@vger.kernel.org
+Cc: codalist@coda.cs.cmu.edu
+---
+
+Signed-off-by: Joel Granados <j.granados@samsung.com>
+
+---
+Joel Granados (4):
+      cachefiles: Remove the now superfluous sentinel element from ctl_table array
+      fs: Remove the now superfluous sentinel elements from ctl_table array
+      sysctl:  Remove the now superfluous sentinel elements from ctl_table array
+      coda:  Remove the now superfluous sentinel elements from ctl_table array
+
+ fs/aio.c                           | 1 -
+ fs/cachefiles/error_inject.c       | 1 -
+ fs/coda/sysctl.c                   | 1 -
+ fs/coredump.c                      | 1 -
+ fs/dcache.c                        | 1 -
+ fs/devpts/inode.c                  | 1 -
+ fs/eventpoll.c                     | 1 -
+ fs/exec.c                          | 1 -
+ fs/file_table.c                    | 1 -
+ fs/inode.c                         | 1 -
+ fs/lockd/svc.c                     | 1 -
+ fs/locks.c                         | 1 -
+ fs/namei.c                         | 1 -
+ fs/namespace.c                     | 1 -
+ fs/nfs/nfs4sysctl.c                | 1 -
+ fs/nfs/sysctl.c                    | 1 -
+ fs/notify/dnotify/dnotify.c        | 1 -
+ fs/notify/fanotify/fanotify_user.c | 1 -
+ fs/notify/inotify/inotify_user.c   | 1 -
+ fs/ntfs/sysctl.c                   | 1 -
+ fs/ocfs2/stackglue.c               | 1 -
+ fs/pipe.c                          | 1 -
+ fs/proc/proc_sysctl.c              | 1 -
+ fs/quota/dquot.c                   | 1 -
+ fs/sysctls.c                       | 1 -
+ fs/userfaultfd.c                   | 1 -
+ fs/verity/init.c                   | 1 -
+ fs/xfs/xfs_sysctl.c                | 2 --
+ lib/test_sysctl.c                  | 2 --
+ 29 files changed, 31 deletions(-)
+---
+base-commit: 8b793bcda61f6c3ed4f5b2ded7530ef6749580cb
+change-id: 20231107-jag-sysctl_remove_empty_elem_fs-dbdcf6581fbe
 
 Best regards,
 -- 
-Suzuki K Poulose <suzuki.poulose@arm.com>
+Joel Granados <j.granados@samsung.com>
+
