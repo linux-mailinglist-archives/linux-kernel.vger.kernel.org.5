@@ -2,234 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E277F22EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9157F22F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:13:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjKUBLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:11:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S232818AbjKUBNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjKUBLh (ORCPT
+        with ESMTP id S230107AbjKUBNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:11:37 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2109.outbound.protection.outlook.com [40.92.23.109])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B6091;
-        Mon, 20 Nov 2023 17:11:33 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CT52z2gjrLYNs/6ylnHbbGCQFKRJyx7Jux5N29+M/DiKqkTTX30gIVMloOTZGRHXjQC9mmKdL0E43oRuI8KHvnvhOxxBAM5t4OEWRogTDcwh260jevte1zfbzOjWwKrh06ODSB3D3RgRSpj2yZFyaevZ2WKoMYxYFMOZt1kaO1seYaXXE/aQzBHUgrv2ESlpCtLIPfS3evBQq0wr8sjSpBvjhFBk0270cNr1FRdvdp5MFgM3Du3FjTA56QH+oB/pbdi+57VBkQ954khp2D0teFjxYlClCxi0Bugh4bbzO+VMRluoE7n/EzYVPCuSXGOkVrywDvw7HSfqnNGItk5Xqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qE6vTLMTycYZkEOX8nJkedvHnWo11AN0EIK9DL3cvaw=;
- b=cLMkmjm9hbKiSDPn2cFBQcUaBdqpcV7IZdaejQv66gwgIqvwKLsDqtfGYI5LVEhiWwSgGG5nVgSevDzk0FPEuK5LJ9qjIByiTrOvUwtqeRCjh4zCnIEiQSMtbGhK/U/T93HFbzeec9McZMVIEZpKE1gknCrzPXoBbNXG4Khb/YhU94w3ZCVFhchgCWyHjkQpAK4jb1GV5IawtrrpzJ3U7tYJV9qFOpeanDR+QsOzFxBD2J9ApXApGdnzapP5zXfQLPwvtFdWM6aFM4+AVNhrozt9uLJ5sjz5RJ2XA321kiyWTB9adr62P7trFX6jPVfMaxYDqyzAopGLwff0PpHwsw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qE6vTLMTycYZkEOX8nJkedvHnWo11AN0EIK9DL3cvaw=;
- b=R7Zexsm1+oe2cUSlkn1QLUNOLuDOYOhHJDUtHdsS9k76MVgLxLosDL6TzvHXzvJfEIXtK/7PsCJ6v9dWkE3lizGm+k/4SY41NSBcSrO0RhB1WQPnzB8f2fB0GjfCcV7XGgaXJ+SiFDTOcozCvHobMyPGLtZuAP6Q63M0YJfGM9cDfTdrM9O3VG1y97izutQ55rZJjm/HYwrKcRX5I9IGr5heRCgkdGnpY0Bw1v/2eMZT9dQTz5Nb2fLCZ7aVbgGq7F1m9lS0bHP3th/NvlfLDZuREwCfKHabw+oDopf0ecoE9sOKWyKrpjoxBBw54zDT9+ujtaqxInU6igsorG1byg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by LV8PR20MB6984.namprd20.prod.outlook.com (2603:10b6:408:1eb::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
- 2023 01:11:31 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
- 01:11:31 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Conor Dooley <conor@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Chen Wang <unicorn_wang@outlook.com>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: timer: thead,c900-aclint-mtimer: separate mtime and mtimecmp regs
-Date:   Tue, 21 Nov 2023 09:12:12 +0800
-Message-ID: <IA1PR20MB4953D36ABE26822B62415500BBBBA@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231120-banshee-traverse-554723cd9490@spud>
-References: <20231120-banshee-traverse-554723cd9490@spud>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [8yZbIqVQVrk8zM0htbFr+EOt5V1vtkGVjzsAs9ApD5E=]
-X-ClientProxiedBy: TY2PR0101CA0041.apcprd01.prod.exchangelabs.com
- (2603:1096:404:8000::27) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231121011212.44318-1-inochiama@outlook.com>
+        Mon, 20 Nov 2023 20:13:33 -0500
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD0ABC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:13:27 -0800 (PST)
+Received: by mail-wm1-x343.google.com with SMTP id 5b1f17b1804b1-40b27726369so2462045e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:13:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700529206; x=1701134006; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d+V8m9rGjlqHOkAe7opi5BbbJj9tL4XyGei+Q738HT0=;
+        b=bdPhmdb7ViYO6KQ5HxaQlDsU3slAlXoMb3osv3rDP5SbAXUDmKGkvAKRjDgudW4oho
+         Mh56xpcliFs/ZWiIFnp8OBW/Skyy1s/ODQdjIB2eU4BGFpS7qaN7ygWlTcMwr/NzHotv
+         UglNIvx1dYNkqK26YvYxC3eDV9Wet51gRxAzeTWRDZzFgReMSe978aMxsguoq1vk7KCR
+         FNXrDib4sGRC7bSjYc4tMYLGdZAMFf7SvfO9RQw0ghgAWUpn776uxf72mWtNpj0AOEHL
+         xv6UF4HXkZv/sHvqygYt1kIyAyayZQEVhrfXxQWEVqp7Z/G+cOtuaYzWCDGWt/r5yy0y
+         OiCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700529206; x=1701134006;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d+V8m9rGjlqHOkAe7opi5BbbJj9tL4XyGei+Q738HT0=;
+        b=cD1TTWZqHzcKmPo78g5fJplrqJVWsOgPrh4WAIpT9c8WK394KCAZuSCFQyd43utGAu
+         FhtCCWXUjlmFcerDMtofb2sbL2kC2defxNjR5PqZsH1zlwIqAXaQUwfToktVAmG9oUry
+         Zou4KP+wObMeXRyPO0qPK5NkUj04ZrtsdPkpSdJnlJAEid8WatKvEVoP04jx1nTuvhoR
+         /KHIMn3mgSbg4EC2icuWH+a3JnqdcD6qqSj/BjjyjdFsNOdCFkFPDxodBZt640jBVPoL
+         SggBBmpEZ3yF2onZs+Q16BEh7FLcMaoHpEwNw/2YuSi+Id8fH+8+5PE3QfvYZLgYS5Qi
+         0PQA==
+X-Gm-Message-State: AOJu0YxmD+gyt3ynaZ4NsCXaC30y9WTnRnr7sAenk9WEzk1bQFhaYEPa
+        hDpAFZp3BYceDE1ssYDnLSqEhA==
+X-Google-Smtp-Source: AGHT+IFEWbryaOwRrgMvz6UDDhe9oJNP3A+S6Hz+hWXIegeS61CWeU0ouIoSH95qIrQIPZ1eh70xgA==
+X-Received: by 2002:a05:600c:1c0a:b0:408:3c8a:65ec with SMTP id j10-20020a05600c1c0a00b004083c8a65ecmr6849421wms.8.1700529206070;
+        Mon, 20 Nov 2023 17:13:26 -0800 (PST)
+Received: from sagittarius-a.nxsw.local ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id 1-20020a05600c230100b003fefb94ccc9sm14913452wmo.11.2023.11.20.17.13.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 17:13:25 -0800 (PST)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mchehab@kernel.org, matti.lehtimaki@gmail.com,
+        quic_grosikop@quicinc.com
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH v5.1] media: qcom: camss: Flag VFE-lites to support more VFEs
+Date:   Tue, 21 Nov 2023 01:13:20 +0000
+Message-ID: <20231121011320.2545959-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231118-b4-camss-named-power-domains-v5-6-55eb0f35a30a@linaro.org>
+References: <20231118-b4-camss-named-power-domains-v5-6-55eb0f35a30a@linaro.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|LV8PR20MB6984:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb01f040-386a-473b-8232-08dbea2ecb95
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Su6JpApkB1+3onQbaZz8yUQ0uJpW1jQ4ESiNsf1UyU11uZctuZDs5TYFQa5pytiqpkRdxUdARn7PhmaLjOLKrp/4yrh3clar+ljh/mB6PWPQ/DLjX3sON8gHfgfWjUu8DtHrXtb25YRqhKwrymJMWunimTPndqJG0H6EW3IVUSTw3QXSohzARVosrtkHqejP6rA/SIwoa+9wt2YsNBD4MgJ3/0C6BmX9ECclJsSj1hO0c/wbtAHIqSMs33qHM0Lv/SNLOzUyTokYXo/OV8ogcL+gn7Wh/zwA/BXq6mc2O9q8JVcZ8QMHOoSkRumZcpsaAA6W6XCgVyv/ctDc3L0SOHhgNXu/mciybdLVvbY00WjWnsXaE40cAQav1M2rgckzX7JxGehDmJXhWGaB483LNPXBIkzJtm/xZqSXsbnR32gKHsHLkegtOmAytSKadhUf3UIR61zTSdST0EcZ5uCH4UC+xKZo8rbVXdneNeJMVYcK4z0rk9uCY9KC2mAVmIwA9OPn2Uuvv1gDZ78UNAlZrSAS7rthq8EjNsE+zfRC8KPpYjxug5u0ikVZV4kyysyjusMrUJjz7y6jVlao/zXbtFdk3OSVXuOqgzvPcfMxI+YttyyqVWtNPU62pBiIHKAej7CikCEIaS5EsP0zRSuPiFt+lVCHGkNT6Fssek6hhN4=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MR3fbXsiFxMEBN7I9AlxHKmXKKoXGs68Gmko6Y5SlKyK9mT7dSDI/n98WTCd?=
- =?us-ascii?Q?DO9PmzXrjQoTGw3OmzFgZ45WDekm++tGevtxsg3lBKY60kiXt6OkEvzw/E/S?=
- =?us-ascii?Q?7SAJnRGumQEWGE00CbIEyn6xBRJVWQ2Rc4uI14l3AYuYCZCLZ5ZoKsj5/2kr?=
- =?us-ascii?Q?8h+spMO4Yu4psNaSakVQ+CnDygaR+GdoqBex/8rZPvYE1pjn7z6JNhMLxCM8?=
- =?us-ascii?Q?fyIww42EF8LDCyOGRTdkb4c1p8uWd9OfMrYMcQ32W7HtTZ3Rai1whedTBrbU?=
- =?us-ascii?Q?rmKpGPcn35GZD6x/RnO/DXz6TO1PNnporiA1oj4hVveqTcpvc9heLzbSI7hp?=
- =?us-ascii?Q?8C6yCuroJ/q7D0O36aCzijnEd1bDCjnDQmOGiAgscEXtxVPkKV79pYwkazpr?=
- =?us-ascii?Q?lsNk/FMA8SbfZtlaF60LpBFLW10PxYGH5rMjLiLVtvtceI2aepi3ItNO9P2u?=
- =?us-ascii?Q?5FlSZO/xkX9hG6Off5fTZTZbwVmTXIwySlzJEiLhBrBXTpeEQ2ryLLKGeboh?=
- =?us-ascii?Q?2NgAHA+A3HvWGWXZjYYCEK5I2PVRemfH4DC6SOqGKfv9tIJdJAawL+hAd3va?=
- =?us-ascii?Q?bTeMeYQn5kYC3hs5PsxT5FwhMlB2WKz2O5Ur/YFb5V/8RgpATuQWoY8cQQg+?=
- =?us-ascii?Q?uTZGiN17p8lo+tckDZ8xtHoRJ/dXIaDBIrXStyk8EyWlgZbDMiQXYE2Nu+MO?=
- =?us-ascii?Q?n0Ny+GW8M2JhDHNYuBmhE+AezTRFAQBwHbFcVuwf5JfVq4hZDAnt4Xwcp7Mq?=
- =?us-ascii?Q?zriGMr/bqpNYl4OncdBMeI+DzIhvBB5Ic1F1wmPwmCR23YFS9t5piQXh4Z4R?=
- =?us-ascii?Q?witvc8+XcaOqx0qSW/1wdHj0K+QRy7iuUnHzFdU6MDIwNVrewbqF86jCoMWK?=
- =?us-ascii?Q?PFLkGW9UsHzakyseS+Ci+iDrPSNuny2T5tNUkakWnj8OGfirbVMqtmMd9yfJ?=
- =?us-ascii?Q?b+1KnQKNX6tf8Zn1yxKCBKKZJQGuDgEK+4Ne8vjZpTJYHo81oto2gn7zl/K3?=
- =?us-ascii?Q?dgNzJvyb2Y/wH/CrWiRnYoAfegz7NDFjZq+DOCDmeCCh5MdgdUtywZjJJx9x?=
- =?us-ascii?Q?S8eZzUwkNwwf0SMP5oZGEBEtRS1Dyuv2XOeXlsJZgSHKiaIiIcxI6UJezSlf?=
- =?us-ascii?Q?JmeyNnu92R0j03cV3uyfGfN7O2wjHELyTNb+G+5W0eIjjjDDbZagnatzCq1Y?=
- =?us-ascii?Q?EufW4DJ6ug50hJjemg7MqOSPE321zPXebS/0R362RMvjgfnSGlnbWJNT7Ak?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb01f040-386a-473b-8232-08dbea2ecb95
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 01:11:31.1847
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR20MB6984
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Yo,
->
->On Sat, Nov 18, 2023 at 03:10:26PM +0800, Inochi Amaoto wrote:
->> The timer registers of aclint don't follow the clint layout and can
->> be mapped on any different offset. As sg2042 uses separated timer
->> and mswi for its clint, it should follow the aclint spec and have
->> separated registers.
->>
->> The previous patch introduced a new type of T-HEAD aclint timer which
->> has clint timer layout. Although it has the clint timer layout, it
->> should follow the aclint spec and uses the separated mtime and mtimecmp
->> regs. So a ABI change is needed to make the timer fit the aclint spec.
->>
->> To make T-HEAD aclint timer more closer to the aclint spec, use
->> regs-names to represent the mtimecmp register, which can avoid hack
->> for unsupport mtime register of T-HEAD aclint timer.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> Fixes: 4734449f7311 ("dt-bindings: timer: Add Sophgo sg2042 CLINT timer")
->> Link: https://lists.infradead.org/pipermail/opensbi/2023-October/005693.html
->> Link: https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
->> ---
->>  .../timer/thead,c900-aclint-mtimer.yaml       | 42 ++++++++++++++++++-
->>  1 file changed, 41 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> index fbd235650e52..053488fb1286 100644
->> --- a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> +++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> @@ -17,7 +17,20 @@ properties:
->>        - const: thead,c900-aclint-mtimer
->>
->>    reg:
->> -    maxItems: 1
->> +    oneOf:
->> +      - items:
->> +          - description: MTIME Registers
->> +          - description: MTIMECMP Registers
->> +      - items:
->> +          - description: MTIMECMP Registers
->> +
->> +  reg-names:
->> +    oneOf:
->> +      - items:
->> +          - const: mtime
->> +          - const: mtimecmp
->> +      - items:
->> +          - const: mtimecmp
->>
->>    interrupts-extended:
->>      minItems: 1
->> @@ -28,8 +41,34 @@ additionalProperties: false
->>  required:
->>    - compatible
->>    - reg
->> +  - reg-names
->>    - interrupts-extended
->>
->> +allOf:
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: thead,c900-aclint-mtimer
->
->Is this being the c900 compatible correct? You mention in your commit
->message that this split is done on the sg2042, but the rule is applied
->here for any c900 series "aclint". Do we know if this is a sophgo
->specific thing (or even sg2042 specific), or if it applies generally?
->
+From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 
-This can be confirmed. The thead c900 series have no mtime support and
-there is no evidence that they will implement it. So I think it is OK
-to applied this restriction for the whole c900 series.
+Some platforms such as SC7280 have three VFEs and two VFE-lites. Current
+code has hard-coded two as the maximum number of VFEs. Remove the
+hard-coded maximum number of VFEs to handle all possible combinations of
+VFEs and VFE-lites.
 
->> +    then:
->> +      properties:
->> +        reg:
->> +          items:
->> +            - description: MTIMECMP Registers
->> +        reg-names:
->> +          items:
->> +            - const: mtimecmp
->
->> +    else:
->> +      properties:
->> +        reg:
->> +          items:
->> +            - description: MTIME Registers
->> +            - description: MTIMECMP Registers
->> +        reg-names:
->> +          items:
->> +            - const: mtime
->> +            - const: mtimecmp
->
->If it applies generally, I would probably just delete this, but unless
->someone can confirm this to be general, I'd probably leave the else
->clause and swap for the specific sg2042 compatible above.
->
+Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311200405.h6G4L9oe-lkp@intel.com
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+ .../media/platform/qcom/camss/camss-vfe-480.c | 33 +++++++++----------
+ drivers/media/platform/qcom/camss/camss-vfe.c |  5 +++
+ drivers/media/platform/qcom/camss/camss-vfe.h | 10 ++++++
+ drivers/media/platform/qcom/camss/camss.c     | 26 +++++++--------
+ drivers/media/platform/qcom/camss/camss.h     |  3 +-
+ 5 files changed, 44 insertions(+), 33 deletions(-)
 
-I suggest keeping this. By taking your advice, this binding has actually
-become the binding for aclint draft. So I think it is better to preserve
-this path, otherwise adding the mtime register seems meaningless. But if
-you think it is OK to add this when adding new compatible or converting it
-to a generic binding. Feel free to remove it.
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-480.c b/drivers/media/platform/qcom/camss/camss-vfe-480.c
+index 4652e8b4cff58..dc2735476c823 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe-480.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe-480.c
+@@ -15,31 +15,28 @@
+ #include "camss.h"
+ #include "camss-vfe.h"
+ 
+-/* VFE 2/3 are lite and have a different register layout */
+-#define IS_LITE		(vfe->id >= 2 ? 1 : 0)
+-
+ #define VFE_HW_VERSION			(0x00)
+ 
+-#define VFE_GLOBAL_RESET_CMD		(IS_LITE ? 0x0c : 0x1c)
+-#define	    GLOBAL_RESET_HW_AND_REG	(IS_LITE ? BIT(1) : BIT(0))
++#define VFE_GLOBAL_RESET_CMD		(vfe_is_lite(vfe) ? 0x0c : 0x1c)
++#define	    GLOBAL_RESET_HW_AND_REG	(vfe_is_lite(vfe) ? BIT(1) : BIT(0))
+ 
+-#define VFE_REG_UPDATE_CMD		(IS_LITE ? 0x20 : 0x34)
++#define VFE_REG_UPDATE_CMD		(vfe_is_lite(vfe) ? 0x20 : 0x34)
+ static inline int reg_update_rdi(struct vfe_device *vfe, int n)
+ {
+-	return IS_LITE ? BIT(n) : BIT(1 + (n));
++	return vfe_is_lite(vfe) ? BIT(n) : BIT(1 + (n));
+ }
+ 
+ #define	    REG_UPDATE_RDI		reg_update_rdi
+-#define VFE_IRQ_CMD			(IS_LITE ? 0x24 : 0x38)
++#define VFE_IRQ_CMD			(vfe_is_lite(vfe) ? 0x24 : 0x38)
+ #define     IRQ_CMD_GLOBAL_CLEAR	BIT(0)
+ 
+-#define VFE_IRQ_MASK(n)			((IS_LITE ? 0x28 : 0x3c) + (n) * 4)
+-#define	    IRQ_MASK_0_RESET_ACK	(IS_LITE ? BIT(17) : BIT(0))
+-#define	    IRQ_MASK_0_BUS_TOP_IRQ	(IS_LITE ? BIT(4) : BIT(7))
+-#define VFE_IRQ_CLEAR(n)		((IS_LITE ? 0x34 : 0x48) + (n) * 4)
+-#define VFE_IRQ_STATUS(n)		((IS_LITE ? 0x40 : 0x54) + (n) * 4)
++#define VFE_IRQ_MASK(n)			((vfe_is_lite(vfe) ? 0x28 : 0x3c) + (n) * 4)
++#define	    IRQ_MASK_0_RESET_ACK	(vfe_is_lite(vfe) ? BIT(17) : BIT(0))
++#define	    IRQ_MASK_0_BUS_TOP_IRQ	(vfe_is_lite(vfe) ? BIT(4) : BIT(7))
++#define VFE_IRQ_CLEAR(n)		((vfe_is_lite(vfe) ? 0x34 : 0x48) + (n) * 4)
++#define VFE_IRQ_STATUS(n)		((vfe_is_lite(vfe) ? 0x40 : 0x54) + (n) * 4)
+ 
+-#define BUS_REG_BASE			(IS_LITE ? 0x1a00 : 0xaa00)
++#define BUS_REG_BASE			(vfe_is_lite(vfe) ? 0x1a00 : 0xaa00)
+ 
+ #define VFE_BUS_WM_CGC_OVERRIDE		(BUS_REG_BASE + 0x08)
+ #define		WM_CGC_OVERRIDE_ALL	(0x3FFFFFF)
+@@ -49,13 +46,13 @@ static inline int reg_update_rdi(struct vfe_device *vfe, int n)
+ #define VFE_BUS_IRQ_MASK(n)		(BUS_REG_BASE + 0x18 + (n) * 4)
+ static inline int bus_irq_mask_0_rdi_rup(struct vfe_device *vfe, int n)
+ {
+-	return IS_LITE ? BIT(n) : BIT(3 + (n));
++	return vfe_is_lite(vfe) ? BIT(n) : BIT(3 + (n));
+ }
+ 
+ #define     BUS_IRQ_MASK_0_RDI_RUP	bus_irq_mask_0_rdi_rup
+ static inline int bus_irq_mask_0_comp_done(struct vfe_device *vfe, int n)
+ {
+-	return IS_LITE ? BIT(4 + (n)) : BIT(6 + (n));
++	return vfe_is_lite(vfe) ? BIT(4 + (n)) : BIT(6 + (n));
+ }
+ 
+ #define     BUS_IRQ_MASK_0_COMP_DONE	bus_irq_mask_0_comp_done
+@@ -90,8 +87,8 @@ static inline int bus_irq_mask_0_comp_done(struct vfe_device *vfe, int n)
+ /* for titan 480, each bus client is hardcoded to a specific path
+  * and each bus client is part of a hardcoded "comp group"
+  */
+-#define RDI_WM(n)			((IS_LITE ? 0 : 23) + (n))
+-#define RDI_COMP_GROUP(n)		((IS_LITE ? 0 : 11) + (n))
++#define RDI_WM(n)			((vfe_is_lite(vfe) ? 0 : 23) + (n))
++#define RDI_COMP_GROUP(n)		((vfe_is_lite(vfe) ? 0 : 11) + (n))
+ 
+ #define MAX_VFE_OUTPUT_LINES	4
+ 
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index 123e5ead7602d..7bcf9ddb3537a 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -1742,3 +1742,8 @@ void msm_vfe_unregister_entities(struct vfe_device *vfe)
+ 		media_entity_cleanup(&sd->entity);
+ 	}
+ }
++
++bool vfe_is_lite(struct vfe_device *vfe)
++{
++	return vfe->camss->res->vfe_res[vfe->id].is_lite;
++}
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
+index cdbe59d8d437e..0572c9b08e112 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.h
++++ b/drivers/media/platform/qcom/camss/camss-vfe.h
+@@ -226,4 +226,14 @@ extern const struct vfe_hw_ops vfe_ops_480;
+ int vfe_get(struct vfe_device *vfe);
+ void vfe_put(struct vfe_device *vfe);
+ 
++/*
++ * vfe_is_lite - Return if VFE is VFE lite.
++ * @vfe: VFE Device
++ *
++ * Some VFE lites have a different register layout.
++ *
++ * Return whether VFE is VFE lite
++ */
++bool vfe_is_lite(struct vfe_device *vfe);
++
+ #endif /* QC_MSM_CAMSS_VFE_H */
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index ee3e8cefa9b1f..ea0038f62b807 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -706,6 +706,7 @@ static const struct camss_subdev_resources vfe_res_845[] = {
+ 				{ 384000000 } },
+ 		.reg = { "vfe_lite" },
+ 		.interrupt = { "vfe_lite" },
++		.is_lite = true,
+ 		.line_num = 4,
+ 		.ops = &vfe_ops_170
+ 	}
+@@ -886,6 +887,7 @@ static const struct camss_subdev_resources vfe_res_8250[] = {
+ 				{ 0 } },
+ 		.reg = { "vfe_lite0" },
+ 		.interrupt = { "vfe_lite0" },
++		.is_lite = true,
+ 		.line_num = 4,
+ 		.ops = &vfe_ops_480
+ 	},
+@@ -905,6 +907,7 @@ static const struct camss_subdev_resources vfe_res_8250[] = {
+ 				{ 0 } },
+ 		.reg = { "vfe_lite1" },
+ 		.interrupt = { "vfe_lite1" },
++		.is_lite = true,
+ 		.line_num = 4,
+ 		.ops = &vfe_ops_480
+ 	},
+@@ -1204,7 +1207,7 @@ static int camss_init_subdevices(struct camss *camss)
+ 	}
+ 
+ 	/* note: SM8250 requires VFE to be initialized before CSID */
+-	for (i = 0; i < camss->vfe_total_num; i++) {
++	for (i = 0; i < camss->res->vfe_num; i++) {
+ 		ret = msm_vfe_subdev_init(camss, &camss->vfe[i],
+ 					  &res->vfe_res[i], i);
+ 		if (ret < 0) {
+@@ -1276,7 +1279,7 @@ static int camss_register_entities(struct camss *camss)
+ 		goto err_reg_ispif;
+ 	}
+ 
+-	for (i = 0; i < camss->vfe_total_num; i++) {
++	for (i = 0; i < camss->res->vfe_num; i++) {
+ 		ret = msm_vfe_register_entities(&camss->vfe[i],
+ 						&camss->v4l2_dev);
+ 		if (ret < 0) {
+@@ -1348,7 +1351,7 @@ static int camss_register_entities(struct camss *camss)
+ 				}
+ 	} else {
+ 		for (i = 0; i < camss->res->csid_num; i++)
+-			for (k = 0; k < camss->vfe_total_num; k++)
++			for (k = 0; k < camss->res->vfe_num; k++)
+ 				for (j = 0; j < camss->vfe[k].line_num; j++) {
+ 					struct v4l2_subdev *csid = &camss->csid[i].subdev;
+ 					struct v4l2_subdev *vfe = &camss->vfe[k].line[j].subdev;
+@@ -1372,7 +1375,7 @@ static int camss_register_entities(struct camss *camss)
+ 	return 0;
+ 
+ err_link:
+-	i = camss->vfe_total_num;
++	i = camss->res->vfe_num;
+ err_reg_vfe:
+ 	for (i--; i >= 0; i--)
+ 		msm_vfe_unregister_entities(&camss->vfe[i]);
+@@ -1411,7 +1414,7 @@ static void camss_unregister_entities(struct camss *camss)
+ 
+ 	msm_ispif_unregister_entities(camss->ispif);
+ 
+-	for (i = 0; i < camss->vfe_total_num; i++)
++	for (i = 0; i < camss->res->vfe_num; i++)
+ 		msm_vfe_unregister_entities(&camss->vfe[i]);
+ }
+ 
+@@ -1509,7 +1512,7 @@ static int camss_configure_pd(struct camss *camss)
+ 		return 0;
+ 
+ 	/* count the # of VFEs which have flagged power-domain */
+-	for (vfepd_num = i = 0; i < camss->vfe_total_num; i++) {
++	for (vfepd_num = i = 0; i < camss->res->vfe_num; i++) {
+ 		if (res->vfe_res[i].has_pd)
+ 			vfepd_num++;
+ 	}
+@@ -1584,7 +1587,7 @@ static void camss_genpd_subdevice_cleanup(struct camss *camss)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < camss->vfe_total_num; i++)
++	for (i = 0; i < camss->res->vfe_num; i++)
+ 		msm_vfe_genpd_cleanup(&camss->vfe[i]);
+ }
+ 
+@@ -1641,8 +1644,7 @@ static int camss_probe(struct platform_device *pdev)
+ 			return -ENOMEM;
+ 	}
+ 
+-	camss->vfe_total_num = camss->res->vfe_num + camss->res->vfe_lite_num;
+-	camss->vfe = devm_kcalloc(dev, camss->vfe_total_num,
++	camss->vfe = devm_kcalloc(dev, camss->res->vfe_num,
+ 				  sizeof(*camss->vfe), GFP_KERNEL);
+ 	if (!camss->vfe)
+ 		return -ENOMEM;
+@@ -1800,8 +1802,7 @@ static const struct camss_resources sdm845_resources = {
+ 	.vfe_res = vfe_res_845,
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_845),
+ 	.csid_num = ARRAY_SIZE(csid_res_845),
+-	.vfe_num = 2,
+-	.vfe_lite_num = 1,
++	.vfe_num = ARRAY_SIZE(vfe_res_845),
+ };
+ 
+ static const struct camss_resources sm8250_resources = {
+@@ -1813,8 +1814,7 @@ static const struct camss_resources sm8250_resources = {
+ 	.icc_path_num = ARRAY_SIZE(icc_res_sm8250),
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_8250),
+ 	.csid_num = ARRAY_SIZE(csid_res_8250),
+-	.vfe_num = 2,
+-	.vfe_lite_num = 2,
++	.vfe_num = ARRAY_SIZE(vfe_res_8250),
+ };
+ 
+ static const struct of_device_id camss_dt_match[] = {
+diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+index cd8186fe1797b..a0c2dcc779f05 100644
+--- a/drivers/media/platform/qcom/camss/camss.h
++++ b/drivers/media/platform/qcom/camss/camss.h
+@@ -51,6 +51,7 @@ struct camss_subdev_resources {
+ 	char *pd_name;
+ 	u8 line_num;
+ 	bool has_pd;
++	bool is_lite;
+ 	const void *ops;
+ };
+ 
+@@ -95,7 +96,6 @@ struct camss_resources {
+ 	const unsigned int csiphy_num;
+ 	const unsigned int csid_num;
+ 	const unsigned int vfe_num;
+-	const unsigned int vfe_lite_num;
+ };
+ 
+ struct camss {
+@@ -113,7 +113,6 @@ struct camss {
+ 	struct device_link *genpd_link;
+ 	struct icc_path *icc_path[ICC_SM8250_COUNT];
+ 	const struct camss_resources *res;
+-	unsigned int vfe_total_num;
+ };
+ 
+ struct camss_camera_interface {
+-- 
+2.42.0
 
->Otherwise, this looks like a better fix than you had proposed before :)
->
-
-Thanks.
-
->Thanks,
->Conor.
->
->
