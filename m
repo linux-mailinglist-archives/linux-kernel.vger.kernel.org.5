@@ -2,171 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D5E7F2282
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 802E17F2288
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjKUAvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S232758AbjKUAvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjKUAvK (ORCPT
+        with ESMTP id S229757AbjKUAvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:51:10 -0500
-Received: from sonic316-27.consmr.mail.ne1.yahoo.com (sonic316-27.consmr.mail.ne1.yahoo.com [66.163.187.153])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B452D2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:51:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1700527863; bh=X6NNrh2o9TkByhBWiubp9qwlQAP2OzbbUw3CuaiiYt4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=gE696MN7CmATorwHr2JjXJaoQNL40hRgJ+cYESBnbzVDtVPmqT3VJc9V2qrJlzMI4lp7zBAPQ5PBVe/UAYPz4HqXD6khLzSwEwLx5eMXMNBUpIGJoWKiznMiTzu7C+UZIgI0CEOqp3HQOhXMnydGk5GmjBfNK+XyGvSUIsNQfOWYdO28Je6bttyedLshlF+6o3qfh8IflG+l6elX5or3Mue5rqMWugAKQBA0RyBtL6St/tV0XTgzEjcy2FRzWhHbD+AAgpkEjiRMo0FR5eFZCYxa7Ve71L+uwLRV31RWgutMHcVWg87MmzfOwrX6Rq+PfsLntxI5RNtF6lu3TxX7gA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1700527863; bh=kmDhWoqSbEAqPNzl2xg7xH/nF3Vp1fYXhkvFIclEdTW=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=gKB5VX19b9sjmgbIYKG13TCGWgcBtI/3SjHk4aGtPuetlKBKyT0qrhsUTA/daOmb5UpBtYklivT6DyKd78c7Ndgdp9S8wu7vLN+poEOcw1gZ4vV9JmyVV0gQf7w/Npi0MLLoU4UrQ7MBnRIPyyHGOIpmGbZ7jPZhdkP3RZldcBGU/p5YpkI+BVdGZZ1K3hPz272zNp/d7+4i6n41pb+7UaqHGJt2zkZE1jbv+++Lcq2mFn51phJ5S2fbrczTWHfaMSq2FHfWCGZRfXdMINfzdu4GeTggcEu3PkAvZNbOsY999JmUwI0UfepDQkI4jkCSONSK+ZrwwgjDkvzFnbR+wg==
-X-YMail-OSG: ylTlCfAVM1mNJDd8QjJ0ZLL.iLXAIZPAxbCtvzHeK8uGpJxFlIS4KnTw4dErzhw
- fqwYAvTC2PxROLx4IPUjI.lG_3ni32g5.kRQXWgD28KXfH0lxU4PNQySgyZywT9RtshfuWR3HFRP
- YWCfqhF2lO22bB4buWxosIa3.RJV18t9EyF3kC3b4R5lZYdgAHwqWDhoKzZ_iyUxV09ZjApUuFMG
- DzNb8mb5_vxaSiyZfJT4.62rHnfMVPjaK82kUNEthikwKQ_lLzGiuoC6p3TXNf6LhVHqlb1tX70A
- GA7gRZxJ08.sjsA79C5PQK2fPRX8vTejKAwkJdAEgwu6chRf03aOAS9LuPtf8WY9kVD9CChGKSyv
- lwCDRt2wK.3BzElbggPPGp8jVBMmEYOGlmTjzP7n9YvVCJtKxB3bjmugxkSmJfNIY5l0w8gyWxxt
- iycZSgqieeQwWd00tLd8m8K0ISiqys_DXcRubnHOVCJT2mPtOfMBl_uI6wwFra9tGPHv9BpW2eZw
- Ja1TghgzisgEx5sCxwM7O990YaaY0IOKWTPWj9y_mgJGCNzCWxoEaMXhwht4oQ.dxbRFkfansHOk
- FMiFv2GzRvzj0rW55PKVKGgrQVUk3tLQnSjNXZ74shCGHmLBg6_58K1B9YkQJKg538__08pC9nBs
- cbMW_k0ZBilAzNjfqcG0mfywGZany6RT8L_R5h99Po4yj4vYTAiGLyeFnej8.J_xECkXaYxkMQgG
- NM.B3jbJxk9UP7ZCwbKmxF.XVj7QSYVfRDQIQmOyaB2GUqKvrj99uM6ztjsyzmj61ngKDKfswbDl
- eoniJYtrGwVubTE_HlyenAiks5V2EQio._WN2YNW89824ceg7nMRXz6MOrAFJ.hA7SH2NdjmdX0B
- PKiOKPrhe7duwWa42yKcwKlVSpuY56jcIQ79R_vvgKYND9FGFnfMsbLJBI_f5rTyL7t3m0B6sY.q
- DtKSbLRM4ZcpOM9CpvmQP9Am3BgYm4kQYXAOY5NZL3P42Is8r1aEQXI7Wi35GuJck5bUo6uYB4Wf
- SsL1_.ZX5BkpciZZCAF.LfpFm.xmDRo9T.Ywmjpl57YQllo201amuihrxGHPvxNcX32uu8Cy2A47
- mR4FaHMNjL8Gf8S0YFXIXa64_fmk4w9IJrMpkVMyW96vffn1s2xTia.uf.XDSxEDEbVCpsO5s8_6
- 4c.yejFWarQ8Ga3kdYP_8ksYFuEl2THKuE7GEzQydMlBc4vxtZwIfADIqMcWyIENCj0vPJWV6Frx
- PdaHBsnwzlhjfE12thBW7GT1xUYLq0r3xz0rvyVSQw5fuyjI2jvbErd6sJ8iry2jxpzQ2Q.pgW1I
- fix5Y2CAAHQjUVBvoTDqHl90oj2mHj36sFL6n.mJue1_yDegNZs452ptcwSowzZEygAs2k9xXiP7
- .5ufFmeOzMMo2A54yz3wKMHSMEgS82WSNs6AbAvLu2A_WY23BjZ.0UP_rbEOQqRQDpL7VB3UpAxX
- pwdLS3vLCrjN8cCzG5bT_jgEV3_QJkZtv_bkXnyTzHiMsUskqkeE2XZ6woPjvgfqlg1hWb7ln1p5
- j2GUVmQ_Gx6XlmuwEXLQsf7AMF73_Ok57brHY3Xt6cOdswIAhSus3OmxEEDGnYL7m9Jo2hSerSk4
- Epg5WiRmr0HW8znp70EVs3bSazyo1umQQL0XYKjlZO20oXov4NbzcXu3WANxKd8XKpvJ3kjwIRxN
- tbffOz2PAWhFHfUCLzAP6bEt2p5eRHIyl4AMZiBTpwkSrkH4FXRsh7JYeNa.lUz0is.NEuDCvwGT
- rWEmyTBz.QuX4zfcb3of9K3MqxtFxnFkhRypxRtIVceGZ.90e2EjhKYAB7NKo2NgTwRCU3CtsdWy
- VoxOkCKsQmuRVPB2bA_pR0q.uQ0irqnqVaSglF34Rr9gqt6BRG9yfGuGxYgaWi5IOoA_HczUUju3
- Oic.VSBN6XOTK6i8t64CD4QDJ9NySXsSiigtd7Kup159H_fEpURwt5YWTSr2TlpPaTXm_N4tuKQF
- CSGbhm2b3MltMqC6NH24K1Uq6oQuWo4RUUTv8IQdh0eT2v2SuDHoU2z6xT84PuYN6go.8Iy0Lqso
- Sz6z50fJkrFL2Qr4BiwS.wjMRLegBLOMn0k7alzJ42FNFQLQKFiBnvVD0HYJzu6hxV6eRYV5D60T
- JI6GQcFKuBff9M2of1AmMnF.04IM6QepkjvrV32hzYu_lYhPgey35wRsgGs0qJAGR21OLjpC861w
- e.TyXO5Z1JN5t98T65VHw3ooV.unQIe.7JCc1He.U_MqFzcAoTS94yyvsV2sNMLduwEM-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 8d70e5ed-64ab-4e7f-8a95-7b16a6fffe37
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Tue, 21 Nov 2023 00:51:03 +0000
-Received: by hermes--production-gq1-6775bfb8fc-ljztx (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 4e636f04e136106655e334c750e19110;
-          Tue, 21 Nov 2023 00:50:58 +0000 (UTC)
-Message-ID: <24a9f95d-6a28-47d3-a0cf-48e1698e2445@schaufler-ca.com>
-Date:   Mon, 20 Nov 2023 16:50:56 -0800
+        Mon, 20 Nov 2023 19:51:40 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629B491;
+        Mon, 20 Nov 2023 16:51:37 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKNfrb8011022;
+        Tue, 21 Nov 2023 00:51:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Uer5WtduZBBOF0bD4+5J1TW7TZH8v4HLbehG1UFqfUk=;
+ b=CQ/Aoqaua5NvFpkJ0kYp0d84/kZgV3x+gD3FR2zpYqcAVqJLuAHvdL8Wicc13uRFRuOF
+ P++UEsTdfMEPfweXuyUQo4q7qHDos54abpNjp8RRE/KU/5tMz2yhF3wu/xjDzJs+C/01
+ iVL1hr1MtTq4Ve+xkSgEzwzD6TNC2hvlZDohpeMOQdwVSEnZ4tqYvyteg6i6D3CnU/Eo
+ U2Prj3RtWv9mzJ4cUWIVcPUyrL2vxacbfSyFrHkwiCCDnWWs++iYoraxf/Rl4BdipMch
+ PeyISnVWtkbPcOKRLFC/hVWMNPNwG4mMUSdIToW4mfXJSHygDQMhbPWk2u1mEvcvlqKR lA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs0npe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 00:51:32 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL0pVRf008762
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 00:51:31 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 16:51:28 -0800
+Message-ID: <732c55bb-e4a5-4a09-9b7b-0e615ddd580c@quicinc.com>
+Date:   Tue, 21 Nov 2023 08:51:26 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 25/25] security: Enforce ordering of 'ima' and 'evm'
- LSMs
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231120173318.1132868-1-roberto.sassu@huaweicloud.com>
- <20231120173318.1132868-26-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231120173318.1132868-26-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Subject: Re: [PATCH 07/16] arm64: dts: qcom: sm8550-aim300: add PCIe0
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <-cc=kernel@quicinc.com>
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+ <20231117101817.4401-8-quic_tengfan@quicinc.com>
+ <61977f5a-fc04-4f85-8b18-a11df3a6b5ec@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <61977f5a-fc04-4f85-8b18-a11df3a6b5ec@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: qRddRAiZwe3czk4xwVz1jbjPQ0wYJQWB
+X-Proofpoint-GUID: qRddRAiZwe3czk4xwVz1jbjPQ0wYJQWB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=751
+ mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210002
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/2023 9:33 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> The ordering of LSM_ORDER_LAST LSMs depends on how they are placed in the
-> .lsm_info.init section of the kernel image.
->
-> Without making any assumption on the LSM ordering based on how they are
-> compiled, enforce that ordering at LSM infrastructure level.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  security/security.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/security/security.c b/security/security.c
-> index 351a124b771c..b98db79ca500 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -263,6 +263,18 @@ static void __init initialize_lsm(struct lsm_info *lsm)
->  	}
->  }
->  
-> +/* Find an LSM with a given name. */
-> +static struct lsm_info __init *find_lsm(const char *name)
-> +{
-> +	struct lsm_info *lsm;
-> +
-> +	for (lsm = __start_lsm_info; lsm < __end_lsm_info; lsm++)
-> +		if (!strcmp(lsm->name, name))
-> +			return lsm;
-> +
-> +	return NULL;
-> +}
-> +
->  /*
->   * Current index to use while initializing the lsm id list.
->   */
-> @@ -333,10 +345,23 @@ static void __init ordered_lsm_parse(const char *order, const char *origin)
->  
->  	/* LSM_ORDER_LAST is always last. */
->  	for (lsm = __start_lsm_info; lsm < __end_lsm_info; lsm++) {
-> +		/* Do it later, to enforce the expected ordering. */
-> +		if (!strcmp(lsm->name, "ima") || !strcmp(lsm->name, "evm"))
-> +			continue;
-> +
 
-Hard coding the ordering of LSMs is incredibly ugly and unlikely to scale.
-Not to mention perplexing the next time someone creates an LSM that "has to be last".
 
-Why isn't LSM_ORDER_LAST sufficient? If it really isn't, how about adding
-and using LSM_ORDER_LAST_I_REALLY_MEAN_IT* ?
+在 11/17/2023 6:30 PM, Krzysztof Kozlowski 写道:
+> On 17/11/2023 11:18, Tengfei Fan wrote:
+>> Add PCIe0 nodes used with WCN7851 device.  The PCIe1 is not connected,
+>> thus skip pcie_1_phy_aux_clk input clock to GCC.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> 
+> You just added this board. Does it mean you added incomplete and wrong DTSU?
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Alternatively, a declaration of ordering requirements with regard to other
-LSMs in lsm_info. You probably don't care where ima is relative to Yama,
-but you need to be after SELinux and before evm. lsm_info could have 
-must_precede and must_follow lists. Maybe a must_not_combine list, too,
-although I'm hoping to make that unnecessary. 
+Hi Krzysztof,
+I will drop PCIe1 setting in dts file because of PCIe1 still have not 
+enable in dts file.
+Another I understand what your comments means is I should combine all 
+the functions which should be implemented together and submit as a 
+complete patch, right?
+I will combine all the functions patch to a total patch when I do next 
+version patch series, because there is another your comments also want 
+to me do as so.
 
-And you should be using LSM_ID values instead of LSM names.
-
----
-* Naming subject to Paul's sensibilities, of course.
-
->  		if (lsm->order == LSM_ORDER_LAST)
->  			append_ordered_lsm(lsm, "   last");
->  	}
->  
-> +	/* Ensure that the 'ima' and 'evm' LSMs are last and in this order. */
-> +	lsm = find_lsm("ima");
-> +	if (lsm)
-> +		append_ordered_lsm(lsm, "   last");
-> +
-> +	lsm = find_lsm("evm");
-> +	if (lsm)
-> +		append_ordered_lsm(lsm, "   last");
-> +
->  	/* Disable all LSMs not in the ordered list. */
->  	for (lsm = __start_lsm_info; lsm < __end_lsm_info; lsm++) {
->  		if (exists_ordered_lsm(lsm))
+-- 
+Thx and BRs,
+Tengfei Fan
