@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B7C7F399B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AC67F3997
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbjKUW5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:57:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42678 "EHLO
+        id S234856AbjKUW5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234747AbjKUW5C (ORCPT
+        with ESMTP id S234775AbjKUW5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:57:02 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D684DD;
-        Tue, 21 Nov 2023 14:56:58 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cf6373ce31so2154975ad.0;
-        Tue, 21 Nov 2023 14:56:58 -0800 (PST)
+        Tue, 21 Nov 2023 17:57:03 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AC5191;
+        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cf6373ce31so2155055ad.0;
+        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700607418; x=1701212218; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700607419; x=1701212219; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pHi5YlXCcsX/D19JuU9Nw7CLS9+F6yhOBOO+wjnP29E=;
-        b=MtmmtrEVs8W0K7YmHL0aSsy4KlgbCiR/rzEoaxxd5xgwo6yySKIEcftF7a0eDvv5mW
-         sV3En1IQR2ITwWxA/VZvWTgYismKndDmu2SujOe6djQOnmzzw5WjZIG/jUf796bR1aMh
-         sh2pdnh1tpajr+3Mlca7eIzXmCJhVnnRAJ5DMHZO7Bmzhxs7oS0pe/9DI9kug2oTyeG/
-         JsF+ACBz/WxwiOu+PrN2SA/V4/lqhfbljF9Z19dghmlWxf/C2IstNvmhoPhbOF6VKUXI
-         dF+6V4pyoJoO00MS6/Yg4floS8gsSbgACoGnjkfmWA5weSVC/ixWDm+VfRESce3FI7d3
-         JoUA==
+        bh=Joh8uuUk19mBxNee66MMAzQ/m9SU9DPYEeo2rbFlN7I=;
+        b=jd9pvD4EsjHTio0o0qDAXju7073NsXRmfaOX2MLIhCGGAHELj4coEMtmG1HMyU2ag1
+         9FSstQ9cE+ZsM5tD35F4d6gIFIeqymUueUQaxJTVqFEZOStF7TJBvXUCu8o4H6VPd4tA
+         Pe8afH74n9uR8zuMTyJxAKkwtJRx1JQyckIvZhSQ8du565h/T/SmQCqWiR6OUtgSLASc
+         Xah+8ggptcoufzPz0fX6eTn/ulzqBK6XoH4p7YRK0+ol2H2w5oBgXvrufzmuXmnjR5ds
+         3UQoulKg3vYzLNpCp9dHnuW3x6tMsl/ypeewMDJ7rkhNa1qZ2UGQ5XUHr+u5MFnxF4uD
+         KNBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607418; x=1701212218;
+        d=1e100.net; s=20230601; t=1700607419; x=1701212219;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=pHi5YlXCcsX/D19JuU9Nw7CLS9+F6yhOBOO+wjnP29E=;
-        b=iVwc9nEIheyTCs/+WJ+947PMVdO1zTldADUa5yo0JnccNN5/TOHzAd6HE5iwvqj6ih
-         QQuMihy4cGfbENu6+YvjKsWx5L9OUHt5L8jdzbukHqb/vcOszYzqT+iw6wz1JNEAFIsm
-         Xnr5JLAlqWhIcfoS6axPBhzgNsGE0oEENFztz6fIBzEglrJBg8jY78riOA/E8IbapcYb
-         Dc9/YcZ2XQd1hRBlBSgZ/YOXSrUZG4ecHIFrNp5yJFp2zRFKz2buE/VvGExSACXA+CCz
-         bntL2SVz7ABcJ3mywbqw9w2mdh5fJA4RadkIysAYFcK6PRR5fPhDJdhrKtFD3GvhXNaf
-         iq8g==
-X-Gm-Message-State: AOJu0YzMiCcI1hT2KwER33RCOLOmXYkzq2T7h6/cD4Yy6i7iHYd6jqxN
-        k5Jtk/ju2MK5utyvZoFCzXg=
-X-Google-Smtp-Source: AGHT+IE6s57NYG7jptMBdy5DVewa70KWUQtBlIN7PP5AfrSGIy85Ot97zH3PYYTC8wgjLQNl/n6VtQ==
-X-Received: by 2002:a17:902:c94b:b0:1c5:cf7c:4d50 with SMTP id i11-20020a170902c94b00b001c5cf7c4d50mr1008200pla.18.1700607418027;
-        Tue, 21 Nov 2023 14:56:58 -0800 (PST)
+        bh=Joh8uuUk19mBxNee66MMAzQ/m9SU9DPYEeo2rbFlN7I=;
+        b=AqSXn+tTmkDzL6TwF+g1orMouTinMfjmR6+dd6ztXwX+8t5ZDo13kaCjwrHvBTB0Af
+         vHAMAg/N+msXuy17mCsKoYPSJedoYpxZv+KbNnhcOjUJPKBJ0SeGwkNUfwFLbfquSjrE
+         H0Mi3o50dkqqz/gWwQ4irMAcPFQOkXGz2jQQ3qqdzT7dQqnllBtXgosq6x7dIQmCte7j
+         SBoXYRWEtG8nlFITRs7721AY6yMqxom81KA7xUnV67ttKAeB2T3zYUHXg931e1cHFxJu
+         UOf9FnzgqioNPF/b9lEz8BKAWfy6iAuoIu+x38gwLVSp0L1EwdegM6IPdLXd4FlVzrdX
+         lyKw==
+X-Gm-Message-State: AOJu0Yy8/eEFQXwZLEmxx9+TuUGVdTilSJCZYRfoRHiBsLbZkkoGyADO
+        ObR2AyYO/Y3tA+fAczdF6NY=
+X-Google-Smtp-Source: AGHT+IEF6WsI9IKqvQRbVbMHIddWP6SHyLEB9w/cjDLBvWk5i+07QkCWj/moZT9nk/fAWHTTOBYE3g==
+X-Received: by 2002:a17:902:da91:b0:1ce:5ca7:1070 with SMTP id j17-20020a170902da9100b001ce5ca71070mr1173646plx.16.1700607419173;
+        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7377:923f:1ff3:266d])
-        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.56
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 14:56:57 -0800 (PST)
+        Tue, 21 Nov 2023 14:56:58 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,13 +59,11 @@ Cc:     Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux.dev, netdev@vger.kernel.org
-Subject: [PATCH 05/14] tools headers UAPI: Update tools's copy of vhost.h header
-Date:   Tue, 21 Nov 2023 14:56:40 -0800
-Message-ID: <20231121225650.390246-5-namhyung@kernel.org>
+        linux-perf-users@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH 06/14] tools headers UAPI: Update tools's copy of unistd.h header
+Date:   Tue, 21 Nov 2023 14:56:41 -0800
+Message-ID: <20231121225650.390246-6-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 In-Reply-To: <20231121225650.390246-1-namhyung@kernel.org>
 References: <20231121225650.390246-1-namhyung@kernel.org>
@@ -125,33 +123,42 @@ So its important not to touch the copies in tools/ when doing changes in
 the original kernel headers, that will be done later, when
 check-headers.sh inform about the change to the perf tools hackers.
 
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: virtualization@lists.linux.dev
-Cc: netdev@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/include/uapi/linux/vhost.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ tools/include/uapi/asm-generic/unistd.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/tools/include/uapi/linux/vhost.h b/tools/include/uapi/linux/vhost.h
-index f5c48b61ab62..649560c685f1 100644
---- a/tools/include/uapi/linux/vhost.h
-+++ b/tools/include/uapi/linux/vhost.h
-@@ -219,4 +219,12 @@
-  */
- #define VHOST_VDPA_RESUME		_IO(VHOST_VIRTIO, 0x7E)
+diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
+index 76d946445391..756b013fb832 100644
+--- a/tools/include/uapi/asm-generic/unistd.h
++++ b/tools/include/uapi/asm-generic/unistd.h
+@@ -816,15 +816,21 @@ __SYSCALL(__NR_process_mrelease, sys_process_mrelease)
+ __SYSCALL(__NR_futex_waitv, sys_futex_waitv)
+ #define __NR_set_mempolicy_home_node 450
+ __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
+-
+ #define __NR_cachestat 451
+ __SYSCALL(__NR_cachestat, sys_cachestat)
+-
+ #define __NR_fchmodat2 452
+ __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
++#define __NR_map_shadow_stack 453
++__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
++#define __NR_futex_wake 454
++__SYSCALL(__NR_futex_wake, sys_futex_wake)
++#define __NR_futex_wait 455
++__SYSCALL(__NR_futex_wait, sys_futex_wait)
++#define __NR_futex_requeue 456
++__SYSCALL(__NR_futex_requeue, sys_futex_requeue)
  
-+/* Get the group for the descriptor table including driver & device areas
-+ * of a virtqueue: read index, write group in num.
-+ * The virtqueue index is stored in the index field of vhost_vring_state.
-+ * The group ID of the descriptor table for this specific virtqueue
-+ * is returned via num field of vhost_vring_state.
-+ */
-+#define VHOST_VDPA_GET_VRING_DESC_GROUP	_IOWR(VHOST_VIRTIO, 0x7F,	\
-+					      struct vhost_vring_state)
- #endif
+ #undef __NR_syscalls
+-#define __NR_syscalls 453
++#define __NR_syscalls 457
+ 
+ /*
+  * 32 bit systems traditionally used different
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
