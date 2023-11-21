@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5895F7F3412
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA50C7F341C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjKUQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:42:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        id S233677AbjKUQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbjKUQmQ (ORCPT
+        with ESMTP id S231229AbjKUQnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:42:16 -0500
+        Tue, 21 Nov 2023 11:43:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D453E8
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:42:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 000F9C433A9;
-        Tue, 21 Nov 2023 16:42:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5964A19E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:43:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF75C433C8;
+        Tue, 21 Nov 2023 16:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700584933;
-        bh=aFR/mFQKExXAv/nb9N19ON2XLkx59yXepa2exX1U6mQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Pe7fdDHCYkc7KSUUeoKGd+0k8Upqv5tT863pJGU6nom4MjmioYRNKbeeU0LYigqZq
-         mMoZQ3vR4gUYsV+BP9oBU4OcW/h49OyCHzx3buepvFUai6rwRi0xUoAubDBLKYTfiF
-         x2sEZ4+vPSgTUkOumnqe4Clb6jiycxpkF9ZKDfBJhdSvdEzoEJR6iMuaMYN+nrphmO
-         e4cyi62ZvttrtqkKx3rGbj0qL+rlTQXDv8NkAOoqv8abis72OenhUfPRZeO38ntXpw
-         WEIoTkiwOhGFOwsZGqT0zIdnUwC23hQ0e2dmCHM3KERmpmJUJYHdfojukPCpmwdbJm
-         cjJszLlSX6B5g==
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso72057671fa.3;
-        Tue, 21 Nov 2023 08:42:12 -0800 (PST)
-X-Gm-Message-State: AOJu0YzfltrG1BNxAEZMQuA8PWtOEFPjiUL4aGpQWKap8etok/rbE2G3
-        TQ/WgemQoVqc4YCRwmRVPWdzbKPiFoWqZh09Uis=
-X-Google-Smtp-Source: AGHT+IE1BtBBQXH8IhaD0lfThsj9OIMHKzDOIxlPBJGUB9DukWvY41yZhOqj18nk5W7PFyAXHxOdAkbW6vA0h7iKYww=
-X-Received: by 2002:a2e:8e63:0:b0:2bb:a28b:58e1 with SMTP id
- t3-20020a2e8e63000000b002bba28b58e1mr7794383ljk.41.1700584931089; Tue, 21 Nov
- 2023 08:42:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
- <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
-In-Reply-To: <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 21 Nov 2023 11:41:59 -0500
-X-Gmail-Original-Message-ID: <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
-Message-ID: <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To:     Simon Glass <sjg@chromium.org>
-Cc:     "Chiu, Chasel" <chasel.chiu@intel.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        s=k20201202; t=1700585008;
+        bh=/U3kd7ywcCF+XCjlFdnVgAtFdH2pvC95gZA5CdP+R7A=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=d8hC5oXZovua02aR+GsRCPNBnBonyFe9VF180GnOg9JdJ7SPSAxI0bQ4fwEhCWh72
+         xhpksKXbcEDH4xLBvzqM1z5IQEdfUP76yHcYFcltbYMwznAdnbEueOnp4XWsQlWXuK
+         /SYSb1/i8vhF7DjpEbzgiEdjorLBkdhqQFyGThfhxAJjelB36jmWYTi0vf6kv8E6Jd
+         7K4FZWR5nKax6ZkunDuHjTEZiIZ5OucROcypM0s6NaSSGpB79TwLfT/z8lCqWAy8Ks
+         B9lH/tuSnVCrwEan4oHH4YyOLgzlJ8Zvt1YTCsee6jvaXllE0/M3iCWiHYIjBYI9oy
+         Tdej5ktkV7eew==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 83BCBCE04C0; Tue, 21 Nov 2023 08:43:27 -0800 (PST)
+Date:   Tue, 21 Nov 2023 08:43:27 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        "Tan, Lean Sheng" <sheng.tan@9elements.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dhaval Sharma <dhaval@rivosinc.com>,
-        "Brune, Maximilian" <maximilian.brune@9elements.com>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        "Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
-        ron minnich <rminnich@gmail.com>,
-        "Guo, Gua" <gua.guo@intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <045efa69-f0a4-4f04-b092-96b317865cf3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+ <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
+ <20231121110753.41dc5603@gandalf.local.home>
+ <e1d33ff6-bf8d-465f-8626-f692ce4debe5@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1d33ff6-bf8d-465f-8626-f692ce4debe5@efficios.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -74,146 +72,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 at 21:12, Simon Glass <sjg@chromium.org> wrote:
->
-> Hi,
->
-> On Mon, 13 Nov 2023 at 11:09, Chiu, Chasel <chasel.chiu@intel.com> wrote:
-> >
-> >
-> > Hi Ard,
-> >
-> > Please see my reply below inline.
-> >
-> > Thanks,
-> > Chasel
-> >
-> >
-> > > -----Original Message-----
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > Sent: Saturday, November 11, 2023 3:04 AM
-> > > To: Chiu, Chasel <chasel.chiu@intel.com>
-> > > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org; Mark =
-Rutland
-> > > <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>; Tan, Lean Shen=
-g
-> > > <sheng.tan@9elements.com>; lkml <linux-kernel@vger.kernel.org>; Dhava=
-l
-> > > Sharma <dhaval@rivosinc.com>; Brune, Maximilian
-> > > <maximilian.brune@9elements.com>; Yunhui Cui <cuiyunhui@bytedance.com=
->;
-> > > Dong, Guo <guo.dong@intel.com>; Tom Rini <trini@konsulko.com>; ron mi=
-nnich
-> > > <rminnich@gmail.com>; Guo, Gua <gua.guo@intel.com>; linux-
-> > > acpi@vger.kernel.org; U-Boot Mailing List <u-boot@lists.denx.de>
-> > > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
-> > > usages
-> > >
-> > > On Sat, 11 Nov 2023 at 04:20, Chiu, Chasel <chasel.chiu@intel.com> wr=
-ote:
-> > > >
-> > > >
-> > > > Just sharing some usage examples from UEFI/EDK2 scenario.
-> > > > To support ACPI S4/Hibernation, memory map must be consistent befor=
-e
-> > > > entering and after resuming from S4, in this case payload may need =
-to
-> > > > know previous memory map from bootloader (currently generic payload
-> > > > cannot access platform/bootloader specific non-volatile data, thus
-> > > > could not save/restore memory map information)
-> > >
-> > > So how would EDK2 reconstruct the entire EFI memory map from just the=
-se
-> > > unannotated /reserved-memory nodes? The EFI memory map contains much
-> > > more information than that, and all of it has to match the pre-hibern=
-ate situation,
-> > > right? Can you given an example?
-> >
-> >
-> > Here we listed only typically memory types that may change cross differ=
-ent platforms.
-> > Reserved memory type already can be handled by reserved-memory node, an=
-d rest of the types usually no need to change cross platforms thus currentl=
-y we could rely on default in generic payload.
-> > In the future if we see a need to add new memory types we will discuss =
-and add it to FDT schema.
-> >
-> >
-> >
-> > >
-> > > > Another usage is to support binary model which generic payload is a=
- prebuilt
-> > > binary compatible for all platforms/configurations, however the paylo=
-ad default
-> > > memory map might not always work for all the configurations and we wa=
-nt to
-> > > allow bootloader to override payload default memory map without recom=
-piling.
-> > > >
-> > >
-> > > Agreed. But can you explain how a EDK2 payload might make meaningful =
-use of
-> > > 'runtime-code' regions provided via DT  by the non-EDK2 platform init=
-? Can you
-> > > give an example?
-> >
-> >
-> > Runtime-code/data is used by UEFI payload for booting UEFI OS which req=
-uired UEFI runtime services.
-> > Platform Init will select some regions from the usable memory and assig=
-n it to runtime-code/data for UPL to consume. Or assign same runtime-code/d=
-ata from previous boot.
-> > If UEFI OS is not supported, PlatformInit may not need to provide runti=
-me-code/data regions to payload. (always providing runtime-code/data should=
- be supported too)
-> >
-> >
-> > >
-> > > > Under below assumption:
-> > > >         FDT OS impact has been evaluated and taken care by relevant
-> > > experts/stakeholders.
-> > > > Reviewed-by: Chasel Chiu <chasel.chiu@intel.com>
-> > > >
-> > >
-> > > I am sorry but I don't know what 'FDT OS impact' means. We are talkin=
-g about a
-> > > firmware-to-firmware abstraction that has the potential to leak into =
-the OS
-> > > visible interface.
-> > >
-> > > I am a maintainer in the Tianocore project myself, so it would help i=
-f you could
-> > > explain who these relevant experts and stakeholders are. Was this dis=
-cussed on
-> > > the edk2-devel mailing list? If so, apologies for missing it but I ma=
-y not have been
-> > > cc'ed perhaps?
-> >
-> >
-> >
-> >
-> > I'm not familiar with FDT OS, also I do not know if who from edk2-devel=
- were supporting FDT OS, I think Simon might be able to connect FDT OS expe=
-rts/stakeholders.
-> > We are mostly focusing on payload firmware phase implementation in edk2=
- (and other payloads too), however, since we have aligned the payload FDT a=
-nd OS FDT months ago, I'm assuming FDT OS impact must be there and we need =
-(or already done?) FDT OS experts to support it. (again, maybe Simon could =
-share more information about FDT OS)
-> >
-> > In edk2 such FDT schema is UefiPayloadPkg internal usage only and paylo=
-ad entry will convert FDT into HOB thus we expected the most of the edk2 ge=
-neric code are no-touch/no impact, that's why we only had small group (Uefi=
-PayloadPkg) discussion.
-> > Ard, if you are aware of any edk2 code that's for supporting FDT OS, pl=
-ease let us know and we can discuss if those code were impacted or not.
->
-> We discussed this and just to clarify, 'FDT OS' is not a special OS,
-> it is just Linux.
->
-> So, with the above, are we all on the same page? Can the patch be
-> applied, perhaps? If not, what other discussion is needed?
->
+On Tue, Nov 21, 2023 at 11:11:57AM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-21 11:07, Steven Rostedt wrote:
+> > On Tue, 21 Nov 2023 11:00:13 -0500
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> > 
+> > > > tasks-tracing-rcu:
+> > > >     extention of tasks to have critical-sections ? Should this simply be
+> > > >     tasks?
+> > > 
+> > > tasks-trace-rcu is meant to allow tasks to block/take a page fault
+> > > within the read-side. It is specialized for tracing and has a single
+> > > domain. It does not need the smp_mb on the read-side, which makes it
+> > > lower-overhead than SRCU.
+> > 
+> > IOW, task-trace-rcu allows the call to schedule in its critical section,
+> > whereas task-rcu does not?
+> 
+> Correct.
+> 
+> And unlike preemptible rcu, tasks-trace-rcu allows calls to schedule which
+> do not provide priority inheritance guarantees (such as I/O triggered by
+> page faults).
 
-An example of how a platform-init/payload combination would make
-meaningful use of such runtime-code/data regions.
+But please keep it to things allowed in vanilla RCU read-side critical
+sections and I/O triggered by page faults.  If you need something else,
+that is a discussion between all the current users of RCU Tasks Trace.
+
+							Thanx, Paul
