@@ -2,70 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E43127F3348
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2EF7F3353
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjKUQJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:09:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
+        id S231236AbjKUQL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUQJt (ORCPT
+        with ESMTP id S232517AbjKUQLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:09:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2C2BC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:09:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08B91C433C8;
-        Tue, 21 Nov 2023 16:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700582985;
-        bh=5M41NCGcjZMhgdurlBjtRlLdvlA9gQfTtgnr20SzQZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O1iqDLIUfkFchTr0uWwZMhQgAuctcM2Lx3snmajtHnpejlh8n+MTWJO7l3nV1CBa1
-         kAHoT3m9q+xRr659OjHWajWVNSlBi0D7Aw+vM7kO4fJqjjqvxeApGS+5nfGJEa78Jk
-         6Y07eattO7dTYl9+mTfkk0M2mD18uYjoBR7K/37EXMdznWu325kyXczTP3GxOGGoRU
-         Xjtnh3hx9nQM2LplH6L1EMqLam1VpAjVMm6H6tloJi/HViAQeJtNGA6mCZIgX9TSna
-         8gmK/ReArU1XZnSjlnmXs2uxwb8xHedROorBMvsdvX6GiHiGeR9Kn3Hg/tbZYz3OVH
-         x6NU13TxFQvNg==
-Date:   Tue, 21 Nov 2023 16:09:40 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>, nd@arm.com
-Subject: Re: [PATCH RFT v3 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <ZVzWRIA9AfXHeWMW@finisterre.sirena.org.uk>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231121-urlaub-motivieren-c9d7ee1a6058@brauner>
- <ZVyg0WgILK35xjBn@arm.com>
+        Tue, 21 Nov 2023 11:11:54 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F69F1AC;
+        Tue, 21 Nov 2023 08:11:47 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 735D16607325;
+        Tue, 21 Nov 2023 16:11:45 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700583106;
+        bh=GxIVE1tU4kysthfZEaW7+CMMGUoCzHenFFVWHpjOR5o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fsHS24tXweaBckKKdHR1EnLzt8TlBejWUh9DHXG2QiRQ//Rl64ecSsw/rCxqTJx8o
+         dpAQNDsOhWBkv3WZp0Q/VcsKZkCl4JbwKZ4CbKHI0APscxbH0Kz7gzlUk6PaYmTwdp
+         YKjCUWloG7fF84/x44mpJ0iPVnRuHtWOy3P0UE7n+3aK2kz4u+yZ4GP3NvIj5TcVao
+         ZwaUsKdoW4TZsX5TmKMQB8LRPWq1QEHJYlVYU8jBYAu+LzVwc965KbWdyVArc17YQX
+         pXZSL1zQANTNbAPRt5R7vBB1RQkO4uUIrXRzwATMUlyyWgdVwrXCjDw5FytYRFd/74
+         31HQLrprMGufA==
+Message-ID: <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+Date:   Tue, 21 Nov 2023 17:11:42 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Cu1hqtbNXe1joyHG"
-Content-Disposition: inline
-In-Reply-To: <ZVyg0WgILK35xjBn@arm.com>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Steven Price <steven.price@arm.com>,
+        boris.brezillon@collabora.com
+Cc:     tzimmermann@suse.de, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, dri-devel@lists.freedesktop.org,
+        wenst@chromium.org, kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+ <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+ <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,142 +66,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto:
+> On 08/11/2023 14:20, Steven Price wrote:
+>> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote:
+>>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
+>>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
+>>> this means that in order to request poweroff of cores, we are supposed
+>>> to write a bitmask of cores that should be powered off!
+>>> This means that the panfrost_gpu_power_off() function has always been
+>>> doing nothing.
+>>>
+>>> Fix powering off the GPU by writing a bitmask of the cores to poweroff
+>>> to the relevant PWROFF_LO registers and then check that the transition
+>>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+>>> registers.
+>>>
+>>> While at it, in order to avoid code duplication, move the core mask
+>>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+>>> function, used in both poweron and poweroff.
+>>>
+>>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
+> 
+> Hi,
+> 
+> This commit was added to next recently but it causes "external abort on
+> non-linefetch" during boot of my Odroid HC1 board.
+> 
+> At least bisect points to it.
+> 
+> If fixed, please add:
+> 
+> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> [    4.861683] 8<--- cut here ---
+> [    4.863429] Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c8802c
+> [    4.871018] [f0c8802c] *pgd=433ed811, *pte=11800653, *ppte=11800453
+> ...
+> [    5.164010]  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
+> [    5.171276]  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+> [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+> [    5.183743]  handle_fasteoi_irq from generic_handle_domain_irq+0x28/0x38
+> [    5.190417]  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
+> [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+> [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+> 
+> Full log:
+> https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
+> 
 
---Cu1hqtbNXe1joyHG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hey Krzysztof,
 
-On Tue, Nov 21, 2023 at 12:21:37PM +0000, Szabolcs Nagy wrote:
-> The 11/21/2023 11:17, Christian Brauner wrote:
+This is interesting. It might be about the cores that are missing from the partial
+core_mask raising interrupts, but an external abort on non-linefetch is strange to
+see here.
 
-> > I have a few questions that are probably me just not knowing much about
-> > shadow stacks so hopefully I'm not asking you write a thesis by
-> > accident:
+Would you be available for some tests?
 
-One thing it feels like it's worth saying up front here is that shadow
-stacks are userspace memory with special permissions and instructions
-for access - they are mapped into the userspace address range and
-userspace can directly interact with them in restricted ways.  For
-example there's some thought to using shadow stacks in unwinders since
-all the return addresses are stored in a single convenient block of
-memory which it's much harder to corrupt.  Overflowing a shadow stack
-results in userspace getting a memory access fault just as with other
-memory access issues.
+I'm thinking to call power_off on all cores (all shaders, all tilers, all l2s),
+regardless of what panfrost_get_core_mask() says, as it could be that your GPU
+powers on the cores that are unused by Panfrost by default, and that then we never
+turn them off, escalating to this issue.
 
-> > (2) With what other interfaces is implicit allocation and deallocation
-> >     not consistent? I don't understand this argument. The kernel creates
-> >     a shadow stack as a security measure to store return addresses. It
-> >     seems to me exactly that the kernel should implicitly allocate and
-> >     deallocate the shadow stack and not have userspace muck around with
-> >     its size?
+If you can please please please test:
 
-> the kernel is not supposed to impose stack size policy or a particular
-> programming model that limits the stack management options nor prevent
-> the handling of stack overflows.
+void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+{
+	u64 core_mask = panfrost_get_core_mask(pfdev);
+	int ret;
+	u32 val;
 
-The inconsistency here is with the management of the standard stack -
-with the standard stack userspace passes an already allocated address
-range to the kernel.  A constant tension during review of the shadow
-stack interfaces has been that shadow stack memory is userspace memory
-but the security constraints mean that we've come down on the side of
-having a custom allocation syscall for it instead of using flags on
-mmap() and friends like people often expect, and now having it allocated
-as part of clone3().  The aim is to highlight that this difference is
-deliberately chosen for specific reasons rather than just carelessness.
+	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+	gpu_write(pfdev, SHADER_PWROFF_HI, pfdev->features.shader_present >> 32);
+	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+					 val, !val, 1, 1000);
+	if (ret)
+		dev_err(pfdev->dev, "shader power transition timeout");
 
-> > (3) Why is it safe for userspace to request the shadow stack size? What
-> >     if they request a tiny shadow stack size? Should this interface
-> >     require any privilege?
+	gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
+	gpu_write(pfdev, TILER_PWROFF_HI, pfdev->features.tiler_present >> 32);
+	ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
+					 val, !val, 1, 1000);
+	if (ret)
+		dev_err(pfdev->dev, "tiler power transition timeout");
 
-> user can allocate huge or tiny stacks already.
+	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+					 val, !val, 0, 1000);
+	if (ret)
+		dev_err(pfdev->dev, "l2 power transition timeout");
 
-> and i think userspace can take control over shadow stack management:
-> it can disable signals, start a clone child with stack_size == 1 page,
-> map_shadow_stack and switch to it, enable signals. however this is
-> complicated, leaks 1 page of kernel allocated shadow stack (+reserved
-> guard page, i guess userspace could unmap, not sure if that works
-> currently) and requires additional syscalls.
+	gpu_write(pfdev, L2_PWROFF_HI, pfdev->features.l2_present >> 32);
+	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_HI,
+					 val, !val, 0, 1000);
+	if (ret)
+		dev_err(pfdev->dev, "l2 power transition timeout");
+}
 
-The other thing here is that if userspace gets this wrong it'll result
-in the userspace process hitting the top of the stack and getting fatal
-signals in a similar manner to what happens if it gets the size of
-the standard stack wrong (the kernel allocation does mean that there
-should always be guard pages and it's harder to overrun the stack and
-corrupt adjacent memory).  There doesn't seem to be any meaningful risk
-here over what userspace can already do to itself anyway as part of
-thread allocation.
 
-> > (4) Why isn't the @stack_size argument I added for clone3() enough?
-> >     If it is specified can't the size of the shadow stack derived from it?
+This is a quick hack that might work. If this does actually work, the real fix
+will be to PWROFF the extra cores only once, at panfrost_gpu_init() time, before
+calling panfrost_gpu_power_on(), and to leave them disabled forever (until Panfrost
+actually gets to support those extra cores for real).
 
-> shadow stack only contains return addresses so it is proportional
-> to the number of stack frames, not the stack size and it must
-> account for sigaltstack too, not just the thread stack.
+Thanks,
+Angelo
 
-> if you make minimal assumptions about stack usage and ignore the
-> sigaltstack issue then the worst case shadow stack requirement
-> is indeed proportional to the stack_size, but this upper bound
-> can be pessimistic and userspace knows the tradeoffs better.
+> 1. exynos_defconfig
+> 2. HW: Odroid HC1
+>     ARMv7, octa-core (Cortex-A7+A15), Exynos5422 SoC
+>     arm,mali-t628
+>     
+> Bisect log:
+> 
+> git bisect start
+> # bad: [07b677953b9dca02928be323e2db853511305fa9] Add linux-next specific files for 20231121
+> git bisect bad 07b677953b9dca02928be323e2db853511305fa9
+> # good: [98b1cc82c4affc16f5598d4fa14b1858671b2263] Linux 6.7-rc2
+> git bisect good 98b1cc82c4affc16f5598d4fa14b1858671b2263
+> # good: [13e2401d5bdc7f5a30f2651c99f0e3374cdda815] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+> git bisect good 13e2401d5bdc7f5a30f2651c99f0e3374cdda815
+> # bad: [3b586cd6d8e51c428675312e7c3f634eb96337e9] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+> git bisect bad 3b586cd6d8e51c428675312e7c3f634eb96337e9
+> # bad: [9d63fd5f05248c78d9a66ce5dbc9cf5649054848] Merge branch 'drm-next' of https://gitlab.freedesktop.org/agd5f/linux
+> git bisect bad 9d63fd5f05248c78d9a66ce5dbc9cf5649054848
+> # bad: [5dea0c3fedee65413271a5700e653eff633e9a7f] drm/panel-elida-kd35t133: Drop shutdown logic
+> git bisect bad 5dea0c3fedee65413271a5700e653eff633e9a7f
+> # good: [48d45fac3940347becd290b96b2fc6d5ad8171f7] accel/ivpu: Remove support for uncached buffers
+> git bisect good 48d45fac3940347becd290b96b2fc6d5ad8171f7
+> # bad: [809ef191ee600e8bcbe2f8a769e00d2d54c16094] drm/gpuvm: add drm_gpuvm_flags to drm_gpuvm
+> git bisect bad 809ef191ee600e8bcbe2f8a769e00d2d54c16094
+> # good: [a78422e9dff366b3a46ae44caf6ec8ded9c9fc2f] drm/sched: implement dynamic job-flow control
+> git bisect good a78422e9dff366b3a46ae44caf6ec8ded9c9fc2f
+> # bad: [e4178256094a76cc36d9b9aabe7482615959b26f] drm/virtio: use uint64_t more in virtio_gpu_context_init_ioctl
+> git bisect bad e4178256094a76cc36d9b9aabe7482615959b26f
+> # bad: [56e76c0179185568049913257c18069293f8bde9] drm/panfrost: Implement ability to turn on/off GPU clocks in suspend
+> git bisect bad 56e76c0179185568049913257c18069293f8bde9
+> # bad: [57d4e26717b030fd794df3534e6b2e806eb761e4] drm/panfrost: Perform hard reset to recover GPU if soft reset fails
+> git bisect bad 57d4e26717b030fd794df3534e6b2e806eb761e4
+> # bad: [22aa1a209018dc2eca78745f7666db63637cd5dc] drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()
+> git bisect bad 22aa1a209018dc2eca78745f7666db63637cd5dc
+> # first bad commit: [22aa1a209018dc2eca78745f7666db63637cd5dc] drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()
+>    
+> 
+> Best regards,
+> Krzysztof
+> 
 
-It's also worth pointing out here that the existing shadow stack support
-for x86 and in review code for arm64 make exactly these assumptions and
-guesses at a shadow stack size based on the stack_size for the thread.
-There's just been a general lack of enthusiasm for the fact that due to
-the need to store variables on the normal stack the resulting shadow
-stack is very likely to be substantially overallocated but we can't
-safely reduce the size without information from userspace.
-
-> > And my current main objection is that shadow stacks were just released
-> > to userspace. There can't be a massive amount of users yet - outside of
-> > maybe early adopters.
-
-> no upstream libc has code to enable shadow stacks at this point
-> so there are exactly 0 users in the open. (this feature requires
-> runtime support)
-
-> the change is expected to allow wider deployability. (e.g. not
-> just in glibc)
-
-Right, and the lack of any userspace control of the shadow stack size
-has been a review concern with the arm64 GCS series which I'm trying to
-address here.  The main concern is that userspaces that start a lot of
-threads are going to start using a lot more address space than they need
-to when shadow stacks are enabled.  Given the fairly long deployment
-pipeline from extending a syscall to end users who might be using the
-feature in conjuction with imposing resource limits it does seem like a
-reasonable problem to anticipate.
-
-> > The fact that there are other architectures that bring in a similar
-> > feature makes me even more hesitant. If they have all agreed _and_
-> > implemented shadow stacks and have unified semantics then we can
-> > consider exposing control knobs to userspace that aren't implicitly
-> > architecture specific currently.
-
-To be clear the reason I'm working on this is that I've implemented the
-arm64 support, I don't even have any access to x86 systems that have the
-feature (hence the RFT in the subject line) - Rick Edgecombe did the x86
-work.  The arm64 code is still in review, the userspace interface is
-very similar to that for x86 and there doesn't seem to be any
-controversy there which makes me expect that a change is likely.  Unlike
-x86 we only have a spec and virtual implementations at present, there's
-no immintent hardware, so we're taking our time with making sure that
-everything is working well.  Deepak Gupta (in CC) has been reviewing the
-series from the point of view of RISC-V.  I think we're all fairly well
-aligned on the requirements here.
-
---Cu1hqtbNXe1joyHG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVc1kMACgkQJNaLcl1U
-h9CDlwf+IhkEGdyJ2fiqfKcNpafPMwN0aeTMjOPP/L7jiP8Td42ADOhD2xjnT+hO
-Hf4eTNgjFZn8jmQkkctS/BiOWjx1ktNT1b8YW7/uOElZ8ecMmwGy9oTLihIuFTfk
-y2jC8/Ih1LfS6Uj493lNI7ozpbPqSAtCppeVWDnoB+YaEw476ZsNl7xnEBcx0k0U
-EXcsMSe9AD3vgV1zZ9oCnSdvG0+HdxwO6yzaKjdJOnd3MMtp7tSeuokr0OehZUDk
-nd/mDzROewzF8DHGFPo0D8UlOhNE3JV2sZPm3AExh/fsrah3JFrj2DDQOQpuoekP
-2nh2I0Rc8Jsn11q+EnefpA8nVFch3w==
-=+tkg
------END PGP SIGNATURE-----
-
---Cu1hqtbNXe1joyHG--
