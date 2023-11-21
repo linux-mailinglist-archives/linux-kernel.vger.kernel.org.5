@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C18127F3926
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FAA7F392D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbjKUWaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
+        id S234513AbjKUWaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUWaG (ORCPT
+        with ESMTP id S234578AbjKUWaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:30:06 -0500
+        Tue, 21 Nov 2023 17:30:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0488119E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:30:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A45EC433C8;
-        Tue, 21 Nov 2023 22:30:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F084E1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:30:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 210E2C433C7;
+        Tue, 21 Nov 2023 22:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700605802;
-        bh=j7aU0i8BzZ0LWN5tC676qAeLCJLeUSdku5k+b6N9i6U=;
+        s=k20201202; t=1700605809;
+        bh=E/bj/1FVapv7EKfhI42/zUXrmVv/I6HbzaDjwjJln44=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U4TUrZedEFvbcBlmmpC9Gs1a7TVbDWGT56xCuhYva+NYZSlcBAYnXPnatx2olRHoy
-         cGv4loLsDlRqCfWUG4NJs52rF1IbrFzMPv5N1ZaQSL+x2v0dd16kkgOSQVSKJ8m/Gu
-         OXqU5f4nxSrOyWjFTI1flvbSjMS8ws5A/ie76W8mLhulU6EJg4vMGuuEgLgstfVu/m
-         mOgc6GD6PxJ12mT1n1nKNf2jl5FJ/YO4XeCR+HOGolPXaG1VprGtKY+N2bui/EB/g1
-         v8KdRswzCcUSyLg6JRj7e+GFfYIHSAvLwaucVUBuJCnhBqu5xCtP2b6dE3G6Wux2Jx
-         HAfvsv8hprMNw==
-Date:   Tue, 21 Nov 2023 14:30:01 -0800
+        b=J0O/QUcwf+hJ+9u9th7dU4ofixzovumMaQmyel928dNYI3hDAJCkcNaTDY1YmSPSY
+         k4JEXGgkPh6+2HD0yj3ygvLKntXV+4Tm7RJc8gv8cB45K2aA93QUPbdxgrZW+Bmino
+         9zX/6yfoT0Q66adsWy5pqbzUZROQLvIzs3aXRDrdnySIdjnXW0jVo39VHRA4WbT15p
+         dij3w0gQdCj4D7jnuEasrt64GCxI7XA9h8wX45W1J/xG5/QYDT0XMbMmdgg/dgYLBs
+         oculAlRo7XNFCoKGLeEguIrSPGRw6zvAciYRVBJddP01oVEsSOQEffzrbkFGmMwy7M
+         mSCzyhHpnt5kA==
+Date:   Tue, 21 Nov 2023 14:30:08 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
@@ -36,11 +36,11 @@ Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
         Eric Dumazet <edumazet@google.com>,
         Paolo Abeni <pabeni@redhat.com>, linux-usb@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: Re: [PATCH 09/17] tty: hso: don't emit load/unload info to the log
-Message-ID: <20231121143001.4990312c@kernel.org>
-In-Reply-To: <20231121092258.9334-10-jirislaby@kernel.org>
+Subject: Re: [PATCH 10/17] tty: hso: don't initialize global serial_table
+Message-ID: <20231121143008.576f4ca9@kernel.org>
+In-Reply-To: <20231121092258.9334-11-jirislaby@kernel.org>
 References: <20231121092258.9334-1-jirislaby@kernel.org>
-        <20231121092258.9334-10-jirislaby@kernel.org>
+        <20231121092258.9334-11-jirislaby@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -54,10 +54,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 10:22:50 +0100 Jiri Slaby (SUSE) wrote:
-> It's preferred NOT to emit anything during the module load and unload
-> (in case the un/load was successful). So drop these prints from hso
-> along with global 'version'. It even contains no version after all.
+On Tue, 21 Nov 2023 10:22:51 +0100 Jiri Slaby (SUSE) wrote:
+> 'serial_table' is global, so there is no need to initialize it to NULLs
+> at the module load. Drop this unneeded for loop.
 > 
 > Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 > Cc: "David S. Miller" <davem@davemloft.net>
