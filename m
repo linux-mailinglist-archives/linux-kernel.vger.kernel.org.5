@@ -2,215 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 926877F2234
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D999D7F2244
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbjKUAin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        id S232749AbjKUAkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjKUAil (ORCPT
+        with ESMTP id S232739AbjKUAkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:38:41 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC4ACF;
-        Mon, 20 Nov 2023 16:38:38 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0PcS3011703;
-        Tue, 21 Nov 2023 00:38:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0/itjaExNH+7XRC48OKXd7v1XRJUqmRluEPlRqEzoNo=;
- b=iT1oVFCcfWdHht+NRhxX/OQZO5DqZEJ12z3TpJ+FPZUUGywr5jqtJpslS1GMIlysTyS/
- cRBOoD0yuIVC7rAMgEZuRTSoFPazuzlZz4Kj5M4ahHACOI03HHOw0IuaSWGcBJGyH3gE
- Km3mB3/g5/ZGJ0HR3l0F6gMiSJyK2bhAgLfXjjq2RfCD4FhvKZQVVmmt0TdpHzXsW2kL
- FVgwFdhimZXrIphKWa+toHcMPmIzlBcQlM3vxjR3HhuWAdqTVgY+FOTRLEZCVCX1qBaU
- 4a2kgGlIbvOH6w0h3ekD46mE6hkZtzvm29jrX3Vq7jPq/H1cVjfqwkOa1bUz5BoyHlIe dg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug30mj69p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:38:31 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL0cUuM017814
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:38:30 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 16:38:28 -0800
-Message-ID: <209d6082-35b6-4403-9dc4-a02c0da4fb94@quicinc.com>
-Date:   Tue, 21 Nov 2023 08:38:25 +0800
+        Mon, 20 Nov 2023 19:40:09 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70228CA;
+        Mon, 20 Nov 2023 16:40:03 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ce5e76912aso29926485ad.2;
+        Mon, 20 Nov 2023 16:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700527203; x=1701132003; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bWNEMhZS/K0TJv2uoFh3uKzFoySYNwsIpa4bcavYV+M=;
+        b=NEd17WkYF+NXhfS2etPmsRD8sEAko3mlUFF1icHnojB9KRYhsi5f8Fwk7SWou6xlim
+         ++LilX841XWudSJZTMVr2FICGLjEYvWbz/fM0nGBFFw5vTVMsFLb+XQLcGPrhkLf31H5
+         13VRP/WEbFwM2XaGsoSXelHGWfYC8hxLjz4xJV+IZ2kFSyeQBp3WfrpQeNSJTh6J4XpZ
+         N/GblDuy+jq8tlqZsWXihjfJH5xF9YMu60CDGYW7esg6KJwDc8I9HK/K+L2sSM3OL57n
+         y2T2Z5MnK48vFaqyjui5tACRdA024D+8FSSNmbaBC57I9XZ9FzcDSN/sBtXOKcBF+g3J
+         8L5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700527203; x=1701132003;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bWNEMhZS/K0TJv2uoFh3uKzFoySYNwsIpa4bcavYV+M=;
+        b=Et1qt+l9CSSItPLXjhrxz4ldvSBv8tXGToc/xNOgpuWdnYUixLK6KKrfdxpGZur262
+         NATlUo8j4bNC2A9XH5DG9YRdEJvD4f0mwSE88hh9aadW9mhDKXoTVM5oEO3FywIXztZf
+         Z+jQ29XNHrKve2tv1t0Wmrw52fFtR2iCINxvuSDY2QpNahkc+WAC/Z/Rc2KXuUmdQCsk
+         pXnn2mUS6Hch3J3+sR5hhM+9cbQ4tnksZ/5kKUb/izGn64Kgz/LcHgT5WyJPAW1qJqWv
+         fH/DQ5D4nwDF+7k6fHa6apqaAKXtG/hQwUK1/N5uQWHuYeST/eUFGdFgXVOH/8KH03lE
+         vwCw==
+X-Gm-Message-State: AOJu0YwJt/hhFPtnhMoajxKmLvnDK5h5vx/Q7nbZhjaWFFgVvBwtTQRI
+        QeZsvpbJVJXbIwSfa5leaPQ=
+X-Google-Smtp-Source: AGHT+IFXhiAAFyErJlqOO1DTQVYb7f74uon84kYLMLdTjeTRCnwI6JR3VAOwwCqryfnQrGSMB9oxFQ==
+X-Received: by 2002:a17:902:eccd:b0:1cf:54e1:8c8c with SMTP id a13-20020a170902eccd00b001cf54e18c8cmr9016957plh.63.1700527202832;
+        Mon, 20 Nov 2023 16:40:02 -0800 (PST)
+Received: from localhost ([47.215.232.245])
+        by smtp.gmail.com with ESMTPSA id g3-20020a170902868300b001cc436e9806sm6636258plo.81.2023.11.20.16.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 16:40:02 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org (open list:AMD KFD),
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        Jack Xiao <Jack.Xiao@amd.com>,
+        Jonathan Kim <jonathan.kim@amd.com>, Lang Yu <Lang.Yu@amd.com>,
+        Leo Liu <leo.liu@amd.com>, Lijo Lazar <lijo.lazar@amd.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), Philip Yang <Philip.Yang@amd.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sean Paul <sean@poorly.run>,
+        Shashank Sharma <shashank.sharma@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Veerabadhran Gopalakrishnan <Veerabadhran.Gopalakrishnan@amd.com>
+Subject: [PATCH v2 0/7] drm/msm/gem: drm_exec conversion
+Date:   Mon, 20 Nov 2023 16:38:44 -0800
+Message-ID: <20231121003935.5868-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/16] arm64: dts: qcom: sm8550-aim300: add SM8550 AIM300
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <-cc=kernel@quicinc.com>
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-7-quic_tengfan@quicinc.com>
- <aecb04cd-805d-4c2d-b6a7-67a47b963ee9@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <aecb04cd-805d-4c2d-b6a7-67a47b963ee9@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kQtM2r9cFGnnoXTNNLOr7I652NoG47h_
-X-Proofpoint-ORIG-GUID: kQtM2r9cFGnnoXTNNLOr7I652NoG47h_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- spamscore=0 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210001
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
+Simplify the exec path (removing a legacy optimization) and convert to
+drm_exec.  One drm_exec patch to allow passing in the expected # of GEM
+objects to avoid re-allocation.
 
-在 11/17/2023 6:28 PM, Dmitry Baryshkov 写道:
-> On 17/11/2023 12:18, Tengfei Fan wrote:
->> Add a minimal DTS for the new QRD8550 board, serial, UFS and USB should
->> be working.
-> 
-> An explanation of what is AIM300 would be welcomed.
-> 
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/Makefile          |   1 +
->>   arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 490 +++++++++++++++++++++
->>   2 files changed, 491 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->>
->> diff --git a/arch/arm64/boot/dts/qcom/Makefile 
->> b/arch/arm64/boot/dts/qcom/Makefile
->> index d6cb840b7050..ea5d4a07671a 100644
->> --- a/arch/arm64/boot/dts/qcom/Makefile
->> +++ b/arch/arm64/boot/dts/qcom/Makefile
->> @@ -229,5 +229,6 @@ dtb-$(CONFIG_ARCH_QCOM)    += sm8450-hdk.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8450-qrd.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8450-sony-xperia-nagara-pdx223.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8450-sony-xperia-nagara-pdx224.dtb
->> +dtb-$(CONFIG_ARCH_QCOM) += sm8550-aim300.dtb
-> 
-> My email client suggests that alignment is broken here.
-I checked the code after apply this patch, and find this code alignment 
-have not issue, so I will check if have some format issue when I do this 
-patch.
-> 
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8550-mtp.dtb
->>   dtb-$(CONFIG_ARCH_QCOM)    += sm8550-qrd.dtb
->> diff --git a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts 
->> b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->> new file mode 100644
->> index 000000000000..202b979da8ca
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
->> @@ -0,0 +1,490 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights 
->> reserved.
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
->> +#include "sm8550.dtsi"
->> +#include "pm8010.dtsi"
->> +#include "pm8550.dtsi"
->> +#include "pm8550b.dtsi"
->> +#include "pm8550ve.dtsi"
->> +#include "pm8550vs.dtsi"
->> +#include "pmk8550.dtsi"
->> +#include "pmr735d_a.dtsi"
->> +#include "pmr735d_b.dtsi"
->> +
->> +/ {
->> +    model = "Qualcomm Technologies, Inc. SM8550 AIM300";
->> +    compatible = "qcom,sm8550-aim300", "qcom,sm8550";
->> +
->> +    aliases {
->> +        serial0 = &uart7;
->> +    };
->> +
->> +    chosen {
->> +        stdout-path = "serial0:115200n8";
->> +    };
->> +
->> +    pmic-glink {
->> +        compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +        orientation-gpios = <&tlmm 11 GPIO_ACTIVE_HIGH>;
->> +
->> +        connector@0 {
->> +            compatible = "usb-c-connector";
->> +            reg = <0>;
->> +            power-role = "dual";
->> +            data-role = "dual";
->> +
->> +            ports {
->> +                #address-cells = <1>;
->> +                #size-cells = <0>;
->> +
->> +                port@0 {
->> +                    reg = <0>;
->> +
->> +                    pmic_glink_hs_in: endpoint {
->> +                        remote-endpoint = <&usb_1_dwc3_hs>;
->> +                    };
->> +                };
->> +
->> +                port@1 {
->> +                    reg = <1>;
->> +
->> +                    pmic_glink_ss_in: endpoint {
->> +                        remote-endpoint = <&usb_1_dwc3_ss>;
->> +                    };
->> +                };
->> +            };
->> +        };
->> +    };
->> +
->> +    vph_pwr: vph-pwr-regulator {
-> 
-> It's not demanded, I think, but I'd suggest 'regulator-vph-pwr' to allow 
-> all regulators to be grouped together.
-Thanks this comments, I will sync your comments with internal team, then 
-I will update sync result to you.
-> 
->> +        compatible = "regulator-fixed";
->> +        regulator-name = "vph_pwr";
->> +        regulator-min-microvolt = <3700000>;
->> +        regulator-max-microvolt = <3700000>;
->> +
->> +        regulator-always-on;
->> +        regulator-boot-on;
->> +    };
->> +};
-> 
-> Other than that looks good to me.
-> 
+I'd be a bit happier if I could avoid the extra objects table allocation
+in drm_exec in the first place, but wasn't really happy with any of the
+things I tried to get rid of that.
+
+v2: updates in 6/7 and other nit-addressing
+
+Rob Clark (7):
+  drm/msm/gem: Remove "valid" tracking
+  drm/msm/gem: Remove submit_unlock_unpin_bo()
+  drm/msm/gem: Don't queue job to sched in error cases
+  drm/msm/gem: Split out submit_unpin_objects() helper
+  drm/msm/gem: Cleanup submit_cleanup_bo()
+  drm/exec: Pass in initial # of objects
+  drm/msm/gem: Convert to drm_exec
+
+ .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |   8 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c       |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c       |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c       |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_umsch_mm.c  |   4 +-
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c          |   2 +-
+ drivers/gpu/drm/drm_exec.c                    |  13 +-
+ drivers/gpu/drm/msm/Kconfig                   |   1 +
+ drivers/gpu/drm/msm/msm_gem.h                 |  13 +-
+ drivers/gpu/drm/msm/msm_gem_submit.c          | 199 +++++-------------
+ drivers/gpu/drm/msm/msm_ringbuffer.c          |   3 +-
+ drivers/gpu/drm/nouveau/nouveau_exec.c        |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_uvmm.c        |   2 +-
+ drivers/gpu/drm/tests/drm_exec_test.c         |  16 +-
+ include/drm/drm_exec.h                        |   2 +-
+ 16 files changed, 92 insertions(+), 187 deletions(-)
 
 -- 
-Thx and BRs,
-Tengfei Fan
+2.42.0
+
