@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FE37F30E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFBF7F30E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbjKUOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
+        id S234538AbjKUOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:32:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbjKUOb6 (ORCPT
+        with ESMTP id S234544AbjKUOcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:31:58 -0500
+        Tue, 21 Nov 2023 09:32:02 -0500
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2531E10C1;
-        Tue, 21 Nov 2023 06:31:53 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALE2A1B027334;
-        Tue, 21 Nov 2023 14:31:43 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B91810CF;
+        Tue, 21 Nov 2023 06:31:59 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALE28dY030673;
+        Tue, 21 Nov 2023 14:31:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
  subject : mime-version : content-type : content-transfer-encoding :
  message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=pX4kYZuSKB3Oi5Dly+zBivG9ZOIjfQbprA7z6Adw25w=;
- b=GifGQbaDxvrSdhwkJ0FsA/Ha/zl6SXaphqkltAu9/6NxvUHIb+uiCzvo9RKfxQFnARQ2
- 6ALN+fN9og7RQR5R0Sk593MjiFqX9rVN4vZZklo2b2rH7SVYTw1E7W3XIv0eSTMBw07G
- DoC4PMD5VRN87cU+Mv+6o9QI3bGtrc/hYIrXGyiavadep8HuKQkv+WMDnA68dOaWZlgK
- 5AnOK25BSH0b73KB4EJAzoLovnc8LHhBpkbxJ2ECo5xriMVGCkLSoXQBQO0MTTJtRtz/
- X65AKlz0lA2AAif2EJkUVXH1bDwKpXFImgsT3g7nfAm4+i1hb767ZOUscKui95B/34M2 OA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugk6x203g-1
+ bh=BskTKg7bjJwUbywnO6hqoJyv7Sqc6PQkw8i1ACSRrkc=;
+ b=giPbUB03x2TM5EshPduPzxlTCtJ3XfPPHq00TPqUYnMmo/QXTVooDvO9TLlL1TzeZeQe
+ MqJwBHA9WW5Elag7IlJfI5eqoWF17XpNesg5hdXQaT1fdVLdWZAQ3KQgb/nKwKS6SkHv
+ mAQydbwL0m/eV6idTLIysXJCgb1TvJvf9k4YBcZm0FQ+KoDSudpKyYU373O2FHKwkmbf
+ auRSDohp9gAd3uMK8zEWlAfIfcTvsFOdDjLEZEXB3GrtlGYlBd7mm9tbdfEJWDV2eLSn
+ 7UH0x8jdJx/JHmlq/cMn8YoDdlcT8UxjW5ypuy2jMUKHS0D+IGHtk4Az36mXY46KqrV+ WQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug7eabps7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 14:31:42 +0000
+        Tue, 21 Nov 2023 14:31:50 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALEVIe3008253
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALEVOvi027441
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 14:31:18 GMT
+        Tue, 21 Nov 2023 14:31:24 GMT
 Received: from hu-kathirav-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 21 Nov 2023 06:31:12 -0800
+ 15.2.1118.40; Tue, 21 Nov 2023 06:31:18 -0800
 From:   Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Date:   Tue, 21 Nov 2023 20:00:44 +0530
-Subject: [PATCH v2 2/9] clk: qcom: ipq5332: enable few nssnoc clocks in
- driver probe
+Date:   Tue, 21 Nov 2023 20:00:45 +0530
+Subject: [PATCH v2 3/9] dt-bindings: clock: ipq5332: drop the few nss
+ clocks definition
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231121-ipq5332-nsscc-v2-2-a7ff61beab72@quicinc.com>
+Message-ID: <20231121-ipq5332-nsscc-v2-3-a7ff61beab72@quicinc.com>
 References: <20231121-ipq5332-nsscc-v2-0-a7ff61beab72@quicinc.com>
 In-Reply-To: <20231121-ipq5332-nsscc-v2-0-a7ff61beab72@quicinc.com>
 To:     Andy Gross <agross@kernel.org>,
@@ -65,11 +65,11 @@ CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         "Kathiravan Thirumoorthy" <quic_kathirav@quicinc.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700577061; l=4389;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700577061; l=1337;
  i=quic_kathirav@quicinc.com; s=20230906; h=from:subject:message-id;
- bh=kl1ojrNH4P07mHLq+405njkVkiRs0X/2WQl+0MW28PQ=;
- b=5idx+LxiSMfT/ykbqCHtwuJq8Bpqmn1DU0gL9ugynCmmhuBuUm24JteyhYun45DrcHXWim+l5
- uNyyP33SZ2bANnFaRWJAG7ZWVeZmyBiU82RI8iouHZJFnrTpkMXFkSM
+ bh=pqduzhZaHeCV7j9kVmg9wiQQH0ixzsxoMBso//t3Mdk=;
+ b=AB4Sr7MUMK8RN0i2Jln/VtEBE1OW7jFmY9eRCjKU3g1TSlI5c6NW0QmFqQn6N8O97CHQoNX0+
+ CPr35vWsxLxApIE/hes/qKuN1PjJHMRfneRfjEho7xPNmRBwaOuFzQU
 X-Developer-Key: i=quic_kathirav@quicinc.com; a=ed25519;
  pk=xWsR7pL6ch+vdZ9MoFGEaP61JUaRf0XaZYWztbQsIiM=
 X-Originating-IP: [10.80.80.8]
@@ -77,14 +77,14 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: H_dRvlKN3IJTZoaZPN00_MYFsr6ZPG7i
-X-Proofpoint-ORIG-GUID: H_dRvlKN3IJTZoaZPN00_MYFsr6ZPG7i
+X-Proofpoint-GUID: aa_TJ_eNJ2XAhN2o794W46TEkvO_FyOq
+X-Proofpoint-ORIG-GUID: aa_TJ_eNJ2XAhN2o794W46TEkvO_FyOq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_07,2023-11-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- impostorscore=0 spamscore=0 clxscore=1015 adultscore=0 malwarescore=0
- bulkscore=0 phishscore=0 priorityscore=1501 mlxlogscore=864
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ phishscore=0 mlxscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=793 bulkscore=0 impostorscore=0 adultscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2311210114
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -97,130 +97,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk, gcc_nssnoc_nsscc_clk are
-enabled by default and it's RCG is properly configured by bootloader.
+In commit 0dd3f263c810 ("clk: qcom: ipq5332: enable few nssnoc clocks in
+driver probe"), gcc_snoc_nssnoc_clk, gcc_snoc_nssnoc_1_clk,
+gcc_nssnoc_nsscc_clk are enabled in driver probe to keep it always-on.
 
-Some of the NSS clocks needs these clocks to be enabled. To avoid
-these clocks being disabled by clock framework, drop these entries
-from the clock table and enable it in the driver probe itself.
+So let's drop the binding definition as well.
 
 Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
 ---
 Changes in V2:
-	- enabled the clocks in driver probe
+	- No changes
 ---
- drivers/clk/qcom/gcc-ipq5332.c | 70 ++++++++----------------------------------
- 1 file changed, 12 insertions(+), 58 deletions(-)
+ include/dt-bindings/clock/qcom,ipq5332-gcc.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
-index 66d5399798fe..38a570b68813 100644
---- a/drivers/clk/qcom/gcc-ipq5332.c
-+++ b/drivers/clk/qcom/gcc-ipq5332.c
-@@ -1672,24 +1672,6 @@ static struct clk_branch gcc_nssnoc_atb_clk = {
- 	},
- };
- 
--static struct clk_branch gcc_nssnoc_nsscc_clk = {
--	.halt_reg = 0x17030,
--	.halt_check = BRANCH_HALT,
--	.clkr = {
--		.enable_reg = 0x17030,
--		.enable_mask = BIT(0),
--		.hw.init = &(const struct clk_init_data) {
--			.name = "gcc_nssnoc_nsscc_clk",
--			.parent_hws = (const struct clk_hw*[]) {
--				&gcc_pcnoc_bfdcd_clk_src.clkr.hw,
--			},
--			.num_parents = 1,
--			.flags = CLK_SET_RATE_PARENT,
--			.ops = &clk_branch2_ops,
--		},
--	},
--};
--
- static struct clk_branch gcc_nssnoc_qosgen_ref_clk = {
- 	.halt_reg = 0x1701c,
- 	.halt_check = BRANCH_HALT,
-@@ -2585,42 +2567,6 @@ static struct clk_branch gcc_snoc_lpass_cfg_clk = {
- 	},
- };
- 
--static struct clk_branch gcc_snoc_nssnoc_1_clk = {
--	.halt_reg = 0x17090,
--	.halt_check = BRANCH_HALT,
--	.clkr = {
--		.enable_reg = 0x17090,
--		.enable_mask = BIT(0),
--		.hw.init = &(const struct clk_init_data) {
--			.name = "gcc_snoc_nssnoc_1_clk",
--			.parent_hws = (const struct clk_hw*[]) {
--				&gcc_system_noc_bfdcd_clk_src.clkr.hw,
--			},
--			.num_parents = 1,
--			.flags = CLK_SET_RATE_PARENT,
--			.ops = &clk_branch2_ops,
--		},
--	},
--};
--
--static struct clk_branch gcc_snoc_nssnoc_clk = {
--	.halt_reg = 0x17084,
--	.halt_check = BRANCH_HALT,
--	.clkr = {
--		.enable_reg = 0x17084,
--		.enable_mask = BIT(0),
--		.hw.init = &(const struct clk_init_data) {
--			.name = "gcc_snoc_nssnoc_clk",
--			.parent_hws = (const struct clk_hw*[]) {
--				&gcc_system_noc_bfdcd_clk_src.clkr.hw,
--			},
--			.num_parents = 1,
--			.flags = CLK_SET_RATE_PARENT,
--			.ops = &clk_branch2_ops,
--		},
--	},
--};
--
- static struct clk_branch gcc_snoc_pcie3_1lane_1_m_clk = {
- 	.halt_reg = 0x2e050,
- 	.halt_check = BRANCH_HALT,
-@@ -3330,7 +3276,6 @@ static struct clk_regmap *gcc_ipq5332_clocks[] = {
- 	[GCC_NSSCC_CLK] = &gcc_nsscc_clk.clkr,
- 	[GCC_NSSCFG_CLK] = &gcc_nsscfg_clk.clkr,
- 	[GCC_NSSNOC_ATB_CLK] = &gcc_nssnoc_atb_clk.clkr,
--	[GCC_NSSNOC_NSSCC_CLK] = &gcc_nssnoc_nsscc_clk.clkr,
- 	[GCC_NSSNOC_QOSGEN_REF_CLK] = &gcc_nssnoc_qosgen_ref_clk.clkr,
- 	[GCC_NSSNOC_SNOC_1_CLK] = &gcc_nssnoc_snoc_1_clk.clkr,
- 	[GCC_NSSNOC_SNOC_CLK] = &gcc_nssnoc_snoc_clk.clkr,
-@@ -3398,8 +3343,6 @@ static struct clk_regmap *gcc_ipq5332_clocks[] = {
- 	[GCC_SDCC1_APPS_CLK_SRC] = &gcc_sdcc1_apps_clk_src.clkr,
- 	[GCC_SLEEP_CLK_SRC] = &gcc_sleep_clk_src.clkr,
- 	[GCC_SNOC_LPASS_CFG_CLK] = &gcc_snoc_lpass_cfg_clk.clkr,
--	[GCC_SNOC_NSSNOC_1_CLK] = &gcc_snoc_nssnoc_1_clk.clkr,
--	[GCC_SNOC_NSSNOC_CLK] = &gcc_snoc_nssnoc_clk.clkr,
- 	[GCC_SNOC_PCIE3_1LANE_1_M_CLK] = &gcc_snoc_pcie3_1lane_1_m_clk.clkr,
- 	[GCC_SNOC_PCIE3_1LANE_1_S_CLK] = &gcc_snoc_pcie3_1lane_1_s_clk.clkr,
- 	[GCC_SNOC_PCIE3_1LANE_M_CLK] = &gcc_snoc_pcie3_1lane_m_clk.clkr,
-@@ -3660,7 +3603,18 @@ static const struct qcom_cc_desc gcc_ipq5332_desc = {
- 
- static int gcc_ipq5332_probe(struct platform_device *pdev)
- {
--	return qcom_cc_probe(pdev, &gcc_ipq5332_desc);
-+	struct regmap *regmap;
-+
-+	regmap = qcom_cc_map(pdev, &gcc_ipq5332_desc);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	/* Keep the critical clocks always-On */
-+	regmap_update_bits(regmap, 0x17030, BIT(0), BIT(0)); /* gcc_nssnoc_nsscc_clk */
-+	regmap_update_bits(regmap, 0x17084, BIT(0), BIT(0)); /* gcc_snoc_nssnoc_clk */
-+	regmap_update_bits(regmap, 0x17090, BIT(0), BIT(0)); /* gcc_snoc_nssnoc_1_clk */
-+
-+	return qcom_cc_really_probe(pdev, &gcc_ipq5332_desc, regmap);
- }
- 
- static const struct of_device_id gcc_ipq5332_match_table[] = {
+diff --git a/include/dt-bindings/clock/qcom,ipq5332-gcc.h b/include/dt-bindings/clock/qcom,ipq5332-gcc.h
+index 8a405a0a96d0..4649026da332 100644
+--- a/include/dt-bindings/clock/qcom,ipq5332-gcc.h
++++ b/include/dt-bindings/clock/qcom,ipq5332-gcc.h
+@@ -55,7 +55,6 @@
+ #define GCC_NSSCC_CLK					46
+ #define GCC_NSSCFG_CLK					47
+ #define GCC_NSSNOC_ATB_CLK				48
+-#define GCC_NSSNOC_NSSCC_CLK				49
+ #define GCC_NSSNOC_QOSGEN_REF_CLK			50
+ #define GCC_NSSNOC_SNOC_1_CLK				51
+ #define GCC_NSSNOC_SNOC_CLK				52
+@@ -124,8 +123,6 @@
+ #define GCC_SDCC1_APPS_CLK_SRC				115
+ #define GCC_SLEEP_CLK_SRC				116
+ #define GCC_SNOC_LPASS_CFG_CLK				117
+-#define GCC_SNOC_NSSNOC_1_CLK				118
+-#define GCC_SNOC_NSSNOC_CLK				119
+ #define GCC_SNOC_PCIE3_1LANE_1_M_CLK			120
+ #define GCC_SNOC_PCIE3_1LANE_1_S_CLK			121
+ #define GCC_SNOC_PCIE3_1LANE_M_CLK			122
 
 -- 
 2.34.1
