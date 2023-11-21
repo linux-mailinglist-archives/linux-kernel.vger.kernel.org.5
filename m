@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E0C7F2F2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 875C07F2F34
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234377AbjKUNqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S234304AbjKUNuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234423AbjKUNq3 (ORCPT
+        with ESMTP id S229514AbjKUNuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:46:29 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7602B1704;
-        Tue, 21 Nov 2023 05:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=6zOoGrrmAHYsbAYjPwlImlFJnip+vYBWOCuz8Ez17B0=; b=oU7Nb4IXXCx1oE0KlmHdTcLpUu
-        kg/KqIwuxpe4VR+Ms2sPwNfjqTsW28iX6HEpHO0QawAPus9kVilpyvN9KFs240JWrKUXUaIoY0TUL
-        PryuKTIwrKdrPCTN9P+nOVElqmUyTUF5B1vkvUCZb56DexWEnOAHwBAerF/rq4VKcsmjsHh0wvUsm
-        oeUjK0M1VhPsya3CJvb6qbHU0+JLoKJjoOdsK5Jz3Fx2F6Ms9NJd3+XlQJ6FhsWIOJXhKI/m2mgHh
-        gp2IPAWUI+jyk4pKhYJ/1f/Uv+vvd3Q/Z/D9qyW2KqSj7IKYtPaFjvhfVR4zi9y657CGrZnVjXJN1
-        5beqDYGw==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:40512 helo=rmk-PC.armlinux.org.uk)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1r5R4J-0007Bz-32;
-        Tue, 21 Nov 2023 13:45:35 +0000
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-        id 1r5R4L-00Ct0d-To; Tue, 21 Nov 2023 13:45:37 +0000
-In-Reply-To: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
-References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
-From:   "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: [PATCH 21/21] riscv: convert to use arch_cpu_is_hotpluggable()
+        Tue, 21 Nov 2023 08:50:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED6D125;
+        Tue, 21 Nov 2023 05:49:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE9A7C433C9;
+        Tue, 21 Nov 2023 13:49:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700574596;
+        bh=vF4LkQLYcuqRQJyYUrQVjvPfs/5O3qig6tC9j8drZog=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Clrx6vhzFPyv2yohZc47Qd06hxwulyJMXR0zF8G9mAcsExaH8j4bz0DLhcFG1fY46
+         h7G5U5C5rx1d3pE3of9XMYTBQAyoIBodIfiakp1AYhJGa+DSnJC+86JgjLmP0qmT8v
+         2QLaWXUwtfguQs4vf/7TMEt+cZBL+A7BEE5ROpl5seJ/9/x7xn0E8w0elP4pStnTar
+         G4iDjBKIl0lBh3K15cykqYtWH+xjDv01/F+GxJN4Hl2HuaIEtsn4zBs02BMikWMMkf
+         MsMUYD1FEeYJXX0/2lPrQ39Um2EYCL+YBp3pIYrw81TomowSnX1QJYszstRjcKySai
+         6IguUM2/CCpDw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5R8i-0004sr-2u;
+        Tue, 21 Nov 2023 14:50:08 +0100
+Date:   Tue, 21 Nov 2023 14:50:08 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Message-ID: <ZVy1kAslWYOQ6n9q@hovoldconsulting.com>
+References: <20231120161607.7405-1-johan+linaro@kernel.org>
+ <20231120161607.7405-3-johan+linaro@kernel.org>
+ <pgmtla6j3dshuq5zdxstszbkkssxcthtzelv2etcbrlstdw4nu@wixz6v5dfpum>
+ <3ff65t36p6n3k7faw2z75t2vfi6rb5p64x7wqosetsksbhhwli@5xaxnm7zz4tu>
+ <ZVx1wRefjNaN0byk@hovoldconsulting.com>
+ <0b627853-78fb-4320-84e4-f88695ac6a9e@quicinc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1r5R4L-00Ct0d-To@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date:   Tue, 21 Nov 2023 13:45:37 +0000
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <0b627853-78fb-4320-84e4-f88695ac6a9e@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,35 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert riscv to use the arch_cpu_is_hotpluggable() helper rather than
-arch_register_cpu().
+On Tue, Nov 21, 2023 at 06:25:37PM +0530, Krishna Kurapati PSSNV wrote:
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- arch/riscv/kernel/setup.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+> > Specifically, I consider the current implementation to be broken in that
+> > it generates wakeup events on disconnect which is generally not want you
+> > want. Consider closing the lid of your laptop and disconnecting a USB
+> > mouse before putting it in your backpack. Now it's no longer suspended
+> > as you would expect it to be.
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index b3a0aa2b78d5..7493fafbe4cb 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -298,12 +298,9 @@ void __init setup_arch(char **cmdline_p)
- 	riscv_user_isa_enable();
- }
- 
--int arch_register_cpu(int cpu)
-+bool arch_cpu_is_hotpluggable(int cpu)
- {
--	struct cpu *c = &per_cpu(cpu_devices, cpu);
--
--	c->hotpluggable = cpu_has_hotplug(cpu);
--	return register_cpu(c, cpu);
-+	return cpu_has_hotplug(cpu);
- }
- 
- void free_initmem(void)
--- 
-2.30.2
+>   Just one query. Even if it wakes up after closing the lid and removing 
+> the mouse, wouldn't pm suspend be triggered again later by the system 
+> once it sees that usb is also good to be suspended again ? I presume a 
+> laptop form factor would be having this facility of re-trigerring 
+> suspend. Let me know if this is not the case.
 
+No, we generally don't use opportunistic suspend (e.g. unlike android)
+so the laptop will not suspend again.
+
+So this is an actual bug affecting, for example, the Lenovo ThinkPad
+X13s.
+
+> Also, the warning you are mentioning in [1] comes because this is a 
+> laptop form factor and we have some firmware running (I don't know much 
+> about ACPI and stuff) ?
+
+No, the "firmware" in this case is just the devicetree which has the
+DP/DM interrupts defined as edge-triggered while the driver requests
+them as level triggered.
+
+(It would look similar with ACPI firmware which also has these declared
+as edge triggered.)
+
+Johan
