@@ -2,121 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555C17F2AD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7D77F2ADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbjKUKlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:41:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
+        id S233815AbjKUKmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbjKUKlM (ORCPT
+        with ESMTP id S231923AbjKUKmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:41:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED2911C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:41:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42018C433C8;
-        Tue, 21 Nov 2023 10:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700563268;
-        bh=6ssmz9Fzj5B5OmCb07mIm3SGwRw9YGJdqqjNOMzjqjI=;
+        Tue, 21 Nov 2023 05:42:03 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAD5BA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:41:57 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6801140E01AD;
+        Tue, 21 Nov 2023 10:41:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jJQ_0gGiUbgo; Tue, 21 Nov 2023 10:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700563313; bh=fnyEynF2/BGyDA25XTqaOcJ4byOQMi/06qF8BTjdMTg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D4vK5vs4oL3icSXZydnqDM56wAeOdVXHDrdnc5HGhc07aObDsKuXDA6nPc9Kb/AjO
-         tFTsFjQsYLFV6t2wKtWlJRyz8RSctyacMs0ecueARCS6ikBk4balsn1z9IN/cBBhf5
-         b8a4mu42V8h2H1j9aw4XOLMiz4gg1lBZeQc8Rcqdpa7CAMwhGOZUPS43Aoercery22
-         A+VWLfY9me9tZNzztinOEcud0MxToeqAgO3RzE+vgDoV0GfSa1VN6plMRXx4ONNNBw
-         52A1UllKq6WlZhEA3yy3s6mPDMlPFWkKB4LuyaHcT/uK52CcIyMSq30d/3K552YJil
-         8xS4+R7zYbMxg==
-Date:   Tue, 21 Nov 2023 18:40:56 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        ThomasPetazzonithomas.petazzoni@bootlin.com,
-        =?iso-8859-1?Q?Gr=E9gory?= Clement <gregory.clement@bootlin.com>
-Subject: Re: [PATCH v2 5/7] usb: cdns3: add quirk to platform data for
- reset-on-resume
-Message-ID: <20231121104056.GA541474@nchen-desktop>
-References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
- <20231120-j7200-usb-suspend-v2-5-038c7e4a3df4@bootlin.com>
+        b=SmZ03YN3Bk4BTZ129QzSuWxt2HZYte4jnM0ruwpxDFJudmwa/g46BbemJGgpb+uai
+         R1XDSXjJPCIf5vMArV57Lm1rfgTFTuRNUNkDpOkk/7jDt5Hw25LRvA8AKdDUM69i9V
+         0IWsqOPjUO6Ac4OH3kVZ21HcB08irjf7G6eEJZHxILsKSQVFPiSnbh1Jl4KoR/O1JP
+         ZQzvSwHCdbs7Qw8wjOo7052IadPj/7u0VvrnHWK7wZkHfh/204bb6mV44sF6wn8+c0
+         Co5UcyYjFDeyI0td7ax7HhlmnDEdj+m69G/lyj4/0hUS0hzPvW/O5Y9a05neUxKxvd
+         R2kU6TLBSEbpzyVQODNAAnxaUr1jLc6ODk35wSb5feouUuBRZ4XSyO8TtoynHQeUtt
+         xWSQYbowsf9V3itOETL0BI5/ondQK0n/3BroYCBs+QkRRrN/LaKIi0KJghZBw+dsVk
+         Go1ReFuz5FfIJLeKilbKtFQ2EljGKPhinj4sNVWldCKBaFkz5+uqlHhquwyFyzSkqw
+         OMnYT6WR9azSjyXILwAxxozcjnC3cQWrk8cwEzxFIulg+BQNrpvuq7Np/n3F4e4qOP
+         hvleqS2Mj+f+I29nYt3w7/vA/mDFnUK7EL7wKyJUCBolq0jZtIRM4yOsXjEE0DoOVl
+         b/pYg7c3qxAaM8Y6lBKuhtn4=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2620E40E0031;
+        Tue, 21 Nov 2023 10:41:50 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 11:41:44 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 07/13] x86/CPU/AMD: Move Zenbleed check to the Zen2 init
+ function
+Message-ID: <20231121104144.GAZVyJaJZDYyt1+aQ6@fat_crate.local>
+References: <20231120104152.13740-1-bp@alien8.de>
+ <20231120104152.13740-8-bp@alien8.de>
+ <bae4d27d-5882-468d-a5bd-80b34c10dd80@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231120-j7200-usb-suspend-v2-5-038c7e4a3df4@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <bae4d27d-5882-468d-a5bd-80b34c10dd80@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-11-20 18:06:05, Théo Lebrun wrote:
-> The cdns3 host role does not care about reset-on-resume. xHCI however
-> reconfigures itself in silence rather than printing a warning about a
-> resume error. Related warning example:
-> 
->   [   16.017462] xhci-hcd xhci-hcd.1.auto: xHC error in resume, USBSTS 0x401, Reinit
-> 
-> Allow passing a CDNS3_RESET_ON_RESUME quirk flag from cdns3 pdata down
-> to xHCI pdata. The goal is to allow signaling about reset-on-resume
-> behavior from platform wrapper drivers.
-> 
-> When used, remote wakeup is not expected to work.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+On Mon, Nov 20, 2023 at 02:53:54PM +0200, Nikolay Borisov wrote:
+> nit:  If you initially introduced the zen-specific functions right after
+> zenbleed_check you would have avoided the function move in this patch which
+> would have reduced the overall diff.
 
-Acked-by: Peter Chen <peter.chen@kernel.org>
+Yap, done, good point.
 
-> ---
->  drivers/usb/cdns3/core.h | 1 +
->  drivers/usb/cdns3/host.c | 3 +++
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
-> index 81a9c9d6be08..7487067ba23f 100644
-> --- a/drivers/usb/cdns3/core.h
-> +++ b/drivers/usb/cdns3/core.h
-> @@ -44,6 +44,7 @@ struct cdns3_platform_data {
->  			bool suspend, bool wakeup);
->  	unsigned long quirks;
->  #define CDNS3_DEFAULT_PM_RUNTIME_ALLOW	BIT(0)
-> +#define CDNS3_RESET_ON_RESUME		BIT(1)
->  };
->  
->  /**
-> diff --git a/drivers/usb/cdns3/host.c b/drivers/usb/cdns3/host.c
-> index 6164fc4c96a4..28c4d1deb231 100644
-> --- a/drivers/usb/cdns3/host.c
-> +++ b/drivers/usb/cdns3/host.c
-> @@ -91,6 +91,9 @@ static int __cdns_host_init(struct cdns *cdns)
->  	if (cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW))
->  		cdns->xhci_plat_data->quirks |= XHCI_DEFAULT_PM_RUNTIME_ALLOW;
->  
-> +	if (cdns->pdata && (cdns->pdata->quirks & CDNS3_RESET_ON_RESUME))
-> +		cdns->xhci_plat_data->quirks |= XHCI_RESET_ON_RESUME;
-> +
->  	ret = platform_device_add_data(xhci, cdns->xhci_plat_data,
->  			sizeof(struct xhci_plat_priv));
->  	if (ret)
-> 
-> -- 
-> 2.42.0
-> 
+And thanks for the review.
 
 -- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Peter Chen
+https://people.kernel.org/tglx/notes-about-netiquette
