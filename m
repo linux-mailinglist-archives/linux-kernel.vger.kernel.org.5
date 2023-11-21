@@ -2,54 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE267F32AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7CE7F32B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbjKUPsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38046 "EHLO
+        id S234601AbjKUPv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjKUPsC (ORCPT
+        with ESMTP id S230509AbjKUPv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:48:02 -0500
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C0999
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:47:58 -0800 (PST)
-Message-ID: <b3bc868f-bf83-4b86-bcf0-13e99d0b7c7e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700581676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zVdBdlkIsnH6I2p3E5sm8f7fpOQeckAW/foyxumZ7OY=;
-        b=rvCdEZdneqNOUqfvNgM8d99zC5r7Hm7vbnpqQFZJWCW0yCRnq4Mebspr9XdHZ8UY5+giaE
-        HTGgWBHAIqQCryqFsD7hJeOB7HWW9cZr4dJMhVVMAI/Lns9q20GyA8hbbwYm4nWX/hWBGk
-        0AMg52MLYLOzj2rDPE0PqBd2xWyR3Zk=
-Date:   Tue, 21 Nov 2023 23:47:26 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v5 6/9] slub: Delay freezing of partial slabs
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        42.hyeyoo@gmail.com, linux-mm@kvack.org,
+        Tue, 21 Nov 2023 10:51:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E082C1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:51:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C36C433C8;
+        Tue, 21 Nov 2023 15:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700581912;
+        bh=WwKdR5EpIuoPyTiF9l91qy2/U/TA9wpVWOK/oMQGTTA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tYFhZuQWeZs0lWDOpEMMrTsTZOk9FNIxy7sRunS70HvJkwJcc2Q7c9Vm+f8+yH2kb
+         pIVOrRKjevNbzvaQuvNHfNIjaN/dDZ7BgYVHdatmXFDVYBzTYIJEnU0QqFjDNOIpdC
+         oul2a9CuXx8CN2c6km9nADrsGY5R5UTE61JMZJxWElPVz2DUyBDb/znP2CBIRYTt5i
+         PmcepSKVAffPnNst6hXbM4mzCQ9SlKZtMYbhNkHPenxW7j+OZSXpM5tKWaFLttlGt5
+         wrdRtgSYxEc70QU16iWwFpM2OuavpjPxMXNgyAiGKaoEaQh80CE7kmnXDikohc8/Q0
+         994pzEV1A6Lyw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 61131CE04BD; Tue, 21 Nov 2023 07:51:52 -0800 (PST)
+Date:   Tue, 21 Nov 2023 07:51:52 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
- <20231102032330.1036151-7-chengming.zhou@linux.dev>
- <4f3bc1bd-ea87-465d-b58a-0ed57b15187b@sirena.org.uk>
- <c8bb9dd9-ae18-4fab-a664-6ec4b0cb2e30@linux.dev>
- <ZVwIFNdABN1b+qWC@finisterre.sirena.org.uk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <ZVwIFNdABN1b+qWC@finisterre.sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <ba543d44-9302-4115-ac4f-d4e9f8d98a90@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,38 +72,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/21 09:29, Mark Brown wrote:
-> On Tue, Nov 21, 2023 at 08:58:40AM +0800, Chengming Zhou wrote:
->> On 2023/11/21 02:49, Mark Brown wrote:
->>> On Thu, Nov 02, 2023 at 03:23:27AM +0000, chengming.zhou@linux.dev wrote:
-> 
->>> When we see problems we see RCU stalls while logging in, for example:
-> 
->>> [   46.453323] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
->>> [   46.459361] rcu: 	3-...0: (1 GPs behind) idle=def4/1/0x40000000 softirq=1304/1304 fqs=951
->>> [   46.467669] rcu: 	(detected by 0, t=2103 jiffies, g=1161, q=499 ncpus=4)
->>> [   46.474472] Sending NMI from CPU 0 to CPUs 3:
-> 
->> IIUC, here should print the backtrace of CPU 3, right? It looks like CPU 3 is the cause,
->> but we couldn't see what it's doing from the log.
-> 
-> AIUI yes, but it looks like we've just completely lost the CPU - there's
-> more attempts to talk to it visible in the log:
-> 
->>> A full log for that run can be seen at:
->>>
->>>    https://validation.linaro.org/scheduler/job/4017095
-> 
-> but none of them appear to cause CPU 3 to respond.  Note that 32 bit ARM
-> is just using a regular IPI rather than something that's actually a NMI
-> so this isn't hugely out of the ordinary, I'd guess it's stuck with
-> interrupts masked.
+On Tue, Nov 21, 2023 at 09:56:55AM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-21 09:46, Peter Zijlstra wrote:
+> > On Tue, Nov 21, 2023 at 09:40:24AM -0500, Mathieu Desnoyers wrote:
+> > > On 2023-11-21 09:36, Peter Zijlstra wrote:
+> > > > On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
+> > > > > Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
+> > > > > 
+> > > > > - Allow page faults within RCU read-side (like SRCU),
+> > > > > - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
+> > > > > - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
+> > > > >     that. Hence, this is not meant to be a generic replacement for SRCU.
+> > > > > 
+> > > > > Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
+> > > > > fit for the following reasons:
+> > > > > 
+> > > > > - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
+> > > > 
+> > > > Your counter points are confused, we simply don't build preemptible RCU
+> > > > unless PREEMPT=y, but that could surely be fixed and exposed as a
+> > > > separate flavour.
+> > > > 
+> > > > > - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
+> > > > 
+> > > > What's that got to do with anything?
 
-Ah yes, there is no NMI on ARM, so CPU 3 maybe running somewhere with
-interrupts disabled. I searched the full log, but still haven't a clue.
-And there is no any WARNING or BUG related to SLUB in the log.
+Preemptible RCU allows blocking/preemption only in those cases where
+priority inheritance applies.  As Mathieu says below, this prevents
+indefinite postponement of a global grace period.  Such postponement is
+especially problematic in kernels built with PREEMPT_RCU=y.  For but one
+example, consider a situation where someone maps a file served by NFS.
+We can debate the wisdom of creating such a map, but having the kernel
+OOM would be a completely unacceptable "error message".
 
-I wonder how to reproduce it locally with a Qemu VM since I don't have
-the ARM machine.
+> > > > Still utterly confused about what task-tracing rcu is and how it is
+> > > > different from preemptible rcu.
 
-Thanks!
+Task Trace RCU allows general blocking, which it tolerates by stringent
+restrictions on what exactly it is used for (tracing in cases where the
+memory to be included in the tracing might page fault).  Preemptible RCU
+does not permit general blocking.
+
+Tasks Trace RCU is a very specialized tool for a very specific use case.
+
+> > > In addition to taking the mmap_sem, the page fault handler need to block
+> > > until its requested pages are faulted in, which may depend on disk I/O.
+> > > Is it acceptable to wait for I/O while holding preemptible RCU read-side?
+> > 
+> > I don't know, preemptible rcu already needs to track task state anyway,
+> > it needs to ensure all tasks have passed through a safe spot etc.. vs regular
+> > RCU which only needs to ensure all CPUs have passed through start.
+> > 
+> > Why is this such a hard question?
+
+It is not a hard question.  Nor is the answer, which is that preemptible
+RCU is not a good fit for this task for all the reasons that Mathieu has
+laid out.
+
+> Personally what I am looking for is a clear documentation of preemptible rcu
+> with respect to whether it is possible to block on I/O (take a page fault,
+> call schedule() explicitly) from within a preemptible rcu critical section.
+> I guess this is a hard question because there is no clear statement to that
+> effect in the kernel documentation.
+> 
+> If it is allowed (which I doubt), then I wonder about the effect of those
+> long readers on grace period delays. Things like expedited grace periods may
+> suffer.
+> 
+> Based on Documentation/RCU/rcu.rst:
+> 
+>   Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
+>   same effect, but require that the readers manipulate CPU-local
+>   counters.  These counters allow limited types of blocking within
+>   RCU read-side critical sections.  SRCU also uses CPU-local
+>   counters, and permits general blocking within RCU read-side
+>   critical sections.  These variants of RCU detect grace periods
+>   by sampling these counters.
+> 
+> Then we just have to find a definition of "limited types of blocking"
+> vs "general blocking".
+
+The key point is that you are not allowed to place any source code in
+a preemptible RCU reader that would not be legal in a non-preemptible
+RCU reader.  The rationale again is that the cases in which preemptible
+RCU readers call schedule are cases to which priority boosting applies.
+
+It is quite possible that the documentation needs upgrading.  ;-)
+
+							Thanx, Paul
