@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B6E7F2CF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1687F2CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234741AbjKUMTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        id S234461AbjKUMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234334AbjKUMTG (ORCPT
+        with ESMTP id S230428AbjKUMS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:19:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A409186;
-        Tue, 21 Nov 2023 04:19:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700569143; x=1732105143;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SdXthQjnrrZo9AkzWMY7oGpGWTtB+tK49t5BJyhg9q4=;
-  b=PuXuTdVdcgmi9XkslxzVOYPs0rk4NJvs7s1jtn0qO6+6xoKzUJcUskEa
-   VcGU4oQhAQGmK0CJCwiLRWBVFyFDydkU4tjqWrdrxD7iGFLj99vpbz5yZ
-   U145ovPJ3gomNVf8tRcmsLEsmCvdlY9We79k/P+OJZ1aJGkoa75mFkXZN
-   Vp1m43jd3R6FC32DpPz25fa8Vmxj+bXMzzODCbY02ISK5tUvJ/uDoCa5Y
-   zVnr5C5fXrL0Ka+GxduQe+Ly89svxg8o1bKSdE5MxquyRAG7dAGTnI4Jz
-   VjhGQEIUBrVPzHksaVdxSsztBRM6eX0K4xXjKCNREgI5FFLXC6bQqc90j
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="10493429"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="10493429"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 04:19:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="8076113"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 21 Nov 2023 04:18:58 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5PiQ-0007mW-37;
-        Tue, 21 Nov 2023 12:18:55 +0000
-Date:   Tue, 21 Nov 2023 20:18:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
-        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v2] PCI: mediatek: Fix sparse warning caused to
- virt_to_phys() prototype change
-Message-ID: <202311212050.Z3EDRIR3-lkp@intel.com>
-References: <170052491316.21557.13173111699965824301.stgit@skinsburskii.>
+        Tue, 21 Nov 2023 07:18:59 -0500
+Received: from esa4.hc3370-68.iphmx.com (esa4.hc3370-68.iphmx.com [216.71.155.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D88183
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:18:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1700569135;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=gw3SJ//CYccv+LfEcReK3mjikYD+hKyjOkLSU+xz4JM=;
+  b=RDPvXq0i3nNF4Pmw1IKlDunV1rU43IBjJ9yl9xtkGXc4WMtj+peZUzsf
+   XrVR0gfvB6NiOTWUSqdSd4NpZTEPKluPiGrDAJ3lTokHrGuzxJ1MbvCc3
+   v+vvU61IWn0mifj1FsEt5raFo5jdpfbau1kirBu2IQXj5vH6h7l5zy1lg
+   Q=;
+X-CSE-ConnectionGUID: FmN2m58OQJ6Gedl0bVHtOw==
+X-CSE-MsgGUID: 1prvCd9oQ162SCnUiibNeA==
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+X-SBRS: 4.0
+X-MesageID: 131026723
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.159.70
+X-Policy: $RELAYED
+X-ThreatScanner-Verdict: Negative
+IronPort-Data: A9a23:47AA8aghrZVL9B4zjtlgabxkX161uBAKZh0ujC45NGQN5FlHY01je
+ htvUW/QOK2CNjekL94gYdnk8h8C6pLSnNNhGgA+/ilgE3kb9cadCdqndUqhZCn6wu8v7q5Ex
+ 55HNoSfdpBcolv0/ErF3m3J9CEkvU2wbuOhTraCYmYoHVMMpB4J0XpLg/Q+jpNjne+3CgaMv
+ cKai8DEMRqu1iUc3lg8sspvkzsx+qyu0N8klgZmP6sS5QWHzyB94K83fsldEVOpGuG4IcbiL
+ wrz5OnR1n/U+R4rFuSknt7TGqHdauePVeQmoiM+t5mK2nCulARrukoIHKN0hXNsoyeIh7hMJ
+ OBl7vRcf+uL0prkw4zxWzEAe8130DYvFLXveRBTuuTLp6HKnueFL1yDwyjaMKVBktubD12i+
+ tQ2LRZXa03ToNuUnp22Ru00jPoDMO70adZ3VnFIlVk1DN4jSJHHBa7L+cVZzHE7gcUm8fT2P
+ pRDL2A1NVKZPkwJZQ9/5JEWxY9EglHWdTFCpU3Tjq0w+2XJlyR60aT3McqTcduPLSlQth/D/
+ zqcoTujWXn2MvTG0SCb2X79gdaWw3nAc4QvFbyy0PND1Qj7Kms7V0RNCArTTeOCoky5QdV3e
+ 0YF5ic1668o+ySDVcTnVgO1rTifowIcWtlNF/Uz7gCR4qPR70CSAW1sZiFAbNgOt8IsQzEuk
+ FiTkLvBHztlsbvTTG+H7reFhTqoPG4eKmpqTSMbSBRfy9jlrps6gh/GQpBkCqHdptf8HjXth
+ TSXhCw/gagDy88Ny6i/u1vAhlqEp5/MSxMd4gTMQnnj6gJ/eZ7ja4G2gXDf7PBdPMOaQ0OHs
+ XwshceT9qYNAIuLmSjLR/8CdJm5t6itLjLRmxhsEoMn+jDr/GSsFb28+xkneh0vaJxdP2a0M
+ QmM4Wu9+aO/IlOEaIktZt/hLP0Ik4ftGdC9XM70cv1RN80ZmBC8wM1+WaKB9zmyyBBwwP9lY
+ MnzTCq6MZoN5U1aINuKqwQ1i+ZDKtgWnz+7eHwC503PPUCiTHCUU6wZF1CFc/o06qiJyC2Mr
+ I4HapPXkUkGCbKgCsUyzWL1BQpSRZTcLcquw/G7i8bZelY2cI3fI6O5LUwdl3xNwP0Oy7agE
+ oCVUU5E0lvv7UAr2i3TAk2PnIjHBM4lxVpiZHxEALpd8yR7CWpZxPtFJsRfkHhO3LAL8MOYu
+ NFfIp/cXa0fEm+ek9nfBLGkxLFfmN2QrVrmF0KYjPIXJvaMmyShFgfYQzbS
+IronPort-HdrOrdr: A9a23:CCsZV68zPzvxS5+Ly1puk+DcI+orL9Y04lQ7vn2ZHyYlFvBw9v
+ rPoB1173TJYVoqMk3I+urgBEDjexzhHMVOkOws1N6ZNWHbUQ2TQb2KhrGN/9SPIUHDHkE279
+ YGT0DTYueAbmSTLKzBkWuFL+o=
+X-Talos-CUID: 9a23:j9e0G28UUi1SBL7nK+mVv2ARPJogLy369VWODEK0DT5jdp2JbkDFrQ==
+X-Talos-MUID: =?us-ascii?q?9a23=3AGaz4nQyLmsX8fjhD+VjXWO7UnN+aqP22El4mncQ?=
+ =?us-ascii?q?BgpDabxdbPQqcjT6RT6Zyfw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="6.04,215,1695700800"; 
+   d="scan'208";a="131026723"
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>,
+        <x86@vger.kernel.org>
+Subject: x86/apic: Further apic::delivery_mode cleanup
+Date:   Tue, 21 Nov 2023 12:18:49 +0000
+Message-ID: <20231121121849.1441264-1-andrew.cooper3@citrix.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231121120411.GDZVycu2OPzz8Jqq4Z@fat_crate.local>
+References: <20231121120411.GDZVycu2OPzz8Jqq4Z@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170052491316.21557.13173111699965824301.stgit@skinsburskii.>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanislav,
+Fold the APIC_DELIVERY_MODE_FIXED constant in more cases now that the apic
+field has disappeared.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
+---
+CC: Joerg Roedel <joro@8bytes.org>
+CC: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+CC: Will Deacon <will@kernel.org>
+CC: Robin Murphy <robin.murphy@arm.com>
+CC: David Woodhouse <dwmw2@infradead.org>
+CC: Lu Baolu <baolu.lu@linux.intel.com>
+CC: iommu@lists.linux.dev
+CC: linux-kernel@vger.kernel.org
+CC: x86@vger.kernel.org
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-20231121]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Does this want a fixes tag?  If so,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Kinsburskii/PCI-mediatek-Fix-sparse-warning-caused-to-virt_to_phys-prototype-change/20231121-080253
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/170052491316.21557.13173111699965824301.stgit%40skinsburskii.
-patch subject: [PATCH v2] PCI: mediatek: Fix sparse warning caused to virt_to_phys() prototype change
-config: s390-randconfig-r113-20231121 (https://download.01.org/0day-ci/archive/20231121/202311212050.Z3EDRIR3-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231121/202311212050.Z3EDRIR3-lkp@intel.com/reproduce)
+Fixes: b5148dfe66f5 ("x86/apic: Drop apic::delivery_mode")
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311212050.Z3EDRIR3-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/pci/controller/pcie-mediatek.c:400:62: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void volatile *address @@     got void const * @@
-   drivers/pci/controller/pcie-mediatek.c:400:62: sparse:     expected void volatile *address
-   drivers/pci/controller/pcie-mediatek.c:400:62: sparse:     got void const *
-   drivers/pci/controller/pcie-mediatek.c:523:66: sparse: sparse: incorrect type in argument 1 (different modifiers) @@     expected void volatile *address @@     got void const * @@
-   drivers/pci/controller/pcie-mediatek.c:523:66: sparse:     expected void volatile *address
-   drivers/pci/controller/pcie-mediatek.c:523:66: sparse:     got void const *
-
-vim +400 drivers/pci/controller/pcie-mediatek.c
-
-   393	
-   394	static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
-   395	{
-   396		struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
-   397		phys_addr_t addr;
-   398	
-   399		/* MT2712/MT7622 only support 32-bit MSI addresses */
- > 400		addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
-   401		msg->address_hi = 0;
-   402		msg->address_lo = lower_32_bits(addr);
-   403	
-   404		msg->data = data->hwirq;
-   405	
-   406		dev_dbg(port->pcie->dev, "msi#%d address_hi %#x address_lo %#x\n",
-   407			(int)data->hwirq, msg->address_hi, msg->address_lo);
-   408	}
-   409	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index 95bd7c25ba6f..542b823f9827 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -3311,7 +3311,7 @@ static void irq_remapping_prepare_irte(struct amd_ir_data *data,
+ 
+ 	data->irq_2_irte.devid = devid;
+ 	data->irq_2_irte.index = index + sub_handle;
+-	iommu->irte_ops->prepare(data->entry, apic->delivery_mode,
++	iommu->irte_ops->prepare(data->entry, APIC_DELIVERY_MODE_FIXED,
+ 				 apic->dest_mode_logical, irq_cfg->vector,
+ 				 irq_cfg->dest_apicid, devid);
+ 
+@@ -3588,7 +3588,7 @@ int amd_iommu_deactivate_guest_mode(void *data)
+ 
+ 	entry->lo.fields_remap.valid       = valid;
+ 	entry->lo.fields_remap.dm          = apic->dest_mode_logical;
+-	entry->lo.fields_remap.int_type    = apic->delivery_mode;
++	entry->lo.fields_remap.int_type    = APIC_DELIVERY_MODE_FIXED;
+ 	entry->hi.fields.vector            = cfg->vector;
+ 	entry->lo.fields_remap.destination =
+ 				APICID_TO_IRTE_DEST_LO(cfg->dest_apicid);
+diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+index 29b9e55dcf26..566297bc87dd 100644
+--- a/drivers/iommu/intel/irq_remapping.c
++++ b/drivers/iommu/intel/irq_remapping.c
+@@ -1112,7 +1112,7 @@ static void prepare_irte(struct irte *irte, int vector, unsigned int dest)
+ 	 * irq migration in the presence of interrupt-remapping.
+ 	*/
+ 	irte->trigger_mode = 0;
+-	irte->dlvry_mode = apic->delivery_mode;
++	irte->dlvry_mode = APIC_DELIVERY_MODE_FIXED;
+ 	irte->vector = vector;
+ 	irte->dest_id = IRTE_DEST(dest);
+ 	irte->redir_hint = 1;
