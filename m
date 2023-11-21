@@ -2,119 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361CD7F34EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D56C07F34F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbjKURZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S234084AbjKURbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:31:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234036AbjKURZg (ORCPT
+        with ESMTP id S231131AbjKURbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:25:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374CE9E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:25:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCF39C433CC
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:25:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700587531;
-        bh=qt6Wz1wjQVS9tVKoXRbtoCApE+YOUmxZa+rP2nFghP8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=d2sJTgAJM3C2pe6wm6FgWEP3Mp32DhS77vJvJbwKIdkQnQVF8WvAZpYqqJkIWc2Y9
-         t3/BldE9o5BlD94jCDrDS0ghnjSZFF/vbrgWzWoZTFvKW4ihNkMUNKaoOMjGHsMFRG
-         ukpnSeukYqQ5Gb9vf6WjMOzzjVnv649z4vAOrQ81jBByJQV0miYqoPwsj9apVnpRQ5
-         kIWgN1bXN9Pc+N9HDPu1R+BbhUhgGseLaPHg7u1qhpZQ8iLHcdGph011VO8t48bdip
-         Wg1LutdYKet/VOA1YBxVI26liHK29nk/fnNeocz3eV5kl1JbYPWOlJPR3qoW+YLSGM
-         x+dgnB7unhCAg==
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5aa481d53e5so3906122a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:25:31 -0800 (PST)
-X-Gm-Message-State: AOJu0YzPWC671Lx47XP8u3dQ+RbqbsO3GCzUNYdWBczcRbyOPfcR31q5
-        ldfM8Gj+pEbL/NqGiYuvzfDTdIVFecKydPeZUXGXwg==
-X-Google-Smtp-Source: AGHT+IGGVfRpUhMS2OniXh63UwnOagMginQmE+GvDZVCOiVoIC5mvb8KoxnZDqOxlTD9o8WLBm+c/w2aCzQhdwG3k18=
-X-Received: by 2002:a17:90b:4aca:b0:27d:b9d:bd6f with SMTP id
- mh10-20020a17090b4aca00b0027d0b9dbd6fmr10246427pjb.45.1700587531325; Tue, 21
- Nov 2023 09:25:31 -0800 (PST)
+        Tue, 21 Nov 2023 12:31:23 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD292A4;
+        Tue, 21 Nov 2023 09:31:18 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BBD25C0006;
+        Tue, 21 Nov 2023 17:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700587877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B3kq6X9wDyuhC6coa3KMXDSFrs/k9gUPcRjKn0KIPLQ=;
+        b=i5coG3f9OL1PEPMekdoyYjnQkjcMp/pI4Kskf8SG8FKMbXhmgRmPhQDKLMzv6+WLjUsKrm
+        19qd908eimPKaWG28pCRrWAtwiKoxXxV2IGiP27STZM4NWnxZjWk3lKmit5XC3Ux1B5sqj
+        EDaijmEeii8RGPTzP3It1HWJaC5vIpsMHNyfU3C6cFxnPl3Z5ZQavmic9/Xz3W1plKUaiT
+        /TaIhJaXoJyQsWM4oBMIkko16n60cjTvenfRqZVKCy7URiNgMCRkc8cHjn03jhJYfHT1Sr
+        pIiqcSCj4ga26l9Dtt4Y0pzH37+rp3nwXd+rxNfopYSlRMXqyBClgKB8LOHu4A==
+Date:   Tue, 21 Nov 2023 18:31:14 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
+In-Reply-To: <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+References: <20231120105255.cgbart5amkg4efaz@skbuf>
+ <20231120121440.3274d44c@kmaincent-XPS-13-7390>
+ <20231120120601.ondrhbkqpnaozl2q@skbuf>
+ <20231120144929.3375317e@kmaincent-XPS-13-7390>
+ <20231120142316.d2emoaqeej2pg4s3@skbuf>
+ <20231120093723.4d88fb2a@kernel.org>
+ <20231120190023.ymog4yb2hcydhmua@skbuf>
+ <20231120115839.74ee5492@kernel.org>
+ <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+ <20231120133737.70dde657@kernel.org>
+ <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-17-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-17-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 09:25:20 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuPs-pqu=SpnP+oWfSimGNUyS4sOVW8px31Jo+cHn23K8w@mail.gmail.com>
-Message-ID: <CAF8kJuPs-pqu=SpnP+oWfSimGNUyS4sOVW8px31Jo+cHn23K8w@mail.gmail.com>
-Subject: Re: [PATCH 16/24] mm/swap: reduce scope of get_swap_device in swapin path
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Move get_swap_device into swapin_readahead, simplify the code
-> and prepare for follow up commits.
->
-> For the later part in do_swap_page, using swp_swap_info directly is fine
-> since in that context, the swap device is pinned by swapcache reference.
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/memory.c     | 16 ++++------------
->  mm/swap_state.c |  8 ++++++--
->  mm/swapfile.c   |  4 +++-
->  3 files changed, 13 insertions(+), 15 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 22af9f3e8c75..e399b37ef395 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3789,7 +3789,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->         struct folio *swapcache =3D NULL, *folio =3D NULL;
->         enum swap_cache_result cache_result;
->         struct page *page;
-> -       struct swap_info_struct *si =3D NULL;
->         rmap_t rmap_flags =3D RMAP_NONE;
->         bool exclusive =3D false;
->         swp_entry_t entry;
-> @@ -3845,14 +3844,11 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->                 goto out;
->         }
->
-> -       /* Prevent swapoff from happening to us. */
-> -       si =3D get_swap_device(entry);
-> -       if (unlikely(!si))
-> -               goto out;
-> -
->         page =3D swapin_readahead(entry, GFP_HIGHUSER_MOVABLE,
->                                 vmf, &cache_result);
-> -       if (page) {
-> +       if (PTR_ERR(page) =3D=3D -EBUSY) {
-> +               goto out;
-> +       } else if (page) {
+On Tue, 21 Nov 2023 00:05:49 +0200
+Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
 
-As Matthew suggested, using ERR_PTR(-EBUSY).
-you also don't need the else here. The goto already terminates the flow.
+> On Mon, Nov 20, 2023 at 01:37:37PM -0800, Jakub Kicinski wrote:
+> > > Is it an accurate summary? =20
+> >=20
+> > Yes.
+> >=20
+> > For now we can impose the requirement that only one can be active=20
+> > easily at the kernel level. But the uAPI should allow expressing more. =
+=20
+>=20
+> I see. That's quite something to think about for K=C3=B6ry. In its defens=
+e,
+> I also agree that this idea seems the most orthogonal to everything else
+> that we have or may want to add in the future, and is not likely to
+> become obsoleted by some other mechanism that can achieve the same
+> thing, but in a more flexible way. It's just that it's quite the task.
+>=20
+> I sense it may be time to dust off and submit the rest of my
+> ndo_hwtstamp_get()/ ndo_hwtstamp_set() conversions before a netlink
+> conversion of SIOCGHWTSTAMP/SIOCSHWTSTAMP could even take place...
+> https://github.com/vladimiroltean/linux/commits/ndo-hwtstamp-v9
 
-if (page =3D=3D ERR_PTR(-EBUSY))
-   goto out;
+Ok I kind of got an idea of what is your prerequisites.
 
-if (page) {
+If I summarize, a solution could be this:
 
-Chris
+- Expand struct hwtstamp_config with a phc_index member for the SIOCG/SHWTS=
+TAMP
+  commands.
+  To keep backward compatibility if phc_index is not set in the hwtstamp_co=
+nfig
+  data from userspace use the default hwtstamp (the default being selected =
+as
+  done in my patch series).
+  Is this possible, would it breaks things?
+
+- In netlink part, send one netlink tsinfo skb for each phc_index.
+
+Could be done in a later patch series:
+- Expand netlink TSINFO with ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_QUALIFIER.
+  Describing this struct:
+enum ethtool_hwstamp_provider_qualifier {
+ 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_PRECISE,
+ 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_APPROX,
+};=20
+
+  Set the desired qualifier through TSINFO_SET or through SIOCSHWTSTAMP by
+  expanding again the struct hwtstamp_config.
+
+Do you think this is feasible?
+I might miss some core stuff.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
