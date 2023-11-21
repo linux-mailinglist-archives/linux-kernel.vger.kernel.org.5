@@ -2,63 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2AC7F320F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6900B7F3218
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234401AbjKUPPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S234406AbjKUPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234100AbjKUPPF (ORCPT
+        with ESMTP id S234198AbjKUPQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:15:05 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83F5F113
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:15:00 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E87DFEC;
-        Tue, 21 Nov 2023 07:15:46 -0800 (PST)
-Received: from [10.1.26.189] (XHFQ2J9959.cambridge.arm.com [10.1.26.189])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA1F03F7A6;
-        Tue, 21 Nov 2023 07:14:56 -0800 (PST)
-Message-ID: <bc49d4df-5d64-4eaf-951c-37dc5d4389d4@arm.com>
-Date:   Tue, 21 Nov 2023 15:14:55 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/14] arm64/mm: Wire up PTE_CONT for user mappings
-Content-Language: en-GB
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231115163018.1303287-13-ryan.roberts@arm.com>
- <87v89vmjus.fsf@nvdebian.thelocal>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87v89vmjus.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        Tue, 21 Nov 2023 10:16:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C7B83
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700579790; x=1732115790;
+  h=date:from:to:cc:subject:message-id;
+  bh=dkC/HVo3+6kaq4O4ZJvpfyzqsu7mHVlykMpFWFzYwAU=;
+  b=e7Tl5tW32kKGdQ4FybSMcCSazLtcUA758VIjq93z99mSMS+SE1SYWxWx
+   UKloOH8obejPeCEMH44K/19ccUcRdPoH2IRXHwC8lbTCa/RcRAa1lXiFg
+   u8OZv3jT23GrS89gzlbrgckCK9vYMfuTOrp1hvsKHknsr204QX5QMzbyZ
+   6euhHOzw8CrqWkvgFbmuIqtHLqHiLA7m2DbrhEMtci42NDn5Ylcq0gjJm
+   NBoDVZ0+FZH1Ll21cJXjzlVXpt16qKiYHa5OrszoHP3iPYW5Yw5wpTtzE
+   UedooWycv1TbcDUIOvJhfrN9JBubgyYjjCw1zGrLh4EJqr6wY96Pb5LlM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5054742"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="5054742"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:16:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="8116640"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 21 Nov 2023 07:16:28 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5SUD-0007ww-1Z;
+        Tue, 21 Nov 2023 15:16:25 +0000
+Date:   Tue, 21 Nov 2023 23:15:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ bbb968696d0f3442ab823598def3b756cf4735c6
+Message-ID: <202311212326.IcGnHqCR-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,154 +59,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/11/2023 11:22, Alistair Popple wrote:
-> 
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
-> [...]
-> 
->> +static void contpte_fold(struct mm_struct *mm, unsigned long addr,
->> +			pte_t *ptep, pte_t pte, bool fold)
->> +{
->> +	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
->> +	unsigned long start_addr;
->> +	pte_t *start_ptep;
->> +	int i;
->> +
->> +	start_ptep = ptep = contpte_align_down(ptep);
->> +	start_addr = addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
->> +	pte = pfn_pte(ALIGN_DOWN(pte_pfn(pte), CONT_PTES), pte_pgprot(pte));
->> +	pte = fold ? pte_mkcont(pte) : pte_mknoncont(pte);
->> +
->> +	for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE) {
->> +		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
->> +
->> +		if (pte_dirty(ptent))
->> +			pte = pte_mkdirty(pte);
->> +
->> +		if (pte_young(ptent))
->> +			pte = pte_mkyoung(pte);
->> +	}
->> +
->> +	__flush_tlb_range(&vma, start_addr, addr, PAGE_SIZE, true, 3);
->> +
->> +	__set_ptes(mm, start_addr, start_ptep, pte, CONT_PTES);
->> +}
->> +
->> +void __contpte_try_fold(struct mm_struct *mm, unsigned long addr,
->> +			pte_t *ptep, pte_t pte)
->> +{
->> +	/*
->> +	 * We have already checked that the virtual and pysical addresses are
->> +	 * correctly aligned for a contpte mapping in contpte_try_fold() so the
->> +	 * remaining checks are to ensure that the contpte range is fully
->> +	 * covered by a single folio, and ensure that all the ptes are valid
->> +	 * with contiguous PFNs and matching prots. We ignore the state of the
->> +	 * access and dirty bits for the purpose of deciding if its a contiguous
->> +	 * range; the folding process will generate a single contpte entry which
->> +	 * has a single access and dirty bit. Those 2 bits are the logical OR of
->> +	 * their respective bits in the constituent pte entries. In order to
->> +	 * ensure the contpte range is covered by a single folio, we must
->> +	 * recover the folio from the pfn, but special mappings don't have a
->> +	 * folio backing them. Fortunately contpte_try_fold() already checked
->> +	 * that the pte is not special - we never try to fold special mappings.
->> +	 * Note we can't use vm_normal_page() for this since we don't have the
->> +	 * vma.
->> +	 */
->> +
->> +	struct page *page = pte_page(pte);
->> +	struct folio *folio = page_folio(page);
->> +	unsigned long folio_saddr = addr - (page - &folio->page) * PAGE_SIZE;
->> +	unsigned long folio_eaddr = folio_saddr + folio_nr_pages(folio) * PAGE_SIZE;
->> +	unsigned long cont_saddr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
->> +	unsigned long cont_eaddr = cont_saddr + CONT_PTE_SIZE;
->> +	unsigned long pfn;
->> +	pgprot_t prot;
->> +	pte_t subpte;
->> +	pte_t *orig_ptep;
->> +	int i;
->> +
->> +	if (folio_saddr > cont_saddr || folio_eaddr < cont_eaddr)
->> +		return;
->> +
->> +	pfn = pte_pfn(pte) - ((addr - cont_saddr) >> PAGE_SHIFT);
->> +	prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
->> +	orig_ptep = ptep;
->> +	ptep = contpte_align_down(ptep);
->> +
->> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
->> +		subpte = __ptep_get(ptep);
->> +		subpte = pte_mkold(pte_mkclean(subpte));
->> +
->> +		if (!pte_valid(subpte) ||
->> +		    pte_pfn(subpte) != pfn ||
->> +		    pgprot_val(pte_pgprot(subpte)) != pgprot_val(prot))
->> +			return;
->> +	}
->> +
->> +	contpte_fold(mm, addr, orig_ptep, pte, true);
->> +}
->> +EXPORT_SYMBOL(__contpte_try_fold);
->> +
->> +void __contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
->> +			pte_t *ptep, pte_t pte)
->> +{
->> +	/*
->> +	 * We have already checked that the ptes are contiguous in
->> +	 * contpte_try_unfold(), so we can unfold unconditionally here.
->> +	 */
->> +
->> +	contpte_fold(mm, addr, ptep, pte, false);
-> 
-> I'm still working my way through the series but 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/core
+branch HEAD: bbb968696d0f3442ab823598def3b756cf4735c6  perf/x86/intel/cstate: Add Grand Ridge support
 
-Thanks for taking the time to review!
+elapsed time: 6040m
 
-> calling a fold during an
-> unfold stood out as it seemed wrong. Obviously further reading revealed
-> the boolean flag that changes the functions meaning but I think it would
-> be better to refactor that.
+configs tested: 250
+configs skipped: 2
 
-Yes that sounds reasonable.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> We could easily rename contpte_fold() to eg. set_cont_ptes() and factor
-> the pte calculation loop into a separate helper
-> (eg. calculate_contpte_dirty_young() or some hopefully better name)
-> called further up the stack. That has an added benefit of providing a
-> spot to add the nice comment for young/dirty rules you provided in the
-> patch description ;-)
-> 
-> In other words we'd have something like:
-> 
-> void __contpte_try_unfold() {
->      pte = calculate_contpte_dirty_young(mm, addr, ptep, pte);
->      pte = pte_mknoncont(pte);
->      set_cont_ptes(mm, addr, ptep, pte);
-> }
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231118   gcc  
+arc                   randconfig-001-20231121   gcc  
+arc                   randconfig-002-20231118   gcc  
+arc                   randconfig-002-20231121   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20231118   gcc  
+arm                   randconfig-001-20231121   gcc  
+arm                   randconfig-002-20231118   gcc  
+arm                   randconfig-002-20231121   gcc  
+arm                   randconfig-003-20231118   gcc  
+arm                   randconfig-003-20231121   gcc  
+arm                   randconfig-004-20231118   gcc  
+arm                   randconfig-004-20231121   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231118   gcc  
+arm64                 randconfig-001-20231121   gcc  
+arm64                 randconfig-002-20231118   gcc  
+arm64                 randconfig-002-20231121   gcc  
+arm64                 randconfig-003-20231118   gcc  
+arm64                 randconfig-003-20231121   gcc  
+arm64                 randconfig-004-20231118   gcc  
+arm64                 randconfig-004-20231121   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231118   gcc  
+csky                  randconfig-001-20231121   gcc  
+csky                  randconfig-002-20231118   gcc  
+csky                  randconfig-002-20231121   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231118   clang
+hexagon               randconfig-001-20231121   clang
+hexagon               randconfig-002-20231118   clang
+hexagon               randconfig-002-20231121   clang
+i386                             allmodconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   clang
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231117   gcc  
+i386         buildonly-randconfig-001-20231121   gcc  
+i386         buildonly-randconfig-002-20231117   gcc  
+i386         buildonly-randconfig-002-20231121   gcc  
+i386         buildonly-randconfig-003-20231117   gcc  
+i386         buildonly-randconfig-003-20231121   gcc  
+i386         buildonly-randconfig-004-20231117   gcc  
+i386         buildonly-randconfig-004-20231121   gcc  
+i386         buildonly-randconfig-005-20231117   gcc  
+i386         buildonly-randconfig-005-20231121   gcc  
+i386         buildonly-randconfig-006-20231117   gcc  
+i386         buildonly-randconfig-006-20231121   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231117   gcc  
+i386                  randconfig-001-20231121   gcc  
+i386                  randconfig-002-20231117   gcc  
+i386                  randconfig-002-20231121   gcc  
+i386                  randconfig-003-20231117   gcc  
+i386                  randconfig-003-20231121   gcc  
+i386                  randconfig-004-20231117   gcc  
+i386                  randconfig-004-20231121   gcc  
+i386                  randconfig-005-20231117   gcc  
+i386                  randconfig-005-20231121   gcc  
+i386                  randconfig-006-20231117   gcc  
+i386                  randconfig-006-20231121   gcc  
+i386                  randconfig-011-20231117   gcc  
+i386                  randconfig-011-20231121   clang
+i386                  randconfig-012-20231117   gcc  
+i386                  randconfig-012-20231121   clang
+i386                  randconfig-013-20231117   gcc  
+i386                  randconfig-013-20231121   clang
+i386                  randconfig-014-20231117   gcc  
+i386                  randconfig-014-20231121   clang
+i386                  randconfig-015-20231117   gcc  
+i386                  randconfig-015-20231121   clang
+i386                  randconfig-016-20231117   gcc  
+i386                  randconfig-016-20231121   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231118   gcc  
+loongarch             randconfig-001-20231121   gcc  
+loongarch             randconfig-002-20231118   gcc  
+loongarch             randconfig-002-20231121   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   clang
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231118   gcc  
+nios2                 randconfig-001-20231121   gcc  
+nios2                 randconfig-002-20231118   gcc  
+nios2                 randconfig-002-20231121   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231118   gcc  
+parisc                randconfig-001-20231121   gcc  
+parisc                randconfig-002-20231118   gcc  
+parisc                randconfig-002-20231121   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                          allyesconfig   gcc  
+powerpc               randconfig-001-20231118   gcc  
+powerpc               randconfig-001-20231121   gcc  
+powerpc               randconfig-002-20231118   gcc  
+powerpc               randconfig-002-20231121   gcc  
+powerpc               randconfig-003-20231118   gcc  
+powerpc               randconfig-003-20231121   gcc  
+powerpc64             randconfig-001-20231118   gcc  
+powerpc64             randconfig-001-20231121   gcc  
+powerpc64             randconfig-002-20231118   gcc  
+powerpc64             randconfig-002-20231121   gcc  
+powerpc64             randconfig-003-20231118   gcc  
+powerpc64             randconfig-003-20231121   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231118   gcc  
+riscv                 randconfig-001-20231121   gcc  
+riscv                 randconfig-002-20231118   gcc  
+riscv                 randconfig-002-20231121   gcc  
+riscv                          rv32_defconfig   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231118   gcc  
+s390                  randconfig-001-20231121   clang
+s390                  randconfig-002-20231118   gcc  
+s390                  randconfig-002-20231121   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20231118   gcc  
+sh                    randconfig-001-20231121   gcc  
+sh                    randconfig-002-20231118   gcc  
+sh                    randconfig-002-20231121   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231118   gcc  
+sparc64               randconfig-001-20231121   gcc  
+sparc64               randconfig-002-20231118   gcc  
+sparc64               randconfig-002-20231121   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231118   gcc  
+um                    randconfig-001-20231121   gcc  
+um                    randconfig-002-20231118   gcc  
+um                    randconfig-002-20231121   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231117   gcc  
+x86_64       buildonly-randconfig-001-20231121   gcc  
+x86_64       buildonly-randconfig-002-20231117   gcc  
+x86_64       buildonly-randconfig-002-20231121   gcc  
+x86_64       buildonly-randconfig-003-20231117   gcc  
+x86_64       buildonly-randconfig-003-20231121   gcc  
+x86_64       buildonly-randconfig-004-20231117   gcc  
+x86_64       buildonly-randconfig-004-20231121   gcc  
+x86_64       buildonly-randconfig-005-20231117   gcc  
+x86_64       buildonly-randconfig-005-20231121   gcc  
+x86_64       buildonly-randconfig-006-20231117   gcc  
+x86_64       buildonly-randconfig-006-20231121   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231117   gcc  
+x86_64                randconfig-001-20231121   clang
+x86_64                randconfig-002-20231117   gcc  
+x86_64                randconfig-002-20231121   clang
+x86_64                randconfig-003-20231117   gcc  
+x86_64                randconfig-003-20231121   clang
+x86_64                randconfig-004-20231117   gcc  
+x86_64                randconfig-004-20231121   clang
+x86_64                randconfig-005-20231117   gcc  
+x86_64                randconfig-005-20231121   clang
+x86_64                randconfig-006-20231117   gcc  
+x86_64                randconfig-006-20231121   clang
+x86_64                randconfig-011-20231117   gcc  
+x86_64                randconfig-011-20231121   gcc  
+x86_64                randconfig-012-20231117   gcc  
+x86_64                randconfig-012-20231121   gcc  
+x86_64                randconfig-013-20231117   gcc  
+x86_64                randconfig-013-20231121   gcc  
+x86_64                randconfig-014-20231117   gcc  
+x86_64                randconfig-014-20231121   gcc  
+x86_64                randconfig-015-20231117   gcc  
+x86_64                randconfig-015-20231121   gcc  
+x86_64                randconfig-016-20231117   gcc  
+x86_64                randconfig-016-20231121   gcc  
+x86_64                randconfig-071-20231117   gcc  
+x86_64                randconfig-071-20231121   gcc  
+x86_64                randconfig-072-20231117   gcc  
+x86_64                randconfig-072-20231121   gcc  
+x86_64                randconfig-073-20231117   gcc  
+x86_64                randconfig-073-20231121   gcc  
+x86_64                randconfig-074-20231117   gcc  
+x86_64                randconfig-074-20231121   gcc  
+x86_64                randconfig-075-20231117   gcc  
+x86_64                randconfig-075-20231121   gcc  
+x86_64                randconfig-076-20231117   gcc  
+x86_64                randconfig-076-20231121   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20231118   gcc  
+xtensa                randconfig-001-20231121   gcc  
+xtensa                randconfig-002-20231118   gcc  
+xtensa                randconfig-002-20231121   gcc  
 
-My concern with this approach is that calculate_contpte_dirty_young() has side
-effects; it has to clear each PTE as it loops through it prevent a race between
-our reading access/dirty and another thread causing access/dirty to be set. So
-its not just a "calculation", its the teardown portion of the process too. I
-guess its a taste thing, so happy for it to be argued the other way, but I would
-prefer to keep it all together in one function.
-
-How about renaming contpte_fold() to contpte_convert() or contpte_repaint()
-(other suggestions welcome), and extracting the pte_mkcont()/pte_mknoncont()
-part (so we can remove the bool param):
-
-void __contpte_try_unfold() {
-	pte = pte_mknoncont(pte);
-	contpte_convert(mm, addr, ptep, pte);
-}
-
-Thanks,
-Ryan
-
-> 
-> Which IMHO is more immediately understandable.
-> 
->  - Alistair
-> 
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
