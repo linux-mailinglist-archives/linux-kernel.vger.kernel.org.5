@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E224E7F265C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9943F7F265E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbjKUHbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:31:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
+        id S229449AbjKUHbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbjKUHbh (ORCPT
+        with ESMTP id S229747AbjKUHbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:31:37 -0500
+        Tue, 21 Nov 2023 02:31:43 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D9919A
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:31:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDBF10E
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:31:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700551893;
+        s=mimecast20190719; t=1700551899;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OAkVxc3aGCIVy+mum1Tmv8tqRWzijzVSekSFIcVpdTI=;
-        b=A0kMw3TIhs2EbU962e+26T7JKuBRfCzifPBOFlsOEzmydSStpHeyuICM3WnPwWI5mjeGC+
-        /NSCpogwkqVX10M3U52GfNVpOqshuiQ4vokJJsXDen60k3Q8H+2AiP88jmH1NhDQbpAGvj
-        nc48Mtw/Go18XrupVKr4QXfqCbiFXxU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-CVgMNopqMVOpQb5uC-0KgA-1; Tue, 21 Nov 2023 02:31:32 -0500
-X-MC-Unique: CVgMNopqMVOpQb5uC-0KgA-1
+        bh=77Bzl/+Kq0+MzNg2uBfJvKrlDQ1jm6M8H9m1x9Ji14Q=;
+        b=G9bNE1EPKLxDZi+B3kkNegL2Jeft7dD1SS7TQiSudQ9jlOXgv29gDnJg2zAb/WFJk4xrhI
+        gSuoq5Uv6Bi4GdiByrtPeHSaPoxwVbN05nFrCSQm7zaXXmhVBrzYCzsLYtAb2iKVnCJi2R
+        egN9LBEvpVy/tfYMNsBUyEY0GfVaYLA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-602-ETEATdwXPl-IT_04BPdwNQ-1; Tue,
+ 21 Nov 2023 02:31:35 -0500
+X-MC-Unique: ETEATdwXPl-IT_04BPdwNQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B5126857F7A;
-        Tue, 21 Nov 2023 07:31:31 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F6543804A4D;
+        Tue, 21 Nov 2023 07:31:35 +0000 (UTC)
 Received: from server.redhat.com (unknown [10.72.112.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0087D1C060B0;
-        Tue, 21 Nov 2023 07:31:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60E281C060B0;
+        Tue, 21 Nov 2023 07:31:32 +0000 (UTC)
 From:   Cindy Lu <lulu@redhat.com>
 To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
         xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
         maxime.coquelin@redhat.com
-Subject: [PATCH v2 4/5] vduse: update the vq_info in ioctl
-Date:   Tue, 21 Nov 2023 15:30:49 +0800
-Message-Id: <20231121073050.287080-5-lulu@redhat.com>
+Subject: [PATCH v2 5/5] Documentation: Add reconnect process for VDUSE
+Date:   Tue, 21 Nov 2023 15:30:50 +0800
+Message-Id: <20231121073050.287080-6-lulu@redhat.com>
 In-Reply-To: <20231121073050.287080-1-lulu@redhat.com>
 References: <20231121073050.287080-1-lulu@redhat.com>
 MIME-Version: 1.0
@@ -61,68 +61,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In VDUSE_VQ_GET_INFO, the driver will sync the last_avail_idx
-with reconnect info, After mapping the reconnect pages to userspace
-The userspace App will update the reconnect_time in
-struct vhost_reconnect_vring, If this is not 0 then it means this
-vq is reconnected and will update the last_avail_idx
+Add the document to explained how the reconnect process
+include how the Userspace App need to do and how it works
+with kernel
 
 Signed-off-by: Cindy Lu <lulu@redhat.com>
 ---
- drivers/vdpa/vdpa_user/vduse_dev.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ Documentation/userspace-api/vduse.rst | 29 +++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index d0fe9a7e86ab..6bc5fc2b88cc 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1209,6 +1209,9 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
- 		struct vduse_vq_info vq_info;
- 		struct vduse_virtqueue *vq;
- 		u32 index;
-+		struct vdpa_reconnect_info *area;
-+		struct vhost_reconnect_vring *vq_reconnect;
-+		struct vhost_reconnect_data *dev_reconnect;
+diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
+index bdb880e01132..6e01c21d94df 100644
+--- a/Documentation/userspace-api/vduse.rst
++++ b/Documentation/userspace-api/vduse.rst
+@@ -231,3 +231,32 @@ able to start the dataplane processing as follows:
+    after the used ring is filled.
  
- 		ret = -EFAULT;
- 		if (copy_from_user(&vq_info, argp, sizeof(vq_info)))
-@@ -1225,6 +1228,12 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
- 		vq_info.device_addr = vq->device_addr;
- 		vq_info.num = vq->num;
- 
-+		area = &dev->reconnect_info;
-+		dev_reconnect = (struct vhost_reconnect_data *)area->vaddr;
+ For more details on the uAPI, please see include/uapi/linux/vduse.h.
 +
-+		area = &vq->reconnect_info;
-+		vq_reconnect = (struct vhost_reconnect_vring *)area->vaddr;
++HOW VDUSE devices reconnectoin works
++----------------
++0. Userspace APP checks if the device /dev/vduse/vduse_name exists, if not create
++   the device. If yes means this is reconnect, goto 3
 +
- 		if (dev->driver_features & BIT_ULL(VIRTIO_F_RING_PACKED)) {
- 			vq_info.packed.last_avail_counter =
- 				vq->state.packed.last_avail_counter;
-@@ -1234,9 +1243,22 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
- 				vq->state.packed.last_used_counter;
- 			vq_info.packed.last_used_idx =
- 				vq->state.packed.last_used_idx;
--		} else
-+			/*check if the vq is reconnect, if yes then update the last_avail_idx*/
-+			if (dev_reconnect->reconnected != 0) {
-+				vq_info.packed.last_avail_idx =
-+					vq_reconnect->last_avail_idx;
-+				vq_info.packed.last_avail_counter =
-+					vq_reconnect->avail_wrap_counter;
-+			}
-+		} else {
- 			vq_info.split.avail_index =
- 				vq->state.split.avail_index;
-+			/*check if the vq is reconnect, if yes then update the last_avail_idx*/
-+			if (dev_reconnect->reconnected != 0) {
-+				vq_info.split.avail_index =
-+					vq_reconnect->last_avail_idx;
-+			}
-+		}
- 
- 		vq_info.ready = vq->ready;
- 
++1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
++   /dev/vduse/control.
++
++2. In ioctl(VDUSE_CREATE_DEV), the kernel alloc the memory to sync the reconnect
++   information.
++
++3. Userspace App will mmap the pages to userspace
++
++   If this first time to connect, userspace App need save the reconnect
++   information (struct vhost_reconnect_data) in mapped pages
++
++   If this is reconnect, userspace App need to check if the saved information
++   OK to reconnect, Also userspace App MUST set the bit reconnected in
++   struct vhost_reconnect_data to 1. (kernel will use this bit to identify if the
++   userAPP is reconnected )
++
++4. Successfully start the userspace App.
++   userspace APP need to call ioctl VDUSE_VQ_GET_INFO to sync the vq information. also
++   APP need to save the reconnect information (struct vhost_reconnect_vring)
++   while running
++
++5. When the Userspace App exit, Userspace App need to unmap all the reconnect
++   pages
 -- 
 2.34.3
 
