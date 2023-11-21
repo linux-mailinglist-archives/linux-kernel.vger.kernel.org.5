@@ -2,112 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802E17F2288
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E477F228C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjKUAvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S232913AbjKUAvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:51:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjKUAvk (ORCPT
+        with ESMTP id S229757AbjKUAvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:51:40 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629B491;
-        Mon, 20 Nov 2023 16:51:37 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKNfrb8011022;
-        Tue, 21 Nov 2023 00:51:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Uer5WtduZBBOF0bD4+5J1TW7TZH8v4HLbehG1UFqfUk=;
- b=CQ/Aoqaua5NvFpkJ0kYp0d84/kZgV3x+gD3FR2zpYqcAVqJLuAHvdL8Wicc13uRFRuOF
- P++UEsTdfMEPfweXuyUQo4q7qHDos54abpNjp8RRE/KU/5tMz2yhF3wu/xjDzJs+C/01
- iVL1hr1MtTq4Ve+xkSgEzwzD6TNC2hvlZDohpeMOQdwVSEnZ4tqYvyteg6i6D3CnU/Eo
- U2Prj3RtWv9mzJ4cUWIVcPUyrL2vxacbfSyFrHkwiCCDnWWs++iYoraxf/Rl4BdipMch
- PeyISnVWtkbPcOKRLFC/hVWMNPNwG4mMUSdIToW4mfXJSHygDQMhbPWk2u1mEvcvlqKR lA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs0npe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:51:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL0pVRf008762
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 00:51:31 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 16:51:28 -0800
-Message-ID: <732c55bb-e4a5-4a09-9b7b-0e615ddd580c@quicinc.com>
-Date:   Tue, 21 Nov 2023 08:51:26 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/16] arm64: dts: qcom: sm8550-aim300: add PCIe0
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <-cc=kernel@quicinc.com>
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-8-quic_tengfan@quicinc.com>
- <61977f5a-fc04-4f85-8b18-a11df3a6b5ec@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <61977f5a-fc04-4f85-8b18-a11df3a6b5ec@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qRddRAiZwe3czk4xwVz1jbjPQ0wYJQWB
-X-Proofpoint-GUID: qRddRAiZwe3czk4xwVz1jbjPQ0wYJQWB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=751
- mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210002
+        Mon, 20 Nov 2023 19:51:46 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BB9D2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:51:41 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2ea7cc821so3225801b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700527901; x=1701132701; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pn9aLSeosG7l0BmT5llM/BGYPNtLICtF9m0AjdHG0XM=;
+        b=ljYUw9pomTOCuHuLfwq5xwrekbGMMY1fJg0l9NVnaO8ZAdfPg/6la38Q8g5FXbuI+J
+         g6qXXhzv4TiyfGT54ZxjVmnc51vOUTTN4YZO7dXphU/tLSWmmAgiRAJdZ4Y0cn9RDDjW
+         9ZIytbVzVK7PbZsiqw3o+WxR0+LkJwoezcw5lFrNp9eDBAd1F0X9hgQfv2lvpV3eTN88
+         mHM3/wiez566LYEski/4SgFjNCrLqlx9w11i2K9wMQQq3Zbk3Y7DDKD9JOPwf2fcJuaw
+         PrOkb66w7PzcfRubpUx7u557fSnzh9/tmyjsYUD1v5iyMPHURGrir4bvys93elhIXfaw
+         ZeTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700527901; x=1701132701;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Pn9aLSeosG7l0BmT5llM/BGYPNtLICtF9m0AjdHG0XM=;
+        b=QeV+sSrAvMNZz/Hv8XMeLRqtwltEHNbn+E7Q1KMfRROI4UX/8/QGtzZwItKKDjnJ3L
+         UeFoamgANkKR4mTjq53HRN/LTnRSFbzfRfwXRoEyD9R5Zk6Io1hPK35e6azbP5rCtrtL
+         21Yqudy6GI6J4foAxi5rEZ/+oeFgKN/3ura1r/ibgHmc4hihAntMyfqV2DET/UVw+NYR
+         TGWzDwxuPp6cVVqaY6mGDpjnH4iYwFrj8O76LFwxi2i2Arcp9jEbvE79gs8q7gNN7UwH
+         LHG6JkzFFjWZvLWjpEZ56xHUB+Hv+HRTX2e5/dguf5b2JriddhinchMFpMO8bJjrvxvb
+         K9og==
+X-Gm-Message-State: AOJu0YwZBU1I4ByRNlpqXXdj7LeGtiQ7t2HihcSdf9v/KJjyQtNzY8P/
+        GbIBt0WPFgXBYwbdNx1srtQ=
+X-Google-Smtp-Source: AGHT+IE+o49kLzCuw1FPClPjXT6ATg3hfgvXAS5obzWWtUpkGeQbWTToBNlZGXTLMvhqz0mk9VwJFQ==
+X-Received: by 2002:a05:6871:a60a:b0:1f5:b60d:68ff with SMTP id we10-20020a056871a60a00b001f5b60d68ffmr10197694oab.14.1700527901134;
+        Mon, 20 Nov 2023 16:51:41 -0800 (PST)
+Received: from localhost (203-219-179-16.tpgi.com.au. [203.219.179.16])
+        by smtp.gmail.com with ESMTPSA id n28-20020a056a000d5c00b006cbb80e4577sm723318pfv.210.2023.11.20.16.51.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 16:51:40 -0800 (PST)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 21 Nov 2023 10:51:34 +1000
+Message-Id: <CX42TU4QHS1Z.A0UUHMDAMZOL@wheely>
+Subject: Re: [PATCH] powerpc: add crtsavres.o to always-y instead of extra-y
+From:   "Nicholas Piggin" <npiggin@gmail.com>
+To:     "Masahiro Yamada" <masahiroy@kernel.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        <linuxppc-dev@lists.ozlabs.org>
+Cc:     "Nathan Chancellor" <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Tom Rix" <trix@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>
+X-Mailer: aerc 0.15.2
+References: <20231120232332.4100288-1-masahiroy@kernel.org>
+In-Reply-To: <20231120232332.4100288-1-masahiroy@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue Nov 21, 2023 at 9:23 AM AEST, Masahiro Yamada wrote:
+> crtsavres.o is linked to modules. However, as explained in commit
+> d0e628cd817f ("kbuild: doc: clarify the difference between extra-y
+> and always-y"), 'make modules' does not build extra-y.
+>
+> For example, the following command fails:
+>
+>   $ make ARCH=3Dpowerpc LLVM=3D1 KBUILD_MODPOST_WARN=3D1 mrproper ps3_def=
+config modules
+>     [snip]
+>     LD [M]  arch/powerpc/platforms/cell/spufs/spufs.ko
+>   ld.lld: error: cannot open arch/powerpc/lib/crtsavres.o: No such file o=
+r directory
+>   make[3]: *** [scripts/Makefile.modfinal:56: arch/powerpc/platforms/cell=
+/spufs/spufs.ko] Error 1
+>   make[2]: *** [Makefile:1844: modules] Error 2
+>   make[1]: *** [/home/masahiro/workspace/linux-kbuild/Makefile:350: __bui=
+ld_one_by_one] Error 2
+>   make: *** [Makefile:234: __sub-make] Error 2
+>
+
+Thanks. Is this the correct Fixes tag?
+
+Fixes: d0e628cd817f ("powerpc/64: Do not link crtsavres.o in vmlinux")
+
+Hmm, looks like LLD might just do this now automatically for us
+too without --save-restore-funcs (https://reviews.llvm.org/D79977).
+But we probably still need it for older versions, so we still need
+your patch.
+
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
 
 
-在 11/17/2023 6:30 PM, Krzysztof Kozlowski 写道:
-> On 17/11/2023 11:18, Tengfei Fan wrote:
->> Add PCIe0 nodes used with WCN7851 device.  The PCIe1 is not connected,
->> thus skip pcie_1_phy_aux_clk input clock to GCC.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> 
-> You just added this board. Does it mean you added incomplete and wrong DTSU?
-> 
-> Best regards,
-> Krzysztof
-> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/powerpc/lib/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/lib/Makefile b/arch/powerpc/lib/Makefile
+> index 51ad0397c17a..6eac63e79a89 100644
+> --- a/arch/powerpc/lib/Makefile
+> +++ b/arch/powerpc/lib/Makefile
+> @@ -45,7 +45,7 @@ obj-$(CONFIG_FUNCTION_ERROR_INJECTION)	+=3D error-injec=
+t.o
+>  # so it is only needed for modules, and only for older linkers which
+>  # do not support --save-restore-funcs
+>  ifndef CONFIG_LD_IS_BFD
+> -extra-$(CONFIG_PPC64)	+=3D crtsavres.o
+> +always-$(CONFIG_PPC64)	+=3D crtsavres.o
+>  endif
+> =20
+>  obj-$(CONFIG_PPC_BOOK3S_64) +=3D copyuser_power7.o copypage_power7.o \
 
-Hi Krzysztof,
-I will drop PCIe1 setting in dts file because of PCIe1 still have not 
-enable in dts file.
-Another I understand what your comments means is I should combine all 
-the functions which should be implemented together and submit as a 
-complete patch, right?
-I will combine all the functions patch to a total patch when I do next 
-version patch series, because there is another your comments also want 
-to me do as so.
-
--- 
-Thx and BRs,
-Tengfei Fan
