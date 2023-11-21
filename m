@@ -2,153 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1BE7F3147
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7487F314C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbjKUOl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54844 "EHLO
+        id S234521AbjKUOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbjKUOlX (ORCPT
+        with ESMTP id S234359AbjKUOlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:41:23 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE28D69;
-        Tue, 21 Nov 2023 06:41:19 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BB4461F8B8;
-        Tue, 21 Nov 2023 14:41:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700577677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NSc7dP9JzioiJiPzKQCkXwUEPBhmaH4jbrYRamLVKsQ=;
-        b=kJI22AIuRUb3nVsA+UJE6w2U9+rrfphlpRFyqA9z71oNPm7LVaJntV8vddvAtR2AHlmWj1
-        3zlWa5/ljsCcbJyqP6XJ9afEvEZpRbA+TrMfPsZ49E3KmkkJf62uSLARhUwRhS70mUwVqj
-        UlFCWY6twxUQLILMfHpa4V1PO2JNj9A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700577677;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NSc7dP9JzioiJiPzKQCkXwUEPBhmaH4jbrYRamLVKsQ=;
-        b=yDveSRTOubmCcQmsntdchqyzuNwmHSc04CB6N/AqUXqbkxdWpKedjuaiLf5arcrx4RJjDv
-        jobwcrw/OzS66dCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1C39138E3;
-        Tue, 21 Nov 2023 14:41:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id P8BXK43BXGXnWgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 21 Nov 2023 14:41:17 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id F2478A07D9; Tue, 21 Nov 2023 15:41:16 +0100 (CET)
-Date:   Tue, 21 Nov 2023 15:41:16 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>
-Subject: Re: [PATCH 01/17] tty: deprecate tty_write_message()
-Message-ID: <20231121144116.4kvwinm2vjevmqcy@quack3>
-References: <20231121092258.9334-1-jirislaby@kernel.org>
- <20231121092258.9334-2-jirislaby@kernel.org>
+        Tue, 21 Nov 2023 09:41:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DDA113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:41:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 789C1C433CB;
+        Tue, 21 Nov 2023 14:41:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700577706;
+        bh=C7C7k7MQyKejZFr0pldTQeSMPk6gsd2UxQYtxinu5pw=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=CgL2ucQdy94yOgeIDAUwoCO7aWp99U7UxUB44vIJ3zoQMnIR3udHQhZIN5sXyibxH
+         czAz+Vx7RKPr3AxsKhd//nrVd+r4N6i7ApCx4lYT3p9DQ1FAkUO2nrLt1C0OvO9hu0
+         GyxDqgbOTvqZ+c7ie+Cpemx6xHP6JTyW3ruN+ht4bp54BYF69fMaDHagP5C+KWqEZR
+         2GijwYoxOkrfOh8SuugWFy/NFjq/L/cG2cnPsXdIiJTdRvS4sgOyqNK92uVAfKrcXW
+         /1IJfJPYZxTj5HxtbY5vKw7lmpV/AzMLvdDw7rTTx/pSoeXW8MDSz83AYujBr+LtqC
+         MPuYqOIGMysAw==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 51B9927C0060;
+        Tue, 21 Nov 2023 09:41:44 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 21 Nov 2023 09:41:44 -0500
+X-ME-Sender: <xms:pcFcZdsWGDQlhmI6n2v2STwpRur8Ex5jMj-OfonBvkm_qP9u5Vehkw>
+    <xme:pcFcZWeZpBbfB55MnYno9359Tfus34ITY1sDhe4hW7V3SABXCwWvG2hyrWlObjFSY
+    GxTFDh4hpfPDZC8XQY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledgiedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
+    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
+    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
+    druggv
+X-ME-Proxy: <xmx:pcFcZQwzPDqKgO1eLy9fMP5k2YNWEMyxrZNGFyRrVEVQYyKof1N0OQ>
+    <xmx:pcFcZUPwcZ2E04cngCvFBms1fpBUlzIk4d9BIyGmL2zgsp3AgKymCA>
+    <xmx:pcFcZd9CZzsabkHxDxckarU4_obPREarv2t_-o-ecM-cKfM6Kg3-eQ>
+    <xmx:qMFcZYdm9j_565d_pkgW7CpQU98cxirDUwH0UjRGVxVLDJqpUCXQGyo-hO4RixM3>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D1C33B60089; Tue, 21 Nov 2023 09:41:41 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121092258.9334-2-jirislaby@kernel.org>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.01
-X-Spamd-Result: default: False [-5.01 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         RCPT_COUNT_FIVE(0.00)[5];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.21)[71.76%]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-Id: <5bd85a64-5161-4312-831d-cba420e20bfb@app.fastmail.com>
+In-Reply-To: <9a5f21b69709121c8b342bb44e0b7f83deacd10d.camel@redhat.com>
+References: <20231120215945.52027-2-pstanner@redhat.com>
+ <20231120215945.52027-6-pstanner@redhat.com>
+ <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
+ <9a5f21b69709121c8b342bb44e0b7f83deacd10d.camel@redhat.com>
+Date:   Tue, 21 Nov 2023 15:41:21 +0100
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Eric Auger" <eric.auger@redhat.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "Neil Brown" <neilb@suse.de>, "John Sanpe" <sanpeqf@gmail.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "David Gow" <davidgow@google.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21-11-23 10:22:42, Jiri Slaby (SUSE) wrote:
-> tty_write_message() has only one user: quotas. In particular, there the
-> use depends on CONFIG_PRINT_QUOTA_WARNING. And that is deprecated and
-> marked as BROKEN already too.
-> 
-> So make tty_write_message() dependent on that very config option. This
-> action in fact drops tty_write_message() from the vmlinux binary. Good
-> riddance.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Jan Kara <jack@suse.com>
+On Tue, Nov 21, 2023, at 15:38, Philipp Stanner wrote:
+> On Tue, 2023-11-21 at 11:03 +0100, Arnd Bergmann wrote:
+>> On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
+=20
+>> We should be able to define a generic version like
+>>=20
+>> void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+>> {
+>> #ifdef CONFIG_HAS_IOPORT
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ioport_unmap(addr);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> #endif
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
+>> }
+>
+> And where would you like such a function to reside?
+> drivers/pci/iomap.c?
 
-Sure, that was indeed a hack. Feel free to add:
+Yes, I think that would be the logical place. It could also
+be an inline function but that's not great on architectures
+that don't also have iomem_is_ioport() inline.
 
-Acked-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  drivers/tty/tty_io.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-> index 06414e43e0b5..ee5a90f9adb5 100644
-> --- a/drivers/tty/tty_io.c
-> +++ b/drivers/tty/tty_io.c
-> @@ -1047,6 +1047,7 @@ static ssize_t iterate_tty_write(struct tty_ldisc *ld, struct tty_struct *tty,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_PRINT_QUOTA_WARNING
->  /**
->   * tty_write_message - write a message to a certain tty, not just the console.
->   * @tty: the destination tty_struct
-> @@ -1057,6 +1058,8 @@ static ssize_t iterate_tty_write(struct tty_ldisc *ld, struct tty_struct *tty,
->   * needed.
->   *
->   * We must still hold the BTM and test the CLOSING flag for the moment.
-> + *
-> + * This function is DEPRECATED, do not use in new code.
->   */
->  void tty_write_message(struct tty_struct *tty, char *msg)
->  {
-> @@ -1069,6 +1072,7 @@ void tty_write_message(struct tty_struct *tty, char *msg)
->  		tty_write_unlock(tty);
->  	}
->  }
-> +#endif
->  
->  static ssize_t file_tty_write(struct file *file, struct kiocb *iocb, struct iov_iter *from)
->  {
-> -- 
-> 2.42.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+    Arnd
