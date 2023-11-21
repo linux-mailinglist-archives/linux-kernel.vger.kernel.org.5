@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D957F342F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEAD7F3436
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjKUQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:48:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        id S231131AbjKUQuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjKUQsp (ORCPT
+        with ESMTP id S229566AbjKUQus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:48:45 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B34100;
-        Tue, 21 Nov 2023 08:48:41 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BC225FF813;
-        Tue, 21 Nov 2023 16:48:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700585319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kwcznJ/vPm0Lhw3csLKCSrYXPx6N2BEOWXzBNGHl0I4=;
-        b=O3iE6ZPmaJ2IpxNqOoT0BjRwsjcxXbZ5NbZpO+2SeAMwF+upyoqld23ZXBSeKAeoKh5y9j
-        0xaldUXNvRdZIB7ZqCfS3DTGL3uHOhIg0AXTSgWVZXIyEk846QIDFFI0DhKWl9uCCoyDFM
-        a85kWPb7JpptfNaA9slX5xKeMwite5+GaLwXkbkZD62ZPMYxLX0+V7k60Pgm3IE6amys2q
-        TqPB2sk4g0NjzDPv4Y8+t5VSVNu7RNbUO/wFHZwT7tMnBz/JDGbGu5qB1lDFQgHb6qmKVk
-        J63PaP2/SVU/FQdcLTB5Zspn8gKA7FMiccQjpTxmBS2sFHaihX/uXOHI8si+0w==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 21 Nov 2023 17:48:37 +0100
-Message-Id: <CX4N6LOJQUR0.791161Y74MP8@tleb-bootlin-xps13-01>
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v2 4/7] usb: cdns3-ti: add suspend/resume procedures for
- J7200
-Cc:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Roger Quadros" <rogerq@kernel.org>,
-        "Peter Chen" <peter.chen@kernel.org>,
-        "Pawel Laszczak" <pawell@cadence.com>,
-        "Nishanth Menon" <nm@ti.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tero Kristo" <kristo@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
- <20231120-j7200-usb-suspend-v2-4-038c7e4a3df4@bootlin.com>
- <d84e400d-7f76-4b4d-8960-f1338f37b8ac@linaro.org>
-In-Reply-To: <d84e400d-7f76-4b4d-8960-f1338f37b8ac@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 21 Nov 2023 11:50:48 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7893D110;
+        Tue, 21 Nov 2023 08:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6odFJeiXcQD3LfuiM3sCn8ULJICyJcyaRaylnyp1q5U=; b=kg63EaZjq/SCXMrF+Q3WDSW7sP
+        Fp7ixQBxsr9IqTxEqnmzSaEvkgBs1agdu70Tam4ja/im1QIJ7VuhTUbQeSDgTIYTUpVOt06U6hmIu
+        OTkcxULSDfFgbMkplWILqAmb9WFh9bAKo3NJ+9yG48l6eq/A2WnPEt8PoZ0oFnbUCp9qFfsIgLGUI
+        tsXnOh8Fm1QD3vQCrl5RUgd+fXYuv86vPDqYSf3E74zzUHbjcpksPeE7XBsBjP3Q1A/LsjER39hpY
+        gVW2i7Tt7+4hUgmTc6dRLBu2jcvx2F2YSiRbQqjP/LGJ/p6wNjAi6GkCZaQ+BdVxQyg87rUgIc7V5
+        IVXi6+zQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5TxG-00BV8m-09;
+        Tue, 21 Nov 2023 16:50:30 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 48B1B300338; Tue, 21 Nov 2023 17:50:29 +0100 (CET)
+Date:   Tue, 21 Nov 2023 17:50:29 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <20231121165029.GL8262@noisy.programming.kicks-ass.net>
+References: <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+ <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+On Tue, Nov 21, 2023 at 11:00:13AM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-21 10:52, Peter Zijlstra wrote:
+> > On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
+> > 
+> > > Why is this such a hard question?
+> > 
+> > Anyway, recapping from IRC:
+> > 
+> > preemptible, SRCU:
+> >    counter-array based, GP advances by increasing array index
+> >    and waiting for previous index to drop to 0.
+> > 
+> >    notably, a GP can pass while a task is preempted but not within a
+> >    critical section.
+> > 
+> >    SRCU has smp_mb() in the critical sections to improve GP.
+> 
+> Also:
+> 
+> preemptible only allows blocking when priority inheritance is
+> guarantees, which excludes doing I/O, and thus page faults.
+> Otherwise a long I/O could cause the system to OOM.
+> 
+> SRCU allows all kind of blocking, as long as the entire SRCU
+> domain does not mind waiting for a while before readers complete.
 
-On Mon Nov 20, 2023 at 6:31 PM CET, Krzysztof Kozlowski wrote:
-> On 20/11/2023 18:06, Th=C3=A9o Lebrun wrote:
+Well, no. Fundamentally both SRCU and preemptible (and many other
+flavours) are just a counter-array. The non-blocking for preempt comes
+from the fact that it is the main global rcu instance and allowing all
+that would make GPs too rare and cause you memory trouble.
 
-[...]
+But that's not because of how it's implemented, but because of it being
+the main global instance.
 
-> > --- a/drivers/usb/cdns3/cdns3-ti.c
-> > +++ b/drivers/usb/cdns3/cdns3-ti.c
-> >  static const int cdns_ti_rate_table[] =3D {	/* in KHZ */
-> > @@ -172,6 +173,7 @@ static int cdns_ti_probe(struct platform_device *pd=
-ev)
-> >  	data->usb2_refclk_rate_code =3D i;
-> >  	data->vbus_divider =3D device_property_read_bool(dev, "ti,vbus-divide=
-r");
-> >  	data->usb2_only =3D device_property_read_bool(dev, "ti,usb2-only");
-> > +	data->reset_on_resume =3D of_device_is_compatible(node, "ti,j7200-usb=
-");
->
-> No, use driver data for this. Don't put compatibles in the code. It
-> makes it unmanageable soon.
+> > tasks:
+> >    waits for every task to pass schedule()
+> > 
+> >    ensures that any pieces of text rendered unreachable before, is
+> >    actually unused after.
+> > 
+> > tasks-rude:
+> >    like tasks, but different? build to handle tracing while rcu-idle,
+> >    even though that was already deemed bad?
+> > 
+> > tasks-tracing-rcu:
+> >    extention of tasks to have critical-sections ? Should this simply be
+> >    tasks?
+> 
+> tasks-trace-rcu is meant to allow tasks to block/take a page fault within
+> the read-side. It is specialized for tracing and has a single domain. It
+> does not need the smp_mb on the read-side, which makes it lower-overhead
+> than SRCU.
 
-Fixed for next revision. I hesitated on this patch but I'll know for
-next time.
+That's what it's meant for, not what it is.
 
-Thanks,
+Turns out that tasks-tracing is a per-task counter based thing, and as
+such does not require all tasks to pass through schedule() and does not
+imply the tasks flavour (nor the tasks-rude) despite the similarity in
+naming.
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+But now I am again left wondering what the fundamental difference is
+between a per-task counter and a per-cpu counter.
+
+At the end of the day, you still have to wait for the thing to hit 0.
+
+So I'm once again confused, ...
