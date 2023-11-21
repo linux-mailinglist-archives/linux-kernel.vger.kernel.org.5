@@ -2,67 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7E57F3118
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF3B7F311E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbjKUOhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
+        id S234528AbjKUOh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233961AbjKUOhK (ORCPT
+        with ESMTP id S234418AbjKUOhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:37:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753B2100;
-        Tue, 21 Nov 2023 06:37:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=d8HedOLE7HAb7DhrMWtkJj8KjFf9D0cLXb+qJps2r14=; b=nyovOm6ZBug1Y7ge9B0u8J2d7D
-        T5S03HGyXdBBNDxQjvZxuo7n9VfkA/rPNY8D9GUSvJX8IYk5k3GftEBiFe7ImWRoC5mqUIBRNgktY
-        uqY6HiYgCFWOFwO4bw27GHbKE9T3j2mJ2foJdB2Cm7YAkRDChV1aRR39YjlRVT71LoUiML5kB/Rvd
-        LZYSMHQdWRNtWOxgj4ofrEfYQsCd2Yppm3ov/0lavScgQrtvbBbxzIaiu5z0PPDBbVCKU9Wm95A6V
-        IvhCv8cLG1XH9+tl3F2vMOUqOYgBX97WFzGgdppAB7L0rQUE25Msfc9/q9JufvUwehMq6PtwTJFsT
-        BtQSH6Xg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r5Rrs-005fbL-Ia; Tue, 21 Nov 2023 14:36:48 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 233F8300338; Tue, 21 Nov 2023 15:36:47 +0100 (CET)
-Date:   Tue, 21 Nov 2023 15:36:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <20231121143647.GI8262@noisy.programming.kicks-ass.net>
-References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
- <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+        Tue, 21 Nov 2023 09:37:23 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E29113;
+        Tue, 21 Nov 2023 06:37:20 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALE27wt001575;
+        Tue, 21 Nov 2023 14:37:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=WaJBva/h0Nlx25sp8iGDPxyi3rDtUTLmHycyJq63zJ0=;
+ b=SDg081mbPSoGTEhpo2r//oG+qz9U+2qjTaY7DNDnUrZGtGXHoBVhS3l7sxMVjZ8PU6RR
+ dRV5axLY2DB/Du+uWdQIe85DveLlYID0fzIC2m6zxLsvV/YWdkuyzezNtGliwrxIzRNE
+ 2A1imArlZfxZ91oVSkCOMCs2LVBVzps9GDarWo3YZWPrsC25L/UumZ/QSobUyncabcaq
+ /I1Xx5lKM2pKyf+OuyTjK4K6G/3PAHj8Y0z86jjqnYkxw80L2bTskTcy243lvG0Y7WNW
+ QO/9nRhzn+GxXHkrSWYw98fEtL0Q8NnG8baK0HeCSt+CQOkqieLq7xJPgitfHaDWWwup jw== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs2txt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 14:37:11 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALEbAFS002320
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 14:37:10 GMT
+Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
+ 2023 06:37:03 -0800
+Message-ID: <d432e662-869b-2176-834f-c05ef47b4bcd@quicinc.com>
+Date:   Tue, 21 Nov 2023 20:06:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 3/3] arm64: dts: qcom: sa8775p: Mark PCIe controller as
+ cache coherent
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
+        <dmitry.baryshkov@linaro.org>, <robh@kernel.org>,
+        <quic_krichai@quicinc.com>, <quic_vbadigan@quicinc.com>,
+        <quic_parass@quicinc.com>, <quic_schintav@quicinc.com>,
+        <quic_shijjose@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
+References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700051821-1087-4-git-send-email-quic_msarkar@quicinc.com>
+ <20231117090640.GB250770@thinkpad>
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <20231117090640.GB250770@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ij6xhw0c-UirGYQ4RbHzbY5SVqo60cjc
+X-Proofpoint-GUID: ij6xhw0c-UirGYQ4RbHzbY5SVqo60cjc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_07,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210114
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,27 +94,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
-> Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
-> 
-> - Allow page faults within RCU read-side (like SRCU),
-> - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
-> - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
->   that. Hence, this is not meant to be a generic replacement for SRCU.
-> 
-> Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
-> fit for the following reasons:
-> 
-> - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
 
-Your counter points are confused, we simply don't build preemptible RCU
-unless PREEMPT=y, but that could surely be fixed and exposed as a
-separate flavour.
+On 11/17/2023 2:36 PM, Manivannan Sadhasivam wrote:
+> On Wed, Nov 15, 2023 at 06:07:01PM +0530, Mrinmay Sarkar wrote:
+>> The PCIe controller on SA8775P supports cache coherency, hence add the
+> "PCIe RC controller" both in subject and description.
 
-> - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
+This is for EP so will make as "PCIe EP controller"
 
-What's that got to do with anything?
+--Mrinmay
 
-Still utterly confused about what task-tracing rcu is and how it is
-different from preemptible rcu.
-
+>> "dma-coherent" property to mark it as such.
+>>
+>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> With that,
+>
+> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>
+> - Mani
+>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sa8775p.dtsi | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> index 7eab458..ab01efe 100644
+>> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+>> @@ -3620,6 +3620,7 @@
+>>   				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
+>>   		interconnect-names = "pcie-mem", "cpu-pcie";
+>>   
+>> +		dma-coherent;
+>>   		iommus = <&pcie_smmu 0x0000 0x7f>;
+>>   		resets = <&gcc GCC_PCIE_0_BCR>;
+>>   		reset-names = "core";
+>> -- 
+>> 2.7.4
+>>
