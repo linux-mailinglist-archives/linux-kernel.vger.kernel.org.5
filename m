@@ -2,200 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35FA7F21EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C7B7F21F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbjKUAEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        id S232556AbjKUAGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:06:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKUAE2 (ORCPT
+        with ESMTP id S229490AbjKUAGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:04:28 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC6695
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:04:24 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c994880223so30990637b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:04:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700525064; x=1701129864; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZCOnJaz0EAvoHbURgEibZw+mVElLQgmjJxMJmfh1m6s=;
-        b=TmuvYQsKAJQJZzDkHKjz+BV8Uwe24eNYQq+mK8B1oFZb3bG8+WdF3roTc3A5wVLGg8
-         rFTIrFK0j1iT8C83sRGVp+HrVkolOui2sCcsl698CTEQt31HcygZ9OpSC33at5h8Um0/
-         0W8kZ9bzno0NJTQXj2PcC/2QWkui1DrTaXpjc8iUp+1XchkQExJAQqSJmRtxud1/heh5
-         iAmv59qMd/rWDxqlNnlF+kcU97V30zNLoyt5nQTPak6uywMRKNINORT1sTfUTWNrk5PQ
-         sCiq10qlcdkK1kEPRyek1XTt9Zz49VC9ayVhNjYNIpqd/BkN67LKgf6QmJ6tvishLVnB
-         2iRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700525064; x=1701129864;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZCOnJaz0EAvoHbURgEibZw+mVElLQgmjJxMJmfh1m6s=;
-        b=KVKRhqU41Wphpc3SuOWwIDfvSOkAn6iApmZmHlcGfie//1583fcvWxS8TNODyHMduV
-         f5ZT2h1jLGOKR0CSnngBGGZnjoBLu/pZu5jNcOGr8Pjo17k25TmjBT6x21rKagoWTADE
-         oV+nnCxUlfpULmBX8Flu/mGByv3Nf8PeGvuDWBgFlUhvRZe+k5o1AUutssTU1ggcZ0tk
-         msy+pLwMxIrSDf5t9caYfyWiBrW5MXb6ajaEULrSizs9y3oNz1v22dDpRDVPy+ioMWjF
-         +DCLeO/av+t/spq/6Fv4zY0nELz7/pXcDZKpHWfs/E/S+/w+rhArtGPjcvuVxg1iMXbF
-         Q3JQ==
-X-Gm-Message-State: AOJu0YxPAK6g/Yr7ukOg1t+DHGhoWzTHX48hueuV9N/AwyAEpyXLD6MK
-        jDVfOoQowXxmgsA3OEYJU9vWc2HjzJCU
-X-Google-Smtp-Source: AGHT+IGZuQayuCjQP5dz/h24rjY1hkIw1a8Z19AVZJreAbOPUa3gynFThusK5ZvC3dGpVbHo8Ov07h9bIRaB
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:9c08:6dab:5948:ab06])
- (user=irogers job=sendgmr) by 2002:a0d:c981:0:b0:59b:c811:a709 with SMTP id
- l123-20020a0dc981000000b0059bc811a709mr270383ywd.0.1700525063964; Mon, 20 Nov
- 2023 16:04:23 -0800 (PST)
-Date:   Mon, 20 Nov 2023 16:04:20 -0800
-Message-Id: <20231121000420.368075-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [RFC PATCH v2] perf evsel: Fallback to task-clock when not system wide
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 20 Nov 2023 19:06:22 -0500
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01olkn2024.outbound.protection.outlook.com [40.92.65.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643CE95;
+        Mon, 20 Nov 2023 16:06:18 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hzgozHlAs3dTrqHoiVKCE/aoQANlwC9CLIjsxpajxyiSZ3q2ZMJ9NcQeeIzo+YKGIqDTQOKyJmyBMmsPDAQVujysE6kZT0fWvPOMwzD4ORZKL2sAJE+MWB4nlLDfgnvhERCAN1rhQsXOCDMkC6A0/TXlN7aS9PysP/HvJ7yJw8wZrM8oFZ0T0othh2vmG0LOE/MxhiISLjx243Vasr5pEAajuwknv8kSaqhDGjUO047Di/sVNqikjj6Hx/yqru5PsaHFbX6COzonlEn/fvrEFxdC0v2GEA3w985kgdTdsEj+ChZJaWVgND35yncGFxJo3by18bDWnOaC4jjkiQmglA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vaWv7+gGNvT8/2OemPY/yw072DI8us4yFD0NbweDiDE=;
+ b=Gyz+jIrKDYVwfocx9++870gn3eqk6mRlbCa+VW+JQW+El8cNpTUiPaxnLEWox2kMH0FNfFiEwSgs9b38i3/isvYtQSf8qa6Si9F6gXwduFsgniVVZvXlPWx5jZbwHXhdbiYh137Vpl5dhPCD9fc7ghVZJcrQM6sbfFpqAZJdWXZ+pw/HqHdmujl1BP14znD63DZBF/c41fB6G2OWXF3cjvvezDg5zhUryMkYa0naLraL4eNuP/q6PbNI4nhCqTUYDNLVTJzbJpoNfQGahYjOb94VWXkTX9Br2WliarWWb6krA5qcfgXQchAs9etcd7uxpiDtQk1nWli534FH7HKKVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vaWv7+gGNvT8/2OemPY/yw072DI8us4yFD0NbweDiDE=;
+ b=qxupbq0BXyVpmu6RgF/IVq6pJNO4a4ZVKwbD+yP2l36R+RRPqfiXcsghcgZO3yws9/zGP79QOI6uvynsIIDjkWS8QutUZYoDx9DjxWVTnqj7oNK6qq1dWp+wbFmlmG15ndAkRWuCSwKQu4JTryS8wGNgDm9TIf5c4JycyGW9eqMcUwUXKH1VDdqrQ1XBomttS/uyB12zSYWpnpsFwBQ14wCdFC+Yt3Qf6ZCQ1yEkO6tX0s8mv77tzbKrd6aCJ/x6IZ29nPqD7YOLhGk45RGdu+hG8vJxwGiDmx7s/F+jwQfOn/yPV/E2i8k0mJKIZuIMw/0S6WLBqGbd573+k03aCQ==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS2PR10MB7477.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:593::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
+ 2023 00:06:16 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
+ 00:06:16 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
+        ast@kernel.org, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
+        shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
+Subject: [PATCH bpf-next v3 1/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
+Date:   Tue, 21 Nov 2023 05:35:39 +0530
+Message-ID: <GV1PR10MB6563F180C0F2BB4F6CFA5130E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [fHMVdpxwz9OQbya4iq+gaB9tclLMjrvM]
+X-ClientProxiedBy: JNXP275CA0036.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::24)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231121000539.421270-1-yuran.pereira@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB7477:EE_
+X-MS-Office365-Filtering-Correlation-Id: 85d6a93e-04b8-4a47-968e-08dbea25adda
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2bPTRemX/EeOyugDR2WqaarU5qbuNPJBg2q82L5fx713soOye1VZOVgVGDp7H3Ay3Zk7AaJVmSzayMbI6zBg0AaINBG0GHtpYZogyAP1HcM1VjNO8lU0rpD3Wt5HmIAh8VeBLMjW2Rxs9vzwwAdStkGnXB5EpidnhZAHsgdemvoT2BhEGU9d0QxB6476yAFUOi2/btE4eGC3OCaTgDDJTcEhQkc8cmFlxVL3vmlCxeG++luCi7eIaS3EpILvam664ceRpxdR4P3xng/V5HID/meHIJchrqeA4h771j75FRRhL5EHup2hziIDa2lHh+iWcZHoqZIt0NMnXBHzzd6SE11cIjKKNeY7o07Lupqer6w2GpIawJDsdeCDK4XWH6SYh+T7Pn2anJ89UbAhadsd/3WUoexvLTx++sKoLutY1Ai15TX50ebKEt04fHsCH3nGrkD5vIivb0XUHq5cuc4upb/PI5y2wsp46tCZmiBy8gVuPig1otLcrUAPbJucWempPkSaQjA36x7fkG/7Zma42W8wrdNCk1sEw8xG3Lrqxa7pbzmVbka0RMjnxFJwzshGS1nSxSCfQhu0oKQ6S9KuEhgLzfks0LNmJPINkhPvAhU=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0U+WjHph7B6OUQ8HENfwGYaqHVnoNTlaXpJdR6CCTxvA+OtlvGvyGubdaKrc?=
+ =?us-ascii?Q?UvogW+P1mXJIhc7R7Lpf7HI8+Y496PbXlAUBSPbgCP82n1J9QuCXBXzhnA31?=
+ =?us-ascii?Q?gmbg0DC4XqX/2raKjEGhLwUqwPOrMkC1ljs9kQMQZof/CSGuIU2LMLVWzJJg?=
+ =?us-ascii?Q?4XX+O6briG/6qbkg6VW1HgvdtKporJiIwsXUTq3+rYzAWEHirFO+zmkl5x0r?=
+ =?us-ascii?Q?HZJaJ19stU0vt6Z2M2LyrDuoMLQzXl5hh/76mOaXQDanjWrOqN4HOoHTvpyk?=
+ =?us-ascii?Q?QL/s9PiFqVp7EmbNsBcqSUjZhSj21+bTVcj4FUTq4WW3YDHJPloT0tzy6KcG?=
+ =?us-ascii?Q?yMN+jLC16Yl1bkS5u9gPT9p31fAhWoiWDr53qAaSutArpxwK66t9sj6CyAJi?=
+ =?us-ascii?Q?8ULJAbvHr5cEJkbSMfRCzkqjh/5Omwh+WvIcwPuxakfzlencSCpGFkx8fCQv?=
+ =?us-ascii?Q?qJoOFwrcZxQLmq7Xiqav2/7G3UJY5dYXOJhZteAKodyqmzf6p4QeLeizk3qM?=
+ =?us-ascii?Q?KiPSWcMrYpeOMiGtnRJONfKIyQad0lQjWidt8RKk4SaoQbCeacAfKRPzd2L4?=
+ =?us-ascii?Q?95J/vjIj9GmOKYtiXV/pwDNsBi9Hl6cIQymt1pZj1OOsgpMwu7yoRDEFfw0c?=
+ =?us-ascii?Q?95WRFMh9aTmr2coUYZ5BLq+opRfRTOVIjaZA+WCJhgkJUDfkUoD8rdD5+CUc?=
+ =?us-ascii?Q?MOiGU6b0qL0kRoGz52opcnSKZjTDd9x40Q5Ih8za/XsCW7wpxzUWc6b7i1Jr?=
+ =?us-ascii?Q?2G5j5I8W5YoDiW4QMQ7JhuOTiXxe6YpLDzJVpANa5VK8Ey269akcEz1ptyBo?=
+ =?us-ascii?Q?6NeLlb6dZvq5cjigKaA5QefV/x5RnY0Xj533s7BRugFLpILTIzMNxJHkD7qt?=
+ =?us-ascii?Q?T5m9iovTYSig/wHsnLD5IbBPB/udt840By2MWlQL2Q2p5V+XwUWWnqzC1mqG?=
+ =?us-ascii?Q?bAMVUUwpt+aMN2IBk8dRj2Dzh1W4A68uHKkLIavl6dWXBty2QdLFR48oPjxd?=
+ =?us-ascii?Q?7nAkZdK6w3Ql3oxl8DoC4WSfDzuzDP0RKfOvdYnwCsgBcH7EI1ll/whOxABA?=
+ =?us-ascii?Q?UCc5iNX+cawz4zpJg9NVEd+CSb2yWEH7qx6tjqrfLtOzezYyNMu9GhcBxqbd?=
+ =?us-ascii?Q?wigrPmtTCKWes/9gV/C2pYSiJWI7iRLPmhnZFQzPH6vcMzb3HX3ck6gBWxww?=
+ =?us-ascii?Q?4dyT5hYCl9a2Da6W+OZ1mDbTSIoutmmWYmfrv1/P0ETsspsKDXT8pKMLEIg?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85d6a93e-04b8-4a47-968e-08dbea25adda
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 00:06:16.0149
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7477
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the cycles event isn't available evsel will fallback to the
-cpu-clock software event. task-clock is similar to cpu-clock but only
-runs when the process is running. Falling back to cpu-clock when not
-system wide leads to confusion, by falling back to task-clock it is
-hoped the confusion is less.
+bpf_tcp_ca uses the `CHECK` calls even though the use of
+ASSERT_ series of macros is preferred in the bpf selftests.
 
-Pass the target to determine if task-clock is more appropriate. Update
-a nearby comment and debug string for the change.
+This patch replaces all `CHECK` calls for equivalent `ASSERT_`
+macro calls.
 
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
 ---
-v2. Use target__has_cpu as suggested by Namhyung.
-https://lpc.events/event/17/contributions/1556/
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 48 +++++++++----------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/builtin-record.c |  2 +-
- tools/perf/builtin-stat.c   |  2 +-
- tools/perf/builtin-top.c    |  2 +-
- tools/perf/util/evsel.c     | 18 ++++++++++--------
- tools/perf/util/evsel.h     |  3 ++-
- 5 files changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 8ec818568662..d8bb59511fdd 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1350,7 +1350,7 @@ static int record__open(struct record *rec)
- 	evlist__for_each_entry(evlist, pos) {
- try_again:
- 		if (evsel__open(pos, pos->core.cpus, pos->core.threads) < 0) {
--			if (evsel__fallback(pos, errno, msg, sizeof(msg))) {
-+			if (evsel__fallback(pos, &opts->target, errno, msg, sizeof(msg))) {
- 				if (verbose > 0)
- 					ui__warning("%s\n", msg);
- 				goto try_again;
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index a3af805a1d57..d8e5d6f7a87a 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -653,7 +653,7 @@ static enum counter_recovery stat_handle_error(struct evsel *counter)
- 		if ((evsel__leader(counter) != counter) ||
- 		    !(counter->core.leader->nr_members > 1))
- 			return COUNTER_SKIP;
--	} else if (evsel__fallback(counter, errno, msg, sizeof(msg))) {
-+	} else if (evsel__fallback(counter, &target, errno, msg, sizeof(msg))) {
- 		if (verbose > 0)
- 			ui__warning("%s\n", msg);
- 		return COUNTER_RETRY;
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index ea8c7eca5eee..1e42bd1c7d5a 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1044,7 +1044,7 @@ static int perf_top__start_counters(struct perf_top *top)
- 			    perf_top_overwrite_fallback(top, counter))
- 				goto try_again;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+index 4aabeaa525d4..a88e6e07e4f5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+@@ -20,15 +20,14 @@
  
--			if (evsel__fallback(counter, errno, msg, sizeof(msg))) {
-+			if (evsel__fallback(counter, &opts->target, errno, msg, sizeof(msg))) {
- 				if (verbose > 0)
- 					ui__warning("%s\n", msg);
- 				goto try_again;
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a5da74e3a517..532f34d9fcb5 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2853,7 +2853,8 @@ u64 evsel__intval_common(struct evsel *evsel, struct perf_sample *sample, const
+ static const unsigned int total_bytes = 10 * 1024 * 1024;
+ static int expected_stg = 0xeB9F;
+-static int stop, duration;
++static int stop;
  
- #endif
- 
--bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize)
-+bool evsel__fallback(struct evsel *evsel, struct target *target, int err,
-+		     char *msg, size_t msgsize)
+ static int settcpca(int fd, const char *tcp_ca)
  {
- 	int paranoid;
+ 	int err;
  
-@@ -2861,18 +2862,19 @@ bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize)
- 	    evsel->core.attr.type   == PERF_TYPE_HARDWARE &&
- 	    evsel->core.attr.config == PERF_COUNT_HW_CPU_CYCLES) {
- 		/*
--		 * If it's cycles then fall back to hrtimer based
--		 * cpu-clock-tick sw counter, which is always available even if
--		 * no PMU support.
-+		 * If it's cycles then fall back to hrtimer based cpu-clock sw
-+		 * counter, which is always available even if no PMU support.
- 		 *
- 		 * PPC returns ENXIO until 2.6.37 (behavior changed with commit
- 		 * b0a873e).
- 		 */
--		scnprintf(msg, msgsize, "%s",
--"The cycles event is not supported, trying to fall back to cpu-clock-ticks");
--
- 		evsel->core.attr.type   = PERF_TYPE_SOFTWARE;
--		evsel->core.attr.config = PERF_COUNT_SW_CPU_CLOCK;
-+		evsel->core.attr.config = target__has_cpu(target)
-+			? PERF_COUNT_SW_CPU_CLOCK
-+			: PERF_COUNT_SW_TASK_CLOCK;
-+		scnprintf(msg, msgsize,
-+			"The cycles event is not supported, trying to fall back to %s",
-+			target__has_cpu(target) ? "cpu-clock" : "task-clock");
+ 	err = setsockopt(fd, IPPROTO_TCP, TCP_CONGESTION, tcp_ca, strlen(tcp_ca));
+-	if (CHECK(err == -1, "setsockopt(fd, TCP_CONGESTION)", "errno:%d\n",
+-		  errno))
++	if (!ASSERT_NEQ(err, -1, "setsockopt"))
+ 		return -1;
  
- 		zfree(&evsel->name);
- 		return true;
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index f19ac9f027ef..efbb6e848287 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -460,7 +460,8 @@ static inline bool evsel__is_clock(const struct evsel *evsel)
- 	       evsel__match(evsel, SOFTWARE, SW_TASK_CLOCK);
- }
+ 	return 0;
+@@ -65,8 +64,7 @@ static void *server(void *arg)
+ 		bytes += nr_sent;
+ 	}
  
--bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize);
-+bool evsel__fallback(struct evsel *evsel, struct target *target, int err,
-+		     char *msg, size_t msgsize);
- int evsel__open_strerror(struct evsel *evsel, struct target *target,
- 			 int err, char *msg, size_t size);
+-	CHECK(bytes != total_bytes, "send", "%zd != %u nr_sent:%zd errno:%d\n",
+-	      bytes, total_bytes, nr_sent, errno);
++	ASSERT_EQ(bytes, total_bytes, "send");
  
+ done:
+ 	if (fd >= 0)
+@@ -92,10 +90,11 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+ 	WRITE_ONCE(stop, 0);
+ 
+ 	lfd = socket(AF_INET6, SOCK_STREAM, 0);
+-	if (CHECK(lfd == -1, "socket", "errno:%d\n", errno))
++	if (!ASSERT_NEQ(lfd, -1, "socket"))
+ 		return;
++
+ 	fd = socket(AF_INET6, SOCK_STREAM, 0);
+-	if (CHECK(fd == -1, "socket", "errno:%d\n", errno)) {
++	if (!ASSERT_NEQ(fd, -1, "socket")) {
+ 		close(lfd);
+ 		return;
+ 	}
+@@ -108,26 +107,27 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+ 	sa6.sin6_family = AF_INET6;
+ 	sa6.sin6_addr = in6addr_loopback;
+ 	err = bind(lfd, (struct sockaddr *)&sa6, addrlen);
+-	if (CHECK(err == -1, "bind", "errno:%d\n", errno))
++	if (!ASSERT_NEQ(err, -1, "bind"))
+ 		goto done;
++
+ 	err = getsockname(lfd, (struct sockaddr *)&sa6, &addrlen);
+-	if (CHECK(err == -1, "getsockname", "errno:%d\n", errno))
++	if (!ASSERT_NEQ(err, -1, "getsockname"))
+ 		goto done;
++
+ 	err = listen(lfd, 1);
+-	if (CHECK(err == -1, "listen", "errno:%d\n", errno))
++	if (!ASSERT_NEQ(err, -1, "listen"))
+ 		goto done;
+ 
+ 	if (sk_stg_map) {
+ 		err = bpf_map_update_elem(bpf_map__fd(sk_stg_map), &fd,
+ 					  &expected_stg, BPF_NOEXIST);
+-		if (CHECK(err, "bpf_map_update_elem(sk_stg_map)",
+-			  "err:%d errno:%d\n", err, errno))
++		if (!ASSERT_OK(err, "bpf_map_update_elem(sk_stg_map)"))
+ 			goto done;
+ 	}
+ 
+ 	/* connect to server */
+ 	err = connect(fd, (struct sockaddr *)&sa6, addrlen);
+-	if (CHECK(err == -1, "connect", "errno:%d\n", errno))
++	if (!ASSERT_NEQ(err, -1, "connect"))
+ 		goto done;
+ 
+ 	if (sk_stg_map) {
+@@ -135,14 +135,13 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+ 
+ 		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
+ 					  &tmp_stg);
+-		if (CHECK(!err || errno != ENOENT,
+-			  "bpf_map_lookup_elem(sk_stg_map)",
+-			  "err:%d errno:%d\n", err, errno))
++		if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
++				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
+ 			goto done;
+ 	}
+ 
+ 	err = pthread_create(&srv_thread, NULL, server, (void *)(long)lfd);
+-	if (CHECK(err != 0, "pthread_create", "err:%d errno:%d\n", err, errno))
++	if (!ASSERT_OK(err, "pthread_create"))
+ 		goto done;
+ 
+ 	/* recv total_bytes */
+@@ -156,13 +155,12 @@ static void do_test(const char *tcp_ca, const struct bpf_map *sk_stg_map)
+ 		bytes += nr_recv;
+ 	}
+ 
+-	CHECK(bytes != total_bytes, "recv", "%zd != %u nr_recv:%zd errno:%d\n",
+-	      bytes, total_bytes, nr_recv, errno);
++	ASSERT_EQ(bytes, total_bytes, "recv");
+ 
+ 	WRITE_ONCE(stop, 1);
+ 	pthread_join(srv_thread, &thread_ret);
+-	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
+-	      PTR_ERR(thread_ret));
++	ASSERT_OK(IS_ERR(thread_ret), "thread_ret");
++
+ done:
+ 	close(lfd);
+ 	close(fd);
+@@ -174,7 +172,7 @@ static void test_cubic(void)
+ 	struct bpf_link *link;
+ 
+ 	cubic_skel = bpf_cubic__open_and_load();
+-	if (CHECK(!cubic_skel, "bpf_cubic__open_and_load", "failed\n"))
++	if (!ASSERT_OK_PTR(cubic_skel, "bpf_cubic__open_and_load"))
+ 		return;
+ 
+ 	link = bpf_map__attach_struct_ops(cubic_skel->maps.cubic);
+@@ -197,7 +195,7 @@ static void test_dctcp(void)
+ 	struct bpf_link *link;
+ 
+ 	dctcp_skel = bpf_dctcp__open_and_load();
+-	if (CHECK(!dctcp_skel, "bpf_dctcp__open_and_load", "failed\n"))
++	if (!ASSERT_OK_PTR(dctcp_skel, "bpf_dctcp__open_and_load"))
+ 		return;
+ 
+ 	link = bpf_map__attach_struct_ops(dctcp_skel->maps.dctcp);
+@@ -207,9 +205,7 @@ static void test_dctcp(void)
+ 	}
+ 
+ 	do_test("bpf_dctcp", dctcp_skel->maps.sk_stg_map);
+-	CHECK(dctcp_skel->bss->stg_result != expected_stg,
+-	      "Unexpected stg_result", "stg_result (%x) != expected_stg (%x)\n",
+-	      dctcp_skel->bss->stg_result, expected_stg);
++	ASSERT_EQ(dctcp_skel->bss->stg_result, expected_stg, "stg_result");
+ 
+ 	bpf_link__destroy(link);
+ 	bpf_dctcp__destroy(dctcp_skel);
 -- 
-2.43.0.rc1.413.gea7ed67945-goog
+2.25.1
 
