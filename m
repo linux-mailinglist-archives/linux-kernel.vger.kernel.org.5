@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9943F7F265E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:31:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A987F265F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbjKUHbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:31:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S229484AbjKUHcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjKUHbn (ORCPT
+        with ESMTP id S229689AbjKUHcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:31:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDBF10E
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:31:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700551899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=77Bzl/+Kq0+MzNg2uBfJvKrlDQ1jm6M8H9m1x9Ji14Q=;
-        b=G9bNE1EPKLxDZi+B3kkNegL2Jeft7dD1SS7TQiSudQ9jlOXgv29gDnJg2zAb/WFJk4xrhI
-        gSuoq5Uv6Bi4GdiByrtPeHSaPoxwVbN05nFrCSQm7zaXXmhVBrzYCzsLYtAb2iKVnCJi2R
-        egN9LBEvpVy/tfYMNsBUyEY0GfVaYLA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-602-ETEATdwXPl-IT_04BPdwNQ-1; Tue,
- 21 Nov 2023 02:31:35 -0500
-X-MC-Unique: ETEATdwXPl-IT_04BPdwNQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F6543804A4D;
-        Tue, 21 Nov 2023 07:31:35 +0000 (UTC)
-Received: from server.redhat.com (unknown [10.72.112.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60E281C060B0;
-        Tue, 21 Nov 2023 07:31:32 +0000 (UTC)
-From:   Cindy Lu <lulu@redhat.com>
-To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
-        maxime.coquelin@redhat.com
-Subject: [PATCH v2 5/5] Documentation: Add reconnect process for VDUSE
-Date:   Tue, 21 Nov 2023 15:30:50 +0800
-Message-Id: <20231121073050.287080-6-lulu@redhat.com>
-In-Reply-To: <20231121073050.287080-1-lulu@redhat.com>
-References: <20231121073050.287080-1-lulu@redhat.com>
+        Tue, 21 Nov 2023 02:32:05 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D867100
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:32:01 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so19226775e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:32:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700551920; x=1701156720; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IFtch3Nap710cpf4er7eW9cGVSpjM0L/7+OjaAxxZa8=;
+        b=T/DYxps/BIIYLYvAVIBph/sN27dfJVCjpFYKz0VKEAPWkqDGvtDGlPClXah0iuupoF
+         +0A+DdIsQwh9yAvQYpgFYbKmuQvdeMrJCV7LDQVQKsQ8rx3r0yueMa3TrClSkGDfV5Wu
+         YEycnUTRDSl8DozHEmqJVvTfIpV08HL8lSrM7572IlV9S+Pg1foTeKnNDHljgYykAkVd
+         kYI0U+MPsE0KC+UDqavMNSbqfxiupO1vwU386u42EIxIMV3287/7FsqNlTew275RV3pl
+         GwUbHrq8gD1fMVcS2hVUAEAAI3Vl4X9C0Mn92UIfX6h3L/KHFvr8Xd1qW/ROnnazO8kx
+         PWfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700551920; x=1701156720;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFtch3Nap710cpf4er7eW9cGVSpjM0L/7+OjaAxxZa8=;
+        b=wUAqDGgCg6jDlLa67pSRHqGnAQAdBluEPVnoBDBASo8MehMgTyrgBhJWkNe/r5eYRR
+         LZ2NeAf+OezJnMZTGiVHOgxlloLCyK9PLMBIEGbZ/RPPK0m1NY93ZGEbUNwEdwJnSwBO
+         G0Qe/4J0dT+XXiSUNSMBdRW/sez+OD8HftsYF/9+Hu0jFQDA++wbKziOJpgXo6E+4s6n
+         WaZ0PHWU1Wrfp9kprr8bprEtLX0OLlH5awecOXYy1XUZvPVj5SLQKQtqlHLhNsHGBIZU
+         cuPYEhyHSYO3Y6a2GHg8gbCmQQ+kv/wsIgLQe0Rq+YmC9MZRpmG5APLyJOHLadN3xuwY
+         q0Tg==
+X-Gm-Message-State: AOJu0YxrQd1kA81QT8aOImIKRgu0KxOFFAicvykz139KOEzaAwR1ICuR
+        xSxlxB0+uE649ZXGyogULBHpj29PAyUsJBTF2hw=
+X-Google-Smtp-Source: AGHT+IEzsgomKk4nfW00c6Ga9yeFtrm6C6dS4SdxymDIFlffCn3x55AEMbIKPQCO4+8GI6yjSgHbhw==
+X-Received: by 2002:a5d:64e1:0:b0:332:cf3d:a041 with SMTP id g1-20020a5d64e1000000b00332cf3da041mr177747wri.8.1700551919385;
+        Mon, 20 Nov 2023 23:31:59 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id df10-20020a5d5b8a000000b00331a55d3875sm9435549wrb.38.2023.11.20.23.31.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 23:31:59 -0800 (PST)
+Date:   Tue, 21 Nov 2023 02:31:56 -0500
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/14] staging: rtl8192e: IS_DOT11D_ENABLE() returns
+ always false
+Message-ID: <d911d509-8677-444c-ad7f-92dd141e8e1e@suswa.mountain>
+References: <cover.1700431464.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1700431464.git.philipp.g.hortmann@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the document to explained how the reconnect process
-include how the Userspace App need to do and how it works
-with kernel
+Looks good.
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
----
- Documentation/userspace-api/vduse.rst | 29 +++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
-index bdb880e01132..6e01c21d94df 100644
---- a/Documentation/userspace-api/vduse.rst
-+++ b/Documentation/userspace-api/vduse.rst
-@@ -231,3 +231,32 @@ able to start the dataplane processing as follows:
-    after the used ring is filled.
- 
- For more details on the uAPI, please see include/uapi/linux/vduse.h.
-+
-+HOW VDUSE devices reconnectoin works
-+----------------
-+0. Userspace APP checks if the device /dev/vduse/vduse_name exists, if not create
-+   the device. If yes means this is reconnect, goto 3
-+
-+1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
-+   /dev/vduse/control.
-+
-+2. In ioctl(VDUSE_CREATE_DEV), the kernel alloc the memory to sync the reconnect
-+   information.
-+
-+3. Userspace App will mmap the pages to userspace
-+
-+   If this first time to connect, userspace App need save the reconnect
-+   information (struct vhost_reconnect_data) in mapped pages
-+
-+   If this is reconnect, userspace App need to check if the saved information
-+   OK to reconnect, Also userspace App MUST set the bit reconnected in
-+   struct vhost_reconnect_data to 1. (kernel will use this bit to identify if the
-+   userAPP is reconnected )
-+
-+4. Successfully start the userspace App.
-+   userspace APP need to call ioctl VDUSE_VQ_GET_INFO to sync the vq information. also
-+   APP need to save the reconnect information (struct vhost_reconnect_vring)
-+   while running
-+
-+5. When the Userspace App exit, Userspace App need to unmap all the reconnect
-+   pages
--- 
-2.34.3
+regards,
+dan carpenter
 
