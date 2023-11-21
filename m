@@ -2,204 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FEA7F297D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8C97F2980
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjKUJ57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:57:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S234184AbjKUJ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234099AbjKUJ55 (ORCPT
+        with ESMTP id S234188AbjKUJ6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:57:57 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFFC114
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:57:51 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40859c466efso23726555e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:57:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700560669; x=1701165469; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ya3n3aXDnBMpa9iCsGsDw/lmArvm/c671drEFUNQoo=;
-        b=f0f4/oIAQqebDHWVkydaOtoZ7DLL4dVAAIfY0zSvYqMTN9Md4omqWNXW9+vQD72dgN
-         YL+ABS4NbcNk5rmLbJ+kK5FWPgzgn/v/gmV2K1Yka73gVMlZjyWHhwEKhxWal2ZI3NDJ
-         ZKF9ZRcHbU8jboGkvTYp5sbYAiD7gTd01ARCHmUgh12Vy/zZ4GAsnI9FksVkManSn06i
-         ftqdrMfciFMaoEnKdO0ZAN1W2Q3HECGigxXRgu/Otrk5zOAsZC3Zur7av3g8wsSMoLyz
-         u5u4yo8JM8GzvcWocfRK/FGO7y6U0ydZLPDsnq97zpmzntRPeV7m55OCn6mO4fZXrBzr
-         ONSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700560669; x=1701165469;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ya3n3aXDnBMpa9iCsGsDw/lmArvm/c671drEFUNQoo=;
-        b=VB7Dvg38BUm8Fivzi6861Gmu9i70DrzqZNJnurIXPJdruFZydPkX6xNTKzNbppYbvH
-         CqW5bXNyEdK1sayLc/aECQB2QSJ8+MtVqSJWMP97swxGpPztmVFRbH8ftRkyd1WW3hz5
-         mi1SlLQJnZQpnIWmG5SR/6uxa+1SwPNeqsd6erGv+/P67arVh0pJblvaJbXTMJL/1N2m
-         pkwMYHqgX37kQTehsVku1RvZULBWB52KrPy/ifRK7lcheFuuLNtokIInI8qMmVvMP3aU
-         Kajwqtdu6JMo/An2explHZU05TtL5zgIiBvhmXLw6HIu4Er9/Jw1XtR1W3PeE5rDuE12
-         oLBQ==
-X-Gm-Message-State: AOJu0YzDeq8ICOq1uvifQYxc+PE6H2GoRusaAMskugl92q3QvSeWxMHH
-        nxp35i0Zk47vWQxcV5V6tgQfQw==
-X-Google-Smtp-Source: AGHT+IF5jKaAaWuAYYIRaovptlC1ZuGRLPzcyaZZ1TLyF9C2pvMBO3pkBU9sYd5hnyBTx/DGMQAeWA==
-X-Received: by 2002:a5d:558d:0:b0:332:cbe4:110 with SMTP id i13-20020a5d558d000000b00332cbe40110mr2068623wrv.33.1700560669375;
-        Tue, 21 Nov 2023 01:57:49 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.11])
-        by smtp.gmail.com with ESMTPSA id m17-20020adfe0d1000000b0033130644c87sm13954510wri.54.2023.11.21.01.57.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 01:57:48 -0800 (PST)
-Message-ID: <84a12a2c-3f64-4517-8d38-14c8516e70d0@linaro.org>
-Date:   Tue, 21 Nov 2023 10:57:46 +0100
+        Tue, 21 Nov 2023 04:58:07 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09A34FA;
+        Tue, 21 Nov 2023 01:58:03 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 654B4FEC;
+        Tue, 21 Nov 2023 01:58:49 -0800 (PST)
+Received: from [10.163.36.237] (unknown [10.163.36.237])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73DEF3F73F;
+        Tue, 21 Nov 2023 01:57:57 -0800 (PST)
+Message-ID: <6ab8a99b-00cb-4e53-9f95-51fa1f45a3b8@arm.com>
+Date:   Tue, 21 Nov 2023 15:27:54 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: rtc: add binding for Sophgo CV1800B rtc
- controller
-To:     Jingbao Qiu <qiujingbao.dlmu@gmail.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
-        chao.wei@sophgo.com, unicorn_wang@outlook.com, conor+dt@kernel.org,
-        robh+dt@kernel.org, conor@kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
- <20231121094642.2973795-2-qiujingbao.dlmu@gmail.com>
+Subject: Re: [V14 3/8] drivers: perf: arm_pmuv3: Enable branch stack sampling
+ framework
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231121094642.2973795-2-qiujingbao.dlmu@gmail.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
+References: <20231114051329.327572-1-anshuman.khandual@arm.com>
+ <20231114051329.327572-4-anshuman.khandual@arm.com>
+ <62b84faf-f413-6bfd-5fc1-ac2489e61e00@arm.com>
+ <648dc72b-7120-498f-8963-dbdc0d1acce0@arm.com>
+ <1d731458-d339-1ffa-0d18-33628634224f@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <1d731458-d339-1ffa-0d18-33628634224f@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/11/2023 10:46, Jingbao Qiu wrote:
-> Add devicetree binding for Sophgo CV1800B SoC rtc controller.
 
-A nit, subject: drop second/last, redundant "binding for". The
-"dt-bindings" prefix is already stating that these are bindings.
+
+On 11/15/23 15:37, James Clark wrote:
+> 
+> 
+> On 15/11/2023 07:22, Anshuman Khandual wrote:
+>> On 11/14/23 17:44, James Clark wrote:
+>>>
+>>>
+>>> On 14/11/2023 05:13, Anshuman Khandual wrote:
+>>> [...]
+>>>
+>>>> +/*
+>>>> + * This is a read only constant and safe during multi threaded access
+>>>> + */
+>>>> +static struct perf_branch_stack zero_branch_stack = { .nr = 0, .hw_idx = -1ULL};
+>>>> +
+>>>> +static void read_branch_records(struct pmu_hw_events *cpuc,
+>>>> +				struct perf_event *event,
+>>>> +				struct perf_sample_data *data,
+>>>> +				bool *branch_captured)
+>>>> +{
+>>>> +	/*
+>>>> +	 * CPU specific branch records buffer must have been allocated already
+>>>> +	 * for the hardware records to be captured and processed further.
+>>>> +	 */
+>>>> +	if (WARN_ON(!cpuc->branches))
+>>>> +		return;
+>>>> +
+>>>> +	/*
+>>>> +	 * Overflowed event's branch_sample_type does not match the configured
+>>>> +	 * branch filters in the BRBE HW. So the captured branch records here
+>>>> +	 * cannot be co-related to the overflowed event. Report to the user as
+>>>> +	 * if no branch records have been captured, and flush branch records.
+>>>> +	 * The same scenario is applicable when the current task context does
+>>>> +	 * not match with overflown event.
+>>>> +	 */
+>>>> +	if ((cpuc->brbe_sample_type != event->attr.branch_sample_type) ||
+>>>> +	    (event->ctx->task && cpuc->brbe_context != event->ctx)) {
+>>>> +		perf_sample_save_brstack(data, event, &zero_branch_stack);
+>>>
+>>> Is there any benefit to outputting a zero size stack vs not outputting
+>>> anything at all?
+>>
+>> The event has got PERF_SAMPLE_BRANCH_STACK marked and hence perf_sample_data
+>> must have PERF_SAMPLE_BRANCH_STACK with it's br_stack pointing to the branch
+>> records. Hence without assigning a zeroed struct perf_branch_stack, there is
+>> a chance, that perf_sample_data will pass on some garbage branch records to
+>> the ring buffer.
+>>
+> 
+> I don't think that's an issue, the perf core code handles the case where
+> no branch stack exists on a sample. It even outputs the zero length for
+> you, but there is other stuff that can be skipped if you just never call
+> perf_sample_save_brstack():
+
+Sending out perf_sample_data without valid data->br_stack seems problematic,
+which would be the case when perf_sample_save_brstack() never gets called on
+the perf_sample_data being prepared, and depend on the below 'else' case for
+pushing out zero records.
+
+Alternatively - temporarily just zeroing out cpuc->branches->branch_stack.nr
+for immediate perf_sample_save_brstack(), and then restoring it back to it's
+original value might work as well. Remember it still has got valid records
+for other qualifying events.
 
 > 
-> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> ---
->  .../bindings/rtc/sophgo,cv1800b-rtc.yaml      | 37 +++++++++++++++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> from kernel/events/core.c:
 > 
-> diff --git a/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
-> new file mode 100644
-> index 000000000000..fefb1e70c45c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
-> @@ -0,0 +1,37 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/rtc/sophgo,cv1800b-rtc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sophgo CV1800B SoC RTC Controller
+>  if (sample_type & PERF_SAMPLE_BRANCH_STACK) {
+>   if (data->br_stack) {
+>     size_t size;
+> 
+>     size = data->br_stack->nr
+>       * sizeof(struct perf_branch_entry);
+> 
+>     perf_output_put(handle, data->br_stack->nr);
+>     if (branch_sample_hw_index(event))
+>       perf_output_put(handle, data->br_stack->hw_idx);
+>     perf_output_copy(handle, data->br_stack->entries, size);
+>   } else {
+>     /*
+>      * we always store at least the value of nr
+>      */
+>     u64 nr = 0;
+>     perf_output_put(handle, nr);
+>   }
+> }
+> 
+> 
+>>>
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	/*
+>>>> +	 * Read the branch records from the hardware once after the PMU IRQ
+>>>> +	 * has been triggered but subsequently same records can be used for
+>>>> +	 * other events that might have been overflowed simultaneously thus
+>>>> +	 * saving much CPU cycles.
+>>>> +	 */
+>>>> +	if (!*branch_captured) {
+>>>> +		armv8pmu_branch_read(cpuc, event);
+>>>> +		*branch_captured = true;
+>>>> +	}
+>>>> +	perf_sample_save_brstack(data, event, &cpuc->branches->branch_stack);
+>>>> +}
+>>>> +
+>>>>  static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>>>  {
+>>>>  	u32 pmovsr;
+>>>> @@ -766,6 +815,7 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>>>  	struct pmu_hw_events *cpuc = this_cpu_ptr(cpu_pmu->hw_events);
+>>>>  	struct pt_regs *regs;
+>>>>  	int idx;
+>>>> +	bool branch_captured = false;
+>>>>  
+>>>>  	/*
+>>>>  	 * Get and reset the IRQ flags
+>>>> @@ -809,6 +859,13 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>>>  		if (!armpmu_event_set_period(event))
+>>>>  			continue;
+>>>>  
+>>>> +		/*
+>>>> +		 * PMU IRQ should remain asserted until all branch records
+>>>> +		 * are captured and processed into struct perf_sample_data.
+>>>> +		 */
+>>>> +		if (has_branch_stack(event) && cpu_pmu->has_branch_stack)
+>>>> +			read_branch_records(cpuc, event, &data, &branch_captured);
+>>>
+>>> You could return instead of using the out param, not really any
+>>> different, but maybe a bit more normal:
+>>>
+>>>   branch_captured |= read_branch_records(cpuc, event, &data,
+>>> branch_captured);
+>>
+>> I am just wondering - how that would be any better ?
+>>
+> 
+> Maybe it wouldn't, but I suppose it's just the same way you don't write
+> returns like:
+> 
+>   armv8pmu_task_ctx_cache_alloc(cpu_pmu, &ret);
+> 
+> instead of:
+> 
+>   ret = armv8pmu_task_ctx_cache_alloc(cpu_pmu);
+> 
+> Out params can be hard to reason about sometimes. Maybe not in this case
+> though.
 
-What is a RTC Controller? You have multiple RTCs there?
+The out parameter 'branch_captured' is checked inside read_branch_records()
+to ascertain whether the BRBE records have been already captured inside the
+buffer i.e cpuc->branches->branch_stack, in case the process can be skipped
+(optimization) for subsequent events in the session. Keeping this parameter
+branch_captured just inside the caller i.e armv8pmu_handle_irq() would not
+achieve that objective.
 
-> +
-> +maintainers:
-> +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> +
+>>>
+>>>> +
+>>>>  		/*
+>>>>  		 * Perf event overflow will queue the processing of the event as
+>>>>  		 * an irq_work which will be taken care of in the handling of
+>>>> @@ -818,6 +875,8 @@ static irqreturn_t armv8pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>>>>  			cpu_pmu->disable(event);
+>>>>  	}
+>>>>  	armv8pmu_start(cpu_pmu);
+>>>> +	if (cpu_pmu->has_branch_stack)
+>>>> +		armv8pmu_branch_reset();
+>>>>  
+>>>>  	return IRQ_HANDLED;
+>>>>  }
+>>>> @@ -907,6 +966,24 @@ static int armv8pmu_user_event_idx(struct perf_event *event)
+>>>>  	return event->hw.idx;
+>>>>  }
+>>>>  
+>>>> +static void armv8pmu_sched_task(struct perf_event_pmu_context *pmu_ctx, bool sched_in)
+>>>> +{
+>>>> +	struct arm_pmu *armpmu = to_arm_pmu(pmu_ctx->pmu);
+>>>> +	void *task_ctx = pmu_ctx->task_ctx_data;
+>>>> +
+>>>> +	if (armpmu->has_branch_stack) {
+>>>> +		/* Save branch records in task_ctx on sched out */
+>>>> +		if (task_ctx && !sched_in) {
+>>>> +			armv8pmu_branch_save(armpmu, task_ctx);
+>>>> +			return;
+>>>> +		}
+>>>> +
+>>>> +		/* Reset branch records on sched in */
+>>>> +		if (sched_in)
+>>>> +			armv8pmu_branch_reset();
+>>>> +	}
+>>>> +}
+>>>> +
+>>>>  /*
+>>>>   * Add an event filter to a given event.
+>>>>   */
+>>>> @@ -977,6 +1054,9 @@ static void armv8pmu_reset(void *info)
+>>>>  		pmcr |= ARMV8_PMU_PMCR_LP;
+>>>>  
+>>>>  	armv8pmu_pmcr_write(pmcr);
+>>>> +
+>>>> +	if (cpu_pmu->has_branch_stack)
+>>>> +		armv8pmu_branch_reset();
+>>>>  }
+>>>>  
+>>>>  static int __armv8_pmuv3_map_event_id(struct arm_pmu *armpmu,
+>>>> @@ -1014,6 +1094,20 @@ static int __armv8_pmuv3_map_event(struct perf_event *event,
+>>>>  
+>>>>  	hw_event_id = __armv8_pmuv3_map_event_id(armpmu, event);
+>>>>  
+>>>> +	if (has_branch_stack(event)) {
+>>>> +		if (!armv8pmu_branch_attr_valid(event))
+>>>> +			return -EOPNOTSUPP;
+>>>> +
+>>>> +		/*
+>>>> +		 * If a task gets scheduled out, the current branch records
+>>>> +		 * get saved in the task's context data, which can be later
+>>>> +		 * used to fill in the records upon an event overflow. Let's
+>>>> +		 * enable PERF_ATTACH_TASK_DATA in 'event->attach_state' for
+>>>> +		 * all branch stack sampling perf events.
+>>>> +		 */
+>>>> +		event->attach_state |= PERF_ATTACH_TASK_DATA;
+>>>> +	}
+>>>> +
+>>>>  	/*
+>>>>  	 * CHAIN events only work when paired with an adjacent counter, and it
+>>>>  	 * never makes sense for a user to open one in isolation, as they'll be
+>>>> @@ -1130,6 +1224,35 @@ static void __armv8pmu_probe_pmu(void *info)
+>>>>  		cpu_pmu->reg_pmmir = read_pmmir();
+>>>>  	else
+>>>>  		cpu_pmu->reg_pmmir = 0;
+>>>> +	armv8pmu_branch_probe(cpu_pmu);
+>>>
+>>> I'm not sure if this is splitting hairs or not, but
+>>> __armv8pmu_probe_pmu() is run on only one of 'any' of the supported CPUs
+>>> for this PMU.
+>>
+>> Right.
+>>
+>>>
+>>> Is it not possible to have some of those CPUs support and some not
+>>> support BRBE, even though they are all the same PMU type? Maybe we could
+>>
+>> I am not sure, but not something I have come across.
+>>
+>>> wait for it to explode with some weird system, or change it so that the
+>>> BRBE probe is run on every CPU, with a second 'supported_brbe_mask' field.
+>>
+>> Right, but for now, the current solutions looks sufficient.
+>>
+> 
+> I suppose it means people will have to split their PMUs to ones that do
+> and don't support BRBE. I'm not sure if that's worth adding a comment in
+> the docs or it's too obscure
 
-Missing ref to rtc.yaml. Unless it is not applicable but then why?
+Sure, can add that comment in brbe.rst. Also with debug enabled i.e wrapped
+inside some debug config, it can be ascertained that all cpus on a given ARM
+PMU have BRBE with exact same properties.
 
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sophgo,cv1800b-rtc
-
-Blank line
-
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-
-unevaluatedProperties instead
-
-> +
-> +examples:
-> +  - |
-> +    rtc-controller@05026000{
-
-The names is always "rtc", unless this is not RTC. If it isn't, please
-add full description of the hardware.
-
-> +      compatible = "sophgo,cv800b-rtc";
-> +      reg = <0x05026000 0x1000>;
-> +      interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-> +      interrupt-parent = <&plic0>;
-> +      clocks = <&osc>;
-
-Why do you send untested bindings? Review costs significant amount of
-effort. Code was also not compiled? Warnings not fixed?
-
-Best regards,
-Krzysztof
-
+> 
+>>>
+>>>> +}
+>>>> +
+>>>> +static int branch_records_alloc(struct arm_pmu *armpmu)
+>>>> +{
+>>>> +	struct branch_records __percpu *records;
+>>>> +	int cpu;
+>>>> +
+>>>> +	records = alloc_percpu_gfp(struct branch_records, GFP_KERNEL);
+>>>> +	if (!records)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>
+>>> Doesn't this technically need to take the CPU mask where BRBE is
+>>> supported into account? Otherwise you are allocating for cores that
+>>> never use it.
+>>>
+>>> Also it's done per-CPU _and_ per-PMU type, multiplying the number of
+>>> BRBE buffers allocated, even if they can only ever be used per-CPU.
+>>
+>> Agreed, but I believe we have already been though this discussion, and
+>> settled for this method - for being a simpler approach.
+>>
+>>>
+>>>> +	/*
+>>>> +	 * percpu memory allocated for 'records' gets completely consumed
+>>>> +	 * here, and never required to be freed up later. So permanently
+>>>> +	 * losing access to this anchor i.e 'records' is acceptable.
+>>>> +	 *
+>>>> +	 * Otherwise this allocation handle would have to be saved up for
+>>>> +	 * free_percpu() release later if required.
+>>>> +	 */
+>>>> +	for_each_possible_cpu(cpu) {
+>>>> +		struct pmu_hw_events *events_cpu;
+>>>> +		struct branch_records *records_cpu;
+>>>> +
+>>>> +		events_cpu = per_cpu_ptr(armpmu->hw_events, cpu);
+>>>> +		records_cpu = per_cpu_ptr(records, cpu);
+>>>> +		events_cpu->branches = records_cpu;
+>>>> +	}
+>>>> +	return 0;
+>>>>  }
+>>>>  
+>>>>  static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+>>>> @@ -1146,7 +1269,21 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
+>>>>  	if (ret)
+>>>>  		return ret;
+>>>>  
+>>>> -	return probe.present ? 0 : -ENODEV;
+>>>> +	if (!probe.present)
+>>>> +		return -ENODEV;
+>>>> +
+>>>> +	if (cpu_pmu->has_branch_stack) {
+>>>> +		ret = armv8pmu_task_ctx_cache_alloc(cpu_pmu);
+>>>> +		if (ret)
+>>>> +			return ret;
+>>>> +
+>>>> +		ret = branch_records_alloc(cpu_pmu);
+>>>> +		if (ret) {
+>>>> +			armv8pmu_task_ctx_cache_free(cpu_pmu);
+>>>> +			return ret;
+>>>> +		}
+>>>> +	}
+>>>> +	return 0;
+>>>>  }
+>>>>  
+>>>
+>>> [...]
+>>>> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+>>>> index 9c226adf938a..72da4522397c 100644
+>>>> --- a/include/linux/perf/arm_pmuv3.h
+>>>> +++ b/include/linux/perf/arm_pmuv3.h
+>>>> @@ -303,4 +303,50 @@
+>>>>  		}						\
+>>>>  	} while (0)
+>>>>  
+>>>> +struct pmu_hw_events;
+>>>> +struct arm_pmu;
+>>>> +struct perf_event;
+>>>> +
+>>>> +#ifdef CONFIG_PERF_EVENTS
+>>>
+>>> Very minor nit, but if you end up moving the stubs to the brbe header
+>>> you probably don't need the #ifdef CONFIG_PERF_EVENTS because it just
+>>> won't be included in that case.
+>>
+>> Right, will drop CONFIG_PERF_EVENTS wrapper.
+>>
+>>>
+>>>> +static inline void armv8pmu_branch_reset(void)
+>>>> +{
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_branch_probe(struct arm_pmu *arm_pmu)
+>>>> +{
+>>>> +}
+>>>> +
+>>>> +static inline bool armv8pmu_branch_attr_valid(struct perf_event *event)
+>>>> +{
+>>>> +	WARN_ON_ONCE(!has_branch_stack(event));
+>>>> +	return false;
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)
+>>>> +{
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_branch_disable(void)
+>>>> +{
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_branch_read(struct pmu_hw_events *cpuc,
+>>>> +					struct perf_event *event)
+>>>> +{
+>>>> +	WARN_ON_ONCE(!has_branch_stack(event));
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_branch_save(struct arm_pmu *arm_pmu, void *ctx)
+>>>> +{
+>>>> +}
+>>>> +
+>>>> +static inline int armv8pmu_task_ctx_cache_alloc(struct arm_pmu *arm_pmu)
+>>>> +{
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static inline void armv8pmu_task_ctx_cache_free(struct arm_pmu *arm_pmu)
+>>>> +{
+>>>> +}
+>>>> +#endif /* CONFIG_PERF_EVENTS */
+>>>>  #endif
