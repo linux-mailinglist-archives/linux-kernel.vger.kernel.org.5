@@ -2,158 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 880E37F2842
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418CA7F2847
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbjKUJA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55942 "EHLO
+        id S230455AbjKUJCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbjKUJAy (ORCPT
+        with ESMTP id S230254AbjKUJCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:00:54 -0500
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C09E7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:00:49 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2AB4E5C0A84;
-        Tue, 21 Nov 2023 04:00:46 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 21 Nov 2023 04:00:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm2; t=1700557246; x=1700643646; bh=xvvWLKkLzuvSAxa33ZZp5h+Rr
-        pmORBUXFhEWLoKeOe8=; b=O3neUZnlnUz/+TmWXnvDoUrjjrRhQ/ehGcZmFab5K
-        Rkb8n4z0ODZVRITxgs129eOetINtw2TGzN6RUtbYg0V4aAtrvY+S2FfeMjzZIO9N
-        ZgRME4jzziq/7tnh4jn2TdrGRdURUppf/nC+RQzWEfi2wZEg+D9gqXeBm8a8SnSP
-        1cobglKWQ7UAScI3hpu941jt1GcyoVljnyReDXYuitmPLLoVcE/SU19fB03D047k
-        vPzHqDPL46jHdhMGmka2/ZeUE4uGE54+xmFq852EgosLMf21OnzoVRVPpGAJwsoK
-        9NKCCJFNGFtIBIqo3WufIBZiWRNZcP8yF7zpNAeC1KCVw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1700557246; x=1700643646; bh=xvvWLKkLzuvSAxa33ZZp5h+RrpmORBUXFhE
-        WLoKeOe8=; b=GSil586+acMyTZrpMCTNKm4YwnsC3XpvK557xfeA/g12bOfysys
-        EnjyjvIVRUmov3AyLJD2ZQsGcGO9RHjE7ppLg9VdxXrYbhWmee3BbVi5F5E1p9Cn
-        AUVBHyZJi1hnXHcc8DPv/LhBovrxR71ASSQSYVSw1hz1jKrbzEGMqiVu0sOX7Q1d
-        nxUpfz+pKxDAMI4tHedyZOAVR/YeKshcklOpMOM5Zvn5fLLbcGGzXpULVb0j+sDK
-        oEi9ONyEYt2YxJ8mr9QMMGVI2MVJGw5NQQZ83dleY8cyPeh8J4dLXNhkahu1qmkb
-        6RAmjfxJ3RNEWtESWbdXNS1NOz0bKeq6jGQ==
-X-ME-Sender: <xms:vXFcZdyDW2BGHCg6EqXiwFyEKrGfNykwZ12oEhzuZ8d-U2Vb1h2URg>
-    <xme:vXFcZdToNN5L2HpJwGQK9eIs9cdmDmoqNrdI3hU3pObfyuzz5K0WvYt0wPK_weBzQ
-    2IdvbybWCIcH9xC9ZY>
-X-ME-Received: <xmr:vXFcZXXyhZiU37brhqB9Y946Ah5EKqE7AYz_hY8dH9Iqmk5GyFHBA8kB5b-ctgpWVn_aEw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegkedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtugfgjgesthektddttddtjeenucfhrhhomhepfdfm
-    ihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlsehshhhuthgvmhhovh
-    drnhgrmhgvqeenucggtffrrghtthgvrhhnpeekieduleeugfevhedtieevudeftdfhleef
-    teeuffeuvdetiefgfedutdeggeekleenucffohhmrghinhepghhouggsohhlthdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhr
-    ihhllhesshhhuhhtvghmohhvrdhnrghmvg
-X-ME-Proxy: <xmx:vXFcZfjFnIcmxy_wQdjnn4Mxmw-0v050BjtqONOmd30K7LXllAH0WQ>
-    <xmx:vXFcZfDegGRdEyM2nHYt7_GgSMobotCO0uidoLvZoxq6ryWoMoTrqQ>
-    <xmx:vXFcZYIoUbkf23ZWTHuNvZvj6lW3bpJFehhIRI6BF5BbHjRufrx1Eg>
-    <xmx:vnFcZbtUz3llHOosD4HRlAnLBo6ggUAfAdSAfdiUi7j68Nbb-h7Wew>
-Feedback-ID: ie3994620:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Nov 2023 04:00:45 -0500 (EST)
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id A5E5910A36E; Tue, 21 Nov 2023 12:00:41 +0300 (+03)
-Date:   Tue, 21 Nov 2023 12:00:41 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86/mm/encrypt: Use %a asm operand modifier to obtain
- %rip-relative address
-Message-ID: <20231121090041.abqwtkbzzwxq22ke@box.shutemov.name>
-References: <20231120153419.3045-1-ubizjak@gmail.com>
- <20231120171507.GGZVuUG9aSLyF52jHd@fat_crate.local>
- <CAFULd4aYe=B_Jiag1S4hO0XRXB-Y4UKh2Lat79JOLOB1h8ev4A@mail.gmail.com>
+        Tue, 21 Nov 2023 04:02:13 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A65CA;
+        Tue, 21 Nov 2023 01:02:09 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7ba170ac211so1931030241.2;
+        Tue, 21 Nov 2023 01:02:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700557328; x=1701162128; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vySVtlxZasL8ujz46d4j31n+R/7yltOZRIzr3n9abgM=;
+        b=lIckEBX9cdnwHccw/j1P9Vab8LpjlU3l63/9P2jH4wym4fOEt0sM+CM0/TXRygT/7+
+         4l0LZ4vkCAoPmhm+pXTWH6qy7YFMsyUdrIotTbaMUkktRPQXDnjpopv4wQG0n9uKjUdQ
+         Z/H9wm6TT4jB1kXUV2oVzds97hboe4eIPgj+ti9J3jiZA6AdBGqMgPHiI8VMHoxL1XBK
+         jGoVD5d9jPbS8osx3vI6BGGGCK+pLQIYg7TgZeEz2R7vtZUPUhh8Gudmoo1glLmf1gXE
+         zh5coqB67jjVzGGT9U54E48W2q2I9iGbrdYIKpg5d5Lwiyp4Z88L2rH2rnDA8UPE3Db+
+         JIwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700557328; x=1701162128;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vySVtlxZasL8ujz46d4j31n+R/7yltOZRIzr3n9abgM=;
+        b=OAHlVWzt39CrM57iKJ+mRagXzsiiUTKvj5i+PXdr6ZH5c91oEAyQzdY6hxl0mM+7ck
+         zwyKXR4Fqqavw9d/ziaAnWQYVmz1u6ao2kXQyrz0BC6Hj3m1CKIFKXH/hkgjTY8B3QaU
+         DcSxibrvdX7Vz6TVkXDZri5a/kZqtNjPuLOceEGRQ0ND+Jm3mDeNX35fWblw/vYbZ2Zj
+         Z2LHebbyMtHKTHlE+4IJxycnZ5ZrQgSMEAZdXV6YD0YXHwrdeNnbkJ0Fd0ghId43BLLq
+         3EMYeo+chW6QDFehppO+h9OPSr60glLjgGl6MSBxn0ku9cOx5Qh1KZkPbzrpSVDcEbJi
+         MddQ==
+X-Gm-Message-State: AOJu0YygDFAlQfQS4kFzOBMWhqOVdaIWkjdVcTp9MgbSXd0aBV3uXJlV
+        /N8LTjXs+RTEyy/qk2puX8ETyIb1Y9Rxh/cduEw=
+X-Google-Smtp-Source: AGHT+IFc+3mDgcjtqb/7aZD84LfT9fY0MiwdUWtRt4/j8EHWdIVuAoKJFJBTNJIKOAFXIiL4CwjNKbdcw3VxpVy01tM=
+X-Received: by 2002:a67:bb10:0:b0:45d:b889:3770 with SMTP id
+ m16-20020a67bb10000000b0045db8893770mr7404679vsn.1.1700557328478; Tue, 21 Nov
+ 2023 01:02:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFULd4aYe=B_Jiag1S4hO0XRXB-Y4UKh2Lat79JOLOB1h8ev4A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120091214.150502-1-sxwjean@me.com> <20231120091214.150502-5-sxwjean@me.com>
+In-Reply-To: <20231120091214.150502-5-sxwjean@me.com>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Tue, 21 Nov 2023 18:01:57 +0900
+Message-ID: <CAB=+i9RUP+Ar3x63sbDTq8+=nkygp2bJ1Py962U7ATyNU6Npvw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm/slab: move slab merge from slab_common.c to slub.c
+To:     sxwjean@me.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, vbabka@suse.cz, roman.gushchin@linux.dev,
+        corbet@lwn.net, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 08:58:29PM +0100, Uros Bizjak wrote:
-> On Mon, Nov 20, 2023 at 6:15 PM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Mon, Nov 20, 2023 at 04:33:50PM +0100, Uros Bizjak wrote:
-> > > The "a" asm operand modifier substitutes a memory reference, with the
-> > > actual operand treated as address.  For x86_64, when a symbol is
-> > > provided, the "a" modifier emits "sym(%rip)" instead of "sym".
-> > >
-> > > Clang allows only "i" and "r" operand constraints with an "a" modifier,
-> > > so the patch normalizes the modifier/constraint pair to "a"/"i"
-> >
-> > s/the patch normalizes/normalize/
-> >
-> > > which is consistent between both compilers.
-> > >
-> > > No functional change intended.
-> > >
-> > > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > > Cc: Andy Lutomirski <luto@kernel.org>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > Cc: Ingo Molnar <mingo@kernel.org>
-> > > Cc: Borislav Petkov <bp@alien8.de>
-> > > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > > ---
-> > >  arch/x86/mm/mem_encrypt_identity.c | 16 ++++------------
-> > >  1 file changed, 4 insertions(+), 12 deletions(-)
-> > >
-> > > diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
-> > > index d73aeb16417f..6a351fdd1b39 100644
-> > > --- a/arch/x86/mm/mem_encrypt_identity.c
-> > > +++ b/arch/x86/mm/mem_encrypt_identity.c
-> > > @@ -346,9 +346,7 @@ void __init sme_encrypt_kernel(struct boot_params *bp)
-> > >        * We're running identity mapped, so we must obtain the address to the
-> > >        * SME encryption workarea using rip-relative addressing.
-> > >        */
-> > > -     asm ("lea sme_workarea(%%rip), %0"
-> > > -          : "=r" (workarea_start)
-> > > -          : "p" (sme_workarea));
-> > > +     asm ("lea %a1, %0" : "=r" (workarea_start) : "i" (sme_workarea));
-> >
-> > Yeah, I saw that particular subthread today.
-> >
-> > Are you sure this "a" modifier DTRT with all gcc version we support?
-> >
-> > I.e., from 5.1 onwards...
-> 
-> Yes [1].
-> 
-> [1] https://godbolt.org/z/aWe7b16rT
+On Mon, Nov 20, 2023 at 6:13=E2=80=AFPM <sxwjean@me.com> wrote:
+>
+> From: Xiongwei Song <xiongwei.song@windriver.com>
+>
+> Since slab allocator has been removed. There is no users about slab
+> merge except slub. This commit is almost to revert
+> commit 423c929cbbec ("mm/slab_common: commonize slab merge logic").
+>
+> Also change all prefix of slab merge related functions, variables and
+> definitions from "slab/SLAB" to"slub/SLUB".
+>
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+> ---
+>  mm/slab.h        |   3 --
+>  mm/slab_common.c |  98 ----------------------------------------------
+>  mm/slub.c        | 100 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 99 insertions(+), 102 deletions(-)
+[...]
+> +/*
+> + * Merge control. If this is set then no merging of slab caches will occ=
+ur.
+> + */
+> +static bool slub_nomerge =3D !IS_ENABLED(CONFIG_SLAB_MERGE_DEFAULT);
+> +
+> +static int __init setup_slub_nomerge(char *str)
+> +{
+> +       slub_nomerge =3D true;
+> +       return 1;
+> +}
+> +
+> +static int __init setup_slub_merge(char *str)
+> +{
+> +       slub_nomerge =3D false;
+> +       return 1;
+> +}
+> +
+> +__setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
+> +__setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
 
-But Clang generates RIP-relative load only starting from version 15.
-Clange 11 claimed to be supported.
+FYI This hunk breaks kernel builds:
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+In file included from ./include/linux/printk.h:6,
+                 from ./include/asm-generic/bug.h:22,
+                 from ./arch/x86/include/asm/bug.h:87,
+                 from ./include/linux/bug.h:5,
+                 from ./include/linux/mmdebug.h:5,
+                 from ./include/linux/mm.h:6,
+                 from mm/slub.c:13:
+mm/slub.c:748:45: error: =E2=80=98setup_slab_nomerge=E2=80=99 undeclared he=
+re (not in
+a function); did you mean =E2=80=98setup_slub_nomerge=E2=80=99?
+  748 | __setup_param("slub_nomerge", slub_nomerge, setup_slab_nomerge, 0);
+      |                                             ^~~~~~~~~~~~~~~~~~
+./include/linux/init.h:340:32: note: in definition of macro =E2=80=98__setu=
+p_param=E2=80=99
+  340 |   =3D { __setup_str_##unique_id, fn, early }
+      |                                ^~
+mm/slub.c:749:41: error: =E2=80=98setup_slab_merge=E2=80=99 undeclared here=
+ (not in a
+function); did you mean =E2=80=98setup_slub_merge=E2=80=99?
+  749 | __setup_param("slub_merge", slub_merge, setup_slab_merge, 0);
+      |                                         ^~~~~~~~~~~~~~~~
+./include/linux/init.h:340:32: note: in definition of macro =E2=80=98__setu=
+p_param=E2=80=99
+  340 |   =3D { __setup_str_##unique_id, fn, early }
+      |                                ^~
+  CC      kernel/time/ntp.o
+mm/slub.c:742:19: warning: =E2=80=98setup_slub_merge=E2=80=99 defined but n=
+ot used
+[-Wunused-function]
+  742 | static int __init setup_slub_merge(char *str)
+      |                   ^~~~~~~~~~~~~~~~
+mm/slub.c:736:19: warning: =E2=80=98setup_slub_nomerge=E2=80=99 defined but=
+ not used
+[-Wunused-function]
+  736 | static int __init setup_slub_nomerge(char *str)
+      |                   ^~~~~~~~~~~~~~~~~~
