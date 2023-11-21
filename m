@@ -2,112 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66427F354E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AB27F3555
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:53:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234080AbjKURwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S234208AbjKURx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:53:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbjKURwR (ORCPT
+        with ESMTP id S231338AbjKURx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:52:17 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A366193
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:52:13 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf678043fdso15377885ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:52:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700589133; x=1701193933; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QB47EGfsEp2zY8aVpZ1yVDhEkhsejg57h9CxYIF9pMY=;
-        b=RSU8gWck77NXCZny7Jlx/NGb4kecJIYRWEcnVjBCM/uqXAEoJdHhUR9mc+3fd+3N1+
-         4RwXD+FketwnKRl+XE8iQbO7mIRu6fWQYVpKYyHla02fUrAk1gKVCW6D+nBilzQEjlme
-         7cx9q0Zx7lRwYlfoPSnUxxlLPnCXR+aUde+b5glcJGWvxgYSbRtLrQLhIglyiJr6EZX6
-         T49TaOQSYYzN7PcQ53SeoUfR0rfPInnLNbUOWT8MsZKb98HadmV6Cf0mcUA5YrYiusgZ
-         r5ha3+rgR3CXJPtxty45laJGgi7HA7Wh3+MiCfUL9ZIc055H1QL8pjN3BtQcySHANkU4
-         7GHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700589133; x=1701193933;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QB47EGfsEp2zY8aVpZ1yVDhEkhsejg57h9CxYIF9pMY=;
-        b=A+7mOsC++I1fEb7tbtBXq21s2YjlvJ44L8gCigEG/CUTWgQdJ8AywVVrmW36HFkWLs
-         ZoT2Q5+FeMKZGyb2pDIn/URG+B7pB9QeTKUaPMT8b4g2hevJEF5joIKOU5ogIwRh4f1R
-         Orw+sInsMs7BFGeUt133AKNNMXGwyQIXuqlvTfEZgiLeFQVUefk4TBsqeyTcZ0muI1kO
-         wA9plsgQHkgcmHRG7ck0PxlIr2dEHrvatdyFMbRfSSkyoDy7Usy0yrMMeHOWGJmppqnv
-         RZgKBCIdBKZ0HmuO03HPy07LU1MQT95Ix72rz9i9oLt5iAMSpftb6rsu8X6wK+B+wgX2
-         AjCQ==
-X-Gm-Message-State: AOJu0YxcwfygF+P4IvJgHbPDozcmnGJJxfoWNv4MUdwf/RQxfxnkezSe
-        2pokgggsgcb1qA83mIbJt/0RNA==
-X-Google-Smtp-Source: AGHT+IFWYeTkevTsKJFuxiA1n9NmJm/3ZFZkrXCfs5QmtKQPONxovvZR+2Zqk+21Ud++2IVfWkz2tg==
-X-Received: by 2002:a17:903:1205:b0:1bb:598a:14e5 with SMTP id l5-20020a170903120500b001bb598a14e5mr14104285plh.43.1700589132895;
-        Tue, 21 Nov 2023 09:52:12 -0800 (PST)
-Received: from [172.20.7.39] ([187.217.227.247])
-        by smtp.gmail.com with ESMTPSA id ju4-20020a170903428400b001cc3875e658sm8267124plb.303.2023.11.21.09.52.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 09:52:12 -0800 (PST)
-Message-ID: <6c37708e-c345-4cad-b002-7cc18c9cb7ed@linaro.org>
-Date:   Tue, 21 Nov 2023 11:52:09 -0600
+        Tue, 21 Nov 2023 12:53:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA53418E;
+        Tue, 21 Nov 2023 09:53:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700589202; x=1732125202;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wbvLSSVCATMX1TnkhVx4rea6C+nVCD+ipXsQ0+QGSkU=;
+  b=NN+/OPC7wBIFzVoxQcgyhjMomsTjnOzR112V6lw2bvqytupC0W7DLe9y
+   rZg5IgIzgCVhkXQN1hftvhUxnlr9XLSEiKjbe+ib9IZj5aoaQ56klRvKs
+   DVr1FEAQAZuwoqo3lnS5rwDwW0ATwyGaXeRIOxLMio6K1AI/wg4574yol
+   G2BzoRY9Pi8HS680b35hoFWGGpmZRwRftfQd8lrrqnktsZo/L2f3gyEeY
+   AX1nAtZnBURnzzhXRPxCZFDlN+Qw25GClm/NWbzyxSAfZZujq2U6dqNX7
+   QGB0vTlo6CxQzxnYzcuyKkkE8+63jWadW+FlUHqYv/52nOGarfO9UXiK9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="395816145"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="395816145"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 09:53:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="743124922"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="743124922"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 09:53:18 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1r5Uvz-0000000FsgA-03lj;
+        Tue, 21 Nov 2023 19:53:15 +0200
+Date:   Tue, 21 Nov 2023 19:53:14 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] printk: Save console options for
+ add_preferred_console_match()
+Message-ID: <ZVzuih3Aw3hdfj2s@smile.fi.intel.com>
+References: <20231121113203.61341-1-tony@atomide.com>
+ <20231121113203.61341-2-tony@atomide.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 17/17] tty: srmcons: make 'str_cr' const and non-array
-Content-Language: en-US
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <20231121092258.9334-1-jirislaby@kernel.org>
- <20231121092258.9334-18-jirislaby@kernel.org>
-From:   Richard Henderson <richard.henderson@linaro.org>
-In-Reply-To: <20231121092258.9334-18-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121113203.61341-2-tony@atomide.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 03:22, Jiri Slaby (SUSE) wrote:
-> 'str_cr' contains a single character: \n. There is no need to declare it
-
-\r
-
-> as array. Declare it as a variable, make it const and pass a pointer to
-> it to callback_puts().
+On Tue, Nov 21, 2023 at 01:31:55PM +0200, Tony Lindgren wrote:
+> Driver subsystems may need to translate the preferred console name to the
+> character device name used. We already do some of this in console_setup()
+> with a few hardcoded names, but that does not scale well.
 > 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Richard Henderson <richard.henderson@linaro.org>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: linux-alpha@vger.kernel.org
-> ---
->   arch/alpha/kernel/srmcons.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> The console options are parsed early in console_setup(), and the consoles
+> are added with __add_preferred_console(). At this point we don't know much
+> about the character device names and device drivers getting probed.
 > 
-> diff --git a/arch/alpha/kernel/srmcons.c b/arch/alpha/kernel/srmcons.c
-> index c6b821afbfd3..a6cff61706b5 100644
-> --- a/arch/alpha/kernel/srmcons.c
-> +++ b/arch/alpha/kernel/srmcons.c
-> @@ -91,7 +91,7 @@ srmcons_receive_chars(struct timer_list *t)
->   static void
->   srmcons_do_write(struct tty_port *port, const char *buf, int count)
->   {
-> -	static char str_cr[1] = "\r";
-> +	static const char str_cr = '\r';
+> To allow drivers subsystems to set up a preferred console, let's save the
+> kernel command line console options. To add a preferred console, let's add
+> a new function add_preferred_console_match().
+> 
+> This allows the serial core layer to support console=DEVNAME:0.0 style
+> hardware based addressing in addition to the current console=ttyS0 style
+> naming. And we can start moving console_setup() character device parsing
+> to the driver subsystem specific code.
+> 
+> We use a separate array from the console_cmdline array as the character
+> device name and index may be unknown at the console_setup() time. And we do
+> not want to call __add_preferred_console() until the character device name
+> and index are known.
+> 
+> Adding the console name in addition to the character device name, and a
+> flag for an added console, could be added to the struct console_cmdline.
+> And the console_cmdline array handling modified accordingly. But that
+> complicates things compared saving the console options, and then adding
+> the consoles when the subsystems handling the consoles are ready.
 
-An array of one element is fine -- what's wrong with that?
-Adding const is an improvement though.
+...
+
+> +#include <linux/console.h>
+
+> +#include <linux/kernel.h>
+
+I think instead of kernel.h you may want to see these:
+
+linux/init.h
+linux/string.h
+
+asm/errno.h
+
+> +#include "console_cmdline.h"
+
+...
+
+> +/**
+> + * console_opt_save - Saves kernel command line console option for driver use
+> + * @str: Kernel command line console name and option
+> + *
+> + * Saves a kernel command line console option for driver subsystems to use for
+> + * adding a preferred console during init. Called from console_setup() only.
+
+	scripts/kernel-doc -v -none -Wall ...
+
+most likely will complain (no Return section).
+
+> + */
+> +int __init console_opt_save(char *str)
+
+str is not const? Hmm...
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-r~
