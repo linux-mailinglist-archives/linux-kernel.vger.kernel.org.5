@@ -2,272 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7917F2924
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872857F2930
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbjKUJo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S233622AbjKUJqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbjKUJoX (ORCPT
+        with ESMTP id S232257AbjKUJqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:44:23 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BF5FA;
-        Tue, 21 Nov 2023 01:44:18 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL9KGgU020534;
-        Tue, 21 Nov 2023 01:44:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=j+IlO2L+kSS6pZhREXt8K/Pe3xwGma6Hwu4v9qY28tc=;
- b=d2J5Cr/stLwY9RxTe9zSeYkxz8tuMUvpFPABYYnJawPWmDNcJSNVmBTABd/e6J65KZl3
- 41ws41jbvo/tW6B1xOZ2vm7iSYb4F/b8crb/yYkgDM8rHngRnqAzv7H1ZnTFsBHkLMru
- EEX6LlBifzKC0TndMv8fUzx8DQEKoEHnot0KbVzdeIAPg1R9qRUdDu8ghm6Nz1ueEbLh
- WqcAZFRtS1vvYi0qJzyxazXc07FxUGgF41nLuIb9kXaT5qG1tHvjqP5LollK9BM4C7x/
- Bq8bNJk/y0ahVoC+2kwjosKyFPF80QjfToOo3XivKHxNTvXuTMoSrJWAqaAIgMBZPz49 qA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uewnw09xk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:44:08 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 21 Nov
- 2023 01:44:06 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 21 Nov 2023 01:44:06 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 52B153F7040;
-        Tue, 21 Nov 2023 01:44:02 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>, <horms@kernel.org>,
-        <wojciech.drewek@intel.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH v3 2/2] octeontx2-pf: TC flower offload support for mirror
-Date:   Tue, 21 Nov 2023 15:13:46 +0530
-Message-ID: <20231121094346.3621236-3-sumang@marvell.com>
+        Tue, 21 Nov 2023 04:46:51 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16B1C1;
+        Tue, 21 Nov 2023 01:46:47 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6cb55001124so1815392b3a.0;
+        Tue, 21 Nov 2023 01:46:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700560007; x=1701164807; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qo9/VOIG19hh7iNX6wZ64Gh6cIWZUBNjjynlsiQtTkk=;
+        b=dIGe7189M6gsyKf1XCkYj4rl04y2gtvBvaK0FogUX28qQ7AApREE/ZEReGMKvrCT7m
+         zstfw9rwruINFN2KcoaERzZx2EkIeAfgjD6SiZZsnQwNIW1qHDs8Ro0CbBAj5w3L/xwE
+         989u0Maz6qwU337R2wRh9kPccDKYw+t1Q/qIwndN+wj+DGb1QRc6/U48J2EI6uD8cP1e
+         4jMmdKM/588PVOuih+ot1ZRVBsrrzIlQCn+x5p7AKigYdT20mGWTx4qEZUS1BnrDsX1K
+         J9RaH+jl2cPWx6csHn9Csq8hbMnsxJsOVdTRE2OHvofU9GZydddXmKTCarv8F8bSUPEz
+         X9BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700560007; x=1701164807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qo9/VOIG19hh7iNX6wZ64Gh6cIWZUBNjjynlsiQtTkk=;
+        b=luHJbHgt2QKiige24Mh0Zv8gjk5RilpZJkbSpnLOcSzT7wBKW68S8Kw4AkgBu1rFqE
+         aWtmwRp/mGBojgQCmsnZV15P7p4YxFzxg52h1uKmdFI5UFDyHj8gi/TUNnzggBvN4+Xp
+         wpxTNT9zt4mWOy+hmQIsdDcZIo9fPJeFm9MPmoNYXStLLOQiE5JV+Xmm9CdypptmAlcE
+         f8p7uEQSExbQMh9Rfbpcsy7xH3S/GErl887NL5NZUmDKYoVf99/jt26pLfHo3T71Uco7
+         3LTJxMRarzZs83fyFL7sHO6EZmEZ06W7TOjJOsR0OsZ1DsyeIUH4gytLGn7Nu+oYpdn1
+         5IjA==
+X-Gm-Message-State: AOJu0Yyx10U0MWZNvMnXCQly3ANJ6+GiKRLMmnGrWO4DhNBXPrQDKnz0
+        p95fqqFlq6FYmNtDST+0U8E=
+X-Google-Smtp-Source: AGHT+IHS9fuH+VAeejTqULbKOvKrRWCK+Pqp4LFcZo9FRZm/ym82Y2lX4UKSB4Y7yIPuDLI9COauNw==
+X-Received: by 2002:a05:6a20:7f94:b0:17e:8dfa:f37f with SMTP id d20-20020a056a207f9400b0017e8dfaf37fmr3334255pzj.18.1700560007158;
+        Tue, 21 Nov 2023 01:46:47 -0800 (PST)
+Received: from localhost ([2404:7ac0:49a7:269c:2894:5c86:a553:ed6c])
+        by smtp.gmail.com with ESMTPSA id fa17-20020a056a002d1100b006cb907e8059sm3680101pfb.9.2023.11.21.01.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 01:46:46 -0800 (PST)
+From:   Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
+        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
+        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Subject: [PATCH 0/3] riscv: sophgo: add rtc support for CV1800B
+Date:   Tue, 21 Nov 2023 17:46:39 +0800
+Message-Id: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231121094346.3621236-1-sumang@marvell.com>
-References: <20231121094346.3621236-1-sumang@marvell.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: YAjAfW5I1Sdme77nF_8IDaVjR0ON86_r
-X-Proofpoint-ORIG-GUID: YAjAfW5I1Sdme77nF_8IDaVjR0ON86_r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends TC flower offload support for mirroring
-ingress/egress traffic to a different PF/VF. Below is an example
-command,
+This series adds rtc controller support for Sophgo CV1800B.
 
-'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
-skip_sw action mirred ingress mirror dev eth2'
+Jingbao Qiu (3):
+  dt-bindings: rtc: add binding for Sophgo CV1800B rtc controller
+  rtc: add rtc controller support for Sophgo CV1800B SoC
+  riscv: dts: sophgo: add rtc dt node for CV1800B
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 +++++++++++++++++-
- 1 file changed, 110 insertions(+), 3 deletions(-)
+ .../bindings/rtc/sophgo,cv1800b-rtc.yaml      |  37 +++
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |   8 +
+ drivers/rtc/Kconfig                           |  10 +
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-cv1800b.c                     | 293 ++++++++++++++++++
+ 5 files changed, 349 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-cv1800b.c
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 8a5e3987a482..17a8d9778193 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -29,6 +29,8 @@
- 
- #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
- 
-+#define MCAST_INVALID_GRP		(-1U)
-+
- struct otx2_tc_flow_stats {
- 	u64 bytes;
- 	u64 pkts;
-@@ -47,6 +49,7 @@ struct otx2_tc_flow {
- 	bool				is_act_police;
- 	u32				prio;
- 	struct npc_install_flow_req	req;
-+	u32				mcast_grp_idx;
- };
- 
- static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
-@@ -336,22 +339,96 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
- 	return rc;
- }
- 
-+static int otx2_tc_update_mcast(struct otx2_nic *nic,
-+				struct npc_install_flow_req *req,
-+				struct netlink_ext_ack *extack,
-+				struct otx2_tc_flow *node,
-+				struct nix_mcast_grp_update_req *ureq,
-+				u8 num_intf)
-+{
-+	struct nix_mcast_grp_update_req *grp_update_req;
-+	struct nix_mcast_grp_create_req *creq;
-+	struct nix_mcast_grp_create_rsp *crsp;
-+	u32 grp_index;
-+	int rc;
-+
-+	mutex_lock(&nic->mbox.lock);
-+	creq = otx2_mbox_alloc_msg_nix_mcast_grp_create(&nic->mbox);
-+	if (!creq) {
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	creq->dir = NIX_MCAST_INGRESS;
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to create multicast group");
-+		goto error;
-+	}
-+
-+	crsp = (struct nix_mcast_grp_create_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
-+			0,
-+			&creq->hdr);
-+	if (IS_ERR(crsp)) {
-+		rc = PTR_ERR(crsp);
-+		goto error;
-+	}
-+
-+	grp_index = crsp->mcast_grp_idx;
-+	grp_update_req = otx2_mbox_alloc_msg_nix_mcast_grp_update(&nic->mbox);
-+	if (!grp_update_req) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	ureq->op = NIX_MCAST_OP_ADD_ENTRY;
-+	ureq->mcast_grp_idx = grp_index;
-+	ureq->num_mce_entry = num_intf;
-+	ureq->pcifunc[0] = nic->pcifunc;
-+	ureq->channel[0] = nic->hw.tx_chan_base;
-+
-+	ureq->dest_type[0] = NIX_RX_RSS;
-+	ureq->rq_rss_index[0] = 0;
-+	memcpy(&ureq->hdr, &grp_update_req->hdr, sizeof(struct mbox_msghdr));
-+	memcpy(grp_update_req, ureq, sizeof(struct nix_mcast_grp_update_req));
-+
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		goto error;
-+	}
-+
-+	mutex_unlock(&nic->mbox.lock);
-+	req->op = NIX_RX_ACTIONOP_MCAST;
-+	req->index = grp_index;
-+	node->mcast_grp_idx = grp_index;
-+	return 0;
-+
-+error:
-+	mutex_unlock(&nic->mbox.lock);
-+	return rc;
-+}
-+
- static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 				 struct flow_action *flow_action,
- 				 struct npc_install_flow_req *req,
- 				 struct flow_cls_offload *f,
- 				 struct otx2_tc_flow *node)
- {
-+	struct nix_mcast_grp_update_req dummy_grp_update_req = { 0 };
- 	struct netlink_ext_ack *extack = f->common.extack;
-+	bool pps = false, mcast = false;
- 	struct flow_action_entry *act;
- 	struct net_device *target;
- 	struct otx2_nic *priv;
- 	u32 burst, mark = 0;
- 	u8 nr_police = 0;
--	bool pps = false;
-+	u8 num_intf = 1;
-+	int err, i;
- 	u64 rate;
--	int err;
--	int i;
- 
- 	if (!flow_action_has_entries(flow_action)) {
- 		NL_SET_ERR_MSG_MOD(extack, "no tc actions specified");
-@@ -423,11 +500,30 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			req->index = act->rx_queue;
- 			break;
- 
-+		case FLOW_ACTION_MIRRED_INGRESS:
-+			target = act->dev;
-+			priv = netdev_priv(target);
-+			dummy_grp_update_req.pcifunc[num_intf] = priv->pcifunc;
-+			dummy_grp_update_req.channel[num_intf] = priv->hw.tx_chan_base;
-+			dummy_grp_update_req.dest_type[num_intf] = NIX_RX_RSS;
-+			dummy_grp_update_req.rq_rss_index[num_intf] = 0;
-+			mcast = true;
-+			num_intf++;
-+			break;
-+
- 		default:
- 			return -EOPNOTSUPP;
- 		}
- 	}
- 
-+	if (mcast) {
-+		err = otx2_tc_update_mcast(nic, req, extack, node,
-+					   &dummy_grp_update_req,
-+					   num_intf);
-+		if (err)
-+			return err;
-+	}
-+
- 	if (nr_police > 1) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "rate limit police offload requires a single action");
-@@ -1033,6 +1129,7 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 			    struct flow_cls_offload *tc_flow_cmd)
- {
- 	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
-+	struct nix_mcast_grp_destroy_req *grp_destroy_req;
- 	struct otx2_tc_flow *flow_node;
- 	int err;
- 
-@@ -1064,6 +1161,15 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		mutex_unlock(&nic->mbox.lock);
- 	}
- 
-+	/* Remove the multicast/mirror related nodes */
-+	if (flow_node->mcast_grp_idx != MCAST_INVALID_GRP) {
-+		mutex_lock(&nic->mbox.lock);
-+		grp_destroy_req = otx2_mbox_alloc_msg_nix_mcast_grp_destroy(&nic->mbox);
-+		grp_destroy_req->mcast_grp_idx = flow_node->mcast_grp_idx;
-+		otx2_sync_mbox_msg(&nic->mbox);
-+		mutex_unlock(&nic->mbox.lock);
-+	}
-+
- 	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
- 	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
- 	kfree_rcu(flow_node, rcu);
-@@ -1096,6 +1202,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	spin_lock_init(&new_node->lock);
- 	new_node->cookie = tc_flow_cmd->cookie;
- 	new_node->prio = tc_flow_cmd->common.prio;
-+	new_node->mcast_grp_idx = MCAST_INVALID_GRP;
- 
- 	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
- 
 -- 
 2.25.1
 
