@@ -2,80 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCC37F22BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867E97F22C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbjKUBCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S232902AbjKUBCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjKUBCI (ORCPT
+        with ESMTP id S230107AbjKUBCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:02:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB57A2;
-        Mon, 20 Nov 2023 17:02:05 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0chGj003950;
-        Tue, 21 Nov 2023 01:02:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ADWRDvVUH2QzgQGLB9ZCZ7k78nJhhTb9rlJZFZrpR90=;
- b=XZOgimqIuknZsbkYsa95PUSmdxJQfNFPlBPMrU3/ze2m7PsN7q8tYYsWMoQG8MtvkFWW
- nkW9eOOOjzN5nucrUqUqmjw0k28TqtyLkzk4176PYU+apmetwJQSnKvtIx1rbVM7UnY5
- wJP5j6PNtQBFJ1Mli4dwKslgsqn3FM3ovCjfj2bjL0ncyWBbYPK+8RPb+IOs15hXniP7
- 90I8w2ijL1vzudhsSM7II+KQdojeFGx3XQ6+zGaj+wm5PPiCXptlGOf48PYoDwNL1FrY
- ZZpaGmkX0Vv/2/HfwGamIOEQRFiXL62HggdfdLoqdBimKMeOlvXeA7kRSkulsRA3dCDy 3w== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug37mj74r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:02:00 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL11xU2023174
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:01:59 GMT
-Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 17:01:56 -0800
-Message-ID: <b1beb314-3d31-4e3d-ac6c-c845cbe3c0df@quicinc.com>
-Date:   Tue, 21 Nov 2023 09:01:56 +0800
+        Mon, 20 Nov 2023 20:02:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E112AE3
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:02:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77BE6C433C7;
+        Tue, 21 Nov 2023 01:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700528534;
+        bh=c2p1c9h9OLXIW1qdxiQJ1cJW79ojVa/E+hgB2/Q4MzY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rer8SQ05mg8xsK7UmAxkNIh1pnEOutDGdhg4EixbY39byivelsT7ourpejf41dpRj
+         uNNdy3GfAq+IraJZ81zwuNFm5ADgscdzreRrTwMh9DtWqPI1jHxyNXp8qfK7wQFd/O
+         f+xBFwTTnR5NP1Wmst5HZz7IKfd9Yp3qmB18oKAwRV1Q7pROwpXbLFouaXbtM6guzO
+         sOppS6Sd4g4+G5I1qOk44T5Nr+7mmyD3XqTDomyUFl8Ey4H4luxWuQdXzLC12cuJVB
+         5l6bAG5TYis16QdHnGaw6qoP15jdhNOEzYnoukWn3aQa18TSmhFJGBV2VCU+APMeq1
+         cFjln8kTEA0uw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 25580CE1390; Mon, 20 Nov 2023 17:02:14 -0800 (PST)
+Date:   Mon, 20 Nov 2023 17:02:14 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [RFC PATCH 60/86] treewide: torture: remove cond_resched()
+Message-ID: <00803d57-b012-4c30-8ea2-0605cf68ddee@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-4-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/16] arm64: dts: qcom: sm8550-aim300: add notification
- RGB LED
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <tglx@linutronix.de>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <-cc=kernel@quicinc.com>
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-12-quic_tengfan@quicinc.com>
- <5ab340be-5cd4-4fdb-87e2-05188cf7361e@linaro.org>
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-In-Reply-To: <5ab340be-5cd4-4fdb-87e2-05188cf7361e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kBwvoiuJAR0IGCCq84ykL1RwbF2DCqdh
-X-Proofpoint-ORIG-GUID: kBwvoiuJAR0IGCCq84ykL1RwbF2DCqdh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0 mlxscore=0
- impostorscore=0 clxscore=1015 mlxlogscore=574 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311210004
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107230822.371443-4-ankur.a.arora@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,26 +69,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 11/17/2023 6:31 PM, Krzysztof Kozlowski 写道:
-> On 17/11/2023 11:18, Tengfei Fan wrote:
->> The QRD features a notification LED connected to the pm8550.
->> Configure the RGB led controlled by the PMIC PWM controller.
->>
->> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->> ---
+On Tue, Nov 07, 2023 at 03:07:56PM -0800, Ankur Arora wrote:
+> Some cases changed to cond_resched_stall() to avoid changing
+> the behaviour of the test too drastically.
 > 
-> You just added this board. Does it mean you added incomplete and wrong DTS?
-> 
-> Best regards,
-> Krzysztof
-> 
+> Cc: Davidlohr Bueso <dave@stgolabs.net>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 
-Hi Krzysztof,
-In next version patch series, I'm going to combine all the splited 
-functions into one patch.
+Given lazy preemption, I am OK with dropping the cond_resched()
+invocations from the various torture tests.
 
--- 
-Thx and BRs,
-Tengfei Fan
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  kernel/rcu/rcuscale.c   | 2 --
+>  kernel/rcu/rcutorture.c | 8 ++++----
+>  kernel/scftorture.c     | 1 -
+>  kernel/torture.c        | 1 -
+>  4 files changed, 4 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
+> index ffdb30495e3c..737620bbec83 100644
+> --- a/kernel/rcu/rcuscale.c
+> +++ b/kernel/rcu/rcuscale.c
+> @@ -672,8 +672,6 @@ kfree_scale_thread(void *arg)
+>  			else
+>  				kfree_rcu(alloc_ptr, rh);
+>  		}
+> -
+> -		cond_resched();
+>  	} while (!torture_must_stop() && ++loop < kfree_loops);
+>  
+>  	if (atomic_inc_return(&n_kfree_scale_thread_ended) >= kfree_nrealthreads) {
+> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+> index ade42d6a9d9b..158d58710b51 100644
+> --- a/kernel/rcu/rcutorture.c
+> +++ b/kernel/rcu/rcutorture.c
+> @@ -81,7 +81,7 @@ torture_param(int, fqs_stutter, 3, "Wait time between fqs bursts (s)");
+>  torture_param(int, fwd_progress, 1, "Number of grace-period forward progress tasks (0 to disable)");
+>  torture_param(int, fwd_progress_div, 4, "Fraction of CPU stall to wait");
+>  torture_param(int, fwd_progress_holdoff, 60, "Time between forward-progress tests (s)");
+> -torture_param(bool, fwd_progress_need_resched, 1, "Hide cond_resched() behind need_resched()");
+> +torture_param(bool, fwd_progress_need_resched, 1, "Hide cond_resched_stall() behind need_resched()");
+>  torture_param(bool, gp_cond, false, "Use conditional/async GP wait primitives");
+>  torture_param(bool, gp_cond_exp, false, "Use conditional/async expedited GP wait primitives");
+>  torture_param(bool, gp_cond_full, false, "Use conditional/async full-state GP wait primitives");
+> @@ -2611,7 +2611,7 @@ static void rcu_torture_fwd_prog_cond_resched(unsigned long iter)
+>  		return;
+>  	}
+>  	// No userspace emulation: CB invocation throttles call_rcu()
+> -	cond_resched();
+> +	cond_resched_stall();
+>  }
+>  
+>  /*
+> @@ -2691,7 +2691,7 @@ static void rcu_torture_fwd_prog_nr(struct rcu_fwd *rfp,
+>  		udelay(10);
+>  		cur_ops->readunlock(idx);
+>  		if (!fwd_progress_need_resched || need_resched())
+> -			cond_resched();
+> +			cond_resched_stall();
+>  	}
+>  	(*tested_tries)++;
+>  	if (!time_before(jiffies, stopat) &&
+> @@ -3232,7 +3232,7 @@ static int rcu_torture_read_exit(void *unused)
+>  				errexit = true;
+>  				break;
+>  			}
+> -			cond_resched();
+> +			cond_resched_stall();
+>  			kthread_stop(tsp);
+>  			n_read_exits++;
+>  		}
+> diff --git a/kernel/scftorture.c b/kernel/scftorture.c
+> index 59032aaccd18..24192fe01125 100644
+> --- a/kernel/scftorture.c
+> +++ b/kernel/scftorture.c
+> @@ -487,7 +487,6 @@ static int scftorture_invoker(void *arg)
+>  			set_cpus_allowed_ptr(current, cpumask_of(cpu));
+>  			was_offline = false;
+>  		}
+> -		cond_resched();
+>  		stutter_wait("scftorture_invoker");
+>  	} while (!torture_must_stop());
+>  
+> diff --git a/kernel/torture.c b/kernel/torture.c
+> index b28b05bbef02..0c0224c76275 100644
+> --- a/kernel/torture.c
+> +++ b/kernel/torture.c
+> @@ -747,7 +747,6 @@ bool stutter_wait(const char *title)
+>  			while (READ_ONCE(stutter_pause_test)) {
+>  				if (!(i++ & 0xffff))
+>  					torture_hrtimeout_us(10, 0, NULL);
+> -				cond_resched();
+>  			}
+>  		} else {
+>  			torture_hrtimeout_jiffies(round_jiffies_relative(HZ), NULL);
+> -- 
+> 2.31.1
+> 
