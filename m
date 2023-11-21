@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1117F3214
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0B27F3228
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234230AbjKUPQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S234425AbjKUPRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbjKUPP6 (ORCPT
+        with ESMTP id S234100AbjKUPRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:15:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4871595
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:15:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73E39C433C8;
-        Tue, 21 Nov 2023 15:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700579754;
-        bh=o0D6VcCQZpUAwPWm8y5zZoRGK+djRokQuhzQmDc1Ots=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QBxIKDa855ZF2oYvMAHfBA2AvBeRZ62tqOpz8pVOxERO8DX69gyhW+e9uVJbKIKEt
-         oyCQKUjuxoOU2iXDlti9IrDaj0eVX86fI0wigkMFcstMzdOqeIOz1Oka1ClE8WYkML
-         TFQxNGTJVI/03aveXtVufVZEPI2sWy1ka1aD4t2xdmVWa2CVIJkrwVB9a2fvStgYsW
-         8gAhcYPM3SjkKlBVw8AQMS0pK5d7VfHTqrbYgd4GBOKRsNOMnwwUgSfVgsqW4RpBFD
-         N0F/FLf896AEroD6V0BWf2aJhxKlLUGLJcnc1ozI35y5XX8Xf3TItZUiA+WvDm1RkR
-         b1M9wHZ8LHWQQ==
-Date:   Tue, 21 Nov 2023 15:15:49 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux LEDs <linux-leds@vger.kernel.org>,
-        Tim Crawford <tcrawford@system76.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        System76 Product Development <productdev@system76.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Johannes =?iso-8859-1?Q?Pen=DFel?= <johannes.penssel@gmail.com>
-Subject: Re: Fwd: sysfs: cannot create duplicate filename
- .../system76_acpi::kbd_backlight/color
-Message-ID: <20231121151549.GA173820@google.com>
-References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
- <ZT25-gUmLl8MPk93@debian.me>
- <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
- <ZUjnzB2RL2iLzIQG@debian.me>
- <87sf50pm34.wl-tiwai@suse.de>
- <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+        Tue, 21 Nov 2023 10:17:48 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2056.outbound.protection.outlook.com [40.107.215.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA99DD;
+        Tue, 21 Nov 2023 07:17:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MG/fT2prN9jJxPdZ1JTgpR2BAxf7PtErlgiJptYaTdo7eO1M1W8La7vPCMAsjfE2hbpvRGQw7z3HGq1X8KhsglSnMTM3eVNV0eLZZSnHeIDZcVg+Q8zxly04zmW6IccDXlsQUnWQTiKMfHls48AYdaFtpgZzowE17uyqN3lL/pkanM1tv9YQwqdRHV8rfwljEaoTJOJbB7JyVJKWylIFKmi04/0lV0C5GT1/90gLSc5Z08x+lG+l2kjoJuw8rSgHmCHQ1yj+EJboWGQ1xa0Q5NqGK3GUvOlJ2NLtkGXwJ+ThP+CMJWj+mh3QFnKsD9hpE9BGByRzJboBn2h6okJ0nQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HqtIbLGKY6xLG6kSTp6ZeqMWZrxoOSI/PJhQHp9YZNw=;
+ b=Qjl24P9zeTcXXd0e/y4vD+whyEAIlwEa/59llDvObULDSzxkjiDqT95XdAnMJGR1vAdBdYZ7YhUy5flbDKPcJ3Bc3N8v+nYS4chiOthnLqaOKEJtejDVk5lBAVUaVtjtUHNxAn4siM9f57a1uA55YOPWmRfmQRVXI23PVi/64Rp0qB0nBIwdNE4+/bwqk0c8pAfzHA6xyfI17xjS/6pNWLcCR1Cq31Hym6p60BKEo6csclCMa32jUF8IehU0PELCrxF1hSKqYHMvd3BnA8+HzCC1Gl82joVqOeIg5OR1zqyMBQSIUTp1B7y9z/XDLWdq257ZQHinMdTAO0+fccIvKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=codeconstruct.com.au
+ smtp.mailfrom=nuvoton.com; dmarc=fail (p=none sp=quarantine pct=100)
+ action=none header.from=gmail.com; dkim=none (message not signed); arc=none
+ (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HqtIbLGKY6xLG6kSTp6ZeqMWZrxoOSI/PJhQHp9YZNw=;
+ b=il94ztlxyIzEZwB/d+efFTJE8teWvSezWflKwk8fgf6LdRPsAB9GM6SINE98wCtqUXioT6G3XsViOoXX5AR18XwvRd/cv5OUxx6zAy9PpAHBA9woYpubqxISCLumejp/hnSpM61/5VL6FQJ03a4KtMESLFGp1B3m8DYfC3rVlBo=
+Received: from SG2PR04CA0200.apcprd04.prod.outlook.com (2603:1096:4:187::15)
+ by TYZPR03MB6917.apcprd03.prod.outlook.com (2603:1096:400:28a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
+ 2023 15:17:40 +0000
+Received: from SG2PEPF000B66CC.apcprd03.prod.outlook.com
+ (2603:1096:4:187:cafe::37) by SG2PR04CA0200.outlook.office365.com
+ (2603:1096:4:187::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28 via Frontend
+ Transport; Tue, 21 Nov 2023 15:17:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=gmail.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ SG2PEPF000B66CC.mail.protection.outlook.com (10.167.240.25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.12 via Frontend Transport; Tue, 21 Nov 2023 15:17:39 +0000
+Received: from NTHCML01A.nuvoton.com (10.1.8.177) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 21 Nov
+ 2023 23:17:38 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCML01A.nuvoton.com
+ (10.1.8.177) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Tue, 21 Nov
+ 2023 23:17:38 +0800
+Received: from taln58.nuvoton.co.il (10.191.1.178) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Tue, 21 Nov 2023 23:17:37 +0800
+Received: from taln60.nuvoton.co.il (taln60 [10.191.1.180])
+        by taln58.nuvoton.co.il (Postfix) with ESMTP id EF58B5F5BB;
+        Tue, 21 Nov 2023 17:17:35 +0200 (IST)
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id B7443235CE25; Tue, 21 Nov 2023 17:17:35 +0200 (IST)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <alexandre.torgue@foss.st.com>, <peppe.cavallaro@st.com>,
+        <joabreu@synopsys.com>, <mcoquelin.stm32@gmail.com>,
+        <avifishman70@gmail.com>, <tali.perry1@gmail.com>,
+        <joel@jms.id.au>, <andrew@codeconstruct.com.au>,
+        <venture@google.com>, <yuenn@google.com>,
+        <benjaminfair@google.com>, <j.neuschaefer@gmx.net>
+CC:     <openbmc@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v1 0/2] net: stmmac: add NPCM dwmac support
+Date:   Tue, 21 Nov 2023 17:17:31 +0200
+Message-ID: <20231121151733.2015384-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-Exchange-SkipListedInternetSender: ip=[211.75.126.7];domain=NTHCCAS01.nuvoton.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PEPF000B66CC:EE_|TYZPR03MB6917:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0ab169c-37e7-4d59-a6d7-08dbeaa5001c
+X-MS-Exchange-SenderADCheck: 0
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DgEccS5r0GAZ36rBapW52kBgjka35NqG4PBD0IAJo4d0oI06YyxNu4gCPI6Bz+IVXfFtip4e++Yh+FrD8t3sxwr2gu6CJSdaT8E0alOAgpEPdrhvHGe12ph+89bfW0ByJNA7k/YtNqozAc7ZQG98B/bzLS7iiZrAcB8xtu9XzeTEWsDyiUXuxhZv99DhTAImleHF2M/hbpX0ZXINM1zD1i9Zok6CvQAwBTcyFLJKjDXHBbqhAigLMykQvufrUpufLYLtnd6Dt1T8aBU+SWSUa6ade1flv6WpNyRZDPI0p8jL7Ldc/RaUf9CDznd5WyAIkwmdlVmVnvnBGH/okduLf8RAGFC2iofIKyPxlXFilwGuXZa8p+DyZX8kPmPCKP578bUvXBI9pMWHDpCCSDUECbOyyWYTaO91zx66VKYCnCRa+7l43OQFn3Rm2iFhnjop42aB7W/pHfkplt6A/jlMDpZ3DWrGUVgAnX+Y5whW0vDjTWOTmw9C2mLQ9H3cvH5gj1fqLIOsjPa3wsMPUZusZoDARMSszsLu5tnWJnW6ApvIWkLdtKi9pzuX3VHHUHsAsLj2du4OQl4W+Wco7trC+k9i4zZqQ9TJRkl3x8+VJkTf+/kYbBWqS5UCUh0OFxWdIUDVClmI7u8R/hg9EoDGvMTRZ5kwdKW88De5Wp6EJNN4X/OgndwYG2bJOVZBo0mXPPjL/M60gRJWs/22QIwS+ZgTSoAv0k+TohsHcU+62Bo9EAwY9eRaiX8zgZ3shtkK3xOj1XR85oKZU3HnPf+3GF/Ly3qXxfqsrOzVqgr+SG4Md/W6z+InLsYeM+RytUJS596yjhXo5Ztmih+uzSC0SrfJcLPywrE00pnArJ/3D+I=
+X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(136003)(396003)(230922051799003)(451199024)(48200799006)(82310400011)(64100799003)(61400799012)(186009)(36840700001)(46966006)(40470700004)(40460700003)(73392003)(42882007)(336012)(6266002)(921008)(82740400003)(36756003)(83170400001)(356005)(81166007)(55446002)(47076005)(36860700001)(110136005)(54906003)(42186006)(70586007)(70206006)(4326008)(8676002)(8936002)(41300700001)(316002)(76482006)(7416002)(5660300002)(4744005)(2906002)(2616005)(40480700001)(26005)(82202003)(1076003)(6666004)(478600001)(45356006)(35450700002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 15:17:39.4188
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0ab169c-37e7-4d59-a6d7-08dbeaa5001c
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: SG2PEPF000B66CC.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB6917
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023, Thorsten Leemhuis wrote:
+This patch set add dwmac/stmmac for the NPCM Baseboard
+Management Controllers (BMC).
 
-> Takashi, Jean-Jacques Hiblot, Lee,
-> 
-> On 20.11.23 14:53, Takashi Iwai wrote:
-> > On Mon, 06 Nov 2023 14:19:08 +0100,
-> > Bagas Sanjaya wrote:
-> >> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
-> >>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
-> >>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
-> >>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
-> >>>>
-> >>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
-> >>>> since you authored the culprit?
-> >
-> >>> The offending commit stores the color in struct led_classdev and exposes it
-> >>> via sysfs. It was part of a series that create a RGB leds from multiple
-> >>> single-color LEDs. for this series, we need the color information but we
-> >>> don't really need to expose it it via sysfs. In order to fix the issue, we
-> >>> can remove the 'color' attribute from the sysfs.
-> >>
-> >> OK, see you in the patch!
-> > 
-> > Is there a patch available?
-> 
-> Not that I know of. Could not find anything on lore either.
-> 
-> > This bug hits for a few Logitech keyboard models, too, and it makes
-> > 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
-> > this bug:
-> >   https://bugzilla.kernel.org/show_bug.cgi?id=218155
-> > 
-> > We need a quick fix for 6.6.x.
-> 
-> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
-> committed it and sent it to Linus) know about this for a while already
-> without doing anything about it, I wonder if someone should just send a
-> revert to Linus (unless of course that is likely to introduce a
-> regression on its own).
+NPCM8xx driver is a part of glue logic dwmac driver to support sgmii.
 
-You seem to have gone from DEFCON 4 to DEFCON 2 there.  The middle step
-is to submit a patch to fix the issue and follow the usual patch flow.
+The NPCM dwmac was tested on NPCM845 evaluation board.
+
+Tomer Maimon (2):
+  dt-bindings: net: Add support NPCM dwmac
+  net: stmmac: Add NPCM support
+
+ .../bindings/net/nuvoton,npcm8xx-sgmii.yaml   |  72 +++++++++++
+ .../devicetree/bindings/net/snps,dwmac.yaml   |   1 +
+ MAINTAINERS                                   |   1 +
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |   9 ++
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+ .../net/ethernet/stmicro/stmmac/dwmac-npcm.c  | 121 ++++++++++++++++++
+ 6 files changed, 205 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/nuvoton,npcm8xx-sgmii.yaml
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-npcm.c
 
 -- 
-Lee Jones [李琼斯]
+2.33.0
+
