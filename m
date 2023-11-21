@@ -2,70 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C3C7F31B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8787F31C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbjKUO4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51144 "EHLO
+        id S234817AbjKUO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234787AbjKUO4k (ORCPT
+        with ESMTP id S234811AbjKUO6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:56:40 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455BD9A;
-        Tue, 21 Nov 2023 06:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1700578594;
-        bh=gCXHbPeW/4/LB/bSJQ/3MhPkRCxJ7g2+PzpBkp1VBrI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=R3LIKvyMEbskpJj2vtUJMorWCchBcKg7clor1RjYIHZ48x4MlX9pQoY08zbJmwbj/
-         3HCX/MGaN/7GRz9zwta3YU+2pCjQmJGuPCuH8g3CknUHDHcoOCQ7ek5Z9i15FDiJgB
-         9u/PMAv9OW1/pFVAAlKbaL6YG/Th+gz8x547gtcfIdZ/HgjLaSAhvtFI48+kVez4lc
-         AZ71BOB6VtkF3D3Uv8GCKNqGDSLaec5R4vwdknqd1XDkh/HNJptCOAi+OZneC5qc5h
-         8+uwn32qSQzmJIeV4OVXXr8LXDV99FiZ60KRsBLE1Z9eWX3y4A3zNXRHhDCz93UXZp
-         Y+KcdRzPaPXdA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZSBV1kNhz1d1C;
-        Tue, 21 Nov 2023 09:56:34 -0500 (EST)
-Message-ID: <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
-Date:   Tue, 21 Nov 2023 09:56:55 -0500
+        Tue, 21 Nov 2023 09:58:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E259A
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:58:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F244DC433CC;
+        Tue, 21 Nov 2023 14:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700578706;
+        bh=+gJV5Kq/zk7daeG5FUsmI0jNOy/xuAwkVf/f+7MLU5I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=krU/8KO4ATWr4zxxJrfvksylFL5Le76um3CUG0EvTiIm3ljSQHX9LDTM68Loi9rXe
+         Lc15EnK4Facj2erJIGoZHXmQOo/scEBf1NhxP2fBu3qAEk2sG2+zM39WUPIuZ03zsh
+         zduzA0o5RhvuAy/Vsc2DuolS70GnfTGdhoAYPnp3+xqeW8hIqdS3LXCEDtxt5IUHoE
+         NGAotlvjGIwRIBNZcleOeWep/c7BL6XVPgUVb1To3eBO2RI0iT/m5uP8xgtQia//Kn
+         YUthVWnYrPL85KPpksW6K62+I2u9g1PZrxJzAbVvN9awyjyzSTEL3+SaOGWp4T3e9G
+         x1sLIt2r9On5w==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-507962561adso8243693e87.0;
+        Tue, 21 Nov 2023 06:58:25 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz2AEoTPa91cTrntai2w7JVisMm3MrjRS8ort9V156hayecbqG4
+        cHGvtlyIKCiven82m1ULoiermthZ3CIrfBO/uA==
+X-Google-Smtp-Source: AGHT+IHBiGSizQyBkO4Q43LdN/hKHZvdOgdP/et2Xjgl2vIRMj51OZsWwcNiAsGaNW7Y23qV5f4kXncXYdheozxBgQo=
+X-Received: by 2002:a19:f010:0:b0:505:8075:7c10 with SMTP id
+ p16-20020a19f010000000b0050580757c10mr7788659lfc.25.1700578704209; Tue, 21
+ Nov 2023 06:58:24 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
- <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
- <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+References: <20231116211739.3228239-1-robh@kernel.org> <ee10e67b-6a2f-4ab5-91ef-e42d2f03a424@linaro.org>
+In-Reply-To: <ee10e67b-6a2f-4ab5-91ef-e42d2f03a424@linaro.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 21 Nov 2023 07:58:12 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJ67tZOmhTHQ7KqEbFuDjK8sKHR1FFtAFAaGjZ4uYi9Uw@mail.gmail.com>
+Message-ID: <CAL_JsqJ67tZOmhTHQ7KqEbFuDjK8sKHR1FFtAFAaGjZ4uYi9Uw@mail.gmail.com>
+Subject: Re: [PATCH] arm/arm64: samsung: Enable W=1 on dtbs by default
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,72 +61,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 09:46, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 09:40:24AM -0500, Mathieu Desnoyers wrote:
->> On 2023-11-21 09:36, Peter Zijlstra wrote:
->>> On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
->>>> Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
->>>>
->>>> - Allow page faults within RCU read-side (like SRCU),
->>>> - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
->>>> - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
->>>>     that. Hence, this is not meant to be a generic replacement for SRCU.
->>>>
->>>> Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
->>>> fit for the following reasons:
->>>>
->>>> - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
->>>
->>> Your counter points are confused, we simply don't build preemptible RCU
->>> unless PREEMPT=y, but that could surely be fixed and exposed as a
->>> separate flavour.
->>>
->>>> - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
->>>
->>> What's that got to do with anything?
->>>
->>> Still utterly confused about what task-tracing rcu is and how it is
->>> different from preemptible rcu.
->>
->> In addition to taking the mmap_sem, the page fault handler need to block
->> until its requested pages are faulted in, which may depend on disk I/O.
->> Is it acceptable to wait for I/O while holding preemptible RCU read-side?
-> 
-> I don't know, preemptible rcu already needs to track task state anyway,
-> it needs to ensure all tasks have passed through a safe spot etc.. vs regular
-> RCU which only needs to ensure all CPUs have passed through start.
-> 
-> Why is this such a hard question?
+On Fri, Nov 17, 2023 at 3:19=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 16/11/2023 22:17, Rob Herring wrote:
+> > Samsung platforms are clean of W=3D1 dtc warnings, so enable the warnin=
+gs
+> > by default. This way submitters don't have to remember to run a W=3D1
+> > build of the .dts files and the grumpiness of the maintainers can be
+> > reduced.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > Well, there's a couple of warnings on 32-bit, but they look fixable to
+> > me.
+> >
+> > There's a few other platforms we could do this to. Sadly, they are stil=
+l
+> > the minority. Otherwise, we could change the default and add a flag to
+> > disable (I_STILL_HAVENT_FIXED_MY_PLATFORMS=3D1).
+>
+> 64-bit has still few warnings:
+> https://krzk.eu/#/builders/29/builds/3710/steps/26/logs/warnings__6_
 
-Personally what I am looking for is a clear documentation of preemptible 
-rcu with respect to whether it is possible to block on I/O (take a page 
-fault, call schedule() explicitly) from within a preemptible rcu 
-critical section. I guess this is a hard question because there is no 
-clear statement to that effect in the kernel documentation.
+I may move that graph check to W=3D2. There's some cases where port@1 is
+optional and it doesn't really make sense to fix these.
 
-If it is allowed (which I doubt), then I wonder about the effect of 
-those long readers on grace period delays. Things like expedited grace 
-periods may suffer.
+Also, Conor wants to do this for all of riscv, but this solution is
+per directory. So I need to rework it to use a different variable that
+can be per directory or global.
 
-Based on Documentation/RCU/rcu.rst:
-
-   Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
-   same effect, but require that the readers manipulate CPU-local
-   counters.  These counters allow limited types of blocking within
-   RCU read-side critical sections.  SRCU also uses CPU-local
-   counters, and permits general blocking within RCU read-side
-   critical sections.  These variants of RCU detect grace periods
-   by sampling these counters.
-
-Then we just have to find a definition of "limited types of blocking"
-vs "general blocking".
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Rob
