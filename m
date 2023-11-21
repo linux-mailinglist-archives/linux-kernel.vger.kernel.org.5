@@ -2,78 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF457F30A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E637F30AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbjKUOZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        id S234291AbjKUO0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjKUOZX (ORCPT
+        with ESMTP id S233962AbjKUOZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:25:23 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5BD10DE
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:25:18 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso4860397b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:25:18 -0800 (PST)
+        Tue, 21 Nov 2023 09:25:53 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565B61991
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:25:40 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-dae7cc31151so5134192276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:25:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700576718; x=1701181518; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IeriZn2HB3faAf90rsoEJC630QNkZ7QDKTlPQoSO5Cg=;
-        b=XW+v8Rqdj+W5RDTFT73muFM1vxV9PU11P9yOjIYCFxt+FwPJzicvFYIxmHAJVCif3t
-         NGKsMcTx7m5sjP33I8osRZhwxpRyc6lxktDfsjH/5PynaGz5mWaUtRYpPRDf66MSjKgc
-         qF+iSpqX24h0tVxbUURYKpYHmclFNJQvS0/KLtK532uTvCMIfAzm7MmcfNp+s509jDEL
-         dmYelKtKuMD7V7kLbWdno/MQU5xN4RadKdO8zzqFlZTtnSRU/nj01G8fMF16Zwehg7gf
-         RUpWhCb4A+rRZ9ixMPGakEK1JGrRrBuhti/oZz+farpVI/NgKBqxnJoopwCRBDr3ASpI
-         qV5Q==
+        d=linaro.org; s=google; t=1700576739; x=1701181539; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dCTl+by/8OgzPkqiTTy1mu7iUQvkaM00OdF6QByqCRc=;
+        b=FhGgruZs5WQMJqYwgCqX69RUiOZAWt18vg+4MnG2tk2BVTFtcWomFpNh/5WgHKgUTG
+         9tHYJjR6VR0gs/6mMYNa2TprKEIAXxsPYTqihSgSsjak+MrJ5GI4qdt+lhop4bHQRABL
+         nvKi8WzVZWVJfKN8M+1BuFsPj2EtZDaFCoHSHGR2A+JFyp7srUxH9QgKie7t4mafS+EL
+         Xpy1mne8HKC9FZDN4/DXW+7W1k7Ga/Gy6YoBLl+h10hbgxaexjbS72I6BUV89wkQz2Pn
+         8kJaqcL09gLUUJvTZ8oO4q1+rsig9An2gWLnxWt+74QQFgC9qJChuxUOXyrUcJPjrvrk
+         aP8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700576718; x=1701181518;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IeriZn2HB3faAf90rsoEJC630QNkZ7QDKTlPQoSO5Cg=;
-        b=JjnoHeebk3mrFQALtUtCIxFTOTXK/E7icksSV9uv7EJllpwysWolobmOUZqsYvfco0
-         mb8dTs/yyXbc5i0mgkjbc5mHPNa3XIOCJM7RGnBa2IvkGQxPX0bqI04PeHzmUa9mbX1b
-         n4uc457w7YAUT+J2ryEsushWukavOHnIMTHyBIfSAikBUyk0vLJ2w6JdEEsJaA6Ms2qB
-         vth7py2uSTAys3u6flXiGbXTz6DPo29U5Vq+bv0WXi0kZ2qPKr15eN8P4KXN/PXuqHQe
-         QhVNZjS9YG7ynxo0IyCXUBgVP9IGzIOisLZupdQjZ0ISFbAl+HS/DuG5zNtunfKVHGD/
-         J03A==
-X-Gm-Message-State: AOJu0YwPTUREmMF1TRVE4VWKmHdqGaJ2B7HxfzTF2HDs3O++MtWQIybx
-        Fa5SSAlYWudxNm9ry7CydPEG/g==
-X-Google-Smtp-Source: AGHT+IE9vXr4RgqaSgCijzdvIxGnYYLFWxRa46XZgScWeMammtbE3X5UDSfvdft/8HJ3WbLcZEd/qg==
-X-Received: by 2002:a05:6a00:9a1:b0:6cb:8c70:4790 with SMTP id u33-20020a056a0009a100b006cb8c704790mr6739253pfg.1.1700576718381;
-        Tue, 21 Nov 2023 06:25:18 -0800 (PST)
-Received: from devz1.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id d13-20020a056a00244d00b0068842ebfd10sm7923193pfj.160.2023.11.21.06.25.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 06:25:18 -0800 (PST)
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-To:     ubizjak@gmail.com, mark.rutland@arm.com, vgupta@kernel.org,
-        bcain@quicinc.com, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        chris@zankel.net, jcmvbkbc@gmail.com, geert@linux-m68k.org,
-        andi.shyti@linux.intel.com, mingo@kernel.org, palmer@rivosinc.com,
-        andrzej.hajda@intel.com, arnd@arndb.de, peterz@infradead.org,
-        mhiramat@kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        mattwu@163.com, linux@roeck-us.net,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: [PATCH v3 5/5] arch,locking/atomic: xtensa: define arch_cmpxchg_local as __cmpxchg_local
-Date:   Tue, 21 Nov 2023 22:23:47 +0800
-Message-Id: <20231121142347.241356-6-wuqiang.matt@bytedance.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231121142347.241356-1-wuqiang.matt@bytedance.com>
-References: <20231121142347.241356-1-wuqiang.matt@bytedance.com>
+        d=1e100.net; s=20230601; t=1700576739; x=1701181539;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dCTl+by/8OgzPkqiTTy1mu7iUQvkaM00OdF6QByqCRc=;
+        b=CciTAnRc9d4OGA5U4ks2Y6I0wakSnl/7Nrha14Ms4Yzt8pOw8ZNYM+sAnLnVj28CtD
+         kvSA+QKzdnqe05sVNV2LcaQQhKO/uF8i4sWWvwSIh/2X3MHytyVymK3r54gi/WQieBa9
+         lPT9DPfHDDnKJXqpKAHNxa+xx6iDQ/fvSqytyxnhEyJM04mOXFr5mur1omSyzB/VdS6H
+         XIlDKLXI/rTHYiIPNMTky8HXOj+0fWr4kSN5NXnMhC6bPCHRuSCw5aCnnHnBx8dkd16H
+         5Zc+entGgecuLSmnmQ88RDiuvj8POv3IBuav7r0bFXih/mF5XX48uGS2O7oO/WccQrPn
+         GCkA==
+X-Gm-Message-State: AOJu0YzvpAMtKytsbMzAA33Iyjbp/0t7NVUB9MNHmI0hTqDAptptUsMx
+        PgokvEThVNIhMMv8PJ/bZdsqRG0YKaOOLFoml+FDxg==
+X-Google-Smtp-Source: AGHT+IFzC/P9VBpC/SW7HcjRqPIjGI6/u3317qHHutxgt4On71zUFgu360yHalbn7IBXSLbaUggzuHxl91TG21rj54k=
+X-Received: by 2002:a81:6588:0:b0:59a:d42c:5d50 with SMTP id
+ z130-20020a816588000000b0059ad42c5d50mr9563819ywb.52.1700576739223; Tue, 21
+ Nov 2023 06:25:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 21 Nov 2023 19:55:27 +0530
+Message-ID: <CA+G9fYvcaozQvas-h55FPjXk+uomF2CyeYbWGCsXM8yGo4SZgA@mail.gmail.com>
+Subject: SuperH: fs/namespace.c: In function '__se_sys_listmount':
+ syscalls.h:258:9: internal compiler error: in change_address_1, at emit-rtl.c:2275
+To:     linux-fsdevel@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        regressions@lists.linux.dev, lkft-triage@lists.linaro.org,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>, Ian Kent <raven@themaw.net>,
+        Christian Brauner <brauner@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        dalias@libc.org, Yoshinori Sato <ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,29 +73,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The xtensa architecture already has __cmpxchg_local defined but not used.
-The purpose of __cmpxchg_local() is solely for arch_cmpxchg_local(), just
-as the definition of arch_cmpxchg_local() for other architectures like x86,
-arm and powerpc.
+The SuperH tinyconfig and allnoconfig builds started failing from 20231120 tag
+Please find the following builds warnings / errors.
 
-Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
----
- arch/xtensa/include/asm/cmpxchg.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+sh:
+  build:
+    * gcc-11-tinyconfig
 
-diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/cmpxchg.h
-index 675a11ea8de7..956c9925df1c 100644
---- a/arch/xtensa/include/asm/cmpxchg.h
-+++ b/arch/xtensa/include/asm/cmpxchg.h
-@@ -108,7 +108,7 @@ static inline unsigned long __cmpxchg_local(volatile void *ptr,
-  * them available.
-  */
- #define arch_cmpxchg_local(ptr, o, n)				  	       \
--	((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned long)(o),\
-+	((__typeof__(*(ptr)))__cmpxchg_local((ptr), (unsigned long)(o),        \
- 			(unsigned long)(n), sizeof(*(ptr))))
- #define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
- #define arch_cmpxchg64(ptr, o, n)    arch_cmpxchg64_local((ptr), (o), (n))
--- 
-2.40.1
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Build errors:
+----------
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/build ARCH=sh
+CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+  Generating include/generated/machtypes.h
+<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+during RTL pass: final
+In file included from /builds/linux/fs/namespace.c:11:
+/builds/linux/fs/namespace.c: In function '__se_sys_listmount':
+/builds/linux/include/linux/syscalls.h:258:9: internal compiler error:
+in change_address_1, at emit-rtl.c:2275
+  258 |         }
+         \
+      |         ^
+/builds/linux/include/linux/syscalls.h:233:9: note: in expansion of
+macro '__SYSCALL_DEFINEx'
+  233 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~
+/builds/linux/include/linux/syscalls.h:225:36: note: in expansion of
+macro 'SYSCALL_DEFINEx'
+  225 | #define SYSCALL_DEFINE4(name, ...) SYSCALL_DEFINEx(4, _##name,
+__VA_ARGS__)
+      |                                    ^~~~~~~~~~~~~~~
+/builds/linux/fs/namespace.c:5019:1: note: in expansion of macro
+'SYSCALL_DEFINE4'
+ 5019 | SYSCALL_DEFINE4(listmount, const struct mnt_id_req __user *, req,
+      | ^~~~~~~~~~~~~~~
+0x129d9d7 internal_error(char const*, ...)
+???:0
+0x5dbc4d fancy_abort(char const*, int, char const*)
+???:0
+0x7ddd3e adjust_address_1(rtx_def*, machine_mode, poly_int<1u, long>,
+int, int, int, poly_int<1u, long>)
+???:0
+0x81dd91 output_operand(rtx_def*, int)
+???:0
+0x81e5a4 output_asm_insn(char const*, rtx_def**)
+???:0
+0x8226a8 final_scan_insn(rtx_insn*, _IO_FILE*, int, int, int*)
+???:0
+Please submit a full bug report,
+with preprocessed source if appropriate.
+Please include the complete backtrace with any bug report.
+See <file:///usr/share/doc/gcc-11/README.Bugs> for instructions.
+{standard input}: Assembler messages:
+{standard input}:11800: Warning: end of file not at end of a line;
+newline inserted
+{standard input}:11856: Error: missing operand
+{standard input}:11856: Error: invalid operands for opcode
+{standard input}:11837: Error: displacement to undefined symbol .L2699
+overflows 8-bit field
+{standard input}:11690: Error: pcrel too far
+{standard input}:11705: Error: pcrel too far
+{standard input}:11707: Error: pcrel too far
+{standard input}:11712: Error: pcrel too far
+{standard input}:11719: Error: pcrel too far
+{standard input}:11732: Error: pcrel too far
+{standard input}:11737: Error: pcrel too far
+{standard input}:11760: Error: pcrel too far
+{standard input}:11772: Error: pcrel too far
+{standard input}:11777: Error: pcrel too far
+{standard input}:11778: Error: pcrel too far
+{standard input}:11788: Error: pcrel too far
+{standard input}:11791: Error: pcrel too far
+{standard input}:11807: Error: pcrel too far
+{standard input}:11809: Error: pcrel too far
+{standard input}:11844: Error: pcrel too far
+make[4]: *** [/builds/linux/scripts/Makefile.build:243: fs/namespace.o] Error 1
+
+
+kernel: 6.7.0-rc2
+git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+git_ref: master
+git_sha: 07b677953b9dca02928be323e2db853511305fa9
+git_describe: next-20231121
+Test details: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231121
+
+Regressions (compared to build next-20231117)
+------------------------------------------------------------------------
+
+sh:
+  build:
+    * gcc-8-allnoconfig
+    * gcc-11-tinyconfig
+    * gcc-11-allnoconfig
+    * gcc-8-tinyconfig
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231121/testrun/21199202/suite/build/test/gcc-11-tinyconfig/history/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231121/testrun/21199202/suite/build/test/gcc-11-tinyconfig/log
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org
