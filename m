@@ -2,161 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B736F7F36AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10317F36B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjKUTNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
+        id S230427AbjKUTOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjKUTNJ (ORCPT
+        with ESMTP id S230235AbjKUTOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:13:09 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C9991;
-        Tue, 21 Nov 2023 11:13:02 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALI8HKM008875;
-        Tue, 21 Nov 2023 11:12:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=AWKC+GczEkhuiGyImuPiTHSlgjHzmEvA5QGEFZps9BA=;
- b=cXZ1D/3h4P93mDyunsMEDn2UiRv5CkosraWU9trNJw3gWMnbsZ/pTR/4gMw1/+BIiMRl
- GaFYTwrFbzYnVz4qo631F5+URpNeqw3hgul8hu9Vlv3nT6WlaMCIhnNDvasojhPT+Q5n
- XmOhjQTY2Nv01enj+nm6WOn6LXowdmcY3VQCWof3oYp7kRa60EjDjuvYrxA8O+bie/yM
- ruhL10ckUBCP60kJ5jh+b0zUoj7H7auUCMxwEk19WLrpQHHa+tJSMQA/UqAzgrH3vgOy
- i/xXM/ZkT8o2ABwMhM1+rZmjfA/PHOpPFT+sXfxIb8fdDsuoHvNZJ36cbzweHL9fmXB/ SA== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uh1jb87a8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 11:12:55 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 21 Nov
- 2023 11:12:54 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 21 Nov 2023 11:12:54 -0800
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 226395B6922;
-        Tue, 21 Nov 2023 11:12:54 -0800 (PST)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
-        "Veerasenareddy Burru" <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net-next v1] octeon_ep: get max rx packet length from firmware
-Date:   Tue, 21 Nov 2023 11:12:23 -0800
-Message-ID: <20231121191224.2489474-1-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Nov 2023 14:14:05 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1675210C;
+        Tue, 21 Nov 2023 11:14:01 -0800 (PST)
+Received: from [192.168.1.103] (178.176.72.255) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 21 Nov
+ 2023 22:13:52 +0300
+Subject: Re: [PATCH 12/13] net: ravb: Assert/deassert reset on suspend/resume
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
+        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-13-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <c9f68819-7dc0-3035-4bf4-6bda5dfc621e@omp.ru>
+Date:   Tue, 21 Nov 2023 22:13:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: eTbUaV7jKAe1Ld-2L-H9UrIGKwgh5hvy
-X-Proofpoint-GUID: eTbUaV7jKAe1Ld-2L-H9UrIGKwgh5hvy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_10,2023-11-21_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231120084606.4083194-13-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.255]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 18:58:14
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.255
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/21/2023 19:02:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 4:18:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fill max rx packet length value from firmware.
+On 11/20/23 11:46 AM, Claudiu wrote:
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
- .../marvell/octeon_ep/octep_ctrl_net.c         | 18 ++++++++++++++++++
- .../marvell/octeon_ep/octep_ctrl_net.h         |  9 +++++++++
- .../ethernet/marvell/octeon_ep/octep_main.c    | 10 +++++++++-
- 3 files changed, 36 insertions(+), 1 deletion(-)
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> RZ/G3S can go to deep sleep states where power to most of the SoC parts
+> is off. When resumming from such state the Ethernet controller needs to be
 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-index 6dd3d03c1c0f..c9fcebb9bd9b 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.c
-@@ -198,6 +198,24 @@ int octep_ctrl_net_set_mac_addr(struct octep_device *oct, int vfid, u8 *addr,
- 	return octep_send_mbox_req(oct, &d, wait_for_response);
- }
- 
-+int octep_ctrl_net_get_mtu(struct octep_device *oct, int vfid)
-+{
-+	struct octep_ctrl_net_wait_data d = {0};
-+	struct octep_ctrl_net_h2f_req *req;
-+	int err;
-+
-+	req = &d.data.req;
-+	init_send_req(&d.msg, req, mtu_sz, vfid);
-+	req->hdr.s.cmd = OCTEP_CTRL_NET_H2F_CMD_MTU;
-+	req->mtu.cmd = OCTEP_CTRL_NET_CMD_GET;
-+
-+	err = octep_send_mbox_req(oct, &d, true);
-+	if (err < 0)
-+		return err;
-+
-+	return d.data.resp.mtu.val;
-+}
-+
- int octep_ctrl_net_set_mtu(struct octep_device *oct, int vfid, int mtu,
- 			   bool wait_for_response)
- {
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-index 4bb97ad1f1c6..46ddaa5c64d1 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_ctrl_net.h
-@@ -282,6 +282,15 @@ int octep_ctrl_net_get_mac_addr(struct octep_device *oct, int vfid, u8 *addr);
- int octep_ctrl_net_set_mac_addr(struct octep_device *oct, int vfid, u8 *addr,
- 				bool wait_for_response);
- 
-+/** Get max MTU from firmware.
-+ *
-+ * @param oct: non-null pointer to struct octep_device.
-+ * @param vfid: Index of virtual function.
-+ *
-+ * return value: mtu on success, -errno on failure.
-+ */
-+int octep_ctrl_net_get_mtu(struct octep_device *oct, int vfid);
-+
- /** Set mtu in firmware.
-  *
-  * @param oct: non-null pointer to struct octep_device.
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-index 3cee69b3ac38..f9c539178114 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-@@ -1276,6 +1276,7 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- {
- 	struct octep_device *octep_dev = NULL;
- 	struct net_device *netdev;
-+	int max_rx_pktlen;
- 	int err;
- 
- 	err = pci_enable_device(pdev);
-@@ -1346,8 +1347,15 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 
- 	netdev->hw_features = NETIF_F_SG;
- 	netdev->features |= netdev->hw_features;
-+
-+	max_rx_pktlen = octep_ctrl_net_get_mtu(octep_dev, OCTEP_CTRL_NET_INVALID_VFID);
-+	if (max_rx_pktlen < 0) {
-+		dev_err(&octep_dev->pdev->dev,
-+			"Failed to get max receive packet size; err = %d\n", max_rx_pktlen);
-+		goto register_dev_err;
-+	}
- 	netdev->min_mtu = OCTEP_MIN_MTU;
--	netdev->max_mtu = OCTEP_MAX_MTU;
-+	netdev->max_mtu = max_rx_pktlen - (ETH_HLEN + ETH_FCS_LEN);
- 	netdev->mtu = OCTEP_DEFAULT_MTU;
- 
- 	err = octep_ctrl_net_get_mac_addr(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
--- 
-2.25.1
+   Resuming.
 
+> reinitialized. Deasserting the reset signal for it should also be done.
+> Thus add reset assert/deassert on suspend/resume functions.
+
+   Firefox' spell checker trips over deassert[ing] and you have |de-assert"
+below:
+
+> On resume function the de-assert was not reverted in case of failures to
+> give user a chance to restore the interface (e.g. bringing down/up the
+> interface) in case suspend/resume fails.
+
+   I'm not seeing us reverting anything on the resume failure...
+
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+MBR, Sergey
