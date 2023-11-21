@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B85B77F3460
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF097F3462
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbjKURAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55320 "EHLO
+        id S232960AbjKURAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKURAF (ORCPT
+        with ESMTP id S233504AbjKURAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:00:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D56E113
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:00:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 043EAC433C8;
-        Tue, 21 Nov 2023 16:59:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700586001;
-        bh=OrMmN4aABkmc7mVV4jQIdj8KovDI4fIKhccVEgfoejk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LmtlI5Q9xMShTeJ6ggtOMtfC+xVWvdAv5jkPVtKZ24GmwLMdZfDckSX2BPuH9JRuW
-         UU+DkoQakzyrWIPDwgkqzGKVkE8A7BprdWXO/86zIa8kOFCacGzlmb3tvYgs41JqIU
-         iL0OCH19efzNE5ZzX1E7u4AKp7/YrIu6i16tM6/PfNrrD1ETJ2B2HOv/eYnKZM43Pm
-         r4gGpSjvUGLfxJ8qN5FZ1LuCMax4rAMphf+O5+aIEqStVmTeW/HoGSx4tGIbmMMjne
-         qwJtnh2sTJdsYdhVZhrbnB0LOn2NRJq3yAyMRgT6KsagSEQZ6uBZDmX+RRDecp7oZS
-         AB6bAaow1qHyA==
-Date:   Tue, 21 Nov 2023 16:59:57 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-Message-ID: <20231121-defendant-hemstitch-a728c39b4e7d@spud>
-References: <20231119023454.1591-1-linux.amoon@gmail.com>
- <20231119023454.1591-2-linux.amoon@gmail.com>
- <20231119-phrasing-reverse-bbc1fde515d5@spud>
- <CANAwSgQ6H9FUEBKz7sCf4kUZSMnCfyXG-cpGTMZoT15W9187Kg@mail.gmail.com>
- <20231120-grinch-upbeat-05f7a32a99fa@spud>
- <CANAwSgQGhDMeHLFpe8gnM2c26CjqX8QHOL1GdHrZJSvnBj39bA@mail.gmail.com>
+        Tue, 21 Nov 2023 12:00:14 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4B1D4B
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:00:10 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-59b5484fbe6so60685687b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:00:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700586009; x=1701190809; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NwIj+KbJ7PvCuBNGXgfvFvqUe/IcvSlmM6N9QvJC8BI=;
+        b=DrBiEdv0Yimn4zkyUhBMPxnBBoAs+eZ5uVmACEjeb99WgLKlWalKQh2GwAISBL92sP
+         p9kCI3CUCLI9aq0GCMVXScgCECuIeb6gGN/XnL9OD8GM9JOItmL9kU3UDSSQmRt+i695
+         ARR8m6YRkpQNfSxgD05WnkWO+kJGrXQmQVEeeWkFIwcnrIN9T6ymKN7pvjvDbJK4yNGX
+         LO4bDJ7kEjL/oDIcm73mt0cShUaTG/OV5vxU+PZvatCbQ68Fbn2i4KDR8skzskjlpELS
+         cdBesW3S/rmZELJFiQYgo4P36sNl9vSrHlUZ8MssHT9PEZwfZ5KEoYtOAc0QY+qa8t15
+         QE2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700586009; x=1701190809;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NwIj+KbJ7PvCuBNGXgfvFvqUe/IcvSlmM6N9QvJC8BI=;
+        b=fw6f/U0KHGH/5t8Tl+vbf57DpKU84QTjJNvQDMYmtd6wvcr9xtRvDHzC8fwvKvbrp9
+         qDHfg/ewRbatxek8W9QO6rFbjuzy3CxFMcKzlAohtp9ArypHJ8Qwi03Ok1SzACJQJetq
+         oRxdGPO2d8LcgN6WbTLwGHZ9TDBLZNqPemnQxSWn+AiPwjQM0VVnSt0n+RwSo0A0A6+x
+         2+fiqMVFEq1r+S04/xFX+ZKo5UyRQglQobF5QYgK/i7JWBoTYkA4inKIKM+1kWjswCQm
+         0qZLglKmLPoJFBr4xz5eig0gGRwdU53uHJCQVj+MlD0kfE6YybwcUbj76QTdwbjlFQDg
+         QX9Q==
+X-Gm-Message-State: AOJu0Yyj/Yx9cQ9IS2CjkeWw3Mxc0bAT9r6/PJIY2aQACZ3sSbEr1VLr
+        5x86hTYoMHtfXp5gMI0W2g4=
+X-Google-Smtp-Source: AGHT+IFKHJ10XhorcfTO+RXaMwjjgAn1HCiRI6yoc10rnpZTOOHRaIBRoQaBzxf5zMv7/t/if+Vspw==
+X-Received: by 2002:a81:c803:0:b0:5cb:4404:49c4 with SMTP id n3-20020a81c803000000b005cb440449c4mr4157340ywi.43.1700586009340;
+        Tue, 21 Nov 2023 09:00:09 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
+        by smtp.gmail.com with ESMTPSA id g4-20020a81d444000000b005cb0d7c2e46sm936191ywl.19.2023.11.21.09.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 09:00:08 -0800 (PST)
+Date:   Tue, 21 Nov 2023 09:00:08 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>
+Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
+ __mm_cid_get()
+Message-ID: <ZVziGOcUW0ljEZZr@yury-ThinkPad>
+References: <20231118155105.25678-1-yury.norov@gmail.com>
+ <20231118155105.25678-5-yury.norov@gmail.com>
+ <20231120113105.GR8262@noisy.programming.kicks-ass.net>
+ <1eb9435a-aa1c-4c30-ab1a-9167b73d1b83@efficios.com>
+ <ZVyxMrisyuBtQ+2Y@yury-ThinkPad>
+ <985aff40-97cc-4234-98c5-84dd21c324b7@efficios.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FOgsZlX/pgPygzA3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANAwSgQGhDMeHLFpe8gnM2c26CjqX8QHOL1GdHrZJSvnBj39bA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <985aff40-97cc-4234-98c5-84dd21c324b7@efficios.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 21, 2023 at 08:44:17AM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-21 08:31, Yury Norov wrote:
+> > On Mon, Nov 20, 2023 at 11:17:32AM -0500, Mathieu Desnoyers wrote:
+> > 
+> [...]
+> > 
+> > Sure, I can. Can you point me to the work you mention here?
+> 
+> It would have to be updated now, but here is the last version that was posted:
+> 
+> https://lore.kernel.org/lkml/20221122203932.231377-1-mathieu.desnoyers@efficios.com/
+> 
+> Especially those patches:
+> 
+> 2022-11-22 20:39 ` [PATCH 22/30] lib: Implement find_{first,next,nth}_notandnot_bit, find_first_andnot_bit Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 23/30] cpumask: Implement cpumask_{first,next}_{not,}andnot Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 24/30] sched: NUMA-aware per-memory-map concurrency ID Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 25/30] rseq: Extend struct rseq with per-memory-map NUMA-aware Concurrency ID Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 26/30] selftests/rseq: x86: Implement rseq_load_u32_u32 Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 27/30] selftests/rseq: Implement mm_numa_cid accessors in headers Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 28/30] selftests/rseq: Implement numa node id vs mm_numa_cid invariant test Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 29/30] selftests/rseq: Implement mm_numa_cid tests Mathieu Desnoyers
+> 2022-11-22 20:39 ` [PATCH 30/30] tracing/rseq: Add mm_numa_cid field to rseq_update Mathieu Desnoyers
 
---FOgsZlX/pgPygzA3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK, I'll take a look.
 
-On Tue, Nov 21, 2023 at 09:36:37AM +0530, Anand Moon wrote:
-> On Mon, 20 Nov 2023 at 21:15, Conor Dooley <conor@kernel.org> wrote:
-> > On Sun, Nov 19, 2023 at 08:57:28PM +0530, Anand Moon wrote:
-> > > On Sun, 19 Nov 2023 at 19:28, Conor Dooley <conor@kernel.org> wrote:
-> > > > On Sun, Nov 19, 2023 at 08:04:50AM +0530, Anand Moon wrote:
-> > > > > Add the binding example for the USB3.1 Genesys Logic GL3523
-> > > > > integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-> > > > > hub.
-> > > >
-> > > > But no comment in the commit message about the new property for the
-> > > > "peer hub". $subject saying "dt-bindings: usb: Add the binding example
-> > > > for the Genesys Logic GL3523 hub" is misleading when the meaningful
-> > > > parts of the patch are unrelated to the example.
-> > > >
-
-> > > > > +  peer-hub:
-> > > > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > > > +    description:
-> > > > > +      phandle to the peer hub on the controller.
-> > > >
-> > > > What is this, why is it needed? Please explain it in your commit
-> > > > message.
-> > > >
-> > > Ok, GL3523 integrates Genesys Logic self-developed USB 3.1 Gen 1
-> > > Super Speed transmitter/receiver physical layer (PHY) and USB 2.0
-> > > High-Speed PHY
-> > >
-> > > peer-hub is used to cross-connect those phy nodes so that it can help
-> > > hub power on/off simultaneously.
-> >
-> > I said please explain it in your commit message, but on reflection I
-> > think that would be insufficient. Extending the description to explain
-> > what the peer-hub is would be great too. "peer hub on the controller"
-> > doesn't seem to make sense to me either, as the peer hub phandle is to
-> > another phy, not to the controller. I think that would probably also be
-> > resolved by explaining what the peer hub is in a more detailed manner.
-> >
-> > If this is purely a genesys thing, the property should grow a genesys,
-> > prefix also.
-> >
-> No, some USB Hub have combined phy for USB 3.x and USB 2.0 and have common
-> reset-gpios and power supply, peer-hub node helps connect the USB controller and
-> bring up the USB hub.
-
-I don't know what this is a response to.
-
-> I was waiting for more feedback on these changes.
-> Once it's ok I will update with proper the commit message in v4.
-
-And the property description too, so that a reader can understand how to
-implement it.
-
-Cheers,
-Conor.
-
---FOgsZlX/pgPygzA3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVziDQAKCRB4tDGHoIJi
-0uLyAP0XacgZ4YIqCPBG2yQQt0anbyYpcMvqyLcwj+XJbNqzogD/fU7dUFH+dWnN
-K1As/KVRhQar29x35Q7tsbiDGctVfQI=
-=ozYs
------END PGP SIGNATURE-----
-
---FOgsZlX/pgPygzA3--
+Thanks,
+Yury
