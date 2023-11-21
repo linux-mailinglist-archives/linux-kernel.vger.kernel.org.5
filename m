@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D27307F3A49
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6733F7F3A55
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbjKUXdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 18:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
+        id S234846AbjKUXhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 18:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjKUXdF (ORCPT
+        with ESMTP id S229480AbjKUXht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 18:33:05 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FB483;
-        Tue, 21 Nov 2023 15:33:01 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-332ca7f95e1so1534533f8f.0;
-        Tue, 21 Nov 2023 15:33:01 -0800 (PST)
+        Tue, 21 Nov 2023 18:37:49 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48026199;
+        Tue, 21 Nov 2023 15:37:46 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso5378678b3a.1;
+        Tue, 21 Nov 2023 15:37:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700609580; x=1701214380; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=UmYW1vk7X8EaOO6oHl6rUwKJWkJ/lZRnUq8F+Hg+/E8=;
-        b=UrH52+7whC6RwyhZYcdIRFvX4Zz80w1IAqv52E9yq5W+ojVaJcOC96UTcR3DeKeRtY
-         /U0F7gNoa5L5I8WfbOevH/gPyILMtDulwYE4c27K4JO4ndCP4zAAjmnuWyDIW4uljmus
-         AW4J3xr9mgQyBbBGTBrjkBW3om7Oireq7VoU/GZzAJs/SXGajbR+TmGWJTBOLNekKNBP
-         TqKTZD6TEpBwa48gn49kmHq+lpYDDqNG9+B58Wj4INz4oZlV5BydNpudcBHyLwJQi3j/
-         v5GUwaCzP3vDYqVIbBXMPkXWb1UGiY/OZYov+90zHqUJ/+gfnrRbXn2DHsV85thCqJyK
-         RTHQ==
+        d=gmail.com; s=20230601; t=1700609866; x=1701214666; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OBsM6IhveS+o7/r4qHHc1TgZJQzdQDusijV9f+awe9A=;
+        b=i+baoT7CVpQHwoxnw3QeUKOY2/8JslhpDRrWf+YUyqQQqIdtPC6mTWiD0Xat1R3Nzi
+         +JiBdsQLAVupy3IbFm5+41itKPn/RW3vl94xGYJd67DbjDMI2w/f3+UzPVL9eu8/gRl9
+         vH0cJ29LFSl85U5IQLE/O9jVXq3Pmk6lLrqR29ExLlXCKDduP27TXWJO91dNLM7kNDfY
+         BV9aDbBOb/P0CzA3IC20Phvq9GJGO9Sijtjxk9hSdiJnlzse4PDnUgCxXBJYXU8X81uC
+         alSE7MCeD2dz4XSMVavABUwFXkYBaIyNd+RxHaR65uiwMpXQdbkePz3knlM1LoAulCTG
+         2m4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700609580; x=1701214380;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UmYW1vk7X8EaOO6oHl6rUwKJWkJ/lZRnUq8F+Hg+/E8=;
-        b=MTM2XsRfMKMwyFqoT1EnJc1rJZIauRHT1B6fcL/WlGMXbyqE5qd072EaCPEaxKlQ6q
-         rfQFFw9+Xu8RiDg73zKb5vViC3Tei/X75k3j5RlJoEMXtgH6N+afZUnkql91L/JuhILp
-         +kIR3MRrvzRayA2m5rvcHrY70moodbiEy5MPQr0Dkl3W3JEYXG9sRpPzAaNVyVfcvfvX
-         vyQKEukkEt6/UTPM8t0QWUAYOnxzfnhjlT9+g7zrwxcpPi37QKCE6QxhuB1a3AhUT8M9
-         XDaJXTtbwfz/nuGEjhDTl9T/fbaJXr6kKkx/svMZq8Rj4fCaVLj5R+A4Ih4bCOuWqlgf
-         0CMg==
-X-Gm-Message-State: AOJu0Yw9TRMd23pCpN0mh+fArKUQZqsmjIu9tNce2/GIbsigQ6xS52pQ
-        MiGxOnuNo6cgMVFzAFEco4E=
-X-Google-Smtp-Source: AGHT+IHyfv6EWwGzl/lZkCkfwESfRcrM/6tpQNhRcWQvhACfnXXxJs/frsdZmI9lwhU6OUelW8wUug==
-X-Received: by 2002:adf:f082:0:b0:332:c4e3:9b09 with SMTP id n2-20020adff082000000b00332c4e39b09mr277073wro.30.1700609579780;
-        Tue, 21 Nov 2023 15:32:59 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id k5-20020adfe8c5000000b00331733a98ddsm12625716wrn.111.2023.11.21.15.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 15:32:59 -0800 (PST)
-Message-ID: <655d3e2b.df0a0220.50550.b235@mx.google.com>
-X-Google-Original-Message-ID: <ZV0+KC9dw/lS4xCS@Ansuel-xps.>
-Date:   Wed, 22 Nov 2023 00:32:56 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [net-next PATCH] net: phy: aquantia: make mailbox interface4 lsw
- addr mask more specific
-References: <20231120193504.5922-1-ansuelsmth@gmail.com>
- <20231121150859.7f934627@kernel.org>
+        d=1e100.net; s=20230601; t=1700609866; x=1701214666;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OBsM6IhveS+o7/r4qHHc1TgZJQzdQDusijV9f+awe9A=;
+        b=N2A0fYrasSrh+HpS5NQVlMcw7NR56sW/ybQll/urQOMC7fUqxNLiNEmpGZFZPPjny1
+         BZ0c6TiAO43fNKB+5nRgprykHsoNKrtNozoVV8qa/DbkV5E/IbHJHWhCjZ/efj1nVmOq
+         Ond0mlTQhP6BA9UmOxS8zxvUVefbQ/vJDeUUzHGZ8zpw62c7VT+gIiR5YV7qOQFP73yX
+         HkDW/QSg+4up0QIBBPr9ddlrw1v157ZoP95BrO81VGsm9jSsDghCj6HIuv++v9Lib4wd
+         dLQSIBUDDN1eCHqt5KWITZOBnrE+IESnysZ/I4he2PQSa/UPy4UbFkJBbNvomA+OTlBR
+         x0mw==
+X-Gm-Message-State: AOJu0YwBlnt0Er2v6WZLJXJ7wmTDtX69EtswdypIiXJBf9AanJI8DmAi
+        1YJBKe109ir0I/mY4DaOxaU=
+X-Google-Smtp-Source: AGHT+IHylfg1T9X6BkuN5KOiJNcmxEeJ+UQfaRy0xEGLUcLwjosLbiBRBajuiM8h90cVFePNrmnm0g==
+X-Received: by 2002:a05:6a20:3944:b0:189:c852:562e with SMTP id r4-20020a056a20394400b00189c852562emr636458pzg.38.1700609865663;
+        Tue, 21 Nov 2023 15:37:45 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a19c500b0028098225450sm98849pjj.1.2023.11.21.15.37.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 15:37:45 -0800 (PST)
+Message-ID: <a9abc5ec-f3cd-4a1a-81b9-a6900124d38b@gmail.com>
+Date:   Wed, 22 Nov 2023 06:37:39 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121150859.7f934627@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation: xfs: consolidate XFS docs into its own
+ subdirectory
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Workflows <workflows@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Charles Han <hanchunchao@inspur.com>
+References: <20231121095658.28254-1-bagasdotme@gmail.com>
+ <202311220333.acL7LwXY-lkp@intel.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <202311220333.acL7LwXY-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,55 +88,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 03:08:59PM -0800, Jakub Kicinski wrote:
-> On Mon, 20 Nov 2023 20:35:04 +0100 Christian Marangi wrote:
-> > It seems some arch (s390) require a more specific mask for FIELD_PREP
-> > and doesn't like using GENMASK(15, 2) for u16 values.
-> > 
-> > Fix the compilation error by adding the additional mask for the BITS
-> > that the PHY ignore and AND the passed addr with the real mask that the
-> > PHY will parse for the mailbox interface 4 addr to make sure extra
-> > values are correctly removed.
+On 11/22/23 03:04, kernel test robot wrote:
+> Hi Bagas,
 > 
-> Ah. Um. Pff. Erm. I'm not sure.
+> kernel test robot noticed the following build warnings:
 > 
-> Endianness is not my strong suit but this code:
+> [auto build test WARNING on 98b1cc82c4affc16f5598d4fa14b1858671b2263]
 > 
-> 	/* PHY expect addr in LE */
-> 	addr = (__force u32)cpu_to_le32(addr); 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Bagas-Sanjaya/Documentation-xfs-consolidate-XFS-docs-into-its-own-subdirectory/20231121-180057
+> base:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+> patch link:    https://lore.kernel.org/r/20231121095658.28254-1-bagasdotme%40gmail.com
+> patch subject: [PATCH] Documentation: xfs: consolidate XFS docs into its own subdirectory
+> reproduce: (https://download.01.org/0day-ci/archive/20231122/202311220333.acL7LwXY-lkp@intel.com/reproduce)
 > 
-> 	/* ... use (u16)(addr)       */
-> 	/* ... use (u16)(addr >> 16) */
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311220333.acL7LwXY-lkp@intel.com/
 > 
-> does not make sense to me.
+> All warnings (new ones prefixed by >>):
 > 
-> You're operating on register values here, there is no endian.
-> Endian only exists when you store or load from memory. IOW, this:
+>>> Warning: Documentation/filesystems/xfs/xfs-online-fsck-design.rst references a file that doesn't exist: Documentation/filesystems/xfs-self-describing-metadata.rst
+>>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-maintainer-entry-profile.rst
+>>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-*
+>>> MAINTAINERS:53207: WARNING: unknown document: ../filesystems/xfs-maintainer-entry-profile
 > 
-> 	addr = 0x12345678;
-> 	print((u16)addr);
-> 	print(addr >> 16);
-> 
-> will print the same exact thing regardless of the CPU endian.
-> 
-> Why did you put the byte swap in there?
 
-the 2 addr comes from a define
-
-#define DRAM_BASE_ADDR		0x3FFE0000
-#define IRAM_BASE_ADDR		0x40000000
-
-it wasn't clear to me if on BE these addrs gets saved differently or
-not. PHY wants the addr in LE.
-
-On testing by removing the cpu_to_le32 the error is correctly removed!
-
-I guess on BE the addr was actually swapped and FIELD_GET was correctly
-warning (and failing) as data was missing in applying the mask.
-
-If all of this makes sense, will send a followup patch that drop the
-cpu_to_le32 and also the other in the bottom that does cpu_to_be32 (to a
-__swab32 as FW is LE and mailbox calculate CRC in BE)
+Oh dear, I didn't catch them when building locally. Will fix anyway.
 
 -- 
-	Ansuel
+An old man doll... just what I always wanted! - Clara
+
