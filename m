@@ -2,191 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9ECA7F24CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 05:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B2E7F24D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 05:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjKUESQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 23:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S230164AbjKUEVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 23:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKUESO (ORCPT
+        with ESMTP id S229447AbjKUEVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 23:18:14 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62473D9;
-        Mon, 20 Nov 2023 20:18:10 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AL4Hljl022289;
-        Mon, 20 Nov 2023 22:17:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700540267;
-        bh=iAWgjl6CeVUNIJ5xa2msryoeZqkqbfAiC09oJHoJ948=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=UOLV0lYDKXvXT2j/khhVB2jqDvq8tYYC2oFynZXHbTJSM7x76LaiuD9jQdcsgJoeH
-         7qrzN0tBaPj7n0uFqdFYL2gVll89neHSyzz9tfY1cM6l8wZDkMimzbDAU/LQ/DorkO
-         H20kSfPqz0w9edc8dUz1XolLp6QoxZPsyRuvDezA=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AL4HlxS021942
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 20 Nov 2023 22:17:47 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 20
- Nov 2023 22:17:46 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 20 Nov 2023 22:17:46 -0600
-Received: from [10.249.130.150] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AL4Hf9U045593;
-        Mon, 20 Nov 2023 22:17:42 -0600
-Message-ID: <7b72efc1-c373-4fbb-87b0-0aa7f159b228@ti.com>
-Date:   Tue, 21 Nov 2023 09:47:37 +0530
+        Mon, 20 Nov 2023 23:21:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A22D9;
+        Mon, 20 Nov 2023 20:21:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700540462; x=1732076462;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HeOnsAotLtBAwdDsWn9Pxx0cziA4oaRFyuEBXtVa+Ow=;
+  b=MUnNDx8iciTzpkAczlRyEkOcsg56YxxQ0zKdz3qvreiyM62LuqZt2aVK
+   Quawu8rm+f0BqznccM5H8N+iIkOskyeHv5zAYIgkmFhEHYjP8+d/bdnAt
+   wQdZBOhZYBvl2bjNSFY5Cps9Hro6Fk3iVBxYzmp0vQD0QAPLntllfkWja
+   r4rWsbucf9gTjK1/sUP3YJ6Xixrrmb1sRkW9vnyHvUcbCwNbcAXG56r+0
+   aPro9HJfjLHQN6sYr6ocdD1nQlYQ6sAbgeDgl+Uy8ehbERUZe8OCDn2Wf
+   gXuHWvRGZM3KmCRpwlbNL1dzP/rK8NapgUWFOW6Tpj3QfTS06YQbXK8x+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="395690888"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="395690888"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 20:21:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="14376311"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 20 Nov 2023 20:20:31 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5IFQ-0007Hu-2N;
+        Tue, 21 Nov 2023 04:20:28 +0000
+Date:   Tue, 21 Nov 2023 12:20:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Philipp Stanner <pstanner@redhat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Eric Auger <eric.auger@redhat.com>,
+        Kent Overstreet <kmo@daterainc.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Danilo Krummrich <dakr@redhat.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
+Message-ID: <202311211216.KqPYvOCI-lkp@intel.com>
+References: <20231120215945.52027-3-pstanner@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: hsr: Add support for MC filtering at the
- slave device
-To:     Wojciech Drewek <wojciech.drewek@intel.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <bigeasy@linutronix.de>, <horms@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231120110105.18416-1-r-gunasekaran@ti.com>
- <1f836577-5f33-4662-bb32-26f99f737ee6@intel.com>
-Content-Language: en-US
-From:   Ravi Gunasekaran <r-gunasekaran@ti.com>
-In-Reply-To: <1f836577-5f33-4662-bb32-26f99f737ee6@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Philipp,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus linus/master v6.7-rc2 next-20231120]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-move-pci_iomap-c-to-drivers-pci/20231121-060258
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40redhat.com
+patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
+config: openrisc-allnoconfig (https://download.01.org/0day-ci/archive/20231121/202311211216.KqPYvOCI-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211216.KqPYvOCI-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311211216.KqPYvOCI-lkp@intel.com/
+
+All error/warnings (new ones prefixed by >>):
+
+>> drivers/pci/iomap.c:27:15: error: redefinition of 'pci_iomap_range'
+      27 | void __iomem *pci_iomap_range(struct pci_dev *dev,
+         |               ^~~~~~~~~~~~~~~
+   In file included from include/asm-generic/io.h:20,
+                    from arch/openrisc/include/asm/io.h:37,
+                    from include/linux/io.h:13,
+                    from include/linux/irq.h:20,
+                    from include/asm-generic/hardirq.h:17,
+                    from ./arch/openrisc/include/generated/asm/hardirq.h:1,
+                    from include/linux/hardirq.h:11,
+                    from include/linux/interrupt.h:11,
+                    from include/linux/pci.h:38,
+                    from drivers/pci/iomap.c:7:
+   include/asm-generic/pci_iomap.h:44:29: note: previous definition of 'pci_iomap_range' with type 'void *(struct pci_dev *, int,  long unsigned int,  long unsigned int)'
+      44 | static inline void __iomem *pci_iomap_range(struct pci_dev *dev, int bar,
+         |                             ^~~~~~~~~~~~~~~
+   drivers/pci/iomap.c: In function 'pci_iomap_range':
+>> drivers/pci/iomap.c:43:24: error: implicit declaration of function '__pci_ioport_map'; did you mean 'devm_ioport_map'? [-Werror=implicit-function-declaration]
+      43 |                 return __pci_ioport_map(dev, start, len);
+         |                        ^~~~~~~~~~~~~~~~
+         |                        devm_ioport_map
+>> drivers/pci/iomap.c:43:24: warning: returning 'int' from a function with return type 'void *' makes pointer from integer without a cast [-Wint-conversion]
+      43 |                 return __pci_ioport_map(dev, start, len);
+         |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/pci/iomap.c: At top level:
+>> drivers/pci/iomap.c:67:15: error: redefinition of 'pci_iomap_wc_range'
+      67 | void __iomem *pci_iomap_wc_range(struct pci_dev *dev,
+         |               ^~~~~~~~~~~~~~~~~~
+   include/asm-generic/pci_iomap.h:50:29: note: previous definition of 'pci_iomap_wc_range' with type 'void *(struct pci_dev *, int,  long unsigned int,  long unsigned int)'
+      50 | static inline void __iomem *pci_iomap_wc_range(struct pci_dev *dev, int bar,
+         |                             ^~~~~~~~~~~~~~~~~~
+>> drivers/pci/iomap.c:110:15: error: redefinition of 'pci_iomap'
+     110 | void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
+         |               ^~~~~~~~~
+   include/asm-generic/pci_iomap.h:35:29: note: previous definition of 'pci_iomap' with type 'void *(struct pci_dev *, int,  long unsigned int)'
+      35 | static inline void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
+         |                             ^~~~~~~~~
+>> drivers/pci/iomap.c:131:15: error: redefinition of 'pci_iomap_wc'
+     131 | void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long maxlen)
+         |               ^~~~~~~~~~~~
+   include/asm-generic/pci_iomap.h:40:29: note: previous definition of 'pci_iomap_wc' with type 'void *(struct pci_dev *, int,  long unsigned int)'
+      40 | static inline void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long max)
+         |                             ^~~~~~~~~~~~
+>> drivers/pci/iomap.c:164:6: error: redefinition of 'pci_iounmap'
+     164 | void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+         |      ^~~~~~~~~~~
+   include/asm-generic/pci_iomap.h:56:20: note: previous definition of 'pci_iounmap' with type 'void(struct pci_dev *, void *)'
+      56 | static inline void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+         |                    ^~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
+   Depends on [n]: PCI [=n]
+   Selected by [y]:
+   - OPENRISC [=y]
 
 
-On 11/20/2023 5:10 PM, Wojciech Drewek wrote:
->
-> On 20.11.2023 12:01, Ravi Gunasekaran wrote:
->> From: Murali Karicheri <m-karicheri2@ti.com>
->>
->> When MC (multicast) list is updated by the networking layer due to a
->> user command and as well as when allmulti flag is set, it needs to be
->> passed to the enslaved Ethernet devices. This patch allows this
->> to happen by implementing ndo_change_rx_flags() and ndo_set_rx_mode()
->> API calls that in turns pass it to the slave devices using
->> existing API calls.
->>
->> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
->> Signed-off-by: Ravi Gunasekaran <r-gunasekaran@ti.com>
->> ---
-> One small nit, besides that:
-> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
->
->>  net/hsr/hsr_device.c | 67 +++++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 66 insertions(+), 1 deletion(-)
->>
->> diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
->> index 306f942c3b28..4e8f4a3cefbf 100644
->> --- a/net/hsr/hsr_device.c
->> +++ b/net/hsr/hsr_device.c
->> @@ -173,7 +173,24 @@ static int hsr_dev_open(struct net_device *dev)
->>  
->>  static int hsr_dev_close(struct net_device *dev)
->>  {
->> -	/* Nothing to do here. */
->> +	struct hsr_port *port;
->> +	struct hsr_priv *hsr;
->> +
->> +	hsr = netdev_priv(dev);
->> +	hsr_for_each_port(hsr, port) {
->> +		if (port->type == HSR_PT_MASTER)
->> +			continue;
->> +		switch (port->type) {
->> +		case HSR_PT_SLAVE_A:
->> +		case HSR_PT_SLAVE_B:
->> +			dev_uc_unsync(port->dev, dev);
->> +			dev_mc_unsync(port->dev, dev);
->> +			break;
->> +		default:
->> +			break;
->> +		}
->> +	}
->> +
->>  	return 0;
->>  }
->>  
->> @@ -404,12 +421,60 @@ void hsr_del_ports(struct hsr_priv *hsr)
->>  		hsr_del_port(port);
->>  }
->>  
->> +static void hsr_ndo_set_rx_mode(struct net_device *dev)
-> I wouldn't add "ndo" to the callback name, let's not stand out from other ndo callbacks here.
+vim +/pci_iomap_range +27 drivers/pci/iomap.c
 
-Thank you for reviewing the patch. I will address the above comment and send out
-a v2.
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   11  
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   12  /**
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   13   * pci_iomap_range - create a virtual mapping cookie for a PCI BAR
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   14   * @dev: PCI device that owns the BAR
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   15   * @bar: BAR number
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   16   * @offset: map memory at the given offset in BAR
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   17   * @maxlen: max length of the memory to map
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   18   *
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   19   * Using this function you will get a __iomem address to your device BAR.
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   20   * You can access it using ioread*() and iowrite*(). These functions hide
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   21   * the details if this is a MMIO or PIO address space and will just do what
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   22   * you expect from them in the correct way.
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   23   *
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   24   * @maxlen specifies the maximum length to map. If you want to get access to
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   25   * the complete BAR from offset to the end, pass %0 here.
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   26   * */
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  @27  void __iomem *pci_iomap_range(struct pci_dev *dev,
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   28  			      int bar,
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   29  			      unsigned long offset,
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   30  			      unsigned long maxlen)
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   31  {
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   32  	resource_size_t start = pci_resource_start(dev, bar);
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   33  	resource_size_t len = pci_resource_len(dev, bar);
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   34  	unsigned long flags = pci_resource_flags(dev, bar);
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   35  
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   36  	if (len <= offset || !start)
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   37  		return NULL;
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   38  	len -= offset;
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   39  	start += offset;
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   40  	if (maxlen && len > maxlen)
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   41  		len = maxlen;
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   42  	if (flags & IORESOURCE_IO)
+b923650b84068b lib/pci_iomap.c Michael S. Tsirkin 2012-01-30  @43  		return __pci_ioport_map(dev, start, len);
+92b19ff50e8f24 lib/pci_iomap.c Dan Williams       2015-08-10   44  	if (flags & IORESOURCE_MEM)
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   45  		return ioremap(start, len);
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   46  	/* What? */
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   47  	return NULL;
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   48  }
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   49  EXPORT_SYMBOL(pci_iomap_range);
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24   50  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   51  /**
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   52   * pci_iomap_wc_range - create a virtual WC mapping cookie for a PCI BAR
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   53   * @dev: PCI device that owns the BAR
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   54   * @bar: BAR number
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   55   * @offset: map memory at the given offset in BAR
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   56   * @maxlen: max length of the memory to map
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   57   *
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   58   * Using this function you will get a __iomem address to your device BAR.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   59   * You can access it using ioread*() and iowrite*(). These functions hide
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   60   * the details if this is a MMIO or PIO address space and will just do what
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   61   * you expect from them in the correct way. When possible write combining
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   62   * is used.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   63   *
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   64   * @maxlen specifies the maximum length to map. If you want to get access to
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   65   * the complete BAR from offset to the end, pass %0 here.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   66   * */
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  @67  void __iomem *pci_iomap_wc_range(struct pci_dev *dev,
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   68  				 int bar,
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   69  				 unsigned long offset,
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   70  				 unsigned long maxlen)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   71  {
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   72  	resource_size_t start = pci_resource_start(dev, bar);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   73  	resource_size_t len = pci_resource_len(dev, bar);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   74  	unsigned long flags = pci_resource_flags(dev, bar);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   75  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   76  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   77  	if (flags & IORESOURCE_IO)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   78  		return NULL;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   79  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   80  	if (len <= offset || !start)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   81  		return NULL;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   82  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   83  	len -= offset;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   84  	start += offset;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   85  	if (maxlen && len > maxlen)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   86  		len = maxlen;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   87  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   88  	if (flags & IORESOURCE_MEM)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   89  		return ioremap_wc(start, len);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   90  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   91  	/* What? */
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   92  	return NULL;
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   93  }
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   94  EXPORT_SYMBOL_GPL(pci_iomap_wc_range);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24   95  
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   96  /**
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   97   * pci_iomap - create a virtual mapping cookie for a PCI BAR
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   98   * @dev: PCI device that owns the BAR
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29   99   * @bar: BAR number
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  100   * @maxlen: length of the memory to map
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  101   *
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  102   * Using this function you will get a __iomem address to your device BAR.
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  103   * You can access it using ioread*() and iowrite*(). These functions hide
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  104   * the details if this is a MMIO or PIO address space and will just do what
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  105   * you expect from them in the correct way.
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  106   *
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  107   * @maxlen specifies the maximum length to map. If you want to get access to
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  108   * the complete BAR without checking for its length first, pass %0 here.
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  109   * */
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29 @110  void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  111  {
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  112  	return pci_iomap_range(dev, bar, 0, maxlen);
+eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  113  }
+66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  114  EXPORT_SYMBOL(pci_iomap);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  115  
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  116  /**
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  117   * pci_iomap_wc - create a virtual WC mapping cookie for a PCI BAR
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  118   * @dev: PCI device that owns the BAR
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  119   * @bar: BAR number
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  120   * @maxlen: length of the memory to map
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  121   *
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  122   * Using this function you will get a __iomem address to your device BAR.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  123   * You can access it using ioread*() and iowrite*(). These functions hide
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  124   * the details if this is a MMIO or PIO address space and will just do what
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  125   * you expect from them in the correct way. When possible write combining
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  126   * is used.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  127   *
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  128   * @maxlen specifies the maximum length to map. If you want to get access to
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  129   * the complete BAR without checking for its length first, pass %0 here.
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  130   * */
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24 @131  void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long maxlen)
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  132  {
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  133  	return pci_iomap_wc_range(dev, bar, 0, maxlen);
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  134  }
+1b3d4200c1e00a lib/pci_iomap.c Luis R. Rodriguez  2015-08-24  135  EXPORT_SYMBOL_GPL(pci_iomap_wc);
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  136  
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  137  /*
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  138   * pci_iounmap() somewhat illogically comes from lib/iomap.c for the
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  139   * CONFIG_GENERIC_IOMAP case, because that's the code that knows about
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  140   * the different IOMAP ranges.
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  141   *
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  142   * But if the architecture does not use the generic iomap code, and if
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  143   * it has _not_ defined it's own private pci_iounmap function, we define
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  144   * it here.
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  145   *
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  146   * NOTE! This default implementation assumes that if the architecture
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  147   * support ioport mapping (HAS_IOPORT_MAP), the ioport mapping will
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  148   * be fixed to the range [ PCI_IOBASE, PCI_IOBASE+IO_SPACE_LIMIT [,
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  149   * and does not need unmapping with 'ioport_unmap()'.
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  150   *
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  151   * If you have different rules for your architecture, you need to
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  152   * implement your own pci_iounmap() that knows the rules for where
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  153   * and how IO vs MEM get mapped.
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  154   *
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  155   * This code is odd, and the ARCH_HAS/ARCH_WANTS #define logic comes
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  156   * from legacy <asm-generic/io.h> header file behavior. In particular,
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  157   * it would seem to make sense to do the iounmap(p) for the non-IO-space
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  158   * case here regardless, but that's not what the old header file code
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  159   * did. Probably incorrectly, but this is meant to be bug-for-bug
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  160   * compatible.
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  161   */
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  162  #if defined(ARCH_WANTS_GENERIC_PCI_IOUNMAP)
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  163  
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19 @164  void pci_iounmap(struct pci_dev *dev, void __iomem *p)
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  165  {
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  166  #ifdef ARCH_HAS_GENERIC_IOPORT_MAP
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  167  	uintptr_t start = (uintptr_t) PCI_IOBASE;
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  168  	uintptr_t addr = (uintptr_t) p;
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  169  
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  170  	if (addr >= start && addr < start + IO_SPACE_LIMIT)
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  171  		return;
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  172  	iounmap(p);
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  173  #endif
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  174  }
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  175  EXPORT_SYMBOL(pci_iounmap);
+316e8d79a0959c lib/pci_iomap.c Linus Torvalds     2021-09-19  176  
 
->> +{
->> +	struct hsr_port *port;
->> +	struct hsr_priv *hsr;
->> +
->> +	hsr = netdev_priv(dev);
->> +
->> +	hsr_for_each_port(hsr, port) {
->> +		if (port->type == HSR_PT_MASTER)
->> +			continue;
->> +		switch (port->type) {
->> +		case HSR_PT_SLAVE_A:
->> +		case HSR_PT_SLAVE_B:
->> +			dev_mc_sync_multiple(port->dev, dev);
->> +			dev_uc_sync_multiple(port->dev, dev);
->> +			break;
->> +		default:
->> +			break;
->> +		}
->> +	}
->> +}
->> +
->> +static void hsr_change_rx_flags(struct net_device *dev, int change)
->> +{
->> +	struct hsr_port *port;
->> +	struct hsr_priv *hsr;
->> +
->> +	hsr = netdev_priv(dev);
->> +
->> +	hsr_for_each_port(hsr, port) {
->> +		if (port->type == HSR_PT_MASTER)
->> +			continue;
->> +		switch (port->type) {
->> +		case HSR_PT_SLAVE_A:
->> +		case HSR_PT_SLAVE_B:
->> +			if (change & IFF_ALLMULTI)
->> +				dev_set_allmulti(port->dev,
->> +						 dev->flags &
->> +						 IFF_ALLMULTI ? 1 : -1);
->> +			break;
->> +		default:
->> +			break;
->> +		}
->> +	}
->> +}
->> +
->>  static const struct net_device_ops hsr_device_ops = {
->>  	.ndo_change_mtu = hsr_dev_change_mtu,
->>  	.ndo_open = hsr_dev_open,
->>  	.ndo_stop = hsr_dev_close,
->>  	.ndo_start_xmit = hsr_dev_xmit,
->> +	.ndo_change_rx_flags = hsr_change_rx_flags,
->>  	.ndo_fix_features = hsr_fix_features,
->> +	.ndo_set_rx_mode = hsr_ndo_set_rx_mode,
->>  };
->>  
->>  static struct device_type hsr_type = {
->>
->> base-commit: 5a82d69d48c82e89aef44483d2a129f869f3506a
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
