@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECD07F2219
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AEC7F2220
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjKUAY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51128 "EHLO
+        id S230412AbjKUA24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKUAY4 (ORCPT
+        with ESMTP id S229490AbjKUA2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:24:56 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A3FBA;
-        Mon, 20 Nov 2023 16:24:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=9vlgy8wfHdl3PYwUVlmm+Im+7f3OcAa0y0Xf8fqzxVQ=; b=L7BwsBkXDv6yE5ugjFsPF6yKSj
-        jTqghU9sCbh/qP3kYQo+fDvDxqqLcFcwt3XdLqdMHA3GEPhDDHoJnIQWpqRRAUk52zeEHwXE0UoPx
-        Dq9d1JjI57DARF73zid/0LBEJzurXPf5b4yYEAi3yfYuUxkzZRFCa0Iu5kDoTVVaC71o=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5EZL-000hsQ-Pb; Tue, 21 Nov 2023 01:24:47 +0100
-Date:   Tue, 21 Nov 2023 01:24:47 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [RFC PATCH net-next v2 01/10] net: phy: Introduce ethernet link
- topology representation
-Message-ID: <9079c9f5-5531-4c38-b9c9-975ed3d96104@lunn.ch>
-References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
- <20231117162323.626979-2-maxime.chevallier@bootlin.com>
+        Mon, 20 Nov 2023 19:28:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B41B4
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:28:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F2D5C433C7;
+        Tue, 21 Nov 2023 00:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700526531;
+        bh=tVOIKJd4kJ7fBg79SOhSnFST6k3zeeIVN5WaqodLUIU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aPBqq9i7I2H+gEkoVoqGZAeigotmYTn9NrtyDRrkVpdPb48U7gqp41xPVdezq2b7v
+         mefnJIVi7ZTa+tv+ezKbK8qMRK6WubXgofQPZQGEq4cips2WkMjhe0g+wCc1U62BzH
+         Q55vlOmcwDarqnGOx7C53FvXxhucy+ZpCa/x2SW4O5wD+52NAzb5Jt5RM6hsjLrjYL
+         FShMcdRAb0ciBB18Ssx9ie9Qa0VfagAuGyU+lNrx+22+MTxIZoLMABQHWel/1fKylt
+         FqwQasqRaGTL5e5kNJEXRIjiuaX++ZtLp/LgNELIQsOZ+Prewa9EoW9jHgtTOcN4hG
+         7ey954nDYv+5A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0378BCE1ABD; Mon, 20 Nov 2023 16:28:51 -0800 (PST)
+Date:   Mon, 20 Nov 2023 16:28:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+Message-ID: <b8c1ae88-5c12-488c-a7af-42119ebd55d2@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-48-ankur.a.arora@oracle.com>
+ <20231107192703.1c493431@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231117162323.626979-2-maxime.chevallier@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231107192703.1c493431@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +int link_topo_add_phy(struct link_topology *lt, struct phy_device *phy,
-> +		      enum phy_upstream upt, void *upstream)
-> +{
-> +	ret = xa_alloc_cyclic(&lt->phys, &phy->phyindex, pdn, xa_limit_32b,
-> +			      &lt->next_phy_index, GFP_KERNEL);
-> +	if (ret)
-> +		goto err;
-> +
-> +	return 0;
+On Tue, Nov 07, 2023 at 07:27:03PM -0500, Steven Rostedt wrote:
+> On Tue,  7 Nov 2023 13:57:33 -0800
+> Ankur Arora <ankur.a.arora@oracle.com> wrote:
+> 
+> > With PREEMPTION being always-on, some configurations might prefer
+> > the stronger forward-progress guarantees provided by PREEMPT_RCU=n
+> > as compared to PREEMPT_RCU=y.
+> > 
+> > So, select PREEMPT_RCU=n for PREEMPT_VOLUNTARY and PREEMPT_NONE and
+> > enabling PREEMPT_RCU=y for PREEMPT or PREEMPT_RT.
+> > 
+> > Note that the preemption model can be changed at runtime (modulo
+> > configurations with ARCH_NO_PREEMPT), but the RCU configuration
+> > is statically compiled.
+> 
+> I wonder if we should make this a separate patch, and allow PREEMPT_RCU=n
+> when PREEMPT=y?
 
-It looks like that could be just return xa_alloc_cyclic(...);
+You mean independent of this series?  If so, I am not all that excited
+about allowing a new option due to the effect on testing.  With this full
+series, the number of test scenarios is preserved.
 
-> diff --git a/include/linux/link_topology.h b/include/linux/link_topology.h
+Actually, that is not exactly true, is it?  It would be if we instead had
+something like this:
 
-I think this filename is too generic. Maybe phy_link_topology.h, or
-move it into include/net.
+config PREEMPT_RCU
+	bool
+	default y if PREEMPT || PREEMPT_RT
+	depends on !PREEMPT_NONE && !PREEMPT_VOLUNTARY
+	select TREE_RCU
 
-> +struct phy_device *link_topo_get_phy(struct link_topology *lt, int phyindex);
-> +int link_topo_add_phy(struct link_topology *lt, struct phy_device *phy,
-> +		      enum phy_upstream upt, void *upstream);
-> +
-> +void link_topo_del_phy(struct link_topology *lt, struct phy_device *phy);
+Any reason why this would be a problem?
 
-What is the locking for these functions? Are you assuming RTNL? Maybe
-add ASSERT_RTNL(); into them to make this clear.
+Or to put it another way, do you know of anyone who really wants
+a preemptible kernel (CONFIG_PREEMPT=y, CONFIG_PREEMPT_NONE=n
+and CONFIG_PREEMPT_VOLUNTARY=n) but also non-preemptible RCU
+(CONFIG_PREEMPT_RCU=y)?  If so, why?  I am having some difficulty seeing
+how this combination could be at all helpful.  And if it is not helpful,
+we should not allow people to shoot themselves in the foot with it.
 
-> diff --git a/include/linux/link_topology_core.h b/include/linux/link_topology_core.h
+> This could allow us to test this without this having to be part of this
+> series.
 
-Again, i think this filename is too generic.
+OK, if you mean for testing purposes but not to go to mainline without
+the rest of the series, I am good with that idea.
 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index a16c9cc063fe..7021a0d3d982 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-> @@ -40,7 +40,6 @@
->  #include <net/dcbnl.h>
->  #endif
->  #include <net/netprio_cgroup.h>
-> -
->  #include <linux/netdev_features.h>
+And thank you to Ankur for preserving non-preemptible RCU for those of us
+using system that are adequately but not generously endowed with memory!
 
-Whitespace change.
-
->  #include <linux/neighbour.h>
->  #include <uapi/linux/netdevice.h>
-> @@ -52,6 +51,7 @@
->  #include <net/net_trackers.h>
->  #include <net/net_debug.h>
->  #include <net/dropreason-core.h>
-> +#include <linux/link_topology_core.h>
->  
->  struct netpoll_info;
->  struct device;
-> @@ -2405,6 +2405,7 @@ struct net_device {
->  #if IS_ENABLED(CONFIG_CGROUP_NET_PRIO)
->  	struct netprio_map __rcu *priomap;
->  #endif
-> +	struct link_topology	link_topo;
->  	struct phy_device	*phydev;
->  	struct sfp_bus		*sfp_bus;
->  	struct lock_class_key	*qdisc_tx_busylock;
-> diff --git a/include/linux/phy.h b/include/linux/phy.h
-> index 3cc52826f18e..d698180b1df0 100644
-> --- a/include/linux/phy.h
-> +++ b/include/linux/phy.h
-> @@ -543,6 +543,8 @@ struct macsec_ops;
->   * @drv: Pointer to the driver for this PHY instance
->   * @devlink: Create a link between phy dev and mac dev, if the external phy
->   *           used by current mac interface is managed by another mac interface.
-> + * @phyindex: Unique id across the phy's parent tree of phys to address the PHY
-> + *	      from userspace, similar to ifindex. It's never recycled.
->   * @phy_id: UID for this device found during discovery
->   * @c45_ids: 802.3-c45 Device Identifiers if is_c45.
->   * @is_c45:  Set to true if this PHY uses clause 45 addressing.
-> @@ -640,6 +642,7 @@ struct phy_device {
->  
->  	struct device_link *devlink;
->  
-> +	int phyindex;
-
-Is this int, or unsigned int? Is a negative value possible and legal?
-
-> +enum phy_upstream {
-> +	PHY_UPSTREAM_MAC,
-> +	PHY_UPSTREAM_SFP,
-> +	PHY_UPSTREAM_PHY,
-> +};
-
-Please document what these actually mean.
-
-       Andrew
+							Thanx, Paul
