@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D657F3041
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1AF7F3043
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234038AbjKUOF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S233871AbjKUOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:06:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbjKUOFz (ORCPT
+        with ESMTP id S233976AbjKUOGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:05:55 -0500
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFB110C4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:05:51 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-1f5d7db4dcbso1735452fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:05:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700575550; x=1701180350; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JicfpEa3uNWDUz2NDkVsyh217wG6PJj7MozXv7sFA4w=;
-        b=DdJPZSovoMPlMU3KZCRxvC3VqG5NthmU5hFPCmVZbUFOf9F2dAGDHowEfIA/SxrI+6
-         m+E1a59osoAqwNNTKaPZWmNQCJIe3OSvPdox6pTNOXyqqFjSqznr/GxCH5G9U5kHvshi
-         UHCgTuzfo5G63S5tjNxR3FARuBtO0CKQvebgwr440u8lO1BP8FGprwKRoWBKUMRi06fA
-         YH4hXPDWLEtGS8R0b1HL8otPo0/WjlsB8P3RxSGWbMlp2GinhOT3SWCUTzEDzSO7504q
-         albBlMuklifdiHD2nIFVSfPNPiGY5FPI4PfDcYn6+nE14bONchGvVnzylG7qRR4YESoT
-         WLcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700575550; x=1701180350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JicfpEa3uNWDUz2NDkVsyh217wG6PJj7MozXv7sFA4w=;
-        b=X4ur3mqSCW5diLeFKEka1PBL+eog9Yu5RydwTy45iMTodsITkPdLEiYLPB/zARXatS
-         7DUnrWuovv7mu0HLiVj3hDXjgnHekn1YyUKmVcmX0e2yJi2jKYJv1J5Rg/XOBKZVZlti
-         jawMlYMt1gC+wNdB3zFDJp+NQAIhPWaYbr44fcF7uRiriaTGg46rXwHtVdvdRIw/g8LO
-         ZcOqs9p9gyVOLj5B6EvtF4jtSY+zL25cOwDhEDGHOVQJTXFV9vPMEYQPBCJ7Fmp9SRQG
-         7hwhsH3GQI7ErG9lN/krrixknnwf31cZ3XJJA6Ggtp3Qs55mX98zVsR2XldRg9niqaSa
-         CDZw==
-X-Gm-Message-State: AOJu0Yypj55Qo6Gl6qAHOG51BlOyejPBohN9VV4iUSDk15fimaSICrQS
-        WC4bL0SMQewd3qPksCPaGjI9ad91pByRvhK5mhE=
-X-Google-Smtp-Source: AGHT+IHKHQMKS3b1gLqqox30Lk4uUwKC52JYW8VCEcKNOaYp9uPK894sLiFLuA30J+s9SqYcbYaSE9jt5JVjnAUgiXE=
-X-Received: by 2002:a05:6871:7398:b0:1f5:994:9853 with SMTP id
- na24-20020a056871739800b001f509949853mr13022151oac.22.1700575550741; Tue, 21
- Nov 2023 06:05:50 -0800 (PST)
+        Tue, 21 Nov 2023 09:06:01 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0D2D79;
+        Tue, 21 Nov 2023 06:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1700575556;
+        bh=Rjo+GzhBLOQg08qfzJaOOas6LcnZO+kRHO1x7xhCg5A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=thxzknEYOsX54Uxq75EVE8gsqAuZckze9eVbdjGrqWhnAxFJd2zTUYbp3rlwsvm8L
+         RvifiE+dNS7ZSLgO1vz/2iuBA+vxTg+gon+T9GxUfPeiqu1Cn1B3IDL+Ia+I3b2tn4
+         DUC/TT7rpYPd1WMR/O9eiC1zLaBkDDg/AWBX5uFU9AIA2HzYKaNAjYt0BqP2t5Mj4i
+         ACdF1uP7Z+1r36tCdmelBH4eidFpnqjDGiDmFd1pe/d61iNtSmMAHFrsJwhHlsYXim
+         cg2WHeKtjYA2VqeCjjb3bN4HawXXVIVV8MT8V9NjvagkHshjx+GeLlz0QRrCqOkWhL
+         ZBJqug52ltvkw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZR442Pzhz1dBP;
+        Tue, 21 Nov 2023 09:05:56 -0500 (EST)
+Message-ID: <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+Date:   Tue, 21 Nov 2023 09:06:18 -0500
 MIME-Version: 1.0
-References: <87edgv4x3i.fsf@vps.thesusis.net> <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
- <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
- <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com> <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
- <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com> <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
- <87bkbodp51.fsf@vps.thesusis.net>
-In-Reply-To: <87bkbodp51.fsf@vps.thesusis.net>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 21 Nov 2023 09:05:39 -0500
-Message-ID: <CADnq5_Nh4wCFY10Ha9dTGWvehPCdY2zxfERtFuoeF5_xA+P=QA@mail.gmail.com>
-Subject: Re: Radeon regression in 6.6 kernel
-To:     Phillip Susi <phill@thesusis.net>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         linux-kernel@vger.kernel.org,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 5:40=E2=80=AFPM Phillip Susi <phill@thesusis.net> w=
-rote:
->
-> Alex Deucher <alexdeucher@gmail.com> writes:
->
-> > Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Maybe I'm
-> > misunderstanding what the original report was actually testing.  If it
-> > was 6.7, then try reverting:
-> > 56e449603f0ac580700621a356d35d5716a62ce5
-> > b70438004a14f4d0f9890b3297cd66248728546c
->
-> I had been running v6.6-rc5 before pulling.  It looks like that got me
-> somewhere between v6.6 and v6.7-rc1.  Reverting those two commits fixes
-> it.
+On 2023-11-21 03:47, Peter Zijlstra wrote:
+> On Mon, Nov 20, 2023 at 03:56:30PM -0800, Paul E. McKenney wrote:
+>> On Mon, Nov 20, 2023 at 11:23:11PM +0100, Peter Zijlstra wrote:
+>>> On Mon, Nov 20, 2023 at 02:18:29PM -0800, Paul E. McKenney wrote:
+>>>> On Mon, Nov 20, 2023 at 10:47:42PM +0100, Peter Zijlstra wrote:
+>>>>> On Mon, Nov 20, 2023 at 03:54:14PM -0500, Mathieu Desnoyers wrote:
+>>>>>> When invoked from system call enter/exit instrumentation, accessing
+>>>>>> user-space data is a common use-case for tracers. However, tracepoints
+>>>>>> currently disable preemption around iteration on the registered
+>>>>>> tracepoint probes and invocation of the probe callbacks, which prevents
+>>>>>> tracers from handling page faults.
+>>>>>>
+>>>>>> Extend the tracepoint and trace event APIs to allow defining a faultable
+>>>>>> tracepoint which invokes its callback with preemption enabled.
+>>>>>>
+>>>>>> Also extend the tracepoint API to allow tracers to request specific
+>>>>>> probes to be connected to those faultable tracepoints. When the
+>>>>>> TRACEPOINT_MAY_FAULT flag is provided on registration, the probe
+>>>>>> callback will be called with preemption enabled, and is allowed to take
+>>>>>> page faults. Faultable probes can only be registered on faultable
+>>>>>> tracepoints and non-faultable probes on non-faultable tracepoints.
+>>>>>>
+>>>>>> The tasks trace rcu mechanism is used to synchronize read-side
+>>>>>> marshalling of the registered probes with respect to faultable probes
+>>>>>> unregistration and teardown.
+>>>>>
+>>>>> What is trace-trace rcu and why is it needed here? What's wrong with
+>>>>> SRCU ?
+>>>>
+>>>> Tasks Trace RCU avoids SRCU's full barriers and the array accesses in the
+>>>> read-side primitives.  This can be important when tracing low-overhead
+>>>> components of fast paths.
+>>>
+>>> So why wasn't SRCU improved? That is, the above doesn't much explain.
+>>>
+>>> What is the trade-off made to justify adding yet another RCU flavour?
+>>
+>> We didn't think you would be all that happy about having each and
+>> every context switch iterating through many tens or even hundreds of
+>> srcu_struct structures.  For that matter, we didn't think that anyone
+>> else would be all that happy either.  Us included.
+> 
+> So again, what is task-trace RCU ? How does it differ from say
+> preemptible rcu, which AFAICT could be used here too, no?
 
-Does reverting 56e449603f0ac580700621a356d35d5716a62ce5 alone fix it?
-Can you also attach your full dmesg log for the failed suspend?
+Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
 
-Alex
+- Allow page faults within RCU read-side (like SRCU),
+- Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
+- The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
+   that. Hence, this is not meant to be a generic replacement for SRCU.
+
+Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
+fit for the following reasons:
+
+- It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
+- AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
+
+Please let me know if I'm missing something.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
