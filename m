@@ -2,101 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB107F3426
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430C17F342B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233924AbjKUQqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
+        id S233718AbjKUQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:47:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233718AbjKUQqd (ORCPT
+        with ESMTP id S230307AbjKUQrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:46:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AD5E7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:46:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CA5BC433C7;
-        Tue, 21 Nov 2023 16:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700585189;
-        bh=LY9xRQ7JdmDXMRG582U6DyHNCMi3KaOSsQGtTke5vAo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IqCUOi35WWq2rNmviBVSnzbjGvfAO+tf3QCsWcTiQp4AZOHunoRJtfT7KvtCp23hI
-         B6DV2bZzzN7+y6OakH7MB/Ih48KO23fGFEJjxbC6A4QsFLPuHYLrQvHJl8AmeCenSZ
-         zUekNkAX3E5wdpEDeTqLCZTFoRkKM/ueCpL1q/zEqjt9UEap7idMRGsCTrGSna12fI
-         E0hQpX2C+DC11lrCzN03OfE3jpqIehwfCJKPug7wgZ8WFd3keNkQBSgbceHu6k4WTb
-         u1bbzMHVpxR3rCcep8tTlCFGLIkFNC8jgGzCWmvztbejvAAn/LQglXKeQ7L9g4J/qO
-         Uv1vwOmAt8ciw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C678BCE04C0; Tue, 21 Nov 2023 08:46:28 -0800 (PST)
-Date:   Tue, 21 Nov 2023 08:46:28 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <017aff1d-70cc-4c0c-a05c-aad4329068e7@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <2a41f6cd-971d-4360-aeeb-a9cbf665bb72@paulmck-laptop>
- <20231121160300.GK8262@noisy.programming.kicks-ass.net>
+        Tue, 21 Nov 2023 11:47:19 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FF6100;
+        Tue, 21 Nov 2023 08:47:15 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5bde80aad05so4518816a12.2;
+        Tue, 21 Nov 2023 08:47:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700585235; x=1701190035; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4pN2u4fGcywnuJpGPzQlph9Q+P1Toihu44zlYs+cFFQ=;
+        b=DzxB0nT8p4NyIUu5ZtyBP5LEh8DnTN2KVJL5FLUCbVf5q5ovC7zgcJol4TBTRCXb2o
+         7SSQlDq9vPWcYSkWsk141E+Vmm4w+Hnwd1nOMkd0RKZEa2SIhsd+oXaU3QqB4VGkCTIU
+         5nQhZW/+dmG/p0L8f6+AlaFXwVxAdJx5nsGXAxt1JNiQF+8cHcndF0T9MagiDsMc47cT
+         Bdi4sQubI5zt+eGRlU18z9tkzmiLUZTGZYS9O1tYFCbancpswn66M4zh1FmcnqSQI6Sm
+         1ET82DcJGjh/6bY8GQ2T193dPEPm3Dgt04/K6TWeqWMXTVUwuZp/ovQw5H2q0nctmVEv
+         MpOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700585235; x=1701190035;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4pN2u4fGcywnuJpGPzQlph9Q+P1Toihu44zlYs+cFFQ=;
+        b=a3ig5k9fgIlUoWRhFi57mhhjeldpHY6Oc48+r44lVN/y/ATw7HzrKFCv32rXJ47NSk
+         gcGS5P19PqTYDE0ZFlc5l7i1P3Oeq2Tn3PI+23oWNd7xJM7jd/J2G08oHeto46TIQH7G
+         KLKvmxiwNSLotlqgjW3biw6I6hB6PvCkuI3a2CnChwHipLkJMwvHfHFpNAYoZhTpVjnX
+         3XaOFGOxUY8Dqa31U29o++Wdd5vOl/aZBXHo75cHoyZd39Aw5SyZi/M9MNsRuzX5IRZw
+         YjQHaVZ0Z59w5KyT8vZwGDn9Fr2BW04u6Cj9WXBsYKGn+KWBwPnpQyWx8HG5uZkgdgnA
+         FUww==
+X-Gm-Message-State: AOJu0YxjBnNYLaFsLgR0/L6eoFjsYwPbT/JA4mD0IiSH7FPiqRNnuHjD
+        tPZsQtAEpb0tfRFZIJvW5FD7zToPA5gWOXBL2DM=
+X-Google-Smtp-Source: AGHT+IEgB8wdH50KpUTsCwM7hxb8hnHbggXC75EKjN4In3uMlNFDFNmIEv3gFB7XElvbm6ezJrT/0+1/Sj7dKS+3aBM=
+X-Received: by 2002:a17:90a:4411:b0:280:18bd:ffe7 with SMTP id
+ s17-20020a17090a441100b0028018bdffe7mr9875785pjg.48.1700585234819; Tue, 21
+ Nov 2023 08:47:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121160300.GK8262@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz> <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz>
+In-Reply-To: <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Tue, 21 Nov 2023 17:47:03 +0100
+Message-ID: <CA+fCnZdwLn_h3rsamXZMPcjcvqY3TwDmd+3gRUtjkfEad445Nw@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] KASAN: remove code paths guarded by CONFIG_SLAB
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 05:03:00PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 07:58:40AM -0800, Paul E. McKenney wrote:
-> 
-> > Tasks Trace RCU allows general blocking in its readers, not just the
-> > subject-to-priority-boosting blocking permitted within preemptible RCU
-> > readers.  Restrictions on the use of Tasks Trace RCU are in place to allow
-> > getting away with this general blocking.  Even systems generously endowed
-> > with memory are not going to do well when the RCU grace period is blocked
-> > on I/O, especially if that I/O is across a network to a slow file server.
-> > 
-> > Which means a separate RCU instance is needed.  Which is Tasks Trace RCU.
-> 
-> Separate instance not a problem, nor really the question.
-> 
-> What is the basic mechanism of task-tracing? Is it really the existing
-> tasks-rcu extended with read-side critical sections and call_rcu ?
-> 
-> If so, then why not have it be tasks-rcu?
-> 
-> Or is it a variant of the preemptible/SRCU class of RCUs that are
-> counter-array based? I suspect not.
-> 
-> So once again, what exactly is tasks-tracing ?
+On Mon, Nov 20, 2023 at 7:34=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> With SLAB removed and SLUB the only remaining allocator, we can clean up
+> some code that was depending on the choice.
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/kasan/common.c     | 13 ++-----------
+>  mm/kasan/kasan.h      |  3 +--
+>  mm/kasan/quarantine.c |  7 -------
+>  3 files changed, 3 insertions(+), 20 deletions(-)
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 256930da578a..5d95219e69d7 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -153,10 +153,6 @@ void __kasan_poison_object_data(struct kmem_cache *c=
+ache, void *object)
+>   * 2. A cache might be SLAB_TYPESAFE_BY_RCU, which means objects can be
+>   *    accessed after being freed. We preassign tags for objects in these
+>   *    caches as well.
+> - * 3. For SLAB allocator we can't preassign tags randomly since the free=
+list
+> - *    is stored as an array of indexes instead of a linked list. Assign =
+tags
+> - *    based on objects indexes, so that objects that are next to each ot=
+her
+> - *    get different tags.
+>   */
+>  static inline u8 assign_tag(struct kmem_cache *cache,
+>                                         const void *object, bool init)
+> @@ -171,17 +167,12 @@ static inline u8 assign_tag(struct kmem_cache *cach=
+e,
+>         if (!cache->ctor && !(cache->flags & SLAB_TYPESAFE_BY_RCU))
+>                 return init ? KASAN_TAG_KERNEL : kasan_random_tag();
+>
+> -       /* For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU: */
+> -#ifdef CONFIG_SLAB
+> -       /* For SLAB assign tags based on the object index in the freelist=
+. */
+> -       return (u8)obj_to_index(cache, virt_to_slab(object), (void *)obje=
+ct);
+> -#else
+>         /*
+> -        * For SLUB assign a random tag during slab creation, otherwise r=
+euse
+> +        * For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU,
+> +        * assign a random tag during slab creation, otherwise reuse
+>          * the already assigned tag.
+>          */
+>         return init ? kasan_random_tag() : get_tag(object);
+> -#endif
+>  }
+>
+>  void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 8b06bab5c406..eef50233640a 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -373,8 +373,7 @@ void kasan_set_track(struct kasan_track *track, gfp_t=
+ flags);
+>  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t=
+ flags);
+>  void kasan_save_free_info(struct kmem_cache *cache, void *object);
+>
+> -#if defined(CONFIG_KASAN_GENERIC) && \
+> -       (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+> +#ifdef CONFIG_KASAN_GENERIC
+>  bool kasan_quarantine_put(struct kmem_cache *cache, void *object);
+>  void kasan_quarantine_reduce(void);
+>  void kasan_quarantine_remove_cache(struct kmem_cache *cache);
+> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> index ca4529156735..138c57b836f2 100644
+> --- a/mm/kasan/quarantine.c
+> +++ b/mm/kasan/quarantine.c
+> @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, str=
+uct kmem_cache *cache)
+>  {
+>         void *object =3D qlink_to_object(qlink, cache);
+>         struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, objec=
+t);
+> -       unsigned long flags;
+> -
+> -       if (IS_ENABLED(CONFIG_SLAB))
+> -               local_irq_save(flags);
+>
+>         /*
+>          * If init_on_free is enabled and KASAN's free metadata is stored=
+ in
+> @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, stru=
+ct kmem_cache *cache)
+>         *(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
+>
+>         ___cache_free(cache, object, _THIS_IP_);
+> -
+> -       if (IS_ENABLED(CONFIG_SLAB))
+> -               local_irq_restore(flags);
+>  }
+>
+>  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *cach=
+e)
+>
+> --
+> 2.42.1
+>
 
-I think we covered this elsewhere in the thread, but if there are
-lingering questions, you know where to find us.  ;-)
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
-							Thanx, Paul
+Very nice to see SLAB-induced complexity being gone :)
+
+Thank you!
