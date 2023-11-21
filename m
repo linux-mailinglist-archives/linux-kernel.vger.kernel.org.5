@@ -2,85 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFC97F3011
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990887F3020
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjKUOBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
+        id S233961AbjKUODC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:03:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbjKUOA6 (ORCPT
+        with ESMTP id S230424AbjKUODB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:00:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42574D78
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:00:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7FBC433C8;
-        Tue, 21 Nov 2023 14:00:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700575254;
-        bh=w7YdJzRR6ob83BoAwBQ4tXEIudgax1ZMqEvN7E+987o=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=o6tMvTxiVFn3fwv9A5qj+eEDa5j20thIPgZ6pjgAE4G+JpctYA+njsZz/Hgev3W0H
-         dJC4YcVZlHPV3tqi+fu/eSo/2z/hrT+0LpIP9vvkLeToP8hvYowjWDqoueO/kc5aTG
-         fW9ak8engG5t+kDYZpSrp7s4MBYpTxQFkhXn3RGlSGZpCF1NyjDCrSgxPPHLcvnazk
-         32GOpXaMI36X5E9IDiwweBEvPbZTKb4NfUZcII1n6ycFDeGi2B1zHAugOUO9AWvDDp
-         4lIm69Gv7cQhAaunIbaMYdCKHGJRsud1mj4c1q41TinQBTZ2ZeLANgK8A11b7Uwk/7
-         Pl6GlHzHNAXxQ==
-Date:   Tue, 21 Nov 2023 15:00:50 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Input Devices <linux-input@vger.kernel.org>,
-        Mavroudis Chatzilazaridis <mavchatz@protonmail.com>,
-        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@riseup.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        LinuxCat <masch77.linuxcat@gmail.com>,
-        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
-In-Reply-To: <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info>
-Message-ID: <nycvar.YFH.7.76.2311211458030.29220@cbobk.fhfr.pm>
-References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com> <ZVyr-of1X4RudpWG@archie.me> <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Tue, 21 Nov 2023 09:03:01 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4FAD75
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:02:58 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ff26d7c0a6so268440966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:02:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700575376; x=1701180176; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Okt0Vk7fLF6tTfkiXuwS51yIO92AetNhg7I/Fs4g5s=;
+        b=bqWhZQHfHe12SXrRqVzXKxIzVipiZ21opyedT/T2C4fAHlybcIBxOFqqMdIajqKe2V
+         K9MbCxW/PDigccmXYYh+LHsrbkUdUgLTGxExIK0AneSQGwsyYpdTXQVf56CXQTbf2Vh4
+         iY4mGCQhL/Lm8uQGPOu4p8ne1c+MACY67SQw5XpksJqHyJEb0i6xcsQ81xDp4/UkmsDx
+         mDGo4fMbt+0VHzZvmCa9/F9L2XL3SKGe9ger4g9JwnNCC1D9DEQZEQotDGWmsXcNnLAt
+         5RGkudVftEdDrMkvnw4Ob87gOl7t3cTfLaig1EvaAoHEL1EJz9QFgExGIyd6vM36trID
+         7tqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700575376; x=1701180176;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3Okt0Vk7fLF6tTfkiXuwS51yIO92AetNhg7I/Fs4g5s=;
+        b=VVfePVhE/XxkUD/tvOOdTG10Ee+C8bVH0ijF2T2zuyhzX51jRotjIVzruJ+StajQ/a
+         gpjW6mvQYNH7MGvZ6i9lJ68qy3eq90kLzBwA0AYrKXziaRrUGqUP+p0EPLhDc9huDaN9
+         LPhl0ReGO90Xgkey0BOqSpZhgm6tKnrdhymiJKTy9LcaLZIeW6HbnWqIRs0kwHEMTD81
+         Mflg0nq/HkWD0KV/pmbhNuCx2n1zZpKxtbx4E7nPQvmasJ6hHCsA6a9hrPZVoHC60bU8
+         HQss/B89mcoEgVPaAnE34cIJylio/W983GudaY8K9oj+GcvFFtZ97naPHICEr8WgPT+N
+         9w3A==
+X-Gm-Message-State: AOJu0YypJXMqSCFBA5eK6isAaQdU3b5sJ8gD7xAqiOXDKciQ80bFBxJF
+        bbfPpW6tHkGmskZ+HKJNHe3+FWQV6qZpOY5CkAY=
+X-Google-Smtp-Source: AGHT+IEzLuupufRrOkNgN2ws6o5MMFZCEg2Qwce2Gcw9cxG7jatiU0cWqzY9M+OaDjl4qFC7NDP8LqLiVwpcn/S+8L0=
+X-Received: by 2002:a17:907:5095:b0:a00:8706:c82e with SMTP id
+ fv21-20020a170907509500b00a008706c82emr3109200ejc.18.1700575375887; Tue, 21
+ Nov 2023 06:02:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231117163900.766996-1-daniel.baluta@oss.nxp.com>
+ <874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com> <CAEnQRZBb0ZJk7aTaji-xH2jEs7QiTaoXTuS5_K-ruSaxpEnWdw@mail.gmail.com>
+ <TYCPR01MB109142FEC8F77CFFE3930456CD4B4A@TYCPR01MB10914.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYCPR01MB109142FEC8F77CFFE3930456CD4B4A@TYCPR01MB10914.jpnprd01.prod.outlook.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Tue, 21 Nov 2023 16:02:43 +0200
+Message-ID: <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
+Subject: Re: [RFC PATCH] ASoC: simple-card: Use dai_id from node description
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iuliana.prodan@nxp.com" <iuliana.prodan@nxp.com>,
+        "shengjiu.wang@nxp.com" <shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023, Linux regression tracking (Thorsten Leemhuis) wrote:
+On Tue, Nov 21, 2023 at 1:04=E2=80=AFAM Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
+>
+> Hi Daniel, Mark
+>
+> > > > -     args.args_count =3D (of_graph_get_endpoint_count(node) > 1);
+> > > > +     args.args_count =3D (of_graph_get_endpoint_count(node) >=3D 1=
+);
+> > >
+> > > If my understanding was correct, for example you want to use 2nd DAI
+> > > but your DT has only 1 port (thus, it is using reg property) ?
+> >
+> > Yes.
+>
+> But hmm... in your case, you need to setup 2ports, and use 2nd port
+> is assumed approach.
+> Why you don't setup full port ? Do you have some reason ??
 
-> I guess part of the problem is that Bastien got reassigned and might not
-> care about the kernel anymore.
-> 
-> Another part of it is that Jiri was CCed, but Benjamin was not.
-> 
-> Ideally of course Mavroudis Chatzilazaridis, the culprit's author would
-> look into this, but from a quick search on lore it looks like Mavroudis
-> is not a regular kernel contributor and thus might not even know how we
-> expect situations like this to be handled.
+I'm not sure I understand what is a full port setup. But let me
+describe my scenario so that we have a common ground.
 
-A comment from Mavroudis just appeared in
+I want to use audio-graph-card2 machine driver to setup Sound Open
+Firrmware cards.
 
-	https://bugzilla.kernel.org/show_bug.cgi?id=218172
+Here we start with a normal link with the following components:
 
-pointing out that indeed the report descriptor of the device he is working 
-on is different than the ones from the reporter.
+Component 0 (DAI) : 3b6e8000.dsp (See sound/soc/sof/core.c: 280)
+                                  -> for imx8m this has 3 statically
+defined DAIs
+See sound/soc/sof/imx/imx8m.c:
 
-Until this mess gets figured out, I am now pretty sure revert is the way 
-to go for 6.7.
+static struct snd_soc_dai_driver imx8m_dai[] =3D {
+{     // DAI with index 0
+=C2=BB       .name =3D "sai1",
+},
+{      // DAI with index 1
+=C2=BB       .name =3D "sai3",
+},
+{ /   // DAI with index 2
+=C2=BB       .name =3D "micfil",
+},
+};
 
--- 
-Jiri Kosina
-SUSE Labs
+Component 1 (Codec): wm8960-hifi
+                                    -> with 1 DAI
 
+static struct snd_soc_dai_driver wm8960_dai =3D {
+=C2=BB       .name =3D "wm8960-hifi",
+};
+
+Now, I want to write a DTS description where my DAI link uses
+Component 0 (CPU) (with its DAI index 1) connected with Component 1
+(codec) (with its DAI index 0).
+
+So, for this I use the following dts snippet:
+
+sof-sound-wm8960 {
+=C2=BB       =C2=BB       compatible =3D "audio-graph-card2";
+=C2=BB       =C2=BB       links =3D <&cpu>;
+}
+
+dsp: dsp@3b6e8000 {
+    cpu: port@1 {
+=C2=BB       =C2=BB       reg =3D <1>;
+=C2=BB       =C2=BB       cpu_ep: endpoint { remote-endpoint =3D <&codec_ep=
+>; };
+=C2=BB       };
+}
+
+wm8960 {
+
+=C2=BB       port {
+=C2=BB       =C2=BB       codec_ep: endpoint { remote-endpoint =3D <&cpu_ep=
+>; };
+=C2=BB       };
+}
+
+So, property reg =3D <1> refferes to DAI with index 1 associated with
+component DSP.
