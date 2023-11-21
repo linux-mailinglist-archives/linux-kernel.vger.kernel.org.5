@@ -2,66 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1A77F2C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D9B7F2C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233827AbjKULwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        id S234681AbjKUMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjKULwr (ORCPT
+        with ESMTP id S234742AbjKUMA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:52:47 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7B7100;
-        Tue, 21 Nov 2023 03:52:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kwc1QROQrLJK6qUZ4szek7aN5NLGZbYDFO7vd+LJx7k=; b=p1GSOW5Q5ngq2gB9UFFHXhhNx2
-        IEEp17E+pQPpltJwXRdYJ4xt88epaNYQHSVeJlwBx3pY1GvtqF3yPohDeG2ViPVgZQYD63lrd5nlb
-        ftQxctWDXh5TNkaajh1PiVXXADlE/+hNNH3JqQfOtoG+gU1tOI4AOZmC1pgajtlRMcbYuTIHoGvOz
-        6X9j4Hci8nDHUrV90T+eCYyxrQS8fdiCt62QlH8h9QROrz7VE1QEV91c0mePwvziTs5TkmP5RxIkP
-        iVLFidZjxjJQ91CA91OOAo59wa8mcZ0A3UpUmNDpH7TbKNB6iNI10CQwqOnn9gl6L9pzHvGurlc0a
-        kAnwc31g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41702)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r5PIq-0006ve-2k;
-        Tue, 21 Nov 2023 11:52:28 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r5PIp-00049X-Hc; Tue, 21 Nov 2023 11:52:27 +0000
-Date:   Tue, 21 Nov 2023 11:52:27 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Tue, 21 Nov 2023 07:00:29 -0500
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CF2A110CB;
+        Tue, 21 Nov 2023 03:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=0nbt5
+        Iv6Psgndc9/7xheezuoX2tizM5FTvQBexU/VpI=; b=d6qwFxwwscbDqWjScE9wr
+        rRtRKKFeRXTaO3gkBNm+KhJKY+1KdIz6vFFxLILJ8za6Hx34ueTJhRlQKlvo71Qi
+        KzttJ8gNcDXt2AXVCK4f0s5bXHnlgZWovuHLs+ZrD8XYWtWGkDle9EgyYlpn2GUZ
+        7qlUgYejoifPVD5b6IKgGM=
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+        by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wD3f_oWmlxlBnazCw--.33745S2;
+        Tue, 21 Nov 2023 19:52:58 +0800 (CST)
+From:   Shifeng Li <lishifeng1992@126.com>
+To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hkallweit1@gmail.com, corbet@lwn.net,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 3/6] net: phy: at803x: add QCA8084 ethernet phy support
-Message-ID: <ZVyZ+8Q2eNfAKjO/@shell.armlinux.org.uk>
-References: <20231118062754.2453-1-quic_luoj@quicinc.com>
- <20231118062754.2453-4-quic_luoj@quicinc.com>
- <1eb60a08-f095-421a-bec6-96f39db31c09@lunn.ch>
- <ZVkRkhMHWcAR37fW@shell.armlinux.org.uk>
- <eee39816-b0b8-475c-aa4a-8500ba488a29@lunn.ch>
- <fef2ab86-ccd7-4693-8a7e-2dac2c80fd53@quicinc.com>
- <1d4d7761-6b42-48ec-af40-747cb4b84ca5@lunn.ch>
- <316fb626-4dc3-4540-9cc4-e45840e36f77@quicinc.com>
+        jackm@dev.mellanox.co.il, ogerlitz@mellanox.com,
+        roland@purestorage.com, eli@mellanox.com
+Cc:     dinghui@sangfor.com.cn, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shifeng Li <lishifeng1992@126.com>
+Subject: [PATCH v2] net/mlx5e: Fix a race in command alloc flow
+Date:   Tue, 21 Nov 2023 03:52:51 -0800
+Message-Id: <20231121115251.588436-1-lishifeng1992@126.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <316fb626-4dc3-4540-9cc4-e45840e36f77@quicinc.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3f_oWmlxlBnazCw--.33745S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWrWkKw1kKFy5GF1UZryDAwb_yoWrKF4UpF
+        W7Wry7AF48Gw4q9r4vqF40v3W8C39rK3srGF1I93Z3W3Z8A34kAa4kJFyjgryUuFWxtFy7
+        JayDt3W8Arn3XF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-zVbUUUUU=
+X-Originating-IP: [111.222.250.119]
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1S2mtgUvr1pD4QWXJgAAs-
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,107 +55,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 07:10:08PM +0800, Jie Luo wrote:
-> when pcs is configured to SGMII mode, the fourth PHY can reach to
-> maximum speed 2.5G(2500BaseT) that is reached by increasing the clock
-> rate to 312.5MHZ from 125MHZ of 1G speed, but there is no corresponding
-> interface mode can be used to reflect this 2.5G speed mode(sgmii+)
+Fix a cmd->ent use after free due to a race on command entry.
+Such race occurs when one of the commands releases its last refcount and
+frees its index and entry while another process running command flush
+flow takes refcount to this command entry. The process which handles
+commands flush may see this command as needed to be flushed if the other
+process allocated a ent->idx but didn't set ent to cmd->ent_arr in
+cmd_work_handler(). Fix it by moving the assignment of cmd->ent_arr into
+the spin lock.
 
-So this comes up again. 2.5G SGMII? What is that?
+[70013.081955] BUG: KASAN: use-after-free in mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.081967] Write of size 4 at addr ffff88880b1510b4 by task kworker/26:1/1433361
+[70013.081968]
+[70013.081989] CPU: 26 PID: 1433361 Comm: kworker/26:1 Kdump: loaded Tainted: G           OE     4.19.90-25.17.v2101.osc.sfc.6.10.0.0030.ky10.x86_64+debug #1
+[70013.082001] Hardware name: SANGFOR 65N32-US/ASERVER-G-2605, BIOS SSSS5203 08/19/2020
+[70013.082028] Workqueue: events aer_isr
+[70013.082053] Call Trace:
+[70013.082067]  dump_stack+0x8b/0xbb
+[70013.082086]  print_address_description+0x6a/0x270
+[70013.082102]  kasan_report+0x179/0x2c0
+[70013.082133]  ? mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.082173]  mlx5_cmd_trigger_completions+0x1e2/0x4c0 [mlx5_core]
+[70013.082213]  ? mlx5_cmd_use_polling+0x20/0x20 [mlx5_core]
+[70013.082223]  ? kmem_cache_free+0x1ad/0x1e0
+[70013.082267]  mlx5_cmd_flush+0x80/0x180 [mlx5_core]
+[70013.082304]  mlx5_enter_error_state+0x106/0x1d0 [mlx5_core]
+[70013.082338]  mlx5_try_fast_unload+0x2ea/0x4d0 [mlx5_core]
+[70013.082377]  remove_one+0x200/0x2b0 [mlx5_core]
+[70013.082390]  ? __pm_runtime_resume+0x58/0x70
+[70013.082409]  pci_device_remove+0xf3/0x280
+[70013.082426]  ? pcibios_free_irq+0x10/0x10
+[70013.082439]  device_release_driver_internal+0x1c3/0x470
+[70013.082453]  pci_stop_bus_device+0x109/0x160
+[70013.082468]  pci_stop_and_remove_bus_device+0xe/0x20
+[70013.082485]  pcie_do_fatal_recovery+0x167/0x550
+[70013.082493]  aer_isr+0x7d2/0x960
+[70013.082510]  ? aer_get_device_error_info+0x420/0x420
+[70013.082526]  ? __schedule+0x821/0x2040
+[70013.082536]  ? strscpy+0x85/0x180
+[70013.082543]  process_one_work+0x65f/0x12d0
+[70013.082556]  worker_thread+0x87/0xb50
+[70013.082563]  ? __kthread_parkme+0x82/0xf0
+[70013.082569]  ? process_one_work+0x12d0/0x12d0
+[70013.082571]  kthread+0x2e9/0x3a0
+[70013.082579]  ? kthread_create_worker_on_cpu+0xc0/0xc0
+[70013.082592]  ret_from_fork+0x1f/0x40
 
-Let's start off with the basics. SGMII is Cisco's modification of
-1000base-X. The two are broadly compatible in that they can communicate
-with each other provided that the inband control word is disregarded.
+Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
+Signed-off-by: Shifeng Li <lishifeng1992@126.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+---
+v1->v2: fix code conflicts.
 
-2500base-X is generally implemented as 1000base-X over-clocked by 2.5x.
-Some manufacturers state that the inband control word is not supported.
-Others say it can be used. This disparity comes from the lack of early
-IEEE standardisation of this protocol.
-
-Cisco SGMII as defined is a 10M/100M/1G protocol operating at 125MHz
-with a fixed underlying baud rate of 1250Mbaud. Slower speeds are
-achieved via symbol replication by 10x or 100x. The inband control
-word is modified in order to convey this speed information, as well
-as duplex and sometimes also other vendor extensions.
-
-Switching SGMII to be clocked 2.5x faster means that a partner that
-expects SGMII at normal speed sees garbage - it can't recognise the
-waveform. Therefore, it is not possible for inband to convey any
-information. Many vendors explicitly state that symbol replication
-is not supported when "SGMII" is clocked at 2.5x.
-
-All variants of whatever the vendor calls the 2.5G mode tend to use
-the SGMII term because... it's Serial Gigabit... and SGMII even gets
-used by vendors to describe the interface used for 1000base-X.
-Vendors use terms like "HS-SGMII" and other stuff to describe their
-2.5x mode. Some use "2500base-X". Yours seems to use "SGMII+".
-
-SGMII without inband signalling is basically the same as 1000base-X.
-Therefore, SGMII clocked at 2.5x the speed is basically the same as
-2500base-X without inband signalling.
-
-So, the whole area is totally confused, and one should not get too
-hung up on the terminology that vendors are using, but go back to
-precisely what's going on at the hardware level.
-
-We have raised this point almost every time someone talks about an
-up-clocked "SGMII".
-
-
-> Actually we should add a new interface mode such as sgmii+
-> to reflect this 2.5G speed of sgmii
-
-Only if there really is something different about it. For example,
-if it were Cisco SGMII modified to operate always at 312.5MHz with
-inband signalling updated to signal the four speeds. That would
-definitely be a different protocol.
-
-However, it's not that. What it actually is is Cisco SGMII when
-operating at 10M/100M/1G speeds, and 2500base-X without inband
-signalling when operating at 2.5G speed.
-
-We have PHYs that support this (and more) which we support. PHYs
-that switch between 10GBASE-R, 5GBASE-R, 2500BASE-X and Cisco SGMII
-depending on the speed that was negotiated on the media. There is
-no definition of a single interface mode that covers all those,
-because it isn't a single interface mode. It's four separate modes
-that the PHY switches between - and this is no different from what
-is happening with your PHY.
-
-Ultimately, you will need a way to use inband signalling with Cisco
-SGMII for 10M/100M/1G speeds, and then switch to 2500base-X when
-operating at 2.5G speeds, and that is done via the PHY driver
-updating phydev->interface.
-
-What we do need is some way for the PHY to also tell the PCS/MAC
-whether inband should be used. This is something I keep bringing up
-and now that we have PCS drivers revised to use the value from
-phylink_pcs_neg_mode() _and_ a consistent implementation amongst them
-we can now think about signalling to PCS drivers whether inband mode
-needs to be turned off when switching between modes.
-
-There have been patches in the past that allow inband mode to be
-queried from phylib, and this is another important component in
-properly dealing with PHYs that need to use inband signalling with
-Cisco SGMII, but do not support inband signalling when operating at
-2.5G speeds. The problem when operating at 2.5G speed is that the
-base-X protocols are normally for use over fibre, which is the media,
-and therefore the ethtool Autoneg bit should define whether inband
-gets used or not. However, in the case of a PHY using 2500base-X,
-the Autoneg bit continues to define whether autonegotiation should
-be used on the media, and in this case it's the media side of the
-PHY rather than the 2500base-X link.
-
-So, when using a 2500base-X link to a PHY, we need to disregard the
-Autoneg bit, but that then raises the question about how we should
-configure it - and one solution to that would be to entire of phylib
-what the PHY wants to do. Another is to somehow ask the PCS driver
-whether it supports inband signalling at 2500base-X, and resolve
-those capabilities.
-
-That is my view where we need to get to in order to properly resolve
-the ongoing issues about 2500base-X and PHYs that make use of that.
-
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index f8f0a712c943..a7b1f9686c09 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -156,15 +156,18 @@ static u8 alloc_token(struct mlx5_cmd *cmd)
+ 	return token;
+ }
+ 
+-static int cmd_alloc_index(struct mlx5_cmd *cmd)
++static int cmd_alloc_index(struct mlx5_cmd *cmd, struct mlx5_cmd_work_ent *ent)
+ {
+ 	unsigned long flags;
+ 	int ret;
+ 
+ 	spin_lock_irqsave(&cmd->alloc_lock, flags);
+ 	ret = find_first_bit(&cmd->vars.bitmask, cmd->vars.max_reg_cmds);
+-	if (ret < cmd->vars.max_reg_cmds)
++	if (ret < cmd->vars.max_reg_cmds) {
+ 		clear_bit(ret, &cmd->vars.bitmask);
++		ent->idx = ret;
++		cmd->ent_arr[ent->idx] = ent;
++	}
+ 	spin_unlock_irqrestore(&cmd->alloc_lock, flags);
+ 
+ 	return ret < cmd->vars.max_reg_cmds ? ret : -ENOMEM;
+@@ -979,7 +982,7 @@ static void cmd_work_handler(struct work_struct *work)
+ 	sem = ent->page_queue ? &cmd->vars.pages_sem : &cmd->vars.sem;
+ 	down(sem);
+ 	if (!ent->page_queue) {
+-		alloc_ret = cmd_alloc_index(cmd);
++		alloc_ret = cmd_alloc_index(cmd, ent);
+ 		if (alloc_ret < 0) {
+ 			mlx5_core_err_rl(dev, "failed to allocate command entry\n");
+ 			if (ent->callback) {
+@@ -994,15 +997,14 @@ static void cmd_work_handler(struct work_struct *work)
+ 			up(sem);
+ 			return;
+ 		}
+-		ent->idx = alloc_ret;
+ 	} else {
+ 		ent->idx = cmd->vars.max_reg_cmds;
+ 		spin_lock_irqsave(&cmd->alloc_lock, flags);
+ 		clear_bit(ent->idx, &cmd->vars.bitmask);
++		cmd->ent_arr[ent->idx] = ent;
+ 		spin_unlock_irqrestore(&cmd->alloc_lock, flags);
+ 	}
+ 
+-	cmd->ent_arr[ent->idx] = ent;
+ 	lay = get_inst(cmd, ent->idx);
+ 	ent->lay = lay;
+ 	memset(lay, 0, sizeof(*lay));
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
