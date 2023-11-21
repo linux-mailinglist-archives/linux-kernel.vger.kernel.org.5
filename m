@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AC67F3997
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A2B7F3998
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbjKUW5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:57:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S234798AbjKUW5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:57:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234775AbjKUW5D (ORCPT
+        with ESMTP id S234776AbjKUW5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:57:03 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AC5191;
-        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cf6373ce31so2155055ad.0;
-        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
+        Tue, 21 Nov 2023 17:57:04 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89601A3;
+        Tue, 21 Nov 2023 14:57:00 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bdf5a025c1so4041565a12.0;
+        Tue, 21 Nov 2023 14:57:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700607419; x=1701212219; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700607420; x=1701212220; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Joh8uuUk19mBxNee66MMAzQ/m9SU9DPYEeo2rbFlN7I=;
-        b=jd9pvD4EsjHTio0o0qDAXju7073NsXRmfaOX2MLIhCGGAHELj4coEMtmG1HMyU2ag1
-         9FSstQ9cE+ZsM5tD35F4d6gIFIeqymUueUQaxJTVqFEZOStF7TJBvXUCu8o4H6VPd4tA
-         Pe8afH74n9uR8zuMTyJxAKkwtJRx1JQyckIvZhSQ8du565h/T/SmQCqWiR6OUtgSLASc
-         Xah+8ggptcoufzPz0fX6eTn/ulzqBK6XoH4p7YRK0+ol2H2w5oBgXvrufzmuXmnjR5ds
-         3UQoulKg3vYzLNpCp9dHnuW3x6tMsl/ypeewMDJ7rkhNa1qZ2UGQ5XUHr+u5MFnxF4uD
-         KNBQ==
+        bh=cqLalMyfqwS29Jo7Kjmw4Rvhj33ZYdkwQdVPnwcenNQ=;
+        b=ePGd6JnzpW3f8uRv183MWvBJkUk+RgKO2sEbagig7aE9qnKr1GcjpFNF/G1PhYY1na
+         MRbyu8AynI2IB06OksyNIety/loS10aWCgYpNSBDjZNz3J8iJGC+iwXCt0TlgZd7mHKd
+         s/JneKM6BHRsGHgGaRtP/aNxkcpkzj5cU6BWfXijSVyyO1LXA8ySjsLMNNZq3dVckebh
+         4sPC46RxVW7dgX/IOMQTORrmmwl2SUVBrkP3ZiLPJfxOBRSt/dKYy9zdyuun21EVVEd4
+         a2YUD2Zsf6F6riW9LlNPfKwXTulAOnu6mGp0CYZqOcTkNZlT7P9wskkNlJOSfqls1Occ
+         lIMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607419; x=1701212219;
+        d=1e100.net; s=20230601; t=1700607420; x=1701212220;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Joh8uuUk19mBxNee66MMAzQ/m9SU9DPYEeo2rbFlN7I=;
-        b=AqSXn+tTmkDzL6TwF+g1orMouTinMfjmR6+dd6ztXwX+8t5ZDo13kaCjwrHvBTB0Af
-         vHAMAg/N+msXuy17mCsKoYPSJedoYpxZv+KbNnhcOjUJPKBJ0SeGwkNUfwFLbfquSjrE
-         H0Mi3o50dkqqz/gWwQ4irMAcPFQOkXGz2jQQ3qqdzT7dQqnllBtXgosq6x7dIQmCte7j
-         SBoXYRWEtG8nlFITRs7721AY6yMqxom81KA7xUnV67ttKAeB2T3zYUHXg931e1cHFxJu
-         UOf9FnzgqioNPF/b9lEz8BKAWfy6iAuoIu+x38gwLVSp0L1EwdegM6IPdLXd4FlVzrdX
-         lyKw==
-X-Gm-Message-State: AOJu0Yy8/eEFQXwZLEmxx9+TuUGVdTilSJCZYRfoRHiBsLbZkkoGyADO
-        ObR2AyYO/Y3tA+fAczdF6NY=
-X-Google-Smtp-Source: AGHT+IEF6WsI9IKqvQRbVbMHIddWP6SHyLEB9w/cjDLBvWk5i+07QkCWj/moZT9nk/fAWHTTOBYE3g==
-X-Received: by 2002:a17:902:da91:b0:1ce:5ca7:1070 with SMTP id j17-20020a170902da9100b001ce5ca71070mr1173646plx.16.1700607419173;
-        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
+        bh=cqLalMyfqwS29Jo7Kjmw4Rvhj33ZYdkwQdVPnwcenNQ=;
+        b=T09oBqJe92K6xIzdJPZYCl+k+KwVW0cWWdok4TpBupW30eqPtF/dDYGuHKNgUfhlQq
+         kSS8cKV6iLRt6Ss3nHB5erSsEaJBV/GGaPm+kxOnTZzemsUcD1h/3stoUTdo05nCIfZH
+         xtJ25MK2AS+ltUSOqVT+iJ/25ftKGfQ2h/ou7+FwqWQFwSA9ttFyu6yTg2r+h2/bTPJd
+         dUoTGQzk+6qqkEBTjUX5QxFaaqa7CKxTKCN9M40MtM5K+1UukJrJN+fcxFN0CnvSj4A0
+         yGZ0/LvmJNJmoSzRMn6vXyCfLd+D/6EOq3SaXvXNmF0nsw7eaIuOMlRKsISi0UgJV7iZ
+         YGQA==
+X-Gm-Message-State: AOJu0YxggkA0J2TxgjHbbXbvO9l0dKEHro4vJYUvyMUHjsAhdH2qSLeL
+        ZhJmbBfOM8b3Yhv2De6k0F4=
+X-Google-Smtp-Source: AGHT+IGo6lnCKfaRn8i+090knqFd2fNc6dmrMtF/Jv8GyLdQW8Yn7o9e0cTeTmlcmLC08VGkdMcpMQ==
+X-Received: by 2002:a05:6a20:e11d:b0:187:d18a:3163 with SMTP id kr29-20020a056a20e11d00b00187d18a3163mr545061pzb.48.1700607420334;
+        Tue, 21 Nov 2023 14:57:00 -0800 (PST)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7377:923f:1ff3:266d])
-        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.58
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 14:56:58 -0800 (PST)
+        Tue, 21 Nov 2023 14:56:59 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,11 +59,10 @@ Cc:     Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH 06/14] tools headers UAPI: Update tools's copy of unistd.h header
-Date:   Tue, 21 Nov 2023 14:56:41 -0800
-Message-ID: <20231121225650.390246-6-namhyung@kernel.org>
+        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 07/14] tools headers: Update tools's copy of socket.h header
+Date:   Tue, 21 Nov 2023 14:56:42 -0800
+Message-ID: <20231121225650.390246-7-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 In-Reply-To: <20231121225650.390246-1-namhyung@kernel.org>
 References: <20231121225650.390246-1-namhyung@kernel.org>
@@ -123,42 +122,24 @@ So its important not to touch the copies in tools/ when doing changes in
 the original kernel headers, that will be done later, when
 check-headers.sh inform about the change to the perf tools hackers.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org
+Cc: netdev@vger.kernel.org
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/include/uapi/asm-generic/unistd.h | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ tools/perf/trace/beauty/include/linux/socket.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
-index 76d946445391..756b013fb832 100644
---- a/tools/include/uapi/asm-generic/unistd.h
-+++ b/tools/include/uapi/asm-generic/unistd.h
-@@ -816,15 +816,21 @@ __SYSCALL(__NR_process_mrelease, sys_process_mrelease)
- __SYSCALL(__NR_futex_waitv, sys_futex_waitv)
- #define __NR_set_mempolicy_home_node 450
- __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
--
- #define __NR_cachestat 451
- __SYSCALL(__NR_cachestat, sys_cachestat)
--
- #define __NR_fchmodat2 452
- __SYSCALL(__NR_fchmodat2, sys_fchmodat2)
-+#define __NR_map_shadow_stack 453
-+__SYSCALL(__NR_map_shadow_stack, sys_map_shadow_stack)
-+#define __NR_futex_wake 454
-+__SYSCALL(__NR_futex_wake, sys_futex_wake)
-+#define __NR_futex_wait 455
-+__SYSCALL(__NR_futex_wait, sys_futex_wait)
-+#define __NR_futex_requeue 456
-+__SYSCALL(__NR_futex_requeue, sys_futex_requeue)
+diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
+index 39b74d83c7c4..cfcb7e2c3813 100644
+--- a/tools/perf/trace/beauty/include/linux/socket.h
++++ b/tools/perf/trace/beauty/include/linux/socket.h
+@@ -383,6 +383,7 @@ struct ucred {
+ #define SOL_MPTCP	284
+ #define SOL_MCTP	285
+ #define SOL_SMC		286
++#define SOL_VSOCK	287
  
- #undef __NR_syscalls
--#define __NR_syscalls 453
-+#define __NR_syscalls 457
- 
- /*
-  * 32 bit systems traditionally used different
+ /* IPX options */
+ #define IPX_TYPE	1
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
