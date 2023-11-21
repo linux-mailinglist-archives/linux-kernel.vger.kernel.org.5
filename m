@@ -2,265 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2815E7F36C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA3E7F36CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbjKUTZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
+        id S231130AbjKUTZj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 14:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUTZW (ORCPT
+        with ESMTP id S230527AbjKUTZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:25:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDA2193
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:25:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1B9EC433C7;
-        Tue, 21 Nov 2023 19:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700594718;
-        bh=txS+NC9XfL0401PnsDenT1JWd4lisQJp6T4LJN6fisg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=c64K2SE3oDO62ebSsXI1mle4tjTOrX1Js8JNvA4shwAidhIP/TXtz0i10QhBRaXa9
-         7CZWE0BunfGvmfJvqjqqXxSLOEioJE5h6EIGdgUwf+Z/15/XY/Hki8kDGZQulJM8CW
-         5tuXvWNFKe4K9Pxcc8nkSN2DkPd7C9GX0/UrFBTjPgdhGYqn1IL4agaxJneotiQGYs
-         HBcWAbjywsYSK0NoS5HD9tXMaWOSFrqzcTpjyZk70wMqerZxjxOPFVL+eOv08plPVP
-         FoqJWDRa9rOIhcN5c6HYqzDdLz//cqwUhFK107N5aRXx/xqNx2Y1kENtOj2C7ToiTn
-         2wExk7Yc35pOg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 62D57CE0594; Tue, 21 Nov 2023 11:25:18 -0800 (PST)
-Date:   Tue, 21 Nov 2023 11:25:18 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
-Message-ID: <d10b6243-41b1-44a0-ba95-0cedc7f6856e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-49-ankur.a.arora@oracle.com>
- <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
- <87lear4wj6.fsf@oracle.com>
- <46a4c47a-ba1c-4776-a6f8-6c2146cbdd0d@paulmck-laptop>
- <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
+        Tue, 21 Nov 2023 14:25:36 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B2318C;
+        Tue, 21 Nov 2023 11:25:32 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f947682bfdso118231fac.0;
+        Tue, 21 Nov 2023 11:25:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700594732; x=1701199532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZmF7VsRXyf5IAN8XB8CDp7srxIlqRHtK3S2F91eHJ+c=;
+        b=D7tHfuQKy1Ywjv5BrMs3kAAXsrJ8tYojAAWgYvduVsuRnKVtbq/FvEKXdjaJ0ELI44
+         VSnNRds7iFIoT+dFAnAQ8uTAEYweO32UgdHBPHMkpNAJZj/yv9Al3FaEoEg5bVSHsag8
+         PwmyLih8cBtS7YmTBpLw5C8JH0qJGlv3fV7prWCzqTGpiqdHoIZKzsLYw4xRtMY2SPyp
+         D4SXpWt3jrg10uxz7oKoQ9esGhf5NCk80N6KnJl32BPxOi4F6fOCBE5YZ7+n6qGLsfsI
+         tMqRp+slk34GLVxTGz1X6DSWDZ0zfGx1BI08iBeyoVtv6AeIgYIRKMfMq8kYekcsoVbv
+         UgWA==
+X-Gm-Message-State: AOJu0Yy+kYsoVr2B0/mWMq45RSrK98Bul49FuWcwWnraQjFhJuqPIv7+
+        0Xivikpnd7PkfyJNB+EhJNThHVAyukm/nojyBxU=
+X-Google-Smtp-Source: AGHT+IE2xYxESxcFH8Tibld2HbFOg0GQxx1rnA/r6i4D2ZlbZcUzwCog6c58GO9usT0TzxUdyS5FxqseaZhZuxIluuE=
+X-Received: by 2002:a05:6871:53cd:b0:1f9:602e:7b0d with SMTP id
+ hz13-20020a05687153cd00b001f9602e7b0dmr342897oac.2.1700594731741; Tue, 21 Nov
+ 2023 11:25:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121103829.10027-1-raag.jadav@intel.com> <20231121103829.10027-3-raag.jadav@intel.com>
+In-Reply-To: <20231121103829.10027-3-raag.jadav@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 21 Nov 2023 20:25:20 +0100
+Message-ID: <CAJZ5v0jmaRQWfO_mM4GZ8mEFftuSNgt36=tJ5vC2Uw7MAcpYJg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] ACPI: bus: update acpi_dev_uid_match() to support
+ multiple types
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
+        ardb@kernel.org, will@kernel.org, mark.rutland@arm.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:34:05PM -0800, Paul E. McKenney wrote:
-> On Mon, Nov 20, 2023 at 09:17:57PM -0800, Paul E. McKenney wrote:
-> > On Mon, Nov 20, 2023 at 07:26:05PM -0800, Ankur Arora wrote:
-> > > 
-> > > Paul E. McKenney <paulmck@kernel.org> writes:
-> > > > On Tue, Nov 07, 2023 at 01:57:34PM -0800, Ankur Arora wrote:
-> > > >> cond_resched() is used to provide urgent quiescent states for
-> > > >> read-side critical sections on PREEMPT_RCU=n configurations.
-> > > >> This was necessary because lacking preempt_count, there was no
-> > > >> way for the tick handler to know if we were executing in RCU
-> > > >> read-side critical section or not.
-> > > >>
-> > > >> An always-on CONFIG_PREEMPT_COUNT, however, allows the tick to
-> > > >> reliably report quiescent states.
-> > > >>
-> > > >> Accordingly, evaluate preempt_count() based quiescence in
-> > > >> rcu_flavor_sched_clock_irq().
-> > > >>
-> > > >> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> > > >> ---
-> > > >>  kernel/rcu/tree_plugin.h |  3 ++-
-> > > >>  kernel/sched/core.c      | 15 +--------------
-> > > >>  2 files changed, 3 insertions(+), 15 deletions(-)
-> > > >>
-> > > >> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> > > >> index f87191e008ff..618f055f8028 100644
-> > > >> --- a/kernel/rcu/tree_plugin.h
-> > > >> +++ b/kernel/rcu/tree_plugin.h
-> > > >> @@ -963,7 +963,8 @@ static void rcu_preempt_check_blocked_tasks(struct rcu_node *rnp)
-> > > >>   */
-> > > >>  static void rcu_flavor_sched_clock_irq(int user)
-> > > >>  {
-> > > >> -	if (user || rcu_is_cpu_rrupt_from_idle()) {
-> > > >> +	if (user || rcu_is_cpu_rrupt_from_idle() ||
-> > > >> +	    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
-> > > >
-> > > > This looks good.
-> > > >
-> > > >>  		/*
-> > > >>  		 * Get here if this CPU took its interrupt from user
-> > > >> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > >> index bf5df2b866df..15db5fb7acc7 100644
-> > > >> --- a/kernel/sched/core.c
-> > > >> +++ b/kernel/sched/core.c
-> > > >> @@ -8588,20 +8588,7 @@ int __sched _cond_resched(void)
-> > > >>  		preempt_schedule_common();
-> > > >>  		return 1;
-> > > >>  	}
-> > > >> -	/*
-> > > >> -	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
-> > > >> -	 * whether the current CPU is in an RCU read-side critical section,
-> > > >> -	 * so the tick can report quiescent states even for CPUs looping
-> > > >> -	 * in kernel context.  In contrast, in non-preemptible kernels,
-> > > >> -	 * RCU readers leave no in-memory hints, which means that CPU-bound
-> > > >> -	 * processes executing in kernel context might never report an
-> > > >> -	 * RCU quiescent state.  Therefore, the following code causes
-> > > >> -	 * cond_resched() to report a quiescent state, but only when RCU
-> > > >> -	 * is in urgent need of one.
-> > > >> -	 *      /
-> > > >> -#ifndef CONFIG_PREEMPT_RCU
-> > > >> -	rcu_all_qs();
-> > > >> -#endif
-> > > >
-> > > > But...
-> > > >
-> > > > Suppose we have a long-running loop in the kernel that regularly
-> > > > enables preemption, but only momentarily.  Then the added
-> > > > rcu_flavor_sched_clock_irq() check would almost always fail, making
-> > > > for extremely long grace periods.
-> > > 
-> > > So, my thinking was that if RCU wants to end a grace period, it would
-> > > force a context switch by setting TIF_NEED_RESCHED (and as patch 38 mentions
-> > > RCU always uses the the eager version) causing __schedule() to call
-> > > rcu_note_context_switch().
-> > > That's similar to the preempt_schedule_common() case in the
-> > > _cond_resched() above.
-> > 
-> > But that requires IPIing that CPU, correct?
-> > 
-> > > But if I see your point, RCU might just want to register a quiescent
-> > > state and for this long-running loop rcu_flavor_sched_clock_irq() does
-> > > seem to fall down.
-> > > 
-> > > > Or did I miss a change that causes preempt_enable() to help RCU out?
-> > > 
-> > > Something like this?
-> > > 
-> > > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-> > > index dc5125b9c36b..e50f358f1548 100644
-> > > --- a/include/linux/preempt.h
-> > > +++ b/include/linux/preempt.h
-> > > @@ -222,6 +222,8 @@ do { \
-> > >         barrier(); \
-> > >         if (unlikely(preempt_count_dec_and_test())) \
-> > >                 __preempt_schedule(); \
-> > > +       if (!(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
-> > > +               rcu_all_qs(); \
-> > >  } while (0)
-> > 
-> > Or maybe something like this to lighten the load a bit:
-> > 
-> > #define preempt_enable() \
-> > do { \
-> > 	barrier(); \
-> > 	if (unlikely(preempt_count_dec_and_test())) { \
-> > 		__preempt_schedule(); \
-> > 		if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> > 		    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) \
-> > 			rcu_all_qs(); \
-> > 	} \
-> > } while (0)
-> > 
-> > And at that point, we should be able to drop the PREEMPT_MASK, not
-> > that it makes any difference that I am aware of:
-> > 
-> > #define preempt_enable() \
-> > do { \
-> > 	barrier(); \
-> > 	if (unlikely(preempt_count_dec_and_test())) { \
-> > 		__preempt_schedule(); \
-> > 		if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> > 		    !(preempt_count() & SOFTIRQ_MASK)) \
-> > 			rcu_all_qs(); \
-> > 	} \
-> > } while (0)
-> > 
-> > Except that we can migrate as soon as that preempt_count_dec_and_test()
-> > returns.  And that rcu_all_qs() disables and re-enables preemption,
-> > which will result in undesired recursion.  Sigh.
-> > 
-> > So maybe something like this:
-> > 
-> > #define preempt_enable() \
-> > do { \
-> > 	if (raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-> > 	    !(preempt_count() & SOFTIRQ_MASK)) \
-> 
-> Sigh.  This needs to include (PREEMPT_MASK | SOFTIRQ_MASK),
-> but check for equality to something like (1UL << PREEMPT_SHIFT).
-> 
-> Clearly time to sleep.  :-/
+On Tue, Nov 21, 2023 at 11:38 AM Raag Jadav <raag.jadav@intel.com> wrote:
+>
+> According to ACPI specification, a _UID object can evaluate to either
+> a numeric value or a string. Update acpi_dev_uid_match() helper to
+> support _UID matching for both integer and string types.
+>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Maybe this might actually work:
+You need to be careful with using this.  There are some things below
+that go beyond what I have suggested.
 
-#define preempt_enable() \
-do { \
-	barrier(); \
-	if (!IS_ENABLED(CONFIG_PREEMPT_RCU) && raw_cpu_read(rcu_data.rcu_urgent_qs) && \
-	    (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK) == PREEMPT_OFFSET) &&
-	    !irqs_disabled()) \
-		rcu_all_qs(); \
-	if (unlikely(preempt_count_dec_and_test())) { \
-		__preempt_schedule(); \
-	} \
-} while (0)
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> ---
+>  drivers/acpi/utils.c    | 19 -------------------
+>  include/acpi/acpi_bus.h | 35 ++++++++++++++++++++++++++++++++++-
+>  include/linux/acpi.h    |  8 +++-----
+>  3 files changed, 37 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+> index 28c75242fca9..fe7e850c6479 100644
+> --- a/drivers/acpi/utils.c
+> +++ b/drivers/acpi/utils.c
+> @@ -824,25 +824,6 @@ bool acpi_check_dsm(acpi_handle handle, const guid_t *guid, u64 rev, u64 funcs)
+>  }
+>  EXPORT_SYMBOL(acpi_check_dsm);
+>
+> -/**
+> - * acpi_dev_uid_match - Match device by supplied UID
+> - * @adev: ACPI device to match.
+> - * @uid2: Unique ID of the device.
+> - *
+> - * Matches UID in @adev with given @uid2.
+> - *
+> - * Returns:
+> - *  - %true if matches.
+> - *  - %false otherwise.
+> - */
+> -bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+> -{
+> -       const char *uid1 = acpi_device_uid(adev);
+> -
+> -       return uid1 && uid2 && !strcmp(uid1, uid2);
+> -}
+> -EXPORT_SYMBOL_GPL(acpi_dev_uid_match);
+> -
+>  /**
+>   * acpi_dev_hid_uid_match - Match device by supplied HID and UID
+>   * @adev: ACPI device to match.
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index ec6a673dcb95..bcd78939bab4 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -9,6 +9,7 @@
+>  #ifndef __ACPI_BUS_H__
+>  #define __ACPI_BUS_H__
+>
+> +#include <linux/compiler.h>
+>  #include <linux/device.h>
+>  #include <linux/property.h>
+>
+> @@ -857,10 +858,42 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>                 adev->power.states[ACPI_STATE_D3_HOT].flags.explicit_set);
+>  }
+>
+> -bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2);
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+>  int acpi_dev_uid_to_integer(struct acpi_device *adev, u64 *integer);
+>
+> +static inline bool acpi_str_uid_match(struct acpi_device *adev, const char *uid2)
+> +{
+> +       const char *uid1 = acpi_device_uid(adev);
+> +
+> +       return uid1 && uid2 && !strcmp(uid1, uid2);
+> +}
+> +
+> +static inline bool acpi_int_uid_match(struct acpi_device *adev, u64 uid2)
+> +{
+> +       u64 uid1;
+> +
+> +       return !acpi_dev_uid_to_integer(adev, &uid1) && uid1 == uid2;
+> +}
+> +
 
-And the rcu_all_qs() below might also work.
+Up to this point it is all fine IMV.
 
-							Thanx, Paul
+> +/**
+> + * acpi_dev_uid_match - Match device by supplied UID
+> + * @adev: ACPI device to match.
+> + * @uid2: Unique ID of the device.
+> + *
+> + * Matches UID in @adev with given @uid2.
+> + *
+> + * Returns: %true if matches, %false otherwise.
+> + */
+> +
+> +/* Treat uid as a string for array and pointer types, treat as an integer otherwise */
+> +#define get_uid_type(x) \
+> +       (__builtin_choose_expr(is_array_or_pointer_type(x), (const char *)0, (u64)0))
 
-> > 		rcu_all_qs(); \
-> > 	barrier(); \
-> > 	if (unlikely(preempt_count_dec_and_test())) { \
-> > 		__preempt_schedule(); \
-> > 	} \
-> > } while (0)
-> > 
-> > Then rcu_all_qs() becomes something like this:
-> > 
-> > void rcu_all_qs(void)
-> > {
-> > 	unsigned long flags;
-> > 
-> > 	/* Load rcu_urgent_qs before other flags. */
-> > 	if (!smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs)))
-> > 		return;
-> > 	this_cpu_write(rcu_data.rcu_urgent_qs, false);
-> > 	if (unlikely(raw_cpu_read(rcu_data.rcu_need_heavy_qs))) {
-> > 		local_irq_save(flags);
-> > 		rcu_momentary_dyntick_idle();
-> > 		local_irq_restore(flags);
-> > 	}
-> > 	rcu_qs();
-> > }
-> > EXPORT_SYMBOL_GPL(rcu_all_qs);
-> > 
-> > > Though I do wonder about the likelihood of hitting the case you describe
-> > > and maybe instead of adding the check on every preempt_enable()
-> > > it might be better to instead force a context switch in the
-> > > rcu_flavor_sched_clock_irq() (as we do in the PREEMPT_RCU=y case.)
-> > 
-> > Maybe.  But rcu_all_qs() is way lighter weight than a context switch.
-> > 
-> > 							Thanx, Paul
+But I wouldn't use the above.
+
+It is far more elaborate than needed for this use case and may not
+actually work as expected.  For instance, why would a pointer to a
+random struct type be a good candidate for a string?
+
+> +
+> +#define acpi_dev_uid_match(adev, uid2)                         \
+> +       _Generic(get_uid_type(uid2),                            \
+> +                const char *: acpi_str_uid_match,              \
+> +                u64: acpi_int_uid_match)(adev, uid2)
+> +
+
+Personally, I would just do something like the following
+
+#define acpi_dev_uid_match(adev, uid2) \
+        _Generic((uid2), \
+                const char *: acpi_str_uid_match, \
+                char *: acpi_str_uid_match, \
+                const void *: acpi_str_uid_match, \
+                void *: acpi_str_uid_match, \
+                default: acpi_int_uid_match)(adev, uid2)
+
+which doesn't require compiler.h to be fiddled with and is rather
+straightforward to follow.
+
+If I'm to apply the patches, this is about the level of complexity you
+need to target.
+
+>  void acpi_dev_clear_dependencies(struct acpi_device *supplier);
+>  bool acpi_dev_ready_for_enumeration(const struct acpi_device *device);
+>  struct acpi_device *acpi_dev_get_next_consumer_dev(struct acpi_device *supplier,
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index b63d7811c728..aae3a459d63c 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -763,6 +763,9 @@ const char *acpi_get_subsystem_id(acpi_handle handle);
+>  #define ACPI_HANDLE(dev)               (NULL)
+>  #define ACPI_HANDLE_FWNODE(fwnode)     (NULL)
+>
+> +/* Get rid of the -Wunused-variable for adev */
+> +#define acpi_dev_uid_match(adev, uid2)                 (adev && false)
+> +
+>  #include <acpi/acpi_numa.h>
+>
+>  struct fwnode_handle;
+> @@ -779,11 +782,6 @@ static inline bool acpi_dev_present(const char *hid, const char *uid, s64 hrv)
+>
+>  struct acpi_device;
+>
+> -static inline bool acpi_dev_uid_match(struct acpi_device *adev, const char *uid2)
+> -{
+> -       return false;
+> -}
+> -
+>  static inline bool
+>  acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2)
+>  {
+> --
