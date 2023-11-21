@@ -2,102 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C257F2926
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5C17F291D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjKUJo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:44:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S231955AbjKUJoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:44:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbjKUJox (ORCPT
+        with ESMTP id S230371AbjKUJoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:44:53 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9D5CB;
-        Tue, 21 Nov 2023 01:44:49 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL9KGnO020553;
-        Tue, 21 Nov 2023 01:43:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=kPqN676sq1fUBtMEaUsPP99wmvRcdfb2cTT+8LV3Sgs=;
- b=BDDwaxj2B0YQYYBcm904Cnsw5LHqEv7twuDM3ZIMAIRD3Si9ZBWAV3cOcc3HW7zSwSTp
- taZXrbYBkuqFzs5B6hIw8sk8ytpH3ai9YxfRrAqCmvxkX2ULob4GILS6W0EqwdtjaYd2
- tX8ogj9kVr19WHdp43m769XyTUUWhj1VebG0tapF2wiw4noCQkwkpGUyCThgI6IksD8o
- r8uXnzB2/wDpYyLoPlUZyvpzVEwQ4F76ZH/5/P/QiBhdGtlgCCXnoYns3GueX8ZBwPbo
- SrnIbhTs773fDQDLiPDa9m60YR6AgG6fQ73tnAcqwHsIvfoozkN+VB3zLxw17NbYkbu8 Eg== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uewnw09wr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 01:43:56 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 21 Nov
- 2023 01:43:54 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 21 Nov 2023 01:43:53 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 8A91C3F7045;
-        Tue, 21 Nov 2023 01:43:49 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>, <horms@kernel.org>,
-        <wojciech.drewek@intel.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH v3 0/2] octeontx2: Multicast/mirror offload changes
-Date:   Tue, 21 Nov 2023 15:13:44 +0530
-Message-ID: <20231121094346.3621236-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 21 Nov 2023 04:44:01 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C26D8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:43:57 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c1acc1fa98so4699138a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1700559837; x=1701164637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zeX6LBtHobyx/lTsQiwAAEvgonswp+TnKesxqxWL11M=;
+        b=ZM9BUGKhdZSiK9qSY+BRxnJvVs1TrFMGKlkSalxOYVhyIEoM9/kCkBWGGXg3OHv2K1
+         tzWrXbJinR5deBn2P/EN3S+6ll72ULDUty2DBc5jNYIAncsSvExgJCD7vI6X6O6amUPU
+         P+b7lSrzrGIn26cfpBRXTEd0Q4/ddyXc0SxicqWu7CL4lS5bNufi12+ZhaFS0hD3mtd0
+         4XupWXqEmMyKFOJ1z8zCOyZHPorAvUvyIavcJg2WNPM8Hppfu4FvCc04wDxRMX4PYFgJ
+         EZ9/2mCPfw2zM1KKT289uuMKSQfMR50Z126z3/A7P3DpZ0S06KSeG/j3B4fdTg6gkjcf
+         jalg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700559837; x=1701164637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zeX6LBtHobyx/lTsQiwAAEvgonswp+TnKesxqxWL11M=;
+        b=YbJhBAlsJRTtLOYbYMzR9Srz5xiIvZ+0QRm4+kLxjKRk9Pn1m4EIajiZ3iczXZa+g5
+         kEjbjw1PMawL1ZrcQEPg6zHKzNhwJMy8nBG0Arr0Fi3cowYXxmCWUWQ+o7gOT41g2JEX
+         WBJA/YVZ4Q4Zm/qFl0yvuJbCHQ/uo7PZEbKmV42Y6lSF6gxAiItkHdllYhsNVe6HEPH3
+         SHRZSWP7FXo1D3Q/eJaDenlO9Pm+j2vlTgIJtSRW3fWN8fDcalj9wvA3JSYiIP8TKKOa
+         ijF5XrS+XYv8EwcQTveFO6jKt5VxpDmpSBDcnozdwP+AZfTZmyWsAqOCBrkyiiZXCruM
+         LN1A==
+X-Gm-Message-State: AOJu0YzvugI72U5KDTylfCE16ZzyAkilVJKt8ypfE3nebAu6yhCHpxXm
+        R4dfnFi9kfzZBNFgaZGAnmaHC+4cpyksvKq8AT3QCQ==
+X-Google-Smtp-Source: AGHT+IEcUNpIPdW1r2zWS/VP7g/MssGikpOuJYLZxDVK+bKJDUZATHNuI3hhP6xrYrzf7teMAwRZk2h/7jc/ROLL0jw=
+X-Received: by 2002:a17:90b:4d0a:b0:283:2d65:f231 with SMTP id
+ mw10-20020a17090b4d0a00b002832d65f231mr3047813pjb.22.1700559836764; Tue, 21
+ Nov 2023 01:43:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: QcAMpnshlzMMfXRp1Fdvo-Yz3TPXLPWc
-X-Proofpoint-ORIG-GUID: QcAMpnshlzMMfXRp1Fdvo-Yz3TPXLPWc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com>
+ <ZVwMzXxWkgonIAfc@MiWiFi-R3L-srv> <CALrw=nG8xsYw7XKyL_VMHtKiaBcQCKvC8UVp-C9-BdeN4A1Daw@mail.gmail.com>
+In-Reply-To: <CALrw=nG8xsYw7XKyL_VMHtKiaBcQCKvC8UVp-C9-BdeN4A1Daw@mail.gmail.com>
+From:   Ignat Korchagin <ignat@cloudflare.com>
+Date:   Tue, 21 Nov 2023 09:43:45 +0000
+Message-ID: <CALrw=nH-vcROja2W23rUKEEZMZhxsQiNB4P_ZZQ-XhPHAJGxrg@mail.gmail.com>
+Subject: Re: Potential config regression after 89cde455 ("kexec: consolidate
+ kexec and crash options into kernel/Kconfig.kexec")
+To:     Baoquan He <bhe@redhat.com>, eric_devolder@yahoo.com
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, frederic@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, samitolvanen@google.com,
+        juerg.haefliger@canonical.com, arnd@arndb.de,
+        rmk+kernel@armlinux.org.uk, linus.walleij@linaro.org,
+        sebastian.reichel@collabora.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, anshuman.khandual@arm.com,
+        ziy@nvidia.com, masahiroy@kernel.org, ndesaulniers@google.com,
+        mhiramat@kernel.org, ojeda@kernel.org, thunder.leizhen@huawei.com,
+        xin3.li@intel.com, tj@kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, tsi@tuyoix.net,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset includes changes to support TC multicast/mirror offload.
+On Tue, Nov 21, 2023 at 7:53=E2=80=AFAM Ignat Korchagin <ignat@cloudflare.c=
+om> wrote:
+>
+> On Tue, Nov 21, 2023 at 1:50=E2=80=AFAM Baoquan He <bhe@redhat.com> wrote=
+:
+> >
+> > Eric DeVolder's Oracle mail address is not available anymore, add his
+> > current mail address he told me.
+>
+> Thank you!
+>
+> > On 11/20/23 at 10:52pm, Ignat Korchagin wrote:
+> > > Good day!
+> > >
+> > > We have recently started to evaluate Linux 6.6 and noticed that we
+> > > cannot disable CONFIG_KEXEC anymore, but keep CONFIG_CRASH_DUMP
+> > > enabled. It seems to be related to commit 89cde455 ("kexec:
+> > > consolidate kexec and crash options into kernel/Kconfig.kexec"), wher=
+e
+> > > a CONFIG_KEXEC dependency was added to CONFIG_CRASH_DUMP.
+> > >
+> > > In our current kernel (Linux 6.1) we only enable CONFIG_KEXEC_FILE
+> > > with enforced signature check to support the kernel crash dumping
+> > > functionality and would like to keep CONFIG_KEXEC disabled for
+> > > security reasons [1].
+> > >
+> > > I was reading the long commit message, but the reason for adding
+> > > CONFIG_KEXEC as a dependency for CONFIG_CRASH_DUMP evaded me. And I
+> > > believe from the implementation perspective CONFIG_KEXEC_FILE should
+> > > suffice here (as we successfully used it for crashdumps on Linux 6.1)=
+.
+> > >
+> > > Is there a reason for adding this dependency or is it just an
+> > > oversight? Would some solution of requiring either CONFIG_KEXEC or
+> > > CONFIG_KEXEC_FILE work here?
+> >
+> > I searched the patch history, found Eric didn't add the dependency on
+> > CONFIG_KEXEC at the beginning. Later a linux-next building failure with
+> > randconfig was reported, in there CONFIG_CRASH_DUMP enabled, while
+> > CONFIG_KEXEC is disabled. Finally Eric added the KEXEC dependency for
+> > CRASH_DUMP. Please see below link for more details:
+> >
+> > https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle=
+.com/T/#u
+>
+> Thank you for digging this up. However I'm still confused, because
+> this is exactly how we configure Linux 6.1 (although we do have
+> CONFIG_KEXEC_FILE enabled) and we don't have any problems. I believe
+> we did not investigate this issue properly.
 
-Patch #1: Adds changes to support new mailbox to offload multicast/mirror
-offload.
+I did some preliminary investigation for this. If I patch out the
+dependency on CONFIG_KEXEC the kernel builds just fine for x86
+(without CONFIG_CRASH_HOTPLUG - which is probably another issue) - so
+this was the previous behaviour. I can see that the reported error is
+for arm architecture and was able to reproduce it with a simple cross
+compiler in Debian. However, I think it is still somehow related to
+this patchset as the previous kernels (up to 6.5) build fine with just
+CONFIG_CRASH_DUMP and without CONFIG_KEXEC for arm as well. So even
+for arm it was introduced in 6.6.
 
-Patch #2: Adds TC related changes which uses the newly added mailboxes to
-offload multicast/mirror rules.
+> > And besides, the newly added CONFIG_CRASH_HOTPLUG also needs
+> > CONFIG_KEXEC if the elfcorehdr is allowed to be manipulated when
+> > cpu/memory hotplug hapened.
+>
+> This still feels like a regression to me: any crash dump support
+> should be independent of KEXEC syscalls being present. While probably
+> the common case (including us) that the crashing kernel and recovery
+> kernel are the same, they don't have to be. We need kexec syscall in
+> the crashing kernel, but crashdump support in the recovery kernel (but
+> the recovery kernel not having the kexec syscalls should be totally
+> fine). If we do require some code definitions from kexec - at most we
+> should put them under CONFIG_KEXEC_CORE.
+>
+> > Thanks
+> > Baoquan
+> >
 
-Suman Ghosh (2):
-  octeontx2-af: Add new mbox to support multicast/mirror offload
-  octeontx2-pf: TC flower offload support for mirror
-
-v3 changes:
-- Updated patch#1 based on comments from Wojciech and Simon. The comments were
-  mostly based on some missed mutex_unlock and code reorganization.
-
-v2 changes:
-- Updated small nits based on review comments from Wojciech Drewek
-  in file drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  64 ++
- .../net/ethernet/marvell/octeontx2/af/rvu.c   |   6 +-
- .../net/ethernet/marvell/octeontx2/af/rvu.h   |  39 +-
- .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 699 +++++++++++++++++-
- .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  14 +-
- .../marvell/octeontx2/af/rvu_npc_fs.c         |  73 +-
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 ++-
- 7 files changed, 967 insertions(+), 41 deletions(-)
-
--- 
-2.25.1
-
+Ignat
