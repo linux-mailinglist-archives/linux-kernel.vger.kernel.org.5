@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C09B7F3141
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E65D7F313C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbjKUOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
+        id S234668AbjKUOjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234649AbjKUOjb (ORCPT
+        with ESMTP id S234627AbjKUOi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:39:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4579A90;
-        Tue, 21 Nov 2023 06:39:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700577568; x=1732113568;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=WwsA4VpLz0plLBebxbiTbKHjaqMAa5v25iteuGSMov0=;
-  b=EYyBNJ7Dfi0lIZ3PBLzhhZHKv20qURM7/3/FXX+oHlbCyv8BhW3cTQz5
-   efoV+w4OQJZ348QK7diy0/xE7QLMg94oTtX0matRzAxQdZGud6sZ6EjBH
-   nOlIJwjEr+BEiFV8/fTOABJ8k/XXC1I+EXL4wEgoLT2ByF40MO3TLbdRB
-   kVz4PnyUJFmU1iiHy3mtMkzG4q+pjBFOCRp2umlQR9XB5I9hX97o/jSSN
-   31taGJkmTzeKVRJAtH5SmUW4oooOJFSS3E7nHUoakhSTHggcACnLG7JTj
-   tcjXo5+YrQdMbV6eM7uk40QQMHTIcl0XaxVyV0ljcezJB4XQzpI41AX+L
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="388999777"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="388999777"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 06:39:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="910472645"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="910472645"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Nov 2023 06:39:04 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5Ru1-0007vS-2K;
-        Tue, 21 Nov 2023 14:39:01 +0000
-Date:   Tue, 21 Nov 2023 22:38:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
+        Tue, 21 Nov 2023 09:38:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A691726
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:38:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700577530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qgy9FU1P/mtjjmGhgeXi9H78tlxIy2hISiHhoOKv2hU=;
+        b=WcVT+Te3+PApezdBFRpc48MuTR+X5ORsI9MfkAVFZ3oGoPKHu1oegkudYWpNdoSZLKq+fU
+        W6BW+f5nsdD36PQTHhfcu+BaS9lN/CuV42GcI3SZJw7zy+egmhiuINByDI+AmeLBhyvNC3
+        KwjsfKG/QyeLyLgKPProfaxLFZYnZhg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-452-vAAlKhokN6yuOd2Ezdt6TQ-1; Tue, 21 Nov 2023 09:38:47 -0500
+X-MC-Unique: vAAlKhokN6yuOd2Ezdt6TQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-677fb270eacso10327326d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:38:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700577526; x=1701182326;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qgy9FU1P/mtjjmGhgeXi9H78tlxIy2hISiHhoOKv2hU=;
+        b=PBF2JtlgEeMTZtngt7jc2xhQ92zdQkwiSU6NdmkHTASMK1xr5z2SGWqPiroS6LBhNs
+         Nv9g4VhTmVrE2S9uyTcwSl2eayShU6Mm+7wPqvtDmSuGeZKH9OW9DHkuExVAA0+k0lRi
+         qED5pw8dgDneIyjdN+MpokBuhjdzTIyPxmlDQEnFmHVSszyQVF8RxdkdNi8BFWj+Ym4i
+         UNNMdDr/ID6yQikUuiXAZBE3GTzoYd98zYmtAS72NrndHdye0DHBXXWGXxuGaaE4G2BH
+         xWc7nhZigApVH9lrv8MgnR+7UrZrabCIhcMzRPgXkVbB9K5YvNpCvTNU25p+4udosnIn
+         IMdg==
+X-Gm-Message-State: AOJu0Yxkbxv+wZp5QhIGlxcVUt55YAEHk1cgt6fK2NUV4G2yeUxl39gR
+        hgePqLECMIVc74VdrbLbPwNSNNy6r0K23268IQrNyLiRHy97jjZaUpNoSCE8Ci+Pt2NQLBfzHSe
+        DTSCBrTnGLI6uyDxxWhxeXmTs
+X-Received: by 2002:a05:620a:1994:b0:77b:dce8:737 with SMTP id bm20-20020a05620a199400b0077bdce80737mr10669001qkb.7.1700577526614;
+        Tue, 21 Nov 2023 06:38:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGIPpkU+2GCN9FoFyUK9CChv2vU5606IxhwK6RzXGPX/QXF9WkCmnmU726ssCw+wPxvrSAQ6w==
+X-Received: by 2002:a05:620a:1994:b0:77b:dce8:737 with SMTP id bm20-20020a05620a199400b0077bdce80737mr10668980qkb.7.1700577526343;
+        Tue, 21 Nov 2023 06:38:46 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id p10-20020ae9f30a000000b0076d08d5f93asm3657668qkg.60.2023.11.21.06.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 06:38:46 -0800 (PST)
+Message-ID: <9a5f21b69709121c8b342bb44e0b7f83deacd10d.camel@redhat.com>
+Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kmo@daterainc.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
         Niklas Schnelle <schnelle@linux.ibm.com>,
-        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Neil Brown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
         Dave Jiang <dave.jiang@intel.com>,
         Yury Norov <yury.norov@gmail.com>,
         Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         David Gow <davidgow@google.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -66,85 +79,111 @@ To:     Philipp Stanner <pstanner@redhat.com>,
         Jason Baron <jbaron@akamai.com>,
         Ben Dooks <ben.dooks@codethink.co.uk>,
         Danilo Krummrich <dakr@redhat.com>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <202311212238.EIuwP56e-lkp@intel.com>
-References: <20231120215945.52027-3-pstanner@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Date:   Tue, 21 Nov 2023 15:38:41 +0100
+In-Reply-To: <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
+References: <20231120215945.52027-2-pstanner@redhat.com>
+         <20231120215945.52027-6-pstanner@redhat.com>
+         <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Tue, 2023-11-21 at 11:03 +0100, Arnd Bergmann wrote:
+> On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
+> > lib/iomap.c contains one of the definitions of pci_iounmap(). The
+> > current comment above this out-of-place function does not clarify
+> > WHY
+> > the function is defined here.
+> >=20
+> > Linus's detailed comment above pci_iounmap() in drivers/pci/iomap.c
+> > clarifies that in a far better way.
+> >=20
+> > Extend the existing comment with an excerpt from Linus's and hint
+> > at the
+> > other implementation in drivers/pci/iomap.c
+> >=20
+> > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+>=20
+> I think instead of explaining why the code is so complicated
+> here, I'd prefer to make it more logical and not have to
+> explain it.
+>=20
+> We should be able to define a generic version like
+>=20
+> void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+> {
+> #ifdef CONFIG_HAS_IOPORT
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr)) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ioport_unmap(addr);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 return;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> #endif
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
+> }
 
-kernel test robot noticed the following build warnings:
+And where would you like such a function to reside?
+drivers/pci/iomap.c?
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-202311=
-21]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+P.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-=
-move-pci_iomap-c-to-drivers-pci/20231121-060258
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40=
-redhat.com
-patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-config: openrisc-kismet-CONFIG_GENERIC_PCI_IOMAP-CONFIG_OPENRISC-0-0 (https=
-://download.01.org/0day-ci/archive/20231121/202311212238.EIuwP56e-lkp@intel=
-=2Ecom/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231121/202311212238.E=
-IuwP56e-lkp@intel.com/reproduce)
+>=20
+> and then define iomem_is_ioport() in lib/iomap.c for x86,
+> while defining it in asm-generic/io.h for the rest,
+> with an override in asm/io.h for those architectures
+> that need a custom inb().
+>=20
+> Note that with ia64 gone, GENERIC_IOMAP is not at all
+> generic any more and could just move it to x86 or name
+> it something else. This is what currently uses it:
+>=20
+> arch/hexagon/Kconfig:=C2=A0=C2=A0 select GENERIC_IOMAP
+> arch/um/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC=
+_IOMAP
+>=20
+> These have no port I/O at all, so it doesn't do anything.
+>=20
+> arch/m68k/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
+>=20
+> on m68knommu, the default implementation from asm-generic/io.h
+> as the same effect as GENERIC_IOMAP but is more efficient.
+> On classic m68k, GENERIC_IOMAP does not do what it is
+> meant to because I/O ports on ISA devices have port
+> numbers above PIO_OFFSET. Also they don't have PCI.
+>=20
+> arch/mips/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
+>=20
+> This looks completely bogus because it sets PIO_RESERVED
+> to 0 and always uses the mmio part of lib/iomap.c.=20
+>=20
+> arch/powerpc/platforms/Kconfig: select GENERIC_IOMAP
+>=20
+> This is only used for two platforms: cell and powernv,
+> though on Cell it no longer does anything after the
+> commit f4981a00636 ("powerpc: Remove the celleb support");
+> I think the entire io_workarounds code now be folded
+> back into spider_pci.c if we wanted to.
+>=20
+> The PowerNV LPC support does seem to still rely on it.
+> This tries to do the exact same thing as lib/logic_pio.c
+> for Huawei arm64 servers. I suspect that neither of them
+> does it entirely correctly since the powerpc side appears
+> to just override any non-LPC PIO support while the arm64
+> side is missing the ioread/iowrite support.
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 Arnd
+>=20
 
-If you fix the issue in a separate patch/commit (i.e. not just a new versio=
-n of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311212238.EIuwP56e-lkp@i=
-ntel.com/
-
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMA=
-P when selected by OPENRISC
-   /usr/bin/grep: /db/releases/20231121182703/kernel-tests/etc/kcflags: No =
-such file or directory
-   {"timestamp":"2023-11-21 20:53:27 +0800", "level":"WARN", "event":"kbuil=
-d.sh:3942:in `add_etc_kcflags': grep exit 2 (ShellError)", "detail":"cmd: '=
-/usr/bin/grep' '-v' '-e' '^#' '-e' '^$' '/db/releases/20231121182703/kernel=
--tests/etc/kcflags' \nstderr: \n\n", "hostname":"community-kbuild-consumer-=
-92", "host_hostname":"lkp-worker20", "call_stack":"/zday/kernel-tests/lib/k=
-build.sh:3942:in `add_etc_kcflags':  (ShellError 2)\n  from /zday/kernel-te=
-sts/lib/kbuild.sh:3971: setup_kcflags\n  from /zday/kernel-tests/lib/kbuild=
-=2Esh:4016: invoke_make\n  from /zday/kernel-tests/lib/kbuild.sh:4122: make=
-\n  from /zday/kernel-tests/lib/kbuild.sh:5623: make_config_allyes\n  from =
-/zday/kernel-tests/common.sh:209: redirect_error_to_screen\n  from /zday/ke=
-rnel-tests/common.sh:217: redirect_command_errors\n  from /zday/kernel-test=
-s/lib/kbuild.sh:5630: make_config\n  from /zday/kernel-tests/lib/builder/ki=
-smet.sh:156: generate_make_olddefconfig_warnings\n  from /zday/kernel-tests=
-/lib/builder/kismet.sh:297: builder_compile\n  from /zday/kernel-tests/bise=
-ct-test-build-error.sh:94: main\n"}
-  =20
-   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
-     Depends on [n]: PCI [=3Dn]
-     Selected by [y]:
-     - OPENRISC [=3Dy]
-
---=20
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
