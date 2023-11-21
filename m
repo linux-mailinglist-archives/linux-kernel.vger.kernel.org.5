@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B91C87F2FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D737F2FCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjKUNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:52:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
+        id S234372AbjKUNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUNwg (ORCPT
+        with ESMTP id S229514AbjKUNxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:52:36 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0DA5D6F;
-        Tue, 21 Nov 2023 05:52:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700574752; x=1732110752;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nKvIk90rjbpOesN0GkWDLTjTMmHVHeY5G6qeYk14C4g=;
-  b=ME5CypEpdwocmfxswsfCjeuCszy/yPaDWFAQdbnmCN0xzrqEWNNvhxzx
-   Qnd9wEiEXbnWbWYQFFYnIgWJd5KOajoOzIarQmbQCfzu0m4H+EPKNI2+N
-   yEtvdM+QeTMUoj4DHDrrRb2MYukWRJgodwBNv2mepjnD9eZymzd41AVCF
-   HfcUYRsA4aphbH1kJqjjf7fieok7OGHYL53HMtvFS8OAXr3spMy3Pwbgg
-   4WEgECDX5qQEaG6KTzN0Tg4Z/U2+jAWq1nRFA7Jv43GkwRmktOPIEev/y
-   HASwGQDqDGSrAz4/lnLsszaCFpWYuka6ylcmyfDEefUo5lomKdgacjh0l
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="456176834"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="456176834"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 05:52:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="801531928"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="801531928"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 05:52:32 -0800
-Received: from [10.209.157.143] (smittai-mobl1.amr.corp.intel.com [10.209.157.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 29919580689;
-        Tue, 21 Nov 2023 05:52:31 -0800 (PST)
-Message-ID: <d409d76f-cbd9-42ba-a492-c0cdd23e88da@linux.intel.com>
-Date:   Tue, 21 Nov 2023 08:52:30 -0500
+        Tue, 21 Nov 2023 08:53:25 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81E7D6E;
+        Tue, 21 Nov 2023 05:53:20 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1r5RBn-0003mX-Br; Tue, 21 Nov 2023 14:53:19 +0100
+Message-ID: <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info>
+Date:   Tue, 21 Nov 2023 14:53:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86/intel: Correct wrong 'or' operation for pmu
- capabilities
-Content-Language: en-US
-To:     Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>, stable@vger.kernel.org
-References: <20231121014628.729989-1-dapeng1.mi@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231121014628.729989-1-dapeng1.mi@linux.intel.com>
+Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
+Content-Language: en-US, de-DE
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Input Devices <linux-input@vger.kernel.org>
+Cc:     Mavroudis Chatzilazaridis <mavchatz@protonmail.com>,
+        =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        Jiri Kosina <jkosina@suse.cz>,
+        LinuxCat <masch77.linuxcat@gmail.com>,
+        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com>
+ <ZVyr-of1X4RudpWG@archie.me>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZVyr-of1X4RudpWG@archie.me>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700574801;d07b6676;
+X-HE-SMSGID: 1r5RBn-0003mX-Br
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 21.11.23 14:09, Bagas Sanjaya wrote:
+> On Thu, Nov 02, 2023 at 09:11:42PM +0700, Bagas Sanjaya wrote:
+>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>> 
+>>> Hello, After upgrading from 6.5.9 to 6.6.0, my keyboard started
+>>> acting really weird in its wireless mode, key actions sent are
+>>> completely wrong, see video attached.
+>>> 
+>>> Most keys are perceived as either E, 3 or F7, with F8 and <, as
+>>> well.
+> [...]
+>>> 9d1bd9346241cd6963b58da7ffb7ed303285f684 is the first bad commit 
+>>> commit 9d1bd9346241cd6963b58da7ffb7ed303285f684 Author: Mavroudis
+>>> Chatzilazaridis <mavchatz@protonmail.com> Date: Sun Jul 16
+>>> 18:23:44 2023 +0000
+>>> 
+>>> HID: logitech-dj: Add support for a new lightspeed receiver
+>>> iteration
+> [...]
+>> 
+>> https://bugzilla.kernel.org/show_bug.cgi?id=218094 
+> 
+> There's no reply from culprit author nor linux-input people (did they
+> miss this regression?).
 
+I guess part of the problem is that Bastien got reassigned and might not
+care about the kernel anymore.
 
-On 2023-11-20 8:46 p.m., Dapeng Mi wrote:
-> When running perf-stat command on Intel hybrid platform, perf-stat
-> reports the following errors.
-> 
-> sudo taskset -c 7 ./perf stat -vvvv -e cpu_atom/instructions/ sleep 1
-> 
-> Opening: cpu/cycles/:HG
-> ------------------------------------------------------------
-> perf_event_attr:
->   type                             0 (PERF_TYPE_HARDWARE)
->   config                           0xa00000000
->   disabled                         1
-> ------------------------------------------------------------
-> sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
-> sys_perf_event_open failed, error -16
-> 
->  Performance counter stats for 'sleep 1':
-> 
->      <not counted>      cpu_atom/instructions/
-> 
-> It looks the cpu_atom/instructions/ event can't be enabled on atom pmu
-> even the process is pinned on atom core. The investigation shows that
-> exclusive_event_init() helper always returns -EBUSY error in the perf
-> event creation. That's strange since the atom pmu should not be a
-> exclusive PMU.
-> 
-> Further investigation shows the issue is introduced by commit 97588df87b56
-> ("perf/x86/intel: Add common intel_pmu_init_hybrid()"). The commit
-> originally intents to clear the bit PERF_PMU_CAP_AUX_OUTPUT from pmu
-> capabilities if intel_cap.pebs_output_pt_available is not set, but it
-> incorrectly uses 'or' operation and leads to all pmu capabilities bits
-> are set to 1 except bit PERF_PMU_CAP_AUX_OUTPUT.
-> 
-> Testing this fix on Intel hybrid platforms, the observed issues
-> disappear.
-> 
-> Fixes: 97588df87b56 ("perf/x86/intel: Add common intel_pmu_init_hybrid()")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Another part of it is that Jiri was CCed, but Benjamin was not.
 
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+Ideally of course Mavroudis Chatzilazaridis, the culprit's author would
+look into this, but from a quick search on lore it looks like Mavroudis
+is not a regular kernel contributor and thus might not even know how we
+expect situations like this to be handled.
 
-Thanks,
-Kan
+> And on Bugzilla, other reporters replied that
+> reverting the culprit fixed the regression.
 
-> ---
->  arch/x86/events/intel/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-> index a08f794a0e79..ce1c777227b4 100644
-> --- a/arch/x86/events/intel/core.c
-> +++ b/arch/x86/events/intel/core.c
-> @@ -4660,7 +4660,7 @@ static void intel_pmu_check_hybrid_pmus(struct x86_hybrid_pmu *pmu)
->  	if (pmu->intel_cap.pebs_output_pt_available)
->  		pmu->pmu.capabilities |= PERF_PMU_CAP_AUX_OUTPUT;
->  	else
-> -		pmu->pmu.capabilities |= ~PERF_PMU_CAP_AUX_OUTPUT;
-> +		pmu->pmu.capabilities &= ~PERF_PMU_CAP_AUX_OUTPUT;
->  
->  	intel_pmu_check_event_constraints(pmu->event_constraints,
->  					  pmu->num_counters,
-> 
-> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+From Takashi's comments like
+https://bugzilla.kernel.org/show_bug.cgi?id=218094#c33 it sounds like
+this can be fixed by resolving another regression as discussed earlier
+today here:
+https://lore.kernel.org/all/87edgjo2kr.wl-tiwai@suse.de/
+
+I think that might be the better solution, but Takashi, Hans, or the
+input people will know best.
+
+> FYI, there's similar Bugzilla report on [1].
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=218172
+
+Not sure, that might be a different problem, guess Hans is the best to
+judge.
+
+> Also Cc'ed Linus.
+
+Linus can speak for himself, but I guess he gets enough mail already.
+I'd say in a situation like this it thus might best to not CC him;
+instead poke me when things apparently are not handled well, then we
+together can decide if it's worth bringing Linus in.
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
