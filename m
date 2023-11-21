@@ -2,144 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6967F2CE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C027F2CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbjKUMQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        id S233753AbjKUMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234667AbjKUMQG (ORCPT
+        with ESMTP id S230428AbjKUMQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:16:06 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C823D131
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:16:02 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id 2adb3069b0e04-50aaaf6e58fso3499070e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700568961; x=1701173761; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4WQYH8wKFCCHTXrK1Zk61Xzuiy6SVyBtq7SxIFkJbxM=;
-        b=ng2oXt28vfppNsmNB4Dj7gmk7MlqMR8lhKHHIX5I77ZKGGgOvMBiQ9jTdTbudN8ArH
-         5cZjW/HlP7BSZvbNl9FTr9k+zdDFC7lVEGmNPRm5L0aBLhDslPc/0FOnpvE7qONnBS56
-         vqG21Doz0SonMSXUxj6LHs3Fton+AN9/4v6who6YOq2TAbRP7uVt5LfcTZDHBAOvhiM5
-         bf0/eTlCf+eq3IvXphgCTSVj3CGMp9o2SDtFCK7/gsClHBkxNkNfBnY7A8sjEZGOlJjO
-         sIrsMmEBEPrW02jo3HGkUOu0DYOhwG4SUcqa/vJnZiGMtlE/5wQVlg2BuaJ/IR0l5pYM
-         Gtyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700568961; x=1701173761;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4WQYH8wKFCCHTXrK1Zk61Xzuiy6SVyBtq7SxIFkJbxM=;
-        b=j/ZFttJ1ektdIRqAowz+NxGxz1uaona7C/JN/VwM38htfb5uQYGZp6Enwg6xxfL8wc
-         0uM0z5sGjcN5SgsKQLM6znje7TSUc4DJ2ZrCxg1+vpLILEqAw2taKsDvBJ+rWqsMJt67
-         ISy3rDz8SBsXCdtu5aHQ9F8av3Sb23YX9uXksZJ6iIuR8Yyd0pv0piewo4DpSokXY+Fp
-         m144Rpk3ntjTrM/Gi0vZ0jPSJKQPpGaIq2NTWS9UH+ggqqsW386RCN8iih6BEPkL/vXv
-         qm6CqNTIKNdsvQpKypjKdi5uoJBczeA25pIf9tCC08s4MNfDT6znFHomSG983BdWWTqr
-         e6Zw==
-X-Gm-Message-State: AOJu0YwWMxuTK4RKKV7g+76qDbD5hvthO/wiDwZkzBmfSd5sjvUarun8
-        hibRlBdxbTE5Tm9pQ1NClK50rlU797tAhwMo5f8=
-X-Google-Smtp-Source: AGHT+IEepWFvQt+GirrHSzzGQDkkCiU19dN1cDmr4WpdLO6JYl6Ytum1mSIuXIPZjxIFQiUFKDw9/M8JG7B1ilp71nM=
-X-Received: by 2002:a19:7019:0:b0:509:faef:82f1 with SMTP id
- h25-20020a197019000000b00509faef82f1mr7074547lfc.26.1700568960539; Tue, 21
- Nov 2023 04:16:00 -0800 (PST)
+        Tue, 21 Nov 2023 07:16:53 -0500
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E987137;
+        Tue, 21 Nov 2023 04:16:49 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 4C73F41D83;
+        Tue, 21 Nov 2023 12:16:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1700569008; bh=iMeRzervuoudDuGdhL6yX2feFImvQm3SAtDHF37I57s=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=r2IeCQq429ic+JyT9x/9Ch2c+AqAnZ2/FRs8iJmEjkL5FDbywPnA8ojG3Rjd9q1w7
+         p8qCWUCIcbEJhe1F+aLxTAXUlvmwNTlQus1DMprVEqaRatWfi6i673AHnZaQ5Lj68t
+         iXRTwlXGZioyvc62UBVZ29XnGCkD6a/F5H6o8LOQT6UxpqJik76oxJaWwWqHxtHkKF
+         zfrOW8pd5gKp9V2tZXqehSeJuWO09yunle0lRdUDfoMOhpQKmv2hOtPi0zLBH9XHTZ
+         ii6X/0OfRUjOFjuJkZdM0/wKrcjqUwJYwK2CwwnzzFWIm1HqzzZcnoRBAXvaQyV4+E
+         kZ83sgdG3BEtQ==
+Message-ID: <e4d254a6-3244-4b0b-a2bb-f48824e02995@marcan.st>
+Date:   Tue, 21 Nov 2023 21:16:42 +0900
 MIME-Version: 1.0
-Reply-To: razumkoykhailo@gmail.com
-Sender: stedoni745@gmail.com
-Received: by 2002:a05:6022:b193:b0:49:2c8f:1552 with HTTP; Tue, 21 Nov 2023
- 04:15:59 -0800 (PST)
-From:   "Mr.Razum Khailo" <razumkoykhailo@gmail.com>
-Date:   Tue, 21 Nov 2023 04:15:59 -0800
-X-Google-Sender-Auth: uvSiFkHA2nsuJ3PvfYqoVH6CWFU
-Message-ID: <CAAWQ0g6N4ZAbfiQSwMwY+EoL2Ose+NVZDoU9uXuP_+fE6i=xXw@mail.gmail.com>
-Subject: Greetings from Ukraine,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HK_NAME_FM_MR_MRS,LOTS_OF_MONEY,MILLION_USD,
-        MONEY_FRAUD_5,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
+ starting from kernel 6.5
+Content-Language: en-US
+To:     Aditya Garg <gargaditya08@live.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Orlando Chamberlain <orlandoch.dev@gmail.com>,
+        Kerem Karabay <kekrby@gmail.com>,
+        Aun-Ali Zaidi <admin@kodeit.net>,
+        Asahi Linux Mailing List <asahi@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        "j@jannau.net" <j@jannau.net>
+References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
+ <ZVKxtD2Mt_eVyttJ@archie.me>
+ <MA0P287MB021794BCCCFB5EA57C1C3B69B8B2A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+ <88fcc70e-9f4b-eeb9-d826-03fa4c40e7c3@marcan.st>
+ <e2909986-34b5-3ae2-cf5c-a1f8c46a1e0a@marcan.st>
+ <6574A65F-3C4D-4E26-8848-F12C38668478@live.com>
+ <03cdd06c-3991-dbf8-6068-e76384db8240@marcan.st>
+ <0900292C-5E74-471A-B789-A1D35D1BBBF7@live.com>
+ <3b5aedb4-da00-4ae2-a60f-685dba949223@marcan.st>
+ <MA0P287MB0217A68FDF5E0DC22F19D3DCB8BBA@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+From:   Hector Martin <marcan@marcan.st>
+In-Reply-To: <MA0P287MB0217A68FDF5E0DC22F19D3DCB8BBA@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:143 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [razumkoykhailo[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [stedoni745[at]gmail.com]
-        *  0.0 MILLION_USD BODY: Talks about millions of dollars
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  1.5 HK_NAME_FM_MR_MRS No description available.
-        *  2.2 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings from Ukraine,
-
-Mr. Razumkov Mykhailo, an entrepreneur businessman from Odessa
-Ukraine. Within a year plus some months now, more than 8.2 million
-people around the cities of my country Ukraine have been evacuated to
-a safe location and out of the country, most especially children with
-their parents, nursing mothers and pregnant women, and those who have
-been seriously wounded and need urgent medical attention. I was among
-those that were able to evacuate to our neighbouring countries and I=E2=80=
-=99m
-now in the refugee camp of Ter Apel Groningen in the Netherlands.
-
-I need a foreign partner to enable me to transport my investment
-capital and then relocate with my family, honestly i wish I will
-discuss more and get along. I need a partner because my investment
-capital is in my international account. I=E2=80=99m interested in buying
-properties, houses, building real estates, my capital for investment
-is ($30 Million USD) . The financial institutions in my country
-Ukraine are all shot down due to the crisis of this war on Ukraine
-soil by the Russian forces. Meanwhile, if there is any profitable
-investment that you have so much experience in your country, then we
-can join together as partners since I=E2=80=99m a foreigner.
-
-I came across your e-mail contact through private search while in need
-of your assistance and I decided to contact you directly to ask you if
-you know any lucrative business investment in your country i can
-invest my money since my country Ukraine security and economic
-independent has lost to the greatest lower level, and our culture has
-lost including our happiness has been taken away from us. Our country
-has been on fire for more than a year now.
-
-If you are capable of handling this business partnership, contact me
-for more details, I will appreciate it if you can contact me
-immediately. You may as well tell me a little more about yourself.
-Contact me urgently to enable us to proceed with the business. I will
-be waiting for your response. My sincere apologies for the
-inconvenience.
 
 
-Thank you!
+On 2023/11/21 20:42, Aditya Garg wrote:
+> 
+> 
+>> On 20-Nov-2023, at 4:37 PM, Hector Martin <marcan@marcan.st> wrote:
+>>
+>> ﻿
+>>
+>>> On 2023/11/19 4:31, Aditya Garg wrote:
+>>>
+>>>
+>>>>> On 14-Nov-2023, at 3:14 PM, Hector Martin <marcan@marcan.st> wrote:
+>>>>
+>>>> On 14/11/2023 18.03, Aditya Garg wrote:
+>>>>>
+>>>>>
+>>>>>> On 14-Nov-2023, at 1:28 PM, Hector Martin <marcan@marcan.st> wrote:
+>>>>>>
+>>>>>> On 14/11/2023 15.59, Hector Martin wrote:
+>>>>>>> On 14/11/2023 15.23, Aditya Garg wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>> On 14-Nov-2023, at 5:01 AM, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>>>>>>>>>
+>>>>>>>>> ﻿On Mon, Nov 13, 2023 at 08:57:35PM +0000, Aditya Garg wrote:
+>>>>>>>>>> Starting from kernel 6.5, a regression in the kernel is causing Bluetooth to not work on T2 Macs with BCM4377 chip.
+>>>>>>>>>>
+>>>>>>>>>> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: https://pastebin.com/u9U3kbFJ
+>>>>>>>>>>
+>>>>>>>>>> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: https://pastebin.com/aVHNFMRs
+>>>>>>>>>>
+>>>>>>>>>> Also, the bug hasn’t been fixed even in 6.6.1, as reported by users.
+>>>>>>>>>
+>>>>>>>>> Can you bisect this regression please?
+>>>>>>>>
+>>>>>>>> Since I don't have access to this hardware, it's not possible for me to bisect this regression. Let's hope someone is able to do so though.
+>>>>>>>
+>>>>>>> It's not a regression, it was always broken. I'm sending a patch.
+>>>>>>>
+>>>>>>> - Hector
+>>>>>>
+>>>>>> You are quite likely conflating two problems. The ubsan issue you quoted
+>>>>>> was always there and the patch I just sent fixes it, but it almost
+>>>>>> certainly always worked fine in practice without ubsan.
+>>>>>>
+>>>>>> The Bluetooth problem you are referring to is likely *specific to
+>>>>>> Bluetooth LE devices* and the regression was introduced by 288c90224e
+>>>>>> and fixed by 41e9cdea9c, which is also in 6.5.11 and 6.6.1.
+>>>>>>
+>>>>>> If Bluetooth is broken in *some other way* in 6.6.1 then we need a
+>>>>>> proper report or a bisect. Your logs don't show any issues other than
+>>>>>> the ubsan noise, which is not a regression.
+>>>>>>
+>>>>>> - Hector
+>>>>>>
+>>>>>
+>>>>> UBSAN noise seems to be fixed, Bluetooth not working though
+>>>>>
+>>>>> https://pastebin.com/HeVvMVk4
+>>>>>
+>>>>> Ill try setting .broken_le_coded = true,
+>>>>
+>>>> Now you have a probe timeout, which you didn't have before. That's a
+>>>> different problem.
+>>>>
+>>>> Please try this commit and see if it helps:
+>>>>
+>>>> https://github.com/AsahiLinux/linux/commit/8ec770b4f78fc14629705206e2db54d9d6439686
+>>>>
+>>>> If it's this then it's still not a regression, it's probably just random
+>>>> chance since I think the old timeout value was borderline for the older
+>>>> chips.
+>>>>
+>>>> - Hector
+>>>>
+>>>
+>>>
+>>> Hi
+>>>
+>>> I recently got a kernel tested with this patch as well as with .broken_le_coded = true,
+>>> Here are the logs: https://pastebin.com/BpfJuJKY
+>>>
+>>> Also, without .broken_le_coded = true, the bluetooth doesn't work, as specified in my previous email.
+>>
+>> So are you saying everything works now? If not, what doesn't work?
+>> "Bluetooth doesn't work" isn't useful information, especially in the
+>> absence of any useful error messages. You can't just dump dmesg logs at
+>> us, you have to *describe* what the problem is.
+>>
+> My bad for not specifying that. The user reports that the Bluetooth device is not recognised at all.
+> 
+> Also, broken_le_coded = true did not "fix" it.
+> 
+> Talking about dmesg, well not getting any logs regarding this message indeed is a frustrating thing for me, and bisecting seems to be the only option in my mind rn.
+> 
 
-Mr. Razumkov Mykhailo.
+What does that mean? The controller or the device? Can you initiate a
+scan? Does it find any devices? Is pairing broken or just connecting?
+Was the device paired before or after the breaking change? *What* device
+are you trying to use/pair?
+
+What do these commands say?
+
+$ bluetoothctl show
+$ bluetoothctl devices
+
+Since the kernel isn't logging any errors, have you looked at syslog to
+see what the whole userspace side has to say? If an operation is failing
+*something* should be logging an error.
+
+*Please*, we need proper detailed bug reports if you want this to get
+fixed. I'm sure you're aware of what a reasonable bug report is. Please
+teach your user how to provide useful information. Otherwise yes, it's
+going to be on you to bisect it since there's nothing we can do with
+zero details and useful logs.
+
+- Hector
