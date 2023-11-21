@@ -2,154 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7DC7F346E
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E427F31D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbjKURCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        id S234817AbjKUPD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:03:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbjKURCr (ORCPT
+        with ESMTP id S234521AbjKUPDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:02:47 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB87B10E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:02:43 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c871d566cfso46090871fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 09:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1700586162; x=1701190962; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RY5bcl1x0MOfQG1a+xI6jyP9NlPUMrTJp9SfZPaMtRU=;
-        b=vBFX28TR2bJC6tSdQXVe3UL/sE/o35fhE/8cq3/EVycTKBMmR2yN+slXCatW8C3WEJ
-         FFNGr7fiV+y5eKVUOcP2HDENJyjQ2H5eFIi4zM8IQ9J0RIZ+4zrE4MO+r9Rtj23JEKT/
-         K2QoTG7rOmrmKD+Q1he8kgRjZmPzMPjbPZSrPz/q2mwYJrQ+csUvOxLt47gFZVfXs1Lc
-         dvKiOniDnHy1CfPiLs4YEO1zYuCm95sxXzXFnesAsD/4BkAEfQt2JHNSGCJmT+p+PEOZ
-         /L5UQH9XOP1WWK22R4jWkZiausMJwcBT232LEwG6hSH4AjEmdN96qUtLrxH07wruebnQ
-         VSpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700586162; x=1701190962;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RY5bcl1x0MOfQG1a+xI6jyP9NlPUMrTJp9SfZPaMtRU=;
-        b=tBRBYsabLPWVFuWxAytrDJLBc8cRuR+8Gv7d+MZV/cIxyegFb539Rz9mpb1ACukniE
-         9GFKvQ5wch7qv54YgsBeBlXotqdiLdsAyAPB5+Aw3gX4RDAq2prOx5IZqyyf6Oa75WHc
-         uq06RTFHftRQ6szt05lwWru8TxBP3opOwPbFasH0oUZT73KxCzaQ+cCkMK9ldFh5F00L
-         xYzlKSrY6BiJE5nnCUBuLDGysUDlmFpdgQkxmTKdNKzOgJC5KC4SveNpBBmNFAjNCNXq
-         bhH502JFM8PZYbfQXnl0Ae3Rt3vzhyJCEyGEXRjEmwNLRGyfXOG129Lha60igZwE6kY2
-         NHaQ==
-X-Gm-Message-State: AOJu0Yw+0Yeq0HbSj6ISQFQLbLPa4cyPLc650Zy568X/qAJvbQewAZl8
-        8OM3xxWuvMYT85R0lLGdcuSDQg==
-X-Google-Smtp-Source: AGHT+IHWCWoNHIImsBka/l40pqodUCB/BIiBTxP670O+sPPNIcGbx21bgGmTyfJmWQu0QXTVfIcyFg==
-X-Received: by 2002:a2e:878d:0:b0:2c5:4a0:f3cb with SMTP id n13-20020a2e878d000000b002c504a0f3cbmr7237202lji.11.1700586158495;
-        Tue, 21 Nov 2023 09:02:38 -0800 (PST)
-Received: from airbuntu (host109-151-228-202.range109-151.btcentralplus.com. [109.151.228.202])
-        by smtp.gmail.com with ESMTPSA id k7-20020a7bc407000000b003fd2d3462fcsm703126wmi.1.2023.11.21.09.02.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 09:02:38 -0800 (PST)
-Date:   Tue, 14 Nov 2023 21:13:32 +0000
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com, wyes.karny@amd.com, beata.michalska@arm.com
-Subject: Re: [PATCH v3 0/2] Rework interface between scheduler and schedutil
- governor
-Message-ID: <20231114211332.c3yhmfm7vxgysi72@airbuntu>
-References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
- <CAJZ5v0g4N2UojiQqJn7fxWj2=h=6sgFfGEqEVx1wuh2VdvaH6Q@mail.gmail.com>
- <20231116143450.GF8262@noisy.programming.kicks-ass.net>
+        Tue, 21 Nov 2023 10:03:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCEAD1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:03:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47AD6C433C8;
+        Tue, 21 Nov 2023 15:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700579031;
+        bh=ybjDzxPZW5g+QhZul9Du8UCGPjKVYHmIO/KEc0Aw7YQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oGnUEJcGjCJUadWNW4WUkZSR3cMzcCee54zegnUDA8ilcTUNmGunCdv+Q9IDr4+Mw
+         iACpM2DWBIvBGGHfC//8xFf0Mqq7wLY198e8tWfMB5VxPqYg3iKKmGqjWDAmDm+R+A
+         JJs27it0sDCvJQJ6EWHm1gdt3kX2qCkXB4SWd06ox8GubkZ1FMC0/hqK1ttsjVLnUZ
+         ki975Q/Qp7qFubmCb3G4lLk4jUogBtOezEN0QV0+IDrXwfNDUlFs9B8axkBpN+Nb8u
+         4pAK3DJLq+/1sUwFzqnvDTf/JwilcTCFwrJwSP1ZFzbNRPC4w7yVApZpPRmr6ujn3l
+         cHVxaXqno7+mg==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5SIF-0007xS-2C;
+        Tue, 21 Nov 2023 16:04:03 +0100
+Date:   Tue, 21 Nov 2023 16:04:03 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrew Halaney <ahalaney@redhat.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] USB: dwc3: qcom: fix resource leaks on probe deferral
+Message-ID: <ZVzG4-U_y2q_EBrp@hovoldconsulting.com>
+References: <20231117173650.21161-1-johan+linaro@kernel.org>
+ <041f239f-7b40-4681-8c6c-2268f9c2c684@linaro.org>
+ <74cswe5tivcctmnty3gfavzsxdvjz5m4rktyj5auzwvrndninm@dah4h2fdj3zv>
+ <ZVuO9qj3SRHAS4qm@hovoldconsulting.com>
+ <2023112124-duckling-absinthe-2167@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231116143450.GF8262@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_96_XX,
-        DKIM_SIGNED,DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <2023112124-duckling-absinthe-2167@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/23 15:34, Peter Zijlstra wrote:
-> On Mon, Nov 06, 2023 at 04:05:40PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Nov 3, 2023 at 2:18 PM Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
-> > >
-> > > Following the discussion with Qais [1] about how to handle uclamp
-> > > requirements and after syncing with him, we agreed that I should move
-> > > forward on the patchset to rework the interface between scheduler and
-> > > schedutil governor to provide more information to the latter. Scheduler
-> > > (and EAS in particular) doesn't need anymore to guess estimate which
-> > > headroom the governor wants to apply and will directly ask for the target
-> > > freq. Then the governor directly gets the actual utilization and new
-> > > minimum and maximum boundaries to select this target frequency and
-> > > doesn't have to deal anymore with scheduler internals like uclamp when
-> > > including iowait boost.
-
-Thanks a lot for taking over Vincent and helping with this! And sorry for
-delayed review, was out travelling between holiday and LPC so haven't caught up
-with the list properly yet..
-
-Beside the comments on patch 1, it looks good to me. Do we want to generalize
-the way the interface is called though so that scheduler is not tightly coupled
-to schedutil? Speaking with Intel folks in LPC, it seemed they rely on firmware
-to make a lot of decision and if we further generalize how the interface is
-called (I think we need a new cpufreq wrapper akin to cpufreq_update_util()) to
-allow governors to hook into it and do their own thing. This could allow them
-to use uclamp and these min/max perf hints.
-
-But I haven't thought this fully through. So something to consider separately
-anyway to not hold this up unnecessarily. Maybe we do want to keep schedutil
-tightly integrated and get people to switch to schedutil instead..
-
-> > >
-> > > [1] https://lore.kernel.org/lkml/CAKfTPtA5JqNCauG-rP3wGfq+p8EEVx9Tvwj6ksM3SYCwRmfCTg@mail.gmail.com/
-> > >
-> > > Changes since v2:
-> > > - remove useless target variable
-> > >
-> > > Changes since v1:
-> > > - fix a bug (always set max even when returning early)
-> > > - fix typos
-> > >
-> > > Vincent Guittot (2):
-> > >   sched/schedutil: Rework performance estimation
-> > >   sched/schedutil: Rework iowait boost
-> > >
-> > >  include/linux/energy_model.h     |  1 -
-> > >  kernel/sched/core.c              | 82 ++++++++++++-------------------
-> > >  kernel/sched/cpufreq_schedutil.c | 69 ++++++++++++++++----------
-> > >  kernel/sched/fair.c              | 22 +++++++--
-> > >  kernel/sched/sched.h             | 84 +++-----------------------------
-> > >  5 files changed, 100 insertions(+), 158 deletions(-)
-> > >
-> > > --
+On Tue, Nov 21, 2023 at 03:21:34PM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Nov 20, 2023 at 05:53:10PM +0100, Johan Hovold wrote:
+> > On Mon, Nov 20, 2023 at 09:22:54AM -0600, Andrew Halaney wrote:
+> > > On Sat, Nov 18, 2023 at 12:47:30AM +0100, Konrad Dybcio wrote:
+> > > > On 17.11.2023 18:36, Johan Hovold wrote:
+> > > > > When reviewing the recently submitted series which reworks the dwc3 qcom
+> > > > > glue implementation [1], I noticed that the driver's tear down handling
+> > > > > is currently broken, something which can lead to memory leaks and
+> > > > > potentially use-after-free issues on probe deferral and on driver
+> > > > > unbind.
+> > > > > 
+> > > > > Let's get this sorted before reworking driver.
+> > > > > 
+> > > > > Note that the last patch has only been compile tested as I don't have
+> > > > > access to a sdm845 device.
 > > 
-> > For the schedutil changes in the series:
+> > > > I'll sound like a broken record, but:
+> > > > 
+> > > > is there anyone in the world that is actively benefiting from this failed
+> > > > experiment of using the ACPI tables that were shipped with these SoCs?
+
+> > I agree that if we can remove the ACPI hacks in here, we should try do
+> > so (e.g. given that no one really uses it anymore).
 > > 
-> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > As Andrew already mentioned, that is a separate issue not directly
+> > related to this series, though.
 > > 
-> > and I'm assuming this series to be targeted at sched.
+> > Removing it before reworking the dwc3 binding [1] and adding multiport
+> > support [2] should simplify both of those series quite a bit, however.
+
+> > [1] https://lore.kernel.org/all/20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com/
+> > [2] https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
+> > 
 > 
-> Sure, I'll go queue it. Thanks!
+> So should I apply this series now or not?
 
-Sorry for being late. If this wasn't queued already I think worth waiting to
-iron out some comments on patch 1 first.
+Please do. Removing ACPI support should be done later if that's at all
+possible.
 
-
-Thanks!
-
---
-Qais Yousef
+Johan
