@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5827F33F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CB77F340F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjKUQj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:39:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
+        id S231164AbjKUQmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:42:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjKUQj0 (ORCPT
+        with ESMTP id S230202AbjKUQmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:39:26 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF241A2;
-        Tue, 21 Nov 2023 08:39:22 -0800 (PST)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALFcRdU004331;
-        Tue, 21 Nov 2023 16:39:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=KmKbwEJplODev9WCG+a3bZzneO7c5WCbVoBpxNQbPFg=;
- b=dI1JuA/s5eXZsBHO4ylYEOoViGAfRVKTvm7ZDwjI00DytALhK27B+jygls9RjLxHLlUE
- TqcD8GIAEA9DDqPfq/WQzZ0u8VxBFx+kzD/KtE7lLfNxNfg4j0+I1NiCW4hhV5+5KT7C
- W6P7GKUw2ZpXsfwoHUUmtuR9i9QdaB/tXY1ZRrHJNhpmlB0ouU1GjLWMGmcvu6oBZdln
- MN1PKna2HZ6ZMXf6PxuaeUYhhuB8fGe8+a0S6uNQj4UndhKVk4PWNQLVmjDp3LK+/ClT
- RxwL3NNd8hiBvFn49Zpo5Rgpbv4r9Fudh1gBJkhBDGkKISVfmK46zuK1+DOCUJQ43udC tw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ugy44kpnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 16:39:18 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALGIu0O007851;
-        Tue, 21 Nov 2023 16:39:17 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ufaa21d5s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 16:39:17 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ALGdEaK20775492
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Nov 2023 16:39:14 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8881620040;
-        Tue, 21 Nov 2023 16:39:14 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B8982004D;
-        Tue, 21 Nov 2023 16:39:14 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 21 Nov 2023 16:39:14 +0000 (GMT)
-Date:   Tue, 21 Nov 2023 17:39:13 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 1/6] tty: con3215: drop raw3215_info::ubuffer
-Message-ID: <ZVzdMWawUScUTUM3@tuxmaker.boeblingen.de.ibm.com>
-References: <20231121103626.17772-1-jirislaby@kernel.org>
- <20231121103626.17772-2-jirislaby@kernel.org>
+        Tue, 21 Nov 2023 11:42:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB9CE7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:41:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3CDC433C8;
+        Tue, 21 Nov 2023 16:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700584916;
+        bh=GA5cVgxVxFnsICwvLexb6iEuW/gfAj83suuz969sIis=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IoHNeeUSDJO1JlkHUfNVI4gvYxREiQjrTPMCpEOjyHuAF9b3xCiEVgxpmx5hSQzjs
+         DKWF8JCjAEqAEYMYhYKj4bks9WRYWXzi53pKDF8kVDWQgS9SfovbAsrWWwIHk/xWNn
+         h2GETJFxru8kBvRGRo/a2pAtEToSx7NjmuBMAChMQWTXpw8FE3yilI80YBWel6GXJr
+         nGg3MZrP2GLAe9veDlXLNj1UUfSCPvlJ1vjB7kIQpIRYy0ot+srfS1J5mwbE5EpS/g
+         hYfCGJSYJUij6I/vcbIoi6pS0FBjn5y16vaSjLmjXLIzPlsbZzFssbn+hg3GUhNaTp
+         5icqFEcMLJqhQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 164D8CE04C0; Tue, 21 Nov 2023 08:41:56 -0800 (PST)
+Date:   Tue, 21 Nov 2023 08:41:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <e3721b80-4dfb-4914-acfb-b315b8cc45b8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231121103626.17772-2-jirislaby@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: edxa4Ci-Wph6lN6y2f6gym2vAPhCG9Jj
-X-Proofpoint-ORIG-GUID: edxa4Ci-Wph6lN6y2f6gym2vAPhCG9Jj
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_09,2023-11-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 spamscore=0 bulkscore=0 clxscore=1011 phishscore=0
- mlxscore=0 mlxlogscore=572 suspectscore=0 adultscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+In-Reply-To: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,35 +72,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:36:21AM +0100, Jiri Slaby (SUSE) wrote:
-> clang-struct [1] found raw3215_info::ubuffer unused.
+On Tue, Nov 21, 2023 at 04:52:56PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
 > 
-> It's actually not used since 2004 when we switched to kernel buffers.
-> 
-> [1] https://github.com/jirislaby/clang-struct
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-> Cc: Sven Schnelle <svens@linux.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> ---
->  drivers/s390/char/con3215.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
-> index 99361618c31f..34bc343dcfcc 100644
-> --- a/drivers/s390/char/con3215.c
-> +++ b/drivers/s390/char/con3215.c
-> @@ -89,7 +89,6 @@ struct raw3215_info {
->  	wait_queue_head_t empty_wait; /* wait queue for flushing */
->  	struct timer_list timer;      /* timer for delayed output */
->  	int line_pos;		      /* position on the line (for tabs) */
-> -	char ubuffer[80];	      /* copy_from_user buffer */
->  };
->  
->  /* array of 3215 devices structures */
+> > Why is this such a hard question?
 
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+The place to look is here:
+
+https://docs.kernel.org/RCU/Design/Requirements/Requirements.html
+
+Or, if you prefer, Documentation/RCU/Design/Requirements/Requirements.rst.
+
+> Anyway, recapping from IRC:
+> 
+> preemptible, SRCU:
+>   counter-array based, GP advances by increasing array index
+>   and waiting for previous index to drop to 0.
+> 
+>   notably, a GP can pass while a task is preempted but not within a
+>   critical section.
+> 
+>   SRCU has smp_mb() in the critical sections to improve GP.
+
+https://docs.kernel.org/RCU/Design/Requirements/Requirements.html#sleepable-rcu
+
+Allows general blocking in SRCU readers, which it tolerates by giving
+each user its own SRCU via DEFINE_SRCU(), DEFINE_STATIC_SRCU() or
+a srcu_struct structure.  Users blocking too much in SRCU read-side
+critical sections hurt only themselves.  Yes, heavy-weight readers.
+
+> tasks:
+>   waits for every task to pass schedule()
+> 
+>   ensures that any pieces of text rendered unreachable before, is
+>   actually unused after.
+
+But does not wait for tasks where RCU is not watching, including the
+idle loop.
+
+> tasks-rude:
+>   like tasks, but different? build to handle tracing while rcu-idle,
+>   even though that was already deemed bad?
+
+This waits for the tasks that RCU Tasks cannot wait for.  If noinstr
+is fully fixed, RCU Tasks Rude can go away.
+
+> tasks-tracing-rcu:
+>   extention of tasks to have critical-sections ? Should this simply be
+>   tasks?
+
+Tasks Trace RCU is its own thing.  It uses rcu_read_lock_trace() and
+rcu_read_unlock_trace() to mark its readers.  It can detect quiescent
+states even when the task in question does not call schedule().
+Unlike Tasks RCU, Tasks Trace RCU does not scan the full task list.
+(It used to, but that caused latency blows on non-realtime workloads.)
+Tasks Trace RCU allows preemption and blocking for page faults in
+its readers.  Also blocking on non-raw spinlocks in PREEMPT_RT, but I
+am not sure that anyone cares.  If you want to block on anything else,
+you need to talk to the current Tasks Trace RCU users.
+
+							Thanx, Paul
+
+> Can someone complete, please?
+> 
+> 
+> 
