@@ -2,173 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE3B7F3453
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234EE7F344A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbjKUQzx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 11:55:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
+        id S233573AbjKUQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbjKUQzv (ORCPT
+        with ESMTP id S230340AbjKUQyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:55:51 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A4919E;
-        Tue, 21 Nov 2023 08:55:38 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id E75F224DCA6;
-        Wed, 22 Nov 2023 00:55:35 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 22 Nov
- 2023 00:55:36 +0800
-Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 22 Nov
- 2023 00:55:30 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     <irogers@google.com>
-CC:     <acme@kernel.org>, <adrian.hunter@intel.com>,
-        <alexander.shishkin@linux.intel.com>, <aou@eecs.berkeley.edu>,
-        <jisheng.teoh@starfivetech.com>, <jolsa@kernel.org>,
-        <leyfoon.tan@starfivetech.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <mark.rutland@arm.com>,
-        <mingo@redhat.com>, <n.shubin@yadro.com>, <namhyung@kernel.org>,
-        <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
-        <peterz@infradead.org>
-Subject: Re: [PATCH v3] perf vendor events riscv: add StarFive Dubhe-90 JSON file
-Date:   Wed, 22 Nov 2023 00:53:39 +0800
-Message-ID: <20231121165339.2177083-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAP-5=fVgD7sc1uP5G-Q_bo8bf82rncFt=LLTA725csAT7g63rA@mail.gmail.com>
-References: <CAP-5=fVgD7sc1uP5G-Q_bo8bf82rncFt=LLTA725csAT7g63rA@mail.gmail.com>
+        Tue, 21 Nov 2023 11:54:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378B71A3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:53:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F2FC433C7;
+        Tue, 21 Nov 2023 16:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700585636;
+        bh=8Wh9k1lYQvJfipCVzoypNryh9Xz8F8SP6BIc+Oy13+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NeTiS0S0Yhb8TJaxoKQRvVtc0hEmgZTquvYXnmHKZ514rphvbbJW8g0zXUuZ++s2/
+         zYTny8iPfnZVaPsYLN3OP8wTcEhrU5DHN+L8cJDovIVYqxbKmE4do078ctqyM0K0VF
+         0rDNPIHEHn9uDVwE3EafNb2E9RfT3nCvh8j9PEESw0XKesPnlqTLUEmXt2qmkyjL5I
+         EhXRZc9ek0T62U3SFPtJVsz0TzadLFKDOe4tgquPG0OSEbTrRCvW13LyPE2Q+vk3VL
+         brekgYmZ8fk7ggD3klAd0PyLfG0PRKhChmkdTcbkZG2MP89r3lNQ+61iLaw0oNmjxx
+         KYYT+XWw8Z+Jw==
+Date:   Tue, 21 Nov 2023 16:53:51 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, x86@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [REPORT] BPF: Reproducible triggering of BUG() from userspace PoC
+Message-ID: <20231121165351.GF173820@google.com>
+References: <20231108154626.GB8909@google.com>
+ <ZU1RgvcM0FFXunOA@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZU1RgvcM0FFXunOA@krava>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 07:25:21 -0800
-Ian Rogers <irogers@google.com> wrote:
+On Thu, 09 Nov 2023, Jiri Olsa wrote:
 
-> On Wed, Nov 8, 2023 at 11:51 PM Ji Sheng Teoh
-> <jisheng.teoh@starfivetech.com> wrote:
-> >
-> > StarFive's Dubhe-90 supports raw event id 0x00 - 0x22.
-> > The raw events are enabled through PMU node of DT binding.
-> > Besides raw event, add standard RISC-V firmware events to
-> > support monitoring of firmware event.
-> >
-> > Example of PMU DT node:
-> > pmu {
-> >         compatible = "riscv,pmu";
-> >         riscv,raw-event-to-mhpmcounters =
-> >                 /* Event ID 1-31 */
-> >                 <0x00 0x00 0xFFFFFFFF 0xFFFFFFE0 0x00007FF8>,
-> >                 /* Event ID 32-33 */
-> >                 <0x00 0x20 0xFFFFFFFF 0xFFFFFFFE 0x00007FF8>,
-> >                 /* Event ID 34 */
-> >                 <0x00 0x22 0xFFFFFFFF 0xFFFFFF22 0x00007FF8>;
-> > };
-> >
-> > Perf stat output:
-> > [root@user]# perf stat -a \
-> >         -e access_mmu_stlb \
-> >         -e miss_mmu_stlb \
-> >         -e access_mmu_pte_c \
-> >         -e rob_flush \
-> >         -e btb_prediction_miss \
-> >         -e itlb_miss \
-> >         -e sync_del_fetch_g \
-> >         -e icache_miss \
-> >         -e bpu_br_retire \
-> >         -e bpu_br_miss \
-> >         -e ret_ins_retire \
-> >         -e ret_ins_miss \
-> >         -- openssl speed rsa2048
-> > Doing 2048 bits private rsa's for 10s: 39 2048 bits private RSA's in
-> > 10.03s
-> > Doing 2048 bits public rsa's for 10s: 1469 2048 bits public RSA's in
-> > 9.47s
-> > version: 3.0.10
-> > built on: Tue Aug  1 13:47:24 2023 UTC
-> > options: bn(64,64)
-> > CPUINFO: N/A
-> >                   sign    verify    sign/s verify/s
-> > rsa 2048 bits 0.257179s 0.006447s      3.9    155.1
-> >
-> >  Performance counter stats for 'system wide':
-> >
-> >            3112882      access_mmu_stlb
-> >              10550      miss_mmu_stlb
-> >              18251      access_mmu_pte_c
-> >             274765      rob_flush
-> >           22470560      btb_prediction_miss
-> >            3035839      itlb_miss
-> >          643549060      sync_del_fetch_g
-> >             133013      icache_miss
-> >           62982796      bpu_br_retire
-> >             287548      bpu_br_miss
-> >            8935910      ret_ins_retire
-> >               8308      ret_ins_miss
-> >
-> >       20.656182600 seconds time elapsed
-> >
-> > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> > ---
-> > Changelog:
-> > v2 -> v3:
-> > - Add standard RISC-V firmware event
-> > - Update commit message to reflect addition of standard
-> >   RISC-V firmware event.
-> > v1 -> v2:
-> > - Rename 'Starfive Dubhe' to 'StarFive Dubhe-90' in commit message.
-> > - Rename 'starfive/dubhe' pmu-events folder to 'starfive/dubhe-90'
-> > - Update MARCHID to 0x80000000db000090 in mapfile.csv
-> > ---
-> >  tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
-> >  .../arch/riscv/starfive/dubhe-90/common.json  | 172
-> > ++++++++++++++++++ .../riscv/starfive/dubhe-90/firmware.json     |
-> > 68 +++++++ 3 files changed, 241 insertions(+)
-> >  create mode 100644
-> > tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/common.json
-> > create mode 100644
-> > tools/perf/pmu-events/arch/riscv/starfive/dubhe-90/firmware.json
-> >
-> > diff --git a/tools/perf/pmu-events/arch/riscv/mapfile.csv
-> > b/tools/perf/pmu-events/arch/riscv/mapfile.csv index
-> > c61b3d6ef616..5b75ecfe206d 100644 ---
-> > a/tools/perf/pmu-events/arch/riscv/mapfile.csv +++
-> > b/tools/perf/pmu-events/arch/riscv/mapfile.csv @@ -15,3 +15,4 @@
-> >  #
-> >  #MVENDORID-MARCHID-MIMPID,Version,Filename,EventType
-> >  0x489-0x8000000000000007-0x[[:xdigit:]]+,v1,sifive/u74,core
-> > +0x67e-0x80000000db000090-0x[[:xdigit:]]+,v1,starfive/dubhe-90,core
-> >  
+> On Wed, Nov 08, 2023 at 03:46:26PM +0000, Lee Jones wrote:
+> > Good afternoon,
+> > 
+> > After coming across a recent Syzkaller report [0] I thought I'd take
+> > some time to firstly reproduce the issue, then see if there was a
+> > trivial way to mitigate it.  The report suggests that a BUG() in
+> > prog_array_map_poke_run() [1] can be trivially and reliably triggered
+> > from userspace using the PoC provided [2].
+> > 
+> >         ret = bpf_arch_text_poke(poke->tailcall_bypass,
+> >                                  BPF_MOD_JUMP,
+> >                                  old_bypass_addr,
+> >                                  poke->bypass_addr);
+> >         BUG_ON(ret < 0 && ret != -EINVAL);
+> > 
+> > Indeed the PoC does seem to be able to consistently trigger the BUG(),
+> > not only on the reported kernel (v6.1), but also on linux-next.  I went
+> > to the trouble of checking LORE, but failed to find any patches which
+> > may be attempting to fix this.
+> > 
+> >     kernel BUG at kernel/bpf/arraymap.c:1094!
+> >     invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> >     CPU: 5 PID: 45 Comm: kworker/5:0 Not tainted 6.6.0-rc3-next-20230929-dirty #74
+> >     Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> >     Workqueue: events prog_array_map_clear_deferred
+> >     RIP: 0010:prog_array_map_poke_run+0x6b4/0x6d0
+> >     Code: ff 0f 0b e8 1e 27 e1 ff 48 c7 c7 60 80 93 85 48 c7 c6 00 7f 93 85 48 c7 c2 bb c2 39 86 b9 45 04 00 00 45 89 f8 e8 9c 890
+> >     RSP: 0018:ffffc9000036fb50 EFLAGS: 00010246
+> >     RAX: 0000000000000044 RBX: ffff88811f337490 RCX: 63af48a1314f9900
+> >     RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+> >     RBP: ffffc9000036fbe8 R08: ffffffff815c23c5 R09: 1ffff11084c14eba
+> >     R10: dfffe91084c14ebc R11: ffffed1084c14ebb R12: ffff888116517800
+> >     R13: dffffc0000000000 R14: ffff888125a1a400 R15: 00000000fffffff0
+> >     FS:  0000000000000000(0000) GS:ffff888426080000(0000) knlGS:0000000000000000
+> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >     CR2: 00000000004ab678 CR3: 0000000122ac4000 CR4: 0000000000350eb0
+> >     DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >     DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >     Call Trace:
+> >      <TASK>
+> >      ? __die_body+0x92/0xf0
+> >      ? die+0xa2/0xe0
+> >      ? do_trap+0x12f/0x370
+> >      ? handle_invalid_op+0xa6/0x140
+> >      ? handle_invalid_op+0xdf/0x140
+> >      ? prog_array_map_poke_run+0x6b4/0x6d0
+> >      ? prog_array_map_poke_run+0x6b4/0x6d0
+> >      ? exc_invalid_op+0x32/0x50
+> >      ? asm_exc_invalid_op+0x1b/0x20
+> >      ? __wake_up_klogd+0xd5/0x110
+> >      ? prog_array_map_poke_run+0x6b4/0x6d0
+> >      ? bpf_prog_6781ebc2dae4bad9+0xb/0x53
+> >      fd_array_map_delete_elem+0x152/0x250
+> >      prog_array_map_clear_deferred+0xf6/0x210
+> >      ? __bpf_array_map_seq_show+0xa40/0xa40
+> >      ? kick_pool+0x164/0x350
+> >      ? process_one_work+0x57a/0xd00
+> >      process_one_work+0x5e4/0xd00
+> >      worker_thread+0x9cf/0xea0
+> >      kthread+0x2b4/0x350
+> >      ? pr_cont_work+0x580/0x580
+> >      ? kthread_blkcg+0xd0/0xd0
+> >      ret_from_fork+0x4a/0x80
+> >      ? kthread_blkcg+0xd0/0xd0
+> >      ret_from_fork_asm+0x11/0x20
+> >      </TASK>
+> >     Modules linked in:
+> >     ---[ end trace 0000000000000000 ]---
+> > 
+> > However, with my very limited BPF subsystem knowledge I was unable to
+> > trivially fix the issue.  Hopefully some knowledgable person would be
+> > kind enough to provide me with some pointers.
+> > 
+> > bpf_arch_text_poke() seems to be returning -EBUSY due to a negative
+> > memcmp() result from [3].
+> > 
+> >         ret = -EBUSY;
+> >         mutex_lock(&text_mutex);
+> >         if (memcmp(ip, old_insn, X86_PATCH_SIZE)) {
+> >                 goto out;
+> >         [...]
+> > 
+> > When spitting out the memory at those locations, this is the result:
+> > 
+> >     ip:        e9 06 00 00 00
+> >     old_insn:  0f 1f 44 00 00
+> >     nop_insn:  0f 1f 44 00 00
+> > 
+> > As you can see, the information stored in 'ip' does not match that of
+> > the data stored in 'old_insn', causing bpf_arch_text_poke() to return
+> > early with the error -EBUSY, suggesting that the data pointed to by
+> > 'old_insn', and by extension 'prog' should have been changed when
+> > emit_call()ing, to the value of 'ip', but wasn't.
 > 
-> I've no problem with this approach, but dubhe-90's json files match
-> dubhe-80s. Those files are available in perf-tools-next:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/pmu-events/arch/riscv/starfive/dubhe-80?h=perf-tools-next
-> It could be useful to rebase the patch on that branch to make it
-> easier to merge. As the files match you could make the regular
-> expression for dubhe-80 match both of them like:
+> hi,
+> thanks for the report.. I can reproduce that easily with [2]
 > 
-> 0x67e-0x80000000db0000[89]0-0x[[:xdigit:]]+,v1,starfive/dubhe-80,core
+> AFAICS it looks like previous update fails because we use bpf_arch_text_poke,
+> which can't find poke->tailcall_bypass value as bpf program symbol and fails
+> with -EINVAL
 > 
-> Thanks,
-> Ian
+> then the following update fails to find expected jmp/nop because it was never
+> updated.. I think we should use __bpf_arch_text_poke like we do in
+> bpf_tail_call_direct_fixup and skip the bpf symbol check
+> 
+> with the patch below I can't reproduce the issue anymore, I'll do some more
+> checking though
 
-Thanks Ian. The suggestion makes sense, will take it in and rebase in
-v4.
+The patch below seems to be working for me also:
+
+Tested-by: Lee Jones <lee@kernel.org>
+
+> ---
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 8c10d9abc239..35c2988caf29 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -391,8 +391,8 @@ static int emit_jump(u8 **pprog, void *func, void *ip)
+>  	return emit_patch(pprog, func, ip, 0xE9);
+>  }
+>  
+> -static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+> -				void *old_addr, void *new_addr)
+> +int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+> +			 void *old_addr, void *new_addr)
+>  {
+>  	const u8 *nop_insn = x86_nops[5];
+>  	u8 old_insn[X86_PATCH_SIZE];
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index eb84caf133df..0d7b8311fada 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -3172,6 +3172,8 @@ enum bpf_text_poke_type {
+>  
+>  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+>  		       void *addr1, void *addr2);
+> +int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+> +			 void *old_addr, void *new_addr);
+>  
+>  void *bpf_arch_text_copy(void *dst, void *src, size_t len);
+>  int bpf_arch_text_invalidate(void *dst, size_t len);
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 2058e89b5ddd..4ab5864746ce 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -1073,33 +1073,33 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+>  			new_addr = new ? (u8 *)new->bpf_func + poke->adj_off : NULL;
+>  
+>  			if (new) {
+> -				ret = bpf_arch_text_poke(poke->tailcall_target,
+> +				ret = __bpf_arch_text_poke(poke->tailcall_target,
+>  							 BPF_MOD_JUMP,
+>  							 old_addr, new_addr);
+>  				BUG_ON(ret < 0 && ret != -EINVAL);
+>  				if (!old) {
+> -					ret = bpf_arch_text_poke(poke->tailcall_bypass,
+> +					ret = __bpf_arch_text_poke(poke->tailcall_bypass,
+>  								 BPF_MOD_JUMP,
+>  								 poke->bypass_addr,
+>  								 NULL);
+> -					BUG_ON(ret < 0 && ret != -EINVAL);
+> +					BUG_ON(ret < 0);
+>  				}
+>  			} else {
+> -				ret = bpf_arch_text_poke(poke->tailcall_bypass,
+> +				ret = __bpf_arch_text_poke(poke->tailcall_bypass,
+>  							 BPF_MOD_JUMP,
+>  							 old_bypass_addr,
+>  							 poke->bypass_addr);
+> -				BUG_ON(ret < 0 && ret != -EINVAL);
+> +				BUG_ON(ret < 0);
+>  				/* let other CPUs finish the execution of program
+>  				 * so that it will not possible to expose them
+>  				 * to invalid nop, stack unwind, nop state
+>  				 */
+>  				if (!ret)
+>  					synchronize_rcu();
+> -				ret = bpf_arch_text_poke(poke->tailcall_target,
+> +				ret = __bpf_arch_text_poke(poke->tailcall_target,
+>  							 BPF_MOD_JUMP,
+>  							 old_addr, NULL);
+> -				BUG_ON(ret < 0 && ret != -EINVAL);
+> +				BUG_ON(ret < 0);
+>  			}
+>  		}
+>  	}
+
+-- 
+Lee Jones [李琼斯]
