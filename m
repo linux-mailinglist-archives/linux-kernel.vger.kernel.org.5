@@ -2,96 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5247F3036
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF4F7F303E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbjKUOFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S234042AbjKUOFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:05:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234040AbjKUOEy (ORCPT
+        with ESMTP id S234085AbjKUOFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:04:54 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB83D7E;
-        Tue, 21 Nov 2023 06:04:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=29QJI23zuhCjj0/UknYYHK8lNy2il3wd+lJeqLPpi2w=; b=shi+sqNbqcH0o1rxmet0wTEEeX
-        wnzv0o3AP9HgoYWF1/0yt6NcPNaBo9kG/9mdoHUxLZbJbAVts0CSEOivcXuIEIS7o+L7FquvEp5gX
-        azpqQFrrk4KtaNOnhTW/HuKsWqSV1gBL5j2/xVT0QZDOdUHEk06yUDbVsO7cQyL7DdGg=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5RMj-000lKe-Jg; Tue, 21 Nov 2023 15:04:37 +0100
-Date:   Tue, 21 Nov 2023 15:04:37 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
-        andersson@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH 2/9] net: mdio: ipq4019: Enable the clocks for ipq5332
- platform
-Message-ID: <187a148d-39af-4000-825d-63ca3e3a23b1@lunn.ch>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-3-quic_luoj@quicinc.com>
- <10dc0fff-fc00-4c1f-97cf-30c5e5e8f983@linaro.org>
- <9acace07-d758-4d5d-8321-de75ee53355d@quicinc.com>
+        Tue, 21 Nov 2023 09:05:43 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD64D7E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:05:39 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b6cb515917so3735141b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700575539; x=1701180339; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9/TcEF+FhqZ2nz6qvi/9iJUZggk71Tmqu0as2U0xGu4=;
+        b=3JFzdoVXCUHDirJnVsMkGwwuXQY4e9DuM4YaIHoZFNPMSxUHoqRySYBWBdNqSMjEOu
+         0kUmgIbpNvUMjVL7sWaN6vP6VOy374WcAWPNBTCq2sk8O+Hd83vgoMzJ62pLwDdVKRcV
+         a0VrrFm/BROgonetQIH6hKq45kL4OqsJVRI6JYKjft4fxrMGxFdjY189G2cw8VQ+IfNW
+         n7s/Ox1Y0BWueg/YmNGtZA+CmEb5iuvunqdYCCXla8pFo/YExJdVwSz/jTjYBpK5HQOg
+         ZZwfNmcBe5+arf9u5/MVNaKxAuh24I560SfJH0zTPcKBcfnG6LI0AmFjrHVMmej//uBP
+         ZnSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700575539; x=1701180339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9/TcEF+FhqZ2nz6qvi/9iJUZggk71Tmqu0as2U0xGu4=;
+        b=lSBUHFuTa/3fmbVRazMy/FNYZBSeShYvZmCQEaekiPiTM86L7TSwWEIdEduyhbD8Zj
+         E002fBeOzOdjLiOFoWEnLWkx+kKeuKPJMEcywCS6Y1k6CDZLdHh+ectAsVaPgfJIgU7K
+         Ds0hS6y8yI5Q06KjWT7bCaecqZAYCZq141rezANRB689DEUoPoWLqr7XPIoeqrQKSkDL
+         9dmWTK/fMYYwAAUoucOOFXcpU9+jQElDGRyf1jwt6rZFxS16oJMDRLzVGgp4oqoke9rC
+         ZAtokx3CNB+OOzXwIaxzCUV9g6uMxnMe0oJX0ZO90nxYNmqt+PyJf7dSj4qa/NzVNNvD
+         aXng==
+X-Gm-Message-State: AOJu0YyZH+N4t8arlAfmoSRbJzgRpfAETtNgYRvpPTKI89jRTDcYPnjO
+        UvZI/Gx9gSdnevaqwZWVqhtF1ZAC9kd1CHvVw2US0Q==
+X-Google-Smtp-Source: AGHT+IFdtzRXzXfVy2Uyhi9mLRyDdjmHGp1/Reyrw5PR3wZ9oCq2hd80cAXzSj382UrLHy3w0bEY47RRQFKxOu/bww4=
+X-Received: by 2002:a05:6358:199b:b0:169:7dad:fee1 with SMTP id
+ v27-20020a056358199b00b001697dadfee1mr4692933rwn.4.1700575538944; Tue, 21 Nov
+ 2023 06:05:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9acace07-d758-4d5d-8321-de75ee53355d@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231121085024.15955-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20231121085024.15955-1-lukas.bulwahn@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 21 Nov 2023 15:05:28 +0100
+Message-ID: <CAMRc=Mf-F5vRPwtV37tuj1-Nwm6ncWM9xfgY-DvYaXXfK1rA7w@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: add TI da8xx bus driver to TI DAVINCI
+ MACHINE SUPPORT
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 06:28:54PM +0800, Jie Luo wrote:
-> 
-> 
-> On 11/20/2023 10:22 PM, Konrad Dybcio wrote:
-> > On 15.11.2023 04:25, Luo Jie wrote:
-> > > For the platform ipq5332, the related GCC clocks need to be enabled
-> > > to make the GPIO reset of the MDIO slave devices taking effect.
-> > > 
-> > > Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> > [...]
-> > 
-> > >   static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
-> > > @@ -212,6 +231,38 @@ static int ipq_mdio_reset(struct mii_bus *bus)
-> > >   	u32 val;
-> > >   	int ret;
-> > > +	/* For the platform ipq5332, there are two uniphy available to connect the
-> > > +	 * ethernet devices, the uniphy gcc clock should be enabled for resetting
-> > > +	 * the connected device such as qca8386 switch or qca8081 PHY effectively.
-> > > +	 */
-> > > +	if (of_device_is_compatible(bus->parent->of_node, "qcom,ipq5332-mdio")) {
-> > Would that not also be taken care of in the phy driver?
-> > 
-> > Konrad
-> 
-> Hi Konrad,
-> These clocks are the SOC clocks that is not related to the PHY type.
-> no matter what kind of PHY is connected, we also need to configure
-> these clocks.
+On Tue, Nov 21, 2023 at 9:50=E2=80=AFAM Lukas Bulwahn <lukas.bulwahn@gmail.=
+com> wrote:
+>
+> While doing some code cleanup in drivers/bus/, I noticed that the file
+> drivers/bus/da8xx-mstpri.c has no maintainer.
+>
+> Although the file has not been touched a lot lately, the git history tell=
+s
+> us that Bartosz Golaszewski is the main author. Further, the driver's
+> config depends on config ARCH_DAVINCI_DA8XX, and that is defined in
+> arch/arm/mach-davinci/, which is part of TI DAVINCI MACHINE SUPPORT with
+> Bartosz already being its maintainer.
+>
+> Add drivers/bus/da8xx-mstpri.c to TI DAVINCI MACHINE SUPPORT.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e829dbac1e99..e9cbf6e353bd 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21707,6 +21707,7 @@ T:      git git://git.kernel.org/pub/scm/linux/ke=
+rnel/git/brgl/linux.git
+>  F:     Documentation/devicetree/bindings/i2c/i2c-davinci.txt
+>  F:     arch/arm/boot/dts/ti/davinci/
+>  F:     arch/arm/mach-davinci/
+> +F:     drivers/bus/da8xx-mstpri.c
+>  F:     drivers/i2c/busses/i2c-davinci.c
+>
+>  TI DAVINCI SERIES CLOCK DRIVER
+> --
+> 2.17.1
+>
 
-Hi Jie
-
-You can avoid lots of these questions by making your commit message
-better. Assume the reader does not know the clock tree for this
-device. With a bit of experience, you can guess what reviewers are
-going to ask, and answer those questions in the commit message.
-
-      Andrew
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
