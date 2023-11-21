@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1392F7F3709
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE2C7F3716
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjKUUD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 15:03:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
+        id S230527AbjKUUFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 15:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjKUUD1 (ORCPT
+        with ESMTP id S229524AbjKUUFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 15:03:27 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B179D191;
-        Tue, 21 Nov 2023 12:03:22 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A02FA61E5FE01;
-        Tue, 21 Nov 2023 21:02:54 +0100 (CET)
-Message-ID: <e679745a-6498-496c-8e0a-0d83cafbca27@molgen.mpg.de>
-Date:   Tue, 21 Nov 2023 21:02:53 +0100
+        Tue, 21 Nov 2023 15:05:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFE11A2;
+        Tue, 21 Nov 2023 12:05:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700597117; x=1732133117;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UCGmiu1nxzeNn+cEKPR0gIi35/992X5/vdcGhHlBNsM=;
+  b=kQLDQnTYg/OEBUl5BOXwzL6Ucey77hOaP5ke717dgAS1mCBDwm6ZMFf/
+   i+kGRxJSN+kr/BHKuzyZb/SduE9ri57oZ7c/tqxh7yOl5NGDJKmeEa/bI
+   yPOD6+oa5r6Bs/9fx/sFol0NHDGDFrxenh0EUejMtgFY2XlxU5t2Tp+w9
+   /YDYFS9JxW09o/OospAR6KU+vinTC0WEClYE6x/XOQoOkT09vs/AqtqJf
+   VWuJPmgVlYppiazlX4CAuKj+s58vWvyWe9Dnt18ZKfLXT5lnFGLrY8QVs
+   iBm2H5PQwGuXGaDZk/HdJ3QvMXZWhyenZbAcIQDthx/XlU9SHLEOvgzBk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5046569"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="5046569"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 12:05:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="801660239"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="801660239"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 21 Nov 2023 12:05:12 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5Wzd-0008Cu-2v;
+        Tue, 21 Nov 2023 20:05:09 +0000
+Date:   Wed, 22 Nov 2023 04:04:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Workflows <workflows@vger.kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Jonathan Corbet <corbet@lwn.net>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Charles Han <hanchunchao@inspur.com>
+Subject: Re: [PATCH] Documentation: xfs: consolidate XFS docs into its own
+ subdirectory
+Message-ID: <202311220333.acL7LwXY-lkp@intel.com>
+References: <20231121095658.28254-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
-Content-Language: en-US
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Mike Jones <mike@mjones.io>,
-        Rocky Liao <quic_rjliao@quicinc.com>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
- <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
- <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
- <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
- <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
- <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
- <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
- <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
- <fd84c14a-1866-4643-8ce9-0d6da5c4b82e@rowland.harvard.edu>
- <d8fba4f9-f868-4ef3-938b-f202e5bcc4ad@molgen.mpg.de>
- <b6c77dc7-04e6-424c-b3b6-f51f437a1671@rowland.harvard.edu>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <b6c77dc7-04e6-424c-b3b6-f51f437a1671@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121095658.28254-1-bagasdotme@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,92 +79,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Alan, dear Hans,
+Hi Bagas,
 
+kernel test robot noticed the following build warnings:
 
-Am 21.11.23 um 18:40 schrieb Alan Stern:
-> On Tue, Nov 21, 2023 at 06:12:30PM +0100, Paul Menzel wrote:
+[auto build test WARNING on 98b1cc82c4affc16f5598d4fa14b1858671b2263]
 
->> Am 21.11.23 um 17:23 schrieb Alan Stern:
->>>> [340560.441957] usb 1-3: finish reset-resume
->>>> [340560.570940] usb 1-3: reset full-speed USB device number 2 using xhci_hcd
->>>
->>> Those two lines are unexpected.  Why does the device need to be reset?
->>> While the btusb module is loaded, does anything show up in
->>> /sys/bus/usb/devices/1-3/quirks?
->>
->>      $ more /sys/bus/usb/devices/1-3/quirks
->>      0x2
-> 
-> Ah.  0x2 is the RESET_RESUME quirk bit.  The fact that it is on explains
-> why the device gets reset when it is resumed.
-> 
-> It also explains why the device isn't getting suspended.  The USB core
-> will not autosuspend a device that has the RESET_RESUME quirk if its
-> driver wants remote-wakeup or does not support reset-resume.  The btusb
-> driver is like that.
-> 
-> Apparently the RESET_RESUME quirk bit is set by the btusb driver itself
-> (see the btusb_check_needs_reset_resume() routine in btusb.c), based on
-> the computing platform rather than on the Bluetooth device.  The
-> btusb_needs_reset_resume_table[] contains three entries: Dell OptiPlex
-> 3060, Dell XPS 9360, and Dell Inspiron 5565.
-> 
-> Since your system is an XPS 9360, it has this problem with suspending
-> the onboard Bluetooth device.  The only way the kernel can deal with it
-> is to avoid putting the device into runtime suspend while the driver
-> module is loaded.
-> 
-> So there's your answer.  If you rebuild the btusb driver after removing
-> the XPS 9360 entry from btusb_needs_reset_resume_table[], you should
-> find that the device does get runtime suspended.  (But then it might not
-> operate properly if you try to turn it on again after it has been
-> suspended.)
+url:    https://github.com/intel-lab-lkp/linux/commits/Bagas-Sanjaya/Documentation-xfs-consolidate-XFS-docs-into-its-own-subdirectory/20231121-180057
+base:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+patch link:    https://lore.kernel.org/r/20231121095658.28254-1-bagasdotme%40gmail.com
+patch subject: [PATCH] Documentation: xfs: consolidate XFS docs into its own subdirectory
+reproduce: (https://download.01.org/0day-ci/archive/20231122/202311220333.acL7LwXY-lkp@intel.com/reproduce)
 
-Thank you for finding this. This is commit 596b07a9a226 (Bluetooth: 
-btusb: Add Dell XPS 13 9360 to btusb_needs_reset_resume_table) from 
-April 2018 [1]. Hans, was it ever confirmed to be a platform limitation? 
-Does the Microsoft Windows driver do the same? Did the Dell engineers 
-verify it with the schematics? I was unable to see this in the bug 
-report [2].
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311220333.acL7LwXY-lkp@intel.com/
 
-Also, it would be nice, if Linux logged, if quirks are applied that 
-affect power usage.
+All warnings (new ones prefixed by >>):
 
-As Alan wrote, that I’d need to rebuild the module to deactivate the 
-behavior, there is no switch to override the quirk table, right?
+>> Warning: Documentation/filesystems/xfs/xfs-online-fsck-design.rst references a file that doesn't exist: Documentation/filesystems/xfs-self-describing-metadata.rst
+>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-maintainer-entry-profile.rst
+>> Warning: MAINTAINERS references a file that doesn't exist: Documentation/filesystems/xfs-*
+>> MAINTAINERS:53207: WARNING: unknown document: ../filesystems/xfs-maintainer-entry-profile
 
->>>>       bmAttributes         0xe0
->>>>         Self Powered
->>>>         Remote Wakeup
->>>
->>> That's what I was interested in.  The device does support remote wakeup.
->>
->> That would make sense so it can be resumed? (It does not necessarily mean
->> something like Wake-On-LAN, right?
-> 
-> It _does_ mean something like Wake-On-LAN: The device is capable of
-> asking the system to wake it up under some conditions while it or the
-> system is suspended.
-> 
->> Also, for this device it’s disabled?
->>
->>      $ grep . /sys/bus/usb/devices/1-3/power/wakeup
->>      disabled
-> 
-> Yes.  You can change that setting by writing "enabled" to the sysfs
-> file.  But I don't think this will make any difference to your runtime
-> suspend problem; the power/wakeup setting affects only system suspend,
-> not runtime suspend.
-
-Thank you again for the clarification.
-
-
-Kind regards,
-
-Paul
-
-
-[1]: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=596b07a9a22656493726edf1739569102bd3e136
-[2]: https://bugzilla.redhat.com/show_bug.cgi?id=1514836
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
