@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA9F7F2295
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA837F2297
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbjKUAwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S232758AbjKUAya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:54:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232990AbjKUAwn (ORCPT
+        with ESMTP id S229757AbjKUAy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:52:43 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026611A2;
-        Mon, 20 Nov 2023 16:52:29 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 2A7FC24E203;
-        Tue, 21 Nov 2023 08:52:23 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 21 Nov
- 2023 08:52:23 +0800
-Received: from [192.168.125.85] (183.27.97.46) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 21 Nov
- 2023 08:52:21 +0800
-Message-ID: <ad43c202-3796-469c-b7fb-7591026e6888@starfivetech.com>
-Date:   Tue, 21 Nov 2023 08:52:21 +0800
+        Mon, 20 Nov 2023 19:54:29 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A7D91;
+        Mon, 20 Nov 2023 16:54:26 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0FEED002329;
+        Tue, 21 Nov 2023 00:54:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=9nD/IbZNJSxe5mq6BvwZGaIHYHAzxhHzD2ofqfRnC0s=;
+ b=lV7JcqamyHonmkif4cIwV2oORR+sRHjvSBhe0NnR2K3coYTKIbuGwHwv+xZ4zAq+Eo5G
+ Ka0IdQ/x9RHxe3vx6R3lAQNLhQjfL+v0o443KxvgXkYvZjcT+adPEYSjiu1O4pA0Gu8r
+ rV4AwWkUVAzRNqre0SpqVA07hWa/+oVLUGtOg6v+RRvy6OxGz9qX5cjW219DgMx9TTgN
+ PoxoUPZuLOcpujBUObwadbaEE56+5AKXAMUnzrvnd7OLZTi8B4pA+es1xRpYIW1WtHYM
+ PR+UKCrMkHRndPmCUh1SMbCzKIJO2CcEPSflCC8vx7OqtEwLGvaBFUub2w6+wrEvnyM0 +g== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ug34u27b6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 00:54:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL0sI4N022737
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 00:54:18 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 16:54:13 -0800
+Message-ID: <e072236f-d74e-4527-9247-cc7163b60bdd@quicinc.com>
+Date:   Tue, 21 Nov 2023 08:54:11 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 19/20] PCI: starfive: Add JH7110 PCIe controller
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Conor Dooley <conor@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        "Daire McNamara" <daire.mcnamara@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231120182347.GA207554@bhelgaas>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20231120182347.GA207554@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.46]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 08/16] arm64: dts: qcom: sm8550-aim300: add WCD9385
+ audio-codec
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+ <20231117101817.4401-9-quic_tengfan@quicinc.com>
+ <3e013534-f6c6-48e9-9cfa-82055fe04f7a@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <3e013534-f6c6-48e9-9cfa-82055fe04f7a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Ff6S38F6s66loeB54FwIKDq1JeS3h8Zp
+X-Proofpoint-GUID: Ff6S38F6s66loeB54FwIKDq1JeS3h8Zp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=414 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210002
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,44 +85,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/11/21 2:23, Bjorn Helgaas wrote:
-> On Mon, Nov 20, 2023 at 06:07:31PM +0800, Minda Chen wrote:
->> On 2023/11/15 19:49, Minda Chen wrote:
->> > Add StarFive JH7110 SoC PCIe controller platform driver codes, JH7110
->> > with PLDA host PCIe core.
->> ...
+在 11/17/2023 6:31 PM, Krzysztof Kozlowski 写道:
+> On 17/11/2023 11:18, Tengfei Fan wrote:
+>> Add Qualcomm Aqstic WCD9385 audio codec on two Soundwire interfaces: RX
+>> and TX.
+>>
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 > 
->> > --- a/drivers/pci/pci.h
->> > +++ b/drivers/pci/pci.h
->> > @@ -22,6 +22,13 @@
->> >   */
->> >  #define PCIE_PME_TO_L2_TIMEOUT_US	10000
->> >  
->> > +/*
->> > + * PCIe r6.0, sec 6.6.1, <Conventional Reset>
->> > + * Requires a minimum waiting of 100ms before sending a configuration
->> > + * request to the device.
->> > + */
->> > +#define PCIE_BEFORE_CONFIG_REQUEST_WAIT_MS	100
->> > +
->> >  extern const unsigned char pcie_link_speed[];
->> >  extern bool pci_early_dump;
->> >  
->> Hi Bjorn
->>   I have not checked this carefully.
->>   I think the change of pci.h should be moved to a indepent patch.
->>   Could you approve this? Kevin will commit a new patch for this.
->>   Next version I will remove this change. 
+> You just added this board. Does it mean you added incomplete and wrong DTS?
 > 
-> Yes, I think it makes sense to add that #define in a separate patch.
+> Best regards,
+> Krzysztof
 > 
-> Please trim out the unnecessary context; there's no need for readers
-> to scroll through the entire driver to get to the useful part, which
-> is just the last dozen lines or so.
-> 
-> Bjorn
 
-Thanks. I will notice this next time. 
-Happy Thanksgiving! Wish you and Rob have a good holiday.
+Hi Krzysztof,
+In next version patch series, I will do a board patch which contain all 
+the functions which were splited in current patch series.
 
-BTW. Could you give any comments to Refactoring patches (patch 2 - patch 16)and PLDA patch(patch 17) next week?  Thanks.
+-- 
+Thx and BRs,
+Tengfei Fan
