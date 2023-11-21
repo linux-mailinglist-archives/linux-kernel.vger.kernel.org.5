@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0103E7F2C8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAC67F2C8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbjKUMIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:08:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
+        id S234206AbjKUMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:09:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjKUMIq (ORCPT
+        with ESMTP id S234198AbjKUMJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:08:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B166125
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:08:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5549C433C9;
-        Tue, 21 Nov 2023 12:08:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700568522;
-        bh=xY/S+drvjUTqo2Fu2FpUAKYEb7XcjqGXCgM5ZYigqpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LxWBqy9UnCrGoq3oBdWsp9PGMjwX7o7lQB4D4cAFspVDDEzdm5Rav9/N168AUm8N0
-         hdKRHRpQYw0ljwk0KcHOd0jUhTEvIWFPeiArFDdoPU4IrA7U3QYb1z+/dgj69VQoAc
-         mG7s8o2GEMP1PuGAGPoIsNLRW/lXPLSiVCk7M3SObX6IbuZWKRvcbaWXLgaZURsFNN
-         WO4/JmldKDx1guTwRg7s/FXMzvtaWylSESJLort26n6tx2isMCmupoje6lspivqtd3
-         P1NcXQlLBETlPYSWfEWOUTAxy3dnv3DogJjX3F2c14emfUTjhjJrBzzT+hq4WFL2km
-         i5NBtxDZafi1g==
-Date:   Tue, 21 Nov 2023 17:38:28 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Kory Maincent <kory.maincent@bootlin.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
- setup
-Message-ID: <20231121120828.GC3315@thinkpad>
-References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
- <20231121062629.GA3315@thinkpad>
- <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
+        Tue, 21 Nov 2023 07:09:01 -0500
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71C3185
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:08:55 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 42BE542118;
+        Tue, 21 Nov 2023 12:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1700568533; bh=izpovA0XHb89VRrGlum7I7YsipyerFuXhLb0jEFlzB4=;
+        h=Date:To:From:Subject:Cc;
+        b=o3tsAP39aOWCf2InCItbLug8RNYooAAn10p4t1Uiq4fCQxp3UcnqgJoU3XuEb8frn
+         pGWdSs8OVwDZAlJy68MEs6p/W4cfxudO1LppS5ET7Nmi7uQVWSDfwk/0tu3Fec59at
+         4pN1uJ8uijvfztdmQNmWRIDctx2BtjAVN0qCpFEVbC0ISw/SCK+ctX5Jg2Aa1ma+aN
+         +I/fACBQJE5HBd+J4V1kZIfGKA9jfM0+Os9M4hlIdy68mTYe/Ti4p+rAKpdfj2MlhU
+         H3Wh+bSDZWP8qopJxkHcHkt6hf2CIFt3v5zKs1X0NAOBWHYrRwSgA6pW5AzeScdFQ4
+         lHVsG8gD6Fs7g==
+Message-ID: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+Date:   Tue, 21 Nov 2023 21:08:48 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Subject: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since v6.5
+Cc:     Marc Zyngier <maz@kernel.org>, Asahi Linux <asahi@lists.linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 01:55:22PM +0300, Serge Semin wrote:
-> Hi Mani
-> 
-> On Tue, Nov 21, 2023 at 11:56:29AM +0530, Manivannan Sadhasivam wrote:
-> > On Fri, Nov 17, 2023 at 11:03:48AM +0100, Kory Maincent wrote:
-> > > This patch series fix the support of dw-edma HDMA NATIVE IP.
-> > > I can only test it in remote HDMA IP setup with single dma transfer, but
-> > > with these fixes it works properly.
-> > > 
-> > > Few fixes has also been added for eDMA version. Similarly to HDMA I have
-> > > tested only eDMA in remote setup.
-> > > 
-> > 
-> > Just out of curiosity, can you share how you are setting EDMA_MF_HDMA_NATIVE?
-> 
-> This topic has already been concerned on v1 (in another context
-> though):
-> https://lore.kernel.org/dmaengine/20230621151948.36125997@kmaincent-XPS-13-7390/
-> 
-> Here is the repo with the out-of-tree driver Kory said he was using
-> together with the kernel's version of the DW eDMA/hDMA driver:
-> https://github.com/Brainchip-Inc/akida_dw_edma
-> 
+Perf broke on all Apple ARM64 systems (tested almost everything), and
+according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
 
-Thanks Sergey, I missed it! But looks like we are not focusing on the HDMA
-integration in designware-ep.c. Have you/anyone thought about it? Was it
-discussed previously that I missed?
+Test command:
 
-HDMA is used in one of the recent Qcom SoCs (SA8775) that Qcom folks are
-bringing up and I'd like to have a common solution like we have for eDMA.
+sudo taskset -c 0 ./perf stat -e apple_icestorm_pmu/cycles/ -e
+apple_firestorm_pmu/cycles/ -e cycles ls
 
-- Mani
+Since this is taskset to CPU #0 (LITTLE core, icestorm), only events for
+icestorm are expected.
 
-> -Serge(y)
-> 
-> > 
-> > - Mani
-> > 
-> > > Changes in v2:
-> > > - Update comments and fix typos.
-> > > - Removed patches that tackle hypothetical bug and then were not pertinent.
-> > > - Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
-> > > 
-> > > Changes in v3:
-> > > - Fix comment style.
-> > > - Split a patch in two to differ bug fix and simple harmless typo.
-> > > 
-> > > Changes in v4:
-> > > - Update patch git commit message.
-> > > - Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
-> > > 
-> > > Changes in v5:
-> > > - No change
-> > > - Rebase to mainline 6.7-rc1
-> > > - Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
-> > > 
-> > > Changes in v6:
-> > > - Fix several commit messages and comments.
-> > > - Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
-> > > 
-> > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > > ---
-> > > Kory Maincent (6):
-> > >       dmaengine: dw-edma: Fix the ch_count hdma callback
-> > >       dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
-> > >       dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
-> > >       dmaengine: dw-edma: Add HDMA remote interrupt configuration
-> > >       dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
-> > >       dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
-> > > 
-> > >  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
-> > >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
-> > >  drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
-> > >  3 files changed, 44 insertions(+), 14 deletions(-)
-> > > ---
-> > > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> > > change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
-> > > 
-> > > Best regards,
-> > > -- 
-> > > Köry Maincent, Bootlin
-> > > Embedded Linux and kernel engineering
-> > > https://bootlin.com
-> > > 
-> > 
-> > -- 
-> > மணிவண்ணன் சதாசிவம்
+I bisected the breakage to two distinct points:
 
--- 
-மணிவண்ணன் சதாசிவம்
+5ea8f2ccffb is the first bad commit. With its parent, the output is as
+expected (same as v6.4):
+
+         3,297,462      apple_icestorm_pmu/cycles/
+
+     <not counted>      apple_firestorm_pmu/cycles/
+                       (0.00%)
+     <not counted>      cycles
+                       (0.00%)
+
+With 5ea8f2ccffb everything breaks:
+
+   <not supported>      apple_icestorm_pmu/cycles/
+
+   <not supported>      apple_firestorm_pmu/cycles/
+
+     <not counted>      cycles
+                       (0.00%)
+
+Somewhere along the way to 82fe2e45cdb00 things get even worse (didn't
+bother bisecting this range). With its parent:
+
+   <not supported>      apple_icestorm_pmu/cycles/
+
+   <not supported>      apple_firestorm_pmu/cycles/
+
+   <not supported>      apple_icestorm_pmu/cycles/
+
+   <not supported>      apple_firestorm_pmu/cycles/
+
+Then 82fe2e45cdb00 leads to the current v6.5 behavior:
+
+     <not counted>      apple_icestorm_pmu/cycles/
+                       (0.00%)
+     <not counted>      apple_firestorm_pmu/cycles/
+                       (0.00%)
+     <not counted>      cycles
+                       (0.00%)
+
+If I taskset the task to CPU#2 (big core, firestorm), I get events:
+
+         1,454,858      apple_icestorm_pmu/cycles/
+
+         1,454,760      apple_firestorm_pmu/cycles/
+
+         1,454,384      cycles
+
+
+So the current behavior is that all output seems to come from the
+firestorm PMU event counter, regardless of requested event.
+
+This is all unchanged and still broken in v6.7-rc2.
+
+- Hector
