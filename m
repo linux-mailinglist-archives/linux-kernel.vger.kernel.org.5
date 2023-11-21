@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9F27F3623
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E48E7F3629
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbjKUShU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        id S234662AbjKUShY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234561AbjKUShM (ORCPT
+        with ESMTP id S234568AbjKUShM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 13:37:12 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6E710CF
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:37:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15255C433C9;
-        Tue, 21 Nov 2023 18:37:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09C5CB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:37:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA569C433C7;
+        Tue, 21 Nov 2023 18:37:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700591823;
-        bh=xBeqzteKzjRFD7AK4f9XGIWZHMzDuTSTe3bPhMPVydE=;
+        s=k20201202; t=1700591825;
+        bh=3Izh/8YivRbhQV8XlIsV2wimO/ukDV888NfvTAlrLdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XW+n6C08SNh+kInRoEGKqDrPEzsmS4/A230SA1t1ygBldR47hQJaz0mYmCkCFf3p0
-         VrlzzKWr2unKQkxS6rU6CxyBKOq0P0Lp5flZeYXdFimOWl4kV+FpiFji8iVt8Rt+8A
-         cHtXR8Vb+F6VjpGZI3o8NDdtV8Igl4BtI5oHyRVrP7milTrTWKXU8xJuavzoe3gjzL
-         RuIxdCWCnwiUlQhcZQK62gh3kKt95dBx1SBBZSOyt+BIfFDbGN5z/+GheND+w3YSzi
-         FlGBrovDFtly2OWiWeSgTl3voaQ5JsTVvHXdlOm8Z0MuYaezO9iYSPqUKozVF5kscx
-         wvJh13DDHuRbA==
+        b=GkqMSfp4QvHraguZpfhrbsvGogT0mgl0KOjBBDILIekYojqExQ9KVG9PhsHPt9H8y
+         DfmLCOjeV9MMba0Ac/3YXGWaxT4T8hRNns2R1y3+5ISLTmmoaNnNP3FkLnX9jJk0kw
+         v6SMoXIjGBsN+wc5Tt+P7mqpmB+3DtewO/ZRr8XIBjkYoq0DHWhXuqZsPuLe6209wp
+         Z3XILl/fzd+z3F/XqqBYyv15lKzS8ioSvjHeOykGj4tupcqw3v2zMKubyUYoPr8bX8
+         xuDlgq/lCIDo/bn8KaDfhJ8xWlgO7jL+11KQylE/u2yoQnStcYG4YWk1SP2sz1rG9P
+         TCRI4xoxo6ugg==
 From:   Bjorn Helgaas <helgaas@kernel.org>
 To:     linux-pci@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -42,9 +42,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Tomasz Pala <gotar@polanet.pl>,
         Sebastian Manciulea <manciuleas@protonmail.com>,
         linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 7/9] x86/pci: Comment pci_mmconfig_insert() obscure MCFG dependency
-Date:   Tue, 21 Nov 2023 12:36:41 -0600
-Message-Id: <20231121183643.249006-8-helgaas@kernel.org>
+Subject: [PATCH 8/9] x86/pci: Return pci_mmconfig_add() failure early
+Date:   Tue, 21 Nov 2023 12:36:42 -0600
+Message-Id: <20231121183643.249006-9-helgaas@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231121183643.249006-1-helgaas@kernel.org>
 References: <20231121183643.249006-1-helgaas@kernel.org>
@@ -62,39 +62,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bjorn Helgaas <bhelgaas@google.com>
 
-In pci_mmconfig_insert(), there's no reference to "addr" between locking
-pci_mmcfg_lock and testing "addr", so it *looks* like we should move the
-test before the lock.
-
-But 07f9b61c3915 ("x86/PCI: MMCONFIG: Check earlier for MMCONFIG region at
-address zero") did that, which broke things by returning -EINVAL when
-"addr" is zero instead of -EEXIST.
-
-So 07f9b61c3915 was reverted by 67d470e0e171 ("Revert "x86/PCI: MMCONFIG:
-Check earlier for MMCONFIG region at address zero"").
-
-Add a comment about this issue to prevent it from happening again.
+If pci_mmconfig_alloc() fails, return the failure early so it's obvious
+that the failure is the exception, and the success is the normal case.  No
+functional change intended.
 
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 ---
- arch/x86/pci/mmconfig-shared.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/pci/mmconfig-shared.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-index b36c10e86505..459e95782bb1 100644
+index 459e95782bb1..0cc9520666ef 100644
 --- a/arch/x86/pci/mmconfig-shared.c
 +++ b/arch/x86/pci/mmconfig-shared.c
-@@ -786,6 +786,10 @@ int pci_mmconfig_insert(struct device *dev, u16 seg, u8 start, u8 end,
- 		return -EEXIST;
- 	}
+@@ -102,14 +102,15 @@ struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
+ 	struct pci_mmcfg_region *new;
  
-+	/*
-+	 * Don't move earlier; we must return -EEXIST, not -EINVAL, if
-+	 * pci_mmconfig_lookup() finds something
-+	 */
- 	if (!addr) {
- 		mutex_unlock(&pci_mmcfg_lock);
- 		return -EINVAL;
+ 	new = pci_mmconfig_alloc(segment, start, end, addr);
+-	if (new) {
+-		mutex_lock(&pci_mmcfg_lock);
+-		list_add_sorted(new);
+-		mutex_unlock(&pci_mmcfg_lock);
++	if (!new)
++		return NULL;
+ 
+-		pr_info("ECAM %pR (base %#lx) for domain %04x [bus %02x-%02x]\n",
+-			&new->res, (unsigned long)addr, segment, start, end);
+-	}
++	mutex_lock(&pci_mmcfg_lock);
++	list_add_sorted(new);
++	mutex_unlock(&pci_mmcfg_lock);
++
++	pr_info("ECAM %pR (base %#lx) for domain %04x [bus %02x-%02x]\n",
++		&new->res, (unsigned long)addr, segment, start, end);
+ 
+ 	return new;
+ }
 -- 
 2.34.1
 
