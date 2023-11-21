@@ -2,139 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97F07F29A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDDB7F29AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234176AbjKUKCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S234210AbjKUKCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233639AbjKUKCY (ORCPT
+        with ESMTP id S234169AbjKUKCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:02:24 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69CF11A;
-        Tue, 21 Nov 2023 02:02:19 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BD4ACC000B;
-        Tue, 21 Nov 2023 10:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700560938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZKnahUa3X0OEYKLHF3ihgq745BsVV7IxE68JfJBRJ+c=;
-        b=crT5w6HesfV/u6xGyERcYeNgZCgsabD1xFYjej/WUZ42D13pCT0TXWq4f5+ecD17lChEKW
-        cAm7dkphnYA3l+kkOe8nRrOmzZfEr7Qwuf3Nu8WJtXvURbj8nlKG4EDIMbNP3En5myljqy
-        /Is2eA8NsUUVc2MHiF+F4vLoMzU1LlStER3YnrbDv/y4tauA3eEk4cnH5p806gIFzG14Vv
-        xyaX9XHZ8r9GQ34T2k7nGSkaQfwUpYkQLwXwdKOPzPG4zc00kYrfVCPO24a3ZQWXoAieLQ
-        /fUmbVgbCuI/ajqo5djqrPPd+NmmthXZn+DFnpCd0gpLBkNBEFIiDBazustzxQ==
-Date:   Tue, 21 Nov 2023 11:02:15 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Tue, 21 Nov 2023 05:02:30 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E8F10F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:02:24 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32fdc5be26dso3449712f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:02:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700560942; x=1701165742; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Or4yU7YP2qWPAmcKnNnm3DKwQcR/5HFP/IdH9q7mtM=;
+        b=FCM9D66nsXS5eGOEF1rebSgtCBoQuAzzQVtPNqu5Ti74CIH3bUC+cJ/a6NUL643i5k
+         l+a8NfiAH1bks22FnZpHOcuiBiQgky9F+0sF6SSvJO3F1xPJTODwJBHAiV0u4MIPTJiF
+         zJMq97NbToSHuHLQ7BEZ9BuvUTVa7jaTfe1SBiEAaYd22bQVW9Ji9oGU4F5OSvCrA4HG
+         84bFSLmb79hopkzLb14ANGL5KA8i/6wDMtSXTh9kKTz7gAdwAZid9rWAmqI5F5iZJd3w
+         2V/xohDdA8vsyLbZQo2LKSOnhjS9s8o9Tm4gPYmNQK5FI36NIq2K7yd2Dva6f4YapjBO
+         fjDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700560942; x=1701165742;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Or4yU7YP2qWPAmcKnNnm3DKwQcR/5HFP/IdH9q7mtM=;
+        b=domBYWFvPo3bM7jiViZ7O3nyOovqdlO8khh32d9lAqJsVPcUNeEIu8bR8ka4VFrXII
+         VOKgjoMHGZ2a8PhouAVyUNMbjqBlr0jhc4D2P2RgTujIcjnzGAFninj7hcSWcc460YAL
+         PbvYWKG0+O1Yr5xI6YBh1VZK2SoKbzmg8EfcCGyTeP+wIxlMB2Q2RwSr0AwtAjFekmJj
+         JEdUEY2uY4MHaVVnu+opUGF4tTFbx/t3iSIOa3lhnS8Pe2ytqyPhR5XJpyNHPXeXkGJu
+         mi7LE/a1tum9WugxBeW14eL6bd5qLp08ZuJyDgU3vpRWTethMl4rZMVpiz5+FnIb0Z1b
+         NgZA==
+X-Gm-Message-State: AOJu0YwA2vvcL4mIWXvqIbVrf19feYnNJkb15VKWdqeMwRkr1SwKB2GX
+        ycheRWEvRJjOqpcxkqnyvIuVbw==
+X-Google-Smtp-Source: AGHT+IHEVRQo8kWRweOKmJFiBoiZnXh1CDEPQAVKTDY0u3kIV5homuoooBj4Umdadkp865Ru1BWEpA==
+X-Received: by 2002:adf:f348:0:b0:332:cc85:70ce with SMTP id e8-20020adff348000000b00332cc8570cemr1486798wrp.33.1700560942051;
+        Tue, 21 Nov 2023 02:02:22 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.11])
+        by smtp.gmail.com with ESMTPSA id f12-20020adff44c000000b003313e4dddecsm13821903wrp.108.2023.11.21.02.02.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 02:02:21 -0800 (PST)
+Message-ID: <4b0f14c4-71d1-498e-a94f-20c9c7f2316e@linaro.org>
+Date:   Tue, 21 Nov 2023 11:02:20 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/3] dt-bindings: vendor-prefixes: add aosong
+Content-Language: en-US
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 2/9] ethtool: Expand Ethernet Power Equipment
- with PoE alongside PoDL
-Message-ID: <20231121110215.07f61e55@kmaincent-XPS-13-7390>
-In-Reply-To: <2539b109-72ad-470a-9dae-9f53de4f64ec@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
-        <20231116-feature_poe-v1-2-be48044bf249@bootlin.com>
-        <04cb7d87-bb6b-4997-878d-490c17bfdfd0@lunn.ch>
-        <20231120110944.66938859@kmaincent-XPS-13-7390>
-        <20231120111008.GC590719@pengutronix.de>
-        <2539b109-72ad-470a-9dae-9f53de4f64ec@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231121095800.2180870-1-anshulusr@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231121095800.2180870-1-anshulusr@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 19:00:03 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
-
-> > Official name for "PoE" is "Power via Media Dependent Interface". PoE is
-> > not used in the IEEE 802.3-2018. Using names not used in the specificat=
-ion,
-> > make development even harder :)
-> > Especially since there are even more marketing names (names not used in=
- the
-> > specification) for different PoE variants:
-> > - 802.3af (802.3at Type 1), PoE
-> > - 802.3at Type 2, PoE+
-> > - 802.3bt Type 3, 4PPoE or PoE++
-> > - 802.3bt Type 4, 4PPoE or PoE++ =20
->=20
-> From the 2018 standard:
->=20
->   1.4.407 Power Sourcing Equipment (PSE): A DTE or midspan device that
->   provides the power to a single link section. PSEs are defined for
->   use with two different types of balanced twisted-pair PHYs. When
->   used with 2 or 4 pair balanced twisted-pair (BASE-T) PHYs, (see IEEE
->   Std 802.3, Clause 33), DTE powering is intended to provide a single
->   10BASE-T, 100BASE-TX, or 1000BASE-T device with a unified interface
->   for both the data it requires and the power to process these
->   data. When used with single balanced twisted-pair (BASE-T1) PHYs
->   (see IEEE Std 802.3, Clause 104), DTE powering is intended to
->   provide a single 100BASE-T1 or 1000BASE-T1 device with a unified
->   interface for both the data it requires and the power to process
->   these data. A PSE used with balanced single twisted-pair PHYs is
->   also referred to as a PoDL PSE.
->=20
-> So it seems like, anything not PoDL PSE does not have a name :-(
->=20
-> However, everything not PoDL PSE seems to be clause 33. So how about:
->=20
-> 	enum ethtool_podl_pse_admin_state podl_admin_control;
-> 	enum ethtool_c33_pse_admin_state c33_admin_control; =20
->=20
-> At least inside the kernel we use c22, c45, c37 etc. I'm not sure they
-> are visible to userspace, but if we don't have a better name, maybe we
-> have to use c33 in userspace as well.
->=20
-> I do think naming like this makes it clear we are talking about two
-> parallel technologies, not a generic layer and then extensions for
-> podl.
->=20
-> What do you think?
-
-If we decide to add a prefix, "c33" is precise but less easily understandab=
-le,
-why not using simply "poe" prefix?
-Maybe as POE were originally PMDI you prefer to use c33 which won't change =
-over
-time?=20
-
-Should I also modify the content of the enum?
-ETHTOOL_PSE_ADMIN_STATE_* to ETHTOOL_C33_PSE_ADMIN_*
-ETHTOOL_PSE_PW_D_STATUS_* to ETHTOOL_C33_PSE_PW_D_STATUS_*
+On 21/11/2023 10:57, Anshul Dalal wrote:
+> Aosong Electronic Co., LTD. is a supplier for MEMS sensors such as AHT20
+> temperature and humidity sensor under the brand name Asair
+> 
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> ---
+> 
 
 
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
