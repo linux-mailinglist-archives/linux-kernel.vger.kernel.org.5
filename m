@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675627F2DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20357F2DD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjKUM4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:56:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        id S233746AbjKUM5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjKUMz7 (ORCPT
+        with ESMTP id S233613AbjKUM5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:55:59 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7925EA2;
-        Tue, 21 Nov 2023 04:55:55 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALA9glV006337;
-        Tue, 21 Nov 2023 12:55:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=oo/8E+Gw44yuR+d9JINVYw3emQyGUhU4h+anNeHC+3o=;
- b=jtiMS4RHnZsw/4afHOUMFex075JoXFsbz/UWxdCyRF2+u3GXU/KdWYjtlLWO5a3p3sKB
- 5bYkJu3w6f9DO/fotUu0KZ5/enXRswRNQ9iheeawQIb1Znof1IQcgZJLX8QRZhykmmVh
- yIWCmi7Oav3q8eJXOFClrJ5rOEHcCW5eP51XV+z5bx+yvrTYaisXZm1r2nOFXc1taadL
- gAGGkhc3Baf6RPMRYrV0X6bYbL+MJE16GEZXZXphLjFiIintJxgX/sNllEp7v9otml78
- ILX3r5Rr3vD8IYMzcM2yFG98cgHNnnWRlSvZxfuJxrAtPtzHHG9c+hnRuGHxEl1hDE3P eg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugge19whh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 12:55:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALCtl7P012651
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 12:55:47 GMT
-Received: from [10.216.58.75] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
- 2023 04:55:41 -0800
-Message-ID: <0b627853-78fb-4320-84e4-f88695ac6a9e@quicinc.com>
-Date:   Tue, 21 Nov 2023 18:25:37 +0530
+        Tue, 21 Nov 2023 07:57:13 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E96D4D;
+        Tue, 21 Nov 2023 04:57:09 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-da041ffef81so5495043276.0;
+        Tue, 21 Nov 2023 04:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700571428; x=1701176228; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KaNbwqPl61g5/VVIpWWsVaeAPw/KN3S1vGwln5onZww=;
+        b=Rhi2T9V2Cys87iWNYNZK+K8ZZdgZ9bwbqG1rVsk/iyK21JY0RifkrQS6G028pcWMC9
+         EHZ2tQCLp67268d1p+reoQp50STTAV4G/pppOk4OUdTsqfqRmnIe0cU4QwcrVVLQ8SrL
+         k+cmsj5Bn0Wb1zompdVJCfw268T6Usy2UMVbiUdwhxdgUC+ym+ITGDzL8RpKveQ4BB2l
+         YO4/ebdR75yMUO0fYHn9h6zLeJdZj02qnpxvRTclKooFWy4RnA+QevIyEVfph2YQSsfg
+         Xm/+rXNrgF1Aw72YST+fK8eG6D3fPWY2PaP8zerZKLYkO35Gm2gevMCh8ASQR8vDqTSq
+         brHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700571428; x=1701176228;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KaNbwqPl61g5/VVIpWWsVaeAPw/KN3S1vGwln5onZww=;
+        b=KBm1/zyeJb+Co36jY6IttTp58BcwXgTq6k+0gqdQEpmVZ5T2/Mj1xAErFVuXWiPHVI
+         IgXm9loF7IWUTrhzZKDk7cH2IBPA1FQm8rNucz262FXhzyCzJTzwHJD39SjCe5lBrGey
+         +ktz4Ae+2f40vQAwmvgS0KU9d6HoNqp7xxBOvjhm6GjUUZHJTVgzzheurso6jZ3mr4HC
+         sol35t0hYgmeo7sjJknyZ/vnNP3kuhJCtoDGWJfRj3BhTUHfVOmwOroMtnEpUk5l6KaA
+         3+c27kUG3B0/dHQXRlDo+JeIiAOVqyWsf0gx8SlkvToBQXCo92qILtljg2EZvhDsuIia
+         bYHw==
+X-Gm-Message-State: AOJu0Yzo7Ph6yyqy9eWX2fmiY2EjM7pCZ8g8lnnEKuOTXYr/mBZ4/WgI
+        HM3BR6s/5slzsb3slaQ4EuReIVC7qc7nysjp9g==
+X-Google-Smtp-Source: AGHT+IGfNhwTGxo8LYoNckdS9ICyemegXlAyksTPkCTGbXBAMuzZ1k/cgzsDU0l85YGFcTycAYm1kykUN6dbqykhXHc=
+X-Received: by 2002:a25:a565:0:b0:da0:c49a:5fe4 with SMTP id
+ h92-20020a25a565000000b00da0c49a5fe4mr10432141ybi.24.1700571428454; Tue, 21
+ Nov 2023 04:57:08 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
-To:     Johan Hovold <johan@kernel.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-CC:     Johan Hovold <johan+linaro@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>
-References: <20231120161607.7405-1-johan+linaro@kernel.org>
- <20231120161607.7405-3-johan+linaro@kernel.org>
- <pgmtla6j3dshuq5zdxstszbkkssxcthtzelv2etcbrlstdw4nu@wixz6v5dfpum>
- <3ff65t36p6n3k7faw2z75t2vfi6rb5p64x7wqosetsksbhhwli@5xaxnm7zz4tu>
- <ZVx1wRefjNaN0byk@hovoldconsulting.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZVx1wRefjNaN0byk@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yw1N5N56u4D570tpMa96h-cgcZ0q_GIE
-X-Proofpoint-ORIG-GUID: yw1N5N56u4D570tpMa96h-cgcZ0q_GIE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=479 phishscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210100
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 21 Nov 2023 13:56:57 +0100
+Message-ID: <CACkBjsZ-M=1Yj2PQZM7JN4=9rnDLP36fVO35o9fuAvAMKe=9Nw@mail.gmail.com>
+Subject: [Bug Report] bpf: reg invariant voilation after JSET
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
->> I get that dwc3_qcom_enable_interrupts() limits the scope of what wakes us
->> up to what we expect given the current device (or lack thereof), but it
->> doesn't seem like you're really meant to play with the IRQ triggers,
->> or at least the warning you shared makes me think it is not a great idea
->> if you plan to probe the device ever again in the future.
->>
->> I'll post the current comment in dwc3_qcom_enable_interrupts() to
->> explain the "limits the scope of what wakes us up" a bit more clearly:
->>
->> 	/*
->> 	 * Configure DP/DM line interrupts based on the USB2 device attached to
->> 	 * the root hub port. When HS/FS device is connected, configure the DP line
->> 	 * as falling edge to detect both disconnect and remote wakeup scenarios. When
->> 	 * LS device is connected, configure DM line as falling edge to detect both
->> 	 * disconnect and remote wakeup. When no device is connected, configure both
->> 	 * DP and DM lines as rising edge to detect HS/HS/LS device connect scenario.
->> 	 */
-> 
-> Yes, that is how it is currently implemented and I intend to change that
-> shortly. I just wanted to get the fixes out first.
-> 
-> Specifically, I consider the current implementation to be broken in that
-> it generates wakeup events on disconnect which is generally not want you
-> want. Consider closing the lid of your laptop and disconnecting a USB
-> mouse before putting it in your backpack. Now it's no longer suspended
-> as you would expect it to be.
-> 
-> With the devictrees soon fixed, we could also do away with changing the
-> trigger type, but since this is how it was implemented initially we now
-> need to consider backward compatibility with the broken DTs. We've dealt
-> with that before, but yeah, getting things right from the start would
-> have been so much better.
-> 
+Hi,
 
-Hi Johan,
+The following program (reduced) breaks reg invariant:
 
-  Just one query. Even if it wakes up after closing the lid and removing 
-the mouse, wouldn't pm suspend be triggered again later by the system 
-once it sees that usb is also good to be suspended again ? I presume a 
-laptop form factor would be having this facility of re-trigerring 
-suspend. Let me know if this is not the case.
+C Repro: https://pastebin.com/raw/FmM9q9D4
 
-Also, the warning you are mentioning in [1] comes because this is a 
-laptop form factor and we have some firmware running (I don't know much 
-about ACPI and stuff) ?
+-------- Verifier Log --------
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (18) r8 = 0x3d                     ; R8_w=61
+2: (85) call bpf_ktime_get_ns#5       ; R0_w=scalar()
+3: (ce) if w8 s< w0 goto pc+1         ; R0_w=scalar(smax32=61) R8_w=61
+4: (95) exit
 
-[1]: 
-https://lore.kernel.org/all/20231120161607.7405-3-johan+linaro@kernel.org/
+from 3 to 5: R0_w=scalar(smin=0x800000000000003e,smax=0x7fffffff7fffffff,umin=smin32=umin32=62,umax=0xffffffff7fffffff,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff)) R8_w=61 R10=fp0
+5: R0_w=scalar(smin=0x800000000000003e,smax=0x7fffffff7fffffff,umin=smin32=umin32=62,umax=0xffffffff7fffffff,umax32=0x7fffffff,var_off=(0x0;
+0xffffffff7fffffff)) R8_w=61 R10=fp0
+5: (45) if r0 & 0xfffffff7 goto pc+2
+REG INVARIANTS VIOLATION (false_reg1): range bounds violation
+u64=[0x3e, 0x8] s64=[0x3e, 0x8] u32=[0x3e, 0x8] s32=[0x3e, 0x8]
+var_off=(0x0, 0x8)
+5: R0_w=scalar(var_off=(0x0; 0x8))
+6: (dd) if r0 s<= r8 goto pc+1
+REG INVARIANTS VIOLATION (false_reg1): range bounds violation
+u64=[0x0, 0x8] s64=[0x3e, 0x8] u32=[0x0, 0x8] s32=[0x0, 0x8]
+var_off=(0x0, 0x8)
+6: R0_w=scalar(var_off=(0x0; 0x8)) R8_w=61
+7: (bc) w1 = w0                       ; R0=scalar(var_off=(0x0; 0x8))
+R1=scalar(smin=smin32=0,smax=umax=smax32=umax32=8,var_off=(0x0; 0x8))
+8: (95) exit
 
-Regards,
-Krishna,
+from 6 to 8: safe
+
+from 5 to 8: safe
+processed 10 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
+
+The tnum after #5 is correct, but the ranges are incorrect, which seems a bug in
+reg_bounds_sync().  Thoughts?
+
+Best
+Hao Sun
