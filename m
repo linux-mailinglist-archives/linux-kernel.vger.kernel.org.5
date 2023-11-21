@@ -2,129 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1D97F2E59
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD29F7F2E5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjKUNcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S234048AbjKUNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:32:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbjKUNcA (ORCPT
+        with ESMTP id S233728AbjKUNcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:32:00 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1F2D4B;
-        Tue, 21 Nov 2023 05:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700573514;
-        bh=i0wLYaOPYdVNi/v8GJrh3T7Dl41RZhrj0CgcZP50xAU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=tifmBJA9e2vKpjaPCnsvZmYUlQXcc4X3MAtoLBLFfhMVUCNfwERzt2iy5Aju1UAVT
-         /5/hflHF8goV30slXpz+FHTI+F57II+L/RNI4uw2S9HmLsxh9ByQwY8PwhftmBOVth
-         Xj31fgSUjmrQjynKsIfaUZS43flEESPZQ1xxz0ho=
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id EFCF11286B89;
-        Tue, 21 Nov 2023 08:31:54 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id us5JTmT0cmzc; Tue, 21 Nov 2023 08:31:54 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1700573514;
-        bh=i0wLYaOPYdVNi/v8GJrh3T7Dl41RZhrj0CgcZP50xAU=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=tifmBJA9e2vKpjaPCnsvZmYUlQXcc4X3MAtoLBLFfhMVUCNfwERzt2iy5Aju1UAVT
-         /5/hflHF8goV30slXpz+FHTI+F57II+L/RNI4uw2S9HmLsxh9ByQwY8PwhftmBOVth
-         Xj31fgSUjmrQjynKsIfaUZS43flEESPZQ1xxz0ho=
-Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 524AC1286B29;
-        Tue, 21 Nov 2023 08:31:53 -0500 (EST)
-Message-ID: <c4342441ddd27d587af3805dd9de882ee0b5cfd0.camel@HansenPartnership.com>
-Subject: Re: scsi regression that after months is still not addressed and
- now bothering 6.1.y users, too
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        John Garry <john.g.garry@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sagar Biradar <sagar.biradar@microchip.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        scsi <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gilbert Wu <gilbert.wu@microchip.com>
-Date:   Tue, 21 Nov 2023 08:31:48 -0500
-In-Reply-To: <fe89fd29-562c-46c0-9a15-e3a5c43da9a1@leemhuis.info>
-References: <c6ff53dc-a001-48ee-8559-b69be8e4db81@leemhuis.info>
-         <47e8fd80-3f87-4b87-a875-035e69961392@oracle.com>
-         <a3ddbd03-7a94-4b6a-9be1-b268ce883551@leemhuis.info>
-         <18b3745d3e5de2ffd9b74f9cc826c2c3235dc6ca.camel@HansenPartnership.com>
-         <fe89fd29-562c-46c0-9a15-e3a5c43da9a1@leemhuis.info>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Tue, 21 Nov 2023 08:32:25 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83479D6F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:32:21 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5ca9114e0e2so20578727b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700573540; x=1701178340; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hhGZv1Nv08MvRW2DJYjs+d3sOa+HumQD0w2cfdSjlYU=;
+        b=o1gYLyN7nepNx9mjc188FdMxaA/2ONPzvIHKI5fpxkddLVUjPTjn65ZJGM+RNe+0rV
+         AgceHBBzOy0c3EHEDVDv3Dbf+2iX5thOtT9KQZK6DHP3x4unuWL4ge+czeQcqyLq9ts3
+         HGOBjdF76wVvKqR0oJYw96hcFG2CHTQwGRUcPybljtcl+UBwnij3jXSTq2YPR3kuyEnM
+         drqRv7WrNNIfdAIoCIbQEq4/f5GO7ihEtZsQ4fqI0go1VsGG4XgDhFfHIHwLBg+kuifV
+         DbPzikbC7Rz4oHPMjM6A9p1+u7t/ZmRziYNp2roP+I8m8lMvPbN65pvZplMKC8g74n6Z
+         3b4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700573540; x=1701178340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hhGZv1Nv08MvRW2DJYjs+d3sOa+HumQD0w2cfdSjlYU=;
+        b=RfBQmzvUCjL/Px/NGkZ9qzMz6Wp/sG+/ejw674znNOO5JKQ16oNg05934oMRUfSzd1
+         dCE1pdHw6fiV6uQ6NclL6KlDtLqVErvx3F22ToXR0omqvV4gKLM3CWMkGPXCtPhzbsIz
+         7ghrVGoNAJDmpvc5BSKWxdZVQqQADlpj+aoTBDuHmNyMhWtWK662vnz6FQ5zDWae47As
+         yjXRRPHsUdSVOlFz1/DBnNmZOcvwllzh/wXujfJPdphNNHkvh/2IoU/W/fWd0N8LA6V1
+         5451kUwKF1wL/k5rgJZQYFDjTVhpVl/kom0igwqpU+x7lmIzXsP3fGRLkdW+I4cM6Gbw
+         wyNw==
+X-Gm-Message-State: AOJu0YyLPuNTZn1AIkfCMIXBupV6LInLt4oC+ot/ePQda1EnmX4MgH0g
+        YvINLrxSGUk377Md2YpeoDedexlgf7/Kh6brGCAurw==
+X-Google-Smtp-Source: AGHT+IG5fMKPSUUlBQk/9z9KQDvVshTXZ/yb2JO2VCDadLEWCNWZCTpRysGdod7EeVu9BQ2Pr8mBjhdK5xSfgbEhxcM=
+X-Received: by 2002:a81:b606:0:b0:5c9:70b9:84d5 with SMTP id
+ u6-20020a81b606000000b005c970b984d5mr8331718ywh.8.1700573540642; Tue, 21 Nov
+ 2023 05:32:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+ <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com> <CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com>
+ <41160dbf-d8c8-4dc0-9fda-42cc97df5b77@intel.com> <CAJZ5v0jNOXKv2fHNGUDjDvvg6FGbXuahhH9dBhWiAwiPv3fH8A@mail.gmail.com>
+ <736fcad7-f440-4bcd-86fb-4cc73d1b8f37@intel.com>
+In-Reply-To: <736fcad7-f440-4bcd-86fb-4cc73d1b8f37@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 21 Nov 2023 14:32:08 +0100
+Message-ID: <CACRpkdbz=a7yoJdBOrgJXth53d=F7+eQCu7KofUW8s1rBY=Veg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sam Edwards <cfsworks@gmail.com>, Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-21 at 14:24 +0100, Linux regression tracking (Thorsten
-Leemhuis) wrote:
-> On 21.11.23 14:05, James Bottomley wrote:
-> > On Tue, 2023-11-21 at 13:24 +0100, Linux regression tracking
-> > (Thorsten
-> > Leemhuis) wrote:
-> > > On 21.11.23 12:30, John Garry wrote:
-> > [...]
-> > > > Is there a full kernel log for this hanging system?
-> > > > I can only see snippets in the ticket.
-> > > > And what does /sys/class/scsi_host/host*/nr_hw_queues show?
-> > > 
-> > > Sorry, I'm just the man-in-the-middle: you need to ask in the
-> > > ticket, as  the privacy policy for bugzilla.kernel.org does not
-> > > allow to CC the reporters from the ticket here without their
-> > > consent.
-> > 
-> > How did you arrive at that conclusion?
-> 
-> To quote https://bugzilla.kernel.org/createaccount.cgi:
-> """
-> Note that your email address will never be displayed to logged out
-> users. Only registered users will be able to see it.
-> """
+On Mon, Nov 20, 2023 at 5:53=E2=80=AFPM Dave Jiang <dave.jiang@intel.com> w=
+rote:
 
-OK, so someone needs to update that to reflect reality.
+> However, if I move fw_table.h in linux/acpi.h below include of asm/acpi.h=
+, then we
+> can build successfully w/o including acpi/acpi.h in fw_table.h.
 
-> Not sure since when it's there. Maybe it was added due to EU GDPR?
-> Konstantin should know. But for me that's enough to not CC people. I
-> even heard from one well known kernel developer that his company got
-> a
-> GDPR complaint because he had mentioning the reporters name and email
-> address in a Reported-by: tag.
-> 
-> Side note: bugbot afaics can solve the initial problem (e.g. interact
-> with reporters in bugzilla by mail without exposing their email
-> address). But to use bugbot one *afaik* still has to reassign a
-> ticket to a specific product and component in bugzilla. Some
-> subsystem maintainers don't want that, as that issues then does not
-> show up in the usual queries.
+This looks reasonable to me, can you send a formal patch so I can test?
 
-I'm not sure we need to solve a problem that doesn't exist. Switching
-to email is a standard maintainer response:
-
-https://lore.kernel.org/all/20230324133646.16101dfa666f253c4715d965@linux-foundation.org/
-https://lore.kernel.org/all/20230314144145.07a3e680362eb77061fe6d0e@linux-foundation.org/
-...
-
-James
-
+Yours,
+Linus Walleij
