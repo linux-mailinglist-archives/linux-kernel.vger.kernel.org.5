@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C317F31EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA96E7F31EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbjKUPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:05:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
+        id S234169AbjKUPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbjKUPFs (ORCPT
+        with ESMTP id S230497AbjKUPGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:05:48 -0500
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7757184
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:05:42 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 2B7105815D2;
-        Tue, 21 Nov 2023 10:05:39 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 21 Nov 2023 10:05:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1700579139; x=1700586339; bh=kU
-        zhY3aPA9uxQWEn4jiRHeQXcTUR9GIV1qaAWo562aw=; b=hgdqeObSLjCXCERey/
-        lhYeOe+4VGySwlXIiettstQFnTjTEjxu6tdt2flSUKkVEZ/8KvkKO/UGRnWa3PP9
-        6hcyusHXrWr9RwM6CbMTnoMWXbGBZPyanj//33swIsn4CvR7Ynv0VN26+SCBKymR
-        n2GgEKaZUo/JZT5OTIAIoZuWnZPoqE3VclbBkG+fLaojVD5U8AKQkIZoIj8i6spE
-        4UCFNSKM6xRWR7JqmjuwH+W5yyCi90AkORZ4gIa5kHP4qczmObtLaoZN/oMu7Dj4
-        ZwrGaLn6035M00bWIJwrQFHrUApywkRY2m15Ak0anscVepuEi/IBuM2/otX8JOW1
-        bZsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700579139; x=1700586339; bh=kUzhY3aPA9uxQ
-        WEn4jiRHeQXcTUR9GIV1qaAWo562aw=; b=cLNVVaekcEje0hKqj5BSAf0WltS6+
-        6At0E9xuZHlFuISR3cBCWfhb2BVFXksnV4sp4Jj5gOnv9Rjda9s2lGbdAA/1q8Z3
-        OLswZANcMl16M2EGu0JhLRG16ZIPCfPQBE0mBEKoYHF5bWXNwmadY/JXGQqzcMEZ
-        Hzpv6hz+vbUC6QF7KO9ZnXWArgr2mcroyD2vSz8wY/91uJOVPQ7vvsGvnnMCCwPU
-        UVd3eJPUnj0/UPQAVVZkp+KjyB5uEKYr38FjAHhMd3Tzs0x7/escjTuL4W5RRBqc
-        UtjzbjSxH5BTHJ1ee907FxmTQWARZ4BkBt8AbbOEty3U7TUzUI0w1lIng==
-X-ME-Sender: <xms:QcdcZaY19pQeUxvRaxOF_JYNyRwwxYro6C2QYa127G0LFDiYlK9pcg>
-    <xme:QcdcZdYXBlJId5GsbX5WdwfrxNBqVPIOGPvZ_EcafznBzIOyJ9qRvIsdVWJR6SXVl
-    Wm1jSkJEGyS6UzXXkY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:QcdcZU_Cquqtktz26f1F6Pj-3yE5wzdiL7UfD3vCv9cObuzs-mrdrQ>
-    <xmx:QcdcZcoh_zzCzJz8ZWSX1eAekoj-QQmEFCy32ntsgIKWn50E4Jursw>
-    <xmx:QcdcZVqjeL8az68VSD4BZgSiiW2pP0-KF4N-_AbeI7f61Cc7EGt_LQ>
-    <xmx:Q8dcZWTJsZcFozmSH9puz359823LiOBk5E5Tlm15Z4k7b_z5Y-ULNg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5A704B60089; Tue, 21 Nov 2023 10:05:37 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Tue, 21 Nov 2023 10:06:08 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B1E95
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:06:04 -0800 (PST)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ALDrtQ9014582;
+        Tue, 21 Nov 2023 16:05:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-transfer-encoding:mime-version; s=
+        selector1; bh=NSQTqtkoUPKX1gBN9J3jU6YVYeTm0qXHX7/yeko/snc=; b=Rj
+        QV6dGq5OayP1mhKBtG6jq/zR+Wfppw9rbYlSWV1tYmLnRhulN9ZDvCbqloaN3Sk4
+        CDbEF8imaXHwBckrK0uCYb4EONkMhOrtQJAHQJjOwzPz1qVOmXp9CWdYz4hX5bL/
+        wyiO4UsMd01QHdcr4e4EPdHGGraCzsVFc8hqZgWNKYAuSFcFM7z26EKkV7iQg2se
+        ucF30/WXAtexvUn4f2457Q6I6vz5dfNJnwLe1ottp0sCgrtXgoTL7bUp2KIscsY/
+        K3l17Wuzd+3GBCeimWYQ+CEjms6ZRP/PtCtOlbUqJNUpEQLb9Hr1MWLstsgfiWqB
+        dscE0WdrA0VSCLJtdwlg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ugwtyrane-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 16:05:54 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F0E6B10002A;
+        Tue, 21 Nov 2023 16:05:53 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BA013228A27;
+        Tue, 21 Nov 2023 16:05:53 +0100 (CET)
+Received: from SHFDAG1NODE1.st.com (10.75.129.69) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 21 Nov
+ 2023 16:05:52 +0100
+Received: from SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1]) by
+ SHFDAG1NODE1.st.com ([fe80::117e:c4ab:ed81:6cb1%13]) with mapi id
+ 15.01.2507.027; Tue, 21 Nov 2023 16:05:52 +0100
+From:   Etienne CARRIERE - foss <etienne.carriere@foss.st.com>
+To:     Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        "Kevin Hilman" <khilman@baylibre.com>,
+        "soc@kernel.org" <soc@kernel.org>,
+        "arm@kernel.org" <arm@kernel.org>
+Subject: Re: [PATCH] ARM: multi_v7_defconfig: Add SCMI reset support
+Thread-Topic: [PATCH] ARM: multi_v7_defconfig: Add SCMI reset support
+Thread-Index: AQHaDjNLViXe5j1+tUOJsy0uMnBb6rCEimUAgABwUT0=
+Date:   Tue, 21 Nov 2023 15:05:52 +0000
+Message-ID: <87e815c023e3456cbb8cf7c709bbf942@foss.st.com>
+References: <20231103085400.2924282-1-etienne.carriere@foss.st.com>,<16304f9a-fbbb-497f-917a-c2e2b8d67d9e@foss.st.com>
+In-Reply-To: <16304f9a-fbbb-497f-917a-c2e2b8d67d9e@foss.st.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.201.20.20]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Message-Id: <b78e0487-d9e7-4584-8d6b-7de119ee7769@app.fastmail.com>
-In-Reply-To: <CA+G9fYvcaozQvas-h55FPjXk+uomF2CyeYbWGCsXM8yGo4SZgA@mail.gmail.com>
-References: <CA+G9fYvcaozQvas-h55FPjXk+uomF2CyeYbWGCsXM8yGo4SZgA@mail.gmail.com>
-Date:   Tue, 21 Nov 2023 16:05:17 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Naresh Kamboju" <naresh.kamboju@linaro.org>,
-        linux-fsdevel@vger.kernel.org,
-        "open list" <linux-kernel@vger.kernel.org>,
-        regressions@lists.linux.dev, lkft-triage@lists.linaro.org,
-        "Linux-sh list" <linux-sh@vger.kernel.org>
-Cc:     "Miklos Szeredi" <mszeredi@redhat.com>,
-        "Ian Kent" <raven@themaw.net>,
-        "Christian Brauner" <brauner@kernel.org>,
-        "Alexander Viro" <viro@zeniv.linux.org.uk>,
-        "Dan Carpenter" <dan.carpenter@linaro.org>,
-        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "Rich Felker" <dalias@libc.org>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>
-Subject: Re: SuperH: fs/namespace.c: In function '__se_sys_listmount':
- syscalls.h:258:9: internal compiler error: in change_address_1, at
- emit-rtl.c:2275
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_08,2023-11-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023, at 15:25, Naresh Kamboju wrote:
-> The SuperH tinyconfig and allnoconfig builds started failing from 20231120 tag
-> Please find the following builds warnings / errors.
->
-> /builds/linux/include/linux/syscalls.h:233:9: note: in expansion of
-> macro '__SYSCALL_DEFINEx'
->   233 |         __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
->       |         ^~~~~~~~~~~~~~~~~
-> /builds/linux/include/linux/syscalls.h:225:36: note: in expansion of
-> macro 'SYSCALL_DEFINEx'
->   225 | #define SYSCALL_DEFINE4(name, ...) SYSCALL_DEFINEx(4, _##name,
-> __VA_ARGS__)
->       |                                    ^~~~~~~~~~~~~~~
-> /builds/linux/fs/namespace.c:5019:1: note: in expansion of macro
-> 'SYSCALL_DEFINE4'
->  5019 | SYSCALL_DEFINE4(listmount, const struct mnt_id_req __user *, req,
->       | ^~~~~~~~~~~~~~~
-> 0x129d9d7 internal_error(char const*, ...)
-> ???:0
-> 0x5dbc4d fancy_abort(char const*, int, char const*)
-> ???:0
-> 0x7ddd3e adjust_address_1(rtx_def*, machine_mode, poly_int<1u, long>,
-> int, int, int, poly_int<1u, long>)
-> ???:0
-> 0x81dd91 output_operand(rtx_def*, int)
-> ???:0
-> 0x81e5a4 output_asm_insn(char const*, rtx_def**)
-> ???:0
-> 0x8226a8 final_scan_insn(rtx_insn*, _IO_FILE*, int, int, int*)
-> ???:0
-> Please submit a full bug report,
-> with preprocessed source if appropriate.
-> Please include the complete backtrace with any bug report.
-> See <file:///usr/share/doc/gcc-11/README.Bugs> for instructions.
+Hi Alexandre,
 
-It's clearly a compiler bug, and I get the same thing with
-all sh4 compilers I have on my machine, I tried with gcc-7.5
-through gcc-13.
+> From: Alexandre TORGUE - foss
+> Sent: Tuesday, November 21, 2023 10:19 AM
+>=20
+> Hi Etienne
+>=20
+> On 11/3/23 09:54, Etienne Carriere wrote:
+> > SCMI reset controllers are used in the ARMv7 STMicroelectronics stm32mp
+> > boards:
+> > - for STM32MP13: stm32mp135f-dk
+> > - for STM32MP15 boards with SCMI variant, introduced by commit 5b7e5831=
+3a77
+> >    ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1=
+)")
+> >    * stm32mp157c-ev1-scmi
+> >    * stm32mp157c-ed1-scmi
+> >    * stm32mp157c-dk2-scmi
+> >    * stm32mp157a-dk1-scmi
+> >
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> > Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+> > ---
+> >   arch/arm/configs/multi_v7_defconfig | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/mul=
+ti_v7_defconfig
+> > index 23fc49f23d25..01b3797f9317 100644
+> > --- a/arch/arm/configs/multi_v7_defconfig
+> > +++ b/arch/arm/configs/multi_v7_defconfig
+> > @@ -1189,6 +1189,7 @@ CONFIG_PWM_TEGRA=3Dy
+> >   CONFIG_PWM_VT8500=3Dy
+> >   CONFIG_KEYSTONE_IRQ=3Dy
+> >   CONFIG_RESET_MCHP_SPARX5=3Dy
+> > +CONFIG_RESET_SCMI=3Dy
+> >   CONFIG_PHY_SUN4I_USB=3Dy
+> >   CONFIG_PHY_SUN9I_USB=3Dy
+> >   CONFIG_PHY_BRCM_USB=3Dm
+>=20
+> Just one question before to apply this patch. CONFIG_RESET_SCMI is set
+> by the following dependency in drivers/reset/Kconfig:
+>=20
+> RESET_CONTROLLER [=3Dy] && (ARM_SCMI_PROTOCOL [=3Dy] || COMPILE_TEST [=3D=
+n])
+>=20
+> CONFIG_ARM_SCMI is already set in multi_v7_defconfig.
+> CONFIG_RESET_CONTROLLER seems to be set in each platform Kconfig.
+>=20
+> So not sure we need to force CONFIG_RESET_SCMI in the multi_v7_defconfig.
 
-I also see that the defconfigs work fine, so it's probably
-just hitting some weird corner case. You could try opening
-a bug report against gcc, but I'm not sure it's worth it.
+My bad. Thanks for noticing that to me. Indeed the default directive in
+drivers/reset/Kconfig together with arm/multi_v7_defconfig makes CONFIG_RES=
+ET_SCMI
+be enabled.
 
-      Arnd
+Sorry for the noise, you can discard my patch request.
+
+Best regards,
+Etienne
+
+
+>=20
+> Regards
+> Alex
+>=20
