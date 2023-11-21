@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9072F7F343A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CA17F343B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjKUQuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
+        id S234080AbjKUQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjKUQuu (ORCPT
+        with ESMTP id S233504AbjKUQuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:50:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AB092
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:50:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F068C433CD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700585447;
-        bh=KpSLWpoYDnujgiguvqs0R2yyZ8foM4ACeYZogrkU4I0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Fj+SX4vd92/6IemEiaZl2gnc4DSB2SfGdJOOqij4ynK4zkVgM7aRMiRUzjuWiIyZh
-         Ewnanqnc+KrE260cYqPD5RM0DTRyDBkOBvwDUevGWzWcdfKbrhuHriLTLI7GcRHSIi
-         QOfSvA8+uhUmPkp+8SuuXD9SdD3aQb961yIzH16NDjhk0irH0j4wtqPth50VLMqti4
-         fI31pVxWLVwUnTKVxIUoi/ENz4G/qEo8h6IHHfkz/UbQzdNE1pC9GoPxD5AjwrSeXo
-         NcCUWFj1Ux1f320IlRuIlrt5d/bWx4y7lWkrSQmLzwqG73iGiv++e+xNYFekFnXk1S
-         7HtdRJ7DW4qVA==
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6c115026985so5878287b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:50:47 -0800 (PST)
-X-Gm-Message-State: AOJu0YzVwVIK93AYfFYcIMlQH1fTnRY5qUpwlNwbA9rnUol/2MJ9BWiL
-        XBDqxpEXDm7vmLEO47TP7ICDp8cWnO0AryLqJ4LW8w==
-X-Google-Smtp-Source: AGHT+IGLX8mYLdYfH8QqAbn+qSj6k0Gjc4JdO2QcOM6cfVZXNWpqQt9x+BXh4uZHmsdQxNX018/aYoCkLbjJbJQq20U=
-X-Received: by 2002:a05:6a20:394a:b0:18b:284f:e725 with SMTP id
- r10-20020a056a20394a00b0018b284fe725mr114850pzg.16.1700585446584; Tue, 21 Nov
- 2023 08:50:46 -0800 (PST)
+        Tue, 21 Nov 2023 11:50:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E8D193;
+        Tue, 21 Nov 2023 08:50:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700585452; x=1732121452;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JTdRqF+yP9i6uEWuxlLEu23get1OZ+Y4sxPkDDh2+QM=;
+  b=PespO3HB7JL+wDyKX122PAkIxmlafqGNF4L4j6G6RIAP1ZtEMPvYAGoD
+   0C3Q/IsUXbzqB81RALyF/jPYnzOPjNsUO12kXukKAuWdJ7tqWjcfz7oUO
+   oaFgdRgLijcfjDzJh6glF+1CImk6KO+wVQbYESrV8sVsGkp+9g76DKum4
+   ytVHVvw31joVPIRCJS04rZxa860IoYQ7jATXkHYYNazhtl77UcsqkUuPP
+   I3Tw225ECkeeFwsf3dYAhtmnPUGCQajHZHI6XH0MjC0XGK8rFsYCEl36z
+   D8mzRiSSZDRx3b3cYJ5um3ky50lJWHyKmPQbURcCbme8CoZuSiexrVhsz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="13422930"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="13422930"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 08:50:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="795842221"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="795842221"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 21 Nov 2023 08:50:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id A498513A; Tue, 21 Nov 2023 18:50:45 +0200 (EET)
+Date:   Tue, 21 Nov 2023 18:50:45 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     andriy.shevchenko@linux.intel.com, rafael@kernel.org,
+        lenb@kernel.org, robert.moore@intel.com, ardb@kernel.org,
+        will@kernel.org, mark.rutland@arm.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2 2/6] ACPI: bus: update acpi_dev_uid_match() to support
+ multiple types
+Message-ID: <20231121165045.GQ1074920@black.fi.intel.com>
+References: <20231121103829.10027-1-raag.jadav@intel.com>
+ <20231121103829.10027-3-raag.jadav@intel.com>
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-14-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-14-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 08:50:35 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuMe3K1bUCWFSWB7c2tw6KKWr49MJMfu2q-ET5tM6vWXXA@mail.gmail.com>
-Message-ID: <CAF8kJuMe3K1bUCWFSWB7c2tw6KKWr49MJMfu2q-ET5tM6vWXXA@mail.gmail.com>
-Subject: Re: [PATCH 13/24] swap: simplify swap_cache_get_folio
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231121103829.10027-3-raag.jadav@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,118 +70,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kairui,
+On Tue, Nov 21, 2023 at 04:08:25PM +0530, Raag Jadav wrote:
+> According to ACPI specification, a _UID object can evaluate to either
+> a numeric value or a string. Update acpi_dev_uid_match() helper to
+> support _UID matching for both integer and string types.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Suggested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-I agree the resulting code is marginally better.
-
-However, this change does not bring enough value to justify a stand alone p=
-atch.
-It has no impact on the resulting kernel.
-
-It would be much better if the code was checkin like this, or if you
-are modifying this function, rewrite it better. In my opinion, doing
-very trivial code shuffling for the sake of cleaning up is not
-justifiable for the value it brings.
-For one it will make the git blame less obvious who actually changed
-that code for what reason. I am against trivial code shuffling.
-
-Chris
-
-On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Rearrange the if statement, reduce the code indent, no feature change.
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/swap_state.c | 58 ++++++++++++++++++++++++-------------------------
->  1 file changed, 28 insertions(+), 30 deletions(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 91461e26a8cc..3b5a34f47192 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -336,41 +336,39 @@ static inline bool swap_use_vma_readahead(struct sw=
-ap_info_struct *si)
->   */
->  struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *v=
-mf)
->  {
-> +       bool vma_ra, readahead;
->         struct folio *folio;
->
->         folio =3D filemap_get_folio(swap_address_space(entry), swp_offset=
-(entry));
-> -       if (!IS_ERR(folio)) {
-> -               bool vma_ra =3D swap_use_vma_readahead(swp_swap_info(entr=
-y));
-> -               bool readahead;
-> +       if (IS_ERR(folio))
-> +               return NULL;
->
-> -               /*
-> -                * At the moment, we don't support PG_readahead for anon =
-THP
-> -                * so let's bail out rather than confusing the readahead =
-stat.
-> -                */
-> -               if (unlikely(folio_test_large(folio)))
-> -                       return folio;
-> -
-> -               readahead =3D folio_test_clear_readahead(folio);
-> -               if (vmf && vma_ra) {
-> -                       unsigned long ra_val;
-> -                       int win, hits;
-> -
-> -                       ra_val =3D GET_SWAP_RA_VAL(vmf->vma);
-> -                       win =3D SWAP_RA_WIN(ra_val);
-> -                       hits =3D SWAP_RA_HITS(ra_val);
-> -                       if (readahead)
-> -                               hits =3D min_t(int, hits + 1, SWAP_RA_HIT=
-S_MAX);
-> -                       atomic_long_set(&vmf->vma->swap_readahead_info,
-> -                                       SWAP_RA_VAL(vmf->address, win, hi=
-ts));
-> -               }
-> +       /*
-> +        * At the moment, we don't support PG_readahead for anon THP
-> +        * so let's bail out rather than confusing the readahead stat.
-> +        */
-> +       if (unlikely(folio_test_large(folio)))
-> +               return folio;
->
-> -               if (readahead) {
-> -                       count_vm_event(SWAP_RA_HIT);
-> -                       if (!vmf || !vma_ra)
-> -                               atomic_inc(&swapin_readahead_hits);
-> -               }
-> -       } else {
-> -               folio =3D NULL;
-> +       vma_ra =3D swap_use_vma_readahead(swp_swap_info(entry));
-> +       readahead =3D folio_test_clear_readahead(folio);
-> +       if (vmf && vma_ra) {
-> +               unsigned long ra_val;
-> +               int win, hits;
-> +
-> +               ra_val =3D GET_SWAP_RA_VAL(vmf->vma);
-> +               win =3D SWAP_RA_WIN(ra_val);
-> +               hits =3D SWAP_RA_HITS(ra_val);
-> +               if (readahead)
-> +                       hits =3D min_t(int, hits + 1, SWAP_RA_HITS_MAX);
-> +               atomic_long_set(&vmf->vma->swap_readahead_info,
-> +                               SWAP_RA_VAL(vmf->address, win, hits));
-> +       }
-> +
-> +       if (readahead) {
-> +               count_vm_event(SWAP_RA_HIT);
-> +               if (!vmf || !vma_ra)
-> +                       atomic_inc(&swapin_readahead_hits);
->         }
->
->         return folio;
-> --
-> 2.42.0
->
->
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
