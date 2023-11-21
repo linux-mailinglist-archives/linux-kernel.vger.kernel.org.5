@@ -2,252 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 634D07F268A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 242CA7F26A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjKUHlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
+        id S229689AbjKUHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:50:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjKUHlW (ORCPT
+        with ESMTP id S230089AbjKUHkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:41:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA06110C
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700552478; x=1732088478;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=rwOMzL38TQAcQogt+9N+0DIqcb4pS3AdZb0OQ+1utqQ=;
-  b=Q43qAnClPHXpydnhHDAKJdJ1Xj5gB+bVGs62epE1F3dAWP/lRL/aLWhl
-   FWycfQhrB+f0rlpzgAKQ6jNj+H+il861QvcMhJTn+JjdHGt9fqMYCIulo
-   gTRDdYudTBlBRnwQLz/4IGmKVhuECwukzA0+eKy6IcSysWksrgTe8r0y9
-   aqR1BNERI7uCIIHj8Q5Y5qWSwPql9VG7QPlIp2izTZGBxQZl8WTpQPMwL
-   lBxKdaEAqBgQtB4MBAQam0/LrGoyxOiPO3jkLAQa3enYAkZfGzAmW++qH
-   UlNsrEF5lUGygK56h0fyFzZm9TcvwZgC6kfvkFGSo98vCl9BDUO/4938V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="4978292"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="4978292"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 23:41:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="836972502"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="836972502"
-Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Nov 2023 23:41:13 -0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Tim Chen <tim.c.chen@intel.com>, Aaron Lu <aaron.lu@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Chen Yu <yu.chen.surf@gmail.com>, linux-kernel@vger.kernel.org,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH v2 3/3] sched/fair: do not scribble cache-hot CPU in select_idle_cpu()
-Date:   Tue, 21 Nov 2023 15:40:14 +0800
-Message-Id: <35e612eb2851693a52f7ed1ff9be5bc24011136f.1700548379.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1700548379.git.yu.c.chen@intel.com>
-References: <cover.1700548379.git.yu.c.chen@intel.com>
+        Tue, 21 Nov 2023 02:40:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C752F116
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700552434;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=btk5PFJVEM3+qQpJy98Ir5AUr2+WhihqrbyG2lX5mHg=;
+        b=M2znojdqoTKr3r0b3EY1U7ns53PzYoRl2LlAz4GK+0v22cMUpIgipls2F8GlAEGX59WjBc
+        fHQXyOB7Op7ztQGmxaYXode07aD4QlBBE5rGH4rKHQEshbwmJsmBnKJRn0xwp7NGNDIUSx
+        2dvN7/khIvkcGgXuzby7KeplLyECvAk=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-217-Z3NPIQIvNROhyewsTo932Q-1; Tue, 21 Nov 2023 02:40:30 -0500
+X-MC-Unique: Z3NPIQIvNROhyewsTo932Q-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c6f33ee403so48548591fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:40:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700552428; x=1701157228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=btk5PFJVEM3+qQpJy98Ir5AUr2+WhihqrbyG2lX5mHg=;
+        b=P/pU1yqgjOT8OFjTztfGO/rrOmlyl8LsCMcUZYdfBZLObU1rf1TPv6qpCPVR/6LDrl
+         8IaudeilhGNPKLxNlgv2PQCS6gKhhRP4ZtLczZUk+p+xT6DMPjIEbUy5NY4G976Kqk7B
+         cnseTCiYvhJtXBkhfwZTkUCHrteIP/YL0EP2E65mE62CG8fr8OaLc0CEN4zE1fDepS/+
+         igMD40DMrOiz7hAASYD3VBfIe1UkO0eIGbkLZyCARMVXbdJAQQ7yLPaS2S5AN3Y4keQc
+         fFFnXHWma7i4iLn/UvaF4GhTzbNi2fjlXHEIiJzIRtqwDeyld3UkbmzvXm2WEtoVHN+K
+         MIRw==
+X-Gm-Message-State: AOJu0YwHcu2K/FndLaboOVhUTdNYuZ5B+tShhb5n2i+iqbYa9/InVCgD
+        Z+pGz4TIbPX/UYBHRqexagtkNkz3MEsNfMX8c19apmBHHNYMXd5s6sJhMOlPl4SiX1/gDBaWyyU
+        JvV7OfuEa7WM7wZtixq/2RP998kWMBNmTpvZ8edti
+X-Received: by 2002:a19:7519:0:b0:503:1913:ed8e with SMTP id y25-20020a197519000000b005031913ed8emr6576763lfe.61.1700552428778;
+        Mon, 20 Nov 2023 23:40:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE5quDDF1etAkYKHklDT6zvb0Svk8HaZiN9UE0iQ/R2AzTEf4symv9gLPlpcMPRS0tNeNfz9EFNUyYy60x5xwY=
+X-Received: by 2002:a19:7519:0:b0:503:1913:ed8e with SMTP id
+ y25-20020a197519000000b005031913ed8emr6576752lfe.61.1700552428474; Mon, 20
+ Nov 2023 23:40:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231121073050.287080-1-lulu@redhat.com> <20231121073050.287080-3-lulu@redhat.com>
+In-Reply-To: <20231121073050.287080-3-lulu@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 21 Nov 2023 15:40:16 +0800
+Message-ID: <CACGkMEsSAvUpkxCutX69fPS5B5ChEUP+KutP1OtgcWE6Job61g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] vduse: Add file operation for mmap
+To:     Cindy Lu <lulu@redhat.com>
+Cc:     mst@redhat.com, xieyongji@bytedance.com,
+        linux-kernel@vger.kernel.org, maxime.coquelin@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Problem statement:
-When task p is woken up, the scheduler leverages select_idle_sibling()
-to find an idle CPU for it. p's previous CPU is usually a preference
-because it can improve cache locality. However in many cases, the
-previous CPU has already been taken by other wakees, thus p has to
-find another idle CPU.
+On Tue, Nov 21, 2023 at 3:31=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+>
+> Add the operation for mmap, The user space APP will
+> use this function to map the pages to userspace
+>
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> ---
+>  drivers/vdpa/vdpa_user/vduse_dev.c | 79 ++++++++++++++++++++++++++++++
+>  1 file changed, 79 insertions(+)
+>
+> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/=
+vduse_dev.c
+> index 6209e2f00278..ccb30e98bab5 100644
+> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> @@ -1376,6 +1376,83 @@ static struct vduse_dev *vduse_dev_get_from_minor(=
+int minor)
+>         return dev;
+>  }
+>
+> +static vm_fault_t vduse_vm_fault(struct vm_fault *vmf)
+> +{
+> +       struct vduse_dev *dev =3D vmf->vma->vm_file->private_data;
+> +       struct vm_area_struct *vma =3D vmf->vma;
+> +       u16 index =3D vma->vm_pgoff;
+> +       struct vduse_virtqueue *vq;
+> +       struct vdpa_reconnect_info *info;
+> +
+> +       /* index 0  page reserved for vduse status*/
+> +       if (index =3D=3D 0) {
+> +               info =3D &dev->reconnect_info;
+> +       } else {
+> +               /* index 1+vq_number page reserved for vduse vqs*/
+> +               vq =3D &dev->vqs[index - 1];
+> +               info =3D &vq->reconnect_info;
+> +       }
+> +       if (remap_pfn_range(vma, vmf->address & PAGE_MASK,
+> +                           PFN_DOWN(virt_to_phys((void *)info->vaddr)),
+> +                           PAGE_SIZE, vma->vm_page_prot))
+> +               return VM_FAULT_SIGBUS;
+> +       return VM_FAULT_NOPAGE;
+> +}
+> +
+> +static const struct vm_operations_struct vduse_vm_ops =3D {
+> +       .fault =3D vduse_vm_fault,
+> +};
+> +
+> +static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
+> +{
+> +       struct vduse_dev *dev =3D file->private_data;
+> +       struct vdpa_reconnect_info *info;
+> +       unsigned long index =3D vma->vm_pgoff;
+> +       struct vduse_virtqueue *vq;
+> +
+> +       if (vma->vm_end - vma->vm_start !=3D PAGE_SIZE)
+> +               return -EINVAL;
+> +       if ((vma->vm_flags & VM_SHARED) =3D=3D 0)
+> +               return -EINVAL;
+> +
+> +       /*check if Userspace App map the page number larger than kernel a=
+llocated*/
+> +       if (index > dev->vq_num + 1)
+> +               return -EINVAL;
+> +
+> +       /* index 0  page reserved for vduse status*/
+> +       if (index =3D=3D 0) {
+> +               info =3D &dev->reconnect_info;
+> +       } else {
+> +               /* index 1+vq_number page reserved for vduse vqs*/
+> +               vq =3D &dev->vqs[index - 1];
+> +               info =3D &vq->reconnect_info;
+> +       }
+> +       /*check if map pages was allocated and inited by kernel */
+> +       if (info->vaddr =3D=3D 0)
+> +               return -EOPNOTSUPP;
+> +
+> +       /* check if the address is page aligned, if not,
+> +        * this address maybe damaged
+> +        */
+> +       if (virt_to_phys((void *)info->vaddr) & (PAGE_SIZE - 1))
+> +               return -EINVAL;
+> +
+> +       /* check if Userspace App mapped the correct size
+> +        * the userspace App should map one page each time
+> +        */
+> +       if (vma->vm_end - vma->vm_start !=3D PAGE_SIZE)
+> +               return -EOPNOTSUPP;
+> +       /* VM_IO: set as a memory-mapped I/O region,This will for vq info=
+rmation
+> +        * VM_PFNMAP: only need  the pure PFN
+> +        * VM_DONTEXPAND: do not need to use mremap() in this function
+> +        * VM_DONTDUMP:Do not include in the core dump
+> +        */
 
-Proposal:
-Introduce the SIS_CACHE. It considers the sleep time of the task for
-better task placement. Based on the task's short sleeping history,
-tag p's previous CPU as cache-hot. Later when p is woken up, it can
-choose its previous CPU in select_idle_sibling(). When other task is
-woken up, skip this cache-hot idle CPU when possible.
+Instead of duplicating the semantic, you need to explain why it is needed.
 
-SIS_CACHE still prefers to choose an idle CPU during task wakeup,
-the idea is to optimize the idle CPU scan sequence.
+For example I don't see how the following is useful:
 
-As pointed out by Prateek, this has the potential that all idle CPUs
-are cache-hot and skipped. Mitigate this by returning the first
-cache-hot idle CPU. Meanwhile, to reduce the time spend on scanning,
-limit the max number of cache-hot CPU search depth to half of the number
-suggested by SIS_UTIL.
+VM_IO: the page is not backed by any I/O page
+VM_PFNMAP: we need map it to usespace for sure, for it's not a pure PFN
+VM_DONTDUMP: including this in core dump may help to debug the
+userspace process for sure
 
-Tested on Xeon 2 x 60C/120T platforms:
+Thanks
 
-netperf
-=======
-case            	load    	baseline(std%)	compare%( std%)
-TCP_RR          	60-threads	 1.00 (  1.37)	 +0.04 (  1.47)
-TCP_RR          	120-threads	 1.00 (  1.77)	 -1.03 (  1.31)
-TCP_RR          	180-threads	 1.00 (  2.03)	 +1.25 (  1.66)
-TCP_RR          	240-threads	 1.00 ( 41.31)	+73.71 ( 22.02)
-TCP_RR          	300-threads	 1.00 ( 12.79)	 -0.11 ( 15.84)
-
-tbench
-======
-case            	load    	baseline(std%)	compare%( std%)
-loopback        	60-threads	 1.00 (  0.35)	 +0.40 (  0.31)
-loopback        	120-threads	 1.00 (  1.94)	 -1.89 (  1.17)
-loopback        	180-threads	 1.00 ( 13.59)	 +9.97 (  0.93)
-loopback        	240-threads	 1.00 ( 11.68)	+42.85 (  7.28)
-loopback        	300-threads	 1.00 (  4.47)	+15.12 (  1.40)
-
-hackbench
-=========
-case            	load    	baseline(std%)	compare%( std%)
-process-pipe    	1-groups	 1.00 (  9.21)	 -7.88 (  2.03)
-process-pipe    	2-groups	 1.00 (  7.09)	 +5.47 (  9.02)
-process-pipe    	4-groups	 1.00 (  1.60)	 +1.53 (  1.70)
-
-schbench
-========
-case            	load    	baseline(std%)	compare%( std%)
-normal          	1-mthreads	 1.00 (  0.98)	 +0.26 (  0.37)
-normal          	2-mthreads	 1.00 (  3.99)	 -7.97 (  7.33)
-normal          	4-mthreads	 1.00 (  3.07)	 -1.55 (  3.27)
-
-Also did some experiments on the OLTP workload on a 112 core 2 socket
-SPR machine. The OLTP workload have a mixture of threads handling
-database updates on disks and handling transaction queries over network.
-Around 0.7% improvement is observed with less than 0.2% run-to-run
-variation.
-
-Thanks Madadi for testing the SIS_CACHE on a power system with 96 CPUs.
-The results showed a max of 29% improvements in hackbench, 13% improvements
-in producer_consumer workload, and 2% improvements in real life workload
-named Daytrader.
-
-Thanks Prateek for running microbenchmarks on top of the latest patch on
-a 3rd Generation EPYC System:
-- 2 sockets each with 64C/128T
-- NPS1 (Each socket is a NUMA node)
-- C2 Disabled (POLL and C1(MWAIT) remained enabled)
-No consistent regression was observed in v2 version.
-
-Analysis:
-The reason why waking up the task on its previous CPU brings benefits
-is due to less task migration and higher local resource locality.
-
-Take netperf 240 case as an example, run the following script
-to track the migration number within 10 seconds. Use perf topdown
-to track the PMU events. The task migration and stall cycles
-have been reduced a lot with SIS_CACHE:
-
-kretfunc:select_task_rq_fair
-{
-        $p = (struct task_struct *)args->p;
-        if ($p->comm == "netperf") {
-                if ($p->thread_info.cpu != retval) {
-                        @wakeup_migrate_netperf = count();
-                } else {
-                        @wakeup_prev_netperf = count();
-                }
-        }
-}
-
-NO_SIS_CACHE:
-@wakeup_migrate_netperf: 57473509
-@wakeup_prev_netperf: 14935964
-RESOURCE_STALLS: 19.1% * 7.1% * 35.0%
-
-SIS_CACHE:
-@wakeup_migrate_netperf: 799
-@wakeup_prev_netperf: 132937436
-RESOURCE_STALLS: 5.4% * 7.5% * 39.8%
-
-Suggested-by: Tim Chen <tim.c.chen@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- kernel/sched/fair.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c309b3d203c0..d149eca74fca 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7360,7 +7360,7 @@ static inline int select_idle_smt(struct task_struct *p, int target)
-  * Return true if the idle CPU is cache-hot for someone,
-  * return false otherwise.
-  */
--static __maybe_unused bool cache_hot_cpu(int cpu, int *hot_cpu)
-+static bool cache_hot_cpu(int cpu, int *hot_cpu)
- {
- 	if (!sched_feat(SIS_CACHE))
- 		return false;
-@@ -7383,7 +7383,7 @@ static __maybe_unused bool cache_hot_cpu(int cpu, int *hot_cpu)
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool has_idle_core, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
--	int i, cpu, idle_cpu = -1, nr = INT_MAX;
-+	int i, cpu, idle_cpu = -1, nr = INT_MAX, nr_hot = 0, hot_cpu = -1;
- 	struct sched_domain_shared *sd_share;
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-@@ -7396,6 +7396,9 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 			/* overloaded LLC is unlikely to have idle cpu/core */
- 			if (nr == 1)
- 				return -1;
-+
-+			/* max number of cache-hot idle cpu check */
-+			nr_hot = nr >> 1;
- 		}
- 	}
- 
-@@ -7426,18 +7429,30 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 	for_each_cpu_wrap(cpu, cpus, target + 1) {
- 		if (has_idle_core) {
- 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
--			if ((unsigned int)i < nr_cpumask_bits)
-+			if ((unsigned int)i < nr_cpumask_bits) {
-+				if (--nr_hot >= 0 && cache_hot_cpu(i, &hot_cpu))
-+					continue;
-+
- 				return i;
-+			}
- 
- 		} else {
- 			if (--nr <= 0)
- 				return -1;
- 			idle_cpu = __select_idle_cpu(cpu, p);
--			if ((unsigned int)idle_cpu < nr_cpumask_bits)
-+			if ((unsigned int)idle_cpu < nr_cpumask_bits) {
-+				if (--nr_hot >= 0 && cache_hot_cpu(idle_cpu, &hot_cpu))
-+					continue;
-+
- 				break;
-+			}
- 		}
- 	}
- 
-+	/* pick the first cache-hot CPU as the last resort */
-+	if (idle_cpu == -1 && hot_cpu != -1)
-+		idle_cpu = hot_cpu;
-+
- 	if (has_idle_core)
- 		set_idle_cores(target, false);
- 
--- 
-2.25.1
+> +       vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP=
+);
+> +       vma->vm_ops =3D &vduse_vm_ops;
+> +
+> +       return 0;
+> +}
+> +
+>  static int vduse_dev_open(struct inode *inode, struct file *file)
+>  {
+>         int ret;
+> @@ -1408,6 +1485,8 @@ static const struct file_operations vduse_dev_fops =
+=3D {
+>         .unlocked_ioctl =3D vduse_dev_ioctl,
+>         .compat_ioctl   =3D compat_ptr_ioctl,
+>         .llseek         =3D noop_llseek,
+> +       .mmap           =3D vduse_dev_mmap,
+> +
+>  };
+>
+>  static struct vduse_dev *vduse_dev_create(void)
+> --
+> 2.34.3
+>
 
