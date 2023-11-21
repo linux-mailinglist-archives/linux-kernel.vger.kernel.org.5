@@ -2,217 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAAC7F295D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED4B7F295F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjKUJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
+        id S233573AbjKUJxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233621AbjKUJv7 (ORCPT
+        with ESMTP id S231876AbjKUJw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:51:59 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2076.outbound.protection.outlook.com [40.107.215.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C028C1;
-        Tue, 21 Nov 2023 01:51:55 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OiKxN+Zwk2S6YfwaFk4ZEZ/ySMC899NKIc8+/NO8U4VW7ZhYr9QEwYN7SVq2hWChzzzB/fmgSsF0YlZugWdttiuWep3d2RtDGMI+ZchuDm6oN4lVDpyTu/4TODbbACsV4p19kGHh80LqGpLgT0EFUcvZChqUdlaTydf1jaw8OIJJLs5n6TvV/uVkbVgLbeB1l+8tQdN9FGwondiukuftceL8Iy6LOvW+LiOOIIsjW1rjEzvdPAJgI4pfsB1v/P+/TgUiwtrkYtcv0va9FyplE35s6LZOJs2fZqYMKnmNyH6NCpbHCX4TigXUpaMhUYXyR3yW/H5ZkTSG1nURiPzKpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b3s66eWT2SqKIOaifRv3YMVQCZgQNEUywU9IpCcp5VY=;
- b=IVC4IxTUIoBoGNKVVhboQUdZkgMtjBagYCvZfYT8QlB6V99g+UQ8ndSwQUkVMjVteteZdhnnX5HSbAyGeRifRoohIN4PQVyy4FUQuJ8WZq+xt3pEW/UWVd3sc3/UGdAhnh76egruAzSDO3nonkRnmdWo25H7GRRnFDDBmycp03vnCaLG7C83ksL5Q+gwWgQdbS3ddF3HLRrY/57vGALXt3uP6gTjkWaNFstAcq3wTxcRt+drlF/7BzcqP0SZA4dLTpwwAGcAULxtqLoN2OtuasRhoyr99rFrW0HrzyxW2btXXxWFj4RIEUqLlk9sZEuPepfnIvSbM5Z7wUxqB0ZVTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
- dkim=pass header.d=moxa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b3s66eWT2SqKIOaifRv3YMVQCZgQNEUywU9IpCcp5VY=;
- b=L0+AKpYlrAjCm+EIJvSkouHoZNbaWaQxONzq6Bdxg57tRYCpcHh7ilqj7cRtwAtetJIdDyj+QFIjzKRUuu9vSVhCXowJBeRnt9b4aMTAP5IshX0Ixh5V/kwZ7vIJGaneOzUAmeyy5/pzog/YYxWKQtjEP7lkciZpUeTLacSpJgI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=moxa.com;
-Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- (2603:1096:101:d8::6) by TYZPR01MB5602.apcprd01.prod.exchangelabs.com
- (2603:1096:400:425::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
- 2023 09:51:50 +0000
-Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- ([fe80::a480:d88f:100:3a92]) by SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- ([fe80::a480:d88f:100:3a92%7]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 09:51:50 +0000
-From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-Subject: [PATCH v5] tty: serial: Add RS422 flag to struct serial_rs485
-Date:   Tue, 21 Nov 2023 17:51:22 +0800
-Message-Id: <20231121095122.15948-1-crescentcy.hsieh@moxa.com>
-X-Mailer: git-send-email 2.34.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0104.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:2b4::20) To SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- (2603:1096:101:d8::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR01MB5387:EE_|TYZPR01MB5602:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd9ab74b-3b3a-413c-9721-08dbea777b41
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wS7an9/eePkiiWT/D6IJUD5IDC362x+/9Kns1oAzRQyJ4jnbweQjnkg0d+TUMAwd6h9+qXnPLqkNsARAUWspYwlaiYy1oyh3WY3SIlwOXn1sCjev+YCghvqxIj29pZQhSHB6uhpbeCtQ9H9g58Vn7OPRB+//PESxf5WinGDVcbYCnYgAeVS1xYIW1sEpRtbpICXgQi1Q1RofVCTpDsVR1Hl1IR6OUg2GbVa7T4J83SxgFvgTr9S+Mo8v3mrONwJF3MPpQLAWJy9JGcVi968GS5HAknf4FQGdGOW/2VarktlvSIaS7C9+uxqZNQcCgVnpEp/hTdYz52nVj8sQ/nE9McWPZajfiunnIvOXQuADiRifFaF41q06zR9xsLmEmb56pn8KOiWyX4e5amZZ/vI6KI8VRmjpAFpjMcA/Ej2xAEV3SgoThZg/zgfjh5z2yBO5a27XVF8wkNWFSl1B8xKc1tX8g26DIisRwIwrj9S3bZ68fgtgHLkWeKotIQ4xM1kxHoEjTjlMTOW85AYsdTVjAV541IiO047jtDN8ogCA8NnTkHQkiF7G4jpL8V9Ijiv2SSQWpc148yvSc28VsvqWR1SwpftkkUEN2I5gT/h5Jec=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR01MB5387.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39850400004)(376002)(366004)(396003)(136003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(2616005)(86362001)(110136005)(6486002)(966005)(6666004)(6506007)(66476007)(66556008)(316002)(66946007)(36756003)(38350700005)(107886003)(1076003)(52116002)(6512007)(26005)(83380400001)(2906002)(478600001)(5660300002)(38100700002)(8936002)(8676002)(4326008)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0ad0j/2RzYBrlF5kkEigqQBHmFOXiFwj7QnCHXVi9Isr8pCf2ICVKjCaC89e?=
- =?us-ascii?Q?yUuojezjfEPY2SJASkH70sC+FoCmRRklPn3yu6xU6mvBKNtQPBZamTFebuwu?=
- =?us-ascii?Q?HUOAX0eCV9ZNgvqX/xXtgacMnuv3bBuH1wAB8cRK8pGJT6+jOhQqJq92Aypa?=
- =?us-ascii?Q?bAmwmqjV1S/WqaDKApH5WiNm+q1wDgbRQxZmVMh05Fj1qq6cE0LPnQst8iNl?=
- =?us-ascii?Q?P67D/uO4rF+BMS2B/KkgzZLOtpCNFBEOdgkV+GRCyCpSUalLakDbG1BcjjIs?=
- =?us-ascii?Q?wnUFmPfeOQZPuZP0h5YLj2T5lKLPLQYCtmys0iFR4eMmCuLB+zvf0BOHTWXn?=
- =?us-ascii?Q?PNsoDR2jYY6wkbr/GW944jseJnhSy5WmZKckH+sMzjVZzkqi7Y7hRwl8jEaG?=
- =?us-ascii?Q?cuKQuekfauWXotGTjGiNR36TiRr6j796wxYGwc55PyVhE6YfJ71OzmKBy3l1?=
- =?us-ascii?Q?2HWMhQ81CXk8+bLmEqtBNTNp6qztaGM0qrWACMdt3l7k7RceRF24SRbBsqfp?=
- =?us-ascii?Q?J6+ZWlp3a4pF3Fnx3En2JESamf8ow7jxCxgxRTeuz/3WbABwvJsgx8ocuFgG?=
- =?us-ascii?Q?OUZ1yTJsExTn3n//xAFnBrrCFD9h57Zq4Al650rn9kymkezKGIdXERXZilBG?=
- =?us-ascii?Q?OQQs5VUIA00iRIsd88jp5dn7Tkt8nq0itd3Ij3erAkkZ4Birg75hI9mQ8+7q?=
- =?us-ascii?Q?5cNcx3AhyHIqD6GuIidAyyBRkkKgVy8PbEmWH8xVLm0oxdidim0fk+7JbjJm?=
- =?us-ascii?Q?8vhzXy+4+uw5LHlHtlMoViZibSJJVV2DpS9oUbTW4q+m30tZZLt7b9uH4K8R?=
- =?us-ascii?Q?umbsmakhErO6q9BaVIj3WLsgQyEvdcxLzfvFwYhzBCIkU695zqSZa5egMKMr?=
- =?us-ascii?Q?eP9v99+0E/LjN+r96vQoMeBabKk+EsdaPocZt0Wbj3d2udmSxvg7nu5z12r6?=
- =?us-ascii?Q?Mc+pMuViTg5OCfVvd9bNmyqZlQ2DppO4QBjZJzjNl/G5W4kAYcU2mu6u8slQ?=
- =?us-ascii?Q?v9jNrB3rJBuDmM6DZvXlmq3jXxU0b3AVkBfbfvJ371zkKEN9vFBF7s48WAfT?=
- =?us-ascii?Q?Z7Yo1cCxGnfv1S6wX9mBc4+P4ttIGWHZuZBW3EqPkiyup3uzuJfw++PH+vdt?=
- =?us-ascii?Q?JisfGqf9HWPuVTUFQED7CJydb4AU85Q3rT6gmgG84Z4sURK7yvU1lGDtBu/o?=
- =?us-ascii?Q?oVdontJrA/CYPdMvbnis1FjxR5nuOQkQ0rBRHYMUn+SPP9QmBl1MRn3xpV7O?=
- =?us-ascii?Q?0dvBk1Zi74Jd4PVC7pmCsak0jnu6kjRJj0HNL6qujsWWKI6iDY2rLFd/f/Ml?=
- =?us-ascii?Q?QehFr0kZD32dcGei/ILpSmJEMv9vMl8VcXuLcR7Ai8T+6CcWlvm2IvoARC86?=
- =?us-ascii?Q?I9QYXHDNpWwutMsuxUcBNeNdAwgIOUYZQdrGXppQV34ZKr67aV94CkqyP7Qt?=
- =?us-ascii?Q?IAMqxM87//JHS9C7Cv3skoJbpeW2cCVNHGvJBIsPsVdb26PlAT3v/bPS3eD7?=
- =?us-ascii?Q?WubHZtOmsjlaYvpLKdcn5pl+izbBuIBIPNZe+Y4Ywd/jdh9/BQ6Ijbc7cUuX?=
- =?us-ascii?Q?aCDnPZ9xqUkwpKDQmnug3SUzc+6yog7EBD+Wxn7UOULZ7Nto0+dpl6nIodwm?=
- =?us-ascii?Q?Ig=3D=3D?=
-X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd9ab74b-3b3a-413c-9721-08dbea777b41
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR01MB5387.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 09:51:49.6182
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b3+GR6gf3XR24aCkG7bj4V1LpcK4vNx2ewePqxUBBLACcqesov/y6RiDTUOlLHqEM2wUL8l20qAEzXRQEeOcVBDPe5tQUYK3JfsrM8ffhoA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR01MB5602
+        Tue, 21 Nov 2023 04:52:58 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0008E3;
+        Tue, 21 Nov 2023 01:52:54 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 539B31F8B4;
+        Tue, 21 Nov 2023 09:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700560373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0JXka18BPdCCLvHm1emjsKVsvj/REJd2IDYNWDBp0VE=;
+        b=PkWgvPCqkEnWMDK7z4Ks/WGGDlqAoWdSZMZMqAkf4Bb+02WFZA3FbaIg0yp+UeoDHNJZLt
+        i2DRsK2TT59P7rYeYWjEt7DP2kFKZ9cOWn+WOjyIbhtbM72pKTVDaEfiPHdBghQeCutpFa
+        ug2Bcud+FbQZohe78X1/cZUxo0vHHXY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700560373;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0JXka18BPdCCLvHm1emjsKVsvj/REJd2IDYNWDBp0VE=;
+        b=Eu+xmuWbVHUzHSLKb9GBj6CiEwp6s7E3ptCkrpDSITeI5HHnTxklPCBYHP5QmGLiHdCKmN
+        m/kjQVbDpgmWtlCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0E35E138E3;
+        Tue, 21 Nov 2023 09:52:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WM2bAvV9XGXyNgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 09:52:53 +0000
+Date:   Tue, 21 Nov 2023 10:52:52 +0100
+Message-ID: <87edgjo2kr.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Johannes =?ISO-8859-1?Q?Pe?= =?ISO-8859-1?Q?n=DFel?= 
+        <johannes.penssel@gmail.com>
+Subject: Re: Fwd: sysfs: cannot create duplicate filename .../system76_acpi::kbd_backlight/color
+In-Reply-To: <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+        <ZT25-gUmLl8MPk93@debian.me>
+        <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+        <ZUjnzB2RL2iLzIQG@debian.me>
+        <87sf50pm34.wl-tiwai@suse.de>
+        <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.80
+X-Spamd-Result: default: False [-5.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         TO_DN_ALL(0.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[suse.de,traphandler.com,gmail.com,vger.kernel.org,lists.linux.dev,system76.com,kernel.org,ucw.cz];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "SER_RS485_MODE_RS422" flag to struct serial_rs485, so that serial
-port can switch interface into RS422 if supported by using ioctl command
-"TIOCSRS485".
+On Tue, 21 Nov 2023 10:19:03 +0100,
+Thorsten Leemhuis wrote:
+> 
+> Takashi, Jean-Jacques Hiblot, Lee,
+> 
+> On 20.11.23 14:53, Takashi Iwai wrote:
+> > On Mon, 06 Nov 2023 14:19:08 +0100,
+> > Bagas Sanjaya wrote:
+> >> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+> >>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+> >>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+> >>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+> >>>>
+> >>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+> >>>> since you authored the culprit?
+> >
+> >>> The offending commit stores the color in struct led_classdev and exposes it
+> >>> via sysfs. It was part of a series that create a RGB leds from multiple
+> >>> single-color LEDs. for this series, we need the color information but we
+> >>> don't really need to expose it it via sysfs. In order to fix the issue, we
+> >>> can remove the 'color' attribute from the sysfs.
+> >>
+> >> OK, see you in the patch!
+> > 
+> > Is there a patch available?
+> 
+> Not that I know of. Could not find anything on lore either.
+> 
+> > This bug hits for a few Logitech keyboard models, too, and it makes
+> > 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+> > this bug:
+> >   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+> > 
+> > We need a quick fix for 6.6.x.
+> 
+> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+> committed it and sent it to Linus) know about this for a while already
+> without doing anything about it, I wonder if someone should just send a
+> revert to Linus (unless of course that is likely to introduce a
+> regression on its own).
+> 
+> Takashi, could you maybe do this, unless a fix shows up real soon?
 
-By treating RS422 as a mode of RS485, which means while enabling RS422
-there are two flags need to be set (SER_RS485_ENABLED and
-SER_RS485_MODE_RS422), it would make things much easier. For example
-some places that checks for "SER_RS485_ENABLED" won't need to be rewritten.
+I can, but we need to decide which way to go.
+There are several options:
 
-Signed-off-by: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+1. Revert the commit c7d80059b086;
+   this drops led class color sysfs entries.  Also the store of
+   led_cdev->color from fwnode is dropped, too.
 
----
-Changes from v4 to v5:
-- Revise commit message.
-- Delete RS422 checks within uart_set_rs485_termination().
+2. Drop only led class color sysfs entries;
+   a partial revert of c7d80059b086 above
 
-Changes from v3 to v4:
-- Include 'linux/const.h' header in '/include/uapi/linux/serial.h'
-- Replace BIT() with _BITUL() which defined in
-  '/include/uapi/linux/const.h'
+3. Rename conflicting sysfs entries in drivers;
+   e.g. color -> kb_color for hid-lg-g15 and system76_acpi
 
-Changes from v2 to v3:
-- Remove "SER_RS422_ENABLED" flag from legacy flags.
-- Revise "SER_RS422_ENABLED" into "SER_RS485_MODE_RS422".
-- Remove the code which checks the conflicts between SER_RS485_ENABLED
-  and SER_RS422_ENABLED.
-- Add return check in uart_set_rs485_termination().
+In either way, we'd break user-space (sysfs).
 
-Changes from v1 to v2:
-- Revise the logic that checks whether RS422/RS485 are enabled
-  simultaneously.
+IMO, 2 would be the least harm, as the class sysfs entry was
+introduced since 6.6.  I guess this is what Jean-Jacques suggested.
+But I'm not sure how important this new class sysfs entry is; it has
+to be clarified from leds people who actually use / wanted the
+feature.
 
-v4: https://lore.kernel.org/all/20231113094136.52003-1-crescentcy.hsieh@moxa.com/
-v3: https://lore.kernel.org/all/20231108060719.11775-1-crescentcy.hsieh@moxa.com/
-v2: https://lore.kernel.org/all/20231101064404.45711-1-crescentcy.hsieh@moxa.com/
-v1: https://lore.kernel.org/all/20231030053632.5109-1-crescentcy.hsieh@moxa.com/
+3 was already confirmed to work on both bug reports.  OTOH, it's not
+clear whether we can neglect (potentially) already existing users.
 
----
- drivers/tty/serial/serial_core.c |  7 +++++++
- include/uapi/linux/serial.h      | 19 +++++++++++--------
- 2 files changed, 18 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index 831d03361..db1ebed7f 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1376,6 +1376,13 @@ static void uart_sanitize_serial_rs485(struct uart_port *port, struct serial_rs4
- 		return;
- 	}
- 
-+	/* Clear other RS485 flags and return if enabling RS422 */
-+	if (rs485->flags & SER_RS485_MODE_RS422) {
-+		memset(rs485, 0, sizeof(*rs485));
-+		rs485->flags |= (SER_RS485_ENABLED | SER_RS485_MODE_RS422);
-+		return;
-+	}
-+
- 	/* Pick sane settings if the user hasn't */
- 	if ((supported_flags & (SER_RS485_RTS_ON_SEND|SER_RS485_RTS_AFTER_SEND)) &&
- 	    !(rs485->flags & SER_RS485_RTS_ON_SEND) ==
-diff --git a/include/uapi/linux/serial.h b/include/uapi/linux/serial.h
-index 53bc1af67..9086367db 100644
---- a/include/uapi/linux/serial.h
-+++ b/include/uapi/linux/serial.h
-@@ -11,6 +11,7 @@
- #ifndef _UAPI_LINUX_SERIAL_H
- #define _UAPI_LINUX_SERIAL_H
- 
-+#include <linux/const.h>
- #include <linux/types.h>
- 
- #include <linux/tty_flags.h>
-@@ -137,17 +138,19 @@ struct serial_icounter_struct {
-  * * %SER_RS485_ADDRB		- Enable RS485 addressing mode.
-  * * %SER_RS485_ADDR_RECV - Receive address filter (enables @addr_recv). Requires %SER_RS485_ADDRB.
-  * * %SER_RS485_ADDR_DEST - Destination address (enables @addr_dest). Requires %SER_RS485_ADDRB.
-+ * * %SER_RS485_MODE_RS422	- Enable RS422. Requires %SER_RS485_ENABLED.
-  */
- struct serial_rs485 {
- 	__u32	flags;
--#define SER_RS485_ENABLED		(1 << 0)
--#define SER_RS485_RTS_ON_SEND		(1 << 1)
--#define SER_RS485_RTS_AFTER_SEND	(1 << 2)
--#define SER_RS485_RX_DURING_TX		(1 << 4)
--#define SER_RS485_TERMINATE_BUS		(1 << 5)
--#define SER_RS485_ADDRB			(1 << 6)
--#define SER_RS485_ADDR_RECV		(1 << 7)
--#define SER_RS485_ADDR_DEST		(1 << 8)
-+#define SER_RS485_ENABLED		_BITUL(0)
-+#define SER_RS485_RTS_ON_SEND		_BITUL(1)
-+#define SER_RS485_RTS_AFTER_SEND	_BITUL(2)
-+#define SER_RS485_RX_DURING_TX		_BITUL(3)
-+#define SER_RS485_TERMINATE_BUS		_BITUL(4)
-+#define SER_RS485_ADDRB			_BITUL(5)
-+#define SER_RS485_ADDR_RECV		_BITUL(6)
-+#define SER_RS485_ADDR_DEST		_BITUL(7)
-+#define SER_RS485_MODE_RS422		_BITUL(8)
- 
- 	__u32	delay_rts_before_send;
- 	__u32	delay_rts_after_send;
--- 
-2.34.1
+Takashi
 
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> 
+> P.S.: /me should have followed up on this earlier... :-/
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
