@@ -2,175 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE387F2884
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEF27F2888
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbjKUJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        id S231546AbjKUJRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:17:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKUJRM (ORCPT
+        with ESMTP id S229454AbjKUJRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:17:12 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4103BF5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:17:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iGRiSuoEtMu6/8woZCg4JB558lYfA8c1uemScjWzydXJoLVfMemz5klLVqk2/jh9a3fPgLiCgecgLhlOGX6McKpbXudzLAPwHfaH77rVEY5LLefmG8ngXiv2hSzP5k59fukjNMtDuZLF884kVLv2OSig4oi75bu1BSLKgYpzHO0BblDDg9noLntMvi0s554aKUzEqjpadc7FKl85ZGlkY7pxDhd8qsCaCIA7+j5L5awMdOUOsoNiJw2Ncasq6huiYGdVtkJ4KHdpt+feg9vdZIiAms1USRqCzZZqs367O7ruWTka1H/VBmAEBiRZf6Ftdq7fugZG/w2q4WU630gooQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g6FleHveucG2H5Fm6Z3n3w4GeKDeMhQsStOBTI5aFxY=;
- b=QjazYbFYF2Fthanxp0TwAjL2f/HB4mbObYna7KdMiSJOIb+3O4woOC1PCnDYt4c2AsWuoxq39d0qy760h/f56rlGDF46QeVqshTHmyacFEeCwLaVxetq6YsViqxBxP2gnMFjbGNBVTr4y2dv2sFqOCh+09b7hOf+9teRSmV+UDdTq3reRXVz1N7QLXo9B1NT8l/JoY+678QSeXqOY+Nfv21r+kruMAHDTDdnUxk5wGhjeEgDbx5bl8NAOUGpS729Rb+SOwMSgApbFk0hr+KJTtP684HUmK0Kc7DRS+6vUIKjJqQ4YdX7EJ/+e0DwYogE+oQs2SbU7qm8ThGV1FREJw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g6FleHveucG2H5Fm6Z3n3w4GeKDeMhQsStOBTI5aFxY=;
- b=Uf0bRjHw6vy2hIrheSWCJgvdM8oMwop738Mq2PlelbmFtvgrDmYGlElBnH4rl+Y3lb3iCAZiYprDmn6MXsCDGP2MBDuIXbmBTh1zYL6JeAH1WUVhXNrb/N3aiKJgxIQH/YcxxGL3XG99FFr+P+dKI9pRDyBPZo0pJu1gnktWjgA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by CY5PR12MB6600.namprd12.prod.outlook.com (2603:10b6:930:40::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
- 2023 09:17:06 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 09:17:06 +0000
-Message-ID: <bac617fe-6b23-411f-8dc9-c97cc84208f3@amd.com>
-Date:   Tue, 21 Nov 2023 10:17:00 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] gpu: display: remove unnecessary braces to fix coding
- style
-Content-Language: en-US
-To:     RutingZhang <u202112078@hust.edu.cn>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     hust-os-kernel-patches@googlegroups.com,
-        Dongliang Mu <dzm91@hust.edu.cn>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231121043621.9351-1-u202112078@hust.edu.cn>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <20231121043621.9351-1-u202112078@hust.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR3P281CA0195.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a4::7) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Tue, 21 Nov 2023 04:17:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06810C1;
+        Tue, 21 Nov 2023 01:17:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96403C433C7;
+        Tue, 21 Nov 2023 09:17:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700558262;
+        bh=KiJ/ru65Ua8lo4s4fh4OjLQfr8e6MLSoBb/RDxWensY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EY9G3e//vJF7k13VmW76Yg4tqo4bYwC2YfDojOjvxuSr9VIw4idRrZhBvYcNt5EFP
+         SHaFaNcHn3iQA/LpGwavpXPMJMW19y14mBeHfC8DLz/r8WAZBA3w6hBwEMwd3H3qVh
+         9ZKHx6kkjJ81fj5Dj5azu2nLiIaxaSeFlZWd9KFEosC8kjJPW6B3C9xuKYC8b3ETnh
+         VcyG/gcTVUImvNkZpZx881dhtUmhnH6cnWL+a5f/U4Q6n0otk6WOinYAZyvLu79cqT
+         +NdLMfiSgo7tuW7fllRQflnxVNvgMN2UX85GgfSolv6r7erH4kW+9Bux8cWc3ECHPp
+         SjA5WXIvgy4LQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5MtF-00047b-1C;
+        Tue, 21 Nov 2023 10:17:53 +0100
+Date:   Tue, 21 Nov 2023 10:17:53 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] USB: dwc3: qcom: fix wakeup after probe deferral
+Message-ID: <ZVx1wRefjNaN0byk@hovoldconsulting.com>
+References: <20231120161607.7405-1-johan+linaro@kernel.org>
+ <20231120161607.7405-3-johan+linaro@kernel.org>
+ <pgmtla6j3dshuq5zdxstszbkkssxcthtzelv2etcbrlstdw4nu@wixz6v5dfpum>
+ <3ff65t36p6n3k7faw2z75t2vfi6rb5p64x7wqosetsksbhhwli@5xaxnm7zz4tu>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CY5PR12MB6600:EE_
-X-MS-Office365-Filtering-Correlation-Id: 780feb06-2842-4659-7d2d-08dbea72a184
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8dpPTc3TPL6A82wRB/vRNDHyp/tJSuRSKIHdm2FVXWEaKI+Ii1WLmcsKLrFLQccFRuINdzIav3CRXncV0srUPtYqBJedIrIQ/WE8OLK1LHH0VgOE4CpKXUO/QR/uQ1Gnjnw56CtyDmkpjOlRCNq0jIP17DlPsOMJPYTKWfT1vyTqp0Hc2hW1S/ZPFDROd49CEJInFcFXLeOgQg9ckdMHT8U+xVFekaiKTyL7Sz0dLO2FOPqcK6+srR/ZLdD2v53W4WYWiPTg/bS39HYujOXZTUlnavRfoBgWkV8CndHm6HJr4q/aI+nlRyAG/Q/DK6tAaxADysw/gFh5U2Qf662UoPBpiaBtmmgEdRBokQPiXh7lgXBDVS6DEhGx6rmlBIWBmAFdiRkmz1+9ZezjyKSKvXqWM3P3ZTMUn2Z4NqHx7odBPK5/ksl4Iq72GA1ivOrw/3yC+uV3QRGagAwR6d6bQ4X8r2Xti/xH992/jYH9C0ObYdWAwLGVoKQ1/uky0G6E4h5opvbkd3XEVSpdwoPnwVme4rDDWaVJU5S6XF81DdNjHN291Sz0CsFcWRZEBwRicDA6yjLQAVwM2ffsFLd2/TQ1zT3wRJkz975fCKl8bXP3T0b2gFFqyXD602Fp69nqXv7kJhQ/tWOlU4IYQujMJyjTmjQKNlvbfA0k3pxWCCKNTnMv8L0O9647RF53YL4J
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(396003)(346002)(39860400002)(366004)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(64100799003)(1800799012)(6512007)(31686004)(6506007)(6666004)(6486002)(478600001)(316002)(4326008)(8936002)(8676002)(66946007)(38100700002)(2616005)(110136005)(66476007)(66556008)(83380400001)(2906002)(5660300002)(31696002)(26005)(41300700001)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RDV6bUcyMEF3N0xhbGhGMDIvMTIvR1Vzd2lRNHZKTzRldUxwUzcwSTdna1pS?=
- =?utf-8?B?a2ZCd3V5L0YrWTdIK3NjQy9CWmVnWjV1cldJTVlIYk9aTWl4SGNONEVHeGVO?=
- =?utf-8?B?bW1xc1M1UlJBWEdXSEtjdXlweXh3cGV6RDdMZmU1NW0xSVlJSktwdklmN01T?=
- =?utf-8?B?N2g1TGhBN0FWT0FWWFk2cFMvbW9mWWk5aWw3R0crSXZ5VzZEYWxnUFd1Z0d4?=
- =?utf-8?B?bEFoSGtPZlo4a3lTK2FPLzFxUjVuWldoczhwblJjYk1DYi9BWWJCOHE4R2Vs?=
- =?utf-8?B?dUZqd3JIblVLbWludzRIMjRIOUtrdUpEZE1FVWEyRm9SOEI0VjhncXpoRHN0?=
- =?utf-8?B?cWdGZUVGR0R1S3JwNGI5NHpkYTNwNVhKM0pKLzFnMjZZRCtHT3R4T0hsM0Vk?=
- =?utf-8?B?NVJrRDcxbVNPYWtWdkRXZGhWL3k4V29URlZEems4ZHMwMGVhUDZQSitLS3Jv?=
- =?utf-8?B?L1p2bG0zZm9ncUxQZ0poeDUzdkN5WTVkS0pCSHllc0FKMFdLUStmQS9HdHM2?=
- =?utf-8?B?N3NvVjF5clBIZm5ueXdqNWxlYkNFRGpORG5KZWJScldKWFZ5WkY0RXVCaUlR?=
- =?utf-8?B?NFF0YUxqS2ROVDFnNWt1M3oxa24vWXpYdE1pYUVSTFlrbjNDeExkbnA1bUFl?=
- =?utf-8?B?ZUJHQ3REZDcwNjBHdGVUVHA5RFNTWkZzekFMSWhqUytmY3h6MUdJeVFpMm0v?=
- =?utf-8?B?OEFHOUwrbis4aFNndloyYmswUklqdzZlY3JDTmxUZSs2MkozZ2ZOZ1pZMjZj?=
- =?utf-8?B?UmRLSDFjZ3ZEcEN4aFBQT1pHbXNjbzlEVU55dWRWcG5VRFdrRUNjQWZUdVZ5?=
- =?utf-8?B?Y2lRT3NCUlZwZU10SVAvRnI3ZFJWT1FiTkw0UEVYY2ZBMk1HREUxcjRZeWFY?=
- =?utf-8?B?dVBWa3lKM1ZPUjVKQU52Zm1acVllejVJSzRGYlNiTE1qSGpNNStLUnBWUEdw?=
- =?utf-8?B?Z3BiNGdpMjdZZytSc3B1VFgxN1YzRE91b3NNS3AyY0NJSGczMGJKdEx2SklK?=
- =?utf-8?B?eHprY2dmZmdWK295eGNWVEF0UlQ1RmVoWTlPd2lwWElDQTcvQzVFcjR5eWo4?=
- =?utf-8?B?djNUQWp3YVF5R0Rid3hOSVQ4Y3psS2ZCSGpqZ29oV0hHaUQxRTl1bVJKcTNI?=
- =?utf-8?B?RTI2cGxySVNDUUo4YmNkNjVUZGVtdHRmMFpINVQ3SG9ZTFdxeXk2Qzc5ZUEx?=
- =?utf-8?B?YVUrMUZmNytiNStjK05HV1FiVW5iWEdCUXhwNGU1RlBFTkVXWnNiRUVMcStk?=
- =?utf-8?B?TW45bm1GcURJVW9mRDJCbWlhbzVVSktkMUdKZW5CN1dVV1V4WFQxOFR5VENo?=
- =?utf-8?B?QkY5OCtrdzNQdVdEMnRlN283K3pFQXpGeGl2RU54SmFXekJJYzE3WDZNM2R1?=
- =?utf-8?B?dndyVUEwelNwOTAwWndhNDJ0cmpPN0dqZGV0V21PV0dqWXZ1ZTJLSmZHUDE2?=
- =?utf-8?B?elBmSUpmVE9QdEV5L3J3bzZ5aTA2bWpxdkRXRjJiSnlPejVTZFZ1d3BSR1h0?=
- =?utf-8?B?NXcwY1ppOEwzRTd5dk8wZGNMc3hKY1YyY1hMd0YveXNHWkY4U2J2cDlYdlZj?=
- =?utf-8?B?WlZteS9telJubm9YNkxuS1l5T1F5MkR3YXBHb0taNkNIckc1cGF2TlR3alJv?=
- =?utf-8?B?NGdjcy9nSTFjbytDanVMSHZEQnJLV1grMzZRTVJ5STJ5REtPSHpRVmRSckFz?=
- =?utf-8?B?bE01WVoybjM5Mk1RbmNoUUVSQ2tjZW0vRitFSjI1TE1na1NDYVVRYzB5Rkp2?=
- =?utf-8?B?MmtJc041Mjd3SFA5NmhrdENKYVAyUWt5QVoyRlpJdXhQeXFONi9lN3BOQXE4?=
- =?utf-8?B?N2VJT3BaZmlhdjUvaFdHVDNEUzhpNWVjWG5yQW5EaW1RZVVYTVYvNEhzTWl1?=
- =?utf-8?B?RkRKL3BWQllsVzlLN3B2WlJGdFhRaDlKWDZhcHdoQkkwc29uc21RUUR0dVpN?=
- =?utf-8?B?OGtvZURBTVFDVnp2VS9DOFpnOEJmRWJSTXAxSHp4aW1vUTVCMThzVlZOZERH?=
- =?utf-8?B?R0FYQjBsWTdnUGdNK3o1bnVvVXdMVG5SaGE5QXludXF2dDNTS0MzdlNWRWJJ?=
- =?utf-8?B?ck5FNGZ2VTgzY1RtR0QzT25lT1Q0bjV2cmpkOEhYVC9NMlRycVNEQXM1aFQ1?=
- =?utf-8?Q?A598vAYzu3EA9ps452VFuroqx?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 780feb06-2842-4659-7d2d-08dbea72a184
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 09:17:06.2045
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WqcUafJ4HjjewtkG5LkpEr0PlpsFZCij8OznedfsG+1jOZ/w1o31qPpw6FzqIjjS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6600
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3ff65t36p6n3k7faw2z75t2vfi6rb5p64x7wqosetsksbhhwli@5xaxnm7zz4tu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.11.23 um 05:36 schrieb RutingZhang:
-> checkpatch complains that:
->
-> WARNING: braces {} are not necessary for single statement blocks
-> +                if (pool->base.irqs != NULL) {
-> +                        dal_irq_service_destroy(&pool->base.irqs);
-> +                }
->
-> Fixed it by removing unnecessary braces to fix the coding style issue.
->
-> Signed-off-by: RutingZhang <u202112078@hust.edu.cn>
-> Reviewed-by: Dongliang Mu <dzm91@hust.edu.cn>
+On Mon, Nov 20, 2023 at 02:50:52PM -0600, Andrew Halaney wrote:
+> On Mon, Nov 20, 2023 at 11:39:07AM -0600, Andrew Halaney wrote:
+> > On Mon, Nov 20, 2023 at 05:16:06PM +0100, Johan Hovold wrote:
+> > > The Qualcomm glue driver is overriding the interrupt trigger types
+> > > defined by firmware when requesting the wakeup interrupts during probe.
+> > > 
+> > > This can lead to a failure to map the DP/DM wakeup interrupts after a
+> > > probe deferral as the firmware defined trigger types do not match the
+> > > type used for the initial mapping:
+> > > 
+> > > 	irq: type mismatch, failed to map hwirq-14 for interrupt-controller@b220000!
+> > > 	irq: type mismatch, failed to map hwirq-15 for interrupt-controller@b220000!
+> > > 
+> > > Fix this by not overriding the firmware provided trigger types when
+> > > requesting the wakeup interrupts.
+> > 
+> > This series looks good to me and makes sense except for one point that
+> > I'm struggling to understand. What exactly is the relationship with this
+> > failure and probe deferral?
+> 
+> Eric Chanudet pointed out to me (thanks!) offlist that if you:
+> 
+>     1. Probe
+>     2. Grab the IRQ
+>     3. Request it (and muck with the trigger from the firmware default)
+>     4. Defer out
+>     5. Reprobe
+>     6. Grab the IRQ again
+> 
+> You get that error, which I played with some this afternoon...
+> and can confirm.
+> 
+> It really seems like maybe we should consider reworking messing with the
+> trigger type at all (which is done later for runtime/system suspend)
+> in a follow-up series?
+> 
+> As far as I can tell if you were to remove the driver and reprobe after
+> a suspend you'd hit similar.
 
-Subject line prefix should be "drm/amdgpu".
+Correct, but people don't go around unloading modules (unlike probe
+deferral which anyone can hit). It's a development (debugging) feature
+so there being some corner cases are not that big of a deal.
 
-Apart from this nit it looks good to me, but might be already fixed 
-internally.
+> I've been sitting here scratching my head a
+> bit trying to reason out why keeping it as IRQ_TYPE_EDGE_BOTH isn't
+> acceptable in dwc3_qcom_enable_interrupts()... Correct me if you think
+> that playing with the trigger there is really ok, but it seems like you
+> run the same risks if you do that and then modprobe -r dwc3-qcom.
 
-Regards,
-Christian.
+Changing the trigger type during runtime depending on use-case should be
+fine. It just doesn't play well with the kernel's interrupt mapping
+code, which assumes that if an interrupt already has a mapping then it
+is a shared interrupt.
 
-> ---
->   drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> index 447de8492594..6835dbb733a2 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> @@ -713,9 +713,8 @@ static void dcn21_resource_destruct(struct dcn21_resource_pool *pool)
->   			pool->base.hubps[i] = NULL;
->   		}
->   
-> -		if (pool->base.irqs != NULL) {
-> +		if (pool->base.irqs != NULL)
->   			dal_irq_service_destroy(&pool->base.irqs);
-> -		}
->   	}
->   
->   	for (i = 0; i < pool->base.res_cap->num_ddc; i++) {
+I considered addressing that in the core code, but yeah, I don't want
+too much time since the remaining issue only affects module unload and
+there are other ways to avoid that issue too.
 
+> I get that dwc3_qcom_enable_interrupts() limits the scope of what wakes us
+> up to what we expect given the current device (or lack thereof), but it
+> doesn't seem like you're really meant to play with the IRQ triggers,
+> or at least the warning you shared makes me think it is not a great idea
+> if you plan to probe the device ever again in the future.
+> 
+> I'll post the current comment in dwc3_qcom_enable_interrupts() to
+> explain the "limits the scope of what wakes us up" a bit more clearly:
+> 
+> 	/*
+> 	 * Configure DP/DM line interrupts based on the USB2 device attached to
+> 	 * the root hub port. When HS/FS device is connected, configure the DP line
+> 	 * as falling edge to detect both disconnect and remote wakeup scenarios. When
+> 	 * LS device is connected, configure DM line as falling edge to detect both
+> 	 * disconnect and remote wakeup. When no device is connected, configure both
+> 	 * DP and DM lines as rising edge to detect HS/HS/LS device connect scenario.
+> 	 */
+
+Yes, that is how it is currently implemented and I intend to change that
+shortly. I just wanted to get the fixes out first.
+
+Specifically, I consider the current implementation to be broken in that
+it generates wakeup events on disconnect which is generally not want you
+want. Consider closing the lid of your laptop and disconnecting a USB
+mouse before putting it in your backpack. Now it's no longer suspended
+as you would expect it to be.
+
+With the devictrees soon fixed, we could also do away with changing the
+trigger type, but since this is how it was implemented initially we now
+need to consider backward compatibility with the broken DTs. We've dealt
+with that before, but yeah, getting things right from the start would
+have been so much better.
+
+Johan
