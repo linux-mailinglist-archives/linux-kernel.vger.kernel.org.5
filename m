@@ -2,152 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F227F26AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D337F26AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 08:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjKUHwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 02:52:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S229840AbjKUHwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 02:52:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjKUHwQ (ORCPT
+        with ESMTP id S229620AbjKUHwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 02:52:16 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EF7CB
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:52:11 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ce28faa92dso41535175ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 23:52:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700553130; x=1701157930; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=o2WX9z+qXmObEydEr4Jsr/fb5FQuMi975OooEeJzj60=;
-        b=GgygPtODdXZWCJnxOKTCGOOKnMZM5IpAIMvTg9SAOAyC5f4IfL8yLuh0E3G21oCXpn
-         /OoqNzx3E2lzfH9ozDdn3wcWYbbkyYTzfyNeD4t5NadQK9Xp+THyAqvBel5lMB5ZAntz
-         QBhGAF9Y7tTA++H6pmSrBHLPa4qAjA8IoDFbnQTzZhiMF7m3XleR+/jybJv6oIYfqbMo
-         oj1Ab5uztL7YnNn6G3d++fzUI/KqYrlifBJaW6v9zjbGBwT71Eiq9KvQNgClXsEfVQdH
-         N9E3s1py1aE0kmMNDiZ3vWnQOyGaVyuFpnS4dhbOlhdQE28I7wtzGGb/PLS4OgTZJvbe
-         z/+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700553130; x=1701157930;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o2WX9z+qXmObEydEr4Jsr/fb5FQuMi975OooEeJzj60=;
-        b=xLi1NJ1/PStJJ3G4sAtw6NIK6kyQMxytDSCNh09RjQAubAgdDfw0XImpXuRr6lNhvg
-         8TEAT3FMr+4+Wh0A7g82g0BKk/PEdssSCQzYAlTMC15TbgLCVJGdHUCnjnexhWtCx+7L
-         3yAVeScwFBE9/rmsbZBO6GHDmwrEaZEOaqsyiYZ9IoIFDdl/8nK37QQgG720ZjLHvwtL
-         FrS01jrLXoBpawT5YgseiCLe6Ww+pkSa7TKaQk+OUmW0k9sRNArzRLEDfAKNEW4nzMrd
-         AdnAuqAhpXAxiO/DNTygamc8u2SGIpX0jjL7M1pRjs7lUkoXtVvJ8swEvpO8oFsJO3Jq
-         2GaA==
-X-Gm-Message-State: AOJu0YxPXt5yLfcYhlMZ3sJ6BkRwpQOz+e1fRRTscV5R/yUdTYT7G0as
-        QDhfbkjVcTGTTr0zMljKixRRahNuj5l4+g==
-X-Google-Smtp-Source: AGHT+IGnCYzS+fogym/NhlsT3aV1sdcgMvY1MnbUkzlSJFH5N5nR34K77Q3GFneyd42Vv0iJUgjJVQ==
-X-Received: by 2002:a17:903:11ce:b0:1cc:49e7:ee1b with SMTP id q14-20020a17090311ce00b001cc49e7ee1bmr11373490plh.58.1700553130536;
-        Mon, 20 Nov 2023 23:52:10 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id s12-20020a170902ea0c00b001c9b384731esm7272113plg.270.2023.11.20.23.52.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 23:52:09 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 6CAC51026512A; Tue, 21 Nov 2023 14:52:07 +0700 (WIB)
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Staging Drivers <linux-staging@lists.linux.dev>
-Cc:     Martyn Welch <martyn@welchs.me.uk>,
-        Manohar Vanga <manohar.vanga@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Soumya Negi <soumya.negi97@gmail.com>,
-        Alexon Oliveira <alexondunkan@gmail.com>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Menna Mahmoud <eng.mennamahmoud.mm@gmail.com>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Matt Jan <zoo868e@gmail.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Dorine Tipo <dorine.a.tipo@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Charles Han <hanchunchao@inspur.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH RESEND] drivers: staging: vme_user: Describe VME_BUS and VME_TSI148
-Date:   Tue, 21 Nov 2023 14:51:55 +0700
-Message-ID: <20231121075155.16078-1-bagasdotme@gmail.com>
-X-Mailer: git-send-email 2.42.1
+        Tue, 21 Nov 2023 02:52:38 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A967210F;
+        Mon, 20 Nov 2023 23:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1700553152; x=1732089152;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0ZGF6D08zRB+LaUvIcVXzkLUOQm4Wx4EEjTg4IeXzCI=;
+  b=kEdVk6AZ75naw4DWcyv9aGYINASrN1jD7iJFMJxyjW5eOVREjsZ3sGKm
+   WIpF2z5X8j3/dlPPei6hc05QA2S7ob45luVljXpYlKqBDQPlnyfseh/G1
+   sVuLv2gBk/f0yFsfJGHKoAzCv0EPgbxm9Pwn0qS4dftFeVcA9IW/ITrIi
+   WwTzQJxuSOhCmUsP2NKr0fH1JcL+2vE+t3r6DA1qLfq4Wl2m+obfQ/vFs
+   lWw4CJ9w0FpbO50S3g6JUi4veef7ragvdQuTtj43hBXC3g59xSNj62jSA
+   wwFhYcFyT3KD+PRyaLYjfkykk1p9Lf1HtvRxHVVrdS+/mjGSwBsLkNkda
+   Q==;
+X-CSE-ConnectionGUID: K+dJqAMPQGiPKikBmoSrog==
+X-CSE-MsgGUID: 22K/txD4SWeDLKj2WTZ02g==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="242723296"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Nov 2023 00:52:32 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 21 Nov 2023 00:52:06 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 21 Nov 2023 00:52:06 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZCaAffRZdOBXN5m46y+nY90QK6sPL9+5Cw1n1EsVsHNqc7ie90cHW0kzqrhdZUbRxfKYaLpkaInGtICulLEcCHhPqtTEcAERDZv/g19rq2ye/q8w3VFHk3Uwaow++X8ao5W4/Ll5vsYFcn/mvf9qYjf2o/1rmeGYwFFs0LkrSAXG5aPQatjAsMixiIwBvXrSpf94GSpWxJksfFX3CdjxqbYk2EBcuYoNSTvMBxtgRGwn9KbJndDQqlnAoSAlRg5P/zkp5L973hPPwWHaexIDfKhxQ6KRIMikXzCY9jxVfh1wtuZCLHuJZvV1+IaFiDRVrmaayzIuit0jdxlmdBYhow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EaQuHgmUliQ5qZmJaZOov74taB4TUSUKjYYQR4DEp+Q=;
+ b=mT+HXyUrv7sKtEF9BpT9qYEBIWLXKVDKFABlET1YqZ/k8c9hvsgsso0DwW9puoHZkOLLV59sYaL9r/l+B9k6TIJNvwTKgD8BqBjeAkDiDlNBfEn6AeR0epMEBo9+gE0vwlkHhZKbBVvG5ZhxqWTYsGFilvNQ9SLHZz5e7vobFNkNqrS00hrUjCAlzV1tE4hMBLr1RNtP0sczifT45e0N6NmJDz85MMLRcbw9O3G3XECmCoUPr6j+i+uis3y8my9uXZMIE9HxgFQgQ/HJ71eakIInHvH0NJJjnrAhcrthomXWlx99CeyYL7F6H6yrdWsK5jmyUM9+8h70lFw5cG07ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EaQuHgmUliQ5qZmJaZOov74taB4TUSUKjYYQR4DEp+Q=;
+ b=Lvn+jTqekzM2zWpUasaZyERF8lXZurQ7lfH3PNh93SDi/5Ts1zP3AdQ6u5+UHWq5y38AWb2VGlkw4BvqjSytDFUEL9BtCjqQAJLk0Tn0b3QmeFZ8uQU6zCzPhoYvYO2C4NLODctWp1L4i2G6CJbzb42XgDiZFWSj79BD7yv4TtbfyAaS8LXJKPBjqTyZp5egW27ucaDiIBr3s8em0TtQra8EIMnaS5xYGDVPZutBwUYrBv014giR5s5qNtynqkt61xlx006ANUE3iClVjD1BbMCp3rezcHS7VGWho0sQHLwcplDyRqmvP3bDb8ZT2rtUebmUcckJMy+bbWY4QWwfmg==
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com (2603:10b6:510:ed::9)
+ by DS0PR11MB7559.namprd11.prod.outlook.com (2603:10b6:8:146::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Tue, 21 Nov
+ 2023 07:52:03 +0000
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f]) by PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f%4]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
+ 07:52:03 +0000
+From:   <Shravan.Chippa@microchip.com>
+To:     <green.wan@sifive.com>, <vkoul@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <conor+dt@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <Nagasuresh.Relli@microchip.com>, <Praveen.Kumar@microchip.com>,
+        <Shravan.Chippa@microchip.com>
+Subject: RE: [PATCH v4 0/4] dma: sf-pdma: various sf-pdma updates for the mpfs
+ platform
+Thread-Topic: [PATCH v4 0/4] dma: sf-pdma: various sf-pdma updates for the
+ mpfs platform
+Thread-Index: AQHaC7ryo0Utpq8cYU+3kvUzBUAwAbCEh1Kw
+Date:   Tue, 21 Nov 2023 07:52:03 +0000
+Message-ID: <PH0PR11MB5611FB5D700B2AE5B215D7C181BBA@PH0PR11MB5611.namprd11.prod.outlook.com>
+References: <20231031052753.3430169-1-shravan.chippa@microchip.com>
+In-Reply-To: <20231031052753.3430169-1-shravan.chippa@microchip.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5611:EE_|DS0PR11MB7559:EE_
+x-ms-office365-filtering-correlation-id: 4d37263b-56b5-43ff-e735-08dbea66bffb
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: rMVg4mxIA93pgkdXROMOt8IAx8GqTYDSrBzsKmg4rUUM9c6MSA4mUFnm7bFKnhFdvy31CUg1fIeFeDT28vHIHDZZLlnKDNpMv6IPv2Adc421zeUDJWoXtOswf86DyNvaCUzAXyzJ/FCUzIiM/qJk2FSWQXPD5vOUyzMXAc6LAUHWGvChvLdo4YT9bMc5Y5/tGLL5CQkOIw8l9IxkKT7xiPyY5Lo1qD+U5TuHbpKAbrxnnMWhcXoL2/h5KLhcItdkTZMbZ0ooQH4ERvYrmSWl7kJV4PM+5XuuMzLfh5t1MWqBoJh9xVPhFFKVaRRRBB0uTn5dwY1XYVrHPyai2OHAVqy3K15hMVnb4mVz9BzeUDVpJuUFAgeFnqklnJip/3SFDAcooRnnwbvUAI4ff5PSiLNzg1FO9wBJcSHVWcWXuSpW87616eba3op9rPIYwa+TwaVl5MktoxpEFIsospNXH8iKRDZhyELaFutdfgVA5yUKSFn8+1lEMaHU2JBid4u6xnoxmKBPoWXM1OupV7ZZMM1Vs8y18Du56+ae2SzMzslVBoyekW6IE/A4pCO4USca+sYDwbcgBpiPtXpRM+ip3WnIb0EB02t5Vxsvs+41Pi4fzXJl73Mnjsbuk90wpxsf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5611.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(396003)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(83380400001)(53546011)(26005)(9686003)(4326008)(8676002)(52536014)(8936002)(38100700002)(41300700001)(15650500001)(2906002)(7416002)(5660300002)(478600001)(6506007)(7696005)(71200400001)(110136005)(76116006)(64756008)(66446008)(66476007)(66556008)(66946007)(54906003)(316002)(33656002)(122000001)(86362001)(38070700009)(107886003)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?M2sT1PTSQgSqqRjbEhTothOK1yu68rIJx6DScCCnx1g/py+O9o5UwAzdIODI?=
+ =?us-ascii?Q?y+yg+gekGF2KE/s46QTEr7pPWJeHlrEfr96DS7lyAZHALuNKnttalB+7WhgX?=
+ =?us-ascii?Q?Ba6DkvZIDIFk0gPI8G8WEL7hiPCryFt3jYk/xLEsI0ddycp+MANFEY3WbYWF?=
+ =?us-ascii?Q?Vr384GFaPTg1ISER4+4s57HSQuTLtHEvt38N6Pt++QEZDZFNV8op1S+mtfQY?=
+ =?us-ascii?Q?8D8pmqV623piM/UQphI5IQbl0eSdkhpf1v1GiZMrmBBMIPqfKfsAnKFJfJqJ?=
+ =?us-ascii?Q?WrA+d7v25A+zQDWmXdWmOX28APv2OeOiQ7brlrsL/CDrqjAylGTdYDPfkzm1?=
+ =?us-ascii?Q?z08/WyHX+gSNZg2M/hxKHq3iPnd/wDVHItxFAZ3wcvwhmCpSzm8Acuxch2X5?=
+ =?us-ascii?Q?U5hOqrGJqCBWFF4mmyf0WPC+6ZA4SjHvcuP5OKsReOuN5vLINkevV8alKmbH?=
+ =?us-ascii?Q?aQfQ3PhWmxokHNfpQZeyzKnRLlZNeUbyG09VhzRXBsQXe61BFG13QPQPblrr?=
+ =?us-ascii?Q?/s/M1puDBUxMEzir0CslPHL/S1v5szdXYavrNCJVZKT8wEjFNM8TObiYcsWL?=
+ =?us-ascii?Q?Ij47UmIlcRb1GvfZWtUML1u43FTQ5w+ev7B1VY7YgvZdmPxieuQXsanb1/rm?=
+ =?us-ascii?Q?kBHCc/Gc8RbaTdL3HPctwpM55D/4NpFaEs/s0WJOlXXoF0OTkq/PTDQvv8fC?=
+ =?us-ascii?Q?WFsy3KdeseRX0mdn8Tm2Ls1JnqnGpbOgOo+2z3hKoSO1aSzzk0k6h/htiBUm?=
+ =?us-ascii?Q?I9EhwncCjye3eBqUxKl5TZMHzcwWiJ8FvfbvrWbruUw/ijW2OrzpRDjpLmNe?=
+ =?us-ascii?Q?TKPbjPSyhHamBANkib/WS7MQdNos3H2GqZUtAwfdxwb5GFA5bm736LfMriKc?=
+ =?us-ascii?Q?Hh5DyXUueVbO6NFxCsI6RQA0P7Htsf+ZBH99lAM+VgcLJz2aQD3ugA3/VD9b?=
+ =?us-ascii?Q?mLt4tdJCcYZTZHELng8W9/SQpezZ+1DRC8lZOFFr7bLHKnjr9U67ZmkNsmeA?=
+ =?us-ascii?Q?pixOYYHAbUbbJszf+4EXwsgMYFYtDVUMoU+kjbqU2AP1UtckXT1j0nxj18X1?=
+ =?us-ascii?Q?6W9KJBz1jFJH10jkTndCmoHWs9ENxqtwo+ekdJm+KLFAOi2spo39wuq3hg84?=
+ =?us-ascii?Q?P7RfU4Zbo58HGJ6DYa2l2QCcQZMf/M5YEN6MLoAdw0xvfiQd5ehujN/GFje8?=
+ =?us-ascii?Q?GxNe4zQLDALBTgYi3h+WSAdG1ySfkU3pFeLUb5GmHQqTUzqjtSnuY+lrW/SX?=
+ =?us-ascii?Q?kuTuUlcIorrSph02w3WOfOeWXkInGA6i2LjC2kPvqbI0HzLSMK6n6Q1isChR?=
+ =?us-ascii?Q?JifNRM3fBfp/VGL/8bbGM0JrVXLJz4jBKUY5D8nl7Zf4r+4AwijLnmoD0X7P?=
+ =?us-ascii?Q?HySkSveIePAX8bHKMVYRV1xhrYozASqogPsBfjPOYz456hyZQDcvDrpVb1bU?=
+ =?us-ascii?Q?HrJ9RlbO1+luX9vHFrYD4mPwleVmsX8Gwa8CDTTVMaWLhw+zSkIFvAtvT5NA?=
+ =?us-ascii?Q?UmR3cv5tskY84ZNzlYbN9oMPdAy+te2tei/ka5NpeWXem9/WRmL7q77HfGsO?=
+ =?us-ascii?Q?B9F3i+XceT9WcQkBI9iHx6w5lTvepEi/DsvrlJ0idjHg0iSE6KPCfIFaA3js?=
+ =?us-ascii?Q?2w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2322; i=bagasdotme@gmail.com; h=from:subject; bh=gd9leacfyMnMQZLW/LkwOu83xlPVFP0/KeYNEpi0Yds=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKkxiaHT+B3mz17gm6H40bZdt7/BfKNVT6+83Zq7PNcfL VI73CjVUcrCIMbFICumyDIpka/p9C4jkQvtax1h5rAygQxh4OIUgImcnM3IcHy/6q6+lkXO347r MPOfYOz0uzC57cSflbva/ramFNcz9TAyHA15tsdG6f9vvef/mZN6dyufnfH85dbla60jhH9c+3x biwUA
-X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5611.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d37263b-56b5-43ff-e735-08dbea66bffb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Nov 2023 07:52:03.1431
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Bg+N0fIwUua+Fiq3paCHHwr4ouSX9pRxZ64nM5vjoH1yRU4p+EKv2tkbgCDDEG7RfcNSiHiDT0+9sNgDAt17f0r02nlNETBojrIAM/H2ZwA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7559
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Help description for both options only tells users to enable them
-without description of what VME bridge and TSI148 device are.
+Hi,
 
-Briefly describe them.
+Gentle ping!
 
-Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- This is a wording alternative to Dorine's patch [1]. The wording is
- inspired by [2] and [3].
+Thanks,
+Shravan
 
- [1]: https://lore.kernel.org/outreachy/20231029180346.8570-1-dorine.a.tipo@gmail.com/
- [2]: https://ohwr.org/project/vme-sbc-a25-pcie-vme-bridge/wikis/home
- [3]: https://www.slac.stanford.edu/grp/lcls/controls/global/hw/users_guides/cpu/pci-bridge/Tsi148.pdf
-
- drivers/staging/vme_user/Kconfig | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/vme_user/Kconfig b/drivers/staging/vme_user/Kconfig
-index d65cc5510649e9..8e5df6ce36e8f9 100644
---- a/drivers/staging/vme_user/Kconfig
-+++ b/drivers/staging/vme_user/Kconfig
-@@ -3,18 +3,32 @@ menuconfig VME_BUS
- 	bool "VME bridge support"
- 	depends on PCI
- 	help
--	  If you say Y here you get support for the VME bridge Framework.
-+	  Enable support for VME (VersaModular Eurocard bus) bridge modules.
-+	  The bridge allows connecting VME devices to systems with existing
-+	  interfaces (like USB or PCI) by means of translating VME protocol
-+	  operations.
-+
-+	  Note that this only enables the bridge framework. You'll also
-+	  likely want to enable driver for specific bridge device you have
-+	  to actually use it. If unsure, say N.
- 
- if VME_BUS
- 
- comment "VME Bridge Drivers"
- 
- config VME_TSI148
--	tristate "Tempe"
-+	tristate "Tundra TSI148 VME bridge support"
- 	depends on HAS_DMA
- 	help
--	 If you say Y here you get support for the Tundra TSI148 VME bridge
--	 chip.
-+	 If you say Y here you get support for the Tundra TSI148 VME-to-PCI/X
-+	 bridge chip (and pin-compatible clones).
-+
-+	 TSI148 is a high-performant, 2eSST and VME64-compliant VME-to-PCI/X
-+	 interconnect bridge with support for PCI and PCI-X bus interface.
-+	 It is primarily used in industrial and embedded systems.
-+
-+	 To compile this driver as a module, say M - the module will be
-+	 called vme_tsi148. If unsure, say N.
- 
- config VME_FAKE
- 	tristate "Fake"
-
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
--- 
-An old man doll... just what I always wanted! - Clara
+> -----Original Message-----
+> From: shravan chippa <shravan.chippa@microchip.com>
+> Sent: Tuesday, October 31, 2023 10:58 AM
+> To: green.wan@sifive.com; vkoul@kernel.org; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; palmer@dabbelt.com;
+> paul.walmsley@sifive.com; conor+dt@kernel.org
+> Cc: dmaengine@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Nagasuresh Relli=
+ -
+> I67208 <Nagasuresh.Relli@microchip.com>; Praveen Kumar - I30718
+> <Praveen.Kumar@microchip.com>; shravan Chippa - I35088
+> <Shravan.Chippa@microchip.com>
+> Subject: [PATCH v4 0/4] dma: sf-pdma: various sf-pdma updates for the mpf=
+s
+> platform
+>=20
+> From: Shravan Chippa <shravan.chippa@microchip.com>
+>=20
+> Changes from V3 -> V4:
+>=20
+> Removed unnecessary parentheses and extra space Added review tags
+>=20
+> Changes from V2 -> V3:
+>=20
+> Removed whitespace
+> Change naming convention of the macros (modified code as per new macros)
+> updated with new API device_get_match_data() modified dt-bindings as per
+> the commmets from v2 modified compatible name string for mpfs platform
+>=20
+> Changes from V1 -> V2:
+>=20
+> Removed internal review tags
+> Commit massages modified.
+> Added devicetree patch with new compatible name for mpfs platform Added
+> of_dma_controller_free() clenup call in sf_pdma_remove() function
+>=20
+> V1:
+>=20
+> This series does the following
+> 1. Adds a PolarFire SoC specific compatible and code to support for out-o=
+f-
+> order dma transfers
+>=20
+> 2. Adds generic device tree bindings support by using
+> of_dma_controller_register()
+>=20
+> Shravan Chippa (4):
+>   dmaengine: sf-pdma: Support of_dma_controller_register()
+>   dt-bindings: dma: sf-pdma: add new compatible name
+>   dmaengine: sf-pdma: add mpfs-pdma compatible name
+>   riscv: dts: microchip: add specific compatible for mpfs' pdma
+>=20
+>  .../bindings/dma/sifive,fu540-c000-pdma.yaml  |  1 +
+>  arch/riscv/boot/dts/microchip/mpfs.dtsi       |  2 +-
+>  drivers/dma/sf-pdma/sf-pdma.c                 | 71 ++++++++++++++++++-
+>  drivers/dma/sf-pdma/sf-pdma.h                 |  8 ++-
+>  4 files changed, 77 insertions(+), 5 deletions(-)
+>=20
+> --
+> 2.34.1
 
