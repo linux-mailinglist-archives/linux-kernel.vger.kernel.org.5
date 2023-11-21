@@ -2,114 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF637F2B19
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F737F2B1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbjKUK7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:59:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S233777AbjKUK7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbjKUK7A (ORCPT
+        with ESMTP id S229481AbjKUK7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:59:00 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B2083;
-        Tue, 21 Nov 2023 02:58:56 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c8769edd9fso35176851fa.0;
-        Tue, 21 Nov 2023 02:58:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700564335; x=1701169135; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CCTVl3tUjQOvHObHzjbVxbNLOTFELDSW5iqT75QPHdA=;
-        b=MZ4sKoiS8IkAswmR6yLuMVKZ9eYtKdrAFMQgQ/UaP9KelooCvfcWh0f7n3hoxMduUk
-         ZsjvlEWOstfl7OsV1J1hfA16A3ukwGduMspaVpyp+jqazfFnPJ8JP+nGmz3ot69ZS9vm
-         8bLZvw4WqwMHf6a031SuB9B3gI9iJy7NZ17IkRKnwvzY7ClV4DNfAptj2mgXrObOKCpm
-         K1QvGWDT0UzrV2a3FFOQ/fs1VTDrj01fBb+9IgVJXi7YiSD0XBzGLBPDfjiWlfczW7wy
-         qvOqzqUjNs8Z6mfrOiX4WSwef4m6CMeuBPaVzEmPSdDnPxGCUe51H75b4x/Uup5m4qN8
-         kubw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700564335; x=1701169135;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CCTVl3tUjQOvHObHzjbVxbNLOTFELDSW5iqT75QPHdA=;
-        b=EldVdOzvl8GStiBtL8LMku68Qeiqi4GfL5MsJOrHe/YiGnzcpd+JvN9DTpzf8jqFjP
-         YEMTocBDWBy8eIYmsJT46ZFSBSnDYwYYElBvEYRq0XES2EyX9XIessoLFIG2hyQ0PMDA
-         qaTZ1iH84RrRcPOUvQOOm84mLgFA1+iun18lHUya3WzUCvB9QfwwJKqVVvNBRA3CcK9F
-         bSQhT9g6CvJp9qBRkg0OCh70R5D12xHCoVuhReYLGHxT+IlB9cWGM+YjwV/KnwPJLjU0
-         fXCwNqBhtbC6K+83nzLKKulYsEncZunKClZUGjaCiYzmdAN0j6iydvNhI9z/MqLeMbXw
-         YyOw==
-X-Gm-Message-State: AOJu0YzEZkszCAmD57s7QhsqhFrysbf6fUIiwM42r4upyiO7GJAxIdy/
-        IqyRCURX6pSgeNvRfkeyeZcSWk6P+3+MjTaDYbM=
-X-Google-Smtp-Source: AGHT+IGmo1HpOU/EHoxZuU2TPsFSxyO1Siz8LBA8opwt+bBm4TaevsOx0CoZ1Nke4igOByX5NlDQGKXd1jqMKLbZMgs=
-X-Received: by 2002:a2e:1f11:0:b0:2c5:f54:2477 with SMTP id
- f17-20020a2e1f11000000b002c50f542477mr6787045ljf.40.1700564334353; Tue, 21
- Nov 2023 02:58:54 -0800 (PST)
+        Tue, 21 Nov 2023 05:59:23 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33CD83
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:59:19 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 61B9466072F6;
+        Tue, 21 Nov 2023 10:59:17 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700564358;
+        bh=hLDTvtjHXdN1UWZwGnLWI4X4zJiWHH+M2Ta83yfqwfo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gAvj6e7dR5Diin4goCICBXZjFF0Mbi7wDy70vPr2MNWXzA9tHviIkY3PWf86K/pvy
+         Q8WDKjMTWUL5RqPnWYw07zhdKrpVX8GioYG3k5iIYOX3CFRji0z2lDf8BnuxMrod2H
+         LM908JjgUDU4b0bAT+bhXKkuEeWodKrXiRKvt3IvN06Ye6B3AL7mfoU7q40/wIRqVE
+         asPetWPduA2+TQQ3nZ5N87ylwqDjQOosNtsDQ9YSiVw/MNqEUtYMIsm2DkiFCgwCeF
+         tud5BpwDx8qo2EuUduEn7ApiU8e/RaV6WQqB1tFdZV4ZNySVIF/3hmmBd3GE9fbRx7
+         Ml/4gYS9CYO4g==
+Message-ID: <8fd1affd-936d-415e-9f1f-b0415b68ddb6@collabora.com>
+Date:   Tue, 21 Nov 2023 11:59:14 +0100
 MIME-Version: 1.0
-References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-In-Reply-To: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 21 Nov 2023 11:58:17 +0100
-Message-ID: <CA+icZUXFGp-yoWUHhbowz6YJyoULCgtjSZ-fTpRg8YvVD9V5gg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
-To:     ndesaulniers@google.com
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/mediatek: dp: Add phy_mtk_dp module as pre-dependency
+Content-Language: en-US
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     kernel@collabora.com, Bo-Chen Chen <rex-bc.chen@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Guillaume Ranquet <granquet@baylibre.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20231120202837.396760-1-nfraprado@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231120202837.396760-1-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 8:24=E2=80=AFPM <ndesaulniers@google.com> wrote:
->
-> As discussed at the ClangBuiltLinux '23 meetup (co-located with Linux Plu=
-mbers
-> Conf '23), I'll be taking a step back from kernel work to focus on my gro=
-wing
-> family and helping Google figure out its libc story. So I think it's time=
- to
-> formally hand over the reigns to my co-maintainer Nathan.
->
+Il 20/11/23 21:28, Nícolas F. R. A. Prado ha scritto:
+> The mtk_dp driver registers a phy device which is handled by the
+> phy_mtk_dp driver and assumes that the phy probe will complete
+> synchronously, proceeding to make use of functionality exposed by that
+> driver right away. This assumption however is false when the phy driver
+> is built as a module, causing the mtk_dp driver to fail probe in this
+> case.
+> 
+> Add the phy_mtk_dp module as a pre-dependency to the mtk_dp module to
+> ensure the phy module has been loaded before the dp, so that the phy
+> probe happens synchrounously and the mtk_dp driver can probe
+> successfully even with the phy driver built as a module.
+> 
 
-Hi Nick,
+You forgot a Suggested-by here :-P
 
-WoW (C)lang(B)uilt(L)inux baby coming soon - your best patch well done!
-(  "Catherine Beatrix Luana" might be a good first-name (my
-Suggested-by when it's female) ).
+> Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-> I identify first and foremost as a Linux kernel developer, and an LLVM de=
-v
-> second. May it be a cold day in hell when that changes.
+It's fine anyway; being the best solution that we can use:
 
-Of course, I can understand these 3+ years of working on both sides -
-Linux kernel and LLVM toolchain - might be very time-consuming and
-hopefully with positive stress.
-Best luck and more for the new challenges!
-...and thanks Google jumped into it.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Thanks for inviting and participating in the First Meetup of
-ClangBuiltLinux in Zurich - February 2020.
-I see your slogan "Share Knowledge Aggressively" as a life motto :-).
+> 
+> ---
+> 
+>   drivers/gpu/drm/mediatek/mtk_dp.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+> index e4c16ba9902d..2136a596efa1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+> @@ -2818,3 +2818,4 @@ MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
+>   MODULE_AUTHOR("Bo-Chen Chen <rex-bc.chen@mediatek.com>");
+>   MODULE_DESCRIPTION("MediaTek DisplayPort Driver");
+>   MODULE_LICENSE("GPL");
+> +MODULE_SOFTDEP("pre: phy_mtk_dp");
 
-Thanks and more.
-
-Best regards,
--Sedat-
