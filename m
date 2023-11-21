@@ -2,224 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4326C7F27D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648D07F27E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjKUIq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38106 "EHLO
+        id S231543AbjKUIr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 03:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjKUIq4 (ORCPT
+        with ESMTP id S233096AbjKUIrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:46:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7B1100;
-        Tue, 21 Nov 2023 00:46:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700556412; x=1732092412;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hac0kukbZz6JY7rDm54ZjRjFk4pFlz0OMpo25ey4LNg=;
-  b=ig95qHavl6NNuEf0hEXVHXLTpswqhy57x1gUcJ4ywDuZ6pl0SOnapiCQ
-   Ao+ovmuSgnQivMbjdSTXams0pvUb5bAhhvzQPt3yDE9CPvmt+64Cixp5o
-   8kmIFf/QqNqAZSsiVO2diazMbt0+ymqk4VQMlUCGGRL9I+ZV9Z4K48DWu
-   MyQS6dxecwpfn5zcthd93J7UkENLrQVz7nUDENDu1bgRzmVmpCUyUr8UG
-   EeLkM7VKlSdhXkqHNxbMLrMWHhK42DXefJZvtNpp5joQgpI29wObrythq
-   zlBdR9DfBx4aVPz+shQFzPjNAyFeXzXBGpvUiUgv6V7HSwO8jtCXN6ryt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="4988543"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="4988543"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 00:46:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="760032494"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="760032494"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 21 Nov 2023 00:46:43 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5MP1-0007aE-13;
-        Tue, 21 Nov 2023 08:46:39 +0000
-Date:   Tue, 21 Nov 2023 16:46:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kmo@daterainc.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Danilo Krummrich <dakr@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-Message-ID: <202311211641.ThSnuFs7-lkp@intel.com>
-References: <20231120215945.52027-3-pstanner@redhat.com>
+        Tue, 21 Nov 2023 03:47:32 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4ACEFA;
+        Tue, 21 Nov 2023 00:47:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hhIFmglu/0fpqKkrzBroixh2PqCL29HzySd71uSn2AQ=; b=Btsk4SRKjcFPnTCxdpZd5Qo+Uo
+        9EVDEk/ALQJXF4Rj+e4+9sysr0RIy7syNjT+hhHA9nFjB9NM4nMPzGoSVSTZ1j2BRtI6QzVQX5ELE
+        jVdyJ/f4tSGroIpdflsOWJ/lXWh748ZKaqoHWhwN/zDY8+x5BQGJvcwTzpu/FGa9mZr+UYKNAY1Bu
+        2+FewHujQiC4XnKaKntKB/6iT2EDILFuls6CVOASeRspYWl2yGgyKsOjWSTPcUDltWaCTH6az2pOy
+        nmb6bcsdQ9LkuL3muaM7PSEppkAgECmk9X95wQjlGCwly6PM1k1Tpqmb27V+UNm/xdP9+NZGxZ3Sn
+        bK8Kddwg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5MPU-00BNDn-1c;
+        Tue, 21 Nov 2023 08:47:08 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8304B3006F6; Tue, 21 Nov 2023 09:47:06 +0100 (CET)
+Date:   Tue, 21 Nov 2023 09:47:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120215945.52027-3-pstanner@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Mon, Nov 20, 2023 at 03:56:30PM -0800, Paul E. McKenney wrote:
+> On Mon, Nov 20, 2023 at 11:23:11PM +0100, Peter Zijlstra wrote:
+> > On Mon, Nov 20, 2023 at 02:18:29PM -0800, Paul E. McKenney wrote:
+> > > On Mon, Nov 20, 2023 at 10:47:42PM +0100, Peter Zijlstra wrote:
+> > > > On Mon, Nov 20, 2023 at 03:54:14PM -0500, Mathieu Desnoyers wrote:
+> > > > > When invoked from system call enter/exit instrumentation, accessing
+> > > > > user-space data is a common use-case for tracers. However, tracepoints
+> > > > > currently disable preemption around iteration on the registered
+> > > > > tracepoint probes and invocation of the probe callbacks, which prevents
+> > > > > tracers from handling page faults.
+> > > > > 
+> > > > > Extend the tracepoint and trace event APIs to allow defining a faultable
+> > > > > tracepoint which invokes its callback with preemption enabled.
+> > > > > 
+> > > > > Also extend the tracepoint API to allow tracers to request specific
+> > > > > probes to be connected to those faultable tracepoints. When the
+> > > > > TRACEPOINT_MAY_FAULT flag is provided on registration, the probe
+> > > > > callback will be called with preemption enabled, and is allowed to take
+> > > > > page faults. Faultable probes can only be registered on faultable
+> > > > > tracepoints and non-faultable probes on non-faultable tracepoints.
+> > > > > 
+> > > > > The tasks trace rcu mechanism is used to synchronize read-side
+> > > > > marshalling of the registered probes with respect to faultable probes
+> > > > > unregistration and teardown.
+> > > > 
+> > > > What is trace-trace rcu and why is it needed here? What's wrong with
+> > > > SRCU ?
+> > > 
+> > > Tasks Trace RCU avoids SRCU's full barriers and the array accesses in the
+> > > read-side primitives.  This can be important when tracing low-overhead
+> > > components of fast paths.
+> > 
+> > So why wasn't SRCU improved? That is, the above doesn't much explain.
+> > 
+> > What is the trade-off made to justify adding yet another RCU flavour?
+> 
+> We didn't think you would be all that happy about having each and
+> every context switch iterating through many tens or even hundreds of
+> srcu_struct structures.  For that matter, we didn't think that anyone
+> else would be all that happy either.  Us included.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-20231121]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Philipp-Stanner/lib-move-pci_iomap-c-to-drivers-pci/20231121-060258
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231120215945.52027-3-pstanner%40redhat.com
-patch subject: [PATCH 1/4] lib: move pci_iomap.c to drivers/pci/
-config: x86_64-buildonly-randconfig-004-20231121 (https://download.01.org/0day-ci/archive/20231121/202311211641.ThSnuFs7-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211641.ThSnuFs7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311211641.ThSnuFs7-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/pci/iomap.c:27:15: error: redefinition of 'pci_iomap_range'
-    void __iomem *pci_iomap_range(struct pci_dev *dev,
-                  ^~~~~~~~~~~~~~~
-   In file included from include/asm-generic/iomap.h:113:0,
-                    from include/asm-generic/io.h:16,
-                    from arch/x86/include/asm/io.h:327,
-                    from include/linux/io.h:13,
-                    from include/linux/pci.h:39,
-                    from drivers/pci/iomap.c:7:
-   include/asm-generic/pci_iomap.h:44:29: note: previous definition of 'pci_iomap_range' was here
-    static inline void __iomem *pci_iomap_range(struct pci_dev *dev, int bar,
-                                ^~~~~~~~~~~~~~~
-   drivers/pci/iomap.c: In function 'pci_iomap_range':
-   drivers/pci/iomap.c:43:10: error: implicit declaration of function '__pci_ioport_map'; did you mean 'devm_ioport_map'? [-Werror=implicit-function-declaration]
-      return __pci_ioport_map(dev, start, len);
-             ^~~~~~~~~~~~~~~~
-             devm_ioport_map
->> drivers/pci/iomap.c:43:10: warning: return makes pointer from integer without a cast [-Wint-conversion]
-      return __pci_ioport_map(dev, start, len);
-             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/pci/iomap.c: At top level:
-   drivers/pci/iomap.c:67:15: error: redefinition of 'pci_iomap_wc_range'
-    void __iomem *pci_iomap_wc_range(struct pci_dev *dev,
-                  ^~~~~~~~~~~~~~~~~~
-   In file included from include/asm-generic/iomap.h:113:0,
-                    from include/asm-generic/io.h:16,
-                    from arch/x86/include/asm/io.h:327,
-                    from include/linux/io.h:13,
-                    from include/linux/pci.h:39,
-                    from drivers/pci/iomap.c:7:
-   include/asm-generic/pci_iomap.h:50:29: note: previous definition of 'pci_iomap_wc_range' was here
-    static inline void __iomem *pci_iomap_wc_range(struct pci_dev *dev, int bar,
-                                ^~~~~~~~~~~~~~~~~~
-   drivers/pci/iomap.c:110:15: error: redefinition of 'pci_iomap'
-    void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long maxlen)
-                  ^~~~~~~~~
-   In file included from include/asm-generic/iomap.h:113:0,
-                    from include/asm-generic/io.h:16,
-                    from arch/x86/include/asm/io.h:327,
-                    from include/linux/io.h:13,
-                    from include/linux/pci.h:39,
-                    from drivers/pci/iomap.c:7:
-   include/asm-generic/pci_iomap.h:35:29: note: previous definition of 'pci_iomap' was here
-    static inline void __iomem *pci_iomap(struct pci_dev *dev, int bar, unsigned long max)
-                                ^~~~~~~~~
-   drivers/pci/iomap.c:131:15: error: redefinition of 'pci_iomap_wc'
-    void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long maxlen)
-                  ^~~~~~~~~~~~
-   In file included from include/asm-generic/iomap.h:113:0,
-                    from include/asm-generic/io.h:16,
-                    from arch/x86/include/asm/io.h:327,
-                    from include/linux/io.h:13,
-                    from include/linux/pci.h:39,
-                    from drivers/pci/iomap.c:7:
-   include/asm-generic/pci_iomap.h:40:29: note: previous definition of 'pci_iomap_wc' was here
-    static inline void __iomem *pci_iomap_wc(struct pci_dev *dev, int bar, unsigned long max)
-                                ^~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for GENERIC_PCI_IOMAP
-   Depends on [n]: PCI [=n]
-   Selected by [y]:
-   - GENERIC_IOMAP [=y]
-
-
-vim +43 drivers/pci/iomap.c
-
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  11  
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  12  /**
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  13   * pci_iomap_range - create a virtual mapping cookie for a PCI BAR
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  14   * @dev: PCI device that owns the BAR
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  15   * @bar: BAR number
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  16   * @offset: map memory at the given offset in BAR
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  17   * @maxlen: max length of the memory to map
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  18   *
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  19   * Using this function you will get a __iomem address to your device BAR.
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  20   * You can access it using ioread*() and iowrite*(). These functions hide
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  21   * the details if this is a MMIO or PIO address space and will just do what
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  22   * you expect from them in the correct way.
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  23   *
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  24   * @maxlen specifies the maximum length to map. If you want to get access to
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  25   * the complete BAR from offset to the end, pass %0 here.
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  26   * */
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  27  void __iomem *pci_iomap_range(struct pci_dev *dev,
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  28  			      int bar,
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  29  			      unsigned long offset,
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  30  			      unsigned long maxlen)
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  31  {
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  32  	resource_size_t start = pci_resource_start(dev, bar);
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  33  	resource_size_t len = pci_resource_len(dev, bar);
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  34  	unsigned long flags = pci_resource_flags(dev, bar);
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  35  
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  36  	if (len <= offset || !start)
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  37  		return NULL;
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  38  	len -= offset;
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  39  	start += offset;
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  40  	if (maxlen && len > maxlen)
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  41  		len = maxlen;
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  42  	if (flags & IORESOURCE_IO)
-b923650b84068b lib/pci_iomap.c Michael S. Tsirkin 2012-01-30 @43  		return __pci_ioport_map(dev, start, len);
-92b19ff50e8f24 lib/pci_iomap.c Dan Williams       2015-08-10  44  	if (flags & IORESOURCE_MEM)
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  45  		return ioremap(start, len);
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  46  	/* What? */
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  47  	return NULL;
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  48  }
-eb29d8d2aad706 lib/pci_iomap.c Michael S. Tsirkin 2013-05-29  49  EXPORT_SYMBOL(pci_iomap_range);
-66eab4df288aae lib/pci_iomap.c Michael S. Tsirkin 2011-11-24  50  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+So again, what is task-trace RCU ? How does it differ from say
+preemptible rcu, which AFAICT could be used here too, no?
