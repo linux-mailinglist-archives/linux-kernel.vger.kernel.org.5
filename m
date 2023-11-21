@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597F67F288C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D747F288F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbjKUJTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56956 "EHLO
+        id S231748AbjKUJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230243AbjKUJTK (ORCPT
+        with ESMTP id S231631AbjKUJT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:19:10 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847C8C1;
-        Tue, 21 Nov 2023 01:19:06 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r5MuO-0008PA-QI; Tue, 21 Nov 2023 10:19:04 +0100
-Message-ID: <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
-Date:   Tue, 21 Nov 2023 10:19:03 +0100
+        Tue, 21 Nov 2023 04:19:27 -0500
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F085E8
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:19:23 -0800 (PST)
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AL41oP9001074;
+        Tue, 21 Nov 2023 10:19:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=Se6slwyvr1tGOsCXIQtaS5Bx9pGKNzcVmVzimZG4nYM=; b=be
+        VenTppvhYkI7aVVtpv/yj4ylY70HOoTx9b2epMWw/ZlEVPFD7m8P4IUkstOEDh3W
+        WVxVXwgrhn3+8Usw8mjGocKQR+Vo1XIF6WUGHewUlZRJQCQ2akUiPnTkX6bJAOo3
+        s1b0bTRnMuAhrqfXplI/dJHhWa1yWJQBE3mMGuDMvaGVhceET6msVKC2+esUyO2k
+        Gi2fdQmdFRXu3pxRUgCXeRbvFbkCbKTOHpI+DH9XeljeAF+Ul5vnspaTw5PUrOoU
+        EX7bbpYXpKZysUn+wraRCvR69gSaFb64ksUg1bpu//sr6eEzmmlkuWmkbrBA44HA
+        auJ54z/VIB+x4S8ndLzg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ugn5q1e5q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 10:19:11 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C71CC10002A;
+        Tue, 21 Nov 2023 10:19:10 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2B6ED21512C;
+        Tue, 21 Nov 2023 10:19:10 +0100 (CET)
+Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 21 Nov
+ 2023 10:19:09 +0100
+Message-ID: <16304f9a-fbbb-497f-917a-c2e2b8d67d9e@foss.st.com>
+Date:   Tue, 21 Nov 2023 10:19:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: sysfs: cannot create duplicate filename
- .../system76_acpi::kbd_backlight/color
-Content-Language: en-US, de-DE
-To:     Takashi Iwai <tiwai@suse.de>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux LEDs <linux-leds@vger.kernel.org>,
-        Tim Crawford <tcrawford@system76.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        System76 Product Development <productdev@system76.com>,
-        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        =?UTF-8?Q?Johannes_Pen=C3=9Fel?= <johannes.penssel@gmail.com>
-References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
- <ZT25-gUmLl8MPk93@debian.me>
- <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
- <ZUjnzB2RL2iLzIQG@debian.me> <87sf50pm34.wl-tiwai@suse.de>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <87sf50pm34.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] ARM: multi_v7_defconfig: Add SCMI reset support
+Content-Language: en-US
+To:     Etienne Carriere <etienne.carriere@foss.st.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Kevin Hilman <khilman@baylibre.com>, <soc@kernel.org>,
+        <arm@kernel.org>
+References: <20231103085400.2924282-1-etienne.carriere@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20231103085400.2924282-1-etienne.carriere@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700558346;75c0193b;
-X-HE-SMSGID: 1r5MuO-0008PA-QI
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi, Jean-Jacques Hiblot, Lee,
+Hi Etienne
 
-On 20.11.23 14:53, Takashi Iwai wrote:
-> On Mon, 06 Nov 2023 14:19:08 +0100,
-> Bagas Sanjaya wrote:
->> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
->>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
->>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
->>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
->>>>
->>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
->>>> since you authored the culprit?
->
->>> The offending commit stores the color in struct led_classdev and exposes it
->>> via sysfs. It was part of a series that create a RGB leds from multiple
->>> single-color LEDs. for this series, we need the color information but we
->>> don't really need to expose it it via sysfs. In order to fix the issue, we
->>> can remove the 'color' attribute from the sysfs.
->>
->> OK, see you in the patch!
+On 11/3/23 09:54, Etienne Carriere wrote:
+> SCMI reset controllers are used in the ARMv7 STMicroelectronics stm32mp
+> boards:
+> - for STM32MP13: stm32mp135f-dk
+> - for STM32MP15 boards with SCMI variant, introduced by commit 5b7e58313a77
+>    ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1)")
+>    * stm32mp157c-ev1-scmi
+>    * stm32mp157c-ed1-scmi
+>    * stm32mp157c-dk2-scmi
+>    * stm32mp157a-dk1-scmi
 > 
-> Is there a patch available?
-
-Not that I know of. Could not find anything on lore either.
-
-> This bug hits for a few Logitech keyboard models, too, and it makes
-> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
-> this bug:
->   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
+> ---
+>   arch/arm/configs/multi_v7_defconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> We need a quick fix for 6.6.x.
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> index 23fc49f23d25..01b3797f9317 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -1189,6 +1189,7 @@ CONFIG_PWM_TEGRA=y
+>   CONFIG_PWM_VT8500=y
+>   CONFIG_KEYSTONE_IRQ=y
+>   CONFIG_RESET_MCHP_SPARX5=y
+> +CONFIG_RESET_SCMI=y
+>   CONFIG_PHY_SUN4I_USB=y
+>   CONFIG_PHY_SUN9I_USB=y
+>   CONFIG_PHY_BRCM_USB=m
 
-Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
-committed it and sent it to Linus) know about this for a while already
-without doing anything about it, I wonder if someone should just send a
-revert to Linus (unless of course that is likely to introduce a
-regression on its own).
+Just one question before to apply this patch. CONFIG_RESET_SCMI is set 
+by the following dependency in drivers/reset/Kconfig:
 
-Takashi, could you maybe do this, unless a fix shows up real soon?
+RESET_CONTROLLER [=y] && (ARM_SCMI_PROTOCOL [=y] || COMPILE_TEST [=n])
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+CONFIG_ARM_SCMI is already set in multi_v7_defconfig.
+CONFIG_RESET_CONTROLLER seems to be set in each platform Kconfig.
 
-P.S.: /me should have followed up on this earlier... :-/
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+So not sure we need to force CONFIG_RESET_SCMI in the multi_v7_defconfig.
+
+Regards
+Alex
