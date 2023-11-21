@@ -2,268 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077517F3562
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2FD7F3567
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbjKUR4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        id S233912AbjKUR5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjKUR4t (ORCPT
+        with ESMTP id S230182AbjKUR5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:56:49 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD212C;
-        Tue, 21 Nov 2023 09:56:45 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EDBBF1F8B8;
-        Tue, 21 Nov 2023 17:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1700589403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=BRUlXAJOlgJyfK030JbpQyqs8hbHXrZ60DaHyZm0foM=;
-        b=Aa0nTlqoq8GQwGFbCKlcATI6TKWypBO1S8mLSDWoN1QWlYgPTnoZPEgKGgQeUdH/mNfxfL
-        tOnDSnshswlu1ORBBjUaWdxvsCrXMNDjE9F6LYCTYnlPQiQMj01cvaFzhnOcBlXSZkNX9Z
-        8qoKsMQvqPXf7OGRwxGPZYdTS0PB//0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9221C139FD;
-        Tue, 21 Nov 2023 17:56:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id O3x5IlrvXGW1QAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Tue, 21 Nov 2023 17:56:42 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-        Martin Wilck <mwilck@suse.com>
-Subject: [PATCH] net/sched: cls: Load net classifier modules via alias
-Date:   Tue, 21 Nov 2023 18:56:40 +0100
-Message-ID: <20231121175640.9981-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.42.1
+        Tue, 21 Nov 2023 12:57:38 -0500
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFEA12A;
+        Tue, 21 Nov 2023 09:57:35 -0800 (PST)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1cf50cc2f85so28106835ad.1;
+        Tue, 21 Nov 2023 09:57:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700589455; x=1701194255;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VerxGTg54Ge3nIcqcHewvtLdmH0svTb7Qyi+B5TIC1g=;
+        b=XO6y+bVREZHIaIHbG5qXiDUNpA8GRvp+fyoEY2i4DunsAxUVme+qcsmzTCAUdLbJc4
+         UobPidw446fratRMY0aqzXJhDliaGM0EZtO+xR0ssVVmJFpJOuHUCxviPKQjmmE0YUb8
+         jKZIku4VuO0GnZ3Fy0fCBBJB0OZyzzLaNw8nSmCARXQ3mI8/NyKiRSg1CGf33QIL4iTP
+         PXN3W2pIrquk92029XeWOZXPxNFQWUR9dnH3ije3rhDuDzAEQk25jw6/zHe1QA6mWubY
+         MmHcClbgORuSkV/hvypDkany/xkWQSw+hl79oX7Ser0Tb8kR135UqjW6El1ECJRPe7GE
+         57+Q==
+X-Gm-Message-State: AOJu0YwILfsyIdYme8ODCrpIDt/LzNawQIU1E1Bi4tUqLFDmNPAnZkqS
+        h6qBZO/I52Ew4jE/AwO99Fo=
+X-Google-Smtp-Source: AGHT+IEAbu3suP8whz3NCQkEIS3yeBbVQrCHGkbzk9iiZV7XkmXqQ4Xh0p0IUyJOAuxCQlTSej9ScQ==
+X-Received: by 2002:a17:902:e5ca:b0:1cf:6373:b8a5 with SMTP id u10-20020a170902e5ca00b001cf6373b8a5mr6481837plf.25.1700589454616;
+        Tue, 21 Nov 2023 09:57:34 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:bb61:2ac8:4d61:2b3d? ([2620:0:1000:8411:bb61:2ac8:4d61:2b3d])
+        by smtp.gmail.com with ESMTPSA id c12-20020a170902d48c00b001b7cbc5871csm8230146plg.53.2023.11.21.09.57.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 09:57:34 -0800 (PST)
+Message-ID: <f92655ec-96ab-4f3d-8f5b-a5b9780adc5a@acm.org>
+Date:   Tue, 21 Nov 2023 09:57:29 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.80
-X-Spamd-Result: default: False [-1.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         BAYES_HAM(-3.00)[100.00%];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[24];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[mojatatu.com,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,iogearbox.net,linux.dev,suse.cz,suse.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] scsi: ufs: core: fix racing issue during
+ ufshcd_mcq_abort
+Content-Language: en-US
+To:     SEO HOYOUNG <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com,
+        kwangwon.min@samsung.com, kwmad.kim@samsung.com,
+        sh425.lee@samsung.com, sc.suh@samsung.com,
+        quic_nguyenb@quicinc.com, cpgs@samsung.com, grant.jung@samsung.com,
+        junwoo80.lee@samsung.com
+References: <CGME20231121070851epcas2p2ba11977edde23d3dcb87581e410806c8@epcas2p2.samsung.com>
+ <20231121071128.7743-1-hy50.seo@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20231121071128.7743-1-hy50.seo@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The classifier modules may be loaded lazily without user's awareness and
-control. Add respective aliases to modules and request them under these
-aliases so that modprobe's blacklisting mechanism works also for
-classifier modules. (The same pattern exists e.g. for filesystem
-modules.)
+On 11/20/23 23:11, SEO HOYOUNG wrote:
+> Bart said that lrbp->cmd could be changed before ufshcd_clear_cmd() was
+> called, so lrbp->cmd check was moved to ufshcd_clear_cmd().
+> In the case of legacy mode, spin_lock is used to protect before clear cmd,
+> but spin_lock cannot be used due to mcq mode, so it is necessary to check
+> the status of lrbp->cmd.
 
-Original module names remain unchanged.
+Does this mean that the race that I mentioned has not been addressed at all?
+ufshcd_mcq_sq_cleanup() is called by ufshcd_clear_cmd(). No locks are held by
+ufshcd_eh_device_reset_handler() when it calls ufshcd_clear_cmd(). So I think
+there is still a race between the code added by this patch and the completion
+interrupt.
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- include/net/pkt_cls.h    | 1 +
- net/sched/cls_api.c      | 2 +-
- net/sched/cls_basic.c    | 1 +
- net/sched/cls_bpf.c      | 1 +
- net/sched/cls_cgroup.c   | 1 +
- net/sched/cls_flow.c     | 1 +
- net/sched/cls_flower.c   | 1 +
- net/sched/cls_fw.c       | 1 +
- net/sched/cls_matchall.c | 1 +
- net/sched/cls_route.c    | 1 +
- net/sched/cls_u32.c      | 1 +
- 11 files changed, 11 insertions(+), 1 deletion(-)
+Thanks,
 
-This is primarily for TC subsystem maintainers where the
-request_module() resides but Cc list is large because of touches in
-various classifier modules.
+Bart.
 
-diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
-index a76c9171db0e..424b4f889feb 100644
---- a/include/net/pkt_cls.h
-+++ b/include/net/pkt_cls.h
-@@ -24,6 +24,7 @@ struct tcf_walker {
- 
- int register_tcf_proto_ops(struct tcf_proto_ops *ops);
- void unregister_tcf_proto_ops(struct tcf_proto_ops *ops);
-+#define MODULE_ALIAS_TCF(kind)	MODULE_ALIAS("tcf-" __stringify(kind))
- 
- struct tcf_block_ext_info {
- 	enum flow_block_binder_type binder_type;
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index 1976bd163986..02fdcceee083 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -257,7 +257,7 @@ tcf_proto_lookup_ops(const char *kind, bool rtnl_held,
- #ifdef CONFIG_MODULES
- 	if (rtnl_held)
- 		rtnl_unlock();
--	request_module("cls_%s", kind);
-+	request_module("tcf-%s", kind);
- 	if (rtnl_held)
- 		rtnl_lock();
- 	ops = __tcf_proto_lookup_ops(kind);
-diff --git a/net/sched/cls_basic.c b/net/sched/cls_basic.c
-index a1f56931330c..a3500ac7fc1a 100644
---- a/net/sched/cls_basic.c
-+++ b/net/sched/cls_basic.c
-@@ -328,6 +328,7 @@ static struct tcf_proto_ops cls_basic_ops __read_mostly = {
- 	.bind_class	=	basic_bind_class,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("basic");
- 
- static int __init init_basic(void)
- {
-diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
-index 382c7a71f81f..8d57ac155c0c 100644
---- a/net/sched/cls_bpf.c
-+++ b/net/sched/cls_bpf.c
-@@ -693,6 +693,7 @@ static struct tcf_proto_ops cls_bpf_ops __read_mostly = {
- 	.dump		=	cls_bpf_dump,
- 	.bind_class	=	cls_bpf_bind_class,
- };
-+MODULE_ALIAS_TCF("bpf");
- 
- static int __init cls_bpf_init_mod(void)
- {
-diff --git a/net/sched/cls_cgroup.c b/net/sched/cls_cgroup.c
-index 7ee8dbf49ed0..0ded7d79894c 100644
---- a/net/sched/cls_cgroup.c
-+++ b/net/sched/cls_cgroup.c
-@@ -209,6 +209,7 @@ static struct tcf_proto_ops cls_cgroup_ops __read_mostly = {
- 	.dump		=	cls_cgroup_dump,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("cgroup");
- 
- static int __init init_cgroup_cls(void)
- {
-diff --git a/net/sched/cls_flow.c b/net/sched/cls_flow.c
-index 6ab317b48d6c..2806aa1254e1 100644
---- a/net/sched/cls_flow.c
-+++ b/net/sched/cls_flow.c
-@@ -702,6 +702,7 @@ static struct tcf_proto_ops cls_flow_ops __read_mostly = {
- 	.walk		= flow_walk,
- 	.owner		= THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("flow");
- 
- static int __init cls_flow_init(void)
- {
-diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
-index e5314a31f75a..739e09e0fa57 100644
---- a/net/sched/cls_flower.c
-+++ b/net/sched/cls_flower.c
-@@ -3633,6 +3633,7 @@ static struct tcf_proto_ops cls_fl_ops __read_mostly = {
- 	.owner		= THIS_MODULE,
- 	.flags		= TCF_PROTO_OPS_DOIT_UNLOCKED,
- };
-+MODULE_ALIAS_TCF("flower");
- 
- static int __init cls_fl_init(void)
- {
-diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
-index afc534ee0a18..86c833885a2d 100644
---- a/net/sched/cls_fw.c
-+++ b/net/sched/cls_fw.c
-@@ -433,6 +433,7 @@ static struct tcf_proto_ops cls_fw_ops __read_mostly = {
- 	.bind_class	=	fw_bind_class,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("fw");
- 
- static int __init init_fw(void)
- {
-diff --git a/net/sched/cls_matchall.c b/net/sched/cls_matchall.c
-index c4ed11df6254..21ba73978c6a 100644
---- a/net/sched/cls_matchall.c
-+++ b/net/sched/cls_matchall.c
-@@ -398,6 +398,7 @@ static struct tcf_proto_ops cls_mall_ops __read_mostly = {
- 	.bind_class	= mall_bind_class,
- 	.owner		= THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("matchall");
- 
- static int __init cls_mall_init(void)
- {
-diff --git a/net/sched/cls_route.c b/net/sched/cls_route.c
-index 12a505db4183..a4701c0752df 100644
---- a/net/sched/cls_route.c
-+++ b/net/sched/cls_route.c
-@@ -671,6 +671,7 @@ static struct tcf_proto_ops cls_route4_ops __read_mostly = {
- 	.bind_class	=	route4_bind_class,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("route");
- 
- static int __init init_route4(void)
- {
-diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
-index d5bdfd4a7655..a969adbd7423 100644
---- a/net/sched/cls_u32.c
-+++ b/net/sched/cls_u32.c
-@@ -1453,6 +1453,7 @@ static struct tcf_proto_ops cls_u32_ops __read_mostly = {
- 	.bind_class	=	u32_bind_class,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_TCF("u32");
- 
- static int __init init_u32(void)
- {
--- 
-2.42.1
+> Change-Id: Id8412190e60286d00a30820591566835cefbf47e
 
+No Change-Ids in patches that are posted on upstream mailing lists please.
+
+> diff --git a/drivers/ufs/core/ufs-mcq.c b/drivers/ufs/core/ufs-mcq.c
+> index 2ba8ec254dce..deb6dac724c8 100644
+> --- a/drivers/ufs/core/ufs-mcq.c
+> +++ b/drivers/ufs/core/ufs-mcq.c
+> @@ -507,6 +507,10 @@ int ufshcd_mcq_sq_cleanup(struct ufs_hba *hba, int task_tag)
+>   	if (hba->quirks & UFSHCD_QUIRK_MCQ_BROKEN_RTC)
+>   		return -ETIMEDOUT;
+>   
+> +	if (!ufshcd_cmd_inflight(cmd) ||
+> +	    test_bit(SCMD_STATE_COMPLETE, &cmd->state))
+> +		return 0;
+> +
+>   	if (task_tag != hba->nutrs - UFSHCD_NUM_RESERVED) {
+>   		if (!cmd)
+>   			return -EINVAL;
+
+Thanks,
+
+Bart.
