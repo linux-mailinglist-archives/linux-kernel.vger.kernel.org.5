@@ -2,330 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F35997F3390
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6867F3392
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbjKUQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S232960AbjKUQXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKUQWp (ORCPT
+        with ESMTP id S229566AbjKUQXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:22:45 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FE2112;
-        Tue, 21 Nov 2023 08:22:41 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0FE4A40E0031;
-        Tue, 21 Nov 2023 16:22:39 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oGV3VnjCGa0l; Tue, 21 Nov 2023 16:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700583756; bh=KxtFZyD5p+0QcjGE2q3dM11exyBdBO+J4w/uEQye0ts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eVwqUMJqsVBloXiFRt+258PJZFxtbn4wup872Xc1eoqsrYQJz+sNNzMfmerWNy9Ye
-         gJS9fWp4qQRzMrP/8h2ZCNfdu0EyfGQjIx/4dXPX/YYQ+/s5+bhQQsWsxBhwnzpteO
-         sRlbZz6JKXOrk4JPgu3m9+bf2ulEoQJyAGr5xRvZQv3QffnTgXrj8i/6DT0ZD2MMCG
-         a7F/anwpZmcKO4rgvu/vfInEj0icBwTmo9dyjASF19D5fWnlRnQz7gZvEixvsDzY7I
-         dMsaKp1tq3jRgTCizTvL2E/10HFgE27HT64RIbLAM76/wiXAiLf2iHI0OsvDfS+AkY
-         FVrgvhJjTphltPocEVyzTEoq+YCP8d3m/cg6cPLIKRBGPJmmWlWR8TutanG6QMYtDL
-         /7lFAyeO4IZ3hZgxOlAEZQn0kff60spdv8O8ugxapdgUvPqiXzKrjSAJ40sOUl3Say
-         P1+0IsBOsneK/9T2yy2gTJ/7e8OIgsBU7bM+HJbyGHb3kKm97uMyq8UAcGfVnYG6M4
-         YPInq/u+smERJV4XSqxngcedV06ZTkID1BHdNOqgucK9mlKQLChBTKtiGAheZNy7jM
-         x7+ghE5Nr1+wm+4Rn3W12IJbzDp+jqAnUCfodqx+BMXrNfZ21JeHa/naTZq8kOfIU6
-         bJClC6oA6/aymqRh/j5YGUlg=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6FCF940E0032;
-        Tue, 21 Nov 2023 16:21:55 +0000 (UTC)
-Date:   Tue, 21 Nov 2023 17:21:49 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 11/50] x86/sev: Add helper functions for RMPUPDATE
- and PSMASH instruction
-Message-ID: <20231121162149.GFZVzZHQB1g2bdvJie@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-12-michael.roth@amd.com>
+        Tue, 21 Nov 2023 11:23:13 -0500
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 21F45198
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:23:09 -0800 (PST)
+Received: (qmail 1493358 invoked by uid 1000); 21 Nov 2023 11:23:08 -0500
+Date:   Tue, 21 Nov 2023 11:23:07 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mike Jones <mike@mjones.io>,
+        Rocky Liao <quic_rjliao@quicinc.com>
+Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
+ being disable in GNOME
+Message-ID: <fd84c14a-1866-4643-8ce9-0d6da5c4b82e@rowland.harvard.edu>
+References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
+ <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
+ <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
+ <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
+ <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
+ <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
+ <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
+ <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-12-michael.roth@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:27:40AM -0500, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
+On Mon, Nov 20, 2023 at 11:05:04PM +0100, Paul Menzel wrote:
+> [Cc: +Rocky Liao as Qualcomm developer]
+
+> Am 20.11.23 um 19:10 schrieb Alan Stern:
+> > Again, nothing out of the ordinary.  Maybe dynamic debugging will give
+> > us a clue.  Try doing this:
+> > 
+> > 	Unload the btusb module.
+> > 
+> > 	echo module usbcore +p >/sys/kernel/debug/dynamic_debug/control
+> > 
+> > 	Load the btusb module
+> > 
+> > 	Make sure that Bluetooth is turned off in Gnome
+> > 
+> > 	Wait a few seconds
+> > 
+> > 	echo module usbcore -p >/sys/kernel/debug/dynamic_debug/control
+> > 
+> > Then let's see what the dmesg log contains for that time period.
 > 
-> The RMPUPDATE instruction writes a new RMP entry in the RMP Table. The
-> hypervisor will use the instruction to add pages to the RMP table. See
-> APM3 for details on the instruction operations.
 > 
-> The PSMASH instruction expands a 2MB RMP entry into a corresponding set
-> of contiguous 4KB-Page RMP entries. The hypervisor will use this
+> ```
+> $ sudo modprobe -r btusb
+> $ sudo dmesg | tail -1
+> [340309.272439] usbcore: deregistering interface driver btusb
+> $ echo module usbcore +p | sudo tee /sys/kernel/debug/dynamic_debug/control
+> module usbcore +p
+> $ sudo modprobe btusb
+> $ /sbin/rfkill
+> ID TYPE      DEVICE      SOFT      HARD
+>  1 wlan      phy0   unblocked unblocked
+> 36 bluetooth hci0     blocked unblocked
+> $ echo module usbcore -p | sudo tee /sys/kernel/debug/dynamic_debug/control
+> module usbcore -p
+> $ sudo modprobe -r btusb
+> $ sudo dmesg | tail -1
+> [340608.761313] usbcore: deregistering interface driver btusb
+> $ sudo dmesg
+> […]
+> [340309.272439] usbcore: deregistering interface driver btusb
+> [340560.326182] xhci_hcd 0000:00:14.0: hcd_pci_runtime_resume: 0
+> [340560.326214] usb usb1: usb auto-resume
+> [340560.326258] hub 1-0:1.0: hub_resume
+> [340560.326381] usb usb1-port3: status 0107 change 0000
+> [340560.326418] usb usb1-port4: status 0107 change 0000
+> [340560.326451] usb usb1-port5: status 0507 change 0000
+> [340560.326650] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
+> [340560.326807] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
+> [340560.373988] usb 1-3: usb auto-resume
+> [340560.373998] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0008
+> [340560.441936] usb 1-3: Waited 0ms for CONNECT
+> [340560.441957] usb 1-3: finish reset-resume
+> [340560.570940] usb 1-3: reset full-speed USB device number 2 using xhci_hcd
 
-s/-Page//
+Those two lines are unexpected.  Why does the device need to be reset?
+While the btusb module is loaded, does anything show up in
+/sys/bus/usb/devices/1-3/quirks?
 
-> instruction to adjust the RMP entry without invalidating the previous
-> RMP entry.
-
-"... without invalidating it."
-
-This below is useless text in the commit message - that should be all
-visible from the patch itself.
-
-> Add the following external interface API functions:
+> > Also, please post the output from "lsusb -v" for the Bluetooth device.
 > 
-> psmash(): Used to smash a 2MB aligned page into 4K pages while
-> preserving the Validated bit in the RMP.
+> ```
+> $ sudo lsusb -d 0cf3:e300 -v
 > 
-> rmp_make_private(): Used to assign a page to guest using the RMPUPDATE
-> instruction.
-> 
-> rmp_make_shared(): Used to transition a page to hypervisor/shared
-> state using the RMPUPDATE instruction.
+> Bus 001 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications QCA61x4
+> Bluetooth 4.0
+> Device Descriptor:
+>   bLength                18
+>   bDescriptorType         1
+>   bcdUSB               2.01
+>   bDeviceClass          224 Wireless
+>   bDeviceSubClass         1 Radio Frequency
+>   bDeviceProtocol         1 Bluetooth
+>   bMaxPacketSize0        64
+>   idVendor           0x0cf3 Qualcomm Atheros Communications
+>   idProduct          0xe300 QCA61x4 Bluetooth 4.0
+>   bcdDevice            0.01
+>   iManufacturer           0
+>   iProduct                0
+>   iSerial                 0
+>   bNumConfigurations      1
+>   Configuration Descriptor:
+>     bLength                 9
+>     bDescriptorType         2
+>     wTotalLength       0x00b1
+>     bNumInterfaces          2
+>     bConfigurationValue     1
+>     iConfiguration          0
+>     bmAttributes         0xe0
+>       Self Powered
+>       Remote Wakeup
 
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+That's what I was interested in.  The device does support remote wakeup.
 
-Since Brijesh is the author, first comes his SOB, then Ashish's and then
-yours.
+> PPS: Looking through the commit log/history for `drivers/bluetooth/btusb.c`,
+> I found commit 7ecacafc2406 (Bluetooth: btusb: Disable runtime suspend on
+> Realtek devices) [1] authored on December 5th, 2019. This is for Realtek
+> devices though, and not Qualcomm.
 
-> [mdr: add RMPUPDATE retry logic for transient FAIL_OVERLAP errors]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  arch/x86/include/asm/sev-common.h | 14 +++++
->  arch/x86/include/asm/sev-host.h   | 10 ++++
->  arch/x86/virt/svm/sev.c           | 89 +++++++++++++++++++++++++++++++
->  3 files changed, 113 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index 1e6fb93d8ab0..93ec8c12c91d 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -173,8 +173,22 @@ struct snp_psc_desc {
->  #define GHCB_ERR_INVALID_INPUT		5
->  #define GHCB_ERR_INVALID_EVENT		6
->  
-> +/* RMUPDATE detected 4K page and 2MB page overlap. */
-> +#define RMPUPDATE_FAIL_OVERLAP		4
-> +
->  /* RMP page size */
->  #define RMP_PG_SIZE_4K			0
-> +#define RMP_PG_SIZE_2M			1
+Furthermore the driver has changed considerably since 2019.  See
+commits 8274db0776d1, 895915226a59, 7bd9fb058d77, and 34ec58b9fd1c.
 
-RMP_PG_LEVEL_2M
-
->  #define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
-> +#define X86_TO_RMP_PG_LEVEL(level)	(((level) == PG_LEVEL_4K) ? RMP_PG_SIZE_4K : RMP_PG_SIZE_2M)
-> +
-> +struct rmp_state {
-> +	u64 gpa;
-> +	u8 assigned;
-> +	u8 pagesize;
-> +	u8 immutable;
-> +	u8 rsvd;
-> +	u32 asid;
-> +} __packed;
->  
->  #endif
-> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
-> index bb06c57f2909..1df989411334 100644
-> --- a/arch/x86/include/asm/sev-host.h
-> +++ b/arch/x86/include/asm/sev-host.h
-> @@ -16,9 +16,19 @@
->  #ifdef CONFIG_KVM_AMD_SEV
->  int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level);
->  void sev_dump_hva_rmpentry(unsigned long address);
-> +int psmash(u64 pfn);
-> +int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
-> +int rmp_make_shared(u64 pfn, enum pg_level level);
->  #else
->  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENXIO; }
->  static inline void sev_dump_hva_rmpentry(unsigned long address) {}
-> +static inline int psmash(u64 pfn) { return -ENXIO; }
-> +static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid,
-> +				   bool immutable)
-> +{
-> +	return -ENXIO;
-> +}
-> +static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENXIO; }
->  #endif
->  
->  #endif
-> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-> index cac3e311c38f..24a695af13a5 100644
-> --- a/arch/x86/virt/svm/sev.c
-> +++ b/arch/x86/virt/svm/sev.c
-> @@ -367,3 +367,92 @@ void sev_dump_hva_rmpentry(unsigned long hva)
->  	sev_dump_rmpentry(pte_pfn(*pte));
->  }
->  EXPORT_SYMBOL_GPL(sev_dump_hva_rmpentry);
-> +
-> +/*
-> + * PSMASH a 2MB aligned page into 4K pages in the RMP table while preserving the
-> + * Validated bit.
-> + */
-> +int psmash(u64 pfn)
-> +{
-> +	unsigned long paddr = pfn << PAGE_SHIFT;
-> +	int ret;
-> +
-> +	pr_debug("%s: PFN: 0x%llx\n", __func__, pfn);
-
-Left over?
-
-> +
-> +	if (!pfn_valid(pfn))
-> +		return -EINVAL;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
-
-That needs to happen first in the function.
-
-> +
-> +	/* Binutils version 2.36 supports the PSMASH mnemonic. */
-> +	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
-> +		      : "=a"(ret)
-> +		      : "a"(paddr)
-
-Add an empty space between the " and the (
-
-> +		      : "memory", "cc");
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(psmash);
-> +
-> +static int rmpupdate(u64 pfn, struct rmp_state *val)
-
-rmp_state *state
-
-so that it is clear what this is.
-
-> +{
-> +	unsigned long paddr = pfn << PAGE_SHIFT;
-> +	int ret, level, npages;
-> +	int attempts = 0;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
-> +
-> +	do {
-> +		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
-> +		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
-> +			     : "=a"(ret)
-> +			     : "a"(paddr), "c"((unsigned long)val)
-
-Add an empty space between the " and the (
-
-> +			     : "memory", "cc");
-> +
-> +		attempts++;
-> +	} while (ret == RMPUPDATE_FAIL_OVERLAP);
-
-What's the logic here? Loop as long as it says "overlap"?
-
-How "transient" is that overlapping condition?
-
-What's the upper limit of that loop?
-
-This loop should check a generously chosen upper limit of attempts and
-then break if that limit is reached.
-
-> +	if (ret) {
-> +		pr_err("RMPUPDATE failed after %d attempts, ret: %d, pfn: %llx, npages: %d, level: %d\n",
-> +		       attempts, ret, pfn, npages, level);
-
-You're dumping here uninitialized stack variables npages and level.
-Looks like leftover from some prior version of this function.
-
-> +		sev_dump_rmpentry(pfn);
-> +		dump_stack();
-
-This is going to become real noisy on a huge machine with a lot of SNP
-guests.
-
-> +		return -EFAULT;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Assign a page to guest using the RMPUPDATE instruction.
-> + */
-
-One-line comment works too.
-
-/* Assign ... */
-
-> +int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable)
-> +{
-> +	struct rmp_state val;
-> +
-> +	memset(&val, 0, sizeof(val));
-> +	val.assigned = 1;
-> +	val.asid = asid;
-> +	val.immutable = immutable;
-> +	val.gpa = gpa;
-> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
-> +
-> +	return rmpupdate(pfn, &val);
-> +}
-> +EXPORT_SYMBOL_GPL(rmp_make_private);
-> +
-> +/*
-> + * Transition a page to hypervisor/shared state using the RMPUPDATE instruction.
-> + */
-
-Ditto.
-
-> +int rmp_make_shared(u64 pfn, enum pg_level level)
-> +{
-> +	struct rmp_state val;
-> +
-> +	memset(&val, 0, sizeof(val));
-> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
-> +
-> +	return rmpupdate(pfn, &val);
-> +}
-> +EXPORT_SYMBOL_GPL(rmp_make_shared);
-> -- 
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Alan Stern
