@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDC57F399D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5457F39A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbjKUW5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S234924AbjKUW5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234860AbjKUW5P (ORCPT
+        with ESMTP id S234870AbjKUW5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 17:57:15 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D623D54;
-        Tue, 21 Nov 2023 14:57:03 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cf6a67e290so17791685ad.1;
-        Tue, 21 Nov 2023 14:57:03 -0800 (PST)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBD6D66;
+        Tue, 21 Nov 2023 14:57:04 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cf61eed213so21970015ad.2;
+        Tue, 21 Nov 2023 14:57:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700607423; x=1701212223; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700607424; x=1701212224; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FdcERJimN0aFkwFBjeCuGYBCdP/KZCZ/nHY+2sAtfHI=;
-        b=VP62qRG/cgY5aW7Qfvd61YcYheRlSx1hG8yVBA8EsTqupF6Ee2CpS8o1bA02/w376r
-         2cEdSIA49SGU1RXNUgHD6BHSnXcnkQwj8/rOOeCxl3k/yIyMqng/ELuVD1x+O/17wik6
-         IQca4uQjCEihCaYxnV58/f3Ifp0YczUln3NC/gtQ+VVwNJK6uV4AjWme4LLG836kYB2O
-         QPjbUwkcDcEjhzYrYnwd6xmpOUuwv/k9yQZjw6GaaRhfETJsKLU9k0B2X4G1ZlfcdJoF
-         8kKj60CeTtej/3sYlvmUDT+v7TvMeR4XcrmnSjjlriHHQUwJFtMTfnTctz9n8a1ATDRX
-         wI3A==
+        bh=I57gFn6zue+8kkqtl3RkaJdXFKQmQ2JzNCRbeVy0Nms=;
+        b=AsI6Y/xq1hApC5U573N785n6W1i92im6qE3TjL7pSEH1H5Df2psoWQk/D5LWLZV09M
+         vSkDA51P06XneK4V3eUOlkDW/I8cVBdVQKdD/f6en8Po73y6z4ZdhP6uKrlaTq00VqGn
+         i8rCqJX9GnWhW7o9OuRlr50LClbGr+SFWg/q04rtch+XWRCVUg+pwIODX7yJmpNerIwx
+         YMFS9cKjetyg9IAx+zLnSKd3uQx9zgLVL0fgfTn6jwyl+7ncZmoVLCJsqBV5IcF6CvYM
+         LkZfH9x7mD+K5hE/4wpte4oZ9tAYyQKvp8yPPzRC7Xx7KP4aJceMTWShirTt7NaM9EzD
+         lEAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607423; x=1701212223;
+        d=1e100.net; s=20230601; t=1700607424; x=1701212224;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=FdcERJimN0aFkwFBjeCuGYBCdP/KZCZ/nHY+2sAtfHI=;
-        b=Lwr7M8pm8cFYED7mHMYk+sLrgwTqwREYG3orZBIZLsGmQGvBPxl8J6qVfRUSfDNPmR
-         nNzt6HnZI4vltclFMrt67ImqDatGzvHk69xZCNmbxKGXT47YoNpKMcHPvRJltyC+WkdD
-         1oj3b6l66hOJ5qv/cTUvB+aqBePicu0TkWLbulkT1Y3lgZ/L6o3gScLTYridsHxF3dR1
-         NbnZomup6rV02WAumDfFtEGv5WPnC/6bCp3EylewVLmbhLYkBtHN7e8iMVzPno16KNP/
-         OycF3jVYkkGr/ybcw8hF8K7JenyeS6ur+miTYYzoFGS9KROccAxRXDPuxLf0gfsg0+Ih
-         u5mQ==
-X-Gm-Message-State: AOJu0YwPPDpUbYEw8z4oa81jKpCnUMDguYNf8UC0XWVjZx9BedAzKrYX
-        QOI83gYToJK+w00DfxItWNY=
-X-Google-Smtp-Source: AGHT+IG01UXlCkKciSYVWzCO/LbqH/FAiCE23GbZCK5D7iJNhQkHpT/YRpjb6PSIuQzfQfyiKS+MMw==
-X-Received: by 2002:a17:902:f811:b0:1cc:6dd4:5955 with SMTP id ix17-20020a170902f81100b001cc6dd45955mr663004plb.19.1700607422906;
-        Tue, 21 Nov 2023 14:57:02 -0800 (PST)
+        bh=I57gFn6zue+8kkqtl3RkaJdXFKQmQ2JzNCRbeVy0Nms=;
+        b=TXwL9tL33RYRU/l8tDhvQ8mQpEzFQbZG5gL6gxe0Qdld0u7dseWzLvYa1hnoMRsgbs
+         tGH2mCp7s+5Fnl/c1A084E2HEfD1eUW3m/tUkpZLBYS/MhMUZsg//luOovBMqn+dPzSZ
+         f2hVTTVO4EBtvbL5Iy13SbAWb3+58EARurd7eiqWt+z8yJ+1QZNWMuZdlienmb22jR3Z
+         o6dbhZ2PFf/vs6NyI8/Jd2EHD2F/Vp4nvDok7T/d412NEwc6gvmIJq2AjxjJpvLY+JwN
+         ybUpR/DcDj4+arvCWNIDYq/QUh/lXmT8tfgJVbXb+sncyYw4f7tHzGK3rvwyzCCxK/MS
+         5ZzQ==
+X-Gm-Message-State: AOJu0YwOh4yxa/QnxNeLEwrTNOXCdOgYTYcgdyYoYcyW4r51TASSkUTR
+        orRXEiXvf2E/k8Cb4n/8a9NSXXgmUSo=
+X-Google-Smtp-Source: AGHT+IH8fB1cs3ffiEd9JK8XO3sS19JX7Y5A1zj+bnxNqxT0mMcQ3vG4M/obcmtxOIfilUzz6S4poA==
+X-Received: by 2002:a17:902:dac1:b0:1cc:4e46:3e45 with SMTP id q1-20020a170902dac100b001cc4e463e45mr708746plx.49.1700607424390;
+        Tue, 21 Nov 2023 14:57:04 -0800 (PST)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7377:923f:1ff3:266d])
-        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.57.01
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.57.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 14:57:02 -0800 (PST)
+        Tue, 21 Nov 2023 14:57:03 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,12 +60,14 @@ Cc:     Ian Rogers <irogers@google.com>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 09/14] tools headers: Update tools's copy of arm64/asm headers
-Date:   Tue, 21 Nov 2023 14:56:44 -0800
-Message-ID: <20231121225650.390246-9-namhyung@kernel.org>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: [PATCH 10/14] tools headers: Update tools's copy of s390/asm headers
+Date:   Tue, 21 Nov 2023 14:56:45 -0800
+Message-ID: <20231121225650.390246-10-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 In-Reply-To: <20231121225650.390246-1-namhyung@kernel.org>
 References: <20231121225650.390246-1-namhyung@kernel.org>
@@ -125,110 +127,44 @@ So its important not to touch the copies in tools/ when doing changes in
 the original kernel headers, that will be done later, when
 check-headers.sh inform about the change to the perf tools hackers.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/arch/arm64/include/asm/cputype.h        |  5 ++-
- tools/arch/arm64/include/uapi/asm/kvm.h       | 32 +++++++++++++++++++
- tools/arch/arm64/include/uapi/asm/perf_regs.h | 10 +++---
- 3 files changed, 42 insertions(+), 5 deletions(-)
+ tools/arch/s390/include/uapi/asm/kvm.h | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/tools/arch/arm64/include/asm/cputype.h b/tools/arch/arm64/include/asm/cputype.h
-index 5f6f84837a49..7c7493cb571f 100644
---- a/tools/arch/arm64/include/asm/cputype.h
-+++ b/tools/arch/arm64/include/asm/cputype.h
-@@ -79,13 +79,15 @@
- #define ARM_CPU_PART_CORTEX_A78AE	0xD42
- #define ARM_CPU_PART_CORTEX_X1		0xD44
- #define ARM_CPU_PART_CORTEX_A510	0xD46
-+#define ARM_CPU_PART_CORTEX_A520	0xD80
- #define ARM_CPU_PART_CORTEX_A710	0xD47
- #define ARM_CPU_PART_CORTEX_A715	0xD4D
- #define ARM_CPU_PART_CORTEX_X2		0xD48
- #define ARM_CPU_PART_NEOVERSE_N2	0xD49
- #define ARM_CPU_PART_CORTEX_A78C	0xD4B
+diff --git a/tools/arch/s390/include/uapi/asm/kvm.h b/tools/arch/s390/include/uapi/asm/kvm.h
+index a73cf01a1606..abe926d43cbe 100644
+--- a/tools/arch/s390/include/uapi/asm/kvm.h
++++ b/tools/arch/s390/include/uapi/asm/kvm.h
+@@ -159,6 +159,22 @@ struct kvm_s390_vm_cpu_subfunc {
+ 	__u8 reserved[1728];
+ };
  
--#define APM_CPU_PART_POTENZA		0x000
-+#define APM_CPU_PART_XGENE		0x000
-+#define APM_CPU_VAR_POTENZA		0x00
- 
- #define CAVIUM_CPU_PART_THUNDERX	0x0A1
- #define CAVIUM_CPU_PART_THUNDERX_81XX	0x0A2
-@@ -148,6 +150,7 @@
- #define MIDR_CORTEX_A78AE	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78AE)
- #define MIDR_CORTEX_X1	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_X1)
- #define MIDR_CORTEX_A510 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A510)
-+#define MIDR_CORTEX_A520 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A520)
- #define MIDR_CORTEX_A710 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A710)
- #define MIDR_CORTEX_A715 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A715)
- #define MIDR_CORTEX_X2 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_X2)
-diff --git a/tools/arch/arm64/include/uapi/asm/kvm.h b/tools/arch/arm64/include/uapi/asm/kvm.h
-index f7ddd73a8c0f..89d2fc872d9f 100644
---- a/tools/arch/arm64/include/uapi/asm/kvm.h
-+++ b/tools/arch/arm64/include/uapi/asm/kvm.h
-@@ -505,6 +505,38 @@ struct kvm_smccc_filter {
- #define KVM_HYPERCALL_EXIT_SMC		(1U << 0)
- #define KVM_HYPERCALL_EXIT_16BIT	(1U << 1)
- 
-+/*
-+ * Get feature ID registers userspace writable mask.
-+ *
-+ * From DDI0487J.a, D19.2.66 ("ID_AA64MMFR2_EL1, AArch64 Memory Model
-+ * Feature Register 2"):
-+ *
-+ * "The Feature ID space is defined as the System register space in
-+ * AArch64 with op0==3, op1=={0, 1, 3}, CRn==0, CRm=={0-7},
-+ * op2=={0-7}."
-+ *
-+ * This covers all currently known R/O registers that indicate
-+ * anything useful feature wise, including the ID registers.
-+ *
-+ * If we ever need to introduce a new range, it will be described as
-+ * such in the range field.
-+ */
-+#define KVM_ARM_FEATURE_ID_RANGE_IDX(op0, op1, crn, crm, op2)		\
-+	({								\
-+		__u64 __op1 = (op1) & 3;				\
-+		__op1 -= (__op1 == 3);					\
-+		(__op1 << 6 | ((crm) & 7) << 3 | (op2));		\
-+	})
++#define KVM_S390_VM_CPU_PROCESSOR_UV_FEAT_GUEST	6
++#define KVM_S390_VM_CPU_MACHINE_UV_FEAT_GUEST	7
 +
-+#define KVM_ARM_FEATURE_ID_RANGE	0
-+#define KVM_ARM_FEATURE_ID_RANGE_SIZE	(3 * 8 * 8)
-+
-+struct reg_mask_range {
-+	__u64 addr;		/* Pointer to mask array */
-+	__u32 range;		/* Requested range */
-+	__u32 reserved[13];
++#define KVM_S390_VM_CPU_UV_FEAT_NR_BITS	64
++struct kvm_s390_vm_cpu_uv_feat {
++	union {
++		struct {
++			__u64 : 4;
++			__u64 ap : 1;		/* bit 4 */
++			__u64 ap_intr : 1;	/* bit 5 */
++			__u64 : 58;
++		};
++		__u64 feat;
++	};
 +};
 +
- #endif
- 
- #endif /* __ARM_KVM_H__ */
-diff --git a/tools/arch/arm64/include/uapi/asm/perf_regs.h b/tools/arch/arm64/include/uapi/asm/perf_regs.h
-index fd157f46727e..86e556429e0e 100644
---- a/tools/arch/arm64/include/uapi/asm/perf_regs.h
-+++ b/tools/arch/arm64/include/uapi/asm/perf_regs.h
-@@ -36,11 +36,13 @@ enum perf_event_arm_regs {
- 	PERF_REG_ARM64_LR,
- 	PERF_REG_ARM64_SP,
- 	PERF_REG_ARM64_PC,
-+	PERF_REG_ARM64_MAX,
- 
- 	/* Extended/pseudo registers */
--	PERF_REG_ARM64_VG = 46, // SVE Vector Granule
--
--	PERF_REG_ARM64_MAX = PERF_REG_ARM64_PC + 1,
--	PERF_REG_ARM64_EXTENDED_MAX = PERF_REG_ARM64_VG + 1
-+	PERF_REG_ARM64_VG = 46,				/* SVE Vector Granule */
-+	PERF_REG_ARM64_EXTENDED_MAX
- };
-+
-+#define PERF_REG_EXTENDED_MASK	(1ULL << PERF_REG_ARM64_VG)
-+
- #endif /* _ASM_ARM64_PERF_REGS_H */
+ /* kvm attributes for crypto */
+ #define KVM_S390_VM_CRYPTO_ENABLE_AES_KW	0
+ #define KVM_S390_VM_CRYPTO_ENABLE_DEA_KW	1
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
