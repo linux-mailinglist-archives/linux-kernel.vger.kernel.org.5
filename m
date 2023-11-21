@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91DB37F3254
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412367F3259
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbjKUP0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
+        id S234473AbjKUP3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234156AbjKUP0u (ORCPT
+        with ESMTP id S234156AbjKUP3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:26:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487B3122
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:26:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF9ABC433C7;
-        Tue, 21 Nov 2023 15:26:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700580406;
-        bh=6ASntq+NzGJvktLNPEkxn4FWCB31PpZ1eITUabEWgKw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jMWVh0eFzUUtt7SAyphyKaz8HhM9f+Nkl6I+seXNjiwzoRat6R6hIYirSDEO/6sd3
-         nvNv6tUy0KjZRU7cP7ws2TZYRtMdrCVV1Mjle7LiN6fQolVBRYzzAHXQtNARBPWJ1K
-         qdKIapd/gf5/yoG4UnK8SRqG2ftnidrY+Z3if7QxznX11tgoks/oX0fJ/nDGGvxHVB
-         4GHqJtP1AEQb1ssvp2TGQ4IgmsI3EtXheTrUJiJTvvmIcoHdMHZvW244G78TqUcUZj
-         VDD24RpKGqpQrfAn5sKOFh5hK321BioJSfdGWHLD1SnGT5k6roxLFCi2A0FkNphOAw
-         COv/RqmCcCUng==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5C1E7CE04BD; Tue, 21 Nov 2023 07:26:46 -0800 (PST)
-Date:   Tue, 21 Nov 2023 07:26:46 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        Nicolas Palix <nicolas.palix@imag.fr>
-Subject: Re: [RFC PATCH 57/86] coccinelle: script to remove cond_resched()
-Message-ID: <4f028628-3ea2-4f27-add5-27a0a64ed16c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-1-ankur.a.arora@oracle.com>
- <7d85fbde-fc8d-44b4-802e-376a475891e6@paulmck-laptop>
- <878r6r3cv0.fsf@oracle.com>
+        Tue, 21 Nov 2023 10:29:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B896510C;
+        Tue, 21 Nov 2023 07:29:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700580546; x=1732116546;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=pGlpOt8ekT8rI9o9vzav5LyZJntBPg8+ve6LRsfkTv4=;
+  b=F3mmDQgOt26hYXHqldk8NRYt/5YioRpi7XzOvIL2YRKkqRrWeGCe11gC
+   1Z8aeQrfOm88L0NBFlJgIOMlU1FT2rXRRzbXUyAAf35z8+BGb2e2DuVF8
+   o7svDKBizOdN1sOgOR0/6/4Kr5FCzeX9weWBxV36Nafsv0Ikaap1s7EBe
+   o6pgQSA5vfpWVnaTUQidIqtJ6YqONr0oik88oDazvV8wYIodsPLdbqP7C
+   akpuxtSjrPvIDNGyJcGgYIobVLopIICBGkGwrKcu2a/SNsW2IkcgpyC3Y
+   Rq4D1bbq3smVbZSyk44qHXluha6xCJRXt1KzjuFJq6oRfF7JhcEGvw+jV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="391634468"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="391634468"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:29:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="940133682"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="940133682"
+Received: from azanetti-mobl.ger.corp.intel.com ([10.249.46.144])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:29:03 -0800
+Date:   Tue, 21 Nov 2023 17:28:59 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Re: [PATCH 17/17] tty: srmcons: make 'str_cr' const and non-array
+In-Reply-To: <20231121092258.9334-18-jirislaby@kernel.org>
+Message-ID: <82caf538-cee5-1420-4944-b26b627ef145@linux.intel.com>
+References: <20231121092258.9334-1-jirislaby@kernel.org> <20231121092258.9334-18-jirislaby@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878r6r3cv0.fsf@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/mixed; BOUNDARY="8323329-708007674-1700580476=:2370"
+Content-ID: <35f46392-2e83-15f8-784d-c65e61e6a7a5@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,90 +65,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 09:16:19PM -0800, Ankur Arora wrote:
-> 
-> Paul E. McKenney <paulmck@kernel.org> writes:
-> 
-> > On Tue, Nov 07, 2023 at 03:07:53PM -0800, Ankur Arora wrote:
-> >> Rudimentary script to remove the straight-forward subset of
-> >> cond_resched() and allies:
-> >>
-> >> 1)  if (need_resched())
-> >> 	  cond_resched()
-> >>
-> >> 2)  expression*;
-> >>     cond_resched();  /* or in the reverse order */
-> >>
-> >> 3)  if (expression)
-> >> 	statement
-> >>     cond_resched();  /* or in the reverse order */
-> >>
-> >> The last two patterns depend on the control flow level to ensure
-> >> that the complex cond_resched() patterns (ex. conditioned ones)
-> >> are left alone and we only pick up ones which are only minimally
-> >> related the neighbouring code.
-> >
-> > This series looks to get rid of stall warnings for long in-kernel
-> > preempt-enabled code paths, which is of course a very good thing.
-> > But removing all of the cond_resched() calls can actually increase
-> > scheduling latency compared to the current CONFIG_PREEMPT_NONE=y state,
-> > correct?
-> 
-> Not necessarily.
-> 
-> If TIF_NEED_RESCHED_LAZY is set, then we let the current task finish
-> before preempting. If that task runs for arbitrarily long (what Thomas
-> calls the hog problem) -- currently we allow them to run for upto one
-> extra tick (which might shorten/become a tunable.)
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Agreed, and that is the easy case.  But getting rid of the cond_resched()
-calls really can increase scheduling latency of this patchset compared
-to status-quo mainline.
+--8323329-708007674-1700580476=:2370
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <9813717-44d-cd5a-dcc7-a59df464c62a@linux.intel.com>
 
-> If TIF_NEED_RESCHED is set, then it gets folded the same it does now
-> and preemption happens at the next safe preemption point.
-> 
-> So, I guess the scheduling latency would always be bounded but how much
-> latency a task would incur would be scheduler policy dependent.
-> 
-> This is early days, so the policy (or really the rest of it) isn't set
-> in stone but having two levels of preemption -- immediate and
-> deferred -- does seem to give the scheduler greater freedom of policy.
+On Tue, 21 Nov 2023, Jiri Slaby (SUSE) wrote:
 
-"Give the scheduler freedom!" is a wonderful slogan, but not necessarily
-a useful one-size-fits-all design principle.  The scheduler does not
-and cannot know everything, after all.
+> 'str_cr' contains a single character: \n. There is no need to declare it
 
-> Btw, are you concerned about the scheduling latencies in general or the
-> scheduling latency of a particular set of tasks?
+Aren't \r and \n different characters?
 
-There are a lot of workloads out there with a lot of objective functions
-and constraints, but it is safe to say that both will be important, as
-will other things, depending on the workload.
+> -	static char str_cr[1] = "\r";
+> +	static const char str_cr = '\r';
 
-But you knew that already, right?  ;-)
+Thanks for making these cleanups.
 
-> > If so, it would be good to take a measured approach.  For example, it
-> > is clear that a loop that does a cond_resched() every (say) ten jiffies
-> > can remove that cond_resched() without penalty, at least in kernels built
-> > with either CONFIG_NO_HZ_FULL=n or CONFIG_PREEMPT=y.  But this is not so
-> > clear for a loop that does a cond_resched() every (say) ten microseconds.
-> 
-> True. Though both of those loops sound bad :).
+I've reviewed all the patches in this series, so if I didn't comment a 
+patch or when you address my remarks, feel free to add:
 
-Yes, but do they sound bad enough to be useful in the real world?  ;-)
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-> Yeah, and as we were discussing offlist, the question is the comparative
-> density of preempt_dec_and_test() is true vs calls to cond_resched().
-> 
-> And if they are similar then we could replace cond_resched() quiescence
-> reporting with ones in preempt_enable() (as you mention elsewhere in the
-> thread.)
-
-Here is hoping that something like that can help.
-
-I am quite happy with the thought of reducing the number of cond_resched()
-invocations, but not at the expense of the Linux kernel failing to do
-its job.
-
-							Thanx, Paul
+-- 
+ i.
+--8323329-708007674-1700580476=:2370--
