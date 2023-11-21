@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2967F2A2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE527F2A2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbjKUKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:20:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42486 "EHLO
+        id S233871AbjKUKUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233800AbjKUKTy (ORCPT
+        with ESMTP id S233632AbjKUKT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:19:54 -0500
+        Tue, 21 Nov 2023 05:19:57 -0500
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4099F171E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D6F1BB;
         Tue, 21 Nov 2023 02:19:04 -0800 (PST)
 Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SZKwY56B8z67nhP;
-        Tue, 21 Nov 2023 18:14:05 +0800 (CST)
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SZKwZ2HCKz6J9St;
+        Tue, 21 Nov 2023 18:14:06 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 21 Nov 2023 10:19:01 +0000
+ 15.1.2507.35; Tue, 21 Nov 2023 10:19:02 +0000
 From:   <shiju.jose@huawei.com>
 To:     <linux-cxl@vger.kernel.org>, <linux-mm@kvack.org>,
         <dave@stgolabs.net>, <jonathan.cameron@huawei.com>,
@@ -42,9 +42,9 @@ CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
         <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
         <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [PATCH v2 03/10] cxl/mbox: Add SET_FEATURE mailbox command
-Date:   Tue, 21 Nov 2023 18:18:36 +0800
-Message-ID: <20231121101844.1161-4-shiju.jose@huawei.com>
+Subject: [PATCH v2 04/10] cxl/memscrub: Add CXL device patrol scrub control feature
+Date:   Tue, 21 Nov 2023 18:18:37 +0800
+Message-ID: <20231121101844.1161-5-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20231121101844.1161-1-shiju.jose@huawei.com>
 References: <20231121101844.1161-1-shiju.jose@huawei.com>
@@ -67,117 +67,379 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shiju Jose <shiju.jose@huawei.com>
 
-Add support for SET_FEATURE mailbox command.
+CXL spec 3.1 section 8.2.9.9.11.1 describes the device patrol scrub control
+feature. The device patrol scrub proactively locates and makes corrections
+to errors in regular cycle. The patrol scrub control allows the request to
+configure patrol scrub input configurations.
 
-CXL spec 3.0 section 8.2.9.6 describes optional device specific features.
-CXL devices supports features with changeable attributes.
-The settings of a feature can be optionally modified using Set Feature
-command.
+The patrol scrub control allows the requester to specify the number of
+hours for which the patrol scrub cycles must be completed, provided that
+the requested number is not less than the minimum number of hours for the
+patrol scrub cycle that the device is capable of. In addition, the patrol
+scrub controls allow the host to disable and enable the feature in case
+disabling of the feature is needed for other purposes such as
+performance-aware operations which require the background operations to be
+turned off.
 
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- drivers/cxl/core/mbox.c      | 15 +++++++++++++++
- drivers/cxl/cxlmem.h         | 27 +++++++++++++++++++++++++++
- include/uapi/linux/cxl_mem.h |  1 +
- 3 files changed, 43 insertions(+)
+ drivers/cxl/Kconfig         |  17 +++
+ drivers/cxl/core/Makefile   |   1 +
+ drivers/cxl/core/memscrub.c | 272 ++++++++++++++++++++++++++++++++++++
+ drivers/cxl/cxlmem.h        |   8 ++
+ drivers/cxl/pci.c           |   6 +
+ 5 files changed, 304 insertions(+)
+ create mode 100644 drivers/cxl/core/memscrub.c
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 2675c616caec..d892b07446ca 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -65,6 +65,7 @@ static struct cxl_mem_command cxl_mem_commands[CXL_MEM_COMMAND_ID_MAX] = {
- 	CXL_CMD(GET_SCAN_MEDIA_CAPS, 0x10, 0x4, 0),
- 	CXL_CMD(GET_SUPPORTED_FEATURES, 0x8, CXL_VARIABLE_PAYLOAD, 0),
- 	CXL_CMD(GET_FEATURE, 0x15, CXL_VARIABLE_PAYLOAD, 0),
-+	CXL_CMD(SET_FEATURE, CXL_VARIABLE_PAYLOAD, 0, 0),
- };
+diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+index 8ea1d340e438..e91f5acc94f2 100644
+--- a/drivers/cxl/Kconfig
++++ b/drivers/cxl/Kconfig
+@@ -154,4 +154,21 @@ config CXL_PMU
+ 	  monitoring units and provide standard perf based interfaces.
  
- /*
-@@ -1350,6 +1351,20 @@ int cxl_get_feature(struct cxl_memdev_state *mds,
- }
- EXPORT_SYMBOL_NS_GPL(cxl_get_feature, CXL);
- 
-+int cxl_set_feature(struct cxl_memdev_state *mds, void *feat_in, size_t size)
-+{
-+	struct cxl_mbox_cmd mbox_cmd;
+ 	  If unsure say 'm'.
 +
-+	mbox_cmd = (struct cxl_mbox_cmd) {
-+		.opcode = CXL_MBOX_OP_SET_FEATURE,
-+		.size_in = size,
-+		.payload_in = feat_in,
-+	};
++config CXL_SCRUB
++	tristate "CXL: Memory scrub feature"
++	depends on CXL_PCI
++	depends on CXL_MEM
++	help
++	  The CXL memory scrub control is an optional feature allows host to
++	  control the scrub configurations of CXL Type 3 devices, which
++	  support patrol scrub and/or DDR5 ECS(Error Check Scrub).
 +
-+	return cxl_internal_send_cmd(mds, &mbox_cmd);
-+}
-+EXPORT_SYMBOL_NS_GPL(cxl_set_feature, CXL);
++	  Say 'y/m' to enable the CXL memory scrub driver that will attach to
++	  CXL.mem devices for memory scrub control feature. See sections
++	  8.2.9.9.11.1 and 8.2.9.9.11.2 in the CXL 3.1 specification for a
++	  detailed description of CXL memory scrub control features.
 +
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
- 		       struct cxl_region *cxlr)
- {
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index 92c1f2a44713..46131dcd0900 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -508,6 +508,7 @@ enum cxl_opcode {
- 	CXL_MBOX_OP_GET_LOG		= 0x0401,
- 	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	= 0x0500,
- 	CXL_MBOX_OP_GET_FEATURE		= 0x0501,
-+	CXL_MBOX_OP_SET_FEATURE		= 0x0502,
- 	CXL_MBOX_OP_IDENTIFY		= 0x4000,
- 	CXL_MBOX_OP_GET_PARTITION_INFO	= 0x4100,
- 	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
-@@ -817,6 +818,31 @@ struct cxl_mbox_get_feat_in {
- 	u8 selection;
- }  __packed;
- 
-+/* Set Feature CXL 3.0 Spec 8.2.9.6.3 */
++	  If unsure say 'm'.
++
+ endif
+diff --git a/drivers/cxl/core/Makefile b/drivers/cxl/core/Makefile
+index 1f66b5d4d935..99e3202f868f 100644
+--- a/drivers/cxl/core/Makefile
++++ b/drivers/cxl/core/Makefile
+@@ -15,3 +15,4 @@ cxl_core-y += hdm.o
+ cxl_core-y += pmu.o
+ cxl_core-$(CONFIG_TRACING) += trace.o
+ cxl_core-$(CONFIG_CXL_REGION) += region.o
++cxl_core-$(CONFIG_CXL_SCRUB) += memscrub.o
+diff --git a/drivers/cxl/core/memscrub.c b/drivers/cxl/core/memscrub.c
+new file mode 100644
+index 000000000000..7d98a1593abe
+--- /dev/null
++++ b/drivers/cxl/core/memscrub.c
+@@ -0,0 +1,272 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Set Feature input payload
-+ * CXL rev 3.0 section 8.2.9.6.3; Table 8-81
++ * cxl_memscrub.c - CXL memory scrub driver
++ *
++ * Copyright (c) 2023 HiSilicon Limited.
++ *
++ *  - Provides functions to configure patrol scrub
++ *    feature of the CXL memory devices.
 + */
-+/* Set Feature : Payload in flags */
-+#define CXL_SET_FEAT_FLAG_DATA_TRANSFER_MASK	GENMASK(2, 0)
-+enum cxl_set_feat_flag_data_transfer {
-+	CXL_SET_FEAT_FLAG_FULL_DATA_TRANSFER = 0x0,
-+	CXL_SET_FEAT_FLAG_INITIATE_DATA_TRANSFER = 0x1,
-+	CXL_SET_FEAT_FLAG_CONTINUE_DATA_TRANSFER = 0x2,
-+	CXL_SET_FEAT_FLAG_FINISH_DATA_TRANSFER = 0x3,
-+	CXL_SET_FEAT_FLAG_ABORT_DATA_TRANSFER = 0x4,
-+	CXL_SET_FEAT_FLAG_DATA_TRANSFER_MAX
-+};
-+#define CXL_SET_FEAT_FLAG_MOD_VALUE_SAVED_ACROSS_RESET	BIT(3)
 +
-+struct cxl_mbox_set_feat_in {
-+	uuid_t uuid;
-+	__le32 flags;
-+	__le16 offset;
-+	u8 version;
-+	u8 rsvd[9];
++#define pr_fmt(fmt)	"CXL_MEM_SCRUB: " fmt
++
++#include <cxlmem.h>
++
++/* CXL memory scrub feature common definitions */
++#define CXL_SCRUB_MAX_ATTRB_RANGE_LENGTH	128
++
++static int cxl_mem_get_supported_feature_entry(struct cxl_memdev *cxlmd, const uuid_t *feat_uuid,
++					       struct cxl_mbox_supp_feat_entry *feat_entry_out)
++{
++	struct cxl_mbox_get_supp_feats_out *feats_out __free(kvfree) = NULL;
++	struct cxl_mbox_supp_feat_entry *feat_entry;
++	struct cxl_dev_state *cxlds = cxlmd->cxlds;
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
++	struct cxl_mbox_get_supp_feats_in pi;
++	bool is_support_feature = false;
++	int feat_index, count;
++	int nentries;
++	int ret;
++
++	feat_index = 0;
++	pi.count = sizeof(struct cxl_mbox_get_supp_feats_out) +
++			  sizeof(struct cxl_mbox_supp_feat_entry);
++	feats_out = kvmalloc(pi.count, GFP_KERNEL);
++	if (!feats_out)
++		return -ENOMEM;
++
++	do {
++		pi.start_index = feat_index;
++		memset(feats_out, 0, pi.count);
++		ret = cxl_get_supported_features(mds, &pi, feats_out);
++		if (ret)
++			return ret;
++
++		nentries = feats_out->entries;
++		if (!nentries)
++			break;
++
++		/* Check CXL memdev supports the feature */
++		feat_entry = (void *)feats_out->feat_entries;
++		for (count = 0; count < nentries; count++, feat_entry++) {
++			if (uuid_equal(&feat_entry->uuid, feat_uuid)) {
++				is_support_feature = true;
++				memcpy(feat_entry_out, feat_entry, sizeof(*feat_entry_out));
++				break;
++			}
++		}
++		if (is_support_feature)
++			break;
++		feat_index += nentries;
++	} while (nentries);
++
++	if (!is_support_feature)
++		return -ENOTSUPP;
++
++	return 0;
++}
++
++/* CXL memory patrol scrub control definitions */
++#define CXL_MEMDEV_PS_GET_FEAT_VERSION	0x01
++#define CXL_MEMDEV_PS_SET_FEAT_VERSION	0x01
++
++static const uuid_t cxl_patrol_scrub_uuid =
++	UUID_INIT(0x96dad7d6, 0xfde8, 0x482b, 0xa7, 0x33, 0x75, 0x77, 0x4e,     \
++		  0x06, 0xdb, 0x8a);
++
++/* CXL memory patrol scrub control functions */
++struct cxl_patrol_scrub_context {
++	struct device *dev;
++	u16 get_feat_size;
++	u16 set_feat_size;
++	bool scrub_cycle_changable;
++};
++
++/**
++ * struct cxl_memdev_ps_params - CXL memory patrol scrub parameter data structure.
++ * @enable:     [IN] enable(1)/disable(0) patrol scrub.
++ * @scrub_cycle_changable: [OUT] scrub cycle attribute of patrol scrub is changeable.
++ * @speed:      [IN] Requested patrol scrub cycle in hours.
++ *              [OUT] Current patrol scrub cycle in hours.
++ * @min_speed:[OUT] minimum patrol scrub cycle, in hours, supported.
++ * @speed_avail:[OUT] Supported patrol scrub cycle in hours.
++ */
++struct cxl_memdev_ps_params {
++	bool enable;
++	bool scrub_cycle_changable;
++	u16 speed;
++	u16 min_speed;
++	char speed_avail[CXL_SCRUB_MAX_ATTRB_RANGE_LENGTH];
++};
++
++enum {
++	CXL_MEMDEV_PS_PARAM_ENABLE = 0,
++	CXL_MEMDEV_PS_PARAM_SPEED,
++};
++
++#define	CXL_MEMDEV_PS_SCRUB_CYCLE_CHANGE_CAP_MASK	BIT(0)
++#define	CXL_MEMDEV_PS_SCRUB_CYCLE_REALTIME_REPORT_CAP_MASK	BIT(1)
++#define	CXL_MEMDEV_PS_CUR_SCRUB_CYCLE_MASK	GENMASK(7, 0)
++#define	CXL_MEMDEV_PS_MIN_SCRUB_CYCLE_MASK	GENMASK(15, 8)
++#define	CXL_MEMDEV_PS_FLAG_ENABLED_MASK	BIT(0)
++
++struct cxl_memdev_ps_feat_read_attrbs {
++	u8 scrub_cycle_cap;
++	__le16 scrub_cycle;
++	u8 scrub_flags;
 +}  __packed;
 +
- /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
- struct cxl_mbox_poison_in {
- 	__le64 offset;
-@@ -949,6 +975,7 @@ int cxl_get_supported_features(struct cxl_memdev_state *mds,
- 			       void *feats_out);
- int cxl_get_feature(struct cxl_memdev_state *mds,
- 		    struct cxl_mbox_get_feat_in *pi, void *feat_out);
-+int cxl_set_feature(struct cxl_memdev_state *mds, void *feat_in, size_t size);
- int cxl_poison_state_init(struct cxl_memdev_state *mds);
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
- 		       struct cxl_region *cxlr);
-diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-index b20de60bfc71..8c89d323cc41 100644
---- a/include/uapi/linux/cxl_mem.h
-+++ b/include/uapi/linux/cxl_mem.h
-@@ -48,6 +48,7 @@
- 	___DEPRECATED(GET_SCAN_MEDIA, "Get Scan Media Results"),          \
- 	___C(GET_SUPPORTED_FEATURES, "Get Supported Features"),           \
- 	___C(GET_FEATURE, "Get Feature"),                                 \
-+	___C(SET_FEATURE, "Set Feature"),                                 \
- 	___C(MAX, "invalid / last command")
++struct cxl_memdev_ps_set_feat_pi {
++	struct cxl_mbox_set_feat_in pi;
++	u8 scrub_cycle_hr;
++	u8 scrub_flags;
++}  __packed;
++
++static int cxl_mem_ps_get_attrbs(struct device *dev,
++				 struct cxl_memdev_ps_params *params)
++{
++	struct cxl_memdev_ps_feat_read_attrbs *rd_attrbs __free(kvfree) = NULL;
++	struct cxl_mbox_get_feat_in pi = {
++		.uuid = cxl_patrol_scrub_uuid,
++		.offset = 0,
++		.count = sizeof(struct cxl_memdev_ps_feat_read_attrbs),
++		.selection = CXL_GET_FEAT_SEL_CURRENT_VALUE,
++	};
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_dev_state *cxlds = cxlmd->cxlds;
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
++	int ret;
++
++	if (!mds)
++		return -EFAULT;
++
++	rd_attrbs = kvmalloc(pi.count, GFP_KERNEL);
++	if (!rd_attrbs)
++		return -ENOMEM;
++
++	ret = cxl_get_feature(mds, &pi, rd_attrbs);
++	if (ret) {
++		params->enable = 0;
++		params->speed = 0;
++		snprintf(params->speed_avail, CXL_SCRUB_MAX_ATTRB_RANGE_LENGTH,
++			"Unavailable");
++		return ret;
++	}
++	params->scrub_cycle_changable = FIELD_GET(CXL_MEMDEV_PS_SCRUB_CYCLE_CHANGE_CAP_MASK,
++						  rd_attrbs->scrub_cycle_cap);
++	params->enable = FIELD_GET(CXL_MEMDEV_PS_FLAG_ENABLED_MASK,
++				   rd_attrbs->scrub_flags);
++	params->speed = FIELD_GET(CXL_MEMDEV_PS_CUR_SCRUB_CYCLE_MASK,
++				  rd_attrbs->scrub_cycle);
++	params->min_speed  = FIELD_GET(CXL_MEMDEV_PS_MIN_SCRUB_CYCLE_MASK,
++				       rd_attrbs->scrub_cycle);
++	snprintf(params->speed_avail, CXL_SCRUB_MAX_ATTRB_RANGE_LENGTH,
++		 "Minimum scrub cycle = %d hour", params->min_speed);
++
++	return 0;
++}
++
++static int cxl_mem_ps_set_attrbs(struct device *dev,
++				 struct cxl_memdev_ps_params *params, u8 param_type)
++{
++	struct cxl_memdev_ps_set_feat_pi set_pi = {
++		.pi.uuid = cxl_patrol_scrub_uuid,
++		.pi.flags = CXL_SET_FEAT_FLAG_MOD_VALUE_SAVED_ACROSS_RESET |
++			    CXL_SET_FEAT_FLAG_FULL_DATA_TRANSFER,
++		.pi.offset = 0,
++		.pi.version = CXL_MEMDEV_PS_SET_FEAT_VERSION,
++	};
++	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
++	struct cxl_dev_state *cxlds = cxlmd->cxlds;
++	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlds);
++	struct cxl_memdev_ps_params rd_params;
++	int ret;
++
++	if (!mds)
++		return -EFAULT;
++
++	ret = cxl_mem_ps_get_attrbs(dev, &rd_params);
++	if (ret) {
++		dev_err(dev, "Get cxlmemdev patrol scrub params fail ret=%d\n",
++			ret);
++		return ret;
++	}
++
++	switch (param_type) {
++	case CXL_MEMDEV_PS_PARAM_ENABLE:
++		set_pi.scrub_flags = FIELD_PREP(CXL_MEMDEV_PS_FLAG_ENABLED_MASK,
++						   params->enable);
++		set_pi.scrub_cycle_hr = FIELD_PREP(CXL_MEMDEV_PS_CUR_SCRUB_CYCLE_MASK,
++						      rd_params.speed);
++		break;
++	case CXL_MEMDEV_PS_PARAM_SPEED:
++		if (params->speed < rd_params.min_speed) {
++			dev_err(dev, "Invalid CXL patrol scrub cycle(%d) to set\n",
++				params->speed);
++			dev_err(dev, "Minimum supported CXL patrol scrub cycle in hour %d\n",
++			       params->min_speed);
++			return -EINVAL;
++		}
++		set_pi.scrub_cycle_hr = FIELD_PREP(CXL_MEMDEV_PS_CUR_SCRUB_CYCLE_MASK,
++						      params->speed);
++		set_pi.scrub_flags = FIELD_PREP(CXL_MEMDEV_PS_FLAG_ENABLED_MASK,
++						   rd_params.enable);
++		break;
++	default:
++		dev_err(dev, "Invalid CXL patrol scrub parameter to set\n");
++		return -EINVAL;
++	}
++
++	ret = cxl_set_feature(mds, &set_pi, sizeof(set_pi));
++	if (ret) {
++		dev_err(dev, "CXL patrol scrub set feature fail ret=%d\n",
++			ret);
++		return ret;
++	}
++
++	/* Verify attribute set successfully */
++	if (param_type == CXL_MEMDEV_PS_PARAM_SPEED) {
++		ret = cxl_mem_ps_get_attrbs(dev, &rd_params);
++		if (ret) {
++			dev_err(dev, "Get cxlmemdev patrol scrub params fail ret=%d\n", ret);
++			return ret;
++		}
++		if (rd_params.speed != params->speed)
++			return -EFAULT;
++	}
++
++	return 0;
++}
++
++int cxl_mem_patrol_scrub_init(struct cxl_memdev *cxlmd)
++{
++	struct cxl_patrol_scrub_context *cxl_ps_ctx;
++	struct cxl_mbox_supp_feat_entry feat_entry;
++	struct cxl_memdev_ps_params params;
++	int ret;
++
++	ret = cxl_mem_get_supported_feature_entry(cxlmd, &cxl_patrol_scrub_uuid,
++						  &feat_entry);
++	if (ret < 0)
++		return ret;
++
++	if (!(feat_entry.attrb_flags & CXL_FEAT_ENTRY_FLAG_CHANGABLE))
++		return -ENOTSUPP;
++
++	cxl_ps_ctx = devm_kzalloc(&cxlmd->dev, sizeof(*cxl_ps_ctx), GFP_KERNEL);
++	if (!cxl_ps_ctx)
++		return -ENOMEM;
++
++	cxl_ps_ctx->get_feat_size = feat_entry.get_feat_size;
++	cxl_ps_ctx->set_feat_size = feat_entry.set_feat_size;
++	ret = cxl_mem_ps_get_attrbs(&cxlmd->dev, &params);
++	if (ret) {
++		dev_err(&cxlmd->dev, "Get CXL patrol scrub params fail ret=%d\n",
++			ret);
++		return ret;
++	}
++	cxl_ps_ctx->scrub_cycle_changable =  params.scrub_cycle_changable;
++
++	return 0;
++}
++EXPORT_SYMBOL_NS_GPL(cxl_mem_patrol_scrub_init, CXL);
+diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+index 46131dcd0900..25c46e72af16 100644
+--- a/drivers/cxl/cxlmem.h
++++ b/drivers/cxl/cxlmem.h
+@@ -983,6 +983,14 @@ int cxl_trigger_poison_list(struct cxl_memdev *cxlmd);
+ int cxl_inject_poison(struct cxl_memdev *cxlmd, u64 dpa);
+ int cxl_clear_poison(struct cxl_memdev *cxlmd, u64 dpa);
  
- #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
++/* cxl memory scrub functions */
++#ifdef CONFIG_CXL_SCRUB
++int cxl_mem_patrol_scrub_init(struct cxl_memdev *cxlmd);
++#else
++static inline int cxl_mem_patrol_scrub_init(struct cxl_memdev *cxlmd)
++{ return -ENOTSUPP; }
++#endif
++
+ #ifdef CONFIG_CXL_SUSPEND
+ void cxl_mem_active_inc(void);
+ void cxl_mem_active_dec(void);
+diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+index 0155fb66b580..86bba8794bb4 100644
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -881,6 +881,12 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (rc)
+ 		return rc;
+ 
++	/*
++	 * Initialize optional CXL scrub features
++	 */
++	if (cxl_mem_patrol_scrub_init(cxlmd))
++		dev_dbg(&pdev->dev, "cxl_mem_patrol_scrub_init failed\n");
++
+ 	rc = devm_cxl_sanitize_setup_notifier(&pdev->dev, cxlmd);
+ 	if (rc)
+ 		return rc;
 -- 
 2.34.1
 
