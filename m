@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1AF7F3043
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A400A7F3049
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:07:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjKUOGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        id S234053AbjKUOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233976AbjKUOGB (ORCPT
+        with ESMTP id S233881AbjKUOHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:06:01 -0500
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0D2D79;
-        Tue, 21 Nov 2023 06:05:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1700575556;
-        bh=Rjo+GzhBLOQg08qfzJaOOas6LcnZO+kRHO1x7xhCg5A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=thxzknEYOsX54Uxq75EVE8gsqAuZckze9eVbdjGrqWhnAxFJd2zTUYbp3rlwsvm8L
-         RvifiE+dNS7ZSLgO1vz/2iuBA+vxTg+gon+T9GxUfPeiqu1Cn1B3IDL+Ia+I3b2tn4
-         DUC/TT7rpYPd1WMR/O9eiC1zLaBkDDg/AWBX5uFU9AIA2HzYKaNAjYt0BqP2t5Mj4i
-         ACdF1uP7Z+1r36tCdmelBH4eidFpnqjDGiDmFd1pe/d61iNtSmMAHFrsJwhHlsYXim
-         cg2WHeKtjYA2VqeCjjb3bN4HawXXVIVV8MT8V9NjvagkHshjx+GeLlz0QRrCqOkWhL
-         ZBJqug52ltvkw==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZR442Pzhz1dBP;
-        Tue, 21 Nov 2023 09:05:56 -0500 (EST)
-Message-ID: <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
-Date:   Tue, 21 Nov 2023 09:06:18 -0500
+        Tue, 21 Nov 2023 09:07:36 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAC7121
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:07:32 -0800 (PST)
+Received: from notapiano (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 45C1966072F6;
+        Tue, 21 Nov 2023 14:07:28 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700575651;
+        bh=tOGWTmQJW/JANHeyGfQepL3uI6iHK1P8zxtRmtORk2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C4syRfR21MGFLX1wH3nywSpQpCUGVfO1aI/4C99i7AxCnFTJB+cas+a+yAy/3lsL1
+         ApnAIbNuyYVeDlg9mff0itSwKCOvUF+P1BOS/qrkMY0MrAaWs6EbPSdZbhmbn+kZg0
+         NFXmAiDw5AU7uiAa0cmpJQWDp5O48pa7rGT+AdP85Q1ogWoW+tAID6+tpMmFafhJ4z
+         H9ZkUeXDPVHO7kro8Nl95ff6G68TOkqGJmFUyoAFKxBgCoQkavB3XgfDC18kzxEt2t
+         /v0H3r4k5++qjcZCJu7tdUFKbck/1sxl+MstUPYA0WWWnCBmwqFUDJy+kR99aQksNZ
+         e/yyLWFgkmo0Q==
+Date:   Tue, 21 Nov 2023 09:07:24 -0500
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>, kernel@collabora.com,
+        Bo-Chen Chen <rex-bc.chen@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Guillaume Ranquet <granquet@baylibre.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] drm/mediatek: dp: Add phy_mtk_dp module as pre-dependency
+Message-ID: <1de08400-8441-43b9-9104-395444bccc0e@notapiano>
+References: <20231120202837.396760-1-nfraprado@collabora.com>
+ <8fd1affd-936d-415e-9f1f-b0415b68ddb6@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
- <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231121084706.GF8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8fd1affd-936d-415e-9f1f-b0415b68ddb6@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -69,72 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 03:47, Peter Zijlstra wrote:
-> On Mon, Nov 20, 2023 at 03:56:30PM -0800, Paul E. McKenney wrote:
->> On Mon, Nov 20, 2023 at 11:23:11PM +0100, Peter Zijlstra wrote:
->>> On Mon, Nov 20, 2023 at 02:18:29PM -0800, Paul E. McKenney wrote:
->>>> On Mon, Nov 20, 2023 at 10:47:42PM +0100, Peter Zijlstra wrote:
->>>>> On Mon, Nov 20, 2023 at 03:54:14PM -0500, Mathieu Desnoyers wrote:
->>>>>> When invoked from system call enter/exit instrumentation, accessing
->>>>>> user-space data is a common use-case for tracers. However, tracepoints
->>>>>> currently disable preemption around iteration on the registered
->>>>>> tracepoint probes and invocation of the probe callbacks, which prevents
->>>>>> tracers from handling page faults.
->>>>>>
->>>>>> Extend the tracepoint and trace event APIs to allow defining a faultable
->>>>>> tracepoint which invokes its callback with preemption enabled.
->>>>>>
->>>>>> Also extend the tracepoint API to allow tracers to request specific
->>>>>> probes to be connected to those faultable tracepoints. When the
->>>>>> TRACEPOINT_MAY_FAULT flag is provided on registration, the probe
->>>>>> callback will be called with preemption enabled, and is allowed to take
->>>>>> page faults. Faultable probes can only be registered on faultable
->>>>>> tracepoints and non-faultable probes on non-faultable tracepoints.
->>>>>>
->>>>>> The tasks trace rcu mechanism is used to synchronize read-side
->>>>>> marshalling of the registered probes with respect to faultable probes
->>>>>> unregistration and teardown.
->>>>>
->>>>> What is trace-trace rcu and why is it needed here? What's wrong with
->>>>> SRCU ?
->>>>
->>>> Tasks Trace RCU avoids SRCU's full barriers and the array accesses in the
->>>> read-side primitives.  This can be important when tracing low-overhead
->>>> components of fast paths.
->>>
->>> So why wasn't SRCU improved? That is, the above doesn't much explain.
->>>
->>> What is the trade-off made to justify adding yet another RCU flavour?
->>
->> We didn't think you would be all that happy about having each and
->> every context switch iterating through many tens or even hundreds of
->> srcu_struct structures.  For that matter, we didn't think that anyone
->> else would be all that happy either.  Us included.
+On Tue, Nov 21, 2023 at 11:59:14AM +0100, AngeloGioacchino Del Regno wrote:
+> Il 20/11/23 21:28, Nícolas F. R. A. Prado ha scritto:
+> > The mtk_dp driver registers a phy device which is handled by the
+> > phy_mtk_dp driver and assumes that the phy probe will complete
+> > synchronously, proceeding to make use of functionality exposed by that
+> > driver right away. This assumption however is false when the phy driver
+> > is built as a module, causing the mtk_dp driver to fail probe in this
+> > case.
+> > 
+> > Add the phy_mtk_dp module as a pre-dependency to the mtk_dp module to
+> > ensure the phy module has been loaded before the dp, so that the phy
+> > probe happens synchrounously and the mtk_dp driver can probe
+> > successfully even with the phy driver built as a module.
+> > 
 > 
-> So again, what is task-trace RCU ? How does it differ from say
-> preemptible rcu, which AFAICT could be used here too, no?
+> You forgot a Suggested-by here :-P
 
-Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
+Oops, sorry, I forgot that tag existed. Will send a v2 with it added :).
 
-- Allow page faults within RCU read-side (like SRCU),
-- Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
-- The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
-   that. Hence, this is not meant to be a generic replacement for SRCU.
-
-Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
-fit for the following reasons:
-
-- It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
-- AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
-
-Please let me know if I'm missing something.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> 
+> > Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> 
+> It's fine anyway; being the best solution that we can use:
+> 
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> 
+> > 
+> > ---
+> > 
+> >   drivers/gpu/drm/mediatek/mtk_dp.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+> > index e4c16ba9902d..2136a596efa1 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_dp.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+> > @@ -2818,3 +2818,4 @@ MODULE_AUTHOR("Markus Schneider-Pargmann <msp@baylibre.com>");
+> >   MODULE_AUTHOR("Bo-Chen Chen <rex-bc.chen@mediatek.com>");
+> >   MODULE_DESCRIPTION("MediaTek DisplayPort Driver");
+> >   MODULE_LICENSE("GPL");
+> > +MODULE_SOFTDEP("pre: phy_mtk_dp");
+> 
