@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FA27F287D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866427F2882
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbjKUJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S230371AbjKUJRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:17:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbjKUJOF (ORCPT
+        with ESMTP id S229454AbjKUJRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:14:05 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D3AAB124;
-        Tue, 21 Nov 2023 01:14:01 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 429CAFEC;
-        Tue, 21 Nov 2023 01:14:48 -0800 (PST)
-Received: from [10.163.36.237] (unknown [10.163.36.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 182C33F73F;
-        Tue, 21 Nov 2023 01:13:56 -0800 (PST)
-Message-ID: <c8ddb80b-4228-4ed3-bc54-fba334b70c2b@arm.com>
-Date:   Tue, 21 Nov 2023 14:43:54 +0530
+        Tue, 21 Nov 2023 04:17:09 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FB7E8;
+        Tue, 21 Nov 2023 01:17:04 -0800 (PST)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 3A3791F83F;
+        Tue, 21 Nov 2023 10:17:01 +0100 (CET)
+Date:   Tue, 21 Nov 2023 10:16:57 +0100
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Thorsten Leemhuis <regressions@leemhuis.info>, linux@bigler.io
+Cc:     Francesco Dolcini <francesco@dolcini.it>,
+        Stefan Moring <stefan.moring@technolution.nl>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: spi: imx: Increase imx51 ecspi burst length fails on imx6dl and
+ imx8mm
+Message-ID: <ZVx1ic9/vxDDStoE@francesco-nb.int.toradex.com>
+References: <CAB3BuKA+qOY+UhWR-9Ov3qsz3wQr8q8n38MrEMf3FMCthr04yA@mail.gmail.com>
+ <2fcdd99eee9ee4f5d34fa1abab2f51bb@mail.infomaniak.com>
+ <CAB3BuKARgJhaVNFsP1FQ+2yLe18QU9H17fHKjc-Sf3izE+MZ1Q@mail.gmail.com>
+ <86566391db9c5044f1a082bc8ec697a2@mail.infomaniak.com>
+ <ZVsdNGyVrTJ/Kv3n@francesco-nb.int.toradex.com>
+ <6322fd4c1967a518310140c35ab34f65@mail.infomaniak.com>
+ <ZVsyVAapXTWnznFd@francesco-nb.int.toradex.com>
+ <CAB3BuKDb6uucujD7ac-w4pa1GVNLSQUA4OGE7i074mQSU==WaA@mail.gmail.com>
+ <ZVucAc2Nq0JwJ+N4@francesco-nb.int.toradex.com>
+ <90abbd7a-e3e3-42c9-9be9-28e475f0fc9a@leemhuis.info>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [V14 3/8] drivers: perf: arm_pmuv3: Enable branch stack sampling
- framework
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-References: <20231114051329.327572-1-anshuman.khandual@arm.com>
- <20231114051329.327572-4-anshuman.khandual@arm.com>
- <0020aa0d-e9a5-aef6-f33d-817da56411a3@arm.com>
- <5bf73672-4094-490b-b0a9-b983d512c904@arm.com>
- <4fa8ca52-b40c-65ec-59a0-7ad14c4e93b7@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <4fa8ca52-b40c-65ec-59a0-7ad14c4e93b7@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <90abbd7a-e3e3-42c9-9be9-28e475f0fc9a@leemhuis.info>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,112 +53,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/15/23 15:07, James Clark wrote:
+On Tue, Nov 21, 2023 at 10:06:51AM +0100, Thorsten Leemhuis wrote:
+> On 20.11.23 18:48, Francesco Dolcini wrote:
+> > On Mon, Nov 20, 2023 at 04:30:15PM +0100, Stefan Moring wrote:
+> >> Can you verify the values used for the transfer,� spi_imx->count and spi_imx->
+> >> bits_per_word inside the mx51_ecpsi_prepare_transfer() method? Those are the
+> >> only two things that changed in the commits. Maybe compare them to the working
+> >> version?
+> > 
+> > I would suggest to bisect the issue to the actual commit that
+> > introduced the regression, I do not think this was done yet.
 > 
-> 
-> On 15/11/2023 05:44, Anshuman Khandual wrote:
->> On 11/14/23 15:28, James Clark wrote:
->>>
->>>
->>> On 14/11/2023 05:13, Anshuman Khandual wrote:
->>>> Branch stack sampling support i.e capturing branch records during execution
->>>> in core perf, rides along with normal HW events being scheduled on the PMU.
->>>> This prepares ARMV8 PMU framework for branch stack support on relevant PMUs
->>>> with required HW implementation.
->>>>
->>>
->>> [...]
->>>
->>>> - All armv8pmu_branch_xxxx() stub definitions have been moved inside
->>>>   include/linux/perf/arm_pmuv3.h for easy access from both arm32 and
->>>>   arm64 platforms
->>>>
->>>
->>> This causes lots of W=1 build errors because the prototypes are in
->>> arm_pmuv3.h, but arm_brbe.c doesn't include it.
->>
->> I guess these are the W=1 warnings you mentioned above.
->>
->> drivers/perf/arm_brbe.c:11:6: warning: no previous prototype for ‘armv8pmu_branch_reset’ [-Wmissing-prototypes]
->>    11 | void armv8pmu_branch_reset(void)                                                                                                                                                                   
->>       |      ^~~~~~~~~~~~~~~~~~~~~                                                                                                                                                                         
->> drivers/perf/arm_brbe.c:190:6: warning: no previous prototype for ‘armv8pmu_branch_save’ [-Wmissing-prototypes]      
->>   190 | void armv8pmu_branch_save(struct arm_pmu *arm_pmu, void *ctx)                      
->>       |      ^~~~~~~~~~~~~~~~~~~~                                                                                                                                                                          
->> drivers/perf/arm_brbe.c:236:6: warning: no previous prototype for ‘armv8pmu_branch_attr_valid’ [-Wmissing-prototypes]
->>   236 | bool armv8pmu_branch_attr_valid(struct perf_event *event)                                                                                                                                          
->>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                                                                                                    
->> drivers/perf/arm_brbe.c:269:5: warning: no previous prototype for ‘armv8pmu_task_ctx_cache_alloc’ [-Wmissing-prototypes]
->>   269 | int armv8pmu_task_ctx_cache_alloc(struct arm_pmu *arm_pmu)                            
->>       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                            
->> drivers/perf/arm_brbe.c:279:6: warning: no previous prototype for ‘armv8pmu_task_ctx_cache_free’ [-Wmissing-prototypes]
->>   279 | void armv8pmu_task_ctx_cache_free(struct arm_pmu *arm_pmu)                       
->>       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                            
->> drivers/perf/arm_brbe.c:303:6: warning: no previous prototype for ‘armv8pmu_branch_probe’ [-Wmissing-prototypes]
->>   303 | void armv8pmu_branch_probe(struct arm_pmu *armpmu)                                
->>       |      ^~~~~~~~~~~~~~~~~~~~~                                                                   
->> drivers/perf/arm_brbe.c:449:6: warning: no previous prototype for ‘armv8pmu_branch_enable’ [-Wmissing-prototypes]
->>   449 | void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)                             
->>       |      ^~~~~~~~~~~~~~~~~~~~~~                                                                  
->> drivers/perf/arm_brbe.c:474:6: warning: no previous prototype for ‘armv8pmu_branch_disable’ [-Wmissing-prototypes]
->>   474 | void armv8pmu_branch_disable(void)                                                           
->>       |      ^~~~~~~~~~~~~~~~~~~~~~~                                                                 
->> drivers/perf/arm_brbe.c:717:6: warning: no previous prototype for ‘armv8pmu_branch_read’ [-Wmissing-prototypes]
->>   717 | void armv8pmu_branch_read(struct pmu_hw_events *cpuc, struct perf_event *event)
->>
->> Branch helpers are used in ARM PMU V3 driver i.e drivers/perf/arm_pmuv3.c.
->> Whether the actual BRBE helper definitions, or their fallback stubs (when
->> CONFIG_ARM64_BRBE is not enabled), need to be accessible from arm_pmuv3.c
->> driver not from brbe.c implementations itself.
->>
->>>
->>> It seems like the main reason you can't include arm_brbe.h in arm32 code
->>> is because there are a load of inline functions and references to
->>> registers in there. But these are only used in arm_brbe.c, so they don't
->>
->> Right, arm32 should not be exposed to BRBE internals via arm_brbe.h header.
->>
->>> need to be in the header anyway.
->>
->> Right, these are only used in arm_brbe.c
->>
->>>
->>> If you removed the code from the header and moved it to the source file
->>> you could move the brbe prototypes to the brbe header and it would be a
->>> bit cleaner and more idiomatic.
->>
->> Alight, how about the following changes - build tested on arm32 and arm64.
->>
->> - Move BRBE helpers from arm_brbe.h into arm_brbe.c
->> - Move armv8_pmu_xxx() declaration inside arm_brbe.h for arm64 (CONFIG_ARM64_BRBE)
->> - Move armv8_pmu_xxx() stub definitions inside arm_pmuv3.c for arm32 (!CONFIG_ARM64_BRBE)
->> - Include arm_brbe.h header both in arm_pmuv3.c and arm_brbe.c
-> 
-> Agree to them all except:
-> 
->   - Move armv8_pmu_xxx() stub definitions inside arm_pmuv3.c for arm32
-> (!CONFIG_ARM64_BRBE)
-> 
-> Normally you put the stubs right next to the prototypes with #else, so
-> in this case both would be in arm_brbe.h. Not sure what the reason for
-> splitting them here is? You already said "include arm_brbe.h in
-> arm_pmuv3.c", so that covers arm32 too.
+> I think it was. To quote
+Whoops, you are right.
 
-Not any particular strong reason for the split as such, will move these
-stubs to the header as well. BRBE header includes <linux/perf/arm_pmu.h>
-which causes the following redefinition warning for the pr_fmt().
+> spi: Increase imx51 ecspi burst length based on transfer length
+> 15a6af94a2779d5dfb42ee4bfac858ea8e964a3f
+> 
+> spi: imx: Take in account bits per word instead of assuming 8-bits
+> 5f66db08cbd3ca471c66bacb0282902c79db9274
 
-drivers/perf/arm_brbe.c:11: warning: "pr_fmt" redefined
-   11 | #define pr_fmt(fmt) "brbe: " fmt
-      | 
-In file included from ./include/linux/kernel.h:31,
-                 from ./include/linux/interrupt.h:6,
-                 from ./include/linux/perf/arm_pmu.h:11,
-                 from drivers/perf/arm_brbe.h:10,
-                 from drivers/perf/arm_brbe.c:9:
-./include/linux/printk.h:345: note: this is the location of the previous definition
-  345 | #define pr_fmt(fmt) fmt
+Do we know which one of those two commits introduces this regression?
 
-Although it should be okay to just drop this custom pr_fmt() from BRBE.
+Francesco
+
