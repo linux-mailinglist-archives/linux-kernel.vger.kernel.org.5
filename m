@@ -2,113 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A037F362D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8427F35F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbjKUSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S234647AbjKUSbd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 13:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234440AbjKUSiP (ORCPT
+        with ESMTP id S234638AbjKUSbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:38:15 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D491BF1;
-        Tue, 21 Nov 2023 10:37:34 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 16A2E2193C;
-        Tue, 21 Nov 2023 18:37:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700591853;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=17fwntM2BUitSmxQD/3FyPFXOrLp/EyPR6vZWAaaNbQ=;
-        b=Xu29vfSyPH6Eni6Cs9SzWD9p605UHUxKACQ+5hDZfVAu+7leM1yvOFLiHaE18lKQ4JM7ZC
-        +XrC53eXRtzjQiWQm1bwhffS9jIvYxyVR9yq6cclbU57w8v/GXF8hXOei/XkV9IETQ26iZ
-        kco44U0LucS+ijLAX2hqyoOyqsnTRuA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700591853;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=17fwntM2BUitSmxQD/3FyPFXOrLp/EyPR6vZWAaaNbQ=;
-        b=n2waHFKBO1bfFzM+WK+4BnrNsCq2g4jzVkxQB/wIVXrvp7NAyTtpbdb/TWDS2nJ60JNFP/
-        5RZxxSM2ELYF4aBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E1B7D138E3;
-        Tue, 21 Nov 2023 18:37:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1yd/Nuz4XGXfUQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Nov 2023 18:37:32 +0000
-Date:   Tue, 21 Nov 2023 19:30:23 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 2/6] tty: ipwireless: remove unused
- ipw_dev::attribute_memory
-Message-ID: <20231121183023.GV11264@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20231121103626.17772-1-jirislaby@kernel.org>
- <20231121103626.17772-3-jirislaby@kernel.org>
+        Tue, 21 Nov 2023 13:31:16 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D523410C9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:31:11 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5a9bc2ec556so3584828a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:31:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700591471; x=1701196271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UKcp8GN0HAb+u3SYTXG/ePsA9Uq1e5LSJUzKPNEW5Ew=;
+        b=PA9RsV0QfBDPYnF3sNudZRjMcy3WWk43qwcJyzRWeiL/uNthpmP4lbqWzVnrpFoB6A
+         q+4C2ykHwRH+6YtmsHV0cQF2FOoXQi6BLL95SDG7jLqJzFSAV/X8m1Osv5/XwMBugfWn
+         C3wz6EXMHbXiPj0NaFdRgpgINAPjW8+JnfR+Ja6xiAfnOVBPO5J2tkbHhTHcCwcwGRnI
+         hvp+xJKsetOKbercSeL3DO/Py5SOCWI6BcHpSTdlkxq/+9mfLP5wzjukykcD9dHt/7P+
+         76cnlDSQ3TZt82pTNr8lnV0e7PWcOXzxoUpmo95jRmpC1wmeEK3qhRvdcuzcxFbaiPu2
+         T0Ug==
+X-Gm-Message-State: AOJu0Yxn84YYZXpg0jb3SdmtVH0jnItt0+LUEiTWKQm5uCUVD1Fx7xsU
+        zU/c1enZv76QYbfQgqePCK9Nb1O318xBIdmytXyahvd/
+X-Google-Smtp-Source: AGHT+IHRh1QGQiUes6PZ/e9wgPD7jsoiN0h934RaY7gWobHGVdxIX1icXPwqfiJs8tjIuTKAXfe824YBfJTaaUGDj/c=
+X-Received: by 2002:a17:90b:1b4f:b0:280:2652:d45 with SMTP id
+ nv15-20020a17090b1b4f00b0028026520d45mr33265pjb.20.1700591471039; Tue, 21 Nov
+ 2023 10:31:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121103626.17772-3-jirislaby@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -7.73
-X-Spamd-Result: default: False [-7.73 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-2.73)[98.82%];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         REPLY(-4.00)[];
-         RCPT_COUNT_FIVE(0.00)[6];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231120221932.213710-1-namhyung@kernel.org> <20231120221932.213710-3-namhyung@kernel.org>
+ <66f74af2-21b6-477b-ada1-a8816ee115dc@linux.intel.com>
+In-Reply-To: <66f74af2-21b6-477b-ada1-a8816ee115dc@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 21 Nov 2023 10:30:59 -0800
+Message-ID: <CAM9d7chDB0nPcu7_Ks4kp2R=+iVNU8SyEFKHVEsd3d0S=mYRnw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf/x86: Add CAP_NO_INTERRUPT for uncore PMUs
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Mingwei Zhang <mizhang@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:36:22AM +0100, Jiri Slaby (SUSE) wrote:
-> clang-struct [1] found ipw_dev::attribute_memory unused.
-> 
-> As far as I can see it was never used since the driver merge. Drop it.
-> 
-> [1] https://github.com/jirislaby/clang-struct
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: David Sterba <dsterba@suse.com>
+Hi Kan,
 
-Acked-by: David Sterba <dsterba@suse.com>
+On Tue, Nov 21, 2023 at 7:59 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>
+>
+>
+> On 2023-11-20 5:19 p.m., Namhyung Kim wrote:
+> > It doesn't support sampling in uncore PMU events.  While it's
+> > technically possible to generate interrupts, let's treat it as if it
+> > has no interrupt in order to skip the freq adjust/unthrottling logic
+> > in the timer handler which is only meaningful to sampling events.
+> >
+> > Also remove the sampling event check because it'd be done in the general
+> > code in the perf_event_open syscall.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  arch/x86/events/intel/uncore.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+> > index 69043e02e8a7..f7e6228bd1b1 100644
+> > --- a/arch/x86/events/intel/uncore.c
+> > +++ b/arch/x86/events/intel/uncore.c
+> > @@ -744,10 +744,6 @@ static int uncore_pmu_event_init(struct perf_event *event)
+> >       if (pmu->func_id < 0)
+> >               return -ENOENT;
+> >
+> > -     /* Sampling not supported yet */
+> > -     if (hwc->sample_period)
+> > -             return -EINVAL;
+> > -
+> >       /*
+> >        * Place all uncore events for a particular physical package
+> >        * onto a single cpu
+> > @@ -919,7 +915,12 @@ static int uncore_pmu_register(struct intel_uncore_pmu *pmu)
+> >                       .stop           = uncore_pmu_event_stop,
+> >                       .read           = uncore_pmu_event_read,
+> >                       .module         = THIS_MODULE,
+> > -                     .capabilities   = PERF_PMU_CAP_NO_EXCLUDE,
+> > +                     /*
+> > +                      * It doesn't allow sampling for uncore events, let's
+> > +                      * treat the PMU has no interrupts to skip them in the
+> > +                      * perf_adjust_freq_unthr_context().
+> > +                      */
+> > +                     .capabilities   = PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
+> >                       .attr_update    = pmu->type->attr_update,
+> >               };
+>
+>
+> There is a special customized uncore PMU which needs the flag as well.
+
+Ok, I will add that too.
+
+Btw, during the work I noticed many PMU drivers didn't set the
+CAP_NO_INTERRUPT flag even if they didn't support sampling and
+rejected the sampling events manually in the ->event_init() callback.
+
+I guess it's because the name of the flag is somewhat misleading.
+As the PMU drivers handle IRQ (for overflows), they thought they had
+interrupts and didn't set the flag.  I think it'd be better to rename it to
+CAP_NO_SAMPLING to reveal the intention.  And then we could just set
+the flag in the pmu.capabilities and remove the manual checks.
+
+The benefit is it can skip the PMUs in the timer tick handler even if
+it needs to unthrottle some events.  What do you think?
+
+Thanks,
+Namhyung
+
+>
+> diff --git a/arch/x86/events/intel/uncore_snb.c
+> b/arch/x86/events/intel/uncore_snb.c
+> index 7fd4334e12a1..46a63e291975 100644
+> --- a/arch/x86/events/intel/uncore_snb.c
+> +++ b/arch/x86/events/intel/uncore_snb.c
+> @@ -1013,7 +1013,7 @@ static struct pmu snb_uncore_imc_pmu = {
+>         .start          = uncore_pmu_event_start,
+>         .stop           = uncore_pmu_event_stop,
+>         .read           = uncore_pmu_event_read,
+> -       .capabilities   = PERF_PMU_CAP_NO_EXCLUDE,
+> +       .capabilities   = PERF_PMU_CAP_NO_EXCLUDE |
+> PERF_PMU_CAP_NO_INTERRUPT,
+>  };
+>
+>  static struct intel_uncore_ops snb_uncore_imc_ops = {
+>
+>
+> Thanks,
+> Kan
+> >       } else {
