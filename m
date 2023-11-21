@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 105AC7F377A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646D17F3740
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234023AbjKUUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 15:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
+        id S229547AbjKUU1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 15:27:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234476AbjKUUbw (ORCPT
+        with ESMTP id S229524AbjKUU1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 15:31:52 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EC11FF6
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:29:33 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507a5f2193bso167914e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700598569; x=1701203369; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6pUSylQ57QDAnOYu4uoAZWK5eAYHbB7ZTMJQDUS70M=;
-        b=fCCR6+pbo1xyY31e4mJ4cQXLs2L4HGXuHsCeD8RpJ4hj4cwx1nXW4hRhytYk81PBda
-         wfmGjdEilXAxS699atHxZIdWrI5R9sVkCOwQR1OrBdPFeFG+h6i7R1bJipwEl7VfJ94D
-         YTFykVcMwgeGntOEeCSW0Ktil4bI0i0o4PCYJz2hOpv36I+JVbro64MVO2Gf2E1+chth
-         rNf+Ri48jKkc+dfkZQL/JRg1wvo8meRfxNmEsig0u5h6OPs0DLUC164A7au+KP/3sZ1X
-         D9H8i07ZhFb5uGbRkM06vTp0MyEeBrW4pzBmr8DmFwSWUooIynKUnfZTzPNsRzGcEEUd
-         5ftg==
+        Tue, 21 Nov 2023 15:27:11 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F319E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:27:07 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cf6e930886so15311665ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 12:27:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700598569; x=1701203369;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H6pUSylQ57QDAnOYu4uoAZWK5eAYHbB7ZTMJQDUS70M=;
-        b=R1pma95GX7z8JMQLo6AM7eIk/pWI+u52CRBwEFtV4LUp86adLtkm9sXLWBauEPahvD
-         zLXwHiuRJknpsAFwVNxU8onmm9j4R57V5Y7C3kKPraNuyGXZA+B/U4QjPM00kue/KnK1
-         jIJoCJltIk90K/OrFQ1l+h3tvb7i67h0+zF2IQMJe0a0fp/cMtpyEjKpozHSMZy7Jfhj
-         v5X2xSxy2ZxrRkude13NiranUohCkxET4eYIWV7OYfRIznFyq/Y6bbrr3DTHDZrDFw2i
-         8cJl+DwXiJmVi6vZVpEnKbxKiiYO9NzTdXRHqtwHLlM+v97xXOZNCx7WWuqzfBAH9PMW
-         5A6Q==
-X-Gm-Message-State: AOJu0YyeQTk/xi1Wm65yBd4hNehfDodcUHxShqIALUD6n+Yy4yeo7F0B
-        mSnb9fa+SwhJNsxu0c2EYmwmJQ==
-X-Google-Smtp-Source: AGHT+IH0jTRQM5w+kYWIMAHKUNTpVDgqlCy01ePT/kCx57Ft4PfLmDfBxK5KunZbk5hReZpNqqabLA==
-X-Received: by 2002:a05:6512:3708:b0:50a:6fb8:a0c0 with SMTP id z8-20020a056512370800b0050a6fb8a0c0mr114755lfr.19.1700598568810;
-        Tue, 21 Nov 2023 12:29:28 -0800 (PST)
-Received: from eriador.lan (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id h4-20020a056512350400b0050ab6112af2sm286287lfs.65.2023.11.21.12.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 12:29:28 -0800 (PST)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v2 2/2] usb: typec: tcpm: Parse Accessory Mode information
-Date:   Tue, 21 Nov 2023 22:27:00 +0200
-Message-ID: <20231121202925.2481471-3-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231121202925.2481471-1-dmitry.baryshkov@linaro.org>
-References: <20231121202925.2481471-1-dmitry.baryshkov@linaro.org>
+        d=1e100.net; s=20230601; t=1700598426; x=1701203226;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n8Df5cuqMqSyizP/11eYl6v0tulaOCao3UPcZKj9MfQ=;
+        b=EdeHeXB1IR+uAwlM2gFOv3FJ4IhlAzfeOVGOQZtsRKKpH22eSrlKrPEJ2RgDQzK7Sx
+         IJwywj30QVxOMYZTpD7zgzGm6+SdsFYQ06l4S/zCvOpB5tjEeyzb7SoEYoctcXs2nCzx
+         cy+3LF4x6f/yqOgERF5QxoZTsp8edHbgo5Dt81JB+cVXliNN27jjcD4PKaH6cLSdHM8T
+         CpFVmlh8km7gzx3irIxiMYkgjhuIF18F27Xl3pkZw5z0wShnWhFvyEiZimk5bA+sILyI
+         yp9JUMOB9YF2WklNrVJblGhtnLpLUvnL8qh8t9o8JK/6s7eNjUZ4mcj6v0rAcMS72H99
+         qi/A==
+X-Gm-Message-State: AOJu0YyDATVOtqNhCFOctcx1dSm7nf0odlxMzmHWeA9yp/25Ictl/Ylc
+        rrlLGbFSPnkkWfsbwA+KltN5pf4LHbsd60/MezUlKr3aocSP9NU=
+X-Google-Smtp-Source: AGHT+IGroASKvRv275OYnuW1udLy3196WexKVfY4CJiC1VkyF1Za3uN6dslnnwU2rHfcZ6dsegf6Oi/dlgmT62TPVp3rcqhsod37
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:eccf:b0:1cc:f064:8d6f with SMTP id
+ a15-20020a170902eccf00b001ccf0648d6fmr50470plh.4.1700598426385; Tue, 21 Nov
+ 2023 12:27:06 -0800 (PST)
+Date:   Tue, 21 Nov 2023 12:27:06 -0800
+In-Reply-To: <20231121191815.201459-1-tintinm2017@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001c44c9060aaf6de3@google.com>
+Subject: Re: [syzbot] [usb?] UBSAN: array-index-out-of-bounds in usbhid_parse
+From:   syzbot <syzbot+c52569baf0c843f35495@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tintinm2017@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the boards supported by the TCPM drivers can support USB-C
-Accessory Modes (Analog Audio, Debug). Parse information about supported
-modes from the device tree.
+Hello,
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/usb/typec/tcpm/tcpm.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in usbhid_parse
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 6e843c511b85..ba2926846269 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -6114,6 +6114,7 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- {
- 	const char *opmode_str;
- 	int ret;
-+	int mode;
- 	u32 mw, frs_current;
- 
- 	if (!fwnode)
-@@ -6132,6 +6133,14 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 	if (ret < 0)
- 		return ret;
- 
-+	mode = 0;
-+
-+	if (fwnode_property_read_bool(fwnode, "accessory-mode-audio"))
-+		port->typec_caps.accessory[mode++] = TYPEC_ACCESSORY_AUDIO;
-+
-+	if (fwnode_property_read_bool(fwnode, "accessory-mode-debug"))
-+		port->typec_caps.accessory[mode++] = TYPEC_ACCESSORY_DEBUG;
-+
- 	port->port_type = port->typec_caps.type;
- 	port->pd_supported = !fwnode_property_read_bool(fwnode, "pd-disable");
- 
--- 
-2.42.0
+usb 1-1: string descriptor 0 read error: -22
+usb 1-1: New USB device found, idVendor=080e, idProduct=4eb9, bcdDevice=d7.f6
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+================================================================================
+UBSAN: array-index-out-of-bounds in drivers/hid/usbhid/hid-core.c:1026:18
+index 1 is out of range for type 'hid_class_descriptor [1]'
+CPU: 1 PID: 23 Comm: kworker/1:0 Not tainted 6.7.0-rc2-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
+ usbhid_parse+0x99d/0xa10 drivers/hid/usbhid/hid-core.c:1026
+ hid_add_device+0x189/0xa60 drivers/hid/hid-core.c:2783
+ usbhid_probe+0xd0a/0x1360 drivers/hid/usbhid/hid-core.c:1431
+ usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3625
+ usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
+ usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
+ usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+ __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
+ bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
+ __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
+ bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
+ device_add+0x117e/0x1aa0 drivers/base/core.c:3625
+ usb_new_device+0xd80/0x19f0 drivers/usb/core/hub.c:2599
+ hub_port_connect drivers/usb/core/hub.c:5463 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5603 [inline]
+ port_event drivers/usb/core/hub.c:5763 [inline]
+ hub_event+0x2dac/0x4e10 drivers/usb/core/hub.c:5845
+ process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+================================================================================
+
+
+Tested on:
+
+commit:         98b1cc82 Linux 6.7-rc2
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=17127f58e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7445bf05fbfd240c
+dashboard link: https://syzkaller.appspot.com/bug?extid=c52569baf0c843f35495
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=112520af680000
 
