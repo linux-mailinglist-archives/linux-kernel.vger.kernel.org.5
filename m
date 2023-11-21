@@ -2,51 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215CF7F2977
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992847F297B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbjKUJ5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:57:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
+        id S233357AbjKUJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231657AbjKUJ5L (ORCPT
+        with ESMTP id S234176AbjKUJ5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:57:11 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C319CC1;
-        Tue, 21 Nov 2023 01:57:06 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r5NV7-0007lq-KD; Tue, 21 Nov 2023 10:57:01 +0100
-Message-ID: <06eada44-166d-4ab4-acfd-f9cd65176460@leemhuis.info>
-Date:   Tue, 21 Nov 2023 10:57:00 +0100
+        Tue, 21 Nov 2023 04:57:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE899112;
+        Tue, 21 Nov 2023 01:57:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700560654; x=1732096654;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qFch2I4wb3I5lzRPVl9RrDhRU6eftq6hKyzQM7XrNCw=;
+  b=PhXR/yPzzYYtVRB4z0ZIw6dBPviBXyq+hN7yPL0dbXgiCWLXYHAwanIL
+   UvDJsbdJQbTmB3hd9/pFJfn7AEWMNhDLTqIeWMDv/MX0dqWD1WOC+s9CU
+   PcH3dsKlKh6WF12udZlic8LMrlmF/WrbP6BgdEU6dD3MDgtC2q3889VJT
+   M1eLzJDE5xu1ryV0poS4eYaZitj134RRE2TWz3L2Zcz5Q2CIO1byPqYLZ
+   qgp8Y/l81SFFZCk1Sy58ZCahXq2ANONWM62z3ziA9YZOmM2fzyi9E3z6v
+   3H0otck6KSSk3TaXFJedAJHRHHltJQxmkLfS2klQD23pxi/+ZhzRceaT6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="13349006"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="13349006"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:57:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="14867587"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:57:30 -0800
+Message-ID: <5d9aadbd-975b-4c4d-ba18-ac6e0fb07ba1@linux.intel.com>
+Date:   Tue, 21 Nov 2023 17:57:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: scsi regression that after months is still not addressed and now
- bothering 6.1.y users, too
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Sagar Biradar <sagar.biradar@microchip.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        Hannes Reinecke <hare@suse.de>,
-        scsi <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gilbert Wu <gilbert.wu@microchip.com>,
-        John Garry <john.g.garry@oracle.com>
-References: <c6ff53dc-a001-48ee-8559-b69be8e4db81@leemhuis.info>
-In-Reply-To: <c6ff53dc-a001-48ee-8559-b69be8e4db81@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v6 11/16] KVM: x86/tdp_mmu: Split the large page when zap
+ leaf
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <8b43a9203c34b5330c4ea5901da5dac3458ac98d.1699368363.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700560627;bb90ccbb;
-X-HE-SMSGID: 1r5NV7-0007lq-KD
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,57 +70,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.11.23 10:50, Thorsten Leemhuis wrote:
-> * @SCSI maintainers: could you please look into below please?
-> 
-> * @Stable team: you might want to take a look as well and consider a
-> revert in 6.1.y (yes, I know, those are normally avoided, but here it
-> might make sense).
-> 
-> TLDR: I noticed a regression (Adaptec 71605z with aacraid sometimes
-> hangs for a while) that was reported months ago already but is still not
-> fixed. Not only that, it apparently more and more users run into this
-> recently, as the culprit was recently integrated into 6.1.y; I wonder if
-> it would be best to revert it there, unless a fix for mainline comes
-> into reach soon.
+
+
+On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
+> From: Xiaoyao Li <xiaoyao.li@intel.com>
 >
-> Details:
-> 
-> Quite a few machines with Adaptec controllers seems to hang for a few
-> tens of seconds to a few minutes before things start to work normally
-> again for a while:
-> https://bugzilla.kernel.org/show_bug.cgi?id=217599
+> When TDX enabled, a large page cannot be zapped if it contains mixed
+> pages. In this case, it has to split the large page.
+>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> ---
+>   arch/x86/kvm/Kconfig            |  1 +
+>   arch/x86/kvm/mmu/mmu.c          |  6 +--
+>   arch/x86/kvm/mmu/mmu_internal.h |  9 +++++
+>   arch/x86/kvm/mmu/tdp_mmu.c      | 68 +++++++++++++++++++++++++++++++--
+>   4 files changed, 78 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> index b0f103641547..557479737962 100644
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -93,6 +93,7 @@ config KVM_INTEL
+>   	tristate "KVM for Intel (and compatible) processors support"
+>   	depends on KVM && IA32_FEAT_CTL
+>   	select KVM_SW_PROTECTED_VM if INTEL_TDX_HOST
+> +	select KVM_GENERIC_MEMORY_ATTRIBUTES if INTEL_TDX_HOST
+>   	select KVM_PRIVATE_MEM if INTEL_TDX_HOST
+>   	help
+>   	  Provides support for KVM on processors equipped with Intel's VT
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 265177cedf37..0bf043812644 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -7463,8 +7463,8 @@ bool kvm_arch_pre_set_memory_attributes(struct kvm *kvm,
+>   	return kvm_unmap_gfn_range(kvm, range);
+>   }
+>   
+> -static bool hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
+> -				int level)
+> +bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
+> +			     int level)
+>   {
+>   	return lpage_info_slot(gfn, slot, level)->disallow_lpage & KVM_LPAGE_MIXED_FLAG;
+>   }
+> @@ -7491,7 +7491,7 @@ static bool hugepage_has_attrs(struct kvm *kvm, struct kvm_memory_slot *slot,
+>   		return kvm_range_has_memory_attributes(kvm, start, end, attrs);
+>   
+>   	for (gfn = start; gfn < end; gfn += KVM_PAGES_PER_HPAGE(level - 1)) {
+> -		if (hugepage_test_mixed(slot, gfn, level - 1) ||
+> +		if (kvm_hugepage_test_mixed(slot, gfn, level - 1) ||
+>   		    attrs != kvm_get_memory_attributes(kvm, gfn))
+>   			return false;
+>   	}
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 1da98be74ad2..653e96769956 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -460,4 +460,13 @@ void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
+>   void track_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
+>   void untrack_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
+>   
+> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> +bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn, int level);
+> +#else
+> +static inline bool kvm_hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn, int level)
+> +{
+> +	return false;
+> +}
+> +#endif
+> +
+>   #endif /* __KVM_X86_MMU_INTERNAL_H */
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 7873e9ee82ad..a209a67decae 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -964,6 +964,14 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>   	return true;
+>   }
+>   
+> +
+> +static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
+> +						       struct tdp_iter *iter,
+> +						       bool shared);
+> +
+> +static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
+> +				   struct kvm_mmu_page *sp, bool shared);
+> +
+>   /*
+>    * If can_yield is true, will release the MMU lock and reschedule if the
+>    * scheduler needs the CPU or there is contention on the MMU lock. If this
+> @@ -975,13 +983,15 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>   			      gfn_t start, gfn_t end, bool can_yield, bool flush,
+>   			      bool zap_private)
+>   {
+> +	bool is_private = is_private_sp(root);
+> +	struct kvm_mmu_page *split_sp = NULL;
+>   	struct tdp_iter iter;
+>   
+>   	end = min(end, tdp_mmu_max_gfn_exclusive());
+>   
+>   	lockdep_assert_held_write(&kvm->mmu_lock);
+>   
+> -	WARN_ON_ONCE(zap_private && !is_private_sp(root));
+> +	WARN_ON_ONCE(zap_private && !is_private);
+>   	if (!zap_private && is_private_sp(root))
+Can use is_private instead of is_private_sp(root) here as well.
 
-Quick follow up, only saw this now while posting something to the
-ticket: according to one reporter the problem even causes data damage.
-To quote:
+>   		return false;
+>   
+> @@ -1006,12 +1016,66 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>   		    !is_last_spte(iter.old_spte, iter.level))
+>   			continue;
+>   
+> +		if (is_private && kvm_gfn_shared_mask(kvm) &&
+> +		    is_large_pte(iter.old_spte)) {
+> +			gfn_t gfn = iter.gfn & ~kvm_gfn_shared_mask(kvm);
+> +			gfn_t mask = KVM_PAGES_PER_HPAGE(iter.level) - 1;
+> +			struct kvm_memory_slot *slot;
+> +			struct kvm_mmu_page *sp;
+> +
+> +			slot = gfn_to_memslot(kvm, gfn);
+> +			if (kvm_hugepage_test_mixed(slot, gfn, iter.level) ||
+> +			    (gfn & mask) < start ||
+> +			    end < (gfn & mask) + KVM_PAGES_PER_HPAGE(iter.level)) {
+> +				WARN_ON_ONCE(!can_yield);
+> +				if (split_sp) {
+> +					sp = split_sp;
+> +					split_sp = NULL;
+> +					sp->role = tdp_iter_child_role(&iter);
+> +				} else {
+> +					WARN_ON(iter.yielded);
+> +					if (flush && can_yield) {
+> +						kvm_flush_remote_tlbs(kvm);
+> +						flush = false;
+> +					}
+Is it necessary to do the flush here?
 
-'''
-if you run fsck.ext4 on ext4 file system with buggy kernel it will
-damage file system and its data
+> +					sp = tdp_mmu_alloc_sp_for_split(kvm, &iter, false);
+> +					if (iter.yielded) {
+> +						split_sp = sp;
+> +						continue;
+> +					}
+> +				}
+> +				KVM_BUG_ON(!sp, kvm);
+> +
+> +				tdp_mmu_init_sp(sp, iter.sptep, iter.gfn);
+> +				if (tdp_mmu_split_huge_page(kvm, &iter, sp, false)) {
+> +					kvm_flush_remote_tlbs(kvm);
+> +					flush = false;
+Why it needs to flush TLB immediately if tdp_mmu_split_huge_page() fails?
 
-using buggy kernel BTRFS scrub also says that checksums are wrong
-'''
+Also, when KVM MMU write lock is held, it seems tdp_mmu_split_huge_page()
+will not fail. But let's assume this condition can be triggered, since 
+sp is local
+variable, it will lost its value after continue, and split_sp is also NULL,
+it will try to allocate a new sp, memory leakage here?
 
-Ciao, Thorsten
+> +					/* force retry on this gfn. */
+> +					iter.yielded = true;
+> +				} else
+> +					flush = true;
+> +				continue;
+> +			}
+> +		}
+> +
+>   		tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
+>   		flush = true;
+>   	}
+>   
+>   	rcu_read_unlock();
+>   
+> +	if (split_sp) {
+> +		WARN_ON(!can_yield);
+> +		if (flush) {
+> +			kvm_flush_remote_tlbs(kvm);
+> +			flush = false;
+> +		}
+Same here, why we need to do the flush here?
+Can we delay it till the caller do the flush?
 
-> That problem is apparently caused by 9dc704dcc09eae ("scsi: aacraid:
-> Reply queue mapping to CPUs based on IRQ affinity") [v6.4-rc7]. That
-> commit despite a warning of mine to Sasha recently made it into 6.1.53
-> -- and that way apparently recently reached more users recently, as
-> quite a few joined that ticket.
-> 
-> The culprit is authored by Sagar Biradar who unless I missed something
-> never replied even once to the ticket or earlier mails about it. Lore
-> has no messages from him since early June.
-> 
-> Hannes Reinecke at least tried to fix it a few weeks ago (many thx), but
-> that didn't work out (see the ticket for details). Since then things
-> look stalled again, which is, ehh, unfortunate when it comes to
-> regressions.
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
+> +
+> +		write_unlock(&kvm->mmu_lock);
+> +		tdp_mmu_free_sp(split_sp);
+> +		write_lock(&kvm->mmu_lock);
+> +	}
+> +
+>   	/*
+>   	 * Because this flow zaps _only_ leaf SPTEs, the caller doesn't need
+>   	 * to provide RCU protection as no 'struct kvm_mmu_page' will be freed.
+> @@ -1606,8 +1670,6 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp_for_split(struct kvm *kvm,
+>   
+>   	KVM_BUG_ON(kvm_mmu_page_role_is_private(role) !=
+>   		   is_private_sptep(iter->sptep), kvm);
+> -	/* TODO: Large page isn't supported for private SPTE yet. */
+> -	KVM_BUG_ON(kvm_mmu_page_role_is_private(role), kvm);
+>   
+>   	/*
+>   	 * Since we are allocating while under the MMU lock we have to be
+
