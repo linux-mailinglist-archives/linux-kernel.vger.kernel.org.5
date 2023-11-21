@@ -2,253 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EECF07F234C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6DEA7F2350
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbjKUBsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
+        id S233240AbjKUBu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:50:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjKUBsm (ORCPT
+        with ESMTP id S229679AbjKUBuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:48:42 -0500
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66BDC3;
-        Mon, 20 Nov 2023 17:48:36 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0Vwqn1AR_1700531311;
-Received: from 30.240.112.71(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vwqn1AR_1700531311)
-          by smtp.aliyun-inc.com;
-          Tue, 21 Nov 2023 09:48:33 +0800
-Message-ID: <57bd6874-35df-48b0-90d8-45077396b44f@linux.alibaba.com>
-Date:   Tue, 21 Nov 2023 09:48:28 +0800
+        Mon, 20 Nov 2023 20:50:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FC9D8
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:50:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700531418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y3Q3tLM9OGu607uvr6IkvxoBRGupiz4hQd2uNEc6wxU=;
+        b=h35Vxiqr1QITmJY7boN3uZO1bPYrOgJMJvd+9sbm8tZ47J8t72x9BolqdjlchhsEEzXaSc
+        EHQogQThJQNIqpBk0/VXB0ZaDI4uYCrl9PlsKDeXcgjUBGrYP+Ig+TBcgrlk7CpaV7owwd
+        Ptne/zjbqdKAgOgfQYItq3EcjBbF464=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-317-dGxeOKufP0OB-17nBSQkQA-1; Mon, 20 Nov 2023 20:50:15 -0500
+X-MC-Unique: dGxeOKufP0OB-17nBSQkQA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F0F9811E7B;
+        Tue, 21 Nov 2023 01:50:14 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2267D2026D4C;
+        Tue, 21 Nov 2023 01:50:10 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 09:50:05 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Ignat Korchagin <ignat@cloudflare.com>, eric_devolder@yahoo.com
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, frederic@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, samitolvanen@google.com,
+        juerg.haefliger@canonical.com, arnd@arndb.de,
+        rmk+kernel@armlinux.org.uk, linus.walleij@linaro.org,
+        sebastian.reichel@collabora.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, anshuman.khandual@arm.com,
+        ziy@nvidia.com, masahiroy@kernel.org, ndesaulniers@google.com,
+        mhiramat@kernel.org, ojeda@kernel.org, thunder.leizhen@huawei.com,
+        xin3.li@intel.com, tj@kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, tsi@tuyoix.net,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: Potential config regression after 89cde455 ("kexec: consolidate
+ kexec and crash options into kernel/Kconfig.kexec")
+Message-ID: <ZVwMzXxWkgonIAfc@MiWiFi-R3L-srv>
+References: <CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/2] ACPI: APEI: handle synchronous errors in task work
- with proper si_code
-Content-Language: en-US
-To:     rafael@kernel.org, wangkefeng.wang@huawei.com,
-        tanxiaofei@huawei.com, mawupeng1@huawei.com, tony.luck@intel.com,
-        linmiaohe@huawei.com, naoya.horiguchi@nec.com, james.morse@arm.com,
-        gregkh@linuxfoundation.org, will@kernel.org, jarkko@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-edac@vger.kernel.org, acpica-devel@lists.linuxfoundation.org,
-        stable@vger.kernel.org, x86@kernel.org, justin.he@arm.com,
-        ardb@kernel.org, ying.huang@intel.com, ashish.kalra@amd.com,
-        baolin.wang@linux.alibaba.com, bp@alien8.de, tglx@linutronix.de,
-        mingo@redhat.com, dave.hansen@linux.intel.com, lenb@kernel.org,
-        hpa@zytor.com, robert.moore@intel.com, lvying6@huawei.com,
-        xiexiuqi@huawei.com, zhuo.song@linux.alibaba.com
-References: <20221027042445.60108-1-xueshuai@linux.alibaba.com>
- <20231007072818.58951-1-xueshuai@linux.alibaba.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20231007072818.58951-1-xueshuai@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, ALL,
+Eric DeVolder's Oracle mail address is not available anymore, add his
+current mail address he told me. 
 
-Gentle ping.
+On 11/20/23 at 10:52pm, Ignat Korchagin wrote:
+> Good day!
+> 
+> We have recently started to evaluate Linux 6.6 and noticed that we
+> cannot disable CONFIG_KEXEC anymore, but keep CONFIG_CRASH_DUMP
+> enabled. It seems to be related to commit 89cde455 ("kexec:
+> consolidate kexec and crash options into kernel/Kconfig.kexec"), where
+> a CONFIG_KEXEC dependency was added to CONFIG_CRASH_DUMP.
+> 
+> In our current kernel (Linux 6.1) we only enable CONFIG_KEXEC_FILE
+> with enforced signature check to support the kernel crash dumping
+> functionality and would like to keep CONFIG_KEXEC disabled for
+> security reasons [1].
+> 
+> I was reading the long commit message, but the reason for adding
+> CONFIG_KEXEC as a dependency for CONFIG_CRASH_DUMP evaded me. And I
+> believe from the implementation perspective CONFIG_KEXEC_FILE should
+> suffice here (as we successfully used it for crashdumps on Linux 6.1).
+> 
+> Is there a reason for adding this dependency or is it just an
+> oversight? Would some solution of requiring either CONFIG_KEXEC or
+> CONFIG_KEXEC_FILE work here?
 
-Best Regards,
-Shuai
+I searched the patch history, found Eric didn't add the dependency on
+CONFIG_KEXEC at the beginning. Later a linux-next building failure with
+randconfig was reported, in there CONFIG_CRASH_DUMP enabled, while
+CONFIG_KEXEC is disabled. Finally Eric added the KEXEC dependency for
+CRASH_DUMP. Please see below link for more details:
 
-On 2023/10/7 15:28, Shuai Xue wrote:
-> Hi, ALL,
-> 
-> I have rewritten the cover letter with the hope that the maintainer will truly
-> understand the necessity of this patch. Both Alibaba and Huawei met the same
-> issue in products, and we hope it could be fixed ASAP.
-> 
-> ## Changes Log
-> 
-> changes since v8:
-> - remove the bug fix tag of patch 2 (per Jarkko Sakkinen)
-> - remove the declaration of memory_failure_queue_kick (per Naoya Horiguchi)
-> - rewrite the return value comments of memory_failure (per Naoya Horiguchi)
-> 
-> changes since v7:
-> - rebase to Linux v6.6-rc2 (no code changed)
-> - rewritten the cover letter to explain the motivation of this patchset
-> 
-> changes since v6:
-> - add more explicty error message suggested by Xiaofei
-> - pick up reviewed-by tag from Xiaofei
-> - pick up internal reviewed-by tag from Baolin
-> 
-> changes since v5 by addressing comments from Kefeng:
-> - document return value of memory_failure()
-> - drop redundant comments in call site of memory_failure() 
-> - make ghes_do_proc void and handle abnormal case within it
-> - pick up reviewed-by tag from Kefeng Wang 
-> 
-> changes since v4 by addressing comments from Xiaofei:
-> - do a force kill only for abnormal sync errors
-> 
-> changes since v3 by addressing comments from Xiaofei:
-> - do a force kill for abnormal memory failure error such as invalid PA,
-> unexpected severity, OOM, etc
-> - pcik up tested-by tag from Ma Wupeng
-> 
-> changes since v2 by addressing comments from Naoya:
-> - rename mce_task_work to sync_task_work
-> - drop ACPI_HEST_NOTIFY_MCE case in is_hest_sync_notify()
-> - add steps to reproduce this problem in cover letter
-> 
-> changes since v1:
-> - synchronous events by notify type
-> - Link: https://lore.kernel.org/lkml/20221206153354.92394-3-xueshuai@linux.alibaba.com/
-> 
-> 
-> ## Cover Letter
-> 
-> There are two major types of uncorrected recoverable (UCR) errors :
-> 
-> - Action Required (AR): The error is detected and the processor already
->   consumes the memory. OS requires to take action (for example, offline
->   failure page/kill failure thread) to recover this error.
-> 
-> - Action Optional (AO): The error is detected out of processor execution
->   context. Some data in the memory are corrupted. But the data have not
->   been consumed. OS is optional to take action to recover this error.
-> 
-> The main difference between AR and AO errors is that AR errors are synchronous
-> events, while AO errors are asynchronous events. Synchronous exceptions, such as
-> Machine Check Exception (MCE) on X86 and Synchronous External Abort (SEA) on
-> Arm64, are signaled by the hardware when an error is detected and the memory
-> access has architecturally been executed.
-> 
-> Currently, both synchronous and asynchronous errors are queued as AO errors and
-> handled by a dedicated kernel thread in a work queue on the ARM64 platform. For
-> synchronous errors, memory_failure() is synced using a cancel_work_sync trick to
-> ensure that the corrupted page is unmapped and poisoned. Upon returning to
-> user-space, the process resumes at the current instruction, triggering a page
-> fault. As a result, the kernel sends a SIGBUS signal to the current process due
-> to VM_FAULT_HWPOISON.
-> 
-> However, this trick is not always be effective, this patch set improves the
-> recovery process in three specific aspects:
-> 
-> 1. Handle synchronous exceptions with proper si_code
-> 
-> ghes_handle_memory_failure() queue both synchronous and asynchronous errors with
-> flag=0. Then the kernel will notify the process by sending a SIGBUS signal in
-> memory_failure() with wrong si_code: BUS_MCEERR_AO to the actual user-space
-> process instead of BUS_MCEERR_AR. The user-space processes rely on the si_code
-> to distinguish to handle memory failure.
-> 
-> For example, hwpoison-aware user-space processes use the si_code:
-> BUS_MCEERR_AO for 'action optional' early notifications, and BUS_MCEERR_AR
-> for 'action required' synchronous/late notifications. Specifically, when a
-> signal with SIGBUS_MCEERR_AR is delivered to QEMU, it will inject a vSEA to
-> Guest kernel. In contrast, a signal with SIGBUS_MCEERR_AO will be ignored
-> by QEMU.[1]
-> 
-> Fix it by seting memory failure flags as MF_ACTION_REQUIRED on synchronous events. (PATCH 1)
-> 
-> 2. Handle memory_failure() abnormal fails to avoid a unnecessary reboot
-> 
-> If process mapping fault page, but memory_failure() abnormal return before
-> try_to_unmap(), for example, the fault page process mapping is KSM page.
-> In this case, arm64 cannot use the page fault process to terminate the
-> synchronous exception loop.[4]
-> 
-> This loop can potentially exceed the platform firmware threshold or even trigger
-> a kernel hard lockup, leading to a system reboot. However, kernel has the
-> capability to recover from this error.
-> 
-> Fix it by performing a force kill when memory_failure() abnormal fails or when
-> other abnormal synchronous errors occur. These errors can include situations
-> such as invalid PA, unexpected severity, no memory failure config support,
-> invalid GUID section, OOM, etc. (PATCH 2)
-> 
-> 3. Handle memory_failure() in current process context which consuming poison
-> 
-> When synchronous errors occur, memory_failure() assume that current process
-> context is exactly that consuming poison synchronous error.
-> 
-> For example, kill_accessing_process() holds mmap locking of current->mm, does
-> pagetable walk to find the error virtual address, and sends SIGBUS to the
-> current process with error info. However, the mm of kworker is not valid,
-> resulting in a null-pointer dereference. I have fixed this in[3].
-> 
->     commit 77677cdbc2aa mm,hwpoison: check mm when killing accessing process
-> 
-> Another example is that collect_procs()/kill_procs() walk the task list, only
-> collect and send sigbus to task which consuming poison. But memory_failure() is
-> queued and handled by a dedicated kernel thread on arm64 platform.
-> 
-> Fix it by queuing memory_failure() as a task work which runs in current
-> execution context to synchronously send SIGBUS before ret_to_user. (PATCH 2)
-> 
-> ** In summary, this patch set handles synchronous errors in task work with
-> proper si_code so that hwpoison-aware process can recover from errors, and
-> fixes (potentially) abnormal cases. **
-> 
-> Lv Ying and XiuQi from Huawei also proposed to address similar problem[2][4].
-> Acknowledge to discussion with them.
-> 
-> ## Steps to Reproduce This Problem
-> 
-> To reproduce this problem:
-> 
-> 	# STEP1: enable early kill mode
-> 	#sysctl -w vm.memory_failure_early_kill=1
-> 	vm.memory_failure_early_kill = 1
-> 
-> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-> 	#einj_mem_uc single
-> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-> 	injecting ...
-> 	triggering ...
-> 	signal 7 code 5 addr 0xffffb0d75000
-> 	page not present
-> 	Test passed
-> 
-> The si_code (code 5) from einj_mem_uc indicates that it is BUS_MCEERR_AO error
-> and it is not fact.
-> 
-> After this patch set:
-> 
-> 	# STEP1: enable early kill mode
-> 	#sysctl -w vm.memory_failure_early_kill=1
-> 	vm.memory_failure_early_kill = 1
-> 
-> 	# STEP2: inject an UCE error and consume it to trigger a synchronous error
-> 	#einj_mem_uc single
-> 	0: single   vaddr = 0xffffb0d75400 paddr = 4092d55b400
-> 	injecting ...
-> 	triggering ...
-> 	signal 7 code 4 addr 0xffffb0d75000
-> 	page not present
-> 	Test passed
-> 
-> The si_code (code 4) from einj_mem_uc indicates that it is BUS_MCEERR_AR error
-> as we expected.
-> 
-> [1] Add ARMv8 RAS virtualization support in QEMU https://patchew.org/QEMU/20200512030609.19593-1-gengdongjiu@huawei.com/
-> [2] https://lore.kernel.org/lkml/20221205115111.131568-3-lvying6@huawei.com/
-> [3] https://lkml.kernel.org/r/20220914064935.7851-1-xueshuai@linux.alibaba.com
-> [4] https://lore.kernel.org/lkml/20221209095407.383211-1-lvying6@huawei.com/
-> 
-> Shuai Xue (2):
->   ACPI: APEI: set memory failure flags as MF_ACTION_REQUIRED on
->     synchronous events
->   ACPI: APEI: handle synchronous exceptions in task work
-> 
->  arch/x86/kernel/cpu/mce/core.c |   9 +--
->  drivers/acpi/apei/ghes.c       | 113 ++++++++++++++++++++++-----------
->  include/acpi/ghes.h            |   3 -
->  include/linux/mm.h             |   1 -
->  mm/memory-failure.c            |  22 ++-----
->  5 files changed, 82 insertions(+), 66 deletions(-)
-> 
+https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle.com/T/#u
+
+And besides, the newly added CONFIG_CRASH_HOTPLUG also needs
+CONFIG_KEXEC if the elfcorehdr is allowed to be manipulated when
+cpu/memory hotplug hapened.
+
+Thanks
+Baoquan
+
