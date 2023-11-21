@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750A57F36FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E676B7F36FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjKUT46 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 14:56:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S230527AbjKUT7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKUT45 (ORCPT
+        with ESMTP id S229514AbjKUT7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:56:57 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C344D19B;
-        Tue, 21 Nov 2023 11:56:47 -0800 (PST)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d7e4e61bedso61948a34.1;
-        Tue, 21 Nov 2023 11:56:47 -0800 (PST)
+        Tue, 21 Nov 2023 14:59:06 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D46D1A1;
+        Tue, 21 Nov 2023 11:59:03 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cf57430104so22804485ad.1;
+        Tue, 21 Nov 2023 11:59:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700596743; x=1701201543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ksp0gscyzTzv7gMh3uW3pYf1M1qB9WxVG6lkj3p63HM=;
+        b=CM/mZjknIViX/zgRQ/yXGDzpVhg+HWiDybYc5GLlGGoExlAx644XNHKHvdmtCXDJF1
+         GLVHFDuB+rQ+kh1UgT3RZeGZCaq+gxBAKxJ1I1vOae30TSOqSf+GtAwq2cDD+61j5wdC
+         yYffl/wiWFge62NhZP0PK0YyurtIStWIukA29FeqqvO6FSoGx1icXotk7sRguNFfZCR/
+         dL2CUKp8nY4OvrzC8zhUDErmCzM4d8zfdxy40moKnxzgSr5s5f8whrfjmUgTFuxT5L0e
+         X0mP2WJ3DmEYmYt5AO9508yXHobhp99hB7ydE6Kyl1cgEEMXZ+2GE4qNXMVKiCN1O/vA
+         VsVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700596606; x=1701201406;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2ZOeqvRu3LxXiXrSd8uRhoWsi+0XXhfdsm4I1VLjf3E=;
-        b=rJIJzUrRnpbYgZK6BkjlbrWcfpssqPzIHQB3LBNOHypWzREeicTzqfu7ffvU0EbpPp
-         1PhyBExusenPeV3CVQinpZxJc62ZOem5jBi7BOqB/KzRXGkqOJ2rWHsYQ45Q0HoVS8Hn
-         79N6ayKJpPXLcAhQ2l687o2ajBpRlXbUkJZhDmhEE8MsLC8TTQ/LepMYrH0aXHIuSK4s
-         HPizehaAJPd5OU/Kzag0NLTYMZs8kRg0BqlmOWQwrBPa5zg4BvdQjOFbfjn/JUaP2Qfq
-         3NzX4buu/zfcn5hyHShX+s/02l59ZauC4H1QE+VMHBeJaWaKphbSyoGANyQr8sXalaDP
-         wTOA==
-X-Gm-Message-State: AOJu0YzDJjk2tBzKjKjoHkIL9qZY4XWRanEowdD/I61Tq64VjF2SXUa+
-        PnrAE37E4FsbVeK3dIY1YzaOC7luafdBuWGh7g0=
-X-Google-Smtp-Source: AGHT+IGfoh2AoQ1+r30cMz7Wi8VaxFkshXC+ngX/S9+JfPwwxHfOaJ4eH6D9XO8XC+cmqNdq15Zv1NpUwr2qAfyohqM=
-X-Received: by 2002:a05:6820:311:b0:58c:e80a:537d with SMTP id
- l17-20020a056820031100b0058ce80a537dmr411410ooe.1.1700596606357; Tue, 21 Nov
- 2023 11:56:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700596743; x=1701201543;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ksp0gscyzTzv7gMh3uW3pYf1M1qB9WxVG6lkj3p63HM=;
+        b=hDPczU8bnTjaNv8TjHJ4eoznx6BU7aai1x0YR2mvkU0Upggx67KDwH2b+cWO5F+YS1
+         Q3ArVihlaKfaVkSZIR8uCNxNS7UugHnNt2zqb0jTmMMiQjnDNvjcc9H4O0uSJQTpv9O7
+         S4nkJRyxdomq4IoJLsZkV08NOkdjDWECAqr+Bvc/w1pZp44+gxIxU3G6784nCMOnNAWG
+         NwrFKPkTp2GSXZlvrUgFabnhTBVsx51JMZMN6LYhdw3CLEt+hgEKWPZnO/+h7Q0bT1AX
+         6YnJ66IdiGZLBKGxycVxVQzdJaP0HN8dbkrKqI3mEyamCdzWR0LlQByUp/kr6cd9uThT
+         bRQQ==
+X-Gm-Message-State: AOJu0YyhdPAgukZL+9cBVyHKwVUg86WhtmXhPhX3I+qtGHYwNQ0th2ic
+        emqv8NLYKbijPntocznzG9o=
+X-Google-Smtp-Source: AGHT+IFQpNt6hsKsku/HQD+vPEIpWTeUotmIGn0u0JP+YIjmbDjqW2tJTUIerT5z8sVEwPDtXCmAZA==
+X-Received: by 2002:a17:902:e88f:b0:1ce:654a:81ef with SMTP id w15-20020a170902e88f00b001ce654a81efmr217635plg.18.1700596742968;
+        Tue, 21 Nov 2023 11:59:02 -0800 (PST)
+Received: from localhost.localdomain ([110.46.146.116])
+        by smtp.gmail.com with ESMTPSA id u4-20020a17090282c400b001cc615e6850sm8310732plz.90.2023.11.21.11.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 11:59:02 -0800 (PST)
+From:   SungHwan Jung <onenowy@gmail.com>
+To:     "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     SungHwan Jung <onenowy@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add support for Acer Predator PHN16-71
+Date:   Wed, 22 Nov 2023 04:58:14 +0900
+Message-ID: <20231121195817.18128-1-onenowy@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <430a1271-a45c-4f5a-90c7-a62703ac7cf4@ancud.ru>
-In-Reply-To: <430a1271-a45c-4f5a-90c7-a62703ac7cf4@ancud.ru>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 21 Nov 2023 20:56:35 +0100
-Message-ID: <CAJZ5v0gHgfscDCGo3P5JVn73uUTBkpfCqRJV3QcOnFt8FP7FhQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: LPIT: fix u32 multiplication overflow
-To:     Nikita Kiryushin <kiryushin@ancud.ru>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 7:09 PM Nikita Kiryushin <kiryushin@ancud.ru> wrote:
->
-> In lpit_update_residency there is a possibility of overflow
-> in multiplication, if tsc_khz is large enough (> UINT_MAX/1000).
+This series of patches adds support for Acer Predator PHN16-71 in acer-wmi
+including platform profile, (thermal) mode key and fan speed monitoring.
 
-That would be a TSC ticking at hundreds of millions of kHz if I'm not
-mistaken.  Why is it really a concern?
+The acer-wmi driver already includes fan control and turbo mode support
+for gaming laptops that use predator sense app (version 3), but PHN16-71
+operates in different way with new predator sense (version 4).
+To distinguish from implementation for previous model, new implementation
+for this device is marked with "v4".
 
-> Change multiplication to mul_u32_u32.
+SungHwan Jung (2):
+  platform/x86: acer-wmi: Add platform profile and mode key support for
+    Predator PHN16-71
+  platform/x86: acer-wmi: add fan speed monitoring for  Predator
+    PHN16-71
 
-So why is this better?
+ drivers/platform/x86/acer-wmi.c | 367 +++++++++++++++++++++++++++++++-
+ 1 file changed, 366 insertions(+), 1 deletion(-)
 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->
-> Fixes: eeb2d80d502a ("ACPI / LPIT: Add Low Power Idle Table (LPIT) support")
-> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
-> ---
->   drivers/acpi/acpi_lpit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/acpi/acpi_lpit.c b/drivers/acpi/acpi_lpit.c
-> index c5598b6d5db8..794962c5c88e 100644
-> --- a/drivers/acpi/acpi_lpit.c
-> +++ b/drivers/acpi/acpi_lpit.c
-> @@ -105,7 +105,7 @@ static void lpit_update_residency(struct
-> lpit_residency_info *info,
->                 return;
->         info->frequency = lpit_native->counter_frequency ?
-> -                               lpit_native->counter_frequency : tsc_khz * 1000;
-> +                               lpit_native->counter_frequency : mul_u32_u32(tsc_khz, 1000U);
->         if (!info->frequency)
->                 info->frequency = 1;
->   -- 2.34.1
->
+-- 
+2.43.0
+
