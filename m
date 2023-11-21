@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B237F3669
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0977F366B
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbjKUSqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        id S231387AbjKUSqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234504AbjKUSp6 (ORCPT
+        with ESMTP id S234544AbjKUSqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:45:58 -0500
+        Tue, 21 Nov 2023 13:46:03 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AD619B
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:45:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61DACC433C7;
-        Tue, 21 Nov 2023 18:45:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45711D40
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:45:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E70BC433D9;
+        Tue, 21 Nov 2023 18:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700592354;
-        bh=EO6luDaoUXzK9d1/iYTv3zcFJV469noLg8l0rjIvJ60=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=HSACHcHsqFmT/I15b1ugu5nNPev/5uP+Z7IWJBd4FR7SWsVV8y4+sKfyqB0uxEFlc
-         bfx15Z7Xh3V0+Ck9GMq7pzGksECDUE3tiIpl+/TCsoQaLV3ZBIxyVRKnpv2qaVxiNc
-         dAwa8Gz3b1R8VkdC3Bkcvo5nlaCXsVNfgS5zWjfx9d7splSvkdU/lTJUQb16nVtI+u
-         MlQtuVhbqq03mDxdedDyKVK72cZ1nJnQTlPnn65iAewwP3VaFT70jCQb0/udPPsAtv
-         1d3Ss7ZXVxFSJWXQIe98HTwaUFhcMMpnQOJCoslosDGb51wWmeEkcWzSWZs6sv0VYA
-         zYoDS6q8+ERcA==
+        s=k20201202; t=1700592356;
+        bh=9WC8aqJ6oZ32SlXJ7faib65Qf55EOmQoT+BGw8wVCVY=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=kCGGh0aDTr4yCXL3F6PhpNEEg8N3gvA9MiPxP+X+ZS97UEM3YOKUZIiIdbWr/kMKC
+         pBjJcTPjI3C+mWnPCTvko9Sc525p1YixKgGHn6wqqkCJ6fH6SmVhfWRqmrBLV459Pr
+         7cqiZXGEbwZXD9Vw1Uzusklfdq261Nhhd7LxYwW3Lr4eWgmhYWO9zXPjGIHR/awWMf
+         ZDumBxi+JUHERekmp4R+etCrSCoBxiIGDidHCjI2smA9UueC70vq+ZJobMWcOaG6vL
+         4aoYv5i2RVccARukINsuNDhig3mu1CygEovgHNcBnjGxicaP3BO6ViFCWRA0nUcKZV
+         E3RHJxW9Tku3w==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20231121052512.20235-1-chancel.liu@nxp.com>
-References: <20231121052512.20235-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH v5 1/2] ASoC: dt-bindings: sound-card-common: List
- sound widgets ignoring system suspend
-Message-Id: <170059235006.1901021.2131981423033331673.b4-ty@kernel.org>
-Date:   Tue, 21 Nov 2023 18:45:50 +0000
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc:     linux-sound@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231121120751.77355-1-cristian.ciocaltea@collabora.com>
+References: <20231121120751.77355-1-cristian.ciocaltea@collabora.com>
+Subject: Re: [PATCH] ASoC: doc: Fix undefined SND_SOC_DAPM_NOPM argument
+Message-Id: <170059235481.1901021.9703531954255937779.b4-ty@kernel.org>
+Date:   Tue, 21 Nov 2023 18:45:54 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -57,11 +54,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 13:25:11 +0800, Chancel Liu wrote:
-> Add a property to list audio sound widgets which are marked ignoring
-> system suspend. Paths between these endpoints are still active over
-> suspend of the main application processor that the current operating
-> system is running.
+On Tue, 21 Nov 2023 14:07:51 +0200, Cristian Ciocaltea wrote:
+> The virtual widget example makes use of an undefined SND_SOC_DAPM_NOPM
+> argument passed to SND_SOC_DAPM_MIXER().  Replace with the correct
+> SND_SOC_NOPM definition.
 > 
 > 
 
@@ -71,10 +67,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: sound-card-common: List sound widgets ignoring system suspend
-      commit: 27c69d7da1084af0b8b3a20ef9ff01e9eda5270c
-[2/2] ASoC: imx-rpmsg: Force codec power on in low power audio mode
-      commit: 5d9f746ca64c3ebfba3b650dbc4b0de705c83f3b
+[1/1] ASoC: doc: Fix undefined SND_SOC_DAPM_NOPM argument
+      commit: 67c7666fe808c3a7af3cc6f9d0a3dd3acfd26115
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
