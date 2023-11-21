@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B997F32F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291E17F32F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbjKUP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        id S234840AbjKUP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjKUP7L (ORCPT
+        with ESMTP id S234841AbjKUP7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:59:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108D9139
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:59:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700582347; x=1732118347;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=P6HcNX+jdIWSaxjwmIVYFvKSrRGelBv2vGjlF+Zi26g=;
-  b=LbbMfYQv+/nDO71S7boA2sYPZpkWRZGjJVp1nNIboacyGoN36AYjzvrt
-   yhfvxN3s9clYieGkPLdnr1KnWlwN+F+AIxEm4CzYLGrnrJ54BjQT/nARC
-   U/Wx9NyTu8naRJj9EPPTLsRHIy2D459PunrwCQ14m9fonxOPGoCpB5Tsz
-   UOjoyPpbG1k2yxdCMCvPDCLIvGNW//SkOF4r4/PPbmmZOC2xqhLy+G//G
-   8Cq+G1U7jVDF8CEaAIswffcyXuCELrp/wtSdE3ZTazpFqx3eLM6sXj5BI
-   LqDRmpOd2jb+1DON4F/YgEQQm/SoeX5QqWPN1qfqH21tLcsNTyBKYhPWF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="456202067"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="456202067"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:59:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="14556196"
-Received: from linux.intel.com ([10.54.29.200])
-  by orviesa001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 07:59:07 -0800
-Received: from [10.209.157.143] (kliang2-mobl1.ccr.corp.intel.com [10.209.157.143])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 485AF580689;
-        Tue, 21 Nov 2023 07:59:06 -0800 (PST)
-Message-ID: <66f74af2-21b6-477b-ada1-a8816ee115dc@linux.intel.com>
-Date:   Tue, 21 Nov 2023 10:59:06 -0500
+        Tue, 21 Nov 2023 10:59:24 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791CE191;
+        Tue, 21 Nov 2023 07:59:19 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cf62a3b249so15271055ad.0;
+        Tue, 21 Nov 2023 07:59:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700582359; x=1701187159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4LYyNKkmX/uEHFZv6ne32wpjoPjS3cMG64F7aftHlMU=;
+        b=b1g3H9ml79e9USUT9B2j2158wbfqoetH9dfEigld+f9KpmnSe+5cv45iy2gq7mHkjp
+         OKRaMw1zS7N4fHSaN6lP0l97iGk/lFk2cM7v6OfbLy5Brnx7+xmulxVHQLvX6dx+ILjt
+         b/b9c+Jg95jSyoYif9ReTz2cMBn++6hzstNJn4+2NUqscq6HVBJhJkdNTo1c7fIIsLq4
+         r5GmtTeCqLPs25QEktNLzSQgJ5L5+Cc/kjrzmiDgGUKI7wPNPOpNVVsl7UdkhXtKX/iT
+         OjdOO3kExxTGT/P/d2vnGnSdqMsA1p8AYxAUQL6wgMdfRhVmwUnyFc+4d2NrqPCaS4eF
+         8lDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700582359; x=1701187159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4LYyNKkmX/uEHFZv6ne32wpjoPjS3cMG64F7aftHlMU=;
+        b=I1RDU1cjbB08cpl2HJRPq3T3lP+GmW8u+qR2F/TLCnPCX8lU3FQD7HpDJkDdT7Qyll
+         gSrnpwaqQKBdAEL8KwPuw1TBOouIPN29nsmIijKfdoLXGqgh1VQ7TorZaQEND7n7v0ZX
+         /iBAEbmw3Q/AArSeCnubZCdOeTPMcUH3s8k6S/QBmd/gbLa+0m3ZY1M0WzbZDK8r9s2o
+         wmTnmch/dchw/lyDmiVRVHXewEh6L4GZkhiOJo2wkwrNTH5uKOuNxF7mj1L+X8s07j9a
+         pRCBE7An/NSdX75jedaP0me+0VuBJKLDfT0hSxs/rHzoGoZPM08sFXjkuOmpxP9a7g/t
+         7hzA==
+X-Gm-Message-State: AOJu0Yy1Z4V6/tyF4bO0RdranG51PyMRI+PWoiH7Dx3dzo9N6fy/XXPl
+        7H9AaILnP96JHIukzO3pawE=
+X-Google-Smtp-Source: AGHT+IEruKQliG6flmHqnASEhkc2Xm19UStJK6nxzq22+KzG0YLwvHxxxPxKBtcQYRi7HbInd2BhaA==
+X-Received: by 2002:a17:902:e546:b0:1cc:4669:c0eb with SMTP id n6-20020a170902e54600b001cc4669c0ebmr11057412plf.21.1700582358656;
+        Tue, 21 Nov 2023 07:59:18 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b14-20020a170902d50e00b001c898328289sm2035486plg.158.2023.11.21.07.59.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 07:59:17 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 21 Nov 2023 07:59:16 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Xing Tong Wu <xingtong_wu@163.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xingtong.wu@siemens.com,
+        tobias.schaffner@siemens.com, gerd.haeussler.ext@siemens.com
+Subject: Re: [PATCH v3 1/2] hwmon: (nct6775) Add support for 2 additional fan
+ controls
+Message-ID: <d51bdd07-8ea1-4f33-a205-168dee6d5992@roeck-us.net>
+References: <20231121081604.2499-1-xingtong_wu@163.com>
+ <20231121081604.2499-2-xingtong_wu@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] perf/x86: Add CAP_NO_INTERRUPT for uncore PMUs
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Mingwei Zhang <mizhang@google.com>
-References: <20231120221932.213710-1-namhyung@kernel.org>
- <20231120221932.213710-3-namhyung@kernel.org>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231120221932.213710-3-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121081604.2499-2-xingtong_wu@163.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-11-20 5:19 p.m., Namhyung Kim wrote:
-> It doesn't support sampling in uncore PMU events.  While it's
-> technically possible to generate interrupts, let's treat it as if it
-> has no interrupt in order to skip the freq adjust/unthrottling logic
-> in the timer handler which is only meaningful to sampling events.
+On Tue, Nov 21, 2023 at 04:16:03PM +0800, Xing Tong Wu wrote:
+> From: Xing Tong Wu <xingtong.wu@siemens.com>
 > 
-> Also remove the sampling event check because it'd be done in the general
-> code in the perf_event_open syscall.
+> The nct6116 has 2 additional PWM pins compared to the nct6106.
+> Extend the nct6106 PWM arrays to support the nct6116.
 > 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  arch/x86/events/intel/uncore.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-> index 69043e02e8a7..f7e6228bd1b1 100644
-> --- a/arch/x86/events/intel/uncore.c
-> +++ b/arch/x86/events/intel/uncore.c
-> @@ -744,10 +744,6 @@ static int uncore_pmu_event_init(struct perf_event *event)
->  	if (pmu->func_id < 0)
->  		return -ENOENT;
->  
-> -	/* Sampling not supported yet */
-> -	if (hwc->sample_period)
-> -		return -EINVAL;
-> -
->  	/*
->  	 * Place all uncore events for a particular physical package
->  	 * onto a single cpu
-> @@ -919,7 +915,12 @@ static int uncore_pmu_register(struct intel_uncore_pmu *pmu)
->  			.stop		= uncore_pmu_event_stop,
->  			.read		= uncore_pmu_event_read,
->  			.module		= THIS_MODULE,
-> -			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
-> +			/*
-> +			 * It doesn't allow sampling for uncore events, let's
-> +			 * treat the PMU has no interrupts to skip them in the
-> +			 * perf_adjust_freq_unthr_context().
-> +			 */
-> +			.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
->  			.attr_update	= pmu->type->attr_update,
->  		};
+> Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
 
-
-There is a special customized uncore PMU which needs the flag as well.
-
-diff --git a/arch/x86/events/intel/uncore_snb.c
-b/arch/x86/events/intel/uncore_snb.c
-index 7fd4334e12a1..46a63e291975 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -1013,7 +1013,7 @@ static struct pmu snb_uncore_imc_pmu = {
-        .start          = uncore_pmu_event_start,
-        .stop           = uncore_pmu_event_stop,
-        .read           = uncore_pmu_event_read,
--       .capabilities   = PERF_PMU_CAP_NO_EXCLUDE,
-+       .capabilities   = PERF_PMU_CAP_NO_EXCLUDE |
-PERF_PMU_CAP_NO_INTERRUPT,
- };
-
- static struct intel_uncore_ops snb_uncore_imc_ops = {
-
+Applied.
 
 Thanks,
-Kan
->  	} else {
+Guenter
