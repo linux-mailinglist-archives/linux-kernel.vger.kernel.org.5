@@ -2,91 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDCF7F22E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 644017F22EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbjKUBIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S230121AbjKUBMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjKUBIn (ORCPT
+        with ESMTP id S229954AbjKUBMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:08:43 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E73CA2;
-        Mon, 20 Nov 2023 17:08:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Yf3IvbJ2ih8PxkhZnuDKG2nQzUN38q5GqA8aWK1dmiQ=; b=5MIvc56rLJB6n1nEGpuodLC0uD
-        AYXlzVaLRXcvoGTaNesRuW7cx2Lcpi3zLkE5uCJr+l0kiyF+PSmZM/8cbFbU+dXcbgOna4Lm8deWD
-        L7A+jM5z5Mbr/SHCQatyJKkpcht9VSJsWijvRniFjzb/4G+KP3Gqz82wE078TF3cAzFc=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5FFl-000i0l-Gt; Tue, 21 Nov 2023 02:08:37 +0100
-Date:   Tue, 21 Nov 2023 02:08:37 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [RFC PATCH net-next v2 05/10] net: ethtool: Allow passing a phy
- index for some commands
-Message-ID: <d7090506-68f9-4935-a0e9-b3143362b838@lunn.ch>
-References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
- <20231117162323.626979-6-maxime.chevallier@bootlin.com>
+        Mon, 20 Nov 2023 20:12:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0145BC
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:12:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700529132; x=1732065132;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=VEFsIUgfPV39a0OqrPWAUirhQiyA7JQSSKxLhbj5aiA=;
+  b=IX20ZPXBim4Qf26nXbDSrtu0llZ7hn/Zp2mybrGxAhfjg9nnJf+z0JM/
+   FBjzWasEBnoPx0qUH2WBI1FxCghrGsI5MDe62L05yo0eb9aW4eo1Tzvcf
+   QZYcAht8WcC2p5DY5YkefrDs/VJWBIdaPVsTZgQjhUj59iNLEY/12QnXw
+   FuyEAnf2uS2c5PkLFzH4AWba/pYcVx3UfEDyl8ASf2OOrEeup4++uvih6
+   4da22W9v3YZ6dcDarqwHqSmXRVOl1hlefgUXErZfcmch+GanXyTRhD/WO
+   k1+u7PbL7njyvSXoSDJyjsNuKxYKtzaERAKxfzmYcYGyqwW2Ri133I5+j
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="10407918"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="10407918"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 17:12:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="1097886053"
+X-IronPort-AV: E=Sophos;i="6.04,214,1695711600"; 
+   d="scan'208";a="1097886053"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 17:12:07 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Kairui Song <ryncsn@gmail.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/24] mm/swap: check readahead policy per entry
+In-Reply-To: <CAMgjq7DX30BpNR4kFPUMRat37F11rpnmb8ia2RetAaf7oZbE+g@mail.gmail.com>
+        (Kairui Song's message of "Mon, 20 Nov 2023 19:17:12 +0800")
+References: <20231119194740.94101-1-ryncsn@gmail.com>
+        <20231119194740.94101-9-ryncsn@gmail.com>
+        <87r0klarjp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAMgjq7DX30BpNR4kFPUMRat37F11rpnmb8ia2RetAaf7oZbE+g@mail.gmail.com>
+Date:   Tue, 21 Nov 2023 09:10:06 +0800
+Message-ID: <87a5r7c3o1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117162323.626979-6-maxime.chevallier@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	if (dev) {
-> +		if (tb[ETHTOOL_A_HEADER_PHY_INDEX]) {
-> +			u32 phy_index = nla_get_u32(tb[ETHTOOL_A_HEADER_PHY_INDEX]);
-> +
-> +			phydev = link_topo_get_phy(&dev->link_topo, phy_index);
+Kairui Song <ryncsn@gmail.com> writes:
 
-struct phy_device *link_topo_get_phy(struct link_topology *lt, int phyindex)
+> Huang, Ying <ying.huang@intel.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=8820=E6=
+=97=A5=E5=91=A8=E4=B8=80 14:07=E5=86=99=E9=81=93=EF=BC=9A
+>>
+>> Kairui Song <ryncsn@gmail.com> writes:
+>>
+>> > From: Kairui Song <kasong@tencent.com>
+>> >
+>> > Currently VMA readahead is globally disabled when any rotate disk is
+>> > used as swap backend. So multiple swap devices are enabled, if a slower
+>> > hard disk is set as a low priority fallback, and a high performance SSD
+>> > is used and high priority swap device, vma readahead is disabled globa=
+lly.
+>> > The SSD swap device performance will drop by a lot.
+>> >
+>> > Check readahead policy per entry to avoid such problem.
+>> >
+>> > Signed-off-by: Kairui Song <kasong@tencent.com>
+>> > ---
+>> >  mm/swap_state.c | 12 +++++++-----
+>> >  1 file changed, 7 insertions(+), 5 deletions(-)
+>> >
+>> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> > index ff6756f2e8e4..fb78f7f18ed7 100644
+>> > --- a/mm/swap_state.c
+>> > +++ b/mm/swap_state.c
+>> > @@ -321,9 +321,9 @@ static inline bool swap_use_no_readahead(struct sw=
+ap_info_struct *si, swp_entry_
+>> >       return data_race(si->flags & SWP_SYNCHRONOUS_IO) && __swap_count=
+(entry) =3D=3D 1;
+>> >  }
+>> >
+>> > -static inline bool swap_use_vma_readahead(void)
+>> > +static inline bool swap_use_vma_readahead(struct swap_info_struct *si)
+>> >  {
+>> > -     return READ_ONCE(enable_vma_readahead) && !atomic_read(&nr_rotat=
+e_swap);
+>> > +     return data_race(si->flags & SWP_SOLIDSTATE) && READ_ONCE(enable=
+_vma_readahead);
+>> >  }
+>> >
+>> >  /*
+>> > @@ -341,7 +341,7 @@ struct folio *swap_cache_get_folio(swp_entry_t ent=
+ry,
+>> >
+>> >       folio =3D filemap_get_folio(swap_address_space(entry), swp_offse=
+t(entry));
+>> >       if (!IS_ERR(folio)) {
+>> > -             bool vma_ra =3D swap_use_vma_readahead();
+>> > +             bool vma_ra =3D swap_use_vma_readahead(swp_swap_info(ent=
+ry));
+>> >               bool readahead;
+>> >
+>> >               /*
+>> > @@ -920,16 +920,18 @@ static struct page *swapin_no_readahead(swp_entr=
+y_t entry, gfp_t gfp_mask,
+>> >  struct page *swapin_readahead(swp_entry_t entry, gfp_t gfp_mask,
+>> >                             struct vm_fault *vmf, bool *swapcached)
+>> >  {
+>> > +     struct swap_info_struct *si;
+>> >       struct mempolicy *mpol;
+>> >       struct page *page;
+>> >       pgoff_t ilx;
+>> >       bool cached;
+>> >
+>> > +     si =3D swp_swap_info(entry);
+>> >       mpol =3D get_vma_policy(vmf->vma, vmf->address, 0, &ilx);
+>> > -     if (swap_use_no_readahead(swp_swap_info(entry), entry)) {
+>> > +     if (swap_use_no_readahead(si, entry)) {
+>> >               page =3D swapin_no_readahead(entry, gfp_mask, mpol, ilx,=
+ vmf->vma->vm_mm);
+>> >               cached =3D false;
+>> > -     } else if (swap_use_vma_readahead()) {
+>> > +     } else if (swap_use_vma_readahead(si)) {
+>>
+>> It's possible that some pages are swapped out to SSD while others are
+>> swapped out to HDD in a readahead window.
+>>
+>> I suspect that there are practical requirements to use swap on SSD and
+>> HDD at the same time.
+>
+> Hi Ying,
+>
+> Thanks for the review!
+>
+> For the first issue "fragmented readahead window", I was planning to
+> do an extra check in readahead path to skip readahead entries that are
+> on different swap devices, which is not hard to do,
 
-We have u32 vs int here for phyindex. It would be good to have the
-same type everywhere.
+This is a possible solution.
 
+> but this series is growing too long so I thought it will be better
+> done later.
 
-> +			if (!phydev) {
-> +				NL_SET_ERR_MSG_ATTR(extack, header, "no phy matches phy index");
-> +				return -EINVAL;
-> +			}
-> +		} else {
-> +			/* If we need a PHY but no phy index is specified, fallback
-> +			 * to dev->phydev
-> +			 */
-> +			phydev = dev->phydev;
-> +		}
-> +	}
-> +
-> +	req_info->phydev = phydev;
+You don't need to keep everything in one series.  Just use multiple
+series.  Even if they are all swap-related.  They are dealing with
+different problem in fact.
 
-Don't forget to update Documentation/networking/ethtool-netlink.rst.
+> For the second issue, "is there any practical use for multiple swap",
+> I think actually there are. For example we are trying to use multi
+> layer swap for offloading memory of different hotness on servers. And
+> we also tried to implement a mechanism to migrate long sleep swap
+> entries from high performance SSD/RAMDISK swap to cheap HDD swap
+> device, with more than two layers of swap, which worked except the
+> upstream issue, that readahead policy will no longer work as expected.
 
-      Andrew
+Thanks for your information.
+
+>> >               page =3D swap_vma_readahead(entry, gfp_mask, mpol, ilx, =
+vmf);
+>> >               cached =3D true;
+>> >       } else {
+
+--
+Best Regards,
+Huang, Ying
