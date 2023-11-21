@@ -2,93 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB09A7F29D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D5F7F29DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233573AbjKUKKv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 05:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        id S234227AbjKUKLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbjKUKKo (ORCPT
+        with ESMTP id S232600AbjKUKLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:10:44 -0500
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AB110E;
-        Tue, 21 Nov 2023 02:10:38 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a877e0f0d8so49403457b3.1;
-        Tue, 21 Nov 2023 02:10:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700561438; x=1701166238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WoVtVz3fpUU/SjmxthCzYdpUjh79x4EQaoeFPJrIWPo=;
-        b=to19NI5qblF5dtBm5vlNSBQPDNeb/dqOSV+4K18kbQNVpATw/ugGV55Vk/Db6seHZG
-         1Mu99jiCjdLAGGsJWDlAJviyKIGNaOhpwQMRZU6l3TDFSutLSVR0PfJsyUR0738eSv7D
-         9SwdONsVLPoziGTFkpDXGnRnVNj1+P7o6uXnyKbx6frzaaCjHRET02LvIfPhI+ZiqQJK
-         5aLJSifdzU4jYwrRSvui2f3JDpRuPOnV1OiIB2RSb+8tMCt8/QSVFox5UB/Zjw5Pmtri
-         oeOSeF1EjuYD326yIBkTuJXo6qorfIkKq9gbacV/t4lwHt47eV3tmX9ge11WW+rIrT+B
-         ytzw==
-X-Gm-Message-State: AOJu0YypOnRNOqfY0UTGDZ1RsEsODG9Y+hh5W9VbLMy9rNRT079UUwY/
-        Idm8571Cj2sgTc4z80za+WQcpEARy5KxVslj
-X-Google-Smtp-Source: AGHT+IHWw4m4D3bN6Xmo7kWfh4Cac9alp2eV6jg3UT+M0lDoSzGIJzfdzsieTV20MhikFbcMUlBzmQ==
-X-Received: by 2002:a5b:711:0:b0:db3:84cc:3f59 with SMTP id g17-20020a5b0711000000b00db384cc3f59mr1679598ybq.10.1700561437948;
-        Tue, 21 Nov 2023 02:10:37 -0800 (PST)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id e201-20020a25e7d2000000b00d9cbf2aabc6sm602536ybh.14.2023.11.21.02.10.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 02:10:36 -0800 (PST)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so4154667276.0;
-        Tue, 21 Nov 2023 02:10:36 -0800 (PST)
-X-Received: by 2002:a25:cb54:0:b0:db3:52de:1d96 with SMTP id
- b81-20020a25cb54000000b00db352de1d96mr1711069ybg.15.1700561435204; Tue, 21
- Nov 2023 02:10:35 -0800 (PST)
+        Tue, 21 Nov 2023 05:11:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323FEB9
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:11:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7398C433C7;
+        Tue, 21 Nov 2023 10:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700561476;
+        bh=pwVt1w2LCBRnUv5jOmI2812LEvoFjTvS4hIHofg4Jas=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=ZfZFYfxxS0kEHfQDfWXH7ireMlOgqyx0yaQJpgectuibgt0G+FYx8HopU8/OaKkz5
+         gwTPcWEuCRVaCMTRvG2KtNLyFRnPUT1suQ177UA3k4kPlnuDBTJWdemwwyPyuZJcZe
+         OChqB/BfYEZOCrB+0gwXyXTx9IeCctN/En00qnrUbSO/pfSK2DaEajRnqsYDORzw/T
+         TnlaxAL7RX+th+wCKBklOyVpclKZPe4/JvYWoaX2wCh9iuTQod8xXeHJzIvDWdoWPH
+         MfeqPSklfM2dKl47JXR25E9f9KFSIICu2K0ZCHHSP3mduSOyVkdVmVIcgmf2YgxAKd
+         INCwXxdSIhk6Q==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id B7F6C27C005B;
+        Tue, 21 Nov 2023 05:11:14 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 21 Nov 2023 05:11:14 -0500
+X-ME-Sender: <xms:QYJcZZOsH-mUuunCB8jsICA8SXmqvbkSxX1urvM880E4tme3cLuZlA>
+    <xme:QYJcZb-oApEEEdyISnFgBNPFhuiLciclgtIj9IVX4c1_eE_Ks-3s54Qr18zMPd1sM
+    eL6hCqjRnZwHdrQ7wI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
+    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
+    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
+    guvg
+X-ME-Proxy: <xmx:QYJcZYTLMUsoPYYkz62VgwTBcINyKVI2lw5kKpIfQECglAjBavdKCw>
+    <xmx:QYJcZVurnxtwUR2GwTR2ilONbym90xq-UPJ7Bb--HnT48TJc_se0cQ>
+    <xmx:QYJcZRd8F1UQEgvCOM7pkVREzFPo_LQM6LrJjsar-2maBiq35vKfIg>
+    <xmx:QoJcZX_Dw3364yokzNFcp-_h9mYEYM8RCotQIHlbuZhsgZXupblPGF68Rgz_ttDl>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6C63CB60089; Tue, 21 Nov 2023 05:11:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-References: <20231120111820.87398-1-claudiu.beznea.uj@bp.renesas.com> <20231120111820.87398-5-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231120111820.87398-5-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Nov 2023 11:10:24 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVmk+DM3FH2qBJDLCeRaCYzXLJbgAAf3ZRO0+U9CqpejA@mail.gmail.com>
-Message-ID: <CAMuHMdVmk+DM3FH2qBJDLCeRaCYzXLJbgAAf3ZRO0+U9CqpejA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/9] irqchip/renesas-rzg2l: Document structure members
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     tglx@linutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Message-Id: <f4cded7b-c62a-453e-b09f-6fe39b4a9c1a@app.fastmail.com>
+In-Reply-To: <d38d1149fdf5eb0cc4da12402ca03604beba1881.camel@redhat.com>
+References: <20231120215945.52027-2-pstanner@redhat.com>
+ <20231120215945.52027-4-pstanner@redhat.com>
+ <45997863-d817-48c7-ad46-8b47f5e0ce61@app.fastmail.com>
+ <d38d1149fdf5eb0cc4da12402ca03604beba1881.camel@redhat.com>
+Date:   Tue, 21 Nov 2023 11:10:41 +0100
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Eric Auger" <eric.auger@redhat.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "Neil Brown" <neilb@suse.de>, "John Sanpe" <sanpeqf@gmail.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "David Gow" <davidgow@google.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 2/4] lib: move pci-specific devres code to drivers/pci/
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 7:16 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Tue, Nov 21, 2023, at 09:00, Philipp Stanner wrote:
+> On Tue, 2023-11-21 at 08:29 +0100, Arnd Bergmann wrote:
+>> On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
+>> 
+>> Since you are moving the pci_iomap() code into drivers/pci/ already,
+>> I'd suggest merging this one into the same file and keep the two
+>> halves of this interface together.
 >
-> Document structure members to follow the requirements specified in
-> maintainer-tip, section 4.3.7. Struct declarations and initializers.
 >
-> Link: https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#struct-declarations-and-initializers
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> I'd argue that they are as much together as they were before:
+>
+> Previously:
+>  * PCI-IOMAP-code in folder lib/ in its own file (pci_iomap.c)
+>  * PCI-Devres-code in folder lib/ in a distinct file (devres.c)
+>
+> Now:
+>  * PCI-IOMAP-code in folder drivers/pci/ in its own file (iomap.c)
+>  * PCI-Devres-code in folder drivers/pci/ in its own file (devres.c)
+>
+> Or am I misunderstanding something?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+They are indeed closer together now, just not in the same file.
 
-Gr{oetje,eeting}s,
+Looking across subsystems at the output of
 
-                        Geert
+git grep -l EXPORT.*devm
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I see that 10 out of 182 files have split the devres functions
+into a separate file, while the others just keep the devm_*
+function in the same place as the normal one. Since you never
+have one of these files without the other, and they do
+almost the exact same thing, a single file is the simpler
+option.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Note that there are also three pcim_*() functions in
+drivers/pci/pci.c. I think that is the correct place for
+them, but if you wanted to split out pci devres functions
+into a separate file, they would now also have to go
+into drivers/pci/devres.c.
+
+     Arnd
