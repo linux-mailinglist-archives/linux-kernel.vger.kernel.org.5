@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDF97F2D49
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8647F2D47
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbjKUMf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        id S234769AbjKUMfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:35:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234785AbjKUMfX (ORCPT
+        with ESMTP id S234682AbjKUMfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:35:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5900CD65;
-        Tue, 21 Nov 2023 04:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700570118; x=1732106118;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nivaZQ+9P0ZV/opmlAd8c2iOR56SU+o3ql7tnZt2R+U=;
-  b=D1D9DF/l34RN+o4MhIIZvE1SAi13aICV6oWBa48iBCMBGm23hWQrmP6s
-   uEhOGywmxtlqe+LnBE8YkifDTUI3ebqZh1r2Mr7go4q+r01oe7DLCEc5E
-   08uZl947mLlAIwL1+ItJzh4uRu1vemyWtfdYjZfOou80tDO4gR02isduV
-   23h8BCW6LayfdJNYYVs+dJI02YqxiJJNeFd8PHkVLbI1VNM4KuecguNCF
-   w02XkpRkKwck2wNTi1gOH4KawTSZyvwwOKNxzZ+xK0sLMp7FG8RPrrJAQ
-   mhfkMRAq1KktgtV2ya3+U7Z4xEoA0CfSYFkDbZkX6z7mh+3igwnmuq+tG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="458327794"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="458327794"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 04:35:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="837044350"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="837044350"
-Received: from wpastern-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.57.17])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 04:35:13 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v4 3/3] e1000e: Use pcie_capability_read_word() for reading LNKSTA
-Date:   Tue, 21 Nov 2023 14:34:28 +0200
-Message-Id: <20231121123428.20907-4-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231121123428.20907-1-ilpo.jarvinen@linux.intel.com>
-References: <20231121123428.20907-1-ilpo.jarvinen@linux.intel.com>
+        Tue, 21 Nov 2023 07:35:17 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0DB13D;
+        Tue, 21 Nov 2023 04:35:12 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALA9X8k022595;
+        Tue, 21 Nov 2023 12:35:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=PGU0MWzfni8uZCA1g4/HDHP1TtIUgmy0VuY7aaFWkT0=;
+ b=CG04AIpUnH1G2IPMbM3MNQdQ3IPP5M+Bqms2wZpeOCFZpq1yIsZTgAOyzcVNVHt3zHMR
+ C3nspEojD9c7CE/aKALeDPtNczINWpBo2p1oXCmqvPbizjSW9yfTImsIZVbQpN3lx2Mp
+ qP5VAgijE6asY6dLzUgblX7HVeIvyMMI367jprje0sI3hdXri/uowZke7jGqTUkUR4XA
+ 5YsgC4hilONJqd+ETTSV6/fsSAXvHJD6JLvaUG0ECnPCfs/RI+sy1A5PgOMr9LTq+KP2
+ 78Mb7xVYHVKixhRvtLRN7J6RECp9ubeC6v/JDexXhERoOPHxLHa079Lt1VgLj2k43oqD Lw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uge0025wm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:35:05 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ALCZ5u8024985
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 12:35:05 GMT
+Received: from [10.218.35.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 21 Nov
+ 2023 04:35:02 -0800
+Message-ID: <8ffbb08a-730a-6b67-a22f-bbe009d5e2c3@quicinc.com>
+Date:   Tue, 21 Nov 2023 18:04:41 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 0/2] Add support for xhci-sg-trb-cache-size-quirk
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzk@kernel.org>, <stable@vger.kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Mathias Nyman <mathias.nyman@intel.com>,
+        Tejas Joglekar <joglekar@synopsys.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usbyy@vger.kernel.org>
+References: <20231120055803.224634-1-quic_prashk@quicinc.com>
+ <6e435e84-fea9-4f74-8977-d589cbc31ded@kernel.org>
+From:   Prashanth K <quic_prashk@quicinc.com>
+In-Reply-To: <6e435e84-fea9-4f74-8977-d589cbc31ded@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: msbxiVd55hvgBas3noiNzGC4vBLbgUgB
+X-Proofpoint-ORIG-GUID: msbxiVd55hvgBas3noiNzGC4vBLbgUgB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_05,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=817 impostorscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210098
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,57 +83,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pcie_capability_read_word() for reading LNKSTA and remove the
-custom define that matches to PCI_EXP_LNKSTA.
 
-As only single user for cap_offset remains, replace it with a call to
-pci_pcie_cap(). Instead of e1000_adapter, make local variable out of
-pci_dev because both users are interested in it.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- drivers/net/ethernet/intel/e1000e/defines.h |  1 -
- drivers/net/ethernet/intel/e1000e/mac.c     | 11 ++++-------
- 2 files changed, 4 insertions(+), 8 deletions(-)
+On 20-11-23 03:00 pm, Krzysztof Kozlowski wrote:
+> On 20/11/2023 06:58, Prashanth K wrote:
+>> XHCI_SG_TRB_CACHE_SIZE_QUIRK was introduced in XHCI to resolve
+>> XHC timeout while using SG buffers, which was seen Synopsys XHCs.
+>> The support for this isn't present in DWC3 layer, this series
+>> enables XHCI_SG_TRB_CACHE_SIZE_QUIRK since this is needed for
+>> DWC3 controller.
+> 
+> You keep Cc-ing incorrect mailing lists (bogus addresses). Just use
+> get_maintainers.pl  --no-git-fallback without changing its output.
+> 
+> I repeated this comment multiple times to Qualcomm. It's awesome that
+> Qualcomm participates so much in upstream development, I really
+> appreciate this. However repeating the same comment over-and-over again,
+> makes me quite tired. Can you instruct your colleagues to use b4 which
+> solves this problem? If not, use script like:
+> https://github.com/krzk/tools/blob/master/linux/.bash_aliases_linux#L91
+> (or one of many other variants posted by multiple people on the mailing
+> lists)
+> 
+> Best regards,
+> Krzysztof
+> 
 
-diff --git a/drivers/net/ethernet/intel/e1000e/defines.h b/drivers/net/ethernet/intel/e1000e/defines.h
-index a4d29c9e03a6..23a58cada43a 100644
---- a/drivers/net/ethernet/intel/e1000e/defines.h
-+++ b/drivers/net/ethernet/intel/e1000e/defines.h
-@@ -678,7 +678,6 @@
- 
- /* PCI/PCI-X/PCI-EX Config space */
- #define PCI_HEADER_TYPE_REGISTER     0x0E
--#define PCIE_LINK_STATUS             0x12
- 
- #define PCI_HEADER_TYPE_MULTIFUNC    0x80
- 
-diff --git a/drivers/net/ethernet/intel/e1000e/mac.c b/drivers/net/ethernet/intel/e1000e/mac.c
-index 5340cf73778d..694a779e718d 100644
---- a/drivers/net/ethernet/intel/e1000e/mac.c
-+++ b/drivers/net/ethernet/intel/e1000e/mac.c
-@@ -17,16 +17,13 @@ s32 e1000e_get_bus_info_pcie(struct e1000_hw *hw)
- {
- 	struct e1000_mac_info *mac = &hw->mac;
- 	struct e1000_bus_info *bus = &hw->bus;
--	struct e1000_adapter *adapter = hw->adapter;
--	u16 pcie_link_status, cap_offset;
-+	struct pci_dev *pdev = hw->adapter->pdev;
-+	u16 pcie_link_status;
- 
--	cap_offset = adapter->pdev->pcie_cap;
--	if (!cap_offset) {
-+	if (!pci_pcie_cap(pdev)) {
- 		bus->width = e1000_bus_width_unknown;
- 	} else {
--		pci_read_config_word(adapter->pdev,
--				     cap_offset + PCIE_LINK_STATUS,
--				     &pcie_link_status);
-+		pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &pcie_link_status);
- 		bus->width = (enum e1000_bus_width)FIELD_GET(PCI_EXP_LNKSTA_NLW,
- 							     pcie_link_status);
- 	}
--- 
-2.30.2
 
+
+Thanks for your comments! I accidentally added 'yy' in the USB mailing 
+list while configuring it. A careless mistake indeed :)
+
+I will resend the the patch without adding the quirk (only driver 
+change) since this should be applicable for all the dwc3 devices.
+
+Thanks again,
+Prashanth K
