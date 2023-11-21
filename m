@@ -2,58 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F057F2528
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 06:18:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 299B57F252F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 06:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbjKUFSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 00:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        id S233397AbjKUFTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 00:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233349AbjKUFSi (ORCPT
+        with ESMTP id S233341AbjKUFTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 00:18:38 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EE8ED;
-        Mon, 20 Nov 2023 21:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0IQyXB4lFR5QVHXCSZcGjzmyyThMkWKD+nk8D0ijT9w=; b=4kpD4oxlnlflUTPXRGTky1Rbrq
-        TXgXHt7jI+pXwCDIHvo9KL7BmAclqhOXsA+GM/gDmiB94fguYgyFfGNiCK2M8oO5TeZLOETSHDthJ
-        4E11MN/no4PoG8WTweUICysT3YSbIVyBWREeXJ2t0IiqWnthMqyf+fIrKvRT8K95+rarV+lLLoS22
-        tRd+pRD5b+VmXV0ouMb5wKbJHKTkMpyuWmS+cPwWY5ECpw2JZrovMP546MQ3U0KWxq1rp1rxL00BI
-        k4YrR/MRchV70bn9gUS1/igjpw4SvNo0HpTzXXWkFRob178m4XbFgfTETGvSBS/nTKI0eluFlPbqq
-        XKyLV2JQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r5J9a-00FfQY-1U;
-        Tue, 21 Nov 2023 05:18:30 +0000
-Date:   Mon, 20 Nov 2023 21:18:30 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 00/12] Convert write_cache_pages() to an iterator
-Message-ID: <ZVw9ppybs8FmIPVc@infradead.org>
-References: <20230626173521.459345-1-willy@infradead.org>
+        Tue, 21 Nov 2023 00:19:48 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2049.outbound.protection.outlook.com [40.107.243.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3116CE7;
+        Mon, 20 Nov 2023 21:19:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gco2SCAinM81UXIcv7w21GwaILgYdkOY1M+9cyKoBVY02ub1tY+TSs19Lm/lD9t6OfisMiNEvyBYQn9w13rfra+lBZIAdfOpYP95oKr2cJ3YbHhiFkzqvaGiV8aCKbFBnbyJjFKxSOI9l1GyY3Wh/Tmze75N0hykoSKbD/klmxTfS6FL6mpoLfLrSfaaK8eCwCKgdFppdRF0zQGY7/fIKPHIBHa8KcjQ+V9xliTTwAbgR9ljAZVTh1z4M+IV7ANpUdmoKTEBAiepOyzEGOkWlLZDCCtP7s7CYJqmPbYbhxFwi3Smv/F6QfsK19KrnzHSuzKme96KDZQ/E6TtvPMJNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HpOeTLBcVDUWcX260GzEA8SaSYwb29ivbwUwdBVrVyg=;
+ b=WYK5ZdhXunY7WvwJctrWfaDtq5plqjL2FcUtoFGhRe3VbIFjZinS0ldFk5g+gBVraVVLPlH9XJZ0DA7D1ajE1wKx4hs3De2f4cC627hbqED+Af+2QCxqT2TpOKTgyFIBlViXx0L9ztrVYxorR55MK/UtqtiCg18kBcqJroP/03FOQ0I4KyAlVZozo59dJNoXe1rgZpIW01BFb6J/FRp76faw18HjFV8FEmmOlI3B9krrZPeuJLRrDd0lFnFPmxN5TuzZf83zv9czM7UVbAHoqVL2IeLwY50fbxoXEVXbC2YAm7OrrkR0aw8RTccQY84cxreoHAzvi4s6vhhKVsSs5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HpOeTLBcVDUWcX260GzEA8SaSYwb29ivbwUwdBVrVyg=;
+ b=B/umE7bDnYxuHDbtogkjoJQ61P8vPWi20v2z+per8wErlxVFua+x6wILsl6UH1jQwk1wAn++tg6rGfH2WPWi2Hp9NnHhelOneSmCEvbLX3MnNN4CbXeVY/LdPENkUz5JPxOzyidO4y/Ka/+6A9fxkNZh7V3NzyM2v5Ki+akm1io7hY8Kv/upwl21d/b+sjszfDZgNIyn/KFkpDjdw7VAwTcg/ThKccAcLwMJXjFeWlbVYuEwEaOnetnrIwwKTHbxGPYKLPMr13UC/uPHfP6DWonIkenlWG/2uGpheNqCgDq/tM/5OSshzfFaqdFFQ7H+Zqv5aJKca4UnF7uG95evWQ==
+Received: from BL1P222CA0025.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::30)
+ by CY8PR12MB7194.namprd12.prod.outlook.com (2603:10b6:930:5a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
+ 2023 05:19:41 +0000
+Received: from BL02EPF0001A107.namprd05.prod.outlook.com
+ (2603:10b6:208:2c7:cafe::cc) by BL1P222CA0025.outlook.office365.com
+ (2603:10b6:208:2c7::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27 via Frontend
+ Transport; Tue, 21 Nov 2023 05:19:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL02EPF0001A107.mail.protection.outlook.com (10.167.241.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.12 via Frontend Transport; Tue, 21 Nov 2023 05:19:40 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 20 Nov
+ 2023 21:19:18 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 20 Nov
+ 2023 21:19:17 -0800
+Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 20 Nov 2023 21:19:16 -0800
+Date:   Mon, 20 Nov 2023 21:19:14 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>
+CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
+        <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <cohuck@redhat.com>, <eric.auger@redhat.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        <xin.zeng@intel.com>, <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <ZVw90r3/dvgMg94Z@Asurada-Nvidia>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231117130717.19875-3-yi.l.liu@intel.com>
+ <e36e856a-8d4c-4cc2-a5db-cf00673a9bf7@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230626173521.459345-1-willy@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <e36e856a-8d4c-4cc2-a5db-cf00673a9bf7@linux.intel.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A107:EE_|CY8PR12MB7194:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1d4478b0-0cda-430e-2172-08dbea5176b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zg+vGu/OjFcctWskR2hbxhnsMnDcJAL6S/qZQ2gP4YSIKaldikndJbrXweoIdIPi5C02geK3EPW08t9FaS+GciF2uO+wDrp+XOL4BIh9zwiQtyqnPapcPSnLIk4wK9XT/pPVy6WeRqoMWoE5bj3nK5oZNPKpGXkGkC+2Idm76Zr7hwEn6GoB3kfeHRzPRteaN2aIDbKv0UHKJzDdN9BkWNRXjojibLR7W1XTVtRupks4/SiMVT/BLP2Ug3C+QrpwyqId2Rn8iYUmRVSuJOmqA+MCiB8QvddL2Yu3JHEYEA5so/WMb7GHXjdzWkJVPqT/h2whjtrsKDYC4/qUO3s0RO2qdshHzFSKRzUEyTclOsIyKwj+AxwoUaV3DtpbYnYInuTgOrchZPcxwSRGEZvZiS6zoBJ7jxLesRQtipuaV3QaMveotHKyS2JBPcsRgeOrr/ejQMxtGaj7b6gNNdDj8iIBKCzzXMkSK07K+s+dICc/zaVGwaC7TV3pAYvetbRANCS/rAYjcGsU3e/K34M+8w30CAFm++UiR0Gbp/Z926fPQ9sXqkWBU9jXRItE4whI6xPduh62J/Y7Koutdfv7NVVULrwumANF+Ao5Ct6iAquaxOH7QSyYRcCbOrFpnlGOlmQHlNVObGevZ4BrKKkc2S9SvtQ2/EuGrq00jxsUapwFOQas9510NflzV+MYzVJG7N4XoEb8BOK4wVKroDFV8Iir2MN1N2bMoOJwEAfWxtroEAFw8en8YSb2gHVTIylO
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(346002)(136003)(39860400002)(230922051799003)(1800799012)(186009)(82310400011)(451199024)(64100799003)(36840700001)(46966006)(40470700004)(478600001)(9686003)(55016003)(83380400001)(356005)(40480700001)(53546011)(54906003)(40460700003)(26005)(70206006)(70586007)(316002)(6916009)(426003)(336012)(36860700001)(33716001)(47076005)(82740400003)(86362001)(2906002)(7636003)(41300700001)(5660300002)(7416002)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 05:19:40.5530
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d4478b0-0cda-430e-2172-08dbea5176b0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A107.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7194
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just curious where this did end up.  I have some changes that could use
-or conflict with this depending on your view.  They aren't time critical
-yt, but if we're going to the road in this series I'd appreciate if we'd
-get it done rather sooner than later :)
+On Tue, Nov 21, 2023 at 01:02:49PM +0800, Baolu Lu wrote:
+> On 11/17/23 9:07 PM, Yi Liu wrote:
+> > In nested translation, the stage-1 page table is user-managed but cached
+> > by the IOMMU hardware, so an update on present page table entries in the
+> > stage-1 page table should be followed with a cache invalidation.
+> > 
+> > Add an IOMMU_HWPT_INVALIDATE ioctl to support such a cache invalidation.
+> > It takes hwpt_id to specify the iommu_domain, and a multi-entry array to
+> > support multiple invalidation requests in one ioctl.
+> > 
+> > Check cache_invalidate_user op in the iommufd_hw_pagetable_alloc_nested,
+> > since all nested domains need that.
+> > 
+> > Co-developed-by: Nicolin Chen<nicolinc@nvidia.com>
+> > Signed-off-by: Nicolin Chen<nicolinc@nvidia.com>
+> > Signed-off-by: Yi Liu<yi.l.liu@intel.com>
+> > ---
+> >   drivers/iommu/iommufd/hw_pagetable.c    | 35 +++++++++++++++++++++++++
+> >   drivers/iommu/iommufd/iommufd_private.h |  9 +++++++
+> >   drivers/iommu/iommufd/main.c            |  3 +++
+> >   include/uapi/linux/iommufd.h            | 35 +++++++++++++++++++++++++
+> >   4 files changed, 82 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+> > index 2abbeafdbd22..367459d92f69 100644
+> > --- a/drivers/iommu/iommufd/hw_pagetable.c
+> > +++ b/drivers/iommu/iommufd/hw_pagetable.c
+> > @@ -238,6 +238,11 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
+> >               rc = -EINVAL;
+> >               goto out_abort;
+> >       }
+> > +     /* Driver is buggy by missing cache_invalidate_user in domain_ops */
+> > +     if (WARN_ON_ONCE(!hwpt->domain->ops->cache_invalidate_user)) {
+> > +             rc = -EINVAL;
+> > +             goto out_abort;
+> > +     }
+> >       return hwpt_nested;
+> 
+> The WARN message here may cause kernel regression when users bisect
+> issues. Till this patch, there are no drivers support the
+> cache_invalidation_user callback yet.
 
+Ah, this is an unintended consequence from our uAPI bisect to
+merge the nesting alloc first...
+
+Would removing the WARN_ON_ONCE be okay? Although having this
+WARN is actually the point here...
+
+Thanks
+Nic
