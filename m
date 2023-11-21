@@ -2,179 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37AC97F28E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D33F7F28F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbjKUJ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        id S233619AbjKUJ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233622AbjKUJ0n (ORCPT
+        with ESMTP id S232229AbjKUJ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:26:43 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307FE1737
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:26:03 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5c9cdc78c37so19760147b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:26:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700558762; x=1701163562; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aAmGxGkbN4emVuxJ9V8j1fYzlqaJg99Z9eieGlDghe8=;
-        b=BfDyY4/EyX2h1Puuik3SLhv79IUgQYhpzy+txcVo8lSmuthjjhNs/5rvPIi0vSlUL5
-         fFEp++QTUmv0yRG+ZFXJTFBuFs9Yhm3rdrbTSzxFwkC9/K2I5IUPLCizPJS6Rue3UhQM
-         ZEatsbxch23cRmmEGmTRZAVxRz/1rfknu/saumvYHSgLcDntlUZPs/XmvpCIFCE/mLA4
-         pcQOVZYCXUNaXXrzINTGZ88qD5hEpI5qPSYa9A7MErbhyjKc+kH9Vucg0A6ByWDUAbYe
-         QY0YhFIMmsYHH+Zt+FKkikDX8Ai4IMVYDSybunfvCqQpx17wdj8ViDScTvK6Owco7890
-         Im6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700558762; x=1701163562;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aAmGxGkbN4emVuxJ9V8j1fYzlqaJg99Z9eieGlDghe8=;
-        b=lpTngpsLhEgVIuyU3eEFbwSanw4RmyWdN2fVXxmxmTlouLBoq/b5wlSztDGfftxr+o
-         ggX7LdUBQOTPYUOmQGIhOl25fnuet1n1og47r4hlO65TmyJJi0ELWMPzdexG6MSwZbr+
-         NFT76WPAolSOJVuiZIzyxWQ40mqa2SFXbIlBdZ1h/j5WmwOpbbDyKMAugJ2KUN5DOf0V
-         tdK5KAmPqJPLPih/LLbYxJ4iCeaWecvIux+cTooIEvWdBedAesPtPlcGl3xHWb9UrlkK
-         aivQpTkvFvOxzCflBcCLhXbGM9hOupCO6YH7KMAc0fRCshMpyYTd1febSp5IhAjzC+4K
-         CoCQ==
-X-Gm-Message-State: AOJu0YzDcLmtjQ4mnir3y6CcOz7+Z0FHS9LeDIY/2oRgTdw3vc00KJkp
-        xQlxMGBJff9iVO/V6Wm6/7TvMCGpg3hx/0M7LPdkRA==
-X-Google-Smtp-Source: AGHT+IGDpZOujTVErxg8YRP1eiMChk1yVTqch6viH8ATBRlzMnxRNt6WwTrGQpK1/d7L0Ilf7fXU1J53n5NPS6xRjqo=
-X-Received: by 2002:a81:5fc2:0:b0:5c6:9488:4c99 with SMTP id
- t185-20020a815fc2000000b005c694884c99mr8361218ywb.18.1700558762286; Tue, 21
- Nov 2023 01:26:02 -0800 (PST)
+        Tue, 21 Nov 2023 04:29:32 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EEB10E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:29:24 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SZJr05lYbzRj3v;
+        Tue, 21 Nov 2023 17:25:04 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 21 Nov 2023 17:29:19 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>
+CC:     <dietmar.eggemann@arm.com>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
+        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
+        <yangyicong@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/4] Support SMT control on arm64
+Date:   Tue, 21 Nov 2023 17:25:58 +0800
+Message-ID: <20231121092602.47792-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20231120132118.30473-1-brgl@bgdev.pl> <20231120132118.30473-3-brgl@bgdev.pl>
- <6e189833-b76b-030f-482e-d13e0d6d131a@quicinc.com>
-In-Reply-To: <6e189833-b76b-030f-482e-d13e0d6d131a@quicinc.com>
-From:   Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Date:   Tue, 21 Nov 2023 10:25:51 +0100
-Message-ID: <CACMJSesJhkmLdoS0F3t+B-WMXRky0mHp=_2ho_Lb_GvfdJ7y9g@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 02/12] firmware: qcom: scm: enable the TZ mem allocator
-To:     Prasad Sodagudi <quic_psodagud@quicinc.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.165.33]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 at 07:35, Prasad Sodagudi <quic_psodagud@quicinc.com> wrote:
->
->
-> On 11/20/2023 5:21 AM, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Select the TrustZone memory allocator in Kconfig and create a pool of
-> > memory shareable with the TrustZone when probing the SCM driver.
-> >
-> > This will allow a gradual conversion of all relevant SCM calls to using
-> > the dedicated allocator.
-> >
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> > Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
-> > ---
-> >   drivers/firmware/qcom/Kconfig    |  1 +
-> >   drivers/firmware/qcom/qcom_scm.c | 16 ++++++++++++++++
-> >   2 files changed, 17 insertions(+)
-> >
-> > diff --git a/drivers/firmware/qcom/Kconfig b/drivers/firmware/qcom/Kconfig
-> > index b80269a28224..237da40de832 100644
-> > --- a/drivers/firmware/qcom/Kconfig
-> > +++ b/drivers/firmware/qcom/Kconfig
-> > @@ -7,6 +7,7 @@
-> >   menu "Qualcomm firmware drivers"
-> >
-> >   config QCOM_SCM
-> > +     select QCOM_TZMEM
-> >       tristate
-> >
-> >   config QCOM_TZMEM
-> > diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> > index 520de9b5633a..0d4c028be0c1 100644
-> > --- a/drivers/firmware/qcom/qcom_scm.c
-> > +++ b/drivers/firmware/qcom/qcom_scm.c
-> > @@ -8,8 +8,10 @@
-> >   #include <linux/completion.h>
-> >   #include <linux/cpumask.h>
-> >   #include <linux/dma-mapping.h>
-> > +#include <linux/err.h>
-> >   #include <linux/export.h>
-> >   #include <linux/firmware/qcom/qcom_scm.h>
-> > +#include <linux/firmware/qcom/qcom_tzmem.h>
-> >   #include <linux/init.h>
-> >   #include <linux/interconnect.h>
-> >   #include <linux/interrupt.h>
-> > @@ -20,9 +22,11 @@
-> >   #include <linux/of_platform.h>
-> >   #include <linux/platform_device.h>
-> >   #include <linux/reset-controller.h>
-> > +#include <linux/sizes.h>
-> >   #include <linux/types.h>
-> >
-> >   #include "qcom_scm.h"
-> > +#include "qcom_tzmem.h"
-> >
-> >   static bool download_mode = IS_ENABLED(CONFIG_QCOM_SCM_DOWNLOAD_MODE_DEFAULT);
-> >   module_param(download_mode, bool, 0);
-> > @@ -41,6 +45,8 @@ struct qcom_scm {
-> >       int scm_vote_count;
-> >
-> >       u64 dload_mode_addr;
-> > +
-> > +     struct qcom_tzmem_pool *mempool;
-> >   };
-> >
-> >   struct qcom_scm_current_perm_info {
-> > @@ -1887,6 +1893,16 @@ static int qcom_scm_probe(struct platform_device *pdev)
-> >       if (of_property_read_bool(pdev->dev.of_node, "qcom,sdi-enabled"))
-> >               qcom_scm_disable_sdi();
-> >
-> > +     ret = qcom_tzmem_enable(__scm->dev);
-> > +     if (ret)
-> > +             return dev_err_probe(__scm->dev, ret,
-> > +                                  "Failed to enable the TrustZone memory allocator\n");
->
-> Based on my knowledge shmbridge is supported from sm8250 SoC in the
-> firmware.
->
-> sdm845 and couple of other targets may not have support shmbridge
-> support and probe will be fail for these targets right?
->
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-We check the availability of the SHM Bridge calls on the platform at
-run-time before enabling it. We'll simply fall-back to not using SHM
-bridge in this case.
+The core CPU control framework supports runtime SMT control which
+is not yet supported on arm64. Besides the general vulnerabilities
+concerns we want this runtime control on our arm64 server for:
 
-Bart
+- better single CPU performance in some cases
+- saving overall power consumption
 
-> > +
-> > +     __scm->mempool = devm_qcom_tzmem_pool_new(__scm->dev, SZ_256K);
-> > +     if (IS_ERR(__scm->mempool))
-> > +             return dev_err_probe(__scm->dev, PTR_ERR(__scm->mempool),
-> > +                                  "Failed to create the SCM memory pool\n");
-> > +
-> >       /*
-> >        * Initialize the QSEECOM interface.
-> >        *
+This patchset implements it in the following aspects:
+
+- implements the basic support in arch_topology driver
+- support retrieve SMT thread number on OF based system
+- support retrieve SMT thread number on ACPI based system
+- select HOTPLUG_SMT for arm64
+
+Tests has been done on our real ACPI based arm64 server and on
+ACPI/OF based QEMU VMs.
+
+The patchset is based on v6.7-rc1.
+
+Change since v3:
+- Fix some build and kconfig error reported by kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/linux-arm-kernel/20231114040110.54590-1-yangyicong@huawei.com/
+
+Change since v2:
+- Detect SMT thread number at topology build from ACPI/DT, avoid looping CPUs
+- Split patches into ACPI/OF/arch_topology path and enable the kconfig for arm64
+Link: https://lore.kernel.org/linux-arm-kernel/20231010115335.13862-1-yangyicong@huawei.com/
+
+Yicong Yang (4):
+  arch_topology: Support basic SMT control for the driver
+  arch_topology: Support SMT control for OF based system
+  arm64: topology: Support SMT control on ACPI based system
+  arm64: Kconfig: Enable HOTPLUG_SMT
+
+ arch/arm64/Kconfig            |  1 +
+ arch/arm64/kernel/topology.c  | 23 ++++++++++++++++++
+ drivers/base/arch_topology.c  | 45 +++++++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h | 14 +++++++++++
+ 4 files changed, 83 insertions(+)
+
+-- 
+2.24.0
+
