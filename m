@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D67F33B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 788167F33C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjKUQ3k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 11:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
+        id S233709AbjKUQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKUQ3j (ORCPT
+        with ESMTP id S229558AbjKUQaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:29:39 -0500
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D5B197;
-        Tue, 21 Nov 2023 08:29:35 -0800 (PST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5cbf946a6f3so4159597b3.2;
-        Tue, 21 Nov 2023 08:29:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700584175; x=1701188975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mxHuohagQtGVaCTwDHZT0rRlGCapRZ5dBubyNC4XBAI=;
-        b=wD3rjvABqZ0mEfUikMZgxtCgX+Y12GROjaRorORq4C4LRfLoOyqIlJ3YiBpBpkmM1j
-         UenQLDqUt7EdApTW5Q79wdvzdf3tw8X/OogzlXydiFCgjmtmPj/r7uyJPqzTG6ez16AA
-         LwB2XFzFGBOjr+8w1hi9TNAlCOPkfoTSU+G4IjjaMFWGLeCu9yqPKZLEQ9boMHceUG0t
-         kwvRk/6cxKLOZOMR6EODlnPiPWqKSrZjBQLolwMwbGHXF2kfC1Fp2M4y5zYQ6rOjQEBS
-         2PxurnsjEQcb2eKGQPDphc20QhM/XjCB45Bb3DQsoNSlR1Lso5zC7O9VcDWTXIsFFu78
-         yuhQ==
-X-Gm-Message-State: AOJu0YwSTWcSfcPlechKhl5kWcJGmOXUdnzXWrcbAozL8VJ3hjQj4g1t
-        EyO4ODLkD4a+MJCb51kpmhxKA+gTN1o3aeMq
-X-Google-Smtp-Source: AGHT+IETDdt4IEzFwkdNwFBhLqICCRw+X+4jp5GQEa4bi3FLMJAqg+VD6URF53k4RGJ1wQzCLW3Miw==
-X-Received: by 2002:a81:c246:0:b0:5b3:23f7:4254 with SMTP id t6-20020a81c246000000b005b323f74254mr12006517ywg.25.1700584174938;
-        Tue, 21 Nov 2023 08:29:34 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id n3-20020a0dfd03000000b005a7bb193b37sm3106395ywf.27.2023.11.21.08.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 08:29:33 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5cb96ef7ac6so8835107b3.3;
-        Tue, 21 Nov 2023 08:29:31 -0800 (PST)
-X-Received: by 2002:a81:b149:0:b0:5ca:c5e9:938b with SMTP id
- p70-20020a81b149000000b005cac5e9938bmr5565031ywh.1.1700584171136; Tue, 21 Nov
- 2023 08:29:31 -0800 (PST)
+        Tue, 21 Nov 2023 11:30:46 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5C4CB;
+        Tue, 21 Nov 2023 08:30:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1700584228; x=1701189028; i=wahrenst@gmx.net;
+        bh=S02d0LpoaxYbVXdkNYddTYpdeZjfrmY2E0FoJic6qbc=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Ukx3ySE62hk+lkblYSRiHbPWiGZJCYu/T5X6Ydk4FM2MPCPdXejMVj5y2LHI4T1L
+         gdBaBR3VqSjBsqZhBSjDuuqIxtNMOFZWqll0gbSWewBqVRJJsJ0CWXZAYUG3OjD8Z
+         fPrp7IhWqpcLlEgVfvFZZJtsX+vVbsH2lSfbIrfjV1T1z6M9/VxvKtRQhlNg/jSpE
+         fZTKRlLd61ke9uojRpwFbsvKqPyYdrdLnJM6u65dnbHow1Db88H740KH5DPS4v+kM
+         oOZrS+9YKisAduIGPa/GWrmlZ9siFk064npDmnbnP2BqX5Zl74FVoBE4PsYkWrUld
+         luBb0cc5gs8JrVNH5g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSKy8-1quR2340Ii-00Sjav; Tue, 21
+ Nov 2023 17:30:28 +0100
+From:   Stefan Wahren <wahrenst@gmx.net>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH 0/4 net] qca_spi: collection of major fixes
+Date:   Tue, 21 Nov 2023 17:30:00 +0100
+Message-Id: <20231121163004.21232-1-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com> <20231120070024.4079344-10-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231120070024.4079344-10-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 21 Nov 2023 17:29:18 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUr8bqQvJE78zMHb2sqQCnTZSZhcMef1x6DgXmUhdTWqg@mail.gmail.com>
-Message-ID: <CAMuHMdUr8bqQvJE78zMHb2sqQCnTZSZhcMef1x6DgXmUhdTWqg@mail.gmail.com>
-Subject: Re: [PATCH 09/14] dt-bindings: net: renesas,etheravb: Document RZ/G3S support
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@armlinux.org.uk, magnus.damm@gmail.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
-        broonie@kernel.org, alexander.stein@ew.tq-group.com,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VNnea3i9p0ZZHidLTaFt5yhjJh/22PQZCf8ShbJNrQQjLKHx6Cl
+ 4HXaUDrUJnQSnhxxMU4ZbCJRW2XPczMPPdinOUukKUlR5luSWYUWX+tYt3jhZTPXT4EgeVw
+ tSVt7NU8W7rjsBTrxCSQw8Ge9m+5rdHqG7WuuUhxuSjiHweB3hg5R8xI1S3X0BUdl1OTr0F
+ ecbWuiL8zcb1fZmBa0NDQ==
+UI-OutboundReport: notjunk:1;M01:P0:RVDoPulWi8Q=;hl3THpf2XvUDj8ESzV+8Ksu/u6C
+ Iy4V75TmNss/sqZ7/q9aj5NgbjTyITnXntwJ6D28pEJhAXaVsqDPyMXcOYVC5Kr7jpJ/sa0cA
+ 2ZR6D/Da72T8IbTo3xYcIb+ACAYYkdxdDV6kLSpAqKy+OYVVSQKKi1AyjOOupm4yVHoNQIY5a
+ OPZykMt2vKaGBBQmYywfFCK8xm8pSp2g7rSLkPYlwAuYyGQd6oMH5uf+7gg8mW2pFHAaliVWg
+ xb22s1uFXSBkm9335iCt8Q1mMuHVYZzyI8FyLPgNQYbm55GjeoJve+U5/CdiZV91W7MepLmin
+ ct57ZP9OYQ5EPDgxja6NXBkxatyNN5o8sfw7TvXYR/Wg2moT4pU6E6wH9fN1DnzfsO1YWHCre
+ ZNLCDuw2VwzNsFtYVtZzD0nwRZhcJKmMiEEqsbKMsmub/RrwQaAnRCLw1iYxJVqwomdPXUhXL
+ oB5Mf/JT4DhFsIUEhkIPqHLtUTJiIfw+N6r75Q+w/vv1ysHcAbzALkf5OCufJ23qcH/aLTRMb
+ kG8ZiogHH8/SLJCOx4NFV8dAYkXb3tqWb7NicF7U+LK4sVJwdDfm0DmiGFuDOZY73GD6U3SZs
+ pFBaPoTnaXxafHdX2ueRevXvknm80xUYPoIb6LtP5HW6cnvmGNkwXIkvAO9F1wpi6SuoGYS78
+ FTwN01GNiBA7qovwBo9+hcPDfNX2HnLTWeQlJXgoH63pyWxEzIx4QxPQ/F5DNFxzFmMLzi4FT
+ qsAWx5T7d/mhrdjloWjEWugxNl3AbrGkh0XmAx0eLb4WszBdcRaqZ4ie23Ct8GhTAfOEupOy+
+ v9cRJD359mKyRPP62RGQ/NUwHodAJYto0UjCDzkr+K2uHHes4jedMlYlYN2XkHH76IMHW+5NX
+ VL2acSmE+O5HFmOTurY/TWbw2t8cMgPtBxeIqkEvZkwY83puLlMpNaNzVF9NuVI54JW8XRXoW
+ nMiHwg==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Document Ethernet RZ/G3S support. Ethernet IP is similar to the one
-> available on RZ/G2L devices.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+This series contains a collection of major fixes for the qca_spi driver,
+which has been recently discovered.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Stefan Wahren (4):
+  qca_spi: Fix SPI thread creation
+  qca_spi: Fix SPI IRQ handling
+  qca_spi: Fix ethtool -G iface tx behavior
+  qca_spi: Fix reset behavior
 
-Gr{oetje,eeting}s,
+ drivers/net/ethernet/qualcomm/qca_debug.c |  2 -
+ drivers/net/ethernet/qualcomm/qca_spi.c   | 63 +++++++++++++++--------
+ 2 files changed, 41 insertions(+), 24 deletions(-)
 
-                        Geert
+=2D-
+2.34.1
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
