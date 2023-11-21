@@ -2,125 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7487F314C
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7507F3150
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 15:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234521AbjKUOly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 09:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
+        id S234712AbjKUOmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 09:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234359AbjKUOlu (ORCPT
+        with ESMTP id S234295AbjKUOmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 09:41:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DDA113
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:41:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 789C1C433CB;
-        Tue, 21 Nov 2023 14:41:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700577706;
-        bh=C7C7k7MQyKejZFr0pldTQeSMPk6gsd2UxQYtxinu5pw=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=CgL2ucQdy94yOgeIDAUwoCO7aWp99U7UxUB44vIJ3zoQMnIR3udHQhZIN5sXyibxH
-         czAz+Vx7RKPr3AxsKhd//nrVd+r4N6i7ApCx4lYT3p9DQ1FAkUO2nrLt1C0OvO9hu0
-         GyxDqgbOTvqZ+c7ie+Cpemx6xHP6JTyW3ruN+ht4bp54BYF69fMaDHagP5C+KWqEZR
-         2GijwYoxOkrfOh8SuugWFy/NFjq/L/cG2cnPsXdIiJTdRvS4sgOyqNK92uVAfKrcXW
-         /1IJfJPYZxTj5HxtbY5vKw7lmpV/AzMLvdDw7rTTx/pSoeXW8MDSz83AYujBr+LtqC
-         MPuYqOIGMysAw==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 51B9927C0060;
-        Tue, 21 Nov 2023 09:41:44 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 21 Nov 2023 09:41:44 -0500
-X-ME-Sender: <xms:pcFcZdsWGDQlhmI6n2v2STwpRur8Ex5jMj-OfonBvkm_qP9u5Vehkw>
-    <xme:pcFcZWeZpBbfB55MnYno9359Tfus34ITY1sDhe4hW7V3SABXCwWvG2hyrWlObjFSY
-    GxTFDh4hpfPDZC8XQY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
-    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
-    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
-    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
-    druggv
-X-ME-Proxy: <xmx:pcFcZQwzPDqKgO1eLy9fMP5k2YNWEMyxrZNGFyRrVEVQYyKof1N0OQ>
-    <xmx:pcFcZUPwcZ2E04cngCvFBms1fpBUlzIk4d9BIyGmL2zgsp3AgKymCA>
-    <xmx:pcFcZd9CZzsabkHxDxckarU4_obPREarv2t_-o-ecM-cKfM6Kg3-eQ>
-    <xmx:qMFcZYdm9j_565d_pkgW7CpQU98cxirDUwH0UjRGVxVLDJqpUCXQGyo-hO4RixM3>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D1C33B60089; Tue, 21 Nov 2023 09:41:41 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Tue, 21 Nov 2023 09:42:49 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 184B79E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:42:38 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a9541c9b2aso53914039f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 06:42:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1700577757; x=1701182557; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TgSwU2wjmRzA6RzqAcEMU9EpGu84w83u/YmCrCrTRVc=;
+        b=MqyXD354+ZkPfKBkUd3tC7UHh1hIMqRNNFnDv05Q6PooI0pA/VMaiRoljmWWOsyJvf
+         K0bTcsK+BQ91pwkq0wiWPY75CVq2hRqYhNDZ1yQTKEwayV036/wWuW2fmhAqjz1AfiGK
+         Ve+MpJHdbjlcMrDs5BeIsJXeI8RzCtbzPECSPcLpd8gyPFrMGQIaIcWZw76qhLihDaAw
+         +6jTq9pyn+OLlTiZn8jq3gtRLJb2rv9b53EsFl+vqSPxquaRtgqPH+ingIPJQg7nwMy8
+         zzdjULi3nJZwoBVFYIheQ+qZpHtOgp/uvYx7SxhTvCd3LtGX/x2v1MzWEIx+D+gweh8t
+         b+dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700577757; x=1701182557;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TgSwU2wjmRzA6RzqAcEMU9EpGu84w83u/YmCrCrTRVc=;
+        b=VV2RTtLF80cyNsUwUGeoFl9dpsvh11JXx2x/ABZu/7lDAkRbdOBkzelAH2cUC6ZCPy
+         vnwxKrx3/SvkAFdJEGxyHetcVXA8V7x7qS8SjoJBxLW19mAXLzsWJIe4acvEXTmB/P+d
+         ZQpN/wfr9xcljvz8QDQcxbGM2KJUeg8dMje5wxmkOcLVt49ja3a5cvJBHRanMN+wO34C
+         ht70LETJdxTFpby6pYL45z4MOWHzK1L9E4J0E0C3p3pGmiYXxtycxksgOpLYdNJDFmXk
+         l7N17k/gqCm3G0t2VpzTVEF00c6j5fYZ9+MPlNN/xTaDq4dsrpPZAN1vjNI2uf7on9k5
+         p/1A==
+X-Gm-Message-State: AOJu0YzXfOrFIoQRZdrJgGVRUx5hxUidYrVqmCbSdK9MfKfQ8v2u0TPa
+        rWFx2D+prcUqK9MeMom3xltoENJEQq2uz4D/1fqz8w==
+X-Google-Smtp-Source: AGHT+IEEmIAZAYZgOvVGMKlcTAnQdAbmk+xo/5J9j5adJQMyuSUcAXy3WQ87OhmLmjTMwEB7mBPsrg==
+X-Received: by 2002:a5d:9b92:0:b0:7b0:acce:5535 with SMTP id r18-20020a5d9b92000000b007b0acce5535mr7649795iom.1.1700577757029;
+        Tue, 21 Nov 2023 06:42:37 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id j14-20020a02cb0e000000b004665ad49d39sm1187305jap.74.2023.11.21.06.42.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 06:42:35 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     josef@toxicpanda.com, linan666@huaweicloud.com
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, linan122@huawei.com,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+In-Reply-To: <20230911023308.3467802-1-linan666@huaweicloud.com>
+References: <20230911023308.3467802-1-linan666@huaweicloud.com>
+Subject: Re: [PATCH] nbd: pass nbd_sock to nbd_read_reply() instead of
+ index
+Message-Id: <170057775563.269185.521615863055260084.b4-ty@kernel.dk>
+Date:   Tue, 21 Nov 2023 07:42:35 -0700
 MIME-Version: 1.0
-Message-Id: <5bd85a64-5161-4312-831d-cba420e20bfb@app.fastmail.com>
-In-Reply-To: <9a5f21b69709121c8b342bb44e0b7f83deacd10d.camel@redhat.com>
-References: <20231120215945.52027-2-pstanner@redhat.com>
- <20231120215945.52027-6-pstanner@redhat.com>
- <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
- <9a5f21b69709121c8b342bb44e0b7f83deacd10d.camel@redhat.com>
-Date:   Tue, 21 Nov 2023 15:41:21 +0100
-From:   "Arnd Bergmann" <arnd@kernel.org>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Eric Auger" <eric.auger@redhat.com>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "Neil Brown" <neilb@suse.de>, "John Sanpe" <sanpeqf@gmail.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "David Gow" <davidgow@google.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-26615
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023, at 15:38, Philipp Stanner wrote:
-> On Tue, 2023-11-21 at 11:03 +0100, Arnd Bergmann wrote:
->> On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
-=20
->> We should be able to define a generic version like
->>=20
->> void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
->> {
->> #ifdef CONFIG_HAS_IOPORT
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr)) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 ioport_unmap(addr);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 return;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> #endif
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
->> }
->
-> And where would you like such a function to reside?
-> drivers/pci/iomap.c?
 
-Yes, I think that would be the logical place. It could also
-be an inline function but that's not great on architectures
-that don't also have iomem_is_ioport() inline.
+On Mon, 11 Sep 2023 10:33:08 +0800, linan666@huaweicloud.com wrote:
+> If a socket is processing ioctl 'NBD_SET_SOCK', config->socks might be
+> krealloc in nbd_add_socket(), and a garbage request is received now, a UAF
+> may occurs.
+> 
+>   T1
+>   nbd_ioctl
+>    __nbd_ioctl
+>     nbd_add_socket
+>      blk_mq_freeze_queue
+> 				T2
+>   				recv_work
+>   				 nbd_read_reply
+>   				  sock_xmit
+>      krealloc config->socks
+> 				   def config->socks
+> 
+> [...]
 
-    Arnd
+Applied, thanks!
+
+[1/1] nbd: pass nbd_sock to nbd_read_reply() instead of index
+      commit: 98c598afc22d4e43c2ad91860b65996d0c099a5d
+
+Best regards,
+-- 
+Jens Axboe
+
+
+
