@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FA57F344F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D11A7F3452
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjKUQza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S230424AbjKUQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:55:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjKUQz3 (ORCPT
+        with ESMTP id S233592AbjKUQzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:55:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A176F122
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:55:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48580C433CD
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:55:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700585725;
-        bh=BPPgPgKcY3SOUFT/m046HQ005it97DrTli/SOEvkQKo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AyIB+p/uoUU3ZISYJX0QPlyP5YrCnqpIB2Ni+TmVHiJnNMoFecb8fEDnx00wDxxcs
-         gH4aZ5fPsL0dNwBA7KWvXA1YCJ2CmvqOrdt54SAoQionaPJtk3z3U86dWmI4Paxr5u
-         wLJrYqkxSqxp9lOJWQMr3FD5opwDt9KxzCYzrMZaWQqZhBRasOyaU8KgwHxGlKve4P
-         BgIv9FsvqVF142cEVZfsx9hjbVo+4pBX7Wn88C2+/4QCmb7Enk8jex7twibpzRo3wZ
-         cWq4TcSutJz51JXnHsE8joAeGIjWyD7hkDbE8JSZjTwIDv3mR2gdso2//0onCGdxyx
-         I8keks/lHrRuw==
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5be30d543c4so3871458a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:55:25 -0800 (PST)
-X-Gm-Message-State: AOJu0YwV4E5Fb5JHlVe+Jkye3vQ3Phn8rGvuLzbfThMSb+0h5Ec9H/YZ
-        pgPYCZrnQ4HpUfVH1oY9mWf22oNFUXHTLyjxQ2FyXQ==
-X-Google-Smtp-Source: AGHT+IGoSNcrUquRFAr5cOwbm7HO1VPZS01Auc5YCOQnAEpE2mJ8dQoJTyd0GmXa0yLkD6c93EChhkWvJTyOvG2JclI=
-X-Received: by 2002:a17:90b:4aca:b0:27d:b9d:bd6f with SMTP id
- mh10-20020a17090b4aca00b0027d0b9dbd6fmr10142174pjb.45.1700585724698; Tue, 21
- Nov 2023 08:55:24 -0800 (PST)
+        Tue, 21 Nov 2023 11:55:41 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4B1194;
+        Tue, 21 Nov 2023 08:55:37 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1CE896607295;
+        Tue, 21 Nov 2023 16:55:35 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700585735;
+        bh=mdGg1nddgmW59PVR/+jB1h2IWASeId6LzRHfz+nJCBE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SQcNNBZMj0lhMZdq5kybwuucz82fO2JZBlE3rqS+k3sNJ4eYpyhOghO9QxM5aTbxT
+         MMZGUe/IwQ/GqLlfrWmBejzlKfT+Lqfdrc8gM/48xhRhT1ouGDE5tAThvSGUYuIVp8
+         PB2GfrNU+9FPg90MoDPrAesDOuenQ5S4qSvpLcIjuCB8VG6OJrbvN5yw1MmK9onImx
+         d0faVeghkmsnKUJYbdRnSjRseFejp7z05WAxR+Qiddu2Y067NUOpS38eFcjb2bGCTe
+         8xcuaBPqX3dQjnkEGLAcX+SPog4So8TlnK3wHPlpQqGGbxITfrtgbqORUBMIYDZ7Q+
+         1Ah5AaqHiph5Q==
+Date:   Tue, 21 Nov 2023 17:55:31 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, mripard@kernel.org,
+        dri-devel@lists.freedesktop.org, wenst@chromium.org,
+        kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+Message-ID: <20231121175531.085809f5@collabora.com>
+In-Reply-To: <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+        <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+        <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+        <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-15-ryncsn@gmail.com>
-In-Reply-To: <20231119194740.94101-15-ryncsn@gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 21 Nov 2023 08:55:13 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuP5Bnz1PncU265+YnaSQG1CmdxqvuvzZK5Xuu6Pd==peg@mail.gmail.com>
-Message-ID: <CAF8kJuP5Bnz1PncU265+YnaSQG1CmdxqvuvzZK5Xuu6Pd==peg@mail.gmail.com>
-Subject: Re: [PATCH 14/24] mm/swap: do shadow lookup as well when doing swap
- cache lookup
-To:     Kairui Song <kasong@tencent.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,98 +67,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kairui,
+On Tue, 21 Nov 2023 17:11:42 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
 
-Too trivial to stand alone as a patch. Merge it with the patch needed
-to use that "*shadow".
+> Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto:
+> > On 08/11/2023 14:20, Steven Price wrote:  
+> >> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote:  
+> >>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to request
+> >>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO ones:
+> >>> this means that in order to request poweroff of cores, we are supposed
+> >>> to write a bitmask of cores that should be powered off!
+> >>> This means that the panfrost_gpu_power_off() function has always been
+> >>> doing nothing.
+> >>>
+> >>> Fix powering off the GPU by writing a bitmask of the cores to poweroff
+> >>> to the relevant PWROFF_LO registers and then check that the transition
+> >>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+> >>> registers.
+> >>>
+> >>> While at it, in order to avoid code duplication, move the core mask
+> >>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+> >>> function, used in both poweron and poweroff.
+> >>>
+> >>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+> >>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>  
+> > 
+> > 
+> > Hi,
+> > 
+> > This commit was added to next recently but it causes "external abort on
+> > non-linefetch" during boot of my Odroid HC1 board.
+> > 
+> > At least bisect points to it.
+> > 
+> > If fixed, please add:
+> > 
+> > Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > 
+> > [    4.861683] 8<--- cut here ---
+> > [    4.863429] Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c8802c
+> > [    4.871018] [f0c8802c] *pgd=433ed811, *pte=11800653, *ppte=11800453
+> > ...
+> > [    5.164010]  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
+> > [    5.171276]  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+> > [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+> > [    5.183743]  handle_fasteoi_irq from generic_handle_domain_irq+0x28/0x38
+> > [    5.190417]  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
+> > [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+> > [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+> > 
+> > Full log:
+> > https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
+> >   
+> 
+> Hey Krzysztof,
+> 
+> This is interesting. It might be about the cores that are missing from the partial
+> core_mask raising interrupts, but an external abort on non-linefetch is strange to
+> see here.
 
-Chris
+I've seen such external aborts in the past, and the fault type has
+often been misleading. It's unlikely to have anything to do with a
+non-linefetch access, but it might be caused by a register access after
+the clock or power domain driving the register bank has been disabled.
+The following diff might help validate this theory. If that works, we
+probably want to make sure we synchronize IRQs before disabling in the
+suspend path.
 
-On Sun, Nov 19, 2023 at 11:48=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
-te:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Make swap_cache_get_folio capable of returning the shadow value when the
-> xarray contains a shadow instead of a valid folio. Just extend the
-> arguments to be used later.
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/shmem.c      |  2 +-
->  mm/swap.h       |  2 +-
->  mm/swap_state.c | 11 +++++++----
->  3 files changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 72239061c655..f9ce4067c742 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1875,7 +1875,7 @@ static int shmem_swapin_folio(struct inode *inode, =
-pgoff_t index,
->         }
->
->         /* Look it up and read it in.. */
-> -       folio =3D swap_cache_get_folio(swap, NULL);
-> +       folio =3D swap_cache_get_folio(swap, NULL, NULL);
->         if (!folio) {
->                 /* Or update major stats only when swapin succeeds?? */
->                 if (fault_type) {
-> diff --git a/mm/swap.h b/mm/swap.h
-> index e43e965f123f..da9deb5ba37d 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -47,7 +47,7 @@ void delete_from_swap_cache(struct folio *folio);
->  void clear_shadow_from_swap_cache(int type, unsigned long begin,
->                                   unsigned long end);
->  struct folio *swap_cache_get_folio(swp_entry_t entry,
-> -                                  struct vm_fault *vmf);
-> +                                  struct vm_fault *vmf, void **shadowp);
->  struct folio *filemap_get_incore_folio(struct address_space *mapping,
->                 pgoff_t index);
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 3b5a34f47192..e057c79fb06f 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -334,14 +334,17 @@ static inline bool swap_use_vma_readahead(struct sw=
-ap_info_struct *si)
->   *
->   * Caller must lock the swap device or hold a reference to keep it valid=
-.
->   */
-> -struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *v=
-mf)
-> +struct folio *swap_cache_get_folio(swp_entry_t entry, struct vm_fault *v=
-mf, void **shadowp)
->  {
->         bool vma_ra, readahead;
->         struct folio *folio;
->
-> -       folio =3D filemap_get_folio(swap_address_space(entry), swp_offset=
-(entry));
-> -       if (IS_ERR(folio))
-> +       folio =3D filemap_get_entry(swap_address_space(entry), swp_offset=
-(entry));
-> +       if (xa_is_value(folio)) {
-> +               if (shadowp)
-> +                       *shadowp =3D folio;
->                 return NULL;
-> +       }
->
->         /*
->          * At the moment, we don't support PG_readahead for anon THP
-> @@ -923,7 +926,7 @@ struct page *swapin_readahead(swp_entry_t entry, gfp_=
-t gfp_mask,
->         struct page *page;
->         pgoff_t ilx;
->
-> -       folio =3D swap_cache_get_folio(entry, vmf);
-> +       folio =3D swap_cache_get_folio(entry, vmf, NULL);
->         if (folio) {
->                 page =3D folio_file_page(folio, swp_offset(entry));
->                 cache_result =3D SWAP_CACHE_HIT;
-> --
-> 2.42.0
->
->
+--->8---
+diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
+index 55ec807550b3..98df66e5cc9b 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_regs.h
++++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
+@@ -34,8 +34,6 @@
+          (GPU_IRQ_FAULT                        |\
+           GPU_IRQ_MULTIPLE_FAULT               |\
+           GPU_IRQ_RESET_COMPLETED              |\
+-          GPU_IRQ_POWER_CHANGED                |\
+-          GPU_IRQ_POWER_CHANGED_ALL            |\
+           GPU_IRQ_PERFCNT_SAMPLE_COMPLETED     |\
+           GPU_IRQ_CLEAN_CACHES_COMPLETED)
+ #define GPU_IRQ_MASK_ERROR                     \
+
+
