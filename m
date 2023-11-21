@@ -2,139 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA85D7F2786
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ACB7F278E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 09:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbjKUIdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 03:33:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34362 "EHLO
+        id S230127AbjKUIeI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 03:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKUIc6 (ORCPT
+        with ESMTP id S229492AbjKUIeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 03:32:58 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3708F95
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 00:32:55 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r5MBb-00072e-2K; Tue, 21 Nov 2023 09:32:47 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r5MBa-00AXR2-I0; Tue, 21 Nov 2023 09:32:46 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r5MBa-004qyX-8j; Tue, 21 Nov 2023 09:32:46 +0100
-Date:   Tue, 21 Nov 2023 09:32:46 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     kernel@pengutronix.de, kernel-janitors@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr,
-        Amit Dhingra <mechanicalamit@gmail.com>
-Subject: Re: spi: cadence-xspi: Drop useless assignment to NULL
-Message-ID: <20231121083246.wg5qtej6cll3snlg@pengutronix.de>
-References: <20231105143932.3722920-2-u.kleine-koenig@pengutronix.de>
- <233689d7-9409-406b-9383-49f10cd29336@web.de>
- <CAO=gReGA17gHSr4ftN1Jwrjt5t76oAgaL6+n6X4wD0osJnuq4g@mail.gmail.com>
- <53db2c8f-7b9b-47f7-89ba-d78584c12d7b@web.de>
- <20231121075716.it3cpwhwymkaqjrh@pengutronix.de>
- <3e4c0c06-9681-43df-be12-b2bbc599fdfb@web.de>
+        Tue, 21 Nov 2023 03:34:06 -0500
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3B0F9;
+        Tue, 21 Nov 2023 00:34:03 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5cb9407e697so3705217b3.3;
+        Tue, 21 Nov 2023 00:34:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700555642; x=1701160442;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zvU52/Ubi+bAinyzeHT0A3LXlb5oIMheUWuwfdkOyZY=;
+        b=C/on8yQX7kZPtIc5OpWv6TzAu/ruGEaOq9+yblp2NcZRaG8zuJUVcUB6M23iDGNbF3
+         7sMtrUjpNec54dNHlqReXuNOoXHhqZQPlNvAr9dgM14yCfFhSVEbfhHBMBzEoxtRoDqM
+         L5dZggtqoVmxRFwp8EFoHe/rYI+YvS44WMhGmbcDpne/2f96kgkL+Y1FcM2c2Dpq9R3X
+         0X2BYK8HUbmcdDF/tzNsUohqwkMwjPXfY85DPuSE/U5c4kKsGzzzi1xY6Ugfq+ram7PD
+         dfBpSe54J+L3fw5pzdd/wrUSLSso9QPNbPvKIVdI9F/vUHIH78DpgBiDW8tF00Pj4fp1
+         fCZg==
+X-Gm-Message-State: AOJu0YxFauLejfNB8/wbEUhnqKDYjaHnT35J6Ukb0E1HZe8uema7X05p
+        JeycguuSS0oZ8jTZhoEgkrO5qFB/s3fKqqvp
+X-Google-Smtp-Source: AGHT+IHLjYFUuhPifhgp6Y9NCeDp99nZPXeZZfv3+u5PRuIuMoywYGK9jtbOBY9xXCUOyODzuFFTAg==
+X-Received: by 2002:a81:d512:0:b0:5a7:d461:a2b7 with SMTP id i18-20020a81d512000000b005a7d461a2b7mr4551069ywj.43.1700555642235;
+        Tue, 21 Nov 2023 00:34:02 -0800 (PST)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id k186-20020a0dfac3000000b00559f1cb8444sm2926023ywf.70.2023.11.21.00.34.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 00:34:01 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-daf7ed42ea6so5134789276.0;
+        Tue, 21 Nov 2023 00:34:01 -0800 (PST)
+X-Received: by 2002:a25:16c5:0:b0:d9a:6831:ec1c with SMTP id
+ 188-20020a2516c5000000b00d9a6831ec1cmr8151483ybw.53.1700555641181; Tue, 21
+ Nov 2023 00:34:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="li7yy6xvutejqnwg"
-Content-Disposition: inline
-In-Reply-To: <3e4c0c06-9681-43df-be12-b2bbc599fdfb@web.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231011195923.67404-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231011195923.67404-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 21 Nov 2023 09:33:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU7558Acdi5jQp2JpHwatVtJGKOLq+VhQz5u6MYyhktaA@mail.gmail.com>
+Message-ID: <CAMuHMdU7558Acdi5jQp2JpHwatVtJGKOLq+VhQz5u6MYyhktaA@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: renesas: rzg2l: Enhance driver to support
+ interrupt affinity setting
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 11, 2023 at 10:00 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Implement irq_set_affinity callback so that we can set affinity
+> for GPIO IRQs.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
---li7yy6xvutejqnwg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v6.8.
 
-On Tue, Nov 21, 2023 at 09:19:13AM +0100, Markus Elfring wrote:
-> >>>>> Static structs are initialized with zeros for unspecified fields.
-> >>>>> So there is no advantage to explicitly initialize .remove with NULL
-> >>>>> and the assignment can be dropped without side effects.
-> =E2=80=A6
-> > Removing =3D 0 assignments should be carefully reviewed. I skimmed the
-> > changes to drivers/pwm and would oppose to both changes.
->=20
-> How does this development view fit to information from the patch descript=
-ion?
+Gr{oetje,eeting}s,
 
-They are syntactically fine as they don't change the semantic of the
-code. But assignments to NULL (and still more to 0) also serve the human
-reader as documentation.
+                        Geert
 
-Look at the patch for drivers/pwm/pwm-samsung.c:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-diff -u -p a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
---- a/drivers/pwm/pwm-samsung.c
-+++ b/drivers/pwm/pwm-samsung.c
-@@ -478,21 +478,17 @@ static const struct samsung_pwm_variant
-=20
- static const struct samsung_pwm_variant s3c64xx_variant =3D {
- 	.bits		=3D 32,
--	.div_base	=3D 0,
- 	.has_tint_cstat	=3D true,
- 	.tclk_mask	=3D BIT(7) | BIT(6) | BIT(5),
- };
-=20
- static const struct samsung_pwm_variant s5p64x0_variant =3D {
- 	.bits		=3D 32,
--	.div_base	=3D 0,
- 	.has_tint_cstat	=3D true,
--	.tclk_mask	=3D 0,
- };
-=20
- static const struct samsung_pwm_variant s5pc100_variant =3D {
- 	.bits		=3D 32,
--	.div_base	=3D 0,
- 	.has_tint_cstat	=3D true,
- 	.tclk_mask	=3D BIT(5),
- };
-
-If I saw the resulting code, I'd wonder about the missing assignments
-in these three structs. So IMHO the status quo is better even though it
-is more verbose.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---li7yy6xvutejqnwg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVcay0ACgkQj4D7WH0S
-/k5Srgf/cqBerXOEHw4lusrfnwcRb3Ki/y6uRchce5a3eSyYZRHCfZjA+/obZrsu
-4GCuRb2OoKKQzqE7kfjkMqZzdK4It65Dz14YNu5eBSvFEWftRJUY2bqIkDpAV1n7
-qn87RS6i3CrWKoDTfmKVQOOOvdtoVVhCIzIoR7/3R9PKkYpdVzGNbl0bhuMoKrTJ
-0boVxkij5vVGXz3m6xvpx8xJ3egVObmcj41DTBbe6ipVRklbGQmwWzs7YAW2t4cF
-VceGcpIvpF37IMYWuSbp3PkAPSqeowjrMbUqrCE6+dBT4pMLHPMZZqplaBF93IwT
-dZJcdeVjhSHdi/0RmtO5i0A5Njz3TA==
-=pSIX
------END PGP SIGNATURE-----
-
---li7yy6xvutejqnwg--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
