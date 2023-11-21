@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18737F36F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46757F36F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjKUTx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
+        id S232960AbjKUTx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKUTxz (ORCPT
+        with ESMTP id S229634AbjKUTx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:53:55 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9434618E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:53:51 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d0760cd20so1242916d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:53:51 -0800 (PST)
+        Tue, 21 Nov 2023 14:53:56 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D6B18E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:53:52 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-6711dd6595fso18849026d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 11:53:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700596430; x=1701201230; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=c4cUkquHttLevpn1Zu3e8taH/wWhZO4i4ER9BhBxxuE=;
-        b=OASpZEkK5i0Ec1YlOkRW3KmMB8LXhpmI7gxu7QVFEMrhcYIG57h5DokEVm2AGBUt6u
-         qM24e/8Ih5SxB72Ct/idJQNZrk6/0B7ejMPS39baqUKzBRnmcAra5M9c8DYb4JBmhyO+
-         gWC765frNhgC9ov1OVcNjPgAIRbHti+4Sx1Hc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700596430; x=1701201230;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=chromium.org; s=google; t=1700596432; x=1701201232; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=c4cUkquHttLevpn1Zu3e8taH/wWhZO4i4ER9BhBxxuE=;
-        b=DojC4ZKq5WV0Yt3T+VnKFIpWZvWC5S8nOX5pPesH1NI5kIRwrTFdI/81TlzxqdN+do
-         Wc5hbNDTXQXcZPjBRRTA6wpuJIe7bdS24Bn4Hxca1f+xVxX5ad9Jhw6g4cyyOKYO80kK
-         GyBQmPdV3dIwcHIXNUJ7NIQAIjDIkPPHerZbWWBk35IG4vu6Ug/UOLE1RACd8AA4AZeh
-         uo+kGZt/olRDWM3E5V6BINrDGoFVWaXWU7UyObcqxXBX8wtyHZl27M+zyFxG8ppPd8o2
-         Sls6Fn7GPYbQSKCrpFBSLRkQOZFHIBuGgu1SR5WMoaf0Sp0jLA8VpRp8nredkWh+bH7Y
-         BoWw==
-X-Gm-Message-State: AOJu0YyH22B38sGI/JIgTV0vULNXlyTHM1ehbpyrfDv1AxUaLPKm15zu
-        DmJQAwrAtozh7IdWqajGKpnDGg==
-X-Google-Smtp-Source: AGHT+IFj/O3cq9Lke/5x+0zBGtvTtLId9cT43ggEJaexUSQdujZlLxKmUTurLy6MG/da4zmsRoEalw==
-X-Received: by 2002:a05:6214:3015:b0:677:9248:5a1c with SMTP id ke21-20020a056214301500b0067792485a1cmr729244qvb.3.1700596430741;
-        Tue, 21 Nov 2023 11:53:50 -0800 (PST)
+        bh=dDCQx2svTZtfCmrCU69fY87fRl7Sd0hrHJUJrOpUR1s=;
+        b=XF7p33qxwVcMCafNsYpOaqKk78Gm78d+4D54vMFD+yOprNN92MfBt03qzL5+F2jlz8
+         XWsvUjZ+hC/cHjadbCHNFi0qTjjg0IyjFvZDviirZnOF019Ew2SdDdTp8UyKPtg2efZV
+         1QM2scZ8t/DiL/HnvY62F/XIiPMfAdlzGjMQQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700596432; x=1701201232;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dDCQx2svTZtfCmrCU69fY87fRl7Sd0hrHJUJrOpUR1s=;
+        b=kXj/h/3tLpFhnzR4t0rLE1wxn8C2xpTZo/AHQI7oDwgWmtD6qXzliHX00uC4zfwXNP
+         QZkSqbCnuorgLBNJFJ90Z2niXrxjsdMM0U8EpicHD/eCuqIPEOhBWWdIs3S1Y4sWw6A0
+         5JsJLMJ/7X02HxT3M0mYsNO1VSHhDLShVhWJfxAWqzGueIfccR4ahdGTb6s6Y4hSL57B
+         oMKhI3j1NLJJHJxvvqr4d3zc65soM6PUx0DqTQFzbORgjE3AJ0cMPEJWYzxfJTLgKTKj
+         eL0x3eyD8Ni/MG0C6R0tDTGh81jYhua8x+diXv3kfW8v3haMDlftfRQTlmEr6xLVbwGC
+         vHDQ==
+X-Gm-Message-State: AOJu0Ywy1HkEBxkfNPbf3eT3gvkGe8ANh0zzrlIG5mB4wtH2sVor2kgb
+        j4dC++ZfvkuKFjqZhmepEwtczg==
+X-Google-Smtp-Source: AGHT+IF+lZdugSOktq4NX5eTYkUsxrmRa17an3i9t4gdkRbjS4TnOQljcMe6VQLkna5ICl+GoJLspg==
+X-Received: by 2002:a05:6214:21e2:b0:66d:2d07:eab4 with SMTP id p2-20020a05621421e200b0066d2d07eab4mr51485qvj.42.1700596431833;
+        Tue, 21 Nov 2023 11:53:51 -0800 (PST)
 Received: from denia.c.googlers.com (228.221.150.34.bc.googleusercontent.com. [34.150.221.228])
-        by smtp.gmail.com with ESMTPSA id ct2-20020a056214178200b0065b0d9b4ee7sm4199409qvb.20.2023.11.21.11.53.49
+        by smtp.gmail.com with ESMTPSA id ct2-20020a056214178200b0065b0d9b4ee7sm4199409qvb.20.2023.11.21.11.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 11:53:50 -0800 (PST)
+        Tue, 21 Nov 2023 11:53:51 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v3 0/3] uvcvideo: Attempt N to land UVC race conditions
- fixes
-Date:   Tue, 21 Nov 2023 19:53:47 +0000
-Message-Id: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
+Date:   Tue, 21 Nov 2023 19:53:48 +0000
+Subject: [PATCH v3 1/3] media: uvcvideo: Always use uvc_status_stop()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAMsKXWUC/33NQQrDIBAF0KsE17WMmtrYVe9Rukh0EgcSBU2EE
- nL3SpeFdjX8D+/PzjImwsxuzc4SFsoUQw3q1DDr+zAhJ1czkyAVKDB82jCsmPhCgXhnOi0G6Fo
- cBatk6DPyIfXB+orCNs+19JTXmF6fF0XU8/ixVgQHruXVCbCjRqPv1qe40LacY5rYs24V+c/L6
- lG3AtzFgGvVlz+O4w2dFeAM8AAAAA==
+Message-Id: <20231121-guenter-mini-v3-1-d8a5eae2312b@chromium.org>
+References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
+In-Reply-To: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
 To:     Mauro Carvalho Chehab <mchehab@kernel.org>
 Cc:     Guenter Roeck <linux@roeck-us.net>,
         Tomasz Figa <tfiga@chromium.org>,
@@ -79,76 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Back in 2020 Guenter published a set of patches to fix some race
-conditions on UVC.
-https://lore.kernel.org/all/20200917022547.198090-5-linux@roeck-us.net/
-
-That kind of race conditions are not only seen on UVC, but are a common
-sin on almost all the kernel, so this is what it was decided back then
-that we should try to fix them at higher levels.
-
-After that. A lot of video_is_registered() were added to the core:
-
-```
-ribalda@alco:~/work/linux$ git grep is_registered drivers/media/v4l2-core/
-drivers/media/v4l2-core/v4l2-compat-ioctl32.c:  if (!video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (video_is_registered(vdev)) {
-drivers/media/v4l2-core/v4l2-dev.c:             if (video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (!video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (vdev == NULL || !video_is_registered(vdev)) {
-drivers/media/v4l2-core/v4l2-dev.c:             if (video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-dev.c:     if (!vdev || !video_is_registered(vdev))
-drivers/media/v4l2-core/v4l2-ioctl.c:   if (!video_is_registered(vfd)) {
-drivers/media/v4l2-core/v4l2-subdev.c:  if (video_is_registered(vdev)) {
-```
-
-And recently Sakari is trying to land:
-https://lore.kernel.org/linux-media/20230201214535.347075-1-sakari.ailus@linux.intel.com/
-
-Which will make obsolete a lot of (all?) of the video_is_registered() checks on
-Guenter's patches.
-
-Besides those checks, there were some other valid races fixed on his
-patches.
-
-This series is just a rebase of what I think is missing on UVC even
-if we fixed v4l2/core with all the video_is_register() checks removed.
-
-Thanks!
+uvc_status_stop() handles properly the race conditions with the
+asynchronous worker.
+Let's use uvc_status_stop() for all the code paths that require stopping
+it.
 
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
-Changes in v3:
-- Introduce media: uvcvideo: Do not halt the device after disconnect
-- Introduce media: uvcvideo: Always use uvc_status_stop()
-- Link to v2: https://lore.kernel.org/r/20230309-guenter-mini-v2-0-e6410d590d43@chromium.org
+ drivers/media/usb/uvc/uvc_ctrl.c   | 4 ----
+ drivers/media/usb/uvc/uvc_status.c | 2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-Changes in v2:
-- Actually send the series to the ML an not only to individuals.
-- Link to v1: https://lore.kernel.org/r/20230309-guenter-mini-v1-0-627d10cf6e96@chromium.org
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index e59a463c2761..8e22a07e3e7b 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -2765,10 +2765,6 @@ void uvc_ctrl_cleanup_device(struct uvc_device *dev)
+ 	struct uvc_entity *entity;
+ 	unsigned int i;
+ 
+-	/* Can be uninitialized if we are aborting on probe error. */
+-	if (dev->async_ctrl.work.func)
+-		cancel_work_sync(&dev->async_ctrl.work);
+-
+ 	/* Free controls and control mappings for all entities. */
+ 	list_for_each_entry(entity, &dev->entities, list) {
+ 		for (i = 0; i < entity->ncontrols; ++i) {
+diff --git a/drivers/media/usb/uvc/uvc_status.c b/drivers/media/usb/uvc/uvc_status.c
+index a78a88c710e2..0208612a9f12 100644
+--- a/drivers/media/usb/uvc/uvc_status.c
++++ b/drivers/media/usb/uvc/uvc_status.c
+@@ -292,7 +292,7 @@ int uvc_status_init(struct uvc_device *dev)
+ 
+ void uvc_status_unregister(struct uvc_device *dev)
+ {
+-	usb_kill_urb(dev->int_urb);
++	uvc_status_stop(dev);
+ 	uvc_input_unregister(dev);
+ }
+ 
 
----
-Guenter Roeck (1):
-      media: uvcvideo: Lock video streams and queues while unregistering
-
-Ricardo Ribalda (2):
-      media: uvcvideo: Always use uvc_status_stop()
-      media: uvcvideo: Do not halt the device after disconnect
-
- drivers/media/usb/uvc/uvc_ctrl.c   |  4 ----
- drivers/media/usb/uvc/uvc_driver.c | 11 ++++++++++
- drivers/media/usb/uvc/uvc_status.c |  2 +-
- drivers/media/usb/uvc/uvc_video.c  | 45 ++++++++++++++++++++++++--------------
- drivers/media/usb/uvc/uvcvideo.h   |  2 ++
- 5 files changed, 42 insertions(+), 22 deletions(-)
----
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
-change-id: 20230309-guenter-mini-89861b084ef1
-
-Best regards,
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+2.43.0.rc1.413.gea7ed67945-goog
 
