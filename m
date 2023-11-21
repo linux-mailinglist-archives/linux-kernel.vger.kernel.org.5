@@ -2,165 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FE67F24F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 05:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB747F249C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 04:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbjKUExh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 23:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        id S233218AbjKUDZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 22:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKUExf (ORCPT
+        with ESMTP id S229522AbjKUDZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 23:53:35 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A9BBD
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 20:53:31 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41ea9c5e83cso224881cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 20:53:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700542409; x=1701147209; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KBkXRng0WwkeqG3mC9E0rD7mpoQUAf8DyTenpNasvY8=;
-        b=QGDAQCEgR5l9hFEqYkMeDmlIOlwa16rpRybBtCppGvHSktuhNGeLgBY/9hzoGejjCq
-         tYw1Mq9/IhkJh0mArrVcPtwTggSDTQqosdCgrGt3dXsp1Vnm316/p9nCZSUpKpayEklZ
-         wz3Jv7AcLA4V+X7VNUd4RZSLjbw5c9IpuL+Uk4Ff3JTS6T1M/FhH0dF5HPhyVMkcTRzR
-         3j3UE1Qo0IM4i+T4L2Cy2dCgahBVku7TbpQlwhxMXMuXPX8G8S93Wki4cwo5tWj86t2f
-         o+kTYrqO+nhO5Qiq1JkNnrUka4TJCggBAlXzXBLIh8FojjH93PDefNroBQ/7HNgvB/N0
-         Ho4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700542409; x=1701147209;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KBkXRng0WwkeqG3mC9E0rD7mpoQUAf8DyTenpNasvY8=;
-        b=OeIoGpDrmzc4zw5vCUotfMM7+aM5DI63dXZWXNnuuDOfu3uQUEsQlGbdyI0rQHI8i1
-         Dp4PxwdF9X15ZEC37HemM9z7bhslYPTXrPVxhqNgaA/I/zjzrbBI6KuTEbHvlxoNzZqP
-         YXXN296p+oDnU0QVmH99uAzH2dqw3QwWAz+U4pOg3JaaP/S80fqjXvdL+E4utZI13M3j
-         q06sOHBsP2ZQpXKx+YlaH+7713CJOeS+DnH0t9a0Iu8/plVqBq4sSNDkhezOm8hkMpyF
-         i9MbipTJ7XYi0J4csDRMSd7KxNNixmprk84usDOzrIAE22S3WTb5/6b0Rd/PgZ8CbcGH
-         nyXA==
-X-Gm-Message-State: AOJu0Yy+FOtMSh1oR0gIprjQkdUWMuX1oLk4wuyjvU9zGNPj9SpD6yNk
-        BuP3aDw2l6pF3zixBz+CqFo4LbtBV2OlwM9iP6EIspv78KHZ8rbqHJMONg==
-X-Google-Smtp-Source: AGHT+IFhbmHym8R9Le8/vdeMhxuyRGgZwUuYEYJvcFjiuXRmmPu308GpBg9EeqJyBIt0sQp81rmtyl2dO1fRkjhq1aE=
-X-Received: by 2002:a05:622a:6086:b0:41c:da19:f763 with SMTP id
- hf6-20020a05622a608600b0041cda19f763mr805230qtb.14.1700542408942; Mon, 20 Nov
- 2023 20:53:28 -0800 (PST)
+        Mon, 20 Nov 2023 22:25:35 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CE7DC;
+        Mon, 20 Nov 2023 19:25:31 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SZ8s26KBsz4f3jrm;
+        Tue, 21 Nov 2023 11:25:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 78BEB1A05D0;
+        Tue, 21 Nov 2023 11:25:28 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDX2xEmI1xlv3EABg--.26174S4;
+        Tue, 21 Nov 2023 11:25:28 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     ming.lei@redhat.com, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH v2 0/2] block: warn once for each partition in bio_check_ro()
+Date:   Tue, 21 Nov 2023 19:19:25 +0800
+Message-Id: <20231121111927.2021846-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <CAMRc=MfvrqyAXYS0Q_ko9sYycnb-1n4Q+KjGUYBLig0BX9vDQA@mail.gmail.com>
- <CAGETcx8MNrLhoE8c0=VMc_bW0313zt+8B9w69ziYNV5ynkK8Gg@mail.gmail.com>
-In-Reply-To: <CAGETcx8MNrLhoE8c0=VMc_bW0313zt+8B9w69ziYNV5ynkK8Gg@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 20 Nov 2023 20:52:52 -0800
-Message-ID: <CAGETcx_fXa6Zt_gkTQKw8Wt11EmSt8ZQ6TxKi5P+5ii3EvwsdA@mail.gmail.com>
-Subject: Re: Device links between providers and consumers
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDX2xEmI1xlv3EABg--.26174S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKryxZFy3JF1fKFyxKw1UGFg_yoWxtrg_JF
+        y0kFWrJr4fXayrCFWIyF1qyrW2kr4Iyw1UJFyqyr4DXr17XF1Utw47t3yUCFsxWFsrCwn8
+        JF18Wry8Xr1xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IEw2IIxx
+        k0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK
+        6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
+        xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8v
+        x2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRi
+        Pl1DUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
+From: Yu Kuai <yukuai3@huawei.com>
 
-Adding LKML so that others are aware of what the issue is and it'll be
-easier when I get to my TODO patches and send them out. I'm hoping
-that's okay with you because we didn't discuss anything confidential
-here.
+Changes in v2:
+ - don't use test/set_bit() for new field, because unsigned long will
+ cause that some field can't be placed in the first cacheline(64 bytes),
+ use unsigned int for new field and test/set/clear it like 'bio->bi_flags'.
 
-On Mon, Nov 20, 2023 at 2:21=E2=80=AFPM Saravana Kannan <saravanak@google.c=
-om> wrote:
->
-> On Mon, Nov 20, 2023 at 12:38=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.=
-pl> wrote:
-> >
-> > Hi Saravana,
-> >
-> > As I suspected, I couldn't observe the behavior you described during
-> > our discussion at the LPC event. I have a DT GPIO provider and a
-> > consumer referencing it by phandle. I'm unbinding the provider and the
-> > consumer keeps on living, if it tries to use the GPIO, then it will
-> > enter the regular code path in GPIO for checking if the provider is
-> > there or not.
-> >
-> > Could you point me in the right direction here?
->
-> Thanks for trying it out! Based on the code it should unbind the
-> consumers. I haven't ever tried it myself (no need for it).
+Yu Kuai (2):
+  block: introduce new field flags in block_device
+  block: warn once for each partition in bio_check_ro()
 
-I took a closer look to show you where the consumer unbind is supposed
-to be done, but in doing so I think I know what issue you are hitting.
-One of my TODO items for device links should fix your problem.
+ block/bdev.c              | 15 ++++++++-------
+ block/blk-core.c          | 21 +++++++++++++++------
+ block/genhd.c             | 15 +++++++++++----
+ block/ioctl.c             |  6 +++++-
+ include/linux/blk_types.h | 28 ++++++++++++++++++++++------
+ include/linux/blkdev.h    |  5 +++--
+ 6 files changed, 64 insertions(+), 26 deletions(-)
 
-The force unbinding of consumers when the supplier is unbound is
-supposed to happen here:
-device_driver_detach()
--> device_release_driver_internal()
--> __device_release_driver()
--> device_links_unbind_consumers()
--> for all "active" consumer -> device_release_driver_internal()
+-- 
+2.39.2
 
-However the problem is the "if (drv)" check in __device_release_driver().
-
-This problem also exists for "class" device suppliers that don't have
-a drv. Fixing managed device links for "class" suppliers (and now, bus
-suppliers without drv) has been in my TODO list for a while.
-
-The gpio device is one of the cases of a "bus" device probing without
-a driver. A while ago, I implemented a gpio_bus_match() that'll probe
-the gpio device (so consumer probing isn't blocked) and I was trying
-to keep the boilerplate code minimalistic. So, for your test case, a
-quick test hack would be to implement an actual stub driver instead of
-using a stub bus match. That should fix your problem with the
-consumers not unbinding. I'll put up a proper fix sometime soon
-(hopefully over the holiday lulls).
-
-Btw, when we were talking in person at the LPC dinner, you were asking
-"what would you do if the supplier was an optional supplier but you
-forcefully unbound the consumer?" I have a nice answer now:
-
-After a force unbind, we need to add all these consumers to the
-deferred probe list and trigger another deferred probe attempt. If the
-supplier was optional, the consumer would probe again. This also has
-the nice property that the consumer doesn't advertise something to
-userspace that it can't deliver (because the supplier has gone
-missing) and it makes the error handling easier for drivers. They
-don't have to worry about suppliers vanishing in every part of their
-code. Once they get the supplier and probe successfully, they
-shouldn't have to worry about it vanishing underneath them.
-
-Cheers,
-Saravana
-
-
->
-> Let's start with making sure the basic functionality is working in your c=
-ase.
->
-> Can you check /sys/class/devlink to see if you see a folder with the
-> following name?
-> <bus:supplier>--<bus:consumer>
->
-> Once you find it, can you cat all the file contents and tell me what
-> it says before you unbind it?
->
-> The "status" should be "available". And "sync_state_only" should be false=
-.
->
-> Also, how are you unbinding the supplier? And does the board you are
-> playing with something that's upstream? Should we take this discussion
-> to LKML?
->
-> -Saravana
