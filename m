@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB82E7F324B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381657F3245
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 16:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjKUPYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 10:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
+        id S234243AbjKUPYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 10:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234401AbjKUPYm (ORCPT
+        with ESMTP id S234308AbjKUPYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 10:24:42 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FF0E7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:24:38 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5Sc0-000607-I4; Tue, 21 Nov 2023 16:24:28 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5Sbz-00Ac93-DS; Tue, 21 Nov 2023 16:24:27 +0100
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r5Sbz-00HZfk-18;
-        Tue, 21 Nov 2023 16:24:27 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com
-Subject: [PATCH net-next v1 1/3] net: dsa: microchip: ksz8: move BMCR specific code to separate function
-Date:   Tue, 21 Nov 2023 16:24:24 +0100
-Message-Id: <20231121152426.4188456-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        Tue, 21 Nov 2023 10:24:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3242C100
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 07:24:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7702C433C8;
+        Tue, 21 Nov 2023 15:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700580268;
+        bh=FHSRXrO0Yfw9vDw/yW+guLOeuDCv8w0Xl7JslG6as/0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZMyfE2PxSBMM9cAAljWOoj5yQKmfYy9Ff6/Nd4h2FPRcK+UgiEEIrYRfQnY0xf/KT
+         A8Y7/Iys9utpmrEa4cUvnvdgLz/qOgH8Ju6qO3ubwiRaT0XUU5Fmn6W5WQKcZoMHTS
+         ZDpuWdwTzAuFCs7ooisFN66GHv9s2oVj03ySlpYbNdwn+n/2UwkEIkjNNs1yv5HDhv
+         aS9WK1NNcAl4ICEIdDwALs4t7QauDTn+DJ4HX09pYL6Gd+lwW5z+9fLuGFMYHlA5/o
+         n0YJgkR24pEuau76rf4Q2Q53yh1gVp35nDkjtixX+nm71GIJ7BbIYOD9vn2I3fEz0m
+         RHyeWEFupwnNQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r5Sby-00F8Q5-7L;
+        Tue, 21 Nov 2023 15:24:26 +0000
+Date:   Tue, 21 Nov 2023 15:24:25 +0000
+Message-ID: <86o7fnyvrq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since v6.5
+In-Reply-To: <86pm03z0kw.wl-maz@kernel.org>
+References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+        <86pm03z0kw.wl-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mark.rutland@arm.com, marcan@marcan.st, acme@redhat.com, irogers@google.com, james.clark@arm.com, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, asahi@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,417 +67,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Isolate the Basic Mode Control Register (BMCR) operations in the ksz8795
-driver by moving the BMCR-related code segments from the ksz8_r_phy()
-and ksz8_w_phy() functions to newly created ksz8_r_phy_bmcr() and
-ksz8_w_phy_bmcr() functions.
+On Tue, 21 Nov 2023 13:40:31 +0000,
+Marc Zyngier <maz@kernel.org> wrote:
+> 
+> [Adding key people on Cc]
+> 
+> On Tue, 21 Nov 2023 12:08:48 +0000,
+> Hector Martin <marcan@marcan.st> wrote:
+> > 
+> > Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> 
+> I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> asymmetric ARM platform. It isn't clear what criteria is used to pick
+> the PMU, but nothing works anymore.
+> 
+> The saving grace in my case is that Debian still ships a 6.1 perftool
+> package, but that's obviously not going to last.
+> 
+> I'm happy to test potential fixes.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz8795.c | 351 ++++++++++++++++++----------
- 1 file changed, 227 insertions(+), 124 deletions(-)
+At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+-vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+CPU):
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 4bf4d67557dc..835157815937 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -676,9 +676,98 @@ static int ksz8_r_phy_ctrl(struct ksz_device *dev, int port, u16 *val)
- 	return 0;
- }
- 
-+/**
-+ * ksz8_r_phy_bmcr - Translates and reads from the SMI interface to a MIIM PHY
-+ *		     Basic mode control register (Reg. 0).
-+ * @dev: The KSZ device instance.
-+ * @port: The port number to be read.
-+ * @val: The value read from the SMI interface.
-+ *
-+ * This function reads the SMI interface and translates the hardware register
-+ * bit values into their corresponding control settings for a MIIM PHY Basic
-+ * mode control register.
-+ *
-+ * MIIM Bit Mapping Comparison between KSZ8794 and KSZ8873
-+ * -------------------------------------------------------------------
-+ * MIIM Bit                    | KSZ8794 Reg/Bit             | KSZ8873 Reg/Bit
-+ * ----------------------------+-----------------------------+----------------
-+ * Bit 15 - Soft Reset         | 0xF/4                       | Not supported
-+ * Bit 14 - Loopback           | 0xD/0 (MAC), 0xF/7 (PHY)    ~ 0xD/0 (PHY)
-+ * Bit 13 - Force 100          | 0xC/6                       = 0xC/6
-+ * Bit 12 - AN Enable          | 0xC/7 (reverse logic)       ~ 0xC/7
-+ * Bit 11 - Power Down         | 0xD/3                       = 0xD/3
-+ * Bit 10 - PHY Isolate        | 0xF/5                       | Not supported
-+ * Bit 9 - Restart AN          | 0xD/5                       = 0xD/5
-+ * Bit 8 - Force Full-Duplex   | 0xC/5                       = 0xC/5
-+ * Bit 7 - Collision Test/Res. | Not supported               | Not supported
-+ * Bit 6 - Reserved            | Not supported               | Not supported
-+ * Bit 5 - Hp_mdix             | 0x9/7                       ~ 0xF/7
-+ * Bit 4 - Force MDI           | 0xD/1                       = 0xD/1
-+ * Bit 3 - Disable MDIX        | 0xD/2                       = 0xD/2
-+ * Bit 2 - Disable Far-End F.  | ????                        | 0xD/4
-+ * Bit 1 - Disable Transmit    | 0xD/6                       = 0xD/6
-+ * Bit 0 - Disable LED         | 0xD/7                       = 0xD/7
-+ * -------------------------------------------------------------------
-+ *
-+ * Return: 0 on success, error code on failure.
-+ */
-+static int ksz8_r_phy_bmcr(struct ksz_device *dev, int port, u16 *val)
-+{
-+	const u16 *regs = dev->info->regs;
-+	u8 restart, speed, ctrl;
-+	int ret;
-+
-+	*val = 0;
-+
-+	ret = ksz_pread8(dev, port, regs[P_NEG_RESTART_CTRL], &restart);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz_pread8(dev, port, regs[P_SPEED_STATUS], &speed);
-+	if (ret)
-+		return ret;
-+
-+	ret = ksz_pread8(dev, port, regs[P_FORCE_CTRL], &ctrl);
-+	if (ret)
-+		return ret;
-+
-+	if (restart & PORT_PHY_LOOPBACK)
-+		*val |= BMCR_LOOPBACK;
-+
-+	if (ctrl & PORT_FORCE_100_MBIT)
-+		*val |= BMCR_SPEED100;
-+
-+	if (ksz_is_ksz88x3(dev)) {
-+		if ((ctrl & PORT_AUTO_NEG_ENABLE))
-+			*val |= BMCR_ANENABLE;
-+	} else {
-+		if (!(ctrl & PORT_AUTO_NEG_DISABLE))
-+			*val |= BMCR_ANENABLE;
-+	}
-+
-+	if (restart & PORT_POWER_DOWN)
-+		*val |= BMCR_PDOWN;
-+	if (restart & PORT_AUTO_NEG_RESTART)
-+		*val |= BMCR_ANRESTART;
-+	if (ctrl & PORT_FORCE_FULL_DUPLEX)
-+		*val |= BMCR_FULLDPLX;
-+	if (speed & PORT_HP_MDIX)
-+		*val |= KSZ886X_BMCR_HP_MDIX;
-+	if (restart & PORT_FORCE_MDIX)
-+		*val |= KSZ886X_BMCR_FORCE_MDI;
-+	if (restart & PORT_AUTO_MDIX_DISABLE)
-+		*val |= KSZ886X_BMCR_DISABLE_AUTO_MDIX;
-+	if (restart & PORT_TX_DISABLE)
-+		*val |= KSZ886X_BMCR_DISABLE_TRANSMIT;
-+	if (restart & PORT_LED_OFF)
-+		*val |= KSZ886X_BMCR_DISABLE_LED;
-+
-+	return 0;
-+}
-+
- int ksz8_r_phy(struct ksz_device *dev, u16 phy, u16 reg, u16 *val)
- {
--	u8 restart, speed, ctrl, link;
-+	u8 ctrl, link;
- 	int processed = true;
- 	const u16 *regs;
- 	u8 val1, val2;
-@@ -690,45 +779,9 @@ int ksz8_r_phy(struct ksz_device *dev, u16 phy, u16 reg, u16 *val)
- 
- 	switch (reg) {
- 	case MII_BMCR:
--		ret = ksz_pread8(dev, p, regs[P_NEG_RESTART_CTRL], &restart);
--		if (ret)
--			return ret;
--
--		ret = ksz_pread8(dev, p, regs[P_SPEED_STATUS], &speed);
--		if (ret)
--			return ret;
--
--		ret = ksz_pread8(dev, p, regs[P_FORCE_CTRL], &ctrl);
-+		ret = ksz8_r_phy_bmcr(dev, p, &data);
- 		if (ret)
- 			return ret;
--
--		if (restart & PORT_PHY_LOOPBACK)
--			data |= BMCR_LOOPBACK;
--		if (ctrl & PORT_FORCE_100_MBIT)
--			data |= BMCR_SPEED100;
--		if (ksz_is_ksz88x3(dev)) {
--			if ((ctrl & PORT_AUTO_NEG_ENABLE))
--				data |= BMCR_ANENABLE;
--		} else {
--			if (!(ctrl & PORT_AUTO_NEG_DISABLE))
--				data |= BMCR_ANENABLE;
--		}
--		if (restart & PORT_POWER_DOWN)
--			data |= BMCR_PDOWN;
--		if (restart & PORT_AUTO_NEG_RESTART)
--			data |= BMCR_ANRESTART;
--		if (ctrl & PORT_FORCE_FULL_DUPLEX)
--			data |= BMCR_FULLDPLX;
--		if (speed & PORT_HP_MDIX)
--			data |= KSZ886X_BMCR_HP_MDIX;
--		if (restart & PORT_FORCE_MDIX)
--			data |= KSZ886X_BMCR_FORCE_MDI;
--		if (restart & PORT_AUTO_MDIX_DISABLE)
--			data |= KSZ886X_BMCR_DISABLE_AUTO_MDIX;
--		if (restart & PORT_TX_DISABLE)
--			data |= KSZ886X_BMCR_DISABLE_TRANSMIT;
--		if (restart & PORT_LED_OFF)
--			data |= KSZ886X_BMCR_DISABLE_LED;
- 		break;
- 	case MII_BMSR:
- 		ret = ksz_pread8(dev, p, regs[P_LINK_STATUS], &link);
-@@ -860,113 +913,163 @@ static int ksz8_w_phy_ctrl(struct ksz_device *dev, int port, u16 val)
- 	return ret;
- }
- 
--int ksz8_w_phy(struct ksz_device *dev, u16 phy, u16 reg, u16 val)
-+/**
-+ * ksz8_w_phy_bmcr - Translates and writes to the SMI interface from a MIIM PHY
-+ *		     Basic mode control register (Reg. 0).
-+ * @dev: The KSZ device instance.
-+ * @port: The port number to be configured.
-+ * @val: The register value to be written.
-+ *
-+ * This function translates control settings from a MIIM PHY Basic mode control
-+ * register into their corresponding hardware register bit values for the SMI
-+ * interface.
-+ *
-+ * MIIM Bit Mapping Comparison between KSZ8794 and KSZ8873
-+ * -------------------------------------------------------------------
-+ * MIIM Bit                    | KSZ8794 Reg/Bit             | KSZ8873 Reg/Bit
-+ * ----------------------------+-----------------------------+----------------
-+ * Bit 15 - Soft Reset         | 0xF/4                       | Not supported
-+ * Bit 14 - Loopback           | 0xD/0 (MAC), 0xF/7 (PHY)    ~ 0xD/0 (PHY)
-+ * Bit 13 - Force 100          | 0xC/6                       = 0xC/6
-+ * Bit 12 - AN Enable          | 0xC/7 (reverse logic)       ~ 0xC/7
-+ * Bit 11 - Power Down         | 0xD/3                       = 0xD/3
-+ * Bit 10 - PHY Isolate        | 0xF/5                       | Not supported
-+ * Bit 9 - Restart AN          | 0xD/5                       = 0xD/5
-+ * Bit 8 - Force Full-Duplex   | 0xC/5                       = 0xC/5
-+ * Bit 7 - Collision Test/Res. | Not supported               | Not supported
-+ * Bit 6 - Reserved            | Not supported               | Not supported
-+ * Bit 5 - Hp_mdix             | 0x9/7                       ~ 0xF/7
-+ * Bit 4 - Force MDI           | 0xD/1                       = 0xD/1
-+ * Bit 3 - Disable MDIX        | 0xD/2                       = 0xD/2
-+ * Bit 2 - Disable Far-End F.  | ????                        | 0xD/4
-+ * Bit 1 - Disable Transmit    | 0xD/6                       = 0xD/6
-+ * Bit 0 - Disable LED         | 0xD/7                       = 0xD/7
-+ * -------------------------------------------------------------------
-+ *
-+ * Return: 0 on success, error code on failure.
-+ */
-+static int ksz8_w_phy_bmcr(struct ksz_device *dev, int port, u16 val)
- {
--	u8 restart, speed, ctrl, data;
--	const u16 *regs;
--	u8 p = phy;
-+	const u16 *regs = dev->info->regs;
-+	u8 restart, ctrl, speed, data;
- 	int ret;
- 
--	regs = dev->info->regs;
-+	/* Do not support PHY reset function. */
-+	if (val & BMCR_RESET)
-+		return 0;
- 
--	switch (reg) {
--	case MII_BMCR:
-+	ret = ksz_pread8(dev, port, regs[P_SPEED_STATUS], &speed);
-+	if (ret)
-+		return ret;
- 
--		/* Do not support PHY reset function. */
--		if (val & BMCR_RESET)
--			break;
--		ret = ksz_pread8(dev, p, regs[P_SPEED_STATUS], &speed);
-+	data = speed;
-+	if (val & KSZ886X_BMCR_HP_MDIX)
-+		data |= PORT_HP_MDIX;
-+	else
-+		data &= ~PORT_HP_MDIX;
-+
-+	if (data != speed) {
-+		ret = ksz_pwrite8(dev, port, regs[P_SPEED_STATUS], data);
- 		if (ret)
- 			return ret;
-+	}
-+
-+	ret = ksz_pread8(dev, port, regs[P_FORCE_CTRL], &ctrl);
-+	if (ret)
-+		return ret;
- 
--		data = speed;
--		if (val & KSZ886X_BMCR_HP_MDIX)
--			data |= PORT_HP_MDIX;
-+	data = ctrl;
-+	if (ksz_is_ksz88x3(dev)) {
-+		if ((val & BMCR_ANENABLE))
-+			data |= PORT_AUTO_NEG_ENABLE;
-+		else
-+			data &= ~PORT_AUTO_NEG_ENABLE;
-+	} else {
-+		if (!(val & BMCR_ANENABLE))
-+			data |= PORT_AUTO_NEG_DISABLE;
- 		else
--			data &= ~PORT_HP_MDIX;
-+			data &= ~PORT_AUTO_NEG_DISABLE;
- 
--		if (data != speed) {
--			ret = ksz_pwrite8(dev, p, regs[P_SPEED_STATUS], data);
--			if (ret)
--				return ret;
--		}
-+		/* Fiber port does not support auto-negotiation. */
-+		if (dev->ports[port].fiber)
-+			data |= PORT_AUTO_NEG_DISABLE;
-+	}
- 
--		ret = ksz_pread8(dev, p, regs[P_FORCE_CTRL], &ctrl);
-+	if (val & BMCR_SPEED100)
-+		data |= PORT_FORCE_100_MBIT;
-+	else
-+		data &= ~PORT_FORCE_100_MBIT;
-+	if (val & BMCR_FULLDPLX)
-+		data |= PORT_FORCE_FULL_DUPLEX;
-+	else
-+		data &= ~PORT_FORCE_FULL_DUPLEX;
-+
-+	if (data != ctrl) {
-+		ret = ksz_pwrite8(dev, port, regs[P_FORCE_CTRL], data);
- 		if (ret)
- 			return ret;
-+	}
- 
--		data = ctrl;
--		if (ksz_is_ksz88x3(dev)) {
--			if ((val & BMCR_ANENABLE))
--				data |= PORT_AUTO_NEG_ENABLE;
--			else
--				data &= ~PORT_AUTO_NEG_ENABLE;
--		} else {
--			if (!(val & BMCR_ANENABLE))
--				data |= PORT_AUTO_NEG_DISABLE;
--			else
--				data &= ~PORT_AUTO_NEG_DISABLE;
--
--			/* Fiber port does not support auto-negotiation. */
--			if (dev->ports[p].fiber)
--				data |= PORT_AUTO_NEG_DISABLE;
--		}
-+	ret = ksz_pread8(dev, port, regs[P_NEG_RESTART_CTRL], &restart);
-+	if (ret)
-+		return ret;
- 
--		if (val & BMCR_SPEED100)
--			data |= PORT_FORCE_100_MBIT;
--		else
--			data &= ~PORT_FORCE_100_MBIT;
--		if (val & BMCR_FULLDPLX)
--			data |= PORT_FORCE_FULL_DUPLEX;
--		else
--			data &= ~PORT_FORCE_FULL_DUPLEX;
-+	data = restart;
-+	if (val & KSZ886X_BMCR_DISABLE_LED)
-+		data |= PORT_LED_OFF;
-+	else
-+		data &= ~PORT_LED_OFF;
-+	if (val & KSZ886X_BMCR_DISABLE_TRANSMIT)
-+		data |= PORT_TX_DISABLE;
-+	else
-+		data &= ~PORT_TX_DISABLE;
-+	if (val & BMCR_ANRESTART)
-+		data |= PORT_AUTO_NEG_RESTART;
-+	else
-+		data &= ~(PORT_AUTO_NEG_RESTART);
-+	if (val & BMCR_PDOWN)
-+		data |= PORT_POWER_DOWN;
-+	else
-+		data &= ~PORT_POWER_DOWN;
-+	if (val & KSZ886X_BMCR_DISABLE_AUTO_MDIX)
-+		data |= PORT_AUTO_MDIX_DISABLE;
-+	else
-+		data &= ~PORT_AUTO_MDIX_DISABLE;
-+	if (val & KSZ886X_BMCR_FORCE_MDI)
-+		data |= PORT_FORCE_MDIX;
-+	else
-+		data &= ~PORT_FORCE_MDIX;
-+	if (val & BMCR_LOOPBACK)
-+		data |= PORT_PHY_LOOPBACK;
-+	else
-+		data &= ~PORT_PHY_LOOPBACK;
- 
--		if (data != ctrl) {
--			ret = ksz_pwrite8(dev, p, regs[P_FORCE_CTRL], data);
--			if (ret)
--				return ret;
--		}
-+	if (data != restart) {
-+		ret = ksz_pwrite8(dev, port, regs[P_NEG_RESTART_CTRL],
-+				  data);
-+		if (ret)
-+			return ret;
-+	}
- 
--		ret = ksz_pread8(dev, p, regs[P_NEG_RESTART_CTRL], &restart);
-+	return 0;
-+}
-+
-+int ksz8_w_phy(struct ksz_device *dev, u16 phy, u16 reg, u16 val)
-+{
-+	u8 ctrl, data;
-+	const u16 *regs;
-+	u8 p = phy;
-+	int ret;
-+
-+	regs = dev->info->regs;
-+
-+	switch (reg) {
-+	case MII_BMCR:
-+		ret = ksz8_w_phy_bmcr(dev, p, val);
- 		if (ret)
- 			return ret;
- 
--		data = restart;
--		if (val & KSZ886X_BMCR_DISABLE_LED)
--			data |= PORT_LED_OFF;
--		else
--			data &= ~PORT_LED_OFF;
--		if (val & KSZ886X_BMCR_DISABLE_TRANSMIT)
--			data |= PORT_TX_DISABLE;
--		else
--			data &= ~PORT_TX_DISABLE;
--		if (val & BMCR_ANRESTART)
--			data |= PORT_AUTO_NEG_RESTART;
--		else
--			data &= ~(PORT_AUTO_NEG_RESTART);
--		if (val & BMCR_PDOWN)
--			data |= PORT_POWER_DOWN;
--		else
--			data &= ~PORT_POWER_DOWN;
--		if (val & KSZ886X_BMCR_DISABLE_AUTO_MDIX)
--			data |= PORT_AUTO_MDIX_DISABLE;
--		else
--			data &= ~PORT_AUTO_MDIX_DISABLE;
--		if (val & KSZ886X_BMCR_FORCE_MDI)
--			data |= PORT_FORCE_MDIX;
--		else
--			data &= ~PORT_FORCE_MDIX;
--		if (val & BMCR_LOOPBACK)
--			data |= PORT_PHY_LOOPBACK;
--		else
--			data &= ~PORT_PHY_LOOPBACK;
- 
--		if (data != restart) {
--			ret = ksz_pwrite8(dev, p, regs[P_NEG_RESTART_CTRL],
--					  data);
--			if (ret)
--				return ret;
--		}
- 		break;
- 	case MII_ADVERTISE:
- 		ret = ksz_pread8(dev, p, regs[P_LOCAL_CTRL], &ctrl);
+<quote>
+maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 0 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+ apple_firestorm_pmu/cycles/ -e cycles ls
+Using CPUID 0x00000000612f0280
+Attempt to add: apple_icestorm_pmu/cycles=0/
+..after resolving event: apple_icestorm_pmu/cycles=0/
+Opening: unknown-hardware:HG
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  config                           0xb00000000
+  disabled                         1
+------------------------------------------------------------
+sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+sys_perf_event_open failed, error -95
+Attempt to add: apple_firestorm_pmu/cycles=0/
+..after resolving event: apple_firestorm_pmu/cycles=0/
+Control descriptor is not initialized
+Opening: apple_icestorm_pmu/cycles/
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 3
+Opening: apple_firestorm_pmu/cycles/
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+Opening: cycles
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 5
+arch			builtin-diff.o      builtin-mem.o	 common-cmds.h    perf-completion.sh
+bench			builtin-evlist.c    builtin-probe.c	 CREDITS	  perf.h
+Build			builtin-evlist.o    builtin-probe.o	 design.txt	  perf-in.o
+builtin-annotate.c	builtin-ftrace.c    builtin-record.c	 dlfilters	  perf-iostat
+builtin-annotate.o	builtin-ftrace.o    builtin-record.o	 Documentation    perf-iostat.sh
+builtin-bench.c		builtin.h	    builtin-report.c	 FEATURE-DUMP	  perf.o
+builtin-bench.o		builtin-help.c      builtin-report.o	 include	  perf-read-vdso.c
+builtin-buildid-cache.c  builtin-help.o      builtin-sched.c	 jvmti		  perf-sys.h
+builtin-buildid-cache.o  builtin-inject.c    builtin-script.c	 libapi	  PERF-VERSION-FILE
+builtin-buildid-list.c	builtin-inject.o    builtin-script.o	 libperf	  perf-with-kcore
+builtin-buildid-list.o	builtin-kallsyms.c  builtin-stat.c	 libsubcmd	  pmu-events
+builtin-c2c.c		builtin-kallsyms.o  builtin-stat.o	 libsymbol	  python
+builtin-c2c.o		builtin-kmem.c      builtin-timechart.c  Makefile	  python_ext_build
+builtin-config.c	builtin-kvm.c	    builtin-top.c	 Makefile.config  scripts
+builtin-config.o	builtin-kvm.o	    builtin-top.o	 Makefile.perf    tests
+builtin-daemon.c	builtin-kwork.c     builtin-trace.c	 MANIFEST	  trace
+builtin-daemon.o	builtin-list.c      builtin-version.c	 perf		  ui
+builtin-data.c		builtin-list.o      builtin-version.o	 perf-archive	  util
+builtin-data.o		builtin-lock.c      check-headers.sh	 perf-archive.sh
+builtin-diff.c		builtin-mem.c	    command-list.txt	 perf.c
+apple_icestorm_pmu/cycles/: -1: 0 873709 0
+apple_firestorm_pmu/cycles/: -1: 0 873709 0
+cycles: -1: 0 873709 0
+apple_icestorm_pmu/cycles/: 0 873709 0
+apple_firestorm_pmu/cycles/: 0 873709 0
+cycles: 0 873709 0
+
+ Performance counter stats for 'ls':
+
+     <not counted>      apple_icestorm_pmu/cycles/                                              (0.00%)
+     <not counted>      apple_firestorm_pmu/cycles/                                             (0.00%)
+     <not counted>      cycles                                                                  (0.00%)
+
+       0.000002250 seconds time elapsed
+
+       0.000000000 seconds user
+       0.000000000 seconds sys
+</quote>
+
+If I run the same thing on another CPU cluster (firestorm), I get
+this:
+
+<quote>
+maz@valley-girl:~/hot-poop/arm-platforms/tools/perf$ sudo taskset -c 2 ./perf stat -vvv -e apple_icestorm_pmu/cycles/ -e
+ apple_firestorm_pmu/cycles/ -e cycles ls
+Using CPUID 0x00000000612f0280
+Attempt to add: apple_icestorm_pmu/cycles=0/
+..after resolving event: apple_icestorm_pmu/cycles=0/
+Opening: unknown-hardware:HG
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  config                           0xb00000000
+  disabled                         1
+------------------------------------------------------------
+sys_perf_event_open: pid 0  cpu -1  group_fd -1  flags 0x8
+sys_perf_event_open failed, error -95
+Attempt to add: apple_firestorm_pmu/cycles=0/
+..after resolving event: apple_firestorm_pmu/cycles=0/
+Control descriptor is not initialized
+Opening: apple_icestorm_pmu/cycles/
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 3
+Opening: apple_firestorm_pmu/cycles/
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 4
+Opening: cycles
+------------------------------------------------------------
+perf_event_attr:
+  type                             0 (PERF_TYPE_HARDWARE)
+  size                             136
+  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+  sample_type                      IDENTIFIER
+  read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+  disabled                         1
+  inherit                          1
+  enable_on_exec                   1
+  exclude_guest                    1
+------------------------------------------------------------
+sys_perf_event_open: pid 1045925  cpu -1  group_fd -1  flags 0x8 = 5
+arch			builtin-diff.o      builtin-mem.o	 common-cmds.h    perf-completion.sh
+bench			builtin-evlist.c    builtin-probe.c	 CREDITS	  perf.h
+Build			builtin-evlist.o    builtin-probe.o	 design.txt	  perf-in.o
+builtin-annotate.c	builtin-ftrace.c    builtin-record.c	 dlfilters	  perf-iostat
+builtin-annotate.o	builtin-ftrace.o    builtin-record.o	 Documentation    perf-iostat.sh
+builtin-bench.c		builtin.h	    builtin-report.c	 FEATURE-DUMP	  perf.o
+builtin-bench.o		builtin-help.c      builtin-report.o	 include	  perf-read-vdso.c
+builtin-buildid-cache.c  builtin-help.o      builtin-sched.c	 jvmti		  perf-sys.h
+builtin-buildid-cache.o  builtin-inject.c    builtin-script.c	 libapi	  PERF-VERSION-FILE
+builtin-buildid-list.c	builtin-inject.o    builtin-script.o	 libperf	  perf-with-kcore
+builtin-buildid-list.o	builtin-kallsyms.c  builtin-stat.c	 libsubcmd	  pmu-events
+builtin-c2c.c		builtin-kallsyms.o  builtin-stat.o	 libsymbol	  python
+builtin-c2c.o		builtin-kmem.c      builtin-timechart.c  Makefile	  python_ext_build
+builtin-config.c	builtin-kvm.c	    builtin-top.c	 Makefile.config  scripts
+builtin-config.o	builtin-kvm.o	    builtin-top.o	 Makefile.perf    tests
+builtin-daemon.c	builtin-kwork.c     builtin-trace.c	 MANIFEST	  trace
+builtin-daemon.o	builtin-list.c      builtin-version.c	 perf		  ui
+builtin-data.c		builtin-list.o      builtin-version.o	 perf-archive	  util
+builtin-data.o		builtin-lock.c      check-headers.sh	 perf-archive.sh
+builtin-diff.c		builtin-mem.c	    command-list.txt	 perf.c
+apple_icestorm_pmu/cycles/: -1: 1035101 469125 469125
+apple_firestorm_pmu/cycles/: -1: 1035035 469125 469125
+cycles: -1: 1034653 469125 469125
+apple_icestorm_pmu/cycles/: 1035101 469125 469125
+apple_firestorm_pmu/cycles/: 1035035 469125 469125
+cycles: 1034653 469125 469125
+
+ Performance counter stats for 'ls':
+
+         1,035,101      apple_icestorm_pmu/cycles/                                            
+         1,035,035      apple_firestorm_pmu/cycles/                                           
+         1,034,653      cycles                                                                
+
+       0.000001333 seconds time elapsed
+
+       0.000000000 seconds user
+       0.000000000 seconds sys
+</quote>
+
+which doesn't make any sense either. I really don't understand what
+this PERF_TYPE_HARDWARE does here (the *real* types are 10 and 11),
+nor what this 'cycle=0' stuff is.
+
+/puzzled
+
+	M.
+
 -- 
-2.39.2
-
+Without deviation from the norm, progress is not possible.
