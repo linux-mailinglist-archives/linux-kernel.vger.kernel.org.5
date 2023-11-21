@@ -2,150 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ABDB7F2318
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8621B7F231C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 02:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbjKUBc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 20:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51928 "EHLO
+        id S232815AbjKUBeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 20:34:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKUBc4 (ORCPT
+        with ESMTP id S229490AbjKUBeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 20:32:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE164BC
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 17:32:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D5AFC433CD;
-        Tue, 21 Nov 2023 01:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700530372;
-        bh=MgA2L3AjHphGyfK8GPBa2xn0Jwg5gkiGiIeE3G9xY4E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h5VuxMPM/OimVDCsN/AE1dpWTgAsBmt6J9+DZGy7SfBVfd8AU5NSGl2AfXT7DU9nV
-         WHStAPRZONID1muiYi5Qqu/aQ1jDYV/cVYFNIcfm4mr5bthoXGGGmrBGj0FCb7DDVM
-         P2AvsPvC7FxcSrqImicermj31k469tDfNov5cK4zqP+zIJPcRLU1ca4udIDIT7YW3N
-         kWDdlAgZhCsSc9W6H2q8WCCRFIl3v8tOhqfmeSfbi4L4IHU/YURPnUCNmV/u4EOonG
-         t6grZ6eYYrUIR9/+WdGBF1UZlrY4uRbJMPVOWxgcyhPReHlOvZhO3DzMpy5xw9iP80
-         yVrC73JEus2aw==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9c603e2354fso950766466b.1;
-        Mon, 20 Nov 2023 17:32:52 -0800 (PST)
-X-Gm-Message-State: AOJu0YzpCKb6dhI+Az6r1WCM17YKszplEMUGqysNCvNMPtdbn/bYbXcz
-        97646IvZCPTiFKtIuCXrUa37qxE57jX8XhZg+Lw=
-X-Google-Smtp-Source: AGHT+IHQ//yd2NAdWXmNVsZcGtdgZJwZbXFwxtS3hDn2Brzdx0CH9BCAaRj1zmVI8KKvYZZIkFSnbYzsi6am60h0UbU=
-X-Received: by 2002:a17:906:2da:b0:9fd:78:8b2f with SMTP id
- 26-20020a17090602da00b009fd00788b2fmr1071131ejk.7.1700530370721; Mon, 20 Nov
- 2023 17:32:50 -0800 (PST)
+        Mon, 20 Nov 2023 20:34:15 -0500
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1460EAC;
+        Mon, 20 Nov 2023 17:34:10 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VwqXEfT_1700530445;
+Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VwqXEfT_1700530445)
+          by smtp.aliyun-inc.com;
+          Tue, 21 Nov 2023 09:34:08 +0800
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+To:     ilkka@os.amperecomputing.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com
+Cc:     chengyou@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com, xueshuai@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+Subject: [PATCH v11 0/5] drivers/perf: add Synopsys DesignWare PCIe PMU driver support
+Date:   Tue, 21 Nov 2023 09:33:55 +0800
+Message-Id: <20231121013400.18367-1-xueshuai@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231116130331.241395-1-wangrui@loongson.cn> <20231120230817.GA2116806@dev-arch.thelio-3990X>
-In-Reply-To: <20231120230817.GA2116806@dev-arch.thelio-3990X>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 21 Nov 2023 09:32:37 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7tUKiJVR=9YxwnaSk3Ru1k=4Nd-TUgaMDBCq+xGnLkrA@mail.gmail.com>
-Message-ID: <CAAhV-H7tUKiJVR=9YxwnaSk3Ru1k=4Nd-TUgaMDBCq+xGnLkrA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Record pc instead of offset in la-abs relocation
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     WANG Rui <wangrui@loongson.cn>, WANG Xuerui <kernel@xen0n.name>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Xi Ruoyao <xry111@xry111.site>, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kbuild@vger.kernel.org,
-        llvm@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied to loongarch-fixes, thanks.
+Change Log
+==========
+change sinces v10:
+- Rename to pci_clear_and_set_config_dword() to retain the "config"
+  information and match the other accessors. (Per Bjorn)
+- Align pci_clear_and_set_config_dword() and its call site (Per Bjorn)
+- Polish commit log (Per Bjorn)
+- Simplify dwc_pcie_pmu_time_based_event_enable() with bool value (Per Ilkka)
+- Fix dwc_pcie_register_dev() return value (Per Ilkka)
+- Fix vesc capability discovery by pdev->vendor (Per Ilkka)
+- pick up Acked-by tag from Bjorn for Patch 3/5
+- pick up Tested-by tag from Ilkka for all patch set
 
-Huacai
+changes since v9:
+- move the &plat_dev->dev to previous line to warp more beautiful (Per Jonathan)
+- rename error label with the same suffix 'err'  (Per Jonathan)
+- drop unnecessary else branch and return directly (Per Baolin)
+- warp out set prev_count from dwc_pcie_pmu_set_period (Per Baolin)
+- use PMU_FORMAT_ATTR to simplify format sysfs stuff (Per Will)
+- export pci_clear_and_set_dword() to simplify _enable() functions  (Per Will)
+- simplify _read() function by unconditionally calculate with unit in bytes plused if branch for group#1 event (Per Will and Robin)
+- simplify _update() function by unconditionally mask with 64-bit width plused if branch for lane event (Per Will)
+- add type sanity check in _init() (Per Will)
+- test with fuzzing tool before this new version (Per Will)
+- register a platform device for each PCI device to probe RAS_DES PMU cap (Per Robin)
+- add dwc_pcie_vendor_ids to extend vendor id for future added device (Per Krishna)
+- pickup review-by tag from Baolin, Yicong and Jonathan 
 
-On Tue, Nov 21, 2023 at 7:08=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> Hi Rui,
->
-> On Thu, Nov 16, 2023 at 09:03:31PM +0800, WANG Rui wrote:
-> > To clarify, the previous version functioned flawlessly. However, it's
-> > worth noting that the LLVM's LoongArch backend currently lacks support
-> > for cross-section label calculations. With this patch, we enable the us=
-e
-> > of clang to compile relocatable kernels.
-> >
-> > Signed-off-by: WANG Rui <wangrui@loongson.cn>
->
-> Thanks a lot for the patch! This fixes the CONFIG_RELOCATABLE build for
-> me as well.
->
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
->
-> Something I noticed while testing is that a kernel linked with ld.lld
-> does not boot while one linked with ld.bfd did. I think this might be
-> the same issue that Xuerui filed on our issue tracker but I figured I
-> would mention it in case not:
-> https://github.com/ClangBuiltLinux/linux/issues/1883
->
-> Cheers,
-> Nathan
->
-> > ---
-> >  arch/loongarch/include/asm/asmmacro.h | 3 +--
-> >  arch/loongarch/include/asm/setup.h    | 2 +-
-> >  arch/loongarch/kernel/relocate.c      | 2 +-
-> >  3 files changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/loongarch/include/asm/asmmacro.h b/arch/loongarch/inc=
-lude/asm/asmmacro.h
-> > index c9544f358c33..655db7d7a427 100644
-> > --- a/arch/loongarch/include/asm/asmmacro.h
-> > +++ b/arch/loongarch/include/asm/asmmacro.h
-> > @@ -609,8 +609,7 @@
-> >       lu32i.d \reg, 0
-> >       lu52i.d \reg, \reg, 0
-> >       .pushsection ".la_abs", "aw", %progbits
-> > -     768:
-> > -     .dword  768b-766b
-> > +     .dword  766b
-> >       .dword  \sym
-> >       .popsection
-> >  #endif
-> > diff --git a/arch/loongarch/include/asm/setup.h b/arch/loongarch/includ=
-e/asm/setup.h
-> > index a0bc159ce8bd..ee52fb1e9963 100644
-> > --- a/arch/loongarch/include/asm/setup.h
-> > +++ b/arch/loongarch/include/asm/setup.h
-> > @@ -25,7 +25,7 @@ extern void set_merr_handler(unsigned long offset, vo=
-id *addr, unsigned long len
-> >  #ifdef CONFIG_RELOCATABLE
-> >
-> >  struct rela_la_abs {
-> > -     long offset;
-> > +     long pc;
-> >       long symvalue;
-> >  };
-> >
-> > diff --git a/arch/loongarch/kernel/relocate.c b/arch/loongarch/kernel/r=
-elocate.c
-> > index 6c3eff9af9fb..288b739ca88d 100644
-> > --- a/arch/loongarch/kernel/relocate.c
-> > +++ b/arch/loongarch/kernel/relocate.c
-> > @@ -52,7 +52,7 @@ static inline void __init relocate_absolute(long rand=
-om_offset)
-> >       for (p =3D begin; (void *)p < end; p++) {
-> >               long v =3D p->symvalue;
-> >               uint32_t lu12iw, ori, lu32id, lu52id;
-> > -             union loongarch_instruction *insn =3D (void *)p - p->offs=
-et;
-> > +             union loongarch_instruction *insn =3D (void *)p->pc;
-> >
-> >               lu12iw =3D (v >> 12) & 0xfffff;
-> >               ori    =3D v & 0xfff;
-> > --
-> > 2.42.1
-> >
-> >
+
+changes since v8:
+- tidy up doc and pick up Reviewed-by tag in pathc 1/4 (Per Yicong and Jonathan)
+- rename ras_des as ras_des_offset and remove coment about it (Per Jonathan)
+- keep exact reverse order of what happened in probe when unregister pmu (Per Jonathan)
+- remove the hender length check to make the driver more compatible (Per Jonathan)
+- move unwind of register pmu forward to fix list_del() on something that was never added (Per Jonathan)
+- use devm_add_action_or_reset() to unwind bus_register_notifier() (Per Jonathan)
+- use local pdev directly in dwc_pcie_pmu_offline_cpu() and dwc_pcie_pmu_probe() (Per Jonathan)
+- use the approach of a gotos to handle errors in dwc_pcie_pmu_init() (Per Jonathan)
+- multiply the counter value at point of read by 16 for group#1 events (Per Jonathan)
+
+changes since v7:
+- add config help with alibaba name (per Bjorn)
+- remove the ARM64 dependency (per Bjorn and Jonathan)
+- fix typo and column warp (per Bjorn) 
+- move list_del() after perf_pmu_unregister() (per Bjorn) 
+- reorder the funtions by interests (per Bjorn)
+- rewrite commit log about PMU counters, also update doc (per Bjorn)
+- extend to support stat time-based analysis and lane event at the same time (per Bjorn and Jonathan)
+Link: https://lore.kernel.org/linux-arm-kernel/20231012032856.2640-2-xueshuai@linux.alibaba.com/T/
+
+changes since v6:
+- improve editorial things in doc (Per Jonathan)
+- change config help to generic text (Per Jonathan)
+- remove macro to_dwc_pcie_pmu by moving pmu as the first member to struct dwc_pcie_pmu (Per Yicong)
+- add event type check in dwc_pcie_event_show() to keep consistent with other function (Per Jonathan)
+- remove intended blank line (Per Yicong)
+- protect against lower 32 bits of counter overflow by try again trick (Per Jonathan)
+- call pci_dev_put on all the return branch to keep the refcnt balance (Per Jonathan and Yicong)
+- use devm_add_action_or_reset() to automatic unwind (Per Jonathan)
+- fix picking numa-aware context cpu up when offline and offline cpu (Per Jonathan)
+- simplify online cpu by init pcie_pmu->on_cpu as -1 (Per Jonathan)
+- add bus_register_notifier() to handle rootport hotplug (Per Yicong)
+- pick up Acked-by from Bjorn for patch 2/4 (Per Bjorn)
+Link: https://lore.kernel.org/lkml/20230606074938.97724-1-xueshuai@linux.alibaba.com/T/
+
+changes since v5:
+- Rewrite the commit log to follow policy in pci_ids.h (Bjorn Helgaas)
+- return error code when __dwc_pcie_pmu_probe failed (Baolin Wang)
+- call 'cpuhp_remove_multi_state()' when exiting the driver. (Baolin Wang)
+- pick up Review-by tag from Baolin for Patch 1 and 3
+Link: https://lore.kernel.org/lkml/ZGuSimj1cuQl3W5L@bhelgaas/T/#mba3fa2572dde0deddb40b5b24a31f4df41004bdf
+
+changes since v4:
+
+1. addressing commens from Bjorn Helgaas:
+- reorder the includes by alpha
+- change all macros with upper-case hex
+- change ras_des type into u16
+- remove unnecessary outer "()"
+- minor format changes
+
+2. Address commensts from Jonathan Cameron:
+- rewrite doc and add a example to show how to use lane event
+
+3. fix compile error reported by: kernel test robot
+- remove COMPILE_TEST and add depend on PCI in kconfig
+- add Reported-by: kernel test robot <lkp@intel.com>
+
+Changes since v3:
+
+1. addressing comments from Robin Murphy:
+- add a prepare patch to define pci id in linux/pci_ids.h
+- remove unnecessary 64BIT dependency
+- fix DWC_PCIE_PER_EVENT_OFF/ON macro
+- remove dwc_pcie_pmu struct and move all its fileds into dwc_pcie_rp_info
+- remove unnecessary format field show
+- use sysfs_emit() instead of all the assorted sprintf() and snprintf() calls.
+- remove unnecessary spaces and remove unnecessary cast to follow event show convention
+- remove pcie_pmu_event_attr_is_visible
+- fix a refcout leak on error branch when walk pci device in for_each_pci_dev
+- remove bdf field from dwc_pcie_rp_info and calculate it at runtime
+- finish all the checks before allocating rp_info to avoid hanging wasted memory
+- remove some unused fields
+- warp out control register configuration from sub function to .add()
+- make function return type with a proper signature
+- fix lane event count enable by clear DWC_PCIE_CNT_ENABLE field first
+- pass rp_info directly to the read_*_counter helpers and in start, stop and add callbacks
+- move event type validtion into .event_init()
+- use is_sampling_event() to be consistent with everything else of pmu drivers
+- remove unnecessary dev_err message in .event_init()
+- return EINVAL instead EOPNOTSUPP for not a valid event 
+- finish all the checks before start modifying the event
+- fix sibling event check by comparing event->pmu with sibling->pmu
+- probe PMU for each rootport independently
+- use .update() as .read() directly
+- remove dynamically generating symbolic name of lane event
+- redefine static symbolic name of lane event and leave lane filed to user
+- add CPU hotplug support
+
+2. addressing comments from Baolin:
+- add a mask to avoid possible overflow
+
+Changes since v2 addressing comments from Baolin:
+- remove redundant macro definitions
+- use dev_err to print error message
+- change pmu_is_register to boolean
+- use PLATFORM_DEVID_NONE macro
+- fix module author format
+
+Changes since v1:
+
+1. address comments from Jonathan:
+- drop marco for PMU name and VSEC version
+- simplify code with PCI standard marco
+- simplify code with FIELD_PREP()/FIELD_GET() to replace shift marco
+- name register filed with single _ instead double
+- wrap dwc_pcie_pmu_{write}_dword out and drop meaningless snaity check 
+- check vendor id while matching vesc with pci_find_vsec_capability()
+- remove RP_NUM_MAX and use a list to organize PMU devices for rootports
+- replace DWC_PCIE_CREATE_BDF with standard PCI_DEVID
+- comments on riping register together
+
+2. address comments from Bjorn:
+- rename DWC_PCIE_VSEC_ID to DWC_PCIE_VSEC_RAS_DES_ID
+- rename cap_pos to ras_des
+- simplify declare of device_attribute with DEVICE_ATTR_RO
+- simplify code with PCI standard macro and API like pcie_get_width_cap()
+- fix some code style problem and typo
+- drop meaningless snaity check of container_of
+
+3. address comments from Yicong:
+- use sysfs_emit() to replace sprintf()
+- simplify iteration of pci device with for_each_pci_dev
+- pick preferred CPUs on a near die and add comments
+- unregister PMU drivers only for failed ones
+- log on behalf PMU device and give more hint
+- fix some code style problem
+
+(Thanks for all comments and they are very valuable to me)
+
+This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
+for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
+Core controller IP which provides statistics feature.
+
+Shuai Xue (5):
+  docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+  PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+  PCI: Move pci_clear_and_set_dword() helper to PCI header
+  drivers/perf: add DesignWare PCIe PMU driver
+  MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+
+ .../admin-guide/perf/dwc_pcie_pmu.rst         |  94 +++
+ Documentation/admin-guide/perf/index.rst      |   1 +
+ MAINTAINERS                                   |   7 +
+ drivers/infiniband/hw/erdma/erdma_hw.h        |   2 -
+ drivers/pci/access.c                          |  12 +
+ drivers/pci/pcie/aspm.c                       |  65 +-
+ drivers/perf/Kconfig                          |   7 +
+ drivers/perf/Makefile                         |   1 +
+ drivers/perf/dwc_pcie_pmu.c                   | 792 ++++++++++++++++++
+ include/linux/pci.h                           |   2 +
+ include/linux/pci_ids.h                       |   2 +
+ 11 files changed, 948 insertions(+), 37 deletions(-)
+ create mode 100644 Documentation/admin-guide/perf/dwc_pcie_pmu.rst
+ create mode 100644 drivers/perf/dwc_pcie_pmu.c
+
+-- 
+2.39.3
+
