@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A1B7F2EA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4277F2ECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbjKUNoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:44:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
+        id S234455AbjKUNox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234304AbjKUNoB (ORCPT
+        with ESMTP id S234369AbjKUNom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:44:01 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD48D70
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:43:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1700574234;
-        bh=LSmoGRdqodB1izPvXCIKKJJH6EPb6KIVUPLO7Or7sag=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XTN+K79WBMBuoOWzGHExAGR+aTWHQ2Hqlu03dw+eVDWCZ4dFaTaGFtuLdI8QSml/2
-         ApE3MlnCOHo4Qcmfl8Z4HRTD30oT/cuNPaEtNm88p6hcOHZ9oVkkwovmi4xcZuJiu3
-         HVthUTnb2lkHq7/iDDp0RcRA4NB6LTTR1KX61CI1VVwXOyYWX4Xb0HzqmnxSjNkwdD
-         KEg3Km+FX1ysiqrwm56Gtc1ccggRZ8ugocbZCmiRHbcE+6SNb1bbXahuwYwHSqexH0
-         Exh5211ur61P/XCnFv61Q1G8I9zt3/PGvrxWcJwZSrVAXEMuBQGPZIyVKdf1vRUGL7
-         qQvyOrlYfNNkQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZQZf4GYxz1cXb;
-        Tue, 21 Nov 2023 08:43:54 -0500 (EST)
-Message-ID: <985aff40-97cc-4234-98c5-84dd21c324b7@efficios.com>
-Date:   Tue, 21 Nov 2023 08:44:17 -0500
+        Tue, 21 Nov 2023 08:44:42 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33340D72;
+        Tue, 21 Nov 2023 05:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Rq3mJEDmHmHA0JRTSCaQYOHbxYWrzjJptUUAddlbLuc=; b=YiWzubxHtHS7imqkJKpyUXjtK/
+        CYnkTUAuZsvA643hmcX2vFpN22hMXc6BE2ockNgi+690WfL7blcomEl9x4T6uxQxxN8a2xUtS6kwR
+        4mFwcJWO1yx/bQY+3lxx7JtSsMZlKxV/tXbPhdVFjp8tW0esTg4YGnzpIJYNEbIVFbvbxy2CNDuWG
+        V4r18XCCdqvLiGM16VLN7pbgU44kNoS9qqqxC1UWkoZLUZBT8+zbtdeiGS0/od3lrx8qQ8d18/AJm
+        wdHd4nBV3sJytGzKByj/oPk9+ZevGNFJB4jvjqFD5HkzJUmxGrLxvVJoKGUarjrpvwr30Fnhuju8T
+        fkA6B3QQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:52662 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1r5R34-00077I-2n;
+        Tue, 21 Nov 2023 13:44:18 +0000
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1r5R36-00Csz0-Px; Tue, 21 Nov 2023 13:44:20 +0000
+In-Reply-To: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>
+Subject: [PATCH 06/21] drivers: base: Use present CPUs in GENERIC_CPU_DEVICES
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/34] sched: add cpumask_find_and_set() and use it in
- __mm_cid_get()
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-5-yury.norov@gmail.com>
- <20231120113105.GR8262@noisy.programming.kicks-ass.net>
- <1eb9435a-aa1c-4c30-ab1a-9167b73d1b83@efficios.com>
- <ZVyxMrisyuBtQ+2Y@yury-ThinkPad>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <ZVyxMrisyuBtQ+2Y@yury-ThinkPad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1r5R36-00Csz0-Px@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Tue, 21 Nov 2023 13:44:20 +0000
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,35 +73,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 08:31, Yury Norov wrote:
-> On Mon, Nov 20, 2023 at 11:17:32AM -0500, Mathieu Desnoyers wrote:
-> 
-[...]
-> 
-> Sure, I can. Can you point me to the work you mention here?
+From: James Morse <james.morse@arm.com>
 
-It would have to be updated now, but here is the last version that was posted:
+Three of the five ACPI architectures create sysfs entries using
+register_cpu() for present CPUs, whereas arm64, riscv and all
+GENERIC_CPU_DEVICES do this for possible CPUs.
 
-https://lore.kernel.org/lkml/20221122203932.231377-1-mathieu.desnoyers@efficios.com/
+Registering a CPU is what causes them to show up in sysfs.
 
-Especially those patches:
+It makes very little sense to register all possible CPUs. Registering
+a CPU is what triggers the udev notifications allowing user-space to
+react to newly added CPUs.
 
-2022-11-22 20:39 ` [PATCH 22/30] lib: Implement find_{first,next,nth}_notandnot_bit, find_first_andnot_bit Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 23/30] cpumask: Implement cpumask_{first,next}_{not,}andnot Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 24/30] sched: NUMA-aware per-memory-map concurrency ID Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 25/30] rseq: Extend struct rseq with per-memory-map NUMA-aware Concurrency ID Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 26/30] selftests/rseq: x86: Implement rseq_load_u32_u32 Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 27/30] selftests/rseq: Implement mm_numa_cid accessors in headers Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 28/30] selftests/rseq: Implement numa node id vs mm_numa_cid invariant test Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 29/30] selftests/rseq: Implement mm_numa_cid tests Mathieu Desnoyers
-2022-11-22 20:39 ` [PATCH 30/30] tracing/rseq: Add mm_numa_cid field to rseq_update Mathieu Desnoyers
+To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
+it to use for_each_present_cpu().
 
-Thanks,
+Making the ACPI architectures use GENERIC_CPU_DEVICES is a pre-requisite
+step to centralise their register_cpu() logic, before moving it into the
+ACPI processor driver. When we add support for register CPUs from ACPI
+in a later patch, we will avoid registering CPUs in this path.
 
-Mathieu
+Of the ACPI architectures that register possible CPUs, arm64 and riscv
+do not support making possible CPUs present as they use the weak 'always
+fails' version of arch_register_cpu().
 
+Only two of the eight architectures that use GENERIC_CPU_DEVICES have a
+distinction between present and possible CPUs.
+
+The following architectures use GENERIC_CPU_DEVICES but are not SMP,
+so possible == present:
+ * m68k
+ * microblaze
+ * nios2
+
+The following architectures use GENERIC_CPU_DEVICES and consider
+possible == present:
+ * csky: setup_smp()
+ * processor_probe() sets possible for all CPUs and present for all CPUs
+   except the boot cpu, which will have been done by
+   init/main.c::start_kernel().
+
+um appears to be a subarchitecture of x86.
+
+The remaining architecture using GENERIC_CPU_DEVICES are:
+ * openrisc and hexagon:
+   where smp_init_cpus() makes all CPUs < NR_CPUS possible,
+   whereas smp_prepare_cpus() only makes CPUs < setup_max_cpus present.
+
+After this change, openrisc and hexagon systems that use the max_cpus
+command line argument would not see the other CPUs present in sysfs.
+This should not be a problem as these CPUs can't be brought online as
+_cpu_up() checks cpu_present().
+
+After this change, only CPUs which are present appear in sysfs.
+
+Signed-off-by: James Morse <james.morse@arm.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+ drivers/base/cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+index 9ea22e165acd..34b48f660b6b 100644
+--- a/drivers/base/cpu.c
++++ b/drivers/base/cpu.c
+@@ -533,7 +533,7 @@ static void __init cpu_dev_register_generic(void)
+ #ifdef CONFIG_GENERIC_CPU_DEVICES
+ 	int i;
+ 
+-	for_each_possible_cpu(i) {
++	for_each_present_cpu(i) {
+ 		if (register_cpu(&per_cpu(cpu_devices, i), i))
+ 			panic("Failed to register CPU device");
+ 	}
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.30.2
 
