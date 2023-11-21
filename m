@@ -2,182 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5B27F296F
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01ABD7F2971
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233540AbjKUJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
+        id S232600AbjKUJ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbjKUJ4j (ORCPT
+        with ESMTP id S234101AbjKUJ4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:56:39 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318C1100;
-        Tue, 21 Nov 2023 01:56:36 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D8E66218F2;
-        Tue, 21 Nov 2023 09:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700560594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 21 Nov 2023 04:56:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D793A10E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:56:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700560611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+lWy9/Zt27yG3I1aWH6nlTCFa/Z3H/E1EvhVboDRGdA=;
-        b=AjUWH0fpH4X2UofDmbZ9NsDburJHUIQTVpaZAZY80l2esNJeBZ1o8Q5JBLMqTyqlFVeceP
-        Yv+Y9L1wgSe5FCT7UPsmKe1j5E+7RnH9FspkNwrhq1Vm9KJ2s7s2ikdlSNdD+zDiseIk7F
-        FL2p6doK37m37iZAQYGSKgzGN3wOZQQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700560594;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+lWy9/Zt27yG3I1aWH6nlTCFa/Z3H/E1EvhVboDRGdA=;
-        b=sLeLiJgo88HArU015/4F/zJnaY2skvgd5k6e5eflB6OA4djIQXXLEbUDdkYVdtUv7AwWAF
-        njNKCnEfEWHwoPCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        bh=fPhHnmk39Y9ZPUQmNMZM/ZG0TQ3kydRNczl6JxMjmic=;
+        b=BrK97EPTcoWOIsSXhxD+pyl7+HZCnNyf8nTy31PodCOw8TujnJ9JNT/DRqpSgsWTBb0k/Z
+        7P5TB7Y7TKV5ORLyEnZA4w261ZgHufN3I/xyJu6eVRrHH6yYeg6sKfn/TV/C8qe55kImwU
+        iBhNTZqe7V707c+Lxm2mKS2Gze3F0Pc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-642-FAApqMXDNLKIjte47nBJcQ-1; Tue,
+ 21 Nov 2023 04:56:47 -0500
+X-MC-Unique: FAApqMXDNLKIjte47nBJcQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 81C56138E3;
-        Tue, 21 Nov 2023 09:56:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id mra8HtJ+XGXYOAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 09:56:34 +0000
-Date:   Tue, 21 Nov 2023 10:56:34 +0100
-Message-ID: <87bkbno2el.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux LEDs <linux-leds@vger.kernel.org>,
-        Tim Crawford <tcrawford@system76.com>,
-        Jeremy Soller <jeremy@system76.com>,
-        System76 Product Development <productdev@system76.com>,
-        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Johannes =?ISO-8859-1?Q?Pe?= =?ISO-8859-1?Q?n=DFel?= 
-        <johannes.penssel@gmail.com>
-Subject: Re: Fwd: sysfs: cannot create duplicate filename .../system76_acpi::kbd_backlight/color
-In-Reply-To: <87edgjo2kr.wl-tiwai@suse.de>
-References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
-        <ZT25-gUmLl8MPk93@debian.me>
-        <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
-        <ZUjnzB2RL2iLzIQG@debian.me>
-        <87sf50pm34.wl-tiwai@suse.de>
-        <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
-        <87edgjo2kr.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.80
-X-Spamd-Result: default: False [-5.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         TO_DN_ALL(0.00)[];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[suse.de,traphandler.com,gmail.com,vger.kernel.org,lists.linux.dev,system76.com,kernel.org,ucw.cz];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C91B73813F30;
+        Tue, 21 Nov 2023 09:56:46 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C61FF502A;
+        Tue, 21 Nov 2023 09:56:44 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 17:56:42 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     eric_devolder@yahoo.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
+        geert@linux-m68k.org, tsbogend@alpha.franken.de,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, frederic@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, samitolvanen@google.com,
+        juerg.haefliger@canonical.com, arnd@arndb.de,
+        rmk+kernel@armlinux.org.uk, linus.walleij@linaro.org,
+        sebastian.reichel@collabora.com, rppt@kernel.org,
+        kirill.shutemov@linux.intel.com, anshuman.khandual@arm.com,
+        ziy@nvidia.com, masahiroy@kernel.org, ndesaulniers@google.com,
+        mhiramat@kernel.org, ojeda@kernel.org, thunder.leizhen@huawei.com,
+        xin3.li@intel.com, tj@kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, tsi@tuyoix.net,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: Potential config regression after 89cde455 ("kexec: consolidate
+ kexec and crash options into kernel/Kconfig.kexec")
+Message-ID: <ZVx+2lfTckjv/kiq@MiWiFi-R3L-srv>
+References: <CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com>
+ <ZVwMzXxWkgonIAfc@MiWiFi-R3L-srv>
+ <CALrw=nG8xsYw7XKyL_VMHtKiaBcQCKvC8UVp-C9-BdeN4A1Daw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALrw=nG8xsYw7XKyL_VMHtKiaBcQCKvC8UVp-C9-BdeN4A1Daw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 10:52:52 +0100,
-Takashi Iwai wrote:
+On 11/21/23 at 07:53am, Ignat Korchagin wrote:
+> On Tue, Nov 21, 2023 at 1:50 AM Baoquan He <bhe@redhat.com> wrote:
+> >
+> > Eric DeVolder's Oracle mail address is not available anymore, add his
+> > current mail address he told me.
 > 
-> On Tue, 21 Nov 2023 10:19:03 +0100,
-> Thorsten Leemhuis wrote:
-> > 
-> > Takashi, Jean-Jacques Hiblot, Lee,
-> > 
-> > On 20.11.23 14:53, Takashi Iwai wrote:
-> > > On Mon, 06 Nov 2023 14:19:08 +0100,
-> > > Bagas Sanjaya wrote:
-> > >> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
-> > >>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
-> > >>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
-> > >>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
-> > >>>>
-> > >>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
-> > >>>> since you authored the culprit?
+> Thank you!
+> 
+> > On 11/20/23 at 10:52pm, Ignat Korchagin wrote:
+> > > Good day!
 > > >
-> > >>> The offending commit stores the color in struct led_classdev and exposes it
-> > >>> via sysfs. It was part of a series that create a RGB leds from multiple
-> > >>> single-color LEDs. for this series, we need the color information but we
-> > >>> don't really need to expose it it via sysfs. In order to fix the issue, we
-> > >>> can remove the 'color' attribute from the sysfs.
-> > >>
-> > >> OK, see you in the patch!
-> > > 
-> > > Is there a patch available?
-> > 
-> > Not that I know of. Could not find anything on lore either.
-> > 
-> > > This bug hits for a few Logitech keyboard models, too, and it makes
-> > > 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
-> > > this bug:
-> > >   https://bugzilla.kernel.org/show_bug.cgi?id=218155
-> > > 
-> > > We need a quick fix for 6.6.x.
-> > 
-> > Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
-> > committed it and sent it to Linus) know about this for a while already
-> > without doing anything about it, I wonder if someone should just send a
-> > revert to Linus (unless of course that is likely to introduce a
-> > regression on its own).
-> > 
-> > Takashi, could you maybe do this, unless a fix shows up real soon?
+> > > We have recently started to evaluate Linux 6.6 and noticed that we
+> > > cannot disable CONFIG_KEXEC anymore, but keep CONFIG_CRASH_DUMP
+> > > enabled. It seems to be related to commit 89cde455 ("kexec:
+> > > consolidate kexec and crash options into kernel/Kconfig.kexec"), where
+> > > a CONFIG_KEXEC dependency was added to CONFIG_CRASH_DUMP.
+> > >
+> > > In our current kernel (Linux 6.1) we only enable CONFIG_KEXEC_FILE
+> > > with enforced signature check to support the kernel crash dumping
+> > > functionality and would like to keep CONFIG_KEXEC disabled for
+> > > security reasons [1].
+> > >
+> > > I was reading the long commit message, but the reason for adding
+> > > CONFIG_KEXEC as a dependency for CONFIG_CRASH_DUMP evaded me. And I
+> > > believe from the implementation perspective CONFIG_KEXEC_FILE should
+> > > suffice here (as we successfully used it for crashdumps on Linux 6.1).
+> > >
+> > > Is there a reason for adding this dependency or is it just an
+> > > oversight? Would some solution of requiring either CONFIG_KEXEC or
+> > > CONFIG_KEXEC_FILE work here?
+> >
+> > I searched the patch history, found Eric didn't add the dependency on
+> > CONFIG_KEXEC at the beginning. Later a linux-next building failure with
+> > randconfig was reported, in there CONFIG_CRASH_DUMP enabled, while
+> > CONFIG_KEXEC is disabled. Finally Eric added the KEXEC dependency for
+> > CRASH_DUMP. Please see below link for more details:
+> >
+> > https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle.com/T/#u
 > 
-> I can, but we need to decide which way to go.
-> There are several options:
+> Thank you for digging this up. However I'm still confused, because
+> this is exactly how we configure Linux 6.1 (although we do have
+> CONFIG_KEXEC_FILE enabled) and we don't have any problems. I believe
+> we did not investigate this issue properly.
 > 
-> 1. Revert the commit c7d80059b086;
->    this drops led class color sysfs entries.  Also the store of
->    led_cdev->color from fwnode is dropped, too.
+> > And besides, the newly added CONFIG_CRASH_HOTPLUG also needs
+> > CONFIG_KEXEC if the elfcorehdr is allowed to be manipulated when
+> > cpu/memory hotplug hapened.
 > 
-> 2. Drop only led class color sysfs entries;
->    a partial revert of c7d80059b086 above
-> 
-> 3. Rename conflicting sysfs entries in drivers;
->    e.g. color -> kb_color for hid-lg-g15 and system76_acpi
+> This still feels like a regression to me: any crash dump support
+> should be independent of KEXEC syscalls being present. While probably
+> the common case (including us) that the crashing kernel and recovery
+> kernel are the same, they don't have to be. We need kexec syscall in
+> the crashing kernel, but crashdump support in the recovery kernel (but
+> the recovery kernel not having the kexec syscalls should be totally
+> fine). If we do require some code definitions from kexec - at most we
+> should put them under CONFIG_KEXEC_CORE.
 
-... and
+Hmm, I understand your concern. Will wait for Eric a while to see if he
+has any explannation or plan, otherwise I will check this.
 
-4. Rename conflicting sysfs class color entry
-
-> In either way, we'd break user-space (sysfs).
-
-It still holds :)
-
-
-Takashi
