@@ -2,233 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE047F25D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5637F25D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbjKUGin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        id S229968AbjKUGlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjKUGil (ORCPT
+        with ESMTP id S229539AbjKUGlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:38:41 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E59C8;
-        Mon, 20 Nov 2023 22:38:38 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL6JMFp007993;
-        Tue, 21 Nov 2023 06:38:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=z+YCvibVm8plErXJG0HascOzJXLQFGebjM+tlOVqG8E=;
- b=S3x9+wa2EBt0NDCDmPYjglSL0f/zk4Q6I8WM+6vP/XpvshqXKz79NdaQdiFsErXWyPyR
- H6AY8NzDxz/kjZH3Ih6b5xz2tIoE39Wo4SsTUyIaCpZAS/UU8PJd/G6+Q8EBQdi+9KHS
- nsPhAgj/ShzET+5Bmj8OHdfD5ToJP6p9oc02jEYR+WbUT2U4AFgdTM1y6wTQhmwzFU2W
- qD57MB7CP9Q74D3eY4vW1K+nNCZzne46jX9tFtQYWcOFFIDxYDFzKfKeaAIIewBVIPwp
- mPDz++5xeYx7E78WHXErmqDhERGL382UTx/O83U6iIzmQXvtaxkzEhUIf9AIycu5FRPt lg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs19t3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 06:38:30 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL6cTmW009932
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 06:38:29 GMT
-Received: from [10.110.10.93] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
- 2023 22:38:21 -0800
-Message-ID: <9315c8f1-19b8-9b11-8eb4-32b498f91659@quicinc.com>
-Date:   Mon, 20 Nov 2023 22:38:21 -0800
+        Tue, 21 Nov 2023 01:41:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2998B90
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:41:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700548877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nAT6s1p7Zejr5qyruucrwjjja96dwkjMkL3IvSvg+bw=;
+        b=ee+R59VWHOdBnw7DZwvMl0R2efk1weqHqx4YgFxs47/NWi6c0uNWiu8/ofeiTUQ3lB6pHJ
+        LupOhQ/AtjxLQGTnE0ywulQrSAbTd5xDHbZxOa0OXqjGISWeG1ATB3s1+UgqPFj/eg8Dds
+        q53kSQm1nq2xocpq+4ekcGdcH72bq0I=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-Bukgdl4uPLCcmaLRQ3qb2Q-1; Tue, 21 Nov 2023 01:41:13 -0500
+X-MC-Unique: Bukgdl4uPLCcmaLRQ3qb2Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 00B5584AF89;
+        Tue, 21 Nov 2023 06:41:13 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.97])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CDC81121306;
+        Tue, 21 Nov 2023 06:41:11 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 14:41:08 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, ltao@redhat.com,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 00/14] x86/tdx: Add kexec support
+Message-ID: <ZVxRBLsQcv8KRasA@MiWiFi-R3L-srv>
+References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+ <ZVYGx1EwzjXbTEyX@MiWiFi-R3L-srv>
+ <20231116125612.daxettqcapled7ac@box.shutemov.name>
+ <ZVYkdI74X8acDtTq@MiWiFi-R3L-srv>
+ <ZVYrA+Ks0DGFo/0p@MiWiFi-R3L-srv>
+ <20231117124748.umfuc3no2qvh4shj@box.shutemov.name>
+ <ZVeApN4lDqTLu7ma@MiWiFi-R3L-srv>
+ <20231117154632.zvi6g6lblmtvikzt@box>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH v5 03/12] firmware: qcom: scm: smc: switch to using
- the SCM allocator
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "Maximilian Luz" <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        "Srini Kandagatla" <srinivas.kandagatla@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kernel@quicinc.com>,
-        "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>
-References: <20231120132118.30473-1-brgl@bgdev.pl>
- <20231120132118.30473-4-brgl@bgdev.pl>
-From:   Prasad Sodagudi <quic_psodagud@quicinc.com>
-In-Reply-To: <20231120132118.30473-4-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 2PSceWSW3rNft2sfjKVAi1vvPxTyBoKh
-X-Proofpoint-GUID: 2PSceWSW3rNft2sfjKVAi1vvPxTyBoKh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
- mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311210050
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117154632.zvi6g6lblmtvikzt@box>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/17/23 at 06:46pm, Kirill A. Shutemov wrote:
+> On Fri, Nov 17, 2023 at 11:03:00PM +0800, Baoquan He wrote:
+> > On 11/17/23 at 03:47pm, Kirill A. Shutemov wrote:
+> > > On Thu, Nov 16, 2023 at 10:45:23PM +0800, Baoquan He wrote:
+> > > > On 11/16/23 at 10:17pm, Baoquan He wrote:
+> > > > > On 11/16/23 at 03:56pm, Kirill A. Shutemov wrote:
+> > > > > > On Thu, Nov 16, 2023 at 08:10:47PM +0800, Baoquan He wrote:
+> > > > > > > On 11/15/23 at 03:00pm, Kirill A. Shutemov wrote:
+> > > > > > > > The patchset adds bits and pieces to get kexec (and crashkernel) work on
+> > > > > > > > TDX guest.
+> > > > > > > 
+> > > > > > > I finally got a machine of intel-eaglestream-spr as host and built a
+> > > > > > > tdx guest to give it a shot, the kexec reboot is working very well,
+> > > > > > > while kdump kernel always failed to boot up. I only built kernel and
+> > > > > > > installed it on tdx guest.
+> > > > > > > ------------------------------------------
+> > > > > > > [    1.422500] Run /init as init process
+> > > > > > > [    1.423073] Failed to execute /init (error -2)
+> > > > > > > [    1.423759] Run /sbin/init as init process
+> > > > > > > [    1.424370] Run /etc/init as init process
+> > > > > > > [    1.424969] Run /bin/init as init process
+> > > > > > > [    1.425588] Run /bin/sh as init process
+> > > > > > > [    1.426150] Kernel panic - not syncing: No working init found.  Try passing init= option to kernel. See Linux Documentation/admin-guide/init.rst for guidance.
+> > > > > > > [    1.428122] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc1-00014-gbdba31ba3cec #3
+> > > > > > > [    1.429232] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
+> > > > > > > [    1.430328] Call Trace:
+> > > > > > > [    1.430717]  <TASK>
+> > > > > > > [    1.431041]  dump_stack_lvl+0x33/0x50
+> > > > > > > [    1.431581]  panic+0x324/0x340
+> > > > > > > [    1.432037]  ? __pfx_kernel_init+0x10/0x10
+> > > > > > > [    1.432629]  kernel_init+0x174/0x1c0
+> > > > > > > [    1.433149]  ret_from_fork+0x2d/0x50
+> > > > > > > [    1.433690]  ? __pfx_kernel_init+0x10/0x10
+> > > > > > > [    1.434277]  ret_from_fork_asm+0x1b/0x30
+> > > > > > > [    1.434850]  </TASK>
+> > > > > > > [    1.435345] Kernel Offset: disabled
+> > > > > > > [    1.439216] Rebooting in 10 seconds..
+> > > > > > > qemu-kvm: cpus are not resettable, terminating
+> > > > > > 
+> > > > > > Could you shared your kernel config and details about your setup (qemu
+> > > > > > command, kernel command line, ...)?
+> > > > > 
+> > > > > We followed tdx-tools README to setup the environment and built host and
+> > > > > guest kernel, qemu command is as below. I copied the
+> > > > > tdx-tools/build/rhel-9/intel-mvp-tdx-kernel/tdx-base.config to the
+> > > > > latest upstream linxu kernel then execute 'make olddefconfig'. Because
+> > > > > your patchset can't be applied to the stable kernel with the 731
+> > > > > patches.
+> > > > > 
+> > > > > cd /home/root/tdx-tools
+> > > > > ./start-qemu.sh -i /home/root/guest_tdx.qcow2 -b grub
+> > > > 
+> > > > This is the qemu command when execute above line of command, just for
+> > > > your reference if you happen to not take this way.
+> > > 
+> > > Still failed to reproduce :/
+> > > 
+> > > Blind shot: could you check if the patch below makes any difference.
+> > 
+> > Still failed. And I found the normal reboot does't work either. I will
+> > do more testing tomorrow, e.g use the tdx-tools's own rhel9 kernel
+> > config and rebuild, and update host kernel too.
 
-On 11/20/2023 5:21 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> We need to allocate, map and pass a buffer to the trustzone if we have
-> more than 4 arguments for a given SCM calls. Let's use the new TrustZone
-> allocator for that memory and shrink the code in process.
->
-> As this code lives in a different compilation unit than the rest of the
-> SCM code, we need to provide a helper in the form of
-> qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
-> access the SCM memory pool.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-> Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
-> ---
->   drivers/firmware/qcom/qcom_scm-smc.c | 30 ++++++++--------------------
->   drivers/firmware/qcom/qcom_scm.c     |  5 +++++
->   drivers/firmware/qcom/qcom_scm.h     |  3 +++
->   3 files changed, 16 insertions(+), 22 deletions(-)
->
-> diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
-> index 16cf88acfa8e..dca5f3f1883b 100644
-> --- a/drivers/firmware/qcom/qcom_scm-smc.c
-> +++ b/drivers/firmware/qcom/qcom_scm-smc.c
-> @@ -2,6 +2,7 @@
->   /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
->    */
->   
-> +#include <linux/cleanup.h>
->   #include <linux/io.h>
->   #include <linux/errno.h>
->   #include <linux/delay.h>
-> @@ -9,6 +10,7 @@
->   #include <linux/slab.h>
->   #include <linux/types.h>
->   #include <linux/firmware/qcom/qcom_scm.h>
-> +#include <linux/firmware/qcom/qcom_tzmem.h>
->   #include <linux/arm-smccc.h>
->   #include <linux/dma-mapping.h>
->   
-> @@ -150,11 +152,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
->   		   enum qcom_scm_convention qcom_convention,
->   		   struct qcom_scm_res *res, bool atomic)
->   {
-> +	struct qcom_tzmem_pool *mempool = qcom_scm_get_tzmem_pool();
->   	int arglen = desc->arginfo & 0xf;
->   	int i, ret;
-> -	dma_addr_t args_phys = 0;
-> -	void *args_virt = NULL;
-> -	size_t alloc_len;
-> +	void *args_virt __free(qcom_tzmem) = NULL;
->   	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
->   	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
->   	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
-> @@ -172,9 +173,9 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
->   		smc.args[i + SCM_SMC_FIRST_REG_IDX] = desc->args[i];
->   
->   	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
-> -		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
-> -		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
-> -
-> +		args_virt = qcom_tzmem_alloc(mempool,
-> +					     SCM_SMC_N_EXT_ARGS * sizeof(u64),
-> +					     flag);
+I did more tests, resuls are summarized as below: 
 
-I remember seeing page alignment for this memory allocation in 
-downstream code too.
+1) kexec reboot works, but always fallback to 1 cpu even though multiple
+cpus are specified;
+2) kdump kernel need more crashkernel memory to boot up,
+   crashkernel=512M works well in our case. But it failed in vmcore
+   saving process, either makedumpfile or cp can't access the 1st
+   kernel's old memory;
+3) Normal reboot always failed;
 
-I think, after moving to qcom_tzmem_alloc page alignment is not 
-followed. Is this cross checked with firmware requirements?
+My colleague Tao helped to double check this, he got the same testing result.
+Plesae 
+1) what can we do to enable the multiple cpu support for kexec reboot?
+2) anything missing to allow makedumpfile/cp access 1st kernel's memory?
+3) not sure if this is particular case on the system we tested on.
 
->   		if (!args_virt)
->   			return -ENOMEM;
->   
-> @@ -192,25 +193,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
->   						      SCM_SMC_FIRST_EXT_IDX]);
->   		}
->   
-> -		args_phys = dma_map_single(dev, args_virt, alloc_len,
-> -					   DMA_TO_DEVICE);
-> -
-> -		if (dma_mapping_error(dev, args_phys)) {
-> -			kfree(args_virt);
-> -			return -ENOMEM;
-> -		}
-> -
-> -		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
-> +		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
->   	}
->   
-> -	/* ret error check follows after args_virt cleanup*/
->   	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
-> -
-> -	if (args_virt) {
-> -		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
-> -		kfree(args_virt);
-> -	}
-> -
->   	if (ret)
->   		return ret;
->   
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 0d4c028be0c1..71e98b666391 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -201,6 +201,11 @@ static void qcom_scm_bw_disable(void)
->   enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
->   static DEFINE_SPINLOCK(scm_query_lock);
->   
-> +struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void)
-> +{
-> +	return __scm->mempool;
-> +}
-> +
->   static enum qcom_scm_convention __get_convention(void)
->   {
->   	unsigned long flags;
-> diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-> index 4532907e8489..aa7d06939f8e 100644
-> --- a/drivers/firmware/qcom/qcom_scm.h
-> +++ b/drivers/firmware/qcom/qcom_scm.h
-> @@ -5,6 +5,7 @@
->   #define __QCOM_SCM_INT_H
->   
->   struct device;
-> +struct qcom_tzmem_pool;
->   
->   enum qcom_scm_convention {
->   	SMC_CONVENTION_UNKNOWN,
-> @@ -78,6 +79,8 @@ int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
->   int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
->   		    struct qcom_scm_res *res);
->   
-> +struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
-> +
->   #define QCOM_SCM_SVC_BOOT		0x01
->   #define QCOM_SCM_BOOT_SET_ADDR		0x01
->   #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
+Thanks
+Baoquan
+
