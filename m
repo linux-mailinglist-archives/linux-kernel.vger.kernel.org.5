@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6AB7F3A82
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EC37F3A80
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 00:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbjKUX5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 18:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        id S234958AbjKUX5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 18:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbjKUX5O (ORCPT
+        with ESMTP id S234933AbjKUX5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 18:57:14 -0500
+        Tue, 21 Nov 2023 18:57:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9B21A2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:57:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 044C8C433CB;
-        Tue, 21 Nov 2023 23:57:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD40CE7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 15:57:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA1C7C433C9;
+        Tue, 21 Nov 2023 23:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700611030;
-        bh=YIz9IynczYR7U90yH62Boq0adsyZcqNtIbOqQHRnXxQ=;
+        s=k20201202; t=1700611032;
+        bh=PgDod9JVK1SlTO6PB/we26pgwxZ6Hugtd6ddfhtvips=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AECmMPUzvp8OXYGuSbkcsiIb34EBjISMOkmWB2e0PFYP0yRrPV111M7GOBfowZNN9
-         up76BEiuiYJqSAR34fIl/dpeV+M26AGqlNgIZ7weQvatRSoSNPHb3QmAgVL+NwA7V5
-         kbxf7LyKTuUlSZ2k1FnPL1qQlEpdpaICq0hfnIxKsk1srhCMPrZuW3Gs4wTfFhGaBk
-         1XdJ2mBbU8cpu56+aOe41iJTYfvsUDQQ7WyE/tpkmg0hE0B7635Pib6QFRcFp2APo6
-         9JLgWVBezkbY/5MKejlBvALX+U4PPadgpAjAyNoIGOLgl8yYOcCE0I2RDhYOzISAHP
-         cBXqqqbqpFBjg==
+        b=P5Oqx2adFYIoQ9k4t/Fy/+5td7AJw0Ktf33vV/fGcP8SzAfragsJVRdICPCn1rAiq
+         DY+8pX8mR5/DxUtJobAPYiON00qCGoJvj2BP+5n2et1TWEtFdgFs7egce9cUf+jEoM
+         QuJAxXvWLW5r0KMCYoemcPkKHSz6roL/PrJIA8KHkR+/mWH94Fs+p2YMq8QI05E6ou
+         s/mPI0QIWI4BLxziJ6Est+vJPCMnCuC9lG/Og/BKs8zJ3RLi+amuJSo3nbUqiRZ5bi
+         rhC+VekE2qEghO/hzfZWrvY282W1JlDo00ewShT6Eo4W3aeFl1AH+6vr3odn1i+x/i
+         lKcGM2Gr47bOg==
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -34,9 +34,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] x86: vdso: consolidate targets and clean-files
-Date:   Wed, 22 Nov 2023 08:56:58 +0900
-Message-Id: <20231121235701.239606-2-masahiroy@kernel.org>
+Subject: [PATCH 2/4] x86: vdso: simplify obj-y addition
+Date:   Wed, 22 Nov 2023 08:56:59 +0900
+Message-Id: <20231121235701.239606-3-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231121235701.239606-1-masahiroy@kernel.org>
 References: <20231121235701.239606-1-masahiroy@kernel.org>
@@ -52,40 +52,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'targets' and 'clean-files' do not need to list the same files because
-the files listed in 'targets' are cleaned up.
+Add objects to obj-y in a more straightforward way.
 
-Refactor the code.
+CONFIG_X86_32 and CONFIG_IA32_EMULATION are not enabled simultaneously,
+but even if they are, Kbuild graciously deduplicates obj-y entries.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/x86/entry/vdso/Makefile | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ arch/x86/entry/vdso/Makefile | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
 diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index b1b8dd1608f7..2038d9c8e527 100644
+index 2038d9c8e527..cbfb5aab5e9c 100644
 --- a/arch/x86/entry/vdso/Makefile
 +++ b/arch/x86/entry/vdso/Makefile
-@@ -55,11 +55,8 @@ targets += vdso32/vdso32.lds $(vobjs32-y)
+@@ -18,11 +18,6 @@ OBJECT_FILES_NON_STANDARD	:= y
+ # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
+ KCOV_INSTRUMENT		:= n
  
- # Build the vDSO image C files and link them in.
- vdso_img_objs := $(vdso_img-y:%=vdso-image-%.o)
--vdso_img_cfiles := $(vdso_img-y:%=vdso-image-%.c)
--vdso_img_sodbg := $(vdso_img-y:%=vdso%.so.dbg)
- obj-y += $(vdso_img_objs)
--targets += $(vdso_img_cfiles)
--targets += $(vdso_img_sodbg) $(vdso_img-y:%=vdso%.so)
-+targets += $(foreach x, 64 x32 32, vdso-image-$(x).c vdso$(x).so vdso$(x).so.dbg)
+-VDSO64-$(CONFIG_X86_64)		:= y
+-VDSOX32-$(CONFIG_X86_X32_ABI)	:= y
+-VDSO32-$(CONFIG_X86_32)		:= y
+-VDSO32-$(CONFIG_IA32_EMULATION)	:= y
+-
+ # files to link into the vdso
+ vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
+ vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
+@@ -38,11 +33,11 @@ OBJECT_FILES_NON_STANDARD_vma.o		:= n
+ OBJECT_FILES_NON_STANDARD_extable.o	:= n
+ 
+ # vDSO images to build
+-vdso_img-$(VDSO64-y)		+= 64
+-vdso_img-$(VDSOX32-y)		+= x32
+-vdso_img-$(VDSO32-y)		+= 32
++obj-$(CONFIG_X86_64)		+= vdso-image-64.o
++obj-$(CONFIG_X86_X32_ABI)	+= vdso-image-x32.o
++obj-$(CONFIG_X86_32)		+= vdso-image-32.o vdso32-setup.o
++obj-$(CONFIG_IA32_EMULATION)	+= vdso-image-32.o vdso32-setup.o
+ 
+-obj-$(VDSO32-y)				 += vdso32-setup.o
+ OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
+ 
+ vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
+@@ -53,9 +48,6 @@ $(obj)/vdso.o: $(obj)/vdso.so
+ targets += vdso.lds $(vobjs-y)
+ targets += vdso32/vdso32.lds $(vobjs32-y)
+ 
+-# Build the vDSO image C files and link them in.
+-vdso_img_objs := $(vdso_img-y:%=vdso-image-%.o)
+-obj-y += $(vdso_img_objs)
+ targets += $(foreach x, 64 x32 32, vdso-image-$(x).c vdso$(x).so vdso$(x).so.dbg)
  
  CPPFLAGS_vdso.lds += -P -C
- 
-@@ -190,5 +187,3 @@ GCOV_PROFILE := n
- 
- quiet_cmd_vdso_and_check = VDSO    $@
-       cmd_vdso_and_check = $(cmd_vdso); $(cmd_vdso_check)
--
--clean-files := vdso32.so vdso32.so.dbg vdso64* vdso-image-*.c vdsox32.so*
 -- 
 2.40.1
 
