@@ -2,164 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9CB7F338D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35997F3390
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjKUQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:21:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
+        id S229642AbjKUQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKUQVy (ORCPT
+        with ESMTP id S229566AbjKUQWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:21:54 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF58112;
-        Tue, 21 Nov 2023 08:21:51 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2839cf9ea95so2679990a91.1;
-        Tue, 21 Nov 2023 08:21:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700583711; x=1701188511; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KTFRsgH40UD7MzukJZyHOiKKI64hMJVUbzazPe+Qj2U=;
-        b=WipS5yOlOG4RrpSzlFf3OGQb1AGAVj0GBR70jIC/Yn0Y6NreTMet4+TvQ72NV+QykB
-         BTglDf/9E5sXb4wnWXyk0ZdOdQiXPjJvuAsH/vsrFhRfSTuvkCCmE2+k6qYfeBQYmJDf
-         MTfx1/Lbx1vRSVNduyDcm4hn3uxzwIV7KBe4lR1C1XDk+WUhQbuqPX6wWSvdN3dFZDtA
-         d3UJ2rfL/erP/l/1koQem4ZjqPD+x2kW5LHbjQJc7704MuwyNvRZRCEDZNFa4irDPOyS
-         xj7xOgHKBfkRroXgl4HrDqZHvvKD2JC3K1im/cBWO/nSvRsSze4pOc0ObDSxRXND4Dmu
-         ujow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700583711; x=1701188511;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KTFRsgH40UD7MzukJZyHOiKKI64hMJVUbzazPe+Qj2U=;
-        b=M0+VNxSQWemGDB0yn466DxgL/HjjlHMSbEYE2ZaeMUV9220tgwEKzSGUuAacDgJjZT
-         wRBOxkNkZNj6RLd31MGNeGjWbv2UHBXJrQVMuhJ1GZiShkrJt2OPXyDd8oguSYoBzl32
-         tTSZnnFgAEzYMTr5BkLTZ4bKmd0HCaoWp+prEFvGVXJebGpb2sHrWj+gacW4VKpUVJWt
-         gvSY41KkqSKpxFYaz8/ZOcisBWkibSds9zWEAEWdfXqJDKF+FI3cQXsBPgFgVrrEird6
-         f6vzLj9RMfCA7kQdhmVYSnopIQElaWLGvmshnt2nx4WOlH+fLZBXFfb1B8nuLdBmxzT/
-         dFsA==
-X-Gm-Message-State: AOJu0YyMDY6+eMzwO366TthaXVpcGIayHQHotrHd6cgysEp1IGmk1TLw
-        nGG5ZYBQc8w/FqknfHBYV18=
-X-Google-Smtp-Source: AGHT+IGGtBENf9dS160s3wzmeIjVz/3q7r1rgfd53W48Vj7jDLdwxWWpKeJHhYrbHGCukPK/mmxSuA==
-X-Received: by 2002:a17:90a:19c:b0:280:4f82:68ac with SMTP id 28-20020a17090a019c00b002804f8268acmr8403000pjc.24.1700583710574;
-        Tue, 21 Nov 2023 08:21:50 -0800 (PST)
-Received: from localhost ([47.215.232.245])
-        by smtp.gmail.com with ESMTPSA id t2-20020a17090aae0200b00274262bcf8dsm9306648pjq.41.2023.11.21.08.21.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 08:21:49 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Danylo Piliaiev <dpiliaiev@igalia.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/a690: Fix reg values for a690
-Date:   Tue, 21 Nov 2023 08:21:34 -0800
-Message-ID: <20231121162137.60488-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 21 Nov 2023 11:22:45 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FE2112;
+        Tue, 21 Nov 2023 08:22:41 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0FE4A40E0031;
+        Tue, 21 Nov 2023 16:22:39 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id oGV3VnjCGa0l; Tue, 21 Nov 2023 16:22:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700583756; bh=KxtFZyD5p+0QcjGE2q3dM11exyBdBO+J4w/uEQye0ts=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eVwqUMJqsVBloXiFRt+258PJZFxtbn4wup872Xc1eoqsrYQJz+sNNzMfmerWNy9Ye
+         gJS9fWp4qQRzMrP/8h2ZCNfdu0EyfGQjIx/4dXPX/YYQ+/s5+bhQQsWsxBhwnzpteO
+         sRlbZz6JKXOrk4JPgu3m9+bf2ulEoQJyAGr5xRvZQv3QffnTgXrj8i/6DT0ZD2MMCG
+         a7F/anwpZmcKO4rgvu/vfInEj0icBwTmo9dyjASF19D5fWnlRnQz7gZvEixvsDzY7I
+         dMsaKp1tq3jRgTCizTvL2E/10HFgE27HT64RIbLAM76/wiXAiLf2iHI0OsvDfS+AkY
+         FVrgvhJjTphltPocEVyzTEoq+YCP8d3m/cg6cPLIKRBGPJmmWlWR8TutanG6QMYtDL
+         /7lFAyeO4IZ3hZgxOlAEZQn0kff60spdv8O8ugxapdgUvPqiXzKrjSAJ40sOUl3Say
+         P1+0IsBOsneK/9T2yy2gTJ/7e8OIgsBU7bM+HJbyGHb3kKm97uMyq8UAcGfVnYG6M4
+         YPInq/u+smERJV4XSqxngcedV06ZTkID1BHdNOqgucK9mlKQLChBTKtiGAheZNy7jM
+         x7+ghE5Nr1+wm+4Rn3W12IJbzDp+jqAnUCfodqx+BMXrNfZ21JeHa/naTZq8kOfIU6
+         bJClC6oA6/aymqRh/j5YGUlg=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6FCF940E0032;
+        Tue, 21 Nov 2023 16:21:55 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 17:21:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 11/50] x86/sev: Add helper functions for RMPUPDATE
+ and PSMASH instruction
+Message-ID: <20231121162149.GFZVzZHQB1g2bdvJie@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-12-michael.roth@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-12-michael.roth@amd.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Danylo Piliaiev <dpiliaiev@igalia.com>
+On Mon, Oct 16, 2023 at 08:27:40AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> The RMPUPDATE instruction writes a new RMP entry in the RMP Table. The
+> hypervisor will use the instruction to add pages to the RMP table. See
+> APM3 for details on the instruction operations.
+> 
+> The PSMASH instruction expands a 2MB RMP entry into a corresponding set
+> of contiguous 4KB-Page RMP entries. The hypervisor will use this
 
-KGSL doesn't support a690 so all reg values were the same as
-on a660. Now we know the values and they are different from the
-windows driver.
+s/-Page//
 
-This fixes hangs on D3D12 games and some CTS tests.
+> instruction to adjust the RMP entry without invalidating the previous
+> RMP entry.
 
-Signed-off-by: Danylo Piliaiev <dpiliaiev@igalia.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+"... without invalidating it."
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 8176ea8da7a7..75e1ea0404d3 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1326,6 +1326,7 @@ static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
- 		amsbc = 1;
- 		rgb565_predicator = 1;
- 		uavflagprd_inv = 2;
-+		ubwc_mode = 2;
- 	}
- 
- 	if (adreno_is_7c3(adreno_gpu)) {
-@@ -1741,7 +1742,9 @@ static int hw_init(struct msm_gpu *gpu)
- 	/* Setting the primFifo thresholds default values,
- 	 * and vccCacheSkipDis=1 bit (0x200) for A640 and newer
- 	*/
--	if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu) || adreno_is_a690(adreno_gpu))
-+	if (adreno_is_a690(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00800200);
-+	else if (adreno_is_a650(adreno_gpu) || adreno_is_a660(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00300200);
- 	else if (adreno_is_a640_family(adreno_gpu) || adreno_is_7c3(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_PC_DBG_ECO_CNTL, 0x00200200);
-@@ -1775,6 +1778,8 @@ static int hw_init(struct msm_gpu *gpu)
- 	if (adreno_is_a730(adreno_gpu) ||
- 	    adreno_is_a740_family(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0xcfffff);
-+	else if (adreno_is_a690(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x4fffff);
- 	else if (adreno_is_a619(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x3fffff);
- 	else if (adreno_is_a610(adreno_gpu))
-@@ -1782,7 +1787,10 @@ static int hw_init(struct msm_gpu *gpu)
- 	else
- 		gpu_write(gpu, REG_A6XX_RBBM_INTERFACE_HANG_INT_CNTL, (1 << 30) | 0x1fffff);
- 
--	gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 1);
-+	if (adreno_is_a690(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 0x81);
-+	else
-+		gpu_write(gpu, REG_A6XX_UCHE_CLIENT_PF, 1);
- 
- 	/* Set weights for bicubic filtering */
- 	if (adreno_is_a650_family(adreno_gpu)) {
-@@ -1808,12 +1816,17 @@ static int hw_init(struct msm_gpu *gpu)
- 	a6xx_set_cp_protect(gpu);
- 
- 	if (adreno_is_a660_family(adreno_gpu)) {
--		gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x1);
-+		if (adreno_is_a690(adreno_gpu))
-+			gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x00028801);
-+		else
-+			gpu_write(gpu, REG_A6XX_CP_CHICKEN_DBG, 0x1);
- 		gpu_write(gpu, REG_A6XX_RBBM_GBIF_CLIENT_QOS_CNTL, 0x0);
- 	}
- 
-+	if (adreno_is_a690(adreno_gpu))
-+		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG, 0x90);
- 	/* Set dualQ + disable afull for A660 GPU */
--	if (adreno_is_a660(adreno_gpu))
-+	else if (adreno_is_a660(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG, 0x66906);
- 	else if (adreno_is_a7xx(adreno_gpu))
- 		gpu_write(gpu, REG_A6XX_UCHE_CMDQ_CONFIG,
+This below is useless text in the commit message - that should be all
+visible from the patch itself.
+
+> Add the following external interface API functions:
+> 
+> psmash(): Used to smash a 2MB aligned page into 4K pages while
+> preserving the Validated bit in the RMP.
+> 
+> rmp_make_private(): Used to assign a page to guest using the RMPUPDATE
+> instruction.
+> 
+> rmp_make_shared(): Used to transition a page to hypervisor/shared
+> state using the RMPUPDATE instruction.
+
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+
+Since Brijesh is the author, first comes his SOB, then Ashish's and then
+yours.
+
+> [mdr: add RMPUPDATE retry logic for transient FAIL_OVERLAP errors]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> ---
+>  arch/x86/include/asm/sev-common.h | 14 +++++
+>  arch/x86/include/asm/sev-host.h   | 10 ++++
+>  arch/x86/virt/svm/sev.c           | 89 +++++++++++++++++++++++++++++++
+>  3 files changed, 113 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index 1e6fb93d8ab0..93ec8c12c91d 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -173,8 +173,22 @@ struct snp_psc_desc {
+>  #define GHCB_ERR_INVALID_INPUT		5
+>  #define GHCB_ERR_INVALID_EVENT		6
+>  
+> +/* RMUPDATE detected 4K page and 2MB page overlap. */
+> +#define RMPUPDATE_FAIL_OVERLAP		4
+> +
+>  /* RMP page size */
+>  #define RMP_PG_SIZE_4K			0
+> +#define RMP_PG_SIZE_2M			1
+
+RMP_PG_LEVEL_2M
+
+>  #define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
+> +#define X86_TO_RMP_PG_LEVEL(level)	(((level) == PG_LEVEL_4K) ? RMP_PG_SIZE_4K : RMP_PG_SIZE_2M)
+> +
+> +struct rmp_state {
+> +	u64 gpa;
+> +	u8 assigned;
+> +	u8 pagesize;
+> +	u8 immutable;
+> +	u8 rsvd;
+> +	u32 asid;
+> +} __packed;
+>  
+>  #endif
+> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
+> index bb06c57f2909..1df989411334 100644
+> --- a/arch/x86/include/asm/sev-host.h
+> +++ b/arch/x86/include/asm/sev-host.h
+> @@ -16,9 +16,19 @@
+>  #ifdef CONFIG_KVM_AMD_SEV
+>  int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level);
+>  void sev_dump_hva_rmpentry(unsigned long address);
+> +int psmash(u64 pfn);
+> +int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable);
+> +int rmp_make_shared(u64 pfn, enum pg_level level);
+>  #else
+>  static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENXIO; }
+>  static inline void sev_dump_hva_rmpentry(unsigned long address) {}
+> +static inline int psmash(u64 pfn) { return -ENXIO; }
+> +static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid,
+> +				   bool immutable)
+> +{
+> +	return -ENXIO;
+> +}
+> +static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENXIO; }
+>  #endif
+>  
+>  #endif
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index cac3e311c38f..24a695af13a5 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -367,3 +367,92 @@ void sev_dump_hva_rmpentry(unsigned long hva)
+>  	sev_dump_rmpentry(pte_pfn(*pte));
+>  }
+>  EXPORT_SYMBOL_GPL(sev_dump_hva_rmpentry);
+> +
+> +/*
+> + * PSMASH a 2MB aligned page into 4K pages in the RMP table while preserving the
+> + * Validated bit.
+> + */
+> +int psmash(u64 pfn)
+> +{
+> +	unsigned long paddr = pfn << PAGE_SHIFT;
+> +	int ret;
+> +
+> +	pr_debug("%s: PFN: 0x%llx\n", __func__, pfn);
+
+Left over?
+
+> +
+> +	if (!pfn_valid(pfn))
+> +		return -EINVAL;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return -ENXIO;
+
+That needs to happen first in the function.
+
+> +
+> +	/* Binutils version 2.36 supports the PSMASH mnemonic. */
+> +	asm volatile(".byte 0xF3, 0x0F, 0x01, 0xFF"
+> +		      : "=a"(ret)
+> +		      : "a"(paddr)
+
+Add an empty space between the " and the (
+
+> +		      : "memory", "cc");
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(psmash);
+> +
+> +static int rmpupdate(u64 pfn, struct rmp_state *val)
+
+rmp_state *state
+
+so that it is clear what this is.
+
+> +{
+> +	unsigned long paddr = pfn << PAGE_SHIFT;
+> +	int ret, level, npages;
+> +	int attempts = 0;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return -ENXIO;
+> +
+> +	do {
+> +		/* Binutils version 2.36 supports the RMPUPDATE mnemonic. */
+> +		asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFE"
+> +			     : "=a"(ret)
+> +			     : "a"(paddr), "c"((unsigned long)val)
+
+Add an empty space between the " and the (
+
+> +			     : "memory", "cc");
+> +
+> +		attempts++;
+> +	} while (ret == RMPUPDATE_FAIL_OVERLAP);
+
+What's the logic here? Loop as long as it says "overlap"?
+
+How "transient" is that overlapping condition?
+
+What's the upper limit of that loop?
+
+This loop should check a generously chosen upper limit of attempts and
+then break if that limit is reached.
+
+> +	if (ret) {
+> +		pr_err("RMPUPDATE failed after %d attempts, ret: %d, pfn: %llx, npages: %d, level: %d\n",
+> +		       attempts, ret, pfn, npages, level);
+
+You're dumping here uninitialized stack variables npages and level.
+Looks like leftover from some prior version of this function.
+
+> +		sev_dump_rmpentry(pfn);
+> +		dump_stack();
+
+This is going to become real noisy on a huge machine with a lot of SNP
+guests.
+
+> +		return -EFAULT;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Assign a page to guest using the RMPUPDATE instruction.
+> + */
+
+One-line comment works too.
+
+/* Assign ... */
+
+> +int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, int asid, bool immutable)
+> +{
+> +	struct rmp_state val;
+> +
+> +	memset(&val, 0, sizeof(val));
+> +	val.assigned = 1;
+> +	val.asid = asid;
+> +	val.immutable = immutable;
+> +	val.gpa = gpa;
+> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
+> +
+> +	return rmpupdate(pfn, &val);
+> +}
+> +EXPORT_SYMBOL_GPL(rmp_make_private);
+> +
+> +/*
+> + * Transition a page to hypervisor/shared state using the RMPUPDATE instruction.
+> + */
+
+Ditto.
+
+> +int rmp_make_shared(u64 pfn, enum pg_level level)
+> +{
+> +	struct rmp_state val;
+> +
+> +	memset(&val, 0, sizeof(val));
+> +	val.pagesize = X86_TO_RMP_PG_LEVEL(level);
+> +
+> +	return rmpupdate(pfn, &val);
+> +}
+> +EXPORT_SYMBOL_GPL(rmp_make_shared);
+> -- 
+
+Thx.
+
 -- 
-2.42.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
