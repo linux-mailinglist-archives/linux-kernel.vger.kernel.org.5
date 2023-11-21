@@ -2,102 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A72F7F3651
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7767F3660
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbjKUSn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:43:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
+        id S234364AbjKUSpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbjKUSnz (ORCPT
+        with ESMTP id S230492AbjKUSpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:43:55 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE69F12E;
-        Tue, 21 Nov 2023 10:43:50 -0800 (PST)
-Received: from [192.168.1.103] (178.176.72.255) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 21 Nov
- 2023 21:43:42 +0300
-Subject: Re: [PATCH 11/13] net: ravb: Use tabs instead of spaces
-To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
-        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <sergei.shtylyov@cogentembedded.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-12-claudiu.beznea.uj@bp.renesas.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <d01bc12f-374a-a12b-85c2-b4246b21a636@omp.ru>
-Date:   Tue, 21 Nov 2023 21:43:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 21 Nov 2023 13:45:34 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC65819E
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:45:29 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6909E40E024E;
+        Tue, 21 Nov 2023 18:45:27 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Pi_TiCzc_9uo; Tue, 21 Nov 2023 18:45:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700592324; bh=tqZ7PE/4BcoxuBf+REmYnd/FNUTP77IUNBiOA3NqXBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yvb+fT8xOBlYmB1NUrqpC3Mb/10WG7VFOOAJz4QZSsDCmKLxCFpjKiX1skk93zTiY
+         eSTSXLahx5mm2Oca86NGNual8iH6FvPH5iq3C095o+thk0le0J1dyNCc90D2qebDdC
+         FOrmADp89eYbo88spCP2QobNt2l336LQDw3iskvBVygS+ULp8FSiXGaYI/Z9SkJA+T
+         q3no1QuGnLJOKQiV770nNOqPzSnpHTGVZlmN6APprs4BuQJ7bouAGmadI2UKu7E0up
+         8vegfPN5mRwSN/Hr8UUKG/F1sLZtI/M8WBMIjoHqfFoJ8jFTr64SuCSCTYFnVwmvTs
+         mArRdB0qoh78AZwCJBnQnusH54nwN4+7Vc7Zf+dLWMA6csgYbSP1IGeb+APiFLvLno
+         YoiBgRxOQfGBLxwduU04DKzS053c08h79YoAMX5jK6qiFlAWrRA8XK3U2Akt8YpCIr
+         kEap2SwkIeaay7wDXDavjiM/1d4onDV3Wk5I/ufMXsl9btGbkOQUPxDpy2luI5byli
+         G3HeiqVTMaXHtTBtl2t1x0zFqVInHMDWqEs6sZs5Eg/qnJ0D6IsUkatQmaAsX5P79B
+         5d9fDNHIdRTFyU1/Zh0yuiedK14bfSYezJIkYZsNnd2iqlPx61XONR7HFb84FdoXTI
+         E20JwR+QmYltMnxlWkqmDtWA=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 473AC40E0032;
+        Tue, 21 Nov 2023 18:45:12 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 19:45:05 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 4/5] x86/paravirt: switch mixed paravirt/alternative
+ calls to alternative_2
+Message-ID: <20231121184505.GGZVz6sc+4sP7/HFji@fat_crate.local>
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-5-jgross@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20231120084606.4083194-12-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.72.255]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 18:28:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.255
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/21/2023 18:33:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 4:18:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231030142508.1407-5-jgross@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/20/23 11:46 AM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Mon, Oct 30, 2023 at 03:25:07PM +0100, Juergen Gross wrote:
+> Instead of stacking alternative and paravirt patching, use the new
+> ALT_FLAG_CALL flag to switch those mixed calls to pure alternative
+> handling.
 > 
-> Use tabs instead of spaces in ravb_set_rate_gbeth() function.
-> This aligns with the coding style requirements.
+> This eliminates the need to be careful regarding the sequence of
+> alternative and paravirt patching.
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> For call depth tracking callthunks_setup() needs to be adapted to patch
+> calls at alternative patching sites instead of paravirt calls.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+Why is this important so that it is called out explicitly in the commit
+message? Is callthunks_setup() special somehow?
 
-[...]
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/include/asm/alternative.h    |  5 +++--
+>  arch/x86/include/asm/paravirt.h       |  9 ++++++---
+>  arch/x86/include/asm/paravirt_types.h | 26 +++++++++-----------------
+>  arch/x86/kernel/callthunks.c          | 17 ++++++++---------
+>  arch/x86/kernel/module.c              | 20 +++++---------------
+>  5 files changed, 31 insertions(+), 46 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+> index 2a74a94bd569..07b17bc615a0 100644
+> --- a/arch/x86/include/asm/alternative.h
+> +++ b/arch/x86/include/asm/alternative.h
+> @@ -89,6 +89,8 @@ struct alt_instr {
+>  	u8  replacementlen;	/* length of new instruction */
+>  } __packed;
+>  
+> +extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
+> +
 
-MBR, Sergey
+arch/x86/include/asm/alternative.h:92:extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
+arch/x86/kernel/alternative.c:163:extern struct alt_instr __alt_instructions[], __alt_instructions_end[];
+
+Zap the declaration from the .c file pls.
+
+>  /*
+>   * Debug flag that can be tested to see whether alternative
+>   * instructions were patched in already:
+> @@ -104,11 +106,10 @@ extern void apply_fineibt(s32 *start_retpoline, s32 *end_retpoine,
+>  			  s32 *start_cfi, s32 *end_cfi);
+>  
+>  struct module;
+> -struct paravirt_patch_site;
+>  
+>  struct callthunk_sites {
+>  	s32				*call_start, *call_end;
+> -	struct paravirt_patch_site	*pv_start, *pv_end;
+> +	struct alt_instr		*alt_start, *alt_end;
+>  };
+>  
+>  #ifdef CONFIG_CALL_THUNKS
+> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+> index 3749311d51c3..9c6c5cfa9fe2 100644
+> --- a/arch/x86/include/asm/paravirt.h
+> +++ b/arch/x86/include/asm/paravirt.h
+> @@ -740,20 +740,23 @@ void native_pv_lock_init(void) __init;
+>  
+>  #ifdef CONFIG_X86_64
+>  #ifdef CONFIG_PARAVIRT_XXL
+> +#ifdef CONFIG_DEBUG_ENTRY
+>  
+>  #define PARA_PATCH(off)		((off) / 8)
+>  #define PARA_SITE(ptype, ops)	_PVSITE(ptype, ops, .quad, 8)
+>  #define PARA_INDIRECT(addr)	*addr(%rip)
+>  
+> -#ifdef CONFIG_DEBUG_ENTRY
+>  .macro PARA_IRQ_save_fl
+>  	PARA_SITE(PARA_PATCH(PV_IRQ_save_fl),
+>  		  ANNOTATE_RETPOLINE_SAFE;
+>  		  call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);)
+> +	ANNOTATE_RETPOLINE_SAFE;
+> +	call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);
+>  .endm
+>  
+> -#define SAVE_FLAGS	ALTERNATIVE "PARA_IRQ_save_fl;", "pushf; pop %rax;", \
+> -				    ALT_NOT_XEN
+> +#define SAVE_FLAGS ALTERNATIVE_2 "PARA_IRQ_save_fl;",			\
+> +				 ALT_CALL_INSTR, ALT_CALL_ALWAYS,	\
+> +				 "pushf; pop %rax;", ALT_NOT_XEN
+
+How is that supposed to work?
+
+At build time for a PARAVIRT_XXL build it'll have that PARA_IRQ_save_fl
+macro in there which issues a .parainstructions section and an indirect
+call to
+
+	call *pv_ops+240(%rip);
+
+then it'll always patch in "call BUG_func" due to X86_FEATURE_ALWAYS.
+
+I guess this is your way of saying "this should always be patched, one
+way or the other, depending on X86_FEATURE_XENPV, and this is a way to
+catch unpatched locations...
+
+Then on a pv build which doesn't set X86_FEATURE_XENPV during boot,
+it'll replace the "call BUG_func" thing with the pushf;pop.
+
+And if it does set X86_FEATURE_XENPV, it'll patch in the direct call to
+.... /me greps tree ... pv_native_save_fl I guess.
+
+If anything, how those ALT_CALL_ALWAYS things are supposed to work,
+should be documented there, over the macro definition and what the
+intent is.
+
+Because otherwise we'll have to swap in the whole machinery back into
+our L1s each time we need to touch it.
+
+And btw, this whole patching stuff becomes insanely non-trivial slowly.
+
+:-\
+
+> diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
+> index faa9f2299848..200ea8087ddb 100644
+> --- a/arch/x86/kernel/callthunks.c
+> +++ b/arch/x86/kernel/callthunks.c
+> @@ -238,14 +238,13 @@ patch_call_sites(s32 *start, s32 *end, const struct core_text *ct)
+>  }
+>  
+>  static __init_or_module void
+> -patch_paravirt_call_sites(struct paravirt_patch_site *start,
+> -			  struct paravirt_patch_site *end,
+> -			  const struct core_text *ct)
+> +patch_alt_call_sites(struct alt_instr *start, struct alt_instr *end,
+> +		     const struct core_text *ct)
+>  {
+> -	struct paravirt_patch_site *p;
+> +	struct alt_instr *a;
+>  
+> -	for (p = start; p < end; p++)
+> -		patch_call(p->instr, ct);
+> +	for (a = start; a < end; a++)
+> +		patch_call((u8 *)&a->instr_offset + a->instr_offset, ct);
+
+tip:x86/paravirt has:
+
+5c22c4726e4a ("x86/paravirt: Use relative reference for the original instruction offset")
+
+Perhaps redo yours ontop of tip/master:
+
+diff --git a/arch/x86/kernel/callthunks.c b/arch/x86/kernel/callthunks.c
+index 57e5c2e75c2a..76414aba116d 100644
+--- a/arch/x86/kernel/callthunks.c
++++ b/arch/x86/kernel/callthunks.c
+@@ -233,14 +233,18 @@ patch_call_sites(s32 *start, s32 *end, const struct core_text *ct)
+ }
+ 
+ static __init_or_module void
+-patch_paravirt_call_sites(struct paravirt_patch_site *start,
+-                         struct paravirt_patch_site *end,
+-                         const struct core_text *ct)
++patch_alt_call_sites(struct alt_instr *start, struct alt_instr *end,
++                    const struct core_text *ct)
+ {
+-       struct paravirt_patch_site *p;
++       struct alt_instr *a;
+ 
++<<<<<<<
+        for (p = start; p < end; p++)
+                patch_call((void *)&p->instr_offset + p->instr_offset, ct);
++=======
++       for (a = start; a < end; a++)
++               patch_call((u8 *)&a->instr_offset + a->instr_offset, ct);
++>>>>>>>
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
