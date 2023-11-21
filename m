@@ -2,155 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F147F21ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:03:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35FA7F21EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjKUADs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
+        id S232590AbjKUAEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKUADr (ORCPT
+        with ESMTP id S229490AbjKUAE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 19:03:47 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2076.outbound.protection.outlook.com [40.92.91.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0063497;
-        Mon, 20 Nov 2023 16:03:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iVO8BJXuaqtKcJstbFz0qIstl4Wb5SAAxTQQe1Ivj6XUD67gpD1wk+HwPMILk6TKpTk/IR3hnWZb735MsfHOuuE9zz1y/Q65dUvAJJ7YH09yzav5yCE0Kz3esVTDg9MEA6mABH3CUQ2XIDgh66yYtr4kNsvjjFEWIZHBFWSqg27hrH6z5+dJPIX/WMVp3HK+gZdLh1uV0mOXXfZuZ08yQfuTsgdGcCqKpEuj+sRdYBlcbwYHZ2s4bX9tbvyzekUrZHJZE33zD13zCJIuSn1rwMST2cJynOg/l5koddrKrpCB0ZcEr/HzXZz6VVWTWNc6Ma0FI4eyOsIWbrO9CtWXUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LL/wn7ek3J/d0CPs0+AsqMukxl9/vjhVzdFDfQgj/Q0=;
- b=M/onqgvToQpZFQrj6YESqXyOze/2HFs/PWZYX2t2mQ2JIP32LF9FgLQ/HRexbgMWcnTqOUyjaji489InnFn0N0S4uolWHCxT11IRN81WQUJsGNtMQkYruF5r6VXRfPzMjuj0StaKHFFvqNiFYIVa+C3Y6P4KYBclbNF3kw2NSfj5e9FpNu5FvbBtnqTpJ4IV1kKpW7RcHfNooONU43HOezp/+XJCE2W8FyPoL0qL0/IzTgwdIRq0qpRmBTqeg2VZM0jaahIltmq0cZB/OOhN176rSdXOcbtQkfjXlcmGwc888R6eeT0sgdHyc8jqaO3FyBPchfDA0Wl0ofC14wXMXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LL/wn7ek3J/d0CPs0+AsqMukxl9/vjhVzdFDfQgj/Q0=;
- b=gLPUfmEykYQRbnpb0WnQHXFVS+5IDKxWoLqHNv6fBeWiPdJmPqz47cy1Vv1NckYYv1VdzY9C0ueYunjYmUlrzE32/Oq2gAcUSPsBvTNC4N0rkxbZMiSa1skMdUDsLulAbwdB+hMszq1RGz9ISsZ74hb16MkWldfkRlaKQ0QdkfGx5IAT73/HHgTAonscMUU3+BQObtbdCa7HDCWLl4b9+Fbkm9FcmsTpYUjlbh55yxwk6tuGKCSZrP1vVyuHp0TyGHBF1OyY5lut3twwY+xljRuHmor/lJUNNXO9A6uIx/imnF7CdJMh3Xv9Dj775ytwLVvdjDOQwGe1mlCb56C1Pw==
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
- by PAVPR10MB7444.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:2f4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
- 2023 00:03:40 +0000
-Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 00:03:40 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
-        ast@kernel.org, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
-        shuah@kernel.org, song@kernel.org, yonghong.song@linux.dev
-Subject: [PATCH bpf-next v3 0/4] selftests/bpf: Update multiple prog_tests to use ASSERT_ macros
-Date:   Tue, 21 Nov 2023 05:33:14 +0530
-Message-ID: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [wiZBkUxM0L1MJd/m0WZS0o8LfjZvW86N]
-X-ClientProxiedBy: JN2P275CA0021.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::33)
- To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
-X-Microsoft-Original-Message-ID: <20231121000314.421019-1-yuran.pereira@hotmail.com>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|PAVPR10MB7444:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3b8aebd3-15c2-4919-07dd-08dbea25513e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hPenmBiySzQvzLdtS+sA3XaakzmfVtbHcieZjgp7UMndmok+un1OJd+seZM76mzneOA1k65+k98ujFGJ8sDQwzEpXIM/+nlsyQ0mGMTGODMNOEg7ycg5EBFeDarvAqrS4jaRTagw+WKZo7b8qJduuNpa6fLBJkqGCI3burDVhY/m4vT+QuFfloTnIQSt3+aGnspTqjVAXrmgnPgqj+wO/6QC6IlVudZe9PxDkq5XBX64F7lRf/26wPg8jOTFxpoZ6mfXutPJVy7Ni/oBpSR2GynE68qgSn1Ng1MsSB//np8I4jc+txjhhlXMor825lzuNHqtWeuntxPHGRFc5T1h9nnvOB3k+a0sI4TW8YjHYY22oT/pOb8ClokhvcOPx1u6jrY5NGk29BPG0tymJUqED7S2Qd+uBWLrysopkL6q65rOOy7XIHjz0xJm0jIKWzYBe5bG1D0Hg6Wh83hPbsoZiye3x6KNIMiw6wnU4qMLZXrANQI76GN8UCzwR1FJVnTPuuAxGG2hnffF4tZOx9faK4JcaYk4Alu4rjjS7Rqc1jUlG4Y/vLsuJpEKP8Vh74TYRG42TEceUKG/cwCjP5PtW8rhuDFwWnUebZmbQdd0ZZrFlk8P3ZMPelogvDVjJJTG2/tp/aq5MiBmfPgqTbhqpW6VyU163Rv7QBm/MBoZvFc=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?S/LMXkg63D0lHD5B1D7DHbmec3IAFUafbLLRfqwJO6fzFXx9UI6Sk9+/xjvN?=
- =?us-ascii?Q?yeKnZKfTxif4oK5wgYCm77kDk7CSYhoB+q2iXWy10o/uhxXBq3oM5CXfCh6x?=
- =?us-ascii?Q?WkPH3RqgXUEW98AbTP4LNCfPTbqAKZ5pRP17+Ws5s8A/u6erTNk93L3dXF0g?=
- =?us-ascii?Q?TBas3YllS6SK8T91IBssgGSrYl2JW+UY6wFpMawVXMvO57/iprABi4Ls8X5E?=
- =?us-ascii?Q?cERdT8uPsjQSEcJ6BA60hsQFSALAMuYvT78iSA9OZ5YHJeC7LzwhISVzn1UK?=
- =?us-ascii?Q?6f2h77laXTP/MVwwuNufqTz1izkhkGdPGAbZf9Y6ERRRFKVNS0dDEsPGNzrh?=
- =?us-ascii?Q?Tx5unOq5qcmBJphAf8CjEmWySqxgeKp17O291L97GisEnL8zs6nnfbW6iATy?=
- =?us-ascii?Q?ipF0UY/KtsLHzJhLEtnveYVr24RGC3+nOTLnD+vqMZHagrLsc1HliMcXbm7j?=
- =?us-ascii?Q?jpi+eW84LsVNKE8Xow3vACLEK7XpPsk8FLGYj04iCQ6pf+Bf/VTlxhKb3a3n?=
- =?us-ascii?Q?wNf7q9ig+MQVy6tlAYiGvl9BcrKjF1WyOD3MmckfdaBqHiin/V3mzfA7po3g?=
- =?us-ascii?Q?iBhAgKcnRDzL0Mp/1Fdj6Fm3DZRSk9f0HC2lq5qyr9l+ajy/qzd2x690L4WR?=
- =?us-ascii?Q?ikpFKGHwPfythJtYaAG8xlnsD2tTeGFR/wA23VA+wBKRb7raIUfEbcwidh24?=
- =?us-ascii?Q?4aMIhH2qadgBxccqUAviDCioT6dFiy8eW1Rh+2uAK3luKHAKPMR72Fwbkj8A?=
- =?us-ascii?Q?VAmlP+46di1Rq/7zxRSCMytxm3S2kfOYbpprbhHzPbFLJhMQi7qBwNABngEh?=
- =?us-ascii?Q?9oLt6Ze3xmuaE4SrplO6FiJYNoUzF/NDbu3oDd3D34pTmyi/bG1WVoOGiWfQ?=
- =?us-ascii?Q?kbZjAMV1vP/GyJ6VYNG1YUiPeHK4goWksf/7fMz52CrsKtepyJadUgOFgCgu?=
- =?us-ascii?Q?t1WQXqxO4O4CBpZ35IdWn7h0m4iLfK8DQLKw7yx7WkiG35tair9lcOraS2Ou?=
- =?us-ascii?Q?pudtO19KejuPVHAfAwm6g3TZ3YmPVek6iQ09jbu3tRibyEcBwxYppUPlAqj2?=
- =?us-ascii?Q?8ALUCHWyQ5BFlLC6KKHSjH6zpVg3idbsJXxGm0nUhmqxKLA+jY9fjdPX+3z1?=
- =?us-ascii?Q?iUYs9d9Faf5I51hmmRO7W/+x3CxMAYGTFr/EervKFNbVMZrta4mNkyQUC/Qh?=
- =?us-ascii?Q?rxz42usHrwLgmoL0PSgLtTg+93dF4Jenj13rH2x+JKRNZkX6wopBC4NPzsg?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b8aebd3-15c2-4919-07dd-08dbea25513e
-X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 00:03:40.5328
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR10MB7444
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 20 Nov 2023 19:04:28 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC6695
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:04:24 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c994880223so30990637b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 16:04:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700525064; x=1701129864; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZCOnJaz0EAvoHbURgEibZw+mVElLQgmjJxMJmfh1m6s=;
+        b=TmuvYQsKAJQJZzDkHKjz+BV8Uwe24eNYQq+mK8B1oFZb3bG8+WdF3roTc3A5wVLGg8
+         rFTIrFK0j1iT8C83sRGVp+HrVkolOui2sCcsl698CTEQt31HcygZ9OpSC33at5h8Um0/
+         0W8kZ9bzno0NJTQXj2PcC/2QWkui1DrTaXpjc8iUp+1XchkQExJAQqSJmRtxud1/heh5
+         iAmv59qMd/rWDxqlNnlF+kcU97V30zNLoyt5nQTPak6uywMRKNINORT1sTfUTWNrk5PQ
+         sCiq10qlcdkK1kEPRyek1XTt9Zz49VC9ayVhNjYNIpqd/BkN67LKgf6QmJ6tvishLVnB
+         2iRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700525064; x=1701129864;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZCOnJaz0EAvoHbURgEibZw+mVElLQgmjJxMJmfh1m6s=;
+        b=KVKRhqU41Wphpc3SuOWwIDfvSOkAn6iApmZmHlcGfie//1583fcvWxS8TNODyHMduV
+         f5ZT2h1jLGOKR0CSnngBGGZnjoBLu/pZu5jNcOGr8Pjo17k25TmjBT6x21rKagoWTADE
+         oV+nnCxUlfpULmBX8Flu/mGByv3Nf8PeGvuDWBgFlUhvRZe+k5o1AUutssTU1ggcZ0tk
+         msy+pLwMxIrSDf5t9caYfyWiBrW5MXb6ajaEULrSizs9y3oNz1v22dDpRDVPy+ioMWjF
+         +DCLeO/av+t/spq/6Fv4zY0nELz7/pXcDZKpHWfs/E/S+/w+rhArtGPjcvuVxg1iMXbF
+         Q3JQ==
+X-Gm-Message-State: AOJu0YxPAK6g/Yr7ukOg1t+DHGhoWzTHX48hueuV9N/AwyAEpyXLD6MK
+        jDVfOoQowXxmgsA3OEYJU9vWc2HjzJCU
+X-Google-Smtp-Source: AGHT+IGZuQayuCjQP5dz/h24rjY1hkIw1a8Z19AVZJreAbOPUa3gynFThusK5ZvC3dGpVbHo8Ov07h9bIRaB
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:9c08:6dab:5948:ab06])
+ (user=irogers job=sendgmr) by 2002:a0d:c981:0:b0:59b:c811:a709 with SMTP id
+ l123-20020a0dc981000000b0059bc811a709mr270383ywd.0.1700525063964; Mon, 20 Nov
+ 2023 16:04:23 -0800 (PST)
+Date:   Mon, 20 Nov 2023 16:04:20 -0800
+Message-Id: <20231121000420.368075-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Subject: [RFC PATCH v2] perf evsel: Fallback to task-clock when not system wide
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multiple files/programs in `tools/testing/selftests/bpf/prog_tests/` still
-heavily use the `CHECK` macro, even when better `ASSERT_` alternatives are
-available.
+When the cycles event isn't available evsel will fallback to the
+cpu-clock software event. task-clock is similar to cpu-clock but only
+runs when the process is running. Falling back to cpu-clock when not
+system wide leads to confusion, by falling back to task-clock it is
+hoped the confusion is less.
 
-As it was already pointed out by Yonghong Song [1] in the bpf selftests the use
-of the ASSERT_* series of macros is preferred over the CHECK macro.
+Pass the target to determine if task-clock is more appropriate. Update
+a nearby comment and debug string for the change.
 
-This patchset replaces the usage of `CHECK(` macros to the equivalent `ASSERT_`
-family of macros in the following prog_tests:
-- bind_perm.c
-- bpf_obj_id.c
-- bpf_tcp_ca.c
-- vmlinux.c
+---
+v2. Use target__has_cpu as suggested by Namhyung.
+https://lpc.events/event/17/contributions/1556/
 
-[1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-record.c |  2 +-
+ tools/perf/builtin-stat.c   |  2 +-
+ tools/perf/builtin-top.c    |  2 +-
+ tools/perf/util/evsel.c     | 18 ++++++++++--------
+ tools/perf/util/evsel.h     |  3 ++-
+ 5 files changed, 15 insertions(+), 12 deletions(-)
 
-Changes in v3:
-- Addressed the following points mentioned by Yonghong Song
-- Improved `bpf_map_lookup_elem` assertion in bpf_tcp_ca.
-- Replaced assertion introduced in v2 with one that checks `thread_ret`
-  instead of `pthread_join`. This ensures that `server`'s return value
-  (thread_ret) is the one being checked, as oposed to `pthread_join`'s
-  return value, since the latter one is less likely to fail.
-
-Changes in v2:
-- Fixed pthread_join assertion that broke the previous test
-
-Previous version:
-v2 - https://lore.kernel.org/lkml/GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-v1 - https://lore.kernel.org/lkml/GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-
-Yuran Pereira (4):
-  Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
-  Replaces the usage of CHECK calls for ASSERTs in bind_perm
-  Replaces the usage of CHECK calls for ASSERTs in bpf_obj_id
-  selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in
-    vmlinux
-
- .../selftests/bpf/prog_tests/bind_perm.c      |   6 +-
- .../selftests/bpf/prog_tests/bpf_obj_id.c     | 204 +++++++-----------
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  48 ++---
- .../selftests/bpf/prog_tests/vmlinux.c        |  16 +-
- 4 files changed, 105 insertions(+), 169 deletions(-)
-
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 8ec818568662..d8bb59511fdd 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1350,7 +1350,7 @@ static int record__open(struct record *rec)
+ 	evlist__for_each_entry(evlist, pos) {
+ try_again:
+ 		if (evsel__open(pos, pos->core.cpus, pos->core.threads) < 0) {
+-			if (evsel__fallback(pos, errno, msg, sizeof(msg))) {
++			if (evsel__fallback(pos, &opts->target, errno, msg, sizeof(msg))) {
+ 				if (verbose > 0)
+ 					ui__warning("%s\n", msg);
+ 				goto try_again;
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index a3af805a1d57..d8e5d6f7a87a 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -653,7 +653,7 @@ static enum counter_recovery stat_handle_error(struct evsel *counter)
+ 		if ((evsel__leader(counter) != counter) ||
+ 		    !(counter->core.leader->nr_members > 1))
+ 			return COUNTER_SKIP;
+-	} else if (evsel__fallback(counter, errno, msg, sizeof(msg))) {
++	} else if (evsel__fallback(counter, &target, errno, msg, sizeof(msg))) {
+ 		if (verbose > 0)
+ 			ui__warning("%s\n", msg);
+ 		return COUNTER_RETRY;
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index ea8c7eca5eee..1e42bd1c7d5a 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1044,7 +1044,7 @@ static int perf_top__start_counters(struct perf_top *top)
+ 			    perf_top_overwrite_fallback(top, counter))
+ 				goto try_again;
+ 
+-			if (evsel__fallback(counter, errno, msg, sizeof(msg))) {
++			if (evsel__fallback(counter, &opts->target, errno, msg, sizeof(msg))) {
+ 				if (verbose > 0)
+ 					ui__warning("%s\n", msg);
+ 				goto try_again;
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index a5da74e3a517..532f34d9fcb5 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2853,7 +2853,8 @@ u64 evsel__intval_common(struct evsel *evsel, struct perf_sample *sample, const
+ 
+ #endif
+ 
+-bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize)
++bool evsel__fallback(struct evsel *evsel, struct target *target, int err,
++		     char *msg, size_t msgsize)
+ {
+ 	int paranoid;
+ 
+@@ -2861,18 +2862,19 @@ bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize)
+ 	    evsel->core.attr.type   == PERF_TYPE_HARDWARE &&
+ 	    evsel->core.attr.config == PERF_COUNT_HW_CPU_CYCLES) {
+ 		/*
+-		 * If it's cycles then fall back to hrtimer based
+-		 * cpu-clock-tick sw counter, which is always available even if
+-		 * no PMU support.
++		 * If it's cycles then fall back to hrtimer based cpu-clock sw
++		 * counter, which is always available even if no PMU support.
+ 		 *
+ 		 * PPC returns ENXIO until 2.6.37 (behavior changed with commit
+ 		 * b0a873e).
+ 		 */
+-		scnprintf(msg, msgsize, "%s",
+-"The cycles event is not supported, trying to fall back to cpu-clock-ticks");
+-
+ 		evsel->core.attr.type   = PERF_TYPE_SOFTWARE;
+-		evsel->core.attr.config = PERF_COUNT_SW_CPU_CLOCK;
++		evsel->core.attr.config = target__has_cpu(target)
++			? PERF_COUNT_SW_CPU_CLOCK
++			: PERF_COUNT_SW_TASK_CLOCK;
++		scnprintf(msg, msgsize,
++			"The cycles event is not supported, trying to fall back to %s",
++			target__has_cpu(target) ? "cpu-clock" : "task-clock");
+ 
+ 		zfree(&evsel->name);
+ 		return true;
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index f19ac9f027ef..efbb6e848287 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -460,7 +460,8 @@ static inline bool evsel__is_clock(const struct evsel *evsel)
+ 	       evsel__match(evsel, SOFTWARE, SW_TASK_CLOCK);
+ }
+ 
+-bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msgsize);
++bool evsel__fallback(struct evsel *evsel, struct target *target, int err,
++		     char *msg, size_t msgsize);
+ int evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 			 int err, char *msg, size_t size);
+ 
 -- 
-2.25.1
+2.43.0.rc1.413.gea7ed67945-goog
 
