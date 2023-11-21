@@ -2,52 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D737F2FCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D04F47F2FD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjKUNx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:53:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
+        id S234379AbjKUNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUNxZ (ORCPT
+        with ESMTP id S229514AbjKUNxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:53:25 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81E7D6E;
-        Tue, 21 Nov 2023 05:53:20 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r5RBn-0003mX-Br; Tue, 21 Nov 2023 14:53:19 +0100
-Message-ID: <0e10112a-7560-4dd8-8a03-5fdfc838168f@leemhuis.info>
-Date:   Tue, 21 Nov 2023 14:53:17 +0100
+        Tue, 21 Nov 2023 08:53:43 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E1ED72;
+        Tue, 21 Nov 2023 05:53:39 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-332c82400a5so1376706f8f.0;
+        Tue, 21 Nov 2023 05:53:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700574818; x=1701179618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9v2mri0GlqJoBYwcjZqN/OD5vyWC0Ay18Him7NXwiw=;
+        b=iA8kQSC+jFMGhCNyAN/8b4cdS0B6Fz69WfcrPoXi+pWvSy/+7pu11quFp5Xfr8AxIx
+         316dh7wSA5YqtmHDMduWWqLQIovG2AfMGcjT+vhTKnCG7rlByz097uJik9b5RdNxc+pq
+         j6rlG8pgBaSUIORDzZJ5eaNSrVAA27mPKNGnvS9K/Ff8laKFU4ik24XPkhR8x23YhDtw
+         wN5F5zJxSAe+KR0YN4d7SKBCl4BWnCERo2hBzF+eJ4PfqXW8X8eqFveGPWbZurfDIqZF
+         mTOJXRceZ+qROZ8/8sSfskBU5Gq5nAXU+i2hoyplKqEukLFnyahJFJOYlz8/42SZYOFf
+         tj+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700574818; x=1701179618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d9v2mri0GlqJoBYwcjZqN/OD5vyWC0Ay18Him7NXwiw=;
+        b=aqXXgd2KYf7hzMSob2eACpCmZG+cVtWpuSsipFQ/b3uapZBfEdJ5qMA5PQ4A7t7fWR
+         nZD+WGxK6tJ5a7OUv7o/Ml7PjFqRz3ivylFBpWEIRNLAcaGN8FuMk4z+KbErSVzK54eW
+         ljYfgxnyTOAJD6jleA+MeYszdhU4PrDQTYOJB3TnydXln8T3aS1RVI0+geEsOm+HwpEQ
+         YLoABjFqigo4XmrCVTbVnqc7F0MFNY6RKPu2JLciwwTpfFLroRgcKVjYrXevqqVNh21r
+         yQ26KHB6W5wTPfm8u/72u0jc8OF4b2U5P50uv8vLutoZN3QIfZCH35CCy0gKY17ZHi3T
+         YIaQ==
+X-Gm-Message-State: AOJu0Yw93OqkZhcmCA1HVByxecvhY0R86jpOxs8w2kEYpXbEnIxUm1WF
+        5c5nBb4zjHsQZzz47ezfRnk=
+X-Google-Smtp-Source: AGHT+IEvETv/u7EyA2zlFgBolEG3fdf+Q9YFSmkGv+7D6VSBeNBiPaGCAeab5oGQLKj+r6BC/3lgGA==
+X-Received: by 2002:a5d:47af:0:b0:332:cae7:2ed4 with SMTP id 15-20020a5d47af000000b00332cae72ed4mr3402756wrb.29.1700574817401;
+        Tue, 21 Nov 2023 05:53:37 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id v6-20020adfedc6000000b00326dd5486dcsm14406543wro.107.2023.11.21.05.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 05:53:36 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>
+Subject: [net-next PATCH v2] net: phy: correctly check soft_reset ret ONLY if defined for PHY
+Date:   Tue, 21 Nov 2023 14:53:32 +0100
+Message-Id: <20231121135332.1455-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: Logitech G915 Wireless Keyboard acts weird on 6.6.0
-Content-Language: en-US, de-DE
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Input Devices <linux-input@vger.kernel.org>
-Cc:     Mavroudis Chatzilazaridis <mavchatz@protonmail.com>,
-        =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>,
-        Bastien Nocera <hadess@hadess.net>,
-        Jiri Kosina <jkosina@suse.cz>,
-        LinuxCat <masch77.linuxcat@gmail.com>,
-        Marcelo <mmbossoni@gmail.com>, Takashi Iwai <tiwai@suse.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-References: <6929ebbf-f2e0-4cd4-addc-1e33ecf3277f@gmail.com>
- <ZVyr-of1X4RudpWG@archie.me>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZVyr-of1X4RudpWG@archie.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700574801;d07b6676;
-X-HE-SMSGID: 1r5RBn-0003mX-Br
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,68 +76,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.11.23 14:09, Bagas Sanjaya wrote:
-> On Thu, Nov 02, 2023 at 09:11:42PM +0700, Bagas Sanjaya wrote:
->> I notice a regression report on Bugzilla [1]. Quoting from it:
->> 
->>> Hello, After upgrading from 6.5.9 to 6.6.0, my keyboard started
->>> acting really weird in its wireless mode, key actions sent are
->>> completely wrong, see video attached.
->>> 
->>> Most keys are perceived as either E, 3 or F7, with F8 and <, as
->>> well.
-> [...]
->>> 9d1bd9346241cd6963b58da7ffb7ed303285f684 is the first bad commit 
->>> commit 9d1bd9346241cd6963b58da7ffb7ed303285f684 Author: Mavroudis
->>> Chatzilazaridis <mavchatz@protonmail.com> Date: Sun Jul 16
->>> 18:23:44 2023 +0000
->>> 
->>> HID: logitech-dj: Add support for a new lightspeed receiver
->>> iteration
-> [...]
->> 
->> https://bugzilla.kernel.org/show_bug.cgi?id=218094 
-> 
-> There's no reply from culprit author nor linux-input people (did they
-> miss this regression?).
+Introduced by commit 6e2d85ec0559 ("net: phy: Stop with excessive soft
+reset").
 
-I guess part of the problem is that Bastien got reassigned and might not
-care about the kernel anymore.
+soft_reset call for phy_init_hw had multiple revision across the years
+and the implementation goes back to 2014. Originally was a simple call
+to write the generic PHY reset BIT, it was then moved to a dedicated
+function. It was then added the option for PHY driver to define their
+own special way to reset the PHY. Till this change, checking for ret was
+correct as it was always filled by either the generic reset or the
+custom implementation. This changed tho with commit 6e2d85ec0559 ("net:
+phy: Stop with excessive soft reset"), as the generic reset call to PHY
+was dropped but the ret check was never made entirely optional and
+dependent whether soft_reset was defined for the PHY driver or not.
 
-Another part of it is that Jiri was CCed, but Benjamin was not.
+Luckly nothing was ever added before the soft_reset call so the ret
+check (in the case where a PHY didn't had soft_reset defined) although
+wrong, never caused problems as ret was init 0 at the start of
+phy_init_hw.
 
-Ideally of course Mavroudis Chatzilazaridis, the culprit's author would
-look into this, but from a quick search on lore it looks like Mavroudis
-is not a regular kernel contributor and thus might not even know how we
-expect situations like this to be handled.
+To prevent any kind of problem and to make the function cleaner and more
+robust, correctly move the ret check if the soft_reset section making it
+optional and needed only with the function defined.
 
-> And on Bugzilla, other reporters replied that
-> reverting the culprit fixed the regression.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+---
+Changes v2:
+- Drop Fixes Tag
+- Add Reviewed-by Tag
+- Add Introduced by at the top of the commit description
 
-From Takashi's comments like
-https://bugzilla.kernel.org/show_bug.cgi?id=218094#c33 it sounds like
-this can be fixed by resolving another regression as discussed earlier
-today here:
-https://lore.kernel.org/all/87edgjo2kr.wl-tiwai@suse.de/
+ drivers/net/phy/phy_device.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-I think that might be the better solution, but Takashi, Hans, or the
-input people will know best.
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 2ce74593d6e4..478126f6b5bc 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -1235,14 +1235,13 @@ int phy_init_hw(struct phy_device *phydev)
+ 
+ 	if (phydev->drv->soft_reset) {
+ 		ret = phydev->drv->soft_reset(phydev);
++		if (ret < 0)
++			return ret;
++
+ 		/* see comment in genphy_soft_reset for an explanation */
+-		if (!ret)
+-			phydev->suspended = 0;
++		phydev->suspended = 0;
+ 	}
+ 
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = phy_scan_fixups(phydev);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+2.40.1
 
-> FYI, there's similar Bugzilla report on [1].
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=218172
-
-Not sure, that might be a different problem, guess Hans is the best to
-judge.
-
-> Also Cc'ed Linus.
-
-Linus can speak for himself, but I guess he gets enough mail already.
-I'd say in a situation like this it thus might best to not CC him;
-instead poke me when things apparently are not handled well, then we
-together can decide if it's worth bringing Linus in.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
