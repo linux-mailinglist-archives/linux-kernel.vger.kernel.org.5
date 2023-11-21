@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D999D7F2244
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27C37F2249
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 01:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjKUAkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 19:40:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57554 "EHLO
+        id S232781AbjKUAkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 19:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232739AbjKUAkJ (ORCPT
+        with ESMTP id S229853AbjKUAkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 20 Nov 2023 19:40:09 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70228CA;
-        Mon, 20 Nov 2023 16:40:03 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1ce5e76912aso29926485ad.2;
-        Mon, 20 Nov 2023 16:40:03 -0800 (PST)
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30E5D9;
+        Mon, 20 Nov 2023 16:40:05 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b2ec9a79bdso3601609b6e.3;
+        Mon, 20 Nov 2023 16:40:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700527203; x=1701132003; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bWNEMhZS/K0TJv2uoFh3uKzFoySYNwsIpa4bcavYV+M=;
-        b=NEd17WkYF+NXhfS2etPmsRD8sEAko3mlUFF1icHnojB9KRYhsi5f8Fwk7SWou6xlim
-         ++LilX841XWudSJZTMVr2FICGLjEYvWbz/fM0nGBFFw5vTVMsFLb+XQLcGPrhkLf31H5
-         13VRP/WEbFwM2XaGsoSXelHGWfYC8hxLjz4xJV+IZ2kFSyeQBp3WfrpQeNSJTh6J4XpZ
-         N/GblDuy+jq8tlqZsWXihjfJH5xF9YMu60CDGYW7esg6KJwDc8I9HK/K+L2sSM3OL57n
-         y2T2Z5MnK48vFaqyjui5tACRdA024D+8FSSNmbaBC57I9XZ9FzcDSN/sBtXOKcBF+g3J
-         8L5w==
+        d=gmail.com; s=20230601; t=1700527205; x=1701132005; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7jJiNmIhW71Zn4Fc0nq68KcS1kEb54hrII7uSxSemAM=;
+        b=Rt4yfhbVMN1O9U2g7OhGuyiqVI/VDTNM1Y9yqEltZ8mgdwXi4Oq7UVVGe7CL92ejI5
+         LYuHPs5kdVi2f5qPc+QHUwfEFH6jSezQNQxTM9tA4tugpzl8nvbepax3MxPwV+Kvb5/m
+         04d0T6J9R+rCvQO5h2d+6e/v+dBuhPJC+oOCAN6ITieYV+MKuAKk0VoELwAO9SUfk4Ji
+         CNcWbhdDgmHmxtMciOlmhy9aVyapQgJi6EkBtcNtz5/wMKQLIWA/tUaXjNc3kCowjtaH
+         nfQPa8LKgbLO+o4TYjLXuVNJYM7swVR95qguBP0rLt6Ar3D34SSDFbecrg3bXTemRS1p
+         wlJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700527203; x=1701132003;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bWNEMhZS/K0TJv2uoFh3uKzFoySYNwsIpa4bcavYV+M=;
-        b=Et1qt+l9CSSItPLXjhrxz4ldvSBv8tXGToc/xNOgpuWdnYUixLK6KKrfdxpGZur262
-         NATlUo8j4bNC2A9XH5DG9YRdEJvD4f0mwSE88hh9aadW9mhDKXoTVM5oEO3FywIXztZf
-         Z+jQ29XNHrKve2tv1t0Wmrw52fFtR2iCINxvuSDY2QpNahkc+WAC/Z/Rc2KXuUmdQCsk
-         pXnn2mUS6Hch3J3+sR5hhM+9cbQ4tnksZ/5kKUb/izGn64Kgz/LcHgT5WyJPAW1qJqWv
-         fH/DQ5D4nwDF+7k6fHa6apqaAKXtG/hQwUK1/N5uQWHuYeST/eUFGdFgXVOH/8KH03lE
-         vwCw==
-X-Gm-Message-State: AOJu0YwJt/hhFPtnhMoajxKmLvnDK5h5vx/Q7nbZhjaWFFgVvBwtTQRI
-        QeZsvpbJVJXbIwSfa5leaPQ=
-X-Google-Smtp-Source: AGHT+IFXhiAAFyErJlqOO1DTQVYb7f74uon84kYLMLdTjeTRCnwI6JR3VAOwwCqryfnQrGSMB9oxFQ==
-X-Received: by 2002:a17:902:eccd:b0:1cf:54e1:8c8c with SMTP id a13-20020a170902eccd00b001cf54e18c8cmr9016957plh.63.1700527202832;
-        Mon, 20 Nov 2023 16:40:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700527205; x=1701132005;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7jJiNmIhW71Zn4Fc0nq68KcS1kEb54hrII7uSxSemAM=;
+        b=Us0K8juDPZNbyZuOZ/pcockakvdsXaP7tHfKzdnql5of3uE1JhbbD+TuGya2bU3kDu
+         LEtvgkTq4NvkxSCJvMzEy/+kDTTI8vLbG+xIVLyWsqrvgR9/P4RVOAfMKwzNgNL/NbPt
+         Kaa0eTv41lj/nfXB6ozoC4uJ1DtviI7eaukK+yvERKB9KqpHu3wWLTlK5BSRt4t1beEb
+         PVhYJhIN7G1zbvka6AmteC1v1khBtzA8ml5iINgKITXuLK7fV9NM60q/RjGI7lq5+7Ze
+         6JaoaswIqhd5yHfeINPtyNh2eXN9K0gfkLEqVeVFvwBoA9GyT715or73NQN9O8+ZkTzQ
+         WzVA==
+X-Gm-Message-State: AOJu0YwA+tuJZ4E2UcwpGPYhsZa62mP+KM4kNFZqrrnQ6loZtQZgwUrd
+        y1AhBa994iXORE0VrEmgDQg=
+X-Google-Smtp-Source: AGHT+IHcGK1NJmg8WEvF1E/QUfwop36BTwpUAa5h3H7ELtuDNLXxZzI9udncaGpBHWzB0HNrN1hbMg==
+X-Received: by 2002:a05:6808:114b:b0:3ae:170f:a39b with SMTP id u11-20020a056808114b00b003ae170fa39bmr12467395oiu.17.1700527204827;
+        Mon, 20 Nov 2023 16:40:04 -0800 (PST)
 Received: from localhost ([47.215.232.245])
-        by smtp.gmail.com with ESMTPSA id g3-20020a170902868300b001cc436e9806sm6636258plo.81.2023.11.20.16.40.01
+        by smtp.gmail.com with ESMTPSA id r1-20020a6560c1000000b005ab281d0777sm5665374pgv.20.2023.11.20.16.40.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 16:40:02 -0800 (PST)
+        Mon, 20 Nov 2023 16:40:04 -0800 (PST)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org (open list:AMD KFD),
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        Jack Xiao <Jack.Xiao@amd.com>,
-        Jonathan Kim <jonathan.kim@amd.com>, Lang Yu <Lang.Yu@amd.com>,
-        Leo Liu <leo.liu@amd.com>, Lijo Lazar <lijo.lazar@amd.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        nouveau@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), Philip Yang <Philip.Yang@amd.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
         Sean Paul <sean@poorly.run>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Veerabadhran Gopalakrishnan <Veerabadhran.Gopalakrishnan@amd.com>
-Subject: [PATCH v2 0/7] drm/msm/gem: drm_exec conversion
-Date:   Mon, 20 Nov 2023 16:38:44 -0800
-Message-ID: <20231121003935.5868-1-robdclark@gmail.com>
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/7] drm/msm/gem: Remove "valid" tracking
+Date:   Mon, 20 Nov 2023 16:38:45 -0800
+Message-ID: <20231121003935.5868-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231121003935.5868-1-robdclark@gmail.com>
+References: <20231121003935.5868-1-robdclark@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,43 +82,167 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-Simplify the exec path (removing a legacy optimization) and convert to
-drm_exec.  One drm_exec patch to allow passing in the expected # of GEM
-objects to avoid re-allocation.
+This was a small optimization for pre-soft-pin userspace.  But mesa
+switched to soft-pin nearly 5yrs ago.  So lets drop the optimization
+and simplify the code.
 
-I'd be a bit happier if I could avoid the extra objects table allocation
-in drm_exec in the first place, but wasn't really happy with any of the
-things I tried to get rid of that.
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
+ drivers/gpu/drm/msm/msm_gem.h        |  2 --
+ drivers/gpu/drm/msm/msm_gem_submit.c | 44 +++++-----------------------
+ 2 files changed, 8 insertions(+), 38 deletions(-)
 
-v2: updates in 6/7 and other nit-addressing
-
-Rob Clark (7):
-  drm/msm/gem: Remove "valid" tracking
-  drm/msm/gem: Remove submit_unlock_unpin_bo()
-  drm/msm/gem: Don't queue job to sched in error cases
-  drm/msm/gem: Split out submit_unpin_objects() helper
-  drm/msm/gem: Cleanup submit_cleanup_bo()
-  drm/exec: Pass in initial # of objects
-  drm/msm/gem: Convert to drm_exec
-
- .../gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c  |   8 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_csa.c       |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c       |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c       |   4 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_umsch_mm.c  |   4 +-
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c          |   2 +-
- drivers/gpu/drm/drm_exec.c                    |  13 +-
- drivers/gpu/drm/msm/Kconfig                   |   1 +
- drivers/gpu/drm/msm/msm_gem.h                 |  13 +-
- drivers/gpu/drm/msm/msm_gem_submit.c          | 199 +++++-------------
- drivers/gpu/drm/msm/msm_ringbuffer.c          |   3 +-
- drivers/gpu/drm/nouveau/nouveau_exec.c        |   2 +-
- drivers/gpu/drm/nouveau/nouveau_uvmm.c        |   2 +-
- drivers/gpu/drm/tests/drm_exec_test.c         |  16 +-
- include/drm/drm_exec.h                        |   2 +-
- 16 files changed, 92 insertions(+), 187 deletions(-)
-
+diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+index 8ddef5443140..c36c1c1fa222 100644
+--- a/drivers/gpu/drm/msm/msm_gem.h
++++ b/drivers/gpu/drm/msm/msm_gem.h
+@@ -271,7 +271,6 @@ struct msm_gem_submit {
+ 	struct msm_gpu_submitqueue *queue;
+ 	struct pid *pid;    /* submitting process */
+ 	bool fault_dumped;  /* Limit devcoredump dumping to one per submit */
+-	bool valid;         /* true if no cmdstream patching needed */
+ 	bool in_rb;         /* "sudo" mode, copy cmds into RB */
+ 	struct msm_ringbuffer *ring;
+ 	unsigned int nr_cmds;
+@@ -288,7 +287,6 @@ struct msm_gem_submit {
+ 	} *cmd;  /* array of size nr_cmds */
+ 	struct {
+ /* make sure these don't conflict w/ MSM_SUBMIT_BO_x */
+-#define BO_VALID	0x8000	/* is current addr in cmdstream correct/valid? */
+ #define BO_LOCKED	0x4000	/* obj lock is held */
+ #define BO_PINNED	0x2000	/* obj (pages) is pinned and on active list */
+ 		uint32_t flags;
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index 6d8ec1337e8b..996274ef32a6 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -150,8 +150,6 @@ static int submit_lookup_objects(struct msm_gem_submit *submit,
+ 
+ 		submit->bos[i].handle = submit_bo.handle;
+ 		submit->bos[i].flags = submit_bo.flags;
+-		/* in validate_objects() we figure out if this is true: */
+-		submit->bos[i].iova  = submit_bo.presumed;
+ 	}
+ 
+ 	spin_lock(&file->table_lock);
+@@ -278,9 +276,6 @@ static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
+ {
+ 	unsigned cleanup_flags = BO_PINNED | BO_LOCKED;
+ 	submit_cleanup_bo(submit, i, cleanup_flags);
+-
+-	if (!(submit->bos[i].flags & BO_VALID))
+-		submit->bos[i].iova = 0;
+ }
+ 
+ /* This is where we make sure all the bo's are reserved and pin'd: */
+@@ -390,8 +385,6 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+ 	struct msm_drm_private *priv = submit->dev->dev_private;
+ 	int i, ret = 0;
+ 
+-	submit->valid = true;
+-
+ 	for (i = 0; i < submit->nr_bos; i++) {
+ 		struct drm_gem_object *obj = submit->bos[i].obj;
+ 		struct msm_gem_vma *vma;
+@@ -407,14 +400,7 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
+ 		if (ret)
+ 			break;
+ 
+-		if (vma->iova == submit->bos[i].iova) {
+-			submit->bos[i].flags |= BO_VALID;
+-		} else {
+-			submit->bos[i].iova = vma->iova;
+-			/* iova changed, so address in cmdstream is not valid: */
+-			submit->bos[i].flags &= ~BO_VALID;
+-			submit->valid = false;
+-		}
++		submit->bos[i].iova = vma->iova;
+ 	}
+ 
+ 	/*
+@@ -451,7 +437,7 @@ static void submit_attach_object_fences(struct msm_gem_submit *submit)
+ }
+ 
+ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+-		struct drm_gem_object **obj, uint64_t *iova, bool *valid)
++		struct drm_gem_object **obj, uint64_t *iova)
+ {
+ 	if (idx >= submit->nr_bos) {
+ 		SUBMIT_ERROR(submit, "invalid buffer index: %u (out of %u)\n",
+@@ -463,8 +449,6 @@ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+ 		*obj = submit->bos[idx].obj;
+ 	if (iova)
+ 		*iova = submit->bos[idx].iova;
+-	if (valid)
+-		*valid = !!(submit->bos[idx].flags & BO_VALID);
+ 
+ 	return 0;
+ }
+@@ -477,9 +461,6 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 	uint32_t *ptr;
+ 	int ret = 0;
+ 
+-	if (!nr_relocs)
+-		return 0;
+-
+ 	if (offset % 4) {
+ 		SUBMIT_ERROR(submit, "non-aligned cmdstream buffer: %u\n", offset);
+ 		return -EINVAL;
+@@ -500,7 +481,6 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 		struct drm_msm_gem_submit_reloc submit_reloc = relocs[i];
+ 		uint32_t off;
+ 		uint64_t iova;
+-		bool valid;
+ 
+ 		if (submit_reloc.submit_offset % 4) {
+ 			SUBMIT_ERROR(submit, "non-aligned reloc offset: %u\n",
+@@ -519,13 +499,10 @@ static int submit_reloc(struct msm_gem_submit *submit, struct drm_gem_object *ob
+ 			goto out;
+ 		}
+ 
+-		ret = submit_bo(submit, submit_reloc.reloc_idx, NULL, &iova, &valid);
++		ret = submit_bo(submit, submit_reloc.reloc_idx, NULL, &iova);
+ 		if (ret)
+ 			goto out;
+ 
+-		if (valid)
+-			continue;
+-
+ 		iova += submit_reloc.reloc_offset;
+ 
+ 		if (submit_reloc.shift < 0)
+@@ -879,8 +856,7 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 		struct drm_gem_object *obj;
+ 		uint64_t iova;
+ 
+-		ret = submit_bo(submit, submit->cmd[i].idx,
+-				&obj, &iova, NULL);
++		ret = submit_bo(submit, submit->cmd[i].idx, &obj, &iova);
+ 		if (ret)
+ 			goto out;
+ 
+@@ -894,17 +870,13 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 
+ 		submit->cmd[i].iova = iova + (submit->cmd[i].offset * 4);
+ 
+-		if (submit->valid)
++		if (likely(!submit->cmd[i].nr_relocs))
+ 			continue;
+ 
+ 		if (!gpu->allow_relocs) {
+-			if (submit->cmd[i].nr_relocs) {
+-				SUBMIT_ERROR(submit, "relocs not allowed\n");
+-				ret = -EINVAL;
+-				goto out;
+-			}
+-
+-			continue;
++			SUBMIT_ERROR(submit, "relocs not allowed\n");
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+ 		ret = submit_reloc(submit, obj, submit->cmd[i].offset * 4,
 -- 
 2.42.0
 
