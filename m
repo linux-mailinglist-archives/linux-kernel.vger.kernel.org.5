@@ -2,164 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF067F2A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDAA7F2A78
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjKUKdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43392 "EHLO
+        id S231977AbjKUKeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:34:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKUKdq (ORCPT
+        with ESMTP id S229481AbjKUKeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:33:46 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD42995;
-        Tue, 21 Nov 2023 02:33:42 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37575FEC;
-        Tue, 21 Nov 2023 02:34:29 -0800 (PST)
-Received: from [10.57.42.32] (unknown [10.57.42.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B19443F73F;
-        Tue, 21 Nov 2023 02:33:40 -0800 (PST)
-Message-ID: <0058ca82-e55b-4490-90d0-871afce787c7@arm.com>
-Date:   Tue, 21 Nov 2023 10:33:38 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] Documentation: arm64: Document the PMU event
- counting threshold feature
-Content-Language: en-GB
-To:     Namhyung Kim <namhyung@gmail.com>,
-        James Clark <james.clark@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, will@kernel.org,
-        mark.rutland@arm.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231113112507.917107-1-james.clark@arm.com>
- <20231113112507.917107-4-james.clark@arm.com>
- <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <CAM9d7ciDq-te1DQPrMrZQC9er0pSMY24nvC-atxdRu1C6uD08A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 21 Nov 2023 05:34:01 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF71E7;
+        Tue, 21 Nov 2023 02:33:57 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 688351F8B4;
+        Tue, 21 Nov 2023 10:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700562836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRXMVyH/y3b4hFFPzmfyVfWx5aJ1GDZyh8nJuaGF9+4=;
+        b=G6VdE/2q+KsECht3rwLLDBPs9AVcQYUcdGsFCVoeF9+/LiFsBs4EXLQs//hRJMIzhu33mr
+        2u4p9MrHztVU9KVX7wY10zHs0xFpJlVGUUHcv3GQ4QCjSR6FH4roBrWhI9y6LvNtBN03qE
+        /h6e9ZyK8WklBdEhdbzm1/1XQ1AE8nA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700562836;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRXMVyH/y3b4hFFPzmfyVfWx5aJ1GDZyh8nJuaGF9+4=;
+        b=9gZavoQGAx8D94qdo93SqcRdngZ5Ouz1rYYW+iPiu/p9dfkii6gaCTpJrc07oZXgOktgJW
+        zgHwCSTS9K+mTxAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1F626139FD;
+        Tue, 21 Nov 2023 10:33:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id A7C9BpSHXGUOTQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 21 Nov 2023 10:33:56 +0000
+Date:   Tue, 21 Nov 2023 11:33:55 +0100
+Message-ID: <874jhfo0oc.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Johannes =?ISO-8859-1?Q?Pe?= =?ISO-8859-1?Q?n=DFel?= 
+        <johannes.penssel@gmail.com>
+Subject: Re: Fwd: sysfs: cannot create duplicate filename .../system76_acpi::kbd_backlight/color
+In-Reply-To: <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+        <ZT25-gUmLl8MPk93@debian.me>
+        <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+        <ZUjnzB2RL2iLzIQG@debian.me>
+        <87sf50pm34.wl-tiwai@suse.de>
+        <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+        <87edgjo2kr.wl-tiwai@suse.de>
+        <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -5.80
+X-Spamd-Result: default: False [-5.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         TO_DN_ALL(0.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[suse.de,leemhuis.info,traphandler.com,gmail.com,vger.kernel.org,lists.linux.dev,system76.com,kernel.org,ucw.cz];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/11/2023 21:31, Namhyung Kim wrote:
-> On Mon, Nov 13, 2023 at 3:26 AM James Clark <james.clark@arm.com> wrote:
->>
->> Add documentation for the new Perf event open parameters and
->> the threshold_max capability file.
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   Documentation/arch/arm64/perf.rst | 56 +++++++++++++++++++++++++++++++
->>   1 file changed, 56 insertions(+)
->>
->> diff --git a/Documentation/arch/arm64/perf.rst b/Documentation/arch/arm64/perf.rst
->> index 1f87b57c2332..36b8111a710d 100644
->> --- a/Documentation/arch/arm64/perf.rst
->> +++ b/Documentation/arch/arm64/perf.rst
->> @@ -164,3 +164,59 @@ and should be used to mask the upper bits as needed.
->>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm64/tests/user-events.c
->>   .. _tools/lib/perf/tests/test-evsel.c:
->>      https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/perf/tests/test-evsel.c
->> +
->> +Event Counting Threshold
->> +==========================================
->> +
->> +Overview
->> +--------
->> +
->> +FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
->> +events whose count meets a specified threshold condition. For example if
->> +threshold_compare is set to 2 ('Greater than or equal'), and the
->> +threshold is set to 2, then the PMU counter will now only increment by
->> +when an event would have previously incremented the PMU counter by 2 or
->> +more on a single processor cycle.
->> +
->> +To increment by 1 after passing the threshold condition instead of the
->> +number of events on that cycle, add the 'threshold_count' option to the
->> +commandline.
->> +
->> +How-to
->> +------
->> +
->> +The threshold, threshold_compare and threshold_count values can be
->> +provided per event:
->> +
->> +.. code-block:: sh
->> +
->> +  perf stat -e stall_slot/threshold=2,threshold_compare=2/ \
->> +            -e dtlb_walk/threshold=10,threshold_compare=3,threshold_count/
+On Tue, 21 Nov 2023 11:21:53 +0100,
+Hans de Goede wrote:
 > 
-> Can you please explain this a bit more?
+> Hi,
 > 
-> I guess the first event counts stall_slot PMU if the event if it's
-> greater than or equal to 2.  And as threshold_count is not set,
-> it'd count the stall_slot as is.  E.g. it counts 3 when it sees 3.
+> On 11/21/23 10:52, Takashi Iwai wrote:
+> > On Tue, 21 Nov 2023 10:19:03 +0100,
+> > Thorsten Leemhuis wrote:
+> >>
+> >> Takashi, Jean-Jacques Hiblot, Lee,
+> >>
+> >> On 20.11.23 14:53, Takashi Iwai wrote:
+> >>> On Mon, 06 Nov 2023 14:19:08 +0100,
+> >>> Bagas Sanjaya wrote:
+> >>>> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+> >>>>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+> >>>>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+> >>>>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+> >>>>>>
+> >>>>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+> >>>>>> since you authored the culprit?
+> >>>
+> >>>>> The offending commit stores the color in struct led_classdev and exposes it
+> >>>>> via sysfs. It was part of a series that create a RGB leds from multiple
+> >>>>> single-color LEDs. for this series, we need the color information but we
+> >>>>> don't really need to expose it it via sysfs. In order to fix the issue, we
+> >>>>> can remove the 'color' attribute from the sysfs.
+> >>>>
+> >>>> OK, see you in the patch!
+> >>>
+> >>> Is there a patch available?
+> >>
+> >> Not that I know of. Could not find anything on lore either.
+> >>
+> >>> This bug hits for a few Logitech keyboard models, too, and it makes
+> >>> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+> >>> this bug:
+> >>>   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+> >>>
+> >>> We need a quick fix for 6.6.x.
+> >>
+> >> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+> >> committed it and sent it to Linus) know about this for a while already
+> >> without doing anything about it, I wonder if someone should just send a
+> >> revert to Linus (unless of course that is likely to introduce a
+> >> regression on its own).
+> >>
+> >> Takashi, could you maybe do this, unless a fix shows up real soon?
+> > 
+> > I can, but we need to decide which way to go.
+> > There are several options:
+> > 
+> > 1. Revert the commit c7d80059b086;
+> >    this drops led class color sysfs entries.  Also the store of
+> >    led_cdev->color from fwnode is dropped, too.
+> > 
+> > 2. Drop only led class color sysfs entries;
+> >    a partial revert of c7d80059b086 above
 > 
-> OTOH, dtlb_walk will count 1 if it sees an event less than 10.
-> Is my understanding correct?
+> AFAIK further up in the thread (or a related thread) there
+> already was consensus to do this. Someone just needs to
+> write the patch.
 
-That is correct. The behavior is described in the paragraph above.
-But I agree that it would be really helpful if we explained with the
-example above.
-
-> 
->> +
->> +And the following comparison values are supported:
->> +
->> +.. code-block::
->> +
->> +  0: Not-equal
->> +  1: Equals
->> +  2: Greater-than-or-equal
->> +  3: Less-than
-> 
-> So the above values are for threashold_compare, right?
-> It'd be nice if it's more explicit.
-> 
-> Similarly, it'd be helpful to have a description for the
-> threshold and threshold_count fields.
-
-Agreed.
-
-Suzuki
+Well, is there any user of this new led_classdev.color field?
+The value read from fwnode is stored there, but as far as I see, there
+seems no real user, so far.  If it's still unused, we can do the whole
+revert -- which is cleaner.
 
 
+Takashi
 
+> > 3. Rename conflicting sysfs entries in drivers;
+> >    e.g. color -> kb_color for hid-lg-g15 and system76_acpi
+> > 
+> > In either way, we'd break user-space (sysfs).
 > 
-> Thanks,
-> Namhyung
+> The new color attribute causing the conflict has only
+> been in 6.6 so there likely aren't any users of it yet
+> and since dropping it would be backported to 6.6.y
+> there shouldn't be any future users of it either, since
+> any 6.6 users presumably will use 6.6.y and not 6.6.0
 > 
->> +
->> +The maximum supported threshold value can be read from the caps of each
->> +PMU, for example:
->> +
->> +.. code-block:: sh
->> +
->> +  cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
->> +
->> +  0x000000ff
->> +
->> +If a value higher than this is given, then it will be silently clamped
->> +to the maximum. The highest possible maximum is 4095, as the config
->> +field for threshold is limited to 12 bits, and the Perf tool will refuse
->> +to parse higher values.
->> +
->> +If the PMU doesn't support FEAT_PMUv3_TH, then threshold_max will read
->> +0, and both threshold and threshold_compare will be silently ignored.
->> +threshold_max will also read as 0 on aarch32 guests, even if the host
->> +is running on hardware with the feature.
->> --
->> 2.34.1
->>
->>
-
+> > IMO, 2 would be the least harm, as the class sysfs entry was
+> > introduced since 6.6.
+> 
+> Ack.
+> 
+> > I guess this is what Jean-Jacques suggested.
+> 
+> Right.
+> 
+> > But I'm not sure how important this new class sysfs entry is; it has
+> > to be clarified from leds people who actually use / wanted the
+> > feature.
+> 
+> If I have read the thread correctly it is not important the value
+> it represents is used internally in the LED subsystem and userspace
+> does not really need it.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
