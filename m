@@ -2,178 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC17E7F25C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922C67F25C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbjKUGb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:31:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
+        id S233490AbjKUGbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjKUGb5 (ORCPT
+        with ESMTP id S229618AbjKUGbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:31:57 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F773E8
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:31:29 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c2139492d9so1829601a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:31:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700548289; x=1701153089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Id8ujeGpIkTWnBgsbrdjWqBN1vyTocw7BJ8Bs4CExAE=;
-        b=iGsC9TOiz+JS6ON5xJ5Fq6d0daSnIWtBi1Gg2QBxtU21+kMTf6SDj8JJsOFb/34Uoa
-         vzwK3Gv0Ic1ZX9VP67RMJXSqIgV6Hf6Bw0NYcRu1hdyHYe/xCtUI2wgsdmev9mg/NOjM
-         Of2P1a8UQsmxqO0XGl0ZqxGgzmf0F6QfGyT51uiQMSs7YvIaqzukKkt9bzGqlYw9+MwL
-         qVJ2dJUZ76/fiEA2GJ+W3WSs9dKDMdPoeKMdr0CPr2J7+scZalVKmY4Lm42WOW2gyp+i
-         jeEyocybcR620u5p1SzVNp0bUG07YgyrFxPovgwxdw4Xpgw7p/F7Gx7L+TveAlWGg3V/
-         wlQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700548289; x=1701153089;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Id8ujeGpIkTWnBgsbrdjWqBN1vyTocw7BJ8Bs4CExAE=;
-        b=FWZseEJHnwuwYfBkNdvXOxscCgfD4v2d6TqpJeBPU1gtXV5MUJkoHrvQcTqrP+2vm/
-         NwLyEZwwtOltBI1pO3oXPcZ0dVoaRhK71V5gUuF/d9SvmwEDyIGtEMSefXWairBMOwIW
-         RfS1D2KBoSz6EKJ4hn9+svIdZDRPtq4037MWXu9GNZqxtw42qag1sECOJgchig79P01s
-         lqEBC6bBLMkkLyyPUdQtxDlXBnm6LgA/sYtoA2K/2kDhp46q1uvbHn4RrP7egfVqF+07
-         Dsq5l+Dk2tT9KeP3SZvj7PR+X/Q3irvLlYk61C5CjF9sivL3JmMaY4hAi5NgngoMm1bL
-         2NBg==
-X-Gm-Message-State: AOJu0YzTEfjMlqiQqSrjfiYyDdTj9bJ0NcKpVA44u6wT/KzzsgpZ/XrA
-        LZvt5I5X029bnsog/3oK682zqI+dqscJ4X0xNxaiNw==
-X-Google-Smtp-Source: AGHT+IGaL/ZBmNB4muHdNpaLOjY2/y5nWcYnCFXfIwuPy+jxxgaoeX0bqx5IKCWaJevo0BKKWLn/dg==
-X-Received: by 2002:a17:90b:3e85:b0:27d:882f:e6c5 with SMTP id rj5-20020a17090b3e8500b0027d882fe6c5mr7905600pjb.9.1700548288861;
-        Mon, 20 Nov 2023 22:31:28 -0800 (PST)
-Received: from devz1.bytedance.net ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id b19-20020a17090a8c9300b00280070a2613sm8334414pjo.51.2023.11.20.22.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 22:31:28 -0800 (PST)
-From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
-To:     mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        wuqiang.matt@bytedance.com
-Subject: [PATCH v2] lib: objpool: fix head overrun on big.LITTLE system
-Date:   Tue, 21 Nov 2023 14:31:12 +0800
-Message-Id: <20231121063112.541940-1-wuqiang.matt@bytedance.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231120141824.86bda7ae184baf331e3175d9@kernel.org>
-References: <20231120141824.86bda7ae184baf331e3175d9@kernel.org>
+        Tue, 21 Nov 2023 01:31:36 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C680ACB;
+        Mon, 20 Nov 2023 22:31:32 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL5X1Rt011112;
+        Tue, 21 Nov 2023 06:31:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=V/jXUps7FcsW7n1gITRfSYCcyq9bPOJPSdFvCTOoZyU=;
+ b=n5fe3PahwlP97eR0BFHP9EKMfDO0ae7g+VY+7VkPP0PTjqGj55UcM+0V6ig19ESYHPpR
+ OiJt2NOsuhkvaC3z3tz5ovYM3YyAKo48H+C+QfhyaqvK4AI2xARZfiosHCmEWhbHPsSs
+ Yk/fCJ2R5Tz4UQHJ0tMp/rW+FpW05gBiGytHbjZubx3EhsPhfgLD/zHmGkgoytSbixHg
+ ZPqFVvkW/oEymc1YmlLA0rGvWwHOyi/r5yQBcaDg+5Tj+Cistyf9AC90IZXEILY5TFg/
+ SqytzmptIJNT/VHfSm818EM78Kffkx0egAA33V9d2J6VduDuBAXM+7etHovZ9T1gVKZ4 7g== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ugcqs19dc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 06:31:22 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL6VLSg010308
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 06:31:21 GMT
+Received: from [10.50.58.129] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 20 Nov
+ 2023 22:31:18 -0800
+Message-ID: <5540adcd-4ba6-53e7-c7fe-b7116e6403ca@quicinc.com>
+Date:   Tue, 21 Nov 2023 12:01:15 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v6 2/3] clk: qcom: clk-rcg2: add support for rcg2 freq
+ multi ops
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230916140046.7878-1-ansuelsmth@gmail.com>
+ <20230916140046.7878-3-ansuelsmth@gmail.com>
+ <419b0e85-5479-30b0-d6a9-b2697d057c55@quicinc.com>
+ <655bca09.050a0220.bac1.aa06@mx.google.com>
+From:   Devi Priya <quic_devipriy@quicinc.com>
+In-Reply-To: <655bca09.050a0220.bac1.aa06@mx.google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: jEAffWjfJ59uQ5y7mFhjEzWiZm6AHet4
+X-Proofpoint-GUID: jEAffWjfJ59uQ5y7mFhjEzWiZm6AHet4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_03,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 mlxlogscore=999
+ mlxscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210049
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-objpool overrun stress with test_objpool on OrangePi5+ SBC triggered the
-following kernel warnings:
 
-    WARNING: CPU: 6 PID: 3115 at lib/objpool.c:168 objpool_push+0xc0/0x100
 
-This message is from objpool.c:168:
+On 11/20/2023 11:44 PM, Christian Marangi wrote:
+> On Mon, Nov 20, 2023 at 03:51:50PM +0530, Devi Priya wrote:
+>>
+>>
+>> On 9/16/2023 7:30 PM, Christian Marangi wrote:
+>>> Some RCG frequency can be reached by multiple configuration.
+>>>
+>>> Add clk_rcg2_fm_ops ops to support these special RCG configurations.
+>>>
+>>> These alternative ops will select the frequency using a CEIL policy.
+>>>
+>>> When the correct frequency is found, the correct config is selected by
+>>> calculating the final rate (by checking the defined parent and values
+>>> in the config that is being checked) and deciding based on the one that
+>>> is less different than the requested one.
+>>>
+>>> These check are skipped if there is just on config for the requested
+>>> freq.
+>>>
+>>> qcom_find_freq_multi is added to search the freq with the new struct
+>>> freq_multi_tbl.
+>>> __clk_rcg2_select_conf is used to select the correct conf by simulating
+>>> the final clock.
+>>> If a conf can't be found due to parent not reachable, a WARN is printed
+>>> and -EINVAL is returned.
+>>>
+>>> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+>>> ---
+>>>    drivers/clk/qcom/clk-rcg.h  |   1 +
+>>>    drivers/clk/qcom/clk-rcg2.c | 167 ++++++++++++++++++++++++++++++++++++
+>>>    drivers/clk/qcom/common.c   |  18 ++++
+>>>    drivers/clk/qcom/common.h   |   2 +
+>>>    4 files changed, 188 insertions(+)
+>>>
+>>> diff --git a/drivers/clk/qcom/clk-rcg.h b/drivers/clk/qcom/clk-rcg.h
+>>> index c81458db6ce4..dc9a77965e68 100644
+>>> --- a/drivers/clk/qcom/clk-rcg.h
+>>> +++ b/drivers/clk/qcom/clk-rcg.h
+>>> @@ -190,6 +190,7 @@ struct clk_rcg2_gfx3d {
+>>>    extern const struct clk_ops clk_rcg2_ops;
+>>>    extern const struct clk_ops clk_rcg2_floor_ops;
+>>> +extern const struct clk_ops clk_rcg2_fm_ops;
+>>>    extern const struct clk_ops clk_rcg2_mux_closest_ops;
+>>>    extern const struct clk_ops clk_edp_pixel_ops;
+>>>    extern const struct clk_ops clk_byte_ops;
+>>> diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
+>>> index e22baf3a7112..617e7ff0f6a3 100644
+>>> --- a/drivers/clk/qcom/clk-rcg2.c
+>>> +++ b/drivers/clk/qcom/clk-rcg2.c
+>>> @@ -266,6 +266,116 @@ static int _freq_tbl_determine_rate(struct clk_hw *hw, const struct freq_tbl *f,
+>>>    	return 0;
+>>>    }
+>>> +static const struct freq_conf *
+>>> +__clk_rcg2_select_conf(struct clk_hw *hw, const struct freq_multi_tbl *f,
+>>> +		       unsigned long req_rate)
+>>> +{
+>>> +	unsigned long rate_diff, best_rate_diff = ULONG_MAX;
+>>> +	const struct freq_conf *conf, *best_conf;
+>>> +	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
+>>> +	const char *name = clk_hw_get_name(hw);
+>>> +	unsigned long parent_rate, rate;
+>>> +	struct clk_hw *p;
+>>> +	int index, i;
+>>> +
+>>> +	/* Init best_conf to the first conf */
+>>> +	best_conf = f->confs;
+>>> +
+>>> +	/* Exit early if only one config is defined */
+>>> +	if (f->num_confs == 1)
+>>> +		goto exit;
+>>> +
+>>> +	/* Search in each provided config the one that is near the wanted rate */
+>>> +	for (i = 0, conf = f->confs; i < f->num_confs; i++, conf++) {
+>>> +		index = qcom_find_src_index(hw, rcg->parent_map, conf->src);
+>>> +		if (index < 0)
+>>> +			continue;
+>>> +
+>>> +		p = clk_hw_get_parent_by_index(hw, index);
+>>> +		if (!p)
+>>> +			continue;
+>>> +
+>>> +		parent_rate =  clk_hw_get_rate(p);
+>>> +		rate = calc_rate(parent_rate, conf->n, conf->m, conf->n, conf->pre_div);
+>>> +
+>>> +		if (rate == req_rate) {
+>>> +			best_conf = conf;
+>>> +			goto exit;
+>>> +		}
+>>> +
+>>> +		rate_diff = abs(req_rate - rate);
+>>> +		if (rate_diff < best_rate_diff) {
+>>> +			best_rate_diff = rate_diff;
+>>> +			best_conf = conf;
+>>> +		}
+>>> +	}
+>>> +
+>>> +	/*
+>>> +	 * Very unlikely. Warn if we couldn't find a correct config
+>>> +	 * due to parent not found in every config.
+>>> +	 */
+>>> +	if (unlikely(i == f->num_confs)) {
+>>> +		WARN(1, "%s: can't find a configuration for rate %lu.",
+>>> +		     name, req_rate);
+>>> +		return ERR_PTR(-EINVAL);
+>>> +	}
+>> Hi Christian,
+>>
+>> Thanks a lot for the patch!
+>> We have incorporated these changes along with the corresponding clock driver
+>> changes & tested it on IPQ9574 & IPQ5332 targets.
+>>
+>> When setting the clk rate for the nss port clocks, for the requested
+>> frequency the correct config gets selected and the
+>> clk rate is set properly.
+>> We see the WARN getting printed for other frequencies (rate * i where
+>> i=2 to maxdiv) that is requested by the clk_hw_round_rate function.
+>>
+>> Upon analysis, we see that the for loop in clk_divider_bestdiv iterates
+>> until the maxdiv value and requests (rate*i) via the clk_hw_round_rate
+>> API to find the bestdiv and best_parent_rate. For frequencies which are
+>> multiples of the requested frequency (rate*i where i=2 to maxdiv), it
+>> seems unlikely to see the WARN being printed.
+>>
+>> Can you please help us understand when the WARN is likely to be printed
+>> & Looking forward to your suggestions on how this WARN could
+>> be suppressed in the afore mentioned scenario!
+>>
+> 
+> Hi,
+> 
+> thanks a lot for testing this. Maybe was a small oversight by me.
+> 
+> I attached an alternative patch. Can you test it and tell me if the WARN
+> is still printed? (the WARN must be printed only when the parent is not
+> found, I don't think it's your case)
+> 
+Hi Christian,
 
-    WARN_ON_ONCE(tail - head > pool->nr_objs);
+WARN does not get printed with the attached patchset.
+Thanks much!
 
-The overrun test case is to validate the case that pre-allocated objects
-are insufficient: 8 objects are pre-allocated for each node and consumer
-thread per node tries to grab 16 objects in a row. The testing system is
-OrangePI 5+, with RK3588, a big.LITTLE SOC with 4x A76 and 4x A55. When
-disabling either all 4 big or 4 little cores, the overrun tests run well,
-and once with big and little cores mixed together, the overrun test would
-always cause an overrun loop. It's likely the memory timing differences
-of big and little cores cause this trouble. Here are the debugging data
-of objpool_try_get_slot after try_cmpxchg_release:
-
-    objpool_pop: cpu: 4/0 0:0 head: 278/279 tail:278 last:276/278
-
-The local copies of 'head' and 'last' were 278 and 276, and reloading of
-'slot->head' and 'slot->last' got 279 and 278. After try_cmpxchg_release
-'slot->head' became 'head + 1', which is correct. But what's wrong here
-is the stale value of 'last', and that stale value of 'last' finally led
-the overrun of 'head'.
-
-Memory updating of 'last' and 'head' are performed in push() and pop()
-independently, which could be the culprit leading this out of order
-visibility of 'last' and 'head'. So for objpool_try_get_slot(), it's
-not enough only checking the condition of 'head != slot', the implicit
-condition 'last - head <= nr_objs' must also be explicitly asserted to
-guarantee 'last' is always behind 'head' before the object retrieving.
-
-This patch will check and try reloading of 'head' and 'last' to ensure
-'last' is behind 'head' at the time of object retrieving. Performance
-testings show the average impact is about 0.1% for X86_64 and 1.12% for
-ARM64. Here are the results:
-
-    OS: Debian 10 X86_64, Linux 6.6rc
-    HW: XEON 8336C x 2, 64 cores/128 threads, DDR4 3200MT/s
-                      1T         2T         4T         8T        16T
-    native:     49543304   99277826  199017659  399070324  795185848
-    objpool:    29909085   59865637  119692073  239750369  478005250
-    objpool+:   29879313   59230743  119609856  239067773  478509029
-                     32T        48T        64T        96T       128T
-    native:   1596927073 2390099988 2929397330 3183875848 3257546602
-    objpool:   957553042 1435814086 1680872925 2043126796 2165424198
-    objpool+:  956476281 1434491297 1666055740 2041556569 2157415622
-
-    OS: Debian 11 AARCH64, Linux 6.6rc
-    HW: Kunpeng-920 96 cores/2 sockets/4 NUMA nodes, DDR4 2933 MT/s
-                      1T         2T         4T         8T        16T
-    native:     30890508   60399915  123111980  242257008  494002946
-    objpool:    14742531   28883047   57739948  115886644  232455421
-    objpool+:   14107220   29032998   57286084  113730493  232232850
-                     24T        32T        48T        64T        96T
-    native:    746406039 1000174750 1493236240 1998318364 2942911180
-    objpool:   349164852  467284332  702296756  934459713 1387898285
-    objpool+:  348388180  462750976  696606096  927865887 1368402195
-
-Fixes: b4edb8d2d464 ("lib: objpool added: ring-array based lockless MPMC")
-
-v1 -> v2:
-    - Title updated since it's a common issue of objpool for big.LITTLE
-      systems, verified on Rockchip RK3588 and Amlogic A311D
-    - Fixes tag added, as reminded by Masami Hiramatsu
-
-Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- lib/objpool.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/lib/objpool.c b/lib/objpool.c
-index 1ab49b897b2e..e8c9a30e485f 100644
---- a/lib/objpool.c
-+++ b/lib/objpool.c
-@@ -199,6 +199,23 @@ static inline void *objpool_try_get_slot(struct objpool_head *pool, int cpu)
- 	while (head != READ_ONCE(slot->last)) {
- 		void *obj;
- 
-+		/*
-+		 * data visibility of 'last' and 'head' could be out of
-+		 * order since memory updating of 'last' and 'head' are
-+		 * performed in push() and pop() independently
-+		 *
-+		 * before any retrieving attempts, pop() must guarantee
-+		 * 'last' is behind 'head', that is to say, there must
-+		 * be available objects in slot, which could be ensured
-+		 * by condition 'last != head && last - head <= nr_objs'
-+		 * that is equivalent to 'last - head - 1 < nr_objs' as
-+		 * 'last' and 'head' are both unsigned int32
-+		 */
-+		if (READ_ONCE(slot->last) - head - 1 >= pool->nr_objs) {
-+			head = READ_ONCE(slot->head);
-+			continue;
-+		}
-+
- 		/* obj must be retrieved before moving forward head */
- 		obj = READ_ONCE(slot->entries[head & slot->mask]);
- 
--- 
-2.40.1
-
+Regards,
+Devi Priya
