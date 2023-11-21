@@ -2,279 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCBB7F2D04
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD9F7F2D08
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjKUMWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S234587AbjKUMXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:23:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbjKUMWQ (ORCPT
+        with ESMTP id S230497AbjKUMX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:22:16 -0500
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2078.outbound.protection.outlook.com [40.107.8.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ACB192;
-        Tue, 21 Nov 2023 04:22:12 -0800 (PST)
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=pass;
- b=iN6VzdFWLFlyAd9kcu9KUWDEr72z2c+3zpUSjV6gOOZHOSsvHoxPGx1CfW9Fc9AE5H4xxjyOxs6LiqGae73qeQjK7Pa4DoNbg0Apm1JyDYUXEAdE5KkWBsUs5HUD4RToYZ741tN4mQfXXAPcIpdUslhmy/hrR5XlUdIJ2d2D0vdZMriljttrdoYqEKkFHT5rPmGEHXggB0U5F8NGpM7AsioT/2StxAbBmusuTblc0ljEW3yXXpUiNr9mQBDfr7PLuO+3BfkLTdAoA9RO3cNhkQl8RRoft1XNMyCZztwp4hMmbOKhGrgnJXmYkQhZwoEJHxdSk36XbqhuBieD+oSmsQ==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WTMj0rXGcLMdtxCWMt7OvM7KklUH8bLRxRnQvCHRSnc=;
- b=XcNZ8qrb8f47i/13lIR+pUSbRNXaBJxYtLtIntHnilBqYf2lmL5ZjkKgM5N1h5eKrLZYR9d0qr6+UN2Hl1uJRAFOgrG6yylk+HzTbqQkr5Yt7DfJ5oS1ShVQ4wiDbjOjaFhxIu/+ids3QVg8RXp7kA54d8AFEJEkEt341n3G/WcorCHAiK9nTFKhK1kZsiw7ZZ92FyoDd3ENYSHtpWP/JBv0lPj+rEvzLcw6sR8bYVYGqTJwFawU8OEFvOv5EDVC6BVGn1DeoM+/Y1oaF8ozx0AtzB5HMEnI5QT/y7ayeH9do/ml+h8RJroxA7FiTmhS+PGlPhuXQ+ZMM1+GhZ+Ciw==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 63.35.35.123) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=arm.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=arm.com;
- dkim=pass (signature was verified) header.d=armh.onmicrosoft.com; arc=pass (0
- oda=1 ltdi=1 spf=[1,1,smtp.mailfrom=arm.com] dkim=[1,1,header.d=arm.com]
- dmarc=[1,1,header.from=arm.com])
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WTMj0rXGcLMdtxCWMt7OvM7KklUH8bLRxRnQvCHRSnc=;
- b=FFDmN1wP3RDbkawtUOdfyJI74301frhKfOVwsaCgusPFIacgaHTAam5rKtUT84ld6IEC+NVWq/0F9aKWj6DypTnIDKuVKGLQYxtFZNztPL0s0Ha1vSyXjxvdE796pmiizNByuXm0Wl7pnv6JoMtmjRqumb2/oe3txj3rgfEmEPY=
-Received: from DB9PR01CA0024.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:1d8::29) by PAWPR08MB9567.eurprd08.prod.outlook.com
- (2603:10a6:102:2f1::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
- 2023 12:22:06 +0000
-Received: from DU6PEPF0000A7E3.eurprd02.prod.outlook.com
- (2603:10a6:10:1d8:cafe::9d) by DB9PR01CA0024.outlook.office365.com
- (2603:10a6:10:1d8::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28 via Frontend
- Transport; Tue, 21 Nov 2023 12:22:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
- pr=C
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- DU6PEPF0000A7E3.mail.protection.outlook.com (10.167.8.41) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.13 via Frontend Transport; Tue, 21 Nov 2023 12:22:04 +0000
-Received: ("Tessian outbound 7671e7ddc218:v228"); Tue, 21 Nov 2023 12:22:04 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: 0d1f0a828ce12e80
-X-CR-MTA-TID: 64aa7808
-Received: from f5dd5feb72ff.1
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id C1AD0790-F811-46EC-9500-F77323CE7DCC.1;
-        Tue, 21 Nov 2023 12:21:53 +0000
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id f5dd5feb72ff.1
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Tue, 21 Nov 2023 12:21:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IPSVtAe5SiN8jo58zUbprhvz1OxV1JPIFNgXOBcr+veIoovSL9IuOVxtlCz7dZHolYrPlU9b2uTM14ErdoKI/TNg4UNV4t04Gjzi97+fHnciJr3uu4Qn1OqyXqeAQjQHF7Px3KwsxgMJRki5Zg8mIPMaYJD5DYxXHC/0L8tJNEgcKc7uLe5Q5KNRFsqHn+Lw5l+VVfe6cgtRYP8AhW+hQETEC1lVoNHxTeQODwoa7qSA5B7SSrVyqCUHVnPXKo3eblD10ITwWwQi5X6Y7EgSm5HI811JmD5He2CD9nwOlEA6NmPzJxnkQu4edxWnq7wYK6J1mmNBIxC9S21REd+++A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WTMj0rXGcLMdtxCWMt7OvM7KklUH8bLRxRnQvCHRSnc=;
- b=WvrE+WddSyUBx0sQaQv9UCsqX+hZRqpb+oCxh9CNiPOMoKazW+UtckfvLhWmVPd0l744E4vMfEfk6OjZigt9GJhdFLagdBNO1FzUesoHNZsdTT+xqYPhVUw79R3K3hl4C1gj5Dq4t1TjdbxDr5CeGJxtSLKJ88LUqExaiEFU4pmiVEv8j65b6EToSEyc9O7/FOBHZU+g3sV7kGI4I9Q5yRhJXEFPof+knCgRc27OHRwQw4pw5z2Te89SyX0uOSb1pwGPRIBAEOIaMYZK9L9fW7Z2EixvDdfRV4V/ufXAVvWlCR27M5UjIZwAR7/71ts/WquLTgcFaOleRqL5vkg5ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WTMj0rXGcLMdtxCWMt7OvM7KklUH8bLRxRnQvCHRSnc=;
- b=FFDmN1wP3RDbkawtUOdfyJI74301frhKfOVwsaCgusPFIacgaHTAam5rKtUT84ld6IEC+NVWq/0F9aKWj6DypTnIDKuVKGLQYxtFZNztPL0s0Ha1vSyXjxvdE796pmiizNByuXm0Wl7pnv6JoMtmjRqumb2/oe3txj3rgfEmEPY=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from DB9PR08MB7179.eurprd08.prod.outlook.com (2603:10a6:10:2cc::19)
- by AS8PR08MB10222.eurprd08.prod.outlook.com (2603:10a6:20b:63c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Tue, 21 Nov
- 2023 12:21:50 +0000
-Received: from DB9PR08MB7179.eurprd08.prod.outlook.com
- ([fe80::1fbd:16e1:518f:a381]) by DB9PR08MB7179.eurprd08.prod.outlook.com
- ([fe80::1fbd:16e1:518f:a381%6]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 12:21:50 +0000
-Date:   Tue, 21 Nov 2023 12:21:37 +0000
-From:   Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-To:     Christian Brauner <brauner@kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>, nd@arm.com
-Subject: Re: [PATCH RFT v3 0/5] fork: Support shadow stacks in clone3()
-Message-ID: <ZVyg0WgILK35xjBn@arm.com>
-References: <20231120-clone3-shadow-stack-v3-0-a7b8ed3e2acc@kernel.org>
- <20231121-urlaub-motivieren-c9d7ee1a6058@brauner>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231121-urlaub-motivieren-c9d7ee1a6058@brauner>
-X-ClientProxiedBy: LO2P265CA0311.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a5::35) To DB9PR08MB7179.eurprd08.prod.outlook.com
- (2603:10a6:10:2cc::19)
+        Tue, 21 Nov 2023 07:23:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02DA192
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700569404;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EgdkXy6q5JE0gaoC70ySFvGcqFyTFXzCOKDV430yozo=;
+        b=QoPTFP/Buhzehqls3bPAZZgmymwV5tLDTxGTnx1HR1EOipoLXtnS5ViuETnuoxXjG6Rfa3
+        1Vto9oaeTS9oE8bG4GU0JiMlCZqudkfnApTWSUyxU/MW1jJSaOF8Wpmlg3Fe0GIqlehaXs
+        23peimzatE8SrAYn4LYeFkGu4B599xs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-155-ZyoGhG1AOpu2Y-ukaZcYuA-1; Tue, 21 Nov 2023 07:23:23 -0500
+X-MC-Unique: ZyoGhG1AOpu2Y-ukaZcYuA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-5488320afd1so2241930a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:23:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700569402; x=1701174202;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EgdkXy6q5JE0gaoC70ySFvGcqFyTFXzCOKDV430yozo=;
+        b=LelHzuiPgbQ3CaReUQsfrGKj/73TBDsjEFA23SeTsVNXNU7jKMWLYFDw5RJYY/IF8L
+         eR+Y2M4ZYqlzdUz0awiVCAwTD2iwuJNQbbOzjerYHSPt/ceBN8P3Xs/5U48e2GP6/xl8
+         b+wCQpF96Rno0N+gJEbK7tvGfgHA1K0k+kY3I0oy0zcppQMHe8Pt3EL5yEFKVnZUbDRD
+         xPv2bmBgoTKqfCmtihgct/KB9o7+R7wwu3SeWg84Xn7xsawCDTVpqCYs+IEaTMDjnOzI
+         wKZHttQMmqBV2W4A69oPyzKcxeFBQ4a8pqWiGc8VnqA3Os33mO0jTKi24jQKL0XE09Gq
+         V2EQ==
+X-Gm-Message-State: AOJu0Yz6GmVD7pkoLe71OkRbJydP5FrfCRqAWN2s2AwdIj3d/FiMmD4b
+        OCMzgf1hFlHH/Bj3x76IVgudu4fxrmEZuBSyW2IpHUsqcYuPg0VFDimEBJOhJmDKJ2wdubETH5q
+        e2ea9+yIgg/myrYlVL9HzW9+q
+X-Received: by 2002:a05:6402:797:b0:543:8391:a19a with SMTP id d23-20020a056402079700b005438391a19amr1579222edy.40.1700569402530;
+        Tue, 21 Nov 2023 04:23:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFj+xiia5YOo0bOMmdIE/M2mJWXVUOP6sfD1UWb1jBME6EjjkgQ87pNiOZUjHD/IvkkrvmN6A==
+X-Received: by 2002:a05:6402:797:b0:543:8391:a19a with SMTP id d23-20020a056402079700b005438391a19amr1579205edy.40.1700569402226;
+        Tue, 21 Nov 2023 04:23:22 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id z1-20020aa7cf81000000b0053e89721d4esm4706851edx.68.2023.11.21.04.23.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 04:23:21 -0800 (PST)
+Message-ID: <37f6aa8e-8cab-4194-8493-8e39819ed608@redhat.com>
+Date:   Tue, 21 Nov 2023 13:23:20 +0100
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic: DB9PR08MB7179:EE_|AS8PR08MB10222:EE_|DU6PEPF0000A7E3:EE_|PAWPR08MB9567:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e14e46d-aba7-40ee-fdaf-08dbea8c78f0
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: c6j6DQrCIOlQ5ci9DnEEtGaBxTNSHekZKBNA3PzH98ys/hwLDOpvMoUGoXxh/4e+l5xtwaZGe0sEaVbPqpkRg8LCZmvDsrVgqdKcXdaQMRRWW3/zqK561mmz/2tObnf0w0vAMh7dGOgPVvLiW9E8s44Anc4PKCvjHNS5bZr4T/RDS4peCj5eF6K6na7O747rcSqA4IUTNrboYOKYiYSjUPgtgvX/L5lyXRwOXLiDoGOpSB5GOtM4aRWjqDB07FfEOR2i6HGft09NMPQH1m1zG6z0fvqN8NpZzIcLMyRhoVMeH+Smp48pXpUgCXOIob3cjw+iFQxjrY1PPw4derSnwPFTDAQQgMCd/kOMH4FQ0JrogbI7bVwLN0FPOwiZxxBBPjTFNim6mCcbtMXCAXsKCXo87MWKx+6ZwsR4JA3th+8d86mbnfgSTCU2Wb9KkGuTbcSf0ilQUgGNBVfw1QfA6fFkCnrGHLgqTV4MVNCbusTSQ6yRMBKiF/lVbDYvup8y37QNld0NtXmH4XQy46fO8bVNTqDrpFPVWp7C48wjbg+6le+xNozxWMRg1z5xkmYA
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7179.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(346002)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(316002)(66556008)(110136005)(2616005)(26005)(41300700001)(66476007)(66946007)(478600001)(54906003)(6512007)(6506007)(83380400001)(6486002)(6666004)(8936002)(8676002)(4326008)(66899024)(7416002)(2906002)(5660300002)(36756003)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB10222
-Original-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DU6PEPF0000A7E3.eurprd02.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: e8867878-639a-4bab-e2ae-08dbea8c7082
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: trGM2ALGtA6l5Qzy+wBElvAYneO5HCC0Rwaj7JD4sjNEcs57LD8rmYkuA1nP0iCCWhIoNsIJ+RQsTqMqQdDVhvZlBsQAJYVelTZAmVoMxsquqc0yMbjBWpDNo0g65LucEGGstqQPHikStC/CXKgOaWhTYx+5Rk1T89oKMthXtuuUxxiINhM/CQOPEtNiec32KmmMYeZzQU6j+sGsf5vouPn90SNLRcSxXdC/gsHg8JpVLMf4kt9MP1l4m0FmJDTyEu/fKJ/CVTwtgNlEi5MgqOBAH12kIHwt14NhxFeisqdxVTTvYDxuJVtFeF6tYLoeYdunRZdUszdaV4Y+5+/2q/clGpDVp8R6oHVz5IZt0oQ1qfew34hQndHjdA4c6AOSt0CLsLQH4CWaFmGyMSuxwdZmzh468YjdIU0t7bZwaZVwgQJ6N1L0Y0NTKErAbl41DVo2N8/Esfj9zKDf4xVpuRbMMetqlk4WMqMI/9VcCp9wwmvX20JI2ZBJ8gpJs5ffqR3ogH+RAYDXUICxotZxBExn45BBAMVol0l8NmUlZyunNTP436GysNVGWyyAuGijiMDSfveuGWqhebcJ/BVMDQdQmNeSSeHYAN5gzssS8aTPx3m7HyU5EhsXzJzJy0ihwRjTljfKJ0/pCMk5S1LBL8tjhxqLIx+0X3qMUfUU4aMigOey/+ag8w4zldj3ukKK/lJtwSM8ewD9V6DSUkOhv8oIISkf3XQ8OpiingNuFWO0d6Bp/8c6uANSaYKLY9z9
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(136003)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(82310400011)(186009)(46966006)(40470700004)(36840700001)(40460700003)(66899024)(70206006)(54906003)(70586007)(110136005)(316002)(36756003)(6506007)(6666004)(6512007)(81166007)(336012)(2616005)(26005)(6486002)(478600001)(82740400003)(356005)(83380400001)(36860700001)(86362001)(47076005)(40480700001)(2906002)(5660300002)(450100002)(41300700001)(8936002)(4326008)(8676002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 12:22:04.7187
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e14e46d-aba7-40ee-fdaf-08dbea8c78f0
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: DU6PEPF0000A7E3.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB9567
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: sysfs: cannot create duplicate filename
+ .../system76_acpi::kbd_backlight/color
+Content-Language: en-US, nl
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
+        Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>,
+        Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        =?UTF-8?Q?Johannes_Pen=C3=9Fel?= <johannes.penssel@gmail.com>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+ <ZT25-gUmLl8MPk93@debian.me>
+ <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+ <ZUjnzB2RL2iLzIQG@debian.me> <87sf50pm34.wl-tiwai@suse.de>
+ <b9d4ab02-fe49-48ab-bf74-0c7a578e891a@leemhuis.info>
+ <87edgjo2kr.wl-tiwai@suse.de>
+ <ae77198c-ae7b-4988-8b5b-824260b28e84@redhat.com>
+ <874jhfo0oc.wl-tiwai@suse.de>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <874jhfo0oc.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 11/21/2023 11:17, Christian Brauner wrote:
-> On Mon, Nov 20, 2023 at 11:54:28PM +0000, Mark Brown wrote:
-> > The kernel has recently added support for shadow stacks, currently
-> > x86 only using their CET feature but both arm64 and RISC-V have
-> > equivalent features (GCS and Zicfiss respectively), I am actively
-> > working on GCS[1].  With shadow stacks the hardware maintains an
-> > additional stack containing only the return addresses for branch
-> > instructions which is not generally writeable by userspace and ensures
-> > that any returns are to the recorded addresses.  This provides some
-> > protection against ROP attacks and making it easier to collect call
-> > stacks.  These shadow stacks are allocated in the address space of the
-> > userspace process.
-> > 
-> > Our API for shadow stacks does not currently offer userspace any
-> > flexiblity for managing the allocation of shadow stacks for newly
-> > created threads, instead the kernel allocates a new shadow stack with
-> > the same size as the normal stack whenever a thread is created with the
-> > feature enabled.  The stacks allocated in this way are freed by the
-> > kernel when the thread exits or shadow stacks are disabled for the
-> > thread.  This lack of flexibility and control isn't ideal, in the vast
-> > majority of cases the shadow stack will be over allocated and the
-> > implicit allocation and deallocation is not consistent with other
-> > interfaces.  As far as I can tell the interface is done in this manner
-> > mainly because the shadow stack patches were in development since before
-> > clone3() was implemented.
-> > 
-> > Since clone3() is readily extensible let's add support for specifying a
-> > shadow stack when creating a new thread or process in a similar manner
+Hi,
+
+On 11/21/23 11:33, Takashi Iwai wrote:
+> On Tue, 21 Nov 2023 11:21:53 +0100,
+> Hans de Goede wrote:
+>>
+>> Hi,
+>>
+>> On 11/21/23 10:52, Takashi Iwai wrote:
+>>> On Tue, 21 Nov 2023 10:19:03 +0100,
+>>> Thorsten Leemhuis wrote:
+>>>>
+>>>> Takashi, Jean-Jacques Hiblot, Lee,
+>>>>
+>>>> On 20.11.23 14:53, Takashi Iwai wrote:
+>>>>> On Mon, 06 Nov 2023 14:19:08 +0100,
+>>>>> Bagas Sanjaya wrote:
+>>>>>> On Sat, Nov 04, 2023 at 01:01:56PM +0100, Jean-Jacques Hiblot wrote:
+>>>>>>> On 29/10/2023 02:48, Bagas Sanjaya wrote:
+>>>>>>>> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+>>>>>>>>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+>>>>>>>>
+>>>>>>>> Jean-Jacques Hiblot, would you like to take a look on this regression,
+>>>>>>>> since you authored the culprit?
+>>>>>
+>>>>>>> The offending commit stores the color in struct led_classdev and exposes it
+>>>>>>> via sysfs. It was part of a series that create a RGB leds from multiple
+>>>>>>> single-color LEDs. for this series, we need the color information but we
+>>>>>>> don't really need to expose it it via sysfs. In order to fix the issue, we
+>>>>>>> can remove the 'color' attribute from the sysfs.
+>>>>>>
+>>>>>> OK, see you in the patch!
+>>>>>
+>>>>> Is there a patch available?
+>>>>
+>>>> Not that I know of. Could not find anything on lore either.
+>>>>
+>>>>> This bug hits for a few Logitech keyboard models, too, and it makes
+>>>>> 6.6 kernel unsable for them, as hid-lg-g15 driver probe fails due to
+>>>>> this bug:
+>>>>>   https://bugzilla.kernel.org/show_bug.cgi?id=218155
+>>>>>
+>>>>> We need a quick fix for 6.6.x.
+>>>>
+>>>> Given that Jean-Jacques Hiblot (the author of the culprit) and Lee (who
+>>>> committed it and sent it to Linus) know about this for a while already
+>>>> without doing anything about it, I wonder if someone should just send a
+>>>> revert to Linus (unless of course that is likely to introduce a
+>>>> regression on its own).
+>>>>
+>>>> Takashi, could you maybe do this, unless a fix shows up real soon?
+>>>
+>>> I can, but we need to decide which way to go.
+>>> There are several options:
+>>>
+>>> 1. Revert the commit c7d80059b086;
+>>>    this drops led class color sysfs entries.  Also the store of
+>>>    led_cdev->color from fwnode is dropped, too.
+>>>
+>>> 2. Drop only led class color sysfs entries;
+>>>    a partial revert of c7d80059b086 above
+>>
+>> AFAIK further up in the thread (or a related thread) there
+>> already was consensus to do this. Someone just needs to
+>> write the patch.
 > 
-> So while I made clone3() readily extensible I don't want it to ever
-> devolve into a fancier version of a prctl().
-> 
-> I would really like to see a strong reason for allowing userspace to
-> configure the shadow stack size at this point in time.
-> 
-> I have a few questions that are probably me just not knowing much about
-> shadow stacks so hopefully I'm not asking you write a thesis by
-> accident:
-> 
-> (1) What does it mean for a shadow stack to be over allocated and is
->     over-allocation really that much of a problem out in the wild that
->     we need to give I userspace a knob to control a kernel security
->     feature?
+> Well, is there any user of this new led_classdev.color field?
+> The value read from fwnode is stored there, but as far as I see, there
+> seems no real user, so far.  If it's still unused, we can do the whole
+> revert -- which is cleaner.
 
-over-allocation: allocating 100M shadow stack (RLIMIT_DATA, RLIMIT_AS)
-for a thread that keeps arrays of data on the stack, instead of say 8k,
-and thus running into resource limits.
+I honestly don't know. I've mostly just been reading along. I think
+there may be some future in kernel use planned (not sure at all though).
 
-under-allocation: small thread stack with runaway recursion, but large
-sigaltstack: the stack overflow handler can run out of space because it
-uses the same shadow stack as the thread.
+If there are no current in kernel users then I agree we should just
+go with a full revert now to fix the regression. If some later
+in kernel users do come along then they can always re-introduce
+the change minus the sysfs attr addition.
 
-> (2) With what other interfaces is implicit allocation and deallocation
->     not consistent? I don't understand this argument. The kernel creates
->     a shadow stack as a security measure to store return addresses. It
->     seems to me exactly that the kernel should implicitly allocate and
->     deallocate the shadow stack and not have userspace muck around with
->     its size?
+Regards,
 
-the kernel is not supposed to impose stack size policy or a particular
-programming model that limits the stack management options nor prevent
-the handling of stack overflows.
+Hans
 
-> (3) Why is it safe for userspace to request the shadow stack size? What
->     if they request a tiny shadow stack size? Should this interface
->     require any privilege?
 
-user can allocate huge or tiny stacks already.
 
-and i think userspace can take control over shadow stack management:
-it can disable signals, start a clone child with stack_size == 1 page,
-map_shadow_stack and switch to it, enable signals. however this is
-complicated, leaks 1 page of kernel allocated shadow stack (+reserved
-guard page, i guess userspace could unmap, not sure if that works
-currently) and requires additional syscalls.
-
-> (4) Why isn't the @stack_size argument I added for clone3() enough?
->     If it is specified can't the size of the shadow stack derived from it?
-
-shadow stack only contains return addresses so it is proportional
-to the number of stack frames, not the stack size and it must
-account for sigaltstack too, not just the thread stack.
-
-if you make minimal assumptions about stack usage and ignore the
-sigaltstack issue then the worst case shadow stack requirement
-is indeed proportional to the stack_size, but this upper bound
-can be pessimistic and userspace knows the tradeoffs better.
-
-> 
-> And my current main objection is that shadow stacks were just released
-> to userspace. There can't be a massive amount of users yet - outside of
-> maybe early adopters.
-
-no upstream libc has code to enable shadow stacks at this point
-so there are exactly 0 users in the open. (this feature requires
-runtime support)
-
-the change is expected to allow wider deployability. (e.g. not
-just in glibc)
-
-> 
-> The fact that there are other architectures that bring in a similar
-> feature makes me even more hesitant. If they have all agreed _and_
-> implemented shadow stacks and have unified semantics then we can
-> consider exposing control knobs to userspace that aren't implicitly
-> architecture specific currently.
-> 
-> So I don't have anything against the patches per obviously but with the
-> wider context.
-> 
-> Thanks!
