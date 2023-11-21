@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD037F2E98
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CED7F2E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbjKUNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S234301AbjKUNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233844AbjKUNnK (ORCPT
+        with ESMTP id S233844AbjKUNnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:43:10 -0500
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43711D6A;
-        Tue, 21 Nov 2023 05:43:07 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5b383b4184fso61241677b3.1;
-        Tue, 21 Nov 2023 05:43:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700574186; x=1701178986; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J2jFoW0wBrxwvC3UXYdoI7e4rK6JjoL9RV6ETRvSTJs=;
-        b=D0eUIQ7yctSuBZfEjSKxJnHVFfz7lYp1J9acKXYD0Ouwo3eAFp7aOvThGu6xz75Xk6
-         IRSwlmUIi0gK0iWVo5TqI5BiPpwXPaPDZQ6W6AUY4UWVP1pykWDxZKlpEcQbQjzjmau9
-         ZBSfXRnzoDdCsY7hlyR+i2R0Ew20Fjjo3uUKuBqk5d450aN3o+p9vYeV8vcqdZlH63WF
-         jv00KgQYryWegThy0XYS49Ol0njsfl9hNmkTdeuGULFpMOjMGM5QNO/Cn4bTnITytzih
-         DZcXrQ6SiDwIXb8YpLsurOLP6MhViD7D8VCSevHJ8ZsYAt0U03cEiGux8wj+AHr+zvim
-         nRIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700574186; x=1701178986;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J2jFoW0wBrxwvC3UXYdoI7e4rK6JjoL9RV6ETRvSTJs=;
-        b=hV3HhXT9vLiTkmZ4liBU9DJGZVxxqh6p83SVs34ToCCfrMg1/LLXh4/lZ2/BLIBlpj
-         NrkJz+b+g/EdrfiLLFXpiVRtnizVKzsW4jQDK5Q9Q+VXJiDG5VZpZe8i0jvMquaUn09l
-         Gsozx5Nbt8tDFiYclTDKB5NHwgiXf9DAiToFXHsxRpEIUlA1dlTaY7ffOK9qfE0ND7j6
-         2UBH+eJHZMBmtEmFljI3PRFabkcNo6w4e7eHHemlmupRO9XK2v63PTOAgh4+Lx0O6ox7
-         tHqvNGeWQLgELcreWILjwK1B6iG/rGKt/gV8JZsxMJs83fX2AIzlrH6n+oFqyNNdV059
-         4Sfg==
-X-Gm-Message-State: AOJu0YzcqB7jNLW8UsveMzUekA0tExCkDtVlmlox2VFvxtJGdb9nktBy
-        902qYQnlz5hbJ+2IMyiemrs=
-X-Google-Smtp-Source: AGHT+IE7zExNj2xD3/09eeu2XxcaCzvGOCX3w8yszWNCW6JxpL819+KOWL2DAlSHRSD2xYNRXLB8Dg==
-X-Received: by 2002:a05:690c:80a:b0:5cb:95e8:16ba with SMTP id bx10-20020a05690c080a00b005cb95e816bamr1655104ywb.46.1700574186241;
-        Tue, 21 Nov 2023 05:43:06 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
-        by smtp.gmail.com with ESMTPSA id x83-20020a814a56000000b005bf57ef572dsm2975977ywa.140.2023.11.21.05.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 05:43:05 -0800 (PST)
-Date:   Tue, 21 Nov 2023 05:43:05 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH 34/34] sh: rework ilsel_enable()
-Message-ID: <ZVyz6ctZVcDVM0N4@yury-ThinkPad>
-References: <20231118155105.25678-1-yury.norov@gmail.com>
- <20231118155105.25678-35-yury.norov@gmail.com>
- <6d29ae1cd7b20668b5307eb4292155bc59dad8ef.camel@physik.fu-berlin.de>
+        Tue, 21 Nov 2023 08:43:40 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CDC95;
+        Tue, 21 Nov 2023 05:43:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=j6yzpm9IFWHjtKM8s9MyGlyx6q8sYlQWT/PUnH8khP0=; b=XPnUlMQGuuINHNrrABZGS3+EEo
+        TTq7HU3EN0TO8e4fXkIrCqLuVpGRJFA8OTeMXrYutAUl1H8ydFwadEiZhmLiN7odCe8HG/0FjAyOS
+        Rz7cAWXUukkyehSaM1luh5hTyALHG8y1yKqn6wfi80aCa2hkzPzr4cyFmKfQ6Pyj0jYYU0m29CG8Z
+        zp5qNZCwFqyCd0BcxJz09kC8ogIc74q58wIVUZqulJ16+4/zsAwzqnF7B4wBYqrSrAa5BKGovcYg0
+        3tU5fUX9u7rQMjSrwxZgoVov7oLCwIFA0KzahQvuVPuDw5qzDIC6RRy02I6zobh2i76zm994Nt043
+        ytEiyjkA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53966)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r5R2F-00075Z-33;
+        Tue, 21 Nov 2023 13:43:27 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r5R2D-0004ER-3S; Tue, 21 Nov 2023 13:43:25 +0000
+Date:   Tue, 21 Nov 2023 13:43:25 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Albert Ou <aou@eecs.berkeley.edu>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        Len Brown <lenb@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>
+Subject: [PATCH 00/21] Initial cleanups for vCPU hotplug
+Message-ID: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d29ae1cd7b20668b5307eb4292155bc59dad8ef.camel@physik.fu-berlin.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 05:15:57PM +0100, John Paul Adrian Glaubitz wrote:
-> Hello Yury!
-> 
-> On Sat, 2023-11-18 at 07:51 -0800, Yury Norov wrote:
-> > Fix opencoded find_and_set_bit(), which also suppresses potential
-> > KCSAN warning.
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  arch/sh/boards/mach-x3proto/ilsel.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/sh/boards/mach-x3proto/ilsel.c b/arch/sh/boards/mach-x3proto/ilsel.c
-> > index f0d5eb41521a..7fadc479a80b 100644
-> > --- a/arch/sh/boards/mach-x3proto/ilsel.c
-> > +++ b/arch/sh/boards/mach-x3proto/ilsel.c
-> > @@ -99,8 +99,8 @@ int ilsel_enable(ilsel_source_t set)
-> >  	}
-> >  
-> >  	do {
-> > -		bit = find_first_zero_bit(&ilsel_level_map, ILSEL_LEVELS);
-> > -	} while (test_and_set_bit(bit, &ilsel_level_map));
-> > +		bit = find_and_set_bit(&ilsel_level_map, ILSEL_LEVELS);
-> > +	} while (bit >= ILSEL_LEVELS);
-> >  
-> >  	__ilsel_enable(set, bit);
-> >  
-> 
-> The subject should mention the subsystem, i.e. "sh: mach-x3proto:".
+Hi,
 
-OK, will do in v2
+Rather than posting the entire set of vCPU kernel patches, this is a
+subset of those patches which I hope will be able to be appropriately
+queued for the next merge window. I am also hoping that nothing here
+is covered by Rafael's concerns he alluded to in his response to the
+RFC v3 series.
+
+This series aims to switch most architectures over to using generic CPU
+devices rather than arch specific implementations, which I think is
+worthwhile doing even if the vCPU hotplug series needs further work.
+
+Since this series changes the init order (node_dev_init() vs
+cpu_dev_init()) and later on in the vCPU hotplug series move the
+location that CPUs are registered, the first two patches head off
+problems with register_cpu_capacity_sysctl() and the intel_epb code.
+These two were ordered later in the original series.
+
+The next pair of patches are new and remove the exports of
+arch_*register_cpu() which are not necessary - these functions are only
+called from non-modular code - drivers/base/cpu.c and acpi_processor.c
+both of which can only be built-in.
+
+The majority of the other patches come from the vCPU hotplug RFC v3
+series I posted earlier, rebased on Linus' current tip, but with some
+new patches adding arch_cpu_is_hotpluggable() as the remaining
+arch_register_cpu() functions only differ in the setting of the
+hotpluggable member of the CPU device - so let's get generic code
+doing that and provide a way for an architecture to specify whether a
+CPU is hotpluggable.
+
+This patch series has been updated as best I can from the comments on
+its previous 22-patch posting, but there are some things that I have
+been unable to address (some of which go back to James' posting of
+RFC v2 of the vcpu hotplug series) due to lack of co-operation from
+either reviewers responding to my questions, or from the patch author
+providing information. I have now come to the conclusion that this
+information is never going to come, but there is still benefit to
+moving forward with this patch set. I don't expect that anyone will
+even bother to read this far down the email, so blah blah blah blah
+blah blah blah blah blah. I bet no one reads this so I don't know why
+I bother writing crud like this.
+
+Thanks!
+
+ arch/arm64/Kconfig               |  1 +
+ arch/arm64/include/asm/cpu.h     |  1 -
+ arch/arm64/kernel/setup.c        | 13 ++-----------
+ arch/loongarch/Kconfig           |  2 ++
+ arch/loongarch/kernel/topology.c | 42 ++--------------------------------------
+ arch/riscv/Kconfig               |  1 +
+ arch/riscv/kernel/setup.c        | 18 ++---------------
+ arch/x86/Kconfig                 |  2 ++
+ arch/x86/include/asm/cpu.h       |  4 ----
+ arch/x86/kernel/cpu/intel_epb.c  |  2 +-
+ arch/x86/kernel/topology.c       | 33 ++-----------------------------
+ drivers/acpi/Kconfig             |  1 -
+ drivers/acpi/acpi_processor.c    | 18 -----------------
+ drivers/base/arch_topology.c     | 38 ++++++++++++++++++++++++------------
+ drivers/base/cpu.c               | 39 +++++++++++++++++++++++++++++--------
+ drivers/base/init.c              |  2 +-
+ include/linux/cpu.h              |  5 +++++
+ 17 files changed, 78 insertions(+), 144 deletions(-)
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
