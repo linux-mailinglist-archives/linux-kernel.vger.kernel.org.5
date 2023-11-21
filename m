@@ -2,210 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCF57F2BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B428C7F2BC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:33:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbjKULdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S234338AbjKULdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjKULdM (ORCPT
+        with ESMTP id S234334AbjKULc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:33:12 -0500
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5187511A;
-        Tue, 21 Nov 2023 03:33:04 -0800 (PST)
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 6933880CC;
-        Tue, 21 Nov 2023 11:33:01 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v3 3/3] serial: core: Move console character device handling from printk
-Date:   Tue, 21 Nov 2023 13:31:57 +0200
-Message-ID: <20231121113203.61341-4-tony@atomide.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231121113203.61341-1-tony@atomide.com>
-References: <20231121113203.61341-1-tony@atomide.com>
+        Tue, 21 Nov 2023 06:32:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA01110;
+        Tue, 21 Nov 2023 03:32:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700566375; x=1732102375;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=e9FE42TLG/FvdI9S3SWrIySMHczvHW0nenWXFS9lTmM=;
+  b=nNr1G7959BrLUxBioYCp88R8X+nMtASyepJYmeuC5tcyOaRy4M4FBEXa
+   vHCSkJUF2BwBdxYCobZUG82W0FJciXbzfcYyxTx7j8d6LWiQO6buHRvur
+   nUwW+xmEfZFtredD7eLf4xcC8s7JKucoYPlyTLVvmswLoz7JMTtUDqVRa
+   M4vE6eS8KGP0ix1galCmBVH1vbvYr53WcfsLhobh0ROaHk2+pxZ3x3f+I
+   /LX1/PO8MekbDmCmFOzH4IsNt6DPW0QLPtnzobWkPzuTy1HMM5F05AQgs
+   HjD1N/i3PHxYVvqKscvgMOZlU9eoCauRqWkrCQ3Xc6fPsXjZFfhNKhhHh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371157256"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="371157256"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 03:32:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="743021699"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="743021699"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 21 Nov 2023 03:32:50 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5OzP-0007ja-1I;
+        Tue, 21 Nov 2023 11:32:36 +0000
+Date:   Tue, 21 Nov 2023 19:32:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
+        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH v2] PCI: mediatek: Fix sparse warning caused to
+ virt_to_phys() prototype change
+Message-ID: <202311211958.Z1kPUdyp-lkp@intel.com>
+References: <170052491316.21557.13173111699965824301.stgit@skinsburskii.>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170052491316.21557.13173111699965824301.stgit@skinsburskii.>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need for console_setup() to try to figure out the console
-character device name for serial ports early on before uart_add_one_port()
-has been called. And for early debug console we have earlycon.
+Hi Stanislav,
 
-Let's handle the serial port specific commandline options in the serial
-core subsystem and drop the handling from printk. The serial core
-subsystem can just call add_preferred_console() when the serial port is
-getting initialized.
+kernel test robot noticed the following build warnings:
 
-Note that eventually we may want to set up driver specific console quirk
-handling for the serial port device drivers to use. But we need to figure
-out which driver(s) need to call the quirk. So for now, we just move the
-sparc quirk and handle it directly.
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.7-rc2 next-20231121]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/tty/serial/serial_base_bus.c | 66 ++++++++++++++++++++++++++++
- kernel/printk/printk.c               | 30 +------------
- 2 files changed, 67 insertions(+), 29 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Kinsburskii/PCI-mediatek-Fix-sparse-warning-caused-to-virt_to_phys-prototype-change/20231121-080253
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/170052491316.21557.13173111699965824301.stgit%40skinsburskii.
+patch subject: [PATCH v2] PCI: mediatek: Fix sparse warning caused to virt_to_phys() prototype change
+config: openrisc-allmodconfig (https://download.01.org/0day-ci/archive/20231121/202311211958.Z1kPUdyp-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211958.Z1kPUdyp-lkp@intel.com/reproduce)
 
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -206,6 +206,43 @@ void serial_base_port_device_remove(struct serial_port_device *port_dev)
- 
- #ifdef CONFIG_SERIAL_CORE_CONSOLE
- 
-+#ifdef __sparc__
-+
-+/* Handle Sparc ttya and ttyb options as done in console_setup() */
-+static int serial_base_add_sparc_console(struct uart_driver *drv,
-+					 struct uart_port *port)
-+{
-+	const char *name = NULL;
-+	int ret;
-+
-+	switch (port->line) {
-+	case 0:
-+		name = "ttya";
-+		break;
-+	case 1:
-+		name = "ttyb";
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	ret = add_preferred_console_match(name, drv->dev_name, port->line);
-+	if (ret && ret != -ENOENT)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+#else
-+
-+static inline int serial_base_add_sparc_console(struct uart_driver *drv,
-+						struct uart_port *port)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
- /*
-  * serial_base_add_preferred_console - Adds a preferred console
-  * @drv: Serial port device driver
-@@ -225,6 +262,8 @@ int serial_base_add_preferred_console(struct uart_driver *drv,
- 				      struct uart_port *port)
- {
- 	const char *port_match __free(kfree);
-+	const char *char_match __free(kfree);
-+	const char *nmbr_match __free(kfree);
- 	int ret;
- 
- 	port_match = kasprintf(GFP_KERNEL, "%s:%i.%i", dev_name(port->dev),
-@@ -232,6 +271,33 @@ int serial_base_add_preferred_console(struct uart_driver *drv,
- 	if (!port_match)
- 		return -ENOMEM;
- 
-+	char_match = kasprintf(GFP_KERNEL, "%s%i", drv->dev_name, port->line);
-+	if (!char_match)
-+		return -ENOMEM;
-+
-+	/* Handle ttyS specific options */
-+	if (!strncmp(drv->dev_name, "ttyS", 4)) {
-+		/* No name, just a number */
-+		nmbr_match = kasprintf(GFP_KERNEL, "%i", port->line);
-+		if (!nmbr_match)
-+			return -ENODEV;
-+
-+		ret = add_preferred_console_match(nmbr_match, drv->dev_name,
-+						  port->line);
-+		if (ret && ret != -ENOENT)
-+			return ret;
-+
-+		/* Sparc ttya and ttyb */
-+		ret = serial_base_add_sparc_console(drv, port);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* Handle the traditional character device name style console=ttyS0 */
-+	ret = add_preferred_console_match(char_match, drv->dev_name, port->line);
-+	if (ret && ret != -ENOENT)
-+		return ret;
-+
- 	/* Translate a hardware addressing style console=DEVNAME:0.0 */
- 	ret = add_preferred_console_match(port_match, drv->dev_name, port->line);
- 	if (ret && ret != -ENOENT)
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2438,9 +2438,7 @@ __setup("console_msg_format=", console_msg_format_setup);
-  */
- static int __init console_setup(char *str)
- {
--	char buf[sizeof(console_cmdline[0].name) + 4]; /* 4 for "ttyS" */
--	char *s, *options, *brl_options = NULL;
--	int idx;
-+	char *brl_options = NULL;
- 
- 	/*
- 	 * Save the console for possible driver subsystem use. Bail out early
-@@ -2463,32 +2461,6 @@ static int __init console_setup(char *str)
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
- 
--	/*
--	 * Decode str into name, index, options.
--	 */
--	if (str[0] >= '0' && str[0] <= '9') {
--		strcpy(buf, "ttyS");
--		strncpy(buf + 4, str, sizeof(buf) - 5);
--	} else {
--		strncpy(buf, str, sizeof(buf) - 1);
--	}
--	buf[sizeof(buf) - 1] = 0;
--	options = strchr(str, ',');
--	if (options)
--		*(options++) = 0;
--#ifdef __sparc__
--	if (!strcmp(str, "ttya"))
--		strcpy(buf, "ttyS0");
--	if (!strcmp(str, "ttyb"))
--		strcpy(buf, "ttyS1");
--#endif
--	for (s = buf; *s; s++)
--		if (isdigit(*s) || *s == ',')
--			break;
--	idx = simple_strtoul(s, NULL, 10);
--	*s = 0;
--
--	__add_preferred_console(buf, idx, options, brl_options, true);
- 	return 1;
- }
- __setup("console=", console_setup);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311211958.Z1kPUdyp-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/pci/controller/pcie-mediatek.c: In function 'mtk_compose_msi_msg':
+>> drivers/pci/controller/pcie-mediatek.c:400:62: warning: passing argument 1 of 'virt_to_phys' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     400 |         addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
+         |                                                              ^
+   In file included from arch/openrisc/include/asm/io.h:37,
+                    from include/linux/io.h:13,
+                    from include/linux/iopoll.h:14,
+                    from drivers/pci/controller/pcie-mediatek.c:12:
+   include/asm-generic/io.h:1003:57: note: expected 'volatile void *' but argument is of type 'const void *'
+    1003 | static inline unsigned long virt_to_phys(volatile void *address)
+         |                                          ~~~~~~~~~~~~~~~^~~~~~~
+   drivers/pci/controller/pcie-mediatek.c: In function 'mtk_pcie_enable_msi':
+   drivers/pci/controller/pcie-mediatek.c:523:66: warning: passing argument 1 of 'virt_to_phys' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     523 |         msg_addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
+         |                                                                  ^
+   include/asm-generic/io.h:1003:57: note: expected 'volatile void *' but argument is of type 'const void *'
+    1003 | static inline unsigned long virt_to_phys(volatile void *address)
+         |                                          ~~~~~~~~~~~~~~~^~~~~~~
+
+
+vim +400 drivers/pci/controller/pcie-mediatek.c
+
+   393	
+   394	static void mtk_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+   395	{
+   396		struct mtk_pcie_port *port = irq_data_get_irq_chip_data(data);
+   397		phys_addr_t addr;
+   398	
+   399		/* MT2712/MT7622 only support 32-bit MSI addresses */
+ > 400		addr = virt_to_phys((__force const void *)port->base + PCIE_MSI_VECTOR);
+   401		msg->address_hi = 0;
+   402		msg->address_lo = lower_32_bits(addr);
+   403	
+   404		msg->data = data->hwirq;
+   405	
+   406		dev_dbg(port->pcie->dev, "msi#%d address_hi %#x address_lo %#x\n",
+   407			(int)data->hwirq, msg->address_hi, msg->address_lo);
+   408	}
+   409	
+
 -- 
-2.42.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
