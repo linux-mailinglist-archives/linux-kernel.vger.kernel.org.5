@@ -2,109 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 599F67F25F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136377F25F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 07:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbjKUGtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 01:49:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S229843AbjKUGuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 01:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjKUGtw (ORCPT
+        with ESMTP id S232650AbjKUGuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 01:49:52 -0500
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [IPv6:2001:41d0:203:375::bb])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94EFA90
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 22:49:48 -0800 (PST)
-Message-ID: <11bf3c0f-f78b-4dd3-97d3-c39b5b2ae7bd@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700549386;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9BS9UBYsSndFAg/kFykIgLfKwkfc0tziM6o2ZmXP0yc=;
-        b=qgqcvbKwWn9QXxkyQuD1VkO3P4AyGBcuxrKWDxsoKY9R187ET2HSTLU1/mpggl0ZFcCOSo
-        J4HWCyhfEAj0QBgrQ9Otqfwl3Odl6dBAXBJfOD8Jn+f/+BDybL5NQDEZn7c5MB2AuPHU+4
-        MZlYVZ0uuDvxw/O3hNk3Sj1YR8igVLc=
-Date:   Mon, 20 Nov 2023 22:49:39 -0800
+        Tue, 21 Nov 2023 01:50:23 -0500
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547BC10E;
+        Mon, 20 Nov 2023 22:50:17 -0800 (PST)
+X-UUID: 369bde38883a11ee8051498923ad61e6-20231121
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=LVtuq7UsQsrk2NcQWWUiQIXFunz+bDrGIHgEFaC2aQQ=;
+        b=jZDZx22ytOcc54pbx682rIMy+bQRii1UGuQiD6slKd72GfbmXCS9J1/10UrQN40wFge9ezVc8vkqjvI02OzsxgQdJS+bnIyPf84WstN24k71qtRmSj81jpqBQZ6wj6QWV5x3zpBokZgSGrD/eqANt/OjenO75Amy8cyPEuMnZdA=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:fe7eec47-b2cc-4d27-8efa-e1605c2e0494,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:364b77b,CLOUDID:3f11e472-1bd3-4f48-b671-ada88705968c,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 369bde38883a11ee8051498923ad61e6-20231121
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1569636374; Tue, 21 Nov 2023 14:50:10 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 21 Nov 2023 14:50:08 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 21 Nov 2023 14:50:07 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        CK Hu <ck.hu@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <linaro-mm-sig@lists.linaro.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v6] drm/mediatek: add dma buffer control for drm plane disable
+Date:   Tue, 21 Nov 2023 14:50:06 +0800
+Message-ID: <20231121065006.1536-1-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 0/4] selftests/bpf: Update multiple prog_tests
- to use ASSERT_ macros
-Content-Language: en-GB
-To:     Yuran Pereira <yuran.pereira@hotmail.com>, bpf@vger.kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
-        shuah@kernel.org, song@kernel.org
-References: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+the DMA buffer is released when still accessed by Mediatek display hardware,
+this flow can lead to M4U reporting a translation fault warning
 
-On 11/20/23 7:03 PM, Yuran Pereira wrote:
-> Multiple files/programs in `tools/testing/selftests/bpf/prog_tests/` still
-> heavily use the `CHECK` macro, even when better `ASSERT_` alternatives are
-> available.
->
-> As it was already pointed out by Yonghong Song [1] in the bpf selftests the use
-> of the ASSERT_* series of macros is preferred over the CHECK macro.
->
-> This patchset replaces the usage of `CHECK(` macros to the equivalent `ASSERT_`
-> family of macros in the following prog_tests:
-> - bind_perm.c
-> - bpf_obj_id.c
-> - bpf_tcp_ca.c
-> - vmlinux.c
->
-> [1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
->
-> Changes in v3:
-> - Addressed the following points mentioned by Yonghong Song
-> - Improved `bpf_map_lookup_elem` assertion in bpf_tcp_ca.
-> - Replaced assertion introduced in v2 with one that checks `thread_ret`
->    instead of `pthread_join`. This ensures that `server`'s return value
->    (thread_ret) is the one being checked, as oposed to `pthread_join`'s
->    return value, since the latter one is less likely to fail.
->
-> Changes in v2:
-> - Fixed pthread_join assertion that broke the previous test
->
-> Previous version:
-> v2 - https://lore.kernel.org/lkml/GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
-> v1 - https://lore.kernel.org/lkml/GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
->
-> Yuran Pereira (4):
->    Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
->    Replaces the usage of CHECK calls for ASSERTs in bind_perm
->    Replaces the usage of CHECK calls for ASSERTs in bpf_obj_id
->    selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in
->      vmlinux
->
->   .../selftests/bpf/prog_tests/bind_perm.c      |   6 +-
->   .../selftests/bpf/prog_tests/bpf_obj_id.c     | 204 +++++++-----------
->   .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  48 ++---
->   .../selftests/bpf/prog_tests/vmlinux.c        |  16 +-
->   4 files changed, 105 insertions(+), 169 deletions(-)
->
-Ack for the whole series:
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+add dma buffer control flow in mediatek driver:
+get dma buffer when drm plane disable
+put dma buffer when overlay really disable
 
-Yuran, next time when you submit patches, you can carry 'Acked-by' tag
-from previous revision if there are no significant changes. This will
-reduce some of reviewers and maintainers' work.
+Fixes: 41016fe1028e ("drm: Rename plane->state variables in atomic update and disable")
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+---
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c  | 25 ++++++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c   |  1 +
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c | 12 ++++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_plane.h |  1 +
+ 4 files changed, 39 insertions(+)
+
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index c277b9fae950..188aaa97e5e3 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -4,6 +4,7 @@
+  */
+ 
+ #include <linux/clk.h>
++#include <linux/dma-buf.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/of.h>
+@@ -283,6 +284,23 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(struct drm_crtc *crtc,
+ 	return NULL;
+ }
+ 
++static void mtk_drm_dma_buf_put(struct mtk_drm_crtc *mtk_crtc)
++{
++	unsigned int i;
++
++	for (i = 0; i < mtk_crtc->layer_nr; i++) {
++		struct drm_plane *plane = &mtk_crtc->planes[i];
++		struct mtk_plane_state *plane_state;
++
++		plane_state = to_mtk_plane_state(plane->state);
++
++		if (plane_state && plane_state->pending.dma_buf) {
++			dma_buf_put(plane_state->pending.dma_buf);
++			plane_state->pending.dma_buf = NULL;
++		}
++	}
++}
++
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+ {
+@@ -323,6 +341,8 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
+ 		mtk_crtc->pending_async_planes = false;
+ 	}
+ 
++	mtk_drm_dma_buf_put(mtk_crtc);
++
+ 	mtk_crtc->cmdq_vblank_cnt = 0;
+ 	wake_up(&mtk_crtc->cb_blocking_queue);
+ }
+@@ -627,9 +647,14 @@ static void mtk_crtc_ddp_irq(void *data)
+ 	else if (mtk_crtc->cmdq_vblank_cnt > 0 && --mtk_crtc->cmdq_vblank_cnt == 0)
+ 		DRM_ERROR("mtk_crtc %d CMDQ execute command timeout!\n",
+ 			  drm_crtc_index(&mtk_crtc->base));
++
++	if (!mtk_crtc->cmdq_client.chan)
++		mtk_drm_dma_buf_put(mtk_crtc);
+ #else
+ 	if (!priv->data->shadow_register)
+ 		mtk_crtc_ddp_config(crtc, NULL);
++
++	mtk_drm_dma_buf_put(mtk_crtc);
+ #endif
+ 	mtk_drm_finish_page_flip(mtk_crtc);
+ }
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 2dfaa613276a..4fd232644383 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -1019,4 +1019,5 @@ module_exit(mtk_drm_exit);
+ 
+ MODULE_AUTHOR("YT SHEN <yt.shen@mediatek.com>");
+ MODULE_DESCRIPTION("Mediatek SoC DRM driver");
++MODULE_IMPORT_NS(DMA_BUF);
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index ddc9355b06d5..fbfcd0d1a56c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -12,6 +12,7 @@
+ #include <drm/drm_framebuffer.h>
+ #include <drm/drm_gem_atomic_helper.h>
+ #include <linux/align.h>
++#include <linux/dma-buf.h>
+ 
+ #include "mtk_drm_crtc.h"
+ #include "mtk_drm_ddp_comp.h"
+@@ -283,6 +284,17 @@ static void mtk_plane_atomic_disable(struct drm_plane *plane,
+ 	struct drm_plane_state *new_state = drm_atomic_get_new_plane_state(state,
+ 									   plane);
+ 	struct mtk_plane_state *mtk_plane_state = to_mtk_plane_state(new_state);
++	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state,
++									   plane);
++
++	if (old_state && old_state->fb) {
++		struct drm_gem_object *gem = old_state->fb->obj[0];
++
++		if (gem && gem->dma_buf) {
++			get_dma_buf(gem->dma_buf);
++			mtk_plane_state->pending.dma_buf = gem->dma_buf;
++		}
++	}
+ 	mtk_plane_state->pending.enable = false;
+ 	wmb(); /* Make sure the above parameter is set before update */
+ 	mtk_plane_state->pending.dirty = true;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.h b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+index 99aff7da0831..3aba0b58ef3c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.h
+@@ -33,6 +33,7 @@ struct mtk_plane_pending_state {
+ 	bool				async_dirty;
+ 	bool				async_config;
+ 	enum drm_color_encoding		color_encoding;
++	struct dma_buf			*dma_buf;
+ };
+ 
+ struct mtk_plane_state {
+-- 
+2.25.1
 
