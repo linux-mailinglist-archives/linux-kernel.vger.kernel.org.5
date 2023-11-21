@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A867F2B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E5C7F2B9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjKULVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
+        id S232964AbjKULWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:22:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbjKULVL (ORCPT
+        with ESMTP id S229481AbjKULWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:21:11 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2074.outbound.protection.outlook.com [40.107.96.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994C4F4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:21:07 -0800 (PST)
+        Tue, 21 Nov 2023 06:22:48 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4619C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:22:43 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oQ/ZqAc3ykckKsbrvfAOWuaDP1m9yiKl/u15rI04rKMBC4Hc1HS+VAhT6Tm7jHnEPxkk+xhzz1aPpgvYl53mnBH7DGaWHY6/6ZWQvyyUCCIzMpO8A+T3WyixZMDmWa1Vz3UJgkiw/PMHLvaVJ/0RyPi88w2VIe8zh4BQIMhNVB//R7/UdM6iwOyv6SgSU1WS3Q9eKhpCxkEwoSM23Zr0tHWpJbI5+2MxpMBSOE/Hecw5GvQ0QUIXqa5Ucgy34jOUh6w2JzYrw/FXJRIDUASI2xX6H6L3QPxg851nYsfeVFUj+/XCAthEP2ZgA8419KHn/9kZLFVGvrYKuhbvnbHhNg==
+ b=NgegHFPhzLKYXv6LqsA4eY7+KnCksZpy63EVnUxW0VfIRBECmqEyaXEgeXLr0YVRgSuGBZbPbgGGl0KHxnVSEv4ZCse81cTllZEtVUBKslk/NQFC0sZedR8yXkBIj0WrxCc6KpGc7z0cvJVRPkcPXyW7jDH83+3WRcyiX9HxTUXD4n1jV0+XIkevK0CyekpNm5JoabGvwVUXa9RJiq2KMf3Hj4if1zjqNwqjudh3t27YcmWqQ5NeuMquMfO5Lvm+zWlthl+WXjLuJKbMXolqTLemuv7T9ugM04gdG0n321piyVXoAjuqkIj9cp+8NNzmOybnRgRCt/TOQx/Dn33kXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NBnKcuz+blR+bidsTL5yDX/yyJ20Yc9NGocYRSUR5WE=;
- b=ONeByq9XdBC19bWxwlvc43avi0bei2S/j1vR5dDSKOwvLjNeYu80qYTU8HHWwXdALOKonBpX3lk10vcUakwYBUrZgmkGwarZAYVWkytzoCFey37+Lkf11qm/ji+/8JIspy1Pz9xOMI8LfTF7xSL4UwEx1ykhTuZhqtV4o69fRTVoP5rNZvaNoGQ7jWmTQUQxwZGi41LrOjAuXvS2Aov+NR69/3gx8z6Uu71usQWxBVaLdNzYcRk3eDEk82XFPgfzwEFF+e3KLuxvYug5EatonRfcDC9hLPhzeOi3wVgKhxGlAN4wlE/PLCMLHLPfUoEo00VJb228Sy26lutF3Rr1ZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=T55v0ThRPFS8ivvT1uW5DI5uyerugczAR+2pDPt0p8U=;
+ b=kKo8Byi+NO/q25N4z2AWXVq3tQutKAgEySv8v86tNJAGpqmHmY48n7KyE/ThXWHINQ2BB3AKDwWeAqtQ5VtZPe/qV+Fq+Nfh3o7aqlfPaXH+0tutJtAZWfdHPI9fJxPGFGF5SdhVvsizp9ZdoGD9TSU1yH/d6V6FAP5WMRYBIW3MWGAWgugs9pS7M915UwW2OJmPQcQ8FG8VuOI5sEdn9pU8/jKkkOn1coRvKhpKQqsiMu45UyfmnYyqqhlxB7AD4BHxuNmJvJJgRKl1Axrh99a5GrHchvdvAAFm/kMONhC5Hu7bG6jtlCdnT0zR5gZNgfeN+RYdq7136y9la3iTYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NBnKcuz+blR+bidsTL5yDX/yyJ20Yc9NGocYRSUR5WE=;
- b=ZRv3n8oFf59h3mNImB8UFZtXcBjbTlvVCjgOAn2ki2ClAkvXy93/bieT5QLYQgJ2g8228C0PjA8Yzm03cBxaBTB8WuN3Wx/7zqZwVydOErVeOfEm2UQ8sdy9D03NVP/VmZepvF8mk/3N706xr1IDsIT2mFC3U9hf8y4792C+Iic=
-Received: from DS7PR05CA0064.namprd05.prod.outlook.com (2603:10b6:8:57::26) by
- SN7PR12MB8171.namprd12.prod.outlook.com (2603:10b6:806:322::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.25; Tue, 21 Nov 2023 11:21:03 +0000
-Received: from CY4PEPF0000EDD4.namprd03.prod.outlook.com
- (2603:10b6:8:57:cafe::41) by DS7PR05CA0064.outlook.office365.com
- (2603:10b6:8:57::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.17 via Frontend
- Transport; Tue, 21 Nov 2023 11:21:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000EDD4.mail.protection.outlook.com (10.167.241.208) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Tue, 21 Nov 2023 11:21:03 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
- 2023 05:21:00 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
- 2023 05:21:00 -0600
-Received: from xsjwillw50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 21 Nov 2023 05:20:59 -0600
-From:   Ronak Jain <ronak.jain@amd.com>
-To:     <michal.simek@amd.com>, <gregkh@linuxfoundation.org>,
-        <linus.walleij@linaro.org>, <sai.krishna.potthuri@amd.com>,
-        <tanmay.shah@amd.com>, <ben.levinsky@amd.com>,
-        <nava.kishore.manne@amd.com>, <robh@kernel.org>,
-        <dhaval.r.shah@amd.com>, <marex@denx.de>,
-        <roman.gushchin@linux.dev>, <mathieu.poirier@linaro.org>,
-        <shubhrajyoti.datta@amd.com>, <arnd@arndb.de>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] xilinx: firmware: Add sysfs to get last reset reason
-Date:   Tue, 21 Nov 2023 03:20:56 -0800
-Message-ID: <20231121112056.1762641-3-ronak.jain@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231121112056.1762641-1-ronak.jain@amd.com>
-References: <20231121112056.1762641-1-ronak.jain@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ bh=T55v0ThRPFS8ivvT1uW5DI5uyerugczAR+2pDPt0p8U=;
+ b=cjNIm4z0LaI9YgZXFsttx0sCFF/3gxxG0+UKAcKc6sfOA+Z4Ib2f9jNmad0lG894jdTMgAfP7Ypid6o4nZtVpi2VPLhQUzPi6RDoDedMA0tTGNlSSApaYCIv2hhks0xE4Di+qYS0Z5nSvD5JWFo70fx0PGCxq1Rf4TVR8vh61sc38WFF9myJghm/j7W3Uy9wtafytEWOdhQS7sp52ihYeyWeU9gDTM9zPzajxamNq15za+xXSO/lx8L7iz+aUffXdEM3dLAl95tkumkvoaNRhKNE29uGQ6GL/IFvuvfSCN1fEh7lZMx75j8xaYuGXvyRTid1eyLEp8w+0X3jo1antg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
+ by CH2PR12MB5019.namprd12.prod.outlook.com (2603:10b6:610:6a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.25; Tue, 21 Nov
+ 2023 11:22:40 +0000
+Received: from BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::fb09:9679:bd22:6bcb]) by BYAPR12MB3176.namprd12.prod.outlook.com
+ ([fe80::fb09:9679:bd22:6bcb%7]) with mapi id 15.20.7002.027; Tue, 21 Nov 2023
+ 11:22:39 +0000
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-13-ryan.roberts@arm.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 12/14] arm64/mm: Wire up PTE_CONT for user mappings
+Date:   Tue, 21 Nov 2023 22:22:28 +1100
+In-reply-to: <20231115163018.1303287-13-ryan.roberts@arm.com>
+Message-ID: <87v89vmjus.fsf@nvdebian.thelocal>
 Content-Type: text/plain
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SYCPR01CA0005.ausprd01.prod.outlook.com
+ (2603:10c6:10:31::17) To BYAPR12MB3176.namprd12.prod.outlook.com
+ (2603:10b6:a03:134::26)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD4:EE_|SN7PR12MB8171:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8cad1603-f132-4fa8-09c5-08dbea83f288
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|CH2PR12MB5019:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8bffa6e-9f01-42f3-260c-08dbea842b9a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dFbJYE3nF6ZwH+L5tESfTs7qhsvet0kg8zljPAwMxW52d0ml2FYxL7W9/6exAqgmwE7+3OChnHxw9qh3vdf4NQhclK4WeGx/4ur9516ZCmWDWmC9K3QKYOycvGgF5C80bWMHcVpgyGS3AvzSkntkWeoLfCLIO67wcYzkW73wJkKYxDtbDq6pFFReNy2qTxBpjNb4uB/gNzHEHbM9uWR1xOGWiI/aaxPej8NCPpiplDZG/c5GGDslAiMmC47mgdmpOA7Va7fEyMI99AM1MhQbV47AgH3ZDZbr2+0JW/452hoL40wK2R0P64vodgHn/y6yM/bFJK12rvzz4awMPvzHUBWdR2ZDCIKA+8N29UKGHPXjE22WUd9tPcMCN4/c2wEKhU1fLZmbZdvJOsZ/CeEaaQddddbxYAslzkiQS+W8VZhVYJwFRuNuqBX6kykioETKKAaMPqBAuEi0oUK94FOCI2Hif2/LJoR+2hlK4nWOPzK4Qx0NWFOgKSpwxyMAc1y4xVnWg/lUmUeKY2pNRQMszg5PEDPs8m1txzqV19oCWl+vcQlNg4bOGX80zfyT0hTkXjzJ11oWQJf1w36ZJJPHdSkmQouqu9m8PuFZc5ySnm9YmvQFWFq1YzH1u5oArjnYfXihm+WFJeBOUep0vqUcJ6OUI2f911dxL0tgdfhJ9Y2HqGs9bsfqCtayfv6NcNIzGekm0XUZ4ZpDPVwv/ao7PoFNuCq0jy378ggt9dNHTfOC3sw1VsNm7gN/Xyo7Gp1HUA5NyN/DwWFAhBchtpC49MjngUsJscnXYMeEsPe8igM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(346002)(376002)(396003)(230922051799003)(451199024)(82310400011)(64100799003)(186009)(1800799012)(46966006)(36840700001)(40470700004)(36756003)(41300700001)(5660300002)(40460700003)(86362001)(2906002)(44832011)(921008)(82740400003)(336012)(426003)(81166007)(356005)(110136005)(40480700001)(478600001)(6666004)(1076003)(26005)(2616005)(4326008)(8676002)(8936002)(47076005)(70586007)(70206006)(316002)(36860700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 11:21:03.2580
+X-Microsoft-Antispam-Message-Info: Hx8zpAfW7pRhhykqbC+RtIEpCEGAQOVJEJoVusELljY50ssvNbj+9qebpfIPUxbdUm3ZhLtnF+jmDkj+L+MFa6mChMT61fpnXug4s9J7GK/ztrjdbmINMDQm5nbRZusE3KQpILys2jtQ4T4/lowsYVE+pWkoIr/TNxmbPoqFoKEhXbv+a2eaK71fGZyIOk+JIk4zDraTHD6kGCpgez45hIiFo8iJJQZYVLCRDzF3hMctvF+9DEZ/6PFqY1WxVCJ2gRbF+Wff1jepS+Px6+djKflx6gguPz4bhU+ckkyVTm6O8nUXQOkMR/bcUeOv6bjCNv0OAOzVluBUEd8l9uf8GsMPkWGsT5H58uWmm33qmcMtas7METO6GLkzje+ICmensqrdSnlSsdMg7hVx87Y6Zo6VDtjQT0GU1caCRgWC2fXMRwFcgQz0T0W5nE0AbEtsGPLlZ24ASlYrKb18VPUR0sWY4CsramcsnrPOYSjl12h/aCXrfgKvTemqtqszLnWmfrJf4z2vJChF/XpPyCLzFj/EOIOQWB1ewIE+/CZccao1Z0Eyr+yrN5r2XABkxR9l
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(346002)(396003)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(83380400001)(30864003)(26005)(6512007)(2906002)(9686003)(5660300002)(7416002)(8936002)(41300700001)(6506007)(4326008)(8676002)(6666004)(38100700002)(316002)(54906003)(6916009)(66946007)(66556008)(66476007)(478600001)(6486002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O3pVnIGTN/89G+v9NQFrdSD/fI3Y6KqpjkXP9xJQeL1FTY6Y/v7dl1CNTUoz?=
+ =?us-ascii?Q?l5RvdzwbuDf3FADszs+F6vmY13H9SIcwvu571MbLEyMHlivB6g5WzobPzp2l?=
+ =?us-ascii?Q?Ob6lhGU3B+9stVGheWP9pkDdbBwutlrBOhDS7afvuo3mvCsXQOATlnzb7RKZ?=
+ =?us-ascii?Q?uNHcPhAxn43Y4yoIFIL88s1E8qu4XQ86YfXIk0bWS7PMXeWJKD/mHDH9Pwky?=
+ =?us-ascii?Q?qJwGEOUtKVeXPEjZ3LiajrGXIT129ncKz4PMRhPv0bvi+VSSq/5wSW75niw5?=
+ =?us-ascii?Q?YazUbwR/79vFZfLQY2wxGigNFOsOHGlNlDe3gSmaNf7rUl5A9vWJRpWkSubE?=
+ =?us-ascii?Q?eSS7lxnrXJKh75PLyDR5AsZYmWQLX+qFEc2zpDg7MG2raupLpU4UO1plt0NQ?=
+ =?us-ascii?Q?1evp2gwKKMW61UxShA5vL8JIU4fgsrYlYqqbItWloHk9DWmHjtWwv4qAXkRH?=
+ =?us-ascii?Q?YPMVC6wiq6bttHzRDbKL8pLS5VtSaZVJCQhg4Vh/3yH7TDSBpDmeBNkDTOJo?=
+ =?us-ascii?Q?Rfv1E/eBEX8QdzmF2O+zltQ71e7V9y1UYVm+DFIvQ/impPIgQlsyrUU36sdz?=
+ =?us-ascii?Q?uOEbadWcOyl4s/1gd7/oc1USjQuV5i3tYLWKI8xTqqvJTghxoorbNrZJFpmg?=
+ =?us-ascii?Q?b4kPTWYsZ1kLKRg8fR1x8i/OusxqgdE4kYN5j312tKgWo4YO8kPwr6WxKb5Q?=
+ =?us-ascii?Q?rdCL525RTofrDk3wlAxUM2iVzNK7lyNhy34iQr3ZELvjKiymQ5kaMr9vhVHW?=
+ =?us-ascii?Q?CHhqgi8V1BBmGTnWB4p70NL7zAc9FSEB4Qi8C6C4SfGW2CeLfhUdKrnQb7tb?=
+ =?us-ascii?Q?50zxrgjTqpfcomgFNijsiEW0lXrSSokXeX0kSzYUHRUmEEeTBu/DN2WUxcx4?=
+ =?us-ascii?Q?jHHbp9VKwF+3q9sNfD3Lo308nD1OPE3txBlZS1rT8j98Rhj4by0HkKbI+OfR?=
+ =?us-ascii?Q?PcWwE0Auh+FQFgQZ7lpEXev7fqGM2xNKRtsV83cq4QbfACDruUzYz1ou4ATS?=
+ =?us-ascii?Q?WpOY55vX5wYiEmzzHOkauhdKdBkbZil7YMGEk4nHRZc5wp5Yy8bRYzAm0tDb?=
+ =?us-ascii?Q?1JpDum98FquNxzkdxSInLwWH5x4PK9cHvAbMhVESv4WwqNi3d2GYpgRsr9M5?=
+ =?us-ascii?Q?DxULUBa483jme9ME8txkDLPQSHlHMbnmw3C7Vyf++qWbblZdt9YFDQJ8wz1h?=
+ =?us-ascii?Q?vPA3kLg/lxQ/dmmAb52QzCgaMhMRnt798flvXVweAz1UmH2V9a9yp0Jr9w9p?=
+ =?us-ascii?Q?TB0dpIJQpZQ2l+Uu19C5f0OwSKqefLc3Gjgt+HOLBm+CsSSVIBW7WocgBXfc?=
+ =?us-ascii?Q?9wnwF+csgbzdmEVfbXpb9j2HGI1QBVsXHuKLLPFpGFt8nMRRjKS4cMRBrguh?=
+ =?us-ascii?Q?UWVdJJJG4ly5C+9E1eCVMw8l1kVy1QjmyrOoDsL2XT4LqPTXqyZY3j2elwBU?=
+ =?us-ascii?Q?Mko4JRGyh2Rqgejo+TCJk48WXw4ZXbYm3vp6SYMTxRBzItvExPoGn979woiL?=
+ =?us-ascii?Q?Z+tmWbT1oDbZs0+q4NUSesXv7BsBSLCrDbzdUnL7oHwinbpOcdv+gEDQIphw?=
+ =?us-ascii?Q?ioc+VOiurPOeynZhJuhLvzLokqjS/BF+L/5lDBK/?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8bffa6e-9f01-42f3-260c-08dbea842b9a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 11:22:39.4272
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8cad1603-f132-4fa8-09c5-08dbea83f288
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD4.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8171
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rv5PgmkjolPTRia22gxrZf8/BZ8JzP72JyI8Kl41VUd1ayjqNUIIicG00WnjW95cj0XtvVz4ltM3y3rS4bEfFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5019
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,119 +135,351 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sysfs interface to get the last reset reason of the system from
-a user space.
 
-When the system reset happens whether intentionally or due to some
-errors, the firmware used to store the last reset reason and the same
-be queried by using the IOCTL API or the sysfs entry to know the
-reason behind the system reset and accordingly, the error can be
-diagnostic.
+Ryan Roberts <ryan.roberts@arm.com> writes:
 
-Signed-off-by: Ronak Jain <ronak.jain@amd.com>
----
- .../ABI/stable/sysfs-driver-firmware-zynqmp   | 13 +++++++
- drivers/firmware/xilinx/zynqmp.c              | 36 +++++++++++++++++++
- include/linux/firmware/xlnx-zynqmp.h          | 11 ++++++
- 3 files changed, 60 insertions(+)
+[...]
 
-diff --git a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-index c3fec3c835af..77ae69870767 100644
---- a/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-+++ b/Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
-@@ -254,3 +254,16 @@ Description:
- 		The expected result is 500.
- 
- Users:		Xilinx
-+
-+What:		/sys/devices/platform/firmware\:zynqmp-firmware/last_reset_reason
-+Date:		Nov 2023
-+KernelVersion:	6.7
-+Contact:	"Ronak Jain" <ronak.jain@amd.com>
-+Description:
-+		This sysfs interface allows to get last reset reason.
-+
-+		Usage:
-+		Get last reset reason
-+		# cat /sys/devices/platform/firmware\:zynqmp-firmware/last_reset_reason
-+
-+Users:		Xilinx
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 5815d1e94407..8f49861ebbb3 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -1902,6 +1902,41 @@ static ssize_t feature_config_value_store(struct device *device,
- 
- static DEVICE_ATTR_RW(feature_config_value);
- 
-+static ssize_t last_reset_reason_show(struct device *device,
-+				      struct device_attribute *attr,
-+				      char *buf)
-+{
-+	u32 ret_payload[PAYLOAD_ARG_CNT];
-+	int ret;
-+
-+	ret = zynqmp_pm_get_last_reset_reason(ret_payload);
-+	if (ret)
-+		return ret;
-+
-+	switch (ret_payload[1]) {
-+	case PM_RESET_REASON_EXT_POR:
-+		return sprintf(buf, "ext_por\n");
-+	case PM_RESET_REASON_SW_POR:
-+		return sprintf(buf, "sw_por\n");
-+	case PM_RESET_REASON_SLR_POR:
-+		return sprintf(buf, "slr_por\n");
-+	case PM_RESET_REASON_ERR_POR:
-+		return sprintf(buf, "err_por\n");
-+	case PM_RESET_REASON_DAP_SRST:
-+		return sprintf(buf, "dap_srst\n");
-+	case PM_RESET_REASON_ERR_SRST:
-+		return sprintf(buf, "err_srst\n");
-+	case PM_RESET_REASON_SW_SRST:
-+		return sprintf(buf, "sw_srst\n");
-+	case PM_RESET_REASON_SLR_SRST:
-+		return sprintf(buf, "slr_srst\n");
-+	default:
-+		return sprintf(buf, "unknown reset\n");
-+	}
-+}
-+
-+static DEVICE_ATTR_RO(last_reset_reason);
-+
- static struct attribute *zynqmp_firmware_attrs[] = {
- 	&dev_attr_ggs0.attr,
- 	&dev_attr_ggs1.attr,
-@@ -1915,6 +1950,7 @@ static struct attribute *zynqmp_firmware_attrs[] = {
- 	&dev_attr_health_status.attr,
- 	&dev_attr_feature_config_id.attr,
- 	&dev_attr_feature_config_value.attr,
-+	&dev_attr_last_reset_reason.attr,
- 	NULL,
- };
- 
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 2d8c5e88391b..6d4015b6d964 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -497,6 +497,17 @@ enum pm_gem_config_type {
- 	GEM_CONFIG_FIXED = 2,
- };
- 
-+enum pm_reset_reason {
-+	PM_RESET_REASON_EXT_POR = 0,
-+	PM_RESET_REASON_SW_POR = 1,
-+	PM_RESET_REASON_SLR_POR = 2,
-+	PM_RESET_REASON_ERR_POR = 3,
-+	PM_RESET_REASON_DAP_SRST = 7,
-+	PM_RESET_REASON_ERR_SRST = 8,
-+	PM_RESET_REASON_SW_SRST = 9,
-+	PM_RESET_REASON_SLR_SRST = 10,
-+};
-+
- /**
-  * struct zynqmp_pm_query_data - PM query data
-  * @qid:	query ID
--- 
-2.25.1
+> +static void contpte_fold(struct mm_struct *mm, unsigned long addr,
+> +			pte_t *ptep, pte_t pte, bool fold)
+> +{
+> +	struct vm_area_struct vma = TLB_FLUSH_VMA(mm, 0);
+> +	unsigned long start_addr;
+> +	pte_t *start_ptep;
+> +	int i;
+> +
+> +	start_ptep = ptep = contpte_align_down(ptep);
+> +	start_addr = addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> +	pte = pfn_pte(ALIGN_DOWN(pte_pfn(pte), CONT_PTES), pte_pgprot(pte));
+> +	pte = fold ? pte_mkcont(pte) : pte_mknoncont(pte);
+> +
+> +	for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE) {
+> +		pte_t ptent = __ptep_get_and_clear(mm, addr, ptep);
+> +
+> +		if (pte_dirty(ptent))
+> +			pte = pte_mkdirty(pte);
+> +
+> +		if (pte_young(ptent))
+> +			pte = pte_mkyoung(pte);
+> +	}
+> +
+> +	__flush_tlb_range(&vma, start_addr, addr, PAGE_SIZE, true, 3);
+> +
+> +	__set_ptes(mm, start_addr, start_ptep, pte, CONT_PTES);
+> +}
+> +
+> +void __contpte_try_fold(struct mm_struct *mm, unsigned long addr,
+> +			pte_t *ptep, pte_t pte)
+> +{
+> +	/*
+> +	 * We have already checked that the virtual and pysical addresses are
+> +	 * correctly aligned for a contpte mapping in contpte_try_fold() so the
+> +	 * remaining checks are to ensure that the contpte range is fully
+> +	 * covered by a single folio, and ensure that all the ptes are valid
+> +	 * with contiguous PFNs and matching prots. We ignore the state of the
+> +	 * access and dirty bits for the purpose of deciding if its a contiguous
+> +	 * range; the folding process will generate a single contpte entry which
+> +	 * has a single access and dirty bit. Those 2 bits are the logical OR of
+> +	 * their respective bits in the constituent pte entries. In order to
+> +	 * ensure the contpte range is covered by a single folio, we must
+> +	 * recover the folio from the pfn, but special mappings don't have a
+> +	 * folio backing them. Fortunately contpte_try_fold() already checked
+> +	 * that the pte is not special - we never try to fold special mappings.
+> +	 * Note we can't use vm_normal_page() for this since we don't have the
+> +	 * vma.
+> +	 */
+> +
+> +	struct page *page = pte_page(pte);
+> +	struct folio *folio = page_folio(page);
+> +	unsigned long folio_saddr = addr - (page - &folio->page) * PAGE_SIZE;
+> +	unsigned long folio_eaddr = folio_saddr + folio_nr_pages(folio) * PAGE_SIZE;
+> +	unsigned long cont_saddr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> +	unsigned long cont_eaddr = cont_saddr + CONT_PTE_SIZE;
+> +	unsigned long pfn;
+> +	pgprot_t prot;
+> +	pte_t subpte;
+> +	pte_t *orig_ptep;
+> +	int i;
+> +
+> +	if (folio_saddr > cont_saddr || folio_eaddr < cont_eaddr)
+> +		return;
+> +
+> +	pfn = pte_pfn(pte) - ((addr - cont_saddr) >> PAGE_SHIFT);
+> +	prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
+> +	orig_ptep = ptep;
+> +	ptep = contpte_align_down(ptep);
+> +
+> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
+> +		subpte = __ptep_get(ptep);
+> +		subpte = pte_mkold(pte_mkclean(subpte));
+> +
+> +		if (!pte_valid(subpte) ||
+> +		    pte_pfn(subpte) != pfn ||
+> +		    pgprot_val(pte_pgprot(subpte)) != pgprot_val(prot))
+> +			return;
+> +	}
+> +
+> +	contpte_fold(mm, addr, orig_ptep, pte, true);
+> +}
+> +EXPORT_SYMBOL(__contpte_try_fold);
+> +
+> +void __contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
+> +			pte_t *ptep, pte_t pte)
+> +{
+> +	/*
+> +	 * We have already checked that the ptes are contiguous in
+> +	 * contpte_try_unfold(), so we can unfold unconditionally here.
+> +	 */
+> +
+> +	contpte_fold(mm, addr, ptep, pte, false);
+
+I'm still working my way through the series but calling a fold during an
+unfold stood out as it seemed wrong. Obviously further reading revealed
+the boolean flag that changes the functions meaning but I think it would
+be better to refactor that.
+
+We could easily rename contpte_fold() to eg. set_cont_ptes() and factor
+the pte calculation loop into a separate helper
+(eg. calculate_contpte_dirty_young() or some hopefully better name)
+called further up the stack. That has an added benefit of providing a
+spot to add the nice comment for young/dirty rules you provided in the
+patch description ;-)
+
+In other words we'd have something like:
+
+void __contpte_try_unfold() {
+     pte = calculate_contpte_dirty_young(mm, addr, ptep, pte);
+     pte = pte_mknoncont(pte);
+     set_cont_ptes(mm, addr, ptep, pte);
+}
+
+Which IMHO is more immediately understandable.
+
+ - Alistair
+
+> +}
+> +EXPORT_SYMBOL(__contpte_try_unfold);
+> +
+> +pte_t contpte_ptep_get(pte_t *ptep, pte_t orig_pte)
+> +{
+> +	/*
+> +	 * Gather access/dirty bits, which may be populated in any of the ptes
+> +	 * of the contig range. We are guarranteed to be holding the PTL, so any
+> +	 * contiguous range cannot be unfolded or otherwise modified under our
+> +	 * feet.
+> +	 */
+> +
+> +	pte_t pte;
+> +	int i;
+> +
+> +	ptep = contpte_align_down(ptep);
+> +
+> +	for (i = 0; i < CONT_PTES; i++, ptep++) {
+> +		pte = __ptep_get(ptep);
+> +
+> +		if (pte_dirty(pte))
+> +			orig_pte = pte_mkdirty(orig_pte);
+> +
+> +		if (pte_young(pte))
+> +			orig_pte = pte_mkyoung(orig_pte);
+> +	}
+> +
+> +	return orig_pte;
+> +}
+> +EXPORT_SYMBOL(contpte_ptep_get);
+> +
+> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
+> +{
+> +	/*
+> +	 * Gather access/dirty bits, which may be populated in any of the ptes
+> +	 * of the contig range. We may not be holding the PTL, so any contiguous
+> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
+> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
+> +	 * in the range are valid and have CONT_PTE set, that all pfns are
+> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
+> +	 * If we find a pte that is not consistent, then we must be racing with
+> +	 * an update so start again. If the target pte does not have CONT_PTE
+> +	 * set then that is considered consistent on its own because it is not
+> +	 * part of a contpte range.
+> +	 */
+> +
+> +	pte_t orig_pte;
+> +	pgprot_t orig_prot;
+> +	pte_t *ptep;
+> +	unsigned long pfn;
+> +	pte_t pte;
+> +	pgprot_t prot;
+> +	int i;
+> +
+> +retry:
+> +	orig_pte = __ptep_get(orig_ptep);
+> +
+> +	if (!pte_valid_cont(orig_pte))
+> +		return orig_pte;
+> +
+> +	orig_prot = pte_pgprot(pte_mkold(pte_mkclean(orig_pte)));
+> +	ptep = contpte_align_down(orig_ptep);
+> +	pfn = pte_pfn(orig_pte) - (orig_ptep - ptep);
+> +
+> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
+> +		pte = __ptep_get(ptep);
+> +		prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
+> +
+> +		if (!pte_valid_cont(pte) ||
+> +		   pte_pfn(pte) != pfn ||
+> +		   pgprot_val(prot) != pgprot_val(orig_prot))
+> +			goto retry;
+> +
+> +		if (pte_dirty(pte))
+> +			orig_pte = pte_mkdirty(orig_pte);
+> +
+> +		if (pte_young(pte))
+> +			orig_pte = pte_mkyoung(orig_pte);
+> +	}
+> +
+> +	return orig_pte;
+> +}
+> +EXPORT_SYMBOL(contpte_ptep_get_lockless);
+> +
+> +void contpte_set_ptes(struct mm_struct *mm, unsigned long addr,
+> +					pte_t *ptep, pte_t pte, unsigned int nr)
+> +{
+> +	unsigned long next;
+> +	unsigned long end = addr + (nr << PAGE_SHIFT);
+> +	unsigned long pfn = pte_pfn(pte);
+> +	pgprot_t prot = pte_pgprot(pte);
+> +	pte_t orig_pte;
+> +
+> +	do {
+> +		next = pte_cont_addr_end(addr, end);
+> +		nr = (next - addr) >> PAGE_SHIFT;
+> +		pte = pfn_pte(pfn, prot);
+> +
+> +		if (((addr | next | (pfn << PAGE_SHIFT)) & ~CONT_PTE_MASK) == 0)
+> +			pte = pte_mkcont(pte);
+> +		else
+> +			pte = pte_mknoncont(pte);
+> +
+> +		/*
+> +		 * If operating on a partial contiguous range then we must first
+> +		 * unfold the contiguous range if it was previously folded.
+> +		 * Otherwise we could end up with overlapping tlb entries.
+> +		 */
+> +		if (nr != CONT_PTES)
+> +			contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
+> +
+> +		/*
+> +		 * If we are replacing ptes that were contiguous or if the new
+> +		 * ptes are contiguous and any of the ptes being replaced are
+> +		 * valid, we need to clear and flush the range to prevent
+> +		 * overlapping tlb entries.
+> +		 */
+> +		orig_pte = __ptep_get(ptep);
+> +		if (pte_valid_cont(orig_pte) ||
+> +		    (pte_cont(pte) && ptep_any_valid(ptep, nr)))
+> +			ptep_clear_flush_range(mm, addr, ptep, nr);
+> +
+> +		__set_ptes(mm, addr, ptep, pte, nr);
+> +
+> +		addr = next;
+> +		ptep += nr;
+> +		pfn += nr;
+> +
+> +	} while (addr != end);
+> +}
+> +EXPORT_SYMBOL(contpte_set_ptes);
+> +
+> +int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
+> +					unsigned long addr, pte_t *ptep)
+> +{
+> +	/*
+> +	 * ptep_clear_flush_young() technically requires us to clear the access
+> +	 * flag for a _single_ pte. However, the core-mm code actually tracks
+> +	 * access/dirty per folio, not per page. And since we only create a
+> +	 * contig range when the range is covered by a single folio, we can get
+> +	 * away with clearing young for the whole contig range here, so we avoid
+> +	 * having to unfold.
+> +	 */
+> +
+> +	int i;
+> +	int young = 0;
+> +
+> +	ptep = contpte_align_down(ptep);
+> +	addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> +
+> +	for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE)
+> +		young |= __ptep_test_and_clear_young(vma, addr, ptep);
+> +
+> +	return young;
+> +}
+> +EXPORT_SYMBOL(contpte_ptep_test_and_clear_young);
+> +
+> +int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
+> +					unsigned long addr, pte_t *ptep)
+> +{
+> +	int young;
+> +
+> +	young = contpte_ptep_test_and_clear_young(vma, addr, ptep);
+> +
+> +	if (young) {
+> +		/*
+> +		 * See comment in __ptep_clear_flush_young(); same rationale for
+> +		 * eliding the trailing DSB applies here.
+> +		 */
+> +		addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> +		__flush_tlb_range_nosync(vma, addr, addr + CONT_PTE_SIZE,
+> +					 PAGE_SIZE, true, 3);
+> +	}
+> +
+> +	return young;
+> +}
+> +EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
+> +
+> +int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
+> +					unsigned long addr, pte_t *ptep,
+> +					pte_t entry, int dirty)
+> +{
+> +	pte_t orig_pte;
+> +	int i;
+> +	unsigned long start_addr;
+> +
+> +	/*
+> +	 * Gather the access/dirty bits for the contiguous range. If nothing has
+> +	 * changed, its a noop.
+> +	 */
+> +	orig_pte = ptep_get(ptep);
+> +	if (pte_val(orig_pte) == pte_val(entry))
+> +		return 0;
+> +
+> +	/*
+> +	 * We can fix up access/dirty bits without having to unfold/fold the
+> +	 * contig range. But if the write bit is changing, we need to go through
+> +	 * the full unfold/fold cycle.
+> +	 */
+> +	if (pte_write(orig_pte) == pte_write(entry)) {
+> +		/*
+> +		 * For HW access management, we technically only need to update
+> +		 * the flag on a single pte in the range. But for SW access
+> +		 * management, we need to update all the ptes to prevent extra
+> +		 * faults. Avoid per-page tlb flush in __ptep_set_access_flags()
+> +		 * and instead flush the whole range at the end.
+> +		 */
+> +		ptep = contpte_align_down(ptep);
+> +		start_addr = addr = ALIGN_DOWN(addr, CONT_PTE_SIZE);
+> +
+> +		for (i = 0; i < CONT_PTES; i++, ptep++, addr += PAGE_SIZE)
+> +			__ptep_set_access_flags(vma, addr, ptep, entry, 0);
+> +
+> +		if (dirty)
+> +			__flush_tlb_range(vma, start_addr, addr,
+> +							PAGE_SIZE, true, 3);
+> +	} else {
+> +		__contpte_try_unfold(vma->vm_mm, addr, ptep, orig_pte);
+> +		__ptep_set_access_flags(vma, addr, ptep, entry, dirty);
+> +		contpte_try_fold(vma->vm_mm, addr, ptep, entry);
+> +	}
+> +
+> +	return 1;
+> +}
+> +EXPORT_SYMBOL(contpte_ptep_set_access_flags);
 
