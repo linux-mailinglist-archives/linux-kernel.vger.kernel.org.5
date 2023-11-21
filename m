@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3FB7F35C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1B7F35C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbjKUSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S234244AbjKUSPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 13:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234378AbjKUSPC (ORCPT
+        with ESMTP id S234438AbjKUSPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:15:02 -0500
+        Tue, 21 Nov 2023 13:15:04 -0500
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA10D97
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:14:57 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 11F0D3201951;
-        Tue, 21 Nov 2023 13:14:56 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A07D54
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:15:00 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id ADA2E3201926;
+        Tue, 21 Nov 2023 13:14:59 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 21 Nov 2023 13:14:57 -0500
+  by compute1.internal (MEProxy); Tue, 21 Nov 2023 13:15:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700590496; x=
-        1700676896; bh=9THkF506HhQTz9C2aPreqLigusizQOZKZ9S9SPw4Ix8=; b=N
-        kBSyZWaGDoYvvuD011TrlutIOrxK+LgtnFPrXPa2NVAt2Kt2SWy5XWC1GJGAIUN7
-        dkjFPEy0di8VJjWr5dTugaGJQ4q9SkJ4Zthq7ISjzlUnLErgwNDH6mAM5VTHesl7
-        HpVA8jf0SkpQoM7FLew/TWSZiAvVMCiaoM/3pyBC+VIbLSr96Qv+PD0uBOUy7aC+
-        EeOa1kVDmfcWgi9Hh9DHqe1UrdPuGYWjaJqCm1ygXZrx7+O6kHnQeX2Njx7oTsR3
-        IORrF7fAgtVGHbOjGSlBTJoyaT+U78rHJdQ1QO9vioKCdFddZBFggNE86/rF9GPn
-        YuH4R3rBWWi8NpfxuFajQ==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1700590499; x=
+        1700676899; bh=yt9x+GFYOOcz+oCAtF66VyzySg0BOpnmmsYizNQZV7o=; b=T
+        x6OyUJ6siGMgLCOSlmMPRlcgewz5t6hllwuUkz31sW6YbxKQnQcLEXxU2OTol58x
+        ADSE55fjgZJSM1xaQk924oyU9AOCfKQnJP6uwV7GBIzXpB4+CMDSKGyzmeOOp8Yl
+        jCTY9qJ3MC5IzcY0stT6Jcvm/JDK6nbt8zQWSFrr9kvrVZcvnMSTd6Kdf1ZAores
+        sJvw3RZ5EFHOmWdYTiyefeEbbEarAvMsxnZx7Cf1WifUVRHD2hmIn89611Ju6OgP
+        sQer1t6TIHUFvioXnUZQ5z4dMQE6BCsQJMtaq4bszIKCl6+058NsaVPobkqxNJk/
+        1OfFy51seUH9vG4x55aQA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700590496; x=
-        1700676896; bh=9THkF506HhQTz9C2aPreqLigusizQOZKZ9S9SPw4Ix8=; b=v
-        bOsnEk2AK/Tc0H8I/wKGDDnr5yBSUiBOxioD/xoHiDXVXd0+LRn3yTCtbA8n4Q5y
-        dNm6uuNuHrepu4YSWoq9HK0LNS0bAEf1J+wR/fNJULYPwTygWBNs8ePVkhV16EHu
-        rnfVbgxkhJbisEfOC+agg70+IN0xoDOkA9+FuHRH9acYYTmNJ1i8WNnx0H0gRW9i
-        kPVZfhF6ztnAwtnxqcytCS2uCwSWdNu4u1jD1WVoXvGb4mzi7kMrDOFuXrKbUV+L
-        08k/gMZ1OoXkNBgBdamnjx+PH9X3e73oFvkRujMgMCa599B1GFDh+h/HBzU+Wbvv
-        1jpIJbia//UruKLICp//Q==
-X-ME-Sender: <xms:oPNcZQtpsucXkMEw2s1qYPiLVgak6DbBcP422ifJz7NEhLQcaZNBIA>
-    <xme:oPNcZde3cJljkgJmNJFP8m0iahox83ceQm5pCbu1c9HwmdqSeH-zyt-AtHZIQEfEj
-    DaWOPQhMyBdz5SpfXA>
-X-ME-Received: <xmr:oPNcZbzIvX0qsQKB923EaZzsqgMIdpOKjR3DFBHu1X1lMYBaUCYMcniUI7xeX7uEdfxBKh6aitUhLDueXiNa88jA3AJuaWtnUyy1SbjW379c>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1700590499; x=
+        1700676899; bh=yt9x+GFYOOcz+oCAtF66VyzySg0BOpnmmsYizNQZV7o=; b=J
+        dTrRogRjZog6Npk/fbuHWmNvQ+yXoM/hVJddWN3g47j1QhftGeW1Q6Wpr4TPzYoI
+        XCe+mPfRT/brI2EXx6HKoZfoYh3xxRTkphSmjrrobOiFUMtKweEnem+inJYR9D3G
+        3lH3wM0cI5Sid5O6XQnbhRVfusW5GRFUrQ5S6IAUEb81ltZyMx+xYuKZ38s/fTmy
+        1TItTanJjtNrRLXaKjUaxXXftZkZg3myiL33PN0tF2jlLd0jgHm2X6nZTUjodqWi
+        XKy8iH35lMVlpIdo4ffznSCDIXqujYPZzYQLJgyXtBlhe7jjUCzJqUhQs+oOMlHZ
+        Yxtzo87lvaM+prTx0mW3g==
+X-ME-Sender: <xms:o_NcZc5Flqt9IOM9xVpyxeYCze2ix-_tWWE5SuQaYbSgIWST6sF-FQ>
+    <xme:o_NcZd7okFciI0Mml9oz0ESVJ88A53kevkcUnfMYkywmzAauBIAEmaqkJUHTyq8CX
+    -iFBFsFKnWwOtQbCY4>
+X-ME-Received: <xmr:o_NcZbfy8qFMoTu1KbWh-jgR2mHufJ0jngNJLSoD8UX3n-foNW-tMOLX3IiqjNukoyjTT1fEA1l33r4cQwzsOWDYSOzmNCmlz65wPO5FWLpr>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddtfecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
     ekredtredttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhk
     rghrugesfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeekuedvffeuud
     ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
+    ufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
     hfrghsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:oPNcZTPMWmZIyaiM2FYBJwFI7RKywSkaZEq_F24TEqkKdiGf9s1uww>
-    <xmx:oPNcZQ-IZt20sIhpqGfl7iFbVCo4d7G0EinF422-nZ388DRw6y_PRQ>
-    <xmx:oPNcZbUEoFOxF9WIdpMfl4aIGsXc-cSdNce-VJBJ1snzgvUE__05mQ>
-    <xmx:oPNcZfZrXimex6F2XcFkok8aFzaqntETsNyefas9MqiYPHVyu7_KFw>
+X-ME-Proxy: <xmx:o_NcZRIuGfI0t64dL_UntwC0yD9eMUmXVNqQPn-7gSOOZ5GbURnxyw>
+    <xmx:o_NcZQKO-AQJ5U7k4PDVZjMn2bOi13HLbXuTkyaJIhhXXNsLAJ8c7w>
+    <xmx:o_NcZSzfKJSH2bgPGRrAzvQRV3AeDKu0JRWTsXKf2w4fQbfJUsvO3g>
+    <xmx:o_NcZU1-5fZ-u5SBCNGsPrQAqGBkej2gT6CsMXMThbe6CeCocUJ51Q>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Nov 2023 13:14:55 -0500 (EST)
+ 21 Nov 2023 13:14:58 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 2/5] staging: rtl8192e: renamed variable TXCountToDataRate
-Date:   Tue, 21 Nov 2023 13:14:32 -0500
-Message-ID: <20231121181435.9337-3-garyrookard@fastmail.org>
+Subject: [PATCH 3/5] staging: rtl8192e: renamed variable IsHTHalfNmodeAPs
+Date:   Tue, 21 Nov 2023 13:14:33 -0500
+Message-ID: <20231121181435.9337-4-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231121181435.9337-1-garyrookard@fastmail.org>
 References: <20231121181435.9337-1-garyrookard@fastmail.org>
@@ -87,58 +87,58 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Renamed from Pascal/CamelCase to Snake case the variable
-TXCountToDataRate.
-TXCountToDataRate -> tx_count_to_data_rate
+IsHTHalfNmodeAPs.
+ISHTHalfNmodeAPs -> is_ht_half_nmode_aps
 
 Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
 Driver/module rtl8192e compiles.
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl819x_HTProc.c    | 2 +-
- drivers/staging/rtl8192e/rtllib.h            | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac_wx.c | 2 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
+ drivers/staging/rtl8192e/rtllib.h         | 2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 280e335cbb6d..fb8294f31a60 100644
+index fb8294f31a60..0993263c13d3 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -114,7 +114,7 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
- 	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
+@@ -139,7 +139,7 @@ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
+ 	return MCS_DATA_RATE[is40MHz][isShortGI][nDataRate & 0xf];
  }
  
--u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate)
-+u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
+-bool IsHTHalfNmodeAPs(struct rtllib_device *ieee)
++bool is_ht_half_nmode_aps(struct rtllib_device *ieee)
  {
- 	u16	CCKOFDMRate[12] = {0x02, 0x04, 0x0b, 0x16, 0x0c, 0x12, 0x18,
- 				   0x24, 0x30, 0x48, 0x60, 0x6c};
+ 	bool			retValue = false;
+ 	struct rtllib_network *net = &ieee->current_network;
 diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index d2cf3cfaaaba..0226a69f40c3 100644
+index 0226a69f40c3..6b549629087b 100644
 --- a/drivers/staging/rtl8192e/rtllib.h
 +++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1783,7 +1783,7 @@ extern u16 MCS_DATA_RATE[2][2][77];
+@@ -1782,7 +1782,7 @@ extern u8 MCS_FILTER_ALL[];
+ extern u16 MCS_DATA_RATE[2][2][77];
  u8 HTCCheck(struct rtllib_device *ieee, u8 *pFrame);
  void HTResetIOTSetting(struct rt_hi_throughput *ht_info);
- bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
--u16  TxCountToDataRate(struct rtllib_device *ieee, u8 nDataRate);
-+u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
+-bool IsHTHalfNmodeAPs(struct rtllib_device *ieee);
++bool is_ht_half_nmode_aps(struct rtllib_device *ieee);
+ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
  int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
  int rtllib_rx_ADDBARsp(struct rtllib_device *ieee, struct sk_buff *skb);
- int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb);
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-index f32584291704..28aba1d610f7 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-@@ -208,7 +208,7 @@ int rtllib_wx_get_rate(struct rtllib_device *ieee,
- {
- 	u32 tmp_rate;
- 
--	tmp_rate = TxCountToDataRate(ieee,
-+	tmp_rate = tx_count_to_data_rate(ieee,
- 				     ieee->softmac_stats.CurrentShowTxate);
- 	wrqu->bitrate.value = tmp_rate * 500000;
- 
+diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+index 42d652fe8601..89bc38774fa7 100644
+--- a/drivers/staging/rtl8192e/rtllib_softmac.c
++++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+@@ -1872,7 +1872,7 @@ static void rtllib_rx_auth_resp(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		ieee->softmac_stats.rx_auth_rs_ok++;
+ 		if (!(ieee->ht_info->iot_action & HT_IOT_ACT_PURE_N_MODE)) {
+ 			if (!ieee->GetNmodeSupportBySecCfg(ieee->dev)) {
+-				if (IsHTHalfNmodeAPs(ieee)) {
++				if (is_ht_half_nmode_aps(ieee)) {
+ 					bSupportNmode = true;
+ 					bHalfSupportNmode = true;
+ 				} else {
 -- 
 2.41.0
 
