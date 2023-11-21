@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB277F3838
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037357F3840
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbjKUVWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:22:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        id S229684AbjKUV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbjKUVWG (ORCPT
+        with ESMTP id S229513AbjKUV0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:22:06 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987B8D5C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:21:46 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a692658181so217493739f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:21:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700601705; x=1701206505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U1iDPVZpka4nNa9ZhZHYDDoBfymnFnX6WfSx2iwPL40=;
-        b=M8Qqpnt6gbULmJHOyiOHBVQcP+3okLsEjg5+TmSTkynRs48yKvF9RfBXd7wbVHTO9o
-         pS4eXFSYRzDA5v6D3TSL9frLp+ZopmkgeXurV6aUO0Tv6uslyFpZLfiCNYOxYgjZDx8C
-         7B6bcbzfVGaO64yL4Xy6JZruOQM+6inCvKSLUcQ5fR45No+AOZLlrw8EC+TOMpZioENt
-         dGqepp/s6uLoReYSS/y/v0PRkUsbquePSCQCSp71E+xyjlo6hRZVOZlB17yQViow1gCA
-         Zna75k9L5zIrP/xYxe8gbpMgil0DHrDmbaXD4RK3XJD+kZ/zl1DqjkI13pmfz86QmkIp
-         2bEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700601705; x=1701206505;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1iDPVZpka4nNa9ZhZHYDDoBfymnFnX6WfSx2iwPL40=;
-        b=QlJJ+PsCMXZD8zfIkihoAY1vTlj+BG5L9oFsIbgLc+AORie/fSx2fXWSIOg76qWR9u
-         VI9iNf/s/oeICKvh41OZ/OKTL0z5BnTsz+1bN3+2+iM/hK+cwpsUUaSLpZ0nQJyeKGwJ
-         QMH3cP39QF/EB5GjjbbMlj0QGBcJ6LgxmhKBGEWq0/5OJAU0Ls/pQPfc5tF9A7I2G7rV
-         CrNW0aQtEj0xIqXDb1pfUm+HK1mbpRpz14ASD5kAi0gzVpVmH8YQ9GykEfdyITmMVJFb
-         PHmHYEtU2LKbDKrE1Y9mTIHpIa2PY2h1EFDxIZr5+MvWYvVZE9h0b5QVuddqjS31arVL
-         TYTw==
-X-Gm-Message-State: AOJu0Yxte4mZZHB+a82Btm+TouW5Nern30hdu4snxihgZD7XbwFxx6j3
-        +I7JejJKzlccD0+DfWjPqCc9kxcu2mVMJ5ixS8M=
-X-Google-Smtp-Source: AGHT+IHFnuR563DYa13+P5/j6U4aw6qIjVLFP30n6WKAe9EXfY7bXg7RwkoIvtNqVv18SM2SmM227A==
-X-Received: by 2002:a05:6602:8:b0:7b0:733:b8fe with SMTP id b8-20020a056602000800b007b00733b8femr137985ioa.12.1700601705205;
-        Tue, 21 Nov 2023 13:21:45 -0800 (PST)
-Received: from ?IPV6:2605:a601:adae:4500:9465:402f:4b0a:1116? ([2605:a601:adae:4500:9465:402f:4b0a:1116])
-        by smtp.gmail.com with ESMTPSA id o13-20020a6b5a0d000000b007a669ac1ef4sm2945608iob.40.2023.11.21.13.21.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 13:21:44 -0800 (PST)
-Message-ID: <b56e06b5-ff9d-4890-b0e8-ab2c929f9bc1@sifive.com>
-Date:   Tue, 21 Nov 2023 15:21:43 -0600
+        Tue, 21 Nov 2023 16:26:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08881DD
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 13:26:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700601970; x=1732137970;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=yWltos9U073xVdxGr9Xw4dPqFUsPE1sLwJOtk0Fu1Io=;
+  b=Oq4WxujUpxFi8xgBtZAhfBRDdoyORljuMoT9TWzrzgywcs33gnHpvbS2
+   hFrG5or/a9zenY7vrOAzYG9ut5NwUTsEtZq/4N5AQf01QnWcyuQ9raaNL
+   ysLkeXbNJf0GHbIIRUufSblS7yYXVfCue8LOjanyuYYiRvlWQIQxbLVcG
+   1XR/wL+EVtph+frHFJAK+5c8oIKNUuIouWa5MKgt8T6fNo9k1lGCQFF39
+   HfpxTKrAxeRh9iRsg9PPMRaPj0nM7fbZD3a128AMr3bfxuFKd7E5PNo7c
+   VAy5PkZL92ycFvlz2U9/KPevJSaC0x3OLTrE4VAXuPUEeorQ6RpRdoiqp
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="456265165"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="456265165"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 13:26:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098163044"
+X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
+   d="scan'208";a="1098163044"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Nov 2023 13:26:01 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r5YFr-0008Gw-0O;
+        Tue, 21 Nov 2023 21:25:59 +0000
+Date:   Wed, 22 Nov 2023 05:25:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Edward Cree <ecree.xilinx@gmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Andy Moreton <andy.moreton@amd.com>,
+        Simon Horman <simon.horman@corigine.com>
+Subject: drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within
+ 'struct efx_loopback_payload::(anonymous at
+ drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct
+ iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous a...
+Message-ID: <202311220537.geMTr31W-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: errata: andes: Probe IOCP during boot stage
-Content-Language: en-US
-To:     Prabhakar <prabhakar.csengg@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Yu Chien Peter Lin <peterlin@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20231121202459.36874-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20231121202459.36874-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-21 2:24 PM, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> 
-> We should be probing for IOCP during boot stage only. As we were probing
-> for IOCP for all the stages this caused the below issue during module-init
-> stage,
-> 
-> [9.019104] Unable to handle kernel paging request at virtual address ffffffff8100d3a0
-> [9.027153] Oops [#1]
-> [9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev spi_rspi i2c_core
-> [9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
-> [9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
-> [9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
-> [9.055558]  ra : andes_errata_patch_func+0x4a/0x52
-> [9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc8003abb00
-> [9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000000000
-> [9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc8003abb20
-> [9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000000001
-> [9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff8100d8be
-> [9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 000000000900031e
-> [9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 000000000000031e
-> [9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 000000000000003f
-> [9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff8151a1b0
-> [9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefefefeff
-> [9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
-> [9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 000000000000000f
-> [9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
-> [9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
-> [9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
-> [9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
-> [9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
-> [9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
-> [9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
-> [9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
-> [9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
-> [9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (0123) aef7
-> [9.205994] ---[ end trace 0000000000000000 ]---
-> 
-> This is because we called riscv_noncoherent_supported() for all the stages
-> during IOCP probe. riscv_noncoherent_supported() function sets
-> noncoherent_supported variable to true which has an annotation set to
-> "__ro_after_init" due to which we were seeing the above splat. Fix this by
-> probing IOCP during boot stage only.
-> 
-> Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  arch/riscv/errata/andes/errata.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
-> index d2e1abcac967..1c0fef111273 100644
-> --- a/arch/riscv/errata/andes/errata.c
-> +++ b/arch/riscv/errata/andes/errata.c
-> @@ -60,7 +60,8 @@ void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct al
->  					      unsigned long archid, unsigned long impid,
->  					      unsigned int stage)
->  {
-> -	errata_probe_iocp(stage, archid, impid);
-> +	if (stage == RISCV_ALTERNATIVES_BOOT)
-> +		errata_probe_iocp(stage, archid, impid);
->  
->  	/* we have nothing to patch here ATM so just return back */
->  }
+Hi Edward,
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+FYI, the error/warning still remains.
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+commit: 55c1528f9b97ff3b7efad73e8f79627fc2efb298 sfc: fix field-spanning memcpy in selftest
+date:   4 months ago
+config: arm-randconfig-003-20231122 (https://download.01.org/0day-ci/archive/20231122/202311220537.geMTr31W-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220537.geMTr31W-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311220537.geMTr31W-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(anonymous at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+      48 |                 struct iphdr ip;
+         |                              ^
+>> drivers/net/ethernet/sfc/selftest.c:48:16: warning: field ip within 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' is less aligned than 'struct iphdr' and is usually due to 'struct efx_loopback_payload::(unnamed at drivers/net/ethernet/sfc/selftest.c:46:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+   2 warnings generated.
+--
+>> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+      45 |                 struct iphdr ip;
+         |                              ^
+>> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+   2 warnings generated.
+
+
+vim +48 drivers/net/ethernet/sfc/selftest.c
+
+93e5dfa59b0e26 drivers/net/ethernet/sfc/selftest.c Ben Hutchings   2012-02-28  37  
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  38  /*
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  39   * Loopback test packet structure
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  40   *
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  41   * The self-test should stress every RSS vector, and unfortunately
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  42   * Falcon only performs RSS on TCP/UDP packets.
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  43   */
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  44  struct efx_loopback_payload {
+cf60ed46962992 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  45  	char pad[2]; /* Ensures ip is 4-byte aligned */
+55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  46  	struct_group_attr(packet, __packed,
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  47  		struct ethhdr header;
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07 @48  		struct iphdr ip;
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  49  		struct udphdr udp;
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  50  		__be16 iteration;
+1d20a16062e771 drivers/net/ethernet/sfc/selftest.c David S. Miller 2015-04-17  51  		char msg[64];
+55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  52  	);
+cf60ed46962992 drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-06-23  53  } __packed __aligned(4);
+55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  54  #define EFX_LOOPBACK_PAYLOAD_LEN	\
+55c1528f9b97ff drivers/net/ethernet/sfc/selftest.c Edward Cree     2023-07-28  55  		sizeof_field(struct efx_loopback_payload, packet)
+3273c2e8c66a21 drivers/net/sfc/selftest.c          Ben Hutchings   2008-05-07  56  
+
+:::::: The code at line 48 was first introduced by commit
+:::::: 3273c2e8c66a21ae1c53b0c730ee937c6efde7e2 [netdrvr] sfc: sfc: Add self-test support
+
+:::::: TO: Ben Hutchings <bhutchings@solarflare.com>
+:::::: CC: Jeff Garzik <jgarzik@redhat.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
