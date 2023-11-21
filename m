@@ -2,181 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2125E7F3762
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502D57F376A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 21:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbjKUU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 15:29:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
+        id S234040AbjKUU3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 15:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjKUU3B (ORCPT
+        with ESMTP id S234613AbjKUU3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 15:29:01 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5917FD49;
-        Tue, 21 Nov 2023 12:28:57 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id DFC94100071;
-        Tue, 21 Nov 2023 23:28:55 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DFC94100071
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700598535;
-        bh=YEPAVovAT7fOQhJBeFq/4sGvowJqoh7IRxQv9siAkaY=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=egfdggIoxtLmc2adnt4Mj3XJh8mp39esubzJDPpJ0i9gKVrMXVLBhtTReKVqJxiGJ
-         pFzNz770d+ksoMuMoBu2BeesmSQuwSU1kcNgxGTRtM/6+BLvni9peP0kdcoN2LX3jR
-         atNt3AaMirmNX8IcEc4e8esX27/6jtVCuUFxQHa6YDebI6sihKhPKkjOE05wMCodTQ
-         phQBdwout94O0NvOomzOMpJSDKBVXZVmvON6otjF66ukhwhvzx2tF5Z8u26zv2UAnO
-         6nKsnsou4FE4qFjNA5vh59Aj78VGExxCTQu3ph8sNEkLWiPRfzkslhUy0xotXL9OYY
-         52S//8BKrd7KA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue, 21 Nov 2023 23:28:55 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 21 Nov 2023 23:28:55 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     <lee@kernel.org>, <pavel@ucw.cz>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andy.shevchenko@gmail.com>
-CC:     <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-leds@vger.kernel.org>,
-        Dmitry Rokosov <ddrokosov@salutedevices.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v4 11/11] dt-bindings: leds: aw200xx: fix led pattern and add reg constraints
-Date:   Tue, 21 Nov 2023 23:28:35 +0300
-Message-ID: <20231121202835.28152-12-ddrokosov@salutedevices.com>
-X-Mailer: git-send-email 2.36.0
-In-Reply-To: <20231121202835.28152-1-ddrokosov@salutedevices.com>
-References: <20231121202835.28152-1-ddrokosov@salutedevices.com>
+        Tue, 21 Nov 2023 15:29:32 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79041D4B;
+        Tue, 21 Nov 2023 12:29:13 -0800 (PST)
+Received: from [192.168.1.103] (178.176.72.255) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 21 Nov
+ 2023 23:29:04 +0300
+Subject: Re: [PATCH 10/13] net: ravb: Switch to
+ SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and pm_ptr()
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <p.zabel@pengutronix.de>, <yoshihiro.shimoda.uh@renesas.com>,
+        <geert+renesas@glider.be>, <wsa+renesas@sang-engineering.com>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <sergei.shtylyov@cogentembedded.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-11-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <80a8ad2d-b661-269a-6e32-244450210d98@omp.ru>
+Date:   Tue, 21 Nov 2023 23:29:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181514 [Nov 21 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/21 17:47:00 #22495004
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231120084606.4083194-11-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.255]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/21/2023 20:16:48
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181514 [Nov 21 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.255
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/21/2023 20:20:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/21/2023 4:18:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AW200XX controllers have the capability to declare more than 0xf LEDs,
-therefore, it is necessary to accept LED names using an appropriate
-regex pattern.
+On 11/20/23 11:46 AM, Claudiu wrote:
 
-The register offsets can be adjusted within the specified range, with
-the maximum value corresponding to the highest number of LEDs that can
-be connected to the controller.
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> SET_SYSTEM_SLEEP_PM_OPS() and SET_RUNTIME_PM_OPS() are deprecated now
+> and require __maybe_unused protection against unused function warnings.
+> The usage of pm_ptr() and SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() allows
+> the compiler to see the functions, thus suppressing the warning. Thus
+> drop the __maybe_unused markings.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
- .../bindings/leds/awinic,aw200xx.yaml         | 59 ++++++++++++++++++-
- 1 file changed, 58 insertions(+), 1 deletion(-)
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 
-diff --git a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-index 67c1d960db1d..54d6d1f08e24 100644
---- a/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-+++ b/Documentation/devicetree/bindings/leds/awinic,aw200xx.yaml
-@@ -45,7 +45,7 @@ properties:
-     maxItems: 1
- 
- patternProperties:
--  "^led@[0-9a-f]$":
-+  "^led@[0-9a-f]+$":
-     type: object
-     $ref: common.yaml#
-     unevaluatedProperties: false
-@@ -69,6 +69,63 @@ patternProperties:
-           where max-current-switch-number is determinated by led configuration
-           and depends on how leds are physically connected to the led driver.
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: awinic,aw20036
-+    then:
-+      patternProperties:
-+        "^led@[0-9a-f]+$":
-+          properties:
-+            reg:
-+              items:
-+                minimum: 0
-+                maximum: 36
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: awinic,aw20054
-+    then:
-+      patternProperties:
-+        "^led@[0-9a-f]+$":
-+          properties:
-+            reg:
-+              items:
-+                minimum: 0
-+                maximum: 54
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: awinic,aw20072
-+    then:
-+      patternProperties:
-+        "^led@[0-9a-f]+$":
-+          properties:
-+            reg:
-+              items:
-+                minimum: 0
-+                maximum: 72
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: awinic,aw20108
-+    then:
-+      patternProperties:
-+        "^led@[0-9a-f]+$":
-+          properties:
-+            reg:
-+              items:
-+                minimum: 0
-+                maximum: 108
-+
- required:
-   - compatible
-   - reg
--- 
-2.36.0
+[...]
 
+MBR, Sergey
