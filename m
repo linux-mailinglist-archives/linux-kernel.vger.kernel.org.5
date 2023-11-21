@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CBD7F3991
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171CF7F399C
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234725AbjKUW5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        id S234811AbjKUW5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKUW47 (ORCPT
+        with ESMTP id S234703AbjKUW47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Nov 2023 17:56:59 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D52719E;
-        Tue, 21 Nov 2023 14:56:54 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc938f9612so40361575ad.1;
-        Tue, 21 Nov 2023 14:56:54 -0800 (PST)
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B90771A3;
+        Tue, 21 Nov 2023 14:56:55 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cf6a67e290so17786575ad.1;
+        Tue, 21 Nov 2023 14:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700607414; x=1701212214; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700607415; x=1701212215; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wo5dqey6I8QbyZ6Fam9wAbARY07XFw/XeE4bQ28EgY0=;
-        b=JEu6w1afdz8Hu27VUzP9Khj5RCJ7GpOn5dgugyME5UtqgJd2CWujQuZ+EBBOuckNKF
-         QvgxGntVtrFXpj6dJYcGudmkYF7SJtSqrGw14OZDUaA+9Etc5ULDYPgb8IEOcM51TbZy
-         XPJeL6dwoJ544kri/7bWwEvT3aGTz4rgGh4/BRKH+3cHkReS/uLoiGWtY8ko6PRrQDTg
-         gqqKDQd8dvJF+vSKQ9aL31kQ0VcZAVnYOE7Od0bbi7u7eZ+u8LaM5QYecIWcToNcfDeX
-         /MmOj9MYiLbkT9jUGoEfA/DTAqhL3LYuL4GvPZ0c6dFLsqz2nA/SJyb51h4+p/um4jSa
-         23zg==
+        bh=JxF1JBOvpbEkbZ2xcwyAv8zJQ1WR68j2h9WNm5DzsV8=;
+        b=ffnhW4ZeHX7vb7c5PrFy5srl5TF2CCKXV5Mx2yaW4Aqj1gy7j+GEdcpsxa9zW0p550
+         jHwfUnpGaGMB4s5yGqn+1BmBKbURywxlXqnQyLoulGL0UmI4F3mJV1IFuAyqDdtrIBAB
+         e9CmWFDw+4eKXu7eBTVklbtuW5KFBIYrBehd+iufNVxcvai93utoZMhjaztha9MWhRdI
+         3Ds5CK03YF/iYQiUX7Fux6SclUPybdMqdf7GqsZpFa9Zkk4rEdcEnr5wF95zqD4YZz1i
+         bp0E9nHLeZJ56GfzjrHzHMPGFRa0r91Yp3JQGyLuKJCugKOe0V0WrrlMxxYTr3lVSRnO
+         uHwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700607414; x=1701212214;
+        d=1e100.net; s=20230601; t=1700607415; x=1701212215;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wo5dqey6I8QbyZ6Fam9wAbARY07XFw/XeE4bQ28EgY0=;
-        b=SrDFeAc14cxHFbXaGUWCGLXAMpztgZuzzyJdt9jQtxGHdE1d8Lizobg5GoEmomvHO2
-         gPxXsR5jYNI/ciVB/ojyem6x+WKeSIdZSKNrHqaHD9JJkFsuCTkgUR+e9sdGU2j1JkeD
-         HZXSGgkrGVu1RLphm+CPBhLHWAkQnxLKLtKAB0uf48c9v0ViCm4UFKHetqIDnRENLMqL
-         6y9qJVkQ3ipHjxkglK0Lu6Oc+DCeWeYETZCo8aKi9NDK6KHvkz99Wj+bimbmt9mOzuIc
-         7OuBDCQt1xiJWZHaH0ZIfgjwyWCyugRBvrQDSHVaNda3B7dsNTeBeI7TsQmIVSa3qt6Y
-         zzAQ==
-X-Gm-Message-State: AOJu0Yx5n0ujhgIBcOtY/lKFIZbQ4n9GyIyi0rvvLV19gZ9GKzj6i6wG
-        +oWEE2WdOD4e+MOOMlTCZstkm7X/now=
-X-Google-Smtp-Source: AGHT+IGIxq+l3yx4uYvZ5XmfPTWhnQX0FwJnRjQlkZ5Na4RwXZf6doms4MSbaTaFoR61OXOoFguLJQ==
-X-Received: by 2002:a17:903:11ce:b0:1cf:66a3:16c with SMTP id q14-20020a17090311ce00b001cf66a3016cmr649997plh.21.1700607413955;
-        Tue, 21 Nov 2023 14:56:53 -0800 (PST)
+        bh=JxF1JBOvpbEkbZ2xcwyAv8zJQ1WR68j2h9WNm5DzsV8=;
+        b=jQi+UGj9uCgotj6zK0q0Wjo1qx1DDHgtrLJiRrb2BEeDY2KHBaC7lGOUUey4LV2iaO
+         JGOA0HX/H0w3Hfik6Weh3/7PBt7vcTIcypE+uX1QZ+JalZkfxAPQtRrlfbVbEVaAbe7I
+         la4uubJvrkpWMTk02wmYueBkVoA4/KG7p8FYqrrd1/egxewOxOHZPYovpAGr+lpN3P/i
+         pQPXYTLTbYf8OSbZW6XSLveYpEVv0v+462+MSI/twuxsa0v9IBbaMTsGyQl33RtuiRmb
+         1qspTiYLoSoPzc8NlsLOvXYtLwnAav6JJq/+33X6hnYX4AxCfKUpz0otMBYQnCR0yrOn
+         8HVw==
+X-Gm-Message-State: AOJu0Yy/zEIPf4zpNHe0nD7SIqQrpwypNSIMTy82eroFWGY31jI/xLCY
+        GGxatK2Sc87wXn6gLG6IqR4=
+X-Google-Smtp-Source: AGHT+IEwD5N2N/yS3WerIGGZK8EVLzzmxstnplnYe+9ptzxDn8R/KfwukCdJd9CyXbraAoaucA4SbA==
+X-Received: by 2002:a17:903:41c1:b0:1cc:665d:f818 with SMTP id u1-20020a17090341c100b001cc665df818mr526789ple.68.1700607415108;
+        Tue, 21 Nov 2023 14:56:55 -0800 (PST)
 Received: from bangji.hsd1.ca.comcast.net ([2601:647:6780:42e0:7377:923f:1ff3:266d])
-        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.52
+        by smtp.gmail.com with ESMTPSA id m12-20020a1709026bcc00b001cc47c1c29csm8413189plt.84.2023.11.21.14.56.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 14:56:53 -0800 (PST)
+        Tue, 21 Nov 2023 14:56:54 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,12 +60,10 @@ Cc:     Ian Rogers <irogers@google.com>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         linux-perf-users@vger.kernel.org,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, linux-fscrypt@vger.kernel.org
-Subject: [PATCH 02/14] tools headers UAPI: Update tools's copy of fscrypt.h header
-Date:   Tue, 21 Nov 2023 14:56:37 -0800
-Message-ID: <20231121225650.390246-2-namhyung@kernel.org>
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Subject: [PATCH 03/14] tools headers UAPI: Update tools's copy of kvm.h header
+Date:   Tue, 21 Nov 2023 14:56:38 -0800
+Message-ID: <20231121225650.390246-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 In-Reply-To: <20231121225650.390246-1-namhyung@kernel.org>
 References: <20231121225650.390246-1-namhyung@kernel.org>
@@ -125,29 +123,83 @@ So its important not to touch the copies in tools/ when doing changes in
 the original kernel headers, that will be done later, when
 check-headers.sh inform about the change to the perf tools hackers.
 
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-fscrypt@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/include/uapi/linux/fscrypt.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/include/uapi/linux/kvm.h | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/tools/include/uapi/linux/fscrypt.h b/tools/include/uapi/linux/fscrypt.h
-index fd1fb0d5389d..7a8f4c290187 100644
---- a/tools/include/uapi/linux/fscrypt.h
-+++ b/tools/include/uapi/linux/fscrypt.h
-@@ -71,7 +71,8 @@ struct fscrypt_policy_v2 {
- 	__u8 contents_encryption_mode;
- 	__u8 filenames_encryption_mode;
- 	__u8 flags;
--	__u8 __reserved[4];
-+	__u8 log2_data_unit_size;
-+	__u8 __reserved[3];
- 	__u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
+diff --git a/tools/include/uapi/linux/kvm.h b/tools/include/uapi/linux/kvm.h
+index f089ab290978..211b86de35ac 100644
+--- a/tools/include/uapi/linux/kvm.h
++++ b/tools/include/uapi/linux/kvm.h
+@@ -264,6 +264,7 @@ struct kvm_xen_exit {
+ #define KVM_EXIT_RISCV_SBI        35
+ #define KVM_EXIT_RISCV_CSR        36
+ #define KVM_EXIT_NOTIFY           37
++#define KVM_EXIT_LOONGARCH_IOCSR  38
+ 
+ /* For KVM_EXIT_INTERNAL_ERROR */
+ /* Emulate instruction failed. */
+@@ -336,6 +337,13 @@ struct kvm_run {
+ 			__u32 len;
+ 			__u8  is_write;
+ 		} mmio;
++		/* KVM_EXIT_LOONGARCH_IOCSR */
++		struct {
++			__u64 phys_addr;
++			__u8  data[8];
++			__u32 len;
++			__u8  is_write;
++		} iocsr_io;
+ 		/* KVM_EXIT_HYPERCALL */
+ 		struct {
+ 			__u64 nr;
+@@ -1192,6 +1200,7 @@ struct kvm_ppc_resize_hpt {
+ #define KVM_CAP_COUNTER_OFFSET 227
+ #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
+ #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
++#define KVM_CAP_ARM_SUPPORTED_REG_MASK_RANGES 230
+ 
+ #ifdef KVM_CAP_IRQ_ROUTING
+ 
+@@ -1362,6 +1371,7 @@ struct kvm_dirty_tlb {
+ #define KVM_REG_ARM64		0x6000000000000000ULL
+ #define KVM_REG_MIPS		0x7000000000000000ULL
+ #define KVM_REG_RISCV		0x8000000000000000ULL
++#define KVM_REG_LOONGARCH	0x9000000000000000ULL
+ 
+ #define KVM_REG_SIZE_SHIFT	52
+ #define KVM_REG_SIZE_MASK	0x00f0000000000000ULL
+@@ -1418,9 +1428,16 @@ struct kvm_device_attr {
+ 	__u64	addr;		/* userspace address of attr data */
  };
  
+-#define  KVM_DEV_VFIO_GROUP			1
+-#define   KVM_DEV_VFIO_GROUP_ADD			1
+-#define   KVM_DEV_VFIO_GROUP_DEL			2
++#define  KVM_DEV_VFIO_FILE			1
++
++#define   KVM_DEV_VFIO_FILE_ADD			1
++#define   KVM_DEV_VFIO_FILE_DEL			2
++
++/* KVM_DEV_VFIO_GROUP aliases are for compile time uapi compatibility */
++#define  KVM_DEV_VFIO_GROUP	KVM_DEV_VFIO_FILE
++
++#define   KVM_DEV_VFIO_GROUP_ADD	KVM_DEV_VFIO_FILE_ADD
++#define   KVM_DEV_VFIO_GROUP_DEL	KVM_DEV_VFIO_FILE_DEL
+ #define   KVM_DEV_VFIO_GROUP_SET_SPAPR_TCE		3
+ 
+ enum kvm_device_type {
+@@ -1555,6 +1572,7 @@ struct kvm_s390_ucas_mapping {
+ #define KVM_ARM_MTE_COPY_TAGS	  _IOR(KVMIO,  0xb4, struct kvm_arm_copy_mte_tags)
+ /* Available with KVM_CAP_COUNTER_OFFSET */
+ #define KVM_ARM_SET_COUNTER_OFFSET _IOW(KVMIO,  0xb5, struct kvm_arm_counter_offset)
++#define KVM_ARM_GET_REG_WRITABLE_MASKS _IOR(KVMIO,  0xb6, struct reg_mask_range)
+ 
+ /* ioctl for vm fd */
+ #define KVM_CREATE_DEVICE	  _IOWR(KVMIO,  0xe0, struct kvm_create_device)
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
