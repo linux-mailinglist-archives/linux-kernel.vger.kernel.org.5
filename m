@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C43A97F2E1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A087F2E1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbjKUNOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33864 "EHLO
+        id S233746AbjKUNPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:15:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233922AbjKUNOq (ORCPT
+        with ESMTP id S229642AbjKUNPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:14:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589D81A1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:14:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7789EC433C8;
-        Tue, 21 Nov 2023 13:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700572481;
-        bh=sde8UH1s+S4ZJXYAO43tWVBaZyVwRo176bP2DijjLOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GDpQK5zo9UpeD6GkT0WYJk0auFna8sxeBC4CdhCQMBp49+MoYKwjHAGpgOvsAEPNg
-         fCqE40vgBm7by3wYeVxKARR21bCTugAiNX2my51TLcaJ8QbOzU3jgIXvfLmsa57jYm
-         v+BfyGsD59pQoFcD2opzjY5rtDJlYlFmfJ9VdHeeVNi5QaXEh0d1+ZLsp7ovuPxjXs
-         staHh5fbiivWv9bHPX3P1x1e2LwXdkAyWW4yLs6UymSS/rvQcqPvPoBaeW4dxD9OOc
-         bY5HZ9TPwh3nbaDJ7/umMYtNYjbvzP9hWLeM0duhJiie4u33DwomW9AATV9/TQLV/7
-         3GZuKf/TNC4Iw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0C86440094; Tue, 21 Nov 2023 10:14:39 -0300 (-03)
-Date:   Tue, 21 Nov 2023 10:14:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Benjamin Gray <bgray@linux.ibm.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-pm@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org,
-        Todd E Brandt <todd.e.brandt@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v2 5/7] tools/perf: fix Python string escapes
-Message-ID: <ZVytPl1AjNw3IzSu@kernel.org>
-References: <20230912060801.95533-1-bgray@linux.ibm.com>
- <20230912060801.95533-6-bgray@linux.ibm.com>
- <340eae90-d270-5e52-4982-a67459bc46dd@intel.com>
- <d603d3b3-7563-d1c9-5086-c5bb78ea2e52@linux.ibm.com>
- <592b8fd2-bfe3-0f8d-2814-d8340bbc75ee@intel.com>
+        Tue, 21 Nov 2023 08:15:52 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4AF1A1;
+        Tue, 21 Nov 2023 05:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1700572549; x=1732108549;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dKe1oiD9X8ZrNYYlEcv1sT0fNffaLYL7IdmhxeRP7V8=;
+  b=jJND9iviczFQ/Q/InQOJIuEHO943uk532m8keMhb9fq/F+V8/13BzEeE
+   AIz5vK8Njxlf8CZpcsCN1sLCFTHIq86taoNeDVcl9Uyux5/qGb1LXkWh1
+   mV6AFdhR7o+k/nvkWGWsQghqYvPJWexG0fdzeKLmL1rkxHYkLDfZwSHUc
+   5h/Df+6glJimCHsVf7DABQFKplEI/z3IMzSYaJ0BHLxlfBgJCDs22DbE2
+   B1PoMmey4ZbA+8EOgez+2aWeM9tByAkVkWkzbe5IVqoolIepxKmfcelVM
+   y8hVTlFiG9gKNEeFsmVig4XDXPURKTwb27StxVGrmGpvuwQt6pTlbrJJw
+   Q==;
+X-CSE-ConnectionGUID: 7RKlFjUZS0C2mOVLDV6Cog==
+X-CSE-MsgGUID: TCilXAtDSmaRejXBZO/DsQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="asc'?scan'208";a="12316433"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 21 Nov 2023 06:15:48 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 21 Nov 2023 06:15:18 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Tue, 21 Nov 2023 06:15:15 -0700
+Date:   Tue, 21 Nov 2023 13:14:47 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Jerry Shih <jerry.shih@sifive.com>
+CC:     Eric Biggers <ebiggers@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <andy.chiu@sifive.com>, <greentime.hu@sifive.com>,
+        <guoren@kernel.org>, <bjorn@rivosinc.com>, <heiko@sntech.de>,
+        <ardb@kernel.org>, <phoebe.chen@sifive.com>,
+        <hongrong.hsu@sifive.com>, <linux-riscv@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
+Subject: Re: [PATCH 12/12] RISC-V: crypto: add Zvkb accelerated ChaCha20
+ implementation
+Message-ID: <20231121-knelt-resource-5d71c9246015@wendy>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-13-jerry.shih@sifive.com>
+ <20231102054327.GH1498@sol.localdomain>
+ <90E2B1B4-ACC1-4316-81CD-E919D3BD03BA@sifive.com>
+ <20231120191856.GA964@sol.localdomain>
+ <9724E3A5-F43C-4239-9031-2B33B72C4EF4@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="FNeg8t0GItiNFb8F"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <592b8fd2-bfe3-0f8d-2814-d8340bbc75ee@intel.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <9724E3A5-F43C-4239-9031-2B33B72C4EF4@sifive.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,118 +82,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 13, 2023 at 08:53:26AM +0300, Adrian Hunter escreveu:
-> On 13/09/23 03:26, Benjamin Gray wrote:
-> > On 12/9/23 8:56 pm, Adrian Hunter wrote:
-> >> On 12/09/23 09:07, Benjamin Gray wrote:
-> >>> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> >>> index a7e88332276d..980f080a5a2c 100755
-> >>> --- a/tools/perf/pmu-events/jevents.py
-> >>> +++ b/tools/perf/pmu-events/jevents.py
-> >>> @@ -83,7 +83,7 @@ def c_len(s: str) -> int:
-> >>>     """Return the length of s a C string
-> >>>       This doesn't handle all escape characters properly. It first assumes
-> >>> -  all \ are for escaping, it then adjusts as it will have over counted
-> >>> +  all \\ are for escaping, it then adjusts as it will have over counted
-> >>
-> >> It looks like the whole string should be a raw string
-> >>
-> > ...
-> >>> -                s = value.replace("%", "\%")
-> >>> -                s = s.replace("_", "\_")
-> >>> +                s = value.replace("%", "\\%")
-> >>> +                s = s.replace("_", "\\_")
-> >>
-> >> Raw strings seem more readable, so could be
-> >> used here too
-> > 
-> > Yeah, sounds good. I normally use r strings only for regex, but there shouldn't be any ambiguity here (it might have been misleading if the search argument to replace looked like a regex).
-> > 
-> > Having the docstring be an r string is a good catch. There's probably a few like that in the kernel, but finding them is a little more complicated because they might be 'valid' syntax (e.g., the '\000' just becomes a null byte. This series is focused on the syntax errors though, so I'll just leave it be.
-> > 
-> > How is the following?
-> > ---
-> > Subject: [PATCH] tools/perf: fix Python string escapes
-> > 
-> > Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
-> > This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
-> > be a syntax error.
-> > 
-> > Fix these now to get ahead of it before it's an error.
-> > 
-> > Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-> 
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+--FNeg8t0GItiNFb8F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-applied the tools/perf one.
+On Tue, Nov 21, 2023 at 06:55:07PM +0800, Jerry Shih wrote:
+> On Nov 21, 2023, at 03:18, Eric Biggers <ebiggers@kernel.org> wrote:
+> > First, I can see your updated patchset at branch
+> > "dev/jerrys/vector-crypto-upstream-v2" of https://github.com/JerryShih/=
+linux,
+> > but I haven't seen it on the mailing list yet.  Are you planning to sen=
+d it out?
+>=20
+> I will send it out soon.
+>=20
+> > Second, with your updated patchset, I'm not seeing any of the RISC-V op=
+timized
+> > algorithms be registered when I boot the kernel in QEMU.  This is cause=
+d by the
+> > new check 'riscv_isa_extension_available(NULL, ZICCLSM)' not passing.  =
+Is
+> > checking for "Zicclsm" the correct way to determine whether unaligned m=
+emory
+> > accesses are supported?
+> >=20
+> > I'm using 'qemu-system-riscv64 -cpu max -machine virt', with the very l=
+atest
+> > QEMU commit (af9264da80073435), so it should have all the CPU features.
+> >=20
+> > - Eric
+>=20
+> Sorry, I just use my `internal` qemu with vector-crypto and rva22 patches.
+>=20
+> The public qemu haven't supported rva22 profiles. Here is the qemu patch[=
+1] for
+> that. But here is the discussion why the qemu doesn't export these
+> `named extensions`(e.g. Zicclsm).
+> I try to add Zicclsm in DT in the v2 patch set. Maybe we will have more d=
+iscussion
+> about the rva22 profiles in kernel DT.
 
-- Arnaldo
- 
-> > ---
-> >  tools/perf/pmu-events/jevents.py                 | 2 +-
-> >  tools/perf/scripts/python/arm-cs-trace-disasm.py | 4 ++--
-> >  tools/perf/scripts/python/compaction-times.py    | 2 +-
-> >  tools/perf/scripts/python/exported-sql-viewer.py | 4 ++--
-> >  4 files changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> > index a7e88332276d..1b4519333a28 100755
-> > --- a/tools/perf/pmu-events/jevents.py
-> > +++ b/tools/perf/pmu-events/jevents.py
-> > @@ -80,7 +80,7 @@ def file_name_to_table_name(prefix: str, parents: Sequence[str],
-> > 
-> > 
-> >  def c_len(s: str) -> int:
-> > -  """Return the length of s a C string
-> > +  r"""Return the length of s a C string
-> > 
-> >    This doesn't handle all escape characters properly. It first assumes
-> >    all \ are for escaping, it then adjusts as it will have over counted
-> > diff --git a/tools/perf/scripts/python/arm-cs-trace-disasm.py b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> > index d59ff53f1d94..de58991c78bb 100755
-> > --- a/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> > +++ b/tools/perf/scripts/python/arm-cs-trace-disasm.py
-> > @@ -45,8 +45,8 @@ parser = OptionParser(option_list=option_list)
-> >  # Initialize global dicts and regular expression
-> >  disasm_cache = dict()
-> >  cpu_data = dict()
-> > -disasm_re = re.compile("^\s*([0-9a-fA-F]+):")
-> > -disasm_func_re = re.compile("^\s*([0-9a-fA-F]+)\s.*:")
-> > +disasm_re = re.compile(r"^\s*([0-9a-fA-F]+):")
-> > +disasm_func_re = re.compile(r"^\s*([0-9a-fA-F]+)\s.*:")
-> >  cache_size = 64*1024
-> > 
-> >  glb_source_file_name    = None
-> > diff --git a/tools/perf/scripts/python/compaction-times.py b/tools/perf/scripts/python/compaction-times.py
-> > index 2560a042dc6f..9401f7c14747 100644
-> > --- a/tools/perf/scripts/python/compaction-times.py
-> > +++ b/tools/perf/scripts/python/compaction-times.py
-> > @@ -260,7 +260,7 @@ def pr_help():
-> > 
-> >  comm_re = None
-> >  pid_re = None
-> > -pid_regex = "^(\d*)-(\d*)$|^(\d*)$"
-> > +pid_regex = r"^(\d*)-(\d*)$|^(\d*)$"
-> > 
-> >  opt_proc = popt.DISP_DFL
-> >  opt_disp = topt.DISP_ALL
-> > diff --git a/tools/perf/scripts/python/exported-sql-viewer.py b/tools/perf/scripts/python/exported-sql-viewer.py
-> > index 13f2d8a81610..78763531fe5a 100755
-> > --- a/tools/perf/scripts/python/exported-sql-viewer.py
-> > +++ b/tools/perf/scripts/python/exported-sql-viewer.py
-> > @@ -677,8 +677,8 @@ class CallGraphModelBase(TreeModel):
-> >              #   sqlite supports GLOB (text only) which uses * and ? and is case sensitive
-> >              if not self.glb.dbref.is_sqlite3:
-> >                  # Escape % and _
-> > -                s = value.replace("%", "\%")
-> > -                s = s.replace("_", "\_")
-> > +                s = value.replace("%", r"\%")
-> > +                s = s.replace("_", r"\_")
-> >                  # Translate * and ? into SQL LIKE pattern characters % and _
-> >                  trans = string.maketrans("*?", "%_")
-> >                  match = " LIKE '" + str(s).translate(trans) + "'"
-> 
+Please do, that'll be fun! Please take some time to read what the
+profiles spec actually defines Zicclsm fore before you send those patches
+though. I think you might come to find you have misunderstood what it
+means - certainly I did the first time I saw it!
 
--- 
+> [1]
+> LINK: https://lore.kernel.org/all/d1d6f2dc-55b2-4dce-a48a-4afbbf6df526@ve=
+ntanamicro.com/#t
+>=20
+> I don't know whether it's a good practice to check unaligned access using
+> `Zicclsm`.=20
+>=20
+> Here is another related cpu feature for unaligned access:
+> RISCV_HWPROBE_MISALIGNED_*
+> But it looks like it always be initialized with `RISCV_HWPROBE_MISALIGNED=
+_SLOW`[2].
+> It implies that linux kernel always supports unaligned access. But we hav=
+e the
+> actual HW which doesn't support unaligned access for vector unit.
 
-- Arnaldo
+https://docs.kernel.org/arch/riscv/uabi.html#misaligned-accesses
+
+Misaligned accesses are part of the user ABI & the hwprobe stuff for
+that allows userspace to figure out whether they're fast (likely
+implemented in hardware), slow (likely emulated in firmware) or emulated
+in the kernel.
+
+Cheers,
+Conor.
+
+>=20
+> [2]
+> LINK: https://github.com/torvalds/linux/blob/98b1cc82c4affc16f5598d4fa14b=
+1858671b2263/arch/riscv/kernel/cpufeature.c#L575
+>=20
+> I will still use `Zicclsm` checking in this stage for reviewing. And I wi=
+ll create qemu
+> branch with Zicclsm enabled feature for testing.
+>=20
+> -Jerry
+
+--FNeg8t0GItiNFb8F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVytRwAKCRB4tDGHoIJi
+0viAAQCm6torPYuop5E8J3sRPB3YDXMGHN9Gh2sazUdwj0zlUwEAxM05T+vdP99R
+n2EWjF1PVPMc7VvyvoGGBnXDNYZ8GQE=
+=cEix
+-----END PGP SIGNATURE-----
+
+--FNeg8t0GItiNFb8F--
