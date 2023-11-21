@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB177F384B
+	by mail.lfdr.de (Postfix) with ESMTP id A1AF47F384C
 	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 22:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjKUVaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 16:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
+        id S234415AbjKUVaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 16:30:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKUVaK (ORCPT
+        with ESMTP id S229684AbjKUVaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 16:30:10 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB11ACB;
-        Tue, 21 Nov 2023 13:30:06 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc4f777ab9so48321805ad.0;
-        Tue, 21 Nov 2023 13:30:06 -0800 (PST)
+        Tue, 21 Nov 2023 16:30:11 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F418719E;
+        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ce675e45f9so24703295ad.3;
+        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700602206; x=1701207006; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7MBM4ZA5oNd9/yj6ChXURBgLtdL7sP8s8g23+U8L60Y=;
-        b=TPe6obDvbP5LmXICJR5rxbEo9SCsHShmvKTJU8iyZloRWLthuNHW+GIqLoIQ/BjW56
-         2RcsjfIx5abg4aFJIakiT1zXWEu/D/GLqnRh0zNCHndWSZ1ffM2qKlL+qxFkH5MU5mbG
-         QoScVIzMEPtCJGGZVTnXnFKkAWwz7r0PchepTTLdBZHXWlb/xEjB6SJ/OhmagSFPIbZS
-         OmuvFSgz7IVdcSm72/284tgHOziX3GED2bSwgdAtaLkAVJixL8TvyIa1z5d3V6AomurT
-         k0f11eXRvr2vGHgR8Wzt1cnGrd+mTx4pxoo33fm+3KIvZHxkJOtno0I5ZDo6/QW8IFy2
-         zUVw==
+        d=gmail.com; s=20230601; t=1700602207; x=1701207007; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
+        b=LUIjMDrOzR+Yp53XK+6vS3UXU9xRwxbM8v7A8b8bgESRmhnDgRkibOlQIXbCJcBJrz
+         CgUaB49A0JSvHwlWzAVx+subHk3HcIT1WpIC8ZnMagnDbK1QLMwKUntQ69Yp1+nKQKpg
+         XA3gjgtTPRngqs2/Q2pxzn8JGm6SBDJoIdfAZ+R57HfTCfLStKdlCb8cEgNprcfzxrY9
+         q0ivEyAyqCbutiq3NTqZg0HxIZmZIPbbW40b7T+aK1YIZE4swfKKgTIg3d9BjZzrs0iQ
+         ABY4HW/A44KHL1+KFzhAj2u/TQxG4dsZ9b0XtTJjuOyGilKMLizZ3TT0J0ioqfroXTM4
+         2bRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700602206; x=1701207006;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7MBM4ZA5oNd9/yj6ChXURBgLtdL7sP8s8g23+U8L60Y=;
-        b=hRjhLkmAygo/QfGgowYQzSdLYD4Uxpe4wwDoGgp4nBIHxFbySH+1WUSLOBYUue7sp7
-         7T78RXVWaPLc1UM5cGQ9+OAh4X9DSJ/QvPGikNzHw/8OMwR4EFmUM3NwG3d+HQ5cWVhV
-         gYO6S6WZOab72LnldtSy12n4sn3aM1o7ulVWMk7dDHUYKhbL8S9EuGo7NZZYs1kf031U
-         VsffZb46X//XW4Azlw7eTtr4+dmc4DrgIF9ZpxB6+ovoSfYanncVxPQP4eSmTD5iHqY5
-         uJvirovlOdt522g4sXkU2EmfA/kZ7LQDZ/dQlWXvfSISn7SqtNeYApsl30A+mz1MGW28
-         mj4A==
-X-Gm-Message-State: AOJu0YzA2/e2qVJ042qVIXSM2DZug9OEGVAtNWt6B1P2UonzibMhAvup
-        Xsq0hXAYvO7fIaC++IXsoTM=
-X-Google-Smtp-Source: AGHT+IEeEB8Cae2ly1OL6CYd69YfTn71DZRBkbD9vE8en8a5eqhB+BWYerPWxhCx3cFL2g67Hr3GAg==
-X-Received: by 2002:a17:902:dac8:b0:1ce:89a7:443d with SMTP id q8-20020a170902dac800b001ce89a7443dmr599891plx.5.1700602206023;
-        Tue, 21 Nov 2023 13:30:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700602207; x=1701207007;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
+        b=ABDSwhKxWAYl7DUwKuKgOPtYuFwKm0qNwglFQH7uRKq1TqzgssUXAf1g56HgpdTT+W
+         UFzQb7IeiZpFdbvP6ELfi9VnRgXJ59N37s4e+AAPA/HDKzV7kwPfK9tN1E5sPF9/wzxn
+         ON33S5rdbAWE+3CDTDIV4RiuH9JEYKvmzwLrSsg4SntwgxaV2oaLG/twxpvV5hJ0FN9T
+         iWSCWiLurFavxFf9xBBLVIMyt/AhjOnmpqAVKQfu2EUWqYHn8yRiPqrsLS3+VD9w4Wpi
+         OOaHwd0A/C2saUL2GatMpfpCHUOez79/EQxY7q5RbivmTW01m2YR6nvi7p/orCizT+CK
+         Sq+A==
+X-Gm-Message-State: AOJu0Yxhij8Hx7a3GyY0PIHfPcBKSBvJCuXMVvY6scbdjjDxCnujvx9U
+        i6K4xaxy7B3w+zb3VmY+HAA=
+X-Google-Smtp-Source: AGHT+IG0k767577DEtl9DqETp58uM/MD4C4W6mI4eHWwOiQmbjfCmcbOeVYtVXSVgRTFvKchqFGWeQ==
+X-Received: by 2002:a17:902:ecc6:b0:1cf:6bb1:fcce with SMTP id a6-20020a170902ecc600b001cf6bb1fccemr437108plh.46.1700602207395;
+        Tue, 21 Nov 2023 13:30:07 -0800 (PST)
 Received: from localhost.localdomain (static-198-54-134-172.cust.tzulo.com. [198.54.134.172])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170902d71400b001c726147a45sm8355317ply.190.2023.11.21.13.30.04
+        by smtp.gmail.com with ESMTPSA id w20-20020a170902d71400b001c726147a45sm8355317ply.190.2023.11.21.13.30.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 13:30:05 -0800 (PST)
+        Tue, 21 Nov 2023 13:30:06 -0800 (PST)
 From:   Sam Edwards <cfsworks@gmail.com>
 X-Google-Original-From: Sam Edwards <CFSworks@gmail.com>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
@@ -59,10 +60,12 @@ Cc:     linux-rockchip@lists.infradead.org,
         Sven Rademakers <sven.rademakers@gmail.com>,
         Lokesh Poovaragan <loki@gimmeapis.com>,
         Sam Edwards <CFSworks@gmail.com>
-Subject: [PATCH] arm64: dts: rockchip: Add PCIe pinctrls to Turing RK1
-Date:   Tue, 21 Nov 2023 13:29:40 -0800
-Message-ID: <20231121212941.53873-1-CFSworks@gmail.com>
+Subject: [PATCH] arm64: dts: rockchip: Fix eMMC Data Strobe PD
+Date:   Tue, 21 Nov 2023 13:29:41 -0800
+Message-ID: <20231121212941.53873-2-CFSworks@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231121212941.53873-1-CFSworks@gmail.com>
+References: <20231121212941.53873-1-CFSworks@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,68 +78,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RK3588 PCIe 3.0 controller seems to have unpredictable behavior when
-no CLKREQ/PERST/WAKE pins are configured in the pinmux. In particular, it
-will sometimes (varying between specific RK3588 chips, not over time) shut
-off the DBI block, and reads to this range will instead stall
-indefinitely.
+JEDEC standard JESD84-B51 defines the eMMC Data Strobe line, which is
+currently used only in HS400 mode, as a device->host clock signal that
+"is used only in read operation. The Data Strobe is always High-Z (not
+driven by the device and pulled down by RDS) or Driven Low in write
+operation, except during CRC status response." RDS is a pull-down
+resistor specified in the 10K-100K ohm range. Thus per the standard, the
+Data Strobe is always pulled to ground (by the eMMC and/or RDS) during
+write operations.
 
-When this happens, it will prevent Linux from booting altogether. The
-PCIe driver will stall the CPU core once it attempts to read the version
-information from the DBI range.
+Evidently, the eMMC host controller in the RK3588 considers an active
+voltage on the eMMC-DS line during a write to be an error.
 
-Fix this boot hang by adding the correct pinctrl configuration to the
-PCIe 3.0 device node, which is the proper thing to do anyway. While
-we're at it, also add the necessary configuration to the PCIe 2.0 node,
-which may or may not fix the equivalent problem over there -- but is the
-proper thing to do anyway. :)
+The default (i.e. hardware reset, and Rockchip BSP) behavior for the
+RK3588 is to activate the eMMC-DS pin's builtin pull-down. As a result,
+many RK3588 board designers do not bother adding a dedicated RDS
+resistor, instead relying on the RK3588's internal bias. The current
+devicetree, however, disables this bias (`pcfg_pull_none`), breaking
+HS400-mode writes for boards without a dedicated RDS, but with an eMMC
+chip that chooses to High-Z (instead of drive-low) the eMMC-DS line.
+(The Turing RK1 is one such board.)
 
-Fixes: 2806a69f3fef6 ("arm64: dts: rockchip: Add Turing RK1 SoM support")
+Fix this by changing the bias in the (common) emmc_data_strobe case to
+reflect the expected hardware/BSP behavior. This is unlikely to cause
+regressions elsewhere: the pull-down is only relevant for High-Z eMMCs,
+and if this is redundant with a (dedicated) RDS resistor, the effective
+result is only a lower resistance to ground -- where the range of
+tolerance is quite high. If it does, it's better fixed in the specific
+devicetrees.
+
+Fixes: d85f8a5c798d5 ("arm64: dts: rockchip: Add rk3588 pinctrl data")
 Signed-off-by: Sam Edwards <CFSworks@gmail.com>
 ---
- .../arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-index 9570b34aca2e..129f14dbd42f 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
-@@ -214,7 +214,7 @@ rgmii_phy: ethernet-phy@1 {
- &pcie2x1l1 {
- 	linux,pci-domain = <1>;
- 	pinctrl-names = "default";
--	pinctrl-0 = <&pcie2_reset>;
-+	pinctrl-0 = <&pcie30x1m1_pins>;
- 	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
- 	status = "okay";
- };
-@@ -226,7 +226,7 @@ &pcie30phy {
- &pcie3x4 {
- 	linux,pci-domain = <0>;
- 	pinctrl-names = "default";
--	pinctrl-0 = <&pcie3_reset>;
-+	pinctrl-0 = <&pcie30x4m1_pins>;
- 	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
- 	vpcie3v3-supply = <&vcc3v3_pcie30>;
- 	status = "okay";
-@@ -245,17 +245,7 @@ hym8563_int: hym8563-int {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
+index 63151d9d2377..30db12c4fc82 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
+@@ -369,7 +369,7 @@ emmc_cmd: emmc-cmd {
+ 		emmc_data_strobe: emmc-data-strobe {
+ 			rockchip,pins =
+ 				/* emmc_data_strobe */
+-				<2 RK_PA2 1 &pcfg_pull_none>;
++				<2 RK_PA2 1 &pcfg_pull_down>;
  		};
  	};
  
--	pcie2 {
--		pcie2_reset: pcie2-reset {
--			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
--		};
--	};
--
- 	pcie3 {
--		pcie3_reset: pcie3-reset {
--			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
--		};
--
- 		vcc3v3_pcie30_en: pcie3-reg {
- 			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
 -- 
 2.41.0
 
