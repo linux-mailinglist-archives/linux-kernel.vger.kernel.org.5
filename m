@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2115F7F339D
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2077A7F33A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 17:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbjKUQZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 11:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S230335AbjKUQ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 11:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjKUQZV (ORCPT
+        with ESMTP id S229436AbjKUQ2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 11:25:21 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB1F1A2;
-        Tue, 21 Nov 2023 08:25:17 -0800 (PST)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ALDQR9s022514;
-        Tue, 21 Nov 2023 10:25:02 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=a
-        /7u789OEKGmrzwWMfo3Tx7id73xOZOq/UBx/8LmtAk=; b=VdJvR+PM1JVNbKr+B
-        wvEHwmOA+mU45lBA85+WhADAivTLMG8mYI55kEKPbQiaY3U72QH7Uq54vwweSbvn
-        xp8Q/gdM0xvvyOIIlTf2+Sp5C6HBP9kmwO8RX5V6jIZJ274UWdribh2qPm65X2F1
-        e2FEtrXKxHeVLxxsFvCVcYGC5E+808eMOvubfLbM8hMBAdJpKoN/DOsO/GiDkHq8
-        7DZCcyM/0jFiW366QFU5AeqkTfqvcvq5sADMw8VhpUCGuCW7BXPlYcePFuYtDf/K
-        T9wxwJ7NTChSiFgZ27lqnR1SdZItxNeOfgV6SEC/t2LcHTEoFFLcorrIx6r5JSmI
-        pXK0Q==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ueuj2bdag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Nov 2023 10:25:02 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 21 Nov
- 2023 16:25:00 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Tue, 21 Nov 2023 16:25:00 +0000
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.65.98])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BC675458;
-        Tue, 21 Nov 2023 16:24:59 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <brendan.higgins@linux.dev>, <davidgow@google.com>,
-        <rmoar@google.com>
-CC:     <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] kunit: string-stream-test: Avoid cast warning when testing gfp_t flags
-Date:   Tue, 21 Nov 2023 16:24:57 +0000
-Message-ID: <20231121162457.17703-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 21 Nov 2023 11:28:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA6191
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 08:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700584085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=WwXihslT8h2SicYQaDhoz7hTx5u8MEtPcg6KyWcnIH4=;
+        b=ijm4/7k2W8RbtEuRMqrvgjoSXJbiKjew5cnXQTE7TUq38XtF+fdZiBW+iqpe3kL7qq/BY0
+        MVsQHMaMjrvCJACJTGG43SwbUdefga8oKaY1ppF++LwyMXVXDBxxHxvNJPr4zo+jy+uX2W
+        Z9j3E7Y+U/EeAKiyrtA16f+7LC4opho=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-OWZ_0DI2PkOHMeWNncw39Q-1; Tue,
+ 21 Nov 2023 11:27:58 -0500
+X-MC-Unique: OWZ_0DI2PkOHMeWNncw39Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 248493C14908;
+        Tue, 21 Nov 2023 16:27:57 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.66])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1B05E1121319;
+        Tue, 21 Nov 2023 16:27:55 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 21 Nov 2023 17:26:52 +0100 (CET)
+Date:   Tue, 21 Nov 2023 17:26:50 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] __ptrace_unlink: kill the obsolete "FIXME" code
+Message-ID: <20231121162650.GA6635@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 11SOlOybwqtl2KAu4CPyy3AQ8cBaz4Ma
-X-Proofpoint-GUID: 11SOlOybwqtl2KAu4CPyy3AQ8cBaz4Ma
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Passing a gfp_t to KUNIT_EXPECT_EQ() causes a cast warning:
+The corner case described by the comment is no longer possible after the
+commit 7b3c36fc4c23 ("ptrace: fix task_join_group_stop() for the case when
+current is traced"), task_join_group_stop() ensures that the new thread has
+the correct signr in JOBCTL_STOP_SIGMASK regardless of ptrace.
 
-  lib/kunit/string-stream-test.c:73:9: sparse: sparse: incorrect type in
-  initializer (different base types) expected long long right_value
-  got restricted gfp_t const __right
-
-Avoid this by testing stream->gfp for the expected value and passing the
-boolean result of this comparison to KUNIT_EXPECT_TRUE(), as was already
-done a few lines above in string_stream_managed_init_test().
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Fixes: d1a0d699bfc0 ("kunit: string-stream: Add tests for freeing resource-managed string_stream")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311181918.0mpCu2Xh-lkp@intel.com/
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 ---
- lib/kunit/string-stream-test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/ptrace.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-test.c
-index 06822766f29a..03fb511826f7 100644
---- a/lib/kunit/string-stream-test.c
-+++ b/lib/kunit/string-stream-test.c
-@@ -72,7 +72,7 @@ static void string_stream_unmanaged_init_test(struct kunit *test)
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 443057bee87c..d6fc63458c76 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -145,20 +145,9 @@ void __ptrace_unlink(struct task_struct *child)
+ 	 */
+ 	if (!(child->flags & PF_EXITING) &&
+ 	    (child->signal->flags & SIGNAL_STOP_STOPPED ||
+-	     child->signal->group_stop_count)) {
++	     child->signal->group_stop_count))
+ 		child->jobctl |= JOBCTL_STOP_PENDING;
  
- 	KUNIT_EXPECT_EQ(test, stream->length, 0);
- 	KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
--	KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
-+	KUNIT_EXPECT_TRUE(test, (stream->gfp == GFP_KERNEL));
- 	KUNIT_EXPECT_FALSE(test, stream->append_newlines);
- 
- 	KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
+-		/*
+-		 * This is only possible if this thread was cloned by the
+-		 * traced task running in the stopped group, set the signal
+-		 * for the future reports.
+-		 * FIXME: we should change ptrace_init_task() to handle this
+-		 * case.
+-		 */
+-		if (!(child->jobctl & JOBCTL_STOP_SIGMASK))
+-			child->jobctl |= SIGSTOP;
+-	}
+-
+ 	/*
+ 	 * If transition to TASK_STOPPED is pending or in TASK_TRACED, kick
+ 	 * @child in the butt.  Note that @resume should be used iff @child
 -- 
-2.30.2
+2.25.1.362.g51ebf55
+
 
