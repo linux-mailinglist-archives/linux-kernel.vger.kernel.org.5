@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8007B7F3913
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C527F3914
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 23:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjKUWTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 17:19:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S233840AbjKUWVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 17:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjKUWTW (ORCPT
+        with ESMTP id S229514AbjKUWU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 17:19:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0056191;
-        Tue, 21 Nov 2023 14:19:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700605158; x=1732141158;
-  h=subject:from:to:cc:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=80Z6V0+UFCndLA11Ha1TxeEnx/2m86v49AN9qelggW4=;
-  b=JLYntSmDgLG7/JaITcaawUq+K5YoajJyHX3zz6En1K8rlp1c3/wGiEiU
-   kwLdsLspF9mTqN2BHLGe8eUKTkeg/Crk5TzNCZAb3kAn1eQJtrpeM9gJx
-   um2U4WTY128uWkImvzlbSQt3XBFUt5bct4Z4eUQUdKhp7AkJqO4eZL5Wl
-   jVZbFwxXhS9JRqDwnpzSK8hV0ZQ6rjiyb2ybUt51/vdC99+URYBp2UxjO
-   N92lET3VxG9RtJGgQvBdbsM0O45ruLfxwMHxrxPrpt0QwgTICp028rfoB
-   uQXGQqhjUrVjb3Hou5o1oqCwFgs7+rNfdD4CnNTU1fSAzaeIHb/MBsO4T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="395856500"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="395856500"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:19:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="837183434"
-X-IronPort-AV: E=Sophos;i="6.04,216,1695711600"; 
-   d="scan'208";a="837183434"
-Received: from djiang5-mobl3.amr.corp.intel.com (HELO [192.168.1.177]) ([10.212.123.89])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 14:19:16 -0800
-Subject: [PATCH v2] acpi: Fix ARM32 platforms compile issue introduced by
- fw_table changes
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     linus.walleij@linaro.org, rafael@kernel.org
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
-        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
-        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        cfsworks@gmail.com
-Date:   Tue, 21 Nov 2023 15:19:16 -0700
-Message-ID: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
-User-Agent: StGit/1.5
+        Tue, 21 Nov 2023 17:20:59 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE507113
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:20:55 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35b2144232bso3333985ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 14:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1700605255; x=1701210055; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Z8WXu/fiJNNXFNteHhgEV4qN2i0FU5wTM5NTjIv1Ec=;
+        b=Rze1fUY5Jzt23UzDcdDj8R8XbFikSyPBT4kbZT5jL87HXwOoACdc8it/vZPso5TMK4
+         t9xZ8u9u/iQZuO2Sib/+5ecZ01OVOrjTpOjEB7Dpl6wvxib7HJEP5zjSjbiU5m653qzq
+         haXXQ3TZmbVNKZm7kBx33uBCzVSb6suDP3awUa/FGma5lSZW7BnQNfQOhe5/sireXGZV
+         xL1YO1GdHTkmHNv7d4uONJva0OturzW8aBfGCKy7T1PM7FN2YwvIHNsdI4vq14xhBanJ
+         Cki3v4mL+GyysPWha4wnoHLKBKOjjDEXWgqJ84eQoU35yLcS0Vp94PG9Klksn8sLFwBt
+         plHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700605255; x=1701210055;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Z8WXu/fiJNNXFNteHhgEV4qN2i0FU5wTM5NTjIv1Ec=;
+        b=nqFOLqWt9TrdUzdLUl3O9YswUb9en+a4patbhTIisLAdy9FP0ue5G40Og1SedoMB1D
+         Xkhw4OhT2C9grZA/370/50pD7G9dGgyheoMEWI3DA6QZ964f1zNNMSlqEMPbO41vYT6l
+         JcGNYoACwRB1DCokYo6kGDVBlw19pO20g2Sw3jLQZQEtYPDxOeLp8IpKwvYKyu3wALY4
+         pEgAmWZZ5rFRNFnkZZRapizoSsypUeZ8QxHjOzT/nsom26VCwAqKy/cQ+HPAlzTQBWLe
+         L1oUz0vDnuokvUdmW8alMZCKoOQ+eU8jjhqq6VDnSSeIQBlf4kFsemwgUAYG5UMbefGm
+         VsyQ==
+X-Gm-Message-State: AOJu0YwWQXhS8q4TZlfVihnwWz50XF1eLpa/zlkWlWlzDayMujfjlG6X
+        LsU69OU3MXL8XfY05PFGCzn+dI3JH6dwwHOl6AA=
+X-Google-Smtp-Source: AGHT+IHnEzmXNMqVmbAle3y5pw8fBSNlcSrzJYfQGkwCwmsEPf93tuSlpeOlgv47mg2chlhnMyjDeQ==
+X-Received: by 2002:a05:6e02:2146:b0:359:50f2:88b with SMTP id d6-20020a056e02214600b0035950f2088bmr407808ilv.11.1700605255051;
+        Tue, 21 Nov 2023 14:20:55 -0800 (PST)
+Received: from ?IPV6:2605:a601:adae:4500:9465:402f:4b0a:1116? ([2605:a601:adae:4500:9465:402f:4b0a:1116])
+        by smtp.gmail.com with ESMTPSA id bc23-20020a056e02009700b0035742971dd3sm3505623ilb.16.2023.11.21.14.20.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 14:20:54 -0800 (PST)
+Message-ID: <ddb9d0cb-5f78-4242-b431-878d0372884b@sifive.com>
+Date:   Tue, 21 Nov 2023 16:20:54 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: select ARCH_HAS_FAST_MULTIPLIER
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231121144340.3492-1-jszhang@kernel.org>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20231121144340.3492-1-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,126 +76,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus reported that:
-After commit a103f46633fd the kernel stopped compiling for
-several ARM32 platforms that I am building with a bare metal
-compiler. Bare metal compilers (arm-none-eabi-) don't
-define __linux__.
+On 2023-11-21 8:43 AM, Jisheng Zhang wrote:
+> Currently, riscv linux requires at least IMA, so all platforms have a
+> multiplier. And I assume the 'mul' efficiency is comparable or better
+> than a sequence of five or so register-dependent arithmetic
+> instructions. Select ARCH_HAS_FAST_MULTIPLIER to get slightly nicer
+> codegen. Refer to commit f9b4192923fa ("[PATCH] bitops: hweight()
+> speedup") for more details.
+> 
+> In a simple benchmark test calling hweight64() in a loop, it got:
+> about 14% preformance improvement on JH7110, tested on Milkv Mars.
 
-This is because the header <acpi/platform/acenv.h> is now
-in the include path for <linux/irq.h>:
+typo: performance
 
-  CC      arch/arm/kernel/irq.o
-  CC      kernel/sysctl.o
-  CC      crypto/api.o
-In file included from ../include/acpi/acpi.h:22,
-                 from ../include/linux/fw_table.h:29,
-                 from ../include/linux/acpi.h:18,
-                 from ../include/linux/irqchip.h:14,
-                 from ../arch/arm/kernel/irq.c:25:
-../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
-  218 | #error Unknown target environment
-      |  ^~~~~
+> about 23% performance improvement on TH1520 and SG2042, tested on
+> Sipeed LPI4A and SG2042 platform.
+> 
+> a slight performance drop on CV1800B, tested on milkv duo. Among all
+> riscv platforms in my hands, this is the only one which sees a slight
+> performance drop. It means the 'mul' isn't quick enough. However, the
+> situation exists on x86 too, for example, P4 doesn't have fast
+> integer multiplies as said in the above commit, x86 also selects
+> ARCH_HAS_FAST_MULTIPLIER. So let's select ARCH_HAS_FAST_MULTIPLIER
+> which can benefit almost riscv platforms.
 
-The issue is caused by the introducing of splitting out the ACPI code to
-support the new generic fw_table code.
+On Unmatched: 20% speedup for __sw_hweight32 and 30% speedup for __sw_hweight64.
+On D1: 8% speedup for __sw_hweight32 and 8% slowdown for __sw_hweight64.
 
-Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
-the linux/mutex.h. Remove the two includes in fw_table.h. Add include of
-linux/acpi.h in fw_table.c before the fw_table.h include.
+So overall still an improvement.
 
-Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
-Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
-Reported-by: Linus Walleij <linus.walleij@linaro.org>
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-v2:
-- Remove linux/acpi.h include as well in fw_table.h. (Sam)
----
- include/linux/acpi.h     |   22 +++++++++++-----------
- include/linux/fw_table.h |    3 ---
- lib/fw_table.c           |    1 +
- 3 files changed, 12 insertions(+), 14 deletions(-)
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 54189e0e5f41..4db54e928b36 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -15,7 +15,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/property.h>
- #include <linux/uuid.h>
--#include <linux/fw_table.h>
- 
- struct irq_domain;
- struct irq_domain_ops;
-@@ -25,22 +24,13 @@ struct irq_domain_ops;
- #endif
- #include <acpi/acpi.h>
- 
--#ifdef CONFIG_ACPI_TABLE_LIB
--#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
--#define __init_or_acpilib
--#define __initdata_or_acpilib
--#else
--#define EXPORT_SYMBOL_ACPI_LIB(x)
--#define __init_or_acpilib __init
--#define __initdata_or_acpilib __initdata
--#endif
--
- #ifdef	CONFIG_ACPI
- 
- #include <linux/list.h>
- #include <linux/dynamic_debug.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/fw_table.h>
- 
- #include <acpi/acpi_bus.h>
- #include <acpi/acpi_drivers.h>
-@@ -48,6 +38,16 @@ struct irq_domain_ops;
- #include <acpi/acpi_io.h>
- #include <asm/acpi.h>
- 
-+#ifdef CONFIG_ACPI_TABLE_LIB
-+#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-+#define __init_or_acpilib
-+#define __initdata_or_acpilib
-+#else
-+#define EXPORT_SYMBOL_ACPI_LIB(x)
-+#define __init_or_acpilib __init
-+#define __initdata_or_acpilib __initdata
-+#endif
-+
- static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
- {
- 	return adev ? adev->handle : NULL;
-diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-index ff8fa58d5818..ca49947f0a77 100644
---- a/include/linux/fw_table.h
-+++ b/include/linux/fw_table.h
-@@ -25,9 +25,6 @@ struct acpi_subtable_proc {
- 	int count;
- };
- 
--#include <linux/acpi.h>
--#include <acpi/acpi.h>
--
- union acpi_subtable_headers {
- 	struct acpi_subtable_header common;
- 	struct acpi_hmat_structure hmat;
-diff --git a/lib/fw_table.c b/lib/fw_table.c
-index b51f30a28e47..c4831f3378be 100644
---- a/lib/fw_table.c
-+++ b/lib/fw_table.c
-@@ -7,6 +7,7 @@
-  *  Copyright (C) 2023 Intel Corp.
-  */
- #include <linux/errno.h>
-+#include <linux/acpi.h>
- #include <linux/fw_table.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
-
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
 
