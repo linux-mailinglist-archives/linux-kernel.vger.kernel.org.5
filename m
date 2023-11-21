@@ -2,152 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D5E7F35D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0C47F35DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 19:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjKUSVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 13:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S231235AbjKUSVz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 21 Nov 2023 13:21:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKUSVf (ORCPT
+        with ESMTP id S234308AbjKUSVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 13:21:35 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2050.outbound.protection.outlook.com [40.107.223.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE6A9A;
-        Tue, 21 Nov 2023 10:21:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BQR/mUF6zey9lUBLBa594nGjttrQHL/24x67XGqykP+A6w9DojX2GC2LqJH+0sxs1236EIt1LQEzd6BFZulxnR7197EZw0I9itOOvSeT+BpziG+hys8JddWC6XZ2MQufxlnOKonCwcKVfVf//Ue1iNhWpXfxMFomlgIgHISElQxu52sPs+7Qjb00OAUVu9ywuFHokSz7eg24QSg7WKNgHT0mXCXbTpf8mbDcXSrFKYBYmD83UUymHY/P3QUFb86UB86JhLhXPHsqasnNM+fAMiCZAwjwt4xcXg3xZbUJUKk2latvxI5btp71uYw+O2kQ5/17n9ih3CPtyedAWfgzdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4iP0bt97eaOILFMSS2XOKS+XoGvGd9J/aozCsIw+dng=;
- b=BcE7OswSsRpJgdQx8TlGNJ7R9m01hKYXwGjeg2ga/XUua7ZSz7jHuRki/rAQNPDl9SLGpIL/Yqmzr4H2oyx0QgcLmjbFbhOOJzMygkD0J2G7SwqySnza57Nd8fU/6HK9Hj7iQpC8g2LNvmWUhL2x/iD/GJaeByWkQXbJ+8hipU12O0ZcD86mL7IL+SstmTAtf4eccWnXMFqlpmpjQYxgnUC4roZwdXNI1QOXBoA9Va8bIa8nMxMoClcQOnHQq8VHvJVQfV7x6BUW4p+7rHT4h+47rLEiKagpLpaiIxmr4zAUYyZn9VR4FlSiBr4rIAWs0Y8HN4QHC+tRYOUjTdTL/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=synopsys.com smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4iP0bt97eaOILFMSS2XOKS+XoGvGd9J/aozCsIw+dng=;
- b=wtI1vq13fQlRX5dPqR/Ox/OwUaPNrC3xMFkrkheqYZhs5lA9P8XWEwKp0lPaUYLAuIPvbsTWCfAqo4nUl68BvIHaTnp/Zo6gpAnlGos2AZGg7X6HgSPkQxCjTAAthe3E6nlDoCdIug6l4mAEcv312htMwkzP9QC5hmkRPSZeRR0=
-Received: from BL1PR13CA0192.namprd13.prod.outlook.com (2603:10b6:208:2be::17)
- by DM6PR12MB4108.namprd12.prod.outlook.com (2603:10b6:5:220::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Tue, 21 Nov
- 2023 18:21:30 +0000
-Received: from MN1PEPF0000ECD8.namprd02.prod.outlook.com
- (2603:10b6:208:2be:cafe::1) by BL1PR13CA0192.outlook.office365.com
- (2603:10b6:208:2be::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.16 via Frontend
- Transport; Tue, 21 Nov 2023 18:21:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- MN1PEPF0000ECD8.mail.protection.outlook.com (10.167.242.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Tue, 21 Nov 2023 18:21:29 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
- 2023 12:21:28 -0600
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Tue, 21 Nov 2023 12:21:26 -0600
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To:     <Thinh.Nguyen@synopsys.com>, <gregkh@linuxfoundation.org>,
-        <michal.simek@amd.com>
-CC:     <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@amd.com>,
-        Piyush Mehta <piyush.mehta@amd.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Subject: [PATCH v2] usb: dwc3: xilinx: improve error handling for PM APIs
-Date:   Tue, 21 Nov 2023 23:51:18 +0530
-Message-ID: <1700590878-124335-1-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
+        Tue, 21 Nov 2023 13:21:51 -0500
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B127C97
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:21:47 -0800 (PST)
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5bd5809f63aso3385688a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 10:21:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700590907; x=1701195707;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mjqukWY1TJRl2un3A3Zmwy+nQrqrkLFwF1K5Ugh7bto=;
+        b=AGXn5FNnWLhuLPwtkk05tNpFkgtSGXwt/dc/2U7jsFtxiBOvONyVL73pMrYmPLu4w2
+         CiPcy6V18MJkPzhei/YDW6btb70N/Z01eBqQbZ6yGwdABnE3Ma+ggIrbZZ6HJwPqTShy
+         NpB5FUJpY4Ibq/dqKsDsNqEyWFEaYXajsbiLuMX+dRv0q2DHZLAKGvaexJ+oGVehFaWo
+         6ILQ0Zcf/rmqo1TNrqpDCCeje5hOZ4eNgekm9EicmIAedQ+raqUO23qpf5i6k+ZG4uAH
+         imABlMf62mlueoBukaCq7E7NcR0MlEvik0uA01fKbVmgXyFySBjIR8ZFh3pjmPEE6Sp/
+         zy4Q==
+X-Gm-Message-State: AOJu0YyULzANRcAj/PfJTSkhwkRvtb5Y1mNxa1xfgOoJGuAfpyTumdYS
+        QE0mF+hSHoqI/JVReg6vr4WnJRqLn3BuOk9QUEo=
+X-Google-Smtp-Source: AGHT+IGS8CF8o4jrtTN3gzjZVQq2KuBz1RFbrYXRMpN9bD3qC9J1yABAf1SAGSnPwY61X6+lJf+VHtyISNiR8k4q41Q=
+X-Received: by 2002:a17:90b:3e85:b0:280:25ce:58f with SMTP id
+ rj5-20020a17090b3e8500b0028025ce058fmr9353930pjb.43.1700590907025; Tue, 21
+ Nov 2023 10:21:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD8:EE_|DM6PR12MB4108:EE_
-X-MS-Office365-Filtering-Correlation-Id: 988f77f0-bec4-4a6d-ddf5-08dbeabeae8d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QcMYnkrroMA/FlW//r1EeJjTpcvgEBPYwfkuruj0k6twWlXjPSG9i2WnqT93eLTjCZK3uvTu8dNRJaRUz5t4wU6NJBa49BrFYxbDBZbFOOA4QDeoDBRSzVYRj7dh8Rsyz+IISpBDoeSyui/97iUEn3689A9qpJ6LZ3EUkJXR7H2pi65x8J6Plnrijv43YeMhR3o9gFwM/3j1eTi2tqZTV1oiSqkee+ZS9Tbl8sGsmmv/kYpPcSLPWw6ekC0dR4iQSgUqD643ZENTbP9U/n7efcSQMPXp9u3a1OtuyBCDdWzwFufpUNhNMm3hyXS15WjnlGLWG56zyfDvC5cYKdNw64mrLJ7VVa7O8slMeXaU2etecv2aGK3hXkdRjAa4bDp8tiyhcLNDYg6UHmK9kWHoUUAMSRm8YTtYOaLcsoOc6dvZGDcUMpNUrnqap0WjfkpoeH7LPrPLwzGgznQCD5khU+GR48tnnm4LyHGimvw/0lvkTh6F5AAbmbJ71uyHfMSXtxB+Vech9i2eVcp5EBItFe8IMYe+RrCGt83FHf0AHX6XOf1kvjWtc7+kOXurTwJAVMawEGYaOnOSk2NEAoqP8XO73PwzcF0MPEQGITtF/aCC8YyZEEPHa6wUNYlJ+xpau3LeePiIQ8aXWF0Vq/IQghdqgXPFVwP8OQS1knHqMiLbLKZ9PT7dZDm/NldggHEZRMKuyZ6/tAgtngyfC2/ABQE1CpYSVkCMZU4XFCMocE10uy3+wraaj8C3vYKTJokMexRn1pEaKPIAu5JuVGJrUA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(346002)(136003)(230922051799003)(82310400011)(1800799012)(64100799003)(186009)(451199024)(36840700001)(46966006)(40470700004)(5660300002)(40480700001)(8676002)(4326008)(41300700001)(8936002)(2906002)(70586007)(70206006)(316002)(54906003)(110136005)(6636002)(40460700003)(86362001)(47076005)(26005)(478600001)(6666004)(36756003)(2616005)(336012)(426003)(356005)(81166007)(36860700001)(83380400001)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 18:21:29.5807
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 988f77f0-bec4-4a6d-ddf5-08dbeabeae8d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD8.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4108
-X-Spam-Status: No, score=1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+References: <20231120221932.213710-1-namhyung@kernel.org> <CAP-5=fWFeqEK4woCj2ngjxMi4B4EZ3y0gLN+qNu4oNfp4wG8xA@mail.gmail.com>
+ <ZVvqj0pR2ZebBF3L@google.com>
+In-Reply-To: <ZVvqj0pR2ZebBF3L@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 21 Nov 2023 10:21:36 -0800
+Message-ID: <CAM9d7cgAPxyNxMTz-uoPExcg4e1h5iXCuR5ZOy7UUt5gjbd2VA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf/core: Update perf_adjust_freq_unthr_context()
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Piyush Mehta <piyush.mehta@amd.com>
+Hi Mingwei,
 
-Improve error handling for PM APIs in the dwc3_xlnx_probe function by
-introducing devm_pm_runtime_enable and error label. Removed unnecessary
-API pm_runtime_disable call in dwc3_xlnx_remove.
+On Mon, Nov 20, 2023 at 3:24 PM Mingwei Zhang <mizhang@google.com> wrote:
+>
+> On Mon, Nov 20, 2023, Ian Rogers wrote:
+> > On Mon, Nov 20, 2023 at 2:19 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > It was unnecessarily disabling and enabling PMUs for each event.  It
+> > > should be done at PMU level.  Add pmu_ctx->nr_freq counter to check it
+> > > at each PMU.  As pmu context has separate active lists for pinned group
+> > > and flexible group, factor out a new function to do the job.
+> > >
+> > > Another minor optimization is that it can skip PMUs w/ CAP_NO_INTERRUPT
+> > > even if it needs to unthrottle sampling events.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> >
+> > Series:
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+> >
+> > Thanks,
+> > Ian
+> >
+>
+> Can we have "Cc: stable@vger.kernel.org" for the whole series? This
+> series should have a great performance improvement for all VMs in which
+> perf sampling events without specifying period.
 
-Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
----
-Changes for v2:
-- Remove pm_runtime_enable() call.
----
- drivers/usb/dwc3/dwc3-xilinx.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+I was not sure if it's ok to have this performance fix in the stable series.
 
-diff --git a/drivers/usb/dwc3/dwc3-xilinx.c b/drivers/usb/dwc3/dwc3-xilinx.c
-index 5b7e92f476de..6095f4dee6ce 100644
---- a/drivers/usb/dwc3/dwc3-xilinx.c
-+++ b/drivers/usb/dwc3/dwc3-xilinx.c
-@@ -293,11 +293,15 @@ static int dwc3_xlnx_probe(struct platform_device *pdev)
- 		goto err_clk_put;
- 
- 	pm_runtime_set_active(dev);
--	pm_runtime_enable(dev);
-+	ret = devm_pm_runtime_enable(dev);
-+	if (ret < 0)
-+		goto err_pm_set_suspended;
-+
- 	pm_suspend_ignore_children(dev, false);
--	pm_runtime_get_sync(dev);
-+	return pm_runtime_resume_and_get(dev);
- 
--	return 0;
-+err_pm_set_suspended:
-+	pm_runtime_set_suspended(dev);
- 
- err_clk_put:
- 	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
-@@ -315,7 +319,6 @@ static void dwc3_xlnx_remove(struct platform_device *pdev)
- 	clk_bulk_disable_unprepare(priv_data->num_clocks, priv_data->clks);
- 	priv_data->num_clocks = 0;
- 
--	pm_runtime_disable(dev);
- 	pm_runtime_put_noidle(dev);
- 	pm_runtime_set_suspended(dev);
- }
--- 
-2.34.1
-
+Thanks,
+Namhyung
