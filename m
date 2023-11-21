@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29987F36D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CFB7F36E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 20:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjKUTgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 14:36:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S229545AbjKUToK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 14:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjKUTgO (ORCPT
+        with ESMTP id S229495AbjKUToE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 14:36:14 -0500
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9DC198;
-        Tue, 21 Nov 2023 11:36:08 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4E59E5C09CA;
-        Tue, 21 Nov 2023 14:36:05 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 21 Nov 2023 14:36:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1700595365; x=1700681765; bh=Jf
-        CLQ8+7RDc/ys9Dqiv8ksmZfU6vufRcp+bQh8DNeJ0=; b=j59pbpDDMH8vqiwt9P
-        nW0aRLGyKi3RX23NeVMCIwVcJ9DUbRD9T/w7kSLj5oa+xi5RiHFMdZZfIs6CTaWf
-        acM9LcF+THVCnt6j1IkpCA1pBpGzXENlx4ut0/InWC2QLlxXxZB0u2u0X4+wkiq3
-        8Q+f8QisrigiGc9WIw+9HfTYbt9cipfs4kXoCNfGxKKP7L973N5Vty7y1M1OxgRw
-        HtRyTszVMWVS6Jk3NtRF5KxOmrKzJnZkFGDJwJZNa9hvnl5HsJL/6WtwLQu4zsOp
-        1536tY6PcO15y+7KupCf5CF6qf6DsDcIErCmHggaTFmbO89MKTECdKNq72rMueZB
-        6ErA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700595365; x=1700681765; bh=JfCLQ8+7RDc/y
-        s9Dqiv8ksmZfU6vufRcp+bQh8DNeJ0=; b=ruprUrYUeyI0kBQftKiG9GF70rm0u
-        JSjksjOcdUpA0p5Plg6lcWBMWSsCBho299A7JEE+G5b3/Opwf0XN4c5Xi5JDTiP7
-        Xck/y3dJg2nmblO0DzYxRmYSpq7saNLjANYCmFaHtOn74pDi/K9uRhFLvgRiulsa
-        Yl64KpvAnjMCjf0GmYZMivb94vP7Cm/j9Z1vpfpCgFgQicSv0lPQxf68fsxdETNa
-        s8CRUFR05Rz+g1aU/Zb3rBH2gmqzxFM7z3TFqjrSUyyWkFNJuyWYB48H6gh7bTkM
-        tW813/wvnCqGvTzdexbVyCzxIxPZQCpryaICNVWqlLjbQb8ZOfgS2tR7A==
-X-ME-Sender: <xms:pQZdZXaBtQ8RxX_fSIgh082j-Y4rwyJ8f_n4qpZQE5Cfb8FjK-OWdg>
-    <xme:pQZdZWY_VrcUw8CoKNjN6c82YPzwCadqwFMLvnLp1YxwuajaoQseBlcnOnEjyJmxv
-    Y-gRhnZxpkHjlJFGd8>
-X-ME-Received: <xmr:pQZdZZ_6FmoEXQKBm7rTEzih32gUK4VONsV-Q0fKcP3VufKHgXu0TexLAjC6wQABDrkwEjeU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhk
-    vgculfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrh
-    hnpedvvdegledtheefieejgfevgeefiefhtdevteefteduhfevtdefleethfetgeeluden
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
-    eslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:pQZdZdr7agJcq5g0A0tx7UGjMbFQ_vbA9UwiT24_Opw0ITVgZ8UHog>
-    <xmx:pQZdZSrcDptk4QVOBwwEtONXhrz9voRO33Lt2aHUUSHKbmq209Zjhw>
-    <xmx:pQZdZTQWwEKFp4pG4yNTYd-F1BWjj6eWMqumep24pWHLY9VPwXIazA>
-    <xmx:pQZdZZ2EhdzzvxOaNNpkW8S6NAqCN1-YapE_EqjTc-rv2J7gzDdx-A>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Nov 2023 14:36:01 -0500 (EST)
-Date:   Wed, 22 Nov 2023 08:35:46 +1300
-From:   Luke Jones <luke@ljones.dev>
-Subject: Re: [PATCH 0/2] hid-asus: reset the backlight brightness level on
- resume
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Denis Benato <benato.denis96@gmail.com>,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <MRNH4S.965MCNIAPCDV2@ljones.dev>
-In-Reply-To: <nycvar.YFH.7.76.2311210951340.29220@cbobk.fhfr.pm>
-References: <20231117011556.13067-1-luke@ljones.dev>
-        <b4356286-368a-49ec-b1f8-d7e5e4afdc25@gmail.com>
-        <nycvar.YFH.7.76.2311210951340.29220@cbobk.fhfr.pm>
-X-Mailer: geary/44.1
+        Tue, 21 Nov 2023 14:44:04 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A6C197;
+        Tue, 21 Nov 2023 11:44:01 -0800 (PST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALJV6Tx016765;
+        Tue, 21 Nov 2023 19:43:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=0qCTPnVf7eW8u068diNRbrmHzRxDoghcf3d2UPQTSCo=;
+ b=sEQ85I7iHJ4evsoJRr53L6MD2AqiTLozPRaOiCYmF7Plvzdh+renI8DnuuW+Wt0++1cx
+ ve8TUkrGSmY8+TgiS5rUbfG3IR5hrP7kgUNLHeXlh68F6N2RTG4KZMX4PiuzuA4fY/03
+ hvOG/po0ZC16utXwaKccT95OQ/XCfDX4sMsw6Hf8EJ2m+mpbvzV/tl4R4X269sO93VBr
+ tWy0/TmJQamcojqYVAflvTTO4CrEGumjH4Xu3o7VR5UfUno6NYvF/Y7Cnctch4IY5+Wn
+ qtZTctUrLn2dUITKrxxg5Wnd5RTzM0JOvJzBzMBD5pP94pDWmzkynIfGp57I7FMPM39a uQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uh2gc0jgb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 19:43:56 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ALJXYK3023494;
+        Tue, 21 Nov 2023 19:43:55 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uh2gc0jfn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 19:43:55 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALIVBLB010303;
+        Tue, 21 Nov 2023 19:43:54 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uf93ktw50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 19:43:54 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ALJhpZO66257214
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Nov 2023 19:43:51 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 46BA920043;
+        Tue, 21 Nov 2023 19:43:51 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3768820040;
+        Tue, 21 Nov 2023 19:43:51 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 21 Nov 2023 19:43:51 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
+        id E50A4E0320; Tue, 21 Nov 2023 20:43:50 +0100 (CET)
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Moola <vishal.moola@gmail.com>
+Cc:     linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH v3 0/2] minor ptdesc updates
+Date:   Tue, 21 Nov 2023 20:43:48 +0100
+Message-Id: <cover.1700594815.git.agordeev@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Us9EXl4cpIv4nauzzRT8v61RerjCObOH
+X-Proofpoint-GUID: OzaNylK7WK_VF-uJDwJAFuWaeme9FxMO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_10,2023-11-21_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 phishscore=0 priorityscore=1501 bulkscore=0
+ clxscore=1015 spamscore=0 mlxlogscore=678 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210153
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vishal, Andrew,
 
+Please find v3 of s390-caused ptdesc updates.
 
-On Tue, Nov 21 2023 at 09:52:11 AM +01:00:00, Jiri Kosina 
-<jikos@kernel.org> wrote:
-> On Fri, 17 Nov 2023, Denis Benato wrote:
-> 
->>  > From: Denis Benato <benato.denis96@gmail.com>
->> 
->>  I want to express my gratitude toward Luke for his guidance and his 
->> help
->>  in submitting this fix.
->> 
->>  I confirm those patches were sent in my behalf.
-> 
-> Luke, as you were in the supply chain of the patches, could you please
-> provide Signed-off-by: tags so that I can add them into the chain?
+Changes since v2:
+- single patch split in two;
+- _refcount renamed to __page_refcount;
+- _refcount TABLE_MATCH() check restored;
 
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
+Changes since v1:
+- missing comment to _pt_pad_3 padding added;
 
+Thanks!
+
+Alexander Gordeev (2):
+  pgtable: fix s390 ptdesc field comments
+  pgtable: rename ptdesc _refcount field to __page_refcount
+
+ include/linux/mm_types.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+2.39.2
 
