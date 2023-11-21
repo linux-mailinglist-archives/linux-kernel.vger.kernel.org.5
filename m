@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0867F2E32
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620177F2E34
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbjKUNZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S232683AbjKUNZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjKUNZC (ORCPT
+        with ESMTP id S231748AbjKUNZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:25:02 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0B81BB;
-        Tue, 21 Nov 2023 05:24:58 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r5QkG-0006kS-5Y; Tue, 21 Nov 2023 14:24:52 +0100
-Message-ID: <fe89fd29-562c-46c0-9a15-e3a5c43da9a1@leemhuis.info>
-Date:   Tue, 21 Nov 2023 14:24:50 +0100
+        Tue, 21 Nov 2023 08:25:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8B71BB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 05:25:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1E16C433C8;
+        Tue, 21 Nov 2023 13:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700573115;
+        bh=5h1dRKlWyHsnS2iAX+ZBjDivjot+UuM0uKEgmm27lSs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mb6XfF2Au4nWSAJGBsxKS/vMcj+cqXxZ/8Xau5tFbJUk54vS5AHF5pdMlnBHdjJK0
+         FOhcdSvbpwK3y7lfPGWA4fyp+/SHtW5M4eV3eAwpDQyGBYzfZS7zF5t78cRw7HKGMs
+         MwKk794GUPEOTmemKRUE3bd6p3wVxAto/VFBFW31qPZN2Zgdr8lhXsD1fCtH7486of
+         EtJGrTL3onmt/tZ4jW6Uty6talm+6Wj5EcOMT0jbCB+NTWQ2VWQpWr4EtJLJlJuj0p
+         00YVYBlaol8ec2holPUtIDPLpPCI5kmTuvyLQl4+k6D8p/0y60fLZ5RdH4nNysYsXS
+         WJdbJToZ/i7KQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r5Qkn-0000u4-1j;
+        Tue, 21 Nov 2023 14:25:26 +0100
+Date:   Tue, 21 Nov 2023 14:25:25 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Puliang Lu <puliang.lu@fibocom.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: option: modify Fibocom to DELL custom modem
+ FM101R-GL
+Message-ID: <ZVyvxbrCxSos0B6W@hovoldconsulting.com>
+References: <20231026123506.26453-1-puliang.lu@fibocom.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: scsi regression that after months is still not addressed and now
- bothering 6.1.y users, too
-Content-Language: en-US, de-DE
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        John Garry <john.g.garry@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sagar Biradar <sagar.biradar@microchip.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        scsi <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gilbert Wu <gilbert.wu@microchip.com>
-References: <c6ff53dc-a001-48ee-8559-b69be8e4db81@leemhuis.info>
- <47e8fd80-3f87-4b87-a875-035e69961392@oracle.com>
- <a3ddbd03-7a94-4b6a-9be1-b268ce883551@leemhuis.info>
- <18b3745d3e5de2ffd9b74f9cc826c2c3235dc6ca.camel@HansenPartnership.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <18b3745d3e5de2ffd9b74f9cc826c2c3235dc6ca.camel@HansenPartnership.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700573098;7592b915;
-X-HE-SMSGID: 1r5QkG-0006kS-5Y
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026123506.26453-1-puliang.lu@fibocom.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.11.23 14:05, James Bottomley wrote:
-> On Tue, 2023-11-21 at 13:24 +0100, Linux regression tracking (Thorsten
-> Leemhuis) wrote:
->> On 21.11.23 12:30, John Garry wrote:
-> [...]
->>> Is there a full kernel log for this hanging system?
->>> I can only see snippets in the ticket.
->>> And what does /sys/class/scsi_host/host*/nr_hw_queues show?
->>
->> Sorry, I'm just the man-in-the-middle: you need to ask in the ticket,
->> as  the privacy policy for bugzilla.kernel.org does not allow to CC
->> the reporters from the ticket here without their consent.
+On Thu, Oct 26, 2023 at 08:35:06PM +0800, Puliang Lu wrote:
+> Modify the definition of Fibocom USB serial option driver
+> FM101R-GL different variants
 > 
-> How did you arrive at that conclusion?
+> - VID:PID 413C:8213, FM101R-GL ESIM are laptop M.2 cards (with
+>   MBIM interfaces for Linux)
+> 
+> - VID:PID 413C:8215, FM101R-GL are laptop M.2 cards (with
+>   MBIM interface for Linux)
+> 
+> 0x8213: mbim, tty
+> 0x8215: mbim, tty
+> 
+> Signed-off-by: Puliang Lu <puliang.lu@fibocom.com>
+ 
+> -#define DELL_PRODUCT_FM101R			0x8213
+> -#define DELL_PRODUCT_FM101R_ESIM		0x8215
+> +#define DELL_PRODUCT_FM101R_ESIM		0x8213
+> +#define DELL_PRODUCT_FM101R				0x8215
 
-To quote https://bugzilla.kernel.org/createaccount.cgi:
-"""
-Note that your email address will never be displayed to logged out
-users. Only registered users will be able to see it.
-"""
+You have an extra tab here so that the values are no longer aligned.
 
-Not sure since when it's there. Maybe it was added due to EU GDPR?
-Konstantin should know. But for me that's enough to not CC people. I
-even heard from one well known kernel developer that his company got a
-GDPR complaint because he had mentioning the reporters name and email
-address in a Reported-by: tag.
+>  
+>  #define KYOCERA_VENDOR_ID			0x0c88
+>  #define KYOCERA_PRODUCT_KPC650			0x17da
 
-Side note: bugbot afaics can solve the initial problem (e.g. interact
-with reporters in bugzilla by mail without exposing their email
-address). But to use bugbot one *afaik* still has to reassign a ticket
-to a specific product and component in bugzilla. Some subsystem
-maintainers don't want that, as that issues then does not show up in the
-usual queries.
+Now applied with a slightly updated commit message:
 
-Ciao, Thorsten
+	https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial.git/commit/?h=usb-linus&id=a1092619dd28ac0fcf23016160a2fdccd98ef935
+
+Johan
