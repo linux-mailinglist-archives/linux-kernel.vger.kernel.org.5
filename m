@@ -2,116 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB627F2E00
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E53C67F2DE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 14:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbjKUNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 08:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S233830AbjKUNEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 08:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbjKUNK3 (ORCPT
+        with ESMTP id S233760AbjKUNEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 08:10:29 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C17797;
-        Tue, 21 Nov 2023 05:10:26 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9097E21961;
-        Tue, 21 Nov 2023 13:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700572224;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 21 Nov 2023 08:04:07 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CC8D54;
+        Tue, 21 Nov 2023 05:04:04 -0800 (PST)
+Date:   Tue, 21 Nov 2023 13:04:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1700571842;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hqg8B1Cfy6FxrdAzeN1cVHxxKFT4Kxba9fydGibvXb4=;
-        b=sm7PREpTMHoagXGVOOeISV/D770oLS3kztQsSBml/7ohykRkHkXh582U1IR4J+SBWUVZkV
-        7KpJrhMA9NmN1ZlD1DemUrePdmXkpE3sNp9Zdjqc9g0484i9EYwdT7tfBG5Ch8nAYrDlBe
-        QnriHgQtiJ5HQV2DG9b3r/FOeGYA4uE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700572224;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=Vq3mp3VVlbiGiCUiKGAqxyw/3QBEwu1d5DThRFVhkC8=;
+        b=bHS0PTTevS2/7YV7KIHlD3P7E7QJcwQw2yR4dfdlHYZrbVraDW+Oo3/YqAxkn4DFyhzTYF
+        biJwC1V6dyu7HQ1KgJwo/ZHLGDPLPcwlGtCab0XuELuTXmaA2uFlpPlBe0P3bPMprv2d4h
+        JcpaKIITDzREWRaDy/3U2MG/hq24c+xltewfQyW/TItCOQgmC4huBNgJOVGuU++U2lfSoi
+        GnBLXoJjodoKOKp6Ms3oHBhVvN+vagPpS2cpIw9nIDH22j807QZMLH7u8HOtkXAlbISLu/
+        6YTcDUuX4UuxaKLD5Y8q/eFwLu9Qev21ARTte+QWhr1VGUO214AgnJof7krG5g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1700571842;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hqg8B1Cfy6FxrdAzeN1cVHxxKFT4Kxba9fydGibvXb4=;
-        b=QEx1iHNikLdHtI8E5AooFBcr6KffnYEX8Xr1S0JYdb7QRjjU1URfKUJLR9xeuEUo96RxIw
-        HnA74SfUlbZs7UDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D757139FD;
-        Tue, 21 Nov 2023 13:10:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bkcGFkCsXGXYJwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Tue, 21 Nov 2023 13:10:24 +0000
-Date:   Tue, 21 Nov 2023 14:03:15 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2] btrfs: ref-verify: fix memory leaks
-Message-ID: <20231121130315.GP11264@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20231118091012.14818-1-bragathemanick0908@gmail.com>
+        bh=Vq3mp3VVlbiGiCUiKGAqxyw/3QBEwu1d5DThRFVhkC8=;
+        b=hh9Qu4h9TDSkoFIWm8B74rwTyFGmCXwzQ2FzDF1pNPVRs6MmUbKfAUuLD2w8hujSf4wnrd
+        /XJk1kod2RRstcDA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/entry: Optimize common_interrupt_return()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231120143626.638107480@infradead.org>
+References: <20231120143626.638107480@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231118091012.14818-1-bragathemanick0908@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 3.64
-X-Spamd-Result: default: False [3.64 / 50.00];
-         ARC_NA(0.00)[];
-         HAS_REPLYTO(0.30)[dsterba@suse.cz];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[d66de4cbf532749df35f];
-         REPLYTO_ADDR_EQ_FROM(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_HAM(-0.06)[60.70%];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <170057184198.398.10194594429929992769.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 02:40:12PM +0530, Bragatheswaran Manickavel wrote:
-> In btrfs_ref_tree_mod(), when !parent 're' was allocated
-> through kmalloc(). In the following code, if an error occurs,
-> the execution will be redirected to 'out' or 'out_unlock' and
-> the function will be exited. However, on some of the paths,
-> 're' are not deallocated and may lead to memory leaks.
-> 
-> For example : lookup_block_entry() for 'be' returns null, the
-> out label will be invoked. During that flow ref and ra was
-> freed but not re, which can potentially lead to memleak
-> 
-> Reported-and-tested-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
-> Signed-off-by: Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+The following commit has been merged into the x86/entry branch of tip:
 
-Added to misc-next, thanks.
+Commit-ID:     c516213726fb572700cce4a5909aa8d82b77192a
+Gitweb:        https://git.kernel.org/tip/c516213726fb572700cce4a5909aa8d82b77192a
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 20 Nov 2023 15:33:45 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 21 Nov 2023 13:57:30 +01:00
+
+x86/entry: Optimize common_interrupt_return()
+
+The code in common_interrupt_return() does a bunch of unconditional
+work that is really only needed on PTI kernels. Specifically it
+unconditionally copies the IRET frame back onto the entry stack,
+swizzles onto the entry stack and does IRET from there.
+
+However, without PTI we can simply IRET from whatever stack we're on.
+
+  ivb-ep, mitigations=off, gettid-1m:
+
+  PRE:
+       140,118,538      cycles:k                                                      ( +-  0.01% )
+       236,692,878      instructions:k            #    1.69  insn per cycle           ( +-  0.00% )
+
+  POST:
+       140,026,608      cycles:k                                                      ( +-  0.01% )
+       236,696,176      instructions:k            #    1.69  insn per cycle           ( +-  0.00% )
+
+(this is with --repeat 100 and the run-to-run variance is bigger than
+the difference shown)
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20231120143626.638107480@infradead.org
+---
+ arch/x86/entry/calling.h  | 12 +++++++++---
+ arch/x86/entry/entry_64.S | 17 +++++++++++++++--
+ 2 files changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index f690762..9f1d947 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -175,8 +175,7 @@ For 32-bit we have the following conventions - kernel is built with
+ #define THIS_CPU_user_pcid_flush_mask   \
+ 	PER_CPU_VAR(cpu_tlbstate) + TLB_STATE_user_pcid_flush_mask
+ 
+-.macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
+-	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
++.macro SWITCH_TO_USER_CR3 scratch_reg:req scratch_reg2:req
+ 	mov	%cr3, \scratch_reg
+ 
+ 	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+@@ -206,13 +205,20 @@ For 32-bit we have the following conventions - kernel is built with
+ 	/* Flip the PGD to the user version */
+ 	orq     $(PTI_USER_PGTABLE_MASK), \scratch_reg
+ 	mov	\scratch_reg, %cr3
++.endm
++
++.macro SWITCH_TO_USER_CR3_NOSTACK scratch_reg:req scratch_reg2:req
++	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
++	SWITCH_TO_USER_CR3 \scratch_reg \scratch_reg2
+ .Lend_\@:
+ .endm
+ 
+ .macro SWITCH_TO_USER_CR3_STACK	scratch_reg:req
++	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+ 	pushq	%rax
+-	SWITCH_TO_USER_CR3_NOSTACK scratch_reg=\scratch_reg scratch_reg2=%rax
++	SWITCH_TO_USER_CR3 scratch_reg=\scratch_reg scratch_reg2=%rax
+ 	popq	%rax
++.Lend_\@:
+ .endm
+ 
+ .macro SAVE_AND_SWITCH_TO_KERNEL_CR3 scratch_reg:req save_reg:req
+diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+index de6469d..dfbf799 100644
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -569,7 +569,18 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ #ifdef CONFIG_XEN_PV
+ 	ALTERNATIVE "", "jmp xenpv_restore_regs_and_return_to_usermode", X86_FEATURE_XENPV
+ #endif
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++	ALTERNATIVE "", "jmp .Lpti_restore_regs_and_return_to_usermode", X86_FEATURE_PTI
++#endif
++
++	STACKLEAK_ERASE
++	POP_REGS
++	add	$8, %rsp	/* orig_ax */
++	swapgs
++	jmp	.Lnative_iret
+ 
++#ifdef CONFIG_PAGE_TABLE_ISOLATION
++.Lpti_restore_regs_and_return_to_usermode:
+ 	POP_REGS pop_rdi=0
+ 
+ 	/*
+@@ -596,13 +607,15 @@ SYM_INNER_LABEL(swapgs_restore_regs_and_return_to_usermode, SYM_L_GLOBAL)
+ 	 */
+ 	STACKLEAK_ERASE_NOCLOBBER
+ 
+-	SWITCH_TO_USER_CR3_STACK scratch_reg=%rdi
++	push	%rax
++	SWITCH_TO_USER_CR3 scratch_reg=%rdi scratch_reg2=%rax
++	pop	%rax
+ 
+ 	/* Restore RDI. */
+ 	popq	%rdi
+ 	swapgs
+ 	jmp	.Lnative_iret
+-
++#endif
+ 
+ SYM_INNER_LABEL(restore_regs_and_return_to_kernel, SYM_L_GLOBAL)
+ #ifdef CONFIG_DEBUG_ENTRY
