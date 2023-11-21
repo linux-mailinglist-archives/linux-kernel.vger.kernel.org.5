@@ -2,56 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7D47F34A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDEC7F34AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 18:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234502AbjKURNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 12:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S234561AbjKURNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 12:13:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKURNG (ORCPT
+        with ESMTP id S234337AbjKURNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 12:13:06 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4ACD4B;
-        Tue, 21 Nov 2023 09:12:59 -0800 (PST)
-Received: from [10.0.3.168] (unknown [93.240.169.83])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id AEB2561E5FE01;
-        Tue, 21 Nov 2023 18:12:33 +0100 (CET)
-Message-ID: <d8fba4f9-f868-4ef3-938b-f202e5bcc4ad@molgen.mpg.de>
-Date:   Tue, 21 Nov 2023 18:12:30 +0100
+        Tue, 21 Nov 2023 12:13:20 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A172F10C1;
+        Tue, 21 Nov 2023 09:13:06 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5ca77fc0f04so22365807b3.0;
+        Tue, 21 Nov 2023 09:13:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700586785; x=1701191585; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3AE1vsaCg/OCpsM8DXy41/9s8SNdAdOfniKnePQoU6s=;
+        b=eOpT3uUbu7aJoO2m943tCCnvtyH+xgW8QRT9gX+UlvWV/HsICy6rgzl+tLpXqJRGRD
+         RVteTpaGyrhiGfAOSbtxTLOiqbsuTeK8ydCAgIIEhzMTzdIP4g6CEAGDQ8cj3zH5R/fh
+         T/LpVEfH8RGRgNFtgISCyZfiP0wD9VroNUOonbuMFczernWUWUyIY1VytvXRfCb8e/lF
+         lIuFBYkFEJ7kROaI7Vk0muLV9VG//QGHmZdQCcKpU1s/mJUQmUOxIG+wrb+4DmT5/xQ/
+         PhECaavV6BfmGGe7lfmIOPyzNmo65uMskbroUwKdXrQCaIFB+4UCOtmin0BLGDK01f4X
+         xSNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700586785; x=1701191585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3AE1vsaCg/OCpsM8DXy41/9s8SNdAdOfniKnePQoU6s=;
+        b=DuPVW+sfCMml9z+KqPdoNYknoJFBEtrXPSuK/ZT42Fg3vFsufJraaPZXHywLUHfV6Y
+         hk7SR2AGHehhsrEeXe12jJz71k+n6BY70+xOIKQbQnqdryW027+hrOXY4BgArAyI1Xa9
+         chYuu4aVehyQrhDhEY6lnybBXNNC6H3w21RJMDwn3D61Mk0/F31om57bTXqPSqlzXKQD
+         pn4N04s/ecNZUemHfm5AoZPfq+oRxKgyBR0k50LM9QRRXayEy3AY5EwpQW1k56ykOrbq
+         9tOthHC/mY980Bv1aPn+zemHx1FmvIBt0guo6RLEjZWb4t78p6CqpHFSMXgLkEC8pFd2
+         l3Hw==
+X-Gm-Message-State: AOJu0YwEBBamGsRmPJKq+WACwxA2NTYT+Xfivj62UGZfubZ9N1ZyKx3Y
+        LVrxbvwtkcFZFKtB5caJwY0=
+X-Google-Smtp-Source: AGHT+IHT3ZApSXGATslgtejB/P1iO54fqZKujt8TRiYqECERZwq3b3xGOgsDOV7noQMCcVdL1wlb7g==
+X-Received: by 2002:a25:a206:0:b0:da0:53d2:8f46 with SMTP id b6-20020a25a206000000b00da053d28f46mr8261338ybi.25.1700586785446;
+        Tue, 21 Nov 2023 09:13:05 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:e005:b808:45e:1b60])
+        by smtp.gmail.com with ESMTPSA id y5-20020a259b05000000b00d9cd730e4d0sm803882ybn.26.2023.11.21.09.13.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 09:13:05 -0800 (PST)
+Date:   Tue, 21 Nov 2023 09:13:04 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
+        Florian Weimer <fw@deneb.enyo.de>, David.Laight@aculab.com,
+        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Chris Kennelly <ckennelly@google.com>
+Subject: Re: [PATCH 23/30] cpumask: Implement
+ cpumask_{first,next}_{not,}andnot
+Message-ID: <ZVzlIAUrxGUFsoyt@yury-ThinkPad>
+References: <20221122203932.231377-1-mathieu.desnoyers@efficios.com>
+ <20221122203932.231377-24-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Qualcomm Atheros QCA61x4 keeps drawing 0.85 W despite Bluetooth
- being disable in GNOME
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mike Jones <mike@mjones.io>,
-        Rocky Liao <quic_rjliao@quicinc.com>
-References: <d994bd71-8d8b-4b6a-855e-8ea5bfede3ca@molgen.mpg.de>
- <22494842-a785-4151-915d-6f3a677d96cb@molgen.mpg.de>
- <1f3cb0cc-4bb0-471f-a785-a5d237cd46a3@rowland.harvard.edu>
- <d63ebc5f-9b72-4457-949b-3e90883bd3c0@molgen.mpg.de>
- <d61ae9a8-2228-4af1-a5f0-912e7763fbd1@rowland.harvard.edu>
- <de236c7d-e265-452a-a60e-b10293a5b944@molgen.mpg.de>
- <41253614-764e-4e95-b052-a46bf5587c29@rowland.harvard.edu>
- <3489df64-0f8f-43e1-a05f-ccb145ff6d59@molgen.mpg.de>
- <fd84c14a-1866-4643-8ce9-0d6da5c4b82e@rowland.harvard.edu>
-Content-Language: en-US
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <fd84c14a-1866-4643-8ce9-0d6da5c4b82e@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221122203932.231377-24-mathieu.desnoyers@efficios.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,127 +81,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Alan,
-
-
-Thank you for your reply.
-
-Am 21.11.23 um 17:23 schrieb Alan Stern:
-> On Mon, Nov 20, 2023 at 11:05:04PM +0100, Paul Menzel wrote:
->> [Cc: +Rocky Liao as Qualcomm developer]
+On Tue, Nov 22, 2022 at 03:39:25PM -0500, Mathieu Desnoyers wrote:
+> Allow finding the first or next bit within two input cpumasks which is
+> either:
 > 
->> Am 20.11.23 um 19:10 schrieb Alan Stern:
->>> Again, nothing out of the ordinary.  Maybe dynamic debugging will give
->>> us a clue.  Try doing this:
->>>
->>> 	Unload the btusb module.
->>>
->>> 	echo module usbcore +p >/sys/kernel/debug/dynamic_debug/control
->>>
->>> 	Load the btusb module
->>>
->>> 	Make sure that Bluetooth is turned off in Gnome
->>>
->>> 	Wait a few seconds
->>>
->>> 	echo module usbcore -p >/sys/kernel/debug/dynamic_debug/control
->>>
->>> Then let's see what the dmesg log contains for that time period.
->>
->> ```
->> $ sudo modprobe -r btusb
->> $ sudo dmesg | tail -1
->> [340309.272439] usbcore: deregistering interface driver btusb
->> $ echo module usbcore +p | sudo tee /sys/kernel/debug/dynamic_debug/control
->> module usbcore +p
->> $ sudo modprobe btusb
->> $ /sbin/rfkill
->> ID TYPE      DEVICE      SOFT      HARD
->>   1 wlan      phy0   unblocked unblocked
->> 36 bluetooth hci0     blocked unblocked
->> $ echo module usbcore -p | sudo tee /sys/kernel/debug/dynamic_debug/control
->> module usbcore -p
->> $ sudo modprobe -r btusb
->> $ sudo dmesg | tail -1
->> [340608.761313] usbcore: deregistering interface driver btusb
->> $ sudo dmesg
->> […]
->> [340309.272439] usbcore: deregistering interface driver btusb
->> [340560.326182] xhci_hcd 0000:00:14.0: hcd_pci_runtime_resume: 0
->> [340560.326214] usb usb1: usb auto-resume
->> [340560.326258] hub 1-0:1.0: hub_resume
->> [340560.326381] usb usb1-port3: status 0107 change 0000
->> [340560.326418] usb usb1-port4: status 0107 change 0000
->> [340560.326451] usb usb1-port5: status 0507 change 0000
->> [340560.326650] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
->> [340560.326807] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0000
->> [340560.373988] usb 1-3: usb auto-resume
->> [340560.373998] hub 1-0:1.0: state 7 ports 12 chg 0000 evt 0008
->> [340560.441936] usb 1-3: Waited 0ms for CONNECT
->> [340560.441957] usb 1-3: finish reset-resume
->> [340560.570940] usb 1-3: reset full-speed USB device number 2 using xhci_hcd
+> - both zero and zero,
+> - respectively one and zero.
 > 
-> Those two lines are unexpected.  Why does the device need to be reset?
-> While the btusb module is loaded, does anything show up in
-> /sys/bus/usb/devices/1-3/quirks?
-
-     $ more /sys/bus/usb/devices/1-3/quirks
-     0x2
-
->>> Also, please post the output from "lsusb -v" for the Bluetooth device.
->>
->> ```
->> $ sudo lsusb -d 0cf3:e300 -v
->>
->> Bus 001 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications QCA61x4
->> Bluetooth 4.0
->> Device Descriptor:
->>    bLength                18
->>    bDescriptorType         1
->>    bcdUSB               2.01
->>    bDeviceClass          224 Wireless
->>    bDeviceSubClass         1 Radio Frequency
->>    bDeviceProtocol         1 Bluetooth
->>    bMaxPacketSize0        64
->>    idVendor           0x0cf3 Qualcomm Atheros Communications
->>    idProduct          0xe300 QCA61x4 Bluetooth 4.0
->>    bcdDevice            0.01
->>    iManufacturer           0
->>    iProduct                0
->>    iSerial                 0
->>    bNumConfigurations      1
->>    Configuration Descriptor:
->>      bLength                 9
->>      bDescriptorType         2
->>      wTotalLength       0x00b1
->>      bNumInterfaces          2
->>      bConfigurationValue     1
->>      iConfiguration          0
->>      bmAttributes         0xe0
->>        Self Powered
->>        Remote Wakeup
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> ---
+>  include/linux/cpumask.h | 60 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 60 insertions(+)
 > 
-> That's what I was interested in.  The device does support remote wakeup.
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index c2aa0aa26b45..271bccc0a6d7 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -153,6 +153,32 @@ unsigned int cpumask_first_and(const struct cpumask *srcp1, const struct cpumask
+>  	return find_first_and_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), nr_cpumask_bits);
+>  }
+>  
+> +/**
+> + * cpumask_first_andnot - return the first cpu from *srcp1 & ~*srcp2
+> + * @src1p: the first input
+> + * @src2p: the second input
+> + *
+> + * Returns >= nr_cpu_ids if no cpus match in both.
+> + */
+> +static inline
+> +unsigned int cpumask_first_andnot(const struct cpumask *srcp1, const struct cpumask *srcp2)
+> +{
+> +	return find_first_andnot_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), nr_cpumask_bits);
+> +}
+> +
+> +/**
+> + * cpumask_first_notandnot - return the first cpu from ~*srcp1 & ~*srcp2
+> + * @src1p: the first input
+> + * @src2p: the second input
+> + *
+> + * Returns >= nr_cpu_ids if no cpus match in both.
+> + */
+> +static inline
+> +unsigned int cpumask_first_notandnot(const struct cpumask *srcp1, const struct cpumask *srcp2)
 
-That would make sense so it can be resumed? (It does not necessarily 
-mean something like Wake-On-LAN, right?
+cpumask_first_zero_or
 
-Also, for this device it’s disabled?
+> +{
+> +	return find_first_notandnot_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), nr_cpumask_bits);
+> +}
 
-     $ grep . /sys/bus/usb/devices/1-3/power/wakeup
-     disabled
+Can you be consistent - either add cpumask_check for all new
+functions, or don't.
 
->> PPS: Looking through the commit log/history for `drivers/bluetooth/btusb.c`,
->> I found commit 7ecacafc2406 (Bluetooth: btusb: Disable runtime suspend on
->> Realtek devices) [1] authored on December 5th, 2019. This is for Realtek
->> devices though, and not Qualcomm.
+> +
+>  /**
+>   * cpumask_last - get the last CPU in a cpumask
+>   * @srcp:	- the cpumask pointer
+> @@ -195,6 +221,40 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
+>  	return find_next_zero_bit(cpumask_bits(srcp), nr_cpumask_bits, n+1);
+>  }
+>  
+> +/**
+> + * cpumask_next_andnot - return the next cpu from *srcp1 & ~*srcp2
+> + * @n: the cpu prior to the place to search (ie. return will be > @n)
+> + * @src1p: the first input
+> + * @src2p: the second input
+> + *
+> + * Returns >= nr_cpu_ids if no cpus match in both.
+> + */
+> +static inline
+> +unsigned int cpumask_next_andnot(int n, const struct cpumask *srcp1, const struct cpumask *srcp2)
+> +{
+> +	/* -1 is a legal arg here. */
+> +	if (n != -1)
+> +		cpumask_check(n);
+> +	return find_next_andnot_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), nr_cpumask_bits, n+1);
+> +}
+> +
+> +/**
+> + * cpumask_next_notandnot - return the next cpu from ~*srcp1 & ~*srcp2
+> + * @n: the cpu prior to the place to search (ie. return will be > @n)
+> + * @src1p: the first input
+> + * @src2p: the second input
+> + *
+> + * Returns >= nr_cpu_ids if no cpus match in both.
+> + */
+> +static inline
+> +unsigned int cpumask_next_notandnot(int n, const struct cpumask *srcp1, const struct cpumask *srcp2)
+
+same here: cpumask_next_zero_or()
+
+Thanks,
+        Yury
+
+> +{
+> +	/* -1 is a legal arg here. */
+> +	if (n != -1)
+> +		cpumask_check(n);
+> +	return find_next_notandnot_bit(cpumask_bits(srcp1), cpumask_bits(srcp2), nr_cpumask_bits, n+1);
+> +}
+> +
+>  #if NR_CPUS == 1
+>  /* Uniprocessor: there is only one valid CPU */
+>  static inline unsigned int cpumask_local_spread(unsigned int i, int node)
+> -- 
+> 2.25.1
 > 
-> Furthermore the driver has changed considerably since 2019.  See
-> commits 8274db0776d1, 895915226a59, 7bd9fb058d77, and 34ec58b9fd1c.
-
-Thank you for the references.
-
-
-Kind regards,
-
-Paul
