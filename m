@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAE57F29AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA12F7F29AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjKUKCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S234196AbjKUKDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:03:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbjKUKCq (ORCPT
+        with ESMTP id S234189AbjKUKDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:02:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA3112C;
-        Tue, 21 Nov 2023 02:02:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700560962; x=1732096962;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P53K9nuYns+G3kNjOrAT6WDUrhQtdzcmrGZfrt36JG4=;
-  b=DdEJoy7BLQPpraGlwMaUlxhU1r6bCQ+xy5OyfH5s8HAqzTuMS8gJHs4T
-   M6B4MEHBaSU+DE+fxq3qmtd3QewOPZT/lcmtwo+xx732vMRvvn5krhrNK
-   lRTLE06kiFRZRS4IY8wSfoE9SNk68qutKWYuAg8uFD41wlDPIeI7jPdi4
-   8UQKcFjeSzju9sNpBnnimo1qkZ4CUk20pK2K0FQoaydTiOFJ9OQp6WEDi
-   4eMI1s2D81z9twojdeuRKLk7hqqWU1nOKFdXoHeXmfGYErlvyYVXuK3Dr
-   D67w4NLfH35YxEqecVnCUa1uuejAn7bQqzBGx+KXh4C8wQCEEq8Q1QJcm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="371980560"
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="371980560"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:02:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
-   d="scan'208";a="8033718"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 02:02:42 -0800
-Date:   Tue, 21 Nov 2023 02:02:41 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v6 07/16] KVM: MMU: Introduce level info in PFERR code
-Message-ID: <20231121100241.GE1109547@ls.amr.corp.intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <ea9057ece714a919664e0403a3e7f774e4b3fedf.1699368363.git.isaku.yamahata@intel.com>
- <8e0934a0-c478-413a-8a58-36f7d20c23e9@linux.intel.com>
+        Tue, 21 Nov 2023 05:03:10 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E68B9;
+        Tue, 21 Nov 2023 02:03:06 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 62A3D2189D;
+        Tue, 21 Nov 2023 10:03:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700560985; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E6qoyWwClhugI9VZwP6suNYgWlewOSxpRzOpSziEEZA=;
+        b=GtHeePB6BAvXazbBiyL1UhF0JAInm19ujuhcw5kw+/Qvx1GNMz4oUpUo1s/sVBfGLgA1It
+        jJU9QZUXN+/Z9jVWwKQEnu/4Ys/ubA7LGk8g9CwJ7PIafqdZNpYWM4c384UA4EMWtpp1p1
+        MvztAt2ayDrSs7n/uaTn1dY1jxW/Lpg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700560985;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E6qoyWwClhugI9VZwP6suNYgWlewOSxpRzOpSziEEZA=;
+        b=G+BlnnucPVfo1qGtny6AHeirbbuuvmiz0hwFHEYdV/WWHTgyQboeY9pZe0G/1jL52EAm+Y
+        /Gm5nhaq2+vidiDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 31A5E138E3;
+        Tue, 21 Nov 2023 10:03:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WSFiC1mAXGVgPAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 21 Nov 2023 10:03:05 +0000
+Message-ID: <a6472546-b169-a88c-66a5-972d54edcd76@suse.cz>
+Date:   Tue, 21 Nov 2023 11:03:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8e0934a0-c478-413a-8a58-36f7d20c23e9@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/4] mm/slab: move slab merge from slab_common.c to slub.c
+Content-Language: en-US
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>, sxwjean@me.com
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, roman.gushchin@linux.dev, corbet@lwn.net,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231120091214.150502-1-sxwjean@me.com>
+ <20231120091214.150502-5-sxwjean@me.com>
+ <CAB=+i9RFxqFg2jz3ULbmmswqp0K7SK8O9Uv1=wpUZMQUtSGB1Q@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAB=+i9RFxqFg2jz3ULbmmswqp0K7SK8O9Uv1=wpUZMQUtSGB1Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: 0.17
+X-Spamd-Result: default: False [0.17 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         BAYES_HAM(-0.03)[55.48%];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         FREEMAIL_TO(0.00)[gmail.com,me.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 06:54:07PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+On 11/21/23 09:54, Hyeonggon Yoo wrote:
+> On Mon, Nov 20, 2023 at 6:13 PM <sxwjean@me.com> wrote:
+>>
+>> From: Xiongwei Song <xiongwei.song@windriver.com>
+>>
+>> Since slab allocator has been removed. There is no users about slab
+>> merge except slub. This commit is almost to revert
+>> commit 423c929cbbec ("mm/slab_common: commonize slab merge logic").
+>>
+>> Also change all prefix of slab merge related functions, variables and
+>> definitions from "slab/SLAB" to"slub/SLUB".
+> 
+> Could you please elaborate a little bit?
+> I am not sure if I understand what the last two patches of this series
+> are useful for.
+> 
+> - Why rename variable/function/macro names?
+> - Why move merge related functions from slab_common.c to slub.c?
 
-> 
-> 
-> On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> > From: Xiaoyao Li <xiaoyao.li@intel.com>
-> > 
-> > For TDX, EPT violation can happen when TDG.MEM.PAGE.ACCEPT.
-> > And TDG.MEM.PAGE.ACCEPT contains the desired accept page level of TD guest.
-> > 
-> > 1. KVM can map it with 4KB page while TD guest wants to accept 2MB page.
-> > 
-> >    TD geust will get TDX_PAGE_SIZE_MISMATCH and it should try to accept
-> s/geust/guest
-> 
-> >    4KB size.
-> > 
-> > 2. KVM can map it with 2MB page while TD guest wants to accept 4KB page.
-> > 
-> >    KVM needs to honor it because
-> >    a) there is no way to tell guest KVM maps it as 2MB size. And
-> >    b) guest accepts it in 4KB size since guest knows some other 4KB page
-> >       in the same 2MB range will be used as shared page.
-> > 
-> > For case 2, it need to pass desired page level to MMU's
-> > page_fault_handler. Use bit 29:31 of kvm PF error code for this purpose.
-> 
-> The level info is needed not only for case 2, KVM also needs the info so
-> that
-> it can map a 2MB page when TD guest wants to accept a 2MB page.
+In my series I have moved functions that were part of allocation/free hot
+paths as there should be performance benefits if they are all in the same
+compilation unit.
 
-"MMU's page_fault_handler" = KVM MMU page fault handler, isn't it?
-I'll replace it with KVM MMU page fault handler for clarity.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+>   (I mean merging slab_common.c and slub.c into single file might make sense
+>    but why move only some parts of one into the other?)
+
+OTOH slub.c becomes quite big, so I think it would make sense to not merge
+mm/slab_common.c fully. The non-hot code that's handling e.g. the caches
+creation and management, such as what this patch is moving, could certainly
+stay away from mm/slub.c. We could just pick a more descriptive name for
+slab_common.c.
+
+I'd even investigate if more parts of slub.c could be split out (to a new
+file/files) without compromising the hot paths, i.e. sysfs, debugging etc.
+
