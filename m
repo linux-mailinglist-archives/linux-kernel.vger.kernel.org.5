@@ -2,236 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3407F2AF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B3A7F2AF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbjKUKrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:47:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S233812AbjKUKtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKUKrU (ORCPT
+        with ESMTP id S229481AbjKUKtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:47:20 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E42495;
-        Tue, 21 Nov 2023 02:47:16 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B8D37FEC;
-        Tue, 21 Nov 2023 02:48:02 -0800 (PST)
-Received: from [10.163.36.237] (unknown [10.163.36.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6EB713F6C4;
-        Tue, 21 Nov 2023 02:47:11 -0800 (PST)
-Message-ID: <616bed59-d3c5-4d33-aae7-ea93f63743d3@arm.com>
-Date:   Tue, 21 Nov 2023 16:17:08 +0530
+        Tue, 21 Nov 2023 05:49:18 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D60CA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:49:14 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4084de32db5so27629835e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 02:49:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700563753; x=1701168553; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:date:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vm1mzb+/0cWoJA6/opr6AD2njrHp+x6yQgd44ScRa7Q=;
+        b=maJE4LgWjFL+KeiRZ6vg9pOgRWKwPxl/xNcpc2iCEg7vc67AdD6ybldaBDT5xnQp/N
+         K3USUQo4VRlk/EzUAERX95T+61PPls9WF7+RVkwPG77lFcAhJ6xvHibwn174KVsuQsDw
+         0lezjF1uTaSzfy2ZsAuyDHogFrYWRN+rrm7JueF7R5vIIYmLuYmCETFZKFTdWo3VtlsB
+         rKC7dDwGwc7HuaOJ+It+GL395fqn87R/7MniyHu2ww5EoBnXpUTsquLUkDtjScUS9I59
+         7exr+S49aEDUFYPJblbnJJMePEW7RR7rXNexnng4X3fGsLbQjRjhhzuGDUfPJJlHY9VK
+         bCEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700563753; x=1701168553;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:date:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vm1mzb+/0cWoJA6/opr6AD2njrHp+x6yQgd44ScRa7Q=;
+        b=do7EhlWVK7xA1621GgMRrE7/Dnqw148DTKsXKXjbY5c2yshO777MHa26u4f+AKGiIR
+         2+t/GbYp2idsjIKhbrmTdjNYY4+W4N+Oz3aUwqEJsXepMqRwq1JQ/cStd24ZLiHvqzqv
+         3zU1EQXylU3pbckyVVZddzlwFI6Bl7P6PU7fblV2VccYAWddskEme6pAFVbbqJT2OTww
+         /Sxtp/m5Ir0eeTFrXRLOqSdY7qrni4KJlCTqJb9S7frf1pejyLiJPH0imtlD+fGC+kga
+         D06Q7cDzrMuBQLcuYEevZRViRESss+tEwNk+yv4u23rc4MHhKw6tjfuilBySJx2PMs6f
+         QcPQ==
+X-Gm-Message-State: AOJu0YznNiM7prmej1ZRqI5nKnsX4TewcScB/yYEBqtnz/U4OsCpPmDD
+        dLW0+tgl47wmjOYSbwFA1XfcDA==
+X-Google-Smtp-Source: AGHT+IGdWxrYI1CbBcjMK9wdr9tOMsAMG0nGdMH6J9FvpnI0ugEyHONwgzuV9omZo0HEuwXox11j/A==
+X-Received: by 2002:a05:600c:3588:b0:40b:29f3:af02 with SMTP id p8-20020a05600c358800b0040b29f3af02mr1059939wmq.27.1700563752661;
+        Tue, 21 Nov 2023 02:49:12 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id je12-20020a05600c1f8c00b0040839fcb217sm16689767wmb.8.2023.11.21.02.49.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 02:49:12 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Tue, 21 Nov 2023 05:49:09 -0500
+To:     oe-kbuild@lists.linux.dev,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        devicetree@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 2/2] serial: core: implement support for rs485-mux-gpios
+Message-ID: <ecdc16e5-18f8-4675-91a3-36a0371e1e8d@suswa.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [V14 4/8] drivers: perf: arm_pmuv3: Enable branch stack sampling
- via FEAT_BRBE
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-References: <20231114051329.327572-1-anshuman.khandual@arm.com>
- <20231114051329.327572-5-anshuman.khandual@arm.com>
- <00f05970-c793-242e-485a-f987201651ad@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <00f05970-c793-242e-485a-f987201651ad@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231120151056.148450-3-linux@rasmusvillemoes.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rasmus,
 
+kernel test robot noticed the following build warnings:
 
-On 11/14/23 17:41, James Clark wrote:
-> 
-> 
-> On 14/11/2023 05:13, Anshuman Khandual wrote:
-> [...]
-> 
->> +/*
->> + * BRBE supports the following functional branch type filters while
->> + * generating branch records. These branch filters can be enabled,
->> + * either individually or as a group i.e ORing multiple filters
->> + * with each other.
->> + *
->> + * BRBFCR_EL1_CONDDIR  - Conditional direct branch
->> + * BRBFCR_EL1_DIRCALL  - Direct call
->> + * BRBFCR_EL1_INDCALL  - Indirect call
->> + * BRBFCR_EL1_INDIRECT - Indirect branch
->> + * BRBFCR_EL1_DIRECT   - Direct branch
->> + * BRBFCR_EL1_RTN      - Subroutine return
->> + */
->> +static u64 branch_type_to_brbfcr(int branch_type)
->> +{
->> +	u64 brbfcr = 0;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY) {
->> +		brbfcr |= BRBFCR_EL1_BRANCH_FILTERS;
->> +		return brbfcr;
->> +	}
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY_CALL) {
->> +		brbfcr |= BRBFCR_EL1_INDCALL;
->> +		brbfcr |= BRBFCR_EL1_DIRCALL;
->> +	}
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY_RETURN)
->> +		brbfcr |= BRBFCR_EL1_RTN;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_IND_CALL)
->> +		brbfcr |= BRBFCR_EL1_INDCALL;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_COND)
->> +		brbfcr |= BRBFCR_EL1_CONDDIR;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_IND_JUMP)
->> +		brbfcr |= BRBFCR_EL1_INDIRECT;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_CALL)
->> +		brbfcr |= BRBFCR_EL1_DIRCALL;
->> +
->> +	return brbfcr;
->> +}
->> +
->> +/*
->> + * BRBE supports the following privilege mode filters while generating
->> + * branch records.
->> + *
->> + * BRBCR_ELx_E0BRE - EL0 branch records
->> + * BRBCR_ELx_ExBRE - EL1/EL2 branch records
->> + *
->> + * BRBE also supports the following additional functional branch type
->> + * filters while generating branch records.
->> + *
->> + * BRBCR_ELx_EXCEPTION - Exception
->> + * BRBCR_ELx_ERTN     -  Exception return
->> + */
->> +static u64 branch_type_to_brbcr(int branch_type)
->> +{
->> +	u64 brbcr = BRBCR_ELx_DEFAULT_TS;
->> +
->> +	/*
->> +	 * BRBE should be paused on PMU interrupt while tracing kernel
->> +	 * space to stop capturing further branch records. Otherwise
->> +	 * interrupt handler branch records might get into the samples
->> +	 * which is not desired.
->> +	 *
->> +	 * BRBE need not be paused on PMU interrupt while tracing only
->> +	 * the user space, because it will automatically be inside the
->> +	 * prohibited region. But even after PMU overflow occurs, the
->> +	 * interrupt could still take much more cycles, before it can
->> +	 * be taken and by that time BRBE will have been overwritten.
->> +	 * Hence enable pause on PMU interrupt mechanism even for user
->> +	 * only traces as well.
->> +	 */
->> +	brbcr |= BRBCR_ELx_FZP;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_USER)
->> +		brbcr |= BRBCR_ELx_E0BRE;
->> +
->> +	/*
->> +	 * When running in the hyp mode, writing into BRBCR_EL1
->> +	 * actually writes into BRBCR_EL2 instead. Field E2BRE
->> +	 * is also at the same position as E1BRE.
->> +	 */
->> +	if (branch_type & PERF_SAMPLE_BRANCH_KERNEL)
->> +		brbcr |= BRBCR_ELx_ExBRE;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_HV) {
->> +		if (is_kernel_in_hyp_mode())
->> +			brbcr |= BRBCR_ELx_ExBRE;
->> +	}
->> +
->> +	if (!(branch_type & PERF_SAMPLE_BRANCH_NO_CYCLES))
->> +		brbcr |= BRBCR_ELx_CC;
->> +
->> +	if (!(branch_type & PERF_SAMPLE_BRANCH_NO_FLAGS))
->> +		brbcr |= BRBCR_ELx_MPRED;
->> +
->> +	/*
->> +	 * The exception and exception return branches could be
->> +	 * captured, irrespective of the perf event's privilege.
->> +	 * If the perf event does not have enough privilege for
->> +	 * a given exception level, then addresses which falls
->> +	 * under that exception level will be reported as zero
->> +	 * for the captured branch record, creating source only
->> +	 * or target only records.
->> +	 */
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY) {
->> +		brbcr |= BRBCR_ELx_EXCEPTION;
->> +		brbcr |= BRBCR_ELx_ERTN;
->> +	}
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY_CALL)
->> +		brbcr |= BRBCR_ELx_EXCEPTION;
->> +
->> +	if (branch_type & PERF_SAMPLE_BRANCH_ANY_RETURN)
->> +		brbcr |= BRBCR_ELx_ERTN;
->> +
->> +	return brbcr & BRBCR_ELx_CONFIG_MASK;
->> +}
->> +
->> +void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)
->> +{
->> +	struct pmu_hw_events *cpuc = this_cpu_ptr(arm_pmu->hw_events);
->> +	u64 brbfcr, brbcr;
->> +
->> +	if (!(cpuc->brbe_sample_type && cpuc->brbe_users))
->> +		return;
->> +
->> +	/*
->> +	 * BRBE gets configured with a new mismatched branch sample
->> +	 * type request, overriding any previous branch filters.
->> +	 */
->> +	brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
->> +	brbfcr &= ~BRBFCR_EL1_DEFAULT_CONFIG;
-> 
-> This is called default_config, but is being used semantically the same
-> way as BRBCR_ELx_CONFIG_MASK below to clear out the fields. Doesn't that
-> mean that it's a mask rather than a default config? It's only ever used
-> in this way. default_config implies it's written or used as an
-> initialiser at some point.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Sure, will rename BRBFCR_EL1_DEFAULT_CONFIG as BRBFCR_EL1_CONFIG_MASK
-making it similar to BRBCR_ELx_CONFIG_MASK.
+url:    https://github.com/intel-lab-lkp/linux/commits/Rasmus-Villemoes/dt-bindings-serial-rs485-add-rs485-mux-gpios-binding/20231120-231551
+base:   v6.7-rc2
+patch link:    https://lore.kernel.org/r/20231120151056.148450-3-linux%40rasmusvillemoes.dk
+patch subject: [PATCH 2/2] serial: core: implement support for rs485-mux-gpios
+config: hexagon-randconfig-r071-20231121 (https://download.01.org/0day-ci/archive/20231121/202311211751.MgZLovko-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20231121/202311211751.MgZLovko-lkp@intel.com/reproduce)
 
-> 
->> +	brbfcr |= branch_type_to_brbfcr(cpuc->brbe_sample_type);
->> +	write_sysreg_s(brbfcr, SYS_BRBFCR_EL1);
->> +	isb();
->> +
->> +	brbcr = read_sysreg_s(SYS_BRBCR_EL1);
->> +	brbcr &= ~BRBCR_ELx_CONFIG_MASK;
->> +	brbcr |= branch_type_to_brbcr(cpuc->brbe_sample_type);
-> 
-> BRBCR_ELx_CONFIG_MASK is already &'d at the end of
-> branch_type_to_brbcr(), so isn't it easier and equivalent to just do the
-> following instead of the read(), &= and then |= ?
-> 
->   write_sysreg_s(branch_type_to_brbcr(...), SYS_BRBCR_EL1);
-> 
-> Or at least make branch_type_to_brbfcr() consistent and &
-> BRBFCR_EL1_DEFAULT_CONFIG at the end of that function too.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311211751.MgZLovko-lkp@intel.com/
 
-This sounds better I guess, will '&' BRBFCR_EL1_CONFIG_MASK at the end
-of branch_type_to_brbfcr().
+New smatch warnings:
+drivers/tty/serial/serial_core.c:3651 uart_get_rs485_mode() warn: passing zero to 'PTR_ERR'
 
-> 
->> +	write_sysreg_s(brbcr, SYS_BRBCR_EL1);
->> +	isb();
->> +}
->> +
+Old smatch warnings:
+drivers/tty/serial/serial_core.c:2996 iomem_base_show() warn: argument 3 to %lX specifier is cast from pointer
+
+vim +/PTR_ERR +3651 drivers/tty/serial/serial_core.c
+
+d58a2df3d8877b Lukas Wunner          2020-05-18  3629  	/*
+d58a2df3d8877b Lukas Wunner          2020-05-18  3630  	 * Disabling termination by default is the safe choice:  Else if many
+d58a2df3d8877b Lukas Wunner          2020-05-18  3631  	 * bus participants enable it, no communication is possible at all.
+d58a2df3d8877b Lukas Wunner          2020-05-18  3632  	 * Works fine for short cables and users may enable for longer cables.
+d58a2df3d8877b Lukas Wunner          2020-05-18  3633  	 */
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3634  	desc = devm_gpiod_get_optional(dev, "rs485-term", GPIOD_OUT_LOW);
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3635  	if (IS_ERR(desc))
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3636  		return dev_err_probe(dev, PTR_ERR(desc), "Cannot get rs485-term-gpios\n");
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3637  	port->rs485_term_gpio = desc;
+8bec874f84d826 Ilpo Järvinen         2022-07-04  3638  	if (port->rs485_term_gpio)
+8bec874f84d826 Ilpo Järvinen         2022-07-04  3639  		port->rs485_supported.flags |= SER_RS485_TERMINATE_BUS;
+d58a2df3d8877b Lukas Wunner          2020-05-18  3640  
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3641  	dflags = (rs485conf->flags & SER_RS485_RX_DURING_TX) ?
+163f080eb717d2 Christoph Niedermaier 2022-12-02  3642  		 GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3643  	desc = devm_gpiod_get_optional(dev, "rs485-rx-during-tx", dflags);
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3644  	if (IS_ERR(desc))
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3645  		return dev_err_probe(dev, PTR_ERR(desc), "Cannot get rs485-rx-during-tx-gpios\n");
+7cda0b9eb6eb9e Andy Shevchenko       2023-10-03  3646  	port->rs485_rx_during_tx_gpio = desc;
+163f080eb717d2 Christoph Niedermaier 2022-12-02  3647  
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3648  	dflags = (rs485conf->flags & SER_RS485_ENABLED) ? GPIOD_OUT_HIGH : GPIOD_OUT_LOW;
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3649  	desc = devm_gpiod_get_optional(dev, "rs485-mux", dflags);
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3650  	if (IS_ERR(desc))
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20 @3651  		return dev_err_probe(dev, PTR_ERR(port->rs485_mux_gpio),
+                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Should be PTR_ERR(desc).
+
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3652  				     "Cannot get rs485-mux-gpios\n");
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3653  	port->rs485_mux_gpio = desc;
+da0ccd117da1e4 Rasmus Villemoes      2023-11-20  3654  
+c150c0f362c1e5 Lukas Wunner          2020-05-12  3655  	return 0;
+ef838a81dd4de1 Uwe Kleine-König      2017-09-13  3656  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
