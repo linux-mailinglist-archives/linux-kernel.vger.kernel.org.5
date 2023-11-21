@@ -2,54 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDED7F23CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 03:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53B7F23D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 03:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbjKUCVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 20 Nov 2023 21:21:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S232876AbjKUCZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 20 Nov 2023 21:25:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjKUCVb (ORCPT
+        with ESMTP id S229679AbjKUCZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 20 Nov 2023 21:21:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0DDCB
-        for <linux-kernel@vger.kernel.org>; Mon, 20 Nov 2023 18:21:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C44EC433C9;
-        Tue, 21 Nov 2023 02:21:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700533287;
-        bh=uCIAAso2o2OQwlp0AJVheBQitVA2TVtgsiyQ+Mez97M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Sxly0vUXgMDBDfLs6ZoxC1suGBtCN9UTkQUnCVmRPm7tnzA9x6u0Mh2J4rYzJ+wj1
-         ZhOIdNEUs6ZZ0DVck7xZw37dh7+FqE3j5tipC5yE0O0IwRop4ORVosQST+sSNlMIDb
-         b9JWh9ywNem+hqYeFTpyHeFc+bHF5lRjW/vQIstkgG4kLKn03W2YloHjGScCk76uOk
-         AZWBZmKXpCXD39lws8w9g8r/8gifhF/NiEWqDTjZDXdhIeiAMUcgPVITbJaCyHl7vR
-         xoUjUV6tJX3eEXzNc1yMQcjlCN+5335TBdOpqX69bHvAZpnPM8nvzrd0tiMvBIh5oy
-         bJ+b3s9OlvU7Q==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1f94b07b6b3so674426fac.2;
-        Mon, 20 Nov 2023 18:21:27 -0800 (PST)
-X-Gm-Message-State: AOJu0YyJR/fUlY2pSwFO9l5//UPGaW85yDVwfERSGEHu6/yPuAPGjxoU
-        DVKXmQ+FqoVlIkxz5H2IoXs40+PZ/iSeswztad0=
-X-Google-Smtp-Source: AGHT+IEeCJtyTxsn3ccB7X1hkNcVLwoefNC9DpgwnLhiXBf7c1hy2h1XXtbmfmFWRru6YpJUsZbzvef6EEFa3dKQWOw=
-X-Received: by 2002:a05:6871:22c9:b0:1f9:48fb:1835 with SMTP id
- se9-20020a05687122c900b001f948fb1835mr4140629oab.46.1700533286595; Mon, 20
- Nov 2023 18:21:26 -0800 (PST)
+        Mon, 20 Nov 2023 21:25:39 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25775AA;
+        Mon, 20 Nov 2023 18:25:36 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AL0OY5c028552;
+        Tue, 21 Nov 2023 02:25:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=kU6bepyHJLPXRb3yHjWtij7AyNrmvADA0jgdZ3VliRw=;
+ b=fSbqzSAJJRlAPbpzNNlJgElQ1BVpxWm625IMaV/wASqTCKeFqOJuOtTcSBqPRfhRiXok
+ N/szzfh7UuVQhgUSeggvALMFiF9qKtyEVAH5UV2FOJ6n+1985C3rvlC3A0TYRspIIMv3
+ +8cgFBnyOSjWkFED+fFpA1RY0fl0f0H27FlaTuieluiL6VLAYubrEd1wDpFp7hWViC+F
+ +uh1Jh5XUIf8p9yM/Q4vVbsqkB5xhciX/ooapvz5IA/CK2XoH/qvdZy+4XxyVE8AuRQZ
+ 8tY1SF8cwJmqRBiosM+WW7zyul8eCTLsv8RKvaTtp4Mofs+Yr3BBOqrzsmKnmexUIHSu Cg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uge000mg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 02:25:19 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AL2PJnf010513
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Nov 2023 02:25:19 GMT
+Received: from taozha-gv.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 20 Nov 2023 18:25:14 -0800
+From:   Tao Zhang <quic_taozha@quicinc.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     Tao Zhang <quic_taozha@quicinc.com>,
+        Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Song Chai <quic_songchai@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
+Subject: [PATCH v3 0/8] Add support to configure TPDM CMB subunit
+Date:   Tue, 21 Nov 2023 10:24:46 +0800
+Message-ID: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20231115004932.650702-1-ak@linux.intel.com> <CAK7LNASS1YWdqW5TUXQ0iC3vgoDbUf-M-cRX0BvrkOV8HPyjxg@mail.gmail.com>
- <ZVu8u+oofXO8iwyf@tassilo>
-In-Reply-To: <ZVu8u+oofXO8iwyf@tassilo>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 21 Nov 2023 11:20:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATFPWRaQb876p4=5K0H-Uc7KCLsVNnYVdxSypzmmfSv9A@mail.gmail.com>
-Message-ID: <CAK7LNATFPWRaQb876p4=5K0H-Uc7KCLsVNnYVdxSypzmmfSv9A@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: Add inline-account tool
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: EYnhZk_CW4ybUR8zOvCgVi3rPLIX2fa7
+X-Proofpoint-ORIG-GUID: EYnhZk_CW4ybUR8zOvCgVi3rPLIX2fa7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-20_22,2023-11-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311210015
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,76 +91,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 5:08=E2=80=AFAM Andi Kleen <ak@linux.intel.com> wro=
-te:
->
-> >
-> > > +    sym_sizes =3D [syms[x + 1] - syms[x] for x, _ in enumerate(syms[=
-:-1])]
-> > > +    sym_total =3D sum(sym_sizes)
-> >
-> >
-> > This is equivalent to
-> >
-> >       sym_total =3D syms[-1] - syms[0]
-> >
-> > isn't it?
->
-> No it's not when there are gaps in the symbols, which always happens in
-> the kernel.  The previous version used the range but that led to inbalanc=
-es.
+Introduction of TPDM CMB(Continuous Multi Bit) subunit
+CMB subunit is responsible for creating a dataset element, and is also
+optionally responsible for packing it to fit multiple elements on a
+single ATB transfer if possible in the configuration. The TPDM Core
+Datapath requests timestamps be stored by the TPDA and then delivering
+ATB sized data (depending on ATB width and element size, this could
+be smaller or larger than a dataset element) to the ATB Mast FSM.
+The CMB makes trace elements in two modes. In ‘continuous’ mode, every
+valid data cycle creates an element. In ‘trace on change’ mode, when
+valid data changes on the bus, a trace element is created. In
+continuous mode, all cycles where this condition is true create trace
+elements. In trace on change mode, a data element is only when the
+previously sampled input is different from the current sampled input.
 
+The CMB subunit must be configured prior to enablement. This series
+adds support for TPDM to configure the configure CMB subunit.
 
+Once this series patches are applied properly, the new tpdm nodes for
+should be observed at the tpdm path /sys/bus/coresight/devices/tpdm*
+which supports CMB subunit.
+e.g.
+root@qemuarm64:/sys/devices/platform/soc@0/684c000.tpdm/tpdm0# ls -l
+-rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_mode
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_msr
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_patt
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 cmb_trig_patt
+-rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_trig_ts
+-rw-r--r--    1 root     root          4096 Jan  1 00:00 cmb_ts_all
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 connections
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_edge
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_msr
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_patt
+drwxr-xr-x    2 root     root             0 Jan  1 00:00 dsb_trig_patt
+-rw-r--r--    1 root     root          4096 Jan  1 00:00 enable_source
+--w-------    1 root     root          4096 Jan  1 00:00 integration_test
+drwxr-xr-x    2 root     root             0 Ja?  1 00:00 power
+--w-------    1 root     root          4096 Jan  1 00:00 reset_dataset
+lrwxrwxrwx    1 root     root             0 Apr  5  2021 subsystem -> ../../../../../bus/coresight
+-rw-r--r--    1 root     root          4096 Apr  5  2021 uevent
+-r--r--r--    1 root     root          4096 Jan  1 00:00 waiting_for_supplier
 
-I do not understand because there is nothing to handle gaps
-in your code.
+We can use the commands are similar to the below to configure the
+TPDMs which support CMB subunit. Enable coresight sink first.
+echo 1 > /sys/bus/coresight/devices/tmc_etf0/enable_sink
+echo 1 > /sys/bus/coresight/devices/tpdm0/reset_dataset
+echo 1 > /sys/bus/coresight/devices/tpdm0/cmb_mode
+echo 1 > /sys/bus/coresight/devices/tpdm0/cmb_patt/enable_ts
+echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/cmb_patt/tpmr0
+echo 0 > /sys/bus/coresight/devices/tpdm0/cmb_trig_ts
+echo 0xFFFFFFFF > /sys/bus/coresight/devices/tpdm0/cmb_trig_patt/xpr1
+echo 1 > /sys/bus/coresight/devices/tpdm0/enable_source
 
+codelinaro link:
+https://git.codelinaro.org/clo/linux-kernel/coresight/-/commits/tpdm-cmb-v3
 
-get_syms() appends only 'pc' into the list.
+Changes in V3:
+1. Add 8-bit support to the description in the TPDM devicetree document.
+-- Rob Herring
+2. Change how the result is produced in "tpdm_read_element_size".
+-- James Clark
+3. Calling "tpdm_clear_element_size" at the beginning of
+"tpda_enable_port".
+-- James Clark
+4. Use "dsb_esize" and "cmb_esize" to determine whether multiple TPDMs
+are detected on a TPDA input port in "tpda_get_element_size".
+-- James Clark
+5. Modify the judgment logic in "tpda_enable_port".
+-- James Clark
+6. Add more description of "cmb_mode" to TPDM SysFS document.
+-- James Clark
 
+Changes in V2:
+1. Optimizate and modify this patch series based on the patch series
+"Add support to configure TPDM CMB subunit".
+2. Modify the functions that read the element size of DSB/CMB in TPDA driver.
 
-Then,
+Tao Zhang (8):
+  dt-bindings: arm: Add support for CMB element size
+  coresight-tpda: Add support to configure CMB element
+  coresight-tpdm: Add CMB dataset support
+  coresight-tpdm: Add support to configure CMB
+  coresight-tpdm: Add pattern registers support for CMB
+  coresight-tpdm: Add timestamp control register support for the CMB
+  dt-bindings: arm: Add support for TPDM CMB MSR register
+  coresight-tpdm: Add msr register support for CMB
 
-  sym_sizes =3D [syms[x + 1] - syms[x] for x, _ in enumerate(syms[:-1])]
+ .../testing/sysfs-bus-coresight-devices-tpdm  |  87 ++++
+ .../bindings/arm/qcom,coresight-tpdm.yaml     |  38 ++
+ drivers/hwtracing/coresight/coresight-tpda.c  | 117 +++---
+ drivers/hwtracing/coresight/coresight-tpda.h  |   6 +
+ drivers/hwtracing/coresight/coresight-tpdm.c  | 390 +++++++++++++++++-
+ drivers/hwtracing/coresight/coresight-tpdm.h  |  87 ++++
+ 6 files changed, 673 insertions(+), 52 deletions(-)
 
+-- 
+2.17.1
 
-computes each symbol size by:
-
-   (address of the next symbol) - (address of the current symbol).
-
-
-So, your code is equivalent to:
-
-   sym_total =3D syms[-1] - syms[0]
-
-
-
-
-
-
-
-
-
-
-> > def get_ranges(syms, threads):
-> >
-> >     ranges =3D []
-> >     prev =3D syms[0]
-> >     i =3D 1
-> >
-> >     while threads > 0:
-> >
-> >         boundary =3D prev + 1 + (syms[-1] - prev - 1) // threads
-> >
-> >         while syms[i] < boundary:
-> >             i +=3D 1
->
->
-> Note the boundary is not the address, but the sum of symbol sizes
->
->
-> -Andi
-
---
-Best Regards
-Masahiro Yamada
