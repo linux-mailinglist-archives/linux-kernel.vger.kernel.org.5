@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F9C7F2950
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B6B7F2955
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 10:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234222AbjKUJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 04:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
+        id S234099AbjKUJu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 04:50:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbjKUJti (ORCPT
+        with ESMTP id S233540AbjKUJuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 04:49:38 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E1210FA;
-        Tue, 21 Nov 2023 01:49:19 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EBD971C0018;
-        Tue, 21 Nov 2023 09:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700560158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VVEkp3Bfnnrh5RJDI1Xlb1Qdj4wYUKQF4xGHxqUM4cQ=;
-        b=JmBUpE9uq6PZ+X/WdiEJxaNOlOT8Fqf1XyntNBFDTBO7n8bYWBZVQ9NmcCr9dcUNnlzU3y
-        lM5xsFAHAi/WN7P//bc7ThdqCIJDrAaOJR7N4p7FzT01P7hJrU0gw7jyz8OyK/ALnBVvOC
-        8tLbZxeMID73FdYMAG55Ps5UERQgLPzQPbiDMa22dScue550yU1zAapvMgsuD7Buofw5FN
-        kwV+8N/JOjcUutaNpe+2JCgSR3m7BPX6zO+Rvk7r+vbnUgYB9BChLCdmagG4o8IKiD9aOZ
-        Ik1HIxwRxiumBRKQAve8v1CHCdKXsRRVCZlAMHWOEHXYlM2n1RrrZicYg8L6jg==
-Date:   Tue, 21 Nov 2023 10:49:17 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lu jicong <jiconglu58@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Tue, 21 Nov 2023 04:50:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BEF1AA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 01:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700560206; x=1732096206;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=H2d/tvMIoDvHSQUHPlRsf/csrATiDrGE2RPrh/3LADw=;
+  b=DFbjlvAPFdCq2Da1a4hfbc/5BmMtKSy26xiYjKcR5jpuhpwPBORLgGHH
+   fL75jK171DqclyidrOE+rKP9JQZeXvqyQFg18qPMl/jWr2JJOmuQlT7Ri
+   9NGuXuDO4I+P3MLO+ELlDygIV3D1472xYb+fRn7KPs3QKNLIrBw8QUeRg
+   YKrjuTKQTydTXIS1lXDb7d15JD2NU4PGaTd2t9Qkv9phdt8btmOHYyrCY
+   bbSJyApg52STIqKelvJFVF5Z1gqrp+1EzLadFxdpOzJMXzENmjdQus9ZY
+   +9FjSsMs5tbZnQydZIVMc7Rg3dO2w53PceIlgYZRPdjtL/xLOyl2HrG2K
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="376840533"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="376840533"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:50:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="766585803"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="766585803"
+Received: from ikosarev-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.40.84])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 01:50:01 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 5AEF110A36E; Tue, 21 Nov 2023 12:49:58 +0300 (+03)
+Date:   Tue, 21 Nov 2023 12:49:58 +0300
+From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] usb: dwc3: don't reset device side if dwc3 was
- configured as host-only
-Message-ID: <20231121104917.0fd67952@kmaincent-XPS-13-7390>
-In-Reply-To: <20231117015527.jqoh6i3n4ywg7qui@synopsys.com>
-References: <20231116174206.1a823aa3@kmaincent-XPS-13-7390>
-        <20231116175959.71f5d060@kmaincent-XPS-13-7390>
-        <20231117014038.kbcfnpiefferqomk@synopsys.com>
-        <20231117015527.jqoh6i3n4ywg7qui@synopsys.com>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+Subject: Re: [PATCHv3 09/14] x86/tdx: Account shared memory
+Message-ID: <20231121094958.sagzaclakdnexd7a@box.shutemov.name>
+References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+ <20231115120044.8034-10-kirill.shutemov@linux.intel.com>
+ <07e7619d098ba3579f642a97b644f256884ed0a2.camel@intel.com>
+ <20231121094219.x5ez6ohzc773viul@box.shutemov.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121094219.x5ez6ohzc773viul@box.shutemov.name>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,66 +82,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thinh,
+On Tue, Nov 21, 2023 at 12:42:20PM +0300, kirill.shutemov@linux.intel.com wrote:
+> > That being said, I think perhaps you can separate the /sysfs part as a separate
+> > patch because it's not a mandatory part of this series but a nice to have.  Then
+> > the /sysfs part can be reviewed separately. 
+> 
+> Okay, makes sense.
 
-On Fri, 17 Nov 2023 01:55:30 +0000
-Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
+Hm. Without debugfs there's nothing really left in the patch. Accounting
+itself is few lines.
 
-> > How many ports do you use? Can you try this:
-> >=20
-> > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> > index 0328c86ef806..9921c2737829 100644
-> > --- a/drivers/usb/dwc3/core.c
-> > +++ b/drivers/usb/dwc3/core.c
-> > @@ -296,23 +296,28 @@ int dwc3_core_soft_reset(struct dwc3 *dwc)
-> >  	if (dwc->dr_mode =3D=3D USB_DR_MODE_HOST) {
-> >  		u32 usb3_port;
-> >  		u32 usb2_port;
-> > +		int i;
-> > =20
-> > -		usb3_port =3D dwc3_readl(dwc->regs, DWC3_GUSB3PIPECTL(0));
-> > -		usb3_port |=3D DWC3_GUSB3PIPECTL_PHYSOFTRST;
-> > -		dwc3_writel(dwc->regs, DWC3_GUSB3PIPECTL(0), usb3_port);
-> > +		for (i =3D 0; i < 16; i++) {
-> > +			usb3_port =3D dwc3_readl(dwc->regs,
-> > DWC3_GUSB3PIPECTL(i));
-> > +			usb3_port |=3D DWC3_GUSB3PIPECTL_PHYSOFTRST;
-> > +			dwc3_writel(dwc->regs, DWC3_GUSB3PIPECTL(i),
-> > usb3_port);=20
-> > -		usb2_port =3D dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
-> > -		usb2_port |=3D DWC3_GUSB2PHYCFG_PHYSOFTRST;
-> > -		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), usb2_port);
-> > +			usb2_port =3D dwc3_readl(dwc->regs,
-> > DWC3_GUSB2PHYCFG(i));
-> > +			usb2_port |=3D DWC3_GUSB2PHYCFG_PHYSOFTRST;
-> > +			dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(i),
-> > usb2_port);
-> > +		}
-> > =20
-> >  		/* Small delay for phy reset assertion */
-> >  		usleep_range(1000, 2000);
-> > =20
-> > -		usb3_port &=3D ~DWC3_GUSB3PIPECTL_PHYSOFTRST;
-> > -		dwc3_writel(dwc->regs, DWC3_GUSB3PIPECTL(0), usb3_port);
-> > +		for (i =3D 0; i < 16; i++) {
-> > +			usb3_port &=3D ~DWC3_GUSB3PIPECTL_PHYSOFTRST;
-> > +			dwc3_writel(dwc->regs, DWC3_GUSB3PIPECTL(i),
-> > usb3_port);=20
-> > -		usb2_port &=3D ~DWC3_GUSB2PHYCFG_PHYSOFTRST;
-> > -		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), usb2_port);
-> > +			usb2_port &=3D ~DWC3_GUSB2PHYCFG_PHYSOFTRST;
-> > +			dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(i),
-> > usb2_port);
-> > +		}
-> > =20
-> >  		/* Wait for clock synchronization */
-> >  		msleep(50);
-> > -- =20
+I will probably leave it as is.
 
-Still not working on my side.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
