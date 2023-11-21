@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCE07F2BE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458A87F2BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjKULhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
+        id S230371AbjKULlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjKULhg (ORCPT
+        with ESMTP id S229481AbjKULlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:37:36 -0500
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637D39C;
-        Tue, 21 Nov 2023 03:37:32 -0800 (PST)
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7a66aa8ebb7so215205939f.3;
-        Tue, 21 Nov 2023 03:37:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700566651; x=1701171451;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jxdRsb+4u+iDRHXDxaazTznHq5QV0/4kpZbydWlBH4k=;
-        b=B7LwIxmXoXapblGwGTwfKaq3ox7s6TQSs9Khn8pCGc0uoUqO2h3r8oN4QnvE5rgWVr
-         /GzAKjg4tvQvKy07MzsxnURM3u4wijK/CL22iGZNHT2mVhO7ofUkV5kIHQDEAkbcPmj0
-         FwyHmqBT5s66K8M9oVrW3I6OgckaLd+9iW8TlUVVHm1ZOnodJPqFWPWkLEuZ1BdAkzjK
-         WSqMN0s+SBUyzK0MrvaoBTNht4BzQsTmmsxY1jCygJf38qw1YJtm4Ammy1H/qVuWkBBw
-         akLtEAUnuW377nKfQwwFpAnR9ofeeJwwfpmIg3ikS4RN6wNDdjji7+YoW1aOLm7D7tcj
-         FclQ==
-X-Gm-Message-State: AOJu0YzQHv66Be+t1UWtvJpmL6LE6qjaEHfKGx193ST5DVVok0Eklh89
-        3hx75d0EDvfUeh+QAuuUdfioYDodZg==
-X-Google-Smtp-Source: AGHT+IF9RwR/tdwpnUsKSCPwqO9C9QV8Z9hofoZuMU2wzV56JcTooNqaq/juo/EIVhFfdZm0D55nKQ==
-X-Received: by 2002:a6b:d316:0:b0:794:eaef:f43e with SMTP id s22-20020a6bd316000000b00794eaeff43emr10576258iob.1.1700566651419;
-        Tue, 21 Nov 2023 03:37:31 -0800 (PST)
-Received: from herring.priv ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id s8-20020a056602240800b0079ab2787139sm2853899ioa.7.2023.11.21.03.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 03:37:30 -0800 (PST)
-Received: (nullmailer pid 1352673 invoked by uid 1000);
-        Tue, 21 Nov 2023 11:37:28 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Tue, 21 Nov 2023 06:41:49 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265759C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mrerObRNr02Wz0BKyv1zQtU+Sqe7aHjbDRQlpll/bVM=; b=phMVJX+8kFvgpyZAndCrvxhsV9
+        lJFF/DIhZkQ8+k+LVLuvbHgwni/KeDDiEJf0gb4HfAyDdAXj49+JTQ5OCNJnpFWH9dlBlXTKVkyZ9
+        180HXB3SUcKfwD0+GnB+099dp0Q5pNGaiHdA4XjtGB2UC7dKwYTN2cU0az5HxDjBcQwF4f41FfmrA
+        OBUGQL4lQsue2AUlet+N6XAmFBjnRRMVS1wy76WRKeBT/UgLYBVjm4J3waLHHm/Jo8ZJXMmhJnyNF
+        5RW2mNK8bcVMhPV3XYPOwVLhXM3yGJw4BiGDF6b6Egw+5Whr6p82Ei9oLTIglSnf5PWM9QcZmyhJT
+        tZm1307A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5P8C-00BQ92-0i;
+        Tue, 21 Nov 2023 11:41:29 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 91B563006F6; Tue, 21 Nov 2023 12:41:26 +0100 (CET)
+Date:   Tue, 21 Nov 2023 12:41:26 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: lockdep + kasan bug?
+Message-ID: <20231121114126.GH8262@noisy.programming.kicks-ass.net>
+References: <20231120233659.e36txv3fedbjn4sx@moria.home.lan>
+ <20231121103614.GG8262@noisy.programming.kicks-ass.net>
+ <ZVyRHd-MjMdkLp6S@FVFF77S0Q05N>
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jeff LaBundy <jeff@labundy.com>, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20231121101751.2189965-1-anshulusr@gmail.com>
-References: <20231121101751.2189965-1-anshulusr@gmail.com>
-Message-Id: <170056664884.1352637.4950371378934551272.robh@kernel.org>
-Subject: Re: [PATCH v9 1/2] dt-bindings: input: bindings for Adafruit
- Seesaw Gamepad
-Date:   Tue, 21 Nov 2023 04:37:28 -0700
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZVyRHd-MjMdkLp6S@FVFF77S0Q05N>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,104 +57,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 21, 2023 at 11:14:37AM +0000, Mark Rutland wrote:
 
-On Tue, 21 Nov 2023 15:47:48 +0530, Anshul Dalal wrote:
-> Adds bindings for the Adafruit Seesaw Gamepad.
+> > > 05117 The buggy address belongs to the variable:
+> > > 05117  nr_large_chain_blocks+0x3c/0x40
+> > 
+> > This is weird, nr_lage_chain_blocks is a single variable, if the
+> > compiler keeps layout according to the source file, this would be
+> > chaing_block_bucket[14] or something weird like that.
 > 
-> The gamepad functions as an i2c device with the default address of 0x50
-> and has an IRQ pin that can be enabled in the driver to allow for a rising
-> edge trigger on each button press or joystick movement.
+> I think the size here is bogus; IIUC that's determined form the start of the
+> next symbol, which happens to be 64 bytes away from the start of
+> nr_lage_chain_blocks.
 > 
-> Product page:
->   https://www.adafruit.com/product/5743
-> Arduino driver:
->   https://github.com/adafruit/Adafruit_Seesaw
+> From the memory state dump, there's padding/redzone between two global objects,
+> and I think we're accessing a negative offset from the next object. More on
+> that below.
 > 
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> > Perhaps figure out what it things the @size argument to
+> > add_chain_block() would be?
+> > 
+> > > 05117 
+> > > 05117 The buggy address belongs to the virtual mapping at
+> > > 05117  [ffffffc081710000, ffffffc088861000) created by:
+> > > 05117  paging_init+0x260/0x820
+> > > 05117 
+> > > 05117 The buggy address belongs to the physical page:
+> > > 05117 page:00000000ce625900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x41d7a
+> > > 05117 flags: 0x4000(reserved|zone=0)
+> > > 05117 page_type: 0xffffffff()
+> > > 05117 raw: 0000000000004000 fffffffe00075e88 fffffffe00075e88 0000000000000000
+> > > 05117 raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+> > > 05117 page dumped because: kasan: bad access detected
+> > > 05117 
+> > > 05117 Memory state around the buggy address:
+> > > 05117  ffffffc081b7a780: 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
+> > > 05117  ffffffc081b7a800: 00 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
+> > > 05117 >ffffffc081b7a880: 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
+> > > 05117                                         ^
 > 
-> ---
+> In this dump:
 > 
-> Changes for v9:
-> - Added interrupt in example
+> * '00' means all 8 bytes of an 8-byte region areaccessible
+> * '04' means the first 4 bytes on an 8-byte region are accessible
+> * 'f9' means KASAN_GLOBAL_REDZONE / padding between objects
 > 
-> v8: https://lore.kernel.org/lkml/20231108005337.45069-1-anshulusr@gmail.com/
+> So at 0xffffffc081b7a880 we have a 4-byte object, 60 bytes of padding, then a
+> 64-byte object.
 > 
-> Changes for v8:
-> - no updates
-> 
-> v7: https://lore.kernel.org/lkml/20231106164134.114668-1-anshulusr@gmail.com/
-> 
-> Changes for v7:
-> - no updates
-> 
-> v6: https://lore.kernel.org/lkml/20231027051819.81333-1-anshulusr@gmail.com/
-> 
-> Changes for v6:
-> - no updates
-> 
-> v5: https://lore.kernel.org/lkml/20231017034356.1436677-1-anshulusr@gmail.com/
-> 
-> Changes for v5:
-> - Added link to the datasheet
-> 
-> v4: https://lore.kernel.org/lkml/20231010184827.1213507-1-anshulusr@gmail.com/
-> 
-> Changes for v4:
-> - Fixed the URI for the id field
-> - Added `interrupts` property
-> 
-> v3: https://lore.kernel.org/linux-input/20231008185709.2448423-1-anshulusr@gmail.com/
-> 
-> Changes for v3:
-> - Updated id field to reflect updated file name from previous version
-> - Added `reg` property
-> 
-> v2: https://lore.kernel.org/linux-input/20231008172435.2391009-1-anshulusr@gmail.com/
-> 
-> Changes for v2:
-> - Renamed file to `adafruit,seesaw-gamepad.yaml`
-> - Removed quotes for `$id` and `$schema`
-> - Removed "Bindings for" from the description
-> - Changed node name to the generic name "joystick"
-> - Changed compatible to 'adafruit,seesaw-gamepad' instead of
->   'adafruit,seesaw_gamepad'
-> 
-> v1: https://lore.kernel.org/linux-input/20231007144052.1535417-1-anshulusr@gmail.com/
-> ---
->  .../input/adafruit,seesaw-gamepad.yaml        | 61 +++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
-> 
+> I think the 4-byte object at 0xffffffc081b7a880 is nr_large_chain_blocks, and
+> the later 64-byte object is chain_block_buckets[].
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Oh! That's very helpful, thanks!
 
-yamllint warnings/errors:
+> I suspect the dodgy access is to chain_block_buckets[-1], which hits the last 4
+> bytes of the redzone and gets (incorrectly/misleadingly) attributed to
+> nr_large_chain_blocks.
 
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.example.dts:30.34-35 syntax error
-FATAL ERROR: Unable to parse input tree
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1424: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+That would mean @size == 0, at which point size_to_bucket() returns -1
+and the above happens.
 
-doc reference errors (make refcheckdocs):
+alloc_chain_hlocks() has 'size - req', for the first with the
+precondition 'size >= rq', which allows the 0.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231121101751.2189965-1-anshulusr@gmail.com
+The second is an iteration with the condition size > req, which does not
+allow the 0 case.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+So the first, thing, IIRC, this is trying to split a block,
+del_chain_block() takes what we need, and add_chain_block() puts back
+the remainder, except in the above case the remainder is 0 sized and
+things go sideways or so.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Does the below help?
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+---
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index e85b5ad3e206..151bd3de5936 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3497,7 +3497,8 @@ static int alloc_chain_hlocks(int req)
+ 		size = chain_block_size(curr);
+ 		if (likely(size >= req)) {
+ 			del_chain_block(0, size, chain_block_next(curr));
+-			add_chain_block(curr + req, size - req);
++			if (size > req)
++				add_chain_block(curr + req, size - req);
+ 			return curr;
+ 		}
+ 	}
 
