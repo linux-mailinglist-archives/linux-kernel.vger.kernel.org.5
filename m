@@ -2,51 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ACB7F2B81
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956767F2B83
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 12:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbjKULMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 06:12:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42374 "EHLO
+        id S230353AbjKULPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 06:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKULMa (ORCPT
+        with ESMTP id S229481AbjKULO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 06:12:30 -0500
+        Tue, 21 Nov 2023 06:14:58 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A46FCA;
-        Tue, 21 Nov 2023 03:12:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B6C098
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 03:14:54 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77650FEC;
-        Tue, 21 Nov 2023 03:13:13 -0800 (PST)
-Received: from [10.163.36.237] (unknown [10.163.36.237])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F0063F7A6;
-        Tue, 21 Nov 2023 03:12:21 -0800 (PST)
-Message-ID: <20858eb9-a4d0-41be-ad1d-2a5f2d2fa0de@arm.com>
-Date:   Tue, 21 Nov 2023 16:42:18 +0530
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6F42FEC;
+        Tue, 21 Nov 2023 03:15:40 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.40.232])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F9493F7A6;
+        Tue, 21 Nov 2023 03:14:52 -0800 (PST)
+Date:   Tue, 21 Nov 2023 11:14:37 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: lockdep + kasan bug?
+Message-ID: <ZVyRHd-MjMdkLp6S@FVFF77S0Q05N>
+References: <20231120233659.e36txv3fedbjn4sx@moria.home.lan>
+ <20231121103614.GG8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [V14 5/8] KVM: arm64: nvhe: Disable branch generation in nVHE
- guests
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-References: <20231114051329.327572-1-anshuman.khandual@arm.com>
- <20231114051329.327572-6-anshuman.khandual@arm.com>
- <f2661879-636c-1865-0e1c-60d8e11f80f0@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <f2661879-636c-1865-0e1c-60d8e11f80f0@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121103614.GG8262@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -56,180 +45,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/14/23 14:46, James Clark wrote:
+On Tue, Nov 21, 2023 at 11:36:14AM +0100, Peter Zijlstra wrote:
+> On Mon, Nov 20, 2023 at 06:36:59PM -0500, Kent Overstreet wrote:
+> > I've been seeing a lot of reports like the following in a lot of my
+> > lockdep + kasan tests.
 > 
+> I'm not aware of any such issues, then again, I rarely run with KASAN
+> enabled myself, I mostly leave that to the robots, who are far more
+> patient than me with slow kernels.
 > 
-> On 14/11/2023 05:13, Anshuman Khandual wrote:
->> Disable the BRBE before we enter the guest, saving the status and enable it
->> back once we get out of the guest. This is just to avoid capturing records
->> in the guest kernel/userspace, which would be confusing the samples.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Oliver Upton <oliver.upton@linux.dev>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: kvmarm@lists.linux.dev
->> Cc: linux-arm-kernel@lists.infradead.org
->> CC: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> Changes in V14:
->>
->> - This is a new patch in the series
->>
->>  arch/arm64/include/asm/kvm_host.h  |  4 ++++
->>  arch/arm64/kvm/debug.c             |  6 +++++
->>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 38 ++++++++++++++++++++++++++++++
->>  3 files changed, 48 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 68421c74283a..1faa0430d8dd 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -449,6 +449,8 @@ enum vcpu_sysreg {
->>  	CNTHV_CVAL_EL2,
->>  	PMSCR_EL1,	/* Statistical profiling extension */
->>  	TRFCR_EL1,	/* Self-hosted trace filters */
->> +	BRBCR_EL1,	/* Branch Record Buffer Control Register */
->> +	BRBFCR_EL1,	/* Branch Record Buffer Function Control Register */
->>  
->>  	NR_SYS_REGS	/* Nothing after this line! */
->>  };
->> @@ -753,6 +755,8 @@ struct kvm_vcpu_arch {
->>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
->>  /* Save trace filter controls */
->>  #define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
->> +/* Save BRBE context if active  */
->> +#define DEBUG_STATE_SAVE_BRBE	__vcpu_single_flag(iflags, BIT(9))
->>  
->>  /* SVE enabled for host EL0 */
->>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index 2ab41b954512..4055783c3d34 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -354,6 +354,11 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
->>  		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
->>  			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->>  	}
->> +
->> +	/* Check if we have BRBE implemented and available at the host */
->> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT) &&
->> +	    (read_sysreg_s(SYS_BRBCR_EL1) & (BRBCR_ELx_E0BRE | BRBCR_ELx_ExBRE)))
->> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+> > Some lockdep patches are in my tree: they don't touch this code path
+> > (except I do have to increase MAX_LOCK_DEPTH from 48 to 63, perhaps that
+> > has unintended side effects?)
+> > 
+> > https://evilpiepirate.org/git/bcachefs.git/log/?id=2f42f415f7573001b4f4887b785d8a8747b3757f
 > 
-> Isn't this supposed to just be the feature check? Whether BRBE is
-> enabled or not is checked later in __debug_save_brbe() anyway.
-
-Okay, will make it just a feature check via ID_AA64DFR0_EL1_BRBE_SHIFT.
-
+> yeah, don't see anything weird there. I mean, sad about the no-recursion
+> thing, esp. after you did those custom order bits.
 > 
-> It seems like it's possible to become enabled after this flag load part.
-
-Agreed.
-
+> > bcachefs does take a _large_ number of locks for lockdep to track, also
+> > possibly relevant
+> > 
+> > Have not dug into the lockdep hash table of outstanding locks code yet
+> > but happy to test patches...
+> > 
+> > 04752 ========= TEST   tiering_variable_buckets_replicas
+> > 04752 
+> > 04752 WATCHDOG 3600
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): mounting version 1.3: rebalance_work opts=metadata_replicas=2,data_replicas=2,foreground_target=ssd,background_target=hdd,promote_target=ssd,fsck
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing new filesystem
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): going read-write
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): marking superblocks
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): initializing freespace
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): done initializing freespace
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots table
+> > 04753 bcachefs (ea667958-8bbd-451b-9043-9132a2fd2fa4): reading snapshots done
+> > 04753 WATCHDOG 3600
+> > 04753 randrw: (g=0): rw=randrw, bs=(R) 4096B-1024KiB, (W) 4096B-1024KiB, (T) 4096B-1024KiB, ioengine=libaio, iodepth=64
+> > 04753 fio-3.33
+> > 04753 Starting 1 process
+> > 04753 randrw: Laying out IO file (1 file / 3500MiB)
+> > 05117 Jobs: 1 (f=1)
+> > 05117 BUG: KASAN: global-out-of-bounds in add_chain_block+0x44/0x288
+> > 05117 Read of size 4 at addr ffffffc081b7a8bc by task fio/120528
+> > 05117 
+> > 05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
+> > 05117 Hardware name: linux,dummy-virt (DT)
+> > 05117 Call trace:
+> > 05117  dump_backtrace+0xa8/0xe8
+> > 05117  show_stack+0x1c/0x30
+> > 05117  dump_stack_lvl+0x5c/0xa0
+> > 05117  print_report+0x1e4/0x5a0
+> > 05117  kasan_report+0x80/0xc0
+> > 05117  __asan_load4+0x90/0xb0
+> > 05117  add_chain_block+0x44/0x288
+> > 05117  __lock_acquire+0x1104/0x24f8
+> > 05117  lock_acquire+0x1e0/0x470
+> > 05117  _raw_spin_lock_nested+0x54/0x78
+> > 05117  raw_spin_rq_lock_nested+0x30/0x50
+> > 05117  try_to_wake_up+0x3b4/0x1050
+> > 05117  wake_up_process+0x1c/0x30
+> > 05117  kick_pool+0x104/0x1b0
+> > 05117  __queue_work+0x350/0xa58
+> > 05117  queue_work_on+0x98/0xd0
+> > 05117  __bch2_btree_node_write+0xec0/0x10a0
+> > 05117  bch2_btree_node_write+0x88/0x138
+> > 05117  btree_split+0x744/0x14a0
+> > 05117  bch2_btree_split_leaf+0x94/0x258
+> > 05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
+> > 05117  __bch2_trans_commit+0x1128/0x3010
+> > 05117  bch2_extent_update+0x410/0x570
+> > 05117  bch2_write_index_default+0x404/0x598
+> > 05117  __bch2_write_index+0xb0/0x3b0
+> > 05117  __bch2_write+0x6f0/0x928
+> > 05117  bch2_write+0x368/0x8e0
+> > 05117  bch2_direct_write+0xaa8/0x12c0
+> > 05117  bch2_write_iter+0x2e4/0x1050
+> > 05117  aio_write.constprop.0+0x19c/0x420
+> > 05117  io_submit_one.constprop.0+0xf30/0x17a0
+> > 05117  __arm64_sys_io_submit+0x244/0x388
+> > 05117  invoke_syscall.constprop.0+0x64/0x138
+> > 05117  do_el0_svc+0x7c/0x120
+> > 05117  el0_svc+0x34/0x80
+> > 05117  el0t_64_sync_handler+0xb8/0xc0
+> > 05117  el0t_64_sync+0x14c/0x150
+> > 05117 
+> > 05117 The buggy address belongs to the variable:
+> > 05117  nr_large_chain_blocks+0x3c/0x40
 > 
->>  }
->>  
->>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->> @@ -361,6 +366,7 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
->>  }
->>  
->>  void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
->> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> index 6174f710948e..e44a1f71a0f8 100644
->> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
->> @@ -93,6 +93,38 @@ static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
->>  		write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
->>  }
->>  
->> +static void __debug_save_brbe(struct kvm_cpu_context *host_ctxt)
->> +{
->> +	ctxt_sys_reg(host_ctxt, BRBCR_EL1) = 0;
->> +	ctxt_sys_reg(host_ctxt, BRBFCR_EL1) = 0;
->> +
->> +	/* Check if the BRBE is enabled */
->> +	if (!(ctxt_sys_reg(host_ctxt, BRBCR_EL1) & (BRBCR_ELx_E0BRE | BRBCR_ELx_ExBRE)))
->> +		return;
+> This is weird, nr_lage_chain_blocks is a single variable, if the
+> compiler keeps layout according to the source file, this would be
+> chaing_block_bucket[14] or something weird like that.
+
+I think the size here is bogus; IIUC that's determined form the start of the
+next symbol, which happens to be 64 bytes away from the start of
+nr_lage_chain_blocks.
+
+From the memory state dump, there's padding/redzone between two global objects,
+and I think we're accessing a negative offset from the next object. More on
+that below.
+
+> Perhaps figure out what it things the @size argument to
+> add_chain_block() would be?
 > 
-> Doesn't this always fail, the host BRBCR_EL1 value was just cleared on
-> the line above.
+> > 05117 
+> > 05117 The buggy address belongs to the virtual mapping at
+> > 05117  [ffffffc081710000, ffffffc088861000) created by:
+> > 05117  paging_init+0x260/0x820
+> > 05117 
+> > 05117 The buggy address belongs to the physical page:
+> > 05117 page:00000000ce625900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x41d7a
+> > 05117 flags: 0x4000(reserved|zone=0)
+> > 05117 page_type: 0xffffffff()
+> > 05117 raw: 0000000000004000 fffffffe00075e88 fffffffe00075e88 0000000000000000
+> > 05117 raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
+> > 05117 page dumped because: kasan: bad access detected
+> > 05117 
+> > 05117 Memory state around the buggy address:
+> > 05117  ffffffc081b7a780: 00 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9 f9 f9 f9 f9
+> > 05117  ffffffc081b7a800: 00 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
+> > 05117 >ffffffc081b7a880: 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
+> > 05117                                         ^
 
-Agreed, this error might have slipped in while converting to ctxt_sys_reg().
+In this dump:
 
-> 
-> Also, you need to read the register to determine if it was enabled or
+* '00' means all 8 bytes of an 8-byte region areaccessible
+* '04' means the first 4 bytes on an 8-byte region are accessible
+* 'f9' means KASAN_GLOBAL_REDZONE / padding between objects
 
-Right
+So at 0xffffffc081b7a880 we have a 4-byte object, 60 bytes of padding, then a
+64-byte object.
 
-> not, so you might as well always store the real value, rather than 0 in
-> the not enabled case.
+I think the 4-byte object at 0xffffffc081b7a880 is nr_large_chain_blocks, and
+the later 64-byte object is chain_block_buckets[].
 
-But if it is not enabled - why store the real value ?
+I suspect the dodgy access is to chain_block_buckets[-1], which hits the last 4
+bytes of the redzone and gets (incorrectly/misleadingly) attributed to
+nr_large_chain_blocks.
 
-> 
->> +
->> +	/*
->> +	 * Prohibit branch record generation while we are in guest.
->> +	 * Since access to BRBCR_EL1 and BRBFCR_EL1 is trapped, the
->> +	 * guest can't modify the filtering set by the host.
->> +	 */
->> +	ctxt_sys_reg(host_ctxt, BRBCR_EL1) = read_sysreg_s(SYS_BRBCR_EL1);
->> +	ctxt_sys_reg(host_ctxt, BRBFCR_EL1) = read_sysreg_s(SYS_BRBFCR_EL1)
->> +	write_sysreg_s(0, SYS_BRBCR_EL1);
->> +	write_sysreg_s(0, SYS_BRBFCR_EL1);
-> 
-> Why does SYS_BRBFCR_EL1 need to be saved and restored? Only
-> BRBCR_ELx_E0BRE and BRBCR_ELx_ExBRE need to be cleared to disable BRBE.
+Mark.
 
-Right, just thought both brbcr, and brbfcr system registers represent
-current BRBE state (besides branch records), in a more comprehensive
-manner, although none would be changed from inside the guest.
-
-> 
->> +	isb();
->> +}
->> +
->> +static void __debug_restore_brbe(struct kvm_cpu_context *host_ctxt)
->> +{
->> +	if (!ctxt_sys_reg(host_ctxt, BRBCR_EL1) || !ctxt_sys_reg(host_ctxt, BRBFCR_EL1))
->> +		return;
->> +
->> +	/* Restore BRBE controls */
->> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, BRBCR_EL1), SYS_BRBCR_EL1);
->> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, BRBFCR_EL1), SYS_BRBFCR_EL1);
->> +	isb();
->> +}
->> +
->>  void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
->>  				    struct kvm_cpu_context *guest_ctxt)
->>  {
->> @@ -102,6 +134,10 @@ void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
->>  
->>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
->>  		__debug_save_trace(host_ctxt, guest_ctxt);
->> +
->> +	/* Disable BRBE branch records */
->> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
->> +		__debug_save_brbe(host_ctxt);
->>  }
->>  
->>  void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->> @@ -116,6 +152,8 @@ void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
->>  		__debug_restore_spe(host_ctxt);
->>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
->>  		__debug_restore_trace(host_ctxt, guest_ctxt);
->> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
->> +		__debug_restore_brbe(host_ctxt);
->>  }
->>  
->>  void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+> > 05117  ffffffc081b7a900: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9
+> > 05117  ffffffc081b7a980: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
+> > 05117 ==================================================================
+> > 05117 Kernel panic - not syncing: kasan.fault=panic set ...
+> > 05117 CPU: 11 PID: 120528 Comm: fio Tainted: G             L     6.6.0-ktest-gc18b7260ddd3 #8209
+> > 05117 Hardware name: linux,dummy-virt (DT)
+> > 05117 Call trace:
+> > 05117  dump_backtrace+0xa8/0xe8
+> > 05117  show_stack+0x1c/0x30
+> > 05117  dump_stack_lvl+0x5c/0xa0
+> > 05117  dump_stack+0x18/0x20
+> > 05117  panic+0x3ac/0x408
+> > 05117  kasan_report_invalid_free+0x0/0x90
+> > 05117  kasan_report+0x90/0xc0
+> > 05117  __asan_load4+0x90/0xb0
+> > 05117  add_chain_block+0x44/0x288
+> > 05117  __lock_acquire+0x1104/0x24f8
+> > 05117  lock_acquire+0x1e0/0x470
+> > 05117  _raw_spin_lock_nested+0x54/0x78
+> > 05117  raw_spin_rq_lock_nested+0x30/0x50
+> > 05117  try_to_wake_up+0x3b4/0x1050
+> > 05117  wake_up_process+0x1c/0x30
+> > 05117  kick_pool+0x104/0x1b0
+> > 05117  __queue_work+0x350/0xa58
+> > 05117  queue_work_on+0x98/0xd0
+> > 05117  __bch2_btree_node_write+0xec0/0x10a0
+> > 05117  bch2_btree_node_write+0x88/0x138
+> > 05117  btree_split+0x744/0x14a0
+> > 05117  bch2_btree_split_leaf+0x94/0x258
+> > 05117  bch2_trans_commit_error.isra.0+0x234/0x7d0
+> > 05117  __bch2_trans_commit+0x1128/0x3010
+> > 05117  bch2_extent_update+0x410/0x570
+> > 05117  bch2_write_index_default+0x404/0x598
+> > 05117  __bch2_write_index+0xb0/0x3b0
+> > 05117  __bch2_write+0x6f0/0x928
+> > 05117  bch2_write+0x368/0x8e0
+> > 05117  bch2_direct_write+0xaa8/0x12c0
+> > 05117  bch2_write_iter+0x2e4/0x1050
+> > 05117  aio_write.constprop.0+0x19c/0x420
+> > 05117  io_submit_one.constprop.0+0xf30/0x17a0
+> > 05117  __arm64_sys_io_submit+0x244/0x388
+> > 05117  invoke_syscall.constprop.0+0x64/0x138
+> > 05117  do_el0_svc+0x7c/0x120
+> > 05117  el0_svc+0x34/0x80
+> > 05117  el0t_64_sync_handler+0xb8/0xc0
+> > 05117  el0t_64_sync+0x14c/0x150
+> > 05117 SMP: stopping secondary CPUs
+> > 05117 Kernel Offset: disabled
+> > 05117 CPU features: 0x0,00000000,70000001,1040500b
+> > 05117 Memory Limit: none
+> > 05117 ---[ end Kernel panic - not syncing: kasan.fault=panic set ... ]---
+> > 05122 ========= FAILED TIMEOUT tiering_variable_buckets_replicas in 3600s
