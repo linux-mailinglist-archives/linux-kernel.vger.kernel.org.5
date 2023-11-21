@@ -2,80 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEB27F2C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0103E7F2C8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 13:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbjKUMIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 07:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S232964AbjKUMIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 07:08:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjKUMH7 (ORCPT
+        with ESMTP id S229561AbjKUMIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 07:07:59 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDD1123;
-        Tue, 21 Nov 2023 04:07:56 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0404D6607286;
-        Tue, 21 Nov 2023 12:07:54 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700568475;
-        bh=OPO6PjGpzSwciJq8nGHbJqxbgmsPtmRTdm9UuIC1Pgg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=b16MAPFIwTHeMbcsiU6r2Bd0R0+l2qT7cBQhhAFvM9Zcbo/c2187N2emtX6AelGCJ
-         mgb/PyWfqBDozMQ8aYTHTPTF0qyGgq6VlHIsEb3E2aFIen8wAFQEcaOTFEm11890ye
-         M51/8nU0PGSs3Z10ZzQP9dXXji86lV6pvnSVznG08xcZXqzQCf9QKRJVxZlhubPk8r
-         FNrst196n38+SDbkJCxWsrtDbeFwtNvqbp+CM1JNr/HYauH0nUfp1F3ROTkg3aruBM
-         qMgZcnpmvEg4XuCTa2g+xNZiNeGWeqXOteQwnapF2KgQHHka0HxQIuyBPvqUCL9dWK
-         UPMwNvoNeHXBA==
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-sound@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: doc: Fix undefined SND_SOC_DAPM_NOPM argument
-Date:   Tue, 21 Nov 2023 14:07:51 +0200
-Message-ID: <20231121120751.77355-1-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.42.1
+        Tue, 21 Nov 2023 07:08:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B166125
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 04:08:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5549C433C9;
+        Tue, 21 Nov 2023 12:08:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700568522;
+        bh=xY/S+drvjUTqo2Fu2FpUAKYEb7XcjqGXCgM5ZYigqpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LxWBqy9UnCrGoq3oBdWsp9PGMjwX7o7lQB4D4cAFspVDDEzdm5Rav9/N168AUm8N0
+         hdKRHRpQYw0ljwk0KcHOd0jUhTEvIWFPeiArFDdoPU4IrA7U3QYb1z+/dgj69VQoAc
+         mG7s8o2GEMP1PuGAGPoIsNLRW/lXPLSiVCk7M3SObX6IbuZWKRvcbaWXLgaZURsFNN
+         WO4/JmldKDx1guTwRg7s/FXMzvtaWylSESJLort26n6tx2isMCmupoje6lspivqtd3
+         P1NcXQlLBETlPYSWfEWOUTAxy3dnv3DogJjX3F2c14emfUTjhjJrBzzT+hq4WFL2km
+         i5NBtxDZafi1g==
+Date:   Tue, 21 Nov 2023 17:38:28 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Kory Maincent <kory.maincent@bootlin.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Message-ID: <20231121120828.GC3315@thinkpad>
+References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
+ <20231121062629.GA3315@thinkpad>
+ <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The virtual widget example makes use of an undefined SND_SOC_DAPM_NOPM
-argument passed to SND_SOC_DAPM_MIXER().  Replace with the correct
-SND_SOC_NOPM definition.
+On Tue, Nov 21, 2023 at 01:55:22PM +0300, Serge Semin wrote:
+> Hi Mani
+> 
+> On Tue, Nov 21, 2023 at 11:56:29AM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Nov 17, 2023 at 11:03:48AM +0100, Kory Maincent wrote:
+> > > This patch series fix the support of dw-edma HDMA NATIVE IP.
+> > > I can only test it in remote HDMA IP setup with single dma transfer, but
+> > > with these fixes it works properly.
+> > > 
+> > > Few fixes has also been added for eDMA version. Similarly to HDMA I have
+> > > tested only eDMA in remote setup.
+> > > 
+> > 
+> > Just out of curiosity, can you share how you are setting EDMA_MF_HDMA_NATIVE?
+> 
+> This topic has already been concerned on v1 (in another context
+> though):
+> https://lore.kernel.org/dmaengine/20230621151948.36125997@kmaincent-XPS-13-7390/
+> 
+> Here is the repo with the out-of-tree driver Kory said he was using
+> together with the kernel's version of the DW eDMA/hDMA driver:
+> https://github.com/Brainchip-Inc/akida_dw_edma
+> 
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- Documentation/sound/soc/dapm.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Sergey, I missed it! But looks like we are not focusing on the HDMA
+integration in designware-ep.c. Have you/anyone thought about it? Was it
+discussed previously that I missed?
 
-diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
-index 8e44107933ab..c3154ce6e1b2 100644
---- a/Documentation/sound/soc/dapm.rst
-+++ b/Documentation/sound/soc/dapm.rst
-@@ -234,7 +234,7 @@ corresponding soft power control. In this case it is necessary to create
- a virtual widget - a widget with no control bits e.g.
- ::
- 
--  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_DAPM_NOPM, 0, 0, NULL, 0),
-+  SND_SOC_DAPM_MIXER("AC97 Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
- 
- This can be used to merge to signal paths together in software.
- 
+HDMA is used in one of the recent Qcom SoCs (SA8775) that Qcom folks are
+bringing up and I'd like to have a common solution like we have for eDMA.
+
+- Mani
+
+> -Serge(y)
+> 
+> > 
+> > - Mani
+> > 
+> > > Changes in v2:
+> > > - Update comments and fix typos.
+> > > - Removed patches that tackle hypothetical bug and then were not pertinent.
+> > > - Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
+> > > 
+> > > Changes in v3:
+> > > - Fix comment style.
+> > > - Split a patch in two to differ bug fix and simple harmless typo.
+> > > 
+> > > Changes in v4:
+> > > - Update patch git commit message.
+> > > - Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
+> > > 
+> > > Changes in v5:
+> > > - No change
+> > > - Rebase to mainline 6.7-rc1
+> > > - Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
+> > > 
+> > > Changes in v6:
+> > > - Fix several commit messages and comments.
+> > > - Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
+> > > 
+> > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > > ---
+> > > Kory Maincent (6):
+> > >       dmaengine: dw-edma: Fix the ch_count hdma callback
+> > >       dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
+> > >       dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
+> > >       dmaengine: dw-edma: Add HDMA remote interrupt configuration
+> > >       dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
+> > >       dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
+> > > 
+> > >  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
+> > >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
+> > >  drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
+> > >  3 files changed, 44 insertions(+), 14 deletions(-)
+> > > ---
+> > > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> > > change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
+> > > 
+> > > Best regards,
+> > > -- 
+> > > Köry Maincent, Bootlin
+> > > Embedded Linux and kernel engineering
+> > > https://bootlin.com
+> > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
+
 -- 
-2.42.1
-
+மணிவண்ணன் சதாசிவம்
