@@ -2,157 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 446047F2B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7777F2B0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 21 Nov 2023 11:57:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjKUKzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 05:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S233573AbjKUK5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 05:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbjKUKzd (ORCPT
+        with ESMTP id S229481AbjKUK5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 05:55:33 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5154CA;
-        Tue, 21 Nov 2023 02:55:26 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-507cd62472dso6752846e87.0;
-        Tue, 21 Nov 2023 02:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700564125; x=1701168925; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=f2/S1llZHvvLIHKm122xsgCS2RIget7hRyW8qLwZ7ko=;
-        b=C3VmgU9hdt70XM7CdHoFJwadDy7MeEFhZ7ZV79GfKP6Z9MDCPEATJczDVLj81FoIh8
-         oXBG2WDujh5CBPHf1Rb8Kk71cCtVcQY4pBWSlKQCSZiw6uYBkN2oe3DawYQ0luSRILAz
-         8qlY6kq+5xz44B/BexRajzn8/cie3krfxcl0JtGlqus0lgt4Adtcz8KP1RS4NzxjmfNI
-         Hp8ybJXh+hPp4TDveDZDUISSSwzO4oMnWz1nEZgTG5xo0i9tlVAhiwDq2nB4K0Kzt3Mo
-         CfeTrr6MsPhPqUn6vCN3wz+WUPk/YMwaCvjISkX3wr8PQcN+PIfV+yi4JVbMp9MEWHdx
-         XlIA==
+        Tue, 21 Nov 2023 05:57:30 -0500
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D5AB95;
+        Tue, 21 Nov 2023 02:57:27 -0800 (PST)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35b2144232bso784215ab.3;
+        Tue, 21 Nov 2023 02:57:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700564125; x=1701168925;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2/S1llZHvvLIHKm122xsgCS2RIget7hRyW8qLwZ7ko=;
-        b=BG0fmjqAaayMpCtaVefQ5NKDX6wQG8LEW5dM0alyorSqTZVN0dJZM4bDOJOZemu2PZ
-         jqU4cNJrOKdbV5zmH+xC9oyX4x7+2g4pcfhUgbj+Pi80X1/CY0DX3puSQ9wJfkXhE+6x
-         5p97DUDPDANGwCmdcD4Ddy7b7iSqiLm5BNKTkZWxwvwBFo+G7SG6zB14hq5VQzPa8mui
-         HbUxMkagqK9xetKo1wn/7TBR71WxlPT4UTq1JopIZLMEz4VWJ5+fGy/7FYRBdsFzz+qC
-         l0nDY89IQuxrFz6DXwyQhm6xa7061/fRxafwB394V6Fy+ZhrsR2rMiywz5NFgDWIY5wE
-         l9Mg==
-X-Gm-Message-State: AOJu0YwPcsDDvgms/FK2p/X4jh4sEve65snO9v+tTPGP0FLgSjjWxYa/
-        GFcKcQvc+H3ltgF2Z3FMUic=
-X-Google-Smtp-Source: AGHT+IE3e2ZL/XJPgYOysbMx3oskqnrP6wW9vghbONMzCPL1lixksnEQv/+aEJh2lbAn6+Znd3txAA==
-X-Received: by 2002:a05:6512:e9c:b0:506:8b41:7e31 with SMTP id bi28-20020a0565120e9c00b005068b417e31mr851408lfb.6.1700564124765;
-        Tue, 21 Nov 2023 02:55:24 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id e13-20020ac24e0d000000b0050a3e7e718dsm1471530lfr.189.2023.11.21.02.55.23
+        d=1e100.net; s=20230601; t=1700564246; x=1701169046;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IWHRjyzNCrwuh+4RgzXhICmV3TY97RZEZ35SyiqAe3c=;
+        b=ODy4zyV51nwCSIYN8iYewQFnx9SM2/868fCC9HQDmtsIeQLJUf1xJ0UMxa2fEfMY6o
+         Fuy1G4eNy4jb3LkKSMCxRca8w6XFiMbHPYYx7tYcbjN5H9MbbOWqPUa4iODRIRqQkbLp
+         +pFwwWrYMLFfFGBrTt330mvH47tZBfruev9KguZkxepAYcmn7cxhAaIDE/UoVKga2Btz
+         bOMTr8q01ZZd9MCcGf9q0iDZ+MOgSdKa0EZQkdWcpOG9yMFMQRxxtHZE467qYNAwsais
+         uklxW3YbGa0FQCYKjDhUgMf6HpDQufHltx6iNl05G+hCHNaxV7M+KnNLG8kkPSzke1x1
+         msTg==
+X-Gm-Message-State: AOJu0YzTCE6MRUxtuPVq+xyrNlUew8pjKF70u7eg/BG+h8Lpzd/J1Lq1
+        YW3XXfHBeTgfdcbt4DPBTiTzXiIQNQ==
+X-Google-Smtp-Source: AGHT+IE4vUY5D8ruxozBz7YxFXj7QoJPOhStL5fM6GhhgtGsTmq8vQk09z4qIRi7Nc4M6dDvhUx8wg==
+X-Received: by 2002:a92:d0c8:0:b0:35b:110f:8127 with SMTP id y8-20020a92d0c8000000b0035b110f8127mr1829805ila.26.1700564246331;
+        Tue, 21 Nov 2023 02:57:26 -0800 (PST)
+Received: from herring.priv ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id z6-20020a023446000000b004665bc0a20esm1072609jaz.172.2023.11.21.02.57.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 02:55:24 -0800 (PST)
-Date:   Tue, 21 Nov 2023 13:55:22 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Manivannan Sadhasivam <mani@kernel.org>
-Cc:     Kory Maincent <kory.maincent@bootlin.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v6 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
- setup
-Message-ID: <js3qo4i67tdhbbcopvfaav4c7fzhz4tc2nai45rzfmbpq7l3xa@7ac2colelvnz>
-References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
- <20231121062629.GA3315@thinkpad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Tue, 21 Nov 2023 02:57:25 -0800 (PST)
+Received: (nullmailer pid 1245593 invoked by uid 1000);
+        Tue, 21 Nov 2023 10:57:21 -0000
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231121062629.GA3315@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Kim Seer Paller <kimseer.paller@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <20231121100012.112861-1-kimseer.paller@analog.com>
+References: <20231121100012.112861-1-kimseer.paller@analog.com>
+Message-Id: <170056424171.1245555.12202034703605429855.robh@kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: frequency: add admfm2000
+Date:   Tue, 21 Nov 2023 03:57:21 -0700
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani
 
-On Tue, Nov 21, 2023 at 11:56:29AM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Nov 17, 2023 at 11:03:48AM +0100, Kory Maincent wrote:
-> > This patch series fix the support of dw-edma HDMA NATIVE IP.
-> > I can only test it in remote HDMA IP setup with single dma transfer, but
-> > with these fixes it works properly.
-> > 
-> > Few fixes has also been added for eDMA version. Similarly to HDMA I have
-> > tested only eDMA in remote setup.
-> > 
+On Tue, 21 Nov 2023 18:00:11 +0800, Kim Seer Paller wrote:
+> Dual microwave down converter module with input RF and LO frequency
+> ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+> 8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+> for each down conversion path.
 > 
-> Just out of curiosity, can you share how you are setting EDMA_MF_HDMA_NATIVE?
-
-This topic has already been concerned on v1 (in another context
-though):
-https://lore.kernel.org/dmaengine/20230621151948.36125997@kmaincent-XPS-13-7390/
-
-Here is the repo with the out-of-tree driver Kory said he was using
-together with the kernel's version of the DW eDMA/hDMA driver:
-https://github.com/Brainchip-Inc/akida_dw_edma
-
--Serge(y)
-
+> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
+> ---
+> V1 -> V2: Removed '|' after description. Specified the pins connected to
+>           the GPIOs. Added additionalProperties: false. Changed node name to gpio.
+>           Aligned < syntax with the previous syntax in the examples.
 > 
-> - Mani
+>  .../bindings/iio/frequency/adi,admfm2000.yaml | 130 ++++++++++++++++++
+>  MAINTAINERS                                   |   7 +
+>  2 files changed, 137 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
 > 
-> > Changes in v2:
-> > - Update comments and fix typos.
-> > - Removed patches that tackle hypothetical bug and then were not pertinent.
-> > - Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
-> > 
-> > Changes in v3:
-> > - Fix comment style.
-> > - Split a patch in two to differ bug fix and simple harmless typo.
-> > 
-> > Changes in v4:
-> > - Update patch git commit message.
-> > - Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
-> > 
-> > Changes in v5:
-> > - No change
-> > - Rebase to mainline 6.7-rc1
-> > - Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
-> > 
-> > Changes in v6:
-> > - Fix several commit messages and comments.
-> > - Link to v5: https://lore.kernel.org/r/20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com
-> > 
-> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > ---
-> > Kory Maincent (6):
-> >       dmaengine: dw-edma: Fix the ch_count hdma callback
-> >       dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA
-> >       dmaengine: dw-edma: HDMA_V0_REMOTEL_STOP_INT_EN typo fix
-> >       dmaengine: dw-edma: Add HDMA remote interrupt configuration
-> >       dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
-> >       dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
-> > 
-> >  drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
-> >  drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
-> >  drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
-> >  3 files changed, 44 insertions(+), 14 deletions(-)
-> > ---
-> > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> > change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
-> > 
-> > Best regards,
-> > -- 
-> > Köry Maincent, Bootlin
-> > Embedded Linux and kernel engineering
-> > https://bootlin.com
-> > 
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml:14:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
+
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231121100012.112861-1-kimseer.paller@analog.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
