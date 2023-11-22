@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4ACE7F4E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163E47F4E52
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344050AbjKVRXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        id S1344117AbjKVRYs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 12:24:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjKVRXo (ORCPT
+        with ESMTP id S1344109AbjKVRYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:23:44 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A500F83;
-        Wed, 22 Nov 2023 09:23:40 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso8553276.3;
-        Wed, 22 Nov 2023 09:23:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700673820; x=1701278620; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NynfojDHOku/gIHF0Vtvo3+Mk/LM+8uGwtlY48AR6MM=;
-        b=dv+Hb9NFVteaY/vRglrdAUYLSLXPsyrJVgF9JnPXQvEfm2SlEIoV3Cjdb0jhSU7zbH
-         EMe3pZGSj8PezsOOH/uTGeeBBu5LA3JNxQ1Y+bVhTnFqNtLE/5nmgl4RZ1iFHEI1LCoT
-         5TbcbtE8KDWmSgrwbfW75JGKxHMddg142VC4L8nmIIwuuCIGZeUzzH+VjtDviNnOaVwb
-         GOiWhExqu+Dkib8akRA40YXsGhxZICdhrM2MAa7TRgfT4LTrnVICd+kWZTuhqGLM6Syg
-         Md3q6DM9WQepd1i9ZrcmfSNK+Ittxz8Q8vKToi4P/rH1wTSWjl8nm6UxYQdTrEau63zR
-         5cmw==
+        Wed, 22 Nov 2023 12:24:45 -0500
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB3483;
+        Wed, 22 Nov 2023 09:24:41 -0800 (PST)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c239897895so2518272a12.2;
+        Wed, 22 Nov 2023 09:24:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673820; x=1701278620;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NynfojDHOku/gIHF0Vtvo3+Mk/LM+8uGwtlY48AR6MM=;
-        b=p7UzkmWLM7ulzzCKqGFME5+zSN3n+0o9mJGfb5iSclhi6iYsPUcMwqU9BFJ9WK1GYM
-         ZUWtuLm0vdP5evOD22BFy+dNDZ8NbeHLbWlBj6bNnB/DliQrpjtsFyURqf9NaBHhmP5W
-         o4SqBb0sn3DeTQ2G6lyiFp5gBJxuN7NxXd/cpBzBCWDOSSCc+1sOQlCL528InELE9JDp
-         D9XoDxbRReIRod/CAMzQbSJbm8UU+ph0y4y9qfngXaM09fFJ6fkoIiAA1QMuUz7G93Ua
-         OnUSqtw/gC/UjbvCFRh29zxnYLlLDUzZGz7cwtBSL13VaCCcEHgUCV2eNRZwGXZMv35+
-         T+8Q==
-X-Gm-Message-State: AOJu0YwPUEQX+p7d8atOv6DSXMzAR2DikttHylEs0bz7SmSEBzeb1XVj
-        8xf+kIwh4Mpp9s7LYTlAet/SEWWrnoY9s+cfUTw=
-X-Google-Smtp-Source: AGHT+IHOpI5xPVk6Sar76TK2xFochhgo10/ziA9WnAM3iYe0K/JG8b7nGUI7tLK1eOpbXeUs9Wl63rjUYOi5f2szQMQ=
-X-Received: by 2002:a5b:1cb:0:b0:d91:fdb:afd4 with SMTP id f11-20020a5b01cb000000b00d910fdbafd4mr2751108ybp.16.1700673819823;
- Wed, 22 Nov 2023 09:23:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700673881; x=1701278681;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mKbC8s4IlnELPuS9rnCyIQ9xG0e09amttwp/cHghswQ=;
+        b=fxa6eO+QdMbjIBrQL3EEN+FRM/BkIXLZvDs0eBu0r4oBiKCN3f0HTHZz3Zb/oNTNNN
+         TiPntVszK6nlo5DIdJyn0UjzzS5fHFWNma+tH1jcynMdfU/QH9sybHNKEk73E8FdYTDu
+         piS82no0X/GJMvi3V7TxP2NYkRhX1irLeVdknhRnWy68OBZHz7blq041dQEFjOYpa/bp
+         hLm/z5iZGfchVVuSgLfkF9QYTjH+sKPEuTQSUwyoM19xA6R7KbyNE48JC6GDZih3buBz
+         HUdqy67nd83L7bUj9wRV6QdiGBZVixTvqWS270o+s6c4CaMSWfNVJDpxfYPSkiYegD0s
+         MUOA==
+X-Gm-Message-State: AOJu0Yw9CDOaTQM/isLvEg5I5eXk32AmaQPpZvB0dt588CACpUuvFSZ0
+        26nC9oHs/jlGvz0ZKk3HRIkGuGHRsgJJZqciBGg=
+X-Google-Smtp-Source: AGHT+IH2AdMpsfKZKttBW5WYkolV8QcPT+iP6etg+hWfFsNaod1qAG4rhj+szwmmc3WWwIDLlTQ94d+eS8+aX4ITmwM=
+X-Received: by 2002:a17:90b:1e53:b0:280:2422:d2b4 with SMTP id
+ pi19-20020a17090b1e5300b002802422d2b4mr3011155pjb.22.1700673881209; Wed, 22
+ Nov 2023 09:24:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121151733.2015384-1-tmaimon77@gmail.com> <20231121151733.2015384-3-tmaimon77@gmail.com>
- <ZVzQh9ykusyknGgP@shell.armlinux.org.uk>
-In-Reply-To: <ZVzQh9ykusyknGgP@shell.armlinux.org.uk>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Wed, 22 Nov 2023 19:23:28 +0200
-Message-ID: <CAP6Zq1gzAhp9BZNX1MOozUfQc82Vi_S==on5_nOfVfpvtgnN2g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     davem@davemloft.net, edumazet@google.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, alexandre.torgue@foss.st.com,
-        peppe.cavallaro@st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, joel@jms.id.au, andrew@codeconstruct.com.au,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        j.neuschaefer@gmx.net, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
+References: <20231122022805.511839-1-irogers@google.com> <ZV40tp7uiaTk-Qp1@linux.dev>
+In-Reply-To: <ZV40tp7uiaTk-Qp1@linux.dev>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 22 Nov 2023 09:24:30 -0800
+Message-ID: <CAM9d7ci8J_3+Hv+tHPBLx3SOXiPsGyxpYNHxZU==qR544f9hVw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf MANIFEST: Add gen-sysreg for ARM SPE
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Russell,
+Hi Oliver,
 
-Thanks for your comments.
-
-On Tue, 21 Nov 2023 at 17:45, Russell King (Oracle)
-<linux@armlinux.org.uk> wrote:
+On Wed, Nov 22, 2023 at 9:05 AM Oliver Upton <oliver.upton@linux.dev> wrote:
 >
-> On Tue, Nov 21, 2023 at 05:17:33PM +0200, Tomer Maimon wrote:
-> > Add Nuvoton NPCM BMC SoCs support to STMMAC dwmac driver.
+> Hi Ian,
+>
+> On Tue, Nov 21, 2023 at 06:28:05PM -0800, Ian Rogers wrote:
+> > The necessary files for generating sysreg-defs.h need adding to the
+> > perf tool MANIFEST that lists the files for packaging the perf tool
+> > source code. Fix for the following:
 > >
-> > And modify MAINTAINERS to add a new F: entry for this driver.
+> > ```
+> > $ make perf-tar-src-pkg
+> > $ tar xvf perf-6.7.0-rc2.tar
+> > $ cd perf-6.7.0-rc2
+> > $ make -C tools/perf
+> > ...
+> >   PERF_VERSION = 6.7.rc2.gc2d5304e6c64
+> > make[3]: *** No rule to make target 'perf-6.7.0-rc2/arch/arm64/tools/gen-sysreg.awk', needed by 'perf-6.7.0-rc2/tools/arch/arm64/include/generated/asm/sysreg-defs.h'.  Stop.
+> > make[2]: *** [Makefile.perf:456: arm64-sysreg-defs] Error 2
+> > make[2]: *** Waiting for unfinished jobs....
+> > make[1]: *** [Makefile.perf:242: sub-make] Error 2
+> > make: *** [Makefile:70: all] Error 2
+> > make: Leaving directory 'perf-6.7.0-rc2/tools/perf'
+> > ...
+> > ```
 > >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> > Fixes: e2bdd172e665 ("perf build: Generate arm64's sysreg-defs.h and add to include path")
+> > ---
+> > Note: the breakage is in Linus' tree and perf-tools, not yet in perf-tools-next.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> A few comments on this...
+> I had sent out fixes for both of your comments [*], no preference as to
+> which gets applied. So, FWIW:
 >
-> > +#define IND_AC_BA_REG                0x1FE
-> > +#define SR_MII_CTRL          0x3E0000
-> > +
-> > +#define PCS_SR_MII_CTRL_REG  0x0
-> > +#define PCS_SPEED_SELECT6    BIT(6)
-> > +#define PCS_AN_ENABLE                BIT(12)
-> > +#define PCS_SPEED_SELECT13   BIT(13)
-> > +#define PCS_RST                      BIT(15)
->
-> include/uapi/linux/mii.h:
->
-> #define BMCR_SPEED1000          0x0040  /* MSB of Speed (1000)         */
-> #define BMCR_ANENABLE           0x1000  /* Enable auto negotiation     */
-> #define BMCR_SPEED100           0x2000  /* Select 100Mbps              */
-> #define BMCR_RESET              0x8000  /* Reset to default state      */
->
-> Look familiar? Maybe use the standard definitions for a standardised
-> register?
->
-> > +void npcm_dwmac_pcs_init(struct npcm_dwmac *dwmac, struct device *dev,
-> > +                      struct plat_stmmacenet_data *plat_dat)
-> > +{
-> > +     u16 val;
-> > +
-> > +     iowrite16((u16)(SR_MII_CTRL >> 9), dwmac->reg + IND_AC_BA_REG);
-> > +     val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > +     val |= PCS_RST;
-> > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > +
-> > +     while (val & PCS_RST)
-> > +             val = ioread16(dwmac->reg + PCS_SR_MII_CTRL_REG);
->
-> What if the PCS never clears its reset bit? Maybe use
-> read_poll_timeout() ?
->
-> > +
-> > +     val &= ~(PCS_AN_ENABLE);
-> > +     iowrite16(val, dwmac->reg + PCS_SR_MII_CTRL_REG);
-> > +}
->
-> Also, maybe it's time to require new stmmac platform support to start
-> making use of the phylink PCS support rather than continuing to code its
-> own?
->
-> I notice, however, that you always disable inband signalling - please
-> explain why. Also, what protocol does the PCS use when communicating
-> with the PHY?
-With disable inband signalling you mean disable auto negotiation? if
-yes it is because the PCS sgmii is connected to the external phy AN
-and is not working between the PCS and external phy.
-accessing the PCS registers is indirect. The top 13 bits (bits 21-9)
-of the offset have to be written to Indirect Access Base register
-bits 12:0 before indirectly accessing the target register with the
-offset of the bottom 9 bits (8:0) of the offset
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
 
-Thanks,
+Thanks, I think I can pick up your patches as they came before.
+Namhyung
 
-Tomer
+>
+> [*] https://lore.kernel.org/linux-perf-users/20231121192956.919380-1-oliver.upton@linux.dev/
