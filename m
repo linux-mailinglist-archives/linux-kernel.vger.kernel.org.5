@@ -2,251 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FDE7F43F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE087F43F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbjKVKck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        id S234623AbjKVKdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:33:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjKVKch (ORCPT
+        with ESMTP id S230225AbjKVKda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:32:37 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7AD93
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:32:33 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-679dd3055faso16032246d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700649152; x=1701253952; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nBpspFpw0wYhl7ifL6tUUdN7tL1Ofok89vNbvxhOgUA=;
-        b=k/fsABOxSPGtZ9lKeNf2kxUnOb0eURVdimUOoz6KcneXmcSyOf99Ms2XEenRp93T6g
-         QUBeNIIlagZSAhaoA4n+rIjE6qlZzW02bFoa8jYCw+2wnsi4c54KjYyMR2IybZw7EARh
-         8pP1/0w/OjN5znOT7xwapcXOf8qto6cXm47cc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700649152; x=1701253952;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nBpspFpw0wYhl7ifL6tUUdN7tL1Ofok89vNbvxhOgUA=;
-        b=ZoN8D2iFvg+uD+j6WLXJm0W+clraNFMw/ffNeWLPpc7RdrTS7jusv2ZV7kiWea9W51
-         HTiC+uU04/9fwcIQ1cPKRvlO4jpbuL9H/DMkg5oGmq4lQ6XAZLvHtRyZTa8c2kxCq/Gc
-         Jv1eFBGHgs91lg5iUMcjSk+gCG9dk2mkvE2ZSHgclyBhfoDoQKLOoGg6i97X+AFDcZB6
-         +iCNJ5ow1xYfH2efNpKjKc6HMyZec90D769M5opO7DxviXBU/CGY/oJW36HOw3QgEcAM
-         HXrQiv13VJlwX4mVwP2gKX806XWIlKJjOvh5oAQRmUoXnuvAtX77G4sMe+YjEGMiNLc4
-         XDnw==
-X-Gm-Message-State: AOJu0YzeOfwGa375cyMwdLEnft1CK7VFwGmsA9LyFJT7962IGPhDEzdH
-        gnNfCgYYJGm/qKugbaYhCmGsMDyz4QKuulIJCo7+tw==
-X-Google-Smtp-Source: AGHT+IE3NjYRfgmnaaLWXQINEsI69f3VB2/BMXk5+IwHaqphPx7ayU+amsialmin311dT6p7TUpmUQ==
-X-Received: by 2002:a05:620a:6792:b0:77d:6900:c196 with SMTP id rr18-20020a05620a679200b0077d6900c196mr596612qkn.42.1700649151853;
-        Wed, 22 Nov 2023 02:32:31 -0800 (PST)
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com. [209.85.219.54])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05620a103700b0077580becd52sm4325813qkk.103.2023.11.22.02.32.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 02:32:31 -0800 (PST)
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-679dd3055faso16031656d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:32:31 -0800 (PST)
-X-Received: by 2002:a05:6214:f27:b0:679:f3b2:ef4c with SMTP id
- iw7-20020a0562140f2700b00679f3b2ef4cmr2086266qvb.38.1700649150941; Wed, 22
- Nov 2023 02:32:30 -0800 (PST)
+        Wed, 22 Nov 2023 05:33:30 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648CF93;
+        Wed, 22 Nov 2023 02:33:26 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 364576607351;
+        Wed, 22 Nov 2023 10:33:24 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700649204;
+        bh=LW60lqPVhl0HcdFitvYc/FI/s8B9ah3/L4d5OITngAc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cHIXt3yGjJ3de3cpUqTsK2Y98ZcEXYHOKty7yHSKLnrNdAEasf96wcSMy/rbUrLOk
+         GRrzY57idyR6V90u8+y1iNTGMNlOrss9Ekl9x0IyC04Ke1W2/p/sP5hyZKEsokJspy
+         k/2qL8mLxfegCWjdY1UbMokc+MSDBTOLyDmDSStNouEO66w24aM6BGXnX4hqyVOIaT
+         /mHMvQ1d4F39dpRLCvu47EfKGYCtkPErhrfm53m3CGw81jDUYxTGP0bLksiaoob670
+         wW4JnW3SUxASzZBZvjlzj/acETgJRA85t53k2DTeW/LNELc390uTqDjNWIVAXxIzx5
+         IKqyMXtEK0JBQ==
+Message-ID: <1e196ad9-48b3-484f-ada5-83c56eea60ec@collabora.com>
+Date:   Wed, 22 Nov 2023 11:33:21 +0100
 MIME-Version: 1.0
-References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
- <20231121-guenter-mini-v3-2-d8a5eae2312b@chromium.org> <ZV3XDtUKJPuGLhw9@valkosipuli.retiisi.eu>
-In-Reply-To: <ZV3XDtUKJPuGLhw9@valkosipuli.retiisi.eu>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Wed, 22 Nov 2023 11:32:16 +0100
-X-Gmail-Original-Message-ID: <CANiDSCuXXD_GWadSJo43zxscGAOPzxhODK=TKixn0OPn7z_tCw@mail.gmail.com>
-Message-ID: <CANiDSCuXXD_GWadSJo43zxscGAOPzxhODK=TKixn0OPn7z_tCw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] media: uvcvideo: Do not halt the device after disconnect
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Paul <seanpaul@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+Content-Language: en-US
+To:     Steven Price <steven.price@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     tzimmermann@suse.de, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, dri-devel@lists.freedesktop.org,
+        wenst@chromium.org, kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+ <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+ <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+ <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+ <20231121175531.085809f5@collabora.com>
+ <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
+ <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
+ <cae4eebd-2aa2-4baf-8c9a-59eca114098d@arm.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <cae4eebd-2aa2-4baf-8c9a-59eca114098d@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+Il 22/11/23 10:48, Steven Price ha scritto:
+> On 22/11/2023 09:06, AngeloGioacchino Del Regno wrote:
+>> Il 21/11/23 18:08, Krzysztof Kozlowski ha scritto:
+>>> On 21/11/2023 17:55, Boris Brezillon wrote:
+>>>> On Tue, 21 Nov 2023 17:11:42 +0100
+>>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>> wrote:
+>>>>
+>>>>> Il 21/11/23 16:34, Krzysztof Kozlowski ha scritto:
+>>>>>> On 08/11/2023 14:20, Steven Price wrote:
+>>>>>>> On 02/11/2023 14:15, AngeloGioacchino Del Regno wrote:
+>>>>>>>> The layout of the registers {TILER,SHADER,L2}_PWROFF_LO, used to
+>>>>>>>> request
+>>>>>>>> powering off cores, is the same as the {TILER,SHADER,L2}_PWRON_LO
+>>>>>>>> ones:
+>>>>>>>> this means that in order to request poweroff of cores, we are
+>>>>>>>> supposed
+>>>>>>>> to write a bitmask of cores that should be powered off!
+>>>>>>>> This means that the panfrost_gpu_power_off() function has always
+>>>>>>>> been
+>>>>>>>> doing nothing.
+>>>>>>>>
+>>>>>>>> Fix powering off the GPU by writing a bitmask of the cores to
+>>>>>>>> poweroff
+>>>>>>>> to the relevant PWROFF_LO registers and then check that the
+>>>>>>>> transition
+>>>>>>>> (from ON to OFF) has finished by polling the relevant PWRTRANS_LO
+>>>>>>>> registers.
+>>>>>>>>
+>>>>>>>> While at it, in order to avoid code duplication, move the core mask
+>>>>>>>> logic from panfrost_gpu_power_on() to a new panfrost_get_core_mask()
+>>>>>>>> function, used in both poweron and poweroff.
+>>>>>>>>
+>>>>>>>> Fixes: f3ba91228e8e ("drm/panfrost: Add initial panfrost driver")
+>>>>>>>> Signed-off-by: AngeloGioacchino Del Regno
+>>>>>>>> <angelogioacchino.delregno@collabora.com>
+>>>>>>
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> This commit was added to next recently but it causes "external
+>>>>>> abort on
+>>>>>> non-linefetch" during boot of my Odroid HC1 board.
+>>>>>>
+>>>>>> At least bisect points to it.
+>>>>>>
+>>>>>> If fixed, please add:
+>>>>>>
+>>>>>> Reported-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>>>
+>>>>>> [    4.861683] 8<--- cut here ---
+>>>>>> [    4.863429] Unhandled fault: external abort on non-linefetch
+>>>>>> (0x1008) at 0xf0c8802c
+>>>>>> [    4.871018] [f0c8802c] *pgd=433ed811, *pte=11800653, *ppte=11800453
+>>>>>> ...
+>>>>>> [    5.164010]  panfrost_gpu_irq_handler from
+>>>>>> __handle_irq_event_percpu+0xcc/0x31c
+>>>>>> [    5.171276]  __handle_irq_event_percpu from
+>>>>>> handle_irq_event+0x38/0x80
+>>>>>> [    5.177765]  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+>>>>>> [    5.183743]  handle_fasteoi_irq from
+>>>>>> generic_handle_domain_irq+0x28/0x38
+>>>>>> [    5.190417]  generic_handle_domain_irq from
+>>>>>> gic_handle_irq+0x88/0xa8
+>>>>>> [    5.196741]  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+>>>>>> [    5.202893]  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+>>>>>>
+>>>>>> Full log:
+>>>>>> https://krzk.eu/#/builders/21/builds/4392/steps/11/logs/serial0
+>>>>>>     
+>>>>>
+>>>>> Hey Krzysztof,
+>>>>>
+>>>>> This is interesting. It might be about the cores that are missing
+>>>>> from the partial
+>>>>> core_mask raising interrupts, but an external abort on non-linefetch
+>>>>> is strange to
+>>>>> see here.
+>>>>
+>>>> I've seen such external aborts in the past, and the fault type has
+>>>> often been misleading. It's unlikely to have anything to do with a
+>>>
+>>> Yeah, often accessing device with power or clocks gated.
+>>>
+>>
+>> Except my commit does *not* gate SoC power, nor SoC clocks 🙂
+>>
+>> What the "Really power off ..." commit does is to ask the GPU to
+>> internally power
+>> off the shaders, tilers and L2, that's why I say that it is strange to
+>> see that
+>> kind of abort.
+>>
+>> The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and
+>> GPU_FAULT_ADDRESS_{HI/LO}
+>> registers should still be accessible even with shaders, tilers and cache
+>> OFF.
+>>
+>> Anyway, yes, synchronizing IRQs before calling the poweroff sequence
+>> would also
+>> work, but that'd add up quite a bit of latency on the runtime_suspend()
+>> call, so
+>> in this case I'd be more for avoiding to execute any register r/w in the
+>> handler
+>> by either checking if the GPU is supposed to be OFF, or clearing
+>> interrupts, which
+>> may not work if those are generated after the execution of the poweroff
+>> function.
+>> Or we could simply disable the irq after power_off, but that'd be hacky
+>> (as well).
+>>
+>>
+>> Let's see if asking to poweroff *everything* works:
+>>
+>>
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_gpu.c | 14 +++++++++++---
+>>   1 file changed, 11 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> index 09f5e1563ebd..1c7276aaa182 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> @@ -429,21 +429,29 @@ void panfrost_gpu_power_off(struct panfrost_device
+>> *pfdev)
+>>       int ret;
+>>       u32 val;
+>>
+>> -    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present &
+>> core_mask);
+>> +    gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+> 
+> Hopefully this one line change, and...
+> 
+>> +    gpu_write(pfdev, SHADER_PWROFF_HI, U32_MAX);
+>>       ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+>>                        val, !val, 1, 1000);
+>>       if (ret)
+>>           dev_err(pfdev->dev, "shader power transition timeout");
+>>
+>>       gpu_write(pfdev, TILER_PWROFF_LO, pfdev->features.tiler_present);
+>> +    gpu_write(pfdev, TILER_PWROFF_HI, U32_MAX);
+>>       ret = readl_relaxed_poll_timeout(pfdev->iomem + TILER_PWRTRANS_LO,
+>>                        val, !val, 1, 1000);
+>>       if (ret)
+>>           dev_err(pfdev->dev, "tiler power transition timeout");
+>>
+>> -    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present &
+>> core_mask);
+>> +    gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+> 
+> ... this one are all that are actually needed - the rest should be
+> ignored as they affect cores that aren't present.
+> 
 
-On Wed, 22 Nov 2023 at 11:25, Sakari Ailus <sakari.ailus@iki.fi> wrote:
->
-> Hi Ricardo,
->
-> Thank you for the patch.
->
-> On Tue, Nov 21, 2023 at 07:53:49PM +0000, Ricardo Ribalda wrote:
-> > usb drivers should not call to any usb_() function after the
-> > .disconnect() callback has been triggered.
-> >
-> > If the camera is streaming, the uvc driver will call usb_set_interface or
-> > usb_clear_halt once the device is being released. Let's fix this issue.
-> >
-> > This is probably not the only driver affected with this kind of bug, but
-> > until there is a better way to do it in the core this is the way to
-> > solve this issue.
-> >
-> > When/if a different mechanism is implemented in the core to solve the
-> > lifetime of devices we will adopt it in uvc.
-> >
-> > Trace:
-> > [ 1065.389723] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
-> > [ 1065.390160] drivers/media/usb/uvc/uvc_driver.c:2264 uvc_disconnect exit
-> > [ 1065.433956] drivers/media/usb/uvc/uvc_v4l2.c:659 uvc_v4l2_release enter
-> > [ 1065.433973] drivers/media/usb/uvc/uvc_video.c:2274 uvc_video_stop_streaming enter
-> > [ 1065.434560] drivers/media/usb/uvc/uvc_video.c:2285 uvc_video_stop_streaming exit
-> > [ 1065.435154] drivers/media/usb/uvc/uvc_v4l2.c:680 uvc_v4l2_release exit
-> > [ 1065.435188] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_driver.c |  2 ++
-> >  drivers/media/usb/uvc/uvc_video.c  | 45 ++++++++++++++++++++++++--------------
-> >  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
-> >  3 files changed, 32 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > index 08fcd2ffa727..413c32867617 100644
-> > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > @@ -2257,6 +2257,8 @@ static void uvc_disconnect(struct usb_interface *intf)
-> >               return;
-> >
-> >       uvc_unregister_video(dev);
-> > +     /* Barrier needed to synchronize with uvc_video_stop_streaming(). */
-> > +     smp_store_release(&dev->disconnected, true);
-> >       kref_put(&dev->ref, uvc_delete);
-> >  }
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> > index 28dde08ec6c5..032b44e45b22 100644
-> > --- a/drivers/media/usb/uvc/uvc_video.c
-> > +++ b/drivers/media/usb/uvc/uvc_video.c
-> > @@ -2243,28 +2243,39 @@ int uvc_video_start_streaming(struct uvc_streaming *stream)
-> >       return ret;
-> >  }
-> >
-> > -void uvc_video_stop_streaming(struct uvc_streaming *stream)
-> > +static void uvc_video_halt(struct uvc_streaming *stream)
-> >  {
-> > -     uvc_video_stop_transfer(stream, 1);
-> > +     unsigned int epnum;
-> > +     unsigned int pipe;
-> > +     unsigned int dir;
-> >
-> >       if (stream->intf->num_altsetting > 1) {
->
-> Doesn't this imply the device is using isochronous mode?
+Honestly - when I wrote that diff, I didn't care at all whether the HI registers
+were powering off cores that weren't present, because I knew that the GPU would
+have handled that gracefully anyway.
 
-I haven't changed the behaviour for halt, it is just that git diff is
-being a bit too creative here:
+What I wanted to do was to reduce Krzysztof's testing effort to a minimum, actually
+preventing to send more than one patch to try... but with that, you bought me a bit
+of precious time that I would've spent with research, so, hats off! Thank you!
 
-Basically it is doing:
+> The Exynos 5422 SoC has a T628 MP6 - so two core groups which isn't a
+> particularly well supported configuration. But I'm not sure how we're
+> ending up with the second core group being powered up in the first
+> place. Even if it was left powered by something previous (e.g. the
+> bootloader) then the soft-reset during probe should cause them to power
+> down.
+> 
 
-void video_halt() {
-   if (is_isoc()) {
-     usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-     return;
-   }
-   usb_clear_halt();
-}
+Hm. I didn't know that soft_reset is supposed to (and will) power down cores.
+This is clarifying some things I didn't really have an explanation for... so thanks
+again :-)
 
-instead of the old:
+> But it seems like a good idea to power off everything when powering
+> down, even if we didn't expect the cores to be on.
+> 
+> Boris also has a point that before cutting the power/clocks we should
+> really be synchronising with the IRQs - but that affects the follow on
+> patches not this one.
+> 
 
-void video_halt() {
-   if (is_isoc()) {
-     usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-   }  else {
-      usb_clear_halt();
-   }
-}
+...which gives me some more ideas to try... in the near future.
+But it's out of context for this fix anyway.
 
-Thanks!
->
-> >               usb_set_interface(stream->dev->udev, stream->intfnum, 0);
-> > -     } else {
-> > -             /*
-> > -              * UVC doesn't specify how to inform a bulk-based device
-> > -              * when the video stream is stopped. Windows sends a
-> > -              * CLEAR_FEATURE(HALT) request to the video streaming
-> > -              * bulk endpoint, mimic the same behaviour.
-> > -              */
-> > -             unsigned int epnum = stream->header.bEndpointAddress
-> > -                                & USB_ENDPOINT_NUMBER_MASK;
-> > -             unsigned int dir = stream->header.bEndpointAddress
-> > -                              & USB_ENDPOINT_DIR_MASK;
-> > -             unsigned int pipe;
-> > -
-> > -             pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
-> > -             usb_clear_halt(stream->dev->udev, pipe);
-> > +             return;
-> >       }
-> >
-> > +     /*
-> > +      * UVC doesn't specify how to inform a bulk-based device
->
-> Then this comment doesn't look right. What about the code? This isn't
-> mentioned in the commit message either.
->
-> > +      * when the video stream is stopped. Windows sends a
-> > +      * CLEAR_FEATURE(HALT) request to the video streaming
-> > +      * bulk endpoint, mimic the same behaviour.
-> > +      */
-> > +     epnum = stream->header.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
-> > +     dir = stream->header.bEndpointAddress & USB_ENDPOINT_DIR_MASK;
-> > +     pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
-> > +     usb_clear_halt(stream->dev->udev, pipe);
-> > +}
-> > +
-> > +void uvc_video_stop_streaming(struct uvc_streaming *stream)
-> > +{
-> > +     uvc_video_stop_transfer(stream, 1);
-> > +
-> > +     /*
-> > +      * Barrier needed to synchronize with uvc_disconnect().
-> > +      * We cannot call usb_* functions on a disconnected USB device.
-> > +      */
-> > +     if (!smp_load_acquire(&stream->dev->disconnected))
-> > +             uvc_video_halt(stream);
-> > +
-> >       uvc_video_clock_cleanup(stream);
-> >  }
-> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > index 6fb0a78b1b00..4318ce8e31db 100644
-> > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > @@ -559,6 +559,8 @@ struct uvc_device {
-> >       unsigned int users;
-> >       atomic_t nmappings;
-> >
-> > +     bool disconnected;
-> > +
-> >       /* Video control interface */
-> >  #ifdef CONFIG_MEDIA_CONTROLLER
-> >       struct media_device mdev;
-> >
->
-> --
-> Kind regards,
->
-> Sakari Ailus
+Cheers,
+Angelo
+
+> Steve
+> 
+>>       ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+>> -                 val, !val, 0, 1000);
+>> +                     val, !val, 0, 1000);
+>> +    if (ret)
+>> +        dev_err(pfdev->dev, "l2_low power transition timeout");
+>> +
+>> +    gpu_write(pfdev, L2_PWROFF_HI, U32_MAX);
+>> +    ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_HI,
+>> +                     val, !val, 0, 1000);
+>>       if (ret)
+>>           dev_err(pfdev->dev, "l2 power transition timeout");
+>>   }
+> 
 
 
-
--- 
-Ricardo Ribalda
