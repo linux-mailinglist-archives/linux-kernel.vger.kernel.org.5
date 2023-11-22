@@ -2,195 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBCE7F4779
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDD27F4775
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343974AbjKVNPA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 08:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
+        id S1343965AbjKVNOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343964AbjKVNO4 (ORCPT
+        with ESMTP id S1343619AbjKVNOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:14:56 -0500
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36988D40;
-        Wed, 22 Nov 2023 05:14:53 -0800 (PST)
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6d7e6a08299so209112a34.0;
-        Wed, 22 Nov 2023 05:14:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700658892; x=1701263692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oYp1qA6Rj8R+cs9YseE9JWdxZsiJT+korOEyoXcPVv4=;
-        b=cpoJKCW32sfBaIcuv+DIDy/AFCJhiLlz+9Mz7klBm3ixt7e8e+hlOPt475RJM+hLY1
-         NR/iKnsDxYEM93LootEmX5VeBucsuWi5YoYvnvuk3cHuDFR1OUjRHZ97JNvnCVCzmXHL
-         jzsjUbjPixN+30u9eieYUJWSasutNab/KQpLOwApLGEYkVHWri7g/pyPvIDe24C372ER
-         rkpw0arMevY/ASziZa9HETMeZfCZVGlpW/+VbfJgEQMi3pb0FrfEzSz4e8zD1BykWLM6
-         Rtf3Ydr4FaDLf979/ftC2hGwYZchCHAhxs1aUfyLSYDgnTrQbLz7JnzeZEtG1a3uL8uh
-         3P3g==
-X-Gm-Message-State: AOJu0Yzi+mDL/Kn6+r4W12Bty7hXoqdZAQNAgM+nbNO6AVi1jIzJYc5E
-        w2TwMXlWTcEelHiPk4eXYVYQZw1qwbqOTURkvf4=
-X-Google-Smtp-Source: AGHT+IGLaqddtZJrV7cWRhrcczCAU1dJlp3v3FkD9l6DHotgDfOqpiCeWd08F8MrY56cvJDLtFQNUfFZGkEEJfDGWyo=
-X-Received: by 2002:a05:6870:2401:b0:1f9:5d11:cc7a with SMTP id
- n1-20020a056870240100b001f95d11cc7amr2688101oap.3.1700658892377; Wed, 22 Nov
- 2023 05:14:52 -0800 (PST)
+        Wed, 22 Nov 2023 08:14:53 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B358219E;
+        Wed, 22 Nov 2023 05:14:49 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 89721276;
+        Wed, 22 Nov 2023 14:14:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1700658857;
+        bh=I9y4sun9NeXdT7AZljuwRol7VPibB34QiqgjRQUZFpo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=swIZNt/sv5KAV2KlMVIqUpuJ0ECH71R84iDO/VHU3YXKGBo8la459hrmNMnogg4GR
+         bozwtL/zl6Qj4mBnM56gTPQN2VyVNl+BUuiCALRMniJLAcs1Rg1ws659YmjEryR2T8
+         CIVoV+uo6kmBRm/+nsJ9ANBw7U06KqNasYIy+nB8=
+Date:   Wed, 22 Nov 2023 15:14:55 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Paul <seanpaul@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v3 3/3] media: uvcvideo: Lock video streams and queues
+ while unregistering
+Message-ID: <20231122131455.GC3909@pendragon.ideasonboard.com>
+References: <20231121-guenter-mini-v3-0-d8a5eae2312b@chromium.org>
+ <20231121-guenter-mini-v3-3-d8a5eae2312b@chromium.org>
+ <ZV3WEDZ0EfdYrImE@valkosipuli.retiisi.eu>
 MIME-Version: 1.0
-References: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
-In-Reply-To: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 22 Nov 2023 14:14:41 +0100
-Message-ID: <CAJZ5v0hkGfqzHwmhBKqwhcEchncM6kEgx_TJgJGgjiR5yMZkLg@mail.gmail.com>
-Subject: Re: [PATCH v2] acpi: Fix ARM32 platforms compile issue introduced by
- fw_table changes
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     linus.walleij@linaro.org, rafael@kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
-        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
-        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
-        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        cfsworks@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZV3WEDZ0EfdYrImE@valkosipuli.retiisi.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 11:19 PM Dave Jiang <dave.jiang@intel.com> wrote:
->
-> Linus reported that:
-> After commit a103f46633fd the kernel stopped compiling for
-> several ARM32 platforms that I am building with a bare metal
-> compiler. Bare metal compilers (arm-none-eabi-) don't
-> define __linux__.
->
-> This is because the header <acpi/platform/acenv.h> is now
-> in the include path for <linux/irq.h>:
->
->   CC      arch/arm/kernel/irq.o
->   CC      kernel/sysctl.o
->   CC      crypto/api.o
-> In file included from ../include/acpi/acpi.h:22,
->                  from ../include/linux/fw_table.h:29,
->                  from ../include/linux/acpi.h:18,
->                  from ../include/linux/irqchip.h:14,
->                  from ../arch/arm/kernel/irq.c:25:
-> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
->   218 | #error Unknown target environment
->       |  ^~~~~
->
-> The issue is caused by the introducing of splitting out the ACPI code to
-> support the new generic fw_table code.
->
-> Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
-> the linux/mutex.h. Remove the two includes in fw_table.h. Add include of
-> linux/acpi.h in fw_table.c before the fw_table.h include.
->
-> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
-> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
-> Reported-by: Linus Walleij <linus.walleij@linaro.org>
-> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-> ---
-> v2:
-> - Remove linux/acpi.h include as well in fw_table.h. (Sam)
-> ---
->  include/linux/acpi.h     |   22 +++++++++++-----------
->  include/linux/fw_table.h |    3 ---
->  lib/fw_table.c           |    1 +
->  3 files changed, 12 insertions(+), 14 deletions(-)
->
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 54189e0e5f41..4db54e928b36 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -15,7 +15,6 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/property.h>
->  #include <linux/uuid.h>
-> -#include <linux/fw_table.h>
->
->  struct irq_domain;
->  struct irq_domain_ops;
-> @@ -25,22 +24,13 @@ struct irq_domain_ops;
->  #endif
->  #include <acpi/acpi.h>
->
-> -#ifdef CONFIG_ACPI_TABLE_LIB
-> -#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-> -#define __init_or_acpilib
-> -#define __initdata_or_acpilib
-> -#else
-> -#define EXPORT_SYMBOL_ACPI_LIB(x)
-> -#define __init_or_acpilib __init
-> -#define __initdata_or_acpilib __initdata
-> -#endif
-> -
->  #ifdef CONFIG_ACPI
->
->  #include <linux/list.h>
->  #include <linux/dynamic_debug.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
-> +#include <linux/fw_table.h>
->
->  #include <acpi/acpi_bus.h>
->  #include <acpi/acpi_drivers.h>
-> @@ -48,6 +38,16 @@ struct irq_domain_ops;
->  #include <acpi/acpi_io.h>
->  #include <asm/acpi.h>
->
-> +#ifdef CONFIG_ACPI_TABLE_LIB
-> +#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
-> +#define __init_or_acpilib
-> +#define __initdata_or_acpilib
-> +#else
-> +#define EXPORT_SYMBOL_ACPI_LIB(x)
-> +#define __init_or_acpilib __init
-> +#define __initdata_or_acpilib __initdata
-> +#endif
-> +
->  static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
->  {
->         return adev ? adev->handle : NULL;
-> diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
-> index ff8fa58d5818..ca49947f0a77 100644
-> --- a/include/linux/fw_table.h
-> +++ b/include/linux/fw_table.h
-> @@ -25,9 +25,6 @@ struct acpi_subtable_proc {
->         int count;
->  };
->
-> -#include <linux/acpi.h>
-> -#include <acpi/acpi.h>
-> -
->  union acpi_subtable_headers {
->         struct acpi_subtable_header common;
->         struct acpi_hmat_structure hmat;
-> diff --git a/lib/fw_table.c b/lib/fw_table.c
-> index b51f30a28e47..c4831f3378be 100644
-> --- a/lib/fw_table.c
-> +++ b/lib/fw_table.c
-> @@ -7,6 +7,7 @@
->   *  Copyright (C) 2023 Intel Corp.
->   */
->  #include <linux/errno.h>
-> +#include <linux/acpi.h>
->  #include <linux/fw_table.h>
+CC'ing Dan Williams.
 
-Because fw_table.h is included via acpi.h, do you still need to
-include it directly here?
+On Wed, Nov 22, 2023 at 10:21:04AM +0000, Sakari Ailus wrote:
+> Hi Ricardo,
+> 
+> On Tue, Nov 21, 2023 at 07:53:50PM +0000, Ricardo Ribalda wrote:
+> > From: Guenter Roeck <linux@roeck-us.net>
+> > 
+> > The call to uvc_disconnect() is not protected by any mutex.
+> > This means it can and will be called while other accesses to the video
+> > device are in progress. This can cause all kinds of race conditions,
+> > including crashes such as the following.
+> > 
+> > usb 1-4: USB disconnect, device number 3
+> > BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
+> > PGD 0 P4D 0
+> > Oops: 0000 [#1] PREEMPT SMP PTI
+> > CPU: 0 PID: 5633 Comm: V4L2CaptureThre Not tainted 4.19.113-08536-g5d29ca36db06 #1
+> > Hardware name: GOOGLE Edgar, BIOS Google_Edgar.7287.167.156 03/25/2019
+> > RIP: 0010:usb_ifnum_to_if+0x29/0x40
+> > Code: <...>
+> > RSP: 0018:ffffa46f42a47a80 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff904a396c9000
+> > RDX: ffff904a39641320 RSI: 0000000000000001 RDI: 0000000000000000
+> > RBP: ffffa46f42a47a80 R08: 0000000000000002 R09: 0000000000000000
+> > R10: 0000000000009975 R11: 0000000000000009 R12: 0000000000000000
+> > R13: ffff904a396b3800 R14: ffff904a39e88000 R15: 0000000000000000
+> > FS: 00007f396448e700(0000) GS:ffff904a3ba00000(0000) knlGS:0000000000000000
+> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000000000000 CR3: 000000016cb46000 CR4: 00000000001006f0
+> > Call Trace:
+> >  usb_hcd_alloc_bandwidth+0x1ee/0x30f
+> >  usb_set_interface+0x1a3/0x2b7
+> >  uvc_video_start_transfer+0x29b/0x4b8 [uvcvideo]
+> >  uvc_video_start_streaming+0x91/0xdd [uvcvideo]
+> >  uvc_start_streaming+0x28/0x5d [uvcvideo]
+> >  vb2_start_streaming+0x61/0x143 [videobuf2_common]
+> >  vb2_core_streamon+0xf7/0x10f [videobuf2_common]
+> >  uvc_queue_streamon+0x2e/0x41 [uvcvideo]
+> >  uvc_ioctl_streamon+0x42/0x5c [uvcvideo]
+> >  __video_do_ioctl+0x33d/0x42a
+> >  video_usercopy+0x34e/0x5ff
+> >  ? video_ioctl2+0x16/0x16
+> >  v4l2_ioctl+0x46/0x53
+> >  do_vfs_ioctl+0x50a/0x76f
+> >  ksys_ioctl+0x58/0x83
+> >  __x64_sys_ioctl+0x1a/0x1e
+> >  do_syscall_64+0x54/0xde
+> > 
+> > usb_set_interface() should not be called after the USB device has been
+> > unregistered. However, in the above case the disconnect happened after
+> > v4l2_ioctl() was called, but before the call to usb_ifnum_to_if().
+> > 
+> > Acquire various mutexes in uvc_unregister_video() to fix the majority
+> > (maybe all) of the observed race conditions.
+> > 
+> > The uvc_device lock prevents races against suspend and resume calls
+> > and the poll function.
+> > 
+> > The uvc_streaming lock prevents races against stream related functions;
+> > for the most part, those are ioctls. This lock also requires other
+> > functions using this lock to check if a video device is still registered
+> > after acquiring it. For example, it was observed that the video device
+> > was already unregistered by the time the stream lock was acquired in
+> > uvc_ioctl_streamon().
+> > 
+> > The uvc_queue lock prevents races against queue functions, Most of
+> > those are already protected by the uvc_streaming lock, but some
+> > are called directly. This is done as added protection; an actual race
+> > was not (yet) observed.
+> > 
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Alan Stern <stern@rowland.harvard.edu>
+> > Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> > Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+> > Reviewed-by: Sean Paul <seanpaul@chromium.org>
+> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> > index 413c32867617..3408b865d346 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -1907,14 +1907,22 @@ static void uvc_unregister_video(struct uvc_device *dev)
+> >  {
+> >  	struct uvc_streaming *stream;
+> >  
+> > +	mutex_lock(&dev->lock);
+> > +
+> >  	list_for_each_entry(stream, &dev->streams, list) {
+> >  		if (!video_is_registered(&stream->vdev))
+> >  			continue;
+> >  
+> > +		mutex_lock(&stream->mutex);
+> > +		mutex_lock(&stream->queue.mutex);
+> > +
+> >  		video_unregister_device(&stream->vdev);
+> >  		video_unregister_device(&stream->meta.vdev);
+> >  
+> >  		uvc_debugfs_cleanup_stream(stream);
+> > +
+> > +		mutex_unlock(&stream->queue.mutex);
+> > +		mutex_unlock(&stream->mutex);
+> >  	}
+> >  
+> >  	uvc_status_unregister(dev);
+> > @@ -1925,6 +1933,7 @@ static void uvc_unregister_video(struct uvc_device *dev)
+> >  	if (media_devnode_is_registered(dev->mdev.devnode))
+> >  		media_device_unregister(&dev->mdev);
+> >  #endif
+> > +	mutex_unlock(&dev->lock);
+> >  }
+> >  
+> >  int uvc_register_video_device(struct uvc_device *dev,
+> > 
+> 
+> Instead of acquiring all the possible locks, could you instead take the
+> same approach as you do with ISP? It should use refcount_t btw.
+> <URL:https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/kcam-6.1/drivers/isp/isp-device.c:
 
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->
->
->
+The right approach, as I've said countless of times, is to fix this at
+the cdev and V4L2 level. Dan Williams has done some ground work on this
+a while ago ([1]), and before that I posted an RFC series that
+overlapped with Dan's work (with a more naive and less efficient
+implementation of refcounting, see [2]).
+
+[1] https://lore.kernel.org/all/161117153776.2853729.6944617921517514510.stgit@dwillia2-desk3.amr.corp.intel.com/
+[2] https://lore.kernel.org/linux-media/20171116003349.19235-2-laurent.pinchart+renesas@ideasonboard.com/
+
+-- 
+Regards,
+
+Laurent Pinchart
