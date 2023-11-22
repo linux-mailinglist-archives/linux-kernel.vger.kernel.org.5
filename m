@@ -2,64 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 385A67F52F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6567F52F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344519AbjKVWFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S235193AbjKVWF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbjKVWFI (ORCPT
+        with ESMTP id S231392AbjKVWF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:05:08 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332DEB9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:05:04 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 31E596607332;
-        Wed, 22 Nov 2023 22:05:01 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700690702;
-        bh=L8JWdmRbv/qGbL8ayeiLeAZrkbkPXFdz4DgESw6b6mY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PoLRwynFFCCpJfEbuu2PfIDTr3NeSI/VBEZmk2geOCk8erfiGRjZQzDXteIWW7X2U
-         RRpdqwk63aslO0l+eOMNNjPQeAlCPXTxb7fM9AHlFal49/0eIyLAaNXPO04JMivZRt
-         O2+7kA8GOTnJvm4QFFmsn2Qk8OeFHzDP2bsbN9FZP+4+GGKpHC9cSTakDFPAfZE3Lx
-         1AX0Jg/gus++k0WwXx5PiZNLhsIKdy4hzHNXiewyvtGRK13mMbGOADhh2wxckGC843
-         1IlFYJFMk0ibNkxSUsfHJrif1TLXH2GR2MPHLRa3zr4U6XQPFlDuz8CsTs4IfT5VxZ
-         UnKN8MHEkF+0g==
-Message-ID: <26890ba7-5e19-df0c-fce0-26af58e66266@collabora.com>
-Date:   Thu, 23 Nov 2023 01:04:56 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v18 15/26] drm/panfrost: Explicitly get and put drm-shmem
- pages
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-16-dmitry.osipenko@collabora.com>
- <20231110115354.356c87f7@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20231110115354.356c87f7@collabora.com>
-Content-Type: text/plain; charset=UTF-8
+        Wed, 22 Nov 2023 17:05:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9765210C
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:05:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D05C433C9;
+        Wed, 22 Nov 2023 22:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1700690722;
+        bh=6xOIEj/qsKa5m7ejSZ5W5X0UvOk1jhvFPhHiF6L75xA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=y1Hk41eg3sODEMExVfE8eRdPshbzoz1JkHYScAyrOF9UQXOkBEqF4tLDuJW/zZAs8
+         Gop3nqGi5IL6iTAf116t19POFywvldo5I57ilCW9TMso5lmyJD8mahO0HgeX//oGts
+         r28xnV3VX1+qxKwiYFSYyUA4inIKEJcFXSlVlUjw=
+Date:   Wed, 22 Nov 2023 14:05:21 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     lizhe.67@bytedance.com
+Cc:     dianders@chromium.org, pmladek@suse.com,
+        lecopzer.chen@mediatek.com, kernelfans@gmail.com,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com
+Subject: Re: [PATCH v2] softlockup: serialized softlockup's log
+Message-Id: <20231122140521.85c66b789625e8d270722b3c@linux-foundation.org>
+In-Reply-To: <20231122100212.94327-1-lizhe.67@bytedance.com>
+References: <20231122100212.94327-1-lizhe.67@bytedance.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -71,63 +48,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/23 13:53, Boris Brezillon wrote:
-> Hm, there was no drm_gem_shmem_get_pages_sgt() call here, why should we
-> add a drm_gem_shmem_get_pages()? What we should do instead is add a
-> drm_gem_shmem_get_pages() for each drm_gem_shmem_get_pages_sgt() we
-> have in the driver (in panfrost_mmu_map()), and add
-> drm_gem_shmem_put_pages() calls where they are missing
-> (panfrost_mmu_unmap()).
+On Wed, 22 Nov 2023 18:02:12 +0800 lizhe.67@bytedance.com wrote:
+
+> From: Li Zhe <lizhe.67@bytedance.com>
 > 
->> +		if (err)
->> +			goto err_free;
->> +	}
->> +
->>  	return bo;
->> +
->> +err_free:
->> +	drm_gem_shmem_free(&bo->base);
->> +
->> +	return ERR_PTR(err);
->>  }
->>  
->>  struct drm_gem_object *
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
->> index 770dab1942c2..ac145a98377b 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
->> @@ -504,7 +504,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->>  		if (IS_ERR(pages[i])) {
->>  			ret = PTR_ERR(pages[i]);
->>  			pages[i] = NULL;
->> -			goto err_pages;
->> +			goto err_unlock;
->>  		}
->>  	}
->>  
->> @@ -512,7 +512,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->>  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
->>  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
->>  	if (ret)
->> -		goto err_pages;
->> +		goto err_unlock;
-> Feels like the panfrost_gem_mapping object should hold a ref on the BO
-> pages, not the BO itself, because, ultimately, the user of the BO is
-> the GPU. This matches what I was saying about moving get/put_pages() to
-> panfrost_mmu_map/unmap(): everytime a panfrost_gem_mapping becomes
-> active, to want to take a pages ref, every time it becomes inactive,
-> you should release the pages ref.
+> If multiple CPUs trigger softlockup at the same time with
+> 'softlockup_all_cpu_backtrace=0', the softlockup's logs will appear
+> staggeredly in dmesg, which will affect the viewing of the logs for
+> developer. Since the code path for outputting softlockup logs is not
+> a kernel hotspot and the performance requirements for the code are
+> not strict, locks are used to serialize the softlockup log output to
+> improve the readability of the logs.
 
-The panfrost_mmu_unmap() is also used by shrinker when BO is purged. I'm
-unhappy with how icky it all becomes if unmap is made to put pages.
+Seems reasonable, but...
 
-Previously map() was implicitly allocating pages with get_sgt() and then
-pages were implicitly released by drm_gem_shmem_free(). A non-heap BO is
-mapped when it's created by Panfrost, hence the actual lifetime of pages
-is kept unchanged by this patch. The implicit allocation is turned into
-explicit one, i.e. pages are explicitly allocated before BO is mapped.
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -28,6 +28,8 @@
+>  #include <linux/kvm_para.h>
+>  
+>  static DEFINE_MUTEX(watchdog_mutex);
+> +/* This lock is used to prevent concurrent actions of softlockup output logs */
+> +static DEFINE_SPINLOCK(watchdog_output_lock);
 
--- 
-Best regards,
-Dmitry
+It would be a little neater to reduce the scope of this - move the
+definition into that little code block in watchdog_timer_fn() where it
+is actually used.
+
+>  #if defined(CONFIG_HARDLOCKUP_DETECTOR) || defined(CONFIG_HARDLOCKUP_DETECTOR_SPARC64)
+>  # define WATCHDOG_HARDLOCKUP_DEFAULT	1
+> @@ -514,6 +516,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>  		/* Start period for the next softlockup warning. */
+>  		update_report_ts();
+>  
+> +		spin_lock(&watchdog_output_lock);
+
+The hrtimer callout function is called from [soft]irq context, yes? 
+Doesn't lockdep get upset when we take a spinlock in such a context?
+
+>  		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
+>  			smp_processor_id(), duration,
+>  			current->comm, task_pid_nr(current));
+> @@ -523,6 +526,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+>  			show_regs(regs);
+>  		else
+>  			dump_stack();
+> +		spin_unlock(&watchdog_output_lock);
+>  
+>  		if (softlockup_all_cpu_backtrace) {
+>  			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
 
