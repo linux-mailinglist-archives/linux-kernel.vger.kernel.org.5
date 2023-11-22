@@ -2,147 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 794117F49EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:10:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 679517F49F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbjKVPKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48614 "EHLO
+        id S230029AbjKVPM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:12:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjKVPKi (ORCPT
+        with ESMTP id S229481AbjKVPMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:10:38 -0500
-Received: from mail-pj1-f79.google.com (mail-pj1-f79.google.com [209.85.216.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF76E1BF
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:10:32 -0800 (PST)
-Received: by mail-pj1-f79.google.com with SMTP id 98e67ed59e1d1-2851c6f80f2so4914389a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:10:32 -0800 (PST)
+        Wed, 22 Nov 2023 10:12:25 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20F492;
+        Wed, 22 Nov 2023 07:12:21 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a00f67f120aso336539566b.2;
+        Wed, 22 Nov 2023 07:12:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700665940; x=1701270740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JQfIch1n/oRDhqVwiC5BqHYmxmK2tX6xAmCbIID5gio=;
+        b=k380wJmStBa1k33QXwY+ybrAokpE37D+XWpisBwJuKe9ZtU8+HF8eSKhJG+pAUr3vP
+         tGEMg1nBipl/gLlZBN3OhttDEd2E1MmZSgpYV9U3g51+RwKUuOdzhPz7sfB3Lpkzwn6b
+         oXI8euXlm2l5JyLz7Tli+5afNpJzfZmwTOkgI95iePtd2GaRj4UVyfKTYHVf1TTaGtf1
+         Gp6jZQttEb3wVSfEMjVBeZBLDSDy75msg79n2DJHSLcfNmwepFXG4MOOPqbj5IYB/8gT
+         EvDSOsjZKtMZUZ503kWqM5/6B0CkcCnE4zYsz1S8sY/cj3/DUp3gfmc8SCM2OBhBI0Ao
+         RYkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700665832; x=1701270632;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cNISjNqOME+dw6YEeAsd8Brez3ACNxa0qo7QYk0nRrk=;
-        b=VvDa9agUAd7uBkjukK1NBFBMVqT+BNRfZpBEeagCRilSq2tIKNpzTbhfWb/lJg/Mpp
-         eEL8HqyhjocMHgloOfl15xYH84DOXwja7i0SKD9g78qiQvdv7o8fmRfsxHHXgHHFdPVV
-         SkAzUJ34Mc3fIcoZTxyF/rjU7t2qI7rV4Mo8fNEcwdfq4nCbyQn5nivA/iGXOBtLznsN
-         qMCbl9r6OBlLA9j/VxZqJ76j2/a2yUSojIdZmMPOCCnqRLslgSrocacRCeA6mn587WXe
-         VwUe76GSmfAv/ZesfXKo2yPScN/4r7Hk+xEp+Dp3HrMPeGxc3CEfsxzsA+fyCTvgfdDd
-         tn1g==
-X-Gm-Message-State: AOJu0YzVL7mV1TBXzHcaDDBdh+yJhHmvbR6l2Vk7k/QHJcRL6s5TqkgR
-        qi+uoKHQ4DaKGEM0slatsJH7KlxpHbGOKbJSBC7DpHssvwNz
-X-Google-Smtp-Source: AGHT+IHbSXBA5o+nIc1fBib+40xR7K8epiWQcjBOGTb/NlajdNKU3+Or0JWAiBpmBYy0rwJvDpiD7vM3SoIzAtYMQovG8PRn1Fnp
+        d=1e100.net; s=20230601; t=1700665940; x=1701270740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JQfIch1n/oRDhqVwiC5BqHYmxmK2tX6xAmCbIID5gio=;
+        b=CcH/LI48JJwYKbFSPyqWH64esKA+J0CNq4g5MG5S8TL/VZVLE0fDKD/sU3M0zXF6Wf
+         UL1ZAoeRvddIG4LAdMplfF5lbXNai6pcAQe7zIKuql4z6WnZOYhTLNMupttofS3X7f52
+         Kvt07Lli4XJysEjwa/IbAFpDIGX7sAJN1SV+IGCZKo9R/vIwzCCYvk4KHO4VkGWA9w6Z
+         3FjBwX2WfW8/nja5piKSoRK4TugeY9O9MnZMQdSmb2TIvordTIQziG54KNq2wxxUkWfl
+         VEWx8Q5C0w3QGyZ1qpivXNQ6ftBbJ6P6I2k+pZBdkypaFRq2/pFC+ov98geQZ+KwxXGp
+         w27Q==
+X-Gm-Message-State: AOJu0Yz9GMtHNlH0vID9hkVxJfTWH25c859mopTClaxQUYP8iGeWIY8Z
+        PZnHQP9rHoM/UsTTWCE5F2w=
+X-Google-Smtp-Source: AGHT+IHiLgBVKOXhv7+TxBpeKUaX4wKMK5XDupDn+7Jg4ZH8f40KnSZtsabsjI+c1Zsx7zphFi/2RA==
+X-Received: by 2002:a17:906:10d:b0:a04:837e:a955 with SMTP id 13-20020a170906010d00b00a04837ea955mr1124649eje.32.1700665939918;
+        Wed, 22 Nov 2023 07:12:19 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-142-131.cust.vodafonedsl.it. [2.39.142.131])
+        by smtp.gmail.com with ESMTPSA id i18-20020a17090671d200b009fc3845adc1sm4816513ejk.154.2023.11.22.07.12.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 07:12:19 -0800 (PST)
+Date:   Wed, 22 Nov 2023 16:12:17 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jacob Chen <jacob2.chen@rock-chips.com>,
+        Yichong Zhong <zyc@rock-chips.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eddie Cai <eddie.cai.linux@gmail.com>,
+        Allon Huang <allon.huang@rock-chips.com>,
+        Jeffy Chen <jeffy.chen@rock-chips.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] media: rkisp1: Fix media device memory leak
+Message-ID: <ZV4aUfNGS/C/8cAM@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
+ <20231122-rkisp-fixes-v1-1-1958af371e39@ideasonboard.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:9f90:b0:283:a0b1:cedc with SMTP id
- o16-20020a17090a9f9000b00283a0b1cedcmr587333pjp.4.1700665832137; Wed, 22 Nov
- 2023 07:10:32 -0800 (PST)
-Date:   Wed, 22 Nov 2023 07:10:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ce703b060abf1e06@google.com>
-Subject: [syzbot] [ext4?] WARNING in ext4_dio_write_end_io
-From:   syzbot <syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, jack@suse.cz,
-        joseph.qi@linux.alibaba.com, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ritesh.list@gmail.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122-rkisp-fixes-v1-1-1958af371e39@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Tomi,
 
-syzbot found the following issue on:
+On Wed, Nov 22, 2023 at 04:42:22PM +0200, Tomi Valkeinen wrote:
+> Add missing calls to media_device_cleanup() to fix memory leak.
+> 
+> Fixes: d65dd85281fb ("media: staging: rkisp1: add Rockchip ISP1 base driver")
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> index c41abd2833f1..e10cc2881757 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+> @@ -617,6 +617,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	media_device_unregister(&rkisp1->media_dev);
+>  err_unreg_v4l2_dev:
+>  	v4l2_device_unregister(&rkisp1->v4l2_dev);
+> +	media_device_cleanup(&rkisp1->media_dev);
+>  err_pm_runtime_disable:
+>  	pm_runtime_disable(&pdev->dev);
+>  	return ret;
+> @@ -637,6 +638,8 @@ static void rkisp1_remove(struct platform_device *pdev)
+>  	media_device_unregister(&rkisp1->media_dev);
+>  	v4l2_device_unregister(&rkisp1->v4l2_dev);
+>  
+> +	media_device_cleanup(&rkisp1->media_dev);
+> +
+>  	pm_runtime_disable(&pdev->dev);
+>  }
 
-HEAD commit:    98b1cc82c4af Linux 6.7-rc2
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e09a9f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
-dashboard link: https://syzkaller.appspot.com/bug?extid=47479b71cdfc78f56d30
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c09a00e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=151d5320e80000
+Looks good to me.
+Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/39c6cdad13fc/disk-98b1cc82.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5a77b5daef9b/vmlinux-98b1cc82.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/5e09ae712e0d/bzImage-98b1cc82.xz
+Thanks & Regards,
+Tommaso
 
-The issue was bisected to:
-
-commit 91562895f8030cb9a0470b1db49de79346a69f91
-Author: Jan Kara <jack@suse.cz>
-Date:   Fri Oct 13 12:13:50 2023 +0000
-
-    ext4: properly sync file size update after O_SYNC direct IO
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d0f0c8e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1430f0c8e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1030f0c8e80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
-Fixes: 91562895f803 ("ext4: properly sync file size update after O_SYNC direct IO")
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 4481 at fs/ext4/file.c:391 ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
-Modules linked in:
-CPU: 1 PID: 4481 Comm: kworker/1:2 Not tainted 6.7.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Workqueue: dio/sda1 iomap_dio_complete_work
-RIP: 0010:ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
-Code: e8 6a 37 56 ff 4c 89 e2 4c 89 f6 48 89 ef e8 8c f6 ff ff 89 c3 eb 92 4c 89 ff e8 70 c7 ac ff e9 66 ff ff ff e8 46 37 56 ff 90 <0f> 0b 90 e9 34 ff ff ff e8 58 c7 ac ff e9 e9 fe ff ff 4c 89 ff e8
-RSP: 0018:ffffc9000dd97c40 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000000081fd RCX: ffffffff8231521e
-RDX: ffff88802a403b80 RSI: ffffffff823152ea RDI: 0000000000000006
-RBP: ffff88807cf83eb0 R08: 0000000000000006 R09: 0000000000004000
-R10: 00000000000081fd R11: 0000000000000001 R12: 0000000000004000
-R13: 0000000000004000 R14: 0000000000000000 R15: ffff88807cf83e10
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbc3a9779ee CR3: 0000000077984000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- iomap_dio_complete+0x149/0x9f0 fs/iomap/direct-io.c:91
- iomap_dio_complete_work+0x56/0x80 fs/iomap/direct-io.c:146
- process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x2c6/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>  
+> 
+> -- 
+> 2.34.1
+> 
+> 
