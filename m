@@ -2,288 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D3D7F3C6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5707F3C79
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343633AbjKVDax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        id S1343581AbjKVDg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343668AbjKVDan (ORCPT
+        with ESMTP id S229464AbjKVDgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:30:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72A2D60
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:30:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700623836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J6BAfBcLSn0+FOBzgusAMfyuBJsUaQ4efqNt4w+gDBI=;
-        b=FoLa+4QOcFnZWFdo3YISK8pq71m7Lp8fSLlLcUes89MWns6Vmn18xF4i/xELaBfLPfOrph
-        RbhkQwaP2CbN3C4tatoJu51g4PkdHn4Y6OwRUG6XFhdhbwqTVmDn2jF4Gt2ckadjW6z89X
-        wlXbX84TcXgM3eJ74yFZL2WyRAMwFtA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-437-W6RdiiygN5qI39Br0IFzRA-1; Tue, 21 Nov 2023 22:30:32 -0500
-X-MC-Unique: W6RdiiygN5qI39Br0IFzRA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EBA488007B3;
-        Wed, 22 Nov 2023 03:30:31 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D42F492BE0;
-        Wed, 22 Nov 2023 03:30:26 +0000 (UTC)
-Date:   Wed, 22 Nov 2023 11:30:21 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v3 2/3] block: introduce new field bd_flags in
- block_device
-Message-ID: <ZV11zTuF7AX9eIIE@fedora>
-References: <20231122103103.1104589-1-yukuai1@huaweicloud.com>
- <20231122103103.1104589-3-yukuai1@huaweicloud.com>
+        Tue, 21 Nov 2023 22:36:25 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0E8D1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:36:21 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5bde80aad05so4913218a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:36:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700624181; x=1701228981; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WJYNaQAAZrepl2ZxYcQuq32w1uSGi1gYODywwNvp7o0=;
+        b=I9IVZou+mln/G5lz7sEoAmv4xyJHZOg4FNUVnfL6u1pXoZ/oWmGiFwwXQksBLxyEL8
+         H1dtzHoBOnFaW2CJ85wfA5OyYVrzROzwpF5DvTBMYEjpaSni84Lo2Mm6pmfLSEwQl8UL
+         7SLgvPEjFgvRIcNTlBWmskEl3n+XiGb/RFQ8R9Exz5igaa94YDJq7tob1q0lr4lGvhVS
+         z+rCggmEkcWf1XJxCbKd341rsA0+9oq/zZCl/2lY4ux18P0eRnM6o6r6KvJi1akx3fxV
+         h0WTQwmoPVbp2YSCFG7X6z1/YdXcfPXoqCrx3xD6knzbi5z9bk1d7DkoLf1/J4uiBY7L
+         1xFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700624181; x=1701228981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WJYNaQAAZrepl2ZxYcQuq32w1uSGi1gYODywwNvp7o0=;
+        b=uz63LRl9OJqrM6+qCBQn2wNpdArmMeWW/1NwnQp5HJ91TRsznm8TFCg8P+R557EuDF
+         LYHEM719ZUn1DziQgx+oeir+VarlXEWASl3AjzpKxttmEjn7W+VJMGkm9SUY4+9asUIF
+         b6mKXL7w6LONStPZvKbmeKpbjz9Y14+CLSjVNbx/KL/QsoIbNYAEfDDCJONtGeALFTkd
+         JH8xYub3K/FVYsgNkQkTT+s7/hGXezNi6FPkUUcJ5qRv2Sy7x0Bei0aPrXjbPyAdCRvZ
+         5DA+xuZCJIkz4mlNeKW//tyDGEkq9M1gO3S17gO9KYh6EpFsVPswoXd3SrUrAZhFhOzC
+         qzcw==
+X-Gm-Message-State: AOJu0YxpVE9obtxwWtOotwy7+cYFFz/Ut3BCtm5bXnC59Egu/mwO3zup
+        sjKx6XqJfKGyFOxiFkGhsh7FNiPgtxvIUUga7AQ=
+X-Google-Smtp-Source: AGHT+IGW1CvL3fMk+EADXesb7N7kbsBPKsNqSw9Ed6EbWFpBAMADHekxE5TH/KJmblqo4vXFd5NoDcvFM33si+Lblgw=
+X-Received: by 2002:a05:6a20:914b:b0:18a:e3d9:ef5c with SMTP id
+ x11-20020a056a20914b00b0018ae3d9ef5cmr1324769pzc.4.1700624181156; Tue, 21 Nov
+ 2023 19:36:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122103103.1104589-3-yukuai1@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120121623.119780-1-alexyonghe@tencent.com>
+ <ZVuudtAtDqHqYJr8@slm.duckdns.org> <CANZk6aTS9BODJiqtDSHxwhz2dV3RmaxRautR8WZfH5aYYhcQJw@mail.gmail.com>
+ <ZV0jmGSismObVncD@slm.duckdns.org>
+In-Reply-To: <ZV0jmGSismObVncD@slm.duckdns.org>
+From:   zhuangel570 <zhuangel570@gmail.com>
+Date:   Wed, 22 Nov 2023 11:36:09 +0800
+Message-ID: <CANZk6aRpPAhY_5wS-4igRwSZ5Ohv0RJJ5kgr9_M-W192nH-aVA@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: Make sure that wq_unbound_cpumask is never empty
+To:     Tejun Heo <tj@kernel.org>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 06:31:02PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> There are multiple switches in struct block_device, use separate bool
-> fields for them is not gracefully. Add a new field bd_flags and replace
-> swithes to a bit, there are no functional changes, and prepare to add
-> a new switch in the next patch. In order to keep bd_flags in the first
-> cacheline and prevent layout to be affected, define it as u16.
-> 
-> Also add new helpers to set/clear/test each bit like 'bio->bi_flags'.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+On Wed, Nov 22, 2023 at 5:39=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> During boot, depending on how the housekeeping and workqueue.unbound_cpus
+> masks are set, wq_unbound_cpumask can end up empty. Since 8639ecebc9b1
+> ("workqueue: Implement non-strict affinity scope for unbound workqueues")=
+,
+> this may end up feeding -1 as a CPU number into scheduler leading to oops=
+es.
+>
+>   BUG: unable to handle page fault for address: ffffffff8305e9c0
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   ...
+>   Call Trace:
+>    <TASK>
+>    select_idle_sibling+0x79/0xaf0
+>    select_task_rq_fair+0x1cb/0x7b0
+>    try_to_wake_up+0x29c/0x5c0
+>    wake_up_process+0x19/0x20
+>    kick_pool+0x5e/0xb0
+>    __queue_work+0x119/0x430
+>    queue_work_on+0x29/0x30
+>   ...
+>
+> An empty wq_unbound_cpumask is a clear misconfiguration and already
+> disallowed once system is booted up. Let's warn on and ignore
+> unbound_cpumask restrictions which lead to no unbound cpus. While at it,
+> also remove now unncessary empty check on wq_unbound_cpumask in
+> wq_select_unbound_cpu().
+>
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Reported-by: Yong He <alexyonghe@tencent.com>
+> Link: http://lkml.kernel.org/r/20231120121623.119780-1-alexyonghe@tencent=
+.com
+> Fixes: 8639ecebc9b1 ("workqueue: Implement non-strict affinity scope for =
+unbound workqueues")
+> Cc: stable@vger.kernel.org # v6.6+
 > ---
->  block/bdev.c              | 15 ++++++++-------
->  block/blk-core.c          |  7 ++++---
->  block/genhd.c             | 15 +++++++++++----
->  block/ioctl.c             |  6 +++++-
->  include/linux/blk_types.h | 27 +++++++++++++++++++++------
->  include/linux/blkdev.h    |  5 +++--
->  6 files changed, 52 insertions(+), 23 deletions(-)
-> 
-> diff --git a/block/bdev.c b/block/bdev.c
-> index e4cfb7adb645..10f524a7416c 100644
-> --- a/block/bdev.c
-> +++ b/block/bdev.c
-> @@ -402,10 +402,10 @@ struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
->  	bdev->bd_partno = partno;
->  	bdev->bd_inode = inode;
->  	bdev->bd_queue = disk->queue;
-> -	if (partno)
-> -		bdev->bd_has_submit_bio = disk->part0->bd_has_submit_bio;
-> +	if (partno && bdev_flagged(disk->part0, BD_FLAG_HAS_SUBMIT_BIO))
-> +		bdev_set_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
->  	else
-> -		bdev->bd_has_submit_bio = false;
-> +		bdev_clear_flag(bdev, BD_FLAG_HAS_SUBMIT_BIO);
->  	bdev->bd_stats = alloc_percpu(struct disk_stats);
->  	if (!bdev->bd_stats) {
->  		iput(inode);
-> @@ -606,7 +606,7 @@ static void bd_end_claim(struct block_device *bdev, void *holder)
->  		bdev->bd_holder = NULL;
->  		bdev->bd_holder_ops = NULL;
->  		mutex_unlock(&bdev->bd_holder_lock);
-> -		if (bdev->bd_write_holder)
-> +		if (bdev_flagged(bdev, BD_FLAG_WRITE_HOLDER))
->  			unblock = true;
->  	}
->  	if (!whole->bd_holders)
-> @@ -619,7 +619,7 @@ static void bd_end_claim(struct block_device *bdev, void *holder)
->  	 */
->  	if (unblock) {
->  		disk_unblock_events(bdev->bd_disk);
-> -		bdev->bd_write_holder = false;
-> +		bdev_clear_flag(bdev, BD_FLAG_WRITE_HOLDER);
->  	}
->  }
->  
-> @@ -805,9 +805,10 @@ struct block_device *blkdev_get_by_dev(dev_t dev, blk_mode_t mode, void *holder,
->  		 * writeable reference is too fragile given the way @mode is
->  		 * used in blkdev_get/put().
->  		 */
-> -		if ((mode & BLK_OPEN_WRITE) && !bdev->bd_write_holder &&
-> +		if ((mode & BLK_OPEN_WRITE) &&
-> +		    !bdev_flagged(bdev, BD_FLAG_WRITE_HOLDER) &&
->  		    (disk->event_flags & DISK_EVENT_FLAG_BLOCK_ON_EXCL_WRITE)) {
-> -			bdev->bd_write_holder = true;
-> +			bdev_set_flag(bdev, BD_FLAG_WRITE_HOLDER);
->  			unblock_events = false;
->  		}
->  	}
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index fdf25b8d6e78..f9f8b12ba626 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -482,7 +482,8 @@ __setup("fail_make_request=", setup_fail_make_request);
->  
->  bool should_fail_request(struct block_device *part, unsigned int bytes)
->  {
-> -	return part->bd_make_it_fail && should_fail(&fail_make_request, bytes);
-> +	return bdev_flagged(part, BD_FLAG_MAKE_IT_FAIL) &&
-> +		should_fail(&fail_make_request, bytes);
->  }
->  
->  static int __init fail_make_request_debugfs(void)
-> @@ -595,7 +596,7 @@ static void __submit_bio(struct bio *bio)
->  	if (unlikely(!blk_crypto_bio_prep(&bio)))
->  		return;
->  
-> -	if (!bio->bi_bdev->bd_has_submit_bio) {
-> +	if (!bdev_flagged(bio->bi_bdev, BD_FLAG_HAS_SUBMIT_BIO)) {
->  		blk_mq_submit_bio(bio);
->  	} else if (likely(bio_queue_enter(bio) == 0)) {
->  		struct gendisk *disk = bio->bi_bdev->bd_disk;
-> @@ -703,7 +704,7 @@ void submit_bio_noacct_nocheck(struct bio *bio)
->  	 */
->  	if (current->bio_list)
->  		bio_list_add(&current->bio_list[0], bio);
-> -	else if (!bio->bi_bdev->bd_has_submit_bio)
-> +	else if (!bdev_flagged(bio->bi_bdev, BD_FLAG_HAS_SUBMIT_BIO))
->  		__submit_bio_noacct_mq(bio);
->  	else
->  		__submit_bio_noacct(bio);
-> diff --git a/block/genhd.c b/block/genhd.c
-> index c9d06f72c587..57f96c0c8da0 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -413,7 +413,8 @@ int __must_check device_add_disk(struct device *parent, struct gendisk *disk,
->  	elevator_init_mq(disk->queue);
->  
->  	/* Mark bdev as having a submit_bio, if needed */
-> -	disk->part0->bd_has_submit_bio = disk->fops->submit_bio != NULL;
-> +	if (disk->fops->submit_bio)
-> +		bdev_set_flag(disk->part0, BD_FLAG_HAS_SUBMIT_BIO);
->  
->  	/*
->  	 * If the driver provides an explicit major number it also must provide
-> @@ -1062,7 +1063,8 @@ static DEVICE_ATTR(diskseq, 0444, diskseq_show, NULL);
->  ssize_t part_fail_show(struct device *dev,
->  		       struct device_attribute *attr, char *buf)
->  {
-> -	return sprintf(buf, "%d\n", dev_to_bdev(dev)->bd_make_it_fail);
-> +	return sprintf(buf, "%d\n",
-> +		       bdev_flagged(dev_to_bdev(dev), BD_FLAG_MAKE_IT_FAIL));
->  }
->  
->  ssize_t part_fail_store(struct device *dev,
-> @@ -1071,8 +1073,13 @@ ssize_t part_fail_store(struct device *dev,
->  {
->  	int i;
->  
-> -	if (count > 0 && sscanf(buf, "%d", &i) > 0)
-> -		dev_to_bdev(dev)->bd_make_it_fail = i;
-> +	if (count > 0 && sscanf(buf, "%d", &i) > 0) {
-> +		if (!i)
-> +			bdev_clear_flag(dev_to_bdev(dev), BD_FLAG_MAKE_IT_FAIL);
-> +		else
-> +			bdev_set_flag(dev_to_bdev(dev), BD_FLAG_MAKE_IT_FAIL);
-> +
-> +	}
->  
->  	return count;
->  }
-> diff --git a/block/ioctl.c b/block/ioctl.c
-> index 4160f4e6bd5b..a64440f4c96b 100644
-> --- a/block/ioctl.c
-> +++ b/block/ioctl.c
-> @@ -394,7 +394,11 @@ static int blkdev_roset(struct block_device *bdev, unsigned cmd,
->  		if (ret)
->  			return ret;
->  	}
-> -	bdev->bd_read_only = n;
-> +
-> +	if (!n)
-> +		bdev_clear_flag(bdev, BD_FLAG_READ_ONLY);
-> +	else
-> +		bdev_set_flag(bdev, BD_FLAG_READ_ONLY);
->  	return 0;
->  }
->  
-> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-> index f7d40692dd94..de652045111b 100644
-> --- a/include/linux/blk_types.h
-> +++ b/include/linux/blk_types.h
-> @@ -37,6 +37,11 @@ struct bio_crypt_ctx;
->  #define PAGE_SECTORS		(1 << PAGE_SECTORS_SHIFT)
->  #define SECTOR_MASK		(PAGE_SECTORS - 1)
->  
-> +#define BD_FLAG_READ_ONLY	0 /* read-only-policy */
-> +#define BD_FLAG_WRITE_HOLDER	1
-> +#define BD_FLAG_HAS_SUBMIT_BIO	2
-> +#define BD_FLAG_MAKE_IT_FAIL	3
-> +
->  struct block_device {
->  	sector_t		bd_start_sect;
->  	sector_t		bd_nr_sectors;
-> @@ -44,10 +49,8 @@ struct block_device {
->  	struct request_queue *	bd_queue;
->  	struct disk_stats __percpu *bd_stats;
->  	unsigned long		bd_stamp;
-> -	bool			bd_read_only;	/* read-only policy */
-> +	unsigned short		bd_flags;
->  	u8			bd_partno;
-> -	bool			bd_write_holder;
-> -	bool			bd_has_submit_bio;
->  	dev_t			bd_dev;
->  	struct inode		*bd_inode;	/* will die */
->  
-> @@ -67,9 +70,6 @@ struct block_device {
->  	struct super_block	*bd_fsfreeze_sb;
->  
->  	struct partition_meta_info *bd_meta_info;
-> -#ifdef CONFIG_FAIL_MAKE_REQUEST
-> -	bool			bd_make_it_fail;
-> -#endif
->  	/*
->  	 * keep this out-of-line as it's both big and not needed in the fast
->  	 * path
-> @@ -86,6 +86,21 @@ struct block_device {
->  #define bdev_kobj(_bdev) \
->  	(&((_bdev)->bd_device.kobj))
->  
-> +static inline bool bdev_flagged(struct block_device *bdev, unsigned int bit)
+> Hello,
+>
+> Yong He, zhuangel570, can you please verify that this patch makes the oop=
+s
+> go away? Waiman, this touches code that you've recently worked on. AFAICS=
+,
+> they shouldn't interact or cause conflicts. cc'ing just in case.
+
+Sure.
+I port this patch to my 6.7 branch, and the kernel could boot successfully =
+on BM
+and VM, with the same configurations, also I can see the new added warning,=
+ so
+this patch solves the oops.
+
+So, one last check, do you think we still need to check return value from
+cpumask_any_distribute() to make sure kick_pool() set a correct wake_cpu?
+
+Tested-by: Yong He <alexyonghe@tencent.com>
+
+>
+> Thanks.
+>
+>  kernel/workqueue.c |   22 +++++++++++++++-------
+>  1 file changed, 15 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 6e578f576a6f..0295291d54bc 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -1684,9 +1684,6 @@ static int wq_select_unbound_cpu(int cpu)
+>                 pr_warn_once("workqueue: round-robin CPU selection forced=
+, expect performance impact\n");
+>         }
+>
+> -       if (cpumask_empty(wq_unbound_cpumask))
+> -               return cpu;
+> -
+>         new_cpu =3D __this_cpu_read(wq_rr_cpu_last);
+>         new_cpu =3D cpumask_next_and(new_cpu, wq_unbound_cpumask, cpu_onl=
+ine_mask);
+>         if (unlikely(new_cpu >=3D nr_cpu_ids)) {
+> @@ -6515,6 +6512,17 @@ static inline void wq_watchdog_init(void) { }
+>
+>  #endif /* CONFIG_WQ_WATCHDOG */
+>
+> +static void __init restrict_unbound_cpumask(const char *name, const stru=
+ct cpumask *mask)
 > +{
-> +	return bdev->bd_flags & (1U << bit);
+> +       if (!cpumask_intersects(wq_unbound_cpumask, mask)) {
+> +               pr_warn("workqueue: Restricting unbound_cpumask (%*pb) wi=
+th %s (%*pb) leaves no CPU, ignoring\n",
+> +                       cpumask_pr_args(wq_unbound_cpumask), name, cpumas=
+k_pr_args(mask));
+> +               return;
+> +       }
+> +
+> +       cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, mask);
 > +}
 > +
-> +static inline void bdev_set_flag(struct block_device *bdev, unsigned int bit)
-> +{
-> +	bdev->bd_flags |= (1U << bit);
-> +}
-> +
-> +static inline void bdev_clear_flag(struct block_device *bdev, unsigned int bit)
-> +{
-> +	bdev->bd_flags &= ~(1U << bit);
-> +}
-
-'U' becomes incorrect after .bd_flags is changed to 'unsigned short'.
-
-
-Thanks,
-Ming
-
+>  /**
+>   * workqueue_init_early - early init for workqueue subsystem
+>   *
+> @@ -6534,11 +6542,11 @@ void __init workqueue_init_early(void)
+>         BUILD_BUG_ON(__alignof__(struct pool_workqueue) < __alignof__(lon=
+g long));
+>
+>         BUG_ON(!alloc_cpumask_var(&wq_unbound_cpumask, GFP_KERNEL));
+> -       cpumask_copy(wq_unbound_cpumask, housekeeping_cpumask(HK_TYPE_WQ)=
+);
+> -       cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, housekeeping_=
+cpumask(HK_TYPE_DOMAIN));
+> -
+> +       cpumask_copy(wq_unbound_cpumask, cpu_possible_mask);
+> +       restrict_unbound_cpumask("HK_TYPE_WQ", housekeeping_cpumask(HK_TY=
+PE_WQ));
+> +       restrict_unbound_cpumask("HK_TYPE_DOMAIN", housekeeping_cpumask(H=
+K_TYPE_DOMAIN));
+>         if (!cpumask_empty(&wq_cmdline_cpumask))
+> -               cpumask_and(wq_unbound_cpumask, wq_unbound_cpumask, &wq_c=
+mdline_cpumask);
+> +               restrict_unbound_cpumask("workqueue.unbound_cpus", &wq_cm=
+dline_cpumask);
+>
+>         pwq_cache =3D KMEM_CACHE(pool_workqueue, SLAB_PANIC);
+>
