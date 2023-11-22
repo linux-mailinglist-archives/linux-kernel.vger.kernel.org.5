@@ -2,153 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F3D7F4DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE147F4E0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343987AbjKVRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:15:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
+        id S1343980AbjKVRQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjKVRPS (ORCPT
+        with ESMTP id S231708AbjKVRQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:15:18 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EB901A5;
-        Wed, 22 Nov 2023 09:15:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 230001FB;
-        Wed, 22 Nov 2023 09:16:01 -0800 (PST)
-Received: from [10.57.42.32] (unknown [10.57.42.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABA273F73F;
-        Wed, 22 Nov 2023 09:15:12 -0800 (PST)
-Message-ID: <4de2b664-b7c8-4216-bb57-6f887bd751d2@arm.com>
-Date:   Wed, 22 Nov 2023 17:15:11 +0000
+        Wed, 22 Nov 2023 12:16:48 -0500
+Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.145])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A063197
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:16:43 -0800 (PST)
+Received: (wp-smtpd smtp.tlen.pl 6764 invoked from network); 22 Nov 2023 18:16:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1700673400; bh=tb9uWjBsYkuddaju8FnfaBIITnr7XlEu3AzBqfbpLRM=;
+          h=Subject:To:Cc:From;
+          b=jNAlXodEEp5Ev6on/1OXSRlMUJoP+4PIWBjZaQ8Iw9JFmSlu/sVcQ+tIywkUVQUpC
+           ptt5FhPPyfwvRL8hJU7uBL7Cc/c5PnnZQ1Z9022gxuTtUCfbbkx590VdKC9JsaGdc5
+           CtQCXCO/sctbUa0W/W2erGd9cGzbV2Cde5LijTKs=
+Received: from aafl106.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.141.106])
+          (envelope-sender <mat.jonczyk@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <mario.limonciello@amd.com>; 22 Nov 2023 18:16:40 +0100
+Message-ID: <828b9911-c172-4f9a-9c1f-ec9dc956bb8f@o2.pl>
+Date:   Wed, 22 Nov 2023 18:16:39 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] coresight: tmc: Move ACPI support from AMBA driver to
- platform driver
+Subject: Re: [PATCH v2 4/4] rtc: Extend timeout for waiting for UIP to clear
+ to 1s
 Content-Language: en-GB
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
- <20231027072943.3418997-6-anshuman.khandual@arm.com> <ZV40itsgT5OSJmdC@bogus>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <ZV40itsgT5OSJmdC@bogus>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, tobrohl@gmail.com, aalsing@gmail.com,
+        Dhaval.Giani@amd.com, xmb8dsv4@gmail.com, x86@kernel.org,
+        dhaval.giani@gmail.com
+References: <20231120141555.458-1-mario.limonciello@amd.com>
+ <20231120141555.458-5-mario.limonciello@amd.com>
+From:   =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
+ 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
+ TANkZ3QqXNX2
+In-Reply-To: <20231120141555.458-5-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: d26295b416ab48a2949df0bacf555cb3
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000000 [cVMB]                               
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 17:04, Sudeep Holla wrote:
-> On Fri, Oct 27, 2023 at 12:59:41PM +0530, Anshuman Khandual wrote:
->> Add support for the tmc devices in the platform driver, which can then be
->> used on ACPI based platforms. This change would now allow runtime power
->> management for ACPI based systems. The driver would try to enable the APB
->> clock if available.
->>
->> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->> Cc: Sudeep Holla <sudeep.holla@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: James Clark <james.clark@arm.com>
->> Cc: linux-acpi@vger.kernel.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: coresight@lists.linaro.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   drivers/acpi/arm64/amba.c                     |   2 -
->>   .../hwtracing/coresight/coresight-tmc-core.c  | 127 +++++++++++++++---
->>   drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
->>   3 files changed, 113 insertions(+), 17 deletions(-)
-> 
-> [...]
-> 
->> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
->> index 7ec5365e2b64..618bc0b7a1a5 100644
->> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> 
-> [...]
-> 
->> @@ -573,9 +579,9 @@ static void tmc_shutdown(struct amba_device *adev)
->>   	spin_unlock_irqrestore(&drvdata->spinlock, flags);
->>   }
->>   
->> -static void tmc_remove(struct amba_device *adev)
->> +static void __tmc_remove(struct device *dev)
->>   {
->> -	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->> +	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
->>   
->>   	/*
->>   	 * Since misc_open() holds a refcount on the f_ops, which is
->> @@ -586,6 +592,11 @@ static void tmc_remove(struct amba_device *adev)
->>   	coresight_unregister(drvdata->csdev);
->>   }
->>   
->> +static void tmc_remove(struct amba_device *adev)
->> +{
->> +	__tmc_remove(&adev->dev);
->> +}
->> +
->>   static const struct amba_id tmc_ids[] = {
->>   	CS_AMBA_ID(0x000bb961),
->>   	/* Coresight SoC 600 TMC-ETR/ETS */
->> @@ -613,6 +624,92 @@ static struct amba_driver tmc_driver = {
->>   
->>   module_amba_driver(tmc_driver);
->>   
->> +static int tmc_platform_probe(struct platform_device *pdev)
->> +{
->> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	struct tmc_drvdata *drvdata;
->> +	int ret = 0;
->> +
->> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
->> +	if (!drvdata)
->> +		return -ENOMEM;
->> +
->> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
->> +	if (IS_ERR(drvdata->pclk))
->> +		return -ENODEV;
->> +
-> 
-> --->8
->> +	if (res) {
->> +		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
->> +		if (IS_ERR(drvdata->base)) {
->> +			clk_put(drvdata->pclk);
->> +			return PTR_ERR(drvdata->base);
->> +		}
->> +	}
->> +
+W dniu 20.11.2023 o 15:15, Mario Limonciello pisze:
+> Specs don't say anything about UIP being cleared within 10ms. They
+> only say that UIP won't occur for another 244uS. If a long NMI occurs
+> while UIP is still updating it might not be possible to get valid
+> data in 10ms.
+>
+> This has been observed in the wild that around s2idle some calls can
+> take up to 480ms before UIP is clear.
+>
+> Adjust callers from outside an interrupt context to wait for up to a
+> 1s instead of 10ms.
+>
+> Cc: stable@vger.kernel.org # 6.1.y: commit d2a632a8a117 ("rtc: mc146818-lib: reduce RTC_UIP polling period")
+Same as for patch 3/4.
+> Fixes: ec5895c0f2d8 ("rtc: mc146818-lib: extract mc146818_avoid_UIP")
+> Reported-by: xmb8dsv4@gmail.com
+
+Maybe nitpick, but consider providing the full name of Carsten Hatger, not just
+an email address.
+
+Otherwise,
+
+Reviewed-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Acked-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217626
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > ---
-> 
-> You need drop the above hunk as _tmc_probe() already takes care of that.
-> This is the root cause for the issue I reported in the other thread. Also
-> sorry for the confusion, I had to refer to coresight-tmc-core.c and post
-> the patch to unify module_init/exit but completely mixed up the file/patch
-> and referred coresight-tpiu-core.c instead as that patch was dealing with
-> it.
+> v1->v2:
+>  * Add tags
+> ---
+>  arch/x86/kernel/rtc.c          | 2 +-
+>  drivers/base/power/trace.c     | 2 +-
+>  drivers/rtc/rtc-cmos.c         | 2 +-
+>  drivers/rtc/rtc-mc146818-lib.c | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+>  
 
-Thank you Sudeep for getting to the bottom of the problem !
+Greetings,
 
-Suzuki
-> 
+Mateusz
 
