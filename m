@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFB57F4C58
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E0F7F4C5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjKVQaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        id S232374AbjKVQaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:30:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbjKVQaM (ORCPT
+        with ESMTP id S230318AbjKVQaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:30:12 -0500
+        Wed, 22 Nov 2023 11:30:15 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D2C129A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:30:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB2B6A2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:30:11 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75A2E1595;
-        Wed, 22 Nov 2023 08:30:55 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47A561650;
+        Wed, 22 Nov 2023 08:30:58 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 085443F73F;
-        Wed, 22 Nov 2023 08:30:05 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CF0523F73F;
+        Wed, 22 Nov 2023 08:30:08 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
@@ -41,9 +41,9 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
 Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v7 01/10] mm: Allow deferred splitting of arbitrary anon large folios
-Date:   Wed, 22 Nov 2023 16:29:41 +0000
-Message-Id: <20231122162950.3854897-2-ryan.roberts@arm.com>
+Subject: [RESEND PATCH v7 02/10] mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+Date:   Wed, 22 Nov 2023 16:29:42 +0000
+Message-Id: <20231122162950.3854897-3-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231122162950.3854897-1-ryan.roberts@arm.com>
 References: <20231122162950.3854897-1-ryan.roberts@arm.com>
@@ -58,39 +58,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for the introduction of anonymous small-sized THP, we
-would like to be able to split them when they have unmapped subpages, in
-order to free those unused pages under memory pressure. So remove the
-artificial requirement that the large folio needed to be at least
-PMD-sized.
+In preparation for supporting anonymous small-sized THP, improve
+folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
+passed to it. In this case, all contained pages are accounted using the
+order-0 folio (or base page) scheme.
 
 Reviewed-by: Yu Zhao <yuzhao@google.com>
 Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- mm/rmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/rmap.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
 
 diff --git a/mm/rmap.c b/mm/rmap.c
-index 7a27a2b41802..49e4d86a4f70 100644
+index 49e4d86a4f70..b086dc957b0c 100644
 --- a/mm/rmap.c
 +++ b/mm/rmap.c
-@@ -1488,11 +1488,11 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
- 		__lruvec_stat_mod_folio(folio, idx, -nr);
+@@ -1305,32 +1305,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+  * This means the inc-and-test can be bypassed.
+  * The folio does not have to be locked.
+  *
+- * If the folio is large, it is accounted as a THP.  As the folio
++ * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
+  * is new, it's assumed to be mapped exclusively by a single process.
+  */
+ void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+ 		unsigned long address)
+ {
+-	int nr;
++	int nr = folio_nr_pages(folio);
 
- 		/*
--		 * Queue anon THP for deferred split if at least one
-+		 * Queue anon large folio for deferred split if at least one
- 		 * page of the folio is unmapped and at least one page
- 		 * is still mapped.
- 		 */
--		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
-+		if (folio_test_large(folio) && folio_test_anon(folio))
- 			if (!compound || nr < nr_pmdmapped)
- 				deferred_split_folio(folio);
+-	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
++	VM_BUG_ON_VMA(address < vma->vm_start ||
++			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+ 	__folio_set_swapbacked(folio);
++	__folio_set_anon(folio, vma, address, true);
+
+-	if (likely(!folio_test_pmd_mappable(folio))) {
++	if (likely(!folio_test_large(folio))) {
+ 		/* increment count (starts at -1) */
+ 		atomic_set(&folio->_mapcount, 0);
+-		nr = 1;
++		SetPageAnonExclusive(&folio->page);
++	} else if (!folio_test_pmd_mappable(folio)) {
++		int i;
++
++		for (i = 0; i < nr; i++) {
++			struct page *page = folio_page(folio, i);
++
++			/* increment count (starts at -1) */
++			atomic_set(&page->_mapcount, 0);
++			SetPageAnonExclusive(page);
++		}
++
++		atomic_set(&folio->_nr_pages_mapped, nr);
+ 	} else {
+ 		/* increment count (starts at -1) */
+ 		atomic_set(&folio->_entire_mapcount, 0);
+ 		atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
+-		nr = folio_nr_pages(folio);
++		SetPageAnonExclusive(&folio->page);
+ 		__lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
  	}
+
+ 	__lruvec_stat_mod_folio(folio, NR_ANON_MAPPED, nr);
+-	__folio_set_anon(folio, vma, address, true);
+-	SetPageAnonExclusive(&folio->page);
+ }
+
+ /**
 --
 2.25.1
 
