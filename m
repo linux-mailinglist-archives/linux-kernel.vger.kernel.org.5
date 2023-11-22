@@ -2,601 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215997F40AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1169A7F40B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbjKVI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
+        id S235046AbjKVI7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:59:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjKVI53 (ORCPT
+        with ESMTP id S230267AbjKVI7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:57:29 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE31E7;
-        Wed, 22 Nov 2023 00:57:19 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5409bc907edso9099920a12.0;
-        Wed, 22 Nov 2023 00:57:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700643438; x=1701248238; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C4+Hh52SJ6UM0fg2CWw+oXwIGc8T8xwY8POoGEeIXKg=;
-        b=D8RkjC3lBbSD2ebAA+PjIe0ctK3IXhMzAUXR9LHUMQbbUIabF6HIKQTRA3QQJuF398
-         STipy0+IsLihVAtowLEAx7ubmGbe+WYNawo1kZ5p1+wUtYJJNoFQL5+MvsQwI6tmEGj9
-         rCCBzODeE/Xa1LFEgMRwJTia216yq+CIPd9SmHZV5ep9lhdeeLWnWZQK9frE2HoD+oRc
-         E6WQbhQUo7ti+s5jfechcNW7QjcX3MDHLEgvL5e7RTv0Ega+gPkRclPi040NCrs4R1RZ
-         T2ADMiditGkR1FXz4JT7rqE8d4cd2Hc7S71640Xy/hp+yvGvBhbL4Wh/8NNsQMCigKnt
-         /TKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700643438; x=1701248238;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C4+Hh52SJ6UM0fg2CWw+oXwIGc8T8xwY8POoGEeIXKg=;
-        b=S9FWAGDMwX+W5DeooxC/NxbTlwceme+GXtZoVZOWGNzU0O6WA8tdSJDYkOmw8AwCzD
-         26VWenksoWOO9eHRLfeBAtSbYBA6NiPlrvbD0JO+I8g7zgJNIsyTGyFsjE20CEocfwJX
-         1dxgtXf8juCXf8tGWVDkFQGGYpt+5lXylVm697Pn7Bdm2YktFI9ckHvcm+etYHRnUNSA
-         ofZzu2t/nXhwBvE/WDby+4Q3+dcNNsUIOTd00vyQGSpx0uyRTp07DBOQZUvpydn/vYP0
-         UbCOMkSJKgFC8BVGOeOpXZvx70Ij6akZD48fB+KvXsOaFvyVEZcvePwKahGQgw1J4Ueq
-         +Yzw==
-X-Gm-Message-State: AOJu0Yw1n0aGraZJwToNSZJ4l1uyeIKzPjPlNbIHUQnfwEpqKHa279r1
-        Tc771yS4ZaTg3tQgnHiep/c=
-X-Google-Smtp-Source: AGHT+IESEqFYaiMbIBcJTK+Ub6r3g66yS3rJEllkpIMFv8smdgbITWp+hVoQJ7vj0Q3khr8F94pj8w==
-X-Received: by 2002:a05:6402:2c1:b0:530:7ceb:33c with SMTP id b1-20020a05640202c100b005307ceb033cmr1282725edx.4.1700643437237;
-        Wed, 22 Nov 2023 00:57:17 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-142-131.cust.vodafonedsl.it. [2.39.142.131])
-        by smtp.gmail.com with ESMTPSA id j25-20020aa7de99000000b00543b2d6f88asm5742516edv.15.2023.11.22.00.57.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 00:57:16 -0800 (PST)
-Date:   Wed, 22 Nov 2023 09:57:14 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
-        linuxfancy@googlegroups.com, laurent.pinchart@ideasonboard.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v13 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZV3CaqNVlnB5O1A0@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231106082102.368937-1-tomm.merciai@gmail.com>
- <20231106082102.368937-4-tomm.merciai@gmail.com>
- <ZUynbIgak0mu7ff_@kekkonen.localdomain>
- <ZVXNX3G9ntWeqBur@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZVXxzVzXfNiJPQqh@kekkonen.localdomain>
- <ZVyPySW32I0WgepA@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZV2wPAmRqCbPMYrf@kekkonen.localdomain>
- <ZV29hSWiQuM/fSZD@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
- <ZV2_8qUCTYz0C2Ny@kekkonen.localdomain>
+        Wed, 22 Nov 2023 03:59:39 -0500
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8026A10C;
+        Wed, 22 Nov 2023 00:59:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZV2_8qUCTYz0C2Ny@kekkonen.localdomain>
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1700643571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wnDXFhBLQlKfT9VPeq9LXcsvxwXZ+3LJM0WRVA0R01o=;
+        b=X+/dx7tWETvpV6gVT/ojMQT0+o9PIAThm56C4ZtSXKgZB1dvcAJu9Asl9lzeqFNrolWWA/
+        fIfQQeRvQXZQ3PnQbr6r47EdYWVRln1eF6jmC8DPhFCHYnuInvNDEC/EtbQJGqE8LlAI85
+        eLWoEaodlQy7XaKwt1NAO47EQVGOeIUf9C7+eahxyoDG5T0AOzxca0MAbLgAonmNfoGGU6
+        2zQfmtOdDaA/vx49kVM+Gg+TeMx8MFMkBkWsQzEME2otNiDk9cimPFw6RDCWWxWUd6xxdI
+        HWBwUcwJM+c4aSa6N7ASwlI6vVR+x1l9bK2JozzLINjyAXkQOl3FuagPRBXO5A==
+Date:   Wed, 22 Nov 2023 09:59:29 +0100
+From:   Dragan Simic <dsimic@manjaro.org>
+To:     Michal Simek <michal.simek@amd.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        wens@kernel.org,
+        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+In-Reply-To: <cc4c789c-b595-41eb-b543-9e03549c6e61@amd.com>
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com>
+ <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
+ <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
+ <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org>
+ <58a9caacc1226c7c3a2bdfe73ef1791f@manjaro.org>
+ <cc4c789c-b595-41eb-b543-9e03549c6e61@amd.com>
+Message-ID: <c377c23a3c1c58ce16035cb995ef0209@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakary,
-Thanks for your quick reply :)
-
-On Wed, Nov 22, 2023 at 08:46:42AM +0000, Sakari Ailus wrote:
-> Hi Tommaso,
+On 2023-11-22 09:49, Michal Simek wrote:
+> On 11/22/23 09:29, Dragan Simic wrote:
+>> On 2023-11-22 09:21, Krzysztof Kozlowski wrote:
+>>> On 22/11/2023 09:09, Chen-Yu Tsai wrote:
+>>>> On Wed, Nov 22, 2023 at 4:05 PM Krzysztof Kozlowski
+>>>> <krzysztof.kozlowski@linaro.org> wrote:
+>>>>> 
+>>>>> On 21/11/2023 14:50, Rafał Miłecki wrote:
+>>>>>>> +Order of Properties in Device Node
+>>>>>>> +----------------------------------
+>>>>>>> +
+>>>>>>> +Following order of properties in device nodes is preferred:
+>>>>>>> +
+>>>>>>> +1. compatible
+>>>>>>> +2. reg
+>>>>>>> +3. ranges
+>>>>>>> +4. Standard/common properties (defined by common bindings, e.g. 
+>>>>>>> without
+>>>>>>> +   vendor-prefixes)
+>>>>>>> +5. Vendor-specific properties
+>>>>>>> +6. status (if applicable)
+>>>>>>> +7. Child nodes, where each node is preceded with a blank line
+>>>>>>> +
+>>>>>>> +The "status" property is by default "okay", thus it can be 
+>>>>>>> omitted.
+>>>>>> 
+>>>>>> I think it would really help to include position of #address-cells 
+>>>>>> and
+>>>>>> #size-cells here. In some files I saw them above "compatible" that 
+>>>>>> seems
+>>>>>> unintuitive. Some prefer putting them at end which I think makes 
+>>>>>> sense
+>>>>>> as they affect children nodes.
+>>>>>> 
+>>>>>> Whatever you choose it'd be just nice to have things consistent.
+>>>>> 
+>>>>> This is a standard/common property, thus it goes to (4) above.
+>>>> 
+>>>> It's probably a mix, but AFAIK a lot of the device trees in tree 
+>>>> have
+>>>> #*-cells after "status". In some cases they are added in the board
+>>>> .dts files, not the chip/module .dtsi files.
+>>> 
+>>> Existing DTS is not a good example :)
+>>> 
+>>>> 
+>>>> +1 that it makes sense at the end as they affect child nodes.
+>>> 
+>>> I still insist that status must be the last, because:
+>>> 1. Many SoC nodes have address/size cells but do not have any 
+>>> children
+>>> (I2C, SPI), so we put useless information at the end.
+>>> 2. Status should be the final information to say whether the node is
+>>> ready or is not. I read the node, check properties and then look at 
+>>> the end:
+>>> a. Lack of status means it is ready.
+>>> b. status=disabled means device still needs board 
+>>> resources/customization
+>> 
+>> I agree with the "status" belonging to the very end, because it's both 
+>> logical and much more readable.  Also, "status" is expected to be 
+>> modified in the dependent DT files, which makes it kind of volatile 
+>> and even more deserving to be placed last.
 > 
-> On Wed, Nov 22, 2023 at 09:36:21AM +0100, Tommaso Merciai wrote:
-> > > > > > > > +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
-> > > > > > > > +{
-> > > > > > > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > > > > > > +	struct alvium_bcrm_vers *v;
-> > > > > > > > +	u64 val;
-> > > > > > > > +	int ret;
-> > > > > > > > +
-> > > > > > > > +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
-> > > > > > > > +	if (ret)
-> > > > > > > > +		return ret;
-> > > > > > > > +
-> > > > > > > > +	v = (struct alvium_bcrm_vers *) &val;
-> > > > > > > 
-> > > > > > > No space before "&" in type cast, please. The same elsewhere.
-> > > > > > > 
-> > > > > > > As you cast a single value to a struct, I think the struct field values
-> > > > > > > will be swapped on BE systems. You'll need to convert each value
-> > > > > > > separately. Same for struct alvium_fw_vers below.
-> > > > > > 
-> > > > > > What about:
-> > > > > > 
-> > > > > >  v->minor = le16_to_cpu(v->minor);
-> > > > > >  v->major = le16_to_cpu(v->major);
-> > > > > > 
-> > > > > > here. I posted this solution in some previous v :)
-> > > > > 
-> > > > > You shouldn't assign it to a field marked little endian. Instead, use
-> > > > > le16_to_cpu() when you access the data below.
-> > > > > 
-> > > > > If you want to access the struct in the driver without using the conversion
-> > > > > macros, you should read the data one field at a time (and use u16 instead
-> > > > > of __le16 type for the fields).
-> > > > 
-> > > > It's fine with your suggestion thanks.
-> > > > I'm moving to use the following to prints those values:
-> > > > 
-> > > > 	v = (struct alvium_bcrm_vers *)&val;
-> > > > 
-> > > > 	dev_info(dev, "bcrm version: %u.%u\n",
-> > > > 		 le16_to_cpu(v->minor), le16_to_cpu(v->major));
-> > > > 
-> > > > thanks for the hint.
-> > > 
-> > > Sorry, I forgot alvium_read(), via cci_read(), already does endianness
-> > > conversion here, from big endian to CPU endianness. Is there a need to do
-> > > further conversion here? Noting that le16_to_cpu() does nothing on little
-> > > endian systems, is it necessary here?
-> > > 
-> > > The options here are either changing the struct fields to CPU endianness
-> > > and reading them individually or accessing the register as a single 32-bit
-> > > value.
-> > > 
-> > > I'd do the former, it's easier to access them that way in the driver.
-> > > 
-> > > The same applies to BCRM version below.
-> > > 
-> > > struct alvium_bcrm_vers {
-> > > 	u16 minor;
-> > > 	u16 major;
-> > > };
-> > 
-> > Understood, thanks.
-> > 
-> > Then to resume just compared to v13 I just need to
-> > revert the alvium_bcrm_vers/alvium_fw_vers struct
-> > to:
-> > 
-> > struct alvium_bcrm_vers {
-> > 	u16 minor;
-> > 	u16 major;
-> > };
-> > 
-> > struct alvium_fw_vers {
-> > 	u8 special;
-> > 	u8 major;
-> > 	u16 minor;
-> > 	u16 patch;
-> > };
+> I am just curious if having status property at the end won't affect
+> execution/boot up time. Not sure how it is done in Linux but in U-Boot
+> at least (we want to have DTs in sync between Linux and U-Boot)
+> of_find_property is pretty much big loop over all properties. And
+> status property defined at the end means going over all of them to
+> find it out to if device is present.
+> Not sure if Linux works in the same way but at least of_get_property
+> is done in the same way.
 > 
-> Yes, and accessing the registers one field at a time.
+> It is not big deal on high speed cpus but wanted to point it out.
 
-I'm doing that into dev_info or I'm wrong?
-
-	v = (struct alvium_bcrm_vers *)&val;
-
-	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
-
-same for:
-
-	fw_v = (struct alvium_fw_vers *)&val;
-
-	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
-		 fw_v->minor, fw_v->patch);
-
-Sorry but I want be sure to be aligned with you :)
-
-Thanks & Regards,
-Tommaso
-
-> 
-> > > > > > > > +static int alvium_init_cfg(struct v4l2_subdev *sd,
-> > > > > > > > +			   struct v4l2_subdev_state *state)
-> > > > > > > > +{
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	struct alvium_mode *mode = &alvium->mode;
-> > > > > > > > +	struct v4l2_subdev_format sd_fmt = {
-> > > > > > > > +		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > > > > > > > +		.format = alvium_csi2_default_fmt,
-> > > > > > > > +	};
-> > > > > > > > +	struct v4l2_subdev_crop sd_crop = {
-> > > > > > > > +		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > > > > > > > +		.rect = {
-> > > > > > > > +			.left = mode->crop.left,
-> > > > > > > > +			.top = mode->crop.top,
-> > > > > > > > +			.width = mode->crop.width,
-> > > > > > > > +			.height = mode->crop.height,
-> > > > > > > > +		},
-> > > > > > > > +	};
-> > > > > > > > +
-> > > > > > > > +	*v4l2_subdev_get_pad_crop(sd, state, 0) = sd_crop.rect;
-> > > > > > > > +	*v4l2_subdev_get_pad_format(sd, state, 0) = sd_fmt.format;
-> > > > > > > 
-> > > > > > > Shouldn't the format have same width and height as crop? What about the
-> > > > > > > mbus code?
-> > > > 
-> > > > Can you clarify to me this comment pls :)
-> > > 
-> > > The purpose of the init_cfg operation is to initialise the sub-device
-> > > state, including format and crop rectangle (if applicable). The width and
-> > > height fields of the format are not initialised above, leaving them zeros.
-> > 
-> > Mmmmm.
-> > Why zeros?
-> > 
-> > .format = alvium_csi2_default_fmt
-> > 
-> > where:
-> > 
-> > static const struct v4l2_mbus_framefmt alvium_csi2_default_fmt = {
-> > 	.code = MEDIA_BUS_FMT_UYVY8_1X16,
-> > 	.width = 640,
-> > 	.height = 480,
-> > 	.colorspace = V4L2_COLORSPACE_SRGB,
-> > 	.ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(V4L2_COLORSPACE_SRGB),
-> > 	.quantization = V4L2_QUANTIZATION_FULL_RANGE,
-> > 	.xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(V4L2_COLORSPACE_SRGB),
-> > 	.field = V4L2_FIELD_NONE,
-> > };
-> 
-> Ah, I missed this one. I think this part should be fine then.
-> 
-> > > That doesn't seem to be a valid configuration, given that the crop
-> > > rectangle is initiliased with different values.
-> > 
-> > Why different values?
-> > crop is initialized into subdev_init
-> > 
-> > static int alvium_subdev_init(struct alvium_dev *alvium)
-> > {
-> > 	struct i2c_client *client = alvium->i2c_client;
-> > 	struct device *dev = &alvium->i2c_client->dev;
-> > 	struct v4l2_subdev *sd = &alvium->sd;
-> > 	int ret;
-> > 
-> > 	/* Setup initial frame interval*/
-> > 	alvium->frame_interval.numerator = 1;
-> > 	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
-> > 	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
-> > 
-> > 	/* Setup the initial mode */
-> > 	alvium->mode.fmt = alvium_csi2_default_fmt;
-> > 	alvium->mode.width = alvium_csi2_default_fmt.width;
-> > 	alvium->mode.height = alvium_csi2_default_fmt.height;
-> > 	alvium->mode.crop.left = alvium->min_offx;
-> > 	alvium->mode.crop.top = alvium->min_offy;
-> > 	alvium->mode.crop.width = alvium_csi2_default_fmt.width;
-> > 	alvium->mode.crop.height = alvium_csi2_default_fmt.height;
-> > ...
-> > 
-> > Then:
-> > 
-> > static int alvium_init_cfg(struct v4l2_subdev *sd,
-> > 			   struct v4l2_subdev_state *state)
-> > {
-> > 	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > 	struct alvium_mode *mode = &alvium->mode;
-> > 	struct v4l2_subdev_format sd_fmt = {
-> > 		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > 		.format = alvium_csi2_default_fmt,
-> > 	};
-> > 	struct v4l2_subdev_crop sd_crop = {
-> > 		.which = V4L2_SUBDEV_FORMAT_TRY,
-> > 		.rect = {
-> > 			.left = mode->crop.left,
-> > 			.top = mode->crop.top,
-> > 			.width = mode->crop.width,
-> > 			.height = mode->crop.height,
-> > 		},
-> > 	};
-> > ...
-> > 
-> > Seems that crop and format are using the same init values
-> > or I'm wrong?
-> > Mmm.. maybe I'm missing something?
-> > 
-> > Let me know
-> > 
-> > > 
-> > > > 
-> > > > > > > 
-> > > > > > > > +
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +static int alvium_set_fmt(struct v4l2_subdev *sd,
-> > > > > > > > +			  struct v4l2_subdev_state *sd_state,
-> > > > > > > > +			  struct v4l2_subdev_format *format)
-> > > > > > > > +{
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	const struct alvium_pixfmt *alvium_csi2_fmt;
-> > > > > > > > +	struct v4l2_mbus_framefmt *fmt;
-> > > > > > > > +	struct v4l2_rect *crop;
-> > > > > > > > +
-> > > > > > > > +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
-> > > > > > > > +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
-> > > > > > > > +
-> > > > > > > > +	fmt->width = clamp(format->format.width, alvium->img_min_width,
-> > > > > > > > +			   alvium->img_max_width);
-> > > > > > > > +	fmt->height = clamp(format->format.height, alvium->img_min_height,
-> > > > > > > > +			    alvium->img_max_height);
-> > > > > > > > +
-> > > > > > > > +	/* Adjust left and top to prevent roll over sensor area */
-> > > > > > > > +	crop->left = clamp((u32)crop->left, (u32)0,
-> > > > > > > > +			   (alvium->img_max_width - fmt->width));
-> > > > > > > > +	crop->top = clamp((u32)crop->top, (u32)0,
-> > > > > > > > +			  (alvium->img_max_height - fmt->height));
-> > > > > > > > +
-> > > > > > > > +	/* Set also the crop width and height when set a new fmt */
-> > > > > > > > +	crop->width = fmt->width;
-> > > > > > > > +	crop->height = fmt->height;
-> > > > > > > > +
-> > > > > > > > +	alvium_csi2_fmt = alvium_code_to_pixfmt(alvium, format->format.code);
-> > > > > > > > +	fmt->code = alvium_csi2_fmt->code;
-> > > > > > > > +
-> > > > > > > > +	*fmt = format->format;
-> > > > > > > > +
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +static int alvium_set_selection(struct v4l2_subdev *sd,
-> > > > > > > > +				struct v4l2_subdev_state *sd_state,
-> > > > > > > > +				struct v4l2_subdev_selection *sel)
-> > > > > > > > +{
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	struct v4l2_mbus_framefmt *fmt;
-> > > > > > > > +	struct v4l2_rect *crop;
-> > > > > > > > +
-> > > > > > > > +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
-> > > > > > > > +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
-> > > > > > > > +
-> > > > > > > > +	/*
-> > > > > > > > +	 * Alvium can only shift the origin of the img
-> > > > > > > > +	 * then we accept only value with the same value of the actual fmt
-> > > > > > > > +	 */
-> > > > > > > > +	if (sel->r.width != fmt->width)
-> > > > > > > > +		sel->r.width = fmt->width;
-> > > > > > > > +
-> > > > > > > > +	if (sel->r.height != fmt->height)
-> > > > > > > > +		sel->r.height = fmt->height;
-> > > > > > > > +
-> > > > > > > > +	if (sel->target != V4L2_SEL_TGT_CROP)
-> > > > > > > > +		return -EINVAL;
-> > > > > > > 
-> > > > > > > This should be the first thing to test.
-> > > > > > 
-> > > > > > Oks
-> > > > > > 
-> > > > > > > 
-> > > > > > > > +
-> > > > > > > > +	/* alvium don't accept negative crop left/top */
-> > > > > > > > +	crop->left = clamp((u32)max(0, sel->r.left), alvium->min_offx,
-> > > > > > > > +			   alvium->img_max_width - sel->r.width);
-> > > > > > > > +	crop->top = clamp((u32)max(0, sel->r.top), alvium->min_offy,
-> > > > > > > > +			  alvium->img_max_height - sel->r.height);
-> > > > > > > > +
-> > > > > > > > +	sel->r = *crop;
-> > > > > > > > +
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +static int alvium_get_selection(struct v4l2_subdev *sd,
-> > > > > > > > +				struct v4l2_subdev_state *sd_state,
-> > > > > > > > +				struct v4l2_subdev_selection *sel)
-> > > > > > > > +{
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +
-> > > > > > > > +	switch (sel->target) {
-> > > > > > > > +	/* Current cropping area */
-> > > > > > > > +	case V4L2_SEL_TGT_CROP:
-> > > > > > > > +		sel->r = *v4l2_subdev_get_pad_crop(sd, sd_state, 0);
-> > > > > > > > +		break;
-> > > > > > > > +	/* Cropping bounds */
-> > > > > > > > +	case V4L2_SEL_TGT_NATIVE_SIZE:
-> > > > > > > > +		sel->r.top = 0;
-> > > > > > > > +		sel->r.left = 0;
-> > > > > > > > +		sel->r.width = alvium->img_max_width;
-> > > > > > > > +		sel->r.height = alvium->img_max_height;
-> > > > > > > > +		break;
-> > > > > > > > +	/* Default cropping area */
-> > > > > > > > +	case V4L2_SEL_TGT_CROP_BOUNDS:
-> > > > > > > > +	case V4L2_SEL_TGT_CROP_DEFAULT:
-> > > > > > > > +		sel->r.top = alvium->min_offy;
-> > > > > > > > +		sel->r.left = alvium->min_offx;
-> > > > > > > > +		sel->r.width = alvium->img_max_width;
-> > > > > > > > +		sel->r.height = alvium->img_max_height;
-> > > > > > > > +		break;
-> > > > > > > > +	default:
-> > > > > > > > +		return -EINVAL;
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +static int alvium_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
-> > > > > > > > +{
-> > > > > > > > +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	int val;
-> > > > > > > > +
-> > > > > > > > +	switch (ctrl->id) {
-> > > > > > > > +	case V4L2_CID_GAIN:
-> > > > > > > > +		val = alvium_get_gain(alvium);
-> > > > > > > > +		if (val < 0)
-> > > > > > > > +			return val;
-> > > > > > > > +		alvium->ctrls.gain->val = val;
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_EXPOSURE:
-> > > > > > > > +		val = alvium_get_exposure(alvium);
-> > > > > > > > +		if (val < 0)
-> > > > > > > > +			return val;
-> > > > > > > > +		alvium->ctrls.exposure->val = val;
-> > > > > > > > +		break;
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	return 0;
-> > > > > > > > +}
-> > > > > > > > +
-> > > > > > > > +static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
-> > > > > > > > +{
-> > > > > > > > +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
-> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > > > > > > > +	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
-> > > > > > > > +	int ret;
-> > > > > > > > +
-> > > > > > > > +	/*
-> > > > > > > > +	 * Applying V4L2 control value only happens
-> > > > > > > > +	 * when power is up for streaming
-> > > > > > > > +	 */
-> > > > > > > > +	if (!pm_runtime_get_if_in_use(&client->dev))
-> > > > > > > > +		return 0;
-> > > > > > > > +
-> > > > > > > > +	switch (ctrl->id) {
-> > > > > > > > +	case V4L2_CID_AUTOGAIN:
-> > > > > > > > +		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
-> > > > > > > 
-> > > > > > > 		ret = alvium_set_autogain(alvium, ctrl->val);
-> > > > > > > 
-> > > > > > 
-> > > > > > Pls check [1]
-> > > > > > 
-> > > > > > > Where do you set the manual gain value? What about the manual exposure
-> > > > > > > value? Both appear to be missing here.
-> > > > > > > 
-> > > > > > > How have you tested this?
-> > > > > > > 
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_EXPOSURE_AUTO:
-> > > > > > > > +		ret = alvium_set_ctrl_exposure(alvium, ctrl->val);
-> > > > > > > 
-> > > > > > > 		ret = alvium_set_autoexposure(alvium, ctrl->val);
-> > > > > > > 
-> > > > > > > You're still missing grabbing the manual controls when the corresponding
-> > > > > > > automatic control is enabled. I've commented on the same matter previously.
-> > > > > > 
-> > > > > > Same comment in [1]
-> > > > > > 
-> > > > > > > 
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_AUTO_WHITE_BALANCE:
-> > > > > > > > +		ret = alvium_set_ctrl_white_balance(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_HUE:
-> > > > > > > > +		ret = alvium_set_ctrl_hue(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_CONTRAST:
-> > > > > > > > +		ret = alvium_set_ctrl_contrast(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_SATURATION:
-> > > > > > > > +		ret = alvium_set_ctrl_saturation(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_GAMMA:
-> > > > > > > > +		ret = alvium_set_ctrl_gamma(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_SHARPNESS:
-> > > > > > > > +		ret = alvium_set_ctrl_sharpness(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_HFLIP:
-> > > > > > > > +		ret = alvium_set_ctrl_hflip(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	case V4L2_CID_VFLIP:
-> > > > > > > > +		ret = alvium_set_ctrl_vflip(alvium, ctrl->val);
-> > > > > > > > +		break;
-> > > > > > > > +	default:
-> > > > > > > > +		ret = -EINVAL;
-> > > > > > > > +		break;
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	pm_runtime_put(&client->dev);
-> > > > > > > > +
-> > > > > > > > +	return ret;
-> > > > > > > > +}
-> > 
-> > Here I plan to switch to:
-> > 
-> > static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
-> > {
-> > 	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
-> > 	struct alvium_dev *alvium = sd_to_alvium(sd);
-> > 	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
-> > 	int ret;
-> > 
-> > 	/*
-> > 	 * Applying V4L2 control value only happens
-> > 	 * when power is up for streaming
-> > 	 */
-> > 	if (!pm_runtime_get_if_in_use(&client->dev))
-> > 		return 0;
-> > 
-> > 	switch (ctrl->id) {
-> > 	case V4L2_CID_GAIN:
-> > 		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_AUTOGAIN:
-> > 		ret = alvium_set_ctrl_auto_gain(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_EXPOSURE:
-> > 		ret = alvium_set_ctrl_exposure(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_EXPOSURE_AUTO:
-> > 		ret = alvium_set_ctrl_auto_exposure(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_RED_BALANCE:
-> > 		ret = alvium_set_ctrl_red_balance_ratio(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_BLUE_BALANCE:
-> > 		ret = alvium_set_ctrl_blue_balance_ratio(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_AUTO_WHITE_BALANCE:
-> > 		ret = alvium_set_ctrl_awb(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_HUE:
-> > 		ret = alvium_set_ctrl_hue(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_CONTRAST:
-> > 		ret = alvium_set_ctrl_contrast(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_SATURATION:
-> > 		ret = alvium_set_ctrl_saturation(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_GAMMA:
-> > 		ret = alvium_set_ctrl_gamma(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_SHARPNESS:
-> > 		ret = alvium_set_ctrl_sharpness(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_HFLIP:
-> > 		ret = alvium_set_ctrl_hflip(alvium, ctrl->val);
-> > 		break;
-> > 	case V4L2_CID_VFLIP:
-> > 		ret = alvium_set_ctrl_vflip(alvium, ctrl->val);
-> > 		break;
-> > 	default:
-> > 		ret = -EINVAL;
-> > 		break;
-> > 	}
-> > 
-> > 	pm_runtime_put(&client->dev);
-> > 
-> > 	return ret;
-> > }
-> > 
-> > Like you suggested.
-> > I think is more clean/understandable.
-> > Thanks for your comment.
-> 
-> Ack.
-> 
-> -- 
-> Regards,
-> 
-> Sakari Ailus
+That's a good point, saving every possible CPU cycle counts, so if we 
+can exit early, why not.  However, that's perhaps something to be 
+handled within the dtc utility, by having it rearrange the properties.  
+I'll investigate that in detail.
