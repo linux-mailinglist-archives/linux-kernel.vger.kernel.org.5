@@ -2,184 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06BD7F453A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0201B7F453C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343687AbjKVL53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        id S1343758AbjKVL6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjKVL51 (ORCPT
+        with ESMTP id S233111AbjKVL6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:57:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5A4197
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:57:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E5C1C433C8;
-        Wed, 22 Nov 2023 11:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700654243;
-        bh=dhMFJjDMdHJmWFuL/Wz6Hy55a2bliAN+jn2DVLtt1l4=;
+        Wed, 22 Nov 2023 06:58:47 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143A919E;
+        Wed, 22 Nov 2023 03:58:44 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D5F9F40E024B;
+        Wed, 22 Nov 2023 11:58:41 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 9vIvwcA4Hjr5; Wed, 22 Nov 2023 11:58:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1700654320; bh=bUGVHjUPksg/8UpmwAaAcEYvojtJjumiv8pZ1+4lVqs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0oGwxCjLnODyhXiJsAd0pJ2Q3TpcD6IBQBoAwHKPP5g+eJZ09t6EC0LqE77xOwAf
-         +64jj7gRMSYoTpdX0U0u3VFzdxFNYCifKB7ndtf9EBCHabveyDebo/9ITRbI3sXr/J
-         VLV+Lq6LDBMOezWNmYXqVdZz3f4wfoY3d+GWLPOHWIWYNmXuOLFvn92pafASWgLWP2
-         S8leQr7Mz7N3pFu8qI22CGtN1ODlhndDfPy2Trb3sFccW6FCjdV0BBae2ykfGQh0kX
-         wPn1W/zXlvWfUAs5hMGSJWHPjlfNtfZid3T2NsvAiC9z6F33jtseZOX+YwD4gDBPUI
-         I4MMpAxs/0aRg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r5lrN-00005t-0A;
-        Wed, 22 Nov 2023 12:57:37 +0100
-Date:   Wed, 22 Nov 2023 12:57:37 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 04/12] usb: dwc3: Expose core driver as library
-Message-ID: <ZV3ssSP5dTwAs-e3@hovoldconsulting.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-4-ab4a84165470@quicinc.com>
+        b=U5M+vWXIZp7eojrASnpsDv1LeCHjQVagHx2EEwQLOTC4KLQDZXENy7uZbjJME7zCj
+         5QgqPtWvPisRTKX+xleEWDnPNuwOoifB7hEXRp1hpAcA3xolGGfnE9TklEt0HnLbS7
+         Xn8lp/RG98dHBWj4T5gzgDNcsN68gh+zXKeD1QApI4113kj+evXLcZRP91vBUYdjtQ
+         mcsO9J8Ol8uhuGIEZeUsZXt7ogfFGl7zTBsQKtaPC4tx8001HXAmkC9FshKQrbPFOr
+         j5tQrnOnvVqilF3+Y2hoMRPyd4SLRmRPHlwNo2sAifMqLW4I1LfIDGFll38w0qaBUj
+         1xTlE/ErqrLFHKMZ1LA5T0dXwyp0vFQEjaEbfG27v/wpu8nSXGWWShAsJadHwcmDaC
+         HhGm/6KSnKLRbyQnmyVM/M8rmXO3M+KwSxqLdTbJ05N8qNGtlLDnd5B9D1ccISDOyK
+         oRPq7dZNmwAGiWukPNbLpV43bvk6o3QGVLa6j0rCxdPzd8agRZ9CgSALVENunOPI58
+         mnlv8OVbsPV9AVh/JIi6+f6005UGjz+rjIyOrKhX9SVOXh1BrIpw5D7MXKAR35vlCg
+         knLbdLzcEKPmDx9WQ+ief/QZTPg519eU+xgmtWEDr5WbUtUJvBw+Qtq/jjF0z/7o1i
+         l1dCd4fpT83L2kToZwkUHDxU=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CC67A40E0032;
+        Wed, 22 Nov 2023 11:58:30 +0000 (UTC)
+Date:   Wed, 22 Nov 2023 12:58:26 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
+        hpa@zytor.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to
+ CONFIG_MICROCODE_AMD)
+Message-ID: <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info>
+ <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+ <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016-dwc3-refactor-v1-4-ab4a84165470@quicinc.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:11:12PM -0700, Bjorn Andersson wrote:
-> The DWC3 IP block is handled by three distinct device drivers: XHCI,
-> DWC3 core and a platform specific (optional) DWC3 glue driver.
-> 
-> This has resulted in, at least in the case of the Qualcomm glue, the
-> presence of a number of layering violations, where the glue code either
-> can't handle, or has to work around, the fact that core might not probe
-> deterministically.
-> 
-> An example of this is that the suspend path should operate slightly
-> different depending on the device operating in host or peripheral mode,
-> and the only way to determine the operating state is to peek into the
-> core's drvdata.
-> 
-> The Qualcomm glue driver is expected to make updates in the qscratch
-> register region (the "glue" region) during role switch events, but with
-> the glue and core split using the driver model, there is no reasonable
-> way to introduce listeners for mode changes.
-> 
-> Split the dwc3 core platfrom_driver callbacks and their implementation
-> and export the implementation, to make it possible to deterministically
-> instantiate the dwc3 core as part of the dwc3 glue drivers and to
-> allow flattening of the DeviceTree representation.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
->  drivers/usb/dwc3/core.c | 134 ++++++++++++++++++++++++++++++++----------------
->  drivers/usb/dwc3/core.h |  10 ++++
->  2 files changed, 100 insertions(+), 44 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-> index d25490965b27..71e376bebb16 100644
-> --- a/drivers/usb/dwc3/core.c
-> +++ b/drivers/usb/dwc3/core.c
-> @@ -1876,7 +1876,7 @@ static int dwc3_get_clocks(struct dwc3 *dwc)
->  	return 0;
->  }
->  
-> -static int dwc3_probe(struct platform_device *pdev)
-> +struct dwc3 *dwc3_probe(struct platform_device *pdev)
+On Wed, Nov 22, 2023 at 10:15:42AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> [1] unless you fiddle with things obviously internal; not sure if this
+> case would qualify for him, but somehow I doubt it -- but I might be
+> wrong there.
 
-Perhaps you should move allocation of struct dwc3 to the caller as well
-as you are going to need some way to pass in callback to core which need
-to be set before you register the xhci platform device.
+Well, think about it - by that logic, if CONFIG_* items are an ABI, we
+will never ever be able to change any of them. Now that would be awful.
 
-There could be other ways, like passing in a struct of callbacks, which
-can be added incrementally but it may be good think this through from
-the start.
+> Any progress on this?
 
->  {
->  	struct device		*dev = &pdev->dev;
->  	struct resource		*res, dwc_res;
-> @@ -1886,14 +1886,14 @@ static int dwc3_probe(struct platform_device *pdev)
->  
->  	dwc = devm_kzalloc(dev, sizeof(*dwc), GFP_KERNEL);
->  	if (!dwc)
-> -		return -ENOMEM;
-> +		return ERR_PTR(-ENOMEM);
->  
->  	dwc->dev = dev;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
->  		dev_err(dev, "missing memory resource\n");
-> -		return -ENODEV;
-> +		return ERR_PTR(-ENODEV);
->  	}
->  
->  	dwc->xhci_resources[0].start = res->start;
-> @@ -1922,7 +1922,7 @@ static int dwc3_probe(struct platform_device *pdev)
->  
->  	regs = devm_ioremap_resource(dev, &dwc_res);
->  	if (IS_ERR(regs))
-> -		return PTR_ERR(regs);
-> +		return ERR_CAST(regs);
->  
->  	dwc->regs	= regs;
->  	dwc->regs_size	= resource_size(&dwc_res);
-> @@ -1953,7 +1953,6 @@ static int dwc3_probe(struct platform_device *pdev)
->  		goto err_disable_clks;
->  	}
->  
-> -	platform_set_drvdata(pdev, dwc);
+We're thinking...
 
-This is broken however as the pm ops access the data driver data and can
-be called as soon as you call pm_runtime_put() below.
+We might need an official scheme of stating what any given kernel image
+supports for use by external tools which need it.
 
->  	dwc3_cache_hwparams(dwc);
->  
->  	if (!dwc->sysdev_is_parent &&
-> @@ -2006,7 +2005,7 @@ static int dwc3_probe(struct platform_device *pdev)
->  
->  	pm_runtime_put(dev);
+> BTW: I see that this could help preventing problems like the current one
+> to happen in the far future. But how would that help the current
+> situation (e.g. users that have an old dracut and updated the kernel
+> without updating dracut)?
 
-That is here.
+Update dracut too?
 
-> -	return 0;
-> +	return dwc;
- 
-> -static void dwc3_remove(struct platform_device *pdev)
-> +static int dwc3_plat_probe(struct platform_device *pdev)
->  {
-> -	struct dwc3	*dwc = platform_get_drvdata(pdev);
-> +	struct dwc3 *dwc;
-> +
-> +	dwc = dwc3_probe(pdev);
-> +	if (IS_ERR(dwc))
-> +		return PTR_ERR(dwc);
+-- 
+Regards/Gruss,
+    Boris.
 
-And that leaves a window, for example, here where you can hit a NULL
-pointer dereference.
-
-> +	platform_set_drvdata(pdev, dwc);
-> +
-> +	return 0;
-> +}
-
-Johan
+https://people.kernel.org/tglx/notes-about-netiquette
