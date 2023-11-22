@@ -2,74 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA11A7F5148
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EC77F514C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjKVULC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
+        id S231552AbjKVUMV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 15:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVULB (ORCPT
+        with ESMTP id S230377AbjKVUMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:11:01 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D508DBD;
-        Wed, 22 Nov 2023 12:10:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=PQI5ftJTGKiUGLporU6xLWoqm+T6ThDbFdStpj7smvI=; b=bB9GTIJnwrGs4GYiuojruLSxdl
-        bpTRML45JKO7EHm7gU5dkRoVIHSoANj7jjTkLrcrhr1rVWwF6XJpiawYEb0odX7r9tUDtuUFpfoPm
-        xUm8kp6D0IkXwDpPL9wTLGjlhX4+8Df9sc5Ej8QU2oCreGZUUhiV8WbvGPvEfyAjTsyWyipV4YkMd
-        j4tCFKlM5SAN5mErBvWKZC/r3+CWUGjoW5cGz+pTVBi5lryG1tKIv0FfajxHexhH05DMa48sPGmh9
-        OYyIo9KxnwGDLDl0ltaFyYBppIe2dxmE0eUBzAruBdqmAkwsn2jHv/J2dxZHLlb3GrDx7nLy/avpj
-        syWM/mrw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r5tYl-002zae-1J;
-        Wed, 22 Nov 2023 20:10:55 +0000
-Message-ID: <7daeaa9e-39b7-4205-8769-ecd1817b9c3b@infradead.org>
-Date:   Wed, 22 Nov 2023 12:10:54 -0800
+        Wed, 22 Nov 2023 15:12:20 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F23A4;
+        Wed, 22 Nov 2023 12:12:16 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1d542f05b9aso30635fac.1;
+        Wed, 22 Nov 2023 12:12:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700683935; x=1701288735;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hRAUhzzHnP+XZxzQEXs8TfAKCs5HsmLQBIFGrTTFm+M=;
+        b=J932pq15PT2CkREZCSSNK0BlpQ0nqyfU+osRNkVIv3m87wFFPEovtx968w3ftk0mrR
+         L4BJjIXOmkY3RasRwH2E4xZO9jCM1zIdVITtVND9wfwmf9KTZo6AbAaJg2ahocJbgEJP
+         m9Ogi/7pgWxW7e5JL7XLI6aAdofpE0Lgu0HN+YIgvEtJhAjukunww7j7Fce3cNFvRRKH
+         Vm/E11BfpPS1ZTW6/sWS+Wi7sgtlW17oYIMqq/48VwGC3Z+/1+qLoZgadILNEyFcgOFU
+         m1q7StboXi64wXeLFB+302Rbsvrnkbji6zf483imMzQvQKawJbcP2kAReb/qGNLljMoM
+         Mvvw==
+X-Gm-Message-State: AOJu0YyPK8bkC9ADQ/dhTSY789AKLC2Pe78CyyhPxQ2Vt5CM789NFZ4g
+        KRX6YSzf7Lwud5nlfKxe2pWSPlwaMCUtiKsdwRU=
+X-Google-Smtp-Source: AGHT+IH/N9ldr6Rfz2HMts22gtDdEZrdomZQ3Wqdv4io0UUWkzkPpVzYdpFHz7cSkxilm43rTrV9+lWFNT1vpjiJ/R4=
+X-Received: by 2002:a05:6871:a58b:b0:1ea:1510:d8df with SMTP id
+ wd11-20020a056871a58b00b001ea1510d8dfmr3742289oab.4.1700683935194; Wed, 22
+ Nov 2023 12:12:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH][next] scripts/spelling.txt: add more spellings to
- spelling.txt
-Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231122104037.1770749-1-colin.i.king@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231122104037.1770749-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZVyz/Ve5pPu8AWoA@shell.armlinux.org.uk> <E1r5R2m-00Csyb-2S@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r5R2m-00Csyb-2S@rmk-PC.armlinux.org.uk>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 22 Nov 2023 21:12:04 +0100
+Message-ID: <CAJZ5v0jbjykNooJ_PvkOjpE6hA0QFJUw+kpwYfNY7jOtkcPA0Q@mail.gmail.com>
+Subject: Re: [PATCH 02/21] x86: intel_epb: Don't rely on link order
+To:     Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 21, 2023 at 2:44 PM Russell King <rmk+kernel@armlinux.org.uk> wrote:
+>
+> From: James Morse <james.morse@arm.com>
+>
+> intel_epb_init() is called as a subsys_initcall() to register cpuhp
+> callbacks. The callbacks make use of get_cpu_device() which will return
+> NULL unless register_cpu() has been called. register_cpu() is called
+> from topology_init(), which is also a subsys_initcall().
+>
+> This is fragile. Moving the register_cpu() to a different
+> subsys_initcall()  leads to a NULL dereference during boot.
+>
+> Make intel_epb_init() a late_initcall(), user-space can't provide a
+> policy before this point anyway.
+>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Gavin Shan <gshan@redhat.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On 11/22/23 02:40, Colin Ian King wrote:
-> Some of the more common spelling mistakes and typos that I've found while
-> fixing up spelling mistakes in the kernel over the past couple of
-> releases.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+and I'd suggest sending this separately to the x86 list.
+
 > ---
->  scripts/spelling.txt | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
--- 
-~Randy
+> subsys_initcall_sync() would be an option, but moving the register_cpu()
+> calls into ACPI also means adding a safety net for CPUs that are online
+> but not described properly by firmware. This lives in subsys_initcall_sync().
+> ---
+>  arch/x86/kernel/cpu/intel_epb.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
+> index e4c3ba91321c..f18d35fe27a9 100644
+> --- a/arch/x86/kernel/cpu/intel_epb.c
+> +++ b/arch/x86/kernel/cpu/intel_epb.c
+> @@ -237,4 +237,4 @@ static __init int intel_epb_init(void)
+>         cpuhp_remove_state(CPUHP_AP_X86_INTEL_EPB_ONLINE);
+>         return ret;
+>  }
+> -subsys_initcall(intel_epb_init);
+> +late_initcall(intel_epb_init);
+> --
+> 2.30.2
+>
+>
