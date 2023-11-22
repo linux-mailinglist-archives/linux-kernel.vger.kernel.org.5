@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBFA7F3B00
+	by mail.lfdr.de (Postfix) with ESMTP id 41FD57F3AFF
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235016AbjKVBIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        id S235023AbjKVBI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:08:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbjKVBIW (ORCPT
+        with ESMTP id S231307AbjKVBIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:08:22 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E425D199
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:08:18 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5ab94fc098cso3802649a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:08:18 -0800 (PST)
+        Tue, 21 Nov 2023 20:08:24 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B65199
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:08:20 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b83d2981b5so205144b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700615298; x=1701220098; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1700615300; x=1701220100; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/6X+mOMZoGJuf/KhFjronMx0sFEsDU8bO3mA0YdbfIg=;
-        b=H3U84WlFWMabFJAnu3tQEA+F0LLai5ajuAUMjCUF0bKHxyPQRdJ+QKJPp5+1oqdG91
-         +ZDHnKGt+FlNuhfmnVsYoTM7hLRUvq/FRGGeD8I3jgv2nYqdFw85QIaDik6dzXUqdITS
-         2vekBoz6xau8XcW63DKWbPkuV4V+XjvxHlQq+ZxtaUK3Gz/C7xQh3MzJpnbI0n2WTaEX
-         zPeSgjpKxj9RTmhpZ6wE6RrxCx8VMok8ar+TNuRxvyjBOcPXlsvzezEHqrkoQ7T/kbB/
-         7xZZFV5YNqV5COo+t/rDGl6haTjm2P4erF30M+umkCusAHsbG+GZnwtDD6KfK/ek/V6+
-         N54g==
+        bh=4E3lnavwhWkbsPt/8jollKuN1Wp7270MVQq6Nf32IZI=;
+        b=De9XE7y20ckTyRWrQa0Hbzaoo+nq6WHS5nTYBCqRAFQ86M9Y+UUqDZrtGW6qbGvbam
+         GQWyR45fGKunNpZlHr3OK5+tRLH2Sr7H8s2+WIT3q3iMucD9E6OqkLvNchgsIy8EzEpU
+         ffS+dsPylvPmEkh0dL/gYjCpb24upaSF/yXYwp6u0AGj+YvWJUZOil2jaSrELWKk7bSy
+         FDinXNnPm0RgrV2BjpZ79xUgYKv3AVqBipGKjxI4gVROvr0uZE+YdrqZTCwSoQhucuSr
+         hjYLt/wsZxfDzl0yVo1/8FSPz6KqXmz6xp6fpxXlBt4XGveYUNIbAaajxXPaSJ5YwDAR
+         I2Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700615298; x=1701220098;
+        d=1e100.net; s=20230601; t=1700615300; x=1701220100;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/6X+mOMZoGJuf/KhFjronMx0sFEsDU8bO3mA0YdbfIg=;
-        b=V2gN6eTvUSpkg8SnnbljjHB7/hj2OEk4RR9clhKEn3IZR6FkkR+hygDyr3lobSKXGm
-         N8N1OOfwEhF0emqstXdieDqk9fmkLhsfwMmb2M42+QTBbigGfPvlX+FW8QuwPteGq7Up
-         0dLA9PAA2pMTQHEUaJDQSn6TPMwRcB5bGtthBJng9iGHSC/3dyHlThB/ZJgTRLJ2XC5y
-         ChqTOOm4sAcL23iInxJImwUxKWR73TXVZ8sy3rOSTDb1MytEW4K7Zi6hf0UttL8Aq1Kz
-         V6dSKEMukEgnCJ4E9pc0OsanlaSOgJkTjRCYOo9gMv+L9ehjlrN/qnd6V+91XwGCGMlj
-         k9GA==
-X-Gm-Message-State: AOJu0YxtsAtnCCmVbsLeuASPBj/GliWYk+Y0PhWmHrLPXYMaWlzi7/CM
-        rxHKbnQQeW3DJKJfo5WEHthJSA==
-X-Google-Smtp-Source: AGHT+IF0MPSUCqiTsnl1eQc+NOEkZdfylg4Cinzvui2qig7vBCcLaky4/GlXwa1fL7VF+JjfOGRcVA==
-X-Received: by 2002:a05:6a20:431a:b0:18a:da5a:3825 with SMTP id h26-20020a056a20431a00b0018ada5a3825mr948843pzk.34.1700615298368;
-        Tue, 21 Nov 2023 17:08:18 -0800 (PST)
+        bh=4E3lnavwhWkbsPt/8jollKuN1Wp7270MVQq6Nf32IZI=;
+        b=LdW4YfR4DuuUWXpLcgdY1QI2O7O+w4G5v2th7+9fwgu48iTWCtmeBTro2u1UIAzEY3
+         odaWC7rNvH4nwlm71mY9bN25aU0zPeufmHW7RvCaxfa/TT3oZiUzg8+srLsxcJEarTW2
+         opQosRjspPmKHITfKa7VQ+0elCrpgW/eIAmgDejb7iTIltC9+7uKSKIKfA1+LT50w+u7
+         xc5z/H+nIdL/uR6C+G+vCzlAXF5HD6P+dSTH68pJfhM6DqwgKUf11nwFxmPtqtsg/mee
+         +k6xI8YcBtSa5YSvTmISJK3kovQ45CT6mqRTTyan/yh3359Silw3w9Ku+D5cQToaUK4r
+         /jeQ==
+X-Gm-Message-State: AOJu0YzIQylPPv1fCN9gCuZdecdp5jZ1vH5H6o+C0UF2IoBIVnPtR2dO
+        aGuxlVtNKxVOnzKK0f8DFzEiRA==
+X-Google-Smtp-Source: AGHT+IFhS1aXruOMSeKbF/kr742mxFr/4ERJTn5q1RSxs6qFscJwCL7KnIKBT8DwBL+aJBuJSXtucQ==
+X-Received: by 2002:a05:6871:e805:b0:1d6:8b7f:ce89 with SMTP id qd5-20020a056871e80500b001d68b7fce89mr1213468oac.51.1700615299719;
+        Tue, 21 Nov 2023 17:08:19 -0800 (PST)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id bn5-20020a056a00324500b006be047268d5sm8713961pfb.174.2023.11.21.17.08.17
+        by smtp.gmail.com with ESMTPSA id bn5-20020a056a00324500b006be047268d5sm8713961pfb.174.2023.11.21.17.08.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 17:08:18 -0800 (PST)
+        Tue, 21 Nov 2023 17:08:19 -0800 (PST)
 From:   Samuel Holland <samuel.holland@sifive.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         linux-riscv@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Alexandre Ghiti <alexghiti@rivosinc.com>,
         Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH v3 1/8] riscv: mm: Combine the SMP and UP TLB flush code
-Date:   Tue, 21 Nov 2023 17:07:12 -0800
-Message-ID: <20231122010815.3545294-2-samuel.holland@sifive.com>
+Subject: [PATCH v3 2/8] riscv: Apply SiFive CIP-1200 workaround to single-ASID sfence.vma
+Date:   Tue, 21 Nov 2023 17:07:13 -0800
+Message-ID: <20231122010815.3545294-3-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122010815.3545294-1-samuel.holland@sifive.com>
 References: <20231122010815.3545294-1-samuel.holland@sifive.com>
@@ -74,12 +74,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In SMP configurations, all TLB flushing narrower than flush_tlb_all()
-goes through __flush_tlb_range(). Do the same in UP configurations.
+commit 3f1e782998cd ("riscv: add ASID-based tlbflushing methods") added
+calls to the sfence.vma instruction with rs2 != x0. These single-ASID
+instruction variants are also affected by SiFive errata CIP-1200.
 
-This allows UP configurations to take advantage of recent improvements
-to the code in tlbflush.c, such as support for huge pages and flushing
-multiple-page ranges.
+Until now, the errata workaround was not needed for the single-ASID
+sfence.vma variants, because they were only used when the ASID allocator
+was enabled, and the affected SiFive platforms do not support multiple
+ASIDs. However, we are going to start using those sfence.vma variants
+regardless of ASID support, so now we need alternatives covering them.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
@@ -87,119 +90,107 @@ Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 (no changes since v2)
 
 Changes in v2:
- - Move the SMP/UP merge earlier in the series to avoid build issues
- - Make a copy of __flush_tlb_range() instead of adding ifdefs inside
- - local_flush_tlb_all() is the only function used on !MMU (smpboot.c)
+ - Rebase on Alexandre's "riscv: tlb flush improvements" series v5
 
- arch/riscv/include/asm/tlbflush.h | 33 +++++++------------------------
- arch/riscv/mm/Makefile            |  5 +----
- arch/riscv/mm/tlbflush.c          | 13 ++++++++++++
- 3 files changed, 21 insertions(+), 30 deletions(-)
+ arch/riscv/include/asm/errata_list.h | 12 +++++++++++-
+ arch/riscv/include/asm/tlbflush.h    | 19 ++++++++++++++++++-
+ arch/riscv/mm/tlbflush.c             | 23 -----------------------
+ 3 files changed, 29 insertions(+), 25 deletions(-)
 
+diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
+index 83ed25e43553..6781460ae564 100644
+--- a/arch/riscv/include/asm/errata_list.h
++++ b/arch/riscv/include/asm/errata_list.h
+@@ -44,11 +44,21 @@ ALTERNATIVE(__stringify(RISCV_PTR do_page_fault),			\
+ 	    CONFIG_ERRATA_SIFIVE_CIP_453)
+ #else /* !__ASSEMBLY__ */
+ 
+-#define ALT_FLUSH_TLB_PAGE(x)						\
++#define ALT_SFENCE_VMA_ASID(asid)					\
++asm(ALTERNATIVE("sfence.vma x0, %0", "sfence.vma", SIFIVE_VENDOR_ID,	\
++		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
++		: : "r" (asid) : "memory")
++
++#define ALT_SFENCE_VMA_ADDR(addr)					\
+ asm(ALTERNATIVE("sfence.vma %0", "sfence.vma", SIFIVE_VENDOR_ID,	\
+ 		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
+ 		: : "r" (addr) : "memory")
+ 
++#define ALT_SFENCE_VMA_ADDR_ASID(addr, asid)				\
++asm(ALTERNATIVE("sfence.vma %0, %1", "sfence.vma", SIFIVE_VENDOR_ID,	\
++		ERRATA_SIFIVE_CIP_1200, CONFIG_ERRATA_SIFIVE_CIP_1200)	\
++		: : "r" (addr), "r" (asid) : "memory")
++
+ /*
+  * _val is marked as "will be overwritten", so need to set it to 0
+  * in the default case.
 diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
-index 8f3418c5f172..317a1811aa51 100644
+index 317a1811aa51..e529a643be17 100644
 --- a/arch/riscv/include/asm/tlbflush.h
 +++ b/arch/riscv/include/asm/tlbflush.h
-@@ -27,13 +27,12 @@ static inline void local_flush_tlb_page(unsigned long addr)
- {
- 	ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
+@@ -22,10 +22,27 @@ static inline void local_flush_tlb_all(void)
+ 	__asm__ __volatile__ ("sfence.vma" : : : "memory");
  }
--#else /* CONFIG_MMU */
--#define local_flush_tlb_all()			do { } while (0)
--#define local_flush_tlb_page(addr)		do { } while (0)
--#endif /* CONFIG_MMU */
  
--#if defined(CONFIG_SMP) && defined(CONFIG_MMU)
-+#ifdef CONFIG_SMP
- void flush_tlb_all(void);
-+#else
-+#define flush_tlb_all() local_flush_tlb_all()
-+#endif
- void flush_tlb_mm(struct mm_struct *mm);
- void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
- 			unsigned long end, unsigned int page_size);
-@@ -46,26 +45,8 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end);
- void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end);
- #endif
--#else /* CONFIG_SMP && CONFIG_MMU */
--
--#define flush_tlb_all() local_flush_tlb_all()
--#define flush_tlb_page(vma, addr) local_flush_tlb_page(addr)
--
--static inline void flush_tlb_range(struct vm_area_struct *vma,
--		unsigned long start, unsigned long end)
--{
--	local_flush_tlb_all();
--}
--
--/* Flush a range of kernel pages */
--static inline void flush_tlb_kernel_range(unsigned long start,
--	unsigned long end)
--{
--	local_flush_tlb_all();
--}
--
--#define flush_tlb_mm(mm) flush_tlb_all()
--#define flush_tlb_mm_range(mm, start, end, page_size) flush_tlb_all()
--#endif /* !CONFIG_SMP || !CONFIG_MMU */
-+#else /* CONFIG_MMU */
-+#define local_flush_tlb_all()			do { } while (0)
-+#endif /* CONFIG_MMU */
++static inline void local_flush_tlb_all_asid(unsigned long asid)
++{
++	if (asid != FLUSH_TLB_NO_ASID)
++		ALT_SFENCE_VMA_ASID(asid);
++	else
++		local_flush_tlb_all();
++}
++
+ /* Flush one page from local TLB */
+ static inline void local_flush_tlb_page(unsigned long addr)
+ {
+-	ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
++	ALT_SFENCE_VMA_ADDR(addr);
++}
++
++static inline void local_flush_tlb_page_asid(unsigned long addr,
++					     unsigned long asid)
++{
++	if (asid != FLUSH_TLB_NO_ASID)
++		ALT_SFENCE_VMA_ADDR_ASID(addr, asid);
++	else
++		local_flush_tlb_page(addr);
+ }
  
- #endif /* _ASM_RISCV_TLBFLUSH_H */
-diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-index 3a4dfc8babcf..96e65c571ce8 100644
---- a/arch/riscv/mm/Makefile
-+++ b/arch/riscv/mm/Makefile
-@@ -13,15 +13,12 @@ endif
- KCOV_INSTRUMENT_init.o := n
- 
- obj-y += init.o
--obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o
-+obj-$(CONFIG_MMU) += extable.o fault.o pageattr.o tlbflush.o
- obj-y += cacheflush.o
- obj-y += context.o
- obj-y += pgtable.o
- obj-y += pmem.o
- 
--ifeq ($(CONFIG_MMU),y)
--obj-$(CONFIG_SMP) += tlbflush.o
--endif
- obj-$(CONFIG_HUGETLB_PAGE) += hugetlbpage.o
- obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
- obj-$(CONFIG_KASAN)   += kasan_init.o
+ #ifdef CONFIG_SMP
 diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-index e6659d7368b3..22d7ed5abf8e 100644
+index 22d7ed5abf8e..0feccb8932d2 100644
 --- a/arch/riscv/mm/tlbflush.c
 +++ b/arch/riscv/mm/tlbflush.c
-@@ -66,6 +66,7 @@ static inline void local_flush_tlb_range_asid(unsigned long start,
- 		local_flush_tlb_range_threshold_asid(start, size, stride, asid);
- }
+@@ -7,29 +7,6 @@
+ #include <asm/sbi.h>
+ #include <asm/mmu_context.h>
  
-+#ifdef CONFIG_SMP
- static void __ipi_flush_tlb_all(void *info)
- {
- 	local_flush_tlb_all();
-@@ -138,6 +139,18 @@ static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
- 	if (mm)
- 		put_cpu();
- }
-+#else
-+static void __flush_tlb_range(struct mm_struct *mm, unsigned long start,
-+			      unsigned long size, unsigned long stride)
-+{
-+	unsigned long asid = FLUSH_TLB_NO_ASID;
-+
-+	if (mm && static_branch_unlikely(&use_asid_allocator))
-+		asid = atomic_long_read(&mm->context.id) & asid_mask;
-+
-+	local_flush_tlb_range_asid(start, size, stride, asid);
-+}
-+#endif
- 
- void flush_tlb_mm(struct mm_struct *mm)
- {
+-static inline void local_flush_tlb_all_asid(unsigned long asid)
+-{
+-	if (asid != FLUSH_TLB_NO_ASID)
+-		__asm__ __volatile__ ("sfence.vma x0, %0"
+-				:
+-				: "r" (asid)
+-				: "memory");
+-	else
+-		local_flush_tlb_all();
+-}
+-
+-static inline void local_flush_tlb_page_asid(unsigned long addr,
+-		unsigned long asid)
+-{
+-	if (asid != FLUSH_TLB_NO_ASID)
+-		__asm__ __volatile__ ("sfence.vma %0, %1"
+-				:
+-				: "r" (addr), "r" (asid)
+-				: "memory");
+-	else
+-		local_flush_tlb_page(addr);
+-}
+-
+ /*
+  * Flush entire TLB if number of entries to be flushed is greater
+  * than the threshold below.
 -- 
 2.42.0
 
