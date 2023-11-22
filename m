@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2FC7F492A
+	by mail.lfdr.de (Postfix) with ESMTP id 64B3B7F4929
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344234AbjKVOnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
+        id S232473AbjKVOnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbjKVOmz (ORCPT
+        with ESMTP id S231653AbjKVOmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Nov 2023 09:42:55 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAEB1AC;
-        Wed, 22 Nov 2023 06:42:50 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A27497;
+        Wed, 22 Nov 2023 06:42:51 -0800 (PST)
 Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0579929A;
-        Wed, 22 Nov 2023 15:42:15 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4232E641;
+        Wed, 22 Nov 2023 15:42:17 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700664137;
-        bh=Q1F0LY9V1uh3EhSCWJsd/th8ziEnKGSJDEVMKi83lT0=;
-        h=From:Subject:Date:To:Cc:From;
-        b=gvxTVU+JDNsoybOx5RQzECQarcc7Hp5qvNLOPHn7tudo37KR43SqZT+WqnvbHgXc9
-         QWYcKkYO1nh+MfFJIJzs1DBQj8EcH9+oS8aY7pXLNXEPgjq3QpvxXlZuGt7gN2sO4b
-         19WKPYB0Dz4jNbAQm9CzcTcO2ISKr8zt8pnL9yGY=
+        s=mail; t=1700664138;
+        bh=m/zEIfXXTHvQjozZAyjiA6eqZQPUBkii1euXSnYoOvE=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=YP9asx6SDnlDNjkOD34Fz3GV/GuZuWTjB9tLPdQb3cvh1GK1PGI3jnm/eoIe+qFGt
+         Diywgb9kB03JB7zlTkKO6R2NPSgJVqBuV1vtxTIN/2B1j8YAfFEoaZcek6ocFAHg8D
+         o7I9SHopGhyZxZ4N8VMmkC9fjLblP1g+CHIv5hJQ=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: [PATCH 0/2] media: rkisp1: Fix memory leaks
-Date:   Wed, 22 Nov 2023 16:42:21 +0200
-Message-Id: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
+Date:   Wed, 22 Nov 2023 16:42:22 +0200
+Subject: [PATCH 1/2] media: rkisp1: Fix media device memory leak
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAE0TXmUC/x3LQQqAIBBA0avIrBNyQqKuEi1ExxoCEwciEO+et
- Hx8fgWhwiSwqgqFHha+U4cZFPjTpYM0h27AESdjEHW5WLKO/JJoj/NivYvBWYR+5EJ/6MO2t/Y
- Bn3o7/10AAAA=
+Message-Id: <20231122-rkisp-fixes-v1-1-1958af371e39@ideasonboard.com>
+References: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
+In-Reply-To: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
 To:     Dafna Hirschfeld <dafna@fastmail.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -53,21 +52,21 @@ Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=587;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1184;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=Q1F0LY9V1uh3EhSCWJsd/th8ziEnKGSJDEVMKi83lT0=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlXhNi6mGmzFhiwH8XScOyZRSpdoZWu7l19VDPm
- +NTh/PUYw6JAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZV4TYgAKCRD6PaqMvJYe
- 9TJlEACtzRXltazs9OpEwit3KlmQqsXxumZIs9MDHWKt1ZVCffsxlBDMisG0iIfdcN5UATuJZls
- 1QdO2nYLHp8hCbXwzQGYeEo2TZGmbPc7xNM+RfINEHCgBdRF2tOB1sA2DyvqdNqaywW7RmNrxoA
- sCw/IsPGQQ5OfiJoPVV/E6Ch6EfokJayyoWtDt9/9iv1fr+4rEmoc/cwiwPjcZWnc6y043sI092
- 29EvdmvEDq6UXKTtj72N8cCTmMFN24DIj0AO8bcUGzsUjfkGRgKvvs7YV2d/15GlJiaIqMLBNLX
- P46dOH1xLXFm6anWeUE1cNGoNzs7hrXyOfAWoGL5rfPkgWKSetxCPt2TrsRY76rW7vB3ISlsJdr
- PxLrP4NjFVPEJkKBDHoVPsgv06Fn3Gro7CCfzRk4t3oCoIbkJhkCHzeZHiteWbx5h6wCA0B5blF
- td0bIFXGhnSVtztPYLQrQdWF94jCKJzIV3N/XoRnQpzYsLWBwL7qaVOkG3AbbpKDfzK63FjRyYr
- PhYCnrhhVb8Xa1wYPpm0AEiXjKozx6gR+n0xJOTiSJEIHPOrBOGFIFcTF34hAwDt/CSzyNOPuHP
- y3yIE5JCEJMrKITlqJLbROl+nv8VqY2y8EBxWDAB5nHoULrED1TzmUg13abKHqv1Cqce5wHhdNd
- 7oq1wifnplUL3uw==
+ bh=m/zEIfXXTHvQjozZAyjiA6eqZQPUBkii1euXSnYoOvE=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlXhNmoGXYrkOE3AdB7Fp5rvOueSko64nRBHCyK
+ qKps9vLkRSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZV4TZgAKCRD6PaqMvJYe
+ 9V4vD/9mS6a40zwMwT1NDJ+tXjKAo93DSsj3Q6ByOm9ye0/hPin7RMgZVFGa4q+ojuJnwwONjDb
+ +TK2xaI3pQwgrd53zTS6cgTB0wcYLzShBoNMiDZpUP2jqM+p7vGfI/fAsGsphM67OoTNRh8VuBU
+ oXYpKWgfgfIpiUujcLk9JbxzvnHQL8jZBV8xw2bjdxHuGovFWRGcegiCmF957Nyip8OJzNrP1tj
+ X/wqq2vsdxdRmRTAF+WhqEAZBoJRlCCsV8k0R3hbemf/NgPoff+0Slnz9Iv8tIC1ffof83vNKu1
+ U4nsbEEjIiCuOiVTWhE2+kTwcqThZXjWCPXzPJq3xNTugvYDmrCrl0l6cgti8n7XuhwqS7UJzvL
+ BFuslCUgclBqOldOfLOFAMRm7tSlUqjdc3K2E3BZtCndzqO9zbrnCfSV4JqaUGAmfapIlm5ltRh
+ NnIyIjIHo5t1v61964DsmBk+ezYh/uBBsNhvsi5vHJSo2JNqhUJWxw+1tZxqxuQ6QJ6rgXXHp6k
+ lHOi0yBTgq9a4lbBdORqVHGG4WB2maQJq6egxHqmh1KU6N77c+Iw/5nNxqXHn/W/lmXQYV5Wrvf
+ 3BXb86pagpZjhXhsf7Qe7+CZ089UsFY+/dvlLlqtt5wWgZ/wxkhTiNLevHl9FJhIh+eDhsd8Q6L
+ 6VkHW9jMtVkw7AA==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,22 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two memory leaks in rkisp1 driver.
+Add missing calls to media_device_cleanup() to fix memory leak.
 
+Fixes: d65dd85281fb ("media: staging: rkisp1: add Rockchip ISP1 base driver")
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
-Tomi Valkeinen (2):
-      media: rkisp1: Fix media device memory leak
-      media: rkisp1: Fix memory leaks in rkisp1_isp_unregister()
-
  drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 3 +++
- drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 1 +
- 2 files changed, 4 insertions(+)
----
-base-commit: 1865913dd590ca6d5e3207b15099a1210dd62f29
-change-id: 20231122-rkisp-fixes-c2795cafda52
+ 1 file changed, 3 insertions(+)
 
-Best regards,
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index c41abd2833f1..e10cc2881757 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -617,6 +617,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+ 	media_device_unregister(&rkisp1->media_dev);
+ err_unreg_v4l2_dev:
+ 	v4l2_device_unregister(&rkisp1->v4l2_dev);
++	media_device_cleanup(&rkisp1->media_dev);
+ err_pm_runtime_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 	return ret;
+@@ -637,6 +638,8 @@ static void rkisp1_remove(struct platform_device *pdev)
+ 	media_device_unregister(&rkisp1->media_dev);
+ 	v4l2_device_unregister(&rkisp1->v4l2_dev);
+ 
++	media_device_cleanup(&rkisp1->media_dev);
++
+ 	pm_runtime_disable(&pdev->dev);
+ }
+ 
+
 -- 
-Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+2.34.1
 
