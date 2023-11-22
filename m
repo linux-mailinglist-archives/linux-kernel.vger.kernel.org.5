@@ -2,57 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4747F4B12
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE05B7F4B36
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344704AbjKVPjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S235343AbjKVPmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:42:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344703AbjKVPje (ORCPT
+        with ESMTP id S235319AbjKVPlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:39:34 -0500
+        Wed, 22 Nov 2023 10:41:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CE63C3C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:36:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE038C433CD;
-        Wed, 22 Nov 2023 15:36:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA98E4493;
+        Wed, 22 Nov 2023 07:36:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6093AC433AB;
+        Wed, 22 Nov 2023 15:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667393;
-        bh=OKh33AzVm9uxL93RkAbKxEVBTDGFce76r325kliI7Zw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mZPX+pE6BgQhCxnyvz2us7GgaC44S5Pm6jVPhcdDLXl90vZs0wDYN5mgcYmJS9oV3
-         5Tb/Vq+g8RXzDFpRFiNg4Wtyzl8+l/BYT1etESchluIJmgYh1EmHDNbK1rU/R4Gmyi
-         H0JnKPpKkFQ/VYScjMQqwZBecPdIQibiQ7bh0YkPhHwYVxVLQXFcITDcrqhUyNPdvY
-         PTNzGNAxjIm3fKgEDJ2Vpb9Dw+R+kAzRJj/avhXp55kO85BQ43eL+DdLFN15trIPGK
-         YUDtYXB+oHgIAzwu48xkIaDsbIcJCvOJnZMlfApmACGPwvFpnH/pFBao3qsnBe1xJj
-         cKM8+EHFSbViQ==
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-507f1c29f25so9498010e87.1;
-        Wed, 22 Nov 2023 07:36:33 -0800 (PST)
-X-Gm-Message-State: AOJu0YyTLyZBgJbvGlNlGor8cbnopohkC3Gn2zrFk1g65U6T4gzjOuq0
-        vAdEA5oqmmOjB1XbyP5Fqk6AKQ71+f79qSSQkg==
-X-Google-Smtp-Source: AGHT+IE1SGDtuVjfqEZvGhD647pUyiDxFC2qDwkSydBk3Fmn9SBROP8ROhE5tj24cuC1kE1Iu0iZc4ZOeqnYn86teZs=
-X-Received: by 2002:a05:6512:158e:b0:507:a766:ad27 with SMTP id
- bp14-20020a056512158e00b00507a766ad27mr2845995lfb.16.1700667391875; Wed, 22
- Nov 2023 07:36:31 -0800 (PST)
+        s=k20201202; t=1700667401;
+        bh=M/B2hoXU9RlZ1NNwu7UoF9IIYyDAQaQFAsbsbSU1IvA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QqmQNa++ndwSZSuhGkBM4Cd0zGoT1qrPt9I2ssbu/HWhhbVe24dFl3T95e0tQeLMe
+         hkgaUFbUwhbe4q9wG3z/Ry6Y6CJhzYzO4mNVUaY9zPwBTxSFnrqzA9oP/8/RfFaYpO
+         uVleGnc7pLkZ/YcX+HwDxssoIt3ICJQipimA8dFIoBirQDbrpg4N2H1ByIzFQQvLJh
+         q0iLnsSeiLJUo0x19nDkqSqChkoo7YqGb94dCVr463EpAS4TXV+s95ryemWVIQHvPr
+         k1wwxKIIXQLqN+gyTXpsuHIziTdAKgO4+hKL4SkF0CdB9lSc3Q6qFDrWzDxGST3iqL
+         4wYcszTXpRt8g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Yu Liao <liaoyu15@huawei.com>, Liu Tie <liutie4@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org
+Subject: [PATCH AUTOSEL 4.19 1/6] hrtimers: Push pending hrtimers away from outgoing CPU earlier
+Date:   Wed, 22 Nov 2023 10:36:25 -0500
+Message-ID: <20231122153635.853495-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20230807174159.1140957-1-kyletso@google.com> <20230807174159.1140957-2-kyletso@google.com>
- <20230821162517.GA1832382-robh@kernel.org> <CAGZ6i=0ey+94YYgc=os5iQ_pNmNVB=qZQD0=jB4fRTKggZPSWA@mail.gmail.com>
-In-Reply-To: <CAGZ6i=0ey+94YYgc=os5iQ_pNmNVB=qZQD0=jB4fRTKggZPSWA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 22 Nov 2023 08:36:19 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqLjAooY27pG4GQHRdpiB_=0RCYrkKOjzAvmvz=5yU71Og@mail.gmail.com>
-Message-ID: <CAL_JsqLjAooY27pG4GQHRdpiB_=0RCYrkKOjzAvmvz=5yU71Og@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: connector: Add child nodes for
- multiple PD capabilities
-To:     Kyle Tso <kyletso@google.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, badhri@google.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 4.19.299
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,196 +51,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 18, 2023 at 12:19=E2=80=AFPM Kyle Tso <kyletso@google.com> wrot=
-e:
->
-> On Tue, Aug 22, 2023 at 12:25=E2=80=AFAM Rob Herring <robh@kernel.org> wr=
-ote:
-> >
->
-> Sorry for the late response...
->
-> > On Tue, Aug 08, 2023 at 01:41:58AM +0800, Kyle Tso wrote:
-> > > Define a new optional property "capabilities" which is a child node
-> > > under connector to contain multiple USB Power Delivery capabilities.
-> > >
-> > > Define a new property with pattern (e.g. caps-0, caps-1) which is a
-> >
-> > A property in json-schema terms, but for DT it's a node not a property.
-> > 'Define a child node ...' would be clearer.
-> >
->
-> Will do in the future patch
->
-> > > child node under "capabilities". Each node contains PDO data of a
-> > > selectable Power Delivery capability.
-> > >
-> > > Also define common properties for source-pdos, sink-pdos, and
-> > > op-sink-microwatt that can be referenced.
-> >
-> > Why do we need this? What issue does this solve? The commit message
-> > should answer those questions (always).
-> >
->
-> Will state the rationale in the future patch
->
-> > > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > > ---
-> > > v1 -> v2:
-> > > - move source/sink-pdos to $defs and reference them in properties
-> > >
-> > >  .../bindings/connector/usb-connector.yaml     | 80 +++++++++++++----=
---
-> > >  1 file changed, 57 insertions(+), 23 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/connector/usb-connecto=
-r.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > index 1c4d3eb87763..c6b02dbda83f 100644
-> > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > @@ -117,28 +117,10 @@ properties:
-> > >    # The following are optional properties for "usb-c-connector" with=
- power
-> > >    # delivery support.
-> > >    source-pdos:
-> > > -    description: An array of u32 with each entry providing supported=
- power
-> > > -      source data object(PDO), the detailed bit definitions of PDO c=
-an be found
-> > > -      in "Universal Serial Bus Power Delivery Specification" chapter=
- 6.4.1.2
-> > > -      Source_Capabilities Message, the order of each entry(PDO) shou=
-ld follow
-> > > -      the PD spec chapter 6.4.1. Required for power source and power=
- dual role.
-> > > -      User can specify the source PDO array via PDO_FIXED/BATT/VAR/P=
-PS_APDO()
-> > > -      defined in dt-bindings/usb/pd.h.
-> > > -    minItems: 1
-> > > -    maxItems: 7
-> > > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > +    $ref: "#/$defs/source-pdos"
-> > >
-> > >    sink-pdos:
-> > > -    description: An array of u32 with each entry providing supported=
- power sink
-> > > -      data object(PDO), the detailed bit definitions of PDO can be f=
-ound in
-> > > -      "Universal Serial Bus Power Delivery Specification" chapter 6.=
-4.1.3
-> > > -      Sink Capabilities Message, the order of each entry(PDO) should=
- follow the
-> > > -      PD spec chapter 6.4.1. Required for power sink and power dual =
-role. User
-> > > -      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO=
-() defined
-> > > -      in dt-bindings/usb/pd.h.
-> > > -    minItems: 1
-> > > -    maxItems: 7
-> > > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > +    $ref: "#/$defs/sink-pdos"
-> > >
-> > >    sink-vdos:
-> > >      description: An array of u32 with each entry, a Vendor Defined M=
-essage Object (VDO),
-> > > @@ -164,9 +146,7 @@ properties:
-> > >      $ref: /schemas/types.yaml#/definitions/uint32-array
-> > >
-> > >    op-sink-microwatt:
-> > > -    description: Sink required operating power in microwatt, if sour=
-ce can't
-> > > -      offer the power, Capability Mismatch is set. Required for powe=
-r sink and
-> > > -      power dual role.
-> > > +    $ref: "#/$defs/op-sink-microwatt"
-> > >
-> > >    port:
-> > >      $ref: /schemas/graph.yaml#/properties/port
-> > > @@ -228,6 +208,30 @@ properties:
-> > >        SNK_READY for non-pd link.
-> > >      type: boolean
-> > >
-> > > +  capabilities:
-> > > +    description: A child node to contain all the selectable USB Powe=
-r Delivery capabilities.
-> > > +    type: object
-> > > +
-> > > +    patternProperties:
-> > > +      "^caps-[0-9]+$":
-> > > +        description: Child nodes under "capabilities" node. Each nod=
-e contains a selectable USB
-> > > +          Power Delivery capability.
-> > > +        type: object
-> > > +
-> > > +        properties:
-> > > +          source-pdos:
-> > > +            $ref: "#/$defs/source-pdos"
-> > > +
-> > > +          sink-pdos:
-> > > +            $ref: "#/$defs/sink-pdos"
-> > > +
-> > > +          op-sink-microwatt:
-> > > +            $ref: "#/$defs/op-sink-microwatt"
-> > > +
-> > > +        additionalProperties: false
-> > > +
-> > > +    additionalProperties: false
-> > > +
-> > >  dependencies:
-> > >    sink-vdos-v1: [ 'sink-vdos' ]
-> > >    sink-vdos: [ 'sink-vdos-v1' ]
-> > > @@ -235,6 +239,36 @@ dependencies:
-> > >  required:
-> > >    - compatible
-> > >
-> > > +$defs:
-> >
-> > Make this:
-> >
-> > $defs:
-> >   capabilities:
-> >     properties:
-> >       ...
-> >
-> > And then just reference "#/$defs/capabilities" at the top-level and in
-> > caps-[0-9] node schema.
-> >
-> > You'll need to use unevaluatedProperties instead of additionalPropertie=
-s
-> > as well.
-> >
->
-> I am sorry I don't understand this part. Could you explain more?
->
-> In $defs, define a whole structure of "capabilities" which has
-> patternProperties "caps-[0-9]+", and inside "caps-[0-9]+" there are
-> properties "source/sink-pdos" ?
+From: Thomas Gleixner <tglx@linutronix.de>
 
-No, define a list of properties under a def. Here's a more complete example=
-:
+[ Upstream commit 5c0930ccaad5a74d74e8b18b648c5eb21ed2fe94 ]
 
-$defs:
-  capabilities:
-    properties:
-      source-pdos:
-        ...
+2b8272ff4a70 ("cpu/hotplug: Prevent self deadlock on CPU hot-unplug")
+solved the straight forward CPU hotplug deadlock vs. the scheduler
+bandwidth timer. Yu discovered a more involved variant where a task which
+has a bandwidth timer started on the outgoing CPU holds a lock and then
+gets throttled. If the lock required by one of the CPU hotplug callbacks
+the hotplug operation deadlocks because the unthrottling timer event is not
+handled on the dying CPU and can only be recovered once the control CPU
+reaches the hotplug state which pulls the pending hrtimers from the dead
+CPU.
 
-      sink-pdos:
-        ...
+Solve this by pushing the hrtimers away from the dying CPU in the dying
+callbacks. Nothing can queue a hrtimer on the dying CPU at that point because
+all other CPUs spin in stop_machine() with interrupts disabled and once the
+operation is finished the CPU is marked offline.
 
-And then add "$ref: '#/$defs/capabilities'" at the top-level of this
-schema doc and under "caps-[0-9]+":
+Reported-by: Yu Liao <liaoyu15@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Liu Tie <liutie4@huawei.com>
+Link: https://lore.kernel.org/r/87a5rphara.ffs@tglx
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/cpuhotplug.h |  1 +
+ include/linux/hrtimer.h    |  4 ++--
+ kernel/cpu.c               |  8 +++++++-
+ kernel/time/hrtimer.c      | 33 ++++++++++++---------------------
+ 4 files changed, 22 insertions(+), 24 deletions(-)
 
-    patternProperties:
-      "^caps-[0-9]+$":
-        description: Child nodes under "capabilities" node. Each node
-contains a selectable USB
-          Power Delivery capability.
-        type: object
-        $ref: "#/$defs/capabilities"
-        unevaluatedProperties: false
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 71a0a5ffdbb1a..dd9f035be63f7 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -139,6 +139,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_ARM_CORESIGHT_STARTING,
+ 	CPUHP_AP_ARM64_ISNDEP_STARTING,
+ 	CPUHP_AP_SMPCFD_DYING,
++	CPUHP_AP_HRTIMERS_DYING,
+ 	CPUHP_AP_X86_TBOOT_DYING,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
+ 	CPUHP_AP_ONLINE,
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 542b4fa2cda9b..3bdaa92a2cab3 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -508,9 +508,9 @@ extern void sysrq_timer_list_show(void);
+ 
+ int hrtimers_prepare_cpu(unsigned int cpu);
+ #ifdef CONFIG_HOTPLUG_CPU
+-int hrtimers_dead_cpu(unsigned int cpu);
++int hrtimers_cpu_dying(unsigned int cpu);
+ #else
+-#define hrtimers_dead_cpu	NULL
++#define hrtimers_cpu_dying	NULL
+ #endif
+ 
+ #endif
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index c9ca190ec0347..34c09c3d37bc6 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1418,7 +1418,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 	[CPUHP_HRTIMERS_PREPARE] = {
+ 		.name			= "hrtimers:prepare",
+ 		.startup.single		= hrtimers_prepare_cpu,
+-		.teardown.single	= hrtimers_dead_cpu,
++		.teardown.single	= NULL,
+ 	},
+ 	[CPUHP_SMPCFD_PREPARE] = {
+ 		.name			= "smpcfd:prepare",
+@@ -1485,6 +1485,12 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 		.startup.single		= NULL,
+ 		.teardown.single	= smpcfd_dying_cpu,
+ 	},
++	[CPUHP_AP_HRTIMERS_DYING] = {
++		.name			= "hrtimers:dying",
++		.startup.single		= NULL,
++		.teardown.single	= hrtimers_cpu_dying,
++	},
++
+ 	/* Entry state on starting. Interrupts enabled from here on. Transient
+ 	 * state for synchronsization */
+ 	[CPUHP_AP_ONLINE] = {
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 8512f06f0ebef..bf74f43e42af0 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -1922,29 +1922,22 @@ static void migrate_hrtimer_list(struct hrtimer_clock_base *old_base,
+ 	}
+ }
+ 
+-int hrtimers_dead_cpu(unsigned int scpu)
++int hrtimers_cpu_dying(unsigned int dying_cpu)
+ {
+ 	struct hrtimer_cpu_base *old_base, *new_base;
+-	int i;
++	int i, ncpu = cpumask_first(cpu_active_mask);
+ 
+-	BUG_ON(cpu_online(scpu));
+-	tick_cancel_sched_timer(scpu);
++	tick_cancel_sched_timer(dying_cpu);
++
++	old_base = this_cpu_ptr(&hrtimer_bases);
++	new_base = &per_cpu(hrtimer_bases, ncpu);
+ 
+-	/*
+-	 * this BH disable ensures that raise_softirq_irqoff() does
+-	 * not wakeup ksoftirqd (and acquire the pi-lock) while
+-	 * holding the cpu_base lock
+-	 */
+-	local_bh_disable();
+-	local_irq_disable();
+-	old_base = &per_cpu(hrtimer_bases, scpu);
+-	new_base = this_cpu_ptr(&hrtimer_bases);
+ 	/*
+ 	 * The caller is globally serialized and nobody else
+ 	 * takes two locks at once, deadlock is not possible.
+ 	 */
+-	raw_spin_lock(&new_base->lock);
+-	raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
++	raw_spin_lock(&old_base->lock);
++	raw_spin_lock_nested(&new_base->lock, SINGLE_DEPTH_NESTING);
+ 
+ 	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
+ 		migrate_hrtimer_list(&old_base->clock_base[i],
+@@ -1955,15 +1948,13 @@ int hrtimers_dead_cpu(unsigned int scpu)
+ 	 * The migration might have changed the first expiring softirq
+ 	 * timer on this CPU. Update it.
+ 	 */
+-	hrtimer_update_softirq_timer(new_base, false);
++	__hrtimer_get_next_event(new_base, HRTIMER_ACTIVE_SOFT);
++	/* Tell the other CPU to retrigger the next event */
++	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
+ 
+-	raw_spin_unlock(&old_base->lock);
+ 	raw_spin_unlock(&new_base->lock);
++	raw_spin_unlock(&old_base->lock);
+ 
+-	/* Check, if we got expired work to do */
+-	__hrtimer_peek_ahead_timers();
+-	local_irq_enable();
+-	local_bh_enable();
+ 	return 0;
+ }
+ 
+-- 
+2.42.0
 
-unevaluatedProperties is needed because it can "see" properties
-defined in a $ref to get the full list of properties for a node.
-
-Rob
