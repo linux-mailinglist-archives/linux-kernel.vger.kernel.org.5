@@ -2,65 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8597F4009
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572E37F4012
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbjKVIYF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 03:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48940 "EHLO
+        id S231190AbjKVI2t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 03:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjKVIYE (ORCPT
+        with ESMTP id S230257AbjKVI2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:24:04 -0500
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AABA4;
-        Wed, 22 Nov 2023 00:23:59 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db3fa47c2f7so622354276.0;
-        Wed, 22 Nov 2023 00:23:59 -0800 (PST)
+        Wed, 22 Nov 2023 03:28:47 -0500
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2B193;
+        Wed, 22 Nov 2023 00:28:43 -0800 (PST)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5cb9407e697so15301867b3.3;
+        Wed, 22 Nov 2023 00:28:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700641439; x=1701246239;
+        d=1e100.net; s=20230601; t=1700641723; x=1701246523;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vy1My54yzyi9AiFrv2nlq4bEUpW9uWwjs7YqVEJrmzU=;
-        b=OnFcIRLIzEC2kvMWX5FRgkaaQ/kS8UeBDhRzQg9gP6s9xBFge+L+qPePC48TWBsG+m
-         E1kOyyiLstRvLbSXKtsB0LE5bazCvbfMzW3EItYe/qXJyGbj6PWhKijo7S6ovkQgvXbS
-         10s3FlHPXh48A5N69K8DuMJXE/V+hc118oFH3h9Q1Ln0QNPgQ5LLhKp6lMvmV8PuIsCj
-         AHZBfRw91Ty7J6+XLJiao/xFHkRvZOu0wPWgbwehjdCGsJFmIhtfSETEIuFq2wksZbs9
-         OBzxifp6bOhTiws46UVCwNtPOxkoX/pxt5lTYrsjdosQo0CUefFIgmMUZqQDnsE/bSHT
-         PAmA==
-X-Gm-Message-State: AOJu0YwLM5MIJ/HWirrUSxoXnk0Kfak6SPLZpr1ktmcUIqHdCYgePCSI
-        hTGMY8dmZww0lYw5lroHl6W90ZTKCJKZWA==
-X-Google-Smtp-Source: AGHT+IFvfzpHACzFnQwn+vsv0ZZY4cK89OcH/XPBZTjHfYPaVATZSt8axcfLiD4RjF2EUXZWvC1mrQ==
-X-Received: by 2002:a25:9d01:0:b0:d9a:fd65:f97f with SMTP id i1-20020a259d01000000b00d9afd65f97fmr1383177ybp.17.1700641438739;
-        Wed, 22 Nov 2023 00:23:58 -0800 (PST)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id k16-20020a056902025000b00d9a36ded1besm1230779ybs.6.2023.11.22.00.23.58
+        bh=Gha+lhz98cqfqHPVBYNZIJYx9aE1nB2ARipNu2FhWYQ=;
+        b=E4CX+G9g6PMBq61+FezDEPrbc3vEMCVfhrQTs9NqW3enepgaYnNsvjNWl91m/RaMll
+         +zJqdWfnnTtRh8lI1nSjLcC7TmAGBmocoGlFGHAACas8nvTHcRKvlHj0ep75d1VT7HxZ
+         m1yXtHOWxUkkq9qEK+jOGCSpv2+Cd9HEGAPHI93g+cv9UX0XHNVUGbjcQQ7o8O2vG/xm
+         gF1hQLsOcMKDhIpkEQe8+8/tVmoXzMk7mY5A+f0UOPXMBtoblIRAytLx6DdAqTxVgjiS
+         qQ1vtJhLuVXLXVq5BKsxjgYH4GAKeX150RjWHoeGsCbYvkkfhZQpiMbQ0hs063Y6cIVj
+         G+CA==
+X-Gm-Message-State: AOJu0Ywl5qIYuFLG8PMVq1y22KseVkIW2KYTy2PY01gBWVZGJOE2wp1A
+        WYPAMxwSVxp5QpBqn3DDClOsA4OchKlEeQ==
+X-Google-Smtp-Source: AGHT+IEDd6gxY4RmAFhZrkL023ZMiEGHsqttYS6oXMquTmdAHMJsY/sNAABm26MBC5bKMVihW7F9ow==
+X-Received: by 2002:a0d:d547:0:b0:5b3:26e1:320c with SMTP id x68-20020a0dd547000000b005b326e1320cmr1478260ywd.40.1700641722909;
+        Wed, 22 Nov 2023 00:28:42 -0800 (PST)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id a190-20020a0dd8c7000000b005a8d713a91esm3559623ywe.15.2023.11.22.00.28.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 00:23:58 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-db3fa47c2f7so622341276.0;
-        Wed, 22 Nov 2023 00:23:58 -0800 (PST)
-X-Received: by 2002:a25:d742:0:b0:d9a:d16f:dddf with SMTP id
- o63-20020a25d742000000b00d9ad16fdddfmr1200974ybg.24.1700641437861; Wed, 22
- Nov 2023 00:23:57 -0800 (PST)
+        Wed, 22 Nov 2023 00:28:41 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-da3b4b7c6bdso6358915276.2;
+        Wed, 22 Nov 2023 00:28:41 -0800 (PST)
+X-Received: by 2002:a25:cec5:0:b0:d9b:dae4:63fa with SMTP id
+ x188-20020a25cec5000000b00d9bdae463famr1414014ybe.34.1700641720963; Wed, 22
+ Nov 2023 00:28:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121202459.36874-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20231121202459.36874-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com> <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
+ <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com> <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org>
+In-Reply-To: <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 22 Nov 2023 09:23:44 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXozB7PVOZM+SQa9D6Zca3x_+LE63RhmBGPDvmOma1fUA@mail.gmail.com>
-Message-ID: <CAMuHMdXozB7PVOZM+SQa9D6Zca3x_+LE63RhmBGPDvmOma1fUA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: errata: andes: Probe IOCP during boot stage
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Yu Chien Peter Lin <peterlin@andestech.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Date:   Wed, 22 Nov 2023 09:28:22 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXDUF7i9GdXSyHbmUtwmCCXf-sXQDbrGAKTtQ9=TSNFjA@mail.gmail.com>
+Message-ID: <CAMuHMdXDUF7i9GdXSyHbmUtwmCCXf-sXQDbrGAKTtQ9=TSNFjA@mail.gmail.com>
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     wens@kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -73,77 +88,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
-
-On Tue, Nov 21, 2023 at 9:25 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, Nov 22, 2023 at 9:21 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 22/11/2023 09:09, Chen-Yu Tsai wrote:
+> > On Wed, Nov 22, 2023 at 4:05 PM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> >> On 21/11/2023 14:50, Rafał Miłecki wrote:
+> >>>> +Order of Nodes
+> >>>> +--------------
+> >>>> +
+> >>>> +1. Nodes within any bus, thus using unit addresses for children, shall be
+> >>>> +   ordered incrementally by unit address.
+> >>>> +   Alternatively for some sub-architectures, nodes of the same type can be
+> >>>> +   grouped together (e.g. all I2C controllers one after another even if this
+> >>>> +   breaks unit address ordering).
+> >>>> +
+> >>>> +2. Nodes without unit addresses should be ordered alpha-numerically by the node
+> >>>> +   name.  For a few types of nodes, they can be ordered by the main property
+> >>>> +   (e.g. pin configuration states ordered by value of "pins" property).
+> >>>> +
+> >>>> +3. When extending nodes in the board DTS via &label, the entries should be
+> >>>> +   ordered alpha-numerically.
+> >>>
+> >>> Just an idea. Would that make (more) sense to make &label-like entries
+> >>> match order of nodes in included .dts(i)?
+> >>>
+> >>> Adventages:
+> >>> 1. We keep unit address incremental order that is unlikely to change
+> >>>
+> >>> Disadventages:
+> >>> 1. More difficult to verify
+> >>
+> >> Rob also proposed this and I believe above disadvantage here is crucial.
+> >> If you add new SoC with board DTS you are fine. But if you add only new
+> >> board, the order of entries look random in the diff hunk. Reviewer must
+> >> open SoC DTSI to be able to review the patch with board DTS.
+> >>
+> >> If review is tricky and we do not have tool to perform it automatically,
+> >> I am sure submissions will have disordered board DTS.
+> >>
+> >>>
+> >>>
+> >>>> +Example::
+> >>>> +
+> >>>> +    // SoC DTSI
+> >>>> +
+> >>>> +    / {
+> >>>> +            cpus {
+> >>>> +                    // ...
+> >>>> +            };
+> >>>> +
+> >>>> +            psci {
+> >>>> +                    // ...
+> >>>> +            };
+> >>>> +
+> >>>> +            soc@ {
+> >>>> +                    dma: dma-controller@10000 {
+> >>>> +                            // ...
+> >>>> +                    };
+> >>>> +
+> >>>> +                    clk: clock-controller@80000 {
+> >>>> +                            // ...
+> >>>> +                    };
+> >>>> +            };
+> >>>> +    };
+> >>>> +
+> >>>> +    // Board DTS
+> >>>> +
+> >>>> +    &clk {
+> >>>> +            // ...
+> >>>> +    };
+> >>>> +
+> >>>> +    &dma {
+> >>>> +            // ...
+> >>>> +    };
+> >>>> +
+> >>>> +
+> >>>> +Order of Properties in Device Node
+> >>>> +----------------------------------
+> >>>> +
+> >>>> +Following order of properties in device nodes is preferred:
+> >>>> +
+> >>>> +1. compatible
+> >>>> +2. reg
+> >>>> +3. ranges
+> >>>> +4. Standard/common properties (defined by common bindings, e.g. without
+> >>>> +   vendor-prefixes)
+> >>>> +5. Vendor-specific properties
+> >>>> +6. status (if applicable)
+> >>>> +7. Child nodes, where each node is preceded with a blank line
+> >>>> +
+> >>>> +The "status" property is by default "okay", thus it can be omitted.
+> >>>
+> >>> I think it would really help to include position of #address-cells and
+> >>> #size-cells here. In some files I saw them above "compatible" that seems
+> >>> unintuitive. Some prefer putting them at end which I think makes sense
+> >>> as they affect children nodes.
+> >>>
+> >>> Whatever you choose it'd be just nice to have things consistent.
+> >>
+> >> This is a standard/common property, thus it goes to (4) above.
+> >
+> > It's probably a mix, but AFAIK a lot of the device trees in tree have
+> > #*-cells after "status". In some cases they are added in the board
+> > .dts files, not the chip/module .dtsi files.
 >
-> We should be probing for IOCP during boot stage only. As we were probing
-> for IOCP for all the stages this caused the below issue during module-init
-> stage,
+> Existing DTS is not a good example :)
 >
-> [9.019104] Unable to handle kernel paging request at virtual address ffffffff8100d3a0
-> [9.027153] Oops [#1]
-> [9.029421] Modules linked in: rcar_canfd renesas_usbhs i2c_riic can_dev spi_rspi i2c_core
-> [9.037686] CPU: 0 PID: 90 Comm: udevd Not tainted 6.7.0-rc1+ #57
-> [9.043756] Hardware name: Renesas SMARC EVK based on r9a07g043f01 (DT)
-> [9.050339] epc : riscv_noncoherent_supported+0x10/0x3e
-> [9.055558]  ra : andes_errata_patch_func+0x4a/0x52
-> [9.060418] epc : ffffffff8000d8c2 ra : ffffffff8000d95c sp : ffffffc8003abb00
-> [9.067607]  gp : ffffffff814e25a0 tp : ffffffd80361e540 t0 : 0000000000000000
-> [9.074795]  t1 : 000000000900031e t2 : 0000000000000001 s0 : ffffffc8003abb20
-> [9.081984]  s1 : ffffffff015b57c7 a0 : 0000000000000000 a1 : 0000000000000001
-> [9.089172]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : ffffffff8100d8be
-> [9.096360]  a5 : 0000000000000001 a6 : 0000000000000001 a7 : 000000000900031e
-> [9.103548]  s2 : ffffffff015b57d7 s3 : 0000000000000001 s4 : 000000000000031e
-> [9.110736]  s5 : 8000000000008a45 s6 : 0000000000000500 s7 : 000000000000003f
-> [9.117924]  s8 : ffffffc8003abd48 s9 : ffffffff015b1140 s10: ffffffff8151a1b0
-> [9.125113]  s11: ffffffff015b1000 t3 : 0000000000000001 t4 : fefefefefefefeff
-> [9.132301]  t5 : ffffffff015b57c7 t6 : ffffffd8b63a6000
-> [9.137587] status: 0000000200000120 badaddr: ffffffff8100d3a0 cause: 000000000000000f
-> [9.145468] [<ffffffff8000d8c2>] riscv_noncoherent_supported+0x10/0x3e
-> [9.151972] [<ffffffff800027e8>] _apply_alternatives+0x84/0x86
-> [9.157784] [<ffffffff800029be>] apply_module_alternatives+0x10/0x1a
-> [9.164113] [<ffffffff80008fcc>] module_finalize+0x5e/0x7a
-> [9.169583] [<ffffffff80085cd6>] load_module+0xfd8/0x179c
-> [9.174965] [<ffffffff80086630>] init_module_from_file+0x76/0xaa
-> [9.180948] [<ffffffff800867f6>] __riscv_sys_finit_module+0x176/0x2a8
-> [9.187365] [<ffffffff80889862>] do_trap_ecall_u+0xbe/0x130
-> [9.192922] [<ffffffff808920bc>] ret_from_exception+0x0/0x64
-> [9.198573] Code: 0009 b7e9 6797 014d a783 85a7 c799 4785 0717 0100 (0123) aef7
-> [9.205994] ---[ end trace 0000000000000000 ]---
+> >
+> > +1 that it makes sense at the end as they affect child nodes.
 >
-> This is because we called riscv_noncoherent_supported() for all the stages
-> during IOCP probe. riscv_noncoherent_supported() function sets
-> noncoherent_supported variable to true which has an annotation set to
-> "__ro_after_init" due to which we were seeing the above splat. Fix this by
-> probing IOCP during boot stage only.
->
-> Fixes: e021ae7f5145 ("riscv: errata: Add Andes alternative ports")
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> I still insist that status must be the last, because:
+> 1. Many SoC nodes have address/size cells but do not have any children
+> (I2C, SPI), so we put useless information at the end.
+> 2. Status should be the final information to say whether the node is
+> ready or is not. I read the node, check properties and then look at the end:
+> a. Lack of status means it is ready.
+> b. status=disabled means device still needs board resources/customization
 
-Thanks for your patch!
-
-> --- a/arch/riscv/errata/andes/errata.c
-> +++ b/arch/riscv/errata/andes/errata.c
-> @@ -60,7 +60,8 @@ void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct al
->                                               unsigned long archid, unsigned long impid,
->                                               unsigned int stage)
->  {
-> -       errata_probe_iocp(stage, archid, impid);
-> +       if (stage == RISCV_ALTERNATIVES_BOOT)
-> +               errata_probe_iocp(stage, archid, impid);
->
->         /* we have nothing to patch here ATM so just return back */
->  }
-
-I believe this still causes errata_probe_iocp() to be called twice:
-once from apply_boot_alternatives(), and a second time (if CONFIG_MMU=y)
-from apply_vdso_alternatives().  Is that OK?
-
-Perhaps instead you want to add a check to errata_probe_iocp() (after
-the check for CONFIG_ERRATA_ANDES_CMO), to bail out if the function
-was called before?
++1 for status at the end (before children), so it's easy to find.
+Also, reality can look like the example in the bindings, with an optional
+status property appended.
 
 Gr{oetje,eeting}s,
 
