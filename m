@@ -2,119 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E2C7F3BDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9317F3C20
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343553AbjKVCh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:37:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58246 "EHLO
+        id S1343537AbjKVDET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:04:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343541AbjKVChR (ORCPT
+        with ESMTP id S229464AbjKVDER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:37:17 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AC41A2;
-        Tue, 21 Nov 2023 18:37:13 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SZlkr1NJdz4f3jMX;
-        Wed, 22 Nov 2023 10:37:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id CC8E71A01D0;
-        Wed, 22 Nov 2023 10:37:09 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgBXWhBSaV1lNClcBg--.32716S7;
-        Wed, 22 Nov 2023 10:37:09 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     ming.lei@redhat.com, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH v3 3/3] block: warn once for each partition in bio_check_ro()
-Date:   Wed, 22 Nov 2023 18:31:03 +0800
-Message-Id: <20231122103103.1104589-4-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231122103103.1104589-1-yukuai1@huaweicloud.com>
-References: <20231122103103.1104589-1-yukuai1@huaweicloud.com>
+        Tue, 21 Nov 2023 22:04:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0390B90;
+        Tue, 21 Nov 2023 19:04:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700622254; x=1732158254;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=mbSsWFoIqIIvhF59+J6QPMYANMqHqouPOfSaGopFfm8=;
+  b=KMfJTZny1KJmLy3tbaAZ46akKX7mXTzQDzxcs4RWAUoSFgQWMja7Vybx
+   DIY7vvnS+IEQe1V6gwowIv9OCyUp0FJDKTEMnqbwA2RSwysqpEK6SPYo9
+   tqmXo/jSavZBb9dyJgLgIa4fOYw5rtzEivcHZUM66qmm0gS3QxKV7hq9H
+   j/aL6RVUOb1tRNMzMJdLFBByx5i2ljg6G5+0zMlLkBUrXQPP5prCei7kJ
+   dPIweEKn+D+OcktrbUie+uWkKsekuVw7zUu5sb9on7Et2Vkt1WRB8DG56
+   RvC48xHNjA5Lg6/D2RagPd1CQDGUVwgGQXVXKdWOL1XtW+WHCmjmrySwE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="390832820"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="390832820"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 19:04:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="832865298"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="832865298"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Nov 2023 19:04:13 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 21 Nov 2023 19:04:13 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 21 Nov 2023 19:04:13 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 21 Nov 2023 19:04:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gt0c/f5DjMb7Us87ojo6DFmYzo5b3Trq9ReceGX2MiPrt0VV47KsHtj8JySpAB0xk8C3TQYofsL7g54WlULLl0VuWctKAm4r+PNb+Gltn78A2k78jRfpNQRQTxVCCgAljIk0YdD4ds3A3aLvr2h4mOvjYPF/y28BRMf4yI+FEwc1zlxajqTAfijPaj+jkPZPt7hfX3rNnNNOenj1xZeEu5FQAb4CplVkVKk0L3/HUT8VyT7LYI/WHoiZXUTclQAxnM6qVw+tNIZhhtw0qPPK/iB3XAEgzfF75fJZQYNKKwAX0WIl7llUi/leeQBsCPZp/TR+6OZnwGUYaG4ucwsE2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=m1N/Vrf1Q5IIbM6jd+aDal/ItraKeRgrGvxZsDlaTQ4=;
+ b=foWnunSOb5MJkSC7EhjNCTjn3ltGgxPTWFlY6RSyDvVAwecpgGrLbGA74XOT+LEpQI1k36VTEzez4UeDeaUjAMG/mB5l3Izs0+YqxZIzl17hzrmu0aOcgpiJBOI1JNrBl+M2M0gVD/RF9HZtJBEYf8i3maHSOR+NyQpPYW9MjcVXFeuD4CJfdG1Q1IGxB9tOtHmde88TZK7/LrW7epEW2W5l6ZJ/kiTve8FJRwNp/oZa0xYyh6hpAAsiArxb6tjrrMun/1CNMzPP/FsNaS4mTMWVN5AscU068x9zIRk+FOdbIql3pJv8i0u7bmFV2MRWELsQuuDxxVtzrxySATd9Jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by DS0PR11MB8017.namprd11.prod.outlook.com (2603:10b6:8:115::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 03:04:06 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::1236:9a2e:5acd:a7f]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::1236:9a2e:5acd:a7f%3]) with mapi id 15.20.7002.027; Wed, 22 Nov 2023
+ 03:04:05 +0000
+Date:   Wed, 22 Nov 2023 11:03:57 +0800
+From:   Oliver Sang <oliver.sang@intel.com>
+To:     Ritesh Harjani <ritesh.list@gmail.com>
+CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, <oliver.sang@intel.com>
+Subject: Re: [linus:master] [ext2]  bc943f4872: xfstests.generic.269.fail
+Message-ID: <ZV1vnVoEinETb2z1@xsang-OptiPlex-9020>
+References: <202311211653.3a9e8678-oliver.sang@intel.com>
+ <87zfz7dkpk.fsf@doe.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87zfz7dkpk.fsf@doe.com>
+X-ClientProxiedBy: SI1PR02CA0002.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::16) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBXWhBSaV1lNClcBg--.32716S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF1kXr15WF4xJF47ZrWDJwb_yoW8Ww1fpF
-        nxKFyrGryjgrWxuan7GF13Aa4rGa1kWrW5ArWfZw1Yyay3K34Iq3Z2qr13Jr48uFWSkrW3
-        Xr1jkrWrCFyDWrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2048vs2IY02
-        0E87I2jVAFwI0_JrWl82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2
-        F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjx
-        v20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E
-        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYx
-        C7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-        0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
-        JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-        AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7sRiyCJDUUUUU=
-        =
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|DS0PR11MB8017:EE_
+X-MS-Office365-Filtering-Correlation-Id: d74ff85c-fbf3-4dd9-13c0-08dbeb07b049
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tfRJ4P9MYaN/oUN4xiW10QbfbFC6X7wLgW7MWjdz697ooayMD8AATaRGXg8if1H/u1nzfmypp8bWv3GF+BMafIKBXwa1a+PucVkiBibnpT+1TcfZq9mXYIfElRaFOcYjf9CnmTXnbWQ7J88REQIVhrYFKg7fp7Mb037rleEDjQCw9kME8LwKiz7P3DMZl8cG7QMToGMJunqoYLaKiFlIyEpDGKZsA1KlTYUuvjDHcpeFxKuc5TKcqfRcOG2QMyLm80e/o9gwN0uHLzdsRdqXOphKqx9onM5eaCn48In1vssKmtD7/jT0tes6Lk2BlnCqebxEnuVgWb5kXDe7Il6a3NHSYViMNo94X1r/EXCZPE9wg0b4f47aoZYTlUOC9+ZT4dQ3disD/QrGB6YQAAoqOTFCIl1vJ3jT1Pkyjnt61OkK8wrprbqjKWhD8DrVsg+lxMcAY8qA4aoSnVL5fj4F3niCpgGboHPB6S74ge0hHFiaCXtFkwMfcv5C/si0IXXypc+bR7Ol/bZRYZKQ5pel9HA0mokwEnv0CBCPigIg0xwdd6pwTLFuBocD81BURa8c0tsDxX4clYjxiS6OiR0KsUAhk2ZszvGCd5q+RkpIZdirH5ZfRgLmzPuySd1NVzxmcazBWVOOjxFly/kpdGc8WQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(39860400002)(366004)(136003)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66556008)(66476007)(316002)(66946007)(6916009)(6512007)(478600001)(6506007)(6666004)(107886003)(966005)(9686003)(6486002)(33716001)(82960400001)(38100700002)(83380400001)(26005)(86362001)(44832011)(5660300002)(2906002)(4744005)(8676002)(4326008)(8936002)(41300700001)(41533002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3FWyW99d8J4+/Ps91kD1aRS0v1qnYiKws0fenyDMBs5pv0NZfOpbCBqp7rsR?=
+ =?us-ascii?Q?ZBb9RkyhbnMCDU9ku0VdNHqqbzOqWWFE56nYuMruqLnjFRZW9dr2Lc1bNAJK?=
+ =?us-ascii?Q?POkwRPwV+VpdtL0U+6EDT2tHjvA25mlxQoiEm3RNAh73SRIekN9usJIZYTIS?=
+ =?us-ascii?Q?x90nUpJO0kzdfYwgPxaojHXjxxQy7tRtGKWvkdeWroMyiCj8IgFosnZQPSG2?=
+ =?us-ascii?Q?/mRb+EwRg7PljCYa/+QSGKY5OSeVfEPB6MP4j5bL4PGjyorM51fi+zBGgKtj?=
+ =?us-ascii?Q?gLZGgBtMHQNALxGLEF1Aao85rl754vS4PSMJ8gAd2BZxZN/Fqy5Eyq76mDaa?=
+ =?us-ascii?Q?22FXEAt+ascMkmwaD/4SzK8m4L5rALkaDowuy9xyX0k4cfHHyvsw9G/aLVag?=
+ =?us-ascii?Q?SKjWIgjhn7HmYhQFIgNZ5b95SySXekzJoBn8mYyONxb7Anl5QpXZP1eB+uNg?=
+ =?us-ascii?Q?WwDU7CZmT7gMxnBvrzMgCZW4WegD2mmU4sq6boZg5IMjbkuibIipChd9N8Qw?=
+ =?us-ascii?Q?A26jCktCvaAIg9+/Puv7j5dbBDXMvf2uQvcXic+mikwY/QkhiwqREomMHh2c?=
+ =?us-ascii?Q?siPi8ItmxJWZ9lYF8E3XH9ripDHwOUN1LvU0k8vskiJbaKEQvVudhCcAsw2j?=
+ =?us-ascii?Q?6/TzLfAe7Ajc1tYsN0O97eJiraDI74ytYP8EEu+HMOcmTdYFqGu3E6eymtcx?=
+ =?us-ascii?Q?evQSMYGWt4ETnUK+2u5WS6RhD+BPIczcigpjcsIXzXORuDpwt7w6bViAmobK?=
+ =?us-ascii?Q?diDSYQZzV1sEokoF3dJz0j3iACi/9LaVgqgJReRAVULD1cAC7zrkv3hjU60s?=
+ =?us-ascii?Q?tLPkgxoyowpX151NeVGsvRCd3NINBRBOUf3wP0sygRs/bAw3wopGW+t10OLg?=
+ =?us-ascii?Q?ih0sBuoHeMAJv0sD9WV2WHNguDEzpsBoWJ0TgSCq19y7ssf2BHUXbLTPrxKW?=
+ =?us-ascii?Q?FAwIs+0zrUJrPLvlIFsCF93Zbt/eyzTiwawaeLk+F65vTvKCi/+b6Jq2t0bd?=
+ =?us-ascii?Q?nFCbA1xXwlPF7msu12sbdF/FDuJR0rdDi454rqqhmmcyD/foobmhM30UCjB9?=
+ =?us-ascii?Q?J0dAgKpaMwoscFR4aZrIje5dhpfHzxL6YPjz/pFKpp80xS92VZfyo70cMhB7?=
+ =?us-ascii?Q?PCBuhDKbJvhCOWL09Fx/NVS/rqddGHyrAQ6rioW/Bc9V8VRy4CE+Ij+4FIZc?=
+ =?us-ascii?Q?gPqb6Ol9rmBLRsnRQvXdvoF5BVoFVxGmzIA8SMU2F+0cimHVZbKR/DdgSr+l?=
+ =?us-ascii?Q?eFdUC0i8oTIG+Ox+r80Rfvjm5mVDJh4zlJfUMmAT0T0Szhs1FhObXzsvwDRR?=
+ =?us-ascii?Q?2lzj1r0VHGe/BdzxiYgcScg21kQ63rMl2s/0GLSVXxHZcli16+wkBJFmBIn7?=
+ =?us-ascii?Q?uzuzjzCe4yHVJwx7n2uucLrV+8usopcQUDQ8rNvLdrQuigIKrK8ydDzBINkL?=
+ =?us-ascii?Q?E8Hu1j+9CBT+k4GLWH9waw3d2tZle58gE6UUfSBUP02tpDOQYIBA34hTuYsG?=
+ =?us-ascii?Q?ZXBV0+ZuhlUqkU0RPfAQPgNNZ/SYK2PPgeeuFNVyhBGWZgl2Mf12rmPJR/A7?=
+ =?us-ascii?Q?8PPjT5P34q10zd7pReFDEDFT0katVwqwB58/nid/2JKK5/FvYsrn1wrTY4eG?=
+ =?us-ascii?Q?gA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d74ff85c-fbf3-4dd9-13c0-08dbeb07b049
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 03:04:05.8934
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7bZ/u59HEFzg1+sYNrzcszsuvAhpeWqj2jyIl54p79IEjpPS2QBvpTofkfwBuXx47zianms5e+8P5ELQAtw72A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8017
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+hi, Ritesh Harjani,
 
-Commit 1b0a151c10a6 ("blk-core: use pr_warn_ratelimited() in
-bio_check_ro()") fix message storm by limit the rate, however, there
-will still be lots of message in the long term. Fix it better by warn
-once for each partition.
+On Tue, Nov 21, 2023 at 11:58:55PM +0530, Ritesh Harjani wrote:
+> kernel test robot <oliver.sang@intel.com> writes:
+> 
+> > Hello,
+> >
+> > kernel test robot noticed "xfstests.generic.269.fail" on:
+> >
+> 
+> generic/269 is a ENOSPC with fsstress. There is a recent fix made to
+> this testcase [1]. Could it be that you are missing generic/269 fix in
+> your tree? xfstests recently got updated here [2].
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-core.c          | 14 +++++++++++---
- include/linux/blk_types.h |  1 +
- 2 files changed, 12 insertions(+), 3 deletions(-)
+thanks a lot for information and sorry for false positive.
+we've updated the xfstests, confirmed the test PASS now.
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index f9f8b12ba626..6575f684d41e 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -502,9 +502,17 @@ static inline void bio_check_ro(struct bio *bio)
- 	if (op_is_write(bio_op(bio)) && bdev_read_only(bio->bi_bdev)) {
- 		if (op_is_flush(bio->bi_opf) && !bio_sectors(bio))
- 			return;
--		pr_warn_ratelimited("Trying to write to read-only block-device %pg\n",
--				    bio->bi_bdev);
--		/* Older lvm-tools actually trigger this */
-+
-+		if (bdev_flagged(bio->bi_bdev, BD_FLAG_RO_WARNED))
-+			return;
-+
-+		bdev_set_flag(bio->bi_bdev, BD_FLAG_RO_WARNED);
-+		/*
-+		 * Use ioctl to set underlying disk of raid/dm to read-only
-+		 * will trigger this.
-+		 */
-+		pr_warn("Trying to write to read-only block-device %pg\n",
-+			bio->bi_bdev);
- 	}
- }
- 
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index de652045111b..a2185d2f02d9 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -41,6 +41,7 @@ struct bio_crypt_ctx;
- #define BD_FLAG_WRITE_HOLDER	1
- #define BD_FLAG_HAS_SUBMIT_BIO	2
- #define BD_FLAG_MAKE_IT_FAIL	3
-+#define BD_FLAG_RO_WARNED	4
- 
- struct block_device {
- 	sector_t		bd_start_sect;
--- 
-2.39.2
-
+> 
+> [1]: https://lore.kernel.org/fstests/169687552545.3948976.16961989033707045098.stgit@frogsfrogsfrogs/
+> 
+> [2]: https://lore.kernel.org/fstests/5fbaeebad0ffc8fc6944b35631ebc117.Zorro%20Lang%20%3Czlang@kernel.org/
+> 
+> -ritesh
