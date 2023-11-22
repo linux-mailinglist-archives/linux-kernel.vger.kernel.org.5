@@ -2,188 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD4B7F4BF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B8B7F4BF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343665AbjKVQH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37922 "EHLO
+        id S231653AbjKVQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:08:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVQHZ (ORCPT
+        with ESMTP id S229806AbjKVQI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:07:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBB492
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:07:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A79C433C7;
-        Wed, 22 Nov 2023 16:07:20 +0000 (UTC)
-Message-ID: <bbc673bd-de2c-43eb-81c0-16a9dfad4c4e@xs4all.nl>
-Date:   Wed, 22 Nov 2023 17:07:18 +0100
+        Wed, 22 Nov 2023 11:08:56 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3310C92;
+        Wed, 22 Nov 2023 08:08:51 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8A2CC15;
+        Wed, 22 Nov 2023 08:09:37 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.43.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2AA03F73F;
+        Wed, 22 Nov 2023 08:08:49 -0800 (PST)
+Date:   Wed, 22 Nov 2023 16:08:47 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Message-ID: <ZV4nj-_q4hHaf8Wl@FVFF77S0Q05N>
+References: <86pm03z0kw.wl-maz@kernel.org>
+ <86o7fnyvrq.wl-maz@kernel.org>
+ <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
+ <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
+ <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
+ <ZV38ParIEYWOjt6T@FVFF77S0Q05N>
+ <CAP-5=fUxBv4kbXyLrD5G-=wyRh6tKEJMy5qX0_86wQXxT79dJw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] visl: Add a codec specific variability parameter
-Content-Language: en-US, nl
-To:     Detlev Casanova <detlev.casanova@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-media@vger.kernel.org,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20231024191027.305622-1-detlev.casanova@collabora.com>
- <20231024191027.305622-5-detlev.casanova@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231024191027.305622-5-detlev.casanova@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUxBv4kbXyLrD5G-=wyRh6tKEJMy5qX0_86wQXxT79dJw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2023 21:09, Detlev Casanova wrote:
-> When running tests with different input data, the stable output frames
-> could be too similar and hide possible issues.
+On Wed, Nov 22, 2023 at 07:29:34AM -0800, Ian Rogers wrote:
+> On Wed, Nov 22, 2023 at 5:04 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > On Tue, Nov 21, 2023 at 08:38:45AM -0800, Ian Rogers wrote:
+> > > On Tue, Nov 21, 2023 at 8:15 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
+> > > > > On Tue, Nov 21, 2023 at 8:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > > On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
+> > > > > > > On Tue, Nov 21, 2023 at 7:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > > > > On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > > > > > > > > On Tue, 21 Nov 2023 13:40:31 +0000,
+> > > > > > > > > Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > [Adding key people on Cc]
+> > > > > > > > > >
+> > > > > > > > > > On Tue, 21 Nov 2023 12:08:48 +0000,
+> > > > > > > > > > Hector Martin <marcan@marcan.st> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > > > > > > > > > > according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > > > > > > > > >
+> > > > > > > > > > I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > > > > > > > > > asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > > > > > > > > > the PMU, but nothing works anymore.
+> > > > > > > > > >
+> > > > > > > > > > The saving grace in my case is that Debian still ships a 6.1 perftool
+> > > > > > > > > > package, but that's obviously not going to last.
+> > > > > > > > > >
+> > > > > > > > > > I'm happy to test potential fixes.
+> > > > > > > > >
+> > > > > > > > > At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > > > > > > > > -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > > > > > > > > CPU):
+> > > > > > > >
+> > > > > > > > IIUC the tool is doing the wrong thing here and overriding explicit
+> > > > > > > > ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather than events using
+> > > > > > > > that ${pmu}'s type and event namespace.
+> > > > > > > >
+> > > > > > > > Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE events to be
+> > > > > > > > targetted to a specific PMU, it's semantically wrong to rewrite events like
+> > > > > > > > this since ${pmu}/${event}/ is not necessarily equivalent to a similarly-named
+> > > > > > > > PERF_COUNT_HW_${EVENT}.
+> > > > > > >
+> > > > > > > If you name a PMU and an event then the event should only be opened on
+> > > > > > > that PMU, 100% agree. There's a bunch of output, but when the legacy
+> > > > > > > cycles event is opened it appears to be because it was explicitly
+> > > > > > > requested.
+> > > > > >
+> > > > > > I think you've missed that the named PMU events are being erreously transformed
+> > > > > > into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
+> > > > > >
+> > > > > >   Opening: apple_firestorm_pmu/cycles/
+> > > > > >   ------------------------------------------------------------
+> > > > > >   perf_event_attr:
+> > > > > >     type                             0 (PERF_TYPE_HARDWARE)
+> > > > > >     size                             136
+> > > > > >     config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > > > > >     sample_type                      IDENTIFIER
+> > > > > >     read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > > > > >     disabled                         1
+> > > > > >     inherit                          1
+> > > > > >     enable_on_exec                   1
+> > > > > >     exclude_guest                    1
+> > > > > >   ------------------------------------------------------------
+> > > > > >   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+> > > > > >
+> > > > > > ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_CYCLES.
+> > > > > >
+> > > > > > Marc said that he bisected the issue down to commit:
+> > > > > >
+> > > > > >   5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
+> > > > > >
+> > > > > > ... so it looks like something is going wrong when the events are being parsed,
+> > > > > > e.g. losing the HW PMU information?
+> > > > >
+> > > > > Ok, I think I'm getting confused by other things. This looks like the issue.
+> > > > >
+> > > > > I think it may be working as intended, but not how you intended :-) If
+> > > > > a core PMU is listed and then a legacy event, the legacy event should
+> > > > > be opened on the core PMU as a legacy event with the extended type
+> > > > > set. This is to allow things like legacy cache events to be opened on
+> > > > > a specified PMU. Legacy event names match with a higher priority than
+> > > > > those in sysfs or json as they are hard coded.
+> > > >
+> > > > That has never been the case previously, so this is user-visible breakage, and
+> > > > it prevents users from being able to do the right thing, so I think that's a
+> > > > broken design.
+> > >
+> > > So the problem was caused by ARM and Intel doing two different things.
+> > > Intel did at least contribute to the perf tool in support for their
+> > > BIG.little/hybrid, so that's why the semantics match their approach.
+> >
+> > I appreciate that, and I agree that from the Arm side we haven't been as
+> > engaged with userspace on this front (please understand I'm the messenger here,
+> > this is something I've repeatedly asked for within Arm).
+> >
+> > Regardless, I don't think that changes the substance of the bug, which is that
+> > we're converting named-pmu events into entirely different PERF_TYPE_HARDWARE
+> > events.
+> >
+> > I agree that expanding plain legacy event names to a set of PMU-tagetted legacy
+> > events makes sense (and even for Arm, that's the right thing to do, IMO). If
+> > I ask for 'cycles' and that gets expanded to multiple legacy cycles events that
+> > target specific CPU PMUs, that's good.
+> >
+> > The thing that doesn't make sense here is converting named-pmu events into
+> > egacy events. If I ask for 'apple_firestorm_pmu/cycles/', that should be the
+> > 'cycles' event in the apple_firestorm_pmu's event namespace, and *shouldn't* be
+> > converted to a (potentially semantically different) PERF_TYPE_HARDWARE event,
+> > even if that's targetted towards the apple_firestorm_pmu. I think that should
+> > be true for *any* PMU, whether thats an arm/x86/whatever CPU PMU or a system
+> > PMU.
 > 
-> This commit adds variation by using some codec specific parameters.
+> This is saying that legacy events are lower than system events. We
+> don't do this historically and as it requires extra PMU set up. On an
+> Intel Tigerlake:
 > 
-> Only HEVC and H.264 support this.
+> ```
+> $ ls /sys/devices/cpu/events
+> branch-instructions  cache-misses      instructions  ref-cycles
+> topdown-be-bound
+> branch-misses        cache-references  mem-loads     slots
+> topdown-fe-bound
+> bus-cycles           cpu-cycles        mem-stores    topdown-bad-spec
+> topdown-retiring
+> ```
+> here (at least) branch-misses, bus-cycles, cache-references,
+> cpu-cycles and instructions overlap with legacy event names
+> ```
+> $ perf --version
+> perf version 6.5.6
+> $ perf stat -vv -e branch-misses,bus-cycles,cache-references,cp
+> u-cycles,instructions true
+
+Here you *aren't using a named PMU. As I said before, using the
+PERF_TYPE_HARDWARE events in this case is entriely fine, it's just the
+${pmu}/${eventname}/ case that I'm saying should use the PMU's namespace,
+which was historically the case, and is what users are depending upon.
+
+i.e. 
+
+	perf stat -e cycles ./workload
+
+... can/should use PERF_TYPE_HARDWARE events, as it used to
+
+However:
+
+	perf srtat -e ${pmu}/cycles/ ./workload
+
+... should use the PMU's namespaced events, as it used to
+
+> Using CPUID GenuineIntel-6-8D-1
+> intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+> Control descriptor is not initialized
+> ------------------------------------------------------------
+> perf_event_attr:
+>  type                             0 (PERF_TYPE_HARDWARE)
+>  size                             136
+>  config                           0x5 (PERF_COUNT_HW_BRANCH_MISSES)
+> ...
+> ------------------------------------------------------------
+> perf_event_attr:
+>  type                             0 (PERF_TYPE_HARDWARE)
+>  size                             136
+>  config                           0x6 (PERF_COUNT_HW_BUS_CYCLES)
+> ...
+> ------------------------------------------------------------
+> perf_event_attr:
+>  type                             0 (PERF_TYPE_HARDWARE)
+>  size                             136
+>  config                           0x2 (PERF_COUNT_HW_CACHE_REFERENCES)
+> ...
+> ------------------------------------------------------------
+> perf_event_attr:
+>  type                             0 (PERF_TYPE_HARDWARE)
+>  size                             136
+>  config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> ...
+> ------------------------------------------------------------
+> perf_event_attr:
+>  type                             0 (PERF_TYPE_HARDWARE)
+>  size                             136
+>  config                           0x1 (PERF_COUNT_HW_INSTRUCTIONS)
+> ...
+> branch-misses: -1: 6571 826226 826226
+> bus-cycles: -1: 31411 826226 826226
+> cache-references: -1: 19507 826226 826226
+> cpu-cycles: -1: 1127215 826226 826226
+> instructions: -1: 1301583 826226 826226
+> branch-misses: 6571 826226 826226
+> bus-cycles: 31411 826226 826226
+> cache-references: 19507 826226 826226
+> cpu-cycles: 1127215 826226 826226
+> instructions: 1301583 826226 826226
 > 
-> Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
-> Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
-> ---
->  drivers/media/test-drivers/visl/visl-core.c |  5 ++++
->  drivers/media/test-drivers/visl/visl-dec.c  | 27 +++++++++++++++++++++
->  drivers/media/test-drivers/visl/visl.h      |  1 +
->  3 files changed, 33 insertions(+)
+> Performance counter stats for 'true':
+> ...
+> ```
+> ie perf 6.5 and all events even though sysfs has events we're opening
+> them with PERF_TYPE_HARDWARE.
+
+As above, this is a different case.
+
 > 
-> diff --git a/drivers/media/test-drivers/visl/visl-core.c b/drivers/media/test-drivers/visl/visl-core.c
-> index d28d50afec02..e7466f6a91e1 100644
-> --- a/drivers/media/test-drivers/visl/visl-core.c
-> +++ b/drivers/media/test-drivers/visl/visl-core.c
-> @@ -93,6 +93,11 @@ module_param(stable_output, bool, 0644);
->  MODULE_PARM_DESC(stable_output,
->  		 " only write stable data for a given input on the output frames");
->  
-> +bool codec_variability;
-> +module_param(codec_variability, bool, 0644);
-> +MODULE_PARM_DESC(codec_variability,
-> +		 " add codec specific variability data to generate more unique frames. (Only h.264 and hevc)");
+> > > > > Presumably the expectation was that by advertising a cycles event, presumably
+> > > > > in sysfs, then this is what would be matched.
+> >
+> > Yes. That's how this has always worked prior to the changes Marc referenced.
+> > Note that this can *also* be expaned to events from json databases, but was
+> > *never* previously silently converted to a PERF_TYPE_HARDWARE event.
+> >
+> > Please note that the events in sysfs are *namespaced* to the PMU (specifically,
+> > when using that PMU's dynamic type); they are not necessarily the same as
+> > legacy events (though they may have similar or matching
+> > names in some cases), they may be semantically distinct from the legacy events
+> > even if the names match, and it is incorrect to conflate the two.
+> 
+> This was a behavior added by Intel so that say cpu_atom/legacy-event/
+> would only open as a hardware event on that PMU. The point of the
+> blamed change is to make that behavior consistent for all core PMUs.
 
-Why make this a module parameter instead of always doing this?
+Ok, so Intel has an intel-specific behaviour change, which was ok for them.
 
-It's not clear from the commit log why a parameter is needed.
+That was made generic, but cause d a functional regression on arm (and possibly
+other architectures if anyone else cares about the namespaced events).
 
-> +
->  static const struct visl_ctrl_desc visl_fwht_ctrl_descs[] = {
->  	{
->  		.cfg.id = V4L2_CID_STATELESS_FWHT_PARAMS,
-> diff --git a/drivers/media/test-drivers/visl/visl-dec.c b/drivers/media/test-drivers/visl/visl-dec.c
-> index 61cfca49ead9..002d5e3b0ea4 100644
-> --- a/drivers/media/test-drivers/visl/visl-dec.c
-> +++ b/drivers/media/test-drivers/visl/visl-dec.c
-> @@ -223,6 +223,26 @@ static void visl_tpg_fill_sequence(struct visl_ctx *ctx,
->  	}
->  }
->  
-> +static bool visl_tpg_fill_codec_specific(struct visl_ctx *ctx,
-> +					 struct visl_run *run,
-> +					 char buf[], size_t bufsz)
-> +{
-> +	switch (ctx->current_codec) {
-> +	case VISL_CODEC_H264:
-> +		scnprintf(buf, bufsz,
-> +			  "H264: %u", run->h264.dpram->pic_order_cnt_lsb);
-> +		break;
-> +	case VISL_CODEC_HEVC:
-> +		scnprintf(buf, bufsz,
-> +			  "HEVC: %d", run->hevc.dpram->pic_order_cnt_val);
-> +		break;
+Why can't this be rteturned to being x86 specific?
 
-Perhaps mention here why these specific values are chosen?
+> > > > I expect that if I ask for ${pmu}/${event}/, that PMU is used, and the event
+> > > > *in that PMU's namespace* is used. Overriding that breaks long-established
+> > > > practice and provides users with no recourse to get the behavioru they expect
+> > > > (and previosuly had).
+> > >
+> > > On ARM but not Intel.
+> >
+> > As above, I don't think the CPU architecture matters here for the case that I'm
+> > saying is broken. I think that regardless of CPU architecture (or for any
+> > non-CPU PMU) it is semantically incorrect to convert a named-pmu event to a
+> > legacy event.
+> 
+> So perf's behavior has always been that legacy event priority is
+> greater-than sysfs and json. The distinction here is that a core PMU
+> is explicitly listed and it doesn't seem unreasonable to use core PMU
+> names with legacy events, the behavior Intel added.
 
-> +	default:
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->  static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->  {
->  	u8 *basep[TPG_MAX_PLANES][2];
-> @@ -255,6 +275,13 @@ static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
->  	frame_dprintk(ctx->dev, run->dst->sequence, "");
->  	line++;
->  
-> +	if (codec_variability && visl_tpg_fill_codec_specific(ctx, run, buf, TPG_STR_BUF_SZ)) {
-> +		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 16, buf);
-> +		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
-> +		frame_dprintk(ctx->dev, run->dst->sequence, "");
-> +		line++;
-> +	}
-> +
->  	if (!stable_output) {
->  		visl_get_ref_frames(ctx, buf, TPG_STR_BUF_SZ, run);
->  
-> diff --git a/drivers/media/test-drivers/visl/visl.h b/drivers/media/test-drivers/visl/visl.h
-> index 5a81b493f121..4ac2d1783020 100644
-> --- a/drivers/media/test-drivers/visl/visl.h
-> +++ b/drivers/media/test-drivers/visl/visl.h
-> @@ -86,6 +86,7 @@ extern bool keep_bitstream_buffers;
->  extern int bitstream_trace_frame_start;
->  extern unsigned int bitstream_trace_nframes;
->  extern bool stable_output;
-> +extern bool codec_variability;
->  
->  #define frame_dprintk(dev, current, fmt, arg...) \
->  	do { \
+That may be ok for Intel, but given it *is* causing functional probelsm for
+others, why must it remain generic?
 
-Regards,
+> > > > I do think that (regardless of whther this was the sematnic you intended)
+> > > > silently overriding events with legacy events is a bug, and one we should fix.
+> > > > As I mentioned in another reply, just because the events have the same name
+> > > > does not mean that they are semantically the same, so we're liable to give
+> > > > people the wrong numbers anyhow.
+> > > >
+> > > > Can we fix this?
+> > >
+> > > So I'd like to fix this, some things from various conversations:
+> > >
+> > > 1) we lack testing. Our testing relies on the sysfs of the machine
+> > > being run on, which is better than nothing. I think ideally we'd have
+> > > a collection of zipped up sysfs directories and then we could have a
+> > > test that asserts on ARM you get the behavior you want.
+> >
+> > I agree we lack testing, and I'd be happy to help here going forwards, though I
+> > don't think this is a prerequisite for fixing this issue.
+> >
+> > > 2) for RISC-V they want to make the legacy event matching something in
+> > > user land to simplify the PMU driver.
+> >
+> > Ok; I see how this might be related, but it doesn't sound like a prerequisite
+> > for fixing this issue -- there are plenty of people in this thread who can
+> > test.
+> >
+> > > 3) I'd like to get rid of the PMU json interface. My idea is to
+> > > convert json events/metrics into sysfs style files, zip these up and
+> > > then link them into the perf binary. On Intel the json is 70% of the
+> > > binary (7MB out of 10MB) and we may get this down to 3MB with this
+> > > approach. The json lookup would need to incorporate the cpuid matching
+> > > that currently exists. When we look up an event I'd like the approach
+> > > to be like unionfs with a specified but configurable order. Users
+> > > could provide directories of their own events/metrics for various
+> > > PMUs, and then this approach could be used to help with (1).
+> >
+> > I can see how that might interact with whatever changes we make to fix this
+> > issue, but this seems like a future aspiration, and not a prerequisite for
+> > fixing the existing functional regression.
+> >
+> > > Those proposals are not something to add as a -rc fix, so what I think
+> > > you're asking for here is a "if ARM" fix somewhere in the event
+> > > parsing. That's of course possible but it will cause problems if you
+> > > did say:
+> > >
+> > > perf stat -e arm_pmu/LLC-load-misses/ ...
+> >
+> > As above, I do not think this is an arm-specific issue, we're just the canary
+> > in the coalmine.
+> 
+> Disagree, see comments above. A behavior change here would impact Intel.
 
-	Hans
+Ok, so have Intel keep the Intel behaviour?
+
+> > Please note that:
+> >
+> >         perf stat -e arm_pmu/LLC-load-misses/ ...
+> >
+> > ... would never have worked previously. No arm_pmu instances have a
+> > "LLC-load-misses" event in their event namespaces, and we don't have any
+> > userspace file mapping that event.
+> 
+> This event was for the purpose of giving an example, perf list will
+> show you events that work. The point is that a legacy event may not be
+> available on both BIG.little PMU types so being able to designate the
+> PMU there is helpful.
+
+Sure, but (as per my reply to Arnaldo), it's possible to add an unambiguous way
+to specify that, e.g a 'hw:' prefix like:
+
+	some_arm_pmu/hw:LLC-load-misses/
+
+... which wouldn't clash and cause hte regression that users are seing.
+
+> > That said, If I really wanted that legacy event, I'd have asked for it bare,
+> > e.g.
+> >
+> >         perf stat -e LLC-load-misses
+> >
+> > ... and we're in agreement that it's sensible to expand this to multiple
+> > PERF_TYPE_HARDWARE events targeting the individual CPU PMUs.
+> >
+> > So I see no need to do anything to have magic for 'arm_pmu/LLC-load-misses/'.
+> >
+> > > as I doubt the PMU driver is advertising this legacy event in sysfs
+> > > and the "if ARM" logic would presumably be trying to disable legacy
+> > > events in the term list for the ARM PMU.
+> > >
+> > > Given all of this, is anything actually broken and needing a fix for 6.7?
+> >
+> > There is absolutely a bug that needs to be fixed here (and needs to be
+> > backported to stable so that it gets picked up by distributions).
+> 
+> I'm not seeing this. The behavior is consistent with Intel, this has
+> gone 2 releases without being spotted,
+
+This has gone two releases because people has just updated their tools. The
+prior behaviour for Arm has been there for most of a decade.
+
+> it was triggered by a PMU event
+> name aliasing a legacy event name and the behavior has always been
+> legacy event names have higher priority than sysfs and json events.
+
+That has been the case for plain events without a PMU name. That was never the
+case for events with a PMU name, or there would not have been any difference in
+behaviour.
+
+> Whilst I'm seeing a lot of complaining, I've not seen a proposal of
+> what behavior you want. 
+
+As per my initial reply the bevaiour we want is that:
+
+  pmu/eventname/ 
+
+... opens 'eventname' in that PMU's event namespace, rather than converting the
+event into a PERF_TYPE_HARDWARE event. That was the prior behaviour, which
+people have been using for most of a decade.
+
+I understand that there was some Intel-specific behaviour, and that may need to
+be kept for Intel. Making that behaviour generic broke other existing users.
+
+If we need a mechanism to target a legacy event to a specific PMU, we can add
+an unambiguous way of descirbing that (e.g. the 'hw:' prefix I've suggested a
+few times).
+
+
+> Isn't it a PMU bug if the legacy event specifying the PMU doesn't get opened
+> by the core PMU?
+
+No?
+
+Prior to that mechanism being added to the kernel, there was no way to do that.
+
+When the mechanism was added to x86 specifically, it wasn't a generic feature.
+
+> Fixing the PMU driver appears to be the right fix and means there is
+> consistency on core events across architectures.
+
+I think that's orthogonal.
+
+Adding support to the PMU drivers (which has already been done, per the commit
+you quoted before) is good so that userspace can do the right thing for:
+
+	perf stat -e some_generic_event ./workload
+
+... but that should not be necessary to retain the existing behaviour for:
+
+	perf stat -e pmu/some_similarly_named_event/ ./workload
+
+Thanks,
+Mark.
