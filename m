@@ -2,62 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3D87F45EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A157F45F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344025AbjKVMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
+        id S1344039AbjKVMYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343719AbjKVMXk (ORCPT
+        with ESMTP id S1343951AbjKVMYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:23:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7A6197
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:23:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7071DC433C7;
-        Wed, 22 Nov 2023 12:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700655816;
-        bh=BYEcrkRJolTlhrpPIJPgV41ILBqMXfYPCsqUZp1UwYI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gwmOU9T2VGnU3b6rAa05NBuX3nFH52KxkrNJb7dcCGGArBcSfFkNG81gZrz1fIk6l
-         T/olhBkflMFu9Vp7eX5hz8bUgvcdkJBwTLvOWyws15S3wo6MHDxwSdmTr1JSrvOlGy
-         tRRYmmd/roKlvJ7KVthvHTfsMEVG/fotLXgs1wE9VkRvatMLT8aYZizP8F4TLOGrfG
-         o2wSHZPHxdWzHrQ3RDnGFFh6TP9CD/9McQSJm3BIMZy2t3XI7x55IpOYRh9F2Q3npw
-         qCPov3ojvQvJ6zw4otHorw9091L5Gbq+F+7rtoayNWfQTuVlAp7HmFr3BgM1oAyrbz
-         2pyZpaPBbuEyg==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r5mGk-0000C4-23;
-        Wed, 22 Nov 2023 13:23:51 +0100
-Date:   Wed, 22 Nov 2023 13:23:50 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Subject: Re: [PATCH 07/12] usb: dwc3: qcom: Instantiate dwc3 core directly
-Message-ID: <ZV3y1oUpZL7btbF1@hovoldconsulting.com>
-References: <20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com>
- <20231016-dwc3-refactor-v1-7-ab4a84165470@quicinc.com>
+        Wed, 22 Nov 2023 07:24:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6D398
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:24:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700655872; x=1732191872;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SX370jZj/iiF375wRpaiuBBt7qWPi41IvDXuLfaDWac=;
+  b=fygggFJ6G46mx2xhChMDAw390As1r/sqKAxRUSy+n22AiXJCRPxC59dh
+   LcRns773Oxnkxn0H/BJ574EmnWLZTPNjG6kzD3an5eQdFPTvUufjarbF5
+   jnG+5nqxUC9wvN7w6Bzsj5Leh4mdkWiWpbuhfnkNAfMtdB6u5tbdG30xN
+   51dsIa9ChjU5nuFrD5xXl4jaw70GSwb2l3nAXPISQxkZUfn+3LKu5u7/0
+   W553UNrqdvsDy4GMtsnS8MYpxoqNP+YhEiWqB6AD/EG679Z3X4Ik1eWWN
+   XBNFh71Sh/ZqfsbLAAifKstfInMpErz+FZH9n29w3RVl8fpzem3JF02i9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5184348"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="5184348"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 04:24:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1014216736"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="1014216736"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 04:24:28 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1r5mHJ-0000000G5Qe-04tS;
+        Wed, 22 Nov 2023 14:24:25 +0200
+Date:   Wed, 22 Nov 2023 14:24:24 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Jean Delvare <jdelvare@suse.de>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Johan Jonker <jbx6244@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: Re: [PATCH v5 19/39] mtd: rawnand: add support for ts72xx
+Message-ID: <ZV3y-IJ7JSD3fJeI@smile.fi.intel.com>
+References: <20231122-ep93xx-v5-0-d59a76d5df29@maquefel.me>
+ <20231122-ep93xx-v5-19-d59a76d5df29@maquefel.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231016-dwc3-refactor-v1-7-ab4a84165470@quicinc.com>
+In-Reply-To: <20231122-ep93xx-v5-19-d59a76d5df29@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,28 +78,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:11:15PM -0700, Bjorn Andersson wrote:
-> The Qualcomm DWC3 glue builds up a platform_device programmatically in
-> order to probe the DWC3 core when running off ACPI data. But with the
-> newly introduced support for instantiating the core directly from the
-> glue, this code can be replaced with a single function call.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+On Wed, Nov 22, 2023 at 11:59:57AM +0300, Nikita Shubin wrote:
+> Technologic Systems has it's own nand controller implementation in CPLD.
 
-> @@ -986,10 +933,10 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  interconnect_exit:
->  	dwc3_qcom_interconnect_exit(qcom);
->  depopulate:
-> -	if (np)
-> +	if (qcom->dwc_dev)
->  		of_platform_depopulate(&pdev->dev);
->  	else
-> -		platform_device_put(pdev);
-> +		dwc3_remove(qcom->dwc);
+...
 
-The current code was broken here too:
+> +static int ts72xx_nand_attach_chip(struct nand_chip *chip)
+> +{
+> +	switch (chip->ecc.engine_type) {
+> +	case NAND_ECC_ENGINE_TYPE_SOFT:
+> +		if (chip->ecc.algo == NAND_ECC_ALGO_UNKNOWN)
+> +			chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> +		chip->ecc.algo = NAND_ECC_ALGO_HAMMING;
+> +		break;
+> +	case NAND_ECC_ENGINE_TYPE_ON_HOST:
+> +		return -EINVAL;
 
-	https://lore.kernel.org/linux-usb/20231117173650.21161-2-johan+linaro@kernel.org/
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
 
-Johan
+Move this to default.
+
+> +}
+
+...
+
+> +		for (i = 0; i < instr->ctx.addr.naddrs; i++)
+> +			iowrite8(instr->ctx.addr.addrs[i], data->base);
+
+iowrite8_rep() ?
+
+> +	case NAND_OP_DATA_IN_INSTR:
+> +		ioread8_rep(data->base, instr->ctx.data.buf.in, instr->ctx.data.len);
+
+Hehe, you are even using it...
+
+...
+
+> +	if (instr->delay_ns)
+
+What will happen if you drop this check?
+
+> +		ndelay(instr->delay_ns);
+
+...
+
+> +	int ret;
+> +
+> +	ret = mtd_device_unregister(nand_to_mtd(chip));
+> +	WARN_ON(ret);
+
+Is this a requirement by MTD to have return value being checked?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
