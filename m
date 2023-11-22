@@ -2,222 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 085B47F44E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:26:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834547F44E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 12:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbjKVL0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 06:26:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
+        id S1343685AbjKVL0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 06:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVL0h (ORCPT
+        with ESMTP id S1343709AbjKVL0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 06:26:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B7E112
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700652393;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2nxiX3zTK96N3iDK7/DQy2rA2pN7GRHmvt3F8JWaDVo=;
-        b=Wb077uZC4OI6Ak2eB/8ot/yEQHiLMdnTq86rEdgAkhJ702iKmBiTlXa6oBQWvQ1ZwNyaJe
-        z9JTZYOSwDQEFZU2vWas+8kparx0lEsARwdtCuKLnY5UZPq1YQKd0g7PIShwawO7B8WifH
-        PA9Z0WRCXXvzxr7I/4NZm1irU1nXMtc=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-658-xWDN6sCRN1-B6CyhZcZiNw-1; Wed,
- 22 Nov 2023 06:26:29 -0500
-X-MC-Unique: xWDN6sCRN1-B6CyhZcZiNw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7993C1C18CC3;
-        Wed, 22 Nov 2023 11:26:29 +0000 (UTC)
-Received: from tpad.localdomain (ovpn-112-3.gru2.redhat.com [10.97.112.3])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1DE062166B27;
-        Wed, 22 Nov 2023 11:26:29 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-        id 8B600400E56F9; Wed, 22 Nov 2023 08:26:02 -0300 (-03)
-Date:   Wed, 22 Nov 2023 08:26:02 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [patch 0/2] mm: too_many_isolated can stall due to out of sync
- VM counters
-Message-ID: <ZV3lSttsGq1fuPyG@tpad>
-References: <20231113233420.446465795@redhat.com>
- <ZVMtuYLviLYqAI7x@tiehlicka>
- <ZVNnjVdeNblG1l8t@tpad>
- <ZVNsMVPJ5y8C_hBC@tiehlicka>
- <ZV3kxwqedKH+LDum@tpad>
+        Wed, 22 Nov 2023 06:26:49 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2062.outbound.protection.outlook.com [40.107.244.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243C9D53
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 03:26:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xi1KMQVEv/I9HtDk2iIKCQLEWlx18HjtLk802d0KLp+dpE+4BK3Av+utKJoBKn15NQTOkEUWtamg1vXflGJBCX/ADNMHYZmzMeYPOp0L3x+Hw3M2ZQo83Wz/LyAnleld3Nu9COdj2CaOYMagKshfsaKW6f1o/LksW+g5qdUZNqw01QsJFhPliZxVJhL4bgJddHG51EJTu2RUot1YCgnj1tcao484a7Hw7Ow9FaA0lCzXU56TmtVjCKqMByGEo1bG8Pg7PPQpFGzt4q9pjT1yxzeQRAJRSmJ++FKZVGf1YqASCidYtmnVE4NyWr5n1VG7x8wjv7ZMTRcWe3ZklNopjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hKZzOYdGkwEcj1X8BCU06lxd6U0NuSK4eDUpsEKNudU=;
+ b=OcWmgDFpuggnp+gj0F37wQh8hWaTJTvBucrzLIaFe+Fh3EnOT+UuuTqOpf+Pa3ea32N4+fBwA45hNZGTTxvQEuQo154SC4Ntrn+4Hr2AJxwZAVf88D12Msh3cxpbuHr+siEzNK9ZcDBlzFjXelgs2Mw2CPmFYgOmf61fSkBF4JU4Leb6TB39bs2KhyKseyNOdroj8/wy/kqgjgCiPmImXKUDTT93sPz9tS4sEzfHsY6iSx3s62UJL0iLpdsLTkm6jaBlO+V1dDXgX2j+HI2d550rG2F8dv94NXBo8Nb9RH7NbfgdJeNTqFoUimxz9QV09lGtmV8Lhmwkj2V6NywchA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hKZzOYdGkwEcj1X8BCU06lxd6U0NuSK4eDUpsEKNudU=;
+ b=atKsFZ0ixZJzDsgBfnWz+xH1uUvo9Ncy6cWW6eyvkeBwO9cXB1GFIRe97TLQuHpysBerGHC0bLifl2DQMj6eDOkwI2o3Uc4uao5fk/cP7/kHHgC3iUZscGa81h0RlHlGsRCseWk65Rf343CxhKPT2Nn3L6o3hmXTzmRiv1Gg21Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by CH2PR12MB4922.namprd12.prod.outlook.com (2603:10b6:610:65::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 11:26:40 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
+ 11:26:39 +0000
+Message-ID: <8e0d44ee-e3f3-43f7-9f83-6a4349fc1dc7@amd.com>
+Date:   Wed, 22 Nov 2023 12:26:35 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: Fix cat debugfs amdgpu_regs_didt causes
+ kernel null pointer
+Content-Language: en-US
+To:     Lu Yao <yaolu@kylinos.cn>, airlied@gmail.com, daniel@ffwll.ch
+Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231122093509.34302-1-yaolu@kylinos.cn>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20231122093509.34302-1-yaolu@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0068.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:49::13) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZV3kxwqedKH+LDum@tpad>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CH2PR12MB4922:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0ccca10d-4a3f-468e-2438-08dbeb4de54b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XiY7JcIpvVKo6an4EI4XcmhJn9TWQIPAlZATJTCZ8NAcqco/IkIdiOX/8PgrkA1w0URI3BOE4nf+1PBl+r7YMml5wOmFkzjHOlAcpOU7HYWTtMa/Xtvnr2Keg2od4XbufXViy8laluHLfODxsXbSw86dtA/FhdOgZ/z4OhMRJoq1eElIEJcjv7ViguG/S+axJ0FkuteQg+CHT83uz7YsYVf19K0pwBUgZfgV/siXty1WNWTv005khQlX96VGRej09H+GsNl9JAySjytCWQBce25yRa8/CSFayDyTYyXuIOH5FR5/DGk6+dvl+qnpx1CDMqDRV4xULLDKrX3F50HQ7aO/10+5Nnuc/OtZiS0IWDCc9IRyf0qna3B+cJQdxjuJwLCGDnVU2SyQualV3FSWg1iGJVnUp557MCV3i0r548bFuuWc6RCEr5NC3KOEyhIhjT2SB1uVEfPAtkwlqLQLZUMaQXW5CKFT7LfGFpKgU80Nxfypmjc3DmTIXR5sb4oQrUIvztgpsly2OQ5Hc+Dy+OGWnvCXUQVBZ5Ah4lVoyJsEjtS0rkNLcLjBFfT9VWXPWyW8hiEgPheaWQNsGwRfIQb4vs7FRi7lAq+TE1j1sY+efY48/Dho3NqSeJzyidokREnjvIf7b8RgAWLOzTph0A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(39860400002)(346002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(36756003)(41300700001)(31696002)(5660300002)(2906002)(86362001)(26005)(6666004)(478600001)(6506007)(6486002)(2616005)(6512007)(8936002)(8676002)(83380400001)(4326008)(316002)(66946007)(66556008)(66476007)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWhGSFVUV2hpdy9DSjNCcHAzMGNOOHNCUUhtQkd2cm1UUWxFZFV6ZkNwZElW?=
+ =?utf-8?B?SVBTR3JoTVBZcFdmV1YxSzZqVEsyYmlQbERUbnQwRVBFMjJJK01mZEVwMlNF?=
+ =?utf-8?B?VGd0bmd6bCtSTGNJaDY0aWVteUIzMmN4dzR4cmhYNzJFQlA4VkRYVmJzc1Zz?=
+ =?utf-8?B?UW1ISmRQZE1Td1ZqSFJtUzc3Sms0MHJYT0xlTUpZYUtHTU5tMHJoaUJudlRT?=
+ =?utf-8?B?aFQxbWQzdkJtVGk3UVo3THR6ak1WM053NERTZUNjNHdSSERKNXNVRXdMQmJM?=
+ =?utf-8?B?T1JQR1ZkUDFpWHpYQ0xMeDg2YUlnWkhld1dkWG1VZmZkZHlDY2V5TWMycGpR?=
+ =?utf-8?B?bzNCdmpDbDI1aDdmNXl1T256NjRWcEhFRGlhY1lpdXowSVNMVFc0TzEwbTcx?=
+ =?utf-8?B?NEVDZ25OcDhpVDNsT1VRUjkvWlo4VEdrOWY4TndwNzd6SlNJbmozVUVoR1Y3?=
+ =?utf-8?B?dkd0djJBRGVVeUY0cm93UTRSbVltS2E5NndCODdmeXN6Z0hZM05Vck9jQUEz?=
+ =?utf-8?B?MFNIY0k2bE0wQ2lBMFdhNndWeEhlbGdycVFsaXQxS2dpUzFuWWpNRmlJNG5W?=
+ =?utf-8?B?L2dxdXBCZE04c1M5bE90WUx0TXVOR0JEcG0rMlE0UXZBOVdoTU9uZk1SVldL?=
+ =?utf-8?B?YzFOVFh2T1JvRDhJbWlHc1ZMaGtvdFFldGZ6c0ZYMmhlQTdUVE5qak13VXZQ?=
+ =?utf-8?B?YkhsZTNyTEszaS90RFlIVXk0dGQyMFB2USt2MWkyRUQremt5cXdrSi8zWVIy?=
+ =?utf-8?B?OHFwcWVLTXU3QzhnV3RIbStiZjA0WjhBVWlWRzJ4eW1mZVZZWmxBbHgxNWdq?=
+ =?utf-8?B?c05lMFFSMzZJUXJIRitnV2Q3U1ZiZEs2c29WanZrUmk0YXpRbG02UHhVRHc4?=
+ =?utf-8?B?dzlxc0JtTDVXUUdCYlVwYjVJZWJmRkZUR0FpZnpPUmg0NzJwQXJLVEdlRjhn?=
+ =?utf-8?B?U0Yxd1ViemJrMGFCaWpXOUJITi9pTkdETWIyNTRsSTRHNHUyenhrYzZxc04y?=
+ =?utf-8?B?Q1QwTWh4RVAzR3RScHBsekdjQUVYbms2MWhuOVloRVkvbWRhS3VDQ210QmNV?=
+ =?utf-8?B?NFErb0FWb3VRNmpqM09EdllkSkVpQzlSU3JremdLL0xRM0t3eWo2cVlpNllL?=
+ =?utf-8?B?dzNpc3FNZHpPOCsyaUlNdFhKSFhSL1dXSEduSU1jY2RyK2dhRU1pVmlkNDEr?=
+ =?utf-8?B?NW4vYnZSdi9IYWxiQTBEZ2JRMkFUSDRXSTJkUG1uWnI3RjZUcWdFVUFQcjJV?=
+ =?utf-8?B?QWF4U3lxUnhjV2xxdm80TmgxT3BCRWZrQS82ZTljZHZxQ2NoK2IrM0Z2SU9L?=
+ =?utf-8?B?SzRSaHhKRW1aYVo4bGtMQkNPUXZOWjE0d051TC9nVEJNNmttc1VaOEFHaU1Y?=
+ =?utf-8?B?T3d1bDZIZmZUb2hFMFVuOHJtOUVoNzJpL1ZocVpTTFJyT1oyLzBIdkZ0MjRl?=
+ =?utf-8?B?ZUNPNnRPRmNTM0NLZ09KOWZ1dnFLb0c5MzRpYXM2aEpmeWsvR3FWN2hjYlNh?=
+ =?utf-8?B?d3VKak9rZG1FK2YrTnlLRkdwbis0OGFFSTR0c01IdDl1dUNPU29PTVc1ZnFm?=
+ =?utf-8?B?eDlzRVEyUVFBNVNUVjMvY3QyOGhjK05aZklyU0lJVUViOEYwaFNUL2x4cmt0?=
+ =?utf-8?B?ZVUvMzVTYUE1WFNHcTJ5c3VaVkQ3b09jdUNmNVp0OVV1RWhhSVZJVFRuM0Q5?=
+ =?utf-8?B?WlV2b2pNWnhtNFoyeEU2dEh4Mm5rK0lzMllLbDBBOGtpajQxanNQanh4Y3dM?=
+ =?utf-8?B?Tk5aVXJWYkM4RmFOUEtqMERwZXgvUkI2N3ZlNnhNNVhtZ3QzV0xtb0JTb1FR?=
+ =?utf-8?B?ck12V3FWNUtaRU13dW1IL005b3MwbUl1THZIZC9RZ2JvbDk1bjZmMmhHb0l0?=
+ =?utf-8?B?bCtGVlF3MW44bEFlazFkVXJVTnZVaU1UYU13cjlVZWxETkJXWHNYNEQ5c0FT?=
+ =?utf-8?B?TFd3Y2NVZlVWb0tiRjN2TXZlMnJrR3FPOTI0MC9QM0ZuUmlJcUNRMEo4bW1z?=
+ =?utf-8?B?VEZ6UHNoNDRKaGxFa05XUENNSmZLT3lGYzkwWHduSXNHaHhpMXJCcDZuME9p?=
+ =?utf-8?B?cUhuTGdCaXlvRUhGODdITEorY0wvekpkNU5XWlRpRnp3bWlaZ1pGWGRVdmJw?=
+ =?utf-8?Q?TTkqO1sLenQqcOZdfWwJjyahK?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ccca10d-4a3f-468e-2438-08dbeb4de54b
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 11:26:39.5882
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vmMSE2QA5SR3z/B/pZrZYBAWjxnpRCkkRUusuMdw175f9BhlaAWvtEMf7yeDrT0s
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4922
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 08:23:51AM -0300, Marcelo Tosatti wrote:
-> On Tue, Nov 14, 2023 at 01:46:41PM +0100, Michal Hocko wrote:
-> > On Tue 14-11-23 09:26:53, Marcelo Tosatti wrote:
-> > > Hi Michal,
-> > > 
-> > > On Tue, Nov 14, 2023 at 09:20:09AM +0100, Michal Hocko wrote:
-> > > > On Mon 13-11-23 20:34:20, Marcelo Tosatti wrote:
-> > > > > A customer reported seeing processes hung at too_many_isolated,
-> > > > > while analysis indicated that the problem occurred due to out
-> > > > > of sync per-CPU stats (see below).
-> > > > > 
-> > > > > Fix is to use node_page_state_snapshot to avoid the out of stale values.
-> > > > > 
-> > > > > 2136 static unsigned long
-> > > > >     2137 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
-> > > > >     2138                      struct scan_control *sc, enum lru_list lru)
-> > > > >     2139 {
-> > > > >     :
-> > > > >     2145         bool file = is_file_lru(lru);
-> > > > >     :
-> > > > >     2147         struct pglist_data *pgdat = lruvec_pgdat(lruvec);
-> > > > >     :
-> > > > >     2150         while (unlikely(too_many_isolated(pgdat, file, sc))) {
-> > > > >     2151                 if (stalled)
-> > > > >     2152                         return 0;
-> > > > >     2153
-> > > > >     2154                 /* wait a bit for the reclaimer. */
-> > > > >     2155                 msleep(100);   <--- some processes were sleeping here, with pending SIGKILL.
-> > > > >     2156                 stalled = true;
-> > > > >     2157
-> > > > >     2158                 /* We are about to die and free our memory. Return now. */
-> > > > >     2159                 if (fatal_signal_pending(current))
-> > > > >     2160                         return SWAP_CLUSTER_MAX;
-> > > > >     2161         }
-> > > > > 
-> > > > > msleep() must be called only when there are too many isolated pages:
-> > > > 
-> > > > What do you mean here?
-> > > 
-> > > That msleep() must not be called when
-> > > 
-> > > isolated > inactive
-> > > 
-> > > is false.
-> > 
-> > Well, but the code is structured in a way that this is simply true.
-> > too_many_isolated might be false positive because it is a very loose
-> > interface and the number of isolated pages can fluctuate depending on
-> > the number of direct reclaimers.
-> >  
-> > > > >     2019 static int too_many_isolated(struct pglist_data *pgdat, int file,
-> > > > >     2020                 struct scan_control *sc)
-> > > > >     2021 {
-> > > > >     :
-> > > > >     2030         if (file) {
-> > > > >     2031                 inactive = node_page_state(pgdat, NR_INACTIVE_FILE);
-> > > > >     2032                 isolated = node_page_state(pgdat, NR_ISOLATED_FILE);
-> > > > >     2033         } else {
-> > > > >     :
-> > > > >     2046         return isolated > inactive;
-> > > > > 
-> > > > > The return value was true since:
-> > > > > 
-> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_INACTIVE_FILE]
-> > > > >     $8 = {
-> > > > >       counter = 1
-> > > > >     }
-> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->vm_stat[NR_ISOLATED_FILE]
-> > > > >     $9 = {
-> > > > >       counter = 2
-> > > > > 
-> > > > > while per_cpu stats had:
-> > > > > 
-> > > > >     crash> p ((struct pglist_data *) 0xffff00817fffe580)->per_cpu_nodestats
-> > > > >     $85 = (struct per_cpu_nodestat *) 0xffff8000118832e0
-> > > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[42]
-> > > > >     $86 = 0xffff00917fcc32e0
-> > > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fcc32e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-> > > > >     $87 = -1 '\377'
-> > > > > 
-> > > > >     crash> p/x 0xffff8000118832e0 + __per_cpu_offset[44]
-> > > > >     $89 = 0xffff00917fe032e0
-> > > > >     crash> p ((struct per_cpu_nodestat *) 0xffff00917fe032e0)->vm_node_stat_diff[NR_ISOLATED_FILE]
-> > > > >     $91 = -1 '\377'
-> > > > 
-> > > > This doesn't really tell much. How much out of sync they really are
-> > > > cumulatively over all cpus?
-> > > 
-> > > This is the cumulative value over all CPUs (offsets for other CPUs 
-> > > have been omitted since they are zero).
-> > 
-> > OK, so that means the NR_ISOLATED_FILE is 0 while NR_INACTIVE_FILE is 1,
-> > correct? If that is the case then the value is indeed outdated but it
-> > also means that the NR_INACTIVE_FILE is so small that all but 1 (resp. 2
-> > as kswapd is never throttled) reclaimers will be stalled anyway. So does
-> > the exact snapshot really help? Do you have any means to reproduce this
-> > behavior and see that the patch actually changed the behavior?
-> > 
-> > [...]
-> > 
-> > > > With a very low NR_FREE_PAGES and many contending allocation the system
-> > > > could be easily stuck in reclaim. What are other reclaim
-> > > > characteristics? 
-> > > 
-> > > I can ask. What information in particular do you want to know?
-> > 
-> > When I am dealing with issues like this I heavily rely on /proc/vmstat
-> > counters and pgscan, pgsteal counters to see whether there is any
-> > progress over time.
-> > 
-> > > > Is the direct reclaim successful? 
-> > > 
-> > > Processes are stuck in too_many_isolated (unnecessarily). What do you mean when you ask
-> > > "Is the direct reclaim successful", precisely?
-> > 
-> > With such a small LRU list it is quite likely that many processes will
-> > be competing over last pages on the list while rest will be throttled
-> > because there is nothing to reclaim. It is quite possible that all
-> > reclaimers will be waiting for a single reclaimer (either kswapd or
-> > other direct reclaimer). I would like to understand whether the system
-> > is stuck in unproductive state where everybody just waits until the
-> > counter is synced or everything just progress very slowly because of the
-> > small LRU. 
-> > -- 
-> > Michal Hocko
-> > SUSE Labs
-> 
-> Michal,
-> 
-> I think this provides the data you are looking for:
-> 
-> It seems that the situation was invoking memory-consuming user program
-> in pallarel expecting that the system will kick oom-killer at the end.
-> 
-> The node 0-3 are small containing system data and almost all files.
-> The node 4-7 are large prepared to contain user data only. 
-> The issue described in above was observed on node 4-7, where
-> had very few memory for files.
-> 
-> The node 4-7 has more cpu than node 0-3.
-> Only cpus on node 4-7 are configuerd to be nohz_full.
-> So we often found unflushed percpu vmstat on cpus of node 4-7.
-> 
-> 
+Am 22.11.23 um 10:35 schrieb Lu Yao:
+> For 'AMDGPU_FAMILY_SI' family cards, in 'si_common_early_init' func, init
+> 'didt_rreg' and 'didt_wreg' to 'NULL'. But in func
+> 'amdgpu_debugfs_regs_didt_read/write', using 'RREG32_DIDT' 'WREG32_DIDT'
+> lacks of relevant judgment. And other 'amdgpu_ip_block_version' that use
+> these two definitions won't be added for 'AMDGPU_FAMILY_SI'.
+>
+> So, add null pointer judgment before calling.
+>
+> Signed-off-by: Lu Yao <yaolu@kylinos.cn>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> index a53f436fa9f1..797d7d3bfd50 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+> @@ -638,6 +638,11 @@ static ssize_t amdgpu_debugfs_regs_didt_read(struct file *f, char __user *buf,
+>   	if (size & 0x3 || *pos & 0x3)
+>   		return -EINVAL;
+>   
+> +	if (adev->didt_rreg == NULL) {
+> +		dev_err(adev->dev, "%s adev->didt_rreg is null!\n", __FUNC__);
 
-Michal,
+Please drop the dev_err(), this is not a device error but rather 
+userspace using a functionality not applicable for this device type.
 
-Let me know if you have any objections to the patch, thanks.
+> +		return -EPERM;
+
+Maybe rather use EOPNOTSUPP here.
+
+Regards,
+Christian.
+
+> +	}
+> +
+>   	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
+>   	if (r < 0) {
+>   		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
+> @@ -694,6 +699,11 @@ static ssize_t amdgpu_debugfs_regs_didt_write(struct file *f, const char __user
+>   	if (size & 0x3 || *pos & 0x3)
+>   		return -EINVAL;
+>   
+> +	if (adev->didt_wreg == NULL) {
+> +		dev_err(adev->dev, "%s adev->didt_wreg is null!\n", __FUNC__);
+> +		return -EPERM;
+> +	}
+> +
+>   	r = pm_runtime_get_sync(adev_to_drm(adev)->dev);
+>   	if (r < 0) {
+>   		pm_runtime_put_autosuspend(adev_to_drm(adev)->dev);
 
