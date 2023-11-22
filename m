@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F42187F51A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607977F51A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbjKVU20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
+        id S234145AbjKVU3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 15:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjKVU2Y (ORCPT
+        with ESMTP id S231429AbjKVU3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:28:24 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1041199
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:28:20 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5079f6efd64so151126e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:28:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700684899; x=1701289699; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XCWCbaXqCkkqjJ8AwyXFWRYVY/K8tyc8oCsxMFcMiSs=;
-        b=xESFGW1DGpXx+TIZLC8HVHOihkDdqhGua9BtlJQO8FHh0cNbXMmdB7nZe3MzJAG9j8
-         G34PzW8LF+Jb1vEFW/yW+6hNvp/nxZp2JEjZ6zK2u2+yrksXPwqN4VpF9pFCFPKUY5xQ
-         DV1cn7zsf9lZoiOXPdxURrIKcqwSbjfu1k38qqHu1gwSWV851RsEa2Cdhr2G5yQU5SrV
-         j2vmuMWHqE3yXHc1wK4kWpRUmCccv5YIr0XuLn7oSpnwZnCawrL1GX3b4RgwCKtfwVcX
-         otm0dnUcbTm7Sci+NUJinOg2ltVty6SinLLHk8ZsPE0BsECafUftkqQ0eD8duiCAD++Q
-         bVZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700684899; x=1701289699;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XCWCbaXqCkkqjJ8AwyXFWRYVY/K8tyc8oCsxMFcMiSs=;
-        b=JoUSKNcNdaegbQUuWzyb7Lhe/g/qay7ILrIWcwmz2NYi2SmepqL+Nk0gyrmDQ9/VMt
-         EPU9TjSYNBgmaMwpCuJPbKe8VusAXNFJbd2Hd4j+dKJUkpygdmHCy7lxC81n3Eapk79F
-         uvcx1+ptdSBtLk6SnhNvr9/AAbO2hCWsLumlmXl17XJ34BwonAgj2nvsvHS+IUcddAC/
-         Tmg6YI0Vrjov724FaN+v+bT2Ee/ZCqLszeIamgINasZLFw1ulvmiEq6GkiiHT1W/Nhi+
-         I/bZmp3gMoZEb56InhttJwih75dQSpt5OYTwlp7DRjCC4fpF231ueiE4MDE/MnxkiX8P
-         93Xw==
-X-Gm-Message-State: AOJu0YysHbZHQuFOsiij1B9nYnGrluwH7pTstpfFPFzl4unqf8L7O1ig
-        uqnbdLng1hltJUg9GCs/A2rSFQ==
-X-Google-Smtp-Source: AGHT+IGbae21R7XvRQhLLldvzkRHXG+FoNK4XFelxko3lLb2Ef3rlCohoCMoEmrQDSkEeuOqkLptbg==
-X-Received: by 2002:a19:654b:0:b0:50a:9f42:9ceb with SMTP id c11-20020a19654b000000b0050a9f429cebmr2429983lfj.34.1700684899012;
-        Wed, 22 Nov 2023 12:28:19 -0800 (PST)
-Received: from [172.30.204.74] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id bp7-20020a056512158700b0050aa49aed34sm1683542lfb.29.2023.11.22.12.28.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 12:28:18 -0800 (PST)
-Message-ID: <f76637f9-8242-4258-932e-b879145a5cfd@linaro.org>
-Date:   Wed, 22 Nov 2023 21:28:14 +0100
+        Wed, 22 Nov 2023 15:29:07 -0500
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2781B9A
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:29:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=dGgYBtPaNkz+NxmhFb7ZvVAiX42aZMlvMkpZ6HlBFVw=; b=Feg7DpwLlnWD3LTpkA08M3Gg0F
+        LFRp0VDueKotk4Gcu5iGti02Rgic0ihhonOYctmgp7Q/nIUF6MehpE43BOKeUG23Io4d2G4snp+ng
+        gZRSma4BTxueV0gtjkK6BdAuj80fVgNAKqFHwcm85cEmFnraoas7zbvrcBAdkxPCxZDeT2iNLROAU
+        Tc+RAyhDz872OuZ2eC+TLRr0HZItiFXx1xb+mf6/ey3W1nAJSuSlOjp+JzewPlG5IeuFYTPQFvyRd
+        bxVFc7umgMDjyIwydXTk1ZwhHxGDfhdKaSpTFMOKGxgeG0rXvjkgrIBVMTDUQimpoVcti2ZRvaWTu
+        n6VdKdBg==;
+Received: from 189-69-166-209.dial-up.telesp.net.br ([189.69.166.209] helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1r5tpw-0065hQ-Ea; Wed, 22 Nov 2023 21:28:40 +0100
+Message-ID: <50ff86d4-5ce1-4ae5-aafb-ce3bc0069629@igalia.com>
+Date:   Wed, 22 Nov 2023 17:28:35 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] drm/msm/adreno: Add support for SM7150 SoC machine
+Subject: Re: [PATCH v9 0/4] drm: Add support for atomic async page-flip
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Danila Tikhonov <danila@jiaxyga.com>, robdclark@gmail.com,
-        quic_abhinavk@quicinc.com, sean@poorly.run,
-        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
-        johan+linaro@kernel.org, andersson@kernel.org,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230926174243.161422-1-danila@jiaxyga.com>
- <20230926174243.161422-2-danila@jiaxyga.com>
- <42a1d0ab-4e8d-461d-bb2c-977a793e52b2@linaro.org>
- <1695755445.902336096@f165.i.mail.ru>
- <84e63b82-4fef-416b-8dbe-3838ad788824@linaro.org>
- <c684d0a7-3336-48e3-9d2b-5c92f9132550@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <c684d0a7-3336-48e3-9d2b-5c92f9132550@linaro.org>
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
+        intel-gfx@lists.freedesktop.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Pekka Paalanen <ppaalanen@gmail.com>, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        xaver.hugl@gmail.com, linux-kernel@vger.kernel.org
+References: <20231122161941.320564-1-andrealmeid@igalia.com>
+ <cc10f6b0-e26e-4021-85ca-33cb1e58e937@amd.com>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <cc10f6b0-e26e-4021-85ca-33cb1e58e937@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hamza,
 
-
-On 10/16/23 16:32, Dmitry Baryshkov wrote:
-> On 26/09/2023 23:03, Konrad Dybcio wrote:
->> On 26.09.2023 21:10, Danila Tikhonov wrote:
->>>
->>> I think you mean by name downstream dt - sdmmagpie-gpu.dtsi
->>>
->>> You can see the forked version of the mainline here:
->>> https://github.com/sm7150-mainline/linux/blob/next/arch/arm64/boot/dts/qcom/sm7150.dtsi
->>>
->>> All fdt that we got here, if it is useful for you:
->>> https://github.com/sm7150-mainline/downstream-fdt
->>>
->>> Best wishes, Danila
->> Taking a look at downstream, atoll.dtsi (SC7180) includes
->> sdmmagpie-gpu.dtsi.
+Em 22/11/2023 17:23, Hamza Mahfooz escreveu:
+> Hi André,
+> On 11/22/23 11:19, André Almeida wrote:
+>> Hi,
 >>
->> Bottom line is, they share the speed bins, so it should be
->> fine to just extend the existing entry.
+>> This work from me and Simon adds support for DRM_MODE_PAGE_FLIP_ASYNC 
+>> through
+>> the atomic API. This feature is already available via the legacy API. 
+>> The use
+>> case is to be able to present a new frame immediately (or as soon as
+>> possible), even if after missing a vblank. This might result in 
+>> tearing, but
+>> it's useful when a high framerate is desired, such as for gaming.
+>>
+>> Differently from earlier versions, this one refuses to flip if any 
+>> prop changes
+>> for async flips. The idea is that the fast path of immediate page 
+>> flips doesn't
+>> play well with modeset changes, so only the fb_id can be changed.
+>>
+>> Tested with:
+>>   - Intel TigerLake-LP GT2
+>>   - AMD VanGogh
 > 
-> But then atoll.dtsi rewrites speed bins and pwrlevel bins. So they are not shared.
-+Akhil
+> Have you had a chance to test this with VRR enabled? Since, I suspect
+> this series might break that feature.
+> 
 
-could you please check internally?
+Someone asked this question in an earlier version of this patch, and the 
+result is that VRR still works as expected. You can follow the thread at 
+this link:
 
-Konrad
+https://lore.kernel.org/lkml/b48bd1fc-fcb0-481b-8413-9210d44d709b@igalia.com/
+
+I should have included this note at my cover letter, my bad.
+
+Thanks,
+	André
