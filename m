@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC677F4B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302B37F4BAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344673AbjKVPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        id S1344638AbjKVPyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344472AbjKVPob (ORCPT
+        with ESMTP id S235243AbjKVPya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:44:31 -0500
+        Wed, 22 Nov 2023 10:54:30 -0500
 Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E1D72;
-        Wed, 22 Nov 2023 07:43:00 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AMFgqKW031041;
-        Wed, 22 Nov 2023 09:42:52 -0600
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1229B170E;
+        Wed, 22 Nov 2023 07:43:01 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AMFgtjC031052;
+        Wed, 22 Nov 2023 09:42:55 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700667772;
-        bh=pFduLlydOwKar9BVb8D513PZ/AG8sYpzIvIkHf6BHxQ=;
+        s=ti-com-17Q1; t=1700667775;
+        bh=/hLXqNq2lxfuDYMurFDuU/pVsd2mCXJXYqLfaS+P+zU=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=EibEm12uKf5xmX8rhPG2NwQu6LHW4DKNRvU6xUJu45zvqu+ncNCGWPDTyNo0aJZGh
-         i2YSWHSYzbRD8i1ZgPKDAxojH7sDaLhqp7dqAn8YqNcYf9lfK5Kh0NYO97vRYhxmxu
-         wVYAOPKQdkbuR31WoCSK9BeGh+4E/AD6PJyG53M0=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AMFgq8R012010
+        b=qdGp1tEfNQRWLytU3ht3tqcSh+oDaOdB7wJev8podPQ9/jadNoQjNOI9ajCfcdMlO
+         Z8kjfj2dD2gw2DNCWGkMXFHVCFIqm0UbQEt2pcyMf7AL6zzCvRDM1i3wM1Kv9A0DRQ
+         hK/C7tlxCxoIE3ac3CKAw4ja0+n5+BsZFaQrPzsM=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AMFgtgM086025
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Nov 2023 09:42:52 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 22 Nov 2023 09:42:55 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 22
- Nov 2023 09:42:52 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2023 09:42:55 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 22 Nov 2023 09:42:52 -0600
+ Frontend Transport; Wed, 22 Nov 2023 09:42:55 -0600
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AMFggJn046973;
-        Wed, 22 Nov 2023 09:42:49 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AMFggJo046973;
+        Wed, 22 Nov 2023 09:42:52 -0600
 From:   Vignesh Raghavendra <vigneshr@ti.com>
 To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -50,9 +50,9 @@ CC:     <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v2 2/4] dt-bindings: dma: ti: k3-bcdma: Describe cfg register regions
-Date:   Wed, 22 Nov 2023 21:12:36 +0530
-Message-ID: <20231122154238.815781-3-vigneshr@ti.com>
+Subject: [PATCH v2 3/4] dt-bindings: dma: ti: k3-pktdma: Describe cfg register regions
+Date:   Wed, 22 Nov 2023 21:12:37 +0530
+Message-ID: <20231122154238.815781-4-vigneshr@ti.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231122154238.815781-1-vigneshr@ti.com>
 References: <20231122154238.815781-1-vigneshr@ti.com>
@@ -70,70 +70,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Block copy DMA(BCDMA)module on K3 SoCs have ring, BCHAN, TX and RX
-channel cfg register regions which are usually configured by a Device
-Management firmware. But certain entities such as bootloader (like
-U-Boot) may have to access them directly. Describe this region in the
-binding documentation for completeness of module description.
+Packet DMA (PKTDMA) module on K3 SoCs have ring cfg, TX and RX channel
+cfg and RX flow cfg register regions which are usually configured by a
+Device Management firmware. But certain entities such as bootloader
+(like U-Boot) may have to access them directly. Describe this region in
+the binding documentation for completeness of module description.
 
 Keep the binding compatible with existing DTS files by requiring first
-five regions to be present at least.
+four regions to be present at least.
 
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 ---
- .../devicetree/bindings/dma/ti/k3-bcdma.yaml  | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/dma/ti/k3-pktdma.yaml | 20 +++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-index b5444800b036..b9a0ce347368 100644
---- a/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-+++ b/Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml
-@@ -155,20 +155,30 @@ allOf:
-     then:
-       properties:
-         reg:
-+          minItems: 5
-           items:
-             - description: BCDMA Control /Status Registers region
-             - description: Block Copy Channel Realtime Registers region
-             - description: RX Channel Realtime Registers region
-             - description: TX Channel Realtime Registers region
-             - description: Ring Realtime Registers region
-+            - description: Ring Configuration Registers region
-+            - description: TX Channel Configuration Registers region
-+            - description: RX Channel Configuration Registers region
-+            - description: Block Copy Channel Configuration Registers region
+diff --git a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+index 3580b08f65c6..11e064c02994 100644
+--- a/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
++++ b/Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml
+@@ -45,18 +45,28 @@ properties:
+       The second cell is the ASEL value for the channel
  
-         reg-names:
-+          minItems: 5
-           items:
-             - const: gcfg
-             - const: bchanrt
-             - const: rchanrt
-             - const: tchanrt
-             - const: ringrt
-+            - const: ring
-+            - const: tchan
-+            - const: rchan
-+            - const: bchan
+   reg:
++    minItems: 4
+     items:
+       - description: Packet DMA Control /Status Registers region
+       - description: RX Channel Realtime Registers region
+       - description: TX Channel Realtime Registers region
+       - description: Ring Realtime Registers region
++      - description: Ring Configuration Registers region
++      - description: TX Configuration Registers region
++      - description: RX Configuration Registers region
++      - description: RX Flow Configuration Registers region
  
-       required:
-         - ti,sci-rm-range-bchan
-@@ -224,8 +234,13 @@ examples:
-                       <0x0 0x4c000000 0x0 0x20000>,
-                       <0x0 0x4a820000 0x0 0x20000>,
-                       <0x0 0x4aa40000 0x0 0x20000>,
--                      <0x0 0x4bc00000 0x0 0x100000>;
--                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-+                      <0x0 0x4bc00000 0x0 0x100000>,
-+                      <0x0 0x48600000 0x0 0x8000>,
-+                      <0x0 0x484a4000 0x0 0x2000>,
-+                      <0x0 0x484c2000 0x0 0x2000>,
-+                      <0x0 0x48420000 0x0 0x2000>;
-+                reg-names = "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-+                            "ring", "tchan", "rchan", "bchan";
+   reg-names:
++    minItems: 4
+     items:
+       - const: gcfg
+       - const: rchanrt
+       - const: tchanrt
+       - const: ringrt
++      - const: ring
++      - const: tchan
++      - const: rchan
++      - const: rflow
+ 
+   msi-parent: true
+ 
+@@ -140,8 +150,14 @@ examples:
+                 reg = <0x0 0x485c0000 0x0 0x100>,
+                       <0x0 0x4a800000 0x0 0x20000>,
+                       <0x0 0x4aa00000 0x0 0x40000>,
+-                      <0x0 0x4b800000 0x0 0x400000>;
+-                reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt";
++                      <0x0 0x4b800000 0x0 0x400000>,
++                      <0x0 0x485e0000 0x0 0x20000>,
++                      <0x0 0x484a0000 0x0 0x4000>,
++                      <0x0 0x484c0000 0x0 0x2000>,
++                      <0x0 0x48430000 0x0 0x4000>;
++                reg-names = "gcfg", "rchanrt", "tchanrt", "ringrt",
++                            "ring", "tchan", "rchan", "rflow";
++
                  msi-parent = <&inta_main_dmss>;
-                 #dma-cells = <3>;
+                 #dma-cells = <2>;
  
 -- 
 2.42.0
