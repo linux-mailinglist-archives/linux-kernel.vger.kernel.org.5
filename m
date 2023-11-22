@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D25877F3C6F
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA837F3C6E
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343660AbjKVDaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39638 "EHLO
+        id S235037AbjKVDa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343688AbjKVDap (ORCPT
+        with ESMTP id S1343642AbjKVDas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:30:45 -0500
+        Tue, 21 Nov 2023 22:30:48 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D3AD45
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:30:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8F9D6F
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:30:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700623840; x=1732159840;
+  t=1700623841; x=1732159841;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=NBrfwbm+D/NKidPUfm+0chk1dT5BhEPaSaHHnHNJrj0=;
-  b=nGiWSzhaCDDwzYkEPliowY7FE5g0ai6A7kMobnPC5TT0OMJN7a9QnFNh
-   n45JnP8Fvk3QgP/Z/kkF53+ODg4OJRE8tKBxUn/7XYOXNRjkkdTbwx7Q3
-   CeM4WIjx8ategYHG3+EgTZzNoFI2xUNonvfiRwPia9id/XRAtHW4fL3Mc
-   cnMrgQCVGZR6RguFMJXYGS6PXEVqX1MCAjG0JXB+E+g+pjPnsrLnDkbUj
-   5B6v8ILVhyY4VXLpd+7nxowf7c9NUTOz3OZbNWISZ6GZol2SZytkNwazv
-   F6zrgeLlP+QERbTGNW3RvOy0TBhdg+vGiH0WmtMGI1M2laPsbrCKS8zah
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="391742801"
+  bh=l8mKiuMBoMj92zKyDcAwd723ed3hnwwboBhJ8sse7us=;
+  b=KoCXRkn3I3jEqOHOpuBkxmPX6V5YgMQxaowr6X8F7mP8XbHStGHpSv6w
+   EvMMVBccFXUVq7FdrMaepP0iiT2ScvYO0mtimnEk+4dciEUzHsgwLTlXU
+   h9IjqqFv4JXuUchsm6KG689XFFfQq3RXE5Lou3QEr2ZA7lG4iDt42xJLl
+   whCkcYayCo1DlnRGdhA0ba8LYqEP2HkzvaYESpPPWyC777e1OERj96ojW
+   fsX48WSL+GGA7bqx+eCkl32F84mOU/+MrfxdIouCHemVfVZDBzuGoiZtz
+   YKM7opJUeMYM0glMRk/1T9FnuLnbIQTB3/jZhKLleWctl8NTKNoHaNb82
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="391742807"
 X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="391742801"
+   d="scan'208";a="391742807"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 19:30:39 -0800
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 19:30:41 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="8090190"
+   d="scan'208";a="8090194"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orviesa002.jf.intel.com with ESMTP; 21 Nov 2023 19:30:38 -0800
+  by orviesa002.jf.intel.com with ESMTP; 21 Nov 2023 19:30:40 -0800
 From:   Lu Baolu <baolu.lu@linux.intel.com>
 To:     Joerg Roedel <joro@8bytes.org>
 Cc:     mohd.syazwan.abdul.halim@intel.com,
         Kunwu Chan <chentao@kylinos.cn>, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] iommu/vt-d: Fix incorrect cache invalidation for mm notification
-Date:   Wed, 22 Nov 2023 11:26:07 +0800
-Message-Id: <20231122032608.165144-7-baolu.lu@linux.intel.com>
+Subject: [PATCH 7/7] iommu/vt-d: Set variable intel_dirty_ops to static
+Date:   Wed, 22 Nov 2023 11:26:08 +0800
+Message-Id: <20231122032608.165144-8-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231122032608.165144-1-baolu.lu@linux.intel.com>
 References: <20231122032608.165144-1-baolu.lu@linux.intel.com>
@@ -61,80 +61,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
-invalidating TLBs") moved the secondary TLB invalidations into the TLB
-invalidation functions to ensure that all secondary TLB invalidations
-happen at the same time as the CPU invalidation and added a flush-all
-type of secondary TLB invalidation for the batched mode, where a range
-of [0, -1UL) is used to indicates that the range extends to the end of
-the address space.
+From: Kunwu Chan <chentao@kylinos.cn>
 
-However, using an end address of -1UL caused an overflow in the Intel
-IOMMU driver, where the end address was rounded up to the next page.
-As a result, both the IOTLB and device ATC were not invalidated correctly.
+Fix the following warning:
+drivers/iommu/intel/iommu.c:302:30: warning: symbol
+ 'intel_dirty_ops' was not declared. Should it be static?
 
-Add a flush all helper function and call it when the invalidation range
-is from 0 to -1UL, ensuring that the entire caches are invalidated
-correctly.
+This variable is only used in its defining file, so it should be static.
 
-Fixes: 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when invalidating TLBs")
-Cc: stable@vger.kernel.org
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Alistair Popple <apopple@nvidia.com>
-Tested-by: Luo Yuzhang <yuzhang.luo@intel.com> # QAT
-Tested-by: Tony Zhu <tony.zhu@intel.com> # DSA
+Fixes: f35f22cc760e ("iommu/vt-d: Access/Dirty bit support for SS domains")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Reviewed-by: Alistair Popple <apopple@nvidia.com>
+Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
+Link: https://lore.kernel.org/r/20231120101025.1103404-1-chentao@kylinos.cn
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20231117090933.75267-1-baolu.lu@linux.intel.com
 ---
- drivers/iommu/intel/svm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/iommu/intel/iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 50a481c895b8..ac12f76c1212 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -216,6 +216,27 @@ static void intel_flush_svm_range(struct intel_svm *svm, unsigned long address,
- 	rcu_read_unlock();
- }
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 68f121c28fbf..897159dba47d 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -299,7 +299,7 @@ static int iommu_skip_te_disable;
+ #define IDENTMAP_AZALIA		4
  
-+static void intel_flush_svm_all(struct intel_svm *svm)
-+{
-+	struct device_domain_info *info;
-+	struct intel_svm_dev *sdev;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-+		info = dev_iommu_priv_get(sdev->dev);
-+
-+		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 0);
-+		if (info->ats_enabled) {
-+			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-+						 svm->pasid, sdev->qdep,
-+						 0, 64 - VTD_PAGE_SHIFT);
-+			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
-+						  svm->pasid, sdev->qdep);
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+
- /* Pages have been freed at this point */
- static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 					struct mm_struct *mm,
-@@ -223,6 +244,11 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+ const struct iommu_ops intel_iommu_ops;
+-const struct iommu_dirty_ops intel_dirty_ops;
++static const struct iommu_dirty_ops intel_dirty_ops;
+ 
+ static bool translation_pre_enabled(struct intel_iommu *iommu)
  {
- 	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
- 
-+	if (start == 0 && end == -1UL) {
-+		intel_flush_svm_all(svm);
-+		return;
-+	}
-+
- 	intel_flush_svm_range(svm, start,
- 			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT, 0);
+@@ -4929,7 +4929,7 @@ static int intel_iommu_read_and_clear_dirty(struct iommu_domain *domain,
+ 	return 0;
  }
+ 
+-const struct iommu_dirty_ops intel_dirty_ops = {
++static const struct iommu_dirty_ops intel_dirty_ops = {
+ 	.set_dirty_tracking = intel_iommu_set_dirty_tracking,
+ 	.read_and_clear_dirty = intel_iommu_read_and_clear_dirty,
+ };
 -- 
 2.34.1
 
