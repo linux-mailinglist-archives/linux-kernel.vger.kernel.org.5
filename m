@@ -2,95 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21EF7F5486
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B31787F5493
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjKVX2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44720 "EHLO
+        id S231179AbjKVXbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjKVX2d (ORCPT
+        with ESMTP id S229513AbjKVXbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:28:33 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6B71B5;
-        Wed, 22 Nov 2023 15:28:29 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-332cc1f176bso182008f8f.2;
-        Wed, 22 Nov 2023 15:28:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700695708; x=1701300508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wfE1KTkgq6xLLiPqdRtfBaDM02CW7efViNW5ZFPiv6Y=;
-        b=hc1wwOrGT+29COZc2S5ErMm8kicGbNGH0xm+6D2Z+Y5t9lligQOnixC/Roq69MXkym
-         KeWbv7EUnNbZbLvhTU8y7gQDi0o7O3bh5TJIPsWjFY4RFkPOGpkUJmkr0Qa6bfS2Z9G6
-         c/sLZJeo5BdfDEam8PGXKsnpiV5dFU8htuNh77JWtlZsNRCADghH1CIYZ1WESuhgXz3v
-         7QuHZb02qIe8NqzN0kiwKRdU0CzIgkbTI2O6lvQQxIJoK5y70CKiQPuxg0rKU3lixTwY
-         lkHTHT2LQ8AmUUlT9ExmjwldepdMacPyKS/tuvQsQ8abmWnVAGjr05HwYsEkVQDsTddu
-         f5/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700695708; x=1701300508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wfE1KTkgq6xLLiPqdRtfBaDM02CW7efViNW5ZFPiv6Y=;
-        b=VZHKwq/83gOoc5SfSFVJw+r7rL+aTGJxAxqmImPXwPjncPnhTdKXrkLpwL0OcE741M
-         Qf4luHnRfAS+pHsfAhmUwrXmaZ1a5SQgFsJHrxhcDCu6Z4WY44LFqFGsDkwjsKqA6hlj
-         qwyXQLj8rszhWobwXqzHxeCGRdhA6xa3FFAaoOEKcrurrQDWwGpSXoPuwfpF2h0nKnl+
-         i+hMwMWnXHI8Ps9kBjrgUehv1e0LHQOqxzyRoOwydV6clGBve83iH4jVgc5l+FCYmEr7
-         zYOIM86B3lhhs2ZnVLOH0O9sGEW+hA0K0BQ2wfyL2U6iCLKCsZu/Pyi64/cbyhEbZnn5
-         YhwA==
-X-Gm-Message-State: AOJu0YwfOYBhNoOXtud3eo7xEulrf8B8FFXnSGfJUs5D70Y/7Lhqm3Na
-        VnkmDRm1W2HTHJZ2VnV83fexU4KWYRqZ5AgS0VtUzeIa
-X-Google-Smtp-Source: AGHT+IEWa+pEGlUg+/D9JPP0S7XYTOdPQaLW3OpbJ4qWMzplMz4rJEDxjuTipm4leeAQKQZkXLmHQEzoc/18EMdp+/4=
-X-Received: by 2002:a5d:5550:0:b0:332:e190:f8dd with SMTP id
- g16-20020a5d5550000000b00332e190f8ddmr13782wrw.37.1700695708128; Wed, 22 Nov
- 2023 15:28:28 -0800 (PST)
+        Wed, 22 Nov 2023 18:31:23 -0500
+Received: from DM4PR02CU002.outbound.protection.outlook.com (mail-centralusazon11013021.outbound.protection.outlook.com [52.101.64.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E926E112;
+        Wed, 22 Nov 2023 15:31:18 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fhgizPRVQ0kTssHMnEnv3HXZgASe/YEkOUzWB9Q3AWiCmdxTy1zuZSfDdZZwqAV1vaJYiVoM/UqJqckSHYJyOrbiESbF6/FRFpjRkct8cd8BFQNmoq+QqkAhSkYnPgFbKmvQuQb/GaHfFyQfEt3flCyuJA1HWj0sIuaKZ2OJb7uMJrjj/bck9ppW9LWQpsPs88YUTbReglFaGFYpSj/BdYJBrCh4b1HieUO8oSopBVoXogw0TEZ6TL1uFxZPUoMNRe/Hl2JwS9CI0YwvkdoRrSyu6D8Z8Z/acvyHUB2fdbLOYKNVsupwwx/lHfgRMjbO+bBJHru5aTocVJZWK2dlpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9X+iO1QmTuqf+eDzj8IyX2iYLWS7QsP/WGHqbRswu9c=;
+ b=cIBsKPlVM78eIDVasf2OioIrzEAGOHe33Ea+vJbcE2D38sZLxjt429u0kRo+hNqfkTrO0KKMxJqyFxswIaYmIylzSuGk2Q06p6n1kUNxgOvjUIGk0kF/YNtgqM+rVGJPpnF3jtEdQGenk5PK0gfrYSplYDVcFDymHyula3oZ+anGvrO//65DnRCOzzqzm8aphT6kTbpZljTca/fhSwMY+K43LNfC0tnyJa0p1ySCjHp+PDBZPtr3D277kvrUeZZ3VVzQAV+KszYKYbHzZulEDTX9q5uSjdM1MNaIeE9cqkH+OrQABcvnkmXkCggPWMN3L1vnyFqtBctis/eFAT7c3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9X+iO1QmTuqf+eDzj8IyX2iYLWS7QsP/WGHqbRswu9c=;
+ b=zHFVLMBiUM/G+WBMqhA6ut621BLhSh9KSk9peGICK+krsrwnGFwPW2ira45xILZB5HCNW4iR09vIo/bWC/t+QnBOPW+vwH+8TsKkMOFTnkqbh0atym3neBCm4uFsm/Z7u0phlYEY/zSv3QUHGuguvvTuDJUi045W+2FLBbkZNLo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com (2603:10b6:301:45::23)
+ by BY3PR05MB8275.namprd05.prod.outlook.com (2603:10b6:a03:3b6::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 23:31:16 +0000
+Received: from MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::10f0:590a:708:4ad7]) by MWHPR05MB3648.namprd05.prod.outlook.com
+ ([fe80::10f0:590a:708:4ad7%2]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
+ 23:31:15 +0000
+From:   Alexey Makhalov <amakhalov@vmware.com>
+To:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        hpa@zytor.com, x86@kernel.org, dave.hansen@linux.intel.co,
+        bp@alien8.d, mingo@redhat.com, tglx@linutronix.de,
+        zackr@vmware.com, timothym@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com
+Cc:     netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
+        namit@vmware.com, akaher@vmware.com, jsipek@vmware.com,
+        Alexey Makhalov <amakhalov@vmware.com>
+Subject: [PATCH 0/6] VMware hypercalls enhancements
+Date:   Wed, 22 Nov 2023 15:30:45 -0800
+Message-Id: <20231122233058.185601-1-amakhalov@vmware.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0039.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::16) To MWHPR05MB3648.namprd05.prod.outlook.com
+ (2603:10b6:301:45::23)
 MIME-Version: 1.0
-References: <cover.1700676682.git.dxu@dxuuu.xyz> <84111ba0ea652a7013df520c151d40d400401e9c.1700676682.git.dxu@dxuuu.xyz>
-In-Reply-To: <84111ba0ea652a7013df520c151d40d400401e9c.1700676682.git.dxu@dxuuu.xyz>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Nov 2023 15:28:16 -0800
-Message-ID: <CAADnVQKg7-T_g7CFRs62ZDFyR9z=FTxfyXyTe=3_ojGpnvxJ4w@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next v1 7/7] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        antony.antony@secunet.com, Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        devel@linux-ipsec.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR05MB3648:EE_|BY3PR05MB8275:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8bf9d12-8a32-4472-3940-08dbebb31e6a
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vV8vuqWHmiO/tsNXq5qrTzblLJdHv3pRDBPcRwzjVXDhW8pzS4jBMKzFu4im9QQnvIpBY8d9NnJqgbVaIIYVYVlrbPiIzW/sCMnw5UwfaSsvPlJB3hBFSH0SzolvRa2h7vmF6MM8PQ5UR00GEkaxGcqaHeB706+Z/0DGmUU2b9WRPm9EtsC5dAcab6YvxPQ/+2xtHcOmlzJa3MLKrWsc5T/uuhyjd6mYiQEy8DPL3iK3PAZZtcivGkajzex1/FB8BBBXTFrTz0F8tj91dVO8NvPO9/XptVI8Je/qEtEIarA7Hhxb7zi5xvV8bYxkm6f086FYWP3Ub7m7UuUOeCijA3fO04Qe9Mq4k/XXyudj9kZDdEFg6VvDqeLTbbbaJPZBBsA07UeTtuttXLW4uI2RIbWmYch2a7uJTDcjQFCfMcCBsk2RXToOICQejlGd7d+IzXYKZrRgRkzdguEDax3GiKAoTSQyUP/aS8xxu3Q3oRRpsgbQYXDfbe8gNv7xRXndFdg73lDuPyC5zQgAvRxZWj4SqSccojwAdwYW/sM6ae8T1j6kYB00BkI9QFBFHqrkR3Vf6UL9lJM80OKsliW0Q64id86G4c+RDtTRChxaTpczZE7yDV4szHi0UE06xAPjafYKt0DXRgzcKekucG3c9tkXbSNoascTPiL2+WRh8CkdYRdz3UM8HKnMX4pNdQ/r
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR05MB3648.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(39860400002)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6486002)(4326008)(8676002)(8936002)(5660300002)(7416002)(2616005)(107886003)(478600001)(83380400001)(38350700005)(6666004)(2906002)(66946007)(66556008)(66476007)(38100700002)(316002)(41300700001)(6506007)(6512007)(52116002)(26005)(36756003)(86362001)(921008)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r4R/D5TldzVrLQcJvetj83dPh3Q7JfGEwbPFVJCYDs//ABIt/01A8ReAav6E?=
+ =?us-ascii?Q?DZVhI0AaDYahZWOAHs97APnw5QzeSApbGjAderzsmmwJf1Ma6Ucl58z8fBCA?=
+ =?us-ascii?Q?6OuqsK73lpBtOh7RMPzpfXJWBSw4iFFLwXxfD+yh0j91SBS8HHVVBul2FGQN?=
+ =?us-ascii?Q?BCXMWKRpN1mrSjS+ixvebsB6r3TEXVJu0f7GZ6Mc3xEk0QD/bQ72TPq0zuHx?=
+ =?us-ascii?Q?PsBl/8QkaiSP73obTw/IG1gRn5Q7D3Q2hFCUcJXBh7JXERd0le6o1Dwxmb5S?=
+ =?us-ascii?Q?NexQwpNYRYYYxPNVoUdFrleuUBg9BzHitrdMvcyFJRJyAWmhi+RDxntjw0V/?=
+ =?us-ascii?Q?kH21K1oeHal98IbUFwZ9duH0nN6ZlEaCISouHXxiUOxhW8haJjUUWfYwtiWM?=
+ =?us-ascii?Q?YWVvcWBWiZARc92s2dy6uKn+TBCkA75XWAEndvOWGQqYv/squHa8cSPvLqXN?=
+ =?us-ascii?Q?JwAXyqsibeOe4Yt3hAu5Nzj4OnAxwRSURmtpNRnX7dvLDS7sJqVktI/tbDyx?=
+ =?us-ascii?Q?ZHUL00lseM4VLTb6xpco2dky2X5Cgseokt9Ibpnu7/RDMvA9onc9qFhB9acX?=
+ =?us-ascii?Q?SnF07NT15YHQE/P22RPjrdPldJeBiETdmXa8k9AiArO5Fjj8AFfcr6w2F/L9?=
+ =?us-ascii?Q?fJBRrJdgpqFs1TC2ccsmid/KHCBdMFYLOXRktQze2uPMZhtQRY/YH08aS1WK?=
+ =?us-ascii?Q?IsTQHtbMi3AaW3VSkMNvIO2RifNxTC2BBE8ZSFOtaZfXGUtQQiDNRcvIw+rx?=
+ =?us-ascii?Q?PmezxWU4xuTVvUidboTs/O66Y8u+0sVahdrcUd0dczxIe2QVqkyEdqy+soDy?=
+ =?us-ascii?Q?GIjbKJMYt5QGvPrXQDt1M6E8Z7BBHlJoofWaOxd0XZyo9GppegIuoGtfEJ1w?=
+ =?us-ascii?Q?Ad6aCA/CVvMmZ2XGpIzhaZKGuS7TIVKdWuBFBSUpjxLEaGFi7fMKcp78+Gjf?=
+ =?us-ascii?Q?vBYL9ZGgUjPp22TxxItmCHnpjocxUM3DfpyM0jRp9HhnqY5mcBrTxh4tHnw1?=
+ =?us-ascii?Q?ewXiWUH9CuRQCSQcaO2EZBsetxR2Lunsv4n+vb05wXnaq573gGCaVfPDldfy?=
+ =?us-ascii?Q?HKEW3JdE58iKgh2cqtsW2OQ2nxrKGzO0w2EdPC/3y2qkBPX6fU2POwWDx9SE?=
+ =?us-ascii?Q?2f8KR7xh5vnJzkFpYztjqyfxP4LpcIhuGj35lO1XABGbSK8HMiujRdkj/XMz?=
+ =?us-ascii?Q?p+Md8pZxFGD1t6944QKGoagYAcb3H4cTPFZUWOgj2w5Jv2ObltVaFAzhhxce?=
+ =?us-ascii?Q?5CNVZXttIO3i5TM3ANk5tX5znZvxGOsnSA6XTZ3md8NiBMEDa19d/6HUcyKn?=
+ =?us-ascii?Q?IptSFL2TGeKYoLSqrqUp12vtiDzRjAqa5X3gnzKc+j3UlZ4eNDf6MU5RKMS9?=
+ =?us-ascii?Q?JvWcbqSt8CGIqmbtm6ep9Z0ZiESql+GTeTrDa5FRhbUh+Mhp1+dCrWN7eq/n?=
+ =?us-ascii?Q?EUgqElx3UcyglHG9/6in8snIcY663un4doSh8wzEiLgcCLp3vku/L1rgwLxV?=
+ =?us-ascii?Q?AMjNQhLc2t4PvJ/Z4ebRtfUXG7L0rXiUtK/gGHFKhZ+CieKR/Mk4uPVZ3ORP?=
+ =?us-ascii?Q?1sxjdj4Iq/JQdcSrMGm5AtNi19UqYYO85tnHl4HV?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8bf9d12-8a32-4472-3940-08dbebb31e6a
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR05MB3648.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 23:31:15.0662
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0fkFUwQ3dw6DF43LdPfxPVB/nAXYEwlf9eT3XOMkNKR8EziizpRAbrAMN88asZMUQ7XlAqKFiy6sSKsBY7XVCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR05MB8275
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 10:21=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> +
-> +       bpf_printk("replay-window %d\n", x->replay_esn->replay_window);
+VMware hypercalls invocations were all spread out across the kernel
+implementing same ABI as in-place asm-inline. With encrypted memory
+and confidential computing it became harder to maintain every changes
+in these hypercall implementations.
 
-Pls no printk in tests. Find a different way to validate.
+Intention of this patchset is to introduce arch independent VMware
+hypercall API layer other subsystems such as device drivers can call
+to, while hiding architecture specific implementation behind.
+
+Second patch introduces the vmware_hypercall low and high bandwidth
+families of functions, with little enhancements there.
+Sixth patch adds tdx hypercall support
+
+arm64 implementation of vmware_hypercalls is in drivers/gpu/drm/
+vmwgfx/vmwgfx_msg_arm64.h and going to be moved to arch/arm64 with
+a separate patchset with the introduction of VMware Linux guest
+support for arm64.
+
+No functional changes in drivers/input/mouse/vmmouse.c and
+drivers/ptp/ptp_vmw.c
+
+Alexey Makhalov (6):
+  x86/vmware: Move common macros to vmware.h
+  x86/vmware: Introduce vmware_hypercall API
+  ptp/vmware: Use vmware_hypercall API
+  input/vmmouse: Use vmware_hypercall API
+  drm/vmwgfx: Use vmware_hypercall API
+  x86/vmware: Add TDX hypercall support
+
+ arch/x86/include/asm/vmware.h             | 327 ++++++++++++++++++++--
+ arch/x86/kernel/cpu/vmware.c              | 101 ++-----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c       | 173 ++++--------
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_arm64.h | 197 +++++++++----
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg_x86.h   | 185 ------------
+ drivers/input/mouse/vmmouse.c             |  76 ++---
+ drivers/ptp/ptp_vmw.c                     |  12 +-
+ 7 files changed, 551 insertions(+), 520 deletions(-)
+
+-- 
+2.39.0
+
