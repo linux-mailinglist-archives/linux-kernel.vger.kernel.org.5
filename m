@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8CC7F4F73
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1A87F4F74
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbjKVSYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        id S1344418AbjKVSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:24:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbjKVSYm (ORCPT
+        with ESMTP id S1344071AbjKVSYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:24:42 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A6610C2;
-        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c8879a1570so1049281fa.1;
-        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
+        Wed, 22 Nov 2023 13:24:43 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D2410D5;
+        Wed, 22 Nov 2023 10:24:36 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so984031fa.2;
+        Wed, 22 Nov 2023 10:24:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700677473; x=1701282273; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700677475; x=1701282275; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NrrDffuKyIXgLjHrahGVH1z8qYKZoBaB1/UsWeUkuOI=;
-        b=Dn2gSdh0Ed7bGir0riAhxGH/5IKZkgRJFxHezNMqJQdxieVQIJm24ZA9o2rzMJQkq3
-         fSkraeyEoy5BQHZClfbqCeuJz5L43JLIDDR3KcnuVZFLYyTt+to5o4U6GoI5yVJbaVlM
-         eaCAXTyp6lM2gZt/JQFRYjUh1o3+ckjO6oFpGt0c22BzjkSgasKDH/kDUrAiHEh5oe4k
-         l5wPmwozXrPtODp+iytZj1KPSNAoRw+ikoOamBFWbEExaGk7LjZRK6A0iZjNzl+LtG92
-         LAqmw1mEtTa1dUwWKvE/UBD47CQs/V9AZnoUsSpi+hEB+YMoqEOMc/GR0yarVMDaazTr
-         s6ZA==
+        bh=Du+BFHRvMyqAEjBg6RSkcIbKkpwDLrCm/CbvmyChoXU=;
+        b=IruV7NVzKskCqLWX31NWw9KJ9LqADYT1YUG7em2E7u+vp2MnnDrDoh3jelpnQ8/msS
+         U88F8/4RrHwgb5T3JtdPF55JsyCNkRgtMVut6OkXz1etB28E3uRGn5TBFoFuZWGbvHj3
+         gWcAJRFML2huyZwMEjfT0twK6ywZiomuf+KqQ996BBqLeL8XtgfaRFIWl9k6unXC4O3E
+         awP16Xxb/Zpkl/MN7Tsxu9j1OZMrF5GB/sVrjA1uNXkxhYzATM1mlfHeRXAMZiv9vqiC
+         Bg2qBY1hOVJCV6cGdnPjYhWhhSI7EaREIpTWSpE52aqiXrLoNa5SL/QfG4W3m72z1295
+         8Y6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700677473; x=1701282273;
+        d=1e100.net; s=20230601; t=1700677475; x=1701282275;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NrrDffuKyIXgLjHrahGVH1z8qYKZoBaB1/UsWeUkuOI=;
-        b=IisMH87luUvOD+zg0ObK5aBCH4HlTW7WsgE/LxEZq3teOcI34K3xulHpO3qZECi548
-         qpG184PhqTdg0EM23NrhGxCxzmrWDExpaqNm+7VInfXnfsHikvLEm8me4dGdz/4J0t00
-         kMbgQ3IPfTHOBblIcQ3osOjXAmLJuK6yST6hPlRj4YzN3hOOext2bzJOEV3eJb7APMIn
-         TA9oOrapGyENg1iFNVksb/OwfruJMXIlG/wgWiSp0gaz6GLP3e+74jvmoqLZpCR/ozyw
-         J0qd+Sv1sQKvzQQsohLv8AHPKv9FJV8lNn82MhE6cfcTk4uFSCFFY2RfYXPqC1oOfw+1
-         C5vA==
-X-Gm-Message-State: AOJu0Yx0QTtSIluDZfJAwQWy6vAZ8t7VH4fMIXak/ZCTIkWFJ1W135LC
-        hgsjorPOQLBTQ5p/9rIoE/M=
-X-Google-Smtp-Source: AGHT+IHlyJFYDUK09NiVpLzUjfThYPAyTd5SkNxX1GDZ7WAcgUV7PWYzLSbmzPwSJEKgWLIIXW4sAQ==
-X-Received: by 2002:a2e:2a83:0:b0:2c7:4220:56f3 with SMTP id q125-20020a2e2a83000000b002c7422056f3mr2440133ljq.42.1700677473058;
-        Wed, 22 Nov 2023 10:24:33 -0800 (PST)
+        bh=Du+BFHRvMyqAEjBg6RSkcIbKkpwDLrCm/CbvmyChoXU=;
+        b=r5UGVCWDXia5Cxcn/XYt2I+3Bg5HCluctM2GC44d9b2+2beT0iXur15RrylE3+NKkL
+         h5ArGAnXUE80zmzEh3iAiCOSP2VEafcgrmQcQE9sB7QkboxsOj2MiMznC3EqDtOLGFc3
+         ijrpYlql91rrLS+t6Qg3VbXFrCckcBLyUL8Wic7xE/Iadam/hQEeKevU6CuipTHotcyv
+         Pn3PKyw1fxSG/kvaY/h8hsuDT3td8YlN8VICaA7xpVTXdMgSUPlx5tZWbthQysO2cxyr
+         2eKYOU8+/E3upAb03bB9dRxM/mbVTMhQYA4/Nb75zFnmOGFsdKgOJT7gwIfOtayWrfk3
+         V4Yw==
+X-Gm-Message-State: AOJu0YxkrCviWh0Nf1RQ0oGj+yYfG9VRCeFrgXafXwR4+nPpljwDB1wb
+        W6nVBRGYY5kUj42jc9nT6z8=
+X-Google-Smtp-Source: AGHT+IFKWUisXZgCOFxFmnquMptaMMQFLtq166qNTXQ2pfa0VVlheCvm7EXFGBwSINIn8btqNBHhmQ==
+X-Received: by 2002:a2e:86d5:0:b0:2c8:73b7:5a1c with SMTP id n21-20020a2e86d5000000b002c873b75a1cmr2181439ljj.3.1700677474971;
+        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id i19-20020a2e8653000000b002bfec05a693sm12343ljj.22.2023.11.22.10.24.32
+        by smtp.gmail.com with ESMTPSA id n16-20020a05651c001000b002c884919bdfsm12238lja.10.2023.11.22.10.24.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 10:24:32 -0800 (PST)
+        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -67,9 +67,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Tiezhu Yang <yangtiezhu@loongson.cn>,
         Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
-Date:   Wed, 22 Nov 2023 21:24:03 +0300
-Message-ID: <20231122182419.30633-6-fancer.lancer@gmail.com>
+Subject: [PATCH 6/7] mm/mm_init.c: Append '\n' to the unavailable ranges log-message
+Date:   Wed, 22 Nov 2023 21:24:04 +0300
+Message-ID: <20231122182419.30633-7-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231122182419.30633-1-fancer.lancer@gmail.com>
 References: <20231122182419.30633-1-fancer.lancer@gmail.com>
@@ -85,35 +85,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Besides of the already described reasons the pages backended memory holes
-might be persistent due to having memory mapped IO spaces behind those
-ranges in the framework of flatmem kernel config. Add such note to the
-init_unavailable_range() method kdoc in order to point out to one more
-reason of having the function executed for such regions.
+Based on the init_unavailable_range() method and it's callee semantics no
+multi-line info messages are intended to be printed to the console. Thus
+append the '\n' symbol to the respective info string.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-
 ---
-
-Please let me know if the IO-space pages must be initialized somehow
-differently rather relying on free_area_init() executing the
-init_unavailable_range() method.
----
- mm/mm_init.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/mm_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 077bfe393b5e..3fa33e2d32ba 100644
+index 3fa33e2d32ba..db8b91175834 100644
 --- a/mm/mm_init.c
 +++ b/mm/mm_init.c
-@@ -796,6 +796,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * - physical memory bank size is not necessarily the exact multiple of the
-  *   arbitrary section size
-  * - early reserved memory may not be listed in memblock.memory
-+ * - memory mapped IO space
-  * - memory layouts defined with memmap= kernel parameter may not align
-  *   nicely with memmap sections
-  *
+@@ -827,7 +827,7 @@ static void __init init_unavailable_range(unsigned long spfn,
+ 	}
+ 
+ 	if (pgcnt)
+-		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
++		pr_info("On node %d, zone %s: %lld pages in unavailable ranges\n",
+ 			node, zone_names[zone], pgcnt);
+ }
+ 
 -- 
 2.42.1
 
