@@ -2,121 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144D17F4A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D5A7F4A10
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjKVPPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
+        id S230398AbjKVPRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjKVPP3 (ORCPT
+        with ESMTP id S229634AbjKVPRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:15:29 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDBA92;
-        Wed, 22 Nov 2023 07:15:26 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so9519348a12.2;
-        Wed, 22 Nov 2023 07:15:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700666124; x=1701270924; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SyHVCCe1TwoPClBnsSLHf4EvNUXQ/W3rjCvpOp2oD5E=;
-        b=cmUg6NhmhOWJq3HMPHiaTn2vY09g8/hBsE1BUgPRw3uQoH5BlZhSE1msRvLKGvMrVM
-         haTY3aRfud2T5dEKLpfj+jE3x5p6GVs+JJ1F6+jFF9rqGitezjrSwwaKgCjeSNtoCfSD
-         DlwW2m6Gj1px3cj7J3gy48wqQ62wGMV5zq1wf/eTeZaEkOm3mryQyTmLtvvdDs93+aS5
-         se33DK5SPPx/Pu5JsnptsL0qtblHJ45oDHS1nNIZurbeD8WA75BvIZrNsbZY97I83FEO
-         SvoG8BwCmOKsnVW81Bxqvx9ecUk2ssj7zpZMcoZku2XW1wPIYYuQwoLqkwTQSygCgKKK
-         K59A==
+        Wed, 22 Nov 2023 10:17:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB84A9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700666227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HNZF0SqnqKoxtxQfSsYiCYBkXnRbbx9Gogs3wh0979A=;
+        b=hF4nUseY1sn4eYrWfUD9lQu31uau0ThYLNQeZU+5INFaB3XmWNYCV8vwZGbeAiaqGI8/ia
+        gMM+MJcb2EEwtkuz3xPRCAnS8P2ETfq4vBGeIIJj0208McivEGVv9OChdT4t4m158Kkd0v
+        DsoMkjM4SIPtFn4ajD4UosBzd1zMBzg=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-rRhUWlTVNMGH0n9LduqBxw-1; Wed, 22 Nov 2023 10:17:04 -0500
+X-MC-Unique: rRhUWlTVNMGH0n9LduqBxw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50aa861dcf7so4339982e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:17:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700666124; x=1701270924;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SyHVCCe1TwoPClBnsSLHf4EvNUXQ/W3rjCvpOp2oD5E=;
-        b=tb/t0vcEFSuUgODsB/Rf0LEMHnZPgmk/2uLiI04WygH/KYlyuqO42zp7KZu/sJcI1I
-         hgaBlG+jyy1yBhvnVZFiCzyEFTLZoXBZRoGLAVzfB5pvtrx/87HN9Lt/AOjBP/04jIMw
-         qSOe/4KnWfa/9FzoIpN4sty43MBoJAOpYoSFKfK3MLIHc6GaouyiHjVtnw6EZKO6r7xF
-         aNoOQ9jpGxfsVJ+xAFe3/wau2/2U6fhwJhUby8tl0zGAFqvxNnQIkKGMvihje2ySbnzp
-         dzE8+BlnolB9N7ELxskp9Nf7THAtdZeLQZvzQvm/bCNZKYbrMVQWwntfZLvQQDt2trr2
-         AoZg==
-X-Gm-Message-State: AOJu0Yx2xcglGx5nZ0kO5VRbQlGcECRhdHMAsCs2tyQPOusUzi3oG7S0
-        PsYUwdOC4G3ETdCtpZ2XT1M=
-X-Google-Smtp-Source: AGHT+IHrw/Tts09VHKQ1692wNMYNCsWYYSRyyPml9Dx39zEbtepEmn480zIyu1XaqdkFM2CIrp5zqg==
-X-Received: by 2002:a05:6402:100e:b0:54a:97c4:b03c with SMTP id c14-20020a056402100e00b0054a97c4b03cmr83170edu.2.1700666124240;
-        Wed, 22 Nov 2023 07:15:24 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-142-131.cust.vodafonedsl.it. [2.39.142.131])
-        by smtp.gmail.com with ESMTPSA id r5-20020a056402018500b0053dec545c8fsm6191706edv.3.2023.11.22.07.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 07:15:23 -0800 (PST)
-Date:   Wed, 22 Nov 2023 16:15:21 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jacob Chen <jacob2.chen@rock-chips.com>,
-        Yichong Zhong <zyc@rock-chips.com>,
-        Shunqian Zheng <zhengsq@rock-chips.com>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eddie Cai <eddie.cai.linux@gmail.com>,
-        Allon Huang <allon.huang@rock-chips.com>,
-        Jeffy Chen <jeffy.chen@rock-chips.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] media: rkisp1: Fix memory leaks in
- rkisp1_isp_unregister()
-Message-ID: <ZV4bCdo6vUvaeUE4@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231122-rkisp-fixes-v1-0-1958af371e39@ideasonboard.com>
- <20231122-rkisp-fixes-v1-2-1958af371e39@ideasonboard.com>
+        d=1e100.net; s=20230601; t=1700666223; x=1701271023;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HNZF0SqnqKoxtxQfSsYiCYBkXnRbbx9Gogs3wh0979A=;
+        b=vXoy88B9ZCW7i9rB3GnYfZzAJ7dxLtlNQyNB3cWgIVoxjlz4SHrp8dPF7aZVRU3dLR
+         RLYQxEuC7mKUPrvaImiBs73Ui9OYlg79XM8TETG+mGj4NbRLUpwJUyDlO3AX0011ONds
+         Pwh/SWNb1dt/oVDl1MTG4ZiLbMxq+u8WPHO/miUXFBDukGUBnzFqoo2yYi2Llh+BHyLx
+         +EqcsqK0lACDTR80oc+47Cuxei9QvaEh6Oa191kBSrAjD7qcdezHaxVpxINJgqfOzshy
+         b8OG5kKdDqjjodxFr+P7hwEDWEbS1va97XxKQwDaO65pFbVxyTi3qPT0oE7khibDLxD6
+         xGxA==
+X-Gm-Message-State: AOJu0YwzVpc8NzULjmxX3wx31UD1ZogSI60lQqf3g81yXDENLXs8YU3Q
+        Inz1azdYI/f/E03mY1lO2jW5mlzyc6IOax26enLci67f3NZ/OSJNzkAxDOyAdQXwdwJqGtuEZ/T
+        xoEdplomoPbBaXbj+liIOfxg+
+X-Received: by 2002:a19:f818:0:b0:509:8e22:ae5 with SMTP id a24-20020a19f818000000b005098e220ae5mr1804412lff.60.1700666223052;
+        Wed, 22 Nov 2023 07:17:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGhNkk8osKUkuMiPV2p7kvM34eDJmsK95p+FLf/21RrBimt6NwiyXB5Qui/5kgPXgAMHMEmbw==
+X-Received: by 2002:a19:f818:0:b0:509:8e22:ae5 with SMTP id a24-20020a19f818000000b005098e220ae5mr1804397lff.60.1700666222725;
+        Wed, 22 Nov 2023 07:17:02 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id u10-20020aa7d88a000000b00548ac1f7c5esm4002104edq.64.2023.11.22.07.17.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 07:17:02 -0800 (PST)
+Message-ID: <0e3cd2e2-ea09-4772-88ed-b90a913937a0@redhat.com>
+Date:   Wed, 22 Nov 2023 16:17:01 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122-rkisp-fixes-v1-2-1958af371e39@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
+Content-Language: en-US, nl
+To:     Jonathan Denose <jdenose@chromium.org>
+Cc:     linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        linux-kernel@vger.kernel.org
+References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
+ <fbcf0fee-b97d-8f47-9df4-44bc1b475144@redhat.com>
+ <CALNJtpUH_0+ETa+7MfKRbpc_c1TTTasUrZ4zA4V9EHb_BtAUwg@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <CALNJtpUH_0+ETa+7MfKRbpc_c1TTTasUrZ4zA4V9EHb_BtAUwg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+Hi Jonathan,
 
-On Wed, Nov 22, 2023 at 04:42:23PM +0200, Tomi Valkeinen wrote:
-> Add missing call to v4l2_subdev_cleanup() to fix memory leak.
+On 11/21/23 21:23, Jonathan Denose wrote:
+> Hello Hans,
 > 
-> Fixes: 2cce0a369dbd ("media: rkisp1: isp: Use V4L2 subdev active state")
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 1 +
->  1 file changed, 1 insertion(+)
+> On Tue, Sep 26, 2023 at 5:37 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>
+>> Hi,
+>>
+>> On 9/25/23 23:33, Jonathan Denose wrote:
+>>> The ThinkPad T14 Gen 1 touchpad works fine except that clicking
+>>> and dragging by tapping the touchpad or depressing the touchpad
+>>> do not work. Disabling PNP for controller setting discovery enables
+>>> click and drag without negatively impacting other touchpad features.
+>>>
+>>> Signed-off-by: Jonathan Denose <jdenose@google.com>
+>>
+>> Thanks, patch looks good to me:
+>>
+>> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>>
+>> Regards,
+>>
+>> Hans
 > 
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> index 88ca8b2283b7..45d1ab96fc6e 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> @@ -933,6 +933,7 @@ void rkisp1_isp_unregister(struct rkisp1_device *rkisp1)
->  		return;
->  
->  	v4l2_device_unregister_subdev(&isp->sd);
-> +	v4l2_subdev_cleanup(&isp->sd);
->  	media_entity_cleanup(&isp->sd.entity);
->  }
->  
-> 
-> -- 
-> 2.34.1
-> 
-> 
+> I just wanted to double check that I haven't missed anything, has this
+> patch been applied yet?
 
-Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+Dmitry unfortunately does not have a lot of time for
+reviewing / merging input subsystem patches. So AFAICT this
+has not been processed / merged yet.
 
-Thanks & Regards,
-Tommaso
+I've just send Dmitry a friendly worded email ping for another
+patch, I've also brought this patch to his attention in
+that email.
+
+Regards,
+
+Hans
+
+
