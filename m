@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C93837F4A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B467F4A67
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344379AbjKVPco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:32:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        id S1344381AbjKVPc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344236AbjKVPci (ORCPT
+        with ESMTP id S1344342AbjKVPcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:32:38 -0500
+        Wed, 22 Nov 2023 10:32:53 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8827F18D;
-        Wed, 22 Nov 2023 07:32:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FE59C433C8;
-        Wed, 22 Nov 2023 15:32:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B64BB10EF;
+        Wed, 22 Nov 2023 07:32:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C714C433C9;
+        Wed, 22 Nov 2023 15:32:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667153;
-        bh=jXdwi0sWQem1NtJoxzR0tcraYd/cc+yeZdTfSEKpRt8=;
+        s=k20201202; t=1700667160;
+        bh=EpjLjyqXy9J2BjjoAI8hwuINf00k9PhkqMusJqG7GiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZDEWehTYpMgZQdPIoPK+9BdpHjmbnn3+wHwRbAPHcS1MTYEpsowPafStd4AtLECb
-         7V/V7yYpbvldCqP5kcSo/9er+9mXO1a7cmzHh3J5w9vDV0eNPXU75jwHTnjUP8ejwZ
-         Wl6bbhRLYflE1rJHO7OjqTA1zTutQUo/xLvSgWOSChXDg1dOzSF/Qwilq2G6Acn14J
-         eAvVUDDedT6lXHVDZeIxe4s8vWhXhHEJsPTUVwd6y9Lk2hrdF5d4mMoW3mpb+83IwO
-         uLg8eiuZCxIm4m+KO8Lb+l6taLYB8RuGAEeXjr36aCWdZPFbJakM4mHsMGcZ5E0orw
-         cPvIm/2eSigcA==
+        b=uDLshkhAVrCXSAjQEQK9dqtoIfDOLZlNdmc4ncfvg5odd3dzC/ndS5F/LIMhd54SD
+         6/kPBSlIwjKFpzHOBLqT7anE6gcFtRGUAikY2KZk2C+ANb0sTuIW3FrFal7j0BTm1k
+         9bv7onuuxXujl/67o5MAhzAYGUgMAHvrQ3hC/gL1uDuvEwy4uQ9yA7o2RUgYzgWUv9
+         hL8dHo9FBMvh9y9vPBwPjMCbKRI4FDUjRKORHZJ3MYbh/ZpIFS/qkj+7fT5TSyEO3m
+         wHzI4IqqhisR0f6InPMUbi9PrSPN8qh1QBlYnTGohvbv53lmay8US67hFB+27z8Wcv
+         R7GRsVHXT9txA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>, fw@strlen.de,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, justinstitt@google.com, kuniyu@amazon.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 06/17] netfilter: ipset: fix race condition between swap/destroy and kernel side add/del/test
-Date:   Wed, 22 Nov 2023 10:31:35 -0500
-Message-ID: <20231122153212.852040-6-sashal@kernel.org>
+Cc:     Dave Airlie <airlied@redhat.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, kherbst@redhat.com,
+        lyude@redhat.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 07/17] nouveau: use an rwlock for the event lock.
+Date:   Wed, 22 Nov 2023 10:31:36 -0500
+Message-ID: <20231122153212.852040-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153212.852040-1-sashal@kernel.org>
 References: <20231122153212.852040-1-sashal@kernel.org>
@@ -57,102 +55,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
+From: Dave Airlie <airlied@redhat.com>
 
-[ Upstream commit 28628fa952fefc7f2072ce6e8016968cc452b1ba ]
+[ Upstream commit a2e36cd56041e277d7d81d35638fd8d9731e21f5 ]
 
-Linkui Xiao reported that there's a race condition when ipset swap and destroy is
-called, which can lead to crash in add/del/test element operations. Swap then
-destroy are usual operations to replace a set with another one in a production
-system. The issue can in some cases be reproduced with the script:
+This allows it to break the following circular locking dependency.
 
-ipset create hash_ip1 hash:net family inet hashsize 1024 maxelem 1048576
-ipset add hash_ip1 172.20.0.0/16
-ipset add hash_ip1 192.168.0.0/16
-iptables -A INPUT -m set --match-set hash_ip1 src -j ACCEPT
-while [ 1 ]
-do
-	# ... Ongoing traffic...
-        ipset create hash_ip2 hash:net family inet hashsize 1024 maxelem 1048576
-        ipset add hash_ip2 172.20.0.0/16
-        ipset swap hash_ip1 hash_ip2
-        ipset destroy hash_ip2
-        sleep 0.05
-done
+Aug 10 07:01:29 dg1test kernel: ======================================================
+Aug 10 07:01:29 dg1test kernel: WARNING: possible circular locking dependency detected
+Aug 10 07:01:29 dg1test kernel: 6.4.0-rc7+ #10 Not tainted
+Aug 10 07:01:29 dg1test kernel: ------------------------------------------------------
+Aug 10 07:01:29 dg1test kernel: wireplumber/2236 is trying to acquire lock:
+Aug 10 07:01:29 dg1test kernel: ffff8fca5320da18 (&fctx->lock){-...}-{2:2}, at: nouveau_fence_wait_uevent_handler+0x2b/0x100 [nouveau]
+Aug 10 07:01:29 dg1test kernel:
+                                but task is already holding lock:
+Aug 10 07:01:29 dg1test kernel: ffff8fca41208610 (&event->list_lock#2){-...}-{2:2}, at: nvkm_event_ntfy+0x50/0xf0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:
+                                which lock already depends on the new lock.
+Aug 10 07:01:29 dg1test kernel:
+                                the existing dependency chain (in reverse order) is:
+Aug 10 07:01:29 dg1test kernel:
+                                -> #3 (&event->list_lock#2){-...}-{2:2}:
+Aug 10 07:01:29 dg1test kernel:        _raw_spin_lock_irqsave+0x4b/0x70
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy+0x50/0xf0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        ga100_fifo_nonstall_intr+0x24/0x30 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_intr+0x12c/0x240 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __handle_irq_event_percpu+0x88/0x240
+Aug 10 07:01:29 dg1test kernel:        handle_irq_event+0x38/0x80
+Aug 10 07:01:29 dg1test kernel:        handle_edge_irq+0xa3/0x240
+Aug 10 07:01:29 dg1test kernel:        __common_interrupt+0x72/0x160
+Aug 10 07:01:29 dg1test kernel:        common_interrupt+0x60/0xe0
+Aug 10 07:01:29 dg1test kernel:        asm_common_interrupt+0x26/0x40
+Aug 10 07:01:29 dg1test kernel:
+                                -> #2 (&device->intr.lock){-...}-{2:2}:
+Aug 10 07:01:29 dg1test kernel:        _raw_spin_lock_irqsave+0x4b/0x70
+Aug 10 07:01:29 dg1test kernel:        nvkm_inth_allow+0x2c/0x80 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy_state+0x181/0x250 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy_allow+0x63/0xd0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_uevent_mthd+0x4d/0x70 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_ioctl+0x10b/0x250 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvif_object_mthd+0xa8/0x1f0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvif_event_allow+0x2a/0xa0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nouveau_fence_enable_signaling+0x78/0x80 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __dma_fence_enable_signaling+0x5e/0x100
+Aug 10 07:01:29 dg1test kernel:        dma_fence_add_callback+0x4b/0xd0
+Aug 10 07:01:29 dg1test kernel:        nouveau_cli_work_queue+0xae/0x110 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nouveau_gem_object_close+0x1d1/0x2a0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        drm_gem_handle_delete+0x70/0xe0 [drm]
+Aug 10 07:01:29 dg1test kernel:        drm_ioctl_kernel+0xa5/0x150 [drm]
+Aug 10 07:01:29 dg1test kernel:        drm_ioctl+0x256/0x490 [drm]
+Aug 10 07:01:29 dg1test kernel:        nouveau_drm_ioctl+0x5a/0xb0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __x64_sys_ioctl+0x91/0xd0
+Aug 10 07:01:29 dg1test kernel:        do_syscall_64+0x3c/0x90
+Aug 10 07:01:29 dg1test kernel:        entry_SYSCALL_64_after_hwframe+0x72/0xdc
+Aug 10 07:01:29 dg1test kernel:
+                                -> #1 (&event->refs_lock#4){....}-{2:2}:
+Aug 10 07:01:29 dg1test kernel:        _raw_spin_lock_irqsave+0x4b/0x70
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy_state+0x37/0x250 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy_allow+0x63/0xd0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_uevent_mthd+0x4d/0x70 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_ioctl+0x10b/0x250 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvif_object_mthd+0xa8/0x1f0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvif_event_allow+0x2a/0xa0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nouveau_fence_enable_signaling+0x78/0x80 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __dma_fence_enable_signaling+0x5e/0x100
+Aug 10 07:01:29 dg1test kernel:        dma_fence_add_callback+0x4b/0xd0
+Aug 10 07:01:29 dg1test kernel:        nouveau_cli_work_queue+0xae/0x110 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nouveau_gem_object_close+0x1d1/0x2a0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        drm_gem_handle_delete+0x70/0xe0 [drm]
+Aug 10 07:01:29 dg1test kernel:        drm_ioctl_kernel+0xa5/0x150 [drm]
+Aug 10 07:01:29 dg1test kernel:        drm_ioctl+0x256/0x490 [drm]
+Aug 10 07:01:29 dg1test kernel:        nouveau_drm_ioctl+0x5a/0xb0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __x64_sys_ioctl+0x91/0xd0
+Aug 10 07:01:29 dg1test kernel:        do_syscall_64+0x3c/0x90
+Aug 10 07:01:29 dg1test kernel:        entry_SYSCALL_64_after_hwframe+0x72/0xdc
+Aug 10 07:01:29 dg1test kernel:
+                                -> #0 (&fctx->lock){-...}-{2:2}:
+Aug 10 07:01:29 dg1test kernel:        __lock_acquire+0x14e3/0x2240
+Aug 10 07:01:29 dg1test kernel:        lock_acquire+0xc8/0x2a0
+Aug 10 07:01:29 dg1test kernel:        _raw_spin_lock_irqsave+0x4b/0x70
+Aug 10 07:01:29 dg1test kernel:        nouveau_fence_wait_uevent_handler+0x2b/0x100 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_client_event+0xf/0x20 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_event_ntfy+0x9b/0xf0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        ga100_fifo_nonstall_intr+0x24/0x30 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        nvkm_intr+0x12c/0x240 [nouveau]
+Aug 10 07:01:29 dg1test kernel:        __handle_irq_event_percpu+0x88/0x240
+Aug 10 07:01:29 dg1test kernel:        handle_irq_event+0x38/0x80
+Aug 10 07:01:29 dg1test kernel:        handle_edge_irq+0xa3/0x240
+Aug 10 07:01:29 dg1test kernel:        __common_interrupt+0x72/0x160
+Aug 10 07:01:29 dg1test kernel:        common_interrupt+0x60/0xe0
+Aug 10 07:01:29 dg1test kernel:        asm_common_interrupt+0x26/0x40
+Aug 10 07:01:29 dg1test kernel:
+                                other info that might help us debug this:
+Aug 10 07:01:29 dg1test kernel: Chain exists of:
+                                  &fctx->lock --> &device->intr.lock --> &event->list_lock#2
+Aug 10 07:01:29 dg1test kernel:  Possible unsafe locking scenario:
+Aug 10 07:01:29 dg1test kernel:        CPU0                    CPU1
+Aug 10 07:01:29 dg1test kernel:        ----                    ----
+Aug 10 07:01:29 dg1test kernel:   lock(&event->list_lock#2);
+Aug 10 07:01:29 dg1test kernel:                                lock(&device->intr.lock);
+Aug 10 07:01:29 dg1test kernel:                                lock(&event->list_lock#2);
+Aug 10 07:01:29 dg1test kernel:   lock(&fctx->lock);
+Aug 10 07:01:29 dg1test kernel:
+                                 *** DEADLOCK ***
+Aug 10 07:01:29 dg1test kernel: 2 locks held by wireplumber/2236:
+Aug 10 07:01:29 dg1test kernel:  #0: ffff8fca53177bf8 (&device->intr.lock){-...}-{2:2}, at: nvkm_intr+0x29/0x240 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  #1: ffff8fca41208610 (&event->list_lock#2){-...}-{2:2}, at: nvkm_event_ntfy+0x50/0xf0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:
+                                stack backtrace:
+Aug 10 07:01:29 dg1test kernel: CPU: 6 PID: 2236 Comm: wireplumber Not tainted 6.4.0-rc7+ #10
+Aug 10 07:01:29 dg1test kernel: Hardware name: Gigabyte Technology Co., Ltd. Z390 I AORUS PRO WIFI/Z390 I AORUS PRO WIFI-CF, BIOS F8 11/05/2021
+Aug 10 07:01:29 dg1test kernel: Call Trace:
+Aug 10 07:01:29 dg1test kernel:  <TASK>
+Aug 10 07:01:29 dg1test kernel:  dump_stack_lvl+0x5b/0x90
+Aug 10 07:01:29 dg1test kernel:  check_noncircular+0xe2/0x110
+Aug 10 07:01:29 dg1test kernel:  __lock_acquire+0x14e3/0x2240
+Aug 10 07:01:29 dg1test kernel:  lock_acquire+0xc8/0x2a0
+Aug 10 07:01:29 dg1test kernel:  ? nouveau_fence_wait_uevent_handler+0x2b/0x100 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  ? lock_acquire+0xc8/0x2a0
+Aug 10 07:01:29 dg1test kernel:  _raw_spin_lock_irqsave+0x4b/0x70
+Aug 10 07:01:29 dg1test kernel:  ? nouveau_fence_wait_uevent_handler+0x2b/0x100 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  nouveau_fence_wait_uevent_handler+0x2b/0x100 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  nvkm_client_event+0xf/0x20 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  nvkm_event_ntfy+0x9b/0xf0 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  ga100_fifo_nonstall_intr+0x24/0x30 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  nvkm_intr+0x12c/0x240 [nouveau]
+Aug 10 07:01:29 dg1test kernel:  __handle_irq_event_percpu+0x88/0x240
+Aug 10 07:01:29 dg1test kernel:  handle_irq_event+0x38/0x80
+Aug 10 07:01:29 dg1test kernel:  handle_edge_irq+0xa3/0x240
+Aug 10 07:01:29 dg1test kernel:  __common_interrupt+0x72/0x160
+Aug 10 07:01:29 dg1test kernel:  common_interrupt+0x60/0xe0
+Aug 10 07:01:29 dg1test kernel:  asm_common_interrupt+0x26/0x40
+Aug 10 07:01:29 dg1test kernel: RIP: 0033:0x7fb66174d700
+Aug 10 07:01:29 dg1test kernel: Code: c1 e2 05 29 ca 8d 0c 10 0f be 07 84 c0 75 eb 89 c8 c3 0f 1f 84 00 00 00 00 00 f3 0f 1e fa e9 d7 0f fc ff 0f 1f 80 00 00 00 00 <f3> 0f 1e fa e9 c7 0f fc>
+Aug 10 07:01:29 dg1test kernel: RSP: 002b:00007ffdd3c48438 EFLAGS: 00000206
+Aug 10 07:01:29 dg1test kernel: RAX: 000055bb758763c0 RBX: 000055bb758752c0 RCX: 00000000000028b0
+Aug 10 07:01:29 dg1test kernel: RDX: 000055bb758752c0 RSI: 000055bb75887490 RDI: 000055bb75862950
+Aug 10 07:01:29 dg1test kernel: RBP: 00007ffdd3c48490 R08: 000055bb75873b10 R09: 0000000000000001
+Aug 10 07:01:29 dg1test kernel: R10: 0000000000000004 R11: 000055bb7587f000 R12: 000055bb75887490
+Aug 10 07:01:29 dg1test kernel: R13: 000055bb757f6280 R14: 000055bb758875c0 R15: 000055bb757f6280
+Aug 10 07:01:29 dg1test kernel:  </TASK>
 
-In the race case the possible order of the operations are
-
-	CPU0			CPU1
-	ip_set_test
-				ipset swap hash_ip1 hash_ip2
-				ipset destroy hash_ip2
-	hash_net_kadt
-
-Swap replaces hash_ip1 with hash_ip2 and then destroy removes hash_ip2 which
-is the original hash_ip1. ip_set_test was called on hash_ip1 and because destroy
-removed it, hash_net_kadt crashes.
-
-The fix is to force ip_set_swap() to wait for all readers to finish accessing the
-old set pointers by calling synchronize_rcu().
-
-The first version of the patch was written by Linkui Xiao <xiaolinkui@kylinos.cn>.
-
-v2: synchronize_rcu() is moved into ip_set_swap() in order not to burden
-    ip_set_destroy() unnecessarily when all sets are destroyed.
-v3: Florian Westphal pointed out that all netfilter hooks run with rcu_read_lock() held
-    and em_ipset.c wraps the entire ip_set_test() in rcu read lock/unlock pair.
-    So there's no need to extend the rcu read locked area in ipset itself.
-
-Closes: https://lore.kernel.org/all/69e7963b-e7f8-3ad0-210-7b86eebf7f78@netfilter.org/
-Reported by: Linkui Xiao <xiaolinkui@kylinos.cn>
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+Tested-by: Danilo Krummrich <dakr@redhat.com>
+Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231107053255.2257079-1-airlied@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipset/ip_set_core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/nouveau/include/nvkm/core/event.h |  4 ++--
+ drivers/gpu/drm/nouveau/nvkm/core/event.c         | 12 ++++++------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index 35d2f9c9ada02..4c133e06be1de 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -61,6 +61,8 @@ MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_IPSET);
- 	ip_set_dereference((inst)->ip_set_list)[id]
- #define ip_set_ref_netlink(inst,id)	\
- 	rcu_dereference_raw((inst)->ip_set_list)[id]
-+#define ip_set_dereference_nfnl(p)	\
-+	rcu_dereference_check(p, lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET))
+diff --git a/drivers/gpu/drm/nouveau/include/nvkm/core/event.h b/drivers/gpu/drm/nouveau/include/nvkm/core/event.h
+index 82b267c111470..460459af272d6 100644
+--- a/drivers/gpu/drm/nouveau/include/nvkm/core/event.h
++++ b/drivers/gpu/drm/nouveau/include/nvkm/core/event.h
+@@ -14,7 +14,7 @@ struct nvkm_event {
+ 	int index_nr;
  
- /* The set types are implemented in modules and registered set types
-  * can be found in ip_set_type_list. Adding/deleting types is
-@@ -708,15 +710,10 @@ __ip_set_put_netlink(struct ip_set *set)
- static struct ip_set *
- ip_set_rcu_get(struct net *net, ip_set_id_t index)
+ 	spinlock_t refs_lock;
+-	spinlock_t list_lock;
++	rwlock_t list_lock;
+ 	int *refs;
+ 
+ 	struct list_head ntfy;
+@@ -38,7 +38,7 @@ nvkm_event_init(const struct nvkm_event_func *func, struct nvkm_subdev *subdev,
+ 		int types_nr, int index_nr, struct nvkm_event *event)
  {
--	struct ip_set *set;
- 	struct ip_set_net *inst = ip_set_pernet(net);
- 
--	rcu_read_lock();
--	/* ip_set_list itself needs to be protected */
--	set = rcu_dereference(inst->ip_set_list)[index];
--	rcu_read_unlock();
--
--	return set;
-+	/* ip_set_list and the set pointer need to be protected */
-+	return ip_set_dereference_nfnl(inst->ip_set_list)[index];
+ 	spin_lock_init(&event->refs_lock);
+-	spin_lock_init(&event->list_lock);
++	rwlock_init(&event->list_lock);
+ 	return __nvkm_event_init(func, subdev, types_nr, index_nr, event);
  }
  
- static inline void
-@@ -1397,6 +1394,9 @@ static int ip_set_swap(struct sk_buff *skb, const struct nfnl_info *info,
- 	ip_set(inst, to_id) = from;
- 	write_unlock_bh(&ip_set_ref_lock);
- 
-+	/* Make sure all readers of the old set pointers are completed. */
-+	synchronize_rcu();
-+
- 	return 0;
+diff --git a/drivers/gpu/drm/nouveau/nvkm/core/event.c b/drivers/gpu/drm/nouveau/nvkm/core/event.c
+index a6c877135598f..61fed7792e415 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/core/event.c
++++ b/drivers/gpu/drm/nouveau/nvkm/core/event.c
+@@ -81,17 +81,17 @@ nvkm_event_ntfy_state(struct nvkm_event_ntfy *ntfy)
+ static void
+ nvkm_event_ntfy_remove(struct nvkm_event_ntfy *ntfy)
+ {
+-	spin_lock_irq(&ntfy->event->list_lock);
++	write_lock_irq(&ntfy->event->list_lock);
+ 	list_del_init(&ntfy->head);
+-	spin_unlock_irq(&ntfy->event->list_lock);
++	write_unlock_irq(&ntfy->event->list_lock);
  }
  
+ static void
+ nvkm_event_ntfy_insert(struct nvkm_event_ntfy *ntfy)
+ {
+-	spin_lock_irq(&ntfy->event->list_lock);
++	write_lock_irq(&ntfy->event->list_lock);
+ 	list_add_tail(&ntfy->head, &ntfy->event->ntfy);
+-	spin_unlock_irq(&ntfy->event->list_lock);
++	write_unlock_irq(&ntfy->event->list_lock);
+ }
+ 
+ static void
+@@ -176,7 +176,7 @@ nvkm_event_ntfy(struct nvkm_event *event, int id, u32 bits)
+ 		return;
+ 
+ 	nvkm_trace(event->subdev, "event: ntfy %08x on %d\n", bits, id);
+-	spin_lock_irqsave(&event->list_lock, flags);
++	read_lock_irqsave(&event->list_lock, flags);
+ 
+ 	list_for_each_entry_safe(ntfy, ntmp, &event->ntfy, head) {
+ 		if (ntfy->id == id && ntfy->bits & bits) {
+@@ -185,7 +185,7 @@ nvkm_event_ntfy(struct nvkm_event *event, int id, u32 bits)
+ 		}
+ 	}
+ 
+-	spin_unlock_irqrestore(&event->list_lock, flags);
++	read_unlock_irqrestore(&event->list_lock, flags);
+ }
+ 
+ void
 -- 
 2.42.0
 
