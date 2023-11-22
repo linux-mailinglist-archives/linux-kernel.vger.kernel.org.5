@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F2B7F54CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DA77F54D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344342AbjKVXcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S235236AbjKVXdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344377AbjKVXcA (ORCPT
+        with ESMTP id S235215AbjKVXcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:32:00 -0500
-Received: from DM4PR02CU002.outbound.protection.outlook.com (mail-centralusazon11013021.outbound.protection.outlook.com [52.101.64.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65978D49;
-        Wed, 22 Nov 2023 15:31:47 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NfOc3yhVBSWb4iyIZn5mL1qQQ4oU5stR8LT7tyn/JDh3YrOlTn/59hiv5erJ//kltjZGN2HGN8JK1XDo6UsVCtNRH1UjekF+gn/3pgzx2EGszpTSao0PBGNOjbU+7tdIe0Xry7RcZBjTWAomSMHdvZ1sX0yFM7MAwQd8tgW3X8OVUIqNPaGg95oPQVt8DDpeuCn7QpZ+HOjTRXu+3wWW9lboZTepfK204MJKGqbBaZ9ZCMGlXMZdXFhjWFj34qpAn5WsuPfdpbcxDH1JHiB9Su8y5P3lyryno7yE+IUIuhHmRG79TgwVGB2bfSn03kfjzosdmeId/TeuPhktYH3aGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FzRNOgWnmwpHxYcLc3yQ1p3QI8GkO9/CsPYKHZtJL0s=;
- b=Ir3RZOxYG8RqkuXEDIrbbyqmn3YLsaki6n/XbbTWp+P6JqjZwTsBQyzlE2rWum3mf4yLMzpGvneWwTXl2ouQaCEu9WcRCpBqjMfHjFmyd4k5cQCVXngCEWOlKeOPCgObWoVwD63QdSLHKo9mOraxl9zUls8sWVU5+8wCr0EpSLjvt97XmyXEWiqNy9GT+1UGGpWs9gFhFc7kQacGInkQrOvoIe6+1jvHINmye/9frNO2I0AU//wNkQMVXeQMHRMnporPG9dXZEwxsjn82i5R+Eu6ofj3Hcc4RH45bFsi2xkr66gYcvaoo6N+d3Lw5Km3C7phrUwTmV7TT5xYHSjsxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FzRNOgWnmwpHxYcLc3yQ1p3QI8GkO9/CsPYKHZtJL0s=;
- b=NjG6C6kVGiKCxzkubKjbgZvHgieTINn2GOwBzp23gzhmI7oPC65BKPvbL2OPg10ayV4iL6UwkXtsUcjn145FG9HyoVTPhe3zFVysmFvXH4P3rutDqC29yGxgT/8a9NbxJYU4C5ey2NmPQxH+CGPQjZoYELbj0abIUAya0yhGTuk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-Received: from MWHPR05MB3648.namprd05.prod.outlook.com (2603:10b6:301:45::23)
- by BY3PR05MB8275.namprd05.prod.outlook.com (2603:10b6:a03:3b6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 23:31:29 +0000
-Received: from MWHPR05MB3648.namprd05.prod.outlook.com
- ([fe80::10f0:590a:708:4ad7]) by MWHPR05MB3648.namprd05.prod.outlook.com
- ([fe80::10f0:590a:708:4ad7%2]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
- 23:31:29 +0000
-From:   Alexey Makhalov <amakhalov@vmware.com>
-To:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-        hpa@zytor.com, x86@kernel.org, dave.hansen@linux.intel.co,
-        bp@alien8.d, mingo@redhat.com, tglx@linutronix.de,
-        zackr@vmware.com, timothym@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com
-Cc:     netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        linux-graphics-maintainer@vmware.com, pv-drivers@vmware.com,
-        namit@vmware.com, akaher@vmware.com, jsipek@vmware.com,
-        Alexey Makhalov <amakhalov@vmware.com>
-Subject: [PATCH 6/6] x86/vmware: Add TDX hypercall support
-Date:   Wed, 22 Nov 2023 15:30:58 -0800
-Message-Id: <20231122233058.185601-14-amakhalov@vmware.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231122233058.185601-1-amakhalov@vmware.com>
-References: <20231122233058.185601-1-amakhalov@vmware.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR05CA0039.namprd05.prod.outlook.com
- (2603:10b6:a03:74::16) To MWHPR05MB3648.namprd05.prod.outlook.com
- (2603:10b6:301:45::23)
+        Wed, 22 Nov 2023 18:32:52 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CE21BFE
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:32:15 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c115026985so363361b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700695935; x=1701300735; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VLUpOssAYTVzeEiOhoYcENie1wzsLU/orNHzIAqK+E4=;
+        b=cihpBYripcQ61aN1odvEREFmajjISofm+DaiaSgXGjW4sQM2crnq1puLttRExcOyj7
+         yEW9NsWH98urLSF5yjQ5+2ksza1rOB4QBXu+PHyX/BjpBxaEYh9EuvQUfVvbN107+YeJ
+         FBgNiM2YzIYrdE8p4NZOSYmBiYsggat85YDYoSRjKilEWZX3eiIEAJ/1iVN8x4/rNYKa
+         Uo9CkpN58AGGhacKiYYDUSyrSlsYKmG+XIwFPE66jlE08i10LtT0/CcPhUC48lj507PM
+         WEtWpJhRPkvVMX3J1q1IFJwdm32Va+TsNg+E7I1RnF7SelVhLHlO18ZQFG9NIeuUVQCh
+         gHFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700695935; x=1701300735;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VLUpOssAYTVzeEiOhoYcENie1wzsLU/orNHzIAqK+E4=;
+        b=uiqNjwtJk6eyKLG7gCGl/fPoZeCSSE8Ex/rBMGdjOnmdyc69O/w6ZqWriD/iEnJtd8
+         ijvOcaoN4vTOChj3c/4FZgjdf9ncl+q6iq/Ndv59oXcnunnHKJRSd4A5kZjs8fdsQNFz
+         UfebvnwrM8CgVs12Np2aQ8Ms+Y9zwDjcTLmJcymqKYCyYOaUvya1i3E1xz5J6hY3FYw1
+         w+tYeBVRqVtjcteOFjxXtX2VozEUjr2Mkht1gcuw94rVWJJRUeKa+AVn6EzAIUy256kx
+         y4UuDhy3QCCToQlgV+PgLuKg76+L0ye0tKN/9VsA8KvGlmNhRWSFmYgFY97lCPbiUKoJ
+         Py+w==
+X-Gm-Message-State: AOJu0Yy2TrYLy3MVrQCaHGl3n3SyC2B0tzCbTmH9nMq1iGtxkhjeWA+C
+        MsgVWgKbfDXpPeqX8A/2Qc6mqA==
+X-Google-Smtp-Source: AGHT+IFcwCrbHmI2/Si3lJWdyA1kfWGBgQhRHqzzJtYh+UpNZfyRxdWJNB15WIFzV/kSsdIDFDfSZA==
+X-Received: by 2002:a05:6a20:9e4d:b0:187:9521:92a7 with SMTP id mt13-20020a056a209e4d00b00187952192a7mr4359181pzb.18.1700695934863;
+        Wed, 22 Nov 2023 15:32:14 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id e22-20020aa78c56000000b006c875abecbcsm22603pfd.121.2023.11.22.15.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 15:32:14 -0800 (PST)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v3 0/2] riscv: Fix issues with module loading
+Date:   Wed, 22 Nov 2023 15:31:40 -0800
+Message-Id: <20231122-module_linking_freeing-v3-0-8e9e412a3305@rivosinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWHPR05MB3648:EE_|BY3PR05MB8275:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18c5e9a4-e8cf-4fb8-0a14-08dbebb3273c
-X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jmjPF59KNkQ4RchH8AtcR0fgbnFlbdUPSp9BQJmllciCuPrsOPeIHedl58mjjsmUJHIhYPxLGmp89o0sIKfjPsv6cc+RgFoxvr6ZNb0VjaO5NF9yMTRJusB/K3hLHg43BG+DybQYnlnffgZCg+9nEAWtObrkt16cXXzjPdlmmtDAMUhq8VdSGTCnypNz4tp5QUobIigLgSt8AQ/0KRwBMUXVk7umo7Kxl01BdU9RqY4IihhPDujoH47oDTc5o/XbYkXgsIzTh1PCh0/GGYykOP/0Nkp2CP5VCuUGOj0RzpkZrSN3B5rd5kAQqb2E53JYiZkV5N+gNfgG3QfYusv3TW4SYBOaR6fm7+QMyrxnNOT5JkPPns+qy42MTV4P6qTdcIIEhS29VULE0F2lGYsOkcAwzttp6iKaThuGVw52vvJBl6skaxZwmXu+I/5IqG8oQtGfbSQzbalxgemE1jSAQasxwQxpwf8+J0xmS8rsN4kZ8S1mOBoB+dbvIdU7NZq4qCjTIdcNcn3tV5e6U0Psmfg7/uWGLzJAlrzSwpsJO8kq/rtHqLjfJw5ckYHoBtkla8EuUZDTWeE682oi+oq2fnVZ+JQu2H/85Rv29S+HagfF/JDaWY9D5SwrXPPFUssvZDvLNy9Zk+RgpK8UuNfjosTJe4ZTUfb9mGD4RHH2LSNav1/rDjgwGmur+NNYyEJR
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR05MB3648.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(39860400002)(346002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6486002)(4326008)(8676002)(8936002)(5660300002)(7416002)(2616005)(107886003)(478600001)(38350700005)(6666004)(2906002)(66946007)(66556008)(66476007)(38100700002)(316002)(41300700001)(6506007)(6512007)(52116002)(26005)(36756003)(86362001)(921008)(1076003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AIeBBddSjuAND9P0EysneDqjRXdxrL5QXbRWeDStNorFYQ8JfYBBB2hNiyee?=
- =?us-ascii?Q?C5yRwo1t7Uz396Ur40V0TJfEkLmVNgfDFmvtChj8vbs7tSNRUQZPtSm5P5PK?=
- =?us-ascii?Q?B1skHg98GKp8lHm2V+Mr40fiNaiO2RAYe+fA63UG53Qp87bQbA+MF2Vp803x?=
- =?us-ascii?Q?lAG/Trc/RpoH3bmkPxKtWulGYvO1f6LEYeAOgOJ/n4Y3AasYpHvhyO+xV6Jj?=
- =?us-ascii?Q?DhmiqCiBLoX/u3EAmcxdJTFgh0aB4QgaBVIzBX3ntWv1NOYCl+0d9F/l/voI?=
- =?us-ascii?Q?dp6/WkTRUvbnP/3QyGd+qkBjWqhmCyoDtC/cOcCOKLAZYM9m1q6VT8AVrCFE?=
- =?us-ascii?Q?nyVRtC9dX1t4taCZfNVtDgSaboX0Z8qY3RPVI4bWDRvl1nONMToKzf+Nn+Kg?=
- =?us-ascii?Q?g1BgCwQH53wkaCWs05NkYi/Aw22q0m8Y3bCNeafsPw4QJcYqcePHFzIJadE5?=
- =?us-ascii?Q?X/iJckQibR32/DcCwJqavpLqVAJe3nKcEx+0jXtpi+/yB2HbnK54xzyOIoty?=
- =?us-ascii?Q?67lV8zr4YWo9EgN3/42HLcJko6ob5I6JAdqcEDonoTVr0K5U12HQJcvpMF7Y?=
- =?us-ascii?Q?TdQS6KubaNotAF1d76u9mkwhG9MLqrQubbfPGPlU49wYvPEewnttC6C7iYeZ?=
- =?us-ascii?Q?5g/BVF8rPIg8Qw6KhlVVP1ACgBR9kE17+U6bZLRpNTom9y6VOCU1CETlB6nF?=
- =?us-ascii?Q?oTA1PZERqT/cJfvWbaWkGvR4EABSG8MUfpLxTt+MTAuKeccjC2sJ59F5KfHi?=
- =?us-ascii?Q?Komiqehg7KcOmcWQJeEIiVSYaRnUkOLcXFFSZN9ywJYbaWY2dZQQmRGutfXd?=
- =?us-ascii?Q?cxroKJ4UeCKpxl+eqQcTpPRlHMJJsQ1vv7Jr3Ojd0zqTWC7/BQ71TB0Q6DvX?=
- =?us-ascii?Q?sZtb0yyXZE6lSzKI2BCy079oAfpZTonBf1HHxsRtEt1jFJqLjiWK+giavuUr?=
- =?us-ascii?Q?i9KcENW2DU+TRqMZzwLByR+r4ceGwzTmEstD//G2C+jzRr0qKrt1sL7b13iF?=
- =?us-ascii?Q?eWTeLOewOG0RfkutA8v6Xfj6kW4p53ImmzfflFQ6/Qc5rnak9Ipy6ZFickU7?=
- =?us-ascii?Q?aSgXPpRzVrti7MQWYvvgsUbmb4x//a3Zs0CM/bZTohKW9EHH2Mk0s7qodgr4?=
- =?us-ascii?Q?xCM2E7VED1ZaUCoTmikNVNzVejBk8Aku1rbjvA1wHoAq4GzIdYm6Oqc4H5uG?=
- =?us-ascii?Q?iXt7uaHK9me0ZcND8PMveyb/VDPMOHlRjulGrBxVbk0Mbnv8pS9UhMExxCdm?=
- =?us-ascii?Q?JfjY4hQEfu/KwzyTo4go6cYqkDYdTo0FHT1KovxOp0DkOYXeybMpa6brwAIt?=
- =?us-ascii?Q?O8/4GlRbnTrBbk176BonAlw3mDHAKj3YWtpcRnclf4a+34noIuQQypde+tFL?=
- =?us-ascii?Q?Xp9bDqRa2rBJ5QgYPQypX2EcKxLXCgnQ+Gnho/g45eL1Ga0Sj9lUVGol2bnK?=
- =?us-ascii?Q?o49zB7BGpmQUDwW5OQ1SWxEX7o7cgHxrnJMooQDHSFB2ISWGBwH3mVE56CgU?=
- =?us-ascii?Q?Fcq58H3pRDRMJ/074kptgvJPaRtVNfrxC23LELREzFftJvSoHVdReTMPLfoY?=
- =?us-ascii?Q?jZvUziDqa38UTxdYabGHRyahhBlgZ5P5N4iTPAXb?=
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18c5e9a4-e8cf-4fb8-0a14-08dbebb3273c
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR05MB3648.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 23:31:29.6819
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 692e7TML/0gt0dxPiC1jgVoH5Sjwi7PYr6iB6F401aroVyO1QVZpaCZsSc0lszlAdQlUdDcR05SnIO26u49dCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR05MB8275
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFyPXmUC/4XNSwrCMBCA4atI1kaapE9X3kOkNMmkHWwTSTQop
+ Xc37UoEcTX8A/PNTAJ4hECOu5l4iBjQ2RRivyNq6GwPFHVqwjMuGOMZnZx+jNCOaK9o+9Z4gDQ
+ pl0UnJC8KWQBJxzcPBp8bfL6kHjDcnX9tfyJbt3/JyCijxpia6YrXjVEnj9EFtOqg3ERWNfJPi
+ f2UeJKaKpdGaVGWOXxJy7K8AWB7seQJAQAA
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>,
+        Samuel Holland <samuel.holland@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700695933; l=1054;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=vrpXxvCGGH1YSMvQ5Jqe6xeNNZN1b1oOFmQ9hFvEp70=;
+ b=H+vCsGlFIDAhGLcJCyOavGWzQy2EFY2oZAna2dyq5R2q7g2O6wwED3KreBmoVYvsgWxcxXjlp
+ dRS+VBwsxmcB3uzdrkkC12s/Ph3jvsZ6CLb+KWMBb6gQEVxE0y2rRgT
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,165 +83,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMware hypercalls use I/O port, VMCALL or VMMCALL instructions.
-Add __tdx_hypercall path to support TDX guests.
+Module loading did not account for multiple threads concurrently loading
+modules. This patch fixes that issue. There is also a small patch to fix
+the type of a __le16 variable.
 
-No change in high bandwidth hypercalls, as only low bandwidth
-ones are supported for TDX guests.
-
-Co-developed-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Tim Merrifield <timothym@vmware.com>
-Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/x86/include/asm/vmware.h | 72 +++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/vmware.c  |  9 +++++
- 2 files changed, 81 insertions(+)
+Changes in v3:
+- Cleanup pointer passing (Samuel)
+- Correct indentation (Samuel)
+- Check for kmalloc failures (Samuel)
+- Link to v2: https://lore.kernel.org/r/20231121-module_linking_freeing-v2-1-974bfcd3664e@rivosinc.com
 
-diff --git a/arch/x86/include/asm/vmware.h b/arch/x86/include/asm/vmware.h
-index 17091eba68cb..cd58ff8ef1af 100644
---- a/arch/x86/include/asm/vmware.h
-+++ b/arch/x86/include/asm/vmware.h
-@@ -40,6 +40,54 @@
- 
- extern u8 vmware_hypercall_mode;
- 
-+#define VMWARE_TDX_VENDOR_LEAF 0x1AF7E4909ULL
-+#define VMWARE_TDX_HCALL_FUNC  1
-+
-+extern void vmware_tdx_hypercall_args(struct tdx_module_args *args);
-+
-+/*
-+ * TDCALL[TDG.VP.VMCALL] uses rax (arg0) and rcx (arg2), while the use of
-+ * rbp (arg6) is discouraged by the TDX specification. Therefore, we
-+ * remap those registers to r12, r13 and r14, respectively.
-+ */
-+static inline
-+unsigned long vmware_tdx_hypercall(unsigned long cmd, unsigned long in1,
-+				   unsigned long in3, unsigned long in4,
-+				   unsigned long in5, unsigned long in6,
-+				   uint32_t *out1, uint32_t *out2,
-+				   uint32_t *out3, uint32_t *out4,
-+				   uint32_t *out5, uint32_t *out6)
-+{
-+	struct tdx_module_args args = {
-+		.r10 = VMWARE_TDX_VENDOR_LEAF,
-+		.r11 = VMWARE_TDX_HCALL_FUNC,
-+		.r12 = VMWARE_HYPERVISOR_MAGIC,
-+		.r13 = cmd,
-+		.rbx = in1,
-+		.rdx = in3,
-+		.rsi = in4,
-+		.rdi = in5,
-+		.r14 = in6,
-+	};
-+
-+	vmware_tdx_hypercall_args(&args);
-+
-+	if (out1)
-+		*out1 = args.rbx;
-+	if (out2)
-+		*out2 = args.r13;
-+	if (out3)
-+		*out3 = args.rdx;
-+	if (out4)
-+		*out4 = args.rsi;
-+	if (out5)
-+		*out5 = args.rdi;
-+	if (out6)
-+		*out6 = args.r14;
-+
-+	return args.r12;
-+}
-+
- /*
-  * The low bandwidth call. The low word of edx is presumed to have OUT bit
-  * set. The high word of edx may contain input data from the caller.
-@@ -67,6 +115,10 @@ unsigned long vmware_hypercall1(unsigned long cmd, unsigned long in1)
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0, 0, NULL, NULL,
-+					    NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -85,6 +137,10 @@ unsigned long vmware_hypercall3(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0, 0, out1, out2,
-+					    NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -104,6 +160,10 @@ unsigned long vmware_hypercall4(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, 0, 0, 0, 0, out1, out2,
-+					    out3, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -123,6 +183,10 @@ unsigned long vmware_hypercall5(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, in4, in5, 0, NULL,
-+					    out2, NULL, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-@@ -145,6 +209,10 @@ unsigned long vmware_hypercall6(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, 0, 0, 0, NULL, out2,
-+					    out3, out4, out5, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=c" (*out2), "=d" (*out3), "=S" (*out4),
- 		  "=D" (*out5)
-@@ -166,6 +234,10 @@ unsigned long vmware_hypercall7(unsigned long cmd, unsigned long in1,
- {
- 	unsigned long out0;
- 
-+	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-+		return vmware_tdx_hypercall(cmd, in1, in3, in4, in5, 0, out1,
-+					    out2, out3, NULL, NULL, NULL);
-+
- 	asm_inline volatile (VMWARE_HYPERCALL
- 		: "=a" (out0), "=b" (*out1), "=c" (*out2), "=d" (*out3)
- 		: [port] "i" (VMWARE_HYPERVISOR_PORT),
-diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-index 3aa1adaed18f..0207e8ced92c 100644
---- a/arch/x86/kernel/cpu/vmware.c
-+++ b/arch/x86/kernel/cpu/vmware.c
-@@ -428,6 +428,15 @@ static bool __init vmware_legacy_x2apic_available(void)
- 		(eax & BIT(VCPU_LEGACY_X2APIC));
- }
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+/* __tdx_hypercall() is not exported. So, export the wrapper */
-+void vmware_tdx_hypercall_args(struct tdx_module_args *args)
-+{
-+	__tdx_hypercall(args);
-+}
-+EXPORT_SYMBOL_GPL(vmware_tdx_hypercall_args);
-+#endif
-+
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- static void vmware_sev_es_hcall_prepare(struct ghcb *ghcb,
- 					struct pt_regs *regs)
+Changes in v2:
+- Support linking modules concurrently across threads.
+- Link to v1: https://lore.kernel.org/r/20231120-module_linking_freeing-v1-1-fff81d7289fc@rivosinc.com
+
+---
+Charlie Jenkins (2):
+      riscv: Safely remove entries from relocation list
+      riscv: Correct type casting in module loading
+
+ arch/riscv/kernel/module.c | 97 +++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 71 insertions(+), 26 deletions(-)
+---
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+change-id: 20231120-module_linking_freeing-2b5a3b255b5e
 -- 
-2.39.0
+- Charlie
 
