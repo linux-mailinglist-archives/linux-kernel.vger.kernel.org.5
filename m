@@ -2,163 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E202B7F4CD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145BD7F4CD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343853AbjKVQje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        id S1343817AbjKVQkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbjKVQjR (ORCPT
+        with ESMTP id S1343819AbjKVQjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:39:17 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2041.outbound.protection.outlook.com [40.107.243.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB30F1FFD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:37:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nb3AjvHkBcNEpziRnnctBItO1qyRtvmf2tlfHiANwHD7+P8xIm4NznfDUOaex0HX7V5Zj9fkKIlnbbvwaU7PGCV9vXrOJQV97b3nd935Ppe2VmLOghj+E/z6iKvU9KJiCuUGo4dsV9+SlcsgWywEg8lX6cp9EH0Vtw+NCfPAHmzWIpDeslc6WJuJBJfby7jSsgZ7bFFxrUN6uqsuQVGx0CdV1Aa8Gw7nrBLLRLmeqFrOqAgC9xIjakMsIKDAs2jGMithIuyOEU9zuuXeihQOCR6cLUeSB76drdPmttampyxF1AxYH+g3dLF/iGbGgMzVqFRTc1f/A8+TrnDwbtLdPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WAsaGoDonctE7Y9m83x4EeG+S0H1q+LgU7jAsL8BZk0=;
- b=Ykp/vJTjtDu0EmWi+gXx9OdxzGKVALkAvV/86bycnqWCeX58OPLGnmAU1N+eml6OXFTbj+x5Qx8X+nPFJXXUYn5Q1R7DqpJT0ZL2jx3dbkaT22ch3zsq2OfpbTymnaUwf+yGFKqvoYgRnzJnJICLI+DPu9NVMkvyThM1Lm6KHIvtGVq3aFE7BSHTbLjfX3M4LcZh+1baEM93nCu15wvb2u9GEnDMmBXeff/b0dGAbgJeh494BfZzmJnLEb0elcp2L037iNAm5pRn8PuzwjVOX4JqxlC6fLPtGmvTX41Z8pz96rpjoX9mLQbiSJ9N+ZW1us0vQThz/Cvtr1Uv1K/reA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WAsaGoDonctE7Y9m83x4EeG+S0H1q+LgU7jAsL8BZk0=;
- b=1sH7lV1o/togqzgVpwo40UpybDBOspvjB/34o8QeTiMtx4gFxleekUm8LA3oOgiD5jW0ybSTJUBEa6nJnVYUKFnN6gaHkKI9WEf9CEwlwOg6aRKEjuw5QNMkcXWHrXt8Uolox7RE1gQtBZYcY17WvgRPZPXppfk59VsgkQCmkuE=
-Received: from MN2PR16CA0031.namprd16.prod.outlook.com (2603:10b6:208:134::44)
- by SA0PR12MB4462.namprd12.prod.outlook.com (2603:10b6:806:95::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 16:37:40 +0000
-Received: from BL6PEPF0001AB4B.namprd04.prod.outlook.com
- (2603:10b6:208:134:cafe::82) by MN2PR16CA0031.outlook.office365.com
- (2603:10b6:208:134::44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26 via Frontend
- Transport; Wed, 22 Nov 2023 16:37:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB4B.mail.protection.outlook.com (10.167.242.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 16:37:39 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
- 2023 10:37:34 -0600
-From:   Michael Roth <michael.roth@amd.com>
-To:     <x86@kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Joerg Roedel" <jroedel@suse.de>, <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: [PATCH v3] x86: Ensure input to pfn_to_kaddr() is treated as a 64-bit type
-Date:   Wed, 22 Nov 2023 10:37:00 -0600
-Message-ID: <20231122163700.400507-1-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Nov 2023 11:39:51 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15636A2;
+        Wed, 22 Nov 2023 08:38:38 -0800 (PST)
+Received: from arisu.localnet (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: detlev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9FA6B6602F31;
+        Wed, 22 Nov 2023 16:38:35 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700671116;
+        bh=si3WK0FrjG81C4HO0aJN41hihbd3NqNMO1F3f6cyEv8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gCwN4KyKM/tEM426vB1Xc0yr8+YkjWgLrNLmljXWUYcKjbLbhtBysUOdtv6UubyCC
+         B6gmlU/X960b+bpIyb4ffX6UwZjWlHH5LCdvayTlvZ0gMxEeW1Y0h2F2wMrStA6q4I
+         ypURIPj0F/vETt4dDKKiAFgJ5kdOnpJvZzUA3dbw0M+vZtEEaKDgukFQutLcpU95hd
+         Daea+zPOG6JJL5khDBFlFjIkadD0L2c9Ag8z4URw2H5OSeP9UYSIvmPBys0kmJEuXn
+         xTW0DmDlslmviNG4UT5Jbyf13zUXaEw5Fjdov71ra7QRNWXHJYqaQaoeq53QTxFdJY
+         HwrmBnMJlGjqw==
+From:   Detlev Casanova <detlev.casanova@collabora.com>
+To:     linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 1/5] media: visl: Fix params permissions/defaults mismatch
+Date:   Wed, 22 Nov 2023 11:38:46 -0500
+Message-ID: <4879622.31r3eYUQgx@arisu>
+In-Reply-To: <e647782f-6ed5-4d1f-b318-2d83d713b9b1@xs4all.nl>
+References: <20231024191027.305622-1-detlev.casanova@collabora.com>
+ <20231024191027.305622-2-detlev.casanova@collabora.com>
+ <e647782f-6ed5-4d1f-b318-2d83d713b9b1@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4B:EE_|SA0PR12MB4462:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0ea392f-fc9b-4cd4-425c-08dbeb7957cc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IzaTnIiDla7BxcXYdIGagROLbGx+ocYG3+BhsGcCC9X/Z1Z6Kh0SKp+jDrpCFx/yYv5K5x/aoU3DGqNGhnKl9SkS4CcaavTWFVrK/byB70GGMbBE0rmotvSRLM91XSmMso8xd2W0cSjm8hA/rfPCAJnLIu1BaV07qNRgUKORx34ecGF3GABUB2XwLgPED9yQLv0/54BFng7xqQGgBF5R6w1Q+B2xPeftgeSRPtaaLDlu11uPZlVmfEmgQovwc4wh35mrMbmfmH0ghLMRRyvlEHimARvMuKuh1SlvLXQ29I9dQJd8cSympXzTK0oo2xlqiiVkM9qdWTH1mhDnE42tlM+sNtpw8PZDmNYaaXIcXAe7qjQj7SyUO+hlQjb9zxKYkqz7weOI6zkrG4wJnD/0URlN9ZupBMJ+AgJgIYYxlSydfXavy9QyxGzNRh7KTb+teHVeOFLygPpba30Der/+NDbSayiIugePuPSbr2o2maKlGKNQ9QtbcFT5ilFqMHx5+yWWW6Ga89XN1Uh4RBeDl4lbSmYCNg8DgTEmJGA9Yo1q7Oy8E7dqaNu8T0vw3is+6CengVHTww+j64PsUFu4UUFaOm+nlq4YsfRmg8N1eb1Edhlkr5V851M/G4EYmzUjWm9GACgMMuOuwTYKhv3NMo+7bZkgP1XzLBoM6xJEcIsB+l0fQQpSmkOla2LLdwn2zrwCWcwJizjWlY1DC+wW0U8kZKZ3+goC0+9XAc3YJziPdE8dBcjBGj7FPTHDI5Qu7yEI/ixMLZE4oOdzClu1kg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(396003)(136003)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(46966006)(36840700001)(40470700004)(2906002)(5660300002)(44832011)(8676002)(40480700001)(41300700001)(8936002)(4326008)(316002)(54906003)(6916009)(70586007)(26005)(70206006)(40460700003)(66899024)(47076005)(86362001)(16526019)(6666004)(478600001)(426003)(2616005)(336012)(356005)(1076003)(81166007)(36860700001)(36756003)(83380400001)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 16:37:39.8850
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0ea392f-fc9b-4cd4-425c-08dbeb7957cc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4B.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4462
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="nextPart4529700.LvFx2qVVIh";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 64-bit platforms, the pfn_to_kaddr() macro requires that the input
-value is 64-bits in order to ensure that valid address bits don't get
-lost when shifting that input by PAGE_SHIFT to calculate the physical
-address to provide a virtual address for.
+--nextPart4529700.LvFx2qVVIh
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Detlev Casanova <detlev.casanova@collabora.com>
+To: linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+Date: Wed, 22 Nov 2023 11:38:46 -0500
+Message-ID: <4879622.31r3eYUQgx@arisu>
+In-Reply-To: <e647782f-6ed5-4d1f-b318-2d83d713b9b1@xs4all.nl>
+MIME-Version: 1.0
 
-One such example is in pvalidate_pages() (used by SEV-SNP guests), where
-the GFN in the struct used for page-state change requests is a 40-bit
-bit-field, so attempts to pass this GFN field directly into
-pfn_to_kaddr() ends up causing guest crashes when dealing with addresses
-above the 1TB range due to the above.
+On Wednesday, November 22, 2023 10:56:20 A.M. EST Hans Verkuil wrote:
+> On 24/10/2023 21:09, Detlev Casanova wrote:
+> > `false` was used as the keep_bitstream_buffers parameter permissions.
+> > This looks more like a default value for the parameter, so change it to
+> > 0 to avoid confusion.
+> > 
+> > Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
+> > Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+> > ---
+> > 
+> >  drivers/media/test-drivers/visl/visl-core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/visl/visl-core.c
+> > b/drivers/media/test-drivers/visl/visl-core.c index
+> > 9970dc739ca5..df6515530fbf 100644
+> > --- a/drivers/media/test-drivers/visl/visl-core.c
+> > +++ b/drivers/media/test-drivers/visl/visl-core.c
+> > @@ -74,7 +74,7 @@ MODULE_PARM_DESC(visl_dprintk_nframes,
+> > 
+> >  		 " the number of frames to trace with dprintk");
+> >  
+> >  bool keep_bitstream_buffers;
+> > 
+> > -module_param(keep_bitstream_buffers, bool, false);
+> > +module_param(keep_bitstream_buffers, bool, 0);
+> 
+> ???
+> 
+> This last parameter is the permission, it makes no sense that this
+> is either 0 or false: then nobody can see it in /sys/modules/.
 
-Fix this issue with SEV-SNP guests, as well as any similar cases that
-might cause issues in current/future code, by using a inline function,
-instead of the macro, so that the input is implicitly cast to the
-expected 64-bit input type prior to performing the shift operation.
+It makes sense if we want it set when the module is loaded only. This way, we 
+don't have to manage the parameters values changing while work is being done 
+and keep it simple.
+It could be made readable if that looks better, but there is no real need for 
+it to be read either.
 
-While it might be argued that the issue is on the caller side, other
-archs/macros have taken similar approaches to deal with instances like
-this, such as commit e48866647b48 ("ARM: 8396/1: use phys_addr_t in
-pfn_to_kaddr()").
+> Typically this is 0444 if it is readable only, or 0644 if it can be
+> written by root.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> >  MODULE_PARM_DESC(keep_bitstream_buffers,
+> >  
+> >  		 " keep bitstream buffers in debugfs after streaming is 
+stopped");
 
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
-Suggested-by: H. Peter Anvin <hpa@zytor.com>
-Fixes: 6c3211796326 ("x86/sev: Add SNP-specific unaccepted memory support")
-Signed-off-by: Michael Roth <michael.roth@amd.com>
----
-v3:
-  - Use an inline function instead of a macro to handle the cast (Peter)
-v2:
-  - Move the cast down into pfn_to_kaddr() to fix other possible
-    instances (Dave)
-  - Rename from "x86/sev: Fix overflow when computing address for
-    PVALIDATE"
 
- arch/x86/include/asm/page.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+--nextPart4529700.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-index d18e5c332cb9..aa8930da42fd 100644
---- a/arch/x86/include/asm/page.h
-+++ b/arch/x86/include/asm/page.h
-@@ -66,10 +66,14 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
-  * virt_addr_valid(kaddr) returns true.
-  */
- #define virt_to_page(kaddr)	pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
--#define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
- extern bool __virt_addr_valid(unsigned long kaddr);
- #define virt_addr_valid(kaddr)	__virt_addr_valid((unsigned long) (kaddr))
- 
-+static inline void *pfn_to_kaddr(unsigned long pfn)
-+{
-+	return __va(pfn << PAGE_SHIFT);
-+}
-+
- static __always_inline u64 __canonical_address(u64 vaddr, u8 vaddr_bits)
- {
- 	return ((s64)vaddr << (64 - vaddr_bits)) >> (64 - vaddr_bits);
--- 
-2.25.1
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEonF9IvGrXNkDg+CX5EFKUk4x7bYFAmVeLpYACgkQ5EFKUk4x
+7bZE+wf+MCK8uJhfh4YaMqQHC74WNCozrTSQtFgK/+EywNzwEhcHIKUSmLHntpzq
+ECO/A1CYJ03YtO5VJ0CR/3S+kGppVspGA2XBPUvaqao3SiiGzRuvca5ix71Q8W30
+cUxFzknce1gJB4W/ZENeYnrBlPyFWvKi34fB33iOvT8/LonOqgJJergpsccNUvp4
+NY+zmGYJ/S1Liqh5QG0Qa3hDuKQdLPIYdUkjiESmCGgw9D51vNJYhcSi3MwyHxbK
+9eniFJmTWrt1vdiUgeUaNpYfo1JzW0PtDT0Wp+3MoKn0fniLyfDC4UT7uAr2B1Y1
+e6/AmZNuyz/uS+/JKjogIMBTF+KzjA==
+=09tU
+-----END PGP SIGNATURE-----
+
+--nextPart4529700.LvFx2qVVIh--
+
+
 
