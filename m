@@ -2,221 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AFB7F4D29
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747DA7F4D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbjKVQsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
+        id S229464AbjKVQtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjKVQsh (ORCPT
+        with ESMTP id S231708AbjKVQtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:48:37 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2EA18E;
-        Wed, 22 Nov 2023 08:48:31 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 86218C0009;
-        Wed, 22 Nov 2023 16:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700671710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ajeauEZR8WppxNQT8eguJ25565qc08+DI61fuQmDdSw=;
-        b=PiPnagN9iA4MhaTLDc0PKQQxX7jexlIsRjYcnOgbXCiZ7lFZmSs3HYvO1oqFGQJNZ+OZtc
-        7llzyBJuhiaS6KK78ftrDv3r6SUHB+Cb7eL/SRe1WSpYsI746ct/ELMbb7X/t1hBFCJS4h
-        8Q/VGXKUbAqU1/IdEIJikgPyCUlltf9FXg23vlqMd7siaiPgxhNOapiSaYzyTEoM+ZfSrU
-        m7f+xt4301mwwpAuvl9VjrUQLXtVCFret7cQUG4iVqSRHzZHDUR1zADrUePzM5uy+uFULJ
-        2EMPOxfr0ZFkRdDNxnMJxeFQcJ13BCARG28OJjWx8VERkRno1n0o/PCou4C47Q==
-Date:   Wed, 22 Nov 2023 17:48:28 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <20231122174828.7625d7f4@kmaincent-XPS-13-7390>
-In-Reply-To: <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
-        <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
-        <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 22 Nov 2023 11:49:16 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC7F9;
+        Wed, 22 Nov 2023 08:49:11 -0800 (PST)
+Received: from arisu.localnet (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: detlev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9C0166607391;
+        Wed, 22 Nov 2023 16:49:09 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700671750;
+        bh=kZZVgMd43cIxply6qs3meHVC0n1uBKxNoWcslKFq91o=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jk1KD73NYTQ5ojjViH79sZewAN1hrsZCqLVMq+eTWqNs4jmdncMj+K89AdIbxAs7/
+         J8hPy1a92z5TaIaZ+yOBYf/UoLW63KswqxyzM5lv0alJzU1bI7/VoyuP7q4k92fotx
+         nPeirJiE6fccsd3LqcEt/gkp5BhySjXBg/TWwLzgH/JvL94o5e2v3jSFcO4AkWE2rf
+         mkJ6npiZNSGhf7BbsdRN+0+c6WUCuTybKX2aD7w5v8K8mn3EW9eOHmNFqJ24fhFMbX
+         lcAzXGecsDuXIvZFb+Ez3j1gHHwXnVKpfAsL/mXjue0a3you6Bx/PKOTMBDJ9IYtjU
+         gRTBiDrdzKFtg==
+From:   Detlev Casanova <detlev.casanova@collabora.com>
+To:     linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     linux-media@vger.kernel.org,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2 2/5] media: visl: Add a stable_output parameter
+Date:   Wed, 22 Nov 2023 11:49:21 -0500
+Message-ID: <2913770.e9J7NaK4W3@arisu>
+In-Reply-To: <e8594414-eaea-4022-8835-0c093657b005@xs4all.nl>
+References: <20231024191027.305622-1-detlev.casanova@collabora.com>
+ <20231024191027.305622-3-detlev.casanova@collabora.com>
+ <e8594414-eaea-4022-8835-0c093657b005@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: multipart/signed; boundary="nextPart3264630.aeNJFYEL58";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Nov 2023 19:54:30 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+--nextPart3264630.aeNJFYEL58
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Detlev Casanova <detlev.casanova@collabora.com>
+To: linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v2 2/5] media: visl: Add a stable_output parameter
+Date: Wed, 22 Nov 2023 11:49:21 -0500
+Message-ID: <2913770.e9J7NaK4W3@arisu>
+In-Reply-To: <e8594414-eaea-4022-8835-0c093657b005@xs4all.nl>
+MIME-Version: 1.0
 
->=20
-> > +	unsigned long last_cmd_key_time;
+On Wednesday, November 22, 2023 11:03:53 A.M. EST Hans Verkuil wrote:
+> On 24/10/2023 21:09, Detlev Casanova wrote:
+> > This parameter is used to ensure that for a given input, the output
+> > frames are always identical so that it can be compared against
+> > a reference in automatic tests.
+> > 
+> > Reviewed-by: Daniel Almeida <daniel.almeida@collabora.com>
+> > Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+> > ---
+> > 
+> >  drivers/media/test-drivers/visl/visl-core.c |   5 +
+> >  drivers/media/test-drivers/visl/visl-dec.c  | 125 +++++++++++---------
+> >  drivers/media/test-drivers/visl/visl.h      |   1 +
+> >  3 files changed, 77 insertions(+), 54 deletions(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/visl/visl-core.c
+> > b/drivers/media/test-drivers/visl/visl-core.c index
+> > df6515530fbf..d28d50afec02 100644
+> > --- a/drivers/media/test-drivers/visl/visl-core.c
+> > +++ b/drivers/media/test-drivers/visl/visl-core.c
+> > @@ -88,6 +88,11 @@ module_param(bitstream_trace_nframes, uint, 0);
+> > 
+> >  MODULE_PARM_DESC(bitstream_trace_nframes,
+> >  
+> >  		 " the number of frames to dump the bitstream through 
+debugfs");
+> > 
+> > +bool stable_output;
+> > +module_param(stable_output, bool, 0644);
+> > +MODULE_PARM_DESC(stable_output,
+> > +		 " only write stable data for a given input on the 
+output frames");
 > > +
-> > +	enum ethtool_pse_admin_state
-> > admin_state[PD692X0_MAX_LOGICAL_PORTS]; +};
+> > 
+> >  static const struct visl_ctrl_desc visl_fwht_ctrl_descs[] = {
+> >  
+> >  	{
+> >  	
+> >  		.cfg.id = V4L2_CID_STATELESS_FWHT_PARAMS,
+> > 
+> > diff --git a/drivers/media/test-drivers/visl/visl-dec.c
+> > b/drivers/media/test-drivers/visl/visl-dec.c index
+> > 318d675e5668..61cfca49ead9 100644
+> > --- a/drivers/media/test-drivers/visl/visl-dec.c
+> > +++ b/drivers/media/test-drivers/visl/visl-dec.c
+> > @@ -197,19 +197,30 @@ static void visl_tpg_fill_sequence(struct visl_ctx
+> > *ctx,> 
+> >  {
+> >  
+> >  	u32 stream_ms;
+> > 
+> > -	stream_ms = jiffies_to_msecs(get_jiffies_64() -
+> > ctx->capture_streamon_jiffies); -
+> > -	scnprintf(buf, bufsz,
+> > -		  "stream time: %02d:%02d:%02d:%03d sequence:%u 
+timestamp:%lld
+> > field:%s", -		  (stream_ms / (60 * 60 * 1000)) % 24,
+> > -		  (stream_ms / (60 * 1000)) % 60,
+> > -		  (stream_ms / 1000) % 60,
+> > -		  stream_ms % 1000,
+> > -		  run->dst->sequence,
+> > -		  run->dst->vb2_buf.timestamp,
+> > -		  (run->dst->field == V4L2_FIELD_ALTERNATE) ?
+> > -		  (run->dst->field == V4L2_FIELD_TOP ?
+> > -		  " top" : " bottom") : "none");
+> > +	if (!stable_output) {
+> > +		stream_ms = jiffies_to_msecs(get_jiffies_64() -
+> > ctx->capture_streamon_jiffies); +
+> > +		scnprintf(buf, bufsz,
+> > +			  "stream time: %02d:%02d:%02d:%03d 
+sequence:%u timestamp:%lld
+> > field:%s", +			  (stream_ms / (60 * 60 * 
+1000)) % 24,
+> > +			  (stream_ms / (60 * 1000)) % 60,
+> > +			  (stream_ms / 1000) % 60,
+> > +			  stream_ms % 1000,
+> 
+> How useful is this 'stream time' anyway? I don't think this adds anything
+> useful.
+
+I suppose that the more debug information is shown, the better.
+
+> > +			  run->dst->sequence,
+> > +			  run->dst->vb2_buf.timestamp,
+> > +			  (run->dst->field == V4L2_FIELD_ALTERNATE) ?
+> > +			  (run->dst->field == V4L2_FIELD_TOP ?
+> > +			  " top" : " bottom") : "none");
+> > +	} else {
+> > +		scnprintf(buf, bufsz,
+> > +			  "sequence:%u timestamp:%lld field:%s",
+> > +			  run->dst->sequence,
+> > +			  run->dst->vb2_buf.timestamp,
+> > +			  (run->dst->field == V4L2_FIELD_ALTERNATE) ?
+> > +			  (run->dst->field == V4L2_FIELD_TOP ?
+> > +			  " top" : " bottom") : "none");
 > > +
-> > +/* Template list of the fixed bytes of the communication messages */
-> > +static const struct pd692x0_msg pd692x0_msg_template_list[PD692X0_MSG_=
-CNT]
-> > =3D {
-> > +	[PD692X0_MSG_RESET] =3D {
-> > +		.content =3D {
-> > +			.key =3D PD692X0_KEY_CMD,
-> > +			.sub =3D {0x07, 0x55, 0x00},
-> > +			.data =3D {0x55, 0x00, 0x55, 0x4e,
-> > +				 0x4e, 0x4e, 0x4e, 0x4e},
-> > +		},
-> > +	}, =20
->=20
-> Is there any documentation about what all these magic number mean?
->=20
-> > +/* Implementation of the i2c communication in particular when there is
-> > + * a communication loss. See the "Synchronization During Communication
-> > Loss"
-> > + * paragraph of the Communication Protocol document.
-> > + */ =20
->=20
-> Is this document public?
+> > +	}
+> > 
+> >  }
+> >  
+> >  static void visl_tpg_fill(struct visl_ctx *ctx, struct visl_run *run)
+> > 
+> > @@ -244,15 +255,17 @@ static void visl_tpg_fill(struct visl_ctx *ctx,
+> > struct visl_run *run)> 
+> >  	frame_dprintk(ctx->dev, run->dst->sequence, "");
+> >  	line++;
+> > 
+> > -	visl_get_ref_frames(ctx, buf, TPG_STR_BUF_SZ, run);
+> 
+> This function shows both the ts of the ref frames and the buffer
+> index. Is it just the buffer index that causes the problem? If so,
+> then wouldn't it be better to either never show the buffer index
+> or only if !stable_output.
 
-Yes:
-https://www.microchip.com/en-us/software-library/p3-55-firmware-for-pd69200=
--for-ieee802-3bt
+Indeed, the buffer index is the issue, but I did not check if the ref frames ts 
+are stable. I'll do some tests with it and keep the ref frames in stable 
+output mode if they are stable.
 
->=20
-> > +static int pd692x0_recv_msg(struct pd692x0_priv *priv,
-> > +			    struct pd692x0_msg *msg,
-> > +			    struct pd692x0_msg_content *buf)
-> > +{
-> > +	const struct i2c_client *client =3D priv->client;
-> > +	int ret;
-> > +
-> > +	memset(buf, 0, sizeof(*buf));
-> > +	if (msg->delay_recv)
-> > +		msleep(msg->delay_recv);
-> > +	else
-> > +		msleep(30);
-> > +
-> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> > +	if (buf->key)
-> > +		goto out; =20
->=20
-> This is the first attempt to receive the message. I assume buf->key
-> not being 0 indicates something has been received?
+> > +	if (!stable_output) {
+> > +		visl_get_ref_frames(ctx, buf, TPG_STR_BUF_SZ, run);
+> > 
+> > -	while ((line_str = strsep(&tmp, "\n")) && strlen(line_str)) {
+> > -		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 
+16, line_str);
+> > -		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", 
+line_str);
+> > -	}
+> > +		while ((line_str = strsep(&tmp, "\n")) && 
+strlen(line_str)) {
+> > +			tpg_gen_text(&ctx->tpg, basep, line++ * 
+line_height, 16, line_str);
+> > +			frame_dprintk(ctx->dev, run->dst->sequence, 
+"%s\n", line_str);
+> > +		}
+> > 
+> > -	frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > -	line++;
+> > +		frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > +		line++;
+> > +	}
+> > 
+> >  	scnprintf(buf,
+> >  	
+> >  		  TPG_STR_BUF_SZ,
+> > 
+> > @@ -280,28 +293,30 @@ static void visl_tpg_fill(struct visl_ctx *ctx,
+> > struct visl_run *run)> 
+> >  		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", 
+buf);
+> >  	
+> >  	}
+> > 
+> > -	line++;
+> > -	frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > -	scnprintf(buf, TPG_STR_BUF_SZ, "Output queue status:");
+> > -	tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 16, buf);
+> > -	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
+> > +	if (!stable_output) {
+> > +		line++;
+> > +		frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > +		scnprintf(buf, TPG_STR_BUF_SZ, "Output queue status:");
+> > +		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 
+16, buf);
+> > +		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", 
+buf);
+> > 
+> > -	len = 0;
+> > -	for (i = 0; i < out_q->num_buffers; i++) {
+> > -		char entry[] = "index: %u, state: %s, request_fd: %d, 
+";
+> > -		u32 old_len = len;
+> > -		char *q_status = visl_get_vb2_state(out_q->bufs[i]-
+>state);
+> > +		len = 0;
+> > +		for (i = 0; i < out_q->num_buffers; i++) {
+> > +			char entry[] = "index: %u, state: %s, 
+request_fd: %d, ";
+> > +			u32 old_len = len;
+> > +			char *q_status = visl_get_vb2_state(out_q-
+>bufs[i]->state);
+> > 
+> > -		len += scnprintf(&buf[len], TPG_STR_BUF_SZ - len,
+> > -				 entry, i, q_status,
+> > -				 to_vb2_v4l2_buffer(out_q-
+>bufs[i])->request_fd);
+> > +			len += scnprintf(&buf[len], TPG_STR_BUF_SZ - 
+len,
+> > +					 entry, i, q_status,
+> > +					 
+to_vb2_v4l2_buffer(out_q->bufs[i])->request_fd);
+> > 
+> > -		len += visl_fill_bytesused(to_vb2_v4l2_buffer(out_q-
+>bufs[i]),
+> > -					   &buf[len],
+> > -					   TPG_STR_BUF_SZ - 
+len);
+> > +			len += 
+visl_fill_bytesused(to_vb2_v4l2_buffer(out_q->bufs[i]),
+> > +						   
+&buf[len],
+> > +						   
+TPG_STR_BUF_SZ - len);
+> > 
+> > -		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 
+16,
+> > &buf[old_len]);
+> > -		frame_dprintk(ctx->dev, run->dst->sequence, "%s", 
+&buf[old_len]);
+> > +			tpg_gen_text(&ctx->tpg, basep, line++ * 
+line_height, 16,
+> > &buf[old_len]); +			frame_dprintk(ctx->dev, run-
+>dst->sequence, "%s",
+> > &buf[old_len]); +		}
+> > 
+> >  	}
+> >  	
+> >  	line++;
+> > 
+> > @@ -333,25 +348,27 @@ static void visl_tpg_fill(struct visl_ctx *ctx,
+> > struct visl_run *run)> 
+> >  		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", 
+buf);
+> >  	
+> >  	}
+> > 
+> > -	line++;
+> > -	frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > -	scnprintf(buf, TPG_STR_BUF_SZ, "Capture queue status:");
+> > -	tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 16, buf);
+> > -	frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", buf);
+> > +	if (!stable_output) {
+> > +		line++;
+> > +		frame_dprintk(ctx->dev, run->dst->sequence, "");
+> > +		scnprintf(buf, TPG_STR_BUF_SZ, "Capture queue 
+status:");
+> > +		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 
+16, buf);
+> > +		frame_dprintk(ctx->dev, run->dst->sequence, "%s\n", 
+buf);
+> > 
+> > -	len = 0;
+> > -	for (i = 0; i < cap_q->num_buffers; i++) {
+> > -		u32 old_len = len;
+> > -		char *q_status = visl_get_vb2_state(cap_q->bufs[i]-
+>state);
+> > +		len = 0;
+> > +		for (i = 0; i < cap_q->num_buffers; i++) {
+> > +			u32 old_len = len;
+> > +			char *q_status = visl_get_vb2_state(cap_q-
+>bufs[i]->state);
+> > 
+> > -		len += scnprintf(&buf[len], TPG_STR_BUF_SZ - len,
+> > -				 "index: %u, status: %s, 
+timestamp: %llu, is_held: %d",
+> > -				 cap_q->bufs[i]->index, q_status,
+> > -				 cap_q->bufs[i]->timestamp,
+> > -				 to_vb2_v4l2_buffer(cap_q-
+>bufs[i])->is_held);
+> > +			len += scnprintf(&buf[len], TPG_STR_BUF_SZ - 
+len,
+> > +					 "index: %u, status: 
+%s, timestamp: %llu, is_held: %d",
+> > +					 cap_q->bufs[i]-
+>index, q_status,
+> > +					 cap_q->bufs[i]-
+>timestamp,
+> > +					 
+to_vb2_v4l2_buffer(cap_q->bufs[i])->is_held);
+> > 
+> > -		tpg_gen_text(&ctx->tpg, basep, line++ * line_height, 
+16,
+> > &buf[old_len]);
+> > -		frame_dprintk(ctx->dev, run->dst->sequence, "%s", 
+&buf[old_len]);
+> > +			tpg_gen_text(&ctx->tpg, basep, line++ * 
+line_height, 16,
+> > &buf[old_len]); +			frame_dprintk(ctx->dev, run-
+>dst->sequence, "%s",
+> > &buf[old_len]); +		}
+> > 
+> >  	}
+> >  
+> >  }
+> > 
+> > diff --git a/drivers/media/test-drivers/visl/visl.h
+> > b/drivers/media/test-drivers/visl/visl.h index 31639f2e593d..5a81b493f121
+> > 100644
+> > --- a/drivers/media/test-drivers/visl/visl.h
+> > +++ b/drivers/media/test-drivers/visl/visl.h
+> > @@ -85,6 +85,7 @@ extern unsigned int visl_dprintk_nframes;
+> > 
+> >  extern bool keep_bitstream_buffers;
+> >  extern int bitstream_trace_frame_start;
+> >  extern unsigned int bitstream_trace_nframes;
+> > 
+> > +extern bool stable_output;
+> > 
+> >  #define frame_dprintk(dev, current, fmt, arg...) \
+> >  
+> >  	do { \
+> 
+> Should stable_output perhaps be 1 by default?
 
-Yes,=20
+In that case, why not use the visl_debug parameter and show the unstable data 
+only when it is set to one ?
 
->=20
-> > +
-> > +	msleep(100);
-> > +
-> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
-> > +	if (buf->key)
-> > +		goto out; =20
->=20
-> So this is a second attempt. Should there be another memset? Could the
-> first failed transfer fill the buffer with random junk in the higher
-> bytes, and a successful read here could be a partial read and the end
-> of the buffer still contains the junk.
+--
+Detlev
 
-Not sure. The message read should have the right size.
-I will maybe add the memset to prevent any weird behavior.
+--nextPart3264630.aeNJFYEL58
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-> Another resend and two more attempts to receive.
->=20
-> Is there a reason to not uses for loops here? And maybe put
-> send/receive/receive into a helper? And maybe make the first send part
-> of this, rather then separate? I think the code will be more readable
-> when restructured.
+-----BEGIN PGP SIGNATURE-----
 
-I have written it like that to describe literally the communication loss
-procedure. I may restructured it for better understanding.
+iQEzBAABCAAdFiEEonF9IvGrXNkDg+CX5EFKUk4x7bYFAmVeMREACgkQ5EFKUk4x
+7baiLQgAnNXNQEBpHOKQSfJzPc0ohDxroLGL3Se0aYP4pkeJb4+EIQO/tvWFKJtU
+PWcSwFYzIoAloUcQCBDF68UkqE+TBDqEHyNKrW2kPwCq5gWanG64M4Embeby/Ebs
+R2P7uiLKkPSXxrvzHf+fZk4SJAQChRs2VDdx5C7GXmq/ZscLHxN1JlynEYUMvr7e
+BxqzI10JGHztK58YQA21AjVyX1K/2EwC9QTqrmKOnG1ThhbkBBZT5jYf6PLC3hMv
+NLeDizNIeZggVNpeQJGEyRbIybE4l7UPUD5WTnm3io8Lq4uUDobe3uoqTuNm2dw1
+6sEFHlOWWUGBn3yAVupFTl8JyknNvg==
+=rzUM
+-----END PGP SIGNATURE-----
 
-> > +static int pd692x0_ethtool_set_config(struct pse_controller_dev *pcdev,
-> > +				      unsigned long id,
-> > +				      struct netlink_ext_ack *extack,
-> > +				      const struct pse_control_config
-> > *config) +{
-> > +	struct pd692x0_priv *priv =3D to_pd692x0_priv(pcdev);
-> > +	struct pd692x0_msg_content buf =3D {0};
-> > +	struct pd692x0_msg msg;
-> > +	int ret;
-> > +
-> > +	ret =3D pd692x0_fw_unavailable(priv);
-> > +	if (ret)
-> > +		return ret; =20
->=20
-> It seems a bit late to check if the device has any firmware. I would
-> of expected probe to check that, and maybe attempt to download
-> firmware. If that fails, fail the probe, since the PSE is a brick.
+--nextPart3264630.aeNJFYEL58--
 
-The PSE can still be flashed it never become an unusable brick.
-We can flash the wrong Firmware, or having issue in the flashing process. T=
-his
-way we could reflash the controller firmware several times.=20
 
-> > +static struct pd692x0_msg_ver pd692x0_get_sw_version(struct pd692x0_pr=
-iv
-> > *priv) +{
-> > +	struct pd692x0_msg msg =3D
-> > pd692x0_msg_template_list[PD692X0_MSG_GET_SW_VER];
-> > +	struct device *dev =3D &priv->client->dev;
-> > +	struct pd692x0_msg_content buf =3D {0};
-> > +	struct pd692x0_msg_ver ver =3D {0};
-> > +	int ret;
-> > +
-> > +	ret =3D pd692x0_sendrecv_msg(priv, &msg, &buf);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "Failed to get PSE version (%pe)\n",
-> > ERR_PTR(ret));
-> > +		return ver; =20
->=20
-> I _think_ that return is wrong ???
 
-No, this return will return an empty struct pd692x0_msg_ver.
-Which means the firmware has not any version.
-
-> Is the firmware in Motorola SREC format? I thought the kernel had a
-> helper for that, but a quick search did not find it. So maybe i'm
-> remembering wrongly. But it seems silly for every driver to implement
-> an SREC parser.
-
-Oh, I didn't know this format. The firmware seems indeed to match this form=
-at
-specification.
-I found two reference of this Firmware format in the kernel:
-https://elixir.bootlin.com/linux/v6.5.7/source/sound/soc/codecs/zl38060.c#L=
-178
-https://elixir.bootlin.com/linux/v6.5.7/source/drivers/staging/wlan-ng/pris=
-m2fw.c
-
-Any preference in the choice? The zl38060 fw usage is maybe the easiest.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
