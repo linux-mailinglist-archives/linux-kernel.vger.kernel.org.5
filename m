@@ -2,147 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B387F4DD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F26047F4DDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbjKVRJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:09:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
+        id S232069AbjKVRLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVRJY (ORCPT
+        with ESMTP id S229806AbjKVRLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:09:24 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D82B11F;
-        Wed, 22 Nov 2023 09:09:21 -0800 (PST)
-Received: from [192.168.2.39] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 18A3220B74C0;
-        Wed, 22 Nov 2023 09:09:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 18A3220B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1700672960;
-        bh=s6AX/C2zNGnXlHAMv/3n6sM1eRG+UvFSPtvrOsZmvRo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TL6ISCBs2mXICFHaLznFSNLZx8vNPxwTMEuAIeK1WbK0uIkkeQG5XRy2uLV68FDmb
-         QEYA9axxXLQkDhSRROlF4Na6A+03Cy4h83Sd7GxgF0jUXzjGrtpuY0EDLduInLUOO1
-         CZ4G8AChrC+V/l48ZRD/gyPgNyBh0sVxIFVZVDG4=
-Message-ID: <6f20977c-a152-4195-bf4e-f212cf721410@linux.microsoft.com>
-Date:   Wed, 22 Nov 2023 18:09:16 +0100
+        Wed, 22 Nov 2023 12:11:18 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7AEE7;
+        Wed, 22 Nov 2023 09:11:14 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 368C921980;
+        Wed, 22 Nov 2023 17:11:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1700673073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8UQWN8urvKUYRckX3Xlqtm4AGvpGzvpb35HA8d2DQI=;
+        b=mu8nQlYLDB7p7sUhCTYd8JDfrfk5R3hTA/eBpNN6S5SWPCcrZneWlcKtg/V7yEfVxwRfh9
+        blngk3/E9BjOlyeZYl7zLFTYBS4ayWjat95o/E09UFJ5pTuASrVkFBy5Q+dHmp/uPkq2+G
+        Ot6ggJ/PPH9A396RF+DaajasanKQ0Wo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1700673073;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8UQWN8urvKUYRckX3Xlqtm4AGvpGzvpb35HA8d2DQI=;
+        b=naojmf+wkd6JU6MQq3ItRLNmQOYO0uI2dnMkqdvG1yq3B6LOAPrMWgxUssjhLAJdkDXVpy
+        1zpdJ1X+HujdlrDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D957E13461;
+        Wed, 22 Nov 2023 17:11:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id pmIINTA2XmUfUgAAMHmgww
+        (envelope-from <jack@suse.cz>); Wed, 22 Nov 2023 17:11:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 696FBA07DC; Wed, 22 Nov 2023 18:11:12 +0100 (CET)
+Date:   Wed, 22 Nov 2023 18:11:12 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, jack@suse.cz,
+        joseph.qi@linux.alibaba.com, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ritesh.list@gmail.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] WARNING in ext4_dio_write_end_io
+Message-ID: <20231122171112.un5yuwxdcrlswiwe@quack3>
+References: <000000000000ce703b060abf1e06@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/mm: Check cc_vendor when printing memory encryption
- info
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        Michael Kelley <mhklinux@outlook.com>,
-        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
-        stefan.bader@canonical.com, tim.gardner@canonical.com,
-        roxana.nicolescu@canonical.com, cascardo@canonical.com,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        kirill.shutemov@linux.intel.com, sashal@kernel.org
-References: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
- <16ea75a9-8c94-4665-ae04-32d08aa4ebb2@intel.com>
- <58abbc79-64d4-41f9-9fd2-1de7826fbbf6@linux.microsoft.com>
- <ee9de366-6027-495a-98d9-b8b0cd866bf2@intel.com>
- <df95817a-4859-443a-9ac2-b09f102aff30@linux.microsoft.com>
- <20231110131715.GAZU4tW2cJrGoLPmKl@fat_crate.local>
- <73b51be2-cc60-4818-bdba-14b33576366d@linux.microsoft.com>
- <20231110164557.GBZU5eRRj9x6dOVOaH@fat_crate.local>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231110164557.GBZU5eRRj9x6dOVOaH@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000ce703b060abf1e06@google.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305];
+         TAGGED_RCPT(0.00)[47479b71cdfc78f56d30];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         BAYES_HAM(-3.00)[100.00%];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[dilger.ca,suse.cz,linux.alibaba.com,vger.kernel.org,gmail.com,googlegroups.com,mit.edu];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2023 17:45, Borislav Petkov wrote:
-> On Fri, Nov 10, 2023 at 04:51:43PM +0100, Jeremi Piotrowski wrote:
->> What's semi-correct about checking for CC_VENDOR_INTEL and then
->> printing Intel?  I can post a v2 that checks CC_ATTR_GUEST_MEM_ENCRYPT
->> before printing "TDX".
+On Wed 22-11-23 07:10:31, syzbot wrote:
+> syzbot found the following issue on:
 > 
-> How is it that you're not seeing the conflict:
+> HEAD commit:    98b1cc82c4af Linux 6.7-rc2
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15e09a9f680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+> dashboard link: https://syzkaller.appspot.com/bug?extid=47479b71cdfc78f56d30
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c09a00e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=151d5320e80000
 > 
-> Your TD partitioning guest *is* a TDX guest so X86_FEATURE_TDX_GUEST
-> should be set there. But it isn't. Which means, that is already wrong.
-> Or insufficient.
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/39c6cdad13fc/disk-98b1cc82.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/5a77b5daef9b/vmlinux-98b1cc82.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/5e09ae712e0d/bzImage-98b1cc82.xz
 > 
-> 	 if (cc_vendor == CC_VENDOR_INTEL)
+> The issue was bisected to:
 > 
-> just *happens* to work for your case.
+> commit 91562895f8030cb9a0470b1db49de79346a69f91
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Fri Oct 13 12:13:50 2023 +0000
 > 
-> What the detection code should do, rather, is:
+>     ext4: properly sync file size update after O_SYNC direct IO
 > 
-> 	if (guest type == TD partioning)
-> 		set bla;
-> 	else if (TDX_CPUID_LEAF_ID)
-> 		"normal" TDX guest;
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d0f0c8e80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1430f0c8e80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1030f0c8e80000
 > 
-> and those rules need to be spelled out so that everyone is on the same
-> page as to how a TD partitioning guest is detected, how a normal TDX
-> guest is detected, a SEV-ES, a SNP one, yadda yadda.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+47479b71cdfc78f56d30@syzkaller.appspotmail.com
+> Fixes: 91562895f803 ("ext4: properly sync file size update after O_SYNC direct IO")
 > 
->> The paravisor *is* telling the guest it is running on one - using a CPUID leaf
->> (HYPERV_CPUID_ISOLATION_CONFIG). A paravisor is a hypervisor for a confidential
->> guest, that's why paravisor detection shares logic with hypervisor detection.
->>
->> tdx_early_init() runs extremely early, way before hypervisor(/paravisor) detection.
-> 
-> What?
-> 
-> Why can't tdx_early_init() run CPUID(HYPERV_CPUID_ISOLATION_CONFIG) if
-> it can't find a valid TDX_CPUID_LEAF_ID and set X86_FEATURE_TDX_GUEST
-> then?
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 4481 at fs/ext4/file.c:391 ext4_dio_write_end_io+0x1db/0x220 fs/ext4/file.c:391
 
-I guess it can if no one has an issue with it.
+OK, so I could easily reproduce this which is good :). It took a bit longer
+to actually debug what's going on. In the end I've confirmed this is a
+false positive (the assertion isn't 100% reliable). What happens is that
+the IO end completion races with expanding truncate (which is not
+synchronized with DIO in any way) and the assertion sees a situation where
+i_disksize was updated but i_size not yet. This is mostly harmless but we
+better should complete the DIO only once we are sure truncate has updated
+the i_size as well. I'll think how to best do this.
 
-Thank you for the review, I've posted a patchset that implements this idea here:
-https://lore.kernel.org/lkml/20231122170106.270266-1-jpiotrowski@linux.microsoft.com/T/#u
-
-> 
->> Additionally we'd need to sprinkle paravisor checks along with
->> existing X86_FEATURE_TDX_GUEST checks. And any time someone adds a new
->> feature that depends solely on X86_FEATURE_TDX_GUEST we'd run the
->> chance of it breaking things.
-> 
-> Well, before anything, you'd need to define what exactly the guest kernel
-> needs to do when running as a TD partitioning guest and how exactly that
-> is going to be detected and checked using the current cc_* and
-> cpufeatures infra. If it doesn't work with the current scheme, then the
-> current scheme should be extended.
-> 
-> Then, that should be properly written out:
-> 
-> "if bit X is set, then that is a guest type Y"
-> "if feature foo present, then so and so are given"
-> 
-> If the current guest type detection is insufficient, then that should be
-> extended/amended.
-> 
-> That's the only viable way where the kernel would support properly and
-> reliably a given guest type. There'll be no sprinkling of checks
-> anywhere.
-> 
-> Thx.
-> 
-
-OK. In the new submission I've added CC_ATTR_TDX_MODULE_CALLS because that
-is what we really need to guard against, and these guests can then have
-X86_FEATURE_TDX_GUEST set normally.
-
-Jeremi
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
