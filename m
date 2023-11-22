@@ -2,54 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AA67F4D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464057F4D3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbjKVQtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S229789AbjKVQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235122AbjKVQtg (ORCPT
+        with ESMTP id S235134AbjKVQuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:49:36 -0500
+        Wed, 22 Nov 2023 11:50:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3787110E6;
-        Wed, 22 Nov 2023 08:49:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8454C433CA;
-        Wed, 22 Nov 2023 16:49:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7C6D59
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:50:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A345C433C7;
+        Wed, 22 Nov 2023 16:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700671760;
-        bh=2eaEiOuJiPmI83K90hZDYAc0bHogYH21CSUhgSS445U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ORj1pfHG383ZfGaFkbkiJgiyVzT867/J3dvmvSCkgZjFKYDqfDi1r0OZVm/DgP6Pc
-         ViDz4j7NPKGSEHCU89SrvFBF26SpBNuujZefGAI3o59WqwP5mDCxAJyQfHf0SsDk8o
-         /7cBjVVVl+wR4K/Bw3d5CMQi3JMdYWoNMT1YjlJ9kR7rv9F7OSDtbCMy4Hu8H5oky0
-         6VAS0OsnEAZ67VYK/If2gZXlU8RbpjZtBiyaw0NZ8Pzwm33LSt99itdWXw2Kajo1RE
-         +xzRw9Cu3yotvsq/wa0g9kfhYSXWGN6+k5gCsNKBvUkeKUPeFNIR/CWtWM7pgBIeHQ
-         BAglB2rz/XVaQ==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r5qPv-00031n-0F;
-        Wed, 22 Nov 2023 17:49:35 +0100
-Date:   Wed, 22 Nov 2023 17:49:35 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] ASoC: soc-dai: add flag to mute and unmute
- stream during trigger.
-Message-ID: <ZV4xH0lBhlwWYtLO@hovoldconsulting.com>
-References: <20231027105747.32450-1-srinivas.kandagatla@linaro.org>
- <ZTukaxUhgY4WLgEs@hovoldconsulting.com>
- <ZV4hMR8oGQBSbnMl@hovoldconsulting.com>
- <2023112225-crop-uncle-9097@gregkh>
+        s=k20201202; t=1700671802;
+        bh=ZFMcFjU59M2XNKlhy1XsxNfFuYDu0NpI3SyILQsRT0Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fPSeQNCQqy1/x5905Xjdl5nq7QlL/tId3x7pQFXoAGW37wFFRtiWTGUUKJ/YJUR4e
+         /9Nxv3QiRn8YLbTS71k2DfvyQ873pq9HsTshUHDbAfumGHRH/hgfGs37zMYSknImv9
+         2xRa9GS6P1vBKasQ+XP/mf0W5RFjTGB6kwo6DeL1O3Fp+5kESIh3JsdUS0G7XAUsjb
+         ZF4IxuO7V4cc8x+FJfcCYQkcPXegfEeqzgJX/x+Q9hBd7sxwgthverEd2ugTpnjJ/3
+         h2rS0RRV8qd1ovaKTwKS7AR9+USkfjbswYTljgoSpMPAywz1G34liMSX23P6pfv+2w
+         935H/le0J7+hg==
+Date:   Wed, 22 Nov 2023 08:50:00 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
+ stamping layer be selectable
+Message-ID: <20231122085000.79f2d14c@kernel.org>
+In-Reply-To: <20231122140850.li2mvf6tpo3f2fhh@skbuf>
+References: <20231120142316.d2emoaqeej2pg4s3@skbuf>
+        <20231120093723.4d88fb2a@kernel.org>
+        <20231120190023.ymog4yb2hcydhmua@skbuf>
+        <20231120115839.74ee5492@kernel.org>
+        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
+        <20231120133737.70dde657@kernel.org>
+        <20231120220549.cvsz2ni3wj7mcukh@skbuf>
+        <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
+        <20231121094354.635ee8cd@kernel.org>
+        <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
+        <20231122140850.li2mvf6tpo3f2fhh@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023112225-crop-uncle-9097@gregkh>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -60,22 +82,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 04:35:17PM +0000, Greg Kroah-Hartman wrote:
-> On Wed, Nov 22, 2023 at 04:41:37PM +0100, Johan Hovold wrote:
+On Wed, 22 Nov 2023 16:08:50 +0200 Vladimir Oltean wrote:
+> My understanding of Jakub's email was that he wants to see the functionality
+> offered by SIOCGHWTSTAMP and SIOCSHWTSTAMP converted to netlink. I don't
+> think that ethtool is the correct netlink family for that, given that
+> these aren't ethtool ioctls to begin with. Maybe the new netdev netlink
+> family. The conversion in its basic form would offer exactly the same
+> functionality.
 
-> > These fixes are now in 6.7-rc1 as
-> > 
-> > 	f0220575e65a ("ASoC: soc-dai: add flag to mute and unmute stream during trigger")
+Well, ethtool has been the catch all for a lot of random things
+for the longest time. The question is whether we want to extend
+ETHTOOL_GET_TS_INFO or add a third API somewhere else. And if we
+do - do we also duplicate the functionality of ETHTOOL_GET_TS_INFO
+(i.e. getting capabilities)?
+
+My vote is that keeping it in ethtool is less bad than 3rd API.
+
+> The _listing_ of hwtstamp providers is what could be done through ethtool
+> netlink, similar but not identical to the way in which you are proposing
+> today (you are presenting blanket "layers" which correspond to netdev and
+> phylib, rather than individual providers).
 > 
-> This doesn't backport cleanly, can you provide a working backport?
+> The concept of an "active phc_index" would not explicitly exist in the
+> UAPI. Thus I'm not sure what's with this TSINFO_SET being floated around.
+> The only thing would exist is a configurable rx_filter and tx_type per
+> hwtstamp provider (aka "{phc_index, qualifier}"). User space will have
+> to learn to select the hwtstamp provider it wants to configure through
+> netlink, and use for its class of traffic.
 
-Sure, I'll do that tomorrow.
- 
-> > 	805ce81826c8 ("ASoC: codecs: wsa883x: make use of new mute_unmute_on_trigger flag")
-> 
-> Now queued up, thanks.
+"Active provider" is the one that has TX_ON, rx != FILTER_NONE, right?
 
-I don't think this one will build without the former so better to drop
-it from your queues and I'll send backports of both patches tomorrow.
+> This is why I mentioned by ndo_hwtstamp_set() conversion, because
+> suddenly it is a prerequisite for any further progress to be done.
+> You can't convert SIOCSHWTSTAMP to netlink if there are some driver
+> implementations which still use ndo_eth_ioctl(). They need to be
+> UAPI-agnostic.
 
-Johan
+Right, definitely.
+
+> I'm not sure what's with Richard's mention of the "_2" variants of the
+> ioctls. Probably a low-effort suggestion which was a bit out of context.
+> His main point, that you cannot extend struct hwtstamp_config as that
+> has a fixed binary format, is perfectly valid though. This is why
+> netlink is preferable, because if done correctly (meaning not with
+> NLA_BINARY attributes), then it is much more extensible because all
+> attributes are TLVs. Use NLA_BINARY, and you will run into the exact
+> extensibility issues that the ioctl interface has.
