@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 180877F4B75
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB587F4B76
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344662AbjKVPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:45:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
+        id S231744AbjKVPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:45:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbjKVPoh (ORCPT
+        with ESMTP id S235234AbjKVPog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:44:37 -0500
-Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F0202130
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:25 -0800 (PST)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1cc1397321fso86175145ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:25 -0800 (PST)
+        Wed, 22 Nov 2023 10:44:36 -0500
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95B82693
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:24 -0800 (PST)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1cf6177552cso42842535ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:43:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700667805; x=1701272605;
+        d=1e100.net; s=20230601; t=1700667804; x=1701272604;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=waG/5+O/zx2kA6SEedS1bMAXL1Zr5koVLUlbk6mlw4I=;
-        b=FK4xHMARIDefgINwoDbqCuiKYpGGdee+/S+npmdzLajlMmQB41xSSvVYh2Jvw8b46K
-         P+LxgsDyLBvugIoJ92f82F792Fligh9/ZuoBfjUFSyUWqGpuQerE44H3cp2x+7P+rPWP
-         G5ln+OY47c7N75nPy1fyiMc22XnUC7Fid+EX9vfXo2Xzh6W872V90QqWfvwhFg+su2Eq
-         v0O3a1qeecHVeGqLT0zoRy9nB0FtAE0nYuqdNBLjnYii1ySX5Ip3AvZLgfMUU73qR78e
-         xODW+AqTItCbkqASoA+hmQ346Kd3HAlIHzQip6qmjRsACqU6GwOIiBOusB93WIPeZVSS
-         tctA==
-X-Gm-Message-State: AOJu0Yyou5Oss1t9CgBiT+a60MaNV70TCTVmPRiPJpAFevpMJ8XFQDhF
-        hV4Vkp488qGAwCQKmyL86k1wFFt0kpuA0sfd36KDvOiDK1Xl
-X-Google-Smtp-Source: AGHT+IGl3Mc/G+M0NqtbGbw+dWGYiGHdoaTt5r/HDLcJnlfqHEeWM5f7BxAHMapCrg5PR6tijog2B4fMKdE6qCc8S29DPKepfiw7
+        bh=IWVwyNQEDfvaOtWm2dnHqh31z5AnRQ95a3YCW/ap4Xo=;
+        b=DtO/F8quoLa3OIJPX/g3VLOCAVLT0UXjRfWAPuhMNcWaeZ0Fc4IpI9e5PLWWI9+jYD
+         U96BILu5Fa2mKxAzRlymfFHwr+4WTm0WRXtNqkLjPmCZC9K0r9wvAAByIV9DY6EiYFNh
+         q3PggPqcN71EfYEgg1h7EpZFAjsYFjAvcvC1BJ++rtUW/m160LZpBMMIexQh16LnsHdu
+         QLm3HJig7OjSJSi0Te9xIBdng4vzGi7gW8Q5jnsiIfktqh1+Bhj7DoN9qNiqnErzMocX
+         syuJ0Fz35xTdo1EthJUGoBGM/a3aAS39c0xc866WN9MAdGYX9CZjqa0Zy1FozJR14P/L
+         6Q8Q==
+X-Gm-Message-State: AOJu0YwHnvEjmoGzf3+uPeWnyBNQQLQN6gVocKl3js98b5qztpjkMWWG
+        qZ714uZArw6Q7f0HbCtWBrrP4LRlcdsp85P1qw4hYNSfDwy0
+X-Google-Smtp-Source: AGHT+IGilZWxCKJSlxhhHl2+1QTqPEAVF968tnpuhYXMHjC17woOEVJfeu4C2jfWjOFIy5tsgtd/PNw4+e/O683gyE6lT00+hOEY
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2352:b0:1cf:6910:3ba4 with SMTP id
- c18-20020a170903235200b001cf69103ba4mr667867plh.0.1700667804792; Wed, 22 Nov
+X-Received: by 2002:a17:902:9896:b0:1cc:3355:9fa9 with SMTP id
+ s22-20020a170902989600b001cc33559fa9mr558766plp.10.1700667804379; Wed, 22 Nov
  2023 07:43:24 -0800 (PST)
 Date:   Wed, 22 Nov 2023 07:43:24 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000062c5dc060abf9415@google.com>
-Subject: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in __lock_sock
-From:   syzbot <syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000005c72b5060abf946a@google.com>
+Subject: [syzbot] [reiserfs?] kernel BUG in entry_points_to_object
+From:   syzbot <syzbot+927b0cd57b86eedb4193@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@paul-moore.com, reiserfs-devel@vger.kernel.org,
+        roberto.sassu@huawei.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
@@ -59,148 +59,94 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1774144f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=60bfed6b415fbd1fbb87
+HEAD commit:    98b1cc82c4af Linux 6.7-rc2
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17f637b7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=52c9552def2a0fdd
+dashboard link: https://syzkaller.appspot.com/bug?extid=927b0cd57b86eedb4193
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143ee4a0e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c28ca0e80000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101b9214e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fb7214e80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
+disk image: https://storage.googleapis.com/syzbot-assets/77af735993e1/disk-98b1cc82.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/806c51c6c6ae/vmlinux-98b1cc82.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9af67744e298/bzImage-98b1cc82.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/7d091cb75f24/mount_0.gz
+
+The issue was bisected to:
+
+commit d82dcd9e21b77d338dc4875f3d4111f0db314a7c
+Author: Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Fri Mar 31 12:32:18 2023 +0000
+
+    reiserfs: Add security prefix to xattr name in reiserfs_security_write()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17989114e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14589114e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10589114e80000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+60bfed6b415fbd1fbb87@syzkaller.appspotmail.com
+Reported-by: syzbot+927b0cd57b86eedb4193@syzkaller.appspotmail.com
+Fixes: d82dcd9e21b7 ("reiserfs: Add security prefix to xattr name in reiserfs_security_write()")
 
-==================================================================
-BUG: KASAN: slab-use-after-free in __lock_acquire+0x114/0x75e8 kernel/locking/lockdep.c:5004
-Read of size 8 at addr ffff0000d553e0b0 by task kworker/u5:3/6271
-
-CPU: 1 PID: 6271 Comm: kworker/u5:3 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Workqueue: hci0 hci_cmd_sync_work
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- __asan_report_load8_noabort+0x20/0x2c mm/kasan/report_generic.c:381
- __lock_acquire+0x114/0x75e8 kernel/locking/lockdep.c:5004
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x48/0x60 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- __lock_sock+0x170/0x2d4 net/core/sock.c:2960
- lock_sock_nested+0xa4/0x11c net/core/sock.c:3510
- lock_sock include/net/sock.h:1720 [inline]
- sco_conn_ready net/bluetooth/sco.c:1268 [inline]
- sco_connect_cfm+0x140/0x948 net/bluetooth/sco.c:1359
- hci_connect_cfm include/net/bluetooth/hci_core.h:1935 [inline]
- hci_conn_failed+0x17c/0x2c0 net/bluetooth/hci_conn.c:1251
- hci_abort_conn_sync+0x688/0xe38 net/bluetooth/hci_sync.c:5428
- abort_conn_sync+0x5c/0x8c net/bluetooth/hci_conn.c:2910
- hci_cmd_sync_work+0x1cc/0x34c net/bluetooth/hci_sync.c:306
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-Allocated by task 8151:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1026 [inline]
- __kmalloc+0xcc/0x1b8 mm/slab_common.c:1039
- kmalloc include/linux/slab.h:603 [inline]
- sk_prot_alloc+0xc4/0x1f0 net/core/sock.c:2090
- sk_alloc+0x44/0x3f4 net/core/sock.c:2143
- bt_sock_alloc+0x4c/0x32c net/bluetooth/af_bluetooth.c:148
- sco_sock_alloc net/bluetooth/sco.c:495 [inline]
- sco_sock_create+0xbc/0x31c net/bluetooth/sco.c:526
- bt_sock_create+0x14c/0x248 net/bluetooth/af_bluetooth.c:132
- __sock_create+0x43c/0x884 net/socket.c:1569
- sock_create net/socket.c:1620 [inline]
- __sys_socket_create net/socket.c:1657 [inline]
- __sys_socket+0x134/0x340 net/socket.c:1708
- __do_sys_socket net/socket.c:1722 [inline]
- __se_sys_socket net/socket.c:1720 [inline]
- __arm64_sys_socket+0x7c/0x94 net/socket.c:1720
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Freed by task 8151:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_free_info+0x38/0x5c mm/kasan/generic.c:522
- ____kasan_slab_free+0x144/0x1c0 mm/kasan/common.c:236
- __kasan_slab_free+0x18/0x28 mm/kasan/common.c:244
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x2ac/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- sk_prot_free net/core/sock.c:2126 [inline]
- __sk_destruct+0x4c0/0x770 net/core/sock.c:2218
- sk_destruct net/core/sock.c:2233 [inline]
- __sk_free+0x37c/0x4e8 net/core/sock.c:2244
- sk_free+0x60/0xc8 net/core/sock.c:2255
- sock_put include/net/sock.h:1989 [inline]
- sco_sock_kill+0xfc/0x1b4 net/bluetooth/sco.c:426
- sco_sock_release+0x1fc/0x2c0 net/bluetooth/sco.c:1256
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- ____fput+0x20/0x30 fs/file_table.c:412
- task_work_run+0x230/0x2e0 kernel/task_work.c:180
- get_signal+0x13f4/0x15ec kernel/signal.c:2668
- do_signal arch/arm64/kernel/signal.c:1249 [inline]
- do_notify_resume+0x3bc/0x393c arch/arm64/kernel/signal.c:1302
- exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
- exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
- el0_svc+0x9c/0x158 arch/arm64/kernel/entry-common.c:679
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-The buggy address belongs to the object at ffff0000d553e000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 176 bytes inside of
- freed 2048-byte region [ffff0000d553e000, ffff0000d553e800)
-
-The buggy address belongs to the physical page:
-page:0000000014f21d98 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x115538
-head:0000000014f21d98 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000840 ffff0000c0002000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000080080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000d553df80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000d553e000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff0000d553e080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff0000d553e100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff0000d553e180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+REISERFS warning (device loop0): vs-13060 reiserfs_update_sd_size: stat data of object [1 2 0x0 SD] (nlink == 1) not found (pos 2)
+REISERFS warning (device loop0): vs-13060 reiserfs_update_sd_size: stat data of object [1 2 0x0 SD] (nlink == 1) not found (pos 2)
+REISERFS panic (device loop0): vs-7042 entry_points_to_object: entry must be visible
+------------[ cut here ]------------
+kernel BUG at fs/reiserfs/prints.c:390!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5057 Comm: syz-executor309 Not tainted 6.7.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:__reiserfs_panic+0x140/0x150 fs/reiserfs/prints.c:390
+Code: c1 a0 69 7c 8b 48 0f 44 c8 48 0f 44 d8 48 c7 c7 60 6a 7c 8b 4c 89 fe 48 89 da 4d 89 f0 49 c7 c1 80 53 6f 92 e8 71 21 de 08 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 55 48
+RSP: 0018:ffffc9000391f320 EFLAGS: 00010246
+RAX: 0000000000000054 RBX: ffffffff8b7c1b00 RCX: bc3f3e0b1fc0be00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000391f410 R08: ffffffff817136dc R09: 1ffff92000723e04
+R10: dffffc0000000000 R11: fffff52000723e05 R12: ffffffff8b7c1b20
+R13: ffffc9000391f340 R14: ffffffff8d13e152 R15: ffff88801cee8660
+FS:  0000555555e10380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055c020b77818 CR3: 0000000078e9b000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ entry_points_to_object+0x6e7/0x6f0
+ reiserfs_rename+0xff3/0x2110 fs/reiserfs/namei.c:1526
+ vfs_rename+0xaba/0xde0 fs/namei.c:4844
+ do_renameat2+0xd5a/0x1390 fs/namei.c:4996
+ __do_sys_rename fs/namei.c:5042 [inline]
+ __se_sys_rename fs/namei.c:5040 [inline]
+ __x64_sys_rename+0x86/0x90 fs/namei.c:5040
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f695d1e66b9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff86426978 EFLAGS: 00000246 ORIG_RAX: 0000000000000052
+RAX: ffffffffffffffda RBX: 0032656c69662f2e RCX: 00007f695d1e66b9
+RDX: 00007f695d1e66b9 RSI: 00000000200002c0 RDI: 00000000200000c0
+RBP: 0030656c69662f31 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 2f31656c69662f2e
+R13: 00007fff86426b58 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__reiserfs_panic+0x140/0x150 fs/reiserfs/prints.c:390
+Code: c1 a0 69 7c 8b 48 0f 44 c8 48 0f 44 d8 48 c7 c7 60 6a 7c 8b 4c 89 fe 48 89 da 4d 89 f0 49 c7 c1 80 53 6f 92 e8 71 21 de 08 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 55 48
+RSP: 0018:ffffc9000391f320 EFLAGS: 00010246
+RAX: 0000000000000054 RBX: ffffffff8b7c1b00 RCX: bc3f3e0b1fc0be00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: ffffc9000391f410 R08: ffffffff817136dc R09: 1ffff92000723e04
+R10: dffffc0000000000 R11: fffff52000723e05 R12: ffffffff8b7c1b20
+R13: ffffc9000391f340 R14: ffffffff8d13e152 R15: ffff88801cee8660
+FS:  0000555555e10380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055c020b77818 CR3: 0000000078e9b000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -210,6 +156,7 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the report is already addressed, let syzbot know by replying with:
 #syz fix: exact-commit-title
