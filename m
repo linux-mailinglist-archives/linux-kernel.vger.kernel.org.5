@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3411F7F3F62
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:00:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252577F3F63
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbjKVIAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S234563AbjKVIBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjKVIAb (ORCPT
+        with ESMTP id S229995AbjKVIBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:00:31 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A099D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:00:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rG9CnI6rb1E9NFvnbYt1RG2l2gXTlO1XMx7PoiRe2Ec=; b=PCtBrTBvxv7SOp8UE5vFdvbfF0
-        P5NaPlXmpvqNViNINDPdipO0w9S7846a/jfPx/chfTBwwTwYjneEH25vRgUw635dBIYYVnMCDmiM6
-        OeTvKWjvS5RPTRtLFJM8VWWVC1A3xvPIQ+lpajb19q+Chh4kjK5j81FkX1DAOmUYdLz8CY2/xQjU/
-        eHO+ESOk90z7nvlFOUb/rkbJstkzzg3x3vrH7Vvfk96TWlMZ6TRu1MnpeRKEUoHL7WMK53ciD/Y6Q
-        bdvOGQ2aAG+0OYv9E7rZOWLEOZLfUmhAOJwT7XbQn2p/6gB5NGOg/D88uulBsscSZ7PfrfCGM1nAw
-        u/zzeo7A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r5i9o-000z5V-1I;
-        Wed, 22 Nov 2023 08:00:24 +0000
-Date:   Wed, 22 Nov 2023 00:00:24 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
- hugepd processing
-Message-ID: <ZV21GCbG48nTLDzn@infradead.org>
-References: <20231116012908.392077-1-peterx@redhat.com>
- <20231116012908.392077-7-peterx@redhat.com>
- <ZVsYMMJpmFV2T/Zc@infradead.org>
- <ZVzT5_3Zn-Y-6xth@x1n>
+        Wed, 22 Nov 2023 03:01:14 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 798ACA4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:01:10 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b2fa4ec5eso4190165e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:01:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1700640069; x=1701244869; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D9ADCjEI7o9dzGO9BsaR3z0G/sfMu5E5t4/ZTd2GGTs=;
+        b=g7hbwMOhIUOaA+GN1m9F5ZlSXOp6oiVoTpokt2Se4CCwYdHFmEGtpWY1pCGirjuvNo
+         M8SN2W+/Q2+sYr5B5+jIl2pFww+ZYTUBumUdedw3Qi7F0EhwxTWpV3eGuAhqCtVdNid2
+         as3cJDGCwEc7jtWbnJyaE7//v8PnkW3vpwtA5i8OGGCkQF7nAkFDTyqkFiS5MEeqV+Zf
+         anCBe5txgS+VYRaU9zxtjsjFeqylfPEWj3LI9Y3+n1+dQcIGx86M5X1lynqzDVmlnVDI
+         K5jnUT5l14x7L1EP/KH3y5jyTPHAgIq+s+/+4FZULnPrAU1vL/ASEBhqxOUuj4KXPfX8
+         FD4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700640069; x=1701244869;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D9ADCjEI7o9dzGO9BsaR3z0G/sfMu5E5t4/ZTd2GGTs=;
+        b=D0vDtiTjf+r95HRn3hIbhudqZMluyxtmUsWJ2yQN5DBL4NZuuBhnr67xghn+nUmEwG
+         WpJkxmecj7Veks/qdawx2Rfp+vBOUj0qYWuwC/OKZgmHAJroVfbjdFqw/asptTZ/2f4h
+         zNm/ioRIv8dQcTVHQ+o0u8oNvI0lOJd0BUgwDTULfh6MddbSMaA51YT9+hXgNuxPB4qd
+         ZCMUS3e1XeGnmfF81H3GXKB5p5vT69m6sKWR/vxNrXv3KC9UDIODR6oD6KVOXHu6A+Sq
+         oaAKSyZfSeJvuD9CUwdezrAobkiAB+EwfWlCaljOyzf/oaBa5fVbknb9AYWYjXdhYlie
+         hJQA==
+X-Gm-Message-State: AOJu0YxWCK3Sciu/xf+47GZ0jWj5MFJR58ooeh7UAPOpXnGcTir4c3JS
+        DNyaPWupg3ySJ6YyNIwGMbN0jw==
+X-Google-Smtp-Source: AGHT+IE1/C3weLHdhpWJSWXJPJYT4boAklbn3sgz4rb9EWKq6qitvv5j2eDGac4BGRWMcwTjthYjsw==
+X-Received: by 2002:a05:600c:4fcc:b0:40b:2b82:dad8 with SMTP id o12-20020a05600c4fcc00b0040b2b82dad8mr1190319wmq.5.1700640068378;
+        Wed, 22 Nov 2023 00:01:08 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id n44-20020a05600c502c00b004083a105f27sm1326932wmr.26.2023.11.22.00.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 00:01:08 -0800 (PST)
+Date:   Wed, 22 Nov 2023 09:01:06 +0100
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] selftests/kvm: Fix issues with $(SPLIT_TESTS)
+Message-ID: <20231122-ef1578645fb74a7aa0fca822@orel>
+References: <20231121165631.1170797-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVzT5_3Zn-Y-6xth@x1n>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231121165631.1170797-1-pbonzini@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 10:59:35AM -0500, Peter Xu wrote:
-> > What prevents us from ever using hugepd with file mappings?  I think
-> > it would naturally fit in with how large folios for the pagecache work.
-> > 
-> > So keeping this check and generalizing it seems like the better idea to
-> > me.
+On Tue, Nov 21, 2023 at 11:56:31AM -0500, Paolo Bonzini wrote:
+> The introduction of $(SPLIT_TESTS) also introduced a warning when
+> building selftests on architectures that include get-reg-lists:
 > 
-> But then it means we're still keeping that dead code for fast-gup even if
-> we know that fact..  Or do we have a plan to add that support very soon, so
-> this code will be destined to add back?
+>     make: Entering directory '/root/kvm/tools/testing/selftests/kvm'
+>     Makefile:272: warning: overriding recipe for target '/root/kvm/tools/testing/selftests/kvm/get-reg-list'
+>     Makefile:267: warning: ignoring old recipe for target '/root/kvm/tools/testing/selftests/kvm/get-reg-list'
+>     make: Leaving directory '/root/kvm/tools/testing/selftests/kvm'
+> 
+> In addition, the rule for $(SPLIT_TESTS_TARGETS) includes _all_
+> the $(SPLIT_TESTS_OBJS), which only works because there is just one.
+> So fix both by adjusting the rules:
+> 
+> - remove $(SPLIT_TESTS_TARGETS) from the $(TEST_GEN_PROGS) rules,
+>   and rename it to $(SPLIT_TEST_GEN_PROGS)
+> 
+> - fix $(SPLIT_TESTS_OBJS) so that it plays well with $(OUTPUT),
+>   rename it to $(SPLIT_TEST_GEN_OBJ), and list the object file
+>   explicitly in the $(SPLIT_TEST_GEN_PROGS) link rule
+> 
+> Fixes: 17da79e009c3 ("KVM: arm64: selftests: Split get-reg-list test code", 2023-08-09)
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile | 20 ++++++++++++--------
+>  1 file changed, 12 insertions(+), 8 deletions(-)
+>
 
-The question wasn't mean retorical - we support arbitrary power of two
-sized folios for the pagepage, what prevents us from using hugepd with
-them right now?
+Thanks for these fixes, Paolo! And thanks for keeping my old @redhat.com
+address alive!
 
-> The other option is I can always add a comment above gup_huge_pd()
-> explaining this special bit, so that when someone is adding hugepd support
-> to file large folios we'll hopefully not forget it?  But then that
-> generalization work will only happen when the code will be needed.
+I've tested this on riscv,
 
-If dropping the check is the right thing for now (and I think the ppc
-maintainers and willy as the large folio guy might have a more useful
-opinions than I do), leaving a comment in would be very useful.
+Tested-by: Andrew Jones <ajones@ventanamicro.com>
 
+Thanks,
+drew
