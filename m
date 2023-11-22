@@ -2,45 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2613A7F409F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640537F40AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbjKVIyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:54:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
+        id S231174AbjKVI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234988AbjKVIyG (ORCPT
+        with ESMTP id S229477AbjKVI40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:54:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C9E1A2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 00:54:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D42C433C7;
-        Wed, 22 Nov 2023 08:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700643239;
-        bh=kEOLmSI8N/wxIr2gL+9Mff19BUqTjsdYUEN6axFJQWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b4Lmicgpv1rZNdbPiUOaKGnRIh68vd7af14vbLtFQlt9lXPBsSgVxMmg1M8Di9yy0
-         KROVL66Ok1UMvGBPBXCjPTFzCm8g2IrpWjC+7UWNNeHHCnzvOIvS8XXjUV4pOt1kq0
-         e8DOSzFC4BEZmIJg0coHmXeKKW97mUlY2YiCRAp4=
-Date:   Wed, 22 Nov 2023 08:53:56 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Abhijit Gangurde <abhijit.gangurde@amd.com>
-Cc:     linux-kernel@vger.kernel.org, Nipun.Gupta@amd.com,
-        puneet.gupta@amd.com, nikhil.agarwal@amd.com, michal.simek@amd.com,
-        git@amd.com
-Subject: Re: [PATCH 2/2] cdx: Create resource debugfs file for cdx device
-Message-ID: <2023112232-crawfish-twig-0937@gregkh>
-References: <20231122080300.3727388-1-abhijit.gangurde@amd.com>
- <20231122080300.3727388-2-abhijit.gangurde@amd.com>
+        Wed, 22 Nov 2023 03:56:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B316AE7;
+        Wed, 22 Nov 2023 00:56:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700643383; x=1732179383;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=579B6Vn86UXddgf59Bx7trqMdHFc5/puvhZkPkUaV4A=;
+  b=JUlVi7MPbR//by4Thh7ciwxViQLuX3LQvwvLS8Ri7e3qi6GBLnZPXnHs
+   oMzy7cLvLTw5hpHFQsyYYWutNKkPJ3x1eQ4+SkdSTA5uKlEx+Bais/C2p
+   bDrFifPgYrHryGLJqJPXJXxNw6w5BkSf2P1xNEBWYBQychdvCkvY06LKy
+   cMtXk69hF1BsIo4n7qsUfGfP5vnpYIyGX2dKZwAt+StXtenznfqE6ntBG
+   ZDGdvpD35/sxstU5Llj1J0+cuaqelhwuAJVaoZyko4l8QaVwegMf5NygV
+   C7EcDjNl9dmaTnjsRWRsBxpugL6JiH3p29aTHm2fU7++NatvoJfEIvRTe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5154735"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="5154735"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 00:56:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="770520489"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="770520489"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Nov 2023 00:56:19 -0800
+Date:   Wed, 22 Nov 2023 16:54:26 +0800
+From:   Xu Yilun <yilun.xu@linux.intel.com>
+To:     Paul Durrant <paul@xen.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 07/15] KVM: pfncache: include page offset in uhva and
+ use it consistently
+Message-ID: <ZV3Bwghwz63LmgMu@yilunxu-OptiPlex-7050>
+References: <20231121180223.12484-1-paul@xen.org>
+ <20231121180223.12484-8-paul@xen.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122080300.3727388-2-abhijit.gangurde@amd.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231121180223.12484-8-paul@xen.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,66 +69,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 01:33:00PM +0530, Abhijit Gangurde wrote:
-> resource debugfs file contains host addresses of CDX device resources.
-> Each line of the resource file describe a region with start, end and
-> flag fields.
+On Tue, Nov 21, 2023 at 06:02:15PM +0000, Paul Durrant wrote:
+> From: Paul Durrant <pdurrant@amazon.com>
 > 
-> Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
+> Currently the pfncache page offset is sometimes determined using the gpa
+> and sometimes the khva, whilst the uhva is always page-aligned. After a
+> subsequent patch is applied the gpa will not always be valid so adjust
+> the code to include the page offset in the uhva and use it consistently
+> as the source of truth.
+> 
+> Also, where a page-aligned address is required, use PAGE_ALIGN_DOWN()
+> for clarity.
+> 
+> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
 > ---
->  drivers/cdx/cdx.c           | 42 ++++++++++++++++++++++++++++++++++++-
->  include/linux/cdx/cdx_bus.h |  2 ++
->  2 files changed, 43 insertions(+), 1 deletion(-)
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
 > 
-> diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-> index 4edf64f9e98d..e01376272ed3 100644
-> --- a/drivers/cdx/cdx.c
-> +++ b/drivers/cdx/cdx.c
-> @@ -65,6 +65,7 @@
->  #include <linux/cdx/cdx_bus.h>
->  #include <linux/iommu.h>
->  #include <linux/dma-map-ops.h>
-> +#include <linux/debugfs.h>
->  #include "cdx.h"
+> v8:
+>  - New in this version.
+> ---
+>  virt/kvm/pfncache.c | 27 +++++++++++++++++++--------
+>  1 file changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/virt/kvm/pfncache.c b/virt/kvm/pfncache.c
+> index 0eeb034d0674..c545f6246501 100644
+> --- a/virt/kvm/pfncache.c
+> +++ b/virt/kvm/pfncache.c
+> @@ -48,10 +48,10 @@ bool kvm_gpc_check(struct gfn_to_pfn_cache *gpc, unsigned long len)
+>  	if (!gpc->active)
+>  		return false;
 >  
->  /* Default DMA mask for devices on a CDX bus */
-> @@ -75,6 +76,8 @@
->  static DEFINE_IDA(cdx_controller_ida);
->  /* Lock to protect controller ops */
->  static DEFINE_MUTEX(cdx_controller_lock);
-> +/* Debugfs dir for cdx bus */
-> +static struct dentry *cdx_debugfs_dir;
+> -	if (offset_in_page(gpc->gpa) + len > PAGE_SIZE)
+> +	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
+>  		return false;
 >  
->  static char *compat_node_name = "xlnx,versal-net-cdx";
+> -	if (gpc->generation != slots->generation || kvm_is_error_hva(gpc->uhva))
+> +	if (offset_in_page(gpc->uhva) + len > PAGE_SIZE)
+>  		return false;
 >  
-> @@ -149,6 +152,7 @@ static int cdx_unregister_device(struct device *dev,
->  			cdx->ops->bus_disable(cdx, cdx_dev->bus_num);
->  	} else {
->  		cdx_destroy_res_attr(cdx_dev, MAX_CDX_DEV_RESOURCES);
-> +		debugfs_remove_recursive(cdx_dev->debugfs_dir);
->  		kfree(cdx_dev->driver_override);
->  		cdx_dev->driver_override = NULL;
+>  	if (!gpc->valid)
+> @@ -119,7 +119,7 @@ static inline bool mmu_notifier_retry_cache(struct kvm *kvm, unsigned long mmu_s
+>  static kvm_pfn_t hva_to_pfn_retry(struct gfn_to_pfn_cache *gpc)
+>  {
+>  	/* Note, the new page offset may be different than the old! */
+> -	void *old_khva = gpc->khva - offset_in_page(gpc->khva);
+> +	void *old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
+>  	kvm_pfn_t new_pfn = KVM_PFN_ERR_FAULT;
+>  	void *new_khva = NULL;
+>  	unsigned long mmu_seq;
+> @@ -192,7 +192,7 @@ static kvm_pfn_t hva_to_pfn_retry(struct gfn_to_pfn_cache *gpc)
+>  
+>  	gpc->valid = true;
+>  	gpc->pfn = new_pfn;
+> -	gpc->khva = new_khva + offset_in_page(gpc->gpa);
+> +	gpc->khva = new_khva + offset_in_page(gpc->uhva);
+>  
+>  	/*
+>  	 * Put the reference to the _new_ pfn.  The pfn is now tracked by the
+> @@ -215,8 +215,8 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
+>  	struct kvm_memslots *slots = kvm_memslots(gpc->kvm);
+>  	unsigned long page_offset = offset_in_page(gpa);
+>  	bool unmap_old = false;
+> -	unsigned long old_uhva;
+>  	kvm_pfn_t old_pfn;
+> +	bool hva_change = false;
+>  	void *old_khva;
+>  	int ret;
+>  
+> @@ -242,8 +242,7 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
 >  	}
-> @@ -552,6 +556,34 @@ static const struct attribute_group *cdx_dev_groups[] = {
->  	NULL,
->  };
 >  
-> +static int cdx_debug_resource_show(struct seq_file *s, void *data)
-> +{
-> +	struct cdx_device *cdx_dev = s->private;
-> +	int i;
+>  	old_pfn = gpc->pfn;
+> -	old_khva = gpc->khva - offset_in_page(gpc->khva);
+> -	old_uhva = gpc->uhva;
+> +	old_khva = (void *)PAGE_ALIGN_DOWN((uintptr_t)gpc->khva);
+>  
+>  	/* If the userspace HVA is invalid, refresh that first */
+>  	if (gpc->gpa != gpa || gpc->generation != slots->generation ||
+> @@ -259,13 +258,25 @@ static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa,
+>  			ret = -EFAULT;
+>  			goto out;
+>  		}
 > +
-> +	for (i = 0; i < MAX_CDX_DEV_RESOURCES; i++) {
-> +		struct resource *res =  &cdx_dev->res[i];
+> +		hva_change = true;
+> +	} else {
+> +		/*
+> +		 * No need to do any re-mapping if the only thing that has
+> +		 * changed is the page offset. Just page align it to allow the
+> +		 * new offset to be added in.
+
+I don't understand how the uhva('s offset) could be changed when both gpa and
+slot are not changed. Maybe I have no knowledge of xen, but in later
+patch you said your uhva would never change...
+
+Thanks,
+Yilun
+
+> +		 */
+> +		gpc->uhva = PAGE_ALIGN_DOWN(gpc->uhva);
+>  	}
+>  
+> +	/* Note: the offset must be correct before calling hva_to_pfn_retry() */
+> +	gpc->uhva += page_offset;
 > +
-> +		seq_printf(s, "0x%016llx 0x%016llx 0x%016llx\n",
-> +			   (unsigned long long)res->start,
-> +			   (unsigned long long)res->end,
-> +			   (unsigned long long)res->flags);
-
-Why not just use %pR or %pr instead of creating your own style of
-format?
-
-thanks,
-
-greg k-h
+>  	/*
+>  	 * If the userspace HVA changed or the PFN was already invalid,
+>  	 * drop the lock and do the HVA to PFN lookup again.
+>  	 */
+> -	if (!gpc->valid || old_uhva != gpc->uhva) {
+> +	if (!gpc->valid || hva_change) {
+>  		ret = hva_to_pfn_retry(gpc);
+>  	} else {
+>  		/*
+> -- 
+> 2.39.2
+> 
+> 
