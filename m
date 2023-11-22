@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E858F7F48BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E047F48BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjKVOSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:18:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S235168AbjKVOTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbjKVOSN (ORCPT
+        with ESMTP id S230195AbjKVOTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:18:13 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B38A97;
-        Wed, 22 Nov 2023 06:18:10 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso6812557b3a.2;
-        Wed, 22 Nov 2023 06:18:10 -0800 (PST)
+        Wed, 22 Nov 2023 09:19:30 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E90112
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:19:27 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59b5484fbe6so71412347b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700662689; x=1701267489; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e/bl+HpMTJTHISOhj4vCvITdZg7HQqKMUYriE/MKkOk=;
-        b=CjQFyZKjEy+b0clVzQlOevf4yoip7r0keY/bKEd7kSzacHf+4dqY56tUufFLFJe4ll
-         zemgIfEnF2U3x0Imq57UknwcnzPgirxSoeghGPj2luuCFfauO7+pG7fKuDLb8yP4VEJ4
-         pZe+2Kt1S3lWa+qlwgIB0mXszc15Q4RxGAWId8UO6Uch7w/pbiChu/AgDWLlqzQ4Ngrt
-         +JE1VI5KlgThBk8eWJSZmsLirDihgc+OULY0L/IRF/R4urE9Tx9sufsQGRzYTKAlSxA5
-         tk5eS4GwPC35ckhL4jIWMFKdn5bXo+dwCs/WJtJ2YOF66vALkfQrLTrQahPTHDbHFydq
-         HjKA==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1700662766; x=1701267566; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dUuXue76CXuXMitsPHyW7Zcj/6p9bLqIblRtzrqhwvQ=;
+        b=jiDqKR325AsSVTS8DzN/wwQi/NeIYgSKsysg+L7A3hQqDuHs+TNnxofD5L9q4Y0HpS
+         8lKCybw3PcFCyw3OuNBNma/cpIzeyTqX7GVSneE1SNOt1wn6Ss1GXdvlIL6V99yBqDBg
+         0AxCd1pS4ntqxaY4LdZwjl6tJwpFvmaSpT0qtdFmM6iiXzSsx/TQeTFzAfbsp8dJsdFr
+         5HYNxP8d0vaC8qQLCB3BNy9VdbDIpCRpQgeLQhrrOBAKN2eKxgMsSB/56s4R/+HazfTd
+         wGUdQ+Y0VuAm8J04T6TaRam6oHG5WlN9IsASAXeRh4rwER9XXIVzcL4S2n4MuN8FbQhA
+         gfkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700662689; x=1701267489;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e/bl+HpMTJTHISOhj4vCvITdZg7HQqKMUYriE/MKkOk=;
-        b=km9y6ZRNmFbko8pWuZE7rstpUVZ10ziPf4XxOiKQYHg24aFXhN3OIuu59pyxIXoiLb
-         MyNPaE+ym1aAU307Ccneia71ZMdvAxPuRTB9rO9rYPqoo9RWCemu/7FaTvn6xgofkdHC
-         4RsStgQ/I7jBQWKzoXnoocUP9hxiWPGVoOT5YptYs7jvJNJf3/Se1JmYWHclrHw9Fc4t
-         Dd3NnKkXhmb19SlwvuNCCHeH+LtuI/I/MpTC0kPJWfsYT+jKRMBn9tDRDpYcIOuC39Pn
-         KGh4loUhidaEVSDomWZ/D5OTSn7j03lkUzIm7k5ebC2jscGSDaOwoMhJatOe2tmg6ATM
-         hQ2Q==
-X-Gm-Message-State: AOJu0YyTXLcegQ4qXYlpVesp6EigOT8Web9deOCQ3Uq90mgrSB6v5Gp9
-        gmGjfvZOg9rFN4NIfNWIpZo=
-X-Google-Smtp-Source: AGHT+IGavlWwLDmkiZ6Jaki1adWqKlyaSlJenK3G9pnWv/expFADA4dSDmOVdtriA4LDTpqtp3GCwQ==
-X-Received: by 2002:a05:6a00:1149:b0:6cb:d24b:8c2e with SMTP id b9-20020a056a00114900b006cbd24b8c2emr1248130pfm.13.1700662689287;
-        Wed, 22 Nov 2023 06:18:09 -0800 (PST)
-Received: from localhost.localdomain ([156.251.180.79])
-        by smtp.gmail.com with ESMTPSA id e11-20020a056a001a8b00b006cb955dc54csm5781646pfv.58.2023.11.22.06.18.07
+        d=1e100.net; s=20230601; t=1700662766; x=1701267566;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dUuXue76CXuXMitsPHyW7Zcj/6p9bLqIblRtzrqhwvQ=;
+        b=JJYGWI8Ac7jORZmoJvtu/ZFjEqRW6wFhT1vqWpwBdxHRpGY24aKqoC4F5lo5RcvGTm
+         Besr/lcDQKtlWX6+KsE3/1yi6+UPDBjdD269Xzy3RQQDuOaywmVFjm55GfwvFfugDZnv
+         YETXnM6aI4oWX4lstFRTLFJ8/xTkfLTNHwYt1BT+Psu+Mtd3hpV/aIlhaNCwZAFGmrru
+         pjAD2Hee3XQD6ZvG9GruZMQssvkXHKD34Kfi50S+iwVrQkZY2d1FL9p41au56qZYtqDZ
+         lPUAP51xOZsknny5yIUewd76q72iDZgTeVlIu2yH1qq7ZCK5TBzOYiI4qEmkpAfjrHcW
+         XEkg==
+X-Gm-Message-State: AOJu0YxsJddj8zfVKs6mYWhyv92KDcayIWho4hLz7MMpGMX5FUzRnUr3
+        tHYLvtzHLBTgRZNhIXyPQkAwkA==
+X-Google-Smtp-Source: AGHT+IErqs/PN+B9z67h2+4TqPZfdz2AvdCCefan27RDVwGuCmaVTVlK/X6QugZrb3WlD40MFx4ijQ==
+X-Received: by 2002:a81:8742:0:b0:5cc:c00:8d73 with SMTP id x63-20020a818742000000b005cc0c008d73mr2293819ywf.45.1700662766313;
+        Wed, 22 Nov 2023 06:19:26 -0800 (PST)
+Received: from localhost (cpe-76-182-20-124.nc.res.rr.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id k68-20020a0dc847000000b005a7dd6b7eefsm3704869ywd.66.2023.11.22.06.19.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 06:18:08 -0800 (PST)
-From:   Asuna Yang <spriteovo@gmail.com>
-X-Google-Original-From: Asuna Yang <SpriteOvO@gmail.com>
-To:     johan@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Asuna Yang <SpriteOvO@gmail.com>,
-        Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v2] USB: serial: option: add Luat Air72*U series products
-Date:   Wed, 22 Nov 2023 22:18:03 +0800
-Message-ID: <20231122141803.82844-1-SpriteOvO@gmail.com>
-X-Mailer: git-send-email 2.42.1
+        Wed, 22 Nov 2023 06:19:25 -0800 (PST)
+Date:   Wed, 22 Nov 2023 09:19:25 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/4] eventfs: Some more minor fixes
+Message-ID: <20231122141925.GE1733890@perftesting>
+References: <20231121231003.516999942@goodmis.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121231003.516999942@goodmis.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the USB serial option driver support for Luat Air72*U series
-products.
+On Tue, Nov 21, 2023 at 06:10:03PM -0500, Steven Rostedt wrote:
+> Mark Rutland reported some crashes from the latest eventfs updates.
+> This fixes most of them.
+> 
+> He still has one splat that he can trigger but I can not. Still looking
+> into that.
 
-ID 1782:4e00 Spreadtrum Communications Inc. UNISOC-8910
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-T: Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 13 Spd=480 MxCh= 0
-D: Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs= 1
-P: Vendor=1782 ProdID=4e00 Rev=00.00
-S: Manufacturer=UNISOC
-S: Product=UNISOC-8910
-C: #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=400mA
-I: If#= 0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=rndis_host
-E: Ad=82(I) Atr=03(Int.) MxPS= 8 Ivl=4096ms
-I: If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
-E: Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E: Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I: If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E: Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E: Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I: If#= 3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E: Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E: Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I: If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
-E: Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E: Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+Thanks,
 
-Co-developed-by: Yangyu Chen <cyy@cyyself.name>
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-Signed-off-by: Asuna Yang <SpriteOvO@gmail.com>
----
- drivers/usb/serial/option.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 45dcfaadaf98..b76cb9a096f7 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -609,6 +609,8 @@ static void option_instat_callback(struct urb *urb);
- #define UNISOC_VENDOR_ID			0x1782
- /* TOZED LT70-C based on UNISOC SL8563 uses UNISOC's vendor ID */
- #define TOZED_PRODUCT_LT70C			0x4055
-+/* Luat Air72*U series based on UNISOC UIS8910 uses UNISOC's vendor ID */
-+#define LUAT_PRODUCT_AIR720U			0x4e00
- 
- /* Device flags */
- 
-@@ -2271,6 +2273,7 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0xff, 0x40) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(SIERRA_VENDOR_ID, SIERRA_PRODUCT_EM9191, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(UNISOC_VENDOR_ID, TOZED_PRODUCT_LT70C, 0xff, 0, 0) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(UNISOC_VENDOR_ID, LUAT_PRODUCT_AIR720U, 0xff, 0, 0) },
- 	{ } /* Terminating entry */
- };
- MODULE_DEVICE_TABLE(usb, option_ids);
--- 
-2.42.1
-
+Josef
