@@ -2,76 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 464057F4D3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7267F4D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbjKVQuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60858 "EHLO
+        id S231825AbjKVQuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235134AbjKVQuH (ORCPT
+        with ESMTP id S231429AbjKVQus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:50:07 -0500
+        Wed, 22 Nov 2023 11:50:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7C6D59
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:50:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A345C433C7;
-        Wed, 22 Nov 2023 16:50:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E39197
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:50:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E08C433C7;
+        Wed, 22 Nov 2023 16:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700671802;
-        bh=ZFMcFjU59M2XNKlhy1XsxNfFuYDu0NpI3SyILQsRT0Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fPSeQNCQqy1/x5905Xjdl5nq7QlL/tId3x7pQFXoAGW37wFFRtiWTGUUKJ/YJUR4e
-         /9Nxv3QiRn8YLbTS71k2DfvyQ873pq9HsTshUHDbAfumGHRH/hgfGs37zMYSknImv9
-         2xRa9GS6P1vBKasQ+XP/mf0W5RFjTGB6kwo6DeL1O3Fp+5kESIh3JsdUS0G7XAUsjb
-         ZF4IxuO7V4cc8x+FJfcCYQkcPXegfEeqzgJX/x+Q9hBd7sxwgthverEd2ugTpnjJ/3
-         h2rS0RRV8qd1ovaKTwKS7AR9+USkfjbswYTljgoSpMPAywz1G34liMSX23P6pfv+2w
-         935H/le0J7+hg==
-Date:   Wed, 22 Nov 2023 08:50:00 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231122085000.79f2d14c@kernel.org>
-In-Reply-To: <20231122140850.li2mvf6tpo3f2fhh@skbuf>
-References: <20231120142316.d2emoaqeej2pg4s3@skbuf>
-        <20231120093723.4d88fb2a@kernel.org>
-        <20231120190023.ymog4yb2hcydhmua@skbuf>
-        <20231120115839.74ee5492@kernel.org>
-        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
-        <20231120133737.70dde657@kernel.org>
-        <20231120220549.cvsz2ni3wj7mcukh@skbuf>
-        <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
-        <20231121094354.635ee8cd@kernel.org>
-        <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
-        <20231122140850.li2mvf6tpo3f2fhh@skbuf>
+        s=k20201202; t=1700671844;
+        bh=Gy6ICgLvnTaxWqv9MeYnCJN9AaV4Dv5/UPWRNSFp3n8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eO3sCiePyO9mju04v/x+bzylbjrmjfLSXFi24QPC7IrjsqVwpV345L93YY432JMAY
+         4uUghDamU1fVxyA8H7hZowYS5tX2tm3CuVFdUh0AHKLs7oJeHO1pYVsAA6B59l8Fbb
+         6VItSWg2kYQfm/gj4CHChRNtiWDr1geCJ3irm1Ag/gNeysgcYxvOO5PK9rPtKXjMmS
+         LG7vfpuC9lwQQWv3uy6pk7gecJkI8sStxZWpXyaYwzXIvPaLEI0ZOvpQX8CI1g0NIi
+         /VDKiflfgrmZM5Ufwn3KRAZec9J1OQE/dPpiyRrpp32w1/egGH1cLQanEsJTbJp5k+
+         Z9AQdxDV0XPaQ==
+Date:   Wed, 22 Nov 2023 16:50:37 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Nava kishore Manne <nava.kishore.manne@amd.com>
+Cc:     mdf@kernel.org, hao.wu@intel.com, yilun.xu@intel.com,
+        trix@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        michal.simek@amd.com, mathieu.poirier@linaro.org,
+        ben.levinsky@amd.com, sai.krishna.potthuri@amd.com,
+        tanmay.shah@amd.com, dhaval.r.shah@amd.com, arnd@arndb.de,
+        shubhrajyoti.datta@amd.com, linux-fpga@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 1/3] dt-bindings: fpga: Add support for user-key
+ encrypted bitstream loading
+Message-ID: <20231122-exert-gleeful-e4476851c489@spud>
+References: <20231122054404.3764288-1-nava.kishore.manne@amd.com>
+ <20231122054404.3764288-2-nava.kishore.manne@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fQgRGi9CRaM/leib"
+Content-Disposition: inline
+In-Reply-To: <20231122054404.3764288-2-nava.kishore.manne@amd.com>
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -82,49 +59,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 16:08:50 +0200 Vladimir Oltean wrote:
-> My understanding of Jakub's email was that he wants to see the functionality
-> offered by SIOCGHWTSTAMP and SIOCSHWTSTAMP converted to netlink. I don't
-> think that ethtool is the correct netlink family for that, given that
-> these aren't ethtool ioctls to begin with. Maybe the new netdev netlink
-> family. The conversion in its basic form would offer exactly the same
-> functionality.
 
-Well, ethtool has been the catch all for a lot of random things
-for the longest time. The question is whether we want to extend
-ETHTOOL_GET_TS_INFO or add a third API somewhere else. And if we
-do - do we also duplicate the functionality of ETHTOOL_GET_TS_INFO
-(i.e. getting capabilities)?
+--fQgRGi9CRaM/leib
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My vote is that keeping it in ethtool is less bad than 3rd API.
+On Wed, Nov 22, 2023 at 11:14:02AM +0530, Nava kishore Manne wrote:
+> Adds =E2=80=98encrypted-key-name=E2=80=99 property to support user-key en=
+crypted
+> bitstream loading use case.
+>=20
+> Signed-off-by: Nava kishore Manne <nava.kishore.manne@amd.com>
+> ---
+>  .../devicetree/bindings/fpga/fpga-region.txt  | 32 +++++++++++++++++++
 
-> The _listing_ of hwtstamp providers is what could be done through ethtool
-> netlink, similar but not identical to the way in which you are proposing
-> today (you are presenting blanket "layers" which correspond to netdev and
-> phylib, rather than individual providers).
-> 
-> The concept of an "active phc_index" would not explicitly exist in the
-> UAPI. Thus I'm not sure what's with this TSINFO_SET being floated around.
-> The only thing would exist is a configurable rx_filter and tx_type per
-> hwtstamp provider (aka "{phc_index, qualifier}"). User space will have
-> to learn to select the hwtstamp provider it wants to configure through
-> netlink, and use for its class of traffic.
+Is there a reason that this has not yet been converted to yaml?
 
-"Active provider" is the one that has TX_ON, rx != FILTER_NONE, right?
+>  1 file changed, 32 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Doc=
+umentation/devicetree/bindings/fpga/fpga-region.txt
+> index 528df8a0e6d8..309334558b3f 100644
+> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> @@ -177,6 +177,9 @@ Optional properties:
+>  	it indicates that the FPGA has already been programmed with this image.
+>  	If this property is in an overlay targeting an FPGA region, it is a
+>  	request to program the FPGA with that image.
+> +- encrypted-key-name : should contain the name of an encrypted key file =
+located
+> +	on the firmware search path. It will be used to decrypt the FPGA image
+> +	file with user-key.
 
-> This is why I mentioned by ndo_hwtstamp_set() conversion, because
-> suddenly it is a prerequisite for any further progress to be done.
-> You can't convert SIOCSHWTSTAMP to netlink if there are some driver
-> implementations which still use ndo_eth_ioctl(). They need to be
-> UAPI-agnostic.
+I might be misreading things, but your driver code seems to assume that
+this is an aes key. Nothing here seems to document that this is supposed
+to be a key of a particular type.
 
-Right, definitely.
+Cheers,
+Conor.
 
-> I'm not sure what's with Richard's mention of the "_2" variants of the
-> ioctls. Probably a low-effort suggestion which was a bit out of context.
-> His main point, that you cannot extend struct hwtstamp_config as that
-> has a fixed binary format, is perfectly valid though. This is why
-> netlink is preferable, because if done correctly (meaning not with
-> NLA_BINARY attributes), then it is much more extensible because all
-> attributes are TLVs. Use NLA_BINARY, and you will run into the exact
-> extensibility issues that the ioctl interface has.
+>  - fpga-bridges : should contain a list of phandles to FPGA Bridges that =
+must be
+>  	controlled during FPGA programming along with the parent FPGA bridge.
+>  	This property is optional if the FPGA Manager handles the bridges.
+> @@ -459,6 +462,35 @@ programming is the FPGA based bridge of fpga_region1.
+>  	};
+>  };
+> =20
+> +Device Tree Example: Configure/Reconfigure Encrypted Image With User Key
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +Users can encrypt FPGA configuration Images with their own key. While de=
+crypting
+> +the configuration Image the user needs to provide the same key.
+> +"encrypted-key-name" Specifies the name of the FPGA image encrypted key =
+file on
+> +the firmware search path. The search path is described in the firmware c=
+lass
+> +documentation.
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +&fpga_region0 {
+> +	#address-cells =3D <1>;
+> +	#size-cells =3D <1>;
+> +
+> +	firmware-name =3D "soc_image2.rbf";
+> +	encrypted-key-name =3D "key.nky";
+> +
+> +	gpio@10040 {
+> +		compatible =3D "altr,pio-1.0";
+> +		reg =3D <0x10040 0x20>;
+> +		clocks =3D <0x2>;
+> +		altr,ngpio =3D <0x4>;
+> +		#gpio-cells =3D <0x2>;
+> +		gpio-controller;
+> +	};
+> +};
+> +
+>  Constraints
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =20
+> --=20
+> 2.25.1
+>=20
+
+--fQgRGi9CRaM/leib
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZV4xXQAKCRB4tDGHoIJi
+0loFAP9yglWDOnl90C+JIFNKoS8fMwEsVxZA1KeM+gtNfT8IBAEAjdZP9R4ySbJQ
+anmnejBPkAFFim8ousuPXHi+3dEazAM=
+=4Jh2
+-----END PGP SIGNATURE-----
+
+--fQgRGi9CRaM/leib--
