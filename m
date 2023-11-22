@@ -2,143 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB307F5005
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0763D7F500A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344346AbjKVS5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:57:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S1344449AbjKVS6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235124AbjKVS5e (ORCPT
+        with ESMTP id S235189AbjKVS6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:57:34 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F193510C3;
-        Wed, 22 Nov 2023 10:57:28 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 8C408120059;
-        Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8C408120059
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700679447;
-        bh=5pEAGVMHc8CTrD7GrkHh/WKsgucxfvk3kjp7oHifpy8=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=Ps7gMGLYUda/9sTqLehU9RfZaHRhwpKP074r5tSVuqiqu5M3p5IygHC5alGBu98kM
-         1UPJIXL6zr7Hjbw+Mi4UMM25mrRoIVf6OiumGiyk/6wAoxfjvvJUh+gUbmVTXsW7uh
-         inw145BYrR7+QxUmOYJzPLt3kpVS3Zi6FjBRJBsrzGuXSE5fIENCODJ8jPj/T9R3/b
-         MKJ1YJKZ0LHfGWQVMTMrb6qjhro3y5odZILgATUmslcgzs4TW/kH/JUoyovIwZOTXe
-         WppijZA4S7wLB7Ed8AocJXmY+HEXOceK+odJhx8ScX5FspCF8l+pdh6yCsRBFTXZOx
-         C6zzgmO2L9QBw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
- 2023 21:57:27 +0300
-Date:   Wed, 22 Nov 2023 21:57:27 +0300
-From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
-        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
-        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
-        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
-References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
- <20231122100156.6568-3-ddrokosov@salutedevices.com>
- <ZV3WnIJMzxT-Zkt4@tiehlicka>
- <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
- <ZV4BK0wbUAZBIhmA@tiehlicka>
+        Wed, 22 Nov 2023 13:58:13 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2042.outbound.protection.outlook.com [40.107.92.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077131AE;
+        Wed, 22 Nov 2023 10:58:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hYA0m8RAFYrlEi2KSJQwcLcnbJvWhV0quu2Na8SIqSQHxkLGYc2cMxCH+js9Jm29FeHCHTk3lisrJg0MD0WGoUSKe73HnFEhVI+5vxaUMNcGyfsyDK70AfZydOCswtxRaUcu4BIpnwEwfSuqVZyJQiKFPGqhHI6Ie5A3pjqg3UUZdtUavtf2n9OWGedcKjs0bw2FMtMC4skYR9MK2jLU82NvC0Bf+khWi2R6mWmrZ3RI6oknTZ0e9R8e+s6OpluY9kvjhPeZuDOzdKvTmMCwYFSAfd5Q99Gf9L5EpS4RzjNFa42T8vM08suA4E/D2RGNMX/PVqgvA6ffYviIutUcJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UG62bpOSXNPnq8W0MEokfLx+N7IK/57iX9YjTdYeHNs=;
+ b=igHJuk3KynjIQFw64RGfJdbE+jNsBCHAaC1lJHrqDj6KI4sNOgEiZ+b5EBd+pqcwfbgJEHi6IoaTl5tLywrHzw0QhHrNSt0jz3krwKWW5pwy6ZGTxgJajyL/EG4UusJcwDysnF/6E9RUmowHyPG+iZnGQE6mDtjWM0PjKui7Qp5qTuNFbnKpkfC2yDQhmNkLkhoWRkuLwa+vYRDeI3+4Yw9oDqtxNLSBmmtJjga830c1Xcr6Jt6sXYOG5YJ+Sk4KadswS2ycYfYL55/4TskVEwXhTdfAM1I1PTWOmiQ2l1AVj6bOawftTJSwq6qGzmXb8w1rOIVDBTjdO2xYa17NJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UG62bpOSXNPnq8W0MEokfLx+N7IK/57iX9YjTdYeHNs=;
+ b=SfmhPXUWrHt3b76uO2RKE/Y9AacYTy2EfzVSQ7ha53Ukk7FwxUPIeLhYqi/MdKjKWAF8dwVWG3944p7Xi2Xubajs5YoxuJE8RJxc+WQQOLeuXwnMxRnieb9p9TuWUo8t4bZEAyy0tP8fXJ6w9mENHCZcs+wvIzcdRqxTat89SqE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SN7PR12MB7955.namprd12.prod.outlook.com (2603:10b6:806:34d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Wed, 22 Nov
+ 2023 18:58:05 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
+ 18:58:05 +0000
+Message-ID: <c5ae3f32-0779-4583-8fe6-92f5dea5ede6@amd.com>
+Date:   Wed, 22 Nov 2023 19:58:00 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dma-buf: Correct the documentation of name and exp_name
+ symbols
+Content-Language: en-US
+To:     Ramesh Errabolu <Ramesh.Errabolu@amd.com>,
+        amd-gfx@lists.freedesktop.org, sumit.semwal@linaro.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20231122160556.24948-1-Ramesh.Errabolu@amd.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20231122160556.24948-1-Ramesh.Errabolu@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR4P281CA0015.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:c8::7) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZV4BK0wbUAZBIhmA@tiehlicka>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SN7PR12MB7955:EE_
+X-MS-Office365-Filtering-Correlation-Id: a901da26-9356-4525-8f9f-08dbeb8cf5a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FumYCVb9oDKeqwSysGFDRIk9NdaErTRHq+37S3Q5Xs4D5Uc3ZE414SDwCoOOeCzmt7cUEAxEsPYlbatZV1l9jzC9dr+heCcVYRD0UmIPnICYWNhmgXmN03zeDE8EyOPqwV63/mQaucHLyT9Cs5vybwuGuuJzqWFEVlaR6USYiILouGimPv0WjmYnKOX/V0WXx6y0f7wzWrYkE/PwEYxtoB8Rpw5jP1zH1V2UeJbbI763yXn21HBP9stMDm03DyMHyJuaxiW+hWm/c0hNgBTViBocT7quqjLZE5RlC9MSdJfjjUdPFfC4DrS8OAX1BJfnHn0dzEg3JZxI8BG/zBePOfGZpoKeLTFFqeEkDcLtLePX0tr2TBrU+asKpOelXqmejDGWVxuSZZlq10EjKEtMQwUqeNxROHnX+QYwL0+E0+C4IhdZZ20W+WgU7dg7mRq3ibG1G0xc4HAL5RkQ9Ex3ujt7Sz/xaQ5m5iAiIFdocuoWHWsw1aT26JEMRB6ny7R9Z54vRnXpwTYQTwu+BWuVsALM5qBJzTzrDXiEeY5s2JDM3olIbTuNJ1ajzQ4/MIeMhNd6b3hC4qHV5mJSL2wyDG9RLr+mEZoTaBnjkP70OYnsdLXzgsIrVAvrJIWiU+/Y5wDc3ffRQO1IpXjwU/y5nA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39860400002)(376002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(66574015)(2906002)(6506007)(26005)(5660300002)(41300700001)(6512007)(83380400001)(2616005)(38100700002)(8676002)(8936002)(478600001)(6486002)(36756003)(66476007)(66556008)(66946007)(316002)(6666004)(31696002)(86362001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXppNUhLY29wNVRqVEtHVjJhVy9OVitLdjgxWGxiM2t5Q2RwWEVCRDZSeVVN?=
+ =?utf-8?B?NW9USGhyRjV1UWVoYXNiT1ZzdkpRSmUwYUVSNmxHVEN6d1NFb3IxaUtIeUxx?=
+ =?utf-8?B?aVVLZWtPTWI2YXh1aUg4RGZpN2MrakpyMGhweUtKWE5lTjJaK0xodXNTZXNK?=
+ =?utf-8?B?aVllL1NaUFZtZHNkWTRHVEZlTGI4eUtrc3A4cEREaHlKRTF1dS9qckptL2hO?=
+ =?utf-8?B?THhxRmJwQ2MxZ3FSa3FBaXBQK1Vmbjk3ZlBMQk1XbkYyRWNya0tDcWZzSU1C?=
+ =?utf-8?B?OEJGenp3aTE0dzZBS05sV1YyRWdWN1hRbFl1aHB3SFdFZXdjUGgybUFIekJZ?=
+ =?utf-8?B?VGxUdmhQSzliUk45TkFNeEhnWjN3dXJncGxKZitETDZJRzlwTlZSeHR5akRv?=
+ =?utf-8?B?VTBkVFRxMkRTMEkxMGY1cytHY0xwOUtLZG1EeWlrcmNnSm9ydSt2WmkwUFNL?=
+ =?utf-8?B?bVJCMmNseGJyb1ZkU0ovZCtFVWRNakhrQUpGV1dsMitNMTY4bDFCbDlXeTVU?=
+ =?utf-8?B?YnhXbCtQM3UyWmRHWGRZQzUyK05nbjI4dGJEaWFYeGtDNjVmYnVZc1A3NDh5?=
+ =?utf-8?B?ei8zbUEzdTNmTC9ZQlFacm8wMVJmbkRTMnZLcGJoZk9GbEVIdy9zaVRNcjR0?=
+ =?utf-8?B?ZlJOdjJMSXVQTnMwcCsvK25ZOXh4M1d4SHlVblJ2aG9iUXE0b2t4SWFtZ1pm?=
+ =?utf-8?B?VGo4TkJkTFAzWmttRWlSK0tkSDBzeExYRUszNzZPZGdJNis0RDNmbmJBRHY0?=
+ =?utf-8?B?ZkNiaHo4MkNVV2ZRK1dxc0xyT3Vqb1FCSDQ5ZjczMmFaWlF3eEFEUVliT1lU?=
+ =?utf-8?B?WGJsWUJSdEJZVlVpWDM4alNSVmlFZnBDRzlldi9uR2Z6elYvY0xJY0Zpb2w0?=
+ =?utf-8?B?YnVFRDB1NjVGNGEvU21MMm91SWU0Z2UvdjB6NVN4QlExR0J4MSs0bWphQVNa?=
+ =?utf-8?B?dkNzRnA1QTFjSEliMWlwckhFOG9HMENkb0hTdG5pRXNUVlY0ZXhpSWsvbngy?=
+ =?utf-8?B?T1dYMUs2dXE3bW1uZ3lZVmZCMWU5a2k5Q05wN2YyOUtVbjNCS0V0TWh0cGda?=
+ =?utf-8?B?b2MwVGZlaVorNnZCTzlER0R6bEU0NDljeGtTVkM1VDB6b1VNR3JuMnNJeTds?=
+ =?utf-8?B?blQ3MG10RVZzaTBrekJwcEpRMTJSZFBDQjZzZWV6bFQ4c2lqbFh6R2thYnNm?=
+ =?utf-8?B?T21SNWdvZER3WGt3azExa0xmWDRXVlgrYjJYRCtvU054YkJtZk1qREJmdVZY?=
+ =?utf-8?B?QnhMVGhwYTZ4bGdtaWFnWGNCVW5sUmRpSTlGelliQitraVdhdWFKQU1HaVl4?=
+ =?utf-8?B?azFNMFdmckcvemlZRXpud2h1MldPWjJndnhHT3FuTTNLRWNxalRDZ3ZaSmxH?=
+ =?utf-8?B?Z3RDN0VDcHFEbmJzT3dXbGU4T1AyZjhSMHB6Ly9rUldOd1UvbEhybWRGeDlU?=
+ =?utf-8?B?SWlvb1FYVzcvTm9MajB6TGdDK2dGWGVPdUwzREQyVVY2T1RxbjREd1orb09l?=
+ =?utf-8?B?QUxrTjY4U2VpUzFoZTBGbEkvZk44MzNiU3dERW4waG9VUnpydElHOEZpQUt3?=
+ =?utf-8?B?QlpOOEpBUDNsMlZVS3RPU3NLMWx5a3JKZENwRGkvODdmSVRpTzE4WGNGWjdD?=
+ =?utf-8?B?QW5MK2M3VGtEa2JLNmQvRTlPa0JNdUFTK09Sc1dQQUFyd3pZa1JPL0s4WnNk?=
+ =?utf-8?B?SnJtWmNwUmRmY1BET2VrY1BiZkMxYTlHWWEwTkF4MWJXUkplUkczY2dEMHY5?=
+ =?utf-8?B?QlRDTGtCeURtM0hnN2x0dlRLUXVlMW41VHZRdE1XYUxUZytnZWZiaW4wVnZT?=
+ =?utf-8?B?QXZSY0xURWpmQWxkY0kyQm44VlNYcGd2RVVMMVpaNGwzV0RLdkRKREN1TG82?=
+ =?utf-8?B?dVd0c0RUWUM4RzNtbFluNGpYYXlIMllkbFd0T3hzQVlrQTYrdGx6blJ1bTM4?=
+ =?utf-8?B?a3ZQY1dpTVg4QWM5WDlOOFdPZHlLNEhYbm9xaFhQRG1lUFNJMGRlU1BJRWwy?=
+ =?utf-8?B?K0w3WnY2azNSSGllRUV2c2dRTDFhRHZjb3ZnWWxnQ2lqMDhxVk0xWmRqeklL?=
+ =?utf-8?B?M3RPemd2eEVWbnhVK3AvWVQrNkVqTzcvT3BPemlWZnNPU1Y3RHNXNDBRYm1C?=
+ =?utf-8?Q?YbzhoflzHUJjkoysGYd6g0+md?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a901da26-9356-4525-8f9f-08dbeb8cf5a6
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 18:58:05.4384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aKK1XNzlh9WuZiAvNf2luWdmMv6j+jc3urnvhCRG7Szt3hszuEZ4DzCRt7bLpMrc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7955
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
-> On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
-> > Hello Michal,
-> > 
-> > Thank you for the quick review!
-> > 
-> > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
-> > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
-> > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > > > Currently, it is not possible to trace this point from non-direct
-> > > > reclaim paths.
-> > > 
-> > > Is this really true? AFAICS we have
-> > > mm_vmscan_lru_isolate
-> > > mm_vmscan_lru_shrink_active
-> > > mm_vmscan_lru_shrink_inactive
-> > > 
-> > > which are in the vry core of the memory reclaim. Sure post processing
-> > > those is some work.
-> > 
-> > Sure, you are absolutely right. In the usual scenario, the memcg
-> > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
-> > tracepoints you mentioned and analyze them. However, there is one
-> > potential issue. Enabling these tracepoints will trigger the reclaim
-> > events show for all pages. Although we can filter them per pid, we
-> > cannot filter them per cgroup. Nevertheless, there are times when it
-> > would be extremely beneficial to comprehend the effectiveness of the
-> > reclaim process within the relevant cgroup. For this reason, I am adding
-> > the cgroup name to the memcg tracepoints and implementing a cumulative
-> > tracepoint for memcg shrink (LRU + slab)."
-> 
-> I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
-> easier to postprocess per memcg reclaim. But you could do that just by
-> adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
-> does this matter for kswapd and other global reclaim contexts? 
+Am 22.11.23 um 17:05 schrieb Ramesh Errabolu:
+> Fix the documentation of struct dma_buf members name and exp_name
+> as to how these members are to be used and accessed.
+>
+> Signed-off-by: Ramesh Errabolu <Ramesh.Errabolu@amd.com>
 
-From my point of view, kswapd and other non-direct reclaim paths are
-important for memcg analysis because they also influence the memcg
-reclaim statistics.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
-direct memcg reclaim flow, such as:
-    - a direct write to the 'reclaim' node
-    - changing 'max' and 'high' thresholds
-    - raising the 'force_empty' mechanism
-    - the charge path
-    - etc.
+> ---
+>   include/linux/dma-buf.h | 11 +++++++----
+>   1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+> index 3f31baa3293f..8ff4add71f88 100644
+> --- a/include/linux/dma-buf.h
+> +++ b/include/linux/dma-buf.h
+> @@ -343,16 +343,19 @@ struct dma_buf {
+>   	/**
+>   	 * @exp_name:
+>   	 *
+> -	 * Name of the exporter; useful for debugging. See the
+> -	 * DMA_BUF_SET_NAME IOCTL.
+> +	 * Name of the exporter; useful for debugging. Must not be NULL
+>   	 */
+>   	const char *exp_name;
+>   
+>   	/**
+>   	 * @name:
+>   	 *
+> -	 * Userspace-provided name; useful for accounting and debugging,
+> -	 * protected by dma_resv_lock() on @resv and @name_lock for read access.
+> +	 * Userspace-provided name. Default value is NULL. If not NULL,
+> +	 * length cannot be longer than DMA_BUF_NAME_LEN, including NIL
+> +	 * char. Useful for accounting and debugging. Read/Write accesses
+> +	 * are protected by @name_lock
+> +	 *
+> +	 * See the IOCTLs DMA_BUF_SET_NAME or DMA_BUF_SET_NAME_A/B
+>   	 */
+>   	const char *name;
+>   
 
-However, it doesn't cover global reclaim contexts, so it doesn't provide
-us with the full memcg reclaim statistics.
-
--- 
-Thank you,
-Dmitry
