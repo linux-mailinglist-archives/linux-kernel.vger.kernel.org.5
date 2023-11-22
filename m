@@ -2,149 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7D37F3EFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B6E7F3F53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbjKVHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        id S235014AbjKVHkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234933AbjKVHjV (ORCPT
+        with ESMTP id S234941AbjKVHkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:39:21 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A153D6E
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:39:10 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so28014425e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 23:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700638749; x=1701243549; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MBetON7LmVmV+dFyLn9yaZBr84tIkDPKg9QMpcVkFFY=;
-        b=yTZNoA8tyCTBvtcr/Wr7lMCqMWZNORLBIeKGpsuO+XqXko78z1zqh1hc3azBp8YEgF
-         Csz7CgSAWJbHQ1VuQRBR6P6h0AmVCatMLpr0z4JGKE9yIY/G8BsxZksO6avZYgdmguUh
-         qmkzF4KYoe5YcZePtdFqGh4rPKB1oj8XQAxvX0KLEJofgNnSi6fx92vtCPpPC+/twH7J
-         dEbynY9gvXBjxHeMp6Xl9xYSK0ajIwa4PPZdJzMY3+XiHamDoEeBWRH51gS0y4omEljb
-         wIipDbjekml820/qfqqronMfhF8Ap0HeQpDSvbzaIlhngMygZ+Yxp/Ho5LWC9SMpdqk9
-         xOyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700638749; x=1701243549;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MBetON7LmVmV+dFyLn9yaZBr84tIkDPKg9QMpcVkFFY=;
-        b=NxNthcB3fYEQfJEQOk7pMQquvxmTVscri63ohH2yK5lHYKgZEdCdZ3iEjiLIkDg85C
-         EpvSMnvz3vYvNlwgh2uiwk8C//+CKU25fRvWjvcWoUh4GsUuRtFMtraa/RIIF/45LdAc
-         dJJTgA89NPZgR8SAbVJgvS4rMV1sf4b45Cox1Q2utmQz5Gh/AZ2ThMg2k8Y8ZXiL6T98
-         flxLToua5+TcCpScqjwCQslkjOKjmmldghOjq8wf2wB8QeBRNsbZLFRiJ+fwxWtkNvDC
-         gxlGHeS+cI8kRuy+G1OcLKcVRHDDn6gbU/B/Upk2q8XOX+/c1qXa2FDd0mqJjT0JEyIN
-         NhbA==
-X-Gm-Message-State: AOJu0Yy9c0Ue1QObwws66qLIvPBoFqi/0uAuNMHsuEqWVdyMNEqpvAad
-        CRFC2wlkCqB+0mpU3288AWeioQ==
-X-Google-Smtp-Source: AGHT+IHE+FWVdKuzvDqfGiWF3sTwN9+QgCPCFmpg+kym1BB8RcyIyzqp7R/zVjIB/Lyx9uPBGjBgCA==
-X-Received: by 2002:a7b:c015:0:b0:40a:5c71:2c3e with SMTP id c21-20020a7bc015000000b0040a5c712c3emr1185090wmb.19.1700638749363;
-        Tue, 21 Nov 2023 23:39:09 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.100])
-        by smtp.gmail.com with ESMTPSA id o2-20020a5d4a82000000b003196b1bb528sm16347474wrq.64.2023.11.21.23.39.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 23:39:08 -0800 (PST)
-Message-ID: <ae2f2dc9-4c08-4db8-bfae-80608723d8c3@linaro.org>
-Date:   Wed, 22 Nov 2023 08:39:07 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: ufs: Add msi-parent for UFS MCQ
-Content-Language: en-US
-To:     Ziqi Chen <quic_ziqichen@quicinc.com>, quic_asutoshd@quicinc.com,
-        quic_cang@quicinc.com, bvanassche@acm.org, mani@kernel.org,
-        stanley.chu@mediatek.com, adrian.hunter@intel.com,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com
-Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Wed, 22 Nov 2023 02:40:36 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7C4B2;
+        Tue, 21 Nov 2023 23:40:31 -0800 (PST)
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM6Z3Ni017952;
+        Wed, 22 Nov 2023 08:39:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=AIy5g2p
+        TqSwndhUEy4X/vr2mokavnxP8eKiEHWp7CNg=; b=vIyCbVpJN5m4F/hBP2r3IhG
+        tPC5eIqxYX1LMqeBeKEwST48O3xBuOsRtiyDHa85E4jWgqxk3W0cj+yck5wzAXn1
+        bOW9GP3DvscyrClxTw2XZStE9sLmS8BYmbVk6EuK6+qYH2Qm3F+nRdsdSCywEDim
+        pBG2+8UczwBX+AWsq6X3A1zGP+H2gai+NblGOMNPxGdXkl4A2DapVWSRq8ZjC8gM
+        KpisKI0r3TOgXevetfSqycID7wqaGvobG+kMCjl/TG/y7FcYr7Z9yN6qmXq2KtXR
+        gZObwF3ZkgtaSgk8l2ve22LkKHxzSo8jCtShKTkkB3xSA0GXidlxHEY4aqA1TSg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uek9a18p9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 08:39:55 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 265DB10002A;
+        Wed, 22 Nov 2023 08:39:53 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 15D7F2122FD;
+        Wed, 22 Nov 2023 08:39:53 +0100 (CET)
+Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 22 Nov
+ 2023 08:39:52 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1700629624-23571-1-git-send-email-quic_ziqichen@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 0/5] Add support for DCMIPP camera interface of STMicroelectronics STM32 SoC series
+Date:   Wed, 22 Nov 2023 08:39:14 +0100
+Message-ID: <20231122073927.788810-1-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_06,2023-11-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 06:06, Ziqi Chen wrote:
-> The Message Signaled Interrupts (MSI) support has been
-> introduced in UFSHCI version 4.0 (JESD223E). The MSI is
-> the recommended interrupt approach for MCQ. If choose to
-> use MSI, In UFS DT, we need to provide msi-parent property
-> that point to the hardware entity which serves as the MSI
-> controller for this UFS controller.
+This patchset introduces support for Digital Camera Memory Interface
+Pixel Processor (DCMIPP) of STMicroelectronics STM32 SoC series.
 
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+This initial support implements a single capture pipe
+allowing RGB565, YUV, Y, RAW8 and JPEG capture with
+frame skipping, prescaling and cropping.
 
+DCMIPP is exposed through 3 subdevices:
+- dcmipp_dump_parallel: parallel interface handling
+- dcmipp_dump_postproc: frame skipping, prescaling and cropping control
+- dcmipp_dump_capture: video device capture node
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+v8:
+  - serie rebased on top of master branch of tree sailus/media_tree.git
+    in order to use v4l2_subdev_state_* functions
 
-Best regards,
-Krzysztof
+v7:
+  - correct byteproc set_fmt handling and compose/crop/fmt handling
+  - replace few v4l2_subdev_get_try_* into v4l2_subdev_get_pad_*
+  - correct ordering within dcmipp_remove
+
+v6:
+  - correct copyright year in all files
+  - correct Kconfig (removal of OF addition of select
+    VIDEO_V4L2_SUBDEV_API/MEDIA_CONTROLLER
+  - add missing mutex_destroy in error handling
+  - rely on fwnode_graph_get_endpoint_by_id instead of fwnode_graph_get_next_endpoint
+  - rely on device_get_match_data instead of of_device_get_match_data
+  - use local variable for pads_flag initialization
+
+v5:
+  - removal of dcmipp_frame_size & dcmipp_frame_stride and use
+    v4l2_fill_pixfmt
+  - correct typos & avoid check of available buffer at start_streaming
+    time since this is done by vb2 framework
+  - avoid set of pad format in dcmipp_par_ent_init and
+    dcmipp_byteproc_ent_init since done via init_cfg
+  - reorder bound functions
+  - use v4l2_subdev_get_fmt in parallel and byteproc subdevs
+  - correct struct dcmipp_ent_device comments
+  - removal of dcmipp_hdw_pixel_alignment in bytecap subdev since not
+    applicable in this byte mode pipeline
+
+v4:
+  - rework of mutex / spinlock handling
+  - addition of dma mask setting
+  - removal of __maybe_unused, use pm_ptr and new declaration macros
+  - driver now only generate a single stm32-dcmipp.ko module instead of
+    several as before
+  - removal of the component framework usage
+  - various small fixes (function names, lowercase values, indentation,
+    print formats)
+  - register name removal in register access function, only dev_dbg with
+    address & values are kept
+  - removal of VB2_READ and CAP_READWRITE
+  - usage of subdev active state mechanism and removal of locally stored
+    format/compose/crop
+  - addition of port { } within the stm32mp135.dtsi
+
+v3:
+  - Have same To & Cc in all patches emails of the serie so that everybody
+    has coherent view of the serie
+  - bindings: correct wording, clock-names & label removal
+  - driver: replace of_graph call with fwnode_graph
+  - driver: use defined bus-type when calling v4l2_fwnode_endpoint_parse
+  - driver: remove clock name
+  - dtsi: remove clock-names property
+
+v2:
+  - removal of pclk-max-frequency from yaml example dts
+  - codying-style fixes
+  - correction in enum functions (format, mbus, frame_size ...) handling
+  - drop of v4l2_pipeline_pm_ calls, and specific open/close handler of
+    vdev
+  - video dev s_stream handling updated to call s_stream of remote subdev
+    instead of loop until sensor subdev
+  - code update following media_pipeline & v4l2_async_ api changes since v1
+  - removal of IP reset call upon error
+  - removal of link_validate handlers
+  - addition of V4L2_CAP_IO_MC device_caps
+  - removal of the frame skip control for the time being, will be added
+    back in another commit once control method will be agreed
+  - change byteproc entity type to MEDIA_ENT_F_PROC_VIDEO_SCALER
+  - various fixes from Dan & Sakari remarks
+
+Alain Volmat (2):
+  dt-bindings: media: add bindings for stm32 dcmipp
+  media: MAINTAINERS: add entry for STM32 DCMIPP driver
+
+Hugues Fruchet (3):
+  media: stm32-dcmipp: STM32 DCMIPP camera interface driver
+  ARM: dts: stm32: add dcmipp support to stm32mp135
+  ARM: multi_v7_defconfig: enable STM32 DCMIPP media support
+
+ .../bindings/media/st,stm32-dcmipp.yaml       |  89 ++
+ MAINTAINERS                                   |   5 +-
+ arch/arm/boot/dts/st/stm32mp135.dtsi          |  11 +
+ arch/arm/configs/multi_v7_defconfig           |   1 +
+ drivers/media/platform/st/stm32/Kconfig       |  16 +
+ drivers/media/platform/st/stm32/Makefile      |   1 +
+ .../platform/st/stm32/stm32-dcmipp/Makefile   |   4 +
+ .../st/stm32/stm32-dcmipp/dcmipp-bytecap.c    | 914 ++++++++++++++++++
+ .../st/stm32/stm32-dcmipp/dcmipp-byteproc.c   | 565 +++++++++++
+ .../st/stm32/stm32-dcmipp/dcmipp-common.c     | 106 ++
+ .../st/stm32/stm32-dcmipp/dcmipp-common.h     | 216 +++++
+ .../st/stm32/stm32-dcmipp/dcmipp-core.c       | 604 ++++++++++++
+ .../st/stm32/stm32-dcmipp/dcmipp-parallel.c   | 440 +++++++++
+ 13 files changed, 2971 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/Makefile
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-bytecap.c
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-byteproc.c
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+ create mode 100644 drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-parallel.c
+
+-- 
+2.25.1
 
