@@ -2,178 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692117F4830
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045697F483B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344241AbjKVNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S1344246AbjKVNwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343568AbjKVNuL (ORCPT
+        with ESMTP id S1343568AbjKVNwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:50:11 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926A9BC;
-        Wed, 22 Nov 2023 05:50:07 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c887d1fb8fso33751431fa.0;
-        Wed, 22 Nov 2023 05:50:07 -0800 (PST)
+        Wed, 22 Nov 2023 08:52:07 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C93101
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:52:03 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-280cd4e6f47so1483701a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:52:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700661006; x=1701265806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VGvo2wK/qUHrm7e4nS+FqOamAmN2Y01aRBg4wudRWCI=;
-        b=nFo3rrRtfsbe3+X6hbnd2uJJiwLwJWqkz/JmWE/HGWtroXsPBhUfnwRtgZEnf5oL/w
-         JjRZyljTXeyIpmc+ngJKrt/TtejzxmGvUbw8+6GCpoLpl24eH29XpehMYjRqh9oXdlbF
-         BF6ILc93UmA8eHIDqHAH8UcHQQTemBeEATlPLdubNojn9ZEtjJirKGr4HK6EAUWaJcla
-         yZqkuFZM4pxbr29U/6OrXaqvfJWia8SYfCF7y0+X+ND3ud3dy1/Oue/lOoQfrGVdr0Hj
-         9ZPkcHfwxQ5GS3Vyn3Mu/NwRXhex81TN9csm01Z+Rh6sEfHik6yZkA5/2/LGFD2kd11I
-         KS+A==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700661123; x=1701265923; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7husD+9d3F1Gv9OOp27OuBbyYe5n6sJHNp6uS06FL8=;
+        b=GITl4jk+oxBwXrszNoXyNcJPHcH1PiihIC+kFMtYKY1TIJeJ3VzrN3KN5d6LeQjFif
+         tExWUi+U2pwYjMov1dcxUPENVTsLO7IzBD/EnVq8rygWNZxerP+JkgahMiUwc1QUtIAL
+         eN/GyZyViieWG0hKyLqM4xXVFePPqrvAXbqZZCML8k9yO05genOr4ux4JG52eLX3C03j
+         LSR7rT1mU3k2kRsbgXDQDZEdvu1RL6iGPE2cBQqBITPCdbl5pE29XmJ6ZzRkzxTQDpLe
+         nSjYZmDcvzxcWZGHVvzmWbVMjv+RJoU1gA68CIbvBkzdx3TSLK+G9ooNN5++iAywFki9
+         3WFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700661006; x=1701265806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VGvo2wK/qUHrm7e4nS+FqOamAmN2Y01aRBg4wudRWCI=;
-        b=LkcHq0Wc5gwKjLMPy2yjhPUkNgCy3CDBJGRbz94+BvL4No/PlNJFvnTNDsLw1W/dcJ
-         ip0iClPAw59qLsWh4GdzRjYs+A3gPPU/PrJBXLrMNBvJ6MpKx0DOVNxckXrA0pYlE9gz
-         wJ5VbKlqnfznRQZN+rop7TxTU1J9hbKXlZV2ZMVNyONW34ukxANgp6k0AvW0kwklu+4u
-         czuZX258qvVosVQDoVsI9VdhYOcou5MAYbQq7ecjIMVkYbvr/jX3f857WVv5fQ0oGGo3
-         4YmbgsJR71nmWFB3I5Pk1Ght5cZ6o0hkRxRMZCcGZ4G+RFS03lRIUAUuzoeQr5A+UJet
-         8UUQ==
-X-Gm-Message-State: AOJu0YwvHrMrs4WCG0yXv9qDJui0OauBilofsDNev16Rcbgy4RAs9g1A
-        UsNizHH63bMuvYEW8ecAPmFYrMea98YrslyeCTU=
-X-Google-Smtp-Source: AGHT+IGADla5AngdafjZj4xVSn2bMpwu94RIXGs1aggs+dTW20GqVt+KqN6QW83yuruj4ESEnG/vy5fguAMd3CGAzQY=
-X-Received: by 2002:a2e:908f:0:b0:2c8:874b:8f19 with SMTP id
- l15-20020a2e908f000000b002c8874b8f19mr1706701ljg.51.1700661005611; Wed, 22
- Nov 2023 05:50:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700661123; x=1701265923;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P7husD+9d3F1Gv9OOp27OuBbyYe5n6sJHNp6uS06FL8=;
+        b=cJaZ1EZjwxoTHD4we3ZmBdiTjLg6DMQR0Dt9LcDtJtkPHCdLKfFAFDJppdTbGX6M1q
+         JTpYxGoNCvgkg+U2TshEnQa7tGTGm8duuDpfk7yWK/dhzZg9fPj1UwQYFwhV7PiD8pfw
+         s6KKbNwWnHdr+mP74uG8QO4nUK37XBAPEHAg6PvtKF+dSYZcumYExTG8uItXQupY/FQ1
+         cxBMMTIP1QXG3PJBHYDz4O9orEyG+AGpD+wC7NMiaa3JlqopkuW4LgZbp9wjmvpNcaa/
+         9xQdM0cxu7ZNpXfLqw38x6M7WwGojc0tsbjfxlPuYsbL+xasHVjV3EJS+0gZ6bSbRRac
+         SHmw==
+X-Gm-Message-State: AOJu0YwvJCMdhiq7J/3eai4IjoINximZilwA/w2IBGevJKqRJ77HsfAQ
+        FCDh1FFS8ndg1CQipH2agbirpA==
+X-Google-Smtp-Source: AGHT+IE5Dg+TMXVzZNn0mFXompSbIgWw4KFeIm5Q5UstyfAp14qFST/CkbxoGCVx/IGuAn9WPK835w==
+X-Received: by 2002:a17:90b:d8a:b0:285:e55:68b8 with SMTP id bg10-20020a17090b0d8a00b002850e5568b8mr2374428pjb.1.1700661122833;
+        Wed, 22 Nov 2023 05:52:02 -0800 (PST)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:edca:1f11:8726:b116])
+        by smtp.gmail.com with ESMTPSA id rj1-20020a17090b3e8100b0028031e87660sm1387947pjb.16.2023.11.22.05.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 05:52:02 -0800 (PST)
+From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] riscv: fix incorrect use of __user pointer
+Date:   Wed, 22 Nov 2023 14:51:41 +0100
+Message-ID: <20231122135141.2936663-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231122054142.31322-1-lukas.bulwahn@gmail.com> <mku6gvd4rfkxzk2vrdjbizglte526ygyfhnwialtri44oqzikt@pq2l7mk25jgc>
-In-Reply-To: <mku6gvd4rfkxzk2vrdjbizglte526ygyfhnwialtri44oqzikt@pq2l7mk25jgc>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 22 Nov 2023 14:49:54 +0100
-Message-ID: <CAKXUXMwGgtJVWmrFX0chpgNC++Ok54t-qXxware+aEDiyZFszw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add section MIPS BAIKAL-T1 SOC DRIVERS
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 2:32=E2=80=AFPM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> Hi Lukas
->
-> On Wed, Nov 22, 2023 at 06:41:42AM +0100, Lukas Bulwahn wrote:
-> > In recent years, a number of drivers for the MIPS Baikal-T1 SoC have be=
-en
-> > added to the kernel tree, but there is no dedicated MAINTAINERS section=
- for
-> > this SoC.
-> >
-> > As all of the code has been contributed by Serge Semin, let us assume h=
-e is
-> > still the active maintainer for this code rather than marking it orphan=
-.
-> >
-> > Add a new section MIPS BAIKAL-T1 SOC DRIVERS in MAINTAINERS.
->
-> Thanks for submitting this patch. I was going to send a similar change
-> in the framework of the arch-series which is hanging up in my local
-> repo and alas is still under construction. I know I shouldn't have
-> been waiting (I'm sorry about that), but I didn't expect the entire
-> work would have taken so much time. On a way to finishing it up I had
-> to switch my efforts to the EDAC and network drivers and got sucked by
-> the amount of work there. But I will definitely submit the Baikal-T1
-> SoC arch patchset when my work on another area is finally over.
->
-> Here are several comments about this patch. (Please see my last
-> comment should you be ok with accepting the patches with already fixed
-> notes.)
->
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> >  MAINTAINERS | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 9613c9c3cc97..820f1ab1ee80 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14474,6 +14474,19 @@ F:   arch/mips/
-> >  F:   drivers/platform/mips/
-> >  F:   include/dt-bindings/mips/
-> >
-> > +MIPS BAIKAL-T1 SOC DRIVERS
->
-> > +M:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
->
-> It's better to change the email to
-> +M:     Serge Semin <fancer.lancer@gmail.com>
-> I quicker respond from my private inbox, than from the corporate one.
-> This will also be useful should the corporate email eventually change.
->
-> > +S:   Maintained
->
-> +F:     Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-> +F:     Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
->
-> > +F:   Documentation/hwmon/bt1-pvt.rst
->
-> I'd prefer this and these -+ being in a separate entry (see the
-> attached patches), because | the respective device IP-cores have been
-> re-used in another SoC. So | eventually the entries will be updated to
-> reflect that.              +---------------------------------+
->                                                              |
-> > +F:   drivers/ata/ahci_dwc.c                               |
->                                                              |
-> I believe this is already listed in the MAINTAINERS file.    |
->                                                              |
-> > +F:   drivers/bus/bt1-*.c                                  |
-> > +F:   drivers/clk/baikal-t1/                               |
-> > +F:   drivers/hwmon/bt1-pvt.[ch] <-------------------------+
-> > +F:   drivers/memory/bt1-l2-ctl.c                          |
-> > +F:   drivers/mtd/maps/physmap-bt1-rom.[ch]                |
-> > +F:   drivers/pci/controller/dwc/pcie-bt1.c <--------------+
->
-> > +F:   drivers/spi/spi-dw-bt1.c
->
-> This is already marked as maintained by me in the framework of the
-> generic DW APB SSI driver (See the "SYNOPSYS DESIGNWARE APB SSI
-> DRIVER" entry in the MAINTAINERS file).
->
-> Anyway in order to save your time from editing this patch. I've
-> prepared a series which takes into account all the comments above. If
-> you are ok with it, I can submit it for review. What do you think?
->
+These warnings were reported by sparse and were due to lack of __user
+annotation as well as dereferencing such pointer. Fix this by adding
+__user cast were needed (load_u8()/store_u8()) and move the __user
+annotation in __read_insn() into the if() branch that uses __get_user()
+with this pointer.
 
-Sure, go ahead and submit your series. I just wanted to have all files
-in ./drivers/bus/ have a proper maintainer and then got to look at the
-BAIKAL T1 files.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311160606.obGOOwB3-lkp@intel.com/
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+---
+ arch/riscv/kernel/traps_misaligned.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Lukas
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index 5eba37147caa..02abb6616873 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -319,7 +319,7 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
+ static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+ {
+ 	if (user_mode(regs)) {
+-		return __get_user(*r_val, addr);
++		return __get_user(*r_val, (u8 __user *)addr);
+ 	} else {
+ 		*r_val = *addr;
+ 		return 0;
+@@ -329,7 +329,7 @@ static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
+ static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+ {
+ 	if (user_mode(regs)) {
+-		return __put_user(val, addr);
++		return __put_user(val, (u8 __user *)addr);
+ 	} else {
+ 		*addr = val;
+ 		return 0;
+@@ -341,7 +341,7 @@ static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
+ 	int __ret;					\
+ 							\
+ 	if (user_mode(regs)) {				\
+-		__ret = __get_user(insn, insn_addr);	\
++		__ret = __get_user(insn, (typeof(*insn_addr) __user *) insn_addr); \
+ 	} else {					\
+ 		insn = *insn_addr;			\
+ 		__ret = 0;				\
+@@ -356,7 +356,7 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
+ 
+ 	if (epc & 0x2) {
+ 		ulong tmp = 0;
+-		u16 __user *insn_addr = (u16 __user *)epc;
++		u16 *insn_addr = (u16 *)epc;
+ 
+ 		if (__read_insn(regs, insn, insn_addr))
+ 			return -EFAULT;
+@@ -376,7 +376,7 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
+ 
+ 		return 0;
+ 	} else {
+-		u32 __user *insn_addr = (u32 __user *)epc;
++		u32 *insn_addr = (u32 *)epc;
+ 
+ 		if (__read_insn(regs, insn, insn_addr))
+ 			return -EFAULT;
+-- 
+2.42.0
 
-> -Serge(y)
->
-> > +
-> >  MIPS BOSTON DEVELOPMENT BOARD
-> >  M:   Paul Burton <paulburton@kernel.org>
-> >  L:   linux-mips@vger.kernel.org
-> > --
-> > 2.17.1
-> >
-> >
