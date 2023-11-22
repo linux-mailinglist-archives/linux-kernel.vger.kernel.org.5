@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF347F4322
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C84D77F4336
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343847AbjKVKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:04:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        id S1343738AbjKVKGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:06:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343821AbjKVKEY (ORCPT
+        with ESMTP id S234138AbjKVKGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:04:24 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64E4D54
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:04:18 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso9535779a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:04:18 -0800 (PST)
+        Wed, 22 Nov 2023 05:06:35 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BD183
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:29 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a002562bd8bso132832966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:06:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700647457; x=1701252257; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aoX5uB+BF3efXMI0yxqwvmNtTa7dNWj91nG0J2f2fYs=;
-        b=YZjJT1Xr79oo3jVpMPQ1a/vcDf5Gq7olN+18mckh8FjnrfJHhqa7ICJ3XOZ0orEJKE
-         PjMbSOhgmcAQGfYE94gAFB2+GrAiZXKqDLs1765HI2c7dO3y1UBfgEAUTJejn+hb0lzJ
-         EtXLJ0/xDTiJq9tlR76DaEAiBwd+z+PdELEmuW0MEfz2dcjFXeFnXcuSDcGWdNIXuN0k
-         ivRFszvE44kheurSObh5sLj7dwqIxbRIJg35f6NI3CqebhE2Bz5YcEa4PLVcsrIEB+44
-         nGaHwywOnZudZEiM3jG62txVUSV7CORedp20PmO81KsgivBaLBCfvdanLtaSQTJJ5u+E
-         xNGQ==
+        d=linaro.org; s=google; t=1700647588; x=1701252388; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wqLfhkR8T6K8pQkiAI2WVwlKUEvVRxTxhEkDVcSmxA4=;
+        b=sofV+i/tnrM72qpQ6hgYw5BcAeViygt/ypHd+gl7qcX/DALDq88bulJA2Q5xDfNgYF
+         TpYtyuCC0hIROpj0XfUnURaumAubWhMCh28RcRyKAsPa43YdJr7NfW1pKl27EH1/LLDS
+         pLnv6l79enZLH8IsNxvLNPSYrbjBglSQH81KOkEByOaFsL+ZFQk38Zwx6ULf4vvHZUPz
+         9/88L0ZY4aLm/tDOO1JbaB+hRS/XTRpOzyzDpjty7ThwWQQ6Aqcrm5Dygo4Yi7mdEmQ5
+         cNQ/KOEg8fi3o1haTE+ImZfoPXwZ6BVR83TMAk1KiesWwDJXxkMiMWGPVI2uXbJYwJ0p
+         wNBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700647457; x=1701252257;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aoX5uB+BF3efXMI0yxqwvmNtTa7dNWj91nG0J2f2fYs=;
-        b=DDnruH7TJdGTYB+X1e8gTGsDEYoaoi5DqjlQLChdpXK2nT1ZxSY611pWOwAkby0CI1
-         23oZD2DT5AbIn/W/aDyR7GUNVPMCDcTLu4dUNFYeJqM/aC3E/hr4fB5RbeHfqxTcD4A7
-         JyiJFhnnoCUV9xU7fNbj8XemkkT5cLoXpIgHoA0HqUuwnHA76KOiB/0OL21mZKHBeffi
-         ud/I8PzKTrMvYZXSwFq8tLwcQCd3GjSGJOnQhlD9usxjLcse9T9GDmC2Fw0h1m19jIgI
-         cYy0/932MYbD3Qc76xMIGZgjJzVTTcHELzkn3uPZyrg+awV+iJryWarnscH1UokSVVO5
-         AN9Q==
-X-Gm-Message-State: AOJu0YxIeMMhDdfU4SW6+LnZXrYza0zSOvBklxMuAEXsLt1dfLTZiL6d
-        gzvJ0TsjuBiA7PYT0qyhO+5MHw==
-X-Google-Smtp-Source: AGHT+IFvspBRkaxaPwVPBpdyZPYwvAOthr0IYbioLW5AaJu2Q7WL9YsT7pCXH9vUULGeMERrB5xBow==
-X-Received: by 2002:aa7:cd74:0:b0:543:5f7a:9e27 with SMTP id ca20-20020aa7cd74000000b005435f7a9e27mr1464175edb.12.1700647457211;
-        Wed, 22 Nov 2023 02:04:17 -0800 (PST)
-Received: from [127.0.1.1] ([86.123.99.122])
-        by smtp.gmail.com with ESMTPSA id o9-20020a509b09000000b0053deb97e8e6sm6110456edi.28.2023.11.22.02.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 02:04:16 -0800 (PST)
-From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Wed, 22 Nov 2023 12:03:59 +0200
-Subject: [PATCH 7/7] phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
+        d=1e100.net; s=20230601; t=1700647588; x=1701252388;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wqLfhkR8T6K8pQkiAI2WVwlKUEvVRxTxhEkDVcSmxA4=;
+        b=lB3HtzRQJzsGMuHpk87t8JB6N9meQDJnCVzWXvQWbjm2Bk0wxjdZq7IW1PVbDAG11k
+         eq9K7keuJSxeMqTlmnv/8sDb/FutDfZSf/bvXIYGL0jJhgehgHwRZDhH8guVMkj4fT3s
+         WF/vIAwoqtXwYcDtHA6YZeH/08M+tyyXi06gPPywO1cVIPZsvm5ZtaWB/6vHKselSSWr
+         6gvxvei5sQ88OkWIoK4PGx8VlZZsnddvVBg5sVsSkWooX+OlPFwa5YigZzik6ymVtDn3
+         ElnrRlgcjE24VLX3hHpbFVQvPbtuBIwvc/bizL9cRXRu6qoGJ3LC3jDExvqcJtXyioPA
+         GgNA==
+X-Gm-Message-State: AOJu0YwOSVTwIlT2pYLPMh3iL+XzO5noF7tV3XQku/Z2+wwVe+ebTTuY
+        eujWPaoJMR0IQdk6SG1YSqoHSg==
+X-Google-Smtp-Source: AGHT+IHXwtCZgUGaDEGHI5VvpONRm4aT5QWp/zsrgChgZ/oQIhX5QWV7xMV7DgHqP8VSjlfdpWtSqw==
+X-Received: by 2002:a17:906:51d5:b0:9ee:a767:12e7 with SMTP id v21-20020a17090651d500b009eea76712e7mr1338076ejk.6.1700647588221;
+        Wed, 22 Nov 2023 02:06:28 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id ka13-20020a170907990d00b009a9fbeb15f2sm6400135ejc.62.2023.11.22.02.06.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 02:06:27 -0800 (PST)
+Message-ID: <891349b7-f023-4c77-97fc-33cfd48eda23@linaro.org>
+Date:   Wed, 22 Nov 2023 11:06:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: soc: xilinx: Move xilinx.yaml from
+ arm to soc
+Content-Language: en-US
+To:     Michal Simek <michal.simek@amd.com>, conor@kernel.org,
+        linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com, robh@kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <ef58475a717c62bc86aeea5148d5b88cdc0cc106.1700644418.git.michal.simek@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ef58475a717c62bc86aeea5148d5b88cdc0cc106.1700644418.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-7-d9340d362664@linaro.org>
-References: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org>
-In-Reply-To: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4580; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=h3a6bhb68prVh8MCjOsfWms2L9QVp3zvpbve1dpq10k=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlXdIW5MVDXZz9L02Q5QkintYeyIvSmnKslK3uI
- ZflrufqAsOJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZV3SFgAKCRAbX0TJAJUV
- VmQqEACRJViQeHSrEXByPFue07HDYG6S25m346GXyyWGlOSaqp1OYj9i4Ye5I+4yfjWTK0o8eFh
- swdq+NjBYzE7AKDd9cN0wc+E3Ur7k4JHsP0UGUJEYapSJAGnRQnSkLt2iulkK6T8FZua3SuKU39
- v07zN7Hrq2LCZnjby8+JqUaThm5vFxp0r0nIchrLlfR1pvSbtS4GOA8Wc5t9TXnu1ECSZHQvDR4
- odqiWlSu1VF4SZkYgRJ/EO8WGHo1riQmMH5jtvadU64VNfCe66NZ2yUecr/ZauckjjHT3W2RCMC
- Vf4crB9m7yOcZ7CdhPEILVg+n1NBHsyNm2qa8HhQgr+mu3JS3UDmYA79QoL4k/tbLGD8BQZ0ese
- BUumhCG9CftigBQXA/GihTghEGNustcNShMmZEmWjnvlg2SG66scVMlaOwtCgArIbQiW8dW254L
- MFmN6K5c2U+PqRIe58Cog5JLZcEyuT1NXaqeci4IcIbhiISWpf5Pb4q2GTM7ueJVBGRXa6XTj1Q
- k91KJpvczvilcc2J7F5GSwXrNbwOpTDTqKIjeSmHdEse7yWzBbU8r1yX3sZwOJUOIIOe5C82xKt
- uOIv++Rlbm8O+ggWkpx8ZiBKp3wibiOiZsU9YdWENA/yD+SVbNSGkoxeDbsm/+DjZWv2dt36pyT
- pL1teL6VrgCO2lg==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -93,112 +126,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The X1E80100 platform bumps the HW version of QMP phy to v7 for USB and PCIE.
-Add the new qserdes TX RX offsets in a dedicated header file.
+On 22/11/2023 10:13, Michal Simek wrote:
+> All Xilinx boards can hosts also soft core CPUs like MicroBlaze or
+> MicroBlaze V (RISC-V ISA) that's why move boar description from arm folder
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    | 78 ++++++++++++++++++++++
- drivers/phy/qualcomm/phy-qcom-qmp.h                |  1 +
- 2 files changed, 79 insertions(+)
+Boards are cute, but boars are cutter :)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h
-new file mode 100644
-index 000000000000..14023f47a95c
---- /dev/null
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h
-@@ -0,0 +1,78 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (c) 2023, Linaro Limited
-+ */
-+
-+#ifndef QCOM_PHY_QMP_QSERDES_TXRX_USB_V7_H_
-+#define QCOM_PHY_QMP_QSERDES_TXRX_USB_V7_H_
-+
-+#define QSERDES_V7_TX_CLKBUF_ENABLE				0x08
-+#define QSERDES_V7_TX_RESET_TSYNC_EN				0x1c
-+#define QSERDES_V7_TX_PRE_STALL_LDO_BOOST_EN			0x20
-+#define QSERDES_V7_TX_TX_BAND					0x24
-+#define QSERDES_V7_TX_INTERFACE_SELECT				0x2c
-+#define QSERDES_V7_TX_RES_CODE_LANE_TX				0x34
-+#define QSERDES_V7_TX_RES_CODE_LANE_RX				0x38
-+#define QSERDES_V7_TX_RES_CODE_LANE_OFFSET_TX			0x3c
-+#define QSERDES_V7_TX_RES_CODE_LANE_OFFSET_RX			0x40
-+#define QSERDES_V7_TX_PARRATE_REC_DETECT_IDLE_EN		0x60
-+#define QSERDES_V7_TX_BIST_PATTERN7				0x7c
-+#define QSERDES_V7_TX_LANE_MODE_1				0x84
-+#define QSERDES_V7_TX_LANE_MODE_2				0x88
-+#define QSERDES_V7_TX_LANE_MODE_3				0x8c
-+#define QSERDES_V7_TX_LANE_MODE_4				0x90
-+#define QSERDES_V7_TX_LANE_MODE_5				0x94
-+#define QSERDES_V7_TX_RCV_DETECT_LVL_2				0xa4
-+#define QSERDES_V7_TX_TRAN_DRVR_EMP_EN				0xc0
-+#define QSERDES_V7_TX_TX_INTERFACE_MODE				0xc4
-+#define QSERDES_V7_TX_VMODE_CTRL1				0xc8
-+#define QSERDES_V7_TX_PI_QEC_CTRL				0xe4
-+
-+#define QSERDES_V7_RX_UCDR_FO_GAIN				0x08
-+#define QSERDES_V7_RX_UCDR_SO_GAIN				0x14
-+#define QSERDES_V7_RX_UCDR_FASTLOCK_FO_GAIN			0x30
-+#define QSERDES_V7_RX_UCDR_SO_SATURATION_AND_ENABLE		0x34
-+#define QSERDES_V7_RX_UCDR_FASTLOCK_COUNT_LOW			0x3c
-+#define QSERDES_V7_RX_UCDR_FASTLOCK_COUNT_HIGH			0x40
-+#define QSERDES_V7_RX_UCDR_PI_CONTROLS				0x44
-+#define QSERDES_V7_RX_UCDR_SB2_THRESH1				0x4c
-+#define QSERDES_V7_RX_UCDR_SB2_THRESH2				0x50
-+#define QSERDES_V7_RX_UCDR_SB2_GAIN1				0x54
-+#define QSERDES_V7_RX_UCDR_SB2_GAIN2				0x58
-+#define QSERDES_V7_RX_AUX_DATA_TCOARSE_TFINE			0x60
-+#define QSERDES_V7_RX_TX_ADAPT_POST_THRESH			0xcc
-+#define QSERDES_V7_RX_VGA_CAL_CNTRL1				0xd4
-+#define QSERDES_V7_RX_VGA_CAL_CNTRL2				0xd8
-+#define QSERDES_V7_RX_GM_CAL					0xdc
-+#define QSERDES_V7_RX_RX_EQU_ADAPTOR_CNTRL2			0xec
-+#define QSERDES_V7_RX_RX_EQU_ADAPTOR_CNTRL3			0xf0
-+#define QSERDES_V7_RX_RX_EQU_ADAPTOR_CNTRL4			0xf4
-+#define QSERDES_V7_RX_RX_IDAC_TSETTLE_LOW			0xf8
-+#define QSERDES_V7_RX_RX_IDAC_TSETTLE_HIGH			0xfc
-+#define QSERDES_V7_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1		0x110
-+#define QSERDES_V7_RX_SIDGET_ENABLES				0x118
-+#define QSERDES_V7_RX_SIGDET_CNTRL				0x11c
-+#define QSERDES_V7_RX_SIGDET_DEGLITCH_CNTRL			0x124
-+#define QSERDES_V7_RX_RX_MODE_00_LOW				0x15c
-+#define QSERDES_V7_RX_RX_MODE_00_HIGH				0x160
-+#define QSERDES_V7_RX_RX_MODE_00_HIGH2				0x164
-+#define QSERDES_V7_RX_RX_MODE_00_HIGH3				0x168
-+#define QSERDES_V7_RX_RX_MODE_00_HIGH4				0x16c
-+#define QSERDES_V7_RX_RX_MODE_01_LOW				0x170
-+#define QSERDES_V7_RX_RX_MODE_01_HIGH				0x174
-+#define QSERDES_V7_RX_RX_MODE_01_HIGH2				0x178
-+#define QSERDES_V7_RX_RX_MODE_01_HIGH3				0x17c
-+#define QSERDES_V7_RX_RX_MODE_01_HIGH4				0x180
-+#define QSERDES_V7_RX_RX_MODE_10_LOW				0x184
-+#define QSERDES_V7_RX_RX_MODE_10_HIGH				0x188
-+#define QSERDES_V7_RX_RX_MODE_10_HIGH2				0x18c
-+#define QSERDES_V7_RX_RX_MODE_10_HIGH3				0x190
-+#define QSERDES_V7_RX_RX_MODE_10_HIGH4				0x194
-+#define QSERDES_V7_RX_DFE_EN_TIMER				0x1a0
-+#define QSERDES_V7_RX_DFE_CTLE_POST_CAL_OFFSET			0x1a4
-+#define QSERDES_V7_RX_DCC_CTRL1					0x1a8
-+#define QSERDES_V7_RX_VTH_CODE					0x1b0
-+#define QSERDES_V7_RX_SIGDET_CAL_CTRL1				0x1e4
-+#define QSERDES_V7_RX_SIGDET_CAL_TRIM				0x1f8
-+
-+#endif
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
-index 63b3cbfcb50f..6923496cbfee 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
-@@ -28,6 +28,7 @@
- #include "phy-qcom-qmp-qserdes-ln-shrd-v6.h"
- 
- #include "phy-qcom-qmp-qserdes-com-v7.h"
-+#include "phy-qcom-qmp-qserdes-txrx-v7.h"
- 
- #include "phy-qcom-qmp-qserdes-pll.h"
- 
+s/boar/boards/
 
--- 
-2.34.1
+> to soc folder.
+> Similar chagne was done for Renesas by commit c27ce08b806d ("dt-bindings:
+> soc: renesas: Move renesas.yaml from arm to soc").
+
+The reason for Renesas was that otherwise same compatible would be in
+two places: arm and riscv schema.
+
+Are you going to have the same case?
+
+
+Best regards,
+Krzysztof
 
