@@ -2,906 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FB57F3F97
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A457F3ED4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbjKVIFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:05:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S234957AbjKVHYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbjKVIEY (ORCPT
+        with ESMTP id S234900AbjKVHYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:04:24 -0500
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31998109;
-        Wed, 22 Nov 2023 00:04:18 -0800 (PST)
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C723420173B;
-        Wed, 22 Nov 2023 09:04:16 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5E9DD2011A5;
-        Wed, 22 Nov 2023 09:04:16 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6526C181D0E2;
-        Wed, 22 Nov 2023 16:04:14 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     hverkuil@xs4all.nl, sakari.ailus@iki.fi, tfiga@chromium.org,
-        m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v11 15/15] media: vim2m-audio: add virtual driver for audio memory to memory
-Date:   Wed, 22 Nov 2023 15:23:58 +0800
-Message-Id: <1700637838-6743-16-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 22 Nov 2023 02:24:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C67A1;
+        Tue, 21 Nov 2023 23:24:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700637880; x=1732173880;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7iO42SkQCmhwo8NQfOnavlhegZ7a1op2/6QivppH0Qo=;
+  b=G5ME/6iR4JRq0AQpDwvOAcEqj1eV0no9JIfxaDO9BDwM0H4gObScuMMd
+   p+Jtme+iDH5IkkVx+NBzsekZzwLMARwuIgFOXXRC9pXptLQt5liYDBjmC
+   osoNA2x2bcWvWeM0pwyryoVtWIGC7Kob4RfLlDIUXR9ATeGrG+h5a0yRn
+   MEs64m35a0PdcJkBd5yjRtn6CVN/R3IdIlIZr5p4rqtb7wrlXs6LCy9FS
+   IKGoEd6VzYyfVl0cEMUYZbTEWPDjn2lE50MY6A0AasMzwqYARQvvk+LJ9
+   66NuGS3J5Ri/OkPYw7xKbjb5iSDyYZcBxjEPEpLAOYq9Fu9cY7o8Bgp1m
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="391769228"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="391769228"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 23:24:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="716754374"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="716754374"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 23:24:35 -0800
+Message-ID: <f6fd4e02-62f8-48b8-b6f3-74b856f8a72c@linux.intel.com>
+Date:   Wed, 22 Nov 2023 15:24:31 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 13/16] KVM: x86/tdp_mmu: Try to merge pages into a
+ large page
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <fef62447723682de6ea30452b270ccf75891f6a0.1699368363.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <fef62447723682de6ea30452b270ccf75891f6a0.1699368363.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Audio memory to memory virtual driver use video memory to memory
-virtual driver vim2m.c as example. The main difference is
-device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
 
-The device_run function is a dummy function, which is simply
-copy the data from input buffer to output buffer.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- drivers/media/test-drivers/Kconfig       |  11 +
- drivers/media/test-drivers/Makefile      |   1 +
- drivers/media/test-drivers/vim2m-audio.c | 799 +++++++++++++++++++++++
- 3 files changed, 811 insertions(+)
- create mode 100644 drivers/media/test-drivers/vim2m-audio.c
+On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> When a large page is passed to the KVM page fault handler and some of sub
+> pages are already populated, try to merge sub pages into a large page.
+> This situation can happen when the guest converts small pages into shared
+> and convert it back into private.
+>
+> When a large page is passed to KVM mmu page fault handler and the spte
+> corresponding to the page is non-leaf (one or more of sub pages are already
+> populated at lower page level), the current kvm mmu zaps non-leaf spte at a
+> large page level, and populate a leaf spte at that level.  Thus small pages
+> are converted into a large page.  However, it doesn't work for TDX because
+> zapping and re-populating results in zeroing page content.  Instead,
+> populate all small pages and merge them into a large page.
+>
+> Merging pages into a large page can fail when some sub pages are accepted
+> and some are not.  In such case, with the assumption that guest tries to
+> accept at large page size for performance when possible, don't try to be
+> smart to identify which page is still pending, map all pages at lower page
+> level, and let vcpu re-execute.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h |   2 +
+>   arch/x86/include/asm/kvm_host.h    |   4 +
+>   arch/x86/kvm/mmu/tdp_iter.c        |  37 +++++--
+>   arch/x86/kvm/mmu/tdp_iter.h        |   2 +
+>   arch/x86/kvm/mmu/tdp_mmu.c         | 172 ++++++++++++++++++++++++++++-
+>   5 files changed, 207 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 3deb6ab4f291..9a7d4db304c7 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -104,9 +104,11 @@ KVM_X86_OP(load_mmu_pgd)
+>   KVM_X86_OP_OPTIONAL(link_private_spt)
+>   KVM_X86_OP_OPTIONAL(free_private_spt)
+>   KVM_X86_OP_OPTIONAL(split_private_spt)
+> +KVM_X86_OP_OPTIONAL(merge_private_spt)
+>   KVM_X86_OP_OPTIONAL(set_private_spte)
+>   KVM_X86_OP_OPTIONAL(remove_private_spte)
+>   KVM_X86_OP_OPTIONAL(zap_private_spte)
+> +KVM_X86_OP_OPTIONAL(unzap_private_spte)
+>   KVM_X86_OP(has_wbinvd_exit)
+>   KVM_X86_OP(get_l2_tsc_offset)
+>   KVM_X86_OP(get_l2_tsc_multiplier)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index e75a461bdea7..0254c382f4f0 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -146,6 +146,7 @@
+>   #define KVM_MAX_HUGEPAGE_LEVEL	PG_LEVEL_1G
+>   #define KVM_NR_PAGE_SIZES	(KVM_MAX_HUGEPAGE_LEVEL - PG_LEVEL_4K + 1)
+>   #define KVM_HPAGE_GFN_SHIFT(x)	(((x) - 1) * 9)
+> +#define KVM_HPAGE_GFN_MASK(x)	(~((1UL << KVM_HPAGE_GFN_SHIFT(x)) - 1))
+>   #define KVM_HPAGE_SHIFT(x)	(PAGE_SHIFT + KVM_HPAGE_GFN_SHIFT(x))
+>   #define KVM_HPAGE_SIZE(x)	(1UL << KVM_HPAGE_SHIFT(x))
+>   #define KVM_HPAGE_MASK(x)	(~(KVM_HPAGE_SIZE(x) - 1))
+> @@ -1755,11 +1756,14 @@ struct kvm_x86_ops {
+>   				void *private_spt);
+>   	int (*split_private_spt)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+>   				  void *private_spt);
+> +	int (*merge_private_spt)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+> +				 void *private_spt);
+>   	int (*set_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+>   				 kvm_pfn_t pfn);
+>   	int (*remove_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level,
+>   				    kvm_pfn_t pfn);
+>   	int (*zap_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level);
+> +	int (*unzap_private_spte)(struct kvm *kvm, gfn_t gfn, enum pg_level level);
+>   
+>   	bool (*has_wbinvd_exit)(void);
+>   
+> diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
+> index bd30ebfb2f2c..f33226fcd62a 100644
+> --- a/arch/x86/kvm/mmu/tdp_iter.c
+> +++ b/arch/x86/kvm/mmu/tdp_iter.c
+> @@ -71,6 +71,14 @@ tdp_ptep_t spte_to_child_pt(u64 spte, int level)
+>   	return (tdp_ptep_t)__va(spte_to_pfn(spte) << PAGE_SHIFT);
+>   }
+>   
+> +static void step_down(struct tdp_iter *iter, tdp_ptep_t child_pt)
+> +{
+> +	iter->level--;
+> +	iter->pt_path[iter->level - 1] = child_pt;
+> +	iter->gfn = gfn_round_for_level(iter->next_last_level_gfn, iter->level);
+> +	tdp_iter_refresh_sptep(iter);
+> +}
+> +
+>   /*
+>    * Steps down one level in the paging structure towards the goal GFN. Returns
+>    * true if the iterator was able to step down a level, false otherwise.
+> @@ -92,14 +100,28 @@ static bool try_step_down(struct tdp_iter *iter)
+>   	if (!child_pt)
+>   		return false;
+>   
+> -	iter->level--;
+> -	iter->pt_path[iter->level - 1] = child_pt;
+> -	iter->gfn = gfn_round_for_level(iter->next_last_level_gfn, iter->level);
+> -	tdp_iter_refresh_sptep(iter);
+> -
+> +	step_down(iter, child_pt);
+>   	return true;
+>   }
+>   
+> +/* Steps down for freezed spte.  Don't re-read sptep because it was freezed. */
+> +void tdp_iter_step_down(struct tdp_iter *iter, tdp_ptep_t child_pt)
+> +{
+> +	WARN_ON_ONCE(!child_pt);
+> +	WARN_ON_ONCE(iter->yielded);
+> +	WARN_ON_ONCE(iter->level == iter->min_level);
+> +
+> +	step_down(iter, child_pt);
+> +}
+> +
+> +void tdp_iter_step_side(struct tdp_iter *iter)
+> +{
+> +	iter->gfn += KVM_PAGES_PER_HPAGE(iter->level);
+> +	iter->next_last_level_gfn = iter->gfn;
+> +	iter->sptep++;
+> +	iter->old_spte = kvm_tdp_mmu_read_spte(iter->sptep);
+> +}
+> +
+>   /*
+>    * Steps to the next entry in the current page table, at the current page table
+>    * level. The next entry could point to a page backing guest memory or another
+> @@ -117,10 +139,7 @@ static bool try_step_side(struct tdp_iter *iter)
+>   	    (SPTE_ENT_PER_PAGE - 1))
+>   		return false;
+>   
+> -	iter->gfn += KVM_PAGES_PER_HPAGE(iter->level);
+> -	iter->next_last_level_gfn = iter->gfn;
+> -	iter->sptep++;
+> -	iter->old_spte = kvm_tdp_mmu_read_spte(iter->sptep);
+> +	tdp_iter_step_side(iter);
+>   
+>   	return true;
+>   }
+> diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
+> index a9c9cd0db20a..ca00db799a50 100644
+> --- a/arch/x86/kvm/mmu/tdp_iter.h
+> +++ b/arch/x86/kvm/mmu/tdp_iter.h
+> @@ -134,6 +134,8 @@ void tdp_iter_start(struct tdp_iter *iter, struct kvm_mmu_page *root,
+>   		    int min_level, gfn_t next_last_level_gfn);
+>   void tdp_iter_next(struct tdp_iter *iter);
+>   void tdp_iter_restart(struct tdp_iter *iter);
+> +void tdp_iter_step_side(struct tdp_iter *iter);
+> +void tdp_iter_step_down(struct tdp_iter *iter, tdp_ptep_t child_pt);
+>   
+>   static inline union kvm_mmu_page_role tdp_iter_child_role(struct tdp_iter *iter)
+>   {
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 734ee822b43c..c8a4bd052c71 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1224,6 +1224,176 @@ void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm, bool skip_private)
+>   	}
+>   }
+>   
+> +static int tdp_mmu_iter_step_side(int i, struct tdp_iter *iter)
+> +{
+> +	i++;
+> +
+> +	/*
+> +	 * if i = SPTE_ENT_PER_PAGE, tdp_iter_step_side() results
+> +	 * in reading the entry beyond the last entry.
+> +	 */
+> +	if (i < SPTE_ENT_PER_PAGE)
+> +		tdp_iter_step_side(iter);
+> +
+> +	return i;
+> +}
+> +
+> +static int tdp_mmu_merge_private_spt(struct kvm_vcpu *vcpu,
+> +				     struct kvm_page_fault *fault,
+> +				     struct tdp_iter *iter, u64 new_spte)
+> +{
+> +	u64 *sptep = rcu_dereference(iter->sptep);
+> +	u64 old_spte = iter->old_spte;
+> +	struct kvm_mmu_page *child_sp;
+> +	struct kvm *kvm = vcpu->kvm;
+> +	struct tdp_iter child_iter;
+> +	int level = iter->level;
+> +	gfn_t gfn = iter->gfn;
+> +	tdp_ptep_t child_pt;
+> +	u64 child_spte;
+> +	int ret = 0;
+> +	int i;
+> +
+> +	/*
+> +	 * TDX KVM supports only 2MB large page.  It's not supported to merge
+> +	 * 2MB pages into 1GB page at the moment.
+> +	 */
+> +	WARN_ON_ONCE(fault->goal_level != PG_LEVEL_2M);
+> +	WARN_ON_ONCE(iter->level != PG_LEVEL_2M);
+> +	WARN_ON_ONCE(!is_large_pte(new_spte));
+> +
+> +	/* Freeze the spte to prevent other threads from working spte. */
+> +	if (!try_cmpxchg64(sptep, &iter->old_spte, REMOVED_SPTE))
+> +		return -EBUSY;
+> +
+> +	/*
+> +	 * Step down to the child spte.  Because tdp_iter_next() assumes the
+> +	 * parent spte isn't freezed, do it manually.
+s/freezed/frozen
 
-diff --git a/drivers/media/test-drivers/Kconfig b/drivers/media/test-drivers/Kconfig
-index 459b433e9fae..55f8af6ee4e2 100644
---- a/drivers/media/test-drivers/Kconfig
-+++ b/drivers/media/test-drivers/Kconfig
-@@ -17,6 +17,17 @@ config VIDEO_VIM2M
- 	  This is a virtual test device for the memory-to-memory driver
- 	  framework.
- 
-+config VIDEO_VIM2M_AUDIO
-+	tristate "Virtual Memory-to-Memory Driver For Audio"
-+	depends on VIDEO_DEV
-+	select VIDEOBUF2_VMALLOC
-+	select V4L2_MEM2MEM_DEV
-+	select MEDIA_CONTROLLER
-+	select MEDIA_CONTROLLER_REQUEST_API
-+	help
-+	  This is a virtual audio test device for the memory-to-memory driver
-+	  framework.
-+
- source "drivers/media/test-drivers/vicodec/Kconfig"
- source "drivers/media/test-drivers/vimc/Kconfig"
- source "drivers/media/test-drivers/vivid/Kconfig"
-diff --git a/drivers/media/test-drivers/Makefile b/drivers/media/test-drivers/Makefile
-index 740714a4584d..0c61c9ada3e1 100644
---- a/drivers/media/test-drivers/Makefile
-+++ b/drivers/media/test-drivers/Makefile
-@@ -10,6 +10,7 @@ obj-$(CONFIG_DVB_VIDTV) += vidtv/
- 
- obj-$(CONFIG_VIDEO_VICODEC) += vicodec/
- obj-$(CONFIG_VIDEO_VIM2M) += vim2m.o
-+obj-$(CONFIG_VIDEO_VIM2M_AUDIO) += vim2m-audio.o
- obj-$(CONFIG_VIDEO_VIMC) += vimc/
- obj-$(CONFIG_VIDEO_VIVID) += vivid/
- obj-$(CONFIG_VIDEO_VISL) += visl/
-diff --git a/drivers/media/test-drivers/vim2m-audio.c b/drivers/media/test-drivers/vim2m-audio.c
-new file mode 100644
-index 000000000000..72806ada8628
---- /dev/null
-+++ b/drivers/media/test-drivers/vim2m-audio.c
-@@ -0,0 +1,799 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * A virtual v4l2-mem2mem example for audio device.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+
-+#include <linux/platform_device.h>
-+#include <media/v4l2-mem2mem.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-ioctl.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-event.h>
-+#include <media/videobuf2-vmalloc.h>
-+#include <sound/dmaengine_pcm.h>
-+
-+MODULE_DESCRIPTION("Virtual device for audio mem2mem testing");
-+MODULE_LICENSE("GPL");
-+
-+static unsigned int debug;
-+module_param(debug, uint, 0644);
-+MODULE_PARM_DESC(debug, "debug level");
-+
-+#define MEM2MEM_NAME "vim2m-audio"
-+
-+#define dprintk(dev, lvl, fmt, arg...) \
-+	v4l2_dbg(lvl, debug, &(dev)->v4l2_dev, "%s: " fmt, __func__, ## arg)
-+
-+#define SAMPLE_NUM 4096
-+
-+static void audm2m_dev_release(struct device *dev)
-+{}
-+
-+static struct platform_device audm2m_pdev = {
-+	.name		= MEM2MEM_NAME,
-+	.dev.release	= audm2m_dev_release,
-+};
-+
-+static u32 formats[] = {
-+	V4L2_AUDIO_FMT_S16_LE,
-+};
-+
-+#define NUM_FORMATS ARRAY_SIZE(formats)
-+
-+/* Per-queue, driver-specific private data */
-+struct audm2m_q_data {
-+	unsigned int		rate;
-+	unsigned int		channels;
-+	unsigned int		buffersize;
-+	unsigned int		sequence;
-+	u32			fourcc;
-+};
-+
-+enum {
-+	V4L2_M2M_SRC = 0,
-+	V4L2_M2M_DST = 1,
-+};
-+
-+static snd_pcm_format_t find_format(u32 fourcc)
-+{
-+	snd_pcm_format_t fmt;
-+	unsigned int k;
-+
-+	for (k = 0; k < NUM_FORMATS; k++) {
-+		if (formats[k] == fourcc)
-+			break;
-+	}
-+
-+	if (k == NUM_FORMATS)
-+		return 0;
-+
-+	fmt = v4l2_fourcc_to_audfmt(formats[k]);
-+
-+	return fmt;
-+}
-+
-+struct audm2m_dev {
-+	struct v4l2_device	v4l2_dev;
-+	struct video_device	vfd;
-+
-+	struct mutex		dev_mutex;
-+
-+	struct v4l2_m2m_dev	*m2m_dev;
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	struct media_device	mdev;
-+#endif
-+};
-+
-+struct audm2m_ctx {
-+	struct v4l2_fh		fh;
-+	struct v4l2_ctrl_handler	ctrl_handler;
-+	struct audm2m_dev	*dev;
-+
-+	struct mutex		vb_mutex;
-+
-+	/* Source and destination queue data */
-+	struct audm2m_q_data   q_data[2];
-+};
-+
-+static inline struct audm2m_ctx *file2ctx(struct file *file)
-+{
-+	return container_of(file->private_data, struct audm2m_ctx, fh);
-+}
-+
-+static struct audm2m_q_data *get_q_data(struct audm2m_ctx *ctx,
-+					enum v4l2_buf_type type)
-+{
-+	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
-+		return &ctx->q_data[V4L2_M2M_SRC];
-+	return &ctx->q_data[V4L2_M2M_DST];
-+}
-+
-+static const char *type_name(enum v4l2_buf_type type)
-+{
-+	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
-+		return "Output";
-+	return "Capture";
-+}
-+
-+/*
-+ * mem2mem callbacks
-+ */
-+
-+/*
-+ * device_run() - prepares and starts the device
-+ */
-+static void device_run(void *priv)
-+{
-+	struct audm2m_ctx *ctx = priv;
-+	struct audm2m_dev *audm2m_dev;
-+	struct vb2_v4l2_buffer *src_buf, *dst_buf;
-+	struct audm2m_q_data *q_data_src, *q_data_dst;
-+	int src_size, dst_size = 0;
-+	short *src_addr, *dst_addr;
-+	int i;
-+
-+	audm2m_dev = ctx->dev;
-+
-+	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
-+	if (!q_data_src)
-+		return;
-+
-+	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
-+	if (!q_data_dst)
-+		return;
-+
-+	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
-+	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-+	src_buf->sequence = q_data_src->sequence++;
-+	dst_buf->sequence = q_data_dst->sequence++;
-+	v4l2_m2m_buf_copy_metadata(src_buf, dst_buf, false);
-+
-+	/* Process the conversion */
-+	src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
-+
-+	src_addr = vb2_plane_vaddr(&src_buf->vb2_buf, 0);
-+	dst_addr = vb2_plane_vaddr(&dst_buf->vb2_buf, 0);
-+
-+	if (q_data_src->rate == q_data_dst->rate) {
-+		memcpy(dst_addr, src_addr, src_size);
-+		dst_size = src_size;
-+	} else if (q_data_src->rate == 2 * q_data_dst->rate) {
-+		/* 8k to 16k */
-+		for (i = 0; i < src_size / 2; i++) {
-+			*dst_addr++ = *src_addr++;
-+			src_addr++;
-+		}
-+
-+		dst_size = src_size / 2;
-+	} else if (q_data_src->rate * 2 == q_data_dst->rate) {
-+		/* 16k to 8k */
-+		for (i = 0; i < src_size / 2; i++) {
-+			*dst_addr++ = *src_addr;
-+			*dst_addr++ = *src_addr++;
-+		}
-+
-+		dst_size = src_size * 2;
-+	}
-+
-+	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
-+
-+	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
-+	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
-+
-+	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
-+	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
-+	v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
-+}
-+
-+static int audm2m_querycap(struct file *file, void *priv,
-+			   struct v4l2_capability *cap)
-+{
-+	strscpy(cap->driver, MEM2MEM_NAME, sizeof(cap->driver));
-+	strscpy(cap->card, MEM2MEM_NAME, sizeof(cap->card));
-+	snprintf(cap->bus_info, sizeof(cap->bus_info),
-+		 "platform:%s", MEM2MEM_NAME);
-+
-+	return 0;
-+}
-+
-+static int enum_fmt(struct v4l2_fmtdesc *f)
-+{
-+	int i, num;
-+
-+	num = 0;
-+
-+	for (i = 0; i < NUM_FORMATS; ++i) {
-+		if (num == f->index)
-+			break;
-+		/*
-+		 * Correct type but haven't reached our index yet,
-+		 * just increment per-type index
-+		 */
-+		++num;
-+	}
-+
-+	if (i < NUM_FORMATS) {
-+		/* Format found */
-+		f->pixelformat = formats[i];
-+		return 0;
-+	}
-+
-+	/* Format not found */
-+	return -EINVAL;
-+}
-+
-+static int audm2m_enum_fmt_audio_cap(struct file *file, void *priv,
-+				     struct v4l2_fmtdesc *f)
-+{
-+	return enum_fmt(f);
-+}
-+
-+static int audm2m_enum_fmt_audio_out(struct file *file, void *priv,
-+				     struct v4l2_fmtdesc *f)
-+{
-+	return enum_fmt(f);
-+}
-+
-+static int audm2m_g_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
-+{
-+	struct vb2_queue *vq;
-+	struct audm2m_q_data *q_data;
-+
-+	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-+	if (!vq)
-+		return -EINVAL;
-+
-+	q_data = get_q_data(ctx, f->type);
-+	if (!q_data)
-+		return -EINVAL;
-+
-+	f->fmt.audio.audioformat = q_data->fourcc;
-+	f->fmt.audio.channels	= q_data->channels;
-+	f->fmt.audio.buffersize = q_data->buffersize;
-+
-+	return 0;
-+}
-+
-+static int audm2m_g_fmt_audio_out(struct file *file, void *priv,
-+				  struct v4l2_format *f)
-+{
-+	return audm2m_g_fmt(file2ctx(file), f);
-+}
-+
-+static int audm2m_g_fmt_audio_cap(struct file *file, void *priv,
-+				  struct v4l2_format *f)
-+{
-+	return audm2m_g_fmt(file2ctx(file), f);
-+}
-+
-+static int audm2m_try_fmt(struct v4l2_format *f, snd_pcm_format_t fmt)
-+{
-+	f->fmt.audio.channels = 1;
-+	f->fmt.audio.buffersize = f->fmt.audio.channels *
-+				  snd_pcm_format_physical_width(fmt) *
-+				  SAMPLE_NUM;
-+	return 0;
-+}
-+
-+static int audm2m_try_fmt_audio_cap(struct file *file, void *priv,
-+				    struct v4l2_format *f)
-+{
-+	snd_pcm_format_t fmt;
-+
-+	fmt = find_format(f->fmt.audio.audioformat);
-+	if (!fmt) {
-+		f->fmt.audio.audioformat = formats[0];
-+		fmt = find_format(f->fmt.audio.audioformat);
-+	}
-+
-+	return audm2m_try_fmt(f, fmt);
-+}
-+
-+static int audm2m_try_fmt_audio_out(struct file *file, void *priv,
-+				    struct v4l2_format *f)
-+{
-+	snd_pcm_format_t fmt;
-+
-+	fmt = find_format(f->fmt.audio.audioformat);
-+	if (!fmt) {
-+		f->fmt.audio.audioformat = formats[0];
-+		fmt = find_format(f->fmt.audio.audioformat);
-+	}
-+
-+	return audm2m_try_fmt(f, fmt);
-+}
-+
-+static int audm2m_s_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
-+{
-+	struct audm2m_q_data *q_data;
-+	struct vb2_queue *vq;
-+	snd_pcm_format_t fmt;
-+
-+	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
-+	if (!vq)
-+		return -EINVAL;
-+
-+	q_data = get_q_data(ctx, f->type);
-+	if (!q_data)
-+		return -EINVAL;
-+
-+	if (vb2_is_busy(vq)) {
-+		v4l2_err(&ctx->dev->v4l2_dev, "%s queue busy\n", __func__);
-+		return -EBUSY;
-+	}
-+
-+	q_data->fourcc	= f->fmt.audio.audioformat;
-+	q_data->channels = f->fmt.audio.channels;
-+
-+	fmt = find_format(f->fmt.audio.audioformat);
-+	q_data->buffersize = q_data->channels *
-+			     snd_pcm_format_physical_width(fmt) *
-+			     SAMPLE_NUM;
-+
-+	dprintk(ctx->dev, 1,
-+		"Format for type %s: %d/%d, fmt: %c%c%c%c\n",
-+		type_name(f->type), q_data->rate,
-+		q_data->channels,
-+		(q_data->fourcc & 0xff),
-+		(q_data->fourcc >>  8) & 0xff,
-+		(q_data->fourcc >> 16) & 0xff,
-+		(q_data->fourcc >> 24) & 0xff);
-+
-+	return 0;
-+}
-+
-+static int audm2m_s_fmt_audio_cap(struct file *file, void *priv,
-+				  struct v4l2_format *f)
-+{
-+	int ret;
-+
-+	ret = audm2m_try_fmt_audio_cap(file, priv, f);
-+	if (ret)
-+		return ret;
-+
-+	return audm2m_s_fmt(file2ctx(file), f);
-+}
-+
-+static int audm2m_s_fmt_audio_out(struct file *file, void *priv,
-+				  struct v4l2_format *f)
-+{
-+	int ret;
-+
-+	ret = audm2m_try_fmt_audio_out(file, priv, f);
-+	if (ret)
-+		return ret;
-+
-+	return audm2m_s_fmt(file2ctx(file), f);
-+}
-+
-+static const struct v4l2_ioctl_ops audm2m_ioctl_ops = {
-+	.vidioc_querycap		= audm2m_querycap,
-+
-+	.vidioc_enum_fmt_audio_cap	= audm2m_enum_fmt_audio_cap,
-+	.vidioc_g_fmt_audio_cap		= audm2m_g_fmt_audio_cap,
-+	.vidioc_try_fmt_audio_cap	= audm2m_try_fmt_audio_cap,
-+	.vidioc_s_fmt_audio_cap		= audm2m_s_fmt_audio_cap,
-+
-+	.vidioc_enum_fmt_audio_out	= audm2m_enum_fmt_audio_out,
-+	.vidioc_g_fmt_audio_out		= audm2m_g_fmt_audio_out,
-+	.vidioc_try_fmt_audio_out	= audm2m_try_fmt_audio_out,
-+	.vidioc_s_fmt_audio_out		= audm2m_s_fmt_audio_out,
-+
-+	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
-+	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
-+	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
-+	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
-+	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
-+	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
-+
-+	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
-+	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
-+
-+	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
-+	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
-+};
-+
-+/*
-+ * Queue operations
-+ */
-+static int audm2m_queue_setup(struct vb2_queue *vq,
-+			      unsigned int *nbuffers,
-+			      unsigned int *nplanes,
-+			      unsigned int sizes[],
-+			      struct device *alloc_devs[])
-+{
-+	struct audm2m_ctx *ctx = vb2_get_drv_priv(vq);
-+	struct audm2m_q_data *q_data;
-+
-+	q_data = get_q_data(ctx, vq->type);
-+
-+	if (*nplanes)
-+		return sizes[0] < q_data->buffersize ? -EINVAL : 0;
-+
-+	*nplanes = 1;
-+	sizes[0] = q_data->buffersize;
-+
-+	dprintk(ctx->dev, 1, "%s: get %d buffer(s) of size %d each.\n",
-+		type_name(vq->type), *nplanes, sizes[0]);
-+
-+	return 0;
-+}
-+
-+static void audm2m_buf_queue(struct vb2_buffer *vb)
-+{
-+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+	struct audm2m_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-+
-+	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
-+}
-+
-+static int audm2m_start_streaming(struct vb2_queue *q, unsigned int count)
-+{
-+	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
-+	struct audm2m_q_data *q_data = get_q_data(ctx, q->type);
-+
-+	q_data->sequence = 0;
-+	return 0;
-+}
-+
-+static void audm2m_stop_streaming(struct vb2_queue *q)
-+{
-+	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
-+	struct vb2_v4l2_buffer *vbuf;
-+
-+	for (;;) {
-+		if (V4L2_TYPE_IS_OUTPUT(q->type))
-+			vbuf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
-+		else
-+			vbuf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
-+		if (!vbuf)
-+			return;
-+		v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_ERROR);
-+	}
-+}
-+
-+static const struct vb2_ops audm2m_qops = {
-+	.queue_setup	 = audm2m_queue_setup,
-+	.buf_queue	 = audm2m_buf_queue,
-+	.start_streaming = audm2m_start_streaming,
-+	.stop_streaming  = audm2m_stop_streaming,
-+	.wait_prepare	 = vb2_ops_wait_prepare,
-+	.wait_finish	 = vb2_ops_wait_finish,
-+};
-+
-+static int queue_init(void *priv, struct vb2_queue *src_vq,
-+		      struct vb2_queue *dst_vq)
-+{
-+	struct audm2m_ctx *ctx = priv;
-+	int ret;
-+
-+	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
-+	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-+	src_vq->drv_priv = ctx;
-+	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-+	src_vq->ops = &audm2m_qops;
-+	src_vq->mem_ops = &vb2_vmalloc_memops;
-+	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-+	src_vq->lock = &ctx->vb_mutex;
-+	src_vq->min_buffers_needed = 1;
-+
-+	ret = vb2_queue_init(src_vq);
-+	if (ret)
-+		return ret;
-+
-+	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
-+	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
-+	dst_vq->drv_priv = ctx;
-+	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
-+	dst_vq->ops = &audm2m_qops;
-+	dst_vq->mem_ops = &vb2_vmalloc_memops;
-+	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
-+	dst_vq->lock = &ctx->vb_mutex;
-+	dst_vq->min_buffers_needed = 1;
-+
-+	return vb2_queue_init(dst_vq);
-+}
-+
-+static const s64 audm2m_rates[] = {
-+	8000, 16000,
-+};
-+
-+static int audm2m_op_s_ctrl(struct v4l2_ctrl *ctrl)
-+{
-+	struct audm2m_ctx *ctx =
-+		container_of(ctrl->handler, struct audm2m_ctx, ctrl_handler);
-+	int ret = 0;
-+
-+	switch (ctrl->id) {
-+	case V4L2_CID_M2M_AUDIO_SOURCE_RATE:
-+		ctx->q_data[V4L2_M2M_SRC].rate = ctrl->qmenu_int[ctrl->val];
-+		break;
-+	case V4L2_CID_M2M_AUDIO_DEST_RATE:
-+		ctx->q_data[V4L2_M2M_DST].rate = ctrl->qmenu_int[ctrl->val];
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static const struct v4l2_ctrl_ops audm2m_ctrl_ops = {
-+	.s_ctrl = audm2m_op_s_ctrl,
-+};
-+
-+/*
-+ * File operations
-+ */
-+static int audm2m_open(struct file *file)
-+{
-+	struct audm2m_dev *dev = video_drvdata(file);
-+	struct audm2m_ctx *ctx = NULL;
-+	snd_pcm_format_t fmt;
-+	int width;
-+	int rc = 0;
-+
-+	if (mutex_lock_interruptible(&dev->dev_mutex))
-+		return -ERESTARTSYS;
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx) {
-+		rc = -ENOMEM;
-+		goto open_unlock;
-+	}
-+
-+	v4l2_fh_init(&ctx->fh, video_devdata(file));
-+	file->private_data = &ctx->fh;
-+	ctx->dev = dev;
-+
-+	ctx->q_data[V4L2_M2M_SRC].fourcc = formats[0];
-+	ctx->q_data[V4L2_M2M_SRC].rate = 8000;
-+	ctx->q_data[V4L2_M2M_SRC].channels = 1;
-+
-+	/* Fix to 4096 samples */
-+	fmt = find_format(formats[0]);
-+	width = snd_pcm_format_physical_width(fmt);
-+	ctx->q_data[V4L2_M2M_SRC].buffersize = SAMPLE_NUM * width;
-+	ctx->q_data[V4L2_M2M_DST] = ctx->q_data[V4L2_M2M_SRC];
-+
-+	ctx->fh.m2m_ctx = v4l2_m2m_ctx_init(dev->m2m_dev, ctx, &queue_init);
-+
-+	mutex_init(&ctx->vb_mutex);
-+
-+	if (IS_ERR(ctx->fh.m2m_ctx)) {
-+		rc = PTR_ERR(ctx->fh.m2m_ctx);
-+
-+		v4l2_fh_exit(&ctx->fh);
-+		kfree(ctx);
-+		goto open_unlock;
-+	}
-+
-+	v4l2_fh_add(&ctx->fh);
-+
-+	dprintk(dev, 1, "Created instance: %p, m2m_ctx: %p\n",
-+		ctx, ctx->fh.m2m_ctx);
-+
-+	v4l2_ctrl_handler_init(&ctx->ctrl_handler, 2);
-+
-+	v4l2_ctrl_new_int_menu(&ctx->ctrl_handler, &audm2m_ctrl_ops,
-+			       V4L2_CID_M2M_AUDIO_SOURCE_RATE,
-+			       ARRAY_SIZE(audm2m_rates) - 1, 0, audm2m_rates);
-+	v4l2_ctrl_new_int_menu(&ctx->ctrl_handler, &audm2m_ctrl_ops,
-+			       V4L2_CID_M2M_AUDIO_DEST_RATE,
-+			       ARRAY_SIZE(audm2m_rates) - 1, 0, audm2m_rates);
-+
-+	if (ctx->ctrl_handler.error) {
-+		rc = ctx->ctrl_handler.error;
-+		v4l2_ctrl_handler_free(&ctx->ctrl_handler);
-+		goto err_ctrl_handler;
-+	}
-+
-+	ctx->fh.ctrl_handler = &ctx->ctrl_handler;
-+
-+	mutex_unlock(&dev->dev_mutex);
-+
-+	return 0;
-+
-+err_ctrl_handler:
-+	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-+open_unlock:
-+	mutex_unlock(&dev->dev_mutex);
-+	return rc;
-+}
-+
-+static int audm2m_release(struct file *file)
-+{
-+	struct audm2m_dev *dev = video_drvdata(file);
-+	struct audm2m_ctx *ctx = file2ctx(file);
-+
-+	dprintk(dev, 1, "Releasing instance %p\n", ctx);
-+
-+	v4l2_ctrl_handler_free(&ctx->ctrl_handler);
-+	v4l2_fh_del(&ctx->fh);
-+	v4l2_fh_exit(&ctx->fh);
-+	mutex_lock(&dev->dev_mutex);
-+	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
-+	mutex_unlock(&dev->dev_mutex);
-+	kfree(ctx);
-+
-+	return 0;
-+}
-+
-+static void audm2m_device_release(struct video_device *vdev)
-+{
-+	struct audm2m_dev *dev = container_of(vdev, struct audm2m_dev, vfd);
-+
-+	v4l2_device_unregister(&dev->v4l2_dev);
-+	v4l2_m2m_release(dev->m2m_dev);
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	media_device_cleanup(&dev->mdev);
-+#endif
-+	kfree(dev);
-+}
-+
-+static const struct v4l2_file_operations audm2m_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= audm2m_open,
-+	.release	= audm2m_release,
-+	.poll		= v4l2_m2m_fop_poll,
-+	.unlocked_ioctl	= video_ioctl2,
-+	.mmap		= v4l2_m2m_fop_mmap,
-+};
-+
-+static const struct video_device audm2m_videodev = {
-+	.name		= MEM2MEM_NAME,
-+	.vfl_dir	= VFL_DIR_M2M,
-+	.fops		= &audm2m_fops,
-+	.ioctl_ops	= &audm2m_ioctl_ops,
-+	.minor		= -1,
-+	.release	= audm2m_device_release,
-+	.device_caps	= V4L2_CAP_AUDIO_M2M | V4L2_CAP_STREAMING,
-+};
-+
-+static const struct v4l2_m2m_ops m2m_ops = {
-+	.device_run	= device_run,
-+};
-+
-+static const struct media_device_ops audm2m_media_ops = {
-+	.req_validate = vb2_request_validate,
-+	.req_queue = v4l2_m2m_request_queue,
-+};
-+
-+static int audm2m_probe(struct platform_device *pdev)
-+{
-+	struct audm2m_dev *dev;
-+	struct video_device *vfd;
-+	int ret;
-+
-+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
-+	if (!dev)
-+		return -ENOMEM;
-+
-+	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
-+	if (ret)
-+		goto error_free;
-+
-+	mutex_init(&dev->dev_mutex);
-+
-+	dev->vfd = audm2m_videodev;
-+	vfd = &dev->vfd;
-+	vfd->lock = &dev->dev_mutex;
-+	vfd->v4l2_dev = &dev->v4l2_dev;
-+
-+	video_set_drvdata(vfd, dev);
-+	platform_set_drvdata(pdev, dev);
-+
-+	dev->m2m_dev = v4l2_m2m_init(&m2m_ops);
-+	if (IS_ERR(dev->m2m_dev)) {
-+		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
-+		ret = PTR_ERR(dev->m2m_dev);
-+		dev->m2m_dev = NULL;
-+		goto error_dev;
-+	}
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	dev->mdev.dev = &pdev->dev;
-+	strscpy(dev->mdev.model, MEM2MEM_NAME, sizeof(dev->mdev.model));
-+	snprintf(dev->mdev.bus_info, sizeof(dev->mdev.bus_info),
-+		 "platform:%s", MEM2MEM_NAME);
-+	media_device_init(&dev->mdev);
-+	dev->mdev.ops = &audm2m_media_ops;
-+	dev->v4l2_dev.mdev = &dev->mdev;
-+#endif
-+
-+	ret = video_register_device(vfd, VFL_TYPE_AUDIO, 0);
-+	if (ret) {
-+		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
-+		goto error_m2m;
-+	}
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	ret = v4l2_m2m_register_media_controller(dev->m2m_dev, vfd,
-+						 MEDIA_ENT_F_PROC_AUDIO_RESAMPLER);
-+	if (ret) {
-+		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem media controller\n");
-+		goto error_v4l2;
-+	}
-+
-+	ret = media_device_register(&dev->mdev);
-+	if (ret) {
-+		v4l2_err(&dev->v4l2_dev, "Failed to register mem2mem media device\n");
-+		goto error_m2m_mc;
-+	}
-+#endif
-+
-+	v4l2_info(&dev->v4l2_dev,
-+		  "Device registered as /dev/v4l-audio%d\n", vfd->num);
-+
-+	return 0;
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+error_m2m_mc:
-+	v4l2_m2m_unregister_media_controller(dev->m2m_dev);
-+#endif
-+error_v4l2:
-+	video_unregister_device(&dev->vfd);
-+	/* audm2m_device_release called by video_unregister_device to release various objects */
-+	return ret;
-+error_m2m:
-+	v4l2_m2m_release(dev->m2m_dev);
-+error_dev:
-+	v4l2_device_unregister(&dev->v4l2_dev);
-+error_free:
-+	kfree(dev);
-+
-+	return ret;
-+}
-+
-+static void audm2m_remove(struct platform_device *pdev)
-+{
-+	struct audm2m_dev *dev = platform_get_drvdata(pdev);
-+
-+	v4l2_info(&dev->v4l2_dev, "Removing " MEM2MEM_NAME);
-+
-+#ifdef CONFIG_MEDIA_CONTROLLER
-+	media_device_unregister(&dev->mdev);
-+	v4l2_m2m_unregister_media_controller(dev->m2m_dev);
-+#endif
-+	video_unregister_device(&dev->vfd);
-+}
-+
-+static struct platform_driver audm2m_pdrv = {
-+	.probe		= audm2m_probe,
-+	.remove_new	= audm2m_remove,
-+	.driver		= {
-+		.name	= MEM2MEM_NAME,
-+	},
-+};
-+
-+static void __exit audm2m_exit(void)
-+{
-+	platform_driver_unregister(&audm2m_pdrv);
-+	platform_device_unregister(&audm2m_pdev);
-+}
-+
-+static int __init audm2m_init(void)
-+{
-+	int ret;
-+
-+	ret = platform_device_register(&audm2m_pdev);
-+	if (ret)
-+		return ret;
-+
-+	ret = platform_driver_register(&audm2m_pdrv);
-+	if (ret)
-+		platform_device_unregister(&audm2m_pdev);
-+
-+	return ret;
-+}
-+
-+module_init(audm2m_init);
-+module_exit(audm2m_exit);
--- 
-2.34.1
+> +	 */
+> +	child_pt = spte_to_child_pt(iter->old_spte, iter->level);
+> +	child_sp = sptep_to_sp(child_pt);
+> +	WARN_ON_ONCE(child_sp->role.level != PG_LEVEL_4K);
+> +	WARN_ON_ONCE(!kvm_mmu_page_role_is_private(child_sp->role));
+> +
+> +	/* Don't modify iter as the caller will use iter after this function. */
+> +	child_iter = *iter;
+> +	/* Adjust the target gfn to the head gfn of the large page. */
+> +	child_iter.next_last_level_gfn &= -KVM_PAGES_PER_HPAGE(level);
+> +	tdp_iter_step_down(&child_iter, child_pt);
+> +
+> +	/*
+> +	 * All child pages are required to be populated for merging them into a
+> +	 * large page.  Populate all child spte.
+> +	 */
+> +	for (i = 0; i < SPTE_ENT_PER_PAGE; i = tdp_mmu_iter_step_side(i, &child_iter)) {
+> +		int tmp;
+> +
+> +		WARN_ON_ONCE(child_iter.level != PG_LEVEL_4K);
+> +
+> +		if (is_shadow_present_pte(child_iter.old_spte)) {
+> +			/* TODO: relocate page for huge page. */
+> +			if (WARN_ON_ONCE(spte_to_pfn(child_iter.old_spte) !=
+> +					 spte_to_pfn(new_spte) + i)) {
+> +				if (!ret)
+> +					ret = -EAGAIN;
+> +				continue;
+> +			}
+> +			/*
+> +			 * When SEPT_VE_DISABLE=true and the page state is
+> +			 * pending, this case can happen.  Just resume the vcpu
+> +			 * again with the expectation for other vcpu to accept
+> +			 * this page.
+> +			 */
+> +			if (child_iter.gfn == fault->gfn) {
+> +				if (!ret)
+> +					ret = -EAGAIN;
+> +			}
+> +			continue;
+> +		}
+> +
+> +		child_spte = make_huge_page_split_spte(kvm, new_spte, child_sp->role, i);
+> +		/*
+> +		 * Because other thread may have started to operate on this spte
+> +		 * before freezing the parent spte,  Use atomic version to
+> +		 * prevent race.
+> +		 */
+> +		tmp = tdp_mmu_set_spte_atomic(vcpu->kvm, &child_iter, child_spte);
+> +		if (tmp == -EBUSY || tmp == -EAGAIN) {
+> +			/*
+> +			 * There was a race condition.  Populate remaining 4K
+> +			 * spte to resolve fault->gfn to guarantee the forward
+> +			 * progress.
+> +			 */
+> +			if (!ret)
+> +				ret = tmp;
+> +		} else if (tmp) {
+> +			ret = tmp;
+> +			goto out;
+> +		}
+> +	}
+> +	if (ret)
+> +		goto out;
+> +
+> +	/* Prevent the Secure-EPT entry from being used. */
+> +	ret = static_call(kvm_x86_zap_private_spte)(kvm, gfn, level);
+> +	if (ret)
+> +		goto out;
+> +	kvm_flush_remote_tlbs_range(kvm, gfn & KVM_HPAGE_GFN_MASK(level),
+> +				    KVM_PAGES_PER_HPAGE(level));
+> +
+> +	/* Merge pages into a large page. */
+> +	ret = static_call(kvm_x86_merge_private_spt)(kvm, gfn, level,
+> +						     kvm_mmu_private_spt(child_sp));
+> +	/*
+> +	 * Failed to merge pages because some pages are accepted and some are
+> +	 * pending.  Since the child page was mapped above, let vcpu run.
+> +	 */
+> +	if (ret) {
+> +		if (static_call(kvm_x86_unzap_private_spte)(kvm, gfn, level))
+> +			old_spte = SHADOW_NONPRESENT_VALUE |
+> +				(spte_to_pfn(old_spte) << PAGE_SHIFT) |
+> +				PT_PAGE_SIZE_MASK;
+> +		goto out;
+> +	}
+> +
+> +	/* Unfreeze spte. */
+> +	iter->old_spte = new_spte;
+> +	__kvm_tdp_mmu_write_spte(sptep, new_spte);
+> +
+> +	/*
+> +	 * Free unused child sp.  Secure-EPT page was already freed at TDX level
+> +	 * by kvm_x86_merge_private_spt().
+> +	 */
+> +	tdp_unaccount_mmu_page(kvm, child_sp);
+> +	tdp_mmu_free_sp(child_sp);
+> +	return -EAGAIN;
+It successfully promoted the page, why still return -EAGAIN?
+
+> +
+> +out:
+> +	iter->old_spte = old_spte;
+> +	__kvm_tdp_mmu_write_spte(sptep, old_spte);
+> +	return ret;
+> +}
+> +
+> +static int __tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+> +					     struct kvm_page_fault *fault,
+> +					     struct tdp_iter *iter, u64 new_spte)
+> +{
+> +	/*
+> +	 * The private page has smaller-size pages.  For example, the child
+> +	 * pages was converted from shared to page, and now it can be mapped as
+> +	 * a large page.  Try to merge small pages into a large page.
+> +	 */
+> +	if (fault->slot &&
+> +	    kvm_gfn_shared_mask(vcpu->kvm) &&
+> +	    iter->level > PG_LEVEL_4K &&
+> +	    kvm_is_private_gpa(vcpu->kvm, fault->addr) &&
+> +	    is_shadow_present_pte(iter->old_spte) &&
+> +	    !is_large_pte(iter->old_spte))
+> +		return tdp_mmu_merge_private_spt(vcpu, fault, iter, new_spte);
+> +
+> +	return tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte);
+> +}
+> +
+>   /*
+>    * Installs a last-level SPTE to handle a TDP page fault.
+>    * (NPT/EPT violation/misconfiguration)
+> @@ -1265,7 +1435,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
+>   
+>   	if (new_spte == iter->old_spte)
+>   		ret = RET_PF_SPURIOUS;
+> -	else if (tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
+> +	else if (__tdp_mmu_map_handle_target_level(vcpu, fault, iter, new_spte))
+>   		return RET_PF_RETRY;
+>   	else if (is_shadow_present_pte(iter->old_spte) &&
+>   		 !is_last_spte(iter->old_spte, iter->level))
 
