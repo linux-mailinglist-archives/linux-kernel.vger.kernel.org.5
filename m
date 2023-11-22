@@ -2,150 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1687F442F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C2E7F4436
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343689AbjKVKnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
+        id S1343708AbjKVKpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:45:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjKVKnq (ORCPT
+        with ESMTP id S1343693AbjKVKpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:43:46 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B64AC1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:43:41 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3316a4bc37dso3448238f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 02:43:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700649820; x=1701254620; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RxvYEiAdK16hEUnfnJJGpW9bKts3DPTjhH3GkFHM2Cc=;
-        b=IwTq2dczAN+R0LMrB5fzJDFtr3VSHl4PUfLGEG0GhaJpPRK+3c3tM94q+ORw2OL9tr
-         0uyvXFO9OYLDJQH6hO990ohLkxuRNneXNhOoLY4+BCyclfHfQIAv1Xz5ofkRv1o8EQsj
-         AtZK1sSY99UfzlO4bF3F0bdfxrl2uhr9gHAdvnZmnVN6hkKexh7wqTCsexS/69FyIgzx
-         k4q/iY+rNTVNQFfMdGSOH9WXxuYRroGRpjcvtQ4YQOfwXLE3DVCTdRYgxjOeoq6v7+9Y
-         wS7WYz441iZl0dQpqrzFaocYiooaYUaKOVAB1HAa9jHPkTThfP8WSI1E+5NYuM3lTDxT
-         d/yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700649820; x=1701254620;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RxvYEiAdK16hEUnfnJJGpW9bKts3DPTjhH3GkFHM2Cc=;
-        b=Iv1O50QM6S4uOVo1W8fhgJPG8agII1cBbJjXl4lCbbAi13vQzy1fqO+CPRuPaRYnkW
-         UqHOL0zNHpIMwzCaYxaMJU8hVLrDLWZJm8z7H4REOSqdFMOTTG4zDYo4v9zZV7qMbLhz
-         G74osh81yNAqA3SrMnVE2zKF3V8Yek5E1+W8jyqOCSLYnqz+mHWzivh7N1gMWhzZqaAv
-         wPzvKnoNgSGYKFtXacu2IjTHFoeYVJUAATfs/kBHAiHdoNNzZ3MEaVv78YlpkI6q0pys
-         yGp4OBBHoqB4RULewPCKt04RPFCARZ0hqbwJtMpPlUdSSWArkDnt/tEXKyFMxA3GmnMt
-         aWmg==
-X-Gm-Message-State: AOJu0Yz4wnOTVUyeG4SCTeFgFX6zd0uw2oI3v2BHpk0rH48spieXkmGx
-        b9qA6KbBM3YMJI/vYuAAoI5KLg==
-X-Google-Smtp-Source: AGHT+IEDZxTP8EA5UdKKS6Vae+fmnJaRF9SBb9RgsfEGdz5fZObyG7C0joEJetvcV0BPBtBITg6AdA==
-X-Received: by 2002:a5d:6d8c:0:b0:332:c5f8:a082 with SMTP id l12-20020a5d6d8c000000b00332c5f8a082mr1469372wrs.13.1700649820030;
-        Wed, 22 Nov 2023 02:43:40 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id t16-20020adff610000000b0032da4c98ab2sm16796346wrp.35.2023.11.22.02.43.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 02:43:39 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Wed, 22 Nov 2023 05:43:37 -0500
-To:     oe-kbuild@lists.linux.dev, Mehdi Djait <mehdi.djait@bootlin.com>,
-        mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
-        paul.kocialkowski@bootlin.com,
-        Mehdi Djait <mehdi.djait@bootlin.com>
-Subject: Re: [PATCH v9 3/3] media: i2c: Introduce a driver for the Techwell
- TW9900 decoder
-Message-ID: <f39cdd12-4be4-4a9b-9ec6-3704c84e12da@suswa.mountain>
+        Wed, 22 Nov 2023 05:45:40 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D80198;
+        Wed, 22 Nov 2023 02:45:35 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AMAjJdD127773;
+        Wed, 22 Nov 2023 04:45:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700649920;
+        bh=e+lEpcGRYl3Tb76nO14RLpG8f70M6EixwdVRMkENcVU=;
+        h=From:To:CC:Subject:Date;
+        b=Q7ZOHG1Q4yvYA/TxxSMXBNcXzPYCsfczYjP90c3Qx+ZYZmxZqf0kObJWLQpPbVBao
+         NgiKKSN89rvdX0FkMLTNTqv+CQBVvSAqONY2YdJfUhOVhKaE9Ras2IDFcJvGwUH9vn
+         rph0IvZ/q+Us+gmPRvq+Byx50H3bzsl3dcDiX+lM=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AMAjJq8078322
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Nov 2023 04:45:19 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 22
+ Nov 2023 04:45:19 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 22 Nov 2023 04:45:19 -0600
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AMAjErt018560;
+        Wed, 22 Nov 2023 04:45:14 -0600
+From:   Neha Malcom Francis <n-francis@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <a-nandan@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
+        <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
+        <devarsht@ti.com>, <n-francis@ti.com>
+Subject: [PATCH v7 0/4] Add TPS6594 PMIC support on several boards
+Date:   Wed, 22 Nov 2023 16:15:09 +0530
+Message-ID: <20231122104513.2335757-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc65a89e7803782a75bf663158e031356ef7cb1a.1700235276.git.mehdi.djait@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mehdi,
+TPS6594 is a Power Management IC which provides regulators and others
+features like GPIOs, RTC, watchdog, ESMs (Error Signal Monitor), and
+PFSM (Pre-configurable Finite State Machine). The SoC and the PMIC can
+communicate through the I2C or SPI interfaces.
+TPS6594 is the super-set device while TPS6593 and LP8764 are derivatives.
 
-kernel test robot noticed the following build warnings:
+This series adds device tree nodes for TI TPS6594 PMICs found in the
+following boards:
+- J721EXSOMXEVM:
+  Link: https://www.ti.com/tool/J721EXSOMXEVM
+- J721S2XSOMXEVM:
+  Link: https://www.ti.com/tool/J721S2XSOMXEVM
+- J7200XSOMXEVM:
+  Link: https://www.ti.com/tool/J7200XSOMXEVM
+- J784S4XEVM
+  Link: https://www.ti.com/tool/J784S4XEVM
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Boot Logs:
+https://gist.github.com/nehamalcom/384cf594e37739a34f8a08664830e37a
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mehdi-Djait/dt-bindings-vendor-prefixes-Add-techwell-vendor-prefix/20231117-234411
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/dc65a89e7803782a75bf663158e031356ef7cb1a.1700235276.git.mehdi.djait%40bootlin.com
-patch subject: [PATCH v9 3/3] media: i2c: Introduce a driver for the Techwell TW9900 decoder
-config: powerpc-randconfig-r071-20231122 (https://download.01.org/0day-ci/archive/20231122/202311221134.0i9KavRs-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231122/202311221134.0i9KavRs-lkp@intel.com/reproduce)
+---
+Changes from v6:
+https://lore.kernel.org/all/20230810-tps6594-v6-0-2b2e2399e2ef@ti.com/
+- Modify patch series to include only patches not merged (J7)
+- Add boot logs for all affected boards
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311221134.0i9KavRs-lkp@intel.com/
+Changes from v5:
+https://lore.kernel.org/all/20230809-tps6594-v5-0-485fd3d63670@ti.com
+- Range-diff: http://0x0.st/H_fD.diff
+- Reword the patch fixing interrupt ranges for mcu domain gpio intr, and
+  add Fixes: tag
+- Also fix interrupt ranges for main domain gpio intr in the same patch
+- Change pinctrl node names to end in -pins to fix dtbs_check warnings
+- (New Patch) Enable TPS6594 in defconfig
 
-New smatch warnings:
-drivers/media/i2c/tw9900.c:628 tw9900_runtime_resume() warn: inconsistent returns '&tw9900->mutex'.
+Changes from v4:
+https://lore.kernel.org/all/20230727130908.10656-1-eblanc@baylibre.com/
+- Range-diff: https://0x0.st/H_L7.diff
+- Rebased on top of linux-next
+- Fix min voltage on vdd_usb_3v3 regulator (ldo2) on j721e-som
+- Use 3-hex-digit format for pinctrl values
 
-Old smatch warnings:
-drivers/media/i2c/tw9900.c:348 tw9900_s_std() error: uninitialized symbol 'mode'.
+Changes from v3:
+https://lore.kernel.org/all/20230417154832.216774-1-eblanc@baylibre.com/
+- Rebased on top of v6.5-rc1.
+- Change pinctrl number for irq pin as wkup_pmx0 was split on some boards.
+- Use already present wkup_i2c0 node instead of creating a new one.
 
-vim +628 drivers/media/i2c/tw9900.c
+Changes from v2:
+https://lore.kernel.org/lkml/20230414112843.1358067-1-eblanc@baylibre.com/
+- Change node name as per Krzysztof review.
+- Add a fix for the interrupt range of wakeup gpio used by TPS6594 pmic
+  on J784S4.
+  The interruptions of the PMIC were not working before that.
+- Remove dependencies on other patch series as that was a mistake, see
+  https://lore.kernel.org/lkml/CRYY2V3HJ0CP.96JQ18PLZB3C@burritosblues/
 
-cf24af11e0a74c Mehdi Djait 2023-11-17  597  static int tw9900_runtime_resume(struct device *dev)
-cf24af11e0a74c Mehdi Djait 2023-11-17  598  {
-cf24af11e0a74c Mehdi Djait 2023-11-17  599  	struct i2c_client *client = to_i2c_client(dev);
-cf24af11e0a74c Mehdi Djait 2023-11-17  600  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-cf24af11e0a74c Mehdi Djait 2023-11-17  601  	struct tw9900 *tw9900 = to_tw9900(sd);
-cf24af11e0a74c Mehdi Djait 2023-11-17  602  	int ret;
-cf24af11e0a74c Mehdi Djait 2023-11-17  603  
-cf24af11e0a74c Mehdi Djait 2023-11-17  604  	mutex_lock(&tw9900->mutex);
-cf24af11e0a74c Mehdi Djait 2023-11-17  605  
-cf24af11e0a74c Mehdi Djait 2023-11-17  606  	if (tw9900->reset_gpio)
-cf24af11e0a74c Mehdi Djait 2023-11-17  607  		gpiod_set_value_cansleep(tw9900->reset_gpio, 1);
-cf24af11e0a74c Mehdi Djait 2023-11-17  608  
-cf24af11e0a74c Mehdi Djait 2023-11-17  609  	ret = regulator_enable(tw9900->regulator);
-cf24af11e0a74c Mehdi Djait 2023-11-17  610  	if (ret < 0)
-cf24af11e0a74c Mehdi Djait 2023-11-17  611  		return ret;
+Changes from v1:
+https://lore.kernel.org/lkml/20230329142948.833800-1-eblanc@baylibre.com/
+- Harmonize regulators names across the different boards.
+- Adjust AVS voltage range.
+- Remove some outdated comments.
+- Add PMIC to J784S4 board.
+- Compatible string modified to match dt-bindings.
+- Add gpio-controller and gpio-cells properties.
 
-mutex_unlock(&tw9900->mutex) before returning.
+Esteban Blanc (2):
+  arm64: dts: ti: k3-j7200-som-p0: Add TP6594 family PMICs
+  arm64: dts: ti: k3-j721s2-som-p0: Add TP6594 family PMICs
 
-cf24af11e0a74c Mehdi Djait 2023-11-17  612  
-cf24af11e0a74c Mehdi Djait 2023-11-17  613  	usleep_range(50000, 52000);
-cf24af11e0a74c Mehdi Djait 2023-11-17  614  
-cf24af11e0a74c Mehdi Djait 2023-11-17  615  	if (tw9900->reset_gpio)
-cf24af11e0a74c Mehdi Djait 2023-11-17  616  		gpiod_set_value_cansleep(tw9900->reset_gpio, 0);
-cf24af11e0a74c Mehdi Djait 2023-11-17  617  
-cf24af11e0a74c Mehdi Djait 2023-11-17  618  	usleep_range(1000, 2000);
-cf24af11e0a74c Mehdi Djait 2023-11-17  619  
-cf24af11e0a74c Mehdi Djait 2023-11-17  620  	ret = tw9900_write_array(tw9900->client, tw9900_init_regs,
-cf24af11e0a74c Mehdi Djait 2023-11-17  621  				 ARRAY_SIZE(tw9900_init_regs));
-cf24af11e0a74c Mehdi Djait 2023-11-17  622  
-cf24af11e0a74c Mehdi Djait 2023-11-17  623  	mutex_unlock(&tw9900->mutex);
-cf24af11e0a74c Mehdi Djait 2023-11-17  624  
-cf24af11e0a74c Mehdi Djait 2023-11-17  625  	/* This sleep is needed for the Horizontal Sync PLL to lock. */
-cf24af11e0a74c Mehdi Djait 2023-11-17  626  	msleep(300);
-cf24af11e0a74c Mehdi Djait 2023-11-17  627  
-cf24af11e0a74c Mehdi Djait 2023-11-17 @628  	return ret;
-cf24af11e0a74c Mehdi Djait 2023-11-17  629  }
+Jerome Neanne (2):
+  arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family PMICs
+  arm64: dts: ti: k3-j784s4-evm: Add support for TPS6594 PMIC
+
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi  | 157 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi  | 163 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi | 199 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts     | 104 ++++++++++
+ 4 files changed, 623 insertions(+)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
 
