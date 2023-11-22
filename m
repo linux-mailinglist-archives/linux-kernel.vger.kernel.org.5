@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F7F7F4618
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1497F4620
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344082AbjKVM1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42344 "EHLO
+        id S1344032AbjKVM3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344065AbjKVM07 (ORCPT
+        with ESMTP id S229548AbjKVM3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:26:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44140D69
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:26:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F08AC433C7;
-        Wed, 22 Nov 2023 12:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700656015;
-        bh=7C94KGgqCbAA+PUlPyfufke9xGPCyJuKoPOwMFmpILc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AhTOfsuJH4uNL1dxrl8w5XllqdE/f5P54GaWxyRB4RLrlVOx4OyzJwbd6Gc4C0qoc
-         2Xzg/stYnSjW+1yxZNxWDcAYThqfSNZGkvn072cy+9S7PCy1DxLfO5WnFrM4sglE4g
-         EuZC1EWJwysoGdyUFGg5RLFi86qdKMxadsVE7CU1Jjc8qMWIzG4yHLhIuuE0rKZSQ7
-         NqT314x2NNAPQt/bksxbzuhb5k9BmoxRKLTBS+b69yrPvvHLfymaaDCmqGBTY0NX4f
-         cDXxKth36fatyNGSrEVz8QGzuXhCd95sNhXtTb/LABHPfeC2qDN6Jz2bV0b8GEMhAr
-         ESh4d4/F0DKAg==
-Date:   Wed, 22 Nov 2023 12:26:51 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-mmc@vger.kernel.org, kernel@pengutronix.de,
-        Ye Bin <yebin10@huawei.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Naresh Solanki <naresh.solanki@9elements.com>,
-        zev@bewilderbeest.net, Sebastian Reichel <sre@kernel.org>,
-        linux-pm@vger.kernel.org,
-        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: mmc: handling of Under-Voltage Events in eMMC
-Message-ID: <ZV3zi7jgkBa2W/Fc@finisterre.sirena.org.uk>
-References: <20230929130028.GB2825985@pengutronix.de>
- <CAPDyKFqUtNEbK2tzD+qOK+dFcDyBxvcNwOHWPJDLhTWGGkoHQw@mail.gmail.com>
- <20231122112212.GA783262@pengutronix.de>
+        Wed, 22 Nov 2023 07:29:08 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C185CB
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:29:02 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1ef370c2e12so3818729fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=melexis.com; s=google; t=1700656142; x=1701260942; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1NMtf5TNC4hWWw549jqhQu4xI8dAUFYNGtWt0AUtBAo=;
+        b=Va8Eg1CMUMgl9VcyHVf/u07WW3Wg5MlUSVd1r6f1Gwbli7OjTw5SW8eYJZAeD1BJNh
+         gOG+aBBR1nOdjJ4ngu52CgyLsgtxBSSyMJF3dr4gGDfgRRaD5GxVy9f+pdwShT/rrYcz
+         1lbgDigVEKu7N3RHA99kES49F7wa3NlkKoqk70OS8Tny8o816QntvI+jyYJE+p9WLV1b
+         La0iALB2Hnfy8gEEJOV3Q/lR1yPvI0cw748UDB2LXevKNYuGt6ElMOfQIDpWGVKAFIMY
+         p2+2v9Lo2so6j4c/T+tquQLEg2ZwiXfobhonVNeJveoXKZ/Z9jcZa/TN5SXYwOBynxys
+         9j6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700656142; x=1701260942;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1NMtf5TNC4hWWw549jqhQu4xI8dAUFYNGtWt0AUtBAo=;
+        b=OxtMgCE0Arr983gVc9oFzDYMRBIb+UByXdK5xk5pBuFP+LfC4vGBs6FsCFR4Epulre
+         5y36Ce4aXSGTNsUgxAhoBKr15SgxpuT/Ojm/6Pi5ck42opmDI09xMdECenwlwX38Gp32
+         yVeyBvp+k20cEz0w7QfUXp9EwdHigHxonN9ipMqjivIVa1mBHnskMede+OG9nYmFfBkx
+         cP803Pg63t1BSKWbH7RlmKiXbx2INw8ODbsVDeOOF1oRQcpXJiQl4cFbCfq5gCfFrf8I
+         efCTb3UlxrJ4t6vRoIilMvhBBimWXecr+WYspUneqOkf7nh9K/4KTQsLwwoLexxNOY1M
+         vjNg==
+X-Gm-Message-State: AOJu0Yw99oDF5JxFgK2xQWun898ddcWQBCU4XTFhNSgOxCzw1Dtm4w2N
+        RT225wBuRwoX12UuTOlZZl/fPbJ+VTMHzkV6hWxvVQ==
+X-Google-Smtp-Source: AGHT+IE4RhkDbuclMq9ltVuFBkZXZA8BM882FOXeUnb6DCxbwIotur+3+O8VDD4iyzzyKVOmUB7dBUVGZkG6Y+BhQW4=
+X-Received: by 2002:a05:6870:c98f:b0:1e1:e36a:fb74 with SMTP id
+ hi15-20020a056870c98f00b001e1e36afb74mr2997080oab.26.1700656141830; Wed, 22
+ Nov 2023 04:29:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GytIA0m4jn6r4+oY"
-Content-Disposition: inline
-In-Reply-To: <20231122112212.GA783262@pengutronix.de>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1700648164.git.cmo@melexis.com> <2e8b4a7d3ef4bc1c53bd0a849e4c31eaf2477f6b.1700648165.git.cmo@melexis.com>
+ <99d1808a-da04-4bc1-a1f7-cbd269adbbf0@kernel.org>
+In-Reply-To: <99d1808a-da04-4bc1-a1f7-cbd269adbbf0@kernel.org>
+From:   Crt Mori <cmo@melexis.com>
+Date:   Wed, 22 Nov 2023 13:28:25 +0100
+Message-ID: <CAKv63uv87srZ3gJxFASuGWV6cULXkN=gYi_L=BCcd3dgOFQEfw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: iio: temperature: add MLX90635 device bindings
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 22 Nov 2023 at 12:52, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On 22/11/2023 11:27, Crt Mori wrote:
+> > Add device tree bindings for MLX90635 Infra Red contactless temperature
+> > sensor.
+>
+> Please use scripts/get_maintainers.pl to get a list of necessary people
+> and lists to CC (and consider --no-git-fallback argument). It might
+> happen, that command when run on an older kernel, gives you outdated
+> entries. Therefore please be sure you base your patches on recent Linux
+> kernel.
+>
 
---GytIA0m4jn6r4+oY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+OK, will put everyone in that list in next spin.
 
-On Wed, Nov 22, 2023 at 12:22:12PM +0100, Oleksij Rempel wrote:
+> A nit, subject: drop second/last, redundant "bindings". The
+> "dt-bindings" prefix is already stating that these are bindings.
+>
 
-> Some puzzle parts are now mainline, for example regulator framework
-> can be configured to detect under-voltage events and execute
-> hw_protection_shutdown(). So far it worked good enough to complete
-> mmc_poweroff_notify() withing 100ms window. The problem is, the chance to
-> execute mmc_poweroff_notify() depends on kernel configuration. If there are too
-> many drivers and devices, mmc_poweroff_notify() will be not executed in time.
+ Ok, will fix that in next version (probably main driver review will
+get some comments).
 
-> For now, I workaround it by registering a reboot notifier for mmc shutdown.
-> It works, because kernel_power_off() is executing all registered reboot
-> notifiers at first place and there are no other slow reboot notifiers.
-> But, it seems to be not reliable enough. Probably notifier prioritization
-> is needed to make it more predictable.
+> >
+> > Signed-off-by: Crt Mori <cmo@melexis.com>
+> > ---
+> >  .../iio/temperature/melexis,mlx90635.yaml     | 60 +++++++++++++++++++
+> >  1 file changed, 60 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/temperature/melexis,mlx90635.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90635.yaml b/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90635.yaml
+> > new file mode 100644
+> > index 000000000000..96463121a806
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/temperature/melexis,mlx90635.yaml
+> > @@ -0,0 +1,60 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/temperature/melexis,mlx90635.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Melexis MLX90635 contactless Infra Red temperature sensor
+> > +
+> > +maintainers:
+> > +  - Crt Mori <cmo@melexis.com>
+> > +
+> > +description: |
+> > +  https://www.melexis.com/en/documents/documentation/datasheets/datasheet-mlx90635
+> > +
+> > +  There are various applications for the Infra Red contactless temperature
+> > +  sensor and MLX90635 is most suitable for consumer applications where
+> > +  measured object temperature is in range between -20 to 100 degrees
+> > +  Celsius with relative error of measurement 2 degree Celsius in
+> > +  object temperature range for industrial applications, while just 0.2
+> > +  degree Celsius for human body measurement applications. Since it can
+> > +  operate and measure ambient temperature in range of -20 to 85 degrees
+> > +  Celsius it is suitable also for outdoor use.
+> > +
+> > +  Be aware that electronics surrounding the sensor can increase ambient
+> > +  temperature. MLX90635 can be calibrated to reduce the housing effect via
+> > +  already existing EEPROM parameters.
+> > +
+> > +  Since measured object emissivity effects Infra Red energy emitted,
+> > +  emissivity should be set before requesting the object temperature.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: melexis,mlx90635
+>
+> It's the same as mlx90632. Add it there (as enum).
+>
 
-> So far, I have two variants to implement it in more predictable way:
-> variant 1 - forward the under-voltage notification to the mmc framework and
->   execute mmc_poweroff_notify() or bus shutdown.
-> variant 2 - use reboot notifier and introduce reboot notifier prioritization.
+Properties are the same, but then you can't have much differences for
+a temperature sensor. It has a bit worse relative measurement error
+outside of the human body range and overall different DSP, register
+map, even physical size - it's 1.8x1.8 mm compared to 90632 3x3 mm. I
+was not sure how it qualifies for adding it as another enum, but I
+went with the feeling that if it can reuse the driver, then it is an
+enum, otherwise it is a new file. And I could not reuse anything from
+90632.
 
-> Are there other options? What are your preferences?
-
-My instinct is that we want to have prioritisation scheme rather than
-something MMC specific, I'd guess that this issue applies in some way to
-at least most storage.  It's not a super strongly held opinion though.
-
---GytIA0m4jn6r4+oY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVd84sACgkQJNaLcl1U
-h9Bf8wf/R6d4p2XKeuQW+1xTu9FLSsr7+z0oM/onpGR9JY0w2ky0IFjZjmbxN9U8
-YMxvuqD/mgLNzjJe7arFUiIpbNe7VNVSM56znjxHg8UadfPHYW9ImNUO14OwkCZN
-qXzMYsNpQhrc5/kNxs2pNso4Cg0Emm/8Hnk97vqFpR1d5AV9hlxsd7xjUlJ5Ah67
-3n+VSty5DszMvSQfxW93Xihv4V3BwQ8dRyCIYac+BUG+sXCrDp/VV3t+2EorXL76
-JLZizRhRKta002htsgAlqRNRZZL1NwI6JGlHD6Rm2WSSAEMDjudiPjJn5KNsEjuP
-bhqR/YN5SXZsTjHC3y/qmZJrkoYWsw==
-=WFJZ
------END PGP SIGNATURE-----
-
---GytIA0m4jn6r4+oY--
+Thanks for quick feedback and best regards,
+Crt
+> Best regards,
+> Krzysztof
+>
