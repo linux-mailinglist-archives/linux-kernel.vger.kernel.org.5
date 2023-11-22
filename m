@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70E87F4E10
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568CA7F4E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343986AbjKVRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:16:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
+        id S1344021AbjKVRUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbjKVRQ4 (ORCPT
+        with ESMTP id S231793AbjKVRUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:16:56 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA73191;
-        Wed, 22 Nov 2023 09:16:50 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D9EEC60005;
-        Wed, 22 Nov 2023 17:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700673409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=96QYHoZIDIT+pxG6t2aqCRbFyqHy2hKopbA6OtGC0ug=;
-        b=KUA08b5UpgDVT1Kju2OmlHYuYPXgqPrvOrFBHuw1abLqkrs5cPxtdYXHtnbwYAM8lelA88
-        jm1PutjS30gkjtNygopDI5oZa0aJYFHh7SRzlVxIaoMc7obiW98oKo9db1aOdIPGCW+A+C
-        Ash1xYvo6E/RUmxVsIOS+G3F2KZajj+gPzSNz2utAQUa+X+rnPhvWsIVFLRCs4mq64rsBG
-        8B7O9KyJl52TiZ+/MIssxF4mxVn1/f9NlVuCbIJ2wlGym9utHkXm9tApy4zUQC6HIOOp86
-        x8o7ABaAu2TcLEwT2lNVvP6XDl3FtfSjSIZQbG8r9V97Vf2j85MUjhDjUTDdDQ==
-Date:   Wed, 22 Nov 2023 18:16:47 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <20231122181647.06d9c3c9@kmaincent-XPS-13-7390>
-In-Reply-To: <04f59e77-134b-45b2-8759-84b8e22c30d5@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
-        <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
-        <2ff8bea5-5972-4d1a-a692-34ad27b05446@lunn.ch>
-        <20231122171112.59370d21@kmaincent-XPS-13-7390>
-        <04f59e77-134b-45b2-8759-84b8e22c30d5@lunn.ch>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 22 Nov 2023 12:20:01 -0500
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728AA92
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:19:57 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 414C93200B57;
+        Wed, 22 Nov 2023 12:19:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 22 Nov 2023 12:19:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
+        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1700673594; x=1700759994; bh=HB
+        A8/PFg10ymZNJDZ693U+tza3MBCER8GemTUdFxOSY=; b=kB6PqRHMuOJq8+yRwk
+        Apu+hG7KQ+/+RHI96oE3S0StgmKqV5mmf22tZOYHgW9hRlZpNdIkgzfLfY5fJLKY
+        9P2zfPVBksW6U1pW2cmnlctW8bGx/o5h3Gw0VjIfjKGRThaDcPgDRNGqlsjMNcty
+        Dh5qD/Z/HqG20rhZM41Pt+LaeaxmdI+VC0n97IFgo6S1i+22SLTKZ4zssVKemROE
+        4vbp830JmNxWbSYcUlRBjx5dfciVR9erOEvF6wmTb/ecb8nYX2+wGSYTQgr5SOAO
+        qeJuPvbmyS2VTTNO86Fvx3hitJhu0xaCPL4z5nU1qm9zzngdLJEGzhb+5RT6o/b2
+        NwiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1700673594; x=1700759994; bh=HBA8/PFg10ymZ
+        NJDZ693U+tza3MBCER8GemTUdFxOSY=; b=RwghFZzluA72h5rDesMsi5YLfssF1
+        3QpqmD0qIBO6NwG3K27ii6vjYDhnf6dW3PbdCKsOJ1ZroqZFSSdlX/RFcn5bKfbD
+        ADMkrUqWLSlNYcfErGTuW8NAbmf5MraM/qHMWEYeQMkHWSi8GaqRJsvymIhOx+0K
+        9cDgwzOrodGUDtoFom9ndeyL9gQc8KHWWhk7SottR/8CRYQQTyDTTeS4L4Xk0N8t
+        hk21090Sxex9EvyQ9+D+ZvEw+tvErD1R0zCBaKMST9tAvrmLNP9yCPtwVFxiWK0F
+        RO9c2KRqkEU6UXRYa8gUXUV6h+wQ9M/ftfjW+sEr5jBklvUYMu8ulOyrQ==
+X-ME-Sender: <xms:ODheZSK711yXzfijKj2B_yBjTSUX16HiWl3r4oIc6IXHwZVVAp7mvA>
+    <xme:ODheZaJVSaGM9PXw3T9h2rw3ILQwiQp1sZ9nZMn0ypbs9w01PmgJT39dAbDnOvzoQ
+    -8r-41C8o5gx2LO9Cw>
+X-ME-Received: <xmr:ODheZSta4fNxw3YCa6Z0iFf09Mu_g3zq0gQWkBiTatoRe7_fgB_sN_oX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goteeftdduqddtudculdduhedmnecujfgurhepfhgfhffvvefuffgjkfggtgesthdtredt
+    tdertdenucfhrhhomhepufhtvghfrghnucftohgvshgthhcuoehshhhrseguvghvkhgvrh
+    hnvghlrdhioheqnecuggftrfgrthhtvghrnhepvdduhfdvffduvedvkedvffejvdejuedv
+    feejtdejtefffeejgfelhfetkedtgeeknecuffhomhgrihhnpehkshhmtddupgdurdhfrg
+    hilhdpkhgvrhhnvghlrdhorhhgpdhkshhmtddurdhfrghilhenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehshhhrseguvghvkhgvrhhnvghlrd
+    hioh
+X-ME-Proxy: <xmx:ODheZXZyffz4GkJdkTUFiCUsEVMAvWwdNM91jQU5dVZZ6BhNiNI7ww>
+    <xmx:ODheZZaES0sNWBYMcb-ilagzdRnfsfZUYQy1w38KAjHImlfD_ocwrA>
+    <xmx:ODheZTDUdLdzHlDIx0CQqQXkW1DGhjL7xcT7qRhvB94K-FNsmFS-WQ>
+    <xmx:OjheZbkcTFFOEdBWdMYskZszXXXzSl9agWrw8pvICwlJTQPTzHQFDQ>
+Feedback-ID: i84614614:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Nov 2023 12:19:50 -0500 (EST)
+References: <202311161132.13d8ce5a-oliver.sang@intel.com>
+ <3540fd3e-88dd-462b-88ce-df28b7b5b148@redhat.com>
+ <87edgo8gq7.fsf@devkernel.io>
+User-agent: mu4e 1.10.3; emacs 29.1
+From:   Stefan Roesch <shr@devkernel.io>
+To:     Stefan Roesch <shr@devkernel.io>
+Cc:     David Hildenbrand <david@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>, linux-mm@kvack.org,
+        ltp@lists.linux.it
+Subject: Re: [linus:master] [mm/ksm] 5e924ff54d: ltp.ksm01.fail
+Date:   Wed, 22 Nov 2023 09:16:47 -0800
+In-reply-to: <87edgo8gq7.fsf@devkernel.io>
+Message-ID: <877cm9so25.fsf@devkernel.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,70 +94,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 17:54:53 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
 
-> > > > +static int pd692x0_sendrecv_msg(struct pd692x0_priv *priv,
-> > > > +				struct pd692x0_msg *msg,
-> > > > +				struct pd692x0_msg_content *buf)
-> > > > +{
-> > > > +	struct device *dev =3D &priv->client->dev;
-> > > > +	int ret;
-> > > > +
-> > > > +	ret =3D pd692x0_send_msg(priv, msg);
-> > > > +	if (ret)
-> > > > +		return ret;
-> > > > +
-> > > > +	ret =3D pd692x0_recv_msg(priv, msg, buf);   =20
-> > >=20
-> > > So this function takes at least 10 seconds? =20
-> >=20
-> > No, on normal communication it takes a bit more than 30ms. =20
->=20
-> So i think the first step is to refactor this code to make it clear
-> what the normal path is, and what the exception path is, and the
-> timing of each.
+Stefan Roesch <shr@devkernel.io> writes:
 
-Ok I will try to refactor it to makes it more readable.
+> David Hildenbrand <david@redhat.com> writes:
+>
+>> On 16.11.23 05:39, kernel test robot wrote:
+>>> hi, Stefan Roesch,
+>>> we reported
+>>> "[linux-next:master] [mm/ksm]  5e924ff54d: ltp.ksm01_1.fail"
+>>> in
+>>> https://lore.kernel.org/all/202311031548.66780ff5-oliver.sang@intel.com/
+>>> when this commit is in linux-next/master.
+>>> now we noticed this commit is merged in mainline, and we still observed
+>>> same issue. just FYI.
+>>> Hello,
+>>> kernel test robot noticed "ltp.ksm01.fail" on:
+>>> commit: 5e924ff54d088828794d9f1a4d5bf17808f7270e ("mm/ksm: add "smart" page
+>>> scanning mode")
+>>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>>> [test failed on linus/master 3ca112b71f35dd5d99fc4571a56b5fc6f0c15814]
+>>> [test failed on linux-next/master 8728c14129df7a6e29188a2e737b4774fb200953]
+>>> in testcase: ltp
+>>> version: ltp-x86_64-14c1f76-1_20230715
+>>> with following parameters:
+>>> 	disk: 1HDD
+>>> 	test: mm-00/ksm01
+>>> compiler: gcc-12
+>>> test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-7700 CPU @ 3.60GHz (Kaby Lake) with 32G memory
+>>> (please refer to attached dmesg/kmsg for entire log/backtrace)
+>>> If you fix the issue in a separate patch/commit (i.e. not just a new version
+>>> of
+>>> the same patch/commit), kindly add following tags
+>>> | Reported-by: kernel test robot <oliver.sang@intel.com>
+>>> | Closes: https://lore.kernel.org/oe-lkp/202311161132.13d8ce5a-oliver.sang@intel.com
+>>> Running tests.......
+>>> <<<test_start>>>
+>>> tag=ksm01 stime=1699563923
+>>> cmdline="ksm01"
+>>> contacts=""
+>>> analysis=exit
+>>> <<<test_output>>>
+>>> tst_kconfig.c:87: TINFO: Parsing kernel config '/proc/config.gz'
+>>> tst_test.c:1558: TINFO: Timeout per run is 0h 00m 30s
+>>> mem.c:422: TINFO: wait for all children to stop.
+>>> mem.c:388: TINFO: child 0 stops.
+>>> mem.c:388: TINFO: child 1 stops.
+>>> mem.c:388: TINFO: child 2 stops.
+>>> mem.c:495: TINFO: KSM merging...
+>>> mem.c:434: TINFO: resume all children.
+>>> mem.c:422: TINFO: wait for all children to stop.
+>>> mem.c:344: TINFO: child 1 continues...
+>>> mem.c:347: TINFO: child 1 allocates 128 MB filled with 'a'
+>>> mem.c:344: TINFO: child 2 continues...
+>>> mem.c:347: TINFO: child 2 allocates 128 MB filled with 'a'
+>>> mem.c:344: TINFO: child 0 continues...
+>>> mem.c:347: TINFO: child 0 allocates 128 MB filled with 'c'
+>>> mem.c:400: TINFO: child 1 stops.
+>>> mem.c:400: TINFO: child 0 stops.
+>>> mem.c:400: TINFO: child 2 stops.
+>>> ksm_helper.c:36: TINFO: ksm daemon takes 2s to run two full scans
+>>> mem.c:264: TINFO: check!
+>>> mem.c:255: TPASS: run is 1.
+>>> mem.c:255: TPASS: pages_shared is 2.
+>>> ....
+>>> mem.c:255: TPASS: pages_shared is 1.
+>>> mem.c:255: TPASS: pages_sharing is 98302.
+>>> mem.c:252: TFAIL: pages_volatile is not 0 but 1.     <-----
+>>> mem.c:252: TFAIL: pages_unshared is not 1 but 0.     <-----
+>>
+>> @Stefan, is this simply related to the new scanning optimization (skip and
+>> eventually not merge a pages within the "2 scans" windows, whereby previously,
+>> they would have gotten merged)?
+>>
+>> If so, we might just want to disable that optimization for that test case?
+>>
+>> Alternatively, maybe we have to wait for "more" scan cycles instead of only 2?
+>
+> I'd expect this is caused by "smart scan", where we can skip pages.
+> The best is probably to disable the smart scan feature for this test.
+> The smart scan feature can be disabled by:
+>
+>     echo 0 > /sys/kernel/mm/ksm/smart_scan
+>
+> I'll have a look at it today.
+>
 
-> > > > +	msg.content.sub[2] =3D id;
-> > > > +	ret =3D pd692x0_sendrecv_msg(priv, &msg, &buf);   =20
-> > >=20
-> > > So this is also 10 seconds?=20
-> > >=20
-> > > Given its name, it looks like this is called via ethtool? Is the
-> > > ethtool core holding RTNL? It is generally considered bad to hold RTN=
-L for
-> > > that long. =20
-> >=20
-> > Yes it is holding RTNL lock. Should I consider another behavior in case=
- of
-> > communication loss to not holding RTNL lock so long? =20
->=20
-> How often does it happen? On the scale of its a theoretical
-> possibility, through to it happens every N calls? Also, does it happen
-> on cold boot and reboot?
->=20
-> If its never supposed to happen, i would keep holding RTNL, and add a
-> pr_warn() that the PSE has crashed and burned, waiting for it to
-> reboot. If this is likely to happen on the first communication with
-> the device, we might want to do a dummy transfer during probe to get
-> is synchronized before we start using it with the RTNL held.
+If I disable "smart scan", the testcase completes successully. This is
+simply the case that for the testcase, it can "skip" a page (as the
+"smart scan" feature is enabled).
 
-I would say it never supposed to happen.
-I never faced the issue playing with the controller. The first communicatio=
-n is
-a simple i2c_master_recv of the controller status without entering the
-pd692x0_sendrecv_msg function, therefore it won't be an issue.
-
-Another solution could be to raise a flag if I enter in communication loss =
-and
-release the rtnlock. We would lock again the rtnl when the flags got disabl=
-ed.
-The controler won't be accessible until the flag is disabled.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+The easiest fix is to disable smart scan for the ksm cases. I'll send an
+ltp patch a bit later to address this issue.
