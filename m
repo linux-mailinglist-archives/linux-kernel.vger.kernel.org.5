@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCBD7F5321
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 139027F5345
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbjKVWOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46802 "EHLO
+        id S1344664AbjKVWTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbjKVWOm (ORCPT
+        with ESMTP id S235246AbjKVWTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:14:42 -0500
+        Wed, 22 Nov 2023 17:19:42 -0500
 Received: from helios.alatek.com.pl (helios.alatek.com.pl [85.14.123.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7B4AD;
-        Wed, 22 Nov 2023 14:14:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B1912A;
+        Wed, 22 Nov 2023 14:19:38 -0800 (PST)
 Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id 3C4812D00B5B;
-        Wed, 22 Nov 2023 23:08:50 +0100 (CET)
+        by helios.alatek.com.pl (Postfix) with ESMTP id 21FE12D00B5F;
+        Wed, 22 Nov 2023 23:09:40 +0100 (CET)
 Received: from helios.alatek.com.pl ([127.0.0.1])
  by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10032)
- with ESMTP id Npj0OrRRbQ5m; Wed, 22 Nov 2023 23:08:49 +0100 (CET)
+ with ESMTP id jqwYF8fSHqPJ; Wed, 22 Nov 2023 23:09:35 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by helios.alatek.com.pl (Postfix) with ESMTP id BEA1B2D00B5A;
-        Wed, 22 Nov 2023 23:08:49 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl BEA1B2D00B5A
+        by helios.alatek.com.pl (Postfix) with ESMTP id E12642D00B5E;
+        Wed, 22 Nov 2023 23:09:35 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 helios.alatek.com.pl E12642D00B5E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alatek.krakow.pl;
-        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1700690929;
-        bh=PTa268/JX+mlRh2pftJ7srsiSRZlKXzy21FlzLAe5Bs=;
+        s=99EE5E86-D06A-11EC-BE24-DBCCD0A148D3; t=1700690975;
+        bh=fRcRZDTsd7kJTaGjL723vrYFFja9y139VFQGM81sxdU=;
         h=From:To:Date:Message-Id:MIME-Version;
-        b=YNW+agj/fsLXUNs8xM0/H5ifHDFwktw8wkaao56kuymnufHKcZyKgKJC+MspTCSDG
-         4OShWE8s8QJBSCBFxJgoaxid/HPMyc+9vob4Q/X/N1m186AFBl/n6DNI2SbMDOGauD
-         4yMklW9I5usHXdMmezlei0sBlnmqFH5g7r5dFiM0xVk9f/E7jmirY1rp9Qrw/kamZn
-         Uc4PzP+7ozfPx/jsZa9wYn6eSI+WrzwvEiP3uWuwR7yXuUJoNvALEDGRWTTZTs56v3
-         c/ldIqLOp6Vw1rp2/Nx/pG9joyVjEqOpibKqzbf+SUflJgOBGIjqmN2f2NaExyl2I4
-         CQpkjv5dyy5VA==
+        b=agfn9OWi6jQz1ZdDBZXwTf2z4wG9cn2rhWQuNDK2iljulBEVzXbaIEoeWH/fx6mkL
+         nRpC7NpLNtw8lg/H58kHJJwQebR2Pkb/IOYdTZSe+CldPiPthLAcddgcGI8eLiamaD
+         i3hPx75ylcdk9fzaUS9iNxhYkalc9Wzt5Ym8wezpnbGknEvJZKTkrO0Yv2BBJfjCHD
+         gdH2tijOO+Je6WZBjKmWpepJ7qnuouuYdmM1U7vF7auSV0k0TGubvDw8qlHAI7NDft
+         5p9OfCFmhc2SJtPqo5D80zxteu45WzF/oH3lozKP5/PqA/M4YnGVEcg1uixScPal3U
+         aqzXsNukIsSMQ==
 X-Virus-Scanned: amavis at alatek.com.pl
 Received: from helios.alatek.com.pl ([127.0.0.1])
  by localhost (helios.alatek.com.pl [127.0.0.1]) (amavis, port 10026)
- with ESMTP id vJcjfbOJKJxQ; Wed, 22 Nov 2023 23:08:49 +0100 (CET)
+ with ESMTP id ZSCcmxY_ej70; Wed, 22 Nov 2023 23:09:35 +0100 (CET)
 Received: from ideapad.. (unknown [10.0.2.2])
-        by helios.alatek.com.pl (Postfix) with ESMTPSA id 82D562D00B50;
-        Wed, 22 Nov 2023 23:08:49 +0100 (CET)
+        by helios.alatek.com.pl (Postfix) with ESMTPSA id B2FAE2D00B5D;
+        Wed, 22 Nov 2023 23:09:35 +0100 (CET)
 From:   Jan Kuliga <jankul@alatek.krakow.pl>
 To:     lizhi.hou@amd.com, brian.xu@amd.com, raj.kumar.rampelli@amd.com,
         vkoul@kernel.org, michal.simek@amd.com, dmaengine@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Jan Kuliga <jankul@alatek.krakow.pl>
-Subject: [PATCH 0/5] Miscellaneous xdma driver enhancements
-Date:   Wed, 22 Nov 2023 23:08:30 +0100
-Message-Id: <20231122220830.117403-1-jankul@alatek.krakow.pl>
+Subject: [PATCH 1/5] dmaengine: xilinx: xdma: Add transfer termination callbacks
+Date:   Wed, 22 Nov 2023 23:09:17 +0100
+Message-Id: <20231122220921.117428-2-jankul@alatek.krakow.pl>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231122220830.117403-1-jankul@alatek.krakow.pl>
+References: <20231122220830.117403-1-jankul@alatek.krakow.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -62,28 +64,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The xdma driver currently doesn't implement proper transfer termination
+callbacks. Therefore, there is no way to gracefully terminate the
+on-going DMA transactions. That is particularly useful for cyclic DMA
+transfers. Implement these callbacks.
 
-This patch series introduces a couple of xdma driver enhancements, such
-as two dmaengine callbacks, partial rework of a interrupt service
-routine and loosening of dma_pool alignment requirements. I have tested
-these changes with XDMA v4.1 (Rev. 20) block.
-
-Jan
+Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
 ---
-Jan Kuliga (5):
-  dmaengine: xilinx: xdma: Add transfer termination callbacks
-  dmaengine: xilinx: xdma: Get rid of duplicated macros definitions
-  dmaengine: xilinx: xdma: Complete lacking register description
-  dmaengine: xilinx: xdma: Rework xdma_channel_isr()
-  dmaengine: xilinx: xdma: Ease dma_pool alignment requirements
+ drivers/dma/xilinx/xdma-regs.h |  1 +
+ drivers/dma/xilinx/xdma.c      | 55 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
- drivers/dma/xilinx/xdma-regs.h | 24 ++++-------
- drivers/dma/xilinx/xdma.c      | 78 +++++++++++++++++++++++++++++-----
- 2 files changed, 76 insertions(+), 26 deletions(-)
-
-
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+diff --git a/drivers/dma/xilinx/xdma-regs.h b/drivers/dma/xilinx/xdma-reg=
+s.h
+index e641a5083e14..1f17ce165f92 100644
+--- a/drivers/dma/xilinx/xdma-regs.h
++++ b/drivers/dma/xilinx/xdma-regs.h
+@@ -76,6 +76,7 @@ struct xdma_hw_desc {
+ #define XDMA_CHAN_CONTROL_W1S		0x8
+ #define XDMA_CHAN_CONTROL_W1C		0xc
+ #define XDMA_CHAN_STATUS		0x40
++#define XDMA_CHAN_STATUS_RC		0x44
+ #define XDMA_CHAN_COMPLETED_DESC	0x48
+ #define XDMA_CHAN_ALIGNMENTS		0x4c
+ #define XDMA_CHAN_INTR_ENABLE		0x90
+diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
+index 84a88029226f..58539a093de2 100644
+--- a/drivers/dma/xilinx/xdma.c
++++ b/drivers/dma/xilinx/xdma.c
+@@ -632,6 +632,59 @@ xdma_prep_dma_cyclic(struct dma_chan *chan, dma_addr=
+_t address,
+ 	return NULL;
+ }
+=20
++/**
++ * xdma_terminate_all - Halt the DMA channel
++ * @chan: DMA channel
++ */
++static int xdma_terminate_all(struct dma_chan *chan)
++{
++	int ret;
++	u32 val;
++	unsigned long flags;
++	struct xdma_chan *xchan =3D to_xdma_chan(chan);
++	struct xdma_device *xdev =3D xchan->xdev_hdl;
++	struct virt_dma_desc *vd;
++	LIST_HEAD(head);
++
++	/* Clear the RUN bit to stop the transfer */
++	ret =3D regmap_write(xdev->rmap, xchan->base + XDMA_CHAN_CONTROL_W1C,
++							CHAN_CTRL_RUN_STOP);
++	if (ret)
++		return ret;
++
++	/* Clear the channel status register */
++	ret =3D regmap_read(xdev->rmap, xchan->base + XDMA_CHAN_STATUS_RC, &val=
+);
++	if (ret)
++		return ret;
++
++	spin_lock_irqsave(&xchan->vchan.lock, flags);
++
++	/* Don't care if there were no descriptors issued */
++	vd =3D vchan_next_desc(&xchan->vchan);
++	if (vd) {
++		list_del(&vd->node);
++		vchan_terminate_vdesc(vd);
++	}
++	vchan_get_all_descriptors(&xchan->vchan, &head);
++	list_splice_tail_init(&head, &xchan->vchan.desc_terminated);
++
++	xchan->busy =3D false;
++	spin_unlock_irqrestore(&xchan->vchan.lock, flags);
++
++	return 0;
++}
++
++/**
++ * xdma_synchronize - Synchronize current execution context to the DMA c=
+hannel
++ * @chan: DMA channel
++ */
++static void xdma_synchronize(struct dma_chan *chan)
++{
++	struct xdma_chan *xchan =3D to_xdma_chan(chan);
++
++	vchan_synchronize(&xchan->vchan);
++}
++
+ /**
+  * xdma_device_config - Configure the DMA channel
+  * @chan: DMA channel
+@@ -1093,6 +1146,8 @@ static int xdma_probe(struct platform_device *pdev)
+ 	xdev->dma_dev.filter.mapcnt =3D pdata->device_map_cnt;
+ 	xdev->dma_dev.filter.fn =3D xdma_filter_fn;
+ 	xdev->dma_dev.device_prep_dma_cyclic =3D xdma_prep_dma_cyclic;
++	xdev->dma_dev.device_terminate_all =3D xdma_terminate_all;
++	xdev->dma_dev.device_synchronize =3D xdma_synchronize;
+=20
+ 	ret =3D dma_async_device_register(&xdev->dma_dev);
+ 	if (ret) {
 --=20
 2.34.1
 
