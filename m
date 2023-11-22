@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 547C97F4812
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31847F4816
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:48:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344102AbjKVNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S1343970AbjKVNs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343568AbjKVNpr (ORCPT
+        with ESMTP id S1343568AbjKVNs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:45:47 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF110CE;
-        Wed, 22 Nov 2023 05:45:44 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00a9c6f283so373262466b.0;
-        Wed, 22 Nov 2023 05:45:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700660742; x=1701265542; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=md1yJyViVJIk7bLbArcNZW7/RCjayNMC8N02jDNysO4=;
-        b=ch4GalIXl3dk5A3Nde7K6ha0vSoqXiq8GlivBm64yEA5gkYwvhjHSmYSSrrUWBZQxN
-         KWVIy0xl6mWTGPM1pBUGt9NXa6awo4YXdN2HCpScrWKHHxO9uEBqipL/ogEsfg3kEdNV
-         mS+FhXnhEFbjfUgzbtlX0LRjfG4Lkv1DogZXJzMprC3KluT9fU0IEMhP+751iNwakl8l
-         hBNuqErYdlpNf/v2kL85oEYWNWPPH0+Kb7pyjcslX/YkrcLwSV+i8LNnwECEC/JSHQDk
-         t2SCE3UcceXuDAEI5+Gb5tOZ4iook7FON725REWvgMJQ5wHQPQZog4pw78Q/loR/6ukn
-         hFLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700660742; x=1701265542;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=md1yJyViVJIk7bLbArcNZW7/RCjayNMC8N02jDNysO4=;
-        b=DUD465gjirqgF2mAOfWEzd/WvNDInuBelu37aSPzVCyu6giOGO63LDGkX5qhYHyYnr
-         6gigR2Kag/kYDsAFYywolB/s98uvv1pNMVdO9sUu0+GbAtnf/JqaO52iZZqsiS0hDiJ0
-         7gVPwn4VFP+09g0BuF2tiveBS7X7RqipMUoTVv/6lqozKpudlmUy4ucmHinA0OLLGQw8
-         aAl4Fro8AbsEAFpg0FTHmFa93yqAZdKMOTC8u0kCeoKcPSYxPyN32XaMBDQi6BEs+tW6
-         ekt4KYYQGtlo4eUPq0ReKy8GGbfWOb0NAb6HzwlrBsZ1umH5Kc6ZK31Tt3utPpP0BFu1
-         qvXA==
-X-Gm-Message-State: AOJu0Yz5Nbk9/lLaPCDekrwERYwWhcMhlteHUy9088QdIN30wDpoXnE6
-        ISCvM3T5F85gFH+MtH+UhPV3xGaT1CxMFIgMe28=
-X-Google-Smtp-Source: AGHT+IEDJD80sNR88v2ZEvEEO8EO3ir1FQB2gTnGz7Y36msid1xY1pR45oM0Od6H7q9Cr5vTAN6bxG6Disb78sSlYj4=
-X-Received: by 2002:a17:906:4e93:b0:9fc:ae47:5f0d with SMTP id
- v19-20020a1709064e9300b009fcae475f0dmr1464027eju.71.1700660742134; Wed, 22
- Nov 2023 05:45:42 -0800 (PST)
+        Wed, 22 Nov 2023 08:48:27 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76890109;
+        Wed, 22 Nov 2023 05:48:23 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AM9cmE8019629;
+        Wed, 22 Nov 2023 13:48:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=kRLjiWkafDJYF06vr/3OJ9/aGHRTxVUHSlMfQx8SFQo=;
+ b=o3aQWRUQeFKqHV1EHPT4x1rcBitP+cSjDedUMCQ688XoeEUGmxCdlogd6K/T7OQF0Adq
+ nAviOLT9uCCk8aG+LVpv211DqYufBVXwAF1X1C8vLCyGUHL7cClh54Gu6xlqAnPBv1X9
+ YnTrThUoOJMqPbewquiK9+WdM+0xnlKFBxJHHmFr4+RRwBxewIgrNPt+/4kDZyAyp5Jw
+ stgJfotbMSdhBYh15Yx4KUf60u6HNCeP/bNBQOgHaNJDi1iCuywTZIee5vAwLQvgRBZf
+ APix9nJTNJT8GZsD2QUhCCQU0hyZQaVxnIoN3DWVmm20PK5oEOAuSy99qHz8sQui9MYZ 7g== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhf668kc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 13:48:12 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AMDmBEO005280
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 13:48:11 GMT
+Received: from hu-pbrahma-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 22 Nov 2023 05:48:07 -0800
+From:   Pratyush Brahma <quic_pbrahma@quicinc.com>
+To:     <sumit.semwal@linaro.org>, <benjamin.gaignard@collabora.com>,
+        <Brian.Starkey@arm.com>, <jstultz@google.com>,
+        <tjmercier@google.com>, <christian.koenig@amd.com>,
+        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <quic_guptap@quicinc.com>
+CC:     Vijayanand Jitta <quic_vjitta@quicinc.com>
+Subject: [PATCH 0/2] Add qcom secure heaps
+Date:   Wed, 22 Nov 2023 19:17:45 +0530
+Message-ID: <cover.1700544802.git.quic_vjitta@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <y>
+References: <y>
 MIME-Version: 1.0
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info> <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
- <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
-In-Reply-To: <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Wed, 22 Nov 2023 14:45:30 +0100
-Message-ID: <CAKXUXMzo4cOW3p-XhODanMy5Lig7zHqnqbYJ5aXNvbeYLwfrrQ@mail.gmail.com>
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to CONFIG_MICROCODE_AMD)
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        hpa@zytor.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vBiTNP9YsZc5lBQg9comOWQGsHORWSZU
+X-Proofpoint-GUID: vBiTNP9YsZc5lBQg9comOWQGsHORWSZU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_09,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ clxscore=1011 bulkscore=0 mlxlogscore=495 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 suspectscore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311220097
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 10:15=E2=80=AFAM Linux regression tracking (Thorste=
-n
-Leemhuis) <regressions@leemhuis.info> wrote:
->
-> On 12.11.23 19:10, Borislav Petkov wrote:
-> > On Sun, Nov 12, 2023 at 04:03:32PM +0100, Linux regression tracking (Th=
-orsten Leemhuis) wrote:
-> >> That's because dracut until the recent commit
-> >> https://github.com/dracutdevs/dracut/commit/6c80408c8644a0add1907b0593=
-eb83f90d6247b1
-> >> looked for CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL in the conf=
-ig
-> >> file to decide what to include or not.
-> >
-> > They've been told a bunch of times already that grepping .config for
-> > specific symbols is not how one should check whether one should add
-> > microcode blobs to the initrd or not because Kconfig symbols are not an
-> > ABI.
->
-> Maybe, but you know how Linus sees things like this: what's considered
-> an ABI/API or not is nearly[1] irrelevant - if a change breaks something
-> that used to work then it needs to be fixed.
->
-> [1] unless you fiddle with things obviously internal; not sure if this
-> case would qualify for him, but somehow I doubt it -- but I might be
-> wrong there.
->
+From: Vijayanand Jitta <quic_vjitta@quicinc.com>
 
-Thorsten, I think you are wrong here in this case. We are talking
-about the kernel build configuration options and their names and these
-are certainly not stable and never have been.
+This patch series is based on mtk patch series [1] of
+adding secure heap support.
 
-Some indication to show that the rate of change we are generally
-talking about without anyone considering this stable ABI/API:
+This patch series adds support for qcom secure heaps which
+include secure cma heap and secure system heap, this does
+use qcom_scm_assign_mem to secure the memory.
 
-You can run "find . -name Kconfig* | xargs grep -h -E '^(menu)config '
-| sort | uniq" on each kernel release. Then diff those lists of
-configs with increasing kernel config versions.
-
-If this would be stable, then only config options should appear and
-little should disappear, but that is not the case. And if something
-disappears, it should relate to a driver/feature that was removed, but
-that is also not always the case.
-
-Here are some quick numbers:
-
-v6.0 to v6.1: 43 removals
-v6.1 to v6.2: 40 removals
-v6.2 to v6.3: 350 removals
-v6.3 to v6.4: 86 removals
-v6.4 to v6.5: 73 removals
-v6.5 to v6.6: 61 removals
-
-* Removals can also be potentially a renaming.
-
-So, these config names are certainly not stable ABI/API. We can
-investigate a bit deeper on which changes are due to driver removals,
-which due to config removal but making a feature default and which are
-simply a config renaming, but in the past, hardly any kernel developer
-has considered this interface to be a special stable ABI/API.
-
-Further, to my knowledge looking at kernel discussions and the
-repository, there are currently no tools out there that would assist
-in updating a kernel build configuration from one version to the next.
-
-So, we are talking about roughly more than 50 removals to kernel
-config options every release, and now there was this one special case
-in one release, where a tool incorrectly relies on this one config
-option to be stable. That is not a regression of a stable ABI/API,
-that is a misuse of an internal non-stable ABI/API.
+Video would be the user of these heaps and the corresponding
+VMIDs are also as added as part of these.
 
 
-Lukas
+[1] https://lore.kernel.org/linux-arm-kernel/20231111111559.8218-2-yong.wu@mediatek.com/T/
+
+Vijayanand Jitta (2):
+  dma-buf: heaps: secure_heap: Add secure ops for CMA heap
+  dma-buf: heaps: secure_heap: Add qcom secure system heap
+
+ drivers/dma-buf/heaps/secure_heap.c | 207 +++++++++++++++++++++++++++-
+ 1 file changed, 204 insertions(+), 3 deletions(-)
+
+-- 
+2.34.1
+
