@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52A87F4AE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DF37F4B1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbjKVPgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S1344597AbjKVPir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235209AbjKVPgM (ORCPT
+        with ESMTP id S1344655AbjKVPiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:36:12 -0500
+        Wed, 22 Nov 2023 10:38:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B436730C0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D6F30C1;
         Wed, 22 Nov 2023 07:34:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5360C433C7;
-        Wed, 22 Nov 2023 15:34:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89376C43395;
+        Wed, 22 Nov 2023 15:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667293;
-        bh=uUlJZrpgLO/ZLKjSdD9KYtjRaWtZ+6uPYlonXPr+/Yg=;
+        s=k20201202; t=1700667296;
+        bh=faClR3R2fzmL7AJjFZwWrlq97qch8VdDc7zsL2khTwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+O+6It9gc5fK6QuRS8Mcv6nNpjIlKAfPACMN0D+smFj872ap9f3T4BWfbZ06FLym
-         eweeUQ7PX2nHAu7HyZPwChwjYI00KYhr2i6jfL8z13wgGN6cB0zbEzo2C+iJfFyLN8
-         p0B4MA+twj3QxNA2mrJECa0u8L9tzRsWGuyl74IP2vbotA/LO8ADW4/88jv44tWEuQ
-         2BtgnaetquHNu2gCdUAbwDGyZXxTlEwelR3bDfnbTfosdR7IUPGqDPu33vin2hzHph
-         8IT/TRLEE18oZLopYuVxCm1DIFgIo4ePaIhe3tuujheRRCMdSyc4khGVUORGD8ds5X
-         DFlXRDCPMEQWg==
+        b=ncu6Xcel4sM8jAf8losxfwH7SHfyG1S/04vwXxHnF9vw0aZgm/jYRapdThrow2w06
+         XCZhHEs5uA5xfJVWeQZM7nW8KlbMp9UlF+cLlGlxcbSRPcQRgZg08jKA3Wxw8czkXB
+         W/LfzuBKxhH9qyh5+wdvpsnvhOVRfw5DmX13WYpUmORPamiikUQcuzfVw8jGDWFobq
+         ZwdfjiVM8198SnXizgP5or14reTTIUrpHUY/vZ9UjADzrQRoEJ4nq1ukxI4RXx/q/X
+         JrP7VJY2/Z3YSwwORySdNTMGhQTHliHyMJRujD+MNAm8qoUXarASZ8t+wPfS50B1lh
+         MbI5KqVRlvIBQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Sasha Levin <sashal@kernel.org>, fw@strlen.de,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kuniyu@amazon.com, justinstitt@google.com,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 4/9] netfilter: ipset: fix race condition between swap/destroy and kernel side add/del/test
-Date:   Wed, 22 Nov 2023 10:34:28 -0500
-Message-ID: <20231122153440.852807-4-sashal@kernel.org>
+Cc:     Nick Terrell <terrelln@fb.com>,
+        syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 5/9] zstd: Fix array-index-out-of-bounds UBSAN warning
+Date:   Wed, 22 Nov 2023 10:34:29 -0500
+Message-ID: <20231122153440.852807-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153440.852807-1-sashal@kernel.org>
 References: <20231122153440.852807-1-sashal@kernel.org>
@@ -47,111 +45,44 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.63
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
+From: Nick Terrell <terrelln@fb.com>
 
-[ Upstream commit 28628fa952fefc7f2072ce6e8016968cc452b1ba ]
+[ Upstream commit 77618db346455129424fadbbaec596a09feaf3bb ]
 
-Linkui Xiao reported that there's a race condition when ipset swap and destroy is
-called, which can lead to crash in add/del/test element operations. Swap then
-destroy are usual operations to replace a set with another one in a production
-system. The issue can in some cases be reproduced with the script:
+Zstd used an array of length 1 to mean a flexible array for C89
+compatibility. Switch to a C99 flexible array to fix the UBSAN warning.
 
-ipset create hash_ip1 hash:net family inet hashsize 1024 maxelem 1048576
-ipset add hash_ip1 172.20.0.0/16
-ipset add hash_ip1 192.168.0.0/16
-iptables -A INPUT -m set --match-set hash_ip1 src -j ACCEPT
-while [ 1 ]
-do
-	# ... Ongoing traffic...
-        ipset create hash_ip2 hash:net family inet hashsize 1024 maxelem 1048576
-        ipset add hash_ip2 172.20.0.0/16
-        ipset swap hash_ip1 hash_ip2
-        ipset destroy hash_ip2
-        sleep 0.05
-done
+Tested locally by booting the kernel and writing to and reading from a
+BtrFS filesystem with zstd compression enabled. I was unable to reproduce
+the issue before the fix, however it is a trivial change.
 
-In the race case the possible order of the operations are
-
-	CPU0			CPU1
-	ip_set_test
-				ipset swap hash_ip1 hash_ip2
-				ipset destroy hash_ip2
-	hash_net_kadt
-
-Swap replaces hash_ip1 with hash_ip2 and then destroy removes hash_ip2 which
-is the original hash_ip1. ip_set_test was called on hash_ip1 and because destroy
-removed it, hash_net_kadt crashes.
-
-The fix is to force ip_set_swap() to wait for all readers to finish accessing the
-old set pointers by calling synchronize_rcu().
-
-The first version of the patch was written by Linkui Xiao <xiaolinkui@kylinos.cn>.
-
-v2: synchronize_rcu() is moved into ip_set_swap() in order not to burden
-    ip_set_destroy() unnecessarily when all sets are destroyed.
-v3: Florian Westphal pointed out that all netfilter hooks run with rcu_read_lock() held
-    and em_ipset.c wraps the entire ip_set_test() in rcu read lock/unlock pair.
-    So there's no need to extend the rcu read locked area in ipset itself.
-
-Closes: https://lore.kernel.org/all/69e7963b-e7f8-3ad0-210-7b86eebf7f78@netfilter.org/
-Reported by: Linkui Xiao <xiaolinkui@kylinos.cn>
-Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://lkml.kernel.org/r/20231012213428.1390905-1-nickrterrell@gmail.com
+Reported-by: syzbot+1f2eb3e8cd123ffce499@syzkaller.appspotmail.com
+Reported-by: Eric Biggers <ebiggers@kernel.org>
+Reported-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Nick Terrell <terrelln@fb.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipset/ip_set_core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ lib/zstd/common/fse_decompress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
-index 20eede37d5228..d47dfdcb899b0 100644
---- a/net/netfilter/ipset/ip_set_core.c
-+++ b/net/netfilter/ipset/ip_set_core.c
-@@ -61,6 +61,8 @@ MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_IPSET);
- 	ip_set_dereference((inst)->ip_set_list)[id]
- #define ip_set_ref_netlink(inst,id)	\
- 	rcu_dereference_raw((inst)->ip_set_list)[id]
-+#define ip_set_dereference_nfnl(p)	\
-+	rcu_dereference_check(p, lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET))
+diff --git a/lib/zstd/common/fse_decompress.c b/lib/zstd/common/fse_decompress.c
+index 2c8bbe3e4c148..f37b7aec088ec 100644
+--- a/lib/zstd/common/fse_decompress.c
++++ b/lib/zstd/common/fse_decompress.c
+@@ -312,7 +312,7 @@ size_t FSE_decompress_wksp(void* dst, size_t dstCapacity, const void* cSrc, size
  
- /* The set types are implemented in modules and registered set types
-  * can be found in ip_set_type_list. Adding/deleting types is
-@@ -708,15 +710,10 @@ __ip_set_put_netlink(struct ip_set *set)
- static struct ip_set *
- ip_set_rcu_get(struct net *net, ip_set_id_t index)
- {
--	struct ip_set *set;
- 	struct ip_set_net *inst = ip_set_pernet(net);
+ typedef struct {
+     short ncount[FSE_MAX_SYMBOL_VALUE + 1];
+-    FSE_DTable dtable[1]; /* Dynamically sized */
++    FSE_DTable dtable[]; /* Dynamically sized */
+ } FSE_DecompressWksp;
  
--	rcu_read_lock();
--	/* ip_set_list itself needs to be protected */
--	set = rcu_dereference(inst->ip_set_list)[index];
--	rcu_read_unlock();
--
--	return set;
-+	/* ip_set_list and the set pointer need to be protected */
-+	return ip_set_dereference_nfnl(inst->ip_set_list)[index];
- }
- 
- static inline void
-@@ -1399,6 +1396,9 @@ static int ip_set_swap(struct sk_buff *skb, const struct nfnl_info *info,
- 	ip_set(inst, to_id) = from;
- 	write_unlock_bh(&ip_set_ref_lock);
- 
-+	/* Make sure all readers of the old set pointers are completed. */
-+	synchronize_rcu();
-+
- 	return 0;
- }
  
 -- 
 2.42.0
