@@ -2,70 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2B27F5460
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439DD7F5461
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbjKVXRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        id S230346AbjKVXS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKVXRS (ORCPT
+        with ESMTP id S229453AbjKVXS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:17:18 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA96A191
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:17:12 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-359c1f42680so1028785ab.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:17:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700695032; x=1701299832; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=z1zcqtTqhZ4Ynym9UE3ui8YaDfpYk7NuHJ7599B7McE=;
-        b=Kno2ufhdPL3SIdPahYr7OYEUBQEzF0iEc1TVm7UAmED/0Zx/hq6OLpgntHsoRQoXyU
-         WVzIu7wDQHyHUqJ8S3yWl0oZ88vIWWqOlNsGwkxvVhE0EeVX81kIDgu3njVGijwpEe1a
-         4pjKasKmSxv643/8HqNj2Oy9ZAMi6aC5VEcnEVU7zgMJC7bSgBgTjCutxQAUx9FDYYzh
-         ERnvobp2nvMRmkM5jtq1sgWX4tqWE4WjfrHhhcYQmLozt8mqWYyfLgzAuoDZKj21MoGg
-         xeMPYwWEJtlGkoM6PZlUYLOqlUNmGSi0D/HOz+h+r5fQWLHpAP9KW9MWRxEAHiFo+6S4
-         Yfag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700695032; x=1701299832;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z1zcqtTqhZ4Ynym9UE3ui8YaDfpYk7NuHJ7599B7McE=;
-        b=wuoqibC8NhNcPJ91aHLZk4d/nef/dxXkr/of231LEUoRXaRJVF2wx/4pJw0doBzxmw
-         S6kcxeoFt+ddTkCUy2DXkOE/SL5TqvvISoM0cG5d1/60jkEwFpExX0zSGRc2ROioZQTR
-         KNoxj6krEl80dI8fQ32ZJzLheu/lVT10VCCy1jwURKZXLK9eJhl1ylgO6cG3Ga00TrdA
-         6eeNKRCw8ruhebbyI0DZH+aq4UFmxeIl/8s0wbNLaXpQ4ZUIeykatT1yV3MNQkX44xgJ
-         TBsxC4O33AAxiSNkhGVJUPMQMwIB1xaamp416Ugd8oOXiWHkJxTUv8jMczbuCm8Ltkw9
-         W2jw==
-X-Gm-Message-State: AOJu0YzXZPkdw+oYYW2OFcpq3iB3Qb0egpoTgOtVZy7PMBWkMDhRQYhc
-        yHkr7ztr+ItL/WlaL3HJSB402IJd0jLVtkkx45M=
-X-Google-Smtp-Source: AGHT+IEONm3/0yle1mIzMytvh9Hjkg6xElFdJTDJzge/HIBKtNQ8pLGn46mQVQ+ZJ0HcXemIm4IMdw==
-X-Received: by 2002:a05:6e02:1285:b0:359:ca5f:5103 with SMTP id y5-20020a056e02128500b00359ca5f5103mr3775252ilq.6.1700695032097;
-        Wed, 22 Nov 2023 15:17:12 -0800 (PST)
-Received: from localhost.localdomain (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.gmail.com with ESMTPSA id cb12-20020a056e02318c00b00359b09f0710sm195468ilb.6.2023.11.22.15.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 15:17:11 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     mka@chromium.org, andersson@kernel.org, quic_cpratapa@quicinc.com,
-        quic_avuyyuru@quicinc.com, quic_jponduru@quicinc.com,
-        quic_subashab@quicinc.com, elder@kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] net: ipa: fix one GSI register field width
-Date:   Wed, 22 Nov 2023 17:17:08 -0600
-Message-Id: <20231122231708.896632-1-elder@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 22 Nov 2023 18:18:57 -0500
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47370D8
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:18:53 -0800 (PST)
+Date:   Wed, 22 Nov 2023 23:18:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700695131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JxXGMR68Ffnug5d1GsuemuN3GA7Qv3hraWikP3Qedyg=;
+        b=EKGjeETg1FstPJI4IUIF9cjjTbqw4SiOzQYBToAG/PRyaM3apZI2VzkUQzsX64VhacLKYU
+        McFbkQwAgzMlNjIHOG6MJ+5w7jqYHy/LCciVJ3Mit2qHGpRdkTGOSOpKVOycUXo7qdZXMC
+        OhzwgUxs+eWT7kYTCw1de2PfeRGitOE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Sebastian Ene <sebastianene@google.com>
+Cc:     will@kernel.org, James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>, catalin.marinas@arm.com,
+        mark.rutland@arm.com, akpm@linux-foundation.org, maz@kernel.org,
+        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        vdonnefort@google.com, qperret@google.com, smostafa@google.com
+Subject: Re: [PATCH v3 00/10] arm64: ptdump: View the second stage page-tables
+Message-ID: <ZV6MVYI8J6NFS9Wl@linux.dev>
+References: <20231115171639.2852644-2-sebastianene@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115171639.2852644-2-sebastianene@google.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,30 +53,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The width of the R_LENGTH field of the EV_CH_E_CNTXT_1 GSI register
-is 24 bits (not 20 bits) starting with IPA v5.0.  Fix this.
+Hi Seb,
 
-Fixes: faf0678ec8a0 ("net: ipa: add IPA v5.0 GSI register definitions")
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-v2: Fixed erroneous commit hash in the "Fixes" tag.
+On Wed, Nov 15, 2023 at 05:16:30PM +0000, Sebastian Ene wrote:
+> Hi,
+> 
+> This can be used as a debugging tool for dumping the second stage
+> page-tables.
+> 
+> When CONFIG_PTDUMP_STAGE2_DEBUGFS is enabled, ptdump registers 
+> '/sys/debug/kvm/<guest_id>/stage2_page_tables' entry with debugfs
+> upon guest creation. This allows userspace tools (eg. cat) to dump the
+> stage-2 pagetables by reading the registered file.
+> 
+> Reading the debugfs file shows stage-2 memory ranges in following format:
+> <IPA range> <size> <descriptor type> <access permissions> <mem_attributes>
+> 
+> Under pKVM configuration(kvm-arm.mode=protected) ptdump registers an entry
+> for the host stage-2 pagetables in the following path:
+> /sys/debug/kvm/host_stage2_page_tables/
+> 
+> The tool interprets the pKVM ownership annotation stored in the invalid
+> entries and dumps to the console the ownership information. To be able
+> to access the host stage-2 page-tables from the kernel, a new hypervisor
+> call was introduced which allows us to snapshot the page-tables in a host
+> provided buffer. The hypervisor call is hidden behind CONFIG_NVHE_EL2_DEBUG
+> as this should be used under debugging environment.
 
- drivers/net/ipa/reg/gsi_reg-v5.0.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+While I think the value of the feature you're proposing is great, I'm
+not a fan of the current shape of this series.
 
-diff --git a/drivers/net/ipa/reg/gsi_reg-v5.0.c b/drivers/net/ipa/reg/gsi_reg-v5.0.c
-index d7b81a36d673b..145eb0bd096d6 100644
---- a/drivers/net/ipa/reg/gsi_reg-v5.0.c
-+++ b/drivers/net/ipa/reg/gsi_reg-v5.0.c
-@@ -78,7 +78,7 @@ REG_STRIDE_FIELDS(EV_CH_E_CNTXT_0, ev_ch_e_cntxt_0,
- 		  0x0001c000 + 0x12000 * GSI_EE_AP, 0x80);
- 
- static const u32 reg_ev_ch_e_cntxt_1_fmask[] = {
--	[R_LENGTH]					= GENMASK(19, 0),
-+	[R_LENGTH]					= GENMASK(23, 0),
- };
- 
- REG_STRIDE_FIELDS(EV_CH_E_CNTXT_1, ev_ch_e_cntxt_1,
+Reusing note_page() for the stage-2 dump is somewhat convenient, but the
+series pulls a **massive** amount of KVM details outside of KVM:
+
+ - Open-coding the whole snapshotting interface with EL2 outside of KVM.
+   This is a complete non-starter for me; the kernel<->EL2 interface
+   needs to be owned by the EL1 portions of KVM.
+
+ - Building page-table walkers using the KVM pgtable library outside of
+   KVM.
+
+ - Copying (rather than directly calling) the logic responsible for
+   things like FWB and PGD concatenation.
+
+ - Hoisting the definition of _software bits_ outside of KVM. I'm less
+   concerned about hardware bits since they have an unambiguous meaning.
+
+I think exporting the necessary stuff from ptdump into KVM will lead to
+a much cleaner implementation.
+
 -- 
-2.34.1
-
+Thanks,
+Oliver
