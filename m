@@ -2,112 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D79EE7F4AD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB327F4AF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344535AbjKVPg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:36:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        id S1344545AbjKVPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344517AbjKVPf7 (ORCPT
+        with ESMTP id S1344281AbjKVPhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:35:59 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112622D57;
-        Wed, 22 Nov 2023 07:34:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700667290; x=1732203290;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fOjYqo3PT8YGwRzKUAvwr8hmWkL6CCqgBph732SCw5k=;
-  b=MpSjPO6Rb1tqOTZ4TdzEi2v4R5QnrKZYpnHK28FowPNg2PF4TLRfq4Fu
-   GESPyqF8hGrvQUaMfhbYvbQJv+Bx0JDK6iBc5kB29IIDGL6Wxb0YzkqJ8
-   tdjSGFDjfrDrNvCpeRM2s/8quuQ58nJFTRJwMzYvh4s8nv2wfQMWtHb8i
-   rB0FEnsENNWaRolbeT5ah+XO5cdWC3wFonlqrnNICxWSTC+bpvzr47r5v
-   PtURuvYGxBE9xxolblhru0ILATuBbyLVrP2TVxK6NtJt+1ZVA26rg+MAS
-   h8eXrsRrvVlHA6nmKi2/nH0Ixzpgbv1sZnP2bBngskCBBVeREzG1jfEMp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="396000879"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="396000879"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:34:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="884658912"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="884658912"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:34:37 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r5pFL-0000000G85G-0H85;
-        Wed, 22 Nov 2023 17:34:35 +0200
-Date:   Wed, 22 Nov 2023 17:34:34 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [rft, PATCH v1 1/1] pinctrl: qcom: lpass-lpi: Remove unused
- member in struct lpi_pingroup
-Message-ID: <ZV4fih9g9isXZRjL@smile.fi.intel.com>
-References: <20231120193353.1670732-1-andriy.shevchenko@linux.intel.com>
- <c622c2a5-665f-4ee3-b3dd-fafb3adf6191@linaro.org>
- <ZVzltQByY1Z0pOGI@smile.fi.intel.com>
+        Wed, 22 Nov 2023 10:37:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D691D10CF;
+        Wed, 22 Nov 2023 07:35:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2419C433C7;
+        Wed, 22 Nov 2023 15:35:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700667319;
+        bh=x+wPCUauejwkomBy0O9Ui+U2EQqM2yABM6Y7MRt/eC8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AvYBfjFL+e9ZuXdGATpXw8Bqk/O8aX8O/6BXETiNl+BNmP0XsVqIdCvTMHxg03Li/
+         XrpwL6k21RG8Mwf22mA3s4LLBtYmgMbb2TRcPycKKpcYr+pH63o1E2UvZfV0QxcHOH
+         08hs45YK7kJdw3QjzDfoNUoteBlwsPM+V45RGU2LErrC5TE4gaTAHN18ATH7CpaFWp
+         2n5dpKbwyXGc0coaTDdAc/Xb3N8gsfnyw5ZIo9W7TwEH1BAL/w/LlBLxQghwYyFCKQ
+         S5Q46vQETlnoDuqh+eYvKy1TkMO4rDBmy6O076bdDgbY/IPaHtFAaS2P4VMGnGHt6S
+         V8bR0VbOlPfVQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Yu Liao <liaoyu15@huawei.com>, Liu Tie <liutie4@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org
+Subject: [PATCH AUTOSEL 5.15 1/7] hrtimers: Push pending hrtimers away from outgoing CPU earlier
+Date:   Wed, 22 Nov 2023 10:35:01 -0500
+Message-ID: <20231122153512.853015-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVzltQByY1Z0pOGI@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.139
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 07:15:33PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 21, 2023 at 08:14:09AM +0100, Krzysztof Kozlowski wrote:
-> > On 20/11/2023 20:26, Andy Shevchenko wrote:
-> > > The group is not used anywhere, remove it. And if needed, it should be
-> > > struct pingroup anyway.
-> > > 
-> > > While at it, replace kernel.h with what exactly being used.
-> > 
-> > Missing Reported-by and Closes by for LKP... Unless you discovered it
-> > without its report?
-> 
-> It's just at hand discovery.
-> 
-> > Missing sm8550.
-> 
-> And sm8650, but there LPI_FUNCTION(gpio) and I'm wondering why LKP complains
-> about it. It's really a maze to me.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Ah, this is _pins, _groups is still in use. Okay, I will remove that in next
-version.
+[ Upstream commit 5c0930ccaad5a74d74e8b18b648c5eb21ed2fe94 ]
 
-> > >  #define LPI_PINGROUP(id, soff, f1, f2, f3, f4)		\
-> > >  	{						\
-> > > -		.group.name = "gpio" #id,			\
-> > > -		.group.pins = gpio##id##_pins,		\
-> > 
-> > Aren't these used by core pinctrl code?
-> 
-> Only via APIs and pin control registered them also via APIs, so I don't think
-> this is being used directly. But if you see how, tell me! I spent already a few
-> hours on this and haven't got any clear picture in my mind.
+2b8272ff4a70 ("cpu/hotplug: Prevent self deadlock on CPU hot-unplug")
+solved the straight forward CPU hotplug deadlock vs. the scheduler
+bandwidth timer. Yu discovered a more involved variant where a task which
+has a bandwidth timer started on the outgoing CPU holds a lock and then
+gets throttled. If the lock required by one of the CPU hotplug callbacks
+the hotplug operation deadlocks because the unthrottling timer event is not
+handled on the dying CPU and can only be recovered once the control CPU
+reaches the hotplug state which pulls the pending hrtimers from the dead
+CPU.
 
+Solve this by pushing the hrtimers away from the dying CPU in the dying
+callbacks. Nothing can queue a hrtimer on the dying CPU at that point because
+all other CPUs spin in stop_machine() with interrupts disabled and once the
+operation is finished the CPU is marked offline.
+
+Reported-by: Yu Liao <liaoyu15@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Liu Tie <liutie4@huawei.com>
+Link: https://lore.kernel.org/r/87a5rphara.ffs@tglx
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/linux/cpuhotplug.h |  1 +
+ include/linux/hrtimer.h    |  4 ++--
+ kernel/cpu.c               |  8 +++++++-
+ kernel/time/hrtimer.c      | 33 ++++++++++++---------------------
+ 4 files changed, 22 insertions(+), 24 deletions(-)
+
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index c7156bb56e831..c1ecc843b97d2 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -193,6 +193,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_ARM_CORESIGHT_CTI_STARTING,
+ 	CPUHP_AP_ARM64_ISNDEP_STARTING,
+ 	CPUHP_AP_SMPCFD_DYING,
++	CPUHP_AP_HRTIMERS_DYING,
+ 	CPUHP_AP_X86_TBOOT_DYING,
+ 	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
+ 	CPUHP_AP_ONLINE,
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index 0ee140176f102..f2044d5a652b5 100644
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -531,9 +531,9 @@ extern void sysrq_timer_list_show(void);
+ 
+ int hrtimers_prepare_cpu(unsigned int cpu);
+ #ifdef CONFIG_HOTPLUG_CPU
+-int hrtimers_dead_cpu(unsigned int cpu);
++int hrtimers_cpu_dying(unsigned int cpu);
+ #else
+-#define hrtimers_dead_cpu	NULL
++#define hrtimers_cpu_dying	NULL
+ #endif
+ 
+ #endif
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 393114c10c285..0e786de993e01 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1697,7 +1697,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 	[CPUHP_HRTIMERS_PREPARE] = {
+ 		.name			= "hrtimers:prepare",
+ 		.startup.single		= hrtimers_prepare_cpu,
+-		.teardown.single	= hrtimers_dead_cpu,
++		.teardown.single	= NULL,
+ 	},
+ 	[CPUHP_SMPCFD_PREPARE] = {
+ 		.name			= "smpcfd:prepare",
+@@ -1764,6 +1764,12 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 		.startup.single		= NULL,
+ 		.teardown.single	= smpcfd_dying_cpu,
+ 	},
++	[CPUHP_AP_HRTIMERS_DYING] = {
++		.name			= "hrtimers:dying",
++		.startup.single		= NULL,
++		.teardown.single	= hrtimers_cpu_dying,
++	},
++
+ 	/* Entry state on starting. Interrupts enabled from here on. Transient
+ 	 * state for synchronsization */
+ 	[CPUHP_AP_ONLINE] = {
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 97409581e9dac..eebd0f31daa8b 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -2216,29 +2216,22 @@ static void migrate_hrtimer_list(struct hrtimer_clock_base *old_base,
+ 	}
+ }
+ 
+-int hrtimers_dead_cpu(unsigned int scpu)
++int hrtimers_cpu_dying(unsigned int dying_cpu)
+ {
+ 	struct hrtimer_cpu_base *old_base, *new_base;
+-	int i;
++	int i, ncpu = cpumask_first(cpu_active_mask);
+ 
+-	BUG_ON(cpu_online(scpu));
+-	tick_cancel_sched_timer(scpu);
++	tick_cancel_sched_timer(dying_cpu);
++
++	old_base = this_cpu_ptr(&hrtimer_bases);
++	new_base = &per_cpu(hrtimer_bases, ncpu);
+ 
+-	/*
+-	 * this BH disable ensures that raise_softirq_irqoff() does
+-	 * not wakeup ksoftirqd (and acquire the pi-lock) while
+-	 * holding the cpu_base lock
+-	 */
+-	local_bh_disable();
+-	local_irq_disable();
+-	old_base = &per_cpu(hrtimer_bases, scpu);
+-	new_base = this_cpu_ptr(&hrtimer_bases);
+ 	/*
+ 	 * The caller is globally serialized and nobody else
+ 	 * takes two locks at once, deadlock is not possible.
+ 	 */
+-	raw_spin_lock(&new_base->lock);
+-	raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
++	raw_spin_lock(&old_base->lock);
++	raw_spin_lock_nested(&new_base->lock, SINGLE_DEPTH_NESTING);
+ 
+ 	for (i = 0; i < HRTIMER_MAX_CLOCK_BASES; i++) {
+ 		migrate_hrtimer_list(&old_base->clock_base[i],
+@@ -2249,15 +2242,13 @@ int hrtimers_dead_cpu(unsigned int scpu)
+ 	 * The migration might have changed the first expiring softirq
+ 	 * timer on this CPU. Update it.
+ 	 */
+-	hrtimer_update_softirq_timer(new_base, false);
++	__hrtimer_get_next_event(new_base, HRTIMER_ACTIVE_SOFT);
++	/* Tell the other CPU to retrigger the next event */
++	smp_call_function_single(ncpu, retrigger_next_event, NULL, 0);
+ 
+-	raw_spin_unlock(&old_base->lock);
+ 	raw_spin_unlock(&new_base->lock);
++	raw_spin_unlock(&old_base->lock);
+ 
+-	/* Check, if we got expired work to do */
+-	__hrtimer_peek_ahead_timers();
+-	local_irq_enable();
+-	local_bh_enable();
+ 	return 0;
+ }
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.42.0
 
