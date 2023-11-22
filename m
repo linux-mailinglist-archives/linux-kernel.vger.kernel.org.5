@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C33517F4671
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:41:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852D17F4674
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344096AbjKVMl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44794 "EHLO
+        id S1344124AbjKVMmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjKVMl1 (ORCPT
+        with ESMTP id S1344119AbjKVMmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:41:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D12E7;
-        Wed, 22 Nov 2023 04:41:23 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63FFF6607286;
-        Wed, 22 Nov 2023 12:41:20 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700656881;
-        bh=S07GE5Evlp8wz8GDG6gCdX6gFUE//1gN9B0MVvjvdJo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=k2UOjMXZUuaJpe6a/ieoqkAsnboxK4czoceIqJ/3TKI2LwE1POXpHmBtOIVzofmUQ
-         USjmEG4I7ejnCm4+2Ovp/4EdcxRyfzbr+Vq9zslZmRvTPJEpAK7zu4ZXF1Ny1OYnjx
-         0r4enlSxTcUC0uabr8pullCZ98p1x0YuvVQE4LVVgIhdsKiZLk3Qi5rRgh6SxYrX6G
-         8gB8DBPxxTYXpIVdvZBZOxKa8pdrZLRTScp++nDMoBNcasoQatNSUeVpwSX4JL129d
-         VoG5n7S/SS/5wGUGnWHgB4aSVj1Vcbp2cmqe6+9Q+E5IVSFlVwfBvZbgU2AzE9dY8U
-         /ay4c6qg6e2MA==
-Message-ID: <43982a3c-eb10-442e-acca-fd4b944a7612@collabora.com>
-Date:   Wed, 22 Nov 2023 13:41:17 +0100
+        Wed, 22 Nov 2023 07:42:22 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5847F12C;
+        Wed, 22 Nov 2023 04:42:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vZFD+CZhZ5/s+IhNoZs04yZO6ujN0gvtdoUyhzS1YLA=; b=pCObuymMRo2FhAIMtEx+vZ0GNP
+        MDWcFft7pgFB9wq42UxzyziZsDkXq3sNFolqF/K2h/FCht5VrAPK5TbRLSDBic37QSYmi8YAW422c
+        2RFsLNDszOUp68E9dYgaIwqSQMdfroCLISVhtW4JFvy6MJTXe8s+gNHL4F2Dh0TvilE5P/QPIkw19
+        BDaukh00GAqCeKHAN8MgH28TdWkAEkJXn+K0DjbVwSsoXLG6ApQ+5dsgfNFWZtmYRmGQXxUsu3Fl7
+        lzflQjNhsuQXgE7NWap3CLcq/FI8Nf/VK1dEF1xxjPURrfhgQ3fYCu9tJzjmyAT22ZBrMzHk7a/Bv
+        auc4vcEw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5mXv-00CJGw-1w;
+        Wed, 22 Nov 2023 12:41:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 515E03006F6; Wed, 22 Nov 2023 13:41:34 +0100 (CET)
+Date:   Wed, 22 Nov 2023 13:41:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, davem@davemloft.net, dsahern@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        samitolvanen@google.com, keescook@chromium.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+        llvm@lists.linux.dev, jpoimboe@kernel.org, joao@overdrivepizza.com,
+        mark.rutland@arm.com
+Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231122124134.GP4779@noisy.programming.kicks-ass.net>
+References: <20231120144642.591358648@infradead.org>
+ <20231120154948.708762225@infradead.org>
+ <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com>
+ <20231122111517.GR8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 09/20] soc: mediatek: mtk-svs: Move t-calibration-data
- retrieval to svs_probe()
-Content-Language: en-US
-To:     Eugen Hristev <eugen.hristev@collabora.com>, matthias.bgg@gmail.com
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        robh+dt@kernel.org, p.zabel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231121125044.78642-1-angelogioacchino.delregno@collabora.com>
- <20231121125044.78642-10-angelogioacchino.delregno@collabora.com>
- <6018ec3f-d3e6-4fe0-b57f-9a7994f983a5@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <6018ec3f-d3e6-4fe0-b57f-9a7994f983a5@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122111517.GR8262@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,133 +68,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 22/11/23 12:23, Eugen Hristev ha scritto:
-> On 11/21/23 14:50, AngeloGioacchino Del Regno wrote:
->> The t-calibration-data (SVS-Thermal calibration data) shall exist for
->> all SoCs or SVS won't work anyway: move it to the common svs_probe()
->> function and remove it from all of the per-SoC efuse_parsing() probe
->> callbacks.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/soc/mediatek/mtk-svs.c | 32 ++++++--------------------------
->>   1 file changed, 6 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/soc/mediatek/mtk-svs.c b/drivers/soc/mediatek/mtk-svs.c
->> index ab564d48092b..1042af2aee3f 100644
->> --- a/drivers/soc/mediatek/mtk-svs.c
->> +++ b/drivers/soc/mediatek/mtk-svs.c
->> @@ -1884,11 +1884,6 @@ static bool svs_mt8195_efuse_parsing(struct svs_platform 
->> *svsp)
->>           svsb->vmax += svsb->dvt_fixed;
->>       }
->> -    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> -                 &svsp->tefuse, &svsp->tefuse_max);
->> -    if (ret)
->> -        return false;
->> -
-> 
-> Hello Angelo,
-> 
-> if you removed the code using `ret` in this patch, it makes sense to also remove 
-> the variable here instead of doing it in patch 18.
-> It will avoid unused variable warnings for this patch.
-> 
-> 
+On Wed, Nov 22, 2023 at 12:15:17PM +0100, Peter Zijlstra wrote:
 
-Yes, though the comment is not for this function, but rather for 8183. Anyway, that
-makes sense, but if it's the only change of this v3, it's something that I can fix
-while applying instead of sending another 20 patches round. Thanks.
+> Ah, so normally the __cfi_foo symbol would catch those, lemme see what I
+> can do here.
 
->>       for (i = 0; i < svsp->tefuse_max; i++)
->>           if (svsp->tefuse[i] != 0)
->>               break;
->> @@ -1949,11 +1944,6 @@ static bool svs_mt8192_efuse_parsing(struct svs_platform 
->> *svsp)
->>           svsb->vmax += svsb->dvt_fixed;
->>       }
->> -    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> -                 &svsp->tefuse, &svsp->tefuse_max);
->> -    if (ret)
->> -        return false;
->> -
->>       for (i = 0; i < svsp->tefuse_max; i++)
->>           if (svsp->tefuse[i] != 0)
->>               break;
->> @@ -2009,11 +1999,6 @@ static bool svs_mt8188_efuse_parsing(struct svs_platform 
->> *svsp)
->>           svsb->vmax += svsb->dvt_fixed;
->>       }
->> -    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> -                 &svsp->tefuse, &svsp->tefuse_max);
->> -    if (ret)
->> -        return false;
->> -
->>       for (i = 0; i < svsp->tefuse_max; i++)
->>           if (svsp->tefuse[i] != 0)
->>               break;
->> @@ -2097,11 +2082,6 @@ static bool svs_mt8186_efuse_parsing(struct svs_platform 
->> *svsp)
->>           svsb->vmax += svsb->dvt_fixed;
->>       }
->> -    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> -                 &svsp->tefuse, &svsp->tefuse_max);
->> -    if (ret)
->> -        return false;
->> -
->>       golden_temp = (svsp->tefuse[0] >> 24) & GENMASK(7, 0);
->>       if (!golden_temp)
->>           golden_temp = 50;
->> @@ -2198,11 +2178,6 @@ static bool svs_mt8183_efuse_parsing(struct svs_platform 
->> *svsp)
->>           }
->>       }
->> -    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> -                 &svsp->tefuse, &svsp->tefuse_max);
->> -    if (ret)
->> -        return false;
->> -
->>       /* Thermal efuse parsing */
->>       adc_ge_t = (svsp->tefuse[1] >> 22) & GENMASK(9, 0);
->>       adc_oe_t = (svsp->tefuse[1] >> 12) & GENMASK(9, 0);
->> @@ -3040,8 +3015,13 @@ static int svs_probe(struct platform_device *pdev)
->>       ret = svs_get_efuse_data(svsp, "svs-calibration-data",
->>                    &svsp->efuse, &svsp->efuse_max);
->> +    if (ret)
->> +        return dev_err_probe(&pdev->dev, ret, "Cannot read SVS calibration\n");
-> 
-> With the previous code, if svs-calibration-data could not be read, the code would 
-> go to svs_probe_free_efuse. In your case, it returns directly.
-> I believe that svs_get_efuse_data using nvmem_cell_read does not allocate the 
-> buffer for the efuse , hence no more need to free it ? The exit code is checking if 
-> it's ERR or NULL, but still, if the buffer was not allocated, it doesn't make sense 
-> to jump there indeed.
-> In that case, you are also changing the behavior here , and your commit appears to 
-> do more than a simple move.
-> 
+I have the below delta (untested etc..), does that look about right?
 
-I'm not changing the behavior: the previous behavior was to fail and free the efuse
-variable if previously allocated, the current behavior is to fail and free the
-efuse variable if previously allocated, and the tefuse variable if previously
-allocated, which is a result of the actual move of the retrieval of the thermal
-fuse calibration data.
-
-I really don't see anything implicit here.
-
->> +
->> +    ret = svs_get_efuse_data(svsp, "t-calibration-data",
->> +                 &svsp->tefuse, &svsp->tefuse_max);
->>       if (ret) {
->> -        ret = -EPERM;
->> +        dev_err_probe(&pdev->dev, ret, "Cannot read SVS-Thermal calibration\n");
->>           goto svs_probe_free_efuse;
-> 
-> again in this case the tefuse has not been allocated I assume.
-> 
-> So previous code was a bit excessive in trying to free the efuse/tefuse ?
-
-The previous code was performing an useless error check on something that was not
-supposed to be allocated *yet*. Yes, it was wrong before.
-
-Cheers,
-Angelo
+---
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -845,19 +845,24 @@ enum cfi_mode cfi_mode __ro_after_init =
+ #ifdef CONFIG_CFI_CLANG
+ struct bpf_insn;
+ 
+-extern unsigned int bpf_func_proto(const void *ctx,
+-				   const struct bpf_insn *insn);
++/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
++extern unsigned int __bpf_prog_runX(const void *ctx,
++				    const struct bpf_insn *insn);
+ 
+-__ADDRESSABLE(bpf_func_proto);
++/* 
++ * Force a reference to the external symbol so the compiler generates
++ * __kcfi_typid.
++ */
++__ADDRESSABLE(__bpf_prog_runX);
+ 
+-/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid_bpf_func_proto */
++/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX */
+ asm (
+ "	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+ "	.type	cfi_bpf_hash,@object				\n"
+ "	.globl	cfi_bpf_hash					\n"
+ "	.p2align	2, 0x0					\n"
+ "cfi_bpf_hash:							\n"
+-"	.long	__kcfi_typeid_bpf_func_proto			\n"
++"	.long	__kcfi_typeid___bpf_prog_runX			\n"
+ "	.size	cfi_bpf_hash, 4					\n"
+ "	.popsection						\n"
+ );
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -308,15 +308,20 @@ static void pop_callee_regs(u8 **pprog,
+ 	*pprog = prog;
+ }
+ 
++/*
++ * Emit the various CFI preambles, see the large comment about FineIBT
++ * in arch/x86/kernel/alternative.c
++ */
++
+ static int emit_fineibt(u8 **pprog)
+ {
+ 	u8 *prog = *pprog;
+ 
+ 	EMIT_ENDBR();
+-	EMIT3_off32(0x41, 0x81, 0xea, cfi_bpf_hash);
+-	EMIT2(0x74, 0x07);
+-	EMIT2(0x0f, 0x0b);
+-	EMIT1(0x90);
++	EMIT3_off32(0x41, 0x81, 0xea, cfi_bpf_hash);	/* subl $hash, %r10d	*/
++	EMIT2(0x74, 0x07);				/* jz.d8 +7		*/
++	EMIT2(0x0f, 0x0b);				/* ud2			*/
++	EMIT1(0x90);					/* nop			*/
+ 	EMIT_ENDBR_POISON();
+ 
+ 	*pprog = prog;
+@@ -328,7 +333,7 @@ static int emit_kcfi(u8 **pprog)
+ 	u8 *prog = *pprog;
+ 	int offset = 5;
+ 
+-	EMIT1_off32(0xb8, cfi_bpf_hash);
++	EMIT1_off32(0xb8, cfi_bpf_hash);		/* movl $hash, %eax	*/
+ #ifdef CONFIG_CALL_PADDING
+ 	EMIT1(0x90);
+ 	EMIT1(0x90);
+@@ -3009,6 +3014,10 @@ struct bpf_prog *bpf_int_jit_compile(str
+ 			jit_data->header = header;
+ 			jit_data->rw_header = rw_header;
+ 		}
++		/*
++		 * ctx.prog_offset is used when CFI preambles put code *before*
++		 * the function. See emit_cfi().
++		 */
+ 		prog->bpf_func = (void *)image + ctx.prog_offset;
+ 		prog->jited = 1;
+ 		prog->jited_len = proglen - ctx.prog_offset; // XXX?
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1431,6 +1431,9 @@ struct bpf_prog_aux {
+ 	struct bpf_kfunc_desc_tab *kfunc_tab;
+ 	struct bpf_kfunc_btf_tab *kfunc_btf_tab;
+ 	u32 size_poke_tab;
++#ifdef CONFIG_FINEIBT
++	struct bpf_ksym ksym_prefix;
++#endif
+ 	struct bpf_ksym ksym;
+ 	const struct bpf_prog_ops *ops;
+ 	struct bpf_map **used_maps;
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -683,6 +683,23 @@ void bpf_prog_kallsyms_add(struct bpf_pr
+ 	fp->aux->ksym.prog = true;
+ 
+ 	bpf_ksym_add(&fp->aux->ksym);
++
++#ifdef CONFIG_FINEIBT
++	/*
++	 * When FineIBT, code in the __cfi_foo() symbols can get executed
++	 * and hence unwinder needs help.
++	 */
++	if (cfi_mode != CFI_FINEIBT)
++		return;
++
++	snprintf(fp->aux->ksym_prefix.name, KSYM_NAME_LEN,
++		 "__cfi_%s", fp->aux->ksym.name);
++
++	prog->aux->ksym_prefix.start = (unsigned long) prog->bpf_func - 16;
++	prog->aux->ksym_prefix.end   = (unsigned long) prog->bpf_func;
++
++	bpf_ksym_add(&fp->aux->ksym_prefix);
++#endif
+ }
+ 
+ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
