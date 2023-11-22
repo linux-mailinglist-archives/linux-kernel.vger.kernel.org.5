@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7AB7F3CB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FD27F3CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343647AbjKVERW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 23:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
+        id S1343649AbjKVEVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 23:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343580AbjKVERU (ORCPT
+        with ESMTP id S1343580AbjKVEVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 23:17:20 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB58BA4;
-        Tue, 21 Nov 2023 20:17:16 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AM4GlnI026736;
-        Tue, 21 Nov 2023 22:16:47 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700626607;
-        bh=2QwHzizvXnwi2gIoXfGTNVgb+YIpsEqc/zkQqkt1laY=;
-        h=From:To:CC:Subject:Date;
-        b=TxTZNu7kqQIOw55qt7E+wi1vsAzzdwMn4qFxSkFZzbj/mMe2vLnBDLsdINc5jF9Gx
-         GwVwsrILBWsmZ/koy8NFmEgIm/bTHePZVxxRhgmYCK8PFiGylV89bENowtUzTgNpkT
-         CTVsFyq245Mdowqar3Uue0hDISGwF7HhpDdheKs0=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AM4GljK108302
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 21 Nov 2023 22:16:47 -0600
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 21
- Nov 2023 22:16:46 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 21 Nov 2023 22:16:46 -0600
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AM4Gh9G065087;
-        Tue, 21 Nov 2023 22:16:44 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Tero Kristo <kristo@kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <afd@ti.com>
-Subject: [PATCH v2] watchdog: rti_wdt: Drop RPM count when unused
-Date:   Wed, 22 Nov 2023 09:46:42 +0530
-Message-ID: <20231122041642.2015936-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 21 Nov 2023 23:21:42 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E84810C
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:21:38 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da37522a363so5934368276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 20:21:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1700626897; x=1701231697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WVXWPvtRBhDeG90a/ZedgAdRgWMSJ7Pm+mRwu5c61Bk=;
+        b=LIp4UK5+wVWLF5T3o8WstaWzh2Ll++NeLK7bnLZNdYp+0vXVuCuREuol78DN1E8QdW
+         dj+/MK6X3XBU3ixJmPbuDDAbupTH7uGHAhedPDx+rEa19evEqaiJt872jqqnoWO0dwBz
+         ofolIf2OZcKoDhSATk6z6eiZjn+VgmKApPmqtznsqF7BA1LGAww6T0oS1iDuIm9gyiZF
+         98CHYzROdwE95bTHnHFdS6KMVFvUfC1l5SwZDUcq3OuCYfy4KjnoQa02oRRBnn0LuM1X
+         9nov61RfuKqnjQbfE0aI1m6rhz4Q3E2j+cMW5D4LakHgqEVyu93d+wvSMd4Z6cHLYQ7D
+         GHng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700626897; x=1701231697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WVXWPvtRBhDeG90a/ZedgAdRgWMSJ7Pm+mRwu5c61Bk=;
+        b=v8Imr9zqf45KwHCueZxYYn+NnhbupI1VkaKdhHYSD7XOkNBbnwnhlSgwMJVt2p6ZWd
+         aBX5XcUj1tPVZ1zv3ip9wQ2u1/aNd0W+2peif4YCLSl7t7iF/PFYW6zh0nHPCeYdiKYj
+         0XzTqSTjB4RXoZ6VbHaPod9r/SEgmEaSiQhXaK67bk+S0EmKvAFImbWP29TyGtWN6mWv
+         YejuMy1lcwMg+EdXgD0i04Pp88agcvXbX2ms6B855FLTMfxqJ8g9VOLOzGyjHFtmi+X3
+         jMIskgilZTR0g/ezx2mTVz6brVrFVUxVx+4w1w4du2/OXlZT9UK2zH4cVp0skZHTsXrh
+         OtLQ==
+X-Gm-Message-State: AOJu0YzfPbGe2NI+AyQNwxukB9erqoS6LrK/Sye3hKbgB9fLtrK0LpIH
+        Gwn6/DcWEktl4zI7cB5rMcEWs/ylxzRP0vFgPCKW
+X-Google-Smtp-Source: AGHT+IE8nMjmv+MMpdCveL8Z01wo2xacBMBUWnBQYMDDwZPg7dC5Q9T1luKYJbPJkntVIqlYW/2qIZJDkEN2u1qQXGk=
+X-Received: by 2002:a25:9184:0:b0:d9a:401d:f5da with SMTP id
+ w4-20020a259184000000b00d9a401df5damr896533ybl.51.1700626897254; Tue, 21 Nov
+ 2023 20:21:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231114022503.6310-1-kelvie@kelvie.ca> <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
+ <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com> <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
+In-Reply-To: <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 21 Nov 2023 23:21:26 -0500
+Message-ID: <CAHC9VhQeQcEKFKWi2pvGE-DhkaccqBn9Yf_+r7JbZ2UPN+z3-g@mail.gmail.com>
+Subject: Re: [PATCH RFC] Add a lockdown_hibernate parameter
+To:     Kelvie Wong <kelvie@kelvie.ca>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do a RPM put if watchdog is not already started during probe and re
-enable it in watchdog start.
+On Mon, Nov 20, 2023 at 10:07=E2=80=AFPM Kelvie Wong <kelvie@kelvie.ca> wro=
+te:
+> On Mon, 20 Nov 2023 at 13:12, Paul Moore <paul@paul-moore.com> wrote:
+> > On Mon, Nov 13, 2023 at 11:01=E2=80=AFPM Randy Dunlap <rdunlap@infradea=
+d.org> wrote:
+> > >
+> > > [add security & dhowells]
+> > >
+> > > On 11/13/23 18:23, Kelvie Wong wrote:
+> > > > This allows the user to tell the kernel that they know better (name=
+ly,
+> > > > they secured their swap properly), and that it can enable hibernati=
+on.
+> > > >
+> > > > I've been using this for about a year now, as it doesn't seem like
+> > > > proper secure hibernation was going to be implemented back then, an=
+d
+> > > > it's now been a year since I've been building my own kernels with t=
+his
+> > > > patch, so getting this upstreamed would save some CO2 from me build=
+ing
+> > > > my own kernels every upgrade.
+> > > >
+> > > > Some other not-me users have also tested the patch:
+> > > >
+> > > > https://community.frame.work/t/guide-fedora-36-hibernation-with-ena=
+bled-secure-boot-and-full-disk-encryption-fde-decrypting-over-tpm2/25474/17
+> > > >
+> > > > Signed-off-by: Kelvie Wong <kelvie@kelvie.ca>
+> >
+> > I would feel a lot better about this if there was a way to verify that
+> > the swap was protected as opposed to leaving that as a note in a doc
+> > that the majority of users will never see, read, or understand.
+>
+> I'd argue that this wouldn't even be necessary if we detect the swap was
+> protected -- hibernation should just be enabled in that case without sett=
+ing
+> any parameters.
+>
+> My understanding is that it was disabled waiting for this
+> functionality, and it's been
+> at least a couple of years now [1], so it looks like it's not such an
+> easy problem.
 
-On K3 SoCs, watchdogs and their corresponding CPUs are under same PD, so
-if the reference count of unused watchdogs aren't dropped, it will lead
-to CPU hotplug failures as Device Management firmware won't allow to
-turn off the PD due to dangling reference count.
+I've got to warn you that I have an allergic reaction to arguments
+that start with "the right solution is really hard, so let's pick the
+easier, worse solution." ;)
 
-Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
+> Anyway, my argument is that the majority of users will never use this ker=
+nel
+> parameter anyway, so I think it's a fair assumption that the power users =
+that
+> *do* use this will educate themselves on why this parameter even exists.
 
-v2:
-* Drop 1/2 (will be posted along with runtime_pm callbacks)
-* Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync() which
- takes care of err handling
+I guess I'm still not sold on this idea, I'm sorry.
 
-v1: lore.kernel.org/r/20231110100726.2930218-1-vigneshr@ti.com
-
- drivers/watchdog/rti_wdt.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-index 8e1be7ba0103..9215793a1c81 100644
---- a/drivers/watchdog/rti_wdt.c
-+++ b/drivers/watchdog/rti_wdt.c
-@@ -77,6 +77,11 @@ static int rti_wdt_start(struct watchdog_device *wdd)
- {
- 	u32 timer_margin;
- 	struct rti_wdt_device *wdt = watchdog_get_drvdata(wdd);
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(wdd->parent);
-+	if (ret)
-+		return ret;
- 
- 	/* set timeout period */
- 	timer_margin = (u64)wdd->timeout * wdt->freq;
-@@ -343,6 +348,9 @@ static int rti_wdt_probe(struct platform_device *pdev)
- 	if (last_ping)
- 		watchdog_set_last_hw_keepalive(wdd, last_ping);
- 
-+	if (!watchdog_hw_running(wdd))
-+		pm_runtime_put_sync(&pdev->dev);
-+
- 	return 0;
- 
- err_iomap:
-@@ -357,7 +365,10 @@ static void rti_wdt_remove(struct platform_device *pdev)
- 	struct rti_wdt_device *wdt = platform_get_drvdata(pdev);
- 
- 	watchdog_unregister_device(&wdt->wdd);
--	pm_runtime_put(&pdev->dev);
-+
-+	if (!pm_runtime_suspended(&pdev->dev))
-+		pm_runtime_put(&pdev->dev);
-+
- 	pm_runtime_disable(&pdev->dev);
- }
- 
--- 
-2.42.0
-
+--=20
+paul-moore.com
