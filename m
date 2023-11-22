@@ -2,136 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3087F3B37
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056357F3B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234999AbjKVBZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:25:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
+        id S234995AbjKVBZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKVBZF (ORCPT
+        with ESMTP id S234922AbjKVBZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:25:05 -0500
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2040.outbound.protection.outlook.com [40.92.107.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D97691;
-        Tue, 21 Nov 2023 17:25:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M52MVz1xCaFzwQTmWVCvFYyNWg14a9JON5a29X69f36DnAoY0EUI2s0hmI+7jXqi4ucOFny5+iy3efzs1VLnRkkhntb4R/XGhdtsTaxvd2oPMS1WBUnoBzRUQv/gFRuuVHE3p8v79yKf7rUNsEa6VplIoJmIiOGHM5P5YhnAMBbsvbywatd70GkLK+Lbjn4zbm2jhYsFv/Md5B2HeFic3S9MaHmoyVlv94s8QyDyMx/6IuDKv/aHQ587iIYkmHzHEgJjrinKfsQ5G8W92jvPS1lk0JWfZJ7ark4UShN1yMfnrku6TMm/FoWzQ+KJLg3EFx2akX/JBDIGVdv8c8VuHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B4nagn7wz/9YH++vhzfM+ICRMfPQv8SJawrhaEoQTsI=;
- b=TqzIi5fDPn3UYMfjMONqEy3DKZGYjnWDmmysK1fvT8hnmefapcLYMKcAuozV3pcvdhJQbk6vm8T+1M9W/DRuUrVVjqvYHtN0QddbNhkOXiQ58M/kDy0mk74b5uhUyh0j2v+gmPaYD4go0MQLeTVS0ZSMs7tNuXCYV2GnGnugaJo2S4p7RMkDlew4CinQ6d6XMTTSv712qdwZofeXvQ3/HKGchrCIG9TkrntpFiLlOvy1NK/gQ9PgwRU7kHqaRTIGfOQcJdpwWsY8Nllabok1WCmgJrNONu55TMjD7Pgf4nOyF8pRPmKYMhFWFjYSLRAgErOntypoCA8HTaydAkQf8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B4nagn7wz/9YH++vhzfM+ICRMfPQv8SJawrhaEoQTsI=;
- b=Mn6HXyd2qSVj8JLjGEyIjHQbdghNJEeRtUFk4TcMaP/sP1T5ztr8MgYig+bSa+Z29UC+/0MRIsaCaDFKQ8ILRo8u4UT6fIPMlYl/fCb9mC3fuvg5mmwTJjd/NJuwc/t+S31ByG3qkrshyQpibA2apLPrkrIB4DQ7x3n5m904OifVV5hJDi6pNDkGy2SJMJfR3sYS5dlVm4DVq5+JLCBT7GK2V2G6KJt3jU1gNUsTicpbCJ2yavRRHcOi2PqJTdBtWsDbBuZQ6FeSvIoITN77eEUBOpQi1TMqmk8Gwyu2kA/YG+lM3Xxe+ob7QDNnf+z2SzGrgxFQStR5wy4ZI60Ojw==
-Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- (2603:1096:820:41::14) by TY2PR0101MB3632.apcprd01.prod.exchangelabs.com
- (2603:1096:404:8003::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 01:24:57 +0000
-Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- ([fe80::907f:e0c0:d442:e14f]) by KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- ([fe80::907f:e0c0:d442:e14f%3]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
- 01:24:56 +0000
-From:   Ken Lin <ken_lin5@hotmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     groeck@chromium.org, Benson Leung <bleung@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Reka Norman <rekanorman@chromium.org>,
-        Stefan Adolfsson <sadolfsson@chromium.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Zoey Wu <zoey_wu@wistron.corp-partner.google.com>,
-        chrome-platform@lists.linux.dev, linux-media@vger.kernel.org
-Subject: [PATCH] media: platform: cros-ec: Add Dexi to the match table
-Date:   Wed, 22 Nov 2023 09:24:43 +0800
-Message-ID: <KL1PR01MB38096A17A4F89721CC3DA073AEBAA@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [tHznemHqqNXdxnt8FUH0WB/VJfdl1mG6]
-X-ClientProxiedBy: SG2PR06CA0246.apcprd06.prod.outlook.com
- (2603:1096:4:ac::30) To KL1PR01MB3809.apcprd01.prod.exchangelabs.com
- (2603:1096:820:41::14)
-X-Microsoft-Original-Message-ID: <20231122092333.1.I02f6efa3023c0bcb437ee3b7ebaa2910a89ab0e9@changeid>
+        Tue, 21 Nov 2023 20:25:28 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D069691
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:25:24 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7b34ee2a243so32744239f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:25:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1700616324; x=1701221124; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BMxupQd497LdzSfq71N2Lrlf91nzxCDS16y5//A13wo=;
+        b=dFyfbxLWoSAfJhRGo9KHNLUPaC6j+hkljTNEK27bL7TuvpYWImGFAnwiFdkvq2pWOz
+         DJ/uHh5R4/bOsYOiVWuJ+ckdrDsHZyf0S5Zxnar19kBeXKL+GUGp8CXLdiPabRFFqBNf
+         3bG67hqmFbsTFHfxURYFp+YQ75FZMK2x44MtoTh08zIk2a8lujls0FNx/NAWzfq2bGdX
+         6Kmy2eC3Tl+rYv1hgnXagmuiJNCNN1Owk6UxUSnKNVxxrznyXa2DyBNeBRypqxCDUaHM
+         qMFQpyeoKHO6YEfQ84BS0Hy5KoQJW2YWOC4gP7d3UpVwuuB6YBHbuJoGi+r/Zk5DS0Sb
+         ytJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700616324; x=1701221124;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMxupQd497LdzSfq71N2Lrlf91nzxCDS16y5//A13wo=;
+        b=tr14rJizGKkdA27Fvbud7lrMOkp0ZIA13KpEj4bQD8MgK/pDCJ34Kgk5Dtlv7bpkR9
+         nTXOrQcubU/ShettzzR3TJmaYUw/07Yi8wczs+eFjj/WoJX0DT9QqIeanNfpeiTWfdkK
+         mCGyAwKevTn8Yx9k/VAk1l8/jwGoVmsfA2taeoIDIP8aLRnb2l1I9gDU4wfp1dOLj/YT
+         AkJfI8KcJZLNReijIiSwxsGD0SFBaKPVVsNxJJ91hlQh/zzxbox6WxD6UsvZ2Klz4W1k
+         7QgUVzzBqn1hioHKHE7mR7u4gdyvQJZI+dwThExNR1zyHnpooEiZJG8vaUehw+AWobrP
+         R53A==
+X-Gm-Message-State: AOJu0Yzk88MXXkA6lN7woFQeFoIlrJP+x7y2i25swwOcj6AXGhZnUiBd
+        v6+YZjxn64jKYzhVbx8/wA+U0ArRgS7rxjfkktE=
+X-Google-Smtp-Source: AGHT+IGd2vGwd7giL7IiRH+5KGiQaPdBluSITVY3kHLXCILv1oR63uIuSpDbZGfswF+tU7/fqS6Mqw==
+X-Received: by 2002:a05:6602:1b04:b0:7a2:a8d5:e146 with SMTP id dk4-20020a0566021b0400b007a2a8d5e146mr576892iob.15.1700616324211;
+        Tue, 21 Nov 2023 17:25:24 -0800 (PST)
+Received: from ?IPV6:2605:a601:adae:4500:3d43:c8e2:1496:e620? ([2605:a601:adae:4500:3d43:c8e2:1496:e620])
+        by smtp.gmail.com with ESMTPSA id az2-20020a056638418200b004664b598273sm2122901jab.49.2023.11.21.17.25.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 17:25:23 -0800 (PST)
+Message-ID: <d94d54d2-50a3-4dc8-9178-e69c118aeefe@sifive.com>
+Date:   Tue, 21 Nov 2023 19:25:20 -0600
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: KL1PR01MB3809:EE_|TY2PR0101MB3632:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3f52483-6c78-4438-d792-08dbeaf9d583
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VJJ2g01ij4Rouzu8nbABsc0AqUuyO8BMcFVOAwFBRBuBUIErEdf8YrmRpedI49wnTzWMaPea0FehLntPs59BWUH1Qdmy5r8NOQXzA21R8Gx+2XtjFRYvm+NbXiBoWww+ic32MQFqiX8Bt8hte9KKVlHDzwGkYyPkBlvPtQwUZw9QWWMnpfFIb95zivUyiSLZ/fYv+TPUDYjS8bDF3LktA36iJO9v6oYqp7l199ZNwxopoTPxHrecFlM9NXNkqyPYvW563VGg1qPguK5adPjZyaAvu7oOsy55paeR80On40x4n7MnBNH1DVDIGB7KpG2jbohLk182vaud02A9xFy+/phLzAEeJIQWqV7Wsovg1jwOb/5DSOCUryZlYgB2NUiVNetl7lpVnJ2e36cfBS4yyE3oWCGeWgrLQndwWz1d4dFGm6FH3BpASlcALTQ06A0jklsojehK0wijkX1bwsRXotroMb+13fehJ5MWOKseCS9Ok+IMh+2JhihLW2+jwx7n3lRI8bXZGk2qDUwlmcvN5KekNlgjidfrOom39apK9LQuaRP8VnaDuRjNrwFGFbQ9
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qjS21Lt24kQOJ5bNrh5gbSjqm0bxk7SzRacrq2t4k0fb7YpoYbND6NZExw5D?=
- =?us-ascii?Q?Z4+sMgMgchSAsWWmdP3bjS9C/w8lk8p2wCdJnd3WMwqAWjFD8ibFa2cQBKGS?=
- =?us-ascii?Q?eMz4VLDZHjWNgu5CY2yQl2TxlOWrh7ENgATzrF6GNVOedEbAWS3ovMnLy6mG?=
- =?us-ascii?Q?bmguNdxQAKC31sdnaarUmUFBhcFzSSNyUUlHThIQrQTReE9MYdyh3rQYrLkA?=
- =?us-ascii?Q?9YE6BknLrRYqTR6Sd7CLaDKp/hqWRvCGjrKzf6tXA64KBRIDyN/H0iL6dR7a?=
- =?us-ascii?Q?UbenKgyCcZQumOzEri7eBnV40NJqJ4DT2Vjo+fhJdgRl51j+EwbdZdfsa8Ja?=
- =?us-ascii?Q?5nDRj+VgD0Nty6FxSGgEJ0kZIgZJHk8m3uLbB4kifdSgJTPMMVUO3Up+cEpn?=
- =?us-ascii?Q?FQxTcl29YCv3fmUZfa1WOBZSQyePkCO+PFWjHvYasY0Eo4fumK/6nIxpelW0?=
- =?us-ascii?Q?cXDLvvQtCdbhrbhGmKbEtqOBeRZkk/TU5kyZpsnSdd5nB1mQvJWRT8ox0nNa?=
- =?us-ascii?Q?30YzCGH1mH3zdevlEb54+8XbwxvdakI8kTy9n9aURDoWxCyp9A50M7470l5d?=
- =?us-ascii?Q?bigSqFlif9sUXBLVaKWiUALDoeDjdG4Bav7xD/WVhQOQrvHRYHmckxr5teIU?=
- =?us-ascii?Q?DRGvEeptA0uyZhsPJQwIhZFlGSes7aXpjLBUaa3tbdKeo3ScPFkg0Ksqdf8Z?=
- =?us-ascii?Q?H8PG9NBx8w7H2i7tSaEf5xvX32Y9l9siKZ2f77bOOsVJrBpBzNib0lK5wSX4?=
- =?us-ascii?Q?dn3aBmyPEolHyAoOMmnWpyDXMHBIQOV13MMe+saWwVmR7KISIfZ1eV9YqdMe?=
- =?us-ascii?Q?rMG/cstyOsuZhlK5aJFIluiAiQ+Idm4FapgvW2fi7pNUcOd8FuItFnqhdWvF?=
- =?us-ascii?Q?O2PjfY7v3NOqCwXbd2fqDP3UrGXzOLqD676OC/PAHtxogKDRqCeNShI8A6Pj?=
- =?us-ascii?Q?It43DzP1KGib0OjwTHdLXCv9dkSsbTKuWOEnzv5GTqFIz2xO0nXXNoaWtvUH?=
- =?us-ascii?Q?efxjpkuXtTvv64bz9/5XHqPN7GMwPSUEls7/R1PS4gEYLtJijhpe3pEedgxQ?=
- =?us-ascii?Q?xBEHPeLXor6rguHzT7jddhbeMBbdVqkaSR/+0sOnh4IaCqtLj5qQhyagYjHe?=
- =?us-ascii?Q?7o8HJnD69ndMpErwejEsdlxNMwFvcQDJczDatDKLNScGl7Kp+E/Q3W2is/tH?=
- =?us-ascii?Q?W4gxDnb/KrqbH1GwKAaSC5w0GFlEKEibICtP+Q=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-d8e84.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3f52483-6c78-4438-d792-08dbeaf9d583
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR01MB3809.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 01:24:56.7937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR0101MB3632
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] soc: sifive: shunt ccache driver to drivers/cache
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        linux-kernel@vger.kernel.org
+References: <20231012-mooing-refined-ad1ab421c0d3@spud>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20231012-mooing-refined-ad1ab421c0d3@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Google Dexi device uses the same approach as the Google Brask
-which enables the HDMI CEC via the cros-ec-cec driver.
+Hi Conor,
 
-Signed-off-by: Ken Lin <ken_lin5@hotmail.com>
----
+On 2023-10-12 4:22 AM, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+> 
+> Move the ccache driver over to drivers/cache, out of the drivers/soc
+> dumping ground, to this new collection point for cache controller
+> drivers.
+> 
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> CC: Conor Dooley <conor@kernel.org>
+> CC: Palmer Dabbelt <palmer@dabbelt.com>
+> CC: Paul Walmsley <paul.walmsley@sifive.com>
+> CC: Emil Renner Berthing <kernel@esmil.dk>
+> CC: linux-kernel@vger.kernel.org
+> CC: linux-riscv@lists.infradead.org
+> ---
+>  MAINTAINERS                                   | 14 +++++++-------
+>  drivers/cache/Kconfig                         |  8 ++++++++
+>  drivers/cache/Makefile                        |  3 ++-
+>  drivers/{soc/sifive => cache}/sifive_ccache.c |  0
+>  drivers/soc/Kconfig                           |  1 -
+>  drivers/soc/Makefile                          |  1 -
+>  drivers/soc/sifive/Kconfig                    | 10 ----------
+>  drivers/soc/sifive/Makefile                   |  3 ---
+>  8 files changed, 17 insertions(+), 23 deletions(-)
+>  rename drivers/{soc/sifive => cache}/sifive_ccache.c (100%)
+>  delete mode 100644 drivers/soc/sifive/Kconfig
+>  delete mode 100644 drivers/soc/sifive/Makefile
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 90f13281d297..ab32599fc799 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19580,6 +19580,13 @@ S:	Supported
+>  N:	sifive
+>  K:	[^@]sifive
+>  
+> +SIFIVE CACHE DRIVER
+> +M:	Conor Dooley <conor@kernel.org>
+> +L:	linux-riscv@lists.infradead.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
+> +F:	drivers/cache/sifive_ccache.c
+> +
+>  SIFIVE FU540 SYSTEM-ON-CHIP
+>  M:	Paul Walmsley <paul.walmsley@sifive.com>
+>  M:	Palmer Dabbelt <palmer@dabbelt.com>
+> @@ -19595,13 +19602,6 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/dma/sifive,fu540-c000-pdma.yaml
+>  F:	drivers/dma/sf-pdma/
+>  
+> -SIFIVE SOC DRIVERS
+> -M:	Conor Dooley <conor@kernel.org>
+> -L:	linux-riscv@lists.infradead.org
+> -S:	Maintained
+> -T:	git https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/
+> -F:	Documentation/devicetree/bindings/cache/sifive,ccache0.yaml
+> -F:	drivers/soc/sifive/
+>  
+>  SILEAD TOUCHSCREEN DRIVER
+>  M:	Hans de Goede <hdegoede@redhat.com>
+> diff --git a/drivers/cache/Kconfig b/drivers/cache/Kconfig
+> index a57677f908f3..433b7ded8787 100644
+> --- a/drivers/cache/Kconfig
+> +++ b/drivers/cache/Kconfig
+> @@ -8,4 +8,12 @@ config AX45MP_L2_CACHE
+>  	help
+>  	  Support for the L2 cache controller on Andes Technology AX45MP platforms.
+>  
+> +if ARCH_SIFIVE || ARCH_STARFIVE
 
- drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 2 ++
- 1 file changed, 2 insertions(+)
+Since this is now in a file grouped/sorted by subsystem instead of by platform,
+maybe it makes sense to convert this to a "depends on" line?
 
-diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-index 42dde3f0dbde..52ec0ba4b339 100644
---- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-+++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-@@ -324,6 +324,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
- 	{ "Google", "Boxy", "0000:00:02.0", port_d_conns },
- 	/* Google Taranza */
- 	{ "Google", "Taranza", "0000:00:02.0", port_db_conns },
-+	/* Google Dexi */
-+	{ "Google", "Dexi", "0000:00:02.0", port_db_conns },
- };
- 
- static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
--- 
-2.25.1
+> +
+> +config SIFIVE_CCACHE
+> +	bool "Sifive Composable Cache controller"
+> +	help
+> +	  Support for the composable cache controller on SiFive platforms.
+> +
+> +endif
+>  endmenu
+> diff --git a/drivers/cache/Makefile b/drivers/cache/Makefile
+> index 2012e7fb978d..7657cff3bd6c 100644
+> --- a/drivers/cache/Makefile
+> +++ b/drivers/cache/Makefile
+> @@ -1,3 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  
+> -obj-$(CONFIG_AX45MP_L2_CACHE) += ax45mp_cache.o
+> +obj-$(CONFIG_AX45MP_L2_CACHE)	+= ax45mp_cache.o
+> +obj-$(CONFIG_SIFIVE_CCACHE)	+= sifive_ccache.o
+> diff --git a/drivers/soc/sifive/sifive_ccache.c b/drivers/cache/sifive_ccache.c
+> similarity index 100%
+> rename from drivers/soc/sifive/sifive_ccache.c
+> rename to drivers/cache/sifive_ccache.c
+> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+> index d21e75d69294..76afeff93045 100644
+> --- a/drivers/soc/Kconfig
+> +++ b/drivers/soc/Kconfig
+> @@ -23,7 +23,6 @@ source "drivers/soc/qcom/Kconfig"
+>  source "drivers/soc/renesas/Kconfig"
+>  source "drivers/soc/rockchip/Kconfig"
+>  source "drivers/soc/samsung/Kconfig"
+> -source "drivers/soc/sifive/Kconfig"
+>  source "drivers/soc/starfive/Kconfig"
+
+This file has a conflict and needs to be rebased, but otherwise:
+
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
+
+>  source "drivers/soc/sunxi/Kconfig"
+>  source "drivers/soc/tegra/Kconfig"
+> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+> index 0706a27d13be..ba8f5b5460e1 100644
+> --- a/drivers/soc/Makefile
+> +++ b/drivers/soc/Makefile
+> @@ -28,7 +28,6 @@ obj-y				+= qcom/
+>  obj-y				+= renesas/
+>  obj-y				+= rockchip/
+>  obj-$(CONFIG_SOC_SAMSUNG)	+= samsung/
+> -obj-y				+= sifive/
+>  obj-y				+= sunxi/
+>  obj-$(CONFIG_ARCH_TEGRA)	+= tegra/
+>  obj-y				+= ti/
+> diff --git a/drivers/soc/sifive/Kconfig b/drivers/soc/sifive/Kconfig
+> deleted file mode 100644
+> index 139884addc41..000000000000
+> --- a/drivers/soc/sifive/Kconfig
+> +++ /dev/null
+> @@ -1,10 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -if ARCH_SIFIVE || ARCH_STARFIVE
+> -
+> -config SIFIVE_CCACHE
+> -	bool "Sifive Composable Cache controller"
+> -	help
+> -	  Support for the composable cache controller on SiFive platforms.
+> -
+> -endif
+> diff --git a/drivers/soc/sifive/Makefile b/drivers/soc/sifive/Makefile
+> deleted file mode 100644
+> index 1f5dc339bf82..000000000000
+> --- a/drivers/soc/sifive/Makefile
+> +++ /dev/null
+> @@ -1,3 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -obj-$(CONFIG_SIFIVE_CCACHE)	+= sifive_ccache.o
 
