@@ -2,235 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702A57F3DD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0357F3DEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbjKVGD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S231307AbjKVGIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVGDZ (ORCPT
+        with ESMTP id S229498AbjKVGIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:03:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B76C195;
-        Tue, 21 Nov 2023 22:03:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700633001; x=1732169001;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yATNtj3wW2LygmD49BqRPnSuheX1Fu8t/llE27t5hB4=;
-  b=imO+seTEQ9stykD7UNrqjG9xY2m+ad4XPEjtICspw/aFNBPVUNd3EWja
-   MY1CvqfSBXo+/i3SEb9Ig24CxHBfry/XOxg+gvqBO/niRXek/olivGl3b
-   giqBeFqgoEqzP1OiaqfwwMisQoMG302R9pGViyGrVAMwxPRwkkj4arJPK
-   uwjFynY+cmZnKTrydfp6ucXmyyFlB1I+vqQLWmur6s5uBpiL99fgkPIlR
-   Rq1wowtKlEWYjyBiYEyS1fG71Fb+tunaE5HaCRU24uNLefhaN5dpCbrtU
-   il9dkSgIQsck6NXdkSFGnICN92f7vlLM9AqSzOr1Q1acC6asFKcaGzB3m
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="5127747"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="5127747"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 22:03:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="743284439"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="743284439"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 21 Nov 2023 22:03:17 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 67E49291; Wed, 22 Nov 2023 08:03:16 +0200 (EET)
-Date:   Wed, 22 Nov 2023 08:03:16 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Sanath S <Sanath.S@amd.com>
-Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        stable@vger.kernel.org
-Subject: Re: [Patch v2] thunderbolt: Add quirk to reset downstream port
-Message-ID: <20231122060316.GT1074920@black.fi.intel.com>
-References: <20231122050639.19651-1-Sanath.S@amd.com>
+        Wed, 22 Nov 2023 01:08:36 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BE4B9;
+        Tue, 21 Nov 2023 22:08:30 -0800 (PST)
+Received: from sunspire (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 1D97028EE6F;
+        Wed, 22 Nov 2023 06:08:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1700633309;
+        bh=qXrWiEusWw2mGp8Om+7vfvXGecnaxYZpAvAu49+prmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=bFyILb78z0IBNzVGHbVq8BASi75VURs9Qlu5pKkUJdZf/BaJxTFnrlHdfrwluiA7f
+         hKiFF/11JtSujkyhyacaYFLXvF4HdJm0lHE5EmKP3qfQCgPNrmoNByZ/ZK0/7WprHA
+         u+7QtrA92LHjPbda8XAL2awdOSN98yUAdb4F6BaM=
+Date:   Wed, 22 Nov 2023 08:08:27 +0200
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH 2/2] iio: pressure: driver for Honeywell HSC/SSC series
+ pressure sensors
+Message-ID: <ZV2a213oidterHYZ@sunspire>
+References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
+ <20231117164232.8474-2-petre.rodan@subdimension.ro>
+ <ZVtSm5f-Qyp8LFFp@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122050639.19651-1-Sanath.S@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZVtSm5f-Qyp8LFFp@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, Nov 22, 2023 at 10:36:39AM +0530, Sanath S wrote:
-> Boot firmware on AMD's Yellow Carp and Pink Sardine allocates
-> very minimal buses for PCIe downstream ports. This results in
-> failure to extend the daisy chain.
+hello,
+
+first of all, thank you for the code review.
+in the interest of brevity I will skip all comments where I simply remove the block, blankline, or fix indentation.
+
+On Mon, Nov 20, 2023 at 02:35:39PM +0200, Andy Shevchenko wrote:
+> > +	select HSC030PA_I2C if (I2C)
+> > +	select HSC030PA_SPI if (SPI_MASTER)
 > 
-> Add quirk to reset the downstream port to help reset the topology
-> created by boot firmware.
+> Unneeded parentheses
 
-But this resets the USB4 side of ports, how does this help with the PCIe
-side? Or this also resets the PCIe side? Please add this information to
-the changelog too.
+ack
 
-I suppose it is not possible to fix the boot firmware?
-
-> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Sanath S <Sanath.S@amd.com>
-> Fixes: e390909ac763 ("thunderbolt: Add vendor specific NHI quirk for auto-clearing interrupt status")
-> Cc: <stable@vger.kernel.org>
-> ---
-> Changes since v1:
->  - Initialize ret variable to avoid compiler warning.
->  - Add Fixes tag with commit id. 
-> ---
+> > +	help
+> > +	  Say Y here to build support for the Honeywell HSC and SSC TruStability
+> > +      pressure and temperature sensor series.
+> > +
+> > +	  To compile this driver as a module, choose M here: the module will be
+> > +	  called hsc030pa.
 > 
->  drivers/thunderbolt/quirks.c  | 14 ++++++++++++++
->  drivers/thunderbolt/switch.c  | 28 ++++++++++++++++++++++++++++
->  drivers/thunderbolt/tb.h      |  2 ++
->  drivers/thunderbolt/tb_regs.h |  1 +
->  4 files changed, 45 insertions(+)
+> Yeah besides indentation issues the LKP complain about this.
+
+fixed indentation and now it compiles fine with git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+sorry, what is 'LKP' in this context and how do I reproduce?
+
+> > +#include <linux/module.h>
+> > +#include <linux/mutex.h>
+> > +#include <linux/init.h>
+> > +#include <linux/math64.h>
+> > +#include <linux/units.h>
+> > +#include <linux/mod_devicetable.h>
+> > +#include <linux/printk.h>
 > 
-> diff --git a/drivers/thunderbolt/quirks.c b/drivers/thunderbolt/quirks.c
-> index e6bfa63b40ae..45e9d6c43e4a 100644
-> --- a/drivers/thunderbolt/quirks.c
-> +++ b/drivers/thunderbolt/quirks.c
-> @@ -27,6 +27,12 @@ static void quirk_clx_disable(struct tb_switch *sw)
->  	tb_sw_dbg(sw, "disabling CL states\n");
->  }
->  
-> +static void quirk_amd_downstream_port_reset(struct tb_switch *sw)
-> +{
-> +	sw->quirks |= QUIRK_DPR;
-> +	tb_sw_dbg(sw, "Resetting Down Stream Port\n");
+> Keep them sorted alphabetically.
+> Also there are missing at least these ones: array_size.h, types.h.
 
-That's "resetting downstream ports\n"
+'#include <linux/array_size.h>' is a weird one.
+$ cd /usr/src/linux/drivers
+$ grep -r ARRAY_SIZE * | grep '\.c:' |  wc -l
+ 32396
+$ grep -r 'include.*array_size\.h' * | grep -E '\.[ch]:' | wc -l
+11
+$ grep -r 'include.*array_size\.h' * | grep -E '\.[ch]:' | grep -v '^pinctrl' | wc -l
+0
 
-> +}
-> +
->  static void quirk_usb3_maximum_bandwidth(struct tb_switch *sw)
->  {
->  	struct tb_port *port;
-> @@ -93,6 +99,14 @@ static const struct tb_quirk tb_quirks[] = {
->  	{ 0x0438, 0x0209, 0x0000, 0x0000, quirk_clx_disable },
->  	{ 0x0438, 0x020a, 0x0000, 0x0000, quirk_clx_disable },
->  	{ 0x0438, 0x020b, 0x0000, 0x0000, quirk_clx_disable },
-> +	/*
-> +	 * Reset Down Stream Ports on AMD USB4 Yellow Carp and
-> +	 * Pink Sardine platforms.
-> +	 */
-> +	{ 0x0438, 0x0208, 0x0000, 0x0000, quirk_amd_downstream_port_reset },
-> +	{ 0x0438, 0x0209, 0x0000, 0x0000, quirk_amd_downstream_port_reset },
-> +	{ 0x0438, 0x020a, 0x0000, 0x0000, quirk_amd_downstream_port_reset },
-> +	{ 0x0438, 0x020b, 0x0000, 0x0000, quirk_amd_downstream_port_reset },
->  };
->  
->  /**
-> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-> index 1e15ffa79295..1c4b1dd5f472 100644
-> --- a/drivers/thunderbolt/switch.c
-> +++ b/drivers/thunderbolt/switch.c
-> @@ -1547,6 +1547,23 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
->  	       regs->__unknown1, regs->__unknown4);
->  }
->  
-> +static int tb_switch_reset_downstream_port(struct tb_switch *sw)
-> +{
-> +	struct tb_port *port;
-> +	uint32_t val = 0;
+plus on a 6.1 version kernel, `make modules` actually reports that the header can't be found if I include it. can't comprehend that.
+so I'll be skipping that particular include.
 
-u32
+> > +// pressure range for current chip based on the nomenclature
+> > +struct hsc_range_config {
+> > +	char name[HSC_RANGE_STR_LEN];	// 5-char string that defines the range - ie "030PA"
+> > +	s32 pmin;		// minimal pressure in pascals
+> > +	s32 pmax;		// maximum pressure in pascals
+> > +};
+> 
+> Can you utilize linear ranges data types and APIs? (linear_range.h)
 
-> +	int ret = -1;
+not fit for this purpose, sorry.
 
-What is -1? Please use proper error codes.
+> > +/*
+> > + * the first two bits from the first byte contain a status code
+> > + *
+> > + * 00 - normal operation, valid data
+> > + * 01 - device in hidden factory command mode
+> > + * 10 - stale data
+> > + * 11 - diagnostic condition
+> > + *
+> > + * function returns 1 only if both bits are zero
+> > + */
+> 
+> You really need to be consistent with style of multi-line comments.
+> And also C++/C variants. Besides that, respect English grammar and
+> punctuation.
 
-> +
-> +	tb_switch_for_each_port(sw, port) {
-> +		if (port->config.type == TB_TYPE_PORT) {
+ok, I changed all comments to /* */.
+this particular block was rewritten (the legend is taken from honeywell's i2c-related datasheet).
 
-You mean 
+> > +static bool hsc_measurement_is_valid(struct hsc_data *data)
+> > +{
+> > +	if (data->buffer[0] & 0xc0)
+> > +		return 0;
+> > +
+> > +	return 1;
+> 
+> You use bool and return integers.
+> 
+> Besides, it can be just a oneliner.
 
-	tb_port_is_null()
+rewritten as a one-liner, without GENMASK.
 
-also please make it a separate function, tb_port_reset() following the
-similar tb_port_unlock() and friends. With the matching kernel-doc and
-everything.
+> 	return !(buffer[0] & GENMASK(3, 2));
+> 
+> (Note, you will need bits.h for this.)
+> 
+> > +}
+> 
+...
+> > +	ret = chip->valid(data);
+> > +	if (!ret)
+> > +		return -EAGAIN;
+> > +
+> > +	data->is_valid = true;
+> 
+> Can this be like
+> 
+> 	bool is_valid;
+> 
+> 	is_valid = chip->valid(...);
+> 	if (!is_valid)
+> 		return ...
+> 
+> 
+> 	data->is_valid = is_valid;
+> 
+> 	// Depending on the flow you can even use that field directly
 
-> +			val = val | PORT_CS_19_DPR;
-> +			ret = tb_port_write(port, &val, TB_CFG_PORT,
-> +					port->cap_usb4 + PORT_CS_19, 1);
+ack
 
-Since it is using cap_usb4 you probably need to make usb4_port_reset()
-as well that gets called from tb_port_reset() (try to make it as simple
-as possible though).
+> > +	case IIO_CHAN_INFO_RAW:
+> > +		mutex_lock(&data->lock);
+> > +		ret = hsc_get_measurement(data);
+> > +		mutex_unlock(&data->lock);
+> 
+> Use guard() operator from cleanup.h.
 
-> +			break;
+I'm not familiar with that, for the time being I'll stick to mutex_lock/unlock if you don't mind.
 
-It is OK just to reset one port?
+> > +		switch (channel->type) {
+> > +		case IIO_PRESSURE:
+> > +			*val =
+> > +			    ((data->buffer[0] & 0x3f) << 8) + data->buffer[1];
+> > +			return IIO_VAL_INT;
+> > +		case IIO_TEMP:
+> > +			*val =
+> > +			    (data->buffer[2] << 3) +
+> > +			    ((data->buffer[3] & 0xe0) >> 5);
+> 
+> Is this some endianess / sign extension? Please convert using proper APIs.
 
-> +		}
-> +	}
-> +	return ret;
-> +}
-> +
->  /**
->   * tb_switch_reset() - reconfigure route, enable and send TB_CFG_PKG_RESET
->   * @sw: Switch to reset
-> @@ -3201,6 +3218,17 @@ int tb_switch_add(struct tb_switch *sw)
->  			return ret;
->  	}
->  
-> +	/*
-> +	 * PCIe resource allocated by boot firmware is not utilizing all the
-> +	 * available buses, So perform reset of topology to avoid failure in
-> +	 * extending daisy chain.
-> +	 */
+the raw conversion data is spread over 4 bytes and interlaced with other info (see comment above the function).
+I'm just cherry-picking the bits I'm interested in, in a way my brain can understand what is going on.
 
-This comment should be inside the quirk, not here.
+> > +			ret = 0;
+> > +			if (!ret)
+> 
+> lol
 
-> +	if (sw->quirks & QUIRK_DPR) {
-> +		ret = tb_switch_reset_downstream_port(sw);
+I should leave that in for comic relief. missed it after a lot of code changes.
 
-And the name of the function should be tb_switch_reset_ports() or so.
+> > +	case IIO_CHAN_INFO_OFFSET:
+> > +		switch (channel->type) {
+> > +		case IIO_TEMP:
+> > +			*val = -50000000;
+> > +			*val2 = 97704;
+> > +			return IIO_VAL_FRACTIONAL;
+> > +		case IIO_PRESSURE:
+> > +			*val = data->p_offset;
+> > +			*val2 = data->p_offset_nano;
+> > +			return IIO_VAL_INT_PLUS_NANO;
+> > +		default:
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> 
+> > +	return ret;
+> 
+> Use default with explicit error code.
 
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	ret = tb_switch_port_hotplug_enable(sw);
->  	if (ret)
->  		return ret;
-> diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
-> index e299e53473ae..7a9ff53be67a 100644
-> --- a/drivers/thunderbolt/tb.h
-> +++ b/drivers/thunderbolt/tb.h
-> @@ -23,6 +23,8 @@
->  #define QUIRK_FORCE_POWER_LINK_CONTROLLER		BIT(0)
->  /* Disable CLx if not supported */
->  #define QUIRK_NO_CLX					BIT(1)
-> +/* Reset Down Stream Port */
-> +#define QUIRK_DPR					BIT(2)
->  
->  /**
->   * struct tb_nvm - Structure holding NVM information
-> diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
-> index 87e4795275fe..d49530bc0d53 100644
-> --- a/drivers/thunderbolt/tb_regs.h
-> +++ b/drivers/thunderbolt/tb_regs.h
-> @@ -389,6 +389,7 @@ struct tb_regs_port_header {
->  #define PORT_CS_18_CSA				BIT(22)
->  #define PORT_CS_18_TIP				BIT(24)
->  #define PORT_CS_19				0x13
-> +#define PORT_CS_19_DPR				BIT(0)
->  #define PORT_CS_19_PC				BIT(3)
->  #define PORT_CS_19_PID				BIT(4)
->  #define PORT_CS_19_WOC				BIT(16)
+ack.
+
+> > +static const struct iio_chan_spec hsc_channels[] = {
+> > +	{
+> > +	 .type = IIO_PRESSURE,
+> > +	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> > +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET)
+> > +	 },
+> > +	{
+> > +	 .type = IIO_TEMP,
+> > +	 .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> > +	 BIT(IIO_CHAN_INFO_SCALE) | BIT(IIO_CHAN_INFO_OFFSET)
+> > +	 },
+> 
+> Strange indentation of }:s...
+
+I blame `indent -linux --line-length 80` for these and weirdly-spaced pointer declarations.
+are you using something else?
+
+> > +int hsc_probe(struct iio_dev *indio_dev, struct device *dev,
+> > +	      const char *name, int type)
+> > +{
+> > +	struct hsc_data *hsc;
+> > +	u64 tmp;
+> > +	int index;
+> > +	int found = 0;
+> > +
+> > +	hsc = iio_priv(indio_dev);
+> > +
+> > +	hsc->last_update = jiffies - HZ;
+> > +	hsc->chip = &hsc_chip;
+> > +
+> > +	if (strcasecmp(hsc->range_str, "na") != 0) {
+> > +		// chip should be defined in the nomenclature
+> > +		for (index = 0; index < ARRAY_SIZE(hsc_range_config); index++) {
+> > +			if (strcasecmp
+> > +			    (hsc_range_config[index].name,
+> > +			     hsc->range_str) == 0) {
+> > +				hsc->pmin = hsc_range_config[index].pmin;
+> > +				hsc->pmax = hsc_range_config[index].pmax;
+> > +				found = 1;
+> > +				break;
+> > +			}
+> > +		}
+> 
+> Reinventing match_string() / sysfs_match_string() ?
+
+match_string() is case-sensitive and operates on string arrays, so unfit for this purpose.
+
+> > +struct hsc_data {
+> > +	void *client;                           // either i2c or spi kernel interface struct for current dev
+> > +	const struct hsc_chip_data *chip;
+> > +	struct mutex lock;                      // lock protecting chip reads
+> > +	int (*xfer)(struct hsc_data *data);    // function that implements the chip reads
+> > +	bool is_valid;                          // false if last transfer has failed
+> > +	unsigned long last_update;              // time of last successful conversion
+> > +	u8 buffer[HSC_REG_MEASUREMENT_RD_SIZE]; // raw conversion data
+> > +	char range_str[HSC_RANGE_STR_LEN];	// range as defined by the chip nomenclature - ie "030PA" or "NA"
+> > +	s32 pmin;                               // min pressure limit
+> > +	s32 pmax;                               // max pressure limit
+> > +	u32 outmin;                             // minimum raw pressure in counts (based on transfer function)
+> > +	u32 outmax;                             // maximum raw pressure in counts (based on transfer function)
+> > +	u32 function;                           // transfer function
+> > +	s64 p_scale;                            // pressure scale
+> > +	s32 p_scale_nano;                       // pressure scale, decimal places
+> > +	s64 p_offset;                           // pressure offset
+> > +	s32 p_offset_nano;                      // pressure offset, decimal places
+> > +};
+> > +
+> > +struct hsc_chip_data {
+> > +	bool (*valid)(struct hsc_data *data);  // function that checks the two status bits
+> > +	const struct iio_chan_spec *channels;   // channel specifications
+> > +	u8 num_channels;                        // pressure and temperature channels
+> > +};
+> 
+> Convert comments to kernel-doc format.
+
+ack. switched to kernel-doc format in multiple places.
+
+> > +enum hsc_func_id {
+> > +	HSC_FUNCTION_A,
+> > +	HSC_FUNCTION_B,
+> > +	HSC_FUNCTION_C,
+> > +	HSC_FUNCTION_F
+> 
+> Leave trailing comma. It make code slightly better to maintain.
+
+ack
+
+> > +static int hsc_i2c_xfer(struct hsc_data *data)
+> > +{
+> > +	struct i2c_client *client = data->client;
+> > +	struct i2c_msg msg;
+> > +	int ret;
+> > +
+> > +	msg.addr = client->addr;
+> > +	msg.flags = client->flags | I2C_M_RD;
+> > +	msg.len = HSC_REG_MEASUREMENT_RD_SIZE;
+> > +	msg.buf = (char *)&data->buffer;
+> > +
+> > +	ret = i2c_transfer(client->adapter, &msg, 1);
+> > +
+> > +	return (ret == 2) ? 0 : ret;
+> > +}
+> 
+> Can you use regmap I2C?
+
+the communication is one-way as in the sensors do not expect anything except 4 bytes-worth of clock signals per 'packet' for both the i2c and spi versions.
+regmap is suited to sensors with an actual memory map.
+
+> > +static int hsc_i2c_probe(struct i2c_client *client,
+> > +			 const struct i2c_device_id *id)
+> 
+> No use of this function prototype, we have a new one.
+
+oops, I was hoping my 6.1.38 kernel is using the same API as 6.7.0
+fixed.
+
+> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
+> > +	if (!indio_dev) {
+> 
+> > +		dev_err(&client->dev, "Failed to allocate device\n");
+> > +		return -ENOMEM;
+> 
+> First of all, use
+> 
+> 		return dev_err_probe();
+> 
+> Second, since it's ENOMEM, we do not issue an errors like this, error
+> code is already enough.
+
+ack
+
+> 
+> > +	}
+> > +
+> > +	hsc = iio_priv(indio_dev);
+> 
+> > +	if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
+> > +		hsc->xfer = hsc_i2c_xfer;
+> > +	else
+> 
+> Redundant 'else', see below.
+> 
+> > +		return -EOPNOTSUPP;
+> 
+> Use traditional pattern, i.e. checking for errors first:
+> 
+> 	if (...)
+> 		return ...
+
+ack
+
+> > +	ret = devm_regulator_get_enable_optional(dev, "vdd");
+> > +	if (ret == -EPROBE_DEFER)
+> > +		return -EPROBE_DEFER;
+> 
+> Oh, boy, this should check for ENODEV or so, yeah, regulator APIs a bit
+> interesting.
+
+since I'm unable to test this I'd rather remove the block altogether.
+if I go the ENODEV route my module will never load since I can't see any vdd-supply support on my devboard.
+
+> > +	if (!dev_fwnode(dev))
+> > +		return -EOPNOTSUPP;
+> 
+> Why do you need this?
+> And why this error code?
+
+it's intentional.
+this module has a hard requirement on the correct parameters (transfer function and pressure range) being provided in the devicetree.
+without those I don't want to provide any measurements since there can't be a default transfer function and pressure range for a generic driver that supports an infinite combination of those.
+
+echo hsc030pa 0x28 > /sys/bus/i2c/devices/i2c-0/new_device
+I want iio_info to detect 0 devices.
+
+> > +	memcpy(hsc->range_str, range_nom, HSC_RANGE_STR_LEN - 1);
+> > +	hsc->range_str[HSC_RANGE_STR_LEN - 1] = 0;
+> 
+> Oh, why do you need this all and can use the property value directly?
+> (Besides the fact the interesting operations are being used for strings.)
+
+using directly and moved to main probe() file.
+
+> > +MODULE_DEVICE_TABLE(of, hsc_i2c_match);
+> > +
+> > +static const struct i2c_device_id hsc_i2c_id[] = {
+> > +	{"hsc", HSC},
+> > +	{"ssc", SSC},
+> 
+> Both ID tables should use pointers in driver data and respective API to get
+> that.
+
+re-written based on bindings thread.
+
+> > +	spi_set_drvdata(spi, indio_dev);
+> 
+> How is this being used?
+
+removed.
+
+> > +	spi->mode = SPI_MODE_0;
+> > +	spi->max_speed_hz = min(spi->max_speed_hz, 800000U);
+> > +	spi->bits_per_word = 8;
+> > +	ret = spi_setup(spi);
+> > +	if (ret < 0)
+> > +		return ret;
+> 
+> Why the firmware can't provide the correct information to begin with?
+
+moved 800kHz max requirement to the bindings file.
+
+> > +	ret = device_property_read_u32(dev,
+> > +				       "honeywell,transfer-function",
+> > +				       &hsc->function);
+..
+> > +		if (ret)
+> > +			return dev_err_probe(dev, ret,
+> > +					     "honeywell,pmax-pascal could not be read\n");
+> > +	}
+> 
+> Ditto. Why is this duplication?
+
+you're right, moved to main probe()
+
 > -- 
-> 2.34.1
+> With Best Regards,
+> Andy Shevchenko
+
+patches are ready, but awaiting any aditional feedback to this message.
+
+thanks again,
+peter
+
+-- 
+petre rodan
