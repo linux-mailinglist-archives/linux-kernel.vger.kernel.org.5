@@ -2,86 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D92A7F4E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8151D7F4E5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344228AbjKVRZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S1344121AbjKVR0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344130AbjKVRZk (ORCPT
+        with ESMTP id S234713AbjKVR0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:25:40 -0500
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B46E11F;
-        Wed, 22 Nov 2023 09:25:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1700673929; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=L7WFrYebsKHoUGrR1I1AnrhXx43r66fniToUVGhpiG1yTxFPw0MYuimgZ4Squ+ClHW
-    X6jaXfoOvLccEA/oPO7NiPwaVV/cJ80qq/UpscPLDc1IlAe9zIBFG/aC1kkwfdeLfcwP
-    9CyF5QB9eCvWUjzMzBLMsUxydr3U5uFPZT6qXgDjWA2qsyMHLE13WlbBUbRShP+hKIhm
-    Ck/lh4Q7tCFI9T6uz2knWdtbkmpQ7J4LMwUBdqLoEeDoOx7QoH/oZxWew163cPPXa7Re
-    2mnOvwXvYaelgt/zrA20CcgEv5Y70IvdVF0kQi5xqq7uEAydvzvE6BQZ0Czjhq2T7g3U
-    gtkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1700673929;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=vZpZ9NKXUQd/HeAYhjZFf4m71jUoBcZvjlDIhfX51No=;
-    b=jVtXAN2Ue+JUsFFZUDqooVnxp2YjrErfvxFChRTLqR7iJb0YNq2jCDWTL6qvhpgtUh
-    pzIdllwANKd86jHjtdfbH66XyCVoo3OQVMDVWbqx71+Dht+xBXi2CEu3bwlWb2qUuddx
-    vUcPdoN6fP527IB+Wea6sAow9hw+LzaoTwwZeMnnrt3tFKFIYreEcN0kCDT3vpqzDWwx
-    IsL8PDMYlqFDaUc91yMIbx7cvJMKM0VLe2sByHsba6gAMga56u8tLvIg7axq6+r5OfuN
-    +CwDI2NVHf0JK5po9e8nEBpme/GWAsKgxRBVqy8aT/GjRKgEpZGRr+G4UTc2+XKNbKVC
-    hnMA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1700673929;
-    s=strato-dkim-0002; d=iokpp.de;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=vZpZ9NKXUQd/HeAYhjZFf4m71jUoBcZvjlDIhfX51No=;
-    b=tmkqyx1ZPFvm9gGyfWwMoEofS1DdYUQaRl6LJQrjUxJqnjR/fB4ex76ZsOKGEgahoY
-    hhNeiU8HVlaoLvpWKlvBEaBqeU6PmHHz94McXnE897Ri1Tjxzrij9V/9RI3el3bzBp3H
-    zW1emX36yRhicdUZGdlo9NhoTfx7OTPlpoRNrt4Vtqdu9xO+keoArpY35sbYcQlp1Cg5
-    TzZP6nUr/I/uJZN9PL1vNcduPMbkAjOthzi263gw3GoxgBHYSQYf/Gn4oOHSltPP1HoE
-    e6VAHgJk+KoKtYcdwnQvGxUg6sZ/mTJX6eRDZqpVNDmugVQmyS7C2bXYkb8dwUGeAfbz
-    HyaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1700673929;
-    s=strato-dkim-0003; d=iokpp.de;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=vZpZ9NKXUQd/HeAYhjZFf4m71jUoBcZvjlDIhfX51No=;
-    b=SkDr8bksm3TNE4WuBF4Cj5eiTXNfrzcq2TtVMVuzsZY6y9r4Zdqbd4YYy/WY7O1u76
-    JS96XsU21T6869eK70Ag==
-X-RZG-AUTH: ":LmkFe0i9dN8c2t4QQyGBB/NDXvjDB6pBSedrgBzPc9DUyubU4DD2QzemV2tdlNlNRZBXiUw="
-Received: from Munilab01-lab.micron.com
-    by smtp.strato.de (RZmta 49.9.1 AUTH)
-    with ESMTPSA id z758a5zAMHPStqM
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 22 Nov 2023 18:25:28 +0100 (CET)
-From:   Bean Huo <beanhuo@iokpp.de>
-To:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, mani@kernel.org,
-        quic_cang@quicinc.com, quic_asutoshd@quicinc.com,
-        beanhuo@micron.com, thomas@t-8ch.de
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikebi@micron.com, lporzio@micron.com
-Subject: [PATCH v2 3/3] scsi: ufs: core: Add sysfs node for UFS RTC update
-Date:   Wed, 22 Nov 2023 18:25:12 +0100
-Message-Id: <20231122172512.103748-4-beanhuo@iokpp.de>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231122172512.103748-1-beanhuo@iokpp.de>
-References: <20231122172512.103748-1-beanhuo@iokpp.de>
+        Wed, 22 Nov 2023 12:26:43 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC9E92
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:26:39 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-462a0e1245bso1299257137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:26:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700673998; x=1701278798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u2shFgJTlJ9h7e3t15BYDPAUoPIZ4uMg+GRBduHwrWE=;
+        b=GaraeVTip7HJ4qr8nej5WgeJtW5xWs3FtNGgGPJUvQRMUl2q4/zwnLgEUXKsIF0h9P
+         V/aPoXYLzdt1iSb/5ojs0UOyMjpP4ftk+6aoY2qLPVqvHp2xaYLFGo3FUgcfZzvzM3xY
+         aHEAxzFMV/CsyqVjS3kYMpJe4NWsebojEr7qRyGFIASwNWhyAX7dCRNNpQtztOLiiQ3j
+         Zm34g6RPIMqGBgLntgfgbos+7uMKUoyrnMNiboN4E67x0wz0q9TvXcl9o/E8HjQtwV14
+         vd2d2WnRxYlKKs7vm280npjbAcCqTqu0WC45Np4gISUj64Y3bGUs+yJFHIuZSZdaEDXP
+         FhCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700673998; x=1701278798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u2shFgJTlJ9h7e3t15BYDPAUoPIZ4uMg+GRBduHwrWE=;
+        b=gqi3DyesMgPtJpiMOe5NRQQjm4x/ayoG4X+JaH+HI2TvHiQHEPQLwBZy3MwhXjle+4
+         KSCTLyXnxYvsusTfXaxNeumGinn+cfkPV5TnbD4FnkzZghQJtCdgWqUNROws3YGbuYq1
+         gavVrcdW35Bfu+qQY32YrmW4XH94IqJEnOobQI6Luc1sVzF7SZNM1H/MgHh/ZRwGeZaG
+         WX5K6PKlKykOIPfA1jbCYIasd98UlYlHtwue4qqesTKiIfRtik8WeHbqNkC0TDeRneZB
+         fU20fWX9p8IuBlnCu79lQ/8vceIpKR2NRqLZ8bSoMFVVfQv2EuJvxsCERI8FDVkdmBRT
+         2tog==
+X-Gm-Message-State: AOJu0YzV+n/35E0dqjw7AzWXKvDoqncatFlYw9sPl2WwrsseMsLrFNju
+        9dSHczn+Wl4Csx70rgqyo1hmWaPSF5T+p1Jmlqq2BQ==
+X-Google-Smtp-Source: AGHT+IFzi7SMG/LyyZzNBXnCal5MiEtxDZ8q1iycJnu3xy9PsdGdlxKP8z69RACANGv6/CKjF+AbqWMoKIiXGT6/D9k=
+X-Received: by 2002:a67:fe5a:0:b0:462:8cc4:745 with SMTP id
+ m26-20020a67fe5a000000b004628cc40745mr3170192vsr.22.1700673998778; Wed, 22
+ Nov 2023 09:26:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+References: <20231122155916.38037-1-brgl@bgdev.pl> <480fef02-09ed-9a32-d5bb-e7114381220c@axentia.se>
+ <CAMRc=Mc_KAX0QWSoL9UEwwjFCD=fHv6ydceSYwaY91C=RkURxA@mail.gmail.com> <978e008b-0787-4204-3d5f-16518f35a3c9@axentia.se>
+In-Reply-To: <978e008b-0787-4204-3d5f-16518f35a3c9@axentia.se>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 22 Nov 2023 18:26:27 +0100
+Message-ID: <CAMRc=Mfo_N75ByOGe0TRxr__ajZ0fdGmzaVu9ig4uSsyMPSOhA@mail.gmail.com>
+Subject: Re: [PATCH] eeprom: at24: use of_match_ptr()
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,134 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Wed, Nov 22, 2023 at 6:14=E2=80=AFPM Peter Rosin <peda@axentia.se> wrote=
+:
+>
+>
+> 2023-11-22 at 17:57, Bartosz Golaszewski wrote:
+> > On Wed, 22 Nov 2023 at 17:41, Peter Rosin <peda@axentia.se> wrote:
+> >>
+> >> Hi!
+> >>
+> >> 2023-11-22 at 16:59, Bartosz Golaszewski wrote:
+> >>> -             .of_match_table =3D at24_of_match,
+> >>> +             .of_match_table =3D of_match_ptr(at24_of_match),
+> >>
+> >> If you do that, you will need to also add #ifdef CONFIG_OF around the
+> >> at24_of_match definition, of you'll trigger a warning about an unused
+> >> const variable (for some configs). I think.
+> >>
+> >> Cheers,
+> >> Peter
+> >
+> > Nope, no warnings even with W=3D2. This is true for unused functions bu=
+t
+> > unused data structures are just silently removed.
+>
+> Then I wonder what the difference is from the following?
+>
+> https://lore.kernel.org/all/202311161306.opyfcoCY-lkp@intel.com/T/#m3a33d=
+c4c3221ae167563bcff70757af776cf07b1
+>
+> It sure looks like the exact same pattern to me.
+> I.e. a static const struct of_device_id paired with of_match_ptr().
+>
+> CHeers,
+> Peter
 
-Introduce a sysfs node named 'rtc_update_ms' within the kernel, enabling user to
-adjust the RTC periodic update frequency to suit the specific requirements of the
-system and UFS. Also, this patch allows the user to disable/enable periodic update RTC
-in the UFS idle time.
+Ah, we need __maybe_unused here.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  7 +++++
- drivers/ufs/core/ufs-sysfs.c               | 31 ++++++++++++++++++++++
- drivers/ufs/core/ufshcd.c                  | 11 ++++++--
- include/ufs/ufs.h                          |  1 +
- 4 files changed, 48 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 0c7efaf62de0..ef1e27584fff 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1474,3 +1474,10 @@ Description:	Indicates status of Write Booster.
- 
- 		The file is read only.
- 
-+What:		/sys/bus/platform/drivers/ufshcd/*/rtc_update_ms
-+What:		/sys/bus/platform/devices/*.ufs/rtc_update_ms
-+Date:		November 2023
-+Contact:	Bean Huo <beanhuo@micron.com>
-+Description:
-+		rtc_update_ms indicates how often the host should synchronize or update the
-+		UFS RTC. If set to 0, this will disable UFS RTC periodic update.
-diff --git a/drivers/ufs/core/ufs-sysfs.c b/drivers/ufs/core/ufs-sysfs.c
-index c95906443d5f..bb6b540ccd8e 100644
---- a/drivers/ufs/core/ufs-sysfs.c
-+++ b/drivers/ufs/core/ufs-sysfs.c
-@@ -255,6 +255,35 @@ static ssize_t wb_on_store(struct device *dev, struct device_attribute *attr,
- 	return res < 0 ? res : count;
- }
- 
-+static ssize_t rtc_update_ms_show(struct device *dev, struct device_attribute *attr,
-+			  char *buf)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+
-+	return sysfs_emit(buf, "%d\n", hba->dev_info.rtc_update_period);
-+}
-+
-+static ssize_t rtc_update_ms_store(struct device *dev, struct device_attribute *attr,
-+			   const char *buf, size_t count)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+	unsigned int ms;
-+	bool resume_period_update = false;
-+
-+	if (kstrtouint(buf, 0, &ms))
-+		return -EINVAL;
-+
-+	if (!hba->dev_info.rtc_update_period && ms > 0)
-+		resume_period_update =  true;
-+	/* Minimum and maximum update frequency should be synchronized with all UFS vendors */
-+	hba->dev_info.rtc_update_period = ms;
-+
-+	if (resume_period_update)
-+		schedule_delayed_work(&hba->ufs_rtc_update_work,
-+						msecs_to_jiffies(hba->dev_info.rtc_update_period));
-+	return count;
-+}
-+
- static ssize_t enable_wb_buf_flush_show(struct device *dev,
- 				    struct device_attribute *attr,
- 				    char *buf)
-@@ -339,6 +368,7 @@ static DEVICE_ATTR_RW(auto_hibern8);
- static DEVICE_ATTR_RW(wb_on);
- static DEVICE_ATTR_RW(enable_wb_buf_flush);
- static DEVICE_ATTR_RW(wb_flush_threshold);
-+static DEVICE_ATTR_RW(rtc_update_ms);
- 
- static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_rpm_lvl.attr,
-@@ -351,6 +381,7 @@ static struct attribute *ufs_sysfs_ufshcd_attrs[] = {
- 	&dev_attr_wb_on.attr,
- 	&dev_attr_enable_wb_buf_flush.attr,
- 	&dev_attr_wb_flush_threshold.attr,
-+	&dev_attr_rtc_update_ms.attr,
- 	NULL
- };
- 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index 4d349eff24c4..53b4c96f4279 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -8223,9 +8223,9 @@ static void ufshcd_rtc_work(struct work_struct *work)
- 	if (!is_busy)
- 		ufshcd_update_rtc(hba);
- 
--	if (ufshcd_is_ufs_dev_active(hba))
-+	if (ufshcd_is_ufs_dev_active(hba) && hba->dev_info.rtc_update_period)
- 		schedule_delayed_work(&hba->ufs_rtc_update_work,
--			msecs_to_jiffies(UFS_RTC_UPDATE_INTERVAL_MS));
-+			msecs_to_jiffies(hba->dev_info.rtc_update_period));
- }
- 
- static void  ufs_init_rtc(struct ufs_hba *hba, u8 *desc_buf)
-@@ -8247,6 +8247,13 @@ static void  ufs_init_rtc(struct ufs_hba *hba, u8 *desc_buf)
- 		dev_info->rtc_time_baseline = 0;
- 	}
- 
-+	/*
-+	 * We ignore TIME_PERIOD defined in wPeriodicRTCUpdate because Spec does not clearly state
-+	 * how to calculate the specific update period for each time unit. Here we disable periodic
-+	 * update work, and let user configure by sysfs node according to specific circumstance.
-+	 */
-+	hba->dev_info.rtc_update_period = 0;
-+
- 	INIT_DELAYED_WORK(&hba->ufs_rtc_update_work, ufshcd_rtc_work);
- }
- 
-diff --git a/include/ufs/ufs.h b/include/ufs/ufs.h
-index 8022d267fe8a..288724d3be90 100644
---- a/include/ufs/ufs.h
-+++ b/include/ufs/ufs.h
-@@ -592,6 +592,7 @@ struct ufs_dev_info {
- 	/* UFS RTC */
- 	enum ufs_rtc_time rtc_type;
- 	time64_t rtc_time_baseline;
-+	u32 rtc_update_period;
- };
- 
- /*
--- 
-2.34.1
-
+Bart
