@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6C47F4CDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 747767F4CF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 17:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbjKVQkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 11:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S235330AbjKVQlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 11:41:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbjKVQkD (ORCPT
+        with ESMTP id S234323AbjKVQk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 11:40:03 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC5B199A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:38:53 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507973f3b65so9861070e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 08:38:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700671132; x=1701275932; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tfN8vV15Ea9/EIcc8eCkqmRkgeAQEYZd6rWJeYZUq3w=;
-        b=PcmgUgG+hzjqL3nkPVgARJi0FxNJNH02pxK5Iz9YYrArQeKJkmnloMSAWUd9H4LGXt
-         HOFosgpCwYBRc9YIzFeO8daWSVUsepjEgTyJCqDtDTH+bK+gqm0AkQNiDWRZ2qTaoKyt
-         O318cpmw4gXFXjeI73XyzvWGzl/e8LPEyIGnfasIiD3AOogdtXpY8QYE7V3+SaVIA5Rg
-         U9ceIi13DUz5sP7raszYmoLLN/TkXWknqyMXWcgqoD1XkDjL51tN9GxqvBgBBMNEE2Bz
-         OCE4sTmAN+rldcr3J970s30QMAqgPL8O6i2HW+R1yruo0FkJQWMz85AP8KfEB+2PVGKb
-         Dk2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700671132; x=1701275932;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tfN8vV15Ea9/EIcc8eCkqmRkgeAQEYZd6rWJeYZUq3w=;
-        b=okKxug9HfnUteCNDPykC88yAGnFypnQNaF7u3qXT0mV1S47A6gbo+0JQbptvTMUFVS
-         UYX5YeKhz6MKbcEp1z1h5Jvyzov9ObnUdVEfHg5ENJGKaG7NT23qBm4gPkYc/bcMVrZd
-         A3ESsrVdRBhlOjg+8seLWBHg5jhAw1n8vfOox3bjqv+r5jBUqO4V6XxIuAPHGU1GLPMk
-         UrQLupb7Wy/WYp8ieyiVDOH2CPxTzaa17RRyAF/x6lG+pNJn0ENToq5n3PkdCE+R28c9
-         LIB7ryFzD/qiYwKLjytuSpsSZvaMqUdjniAKO6C7hkUaOpwAYXAxIEzdncoooVUu5HOe
-         JViQ==
-X-Gm-Message-State: AOJu0YxPLXimv03Co6SKJ7Gjh1qWtZHQpahCG+f1fKcq+Iy9IzY1L7y+
-        xooscdTk3qki4ct+RzvRAyNqzrU1KTQ20BAK0gpfxXv0
-X-Google-Smtp-Source: AGHT+IHKb7OWKqCJ2bI45C9RLV06lHjgr4MW3iZszai98Cva3bxT3FNafWP1S5OJsucSj7tAjtCa+g==
-X-Received: by 2002:a05:6512:684:b0:508:1a2c:46d0 with SMTP id t4-20020a056512068400b005081a2c46d0mr2724979lfe.15.1700671131691;
-        Wed, 22 Nov 2023 08:38:51 -0800 (PST)
-Received: from [172.30.204.227] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id w3-20020ac25983000000b0050aa51bd5b5sm1587819lfn.136.2023.11.22.08.38.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 08:38:51 -0800 (PST)
-Message-ID: <e52c69d4-a2b7-4d9e-9ccd-08d7746c3312@linaro.org>
-Date:   Wed, 22 Nov 2023 17:38:48 +0100
+        Wed, 22 Nov 2023 11:40:59 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83A5010C7;
+        Wed, 22 Nov 2023 08:40:19 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15A91FEC;
+        Wed, 22 Nov 2023 08:41:06 -0800 (PST)
+Received: from [10.57.4.117] (unknown [10.57.4.117])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B47D43F73F;
+        Wed, 22 Nov 2023 08:40:15 -0800 (PST)
+Message-ID: <0bc60a26-af18-4108-8b8d-238a1df1775b@arm.com>
+Date:   Wed, 22 Nov 2023 16:40:14 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: Add PM8937 PMIC
+Subject: Re: [PATCH] sched/pelt: avoid underestimate of task utilization
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     lukasz.luba@arm.com, juri.lelli@redhat.com, mingo@redhat.com,
+        dietmar.eggemann@arm.com, peterz@infradead.org, bsegall@google.com,
+        rostedt@goodmis.org, bristot@redhat.com, mgorman@suse.de,
+        vschneid@redhat.com, rafael@kernel.org, qyousef@layalina.io,
+        viresh.kumar@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20231122140119.472110-1-vincent.guittot@linaro.org>
 Content-Language: en-US
-To:     Dang Huynh <danct12@riseup.net>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20231121-pm8937-v2-0-b0171ab62075@riseup.net>
- <20231121-pm8937-v2-3-b0171ab62075@riseup.net>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231121-pm8937-v2-3-b0171ab62075@riseup.net>
+From:   Hongyan Xia <hongyan.xia2@arm.com>
+In-Reply-To: <20231122140119.472110-1-vincent.guittot@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Vincent,
 
+On 22/11/2023 14:01, Vincent Guittot wrote:
+> It has been reported that thread's util_est can significantly decrease as
+> a result of sharing the CPU with other threads. The use case can be easily
+> reproduced with a periodic task TA that runs 1ms and sleeps 100us.
+> When the task is alone on the CPU, its max utilization and its util_est is
+> around 888. If another similar task starts to run on the same CPU, TA will
+> have to share the CPU runtime and its maximum utilization will decrease
+> around half the CPU capacity (512) then TA's util_est will follow this new
+> maximum trend which is only the result of sharing the CPU with others
+> tasks. Such situation can be detected with runnable_avg wich is close or
+> equal to util_avg when TA is alone but increases above util_avg when TA
+> shares the CPU with other threads and wait on the runqueue.
 
-On 11/21/23 06:35, Dang Huynh wrote:
-> The PM8937 features integrated peripherals like ADC, GPIO controller,
-> MPPs, PON keys and others.
+Thanks for bringing this case up. I'm a bit nervous skipping util_est 
+updates this way. While it is true that this avoids dropping util_est 
+when the task is still busy doing stuff, it also avoids dropping 
+util_est when the task really is becoming less busy. If a task has a 
+legitimate reason to drop its utilization, it looks weird to me that its 
+util_est dropping can be stopped by a new task joining this rq which 
+pushes up runnable_avg.
+
+Also, something about rt-app. Is there an easy way to ask an rt-app 
+thread to achieve a certain amount of throughput (like loops per 
+second)? I think 'runs 1ms and sleeps 100us' may not entirely simulate a 
+task that really wants to preserve a util_est of 888. If its utilization 
+really is that high, its sleep time will become less and less when 
+sharing the rq with another task, or even has no idle time and become 
+1024 which will trigger overutilization and migration.
+
 > 
-> Add the device tree so that any boards with this PMIC can use it.
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 > ---
-No users?
-
-Konrad
+> 
+> This patch implements what I mentioned in [1]. I have been able to
+> reproduce such pattern with rt-app.
+> 
+> [1] https://lore.kernel.org/lkml/CAKfTPtDd-HhF-YiNTtL9i5k0PfJbF819Yxu4YquzfXgwi7voyw@mail.gmail.com/#t
+> 
+>   kernel/sched/fair.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 07f555857698..eeb505d28905 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4774,6 +4774,11 @@ static inline unsigned long task_util(struct task_struct *p)
+>   	return READ_ONCE(p->se.avg.util_avg);
+>   }
+>   
+> +static inline unsigned long task_runnable(struct task_struct *p)
+> +{
+> +	return READ_ONCE(p->se.avg.runnable_avg);
+> +}
+> +
+>   static inline unsigned long _task_util_est(struct task_struct *p)
+>   {
+>   	struct util_est ue = READ_ONCE(p->se.avg.util_est);
+> @@ -4892,6 +4897,14 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
+>   	if (task_util(p) > arch_scale_cpu_capacity(cpu_of(rq_of(cfs_rq))))
+>   		return;
+>   
+> +	/*
+> +	 * To avoid underestimate of task utilization, skip updates of ewma if
+> +	 * we cannot grant that thread got all CPU time it wanted.
+> +	 */
+> +	if ((ue.enqueued + UTIL_EST_MARGIN) < task_runnable(p))
+> +		goto done;
+> +
+> +
+>   	/*
+>   	 * Update Task's estimated utilization
+>   	 *
