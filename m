@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0077F4DF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6657F4DF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343951AbjKVRNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S1343962AbjKVROJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231357AbjKVRNf (ORCPT
+        with ESMTP id S231357AbjKVROH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:13:35 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D25C41A4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:13:30 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-332ce50450dso1365809f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700673209; x=1701278009; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iREYFokOV8dvymG/8i5EmbN9PgByJeos08X2K2e+878=;
-        b=Km+f+K3KRq46AjEFJhRB1ZiEm9tNQhaDuW7vnHKuAuubVUVLVLlyuWaJPzfwvNS3w/
-         yjZCqfvDq0MrlLw4HYOldrPZUIN40+eG2jZQRWJBIhTuSOxG8d4Ee+anuFNiFUvNPCR8
-         Tr4GQjWe5ibggkRs9/+V1WLdPVwA7IsWIBsyrPT9BUaBNn5ngw4sVZLeJ4Kq5tR3t1wH
-         1pC/Xz4FBL0Ws0WZ0kW37hlbdvre8LMZHKb0Qo/im5MDw1bE9SKzSvtNeCmyXXZyT0d5
-         e+w9c255ENUFIvi9mr0IRKSI7F3zm0sCB4WTXhg0ylMUBW3hqXPXGoNLRfZAFv5GloyW
-         7U5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673209; x=1701278009;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iREYFokOV8dvymG/8i5EmbN9PgByJeos08X2K2e+878=;
-        b=VydCO3Cut+n5Cy/4/lIKcBhlGsp5YzKmsAXYA2/p+5jsCrV4Mgx7u2ezmRPI5qfvTt
-         l20Acd2mkL7i5kDPai1V1ndTwX8DhcOd7+YH+PRHutGqT182+l8xjGkT+MomR1lclamg
-         7itN2vLb/I4fJAqyr+eho3wQ0Um2rs4knyuUSP3jW5Jw2fXf+td5n0sVDY03eo02MM4w
-         WssiIomZp6k45H7HSYjrJkgn5T2I5+ckkv1pmMyXhCYDkhklw/I9ZDlm9XRFo0ZHSNjK
-         89Kri8foN4OrQegYxJFKRh3mkmyV3U1Ir+TKntHu8dnym+xTt42LuioOR/RxyMEnom92
-         gAoA==
-X-Gm-Message-State: AOJu0YwdiFVjs9UmZTY57IA7mn2AlJ38wSrIUuBfOkMGs7InPbs47d6H
-        8ifd7J+L5V/T28HXa172vMeOxQ==
-X-Google-Smtp-Source: AGHT+IHG50GHV18iXf9NgLcNgDR5o5sNBk599jpI37YLzVcyzNoVxOG6dCer6jFfQZDfi6s6ijq21w==
-X-Received: by 2002:a5d:64e4:0:b0:332:ce3f:a370 with SMTP id g4-20020a5d64e4000000b00332ce3fa370mr2275817wri.51.1700673208904;
-        Wed, 22 Nov 2023 09:13:28 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:9c:201:1dcf:36df:c2d9:af51])
-        by smtp.gmail.com with ESMTPSA id b15-20020a056000054f00b0031980294e9fsm17633839wrf.116.2023.11.22.09.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 09:13:28 -0800 (PST)
-Date:   Wed, 22 Nov 2023 18:13:23 +0100
-From:   Marco Elver <elver@google.com>
-To:     andrey.konovalov@linux.dev
-Cc:     Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        kasan-dev@googlegroups.com, Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Wed, 22 Nov 2023 12:14:07 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2135.outbound.protection.outlook.com [40.107.21.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5680197;
+        Wed, 22 Nov 2023 09:14:03 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JbhAgg7TBhpNVNXIiQ4o9x1aTJ+4cENxtPHG9OTaxFmbdXFzc8QtWRGYNOiYQZ1ADCheBHhoYnXZQYlrzrKr1TKMZLyYHpb74Za54CV+Pn5Af8nb2fRPhU0TVwycIIRdSbW0/UIu2A1wBU4LF3l+cX8Viw/z/YCOSMKxCO6aFF5LKyPKerJFETqlwktSsx2yF7hCoQT7FYplrP9HrYimKsOMJlo0/vwT9XR0JcciFOMbvOXlZTa4oHFxU7Sow5xiiXn0HYoVU48EHHNx9gA2AfaG9zjMX+mII38R8qnoxE+q41FgJsXs1VGEMPfSIv7PA4R5Z+kUHAQlE83wgOfIag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=auExw+X0Vw9lLbrD7bf/W981SegHFS/qN2n77sP1cfo=;
+ b=NAb5zLW40EMh0qjLlaDTUXB//lAcQ4uBIeaWNv9+E0nUgLTN/QLQLz3/vmXomtVZc5aSZobgm7Du0XHs1gFoFmxGjiJQ6AbplSH9DqxvdV38alICE2cbK9Kmod5m9zDrG9lXOybV+e8KnRf1+G70CImTsvHXQGPWwv4ZD2rx00v9yTPA69kFnOvDyprRBZqg5fXQ1IJHkWxWbP5yguusuP+a0D8KcqV0aaHdD1FkqqmrBLY5UojUPe/PmxFCzayi5eFZLKUTne4uHdnXAwFXBDDH6aY4Bj3uLt6VJP17Z4YcSEKw5wYKjSzzpZocZ1z116SX8CFQiSygDUkZ6iU9kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=auExw+X0Vw9lLbrD7bf/W981SegHFS/qN2n77sP1cfo=;
+ b=as20GBn+u6mZWEqlp1PDMNGnwwkjkF68a/4x/ltHgcPPowYudlq9OTwcmUoWvRqZaBZGacGE9LAGrE0fVe3xcXGQi6PTuUgaOvuMNKEPN/UOgEV1DTXXWVIKRPExGoI4Nff+angUHiWGjE8Cp50quu1mEXmEd8W7Ad+oh2tmgW4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=axentia.se;
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
+ by PAWPR02MB9173.eurprd02.prod.outlook.com (2603:10a6:102:33d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Wed, 22 Nov
+ 2023 17:13:59 +0000
+Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::eb7e:2017:35fb:d31b]) by AM0PR02MB4436.eurprd02.prod.outlook.com
+ ([fe80::eb7e:2017:35fb:d31b%6]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
+ 17:13:59 +0000
+Message-ID: <978e008b-0787-4204-3d5f-16518f35a3c9@axentia.se>
+Date:   Wed, 22 Nov 2023 18:13:58 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] eeprom: at24: use of_match_ptr()
+Content-Language: sv-SE
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: [PATCH RFC 00/20] kasan: save mempool stack traces
-Message-ID: <ZV42s_c3BzCAEwgu@elver.google.com>
-References: <cover.1699297309.git.andreyknvl@google.com>
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20231122155916.38037-1-brgl@bgdev.pl>
+ <480fef02-09ed-9a32-d5bb-e7114381220c@axentia.se>
+ <CAMRc=Mc_KAX0QWSoL9UEwwjFCD=fHv6ydceSYwaY91C=RkURxA@mail.gmail.com>
+From:   Peter Rosin <peda@axentia.se>
+In-Reply-To: <CAMRc=Mc_KAX0QWSoL9UEwwjFCD=fHv6ydceSYwaY91C=RkURxA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: GV3PEPF000000D2.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:144:1:0:2:0:14) To AM0PR02MB4436.eurprd02.prod.outlook.com
+ (2603:10a6:208:ed::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1699297309.git.andreyknvl@google.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|PAWPR02MB9173:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b1885d8-5f9d-40f7-fdad-08dbeb7e6af1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xr5tUhevCQNtkfRry9jqaMGlwgpRUpfuXLP6mofZN1cqc90qhCZ9NcCuKwCgzxeGZINwOA/PeaTNwRAF4SMz8g1CBVxV96tSjowC+9YE1ylFqvxrp1xsITCb85xxmXNqmPeQmT1d7S+whI/7+Ou+tQ8TCan1p4+llpOW0KjPnGFXqVYlDwHu5BCwMkt5sDcLlin0JqhgTsiwrRMBXYBIVBY2tV9dMIMMFSxsj8RdrLGxR0sYCIUzUBcLfgt7Zh0i2psrWojaORRv5lfsF6VGr41XXNFR1uzKH7NlXmDTTfosEcelCtzJ1FfPljKemCSBUJ7q7BgyCzPMLX3DoNor8UOsaI8vykpQoVs1X9t4t1IKV/7jZN9tUcbF8aMq0QGcXyNbLTvosXNTX/iUe67hNn5jMSJPJtzHM4h4uNKOsFS1AKMdLhybPwBGDvctsALeCJFpeRwMi3WPPW7P/7G9vRffRNZRML2Ow/mdg4oraNOilKburEBizy7dgE3u0faWEG3D2WyhecS2YQf2siYMQmqC92pFaknCD7aKFxxLl/0idVqzgMluH5qmPDxNopMJyF0hvsb43aZyfOgf4xo+nMTTutkCr5682vfgwWG79avUYDwPn29t9BJ3aYeRcJl1XUMzx8aSBKxKS4GjRskPCn0eMl3JetWUQgvxn3yWr5RFp8lYJKsgkxFerdfRrjaT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(136003)(366004)(39840400004)(230173577357003)(230273577357003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(41300700001)(36756003)(86362001)(4744005)(5660300002)(2906002)(31696002)(4001150100001)(6486002)(966005)(26005)(83380400001)(478600001)(6506007)(2616005)(6512007)(4326008)(8676002)(38100700002)(8936002)(54906003)(316002)(66946007)(66556008)(66476007)(31686004)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHVOdlVmcldDeVpTSG9TejRXeW1RYzllemp4YUFYVkhZOG1MblBVYmd2Q2tt?=
+ =?utf-8?B?V05NaTF1TkErRGFjVS94amp3cUJOSHNLaTRVZGNEeWNNRGlybkkxYzBJalFU?=
+ =?utf-8?B?Z2NSTFFFNDQrYmRIN2VjSVB6UWMzNFh1VEx4QVhRMzZpQVVYMENkbVVTdndS?=
+ =?utf-8?B?SUJHMnd5dU5QK2xQNGw4U2lpWDF5UzdEVzBiS09yeHRWMVI5NTV1UCtnbzhJ?=
+ =?utf-8?B?a3lCdk0vNm5LVWhVcmo0T25BR0dIY2ZuTEN3VHlLalZDOGFYbzhyQmlRY3li?=
+ =?utf-8?B?bFdMYzlSWCtyZFM2UTdMNUNkN2JNd2tFQUxCUDdaVGMvMVNBbHFjcUNpb2s4?=
+ =?utf-8?B?QVdaWnhUMU9Bd21XdjBWa2lFcnJjeTFBbjZ2b1d1d2FyRHZpZkpEZ3pMbjRP?=
+ =?utf-8?B?by9UNkJTT2loU01xRThkUGdCWmJOQnUxRXZtL2c5WHlaYTAxMkFscXg3a3Rt?=
+ =?utf-8?B?akJDSCtXNXFxMWc1VlNGUmxDbUJ1VFpnYmhOVU91eDNmRmFBZ05oc0tJZ0Vv?=
+ =?utf-8?B?M0cyVEN4ZUZrbzZqMlZaRXVTRXJnd0lKRElIMndjRzl0Sk1wallBOSt5OUNS?=
+ =?utf-8?B?SEdiTDRIWldBcU1IN1phL0FKZDRuVXRRMTJrbEQyNlZrbnFoOFhpcHM0bG94?=
+ =?utf-8?B?Z0NqUjBuZkNuTmRnbEdwYXU2dGp3SzgrNU1DTkY5Q1FORlN0S1BjNGJPY2FD?=
+ =?utf-8?B?OWJjS3VBWituZWNmSTdscTNrbDhoWVhlT0kzamdtdU5XOHk3aXh3SCs0RW1G?=
+ =?utf-8?B?NVpjMFdaWXZTK0t1SmdIc2V3ZG90OGZpN0lHVVpKVWpwTGoyUE5FQmgrVkJE?=
+ =?utf-8?B?L0ovTmVNcXo5RXVCMFMwcDI4cFhwRXR0bGhBaW1wSTFRSmZhOUtGeWtWY0du?=
+ =?utf-8?B?QkdYK21zOHBhcjlyZUVKOHNUalZxL2RBNVBPZUc3Mm9kUnR2eENrY0h4eUNB?=
+ =?utf-8?B?SjF3RGZZc0tMdlZLbUNhRjlxdHBFeFI5eUlqWTVTK2NkQ3JPbHlyQ3lTZGx6?=
+ =?utf-8?B?ZVVHb3pWY3RVeEdVU05vM3Fmcm1RR3ZyYjQ0cVhVUmtKdys1cnQyL0tYMXc2?=
+ =?utf-8?B?bnhCam5HQ0puNmN0VHdCMnVScmd0MWFBT0VNVlZQN1hHOW5hQkxKaWN2cDlm?=
+ =?utf-8?B?UlVkeEZaaTFNSFVJeVZKNWlVTm5hSlAxUlBPQVlOczdUSk9FVC9zRW5ZRW5Z?=
+ =?utf-8?B?a21zblp5SGhONEk1azhQZVdNM0pab0htVEM1Z051dWRuWUJlMnhSRjAzZWxU?=
+ =?utf-8?B?QVlTRHg1RlVrSmFveXlpNHBHcnl0UlFUbGtzS2JCb2xYV0ZhMW5HaXFpZXg5?=
+ =?utf-8?B?VGlhdm0vKzc5MlpHaXZNVFlxc2d3SHExazVsRFdubkhzdS9Gb255QmlyMWdy?=
+ =?utf-8?B?OElLSDZsREtmLzNRV3FraGFpNHkrRmtQZ3gyMDg5aHhHbTZxb3pvYjZ1Z0xW?=
+ =?utf-8?B?ajBDaVBPVE14TjdkTUJBYTkzTG1XZTZBZ0RROFNzTkxwNmlKK1BPbHJrbXJT?=
+ =?utf-8?B?UTc4RUtLSVJNamJXQXlDRS9QdllNZDZuamtjMXlrK3lHaEhxQU10M2ZnSUNL?=
+ =?utf-8?B?dzJnVkFsY0pkRDNUa1RDaCsyNUdZbG5TUThvSlhGZVg3eHg0dEZ1R3lPOE4x?=
+ =?utf-8?B?eTJ3K3lCeG1xV0Jtd25objE0c0RET2s1Nkk1L3lLOUkya1AxbWlBSEJzTE1I?=
+ =?utf-8?B?Q3FrVjBFMkFLMUZhTi9JSUVUL2hyTFM2c2N2WXFHQ0Q1RC9hcmk4OFVIbnlS?=
+ =?utf-8?B?M3A5RVA5YU4ydmZGLzNFcG5iZDBKQm5Zakc0WkdKVUVYc2FmZ2liR2ZjeHdS?=
+ =?utf-8?B?ODdVeThMZmxEbjI0L2hBeEdTNkVlc0ViSTZ5cllWRmNRRUdMVzNHY29WbHU4?=
+ =?utf-8?B?MFRUbWF4eERSWFpTQ1FMQlFCeDRSV01VN1AvNVZMVG9XYThjYU1VMEwvWDdT?=
+ =?utf-8?B?cDFmZm1tcFJpM2treFZXaHpvK2hnY3o3L3R6TG9Gbk5WUzh1MEtJS1RjZ1hS?=
+ =?utf-8?B?YjhRdEVZazBkbkxBYm9mTkhSR0lYWEZpSStLYUJLUjl1VmJjVjhreEJzN1FO?=
+ =?utf-8?B?dVhXTzdoZXZ3MHhZOW5iNE1ZVXMwSXN5TnN6cTFwd285V0g5eUNlR05DTnZn?=
+ =?utf-8?Q?aXIdewKdWxxHCyf463k8qNOX9?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b1885d8-5f9d-40f7-fdad-08dbeb7e6af1
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 17:13:59.8111
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s3OzEN+zLnjaMgtC59yscLb4Se2AYsb0AYh2ms0qgKICD9L/H2xkW0jC/sO4Iu9C
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR02MB9173
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,70 +128,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 09:10PM +0100, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@google.com>
-> 
-> This series updates KASAN to save alloc and free stack traces for
-> secondary-level allocators that cache and reuse allocations internally
-> instead of giving them back to the underlying allocator (e.g. mempool).
 
-Nice.
+2023-11-22 at 17:57, Bartosz Golaszewski wrote:
+> On Wed, 22 Nov 2023 at 17:41, Peter Rosin <peda@axentia.se> wrote:
+>>
+>> Hi!
+>>
+>> 2023-11-22 at 16:59, Bartosz Golaszewski wrote:
+>>> -             .of_match_table = at24_of_match,
+>>> +             .of_match_table = of_match_ptr(at24_of_match),
+>>
+>> If you do that, you will need to also add #ifdef CONFIG_OF around the
+>> at24_of_match definition, of you'll trigger a warning about an unused
+>> const variable (for some configs). I think.
+>>
+>> Cheers,
+>> Peter
+> 
+> Nope, no warnings even with W=2. This is true for unused functions but
+> unused data structures are just silently removed.
 
-> As a part of this change, introduce and document a set of KASAN hooks:
-> 
-> bool kasan_mempool_poison_pages(struct page *page, unsigned int order);
-> void kasan_mempool_unpoison_pages(struct page *page, unsigned int order);
-> bool kasan_mempool_poison_object(void *ptr);
-> void kasan_mempool_unpoison_object(void *ptr, size_t size);
-> 
-> and use them in the mempool code.
-> 
-> Besides mempool, skbuff and io_uring also cache allocations and already
-> use KASAN hooks to poison those. Their code is updated to use the new
-> mempool hooks.
->
-> The new hooks save alloc and free stack traces (for normal kmalloc and
-> slab objects; stack traces for large kmalloc objects and page_alloc are
-> not supported by KASAN yet), improve the readability of the users' code,
-> and also allow the users to prevent double-free and invalid-free bugs;
-> see the patches for the details.
-> 
-> I'm posting this series as an RFC, as it has a few non-trivial-to-resolve
-> conflicts with the stack depot eviction patches. I'll rebase the series and
-> resolve the conflicts once the stack depot patches are in the mm tree.
-> 
-> Andrey Konovalov (20):
->   kasan: rename kasan_slab_free_mempool to kasan_mempool_poison_object
->   kasan: move kasan_mempool_poison_object
->   kasan: document kasan_mempool_poison_object
->   kasan: add return value for kasan_mempool_poison_object
->   kasan: introduce kasan_mempool_unpoison_object
->   kasan: introduce kasan_mempool_poison_pages
->   kasan: introduce kasan_mempool_unpoison_pages
->   kasan: clean up __kasan_mempool_poison_object
->   kasan: save free stack traces for slab mempools
->   kasan: clean up and rename ____kasan_kmalloc
->   kasan: introduce poison_kmalloc_large_redzone
->   kasan: save alloc stack traces for mempool
->   mempool: use new mempool KASAN hooks
->   mempool: introduce mempool_use_prealloc_only
->   kasan: add mempool tests
->   kasan: rename pagealloc tests
->   kasan: reorder tests
->   kasan: rename and document kasan_(un)poison_object_data
->   skbuff: use mempool KASAN hooks
->   io_uring: use mempool KASAN hook
-> 
->  include/linux/kasan.h   | 161 +++++++-
->  include/linux/mempool.h |   2 +
->  io_uring/alloc_cache.h  |   5 +-
->  mm/kasan/common.c       | 221 ++++++----
->  mm/kasan/kasan_test.c   | 876 +++++++++++++++++++++++++++-------------
->  mm/mempool.c            |  49 ++-
->  mm/slab.c               |  10 +-
->  mm/slub.c               |   4 +-
->  net/core/skbuff.c       |  10 +-
->  9 files changed, 940 insertions(+), 398 deletions(-)
+Then I wonder what the difference is from the following?
 
-Overall LGTM and the majority of it is cleanups, so I think once the
-stack depot patches are in the mm tree, just send v1 of this series.
+https://lore.kernel.org/all/202311161306.opyfcoCY-lkp@intel.com/T/#m3a33dc4c3221ae167563bcff70757af776cf07b1
+
+It sure looks like the exact same pattern to me.
+I.e. a static const struct of_device_id paired with of_match_ptr(). 
+
+CHeers,
+Peter
