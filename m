@@ -2,285 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 615807F47F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1A67F47D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjKVNln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S1344126AbjKVNda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbjKVNll (ORCPT
+        with ESMTP id S1343773AbjKVNd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:41:41 -0500
-X-Greylist: delayed 544 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 05:41:34 PST
-Received: from post.baikalelectronics.com (post.baikalelectronics.com [213.79.110.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 207AF1A5;
-        Wed, 22 Nov 2023 05:41:34 -0800 (PST)
-Received: from post.baikalelectronics.com (localhost.localdomain [127.0.0.1])
-        by post.baikalelectronics.com (Proxmox) with ESMTP id ABDF8E0EB9;
-        Wed, 22 Nov 2023 16:32:28 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        baikalelectronics.ru; h=cc:cc:content-type:content-type:date
-        :from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=post; bh=HbHrbH/rcUkVvlTKh1z1
-        S+UWZ0eNJU9qPvTnkmX9sAo=; b=ZaSD9yzmzX2d2SuTq2gLARr4fmQLcPAm4gKl
-        AYfiEFaVpXuA5Wrk7l0Ktf0fiWuiQiGIHm0k/0nIkD8vyKM+bMaEa7YSt/5js9PM
-        ynIzPSyXYnF6qF8AcgteuvPHs6zCjSkTsIeI1SjurBfVjtYYaz7pHQjBWifkGn9+
-        QeIruH8=
-Received: from mail.baikal.int (mail.baikal.int [192.168.51.25])
-        by post.baikalelectronics.com (Proxmox) with ESMTP id 74B73E0EB4;
-        Wed, 22 Nov 2023 16:32:28 +0300 (MSK)
-Received: from mobilestation (10.8.30.118) by mail (192.168.51.25) with
- Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 22 Nov 2023 16:32:28 +0300
-Date:   Wed, 22 Nov 2023 16:32:27 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-CC:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-mips@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Subject: Re: [PATCH] MAINTAINERS: add section MIPS BAIKAL-T1 SOC DRIVERS
-Message-ID: <mku6gvd4rfkxzk2vrdjbizglte526ygyfhnwialtri44oqzikt@pq2l7mk25jgc>
-References: <20231122054142.31322-1-lukas.bulwahn@gmail.com>
+        Wed, 22 Nov 2023 08:33:28 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEDE197;
+        Wed, 22 Nov 2023 05:33:25 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 21726276;
+        Wed, 22 Nov 2023 14:32:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1700659973;
+        bh=ovNRFCOwfiedgo/BxjM6ABJ6tIltn5tkgyoVDp1O/vE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pKeOAKQZCqI9EPX5E6sIkR1baYbxjtlCecJ7izSg2dK9xA9w8qXyoaBdtUN3KP4UC
+         il2klRfQnZOL0sNGdJorB2DLCGXAnhJcqtdTlyxOQWEi6y+o1dVT14fXuQ4VHzpn46
+         QwqPh4q3j5X1xrg3ImeanqvUsq1vaHgURP+PRUmw=
+Date:   Wed, 22 Nov 2023 15:33:30 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Paul <seanpaul@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: Re: [PATCH v5 3/3] media: uvcvideo: Do not use usb_* functions after
+ .disconnect
+Message-ID: <20231122133330.GE3909@pendragon.ideasonboard.com>
+References: <20231122-guenter-mini-v5-0-15d8cd8ed74f@chromium.org>
+ <20231122-guenter-mini-v5-3-15d8cd8ed74f@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ec57xuvyqxygqblb"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231122054142.31322-1-lukas.bulwahn@gmail.com>
-X-Originating-IP: [10.8.30.118]
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20231122-guenter-mini-v5-3-15d8cd8ed74f@chromium.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---ec57xuvyqxygqblb
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-
-Hi Lukas
-
-On Wed, Nov 22, 2023 at 06:41:42AM +0100, Lukas Bulwahn wrote:
-> In recent years, a number of drivers for the MIPS Baikal-T1 SoC have been
-> added to the kernel tree, but there is no dedicated MAINTAINERS section for
-> this SoC.
+On Wed, Nov 22, 2023 at 11:45:49AM +0000, Ricardo Ribalda wrote:
+> usb drivers should not call to any I/O function after the
+> .disconnect() callback has been triggered.
+> https://www.kernel.org/doc/html/latest/driver-api/usb/callbacks.html#the-disconnect-callback
 > 
-> As all of the code has been contributed by Serge Semin, let us assume he is
-> still the active maintainer for this code rather than marking it orphan.
+> If an application is receiving frames form a camera and the device is
+> disconnected: the device will call close() after the usb .disconnect()
+> callback has been called. The streamoff path will call usb_set_interface
+> or usb_clear_halt, which is not allowed.
 > 
-> Add a new section MIPS BAIKAL-T1 SOC DRIVERS in MAINTAINERS.
-
-Thanks for submitting this patch. I was going to send a similar change
-in the framework of the arch-series which is hanging up in my local
-repo and alas is still under construction. I know I shouldn't have
-been waiting (I'm sorry about that), but I didn't expect the entire
-work would have taken so much time. On a way to finishing it up I had
-to switch my efforts to the EDAC and network drivers and got sucked by
-the amount of work there. But I will definitely submit the Baikal-T1
-SoC arch patchset when my work on another area is finally over.
-
-Here are several comments about this patch. (Please see my last
-comment should you be ok with accepting the patches with already fixed
-notes.)
-
+> This patch only solves the calls to close() *after* .disconnect() is
+> being called.
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Trace:
+> [ 1065.389723] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
+> [ 1065.390160] drivers/media/usb/uvc/uvc_driver.c:2264 uvc_disconnect exit
+> [ 1065.433956] drivers/media/usb/uvc/uvc_v4l2.c:659 uvc_v4l2_release enter
+> [ 1065.433973] drivers/media/usb/uvc/uvc_video.c:2274 uvc_video_stop_streaming enter
+> [ 1065.434560] drivers/media/usb/uvc/uvc_video.c:2285 uvc_video_stop_streaming exit
+> [ 1065.435154] drivers/media/usb/uvc/uvc_v4l2.c:680 uvc_v4l2_release exit
+> [ 1065.435188] drivers/media/usb/uvc/uvc_driver.c:2248 uvc_disconnect enter
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
->  MAINTAINERS | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  drivers/media/usb/uvc/uvc_driver.c |  2 ++
+>  drivers/media/usb/uvc/uvc_video.c  | 45 ++++++++++++++++++++++++--------------
+>  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+>  3 files changed, 32 insertions(+), 17 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9613c9c3cc97..820f1ab1ee80 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14474,6 +14474,19 @@ F:	arch/mips/
->  F:	drivers/platform/mips/
->  F:	include/dt-bindings/mips/
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index d5dbf2644272..d78640d422f4 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2266,6 +2266,8 @@ static void uvc_disconnect(struct usb_interface *intf)
+>  		return;
 >  
-> +MIPS BAIKAL-T1 SOC DRIVERS
+>  	uvc_unregister_video(dev);
+> +	/* Barrier needed to pair with uvc_video_stop_streaming(). */
+> +	smp_store_release(&dev->disconnected, true);
 
-> +M:	Serge Semin <Sergey.Semin@baikalelectronics.ru>
+I can't think this would be such a hot path that we really need barriers
+in the driver.
 
-It's better to change the email to
-+M:	Serge Semin <fancer.lancer@gmail.com>
-I quicker respond from my private inbox, than from the corporate one.
-This will also be useful should the corporate email eventually change.
-
-> +S:	Maintained
-
-+F:	Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-+F:	Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
-
-> +F:	Documentation/hwmon/bt1-pvt.rst
-
-I'd prefer this and these -+ being in a separate entry (see the
-attached patches), because | the respective device IP-cores have been
-re-used in another SoC. So | eventually the entries will be updated to
-reflect that.              +---------------------------------+
-                                                             |
-> +F:	drivers/ata/ahci_dwc.c                               |
-                                                             |
-I believe this is already listed in the MAINTAINERS file.    |
-                                                             |
-> +F:	drivers/bus/bt1-*.c                                  |
-> +F:	drivers/clk/baikal-t1/                               |
-> +F:	drivers/hwmon/bt1-pvt.[ch] <-------------------------+
-> +F:	drivers/memory/bt1-l2-ctl.c                          |
-> +F:	drivers/mtd/maps/physmap-bt1-rom.[ch]                |
-> +F:	drivers/pci/controller/dwc/pcie-bt1.c <--------------+
-
-> +F:	drivers/spi/spi-dw-bt1.c
-
-This is already marked as maintained by me in the framework of the
-generic DW APB SSI driver (See the "SYNOPSYS DESIGNWARE APB SSI
-DRIVER" entry in the MAINTAINERS file).
-
-Anyway in order to save your time from editing this patch. I've
-prepared a series which takes into account all the comments above. If
-you are ok with it, I can submit it for review. What do you think?
-
--Serge(y)
-
+>  	kref_put(&dev->ref, uvc_delete);
+>  }
+>  
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index 28dde08ec6c5..f5ef375088de 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -2243,28 +2243,39 @@ int uvc_video_start_streaming(struct uvc_streaming *stream)
+>  	return ret;
+>  }
+>  
+> -void uvc_video_stop_streaming(struct uvc_streaming *stream)
+> +static void uvc_video_halt(struct uvc_streaming *stream)
+>  {
+> -	uvc_video_stop_transfer(stream, 1);
+> +	unsigned int epnum;
+> +	unsigned int pipe;
+> +	unsigned int dir;
+>  
+>  	if (stream->intf->num_altsetting > 1) {
+>  		usb_set_interface(stream->dev->udev, stream->intfnum, 0);
+> -	} else {
+> -		/*
+> -		 * UVC doesn't specify how to inform a bulk-based device
+> -		 * when the video stream is stopped. Windows sends a
+> -		 * CLEAR_FEATURE(HALT) request to the video streaming
+> -		 * bulk endpoint, mimic the same behaviour.
+> -		 */
+> -		unsigned int epnum = stream->header.bEndpointAddress
+> -				   & USB_ENDPOINT_NUMBER_MASK;
+> -		unsigned int dir = stream->header.bEndpointAddress
+> -				 & USB_ENDPOINT_DIR_MASK;
+> -		unsigned int pipe;
+> -
+> -		pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
+> -		usb_clear_halt(stream->dev->udev, pipe);
+> +		return;
+>  	}
+>  
+> +	/*
+> +	 * UVC doesn't specify how to inform a bulk-based device
+> +	 * when the video stream is stopped. Windows sends a
+> +	 * CLEAR_FEATURE(HALT) request to the video streaming
+> +	 * bulk endpoint, mimic the same behaviour.
+> +	 */
+> +	epnum = stream->header.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK;
+> +	dir = stream->header.bEndpointAddress & USB_ENDPOINT_DIR_MASK;
+> +	pipe = usb_sndbulkpipe(stream->dev->udev, epnum) | dir;
+> +	usb_clear_halt(stream->dev->udev, pipe);
+> +}
 > +
->  MIPS BOSTON DEVELOPMENT BOARD
->  M:	Paul Burton <paulburton@kernel.org>
->  L:	linux-mips@vger.kernel.org
-> -- 
-> 2.17.1
+> +void uvc_video_stop_streaming(struct uvc_streaming *stream)
+> +{
+> +	uvc_video_stop_transfer(stream, 1);
+> +
+> +	/*
+> +	 * Barrier needed to pair with uvc_disconnect().
+> +	 * We cannot call usb_* functions on a disconnected USB device.
+> +	 */
+> +	if (!smp_load_acquire(&stream->dev->disconnected))
+> +		uvc_video_halt(stream);
+> +
+>  	uvc_video_clock_cleanup(stream);
+>  }
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index ba8f8c1f2c83..5b1a3643de05 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -559,6 +559,8 @@ struct uvc_device {
+>  	unsigned int users;
+>  	atomic_t nmappings;
+>  
+> +	bool disconnected;
+> +
+>  	/* Video control interface */
+>  #ifdef CONFIG_MEDIA_CONTROLLER
+>  	struct media_device mdev;
 > 
-> 
 
---ec57xuvyqxygqblb
-Content-Type: text/x-patch; charset="us-ascii"
-Content-Disposition: attachment;
-	filename="0001-MAINTAINERS-Add-maintainer-for-Baikal-T1-PVT-hwmon-d.patch"
-
-From 3474717c649d994afade36f8117695a84120ab26 Mon Sep 17 00:00:00 2001
-From: Serge Semin <fancer.lancer@gmail.com>
-Date: Fri, 7 Feb 2020 12:37:59 +0300
-Subject: [PATCH 1/3] MAINTAINERS: Add maintainer for Baikal-T1 PVT hwmon
- driver
-
-Add myself as a maintainer of the Baikal-T1 PVT sensors driver.
-
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 97f51d5ec1cf..9e50a77d746e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3467,6 +3467,14 @@ F:	drivers/video/backlight/
- F:	include/linux/backlight.h
- F:	include/linux/pwm_backlight.h
- 
-+BAIKAL-T1 PVT HARDWARE MONITOR DRIVER
-+M:	Serge Semin <fancer.lancer@gmail.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/hwmon/baikal,bt1-pvt.yaml
-+F:	Documentation/hwmon/bt1-pvt.rst
-+F:	drivers/hwmon/bt1-pvt.[ch]
-+
- BARCO P50 GPIO DRIVER
- M:	Santosh Kumar Yadav <santoshkumar.yadav@barco.com>
- M:	Peter Korsgaard <peter.korsgaard@barco.com>
 -- 
-2.42.1
+Regards,
 
-
---ec57xuvyqxygqblb
-Content-Type: text/x-patch; charset="us-ascii"
-Content-Disposition: attachment;
-	filename="0002-MAINTAINERS-Add-maintainer-for-Baikal-T1-PCIe-driver.patch"
-
-From 460caf4c02f3b9620cf63127a443e05361ff382a Mon Sep 17 00:00:00 2001
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Date: Tue, 22 Mar 2022 23:11:59 +0300
-Subject: [PATCH 2/3] MAINTAINERS: Add maintainer for Baikal-T1 PCIe driver
-
-Add myself as a maintainer of the Baikal-T1 PCIe Root Port driver.
-
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9e50a77d746e..52ee905c50f4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16796,6 +16796,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/pci/axis,artpec*
- F:	drivers/pci/controller/dwc/*artpec*
- 
-+PCIE DRIVER FOR BAIKAL-T1
-+M:	Serge Semin <fancer.lancer@gmail.com>
-+L:	linux-pci@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/pci/baikal,bt1-pcie.yaml
-+F:	drivers/pci/controller/dwc/pcie-bt1.c
-+
- PCIE DRIVER FOR CAVIUM THUNDERX
- M:	Robert Richter <rric@kernel.org>
- L:	linux-pci@vger.kernel.org
--- 
-2.42.1
-
-
---ec57xuvyqxygqblb
-Content-Type: text/x-patch; charset="us-ascii"
-Content-Disposition: attachment;
-	filename="0003-MAINTAINERS-Add-maintainer-for-MIPS-Baikal-T1-platfo.patch"
-
-From 16297c21f443fac69bf1d60924a9ef8602de8a2e Mon Sep 17 00:00:00 2001
-From: Serge Semin <fancer.lancer@gmail.com>
-Date: Fri, 7 Feb 2020 12:43:00 +0300
-Subject: [PATCH 3/3] MAINTAINERS: Add maintainer for MIPS Baikal-T1 platform
- code
-
-Add myself as a maintainer of the MIPS Baikal-T1 platform-specific
-drivers. The arch-code hasn't been submitted yet, but will be soon enough.
-Until then it's better to have the already available drivers marked as
-maintained.
-
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 52ee905c50f4..a56e241608ae 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14491,6 +14491,17 @@ F:	arch/mips/
- F:	drivers/platform/mips/
- F:	include/dt-bindings/mips/
- 
-+MIPS BAIKAL-T1 PLATFORM
-+M:	Serge Semin <fancer.lancer@gmail.com>
-+L:	linux-mips@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-+F:	Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
-+F:	drivers/bus/bt1-*.c
-+F:	drivers/clk/baikal-t1/
-+F:	drivers/memory/bt1-l2-ctl.c
-+F:	drivers/mtd/maps/physmap-bt1-rom.[ch]
-+
- MIPS BOSTON DEVELOPMENT BOARD
- M:	Paul Burton <paulburton@kernel.org>
- L:	linux-mips@vger.kernel.org
--- 
-2.42.1
-
-
---ec57xuvyqxygqblb--
-
+Laurent Pinchart
