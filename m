@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F6F7F5283
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5837F527C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343882AbjKVVXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S231825AbjKVVU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231535AbjKVVXQ (ORCPT
+        with ESMTP id S1344185AbjKVVUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:23:16 -0500
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B191A4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:23:12 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 28BF5601A5;
-        Wed, 22 Nov 2023 22:23:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1700688186; bh=H7MlBg9YpVfV+cspaM8Vo5IiwZKZH0xos1nZLD/aRBc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qNX3yMMbWBa5mYT3MdCdQHfB4eboXliC/nG4U5YgBlpRCkfqkiWMPgalE6UygCPJ9
-         cgTaN4PHyFBtXSSctBsHBT9KCQY+plrh4h+zKvuqh3cocFtAzh9fP7Y6du0rmOUTje
-         IIGylnhSpYKmL/sYuYX1l+o74pSASNw+fUu7yZ9Vbc1s/8FsDae/AtugfV24jBezGZ
-         FM9mVY23JflGp2XXmOTcBeQ+QqAXJDopNT4gt//rxb1RKOsz/LLt450RF3v6K112pR
-         /Hq4R1IWCweaDiXQnzT3epbwdkvLVbL6jhDkb+bH+wQLeEDWWuYWwWtlM2uU6z7Kh+
-         fTJEEmfmkK7XA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 8iAfKtP24BS4; Wed, 22 Nov 2023 22:23:03 +0100 (CET)
-Received: from defiant.. (78-2-200-148.adsl.net.t-com.hr [78.2.200.148])
-        by domac.alu.hr (Postfix) with ESMTPSA id 72DDB60189;
-        Wed, 22 Nov 2023 22:23:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1700688183; bh=H7MlBg9YpVfV+cspaM8Vo5IiwZKZH0xos1nZLD/aRBc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bKPEu64cNCG0LWGGAHW7BVVXev2wBhsy0Xur3AHoc5MI1Hzk96Yy+q5kh4iI78GQd
-         fNEVXPU8dT/hv3JQ1x1uc9EUCTViK38qHlDA2++NJqW/0ThzgShXKo7FwWfnGO5oIc
-         RA2PngKkVIThvh7d36XKa+CP3Rxp+cn62+blFYVXgNy7itBufrjIwQLaKrzZLRhhuy
-         BiqzP254da45G482IwOxbqVPrLaRZpxY/YNkGc4Rd7QbciqrWfoPGMkH4LrKeTsxaq
-         A5CeQT/DuACWvDJP3l2YZsCSs4k8wl8ZRHqLO2or5bCSlsrAF7qvVebFEuRNK0Rvop
-         xKiutD5Yb88ng==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Aditya Kali <adityakali@google.com>
-Subject: [RFC PATCH v2 1/1] kernfs: replace deprecated strlcpy() with strscpy()
-Date:   Wed, 22 Nov 2023 22:20:10 +0100
-Message-Id: <20231122212008.11790-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+        Wed, 22 Nov 2023 16:20:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D5CD47
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:20:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7866AC433C7;
+        Wed, 22 Nov 2023 21:20:35 +0000 (UTC)
+Date:   Wed, 22 Nov 2023 16:20:51 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Nick Lowell <nicholas.lowell@gmail.com>
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Nicholas Lowell <nlowell@lexmark.com>
+Subject: Re: [PATCH v2] trace: tracing_event_filter: fast path when no
+ subsystem filters
+Message-ID: <20231122162051.661981fe@gandalf.local.home>
+In-Reply-To: <CAFEqNJ3PE6_u-q41Jw=-p7PrNBLT0Lr_n87WiY_2UctOJrDmZA@mail.gmail.com>
+References: <20231002144149.1325-1-Nicholas.Lowell@gmail.com>
+        <20231003223003.675bd888@gandalf.local.home>
+        <CAFEqNJ2=rt5KaDaAah1t8gGbLViW7VZEDq+81drvuWUz4CKR2w@mail.gmail.com>
+        <20231004105339.5f948a96@gandalf.local.home>
+        <CAFEqNJ3PE6_u-q41Jw=-p7PrNBLT0Lr_n87WiY_2UctOJrDmZA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+On Thu, 12 Oct 2023 16:37:35 -0400
+Nick Lowell <nicholas.lowell@gmail.com> wrote:
 
-According to strlcpy() being officially deprecated and the encouragement
-to remove the remaining occurrences, this came as the intriguing example.
+Sorry, I was traveling when this was sent, and I missed it.
 
-In the kernfs_name_locked() the behaviour of truncating the kn->name is
-preserved, for it only used in the module for printing in the log and
-declared static. It is only called from pr_cont_kernfs_name() via kernfs_name()
-and returned result is ignored.
 
-It is avoided to go past the allocated page and cause the internal equivalent
-of SEGFAULT in the unlikely case kn->name is not null-terminated, which I
-believe was the idea behind replacing strlcpy() with strscpy().
+> I really appreciate the continued feedback.  I was able to reproduce.
+> I think I'm understanding better but still need some help.
+> I am actually wondering if remove_filter_string(system->filter) should
 
-kernfs_path_from_node_locked() has "(null)" which certainly cannot overrun,
-and a carefully calculated len and truncated path elsewhere.
+You mean to return true if filter->filter_string was not NULL?
 
-Fixes: 17627157cda13 ("kernfs: handle null pointers while printing node name and path")
-Fixes: 3eef34ad7dc36 ("kernfs: implement kernfs_get_parent(), kernfs_name/path() and friends")
-Fixes: 9f6df573a4041 ("kernfs: Add API to generate relative kernfs path")
-Fixes: 3abb1d90f5d93 ("kernfs: make kernfs_path*() behave in the style of strlcpy()")
-Fixes: e56ed358afd81 ("kernfs: make kernfs_walk_ns() use kernfs_pr_cont_buf[]")
-Cc: Konstantin Khlebnikov <koct9i@gmail.com>
-Cc: Aditya Kali <adityakali@google.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org
-Link: https://lwn.net/ml/ksummit-discuss/20231019054642.GF14346@lst.de/#t
-Link: https://lwn.net/Articles/659214/
-Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
----
-v2:
- Fixed a Cc: address bug.
- Fixing the patch according to the new definition of strscpy() in
-    LWN article https://lwn.net/Articles/659214/ that makes strscpy_truncate()
-    obsoleted.
+> also return bool as an OR'd input for sync.
+> Should it be something like this?
+> 
+>         if (!strcmp(strstrip(filter_string), "0")) {
+> -               filter_free_subsystem_preds(dir, tr);
+> -               remove_filter_string(system->filter);
+> +              bool sync;
 
- fs/kernfs/dir.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+I would just make this an int;
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8b2bd65d70e7..a6971a6756bc 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -53,10 +53,17 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
- 
- static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t buflen)
- {
-+	size_t len;
-+
- 	if (!kn)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
-+
-+	len = strscpy(buf, kn->parent ? kn->name : "/", buflen);
- 
--	return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
-+	if (unlikely(len == -E2BIG)) {
-+		return buflen - 1;
-+	} else
-+		return len;
- }
- 
- /* kernfs_node_depth - compute depth from @from to @to */
-@@ -141,13 +148,13 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	int i, j;
- 
- 	if (!kn_to)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
- 
- 	if (!kn_from)
- 		kn_from = kernfs_root(kn_to)->kn;
- 
- 	if (kn_from == kn_to)
--		return strlcpy(buf, "/", buflen);
-+		return strscpy(buf, "/", buflen);
- 
- 	common = kernfs_common_ancestor(kn_from, kn_to);
- 	if (WARN_ON(!common))
-@@ -159,16 +166,16 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	buf[0] = '\0';
- 
- 	for (i = 0; i < depth_from; i++)
--		len += strlcpy(buf + len, parent_str,
-+		len += strscpy(buf + len, parent_str,
- 			       len < buflen ? buflen - len : 0);
- 
- 	/* Calculate how many bytes we need for the rest */
- 	for (i = depth_to - 1; i >= 0; i--) {
- 		for (kn = kn_to, j = 0; j < i; j++)
- 			kn = kn->parent;
--		len += strlcpy(buf + len, "/",
-+		len += strscpy(buf + len, "/",
- 			       len < buflen ? buflen - len : 0);
--		len += strlcpy(buf + len, kn->name,
-+		len += strscpy(buf + len, kn->name,
- 			       len < buflen ? buflen - len : 0);
- 	}
- 
-@@ -857,9 +864,9 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
- 
- 	spin_lock_irq(&kernfs_pr_cont_lock);
- 
--	len = strlcpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
-+	len = strscpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
- 
--	if (len >= sizeof(kernfs_pr_cont_buf)) {
-+	if (unlikely(len == -E2BIG)) {
- 		spin_unlock_irq(&kernfs_pr_cont_lock);
- 		return NULL;
- 	}
--- 
-2.34.1
+> +
+> +              sync = filter_free_subsystem_preds(dir, tr);
+> +              sync = sync || remove_filter_string(system->filter);
 
+And then just have:
+
+		sync |= remove_filter_string(system->filter);
+
+>                 filter = system->filter;
+>                 system->filter = NULL;
+> -               /* Ensure all filters are no longer used */
+> -               tracepoint_synchronize_unregister();
+> +              /* If nothing was freed, we do not need to sync */
+> +              if(sync) {
+> +                      /* Ensure all filters are no longer used */
+> +                      tracepoint_synchronize_unregister();
+> +              }
+>                 filter_free_subsystem_filters(dir, tr);
+>                 __free_filter(filter);
+>                 goto out_unlock;
+> 
+> > Maybe even pass in "sync" to the filter_free_subsystem_filters() to make
+> > sure there were nothing to be freed, and do the WARN_ON_ONCE() then.
+> >
+> >                 __free_filter(filter);
+> >                 goto out_unlock;
+> >         }
+> >
+> > -- Steve  
+> 
+> I'm not sure if I see the reasoning for the WARN_ON_ONCE() in
+> filter_free_subsystem_filters()
+> because it ends up checking the same if(!filter) just like
+> filter_free_subsystem_preds() did earlier. It doesn't
+> seem to do anything with system->filter.  I actually wonder if !sync,
+> could filter_free_subsystem_filters()
+> be skipped altogether.  Help me if I'm missing something.
+
+The point is, code always changes. It's a bug if one of the filters had
+content in filter_free_subsystem_filters() and sync is 0, hence the
+WARN_ON_ONCE() if it does.
+
+WARN_ON*()s are added to make sure the code is acting the way it is expected
+to act. Yes, it should never trigger, but if it does, we know there's a bug
+somewhere.
+
+-- Steve
