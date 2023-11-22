@@ -2,231 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB2A7F4FF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB307F5005
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344284AbjKVSyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:54:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        id S1344346AbjKVS5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjKVSyC (ORCPT
+        with ESMTP id S235124AbjKVS5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:54:02 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E850A1B3;
-        Wed, 22 Nov 2023 10:53:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9mN26oXnsGSUTNXCrfc25Xqi3h24CgPhQwQcmOWKmtQ=; b=Rp8rTiZ+O8UqGbubCwroGF8zur
-        4cOhBwFn2bjNzvoHOCKnsG4BX4F14h36kZT83vwN7EKHMRLJkIKw7jc1/hZZN29H6Nyzrv0iuo2BI
-        ytPCWimRHldZL1GYtID7RmVbPsQ9//EKtwhh2DV8x8dCsYzUn/iOUuWzRY/n3EmSdV45zdBa0MGex
-        21BVuNawD9C3UTzwTiAcL+W4piuPACk0/mGxwDQRWSr0ec0BxZsJd0uUKDdsp1q3hR4bSmzkDbU5X
-        TTJqaPvWjq/lOzbORUQKGQ9zr/4rlAg/VDzlkf+1hcREI9AzemkSACk78mDXf6uHcSb2u4t4PP+Hk
-        3ABNDpHg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58024)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r5sMA-0000eE-2A;
-        Wed, 22 Nov 2023 18:53:50 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r5sMA-0005Q7-K6; Wed, 22 Nov 2023 18:53:50 +0000
-Date:   Wed, 22 Nov 2023 18:53:50 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [net-next PATCH] net: phy: aquantia: drop wrong endianness
- conversion for addr and CRC
-Message-ID: <ZV5OPr5ee2x/yMCQ@shell.armlinux.org.uk>
-References: <20231122170813.1222-1-ansuelsmth@gmail.com>
- <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
- <655e4025.df0a0220.50550.3d70@mx.google.com>
+        Wed, 22 Nov 2023 13:57:34 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F193510C3;
+        Wed, 22 Nov 2023 10:57:28 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8C408120059;
+        Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8C408120059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700679447;
+        bh=5pEAGVMHc8CTrD7GrkHh/WKsgucxfvk3kjp7oHifpy8=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=Ps7gMGLYUda/9sTqLehU9RfZaHRhwpKP074r5tSVuqiqu5M3p5IygHC5alGBu98kM
+         1UPJIXL6zr7Hjbw+Mi4UMM25mrRoIVf6OiumGiyk/6wAoxfjvvJUh+gUbmVTXsW7uh
+         inw145BYrR7+QxUmOYJzPLt3kpVS3Zi6FjBRJBsrzGuXSE5fIENCODJ8jPj/T9R3/b
+         MKJ1YJKZ0LHfGWQVMTMrb6qjhro3y5odZILgATUmslcgzs4TW/kH/JUoyovIwZOTXe
+         WppijZA4S7wLB7Ed8AocJXmY+HEXOceK+odJhx8ScX5FspCF8l+pdh6yCsRBFTXZOx
+         C6zzgmO2L9QBw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
+ 2023 21:57:27 +0300
+Date:   Wed, 22 Nov 2023 21:57:27 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <655e4025.df0a0220.50550.3d70@mx.google.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <ZV4BK0wbUAZBIhmA@tiehlicka>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 06:53:39PM +0100, Christian Marangi wrote:
-> On Wed, Nov 22, 2023 at 05:24:33PM +0000, Russell King (Oracle) wrote:
-> > On Wed, Nov 22, 2023 at 06:08:13PM +0100, Christian Marangi wrote:
-> > > On further testing on BE target with kernel test robot, it was notice
-> > > that the endianness conversion for addr and CRC in fw_load_memory was
-> > > wrong and actually not needed. Values in define doesn't get converted
-> > > and are passed as is and hardcoded values are already in what the PHY
-> > > require, that is LE.
+On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
+> On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
+> > Hello Michal,
+> > 
+> > Thank you for the quick review!
+> > 
+> > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > Currently, it is not possible to trace this point from non-direct
+> > > > reclaim paths.
 > > > 
-> > > Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
-> > > _swab32 instead, the word is taked from firmware and is always LE, the
+> > > Is this really true? AFAICS we have
+> > > mm_vmscan_lru_isolate
+> > > mm_vmscan_lru_shrink_active
+> > > mm_vmscan_lru_shrink_inactive
+> > > 
+> > > which are in the vry core of the memory reclaim. Sure post processing
+> > > those is some work.
 > > 
-> >                                taken
-> > 
-> > > mailbox will emit a BE CRC hence the word needs to be always swapped and
-> > > the endianness of the host needs to be ignored.
-> > 
-> > I'm not convinced. If the firmware is a bytestream (as most "files" are)
-> > then for val = get_unaligned((u32 *)ptr), where ptr is an array of u8:
-> > 
-> > ptr[0]	ptr[1]	ptr[2]	ptr[3]	val on LE	val on BE
-> > 0x01	0x02	0x03	0x04	0x04030201	0x01020304
-> > 
-> > So, endianness matters here, and I think as Jakub already suggested, you
-> > need to use get_unaligned_le32().
-> >
+> > Sure, you are absolutely right. In the usual scenario, the memcg
+> > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+> > tracepoints you mentioned and analyze them. However, there is one
+> > potential issue. Enabling these tracepoints will trigger the reclaim
+> > events show for all pages. Although we can filter them per pid, we
+> > cannot filter them per cgroup. Nevertheless, there are times when it
+> > would be extremely beneficial to comprehend the effectiveness of the
+> > reclaim process within the relevant cgroup. For this reason, I am adding
+> > the cgroup name to the memcg tracepoints and implementing a cumulative
+> > tracepoint for memcg shrink (LRU + slab)."
 > 
-> So they DO get converted to the HOST endian on reading the firmware from
-> an nvmem cell or a filesystem?
+> I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
+> easier to postprocess per memcg reclaim. But you could do that just by
+> adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
+> does this matter for kswapd and other global reclaim contexts? 
 
-I don't like "converted". It's *not* a conversion. It's a fundamental
-property of accessing memory using different sizes of access.
+From my point of view, kswapd and other non-direct reclaim paths are
+important for memcg analysis because they also influence the memcg
+reclaim statistics.
 
-As I attempted to explain above, if you have a file, and byte 0
-contains 0xAA, byte 1 of the file contains 0xBB, byte 2 contains
-0xCC, and byte 3 contains 0xDD, then if you read that file byte by
-byte, you will get 0xAA, then 0xBB, then 0xCC and then 0xDD.
+The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
+direct memcg reclaim flow, such as:
+    - a direct write to the 'reclaim' node
+    - changing 'max' and 'high' thresholds
+    - raising the 'force_empty' mechanism
+    - the charge path
+    - etc.
 
-If you map that file into memory, e.g. in userspace, using mmap(),
-or allocating memory and reading four bytes into memory, and access
-it using bytes, then at offset 0, you will find 0xAA, offset 1 will
-be 0xBB, etc.
-
-The problems with endianness start when you move away from byte
-access.
-
-If you use 16-bit accessors, then, a little endian machine is defined
-that a 16-bit load from memory will result in the first byte being put
-into the LSB of the 16-bit value, and the second byte will be put into
-the MSB of the 16-bit value. So that would be 0xBBAA. However, on a big
-endian machine, a 16-bit load will result in the first byte being put
-into the MSB of the 16-bit value, and the second byte will be put into
-the LSB of that value - meaning the 16-bit value will be 0xAABB.
-
-The second 16-bit value uses the next two bytes, and the order at which
-these two bytes are placed into the 16-bit value reflects the same as
-the first two bytes. So LE will be 0xDDCC and BE would be 0xCCDD.
-
-The same "swapping" happens with 32-bit, but of course instead of just
-two bytes, it covers four bytes. On LE, a 32-bit access will give
-0xDDCCBBAA. On BE, that will be 0xAABBCCDD.
-
-Again, this is not to do with any kind of "conversion" happening in
-software. It's a property of how the memory subsystem inside the CPU
-works.
-
-> Again this is really dumping raw data from the read file directly to the
-> mailbox. Unless phy_write does some conversion internally, but in that
-> case how does it know what endian is the PHY internally?
-
-phy_write() does *no* conversion. The MDIO bus defines that a 16-bit
-register value will be transferred, and the MDIO bus specifies that
-bit 15 will be sent first, followed by subsequent bits down to bit 0.
-
-The access to the hardware to make this happen is required to ensure
-that the value passed to phy_write() and read using phy_read() will
-reflect this. So, if one does this:
-
-	val = phy_read(phydev, 0);
-
-	for (i = 15; i >= 0; i--)
-		printk("%u", !!(val & BIT(i)));
-
-	printk("\n");
-
-This will give you the stream of bits in the _order_ that they appeared
-on the MDIO bus when phy_read() accessed. Doing the same with a value
-to be written will produce the bits in the same value that they will
-be placed on the MDIO bus.
-
-So, this means that if the BMCR contains 0x1234 in the PHY, phy_read()
-will return 0x1234. Passing 0x1234 into phy_write() will write 0x1234
-in that register. The host endian is entirely irrelevant here.
-
-> > I would make this explicit:
-> > 
-> > 		u8 crc_data[4];
-> > 
-> > 		...
-> > 
-> > 		/* CRC is calculated using BE order */
-> > 		crc_data[0] = word >> 24;
-> > 		crc_data[1] = word >> 16;
-> > 		crc_data[2] = word >> 8;
-> > 		crc_data[3] = word;
-> > 
-> > 		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
-> > 
-> > which will be (a) completely unambiguous, and (b) completely
-> > independent of the host endianness.
-> 
-> But isn't this exactly what is done with ___constant_swab32 ?
-> __swab32 should not change if the HOST is BE or LE.
-
-Let try again to make this clear. If one has this code:
-
-		u32 word = 0x01020304;
-		u8 *ptr;
-		int i;
-
-		ptr = (u8 *)&word;
-
-		for (i = 0; i < 4; i++)
-			printk(" %02x", ptr[i]);
-		printk("\n");
-
-Then, on a:
-- LE machine, this will print " 04 03 02 01"
-- BE machine, this will print " 01 02 03 04"
-
-Now, if you look at the definition of crc_ccitt_false(), it is
-defined to do:
-
-        while (len--)
-                crc = crc_ccitt_false_byte(crc, *buffer++);
-
-So, on a LE machine, this will feed the above bytes in the order of
-0x04, 0x03, 0x02, 0x01 in a LE machine, and 0x01, 0x02, 0x03, 0x04
-on a BE machine.
-
-> The real question is if word is converted. (by either the read API on
-> reading the FW or by phy_write on writing the thing to mailbox) (the
-> test are done on a LE HOST)
-
-There are no conversions - where a conversion I define as something
-that the software explicitly has to do rather than what the underlying
-machine hardware does.
-
-> Our theory is that mailbox takes LE and internally converts to BE (as
-> the PHY is BE) but the CRC reg calculates the CRC out of the converted
-> data aka it does calculates the CRC from the BE data (converted
-> internally).
-
-I think the talk about the endian-ness of the PHY is entirely
-unhelpful and is probably adding to confusion. The endian-ness of the
-PHY is *not* exposed to the host because the MDIO interface to the PHY
-is defined in terms of 16-bit register quantities, and bit 0 of the
-register will be bit 0 on the host irrespective of host endian.
+However, it doesn't cover global reclaim contexts, so it doesn't provide
+us with the full memcg reclaim statistics.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Thank you,
+Dmitry
