@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381927F4AD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDE17F4ADD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344392AbjKVPgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S1344443AbjKVPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344532AbjKVPfo (ORCPT
+        with ESMTP id S1344481AbjKVPfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:35:44 -0500
+        Wed, 22 Nov 2023 10:35:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3741984;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F791739;
         Wed, 22 Nov 2023 07:34:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C62B8C433C9;
-        Wed, 22 Nov 2023 15:34:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DD1FC433D9;
+        Wed, 22 Nov 2023 15:34:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667254;
-        bh=cpaY/yV5WXyg9YEkeW49vlb9lDNYl17fwLO5WtfKdaE=;
+        s=k20201202; t=1700667262;
+        bh=6Sbtg7aRv49DECKFT2CS/PIA6JaOYMTfSjqMHYNkqek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yqhg+GPr5JeiBnmMSTPm9JeYt9D4jFSrMHbIHGzBYL3Q2WZvQOXlKGREx77G7f6Cc
-         IeWtCvfcrqDpj04KIGdBROE9gPp5Y3riqX61+Z1uNh4lPs5dALDq2Yz2uuZvNRUjqR
-         KNyN/PFxM2UERigRqodO4ju5JiQM93GqxMCZisplvyWEXiSpsY0VWW9sRK2+Mt9bNs
-         nFRCNhzfsdWjEh18kTFRCHrZLMKD9Q10pH421Dq/028K7afyiTcMDcF+YKqANjBYTc
-         oui5dAG+j6Pp+/qw6Bue4kHlY9tOMFKeCWYiDOLlKF1bDmJ+b4mINXAGjJmYiV9Com
-         GZgMFfTHsbgxA==
+        b=rlBUWD7kVOX0vLWg25qQmyydGJLGVEGcNXOpzwBgWOe+L9fJQW/gkREo1F9Qq+31z
+         WxO+dRQIGqeiUwyeNB6I6ujf0HsbAHGIK58ow78DhAIH6tUpYiwMSYV+8iOYs/Sf4e
+         fRdr5WfAS6YmU6N5Z9jUm+puxS+bB25xdGHNZNdRRGmoJcUkVUmjd9cJ2whoRFk2gY
+         3+XjVT/EQEzQAewl+wrsClc+LkLZABlVwl7tjttIxmxHllDAvw2hnpBCEvmrBqZxIZ
+         eeuDBCFrQa+Pmw6c/3LFClExxeQUiOJkpIFCCsmMwpJkHK+9KwKtSBM3QAQcT6yTzL
+         4ez8wxkT/Poqg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 11/15] kconfig: fix memory leak from range properties
-Date:   Wed, 22 Nov 2023 10:33:13 -0500
-Message-ID: <20231122153340.852434-11-sashal@kernel.org>
+Cc:     Victor Lu <victorchengchi.lu@amd.com>,
+        Samir Dhume <samir.dhume@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Hawking.Zhang@amd.com, tao.zhou1@amd.com, le.ma@amd.com,
+        Felix.Kuehling@amd.com, srinivasan.shanmugam@amd.com,
+        yifan1.zhang@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 12/15] drm/amdgpu: Do not program VF copy regs in mmhub v1.8 under SRIOV (v2)
+Date:   Wed, 22 Nov 2023 10:33:14 -0500
+Message-ID: <20231122153340.852434-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153340.852434-1-sashal@kernel.org>
 References: <20231122153340.852434-1-sashal@kernel.org>
@@ -52,90 +59,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Victor Lu <victorchengchi.lu@amd.com>
 
-[ Upstream commit ae1eff0349f2e908fc083630e8441ea6dc434dc0 ]
+[ Upstream commit 0288603040c38ccfeb5342f34a52673366d90038 ]
 
-Currently, sym_validate_range() duplicates the range string using
-xstrdup(), which is overwritten by a subsequent sym_calc_value() call.
-It results in a memory leak.
+MC_VM_AGP_* registers should not be programmed by guest driver.
 
-Instead, only the pointer should be copied.
+v2: move early return outside of loop
 
-Below is a test case, with a summary from Valgrind.
-
-[Test Kconfig]
-
-  config FOO
-          int "foo"
-          range 10 20
-
-[Test .config]
-
-  CONFIG_FOO=0
-
-[Before]
-
-  LEAK SUMMARY:
-     definitely lost: 3 bytes in 1 blocks
-     indirectly lost: 0 bytes in 0 blocks
-       possibly lost: 0 bytes in 0 blocks
-     still reachable: 17,465 bytes in 21 blocks
-          suppressed: 0 bytes in 0 blocks
-
-[After]
-
-  LEAK SUMMARY:
-     definitely lost: 0 bytes in 0 blocks
-     indirectly lost: 0 bytes in 0 blocks
-       possibly lost: 0 bytes in 0 blocks
-     still reachable: 17,462 bytes in 20 blocks
-          suppressed: 0 bytes in 0 blocks
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
+Reviewed-by: Samir Dhume <samir.dhume@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/symbol.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
-index 0572330bf8a78..a76925b46ce63 100644
---- a/scripts/kconfig/symbol.c
-+++ b/scripts/kconfig/symbol.c
-@@ -122,9 +122,9 @@ static long long sym_get_range_val(struct symbol *sym, int base)
- static void sym_validate_range(struct symbol *sym)
- {
- 	struct property *prop;
-+	struct symbol *range_sym;
- 	int base;
- 	long long val, val2;
--	char str[64];
+diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
+index 5e8b493f86995..e68ffc1b7a095 100644
+--- a/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
++++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v1_8.c
+@@ -130,6 +130,9 @@ static void mmhub_v1_8_init_system_aperture_regs(struct amdgpu_device *adev)
+ 	uint64_t value;
+ 	int i;
  
- 	switch (sym->type) {
- 	case S_INT:
-@@ -140,17 +140,15 @@ static void sym_validate_range(struct symbol *sym)
- 	if (!prop)
- 		return;
- 	val = strtoll(sym->curr.val, NULL, base);
--	val2 = sym_get_range_val(prop->expr->left.sym, base);
-+	range_sym = prop->expr->left.sym;
-+	val2 = sym_get_range_val(range_sym, base);
- 	if (val >= val2) {
--		val2 = sym_get_range_val(prop->expr->right.sym, base);
-+		range_sym = prop->expr->right.sym;
-+		val2 = sym_get_range_val(range_sym, base);
- 		if (val <= val2)
- 			return;
- 	}
--	if (sym->type == S_INT)
--		sprintf(str, "%lld", val2);
--	else
--		sprintf(str, "0x%llx", val2);
--	sym->curr.val = xstrdup(str);
-+	sym->curr.val = range_sym->curr.val;
- }
++	if (amdgpu_sriov_vf(adev))
++		return;
++
+ 	inst_mask = adev->aid_mask;
+ 	for_each_inst(i, inst_mask) {
+ 		/* Program the AGP BAR */
+@@ -139,9 +142,6 @@ static void mmhub_v1_8_init_system_aperture_regs(struct amdgpu_device *adev)
+ 		WREG32_SOC15(MMHUB, i, regMC_VM_AGP_TOP,
+ 			     adev->gmc.agp_end >> 24);
  
- static void sym_set_changed(struct symbol *sym)
+-		if (amdgpu_sriov_vf(adev))
+-			return;
+-
+ 		/* Program the system aperture low logical page number. */
+ 		WREG32_SOC15(MMHUB, i, regMC_VM_SYSTEM_APERTURE_LOW_ADDR,
+ 			min(adev->gmc.fb_start, adev->gmc.agp_start) >> 18);
 -- 
 2.42.0
 
