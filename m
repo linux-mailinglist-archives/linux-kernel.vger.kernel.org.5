@@ -2,54 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1167F5039
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41567F503B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231892AbjKVTHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 14:07:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S1344228AbjKVTIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 14:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjKVTHg (ORCPT
+        with ESMTP id S231771AbjKVTIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 14:07:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38E6C1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:07:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 517C8C433C7;
-        Wed, 22 Nov 2023 19:07:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700680052;
-        bh=uVl7nTlOM0+msqDAdm3xWe+pC9hYDXS7ELazxBmwybM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qzgTnDuKDNNI2dRTWMKvM5zYKH+Hpi+NupYJ34h4+8zUd1hf6idxMdSswFWMqeKfU
-         48rcSLdxqrCZZIL9AP39WVkFTub17R8lcUv2l7mDetSSotS6IooqzdjIkMxuTN9FZ6
-         olz7dYNj7+jdqCIbOvOhmlo1r3Uhepy1nsPgrLnpdUHME2+WdM5mKP5tVu0oEeZ2t9
-         uhWw8IXHpVujmXqiytKyBY0V569vdYww4ToNiLHMz6T5Bi+Gnrg9hR8DDqpfUIrdhv
-         30/uvy/m/YYen77xPm0Ey3ZlsswsI+qLuGwurfs4LvvnBWOaUKgKsajKeECn5WNvMs
-         1xzHjSWZwIFRg==
-Date:   Wed, 22 Nov 2023 19:07:25 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Wen Gu <guwen@linux.alibaba.com>
-Cc:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        kgraul@linux.ibm.com, jaka@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 5/7] net/smc: compatible with 128-bits extend
- GID of virtual ISM device
-Message-ID: <20231122190725.GB6731@kernel.org>
-References: <1700402277-93750-1-git-send-email-guwen@linux.alibaba.com>
- <1700402277-93750-6-git-send-email-guwen@linux.alibaba.com>
+        Wed, 22 Nov 2023 14:08:05 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFB491
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:08:01 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-4083f61312eso603015e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:08:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700680080; x=1701284880; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ERkw8rzZcH5VQ4+E8lzR+R0WUOy2UMqbI/rVKSdow1Q=;
+        b=WqsSPUoTX2FktqJOtX0bLiDu9iMzqqeKClxodLArFwos7xW2guj4rqOBIRWy/pr9Lc
+         1chxMl73gY0sS8vzEAHbIvZ3Icc2M+KNQRcSNDjwqFYs3AQyCYbaZD64SmCgs2QsWlqm
+         SE7mxL2qijIvkLXw5+Ab+AojgDlpN5p45TYhvLZM/dyyyv7EaNdBu2AD7dkmOvsHUA3X
+         nKj+0w5V9BBZiWt+JQdZdeN20A+Pm3l3AFipIqefiQ06TmlNiIVKkUvBaDVUET3F7tzk
+         4XZpYigvq/+GLIfwpPQWGXil3uCXR/kKpkzk2S30TJjKAAqQa6b6N06iSR/ZG+0ii9hT
+         OklQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700680080; x=1701284880;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ERkw8rzZcH5VQ4+E8lzR+R0WUOy2UMqbI/rVKSdow1Q=;
+        b=M2hjeLiIcTlS5Bh9dZWcXbV/wxd9q7QKzT4P5eklIeOU6htKlIWXzvpmVqEtDBVgMq
+         eAzieSDSd/wZxARZsseJItiW0z/ga6isEwn4cfUHV9ZsIxI9wbQ5R5TxKU9R5kbrLIuM
+         VBQLgPrKBtMtOg5ez4eSrxAnObzhnCZPkLTdHhyfFGx1d0wBj830aWFMHYG3rL2PfR5k
+         Da4Hd0RhRamibsc8+fJxR6bqf4ZvekW5pLNidubZohCtAeXIaJJQ0jNfFJ3CF4AXJFZ6
+         bRO4Cgm97MicwD03YYgRTGkUZgqZzH+4Ivk5HhRYtBnAcAyPc2vxEXwwpCTrc8hQQB9D
+         T0WQ==
+X-Gm-Message-State: AOJu0Yz8JvXcFGscHHWCw45I+VzKgTbxHw3TTIwGchgP2DP4ZkkIrxfi
+        3SihE1CRNjuTHplE+rEz3PuE7w==
+X-Google-Smtp-Source: AGHT+IEYlaAUBJTYI4hE847qYf7C5VGEpYaECsCw4fzirfKY27NLvf7xnvij66qHu9oiuERgWUnGlg==
+X-Received: by 2002:a05:600c:511a:b0:40b:2b86:c88a with SMTP id o26-20020a05600c511a00b0040b2b86c88amr1065729wms.2.1700680079847;
+        Wed, 22 Nov 2023 11:07:59 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.100])
+        by smtp.gmail.com with ESMTPSA id hg15-20020a05600c538f00b0040849ce7116sm320957wmb.43.2023.11.22.11.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 11:07:59 -0800 (PST)
+Message-ID: <e7693e9d-a46a-4dc2-9aee-36a2bbf74ade@linaro.org>
+Date:   Wed, 22 Nov 2023 20:07:56 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1700402277-93750-6-git-send-email-guwen@linux.alibaba.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 08/12] dt-bindings: display: vop2: Add rk3588 support
+Content-Language: en-US
+To:     Andy Yan <andyshrk@163.com>, heiko@sntech.de
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125518.3454796-1-andyshrk@163.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231122125518.3454796-1-andyshrk@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,40 +123,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 09:57:55PM +0800, Wen Gu wrote:
-> According to virtual ISM support feature defined by SMCv2.1, GIDs of
-> virtual ISM device are UUIDs defined by RFC4122, which are 128-bits
-> long. So some adaptation work is required. And note that the GIDs of
-> existing platform firmware ISM devices still remain 64-bits long.
+On 22/11/2023 13:55, Andy Yan wrote:
+> From: Andy Yan <andy.yan@rock-chips.com>
 > 
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+> The vop2 on rk3588 is similar to which on rk356x
+> but with 4 video ports and need to reference
+> more grf modules.
+> 
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - fix errors when running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> 
+>  .../display/rockchip/rockchip-vop2.yaml       | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+> index b60b90472d42..24148d9b3b14 100644
+> --- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+> +++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.yaml
+> @@ -20,6 +20,7 @@ properties:
+>      enum:
+>        - rockchip,rk3566-vop
+>        - rockchip,rk3568-vop
+> +      - rockchip,rk3588-vop
+>  
+>    reg:
+>      items:
+> @@ -42,26 +43,47 @@ properties:
+>        frame start (VSYNC), line flag and other status interrupts.
+>  
+>    clocks:
+> +    minItems: 3
+>      items:
+>        - description: Clock for ddr buffer transfer.
+>        - description: Clock for the ahb bus to R/W the phy regs.
+>        - description: Pixel clock for video port 0.
+>        - description: Pixel clock for video port 1.
+>        - description: Pixel clock for video port 2.
+> +      - description: Pixel clock for video port 4.
+> +      - description: Peripheral clock for vop on rk3588.
+>  
+>    clock-names:
+> +    minItems: 3
 
-...
+You relax requirements for all existing variants here which is not
+explained in commit msg. I assume this was not intentional, so you need
+to re-constrain them in allOf:if:then.
 
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+See for example:
+https://elixir.bootlin.com/linux/v5.19-rc6/source/Documentation/devicetree/bindings/clock/samsung,exynos7-clock.yaml#L57
+for some ideas.
 
-...
+>      items:
+>        - const: aclk
+>        - const: hclk
+>        - const: dclk_vp0
+>        - const: dclk_vp1
+>        - const: dclk_vp2
+> +      - const: dclk_vp3
+> +      - const: pclk_vop
+>  
+>    rockchip,grf:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description:
+>        Phandle to GRF regs used for misc control
+>  
+> +  rockchip,vo-grf:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to VO GRF regs used for misc control, required for rk3588
 
-> @@ -1522,7 +1527,10 @@ void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->  	/* run common cleanup function and build free list */
->  	spin_lock_bh(&dev->lgr_lock);
->  	list_for_each_entry_safe(lgr, l, &dev->lgr_list, list) {
-> -		if ((!peer_gid || lgr->peer_gid == peer_gid) &&
-> +		if ((!peer_gid->gid ||
+Drop last sentence, instead add it to required in allOf:if:then.
 
-Hi Wen Gu,
+Is this valid for other variants? If not, should be disallowed in
+allOf:if:then: for them.
 
-Previously this condition assumed that peer could be NULL,
-and that is still the case in the next condition, a few lines down.
-But with this patch peer is unconditionally dereferenced here.
+> +
+> +  rockchip,vop-grf:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to VOP GRF regs used for misc control, required for rk3588
+> +
+> +  rockchip,pmu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      Phandle to PMU regs used for misc control, required for rk3588
 
-As flagged by Smatch.
+For all these three: what is "misc control"? Way too vague. Everything
+is a misc and everything can be control. You must be here specific and
+much more descriptive.
 
-> +		     (lgr->peer_gid.gid == peer_gid->gid &&
-> +		      !smc_ism_is_virtual(dev) ? 1 :
-> +		      lgr->peer_gid.gid_ext == peer_gid->gid_ext)) &&
->  		    (vlan == VLAN_VID_MASK || lgr->vlan_id == vlan)) {
->  			if (peer_gid) /* peer triggered termination */
->  				lgr->peer_shutdown = 1;
+> +
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> @@ -81,6 +103,11 @@ properties:
+>          description:
+>            Output endpoint of VP2
+>  
+> +      port@3:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description:
+> +          Output endpoint of VP3
 
-...
+Valid for other variants?
+
+Best regards,
+Krzysztof
+
