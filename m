@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3176E7F46D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B852F7F4698
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 13:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343844AbjKVMuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 07:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
+        id S1343830AbjKVMtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 07:49:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343886AbjKVMuM (ORCPT
+        with ESMTP id S234981AbjKVMtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:50:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183E5D62
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 04:50:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 467BDC433CB;
-        Wed, 22 Nov 2023 12:49:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700657408;
-        bh=aU2J72Xp3JKGs0IOk/3BX7BmnbVjjSktFzc5W0fL98s=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=fcF4pxKRziGSAF2FOqxImPOzC2PEVz+iXrlHdDaPyM6/v6o+f16jjdAN+lC2pUX0Z
-         c6Vj4pEReJ7qSGBsgd/Etcb/Bx/NFbs8vsXFZDe0htqh1OD5+o81eDXmshIPtuoyBK
-         lUfl8SFejNcIDe347vDzewRE22FCt1MWsk2CM4stuQE/3LK9tJj9skrI0zg5sl10Ot
-         aC+S7ghlxwZ2rYR03/mACnTcLYZ3VnGDGFga1iJsrVdoW+9CIorT0HYAGwO2anWZen
-         uIJ0oJqCh8DfwGg5lQlRhQShmsIUNUkRjdY2uwh1ov0dsfb3jgNLqtI1PY54/gVbLF
-         del/29joBTz5A==
-From:   Christian Brauner <brauner@kernel.org>
-Date:   Wed, 22 Nov 2023 13:48:25 +0100
-Subject: [PATCH v2 4/4] eventfd: make eventfd_signal{_mask}() void
+        Wed, 22 Nov 2023 07:49:04 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F9910C;
+        Wed, 22 Nov 2023 04:48:59 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so9276094a12.2;
+        Wed, 22 Nov 2023 04:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700657338; x=1701262138; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9YdyaqidxNHgQu3f+/04CWCZm/l6aMN9d1kNzF3ISg=;
+        b=SCiIhqLdJWDVB8vNZVi7LtmjKLlIiu+KbWWlDQwNFgKl2fHi0kTJi344MKdQ4JKFaq
+         h7Jn1GdtcpWG+iQOBJAWtvTRDR7uh+bKjantjiDMV7yhJH1+s5U7HPgvBakmc/Ii3/Ef
+         CbQICJHJXkylb/oCKlNsTAcNOpmpL18oPKFvC/5Wn73WZXz0bOF4Nt3LsSr8Ulm8S8Ux
+         nFZL2zJDuW6txUmMgWE0GRKkSIP/eWbDCy6Fko3g+vOjMZZd7jTRqUoDXPEtaP4EFG9b
+         dABQUa+t0O73A6L6yy4GTsehOzfSLOUH6Gh8R5qEchn3OzKvocWgBd4lBy80/xZ+wchv
+         2sOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700657338; x=1701262138;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9YdyaqidxNHgQu3f+/04CWCZm/l6aMN9d1kNzF3ISg=;
+        b=uSHMTOi8sjk9FGnkac4maskfZn/BsiIOwTDExIyUz8LD4C9+iae8cRmV+Bo1H1yJwX
+         YezEaaO4RdJHutu//Wd3T80TSy7vt/cc7Dv94q0h34LD2H099UlK5HprcSURGkYrNLuD
+         HZmNSK6RUKqrDOP6c15900EXoDb/PvHoSxHzW17vfOtWnWv5PfE+X+ZHl/5T/GEWpnSX
+         l6R8IYsOxT9wToQkNnk74JoPyzBrlh7vj7RMnkgDzYdSliOFaZke1nUjXk9EQea+/ZH6
+         cYaMShyl88ZD3WgOXTqGqSmust1waM78S2RcNm3Rex5sZ4HQA8r8n/kOW0Dr1/4+arW2
+         x8qg==
+X-Gm-Message-State: AOJu0YxsHGJ8TQhdMqMWW2uJV12M2yhmyx7PZKG6zu9NGbw934J8vJTO
+        rkvH9AajJ3R8+10vxBG7PMY=
+X-Google-Smtp-Source: AGHT+IFqjD/KCU7ZngsnrhPKksmdkk+WRbkSvFaBR+8abwH25FrPa5R5r8Qr38fG6A7zDpSEeYeCXg==
+X-Received: by 2002:a05:6402:150f:b0:54a:8e8c:80ac with SMTP id f15-20020a056402150f00b0054a8e8c80acmr461955edw.30.1700657338019;
+        Wed, 22 Nov 2023 04:48:58 -0800 (PST)
+Received: from [10.10.53.143] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id j19-20020aa7ca53000000b005488ae52752sm4424561edt.18.2023.11.22.04.48.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 04:48:57 -0800 (PST)
+Message-ID: <c8661c01-94b1-4b10-840b-2fd7c1f0c95d@gmail.com>
+Date:   Wed, 22 Nov 2023 13:48:56 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] Input: bcm5974 - check endpoint type before starting
+ traffic
+Content-Language: en-US
+To:     John Horan <knasher@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+References: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <20231007-topic-bcm5974_bulk-v3-1-d0f38b9d2935@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-vfs-eventfd-signal-v2-4-bd549b14ce0c@kernel.org>
-References: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-In-Reply-To: <20231122-vfs-eventfd-signal-v2-0-bd549b14ce0c@kernel.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-X-Mailer: b4 0.13-dev-26615
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3854; i=brauner@kernel.org;
- h=from:subject:message-id; bh=aU2J72Xp3JKGs0IOk/3BX7BmnbVjjSktFzc5W0fL98s=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTG/lj73/5dRNiNYIfwQ9VnNb8kSHjtMQlc94/11mwNB
- qlLZUUiHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABP5zcjwh+t1UN76vf945tSW
- T/rxjCHQpq4w94r2Zqm/ATIn/7GqSjMyvH01XYi3/rDPbk7Hf182bChuXbCzsfD2+Wr+47+PXN/
- CxAMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -118,124 +77,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No caller care about the return value.
+On 14.10.23 12:20, Javier Carrasco wrote:
+> syzbot has found a type mismatch between a USB pipe and the transfer
+> endpoint, which is triggered by the bcm5974 driver[1].
+> 
+> This driver expects the device to provide input interrupt endpoints and
+> if that is not the case, the driver registration should terminate.
+> 
+> Repros are available to reproduce this issue with a certain setup for
+> the dummy_hcd, leading to an interrupt/bulk mismatch which is caught in
+> the USB core after calling usb_submit_urb() with the following message:
+> "BOGUS urb xfer, pipe 1 != type 3"
+> 
+> Some other device drivers (like the appletouch driver bcm5974 is mainly
+> based on) provide some checking mechanism to make sure that an IN
+> interrupt endpoint is available. In this particular case the endpoint
+> addresses are provided by a config table, so the checking can be
+> targeted to the provided endpoints.
+> 
+> Add some basic checking to guarantee that the endpoints available match
+> the expected type for both the trackpad and button endpoints.
+> 
+> This issue was only found for the trackpad endpoint, but the checking
+> has been added to the button endpoint as well for the same reasons.
+> 
+> Given that there was never a check for the endpoint type, this bug has
+> been there since the first implementation of the driver (f89bd95c5c94).
+> 
+> [1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
+> 
+> Fixes: f89bd95c5c94 ("Input: bcm5974 - add driver for Macbook Air and Pro Penryn touchpads")
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> Reported-and-tested-by: syzbot+348331f63b034f89b622@syzkaller.appspotmail.com
+> ---
+> Changes in v3:
+> - Use usb_check_int_endpoints() to validate the endpoints.
+> - Link to v2: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v2-1-021131c83efb@gmail.com
+> 
+> Changes in v2:
+> - Keep error = -ENOMEM for the rest of the probe and return -ENODEV if
+>   the endpoint check fails.
+> - Check function returns now bool and was renamed (_is_ for
+>   bool-returning functions).
+> - Link to v1: https://lore.kernel.org/r/20231007-topic-bcm5974_bulk-v1-1-355be9f8ad80@gmail.com
+> ---
+>  drivers/input/mouse/bcm5974.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
+> index ca150618d32f..953992b458e9 100644
+> --- a/drivers/input/mouse/bcm5974.c
+> +++ b/drivers/input/mouse/bcm5974.c
+> @@ -19,6 +19,7 @@
+>   * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
+>   */
+>  
+> +#include "linux/usb.h"
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+>  #include <linux/slab.h>
+> @@ -193,6 +194,8 @@ enum tp_type {
+>  
+>  /* list of device capability bits */
+>  #define HAS_INTEGRATED_BUTTON	1
+> +/* maximum number of supported endpoints (currently trackpad and button) */
+> +#define MAX_ENDPOINTS	2
+>  
+>  /* trackpad finger data block size */
+>  #define FSIZE_TYPE1		(14 * sizeof(__le16))
+> @@ -891,6 +894,18 @@ static int bcm5974_resume(struct usb_interface *iface)
+>  	return error;
+>  }
+>  
+> +static bool bcm5974_check_endpoints(struct usb_interface *iface,
+> +				    const struct bcm5974_config *cfg)
+> +{
+> +	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
+> +
+> +	ep_addr[0] = cfg->tp_ep;
+> +	if (cfg->tp_type == TYPE1)
+> +		ep_addr[1] = cfg->bt_ep;
+> +
+> +	return usb_check_int_endpoints(iface, ep_addr);
+> +}
+> +
+>  static int bcm5974_probe(struct usb_interface *iface,
+>  			 const struct usb_device_id *id)
+>  {
+> @@ -903,6 +918,11 @@ static int bcm5974_probe(struct usb_interface *iface,
+>  	/* find the product index */
+>  	cfg = bcm5974_get_config(udev);
+>  
+> +	if (!bcm5974_check_endpoints(iface, cfg)) {
+> +		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
+> +		return -ENODEV;
+> +	}
+> +
+>  	/* allocate memory for our device state and initialize it */
+>  	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
+>  	input_dev = input_allocate_device();
+> 
+> ---
+> base-commit: 401644852d0b2a278811de38081be23f74b5bb04
+> change-id: 20231007-topic-bcm5974_bulk-c66b743ba7ba
+> 
+> Best regards,
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- fs/eventfd.c            | 40 +++++++++++++++-------------------------
- include/linux/eventfd.h | 16 +++++++---------
- 2 files changed, 22 insertions(+), 34 deletions(-)
+Gentle ping, syzbot keeps on reporting this bug (last report 7 days ago).
 
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index a9a6de920fb4..13be2fb7fc96 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -43,10 +43,19 @@ struct eventfd_ctx {
- 	int id;
- };
- 
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
-+/**
-+ * eventfd_signal - Adds @n to the eventfd counter.
-+ * @ctx: [in] Pointer to the eventfd context.
-+ * @mask: [in] poll mask
-+ *
-+ * This function is supposed to be called by the kernel in paths that do not
-+ * allow sleeping. In this function we allow the counter to reach the ULLONG_MAX
-+ * value, and we signal this as overflow condition by returning a EPOLLERR
-+ * to poll(2).
-+ */
-+void eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
- {
- 	unsigned long flags;
--	__u64 n = 1;
- 
- 	/*
- 	 * Deadlock or stack overflow issues can happen if we recurse here
-@@ -57,37 +66,18 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
- 	 * safe context.
- 	 */
- 	if (WARN_ON_ONCE(current->in_eventfd))
--		return 0;
-+		return;
- 
- 	spin_lock_irqsave(&ctx->wqh.lock, flags);
- 	current->in_eventfd = 1;
--	if (ULLONG_MAX - ctx->count < n)
--		n = ULLONG_MAX - ctx->count;
--	ctx->count += n;
-+	if (ctx->count < ULLONG_MAX)
-+		ctx->count++;
- 	if (waitqueue_active(&ctx->wqh))
- 		wake_up_locked_poll(&ctx->wqh, EPOLLIN | mask);
- 	current->in_eventfd = 0;
- 	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
--
--	return n == 1;
--}
--
--/**
-- * eventfd_signal - Adds @n to the eventfd counter.
-- * @ctx: [in] Pointer to the eventfd context.
-- *
-- * This function is supposed to be called by the kernel in paths that do not
-- * allow sleeping. In this function we allow the counter to reach the ULLONG_MAX
-- * value, and we signal this as overflow condition by returning a EPOLLERR
-- * to poll(2).
-- *
-- * Returns the amount by which the counter was incremented.
-- */
--__u64 eventfd_signal(struct eventfd_ctx *ctx)
--{
--	return eventfd_signal_mask(ctx, 0);
- }
--EXPORT_SYMBOL_GPL(eventfd_signal);
-+EXPORT_SYMBOL_GPL(eventfd_signal_mask);
- 
- static void eventfd_free_ctx(struct eventfd_ctx *ctx)
- {
-diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
-index 4f8aac7eb62a..fea7c4eb01d6 100644
---- a/include/linux/eventfd.h
-+++ b/include/linux/eventfd.h
-@@ -35,8 +35,7 @@ void eventfd_ctx_put(struct eventfd_ctx *ctx);
- struct file *eventfd_fget(int fd);
- struct eventfd_ctx *eventfd_ctx_fdget(int fd);
- struct eventfd_ctx *eventfd_ctx_fileget(struct file *file);
--__u64 eventfd_signal(struct eventfd_ctx *ctx);
--__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask);
-+void eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask);
- int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *wait,
- 				  __u64 *cnt);
- void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt);
-@@ -58,14 +57,8 @@ static inline struct eventfd_ctx *eventfd_ctx_fdget(int fd)
- 	return ERR_PTR(-ENOSYS);
- }
- 
--static inline int eventfd_signal(struct eventfd_ctx *ctx)
-+static inline void eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
- {
--	return -ENOSYS;
--}
--
--static inline int eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
--{
--	return -ENOSYS;
- }
- 
- static inline void eventfd_ctx_put(struct eventfd_ctx *ctx)
-@@ -91,5 +84,10 @@ static inline void eventfd_ctx_do_read(struct eventfd_ctx *ctx, __u64 *cnt)
- 
- #endif
- 
-+static inline void eventfd_signal(struct eventfd_ctx *ctx)
-+{
-+	eventfd_signal_mask(ctx, 0);
-+}
-+
- #endif /* _LINUX_EVENTFD_H */
- 
-
--- 
-2.42.0
-
+Thanks and best regards,
+Javier Carrasco
