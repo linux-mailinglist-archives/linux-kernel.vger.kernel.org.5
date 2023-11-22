@@ -2,55 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD6E7F497E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5766C7F4980
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344255AbjKVO4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:56:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
+        id S1343880AbjKVO4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbjKVO4O (ORCPT
+        with ESMTP id S234611AbjKVO4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:56:14 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0DB1A8;
-        Wed, 22 Nov 2023 06:56:11 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ED22229A;
-        Wed, 22 Nov 2023 15:55:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700664938;
-        bh=AQD+AKtGlu5tb4VGoUq86TgL623DydxCYLmlNgoA7c4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lzPk2RTolTmQljSyoiQ+sfpc6Pyg/8tXEJs3yMlo9BGljwJLnNAwonjJiomJXb5lo
-         HSU807deQV2E+RgEs8lcoJSVasn35heION686EHylY6++bKv/LWGX7rIgYUeUPE5/G
-         f7B2+xSxvjba7q15LmmnCQIEEj/zW+y6KBfecC4M=
-Date:   Wed, 22 Nov 2023 16:56:15 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] media: imx-mipi-csis: Fix clock handling in remove()
-Message-ID: <20231122145615.GE8627@pendragon.ideasonboard.com>
-References: <20231122-imx-csis-v1-0-0617368eb996@ideasonboard.com>
- <20231122-imx-csis-v1-1-0617368eb996@ideasonboard.com>
+        Wed, 22 Nov 2023 09:56:45 -0500
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9955992
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:56:41 -0800 (PST)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5cb8440a23cso21851397b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:56:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700665000; x=1701269800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DlRpn0YExbwmZYTM470D32GCVHZUUU3U4GDP0MEdp30=;
+        b=R1gSCxG635L3tmxoUHRdp5rXmgsQ/CbMt8l9I2pK/qrWMssJ1GqLiByJW4+GmSdPZU
+         1xBfEfPr+dOX2dLJyJIh8GaDea7MvKJirgsAyuGPokRgcnEGdqZfr5ngvnCnS2q9qp/R
+         XRGsQkehfDjXLEUxaNwmlAbcGfr3WRhMdYDrv4dATMXlwN2P7DRALUtIdCZNgwDEhJkf
+         IwkcHxyGyFPV92Jm9MUzt9Wi7HU0AWeg7ZYpQMFYXS5E9ujrXkU7a6twQyAv8ec+aXQs
+         RIJ27P1/u+9F1KcWawzX9CpxZbyH91UbsEc96vfrayk4Prdevwl1UHaJCnJ2tF2uUOHZ
+         xIpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700665000; x=1701269800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DlRpn0YExbwmZYTM470D32GCVHZUUU3U4GDP0MEdp30=;
+        b=uMW+ee+nEdVXZQ3slFCCg2echCTJRfFahrv/RsubHcMBkJpsAIInlQU3WRLGiKYhrk
+         AGOOxXdElJbATEaWoomskEZj1br7eCEvBcf551AXsN8hvov7ZB8LXr/LOVBrCv4Ve948
+         Xs3etVAJrRU77JvFUWlsvLXnTbysirtTtbQqWv0HLOoXbgiaRRStegM5x6DY0edmxVNW
+         KlRi471XAIfQpsBdfA56FD7jCAxnDOuo2N9Omxd+xvhCFmkk2xeSyli8IcUciuejM0ye
+         CkAWl28izqoodGMIw3YltDUxgcSxvOtHPatyxVu/Vi6EeyInFQUT71SDEsZW+x/JX29+
+         OEkg==
+X-Gm-Message-State: AOJu0YyuKjGsCxkaLR+dxOxgdQ9QbucaqhjGn2cthDxyyyy1EG0kUzdm
+        bH8wEPTmUuCPweMHz6doGc1CCZGUbObzgLePUuNx9A==
+X-Google-Smtp-Source: AGHT+IETkyDkyc+qmERQdITDeir1SD3U7sHru8ZIboVSSWeeQw5dcf2O6tuEhcqqPh/BIaHsLICfH+aUOCCIoZE93wc=
+X-Received: by 2002:a0d:d692:0:b0:5c9:e98c:a6ae with SMTP id
+ y140-20020a0dd692000000b005c9e98ca6aemr2364566ywd.4.1700665000626; Wed, 22
+ Nov 2023 06:56:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231122-imx-csis-v1-1-0617368eb996@ideasonboard.com>
+References: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
+In-Reply-To: <170060515641.2447486.11798332619205301829.stgit@djiang5-mobl3>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 22 Nov 2023 15:56:28 +0100
+Message-ID: <CACRpkda-YFDH6JB=V5n4QXMAHyHc22pfhUfW97hj7WaHX7-mpg@mail.gmail.com>
+Subject: Re: [PATCH v2] acpi: Fix ARM32 platforms compile issue introduced by
+ fw_table changes
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     rafael@kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, lenb@kernel.org,
+        robert.moore@intel.com, Jonathan.Cameron@huawei.com,
+        dan.j.williams@intel.com, guohanjun@huawei.com, arnd@arndb.de,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        cfsworks@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,47 +75,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+On Tue, Nov 21, 2023 at 11:19=E2=80=AFPM Dave Jiang <dave.jiang@intel.com> =
+wrote:
 
-Thank you for the patch.
+> Linus reported that:
+> After commit a103f46633fd the kernel stopped compiling for
+> several ARM32 platforms that I am building with a bare metal
+> compiler. Bare metal compilers (arm-none-eabi-) don't
+> define __linux__.
+>
+> This is because the header <acpi/platform/acenv.h> is now
+> in the include path for <linux/irq.h>:
+>
+>   CC      arch/arm/kernel/irq.o
+>   CC      kernel/sysctl.o
+>   CC      crypto/api.o
+> In file included from ../include/acpi/acpi.h:22,
+>                  from ../include/linux/fw_table.h:29,
+>                  from ../include/linux/acpi.h:18,
+>                  from ../include/linux/irqchip.h:14,
+>                  from ../arch/arm/kernel/irq.c:25:
+> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target envi=
+ronment
+>   218 | #error Unknown target environment
+>       |  ^~~~~
+>
+> The issue is caused by the introducing of splitting out the ACPI code to
+> support the new generic fw_table code.
+>
+> Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to bel=
+ow
+> the linux/mutex.h. Remove the two includes in fw_table.h. Add include of
+> linux/acpi.h in fw_table.c before the fw_table.h include.
+>
+> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=3Dzk=
+EdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
+> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common=
+ lib")
+> Reported-by: Linus Walleij <linus.walleij@linaro.org>
+> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
 
-On Wed, Nov 22, 2023 at 03:13:48PM +0200, Tomi Valkeinen wrote:
-> The driver always calls mipi_csis_runtime_suspend() and
-> mipi_csis_clk_disable() in remove(). This causes multiple WARNs from the
-> kernel, as the clocks get disabled too many times.
+This works fine on my end.
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
 
-Did you try to unload the driver ? What a weird idea :-)
-
-> Fix the remove() to call mipi_csis_runtime_suspend() and
-> mipi_csis_clk_disable() in a way that reverses what is done in probe().
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/platform/nxp/imx-mipi-csis.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
-> index 6cb20b45e0a1..b39d7aeba750 100644
-> --- a/drivers/media/platform/nxp/imx-mipi-csis.c
-> +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
-> @@ -1502,8 +1502,10 @@ static void mipi_csis_remove(struct platform_device *pdev)
->  	v4l2_async_nf_cleanup(&csis->notifier);
->  	v4l2_async_unregister_subdev(&csis->sd);
->  
-> +	if (!pm_runtime_enabled(&pdev->dev))
-> +		mipi_csis_runtime_suspend(&pdev->dev);
-> +
->  	pm_runtime_disable(&pdev->dev);
-> -	mipi_csis_runtime_suspend(&pdev->dev);
->  	mipi_csis_clk_disable(csis);
->  	v4l2_subdev_cleanup(&csis->sd);
->  	media_entity_cleanup(&csis->sd.entity);
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+Yours,
+Linus Walleij
