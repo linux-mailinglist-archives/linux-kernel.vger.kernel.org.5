@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 100C87F4E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED577F4E83
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjKVRhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S231892AbjKVRhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjKVRho (ORCPT
+        with ESMTP id S230398AbjKVRhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:37:44 -0500
+        Wed, 22 Nov 2023 12:37:45 -0500
 Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45EE19D
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:37:39 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cf669b711fso23381135ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:37:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CF983
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:37:41 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ce5e76912aso46570305ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 09:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700674659; x=1701279459; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T3wo0WtVvuibJG615xhjFRqzcICg2zwMa6Rl+5kbgno=;
-        b=sqNuq6nME7XivzvBD4CVDKaY1NlDuctRKM3iafVpMNPEu8RYoc8wJyDf66gOTCUQli
-         2OzFPgeJeLBhCP4lZR6JWsWqgQ+dS4WkY2lA4PFdq6GKh3My0sZBNvCaF2lESdnA4vct
-         QiLFVnBtPr0EBDuNyO15kTNollwRSO2qQDdDkZNq7HHmWGKPW7eIP/rRJijfvHyPeI/O
-         2Zbda+SJB5ToXYsd/KthMjX0GbHCbwp+fGX/2OsH0Sl1kE3fYSVACkSOys/UyzzfiEye
-         5X9s/zhQ3jekz1w7Opq7NHivaeFKuQkSrzaAbD9+C8eyMpupKajR2ot5uhS4VOWRpI/d
-         s/EA==
+        d=sifive.com; s=google; t=1700674661; x=1701279461; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YB+axD1Vcc97GiHQ3MbqEUMAVWCgEbLU/Yl6K+bGqgI=;
+        b=AJ5CJHSD40bQf0osWlhqm5fgwJfC41Rii+W6khK47Sa4yANV9Zc2Rko5iOy5ZYsbvS
+         DpgjjSqObdeErInOP57p3EEwrWL/Rq2uN1r2P89TJ44ththbu+fUbHpMlA57qrerQLVs
+         Uz5VqXmA3urKZryUyKLiTjvM8bV3nlPJw9nGufOkpiHkvBMjVVmSNFEilBsjmYedx9Yu
+         NCaZOPeNZ/pHq26gxK7gPG4uzWXMOtJ+t5Iih7nt2z48wwOQstgS5FPN3zwPRmgqtZFN
+         +smpG/KVv4ZV1u9qDoO+WQYQunx8eVBdZ95u69WA2Pg5gMwTClHNNRpXtyWFpTwCixLM
+         mZWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700674659; x=1701279459;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T3wo0WtVvuibJG615xhjFRqzcICg2zwMa6Rl+5kbgno=;
-        b=iPoAzu7guJGldEkZwGqSQLdMgFAMs8MVlC1DVDiw5GuGjBjVx2RYnIDUz5KVogcRJA
-         PGtkW1irXZAolAD/t9oOLCY4HT33sOcMvJ4uT6chtqRggrXBbq6SdtWS0K2KUPEQgWm+
-         +Cj5eF1w1jCVob/YtwZnk680IB9UjvlBlf2GyndXI9lVTWdaNvtDXNXNC1ztNjhRcTJZ
-         W+rVi5nkxXN/yVLPQDn4e70xW7MIkWAtmb5KBr0iQVsGKQHeS6jxdfRajEr3hikAdcna
-         lkXIQG0myGCrZvFq0aqsuaACengUQPwX5yziwWFkXX4u58jOeT7o9f3DJvwIm+Z48QM9
-         pTiQ==
-X-Gm-Message-State: AOJu0Yzy5Rp1CWaalF9ueBx7TWwUuKi5ug2kJ0hEQOtOs2cGpCZuRSIC
-        8lkZFA6NC8Nsq27jgJYdzUXn0vf3NrrW/lQTGUtMsw==
-X-Google-Smtp-Source: AGHT+IE13bq+QqMHFadrkXA+oAPu/cmfkR5+fYRH3H43c5t8E09ECy48d2Qio24OEVsuE+BOZIOouRHhW/ZsHiott7s=
-X-Received: by 2002:a17:90b:4a49:b0:27d:3a3e:3a45 with SMTP id
- lb9-20020a17090b4a4900b0027d3a3e3a45mr3351362pjb.44.1700674659171; Wed, 22
- Nov 2023 09:37:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20231122140119.472110-1-vincent.guittot@linaro.org>
- <0bc60a26-af18-4108-8b8d-238a1df1775b@arm.com> <CAKfTPtAosL8f0M1nL2U78iuwm9ZFGuQS5jX4soex8nsGjMX_RQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtAosL8f0M1nL2U78iuwm9ZFGuQS5jX4soex8nsGjMX_RQ@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 22 Nov 2023 18:37:27 +0100
-Message-ID: <CAKfTPtCnj9Gnczt7aJOELRW+_Rgs3Qp9KFM9Kn17YQ3nFbNdhQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/pelt: avoid underestimate of task utilization
-To:     Hongyan Xia <hongyan.xia2@arm.com>
-Cc:     lukasz.luba@arm.com, juri.lelli@redhat.com, mingo@redhat.com,
-        dietmar.eggemann@arm.com, peterz@infradead.org, bsegall@google.com,
-        rostedt@goodmis.org, bristot@redhat.com, mgorman@suse.de,
-        vschneid@redhat.com, rafael@kernel.org, qyousef@layalina.io,
-        viresh.kumar@linaro.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1700674661; x=1701279461;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YB+axD1Vcc97GiHQ3MbqEUMAVWCgEbLU/Yl6K+bGqgI=;
+        b=Te/Y0Ypmfq93YgJ9ZzHhtIBDGiCBY8yBeyUzm0m+37Mjy6dWqIr57Pqpis+7P0CdXE
+         NHTADris5WqpSflO3xwww03Vrv0R7sJuhF5Ny0bSs4CIpB7oYWPw/PtAa44aLW3gn9WK
+         7YP7rnL6UWGDjspK8PyUuS3MmhAAHF5FMM87qajsZVpNO/TEqtXaECxfnUbiKc5t1ZsU
+         Clp+SSepLcn83FVLlPAFdSlXalUpKRHU6bc11voC94fTsk3wYczJunNGYH1m2nhwxNmj
+         OabLvFUBMl7xXwB4F9x8/KIdz9WSinVI8pnMc4e9GjFxfIRlrr/TGxQ7WXQENWlebtHx
+         2GfA==
+X-Gm-Message-State: AOJu0Yx2hBxGSXaLQm/USorywS6rDEHFE47pKJvaJtivuxev2OfeFecl
+        lwFAuR03E14xUGxGVrtRaFJ/sA==
+X-Google-Smtp-Source: AGHT+IF46NJ+qL5ZN5PT+NT5x4N0gK+lFvsXp00qpP0ZTSDTMzWCcTLDobwk4fc21ZcVVM0Kfc+aRw==
+X-Received: by 2002:a17:902:bd06:b0:1cc:3544:ea41 with SMTP id p6-20020a170902bd0600b001cc3544ea41mr2553752pls.46.1700674661156;
+        Wed, 22 Nov 2023 09:37:41 -0800 (PST)
+Received: from ?IPv6:2402:7500:4ce:5a5b:a845:b3e1:8307:922c? ([2402:7500:4ce:5a5b:a845:b3e1:8307:922c])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001bc6e6069a6sm8165114pli.122.2023.11.22.09.37.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 Nov 2023 09:37:40 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH 12/12] RISC-V: crypto: add Zvkb accelerated ChaCha20
+ implementation
+From:   Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231121-knelt-resource-5d71c9246015@wendy>
+Date:   Thu, 23 Nov 2023 01:37:33 +0800
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
+        guoren@kernel.org, bjorn@rivosinc.com, heiko@sntech.de,
+        ardb@kernel.org, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3BDE7B86-0078-4C77-A383-1C83C88E44DA@sifive.com>
+References: <20231025183644.8735-1-jerry.shih@sifive.com>
+ <20231025183644.8735-13-jerry.shih@sifive.com>
+ <20231102054327.GH1498@sol.localdomain>
+ <90E2B1B4-ACC1-4316-81CD-E919D3BD03BA@sifive.com>
+ <20231120191856.GA964@sol.localdomain>
+ <9724E3A5-F43C-4239-9031-2B33B72C4EF4@sifive.com>
+ <20231121-knelt-resource-5d71c9246015@wendy>
+To:     Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: Apple Mail (2.3445.9.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,68 +87,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same but with plain text instead of html ...
+On Nov 21, 2023, at 21:14, Conor Dooley <conor.dooley@microchip.com> =
+wrote:
+> On Tue, Nov 21, 2023 at 06:55:07PM +0800, Jerry Shih wrote:
+>> Sorry, I just use my `internal` qemu with vector-crypto and rva22 =
+patches.
+>>=20
+>> The public qemu haven't supported rva22 profiles. Here is the qemu =
+patch[1] for
+>> that. But here is the discussion why the qemu doesn't export these
+>> `named extensions`(e.g. Zicclsm).
+>> I try to add Zicclsm in DT in the v2 patch set. Maybe we will have =
+more discussion
+>> about the rva22 profiles in kernel DT.
+>=20
+> Please do, that'll be fun! Please take some time to read what the
+> profiles spec actually defines Zicclsm fore before you send those =
+patches
+> though. I think you might come to find you have misunderstood what it
+> means - certainly I did the first time I saw it!
 
- On Wed, 22 Nov 2023 at 17:40, Hongyan Xia <hongyan.xia2@arm.com> wrote:
->
-> Hi Vincent,
->
-> On 22/11/2023 14:01, Vincent Guittot wrote:
-> > It has been reported that thread's util_est can significantly decrease as
-> > a result of sharing the CPU with other threads. The use case can be easily
-> > reproduced with a periodic task TA that runs 1ms and sleeps 100us.
-> > When the task is alone on the CPU, its max utilization and its util_est is
-> > around 888. If another similar task starts to run on the same CPU, TA will
-> > have to share the CPU runtime and its maximum utilization will decrease
-> > around half the CPU capacity (512) then TA's util_est will follow this new
-> > maximum trend which is only the result of sharing the CPU with others
-> > tasks. Such situation can be detected with runnable_avg wich is close or
-> > equal to util_avg when TA is alone but increases above util_avg when TA
-> > shares the CPU with other threads and wait on the runqueue.
->
-> Thanks for bringing this case up. I'm a bit nervous skipping util_est
-> updates this way. While it is true that this avoids dropping util_est
-> when the task is still busy doing stuff, it also avoids dropping
-> util_est when the task really is becoming less busy. If a task has a
-> legitimate reason to drop its utilization, it looks weird to me that its
-> util_est dropping can be stopped by a new task joining this rq which
-> pushes up runnable_avg.
+=46rom the rva22 profile:
+  This requires misaligned support for all regular load and store =
+instructions (including
+  scalar and ``vector``)
 
- We prefer an util_est that overestimate rather than under estimate
-because in 1st case you will not provide enough performance to the
-task which will remain under provisioned whereas in the other case you
-will create some idle time which will enable to reduce contention and
-as a result reduce the util_est so the overestimate will be transient
-whereas the underestimate will be remain
+The spec includes the explicit `vector` keyword.
+So, I still think we could use Zicclsm checking for these vector-crypto =
+implementations.
 
-> Also, something about rt-app. Is there an easy way to ask an rt-app
-> thread to achieve a certain amount of throughput (like loops per
-> second)? I think 'runs 1ms and sleeps 100us' may not entirely simulate a
-> task that really wants to preserve a util_est of 888. If its utilization
+My proposed patch is just a simple patch which only update the DT =
+document and
+update the isa string parser for Zicclsm. If it's still not recommend to =
+use Zicclsm
+checking, I will turn to use `RISCV_HWPROBE_MISALIGNED_*` instead.
+
+>> [1]
+>> LINK: =
+https://lore.kernel.org/all/d1d6f2dc-55b2-4dce-a48a-4afbbf6df526@ventanami=
+cro.com/#t
+>>=20
+>> I don't know whether it's a good practice to check unaligned access =
+using
+>> `Zicclsm`.=20
+>>=20
+>> Here is another related cpu feature for unaligned access:
+>> RISCV_HWPROBE_MISALIGNED_*
+>> But it looks like it always be initialized with =
+`RISCV_HWPROBE_MISALIGNED_SLOW`[2].
+>> It implies that linux kernel always supports unaligned access. But we =
+have the
+>> actual HW which doesn't support unaligned access for vector unit.
+>=20
+> https://docs.kernel.org/arch/riscv/uabi.html#misaligned-accesses
+>=20
+> Misaligned accesses are part of the user ABI & the hwprobe stuff for
+> that allows userspace to figure out whether they're fast (likely
+> implemented in hardware), slow (likely emulated in firmware) or =
+emulated
+> in the kernel.
+
+The HWPROBE_MISALIGNED_* checking function is at:
+=
+https://github.com/torvalds/linux/blob/c2d5304e6c648ebcf653bace7e51e0e6742=
+e46c8/arch/riscv/kernel/cpufeature.c#L564-L647
+The tests are all scalar. No `vector` test inside. So, I'm not sure the
+HWPROBE_MISALIGNED_* is related to vector unit or not.
+
+The goal is to check whether `vector` support unaligned access or not
+in this crypto patch.
+
+I haven't seen the emulated path for unaligned-vector-access in OpenSBI
+and kernel. Is the unaligned-vector-access included in user ABI?
+
+Thanks,
+Jerry
 
 
- We can do this in rt-app with timer instead of sleep but in this case
-there is no sleep and as a result no update of util_est. In the case
-raised in [1] by lukasz and according to the shared charts, there are
-some sleep phases even when the task must share the cpu. This can
-typically happen when you have a pipe of threads:  A task prepares
-some data, wakes up next step and waits for the result. Then the 1st
-task is woken up when it's done and to prepare the next data and so on
-... In this case, the task will slow down because of time sharing and
-there is still sleep phase
 
->
->
-> really is that high, its sleep time will become less and less when
-> sharing the rq with another task, or even has no idle time and become
-> 1024 which will trigger overutilization and migration.
->
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >
-> > This patch implements what I mentioned in [1]. I have been able to
-> > reproduce such pattern with rt-app.
-> >
-> > [1] https://lore.kernel.org/lkml/CAKfTPtDd-HhF-YiNTtL9i5k0PfJbF819Yxu4YquzfXgwi7voyw@mail.gmail.com/#t
-> >
