@@ -2,134 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 604E67F3D50
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC7D7F3D52
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbjKVFbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        id S234613AbjKVFbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:31:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjKVFbD (ORCPT
+        with ESMTP id S234351AbjKVFbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:31:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7854185
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:30:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 664B6C433CD
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 05:30:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700631059;
-        bh=LxgqrVsExp18X41sj9jZd0qVqv8p2H0pjBZVzDy55KE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jxUkwYdg3kdZ5KXh4SvcysIoWYZYZJLWSjXFQj4xu5Kiu/SAIXuW5QvGasMaC3ME0
-         w1nefyg+krajFl9lPlTJCVjVSIxuIMGt4hIHEUeqhtFJyG61lvzBAEPwXg/ep5Uf1w
-         FVXJVrhUlyLRoTP9KoTiIUrnFO/F/pTkq/m1I5XplwuTwzQwWHe8XNgaEpJCqFyUnx
-         WSLJToOep18aMJi4WVDUVgIeHuWLwGA1wO96rrpgyeFmmSCcfnYS4Zk9UKXoFFZQ7e
-         e0nJrHa51p0go92sCMWIJG8YGfxvNiDzqSzaCdP2iA1AsdBu1EPnGYwQXgBcL8/Eu+
-         j2rdQAvpKZllw==
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1f937a7b8aaso1638455fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:30:59 -0800 (PST)
-X-Gm-Message-State: AOJu0Yyz31aoS8qJwneXX6joAdhSbAMGbG/mvhBC0bq5PrucHcjS15Hb
-        34ob0yFKmHUxHuyA/LZlSedTUSf46KEJTcer1nA=
-X-Google-Smtp-Source: AGHT+IHWrSTNFAHs6ffKq7KsequdWmSrsTRwhnDAtkAsnz08m90bcY6ZGzSd6zqLwWU4eDcbsP0u4twzBdviXy0n29Y=
-X-Received: by 2002:a05:6870:3d86:b0:1f9:5ef5:44df with SMTP id
- lm6-20020a0568703d8600b001f95ef544dfmr1889861oab.14.1700631058773; Tue, 21
- Nov 2023 21:30:58 -0800 (PST)
+        Wed, 22 Nov 2023 00:31:08 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2045.outbound.protection.outlook.com [40.107.100.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A08195;
+        Tue, 21 Nov 2023 21:31:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AgQ4wgucdU9lcF29Z5PLYcTrIkOj2snv+LzZsNtJprIvdKDP7NTOZiQXR2+43lsUXqSTCD22BIiYG7ahdX6JrIHdqU59lBKQseUdWTTykMn8PYVztqYoMue0gAcu+23iOrEa7ffwgXySjhqDHP6BA5Oa+3K/a7fWsaUqsd9ZbCpuPPKYqgxAXY1uwYeOkMDpC+OE6mGfgU/GOdmfTM+XS2MuY5HGLFw6AavCr9gMnF1kLhik5gUsiNlsdrXpL/eQC/IENzVDCwPh3jdkMm6mMng1adG3penc64fyjLDH86iGoSD7+ijEMYFaurHKn1ATXSJyvV0Ls+YKvp9ejN9Kqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QbPMeGxszExTFGX3wOXJekuTkAN28MGnaWFeO6lrGDo=;
+ b=CyimvQj5IjOFMdbh7LghfDgumUxkLbZjdsENkIoiv8db6VoqyNkbU8FVnkx8RqGsqLmt9NWNicoq7VcAWpgok15+goPY+E9UbReqA7lEegL89UQsWVEV1fOXZ+viK1FaRts1nK0QvBJanHNnwzqDvf/lmVqHEtpAswJVMwqoTprTpcBpAVw9LS2YvQQ3SuKrRM7o/RgZWG9Ax+8dX+6wLhtr/DHrEJ6kQ3tS7tqKlcONWanE5Slu/4sDKEksUBX2GySHWZfEHsbSuU1kWlTC0SAUkLcJGKiVKCpoPYhNh7D1wi4P1IUGowWFL+r789bfzsmRJLALhfL4zQfOHh/lsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QbPMeGxszExTFGX3wOXJekuTkAN28MGnaWFeO6lrGDo=;
+ b=zlfMrK+BnbFdggakS2V33hgHt/KyOb7DhPMEMQGYM0j8PgZ840IsHy5DU6jeXIjA0u10YEhrhokHP6ug6v/xYK3np06pWnj/PoxnBhEE4Qn6Ow4ko2JVr/gk7FM8U5Wmmh1yT29k4pkRWTRrS2fVYiVc4U8uBkVCLWQgExYlFTw=
+Received: from MN2PR05CA0040.namprd05.prod.outlook.com (2603:10b6:208:236::9)
+ by CY8PR12MB8068.namprd12.prod.outlook.com (2603:10b6:930:75::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Wed, 22 Nov
+ 2023 05:31:01 +0000
+Received: from BL6PEPF0001AB4B.namprd04.prod.outlook.com
+ (2603:10b6:208:236:cafe::72) by MN2PR05CA0040.outlook.office365.com
+ (2603:10b6:208:236::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.16 via Frontend
+ Transport; Wed, 22 Nov 2023 05:31:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB4B.mail.protection.outlook.com (10.167.242.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 05:31:01 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 21 Nov
+ 2023 23:31:00 -0600
+From:   Nava kishore Manne <nava.kishore.manne@amd.com>
+To:     <mdf@kernel.org>, <hao.wu@intel.com>, <yilun.xu@intel.com>,
+        <trix@redhat.com>, <sumit.semwal@linaro.org>,
+        <christian.koenig@amd.com>, <linux-fpga@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
+Subject: [RFC 0/2]fpga: Add fpga configuration support from a pre-allocated dma-able buffer
+Date:   Wed, 22 Nov 2023 11:00:33 +0530
+Message-ID: <20231122053035.3758124-1-nava.kishore.manne@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231119150229.634424-1-sjg@chromium.org> <20231119150229.634424-2-sjg@chromium.org>
-In-Reply-To: <20231119150229.634424-2-sjg@chromium.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 22 Nov 2023 14:30:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR-4LbTWQ+V4Kq1FOevxxw=wfJ1OxHpqLyc1d+e54qjMw@mail.gmail.com>
-Message-ID: <CAK7LNAR-4LbTWQ+V4Kq1FOevxxw=wfJ1OxHpqLyc1d+e54qjMw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] kbuild: arm64: Add BOOT_TARGETS variable
-To:     Simon Glass <sjg@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4B:EE_|CY8PR12MB8068:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3d9a0210-bada-4d6c-d55d-08dbeb1c36f4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3sb9HveYSaasxoYA0KV1YqVkMdh0JCvz3tus5IW0o7WgEqu8+40MM48PU/NGuKEe+8dQI0++g/CMieLIKlA/DTAVkcyoXV87XUy5DjHoWleSBVOQa8Ghg5MPwSNzOb84SipJFXyLQ8rKwmZlEKJg5Q+UpuYlovbaNW5KhbOeTRqOYnvBY64SuqBHl/kdJY5M68tSHnhm2dljWB7uMLk2tnNEhT4HLG3Yp1M8x9GWpxB7ADNmMJnWzTJ3jTQvdnFCn2m+LmmSCd3rEVGTLW3KdIzVw7sFYksY3bmWPYhwNAoja3D6cS1u9dApcHANcmygplg6gfAlUUs8b/g0hGB2redSGFp0XH+gm8jShikxPLwHtZfq5rw9fR9xYLzLtJayLHhZlfKbgGy4JOY5K+6upf1p1MJ+D4o8K9QPDTZCY2xALqfTYqjQXTo2Gm9ITsvpBvSzKiJOy5QfqQ5DtjgNhvEPGGeUIY0jRag0vc2hzWMgcR/ccUK8Tm9IJPnQjLt90Oe0FFBVPCJtKH0UfZ+bOIBmHEDSYqfFvBnSSNg2eBZBs9clZMjZhOYa7pShumfAWXRdGnLtDBZYDJ9g58I6Kfs7+Z9C9zgufENPMlLzZ/0DjpZVe+m4SXQ2EuysSogqMVVW0TJ2Tf1s0QcbvAE7Za3cOdhjBnZADvDVWXbk54l6FBqHKFVRudwCEtZHHWhB4XL7JGthHM6qdlRiQPYm7I2WYXrr1pIZqxsImSv1Wm3WJtAsf4oRJsIAVU8EPb2A1P2Pq9UkXdX2e3c5jZxrEFFStTfvf/kQYL/uXkTkOUI=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(186009)(1800799012)(82310400011)(451199024)(64100799003)(40470700004)(46966006)(36840700001)(16526019)(26005)(83380400001)(1076003)(478600001)(336012)(82740400003)(426003)(81166007)(356005)(6666004)(47076005)(70206006)(36860700001)(40480700001)(316002)(2616005)(70586007)(110136005)(8936002)(5660300002)(86362001)(2906002)(40460700003)(7416002)(8676002)(103116003)(41300700001)(921008)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 05:31:01.6215
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3d9a0210-bada-4d6c-d55d-08dbeb1c36f4
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4B.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8068
+X-Spam-Status: No, score=1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 12:02=E2=80=AFAM Simon Glass <sjg@chromium.org> wro=
-te:
->
-> Add a new variable containing a list of possible targets. Mark them as
-> phony. This matches the approach taken for arch/arm
->
-> Signed-off-by: Simon Glass <sjg@chromium.org>
+Lots of embedded systems have memory constraints but they need to load
+very large configuration files.The FPGA subsystem allows drivers to
+request this configuration image be loaded from the filesystem,but this
+requires that the entire configuration data be loaded into kernel memory
+first before it's provided to the driver.This can lead to a situation where
+we map the configuration data twice, once to load the configuration data
+into kernel memory and once to copy the configuration data into the final
+resting place which is nothing but a dma-able continuous buffer.
 
+This creates needless memory pressure and delays due to multiple copies.
+Let's add a dmabuf handling support to the fpga manager framework that
+allows drivers to load the Configuration data directly from a pre-allocated
+buffer. This skips the intermediate step of allocating a buffer in kernel
+memory to hold the Configuration data.
 
+This implementation allows the lower-level drivers to request the FPGA
+Configuration image be loaded from pre-allocated dma-able continuous
+buffer and also it avoid needless memory pressure and delays due to
+multiple copies.
 
-I encounter difficulty in understanding your subject prefix policy.
+Please take a look at the changes and let us know if any improvements
+are required.
 
+Nava kishore Manne (2):
+  fpga: support loading from a pre-allocated buffer
+  fpga: versal: Use the scatterlist interface
 
-You used the "arm:" prefix for a patch irrelevant to arm:
-https://lore.kernel.org/linux-kbuild/CAK7LNAQN_qGYztWGDmQyfg+eZ5P7RkM47mpgp=
-0dQn_iuhvTSWg@mail.gmail.com/
+ drivers/fpga/fpga-mgr.c       | 113 ++++++++++++++++++++++++++++++++++
+ drivers/fpga/versal-fpga.c    |  13 ++++
+ include/linux/fpga/fpga-mgr.h |  10 +++
+ 3 files changed, 136 insertions(+)
 
+-- 
+2.25.1
 
-
-
-And, the one for this patch.
-
-"kbuild: arm64: Add BOOT_TARGETS variable"
-
-Please do not add "kbuild:" for a patch
-that modifies arch/arm64, and that was not even
-submitted to kbuild ML.
-
-
-
-
-> ---
->
-> Changes in v6:
-> - Drop the unwanted .gz suffix
->
->  arch/arm64/Makefile | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 4bd85cc0d32b..ae0c5ee8c78b 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -150,6 +150,10 @@ libs-$(CONFIG_EFI_STUB) +=3D $(objtree)/drivers/firm=
-ware/efi/libstub/lib.a
->  # Default target when executing plain make
->  boot           :=3D arch/arm64/boot
->
-> +BOOT_TARGETS   :=3D Image vmlinuz.efi
-> +
-> +PHONY +=3D $(BOOT_TARGETS)
-> +
->  ifeq ($(CONFIG_EFI_ZBOOT),)
->  KBUILD_IMAGE   :=3D $(boot)/Image.gz
->  else
-> @@ -159,7 +163,7 @@ endif
->  all:   $(notdir $(KBUILD_IMAGE))
->
->
-> -Image vmlinuz.efi: vmlinux
-> +$(BOOT_TARGETS): vmlinux
->         $(Q)$(MAKE) $(build)=3D$(boot) $(boot)/$@
->
->  Image.%: Image
-> --
-> 2.43.0.rc0.421.g78406f8d94-goog
->
-
-
---
-Best Regards
-Masahiro Yamada
