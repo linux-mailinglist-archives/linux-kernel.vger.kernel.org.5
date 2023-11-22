@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1B57F5512
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E88E7F5519
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Nov 2023 00:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344377AbjKVXzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 18:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S1344496AbjKVX5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 18:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbjKVXzk (ORCPT
+        with ESMTP id S1344489AbjKVX5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 18:55:40 -0500
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5128C110
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 15:55:36 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700697334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=APd5R7wj7h+UmDndBcpcrIZgyAl8kblJEa7hsW1VzXE=;
-        b=Fr7LKUrQ1+DPyV59aRzL3jODD/CLS6w6QtYL7iNfwY43PhntlV2CnZKhxbzNFOmlLBi4SO
-        q/aFPu3vTEVHuChpUq6NShLz2quOOZh/wFX/lb+bTnnZ+Dw4sLO0OWd2YBvoSKoAlmsb8F
-        Hv3l1Yk8Wxh1XvSZjFlhrcEx5+wnTsc=
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH] kbuild: Allow gcov to be enabled on the command line
-Date:   Wed, 22 Nov 2023 18:55:27 -0500
-Message-ID: <20231122235527.180507-1-kent.overstreet@linux.dev>
+        Wed, 22 Nov 2023 18:57:41 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097CBD40;
+        Wed, 22 Nov 2023 15:57:37 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6be1bc5aa1cso363064b3a.3;
+        Wed, 22 Nov 2023 15:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700697456; x=1701302256; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x+jlG3ds7B/4ooT5+OaZJfN0QhswGFhGAyZ2Rsu9K2s=;
+        b=YQVY5WeW3H/IfC1vurc4tnaS41vh3bnMMb51mwHb8+xcM5aWYXLnxnu3d7GW7WmEt2
+         LBnRQ5x9w4woA71+gajj28RsofI4xfhhMS3dmXxwWAJbZo+2c2m+UjIUzNiJ5lefwebB
+         KfwbbCzur//k2GG7jaZySMIwTfwTc2VdJFr/dGAPjcd7tmCpFfI3QG5Txno8664JM2UL
+         C7dywLhkRFJbTamrhqvp/d6OhqvAT8KGdFcQJ0+Mpr13CXzedIT7ZEroEACarFGxLzKB
+         w/lINhZGMnrX+Rv1KlKhuAyfSCg9nxGWhg7FPIBuZZnWA2YjJUzhQGTUmFJHNuNibil9
+         EMaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700697456; x=1701302256;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x+jlG3ds7B/4ooT5+OaZJfN0QhswGFhGAyZ2Rsu9K2s=;
+        b=R0T7Hg7mWFoKwgNQa9VA/vgXpL14YZLPG70kPyh0T/30w+DGLyYiZq34bZD0+379D0
+         RA2D237yEzpbyjp4k+w+AvAaGjq9HB829QXsI2nnUj0EB9kwmoBoe3VGr6jIEdCrtEr4
+         8uXlM/p0+7L5Yqy1ONps062jOqTetE8Wdx3ODe8h++wfWLkHI4TcnPoJ1jaPT6cn770X
+         uJOr4ELAbo17nedQ142ZsfqjDp5Q7lVOTO0PSfU1z/Jjz1WnBAS/oVdOEUJGlZXL71pG
+         MJqVEydEkjMLGLyj38LENDMh4Ps/EmVGWkRhv6+7jYtyIVOsG04v4PR/Vwo0A6/ANNkY
+         NAOg==
+X-Gm-Message-State: AOJu0Yy+1K4FT+MVJBtyAnPxYotSk+lGOkg5vg1s2j7FVRQJhfJDOFDB
+        FzoOV8N8h0irmnGQOW9JXv/8Zokzgw4pdY5W7qU=
+X-Google-Smtp-Source: AGHT+IEcrkxFaV05/k48bltiBzPDjaB9G3mYL0yAe+z18ZeBjySI66lMRSulhdaPgjn2fkQqxdAiCin42kBA/Qk4OVs=
+X-Received: by 2002:a05:6a00:1302:b0:6c2:cb4a:73c3 with SMTP id
+ j2-20020a056a00130200b006c2cb4a73c3mr4379466pfu.11.1700697456419; Wed, 22 Nov
+ 2023 15:57:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <ZV5zGROLefrsEcHJ@r13-u19.micron.com> <20231122133944.297ce0001fb51214096dfb6c@linux-foundation.org>
+In-Reply-To: <20231122133944.297ce0001fb51214096dfb6c@linux-foundation.org>
+From:   Vinicius Petrucci <vpetrucci@gmail.com>
+Date:   Wed, 22 Nov 2023 17:57:00 -0600
+Message-ID: <CAEZ6=UPDPyJ=gq7U50scPM7CUSc8mutJoTodeN6fPdd1YzzxVA@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm/mbind: Introduce process_mbind() syscall for
+ external memory binding
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, minchan@kernel.org,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        Jonathan.Cameron@huawei.com, aneesh.kumar@linux.ibm.com,
+        ying.huang@intel.com, dan.j.williams@intel.com,
+        hezhongkun.hzk@bytedance.com, fvdl@google.com, surenb@google.com,
+        rientjes@google.com, hannes@cmpxchg.org, mhocko@suse.com,
+        Hasan.Maruf@amd.com, jgroves@micron.com, ravis.opensrc@micron.com,
+        sthanneeru@micron.com, emirakhur@micron.com,
+        vtavarespetr@micron.com, Gregory Price <gregory.price@memverge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows gcov to be enabled for a particular kernel source
-subdirectory on the command line, without editing makefiles, like so:
+On Wed, Nov 22, 2023 at 3:39=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+> I'm having deja vu.  Not 10 minutes ago, Gregory sent out a patchset
+> which does the same thing.
+>
+> https://lkml.kernel.org/r/20231122211200.31620-1-gregory.price@memverge.c=
+om
+>
 
-  make GCOV_PROFILE_fs_bcachefs=y
+Certainly, it appears that we were addressing the same matter but
+approaching it from different perspectives or discussions.
+And we hastened to submit our RFCs before the Thanksgiving break. :-)
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- scripts/Kbuild.include | 10 ++++++++++
- scripts/Makefile.lib   |  2 +-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+The patch I sent originated from the thread, and the subsequent
+discussion commenced with the 'pidfd_set_mempolicy' RFC, possibly
+influenced by the 'process_madvise.'
+Specifically, the concept of a 'process_mbind()' syscall was suggested
+by Frank van der Linden (Google):
+https://lkml.kernel.org/linux-mm/Y0WEbCqJHjnqsg8n@dhcp22.suse.cz/T/#m950f26=
+bdd6ce494b20ba170cc1f6db85e1924e8e
 
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 7778cc97a4e0..5341736f2e30 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -277,3 +277,13 @@ ifneq ($(and $(filter notintermediate, $(.FEATURES)),$(filter-out 4.4,$(MAKE_VER
- else
- .SECONDARY:
- endif
-+
-+ # expand_parents(a/b/c) = a/b/c a/b a
-+expand_parents2 = $(if $(subst .,,$(1)),$(call expand_parents,$(1)),)
-+expand_parents  = $(1) $(call expand_parents2,$(patsubst %/,%,$(dir $(1))))
-+
-+# flatten_dirs(a/b/c) = a_b_c a_b a
-+flatten_dirs = $(subst /,_,$(call expand_parents,$(1)))
-+
-+# eval_vars(X_,a/b/c) = $(X_a_b_c) $(X_a_b) $(X_a)
-+eval_vars = $(foreach var,$(call flatten_dirs,$(2)),$($(1)$(var)))
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 1a965fe68e01..0b4581a8bc33 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -148,7 +148,7 @@ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(target-stem).lds)
- #
- ifeq ($(CONFIG_GCOV_KERNEL),y)
- _c_flags += $(if $(patsubst n%,, \
--		$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
-+		$(GCOV_PROFILE_$(basetarget).o)$(call eval_vars,GCOV_PROFILE_,$(src))$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
- 		$(CFLAGS_GCOV))
- endif
- 
--- 
-2.42.0
+I would appreciate it if others could kindly evaluate what appears to
+be the suitable course of action moving forward.
 
+Thank you!
