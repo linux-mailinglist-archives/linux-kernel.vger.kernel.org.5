@@ -2,117 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C0B7F5324
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4047F5328
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbjKVWPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:15:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
+        id S1344284AbjKVWRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:17:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbjKVWPf (ORCPT
+        with ESMTP id S233574AbjKVWRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:15:35 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCE9B9
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:15:31 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da033914f7cso323441276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:15:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700691331; x=1701296131; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rHQ5lVYi4/2MX2skoChLDy6Ocqhy29V3zUGeEPzVvPk=;
-        b=4nje9Ql02zOsTvSoAPAvpOBNu7wg0GEhOvHpvYlYXOFidCjelO2vDEHo7qUJZ9VTU4
-         xgnyqJZhshN0b1WfZk+ZvPvShKSbvthyw0HEKtWDGAGg6nfn9KXeCHkg4u9WSbMYyUvr
-         y0Fb+1bawhV8YtiH+tJ2MbrucEmYDruXoV0kME455LZd5F91cm+YJ9Nlclhs4d+PjCNs
-         9aa68yQMTXmq692YlD7PnPpZNjrWx5sgRnQB6urz2vIlE2+KzrxnueHo96POFFCrLxIP
-         M5YQNxbP9XALPBXEYqzk8BuYqtAAUjfHcv6evKKrg5f7uLqj+05o/Ui+AvSaJFtG246X
-         6vLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691331; x=1701296131;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rHQ5lVYi4/2MX2skoChLDy6Ocqhy29V3zUGeEPzVvPk=;
-        b=qifJxJgLY1neM1IOcbbXbxK0XLmV0wHpJLfOoPurnTaBKjELhTrcy1B40fa4K+KT62
-         wmVuKoCHnoV+2QdE0pMBWM6NHn9FnMI7P5AaEwYu0LpDdNiEzHu1fFSoMDESOKclmlFk
-         1u3vjm0d91vSO/aGDJfM3b+YPqZIFnlY2aB/m9sMBdqJ3gjem/xrFdC6mZycxbMr6obs
-         0ob4mbUISH3hMCo8NQrOe3SQeOINQguBjbepIKP3FEWZ18V1CMiCE5cKNefpljoAh1oL
-         r3+mF1JlRbdAZMKBIQFobg1YNI72PSlCBtGro1NSRp6/KREz3cdoOhyCDmjVbeGJ5gHa
-         YjIQ==
-X-Gm-Message-State: AOJu0YxYYR5cbICpbh7dLG2bIoXLwxfncbzJiGd6Eva4AnKppI6Qk4HQ
-        PNfHViYPBLDV7lQHrGmLcSaLWQXuWTcP
-X-Google-Smtp-Source: AGHT+IEKPFb2EHSzpX16MEr8UpukYHRCQvq4K7GrE1lzHEciYPJMeZQvd7fCFY+au119NI7M63atWhaudwtg
-X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:20a1])
- (user=rananta job=sendgmr) by 2002:a25:ce4e:0:b0:da0:c6d7:8231 with SMTP id
- x75-20020a25ce4e000000b00da0c6d78231mr109435ybe.0.1700691330951; Wed, 22 Nov
- 2023 14:15:30 -0800 (PST)
-Date:   Wed, 22 Nov 2023 22:15:26 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231122221526.2750966-1-rananta@google.com>
-Subject: [PATCH] KVM: selftests: aarch64: Remove unused functions from vpmu test
-From:   Raghavendra Rao Ananta <rananta@google.com>
-To:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Wed, 22 Nov 2023 17:17:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CF2AD;
+        Wed, 22 Nov 2023 14:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700691438; x=1732227438;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yeWZ3BdyhhUuU0VGr46b+afl1WUFwAC0SYpHXwdB+Hk=;
+  b=TytTOb0Hvr0RYxSd5pH2lysLrVqd5uo8v66ICqCi48x3GtIV5NFlhx7B
+   Ucq8MsPCTD/JNfk35ybIBxw8vxYtGnDvYkqdksOlZQpy897d5MqfuHncG
+   KjE7ngxMnhPrGFhG8NtKdF0gyC5JXRf2wSyVbLJyy6+Qjwl9f2lwUw72N
+   dwxL/VKf3BitDRUocQUlo+4Wj/6r9nOk5prorxq7y8IoC6+aFUqZyEMn2
+   pjoAUMvx+huD3kNCJrqR+Np2CkOWxEFdhGKBu16+74BIM2YfWjH0IdJHr
+   QEmVQ+KcwHg2VIHAf7NLzUnVaCMwQMxWK/4neudT/tMP4OTHhNiFwoy99
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="382553921"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="382553921"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 14:17:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="770797680"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="770797680"
+Received: from aconradi-mobl.ger.corp.intel.com (HELO intel.com) ([10.251.221.156])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 14:17:10 -0800
+Date:   Wed, 22 Nov 2023 23:17:07 +0100
+From:   Andi Shyti <andi.shyti@linux.intel.com>
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     ubizjak@gmail.com, mark.rutland@arm.com, vgupta@kernel.org,
+        bcain@quicinc.com, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        chris@zankel.net, jcmvbkbc@gmail.com, geert@linux-m68k.org,
+        andi.shyti@linux.intel.com, mingo@kernel.org, palmer@rivosinc.com,
+        andrzej.hajda@intel.com, arnd@arndb.de, peterz@infradead.org,
+        mhiramat@kernel.org, linux-arch@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, mattwu@163.com,
+        linux@roeck-us.net
+Subject: Re: [PATCH v3 1/5] arch,locking/atomic: arc: arch_cmpxchg should
+ check data size
+Message-ID: <ZV594z0bNQR-vo2b@ashyti-mobl2.lan>
+References: <20231121142347.241356-1-wuqiang.matt@bytedance.com>
+ <20231121142347.241356-2-wuqiang.matt@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121142347.241356-2-wuqiang.matt@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vpmu_counter_access's disable_counter() carries a bug that disables
-all the counters that are enabled, instead of just the requested one.
-Fortunately, it's not an issue as there are no callers of it. Hence,
-instead of fixing it, remove the definition entirely.
+Hi Wuqiang,
 
-Remove enable_counter() as it's unused as well.
+On Tue, Nov 21, 2023 at 10:23:43PM +0800, wuqiang.matt wrote:
+> arch_cmpxchg() should check data size rather than pointer size in case
+> CONFIG_ARC_HAS_LLSC is defined. So rename __cmpxchg to __cmpxchg_32 to
+> emphasize it's explicit support of 32bit data size with BUILD_BUG_ON()
+> added to avoid any possible misuses with unsupported data types.
+> 
+> In case CONFIG_ARC_HAS_LLSC is undefined, arch_cmpxchg() uses spinlock
+> to accomplish SMP-safety, so the BUILD_BUG_ON checking is uncecessary.
+> 
+> v2 -> v3:
+>   - Patches regrouped and has the improvement for xtensa included
+>   - Comments refined to address why these changes are needed
+> 
+> v1 -> v2:
+>   - Try using native cmpxchg variants if avaialble, as Arnd advised
+> 
+> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  arch/arc/include/asm/cmpxchg.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
+> index e138fde067de..bf46514f6f12 100644
+> --- a/arch/arc/include/asm/cmpxchg.h
+> +++ b/arch/arc/include/asm/cmpxchg.h
+> @@ -18,14 +18,16 @@
+>   * if (*ptr == @old)
+>   *      *ptr = @new
+>   */
+> -#define __cmpxchg(ptr, old, new)					\
+> +#define __cmpxchg_32(ptr, old, new)					\
+>  ({									\
+>  	__typeof__(*(ptr)) _prev;					\
+>  									\
+> +	BUILD_BUG_ON(sizeof(*(ptr)) != 4);				\
+> +									\
+>  	__asm__ __volatile__(						\
+> -	"1:	llock  %0, [%1]	\n"					\
+> +	"1:	llock  %0, [%1]		\n"				\
+>  	"	brne   %0, %2, 2f	\n"				\
+> -	"	scond  %3, [%1]	\n"					\
+> +	"	scond  %3, [%1]		\n"				\
+>  	"	bnz     1b		\n"				\
+>  	"2:				\n"				\
+>  	: "=&r"(_prev)	/* Early clobber prevent reg reuse */		\
+> @@ -47,7 +49,7 @@
+>  									\
+>  	switch(sizeof((_p_))) {						\
+>  	case 4:								\
+> -		_prev_ = __cmpxchg(_p_, _o_, _n_);			\
+> +		_prev_ = __cmpxchg_32(_p_, _o_, _n_);			\
+>  		break;							\
+>  	default:							\
+>  		BUILD_BUG();						\
+> @@ -65,8 +67,6 @@
+>  	__typeof__(*(ptr)) _prev_;					\
+>  	unsigned long __flags;						\
+>  									\
+> -	BUILD_BUG_ON(sizeof(_p_) != 4);					\
+> -									\
 
-Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
----
- .../selftests/kvm/aarch64/vpmu_counter_access.c  | 16 ----------------
- 1 file changed, 16 deletions(-)
+I think I made some comments here that have not been addressed or
+replied.
 
-diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-index 5ea78986e665f..e2f0b720cbfcf 100644
---- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-+++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-@@ -94,22 +94,6 @@ static inline void write_sel_evtyper(int sel, unsigned long val)
- 	isb();
- }
- 
--static inline void enable_counter(int idx)
--{
--	uint64_t v = read_sysreg(pmcntenset_el0);
--
--	write_sysreg(BIT(idx) | v, pmcntenset_el0);
--	isb();
--}
--
--static inline void disable_counter(int idx)
--{
--	uint64_t v = read_sysreg(pmcntenset_el0);
--
--	write_sysreg(BIT(idx) | v, pmcntenclr_el0);
--	isb();
--}
--
- static void pmu_disable_reset(void)
- {
- 	uint64_t pmcr = read_sysreg(pmcr_el0);
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+Thanks,
+Andi
 
+>  	/*								\
+>  	 * spin lock/unlock provide the needed smp_mb() before/after	\
+>  	 */								\
+> -- 
+> 2.40.1
