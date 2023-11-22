@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1A87F4F74
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 676CC7F4F75
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 19:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344418AbjKVSY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 13:24:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54976 "EHLO
+        id S1344620AbjKVSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 13:25:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344071AbjKVSYn (ORCPT
+        with ESMTP id S1344399AbjKVSYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 13:24:43 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D2410D5;
-        Wed, 22 Nov 2023 10:24:36 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so984031fa.2;
-        Wed, 22 Nov 2023 10:24:36 -0800 (PST)
+        Wed, 22 Nov 2023 13:24:44 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C143A2;
+        Wed, 22 Nov 2023 10:24:39 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so1013661fa.1;
+        Wed, 22 Nov 2023 10:24:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700677475; x=1701282275; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700677477; x=1701282277; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Du+BFHRvMyqAEjBg6RSkcIbKkpwDLrCm/CbvmyChoXU=;
-        b=IruV7NVzKskCqLWX31NWw9KJ9LqADYT1YUG7em2E7u+vp2MnnDrDoh3jelpnQ8/msS
-         U88F8/4RrHwgb5T3JtdPF55JsyCNkRgtMVut6OkXz1etB28E3uRGn5TBFoFuZWGbvHj3
-         gWcAJRFML2huyZwMEjfT0twK6ywZiomuf+KqQ996BBqLeL8XtgfaRFIWl9k6unXC4O3E
-         awP16Xxb/Zpkl/MN7Tsxu9j1OZMrF5GB/sVrjA1uNXkxhYzATM1mlfHeRXAMZiv9vqiC
-         Bg2qBY1hOVJCV6cGdnPjYhWhhSI7EaREIpTWSpE52aqiXrLoNa5SL/QfG4W3m72z1295
-         8Y6Q==
+        bh=ygdtXD6vQmhTkyIIFbEZLW4cEgmK3nTQybwd/aOy/dw=;
+        b=DlWSmf+8f7QUpkhL5IcS9u0DvbcRC+XQ2AlTWBtvdwo6I7b9ZyEr4vo3GD+Ogt7xl/
+         kEi6YuCS0Na4VtPiUpZVeFdeb+7xr5TtvfLLtveGP+3wfwK3Qj7xbDsq+JijgqcoMvzB
+         HJ91BZuP1gXhOCvD1KRu0J4wHtZDb86i46ivcPCc9ZCHkEgGl3mJdYwNWWlcpwRld1lq
+         zh/6sXcFw2nQkvz54rJgbI9LMhY5teVDWWXDzQAZTY9Ucrv4TvsPkipmFwUFM8ElctwC
+         Iv9lotx5l+Tgp/U0ZHnQs2gnm8c8W5vfjmd7eOCnHbR+XXv2c7MA2W2VngqHqkyl6JzT
+         ECVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700677475; x=1701282275;
+        d=1e100.net; s=20230601; t=1700677477; x=1701282277;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Du+BFHRvMyqAEjBg6RSkcIbKkpwDLrCm/CbvmyChoXU=;
-        b=r5UGVCWDXia5Cxcn/XYt2I+3Bg5HCluctM2GC44d9b2+2beT0iXur15RrylE3+NKkL
-         h5ArGAnXUE80zmzEh3iAiCOSP2VEafcgrmQcQE9sB7QkboxsOj2MiMznC3EqDtOLGFc3
-         ijrpYlql91rrLS+t6Qg3VbXFrCckcBLyUL8Wic7xE/Iadam/hQEeKevU6CuipTHotcyv
-         Pn3PKyw1fxSG/kvaY/h8hsuDT3td8YlN8VICaA7xpVTXdMgSUPlx5tZWbthQysO2cxyr
-         2eKYOU8+/E3upAb03bB9dRxM/mbVTMhQYA4/Nb75zFnmOGFsdKgOJT7gwIfOtayWrfk3
-         V4Yw==
-X-Gm-Message-State: AOJu0YxkrCviWh0Nf1RQ0oGj+yYfG9VRCeFrgXafXwR4+nPpljwDB1wb
-        W6nVBRGYY5kUj42jc9nT6z8=
-X-Google-Smtp-Source: AGHT+IFKWUisXZgCOFxFmnquMptaMMQFLtq166qNTXQ2pfa0VVlheCvm7EXFGBwSINIn8btqNBHhmQ==
-X-Received: by 2002:a2e:86d5:0:b0:2c8:73b7:5a1c with SMTP id n21-20020a2e86d5000000b002c873b75a1cmr2181439ljj.3.1700677474971;
-        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
+        bh=ygdtXD6vQmhTkyIIFbEZLW4cEgmK3nTQybwd/aOy/dw=;
+        b=t9zj5TJn0HAptGgV9zU4uTLn62sTHZX+tEUnUc7Yto2zrrddJBBnImdoe0lb3AF2t5
+         vYUzz+b9RoFsy0jFv/FogP1Q5JADKl79wY64j7D7ETFjS2mhP3cvtv+rRLQQXaSC+FOa
+         5W8u2zTXs1T0GTxeEifivNT81hWDM0cLlnUqm7qw0phMBT9yfFgytU+OW8jxR5wkxUsM
+         YQvCmR+jgjY0wLnyjjYllEINKKGIwR1AJxCbGcF7hLm9VZF7+xecYHN0inqm92p1bDL6
+         QACVpt8ayPTHzbAWxc8ZMxXegTpGq3IBx17RLv6aeI+qoedk14K7eTGmtSjOSvm9Dnzj
+         X3oQ==
+X-Gm-Message-State: AOJu0YycL3Mg0WYFsTTT7WS1l2DtlEJz58aDeaINd87eNlTY7wgTiuLV
+        f2phgWK1i6RQEnfrUxMLmvI=
+X-Google-Smtp-Source: AGHT+IGOQXheOS+Gt4rJnqKjpbv7GijHFeJguvjzbMNW2BiOOY31AXGILBqTgE/H996cdvS6H0FlrA==
+X-Received: by 2002:a2e:9d54:0:b0:2c5:15dc:ba99 with SMTP id y20-20020a2e9d54000000b002c515dcba99mr2236124ljj.51.1700677477316;
+        Wed, 22 Nov 2023 10:24:37 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05651c001000b002c884919bdfsm12238lja.10.2023.11.22.10.24.34
+        by smtp.gmail.com with ESMTPSA id w5-20020a2ea3c5000000b002b9e5fe86dasm11422lje.81.2023.11.22.10.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 10:24:34 -0800 (PST)
+        Wed, 22 Nov 2023 10:24:36 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -67,9 +67,9 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         Tiezhu Yang <yangtiezhu@loongson.cn>,
         Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] mm/mm_init.c: Append '\n' to the unavailable ranges log-message
-Date:   Wed, 22 Nov 2023 21:24:04 +0300
-Message-ID: <20231122182419.30633-7-fancer.lancer@gmail.com>
+Subject: [PATCH 7/7] mips: Set dump-stack arch description
+Date:   Wed, 22 Nov 2023 21:24:05 +0300
+Message-ID: <20231122182419.30633-8-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231122182419.30633-1-fancer.lancer@gmail.com>
 References: <20231122182419.30633-1-fancer.lancer@gmail.com>
@@ -85,28 +85,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on the init_unavailable_range() method and it's callee semantics no
-multi-line info messages are intended to be printed to the console. Thus
-append the '\n' symbol to the respective info string.
+In the framework of the MIPS architecture the mips_set_machine_name()
+method is defined to set the machine name. The name currently is only used
+in the /proc/cpuinfo file content generation. Let's have it utilized to
+mach-personalize the dump-stack data too in a way it's done on ARM, ARM64,
+RISC-V, etc.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- mm/mm_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/prom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 3fa33e2d32ba..db8b91175834 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -827,7 +827,7 @@ static void __init init_unavailable_range(unsigned long spfn,
- 	}
+diff --git a/arch/mips/kernel/prom.c b/arch/mips/kernel/prom.c
+index f88ce78e13e3..6062e6fa589a 100644
+--- a/arch/mips/kernel/prom.c
++++ b/arch/mips/kernel/prom.c
+@@ -28,6 +28,8 @@ __init void mips_set_machine_name(const char *name)
  
- 	if (pgcnt)
--		pr_info("On node %d, zone %s: %lld pages in unavailable ranges",
-+		pr_info("On node %d, zone %s: %lld pages in unavailable ranges\n",
- 			node, zone_names[zone], pgcnt);
+ 	strscpy(mips_machine_name, name, sizeof(mips_machine_name));
+ 	pr_info("MIPS: machine is %s\n", mips_get_machine_name());
++
++	dump_stack_set_arch_desc(name);
  }
  
+ char *mips_get_machine_name(void)
 -- 
 2.42.1
 
