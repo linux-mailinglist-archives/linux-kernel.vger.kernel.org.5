@@ -2,154 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BB87F3C7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 057A77F3C7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343593AbjKVDjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34658 "EHLO
+        id S1343602AbjKVDlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjKVDjL (ORCPT
+        with ESMTP id S229464AbjKVDlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:39:11 -0500
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2106.outbound.protection.outlook.com [40.107.113.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2461D90
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:39:07 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dz49gjY15xvcr108EyrKEIA1Z0c+mVZYYEpPhmlXfU4Q18iS2gMClZxfQNJgwfTSB7UHvIiwYmF3RWeIMT6cGva5G2h0QfU6YzCOA+hVpoXrNjGeLfLSUR5VMyMuKPd4lhZfehbiC7bep4PSpV2C+C/IzL67xIgT9ikXc8/dX9H4L1ZetmOnejhg/gAgSGux1jzZk+//wtF2EpTxZYwcWfJN9VTIMe9wG/QWbjrgtWgBD3QstcoPkBftDjW7zwxbkbuzvdvAdEFzDOtzxPH0IwNLOLJnsEN9M3ZDtiihO9VbRhcCB9s8Rc4Q4GFQ2NeCjRh95UgneR2oStCVSabAhg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
- b=QkL/AhgoBwXKjo4Ipcc6UN+KW29Gphbp2QqCYYZAfhHm8Uvt6uUVmogR4vZxIvxCIr2SYNTeynmwmQtSlHE/vPhPz+//TlDzpRiEv7/pG7FfCMAoKVD4vcu5leHThImn6rg13Jmtrs+HIqCZ1IynLT30OCBkMU72iCxaXd/W7u3NUsFUmTo7F/iH1QlPxRkV9+/QT7xrirRuRCzNOaupc3wIqJEEzprlP3BxjKwZSvfm4qw9lvkJe43eEkyj5OHpnqRhC90IDAe4MQQa8J/KhAAQZbdcimMKnJIyAFQZtUCIXXCSVmv4eBV8svZpO99cIYfuzo0Qq4BlWFjD/6hDyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FMxsqSZpjcaeaiHjF58SgRDCva2dKXaSUVNl2hsgcRY=;
- b=lXf7M5mAlO4h9R3bG9nDnbozsLqcBpnQcXukvxdic984Kg1GJGc4QheE7NEjk3vhJA9R6x/v2GU4H/sR0Yw1x1ELGI05HkVMKZGW3CsLWFiyUUP0XQ6e8NFlzxphduL0ORdB8HTBifPVwsbG4k3yX5Bwmfd6JFOvYW5XWphfN6g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11) by TYCPR01MB11224.jpnprd01.prod.outlook.com
- (2603:1096:400:3bf::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
- 2023 03:39:02 +0000
-Received: from TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::16b3:a84d:faa6:4846]) by TYCPR01MB10914.jpnprd01.prod.outlook.com
- ([fe80::16b3:a84d:faa6:4846%6]) with mapi id 15.20.7025.017; Wed, 22 Nov 2023
- 03:39:02 +0000
-Message-ID: <878r6qh2y1.wl-kuninori.morimoto.gx@renesas.com>
-From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To:     Daniel Baluta <daniel.baluta@gmail.com>
-Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iuliana.prodan@nxp.com" <iuliana.prodan@nxp.com>,
-        "shengjiu.wang@nxp.com" <shengjiu.wang@nxp.com>
-Subject: Re: [RFC PATCH] ASoC: simple-card: Use dai_id from node description
-In-Reply-To: <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
-References: <20231117163900.766996-1-daniel.baluta@oss.nxp.com>
-        <874jhh2g8s.wl-kuninori.morimoto.gx@renesas.com>
-        <CAEnQRZBb0ZJk7aTaji-xH2jEs7QiTaoXTuS5_K-ruSaxpEnWdw@mail.gmail.com>
-        <TYCPR01MB109142FEC8F77CFFE3930456CD4B4A@TYCPR01MB10914.jpnprd01.prod.outlook.com>
-        <CAEnQRZD8zbgRzBrx+iHTbDqG5tOedNLyJByNNtSHTRtxFsgyGw@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
-Content-Type: text/plain; charset=US-ASCII
-Date:   Wed, 22 Nov 2023 03:39:02 +0000
-X-ClientProxiedBy: TYWP286CA0014.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:178::20) To TYCPR01MB10914.jpnprd01.prod.outlook.com
- (2603:1096:400:3a9::11)
+        Tue, 21 Nov 2023 22:41:35 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E4190
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:41:30 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b82541da51so1640125b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700624490; x=1701229290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lTFMml4INEv5C+irajH43nV2pQy7Qcw7rpWXL+qKufA=;
+        b=RBIlTfw2fo8A76aayj12LVgCuhIGb4tI2evm68mOylhCYUeYrls8ZVVJQcxzzPzJI2
+         eVeEkEXpTm2/L31+Aeg20Leyu/mcNJZocdv7fs0gnuLR1TcuzZ2YymhjvmUuOGxOHqyW
+         QmeF6NLh8GTg36x70CwyCd060IWYRag7GN/tYbVpHqiZQsjnX20ofmiT9njTlHaebsDb
+         smnmLglQ0xoOEcX3hsuBlPSGNlW1HX/iBeBSbsu1CrT9Xpi6+WdypQV24aAIS2/yyVJb
+         Mmu6eMOP0S1WXHakW/ZxIh/SyalS87qRAFmBm0RR/EYm7RfoqaHFtWoURxBk5bLRaJ0d
+         +Mfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700624490; x=1701229290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lTFMml4INEv5C+irajH43nV2pQy7Qcw7rpWXL+qKufA=;
+        b=Qwwq146DsPUdUnGaPniXCBloEy0svxM9s92s8bBfFS8wb7vpktnTAVnZhz/s2ipgGU
+         E/u9s12wlKkR+ELbEshMqGFtLbvbtb9MxgD3mFHLjbWTW1xTIzICqLiGFSTlgRDPL7tQ
+         RxLnHMCVRpPjp5xJdx90PZ1BbDF9ou0l1lndVFvXc2+96c2QMlpiNJ6FF2dH7hLiYu9v
+         1tINUXYuWRerTu7H2BjzScIf7FRaN5jUmA2Il1e9Fyc/8x0uSsToJ7YO2N4eTQxnaNVN
+         5EpxU0GWv+F+CqB4iu0Z3W8kMp5gxciDRsSP7y79Zacut+HcYZ5ILT4HgIwHUaTGloGk
+         0ADw==
+X-Gm-Message-State: AOJu0YxG60n7skFocy1y1p+3YAKdP5QXuJZB9lHxPVB9qFC9Z+miPf3X
+        wTAaBRCzOO3DmjsDa19fSUlGHQ==
+X-Google-Smtp-Source: AGHT+IFYwkUlZO9Um/1JZYOKR+I/W6wYbdoWHN4/eWoT5eNGGZUVMxGdSjF+fhcJMFLWF6MZ7xLXOg==
+X-Received: by 2002:a05:6808:1144:b0:3ae:1675:700e with SMTP id u4-20020a056808114400b003ae1675700emr1892632oiu.36.1700624490176;
+        Tue, 21 Nov 2023 19:41:30 -0800 (PST)
+Received: from ghost ([65.158.198.2])
+        by smtp.gmail.com with ESMTPSA id c19-20020a056808139300b003b83ec68a3dsm66571oiw.4.2023.11.21.19.41.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 19:41:29 -0800 (PST)
+Date:   Tue, 21 Nov 2023 22:41:26 -0500
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>
+Subject: Re: [PATCH v2] riscv: Safely remove entries from relocation list
+Message-ID: <ZV14ZrI8pqe9kTH1@ghost>
+References: <20231121-module_linking_freeing-v2-1-974bfcd3664e@rivosinc.com>
+ <43359fc7-957a-4f48-a1d4-fffee238463a@sifive.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCPR01MB10914:EE_|TYCPR01MB11224:EE_
-X-MS-Office365-Filtering-Correlation-Id: 60ad8021-bd38-4a28-58bb-08dbeb0c920c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lCc2ZZVSxGuRQ3nzkX4O3YXLxITo2kcB29qz+MATwnHrI+WfMEMnEvlmZqg1SAvlx6+fbU1B8GVMKybrsuAg4qa5hCXeM5IPPdHE2bGhPqXu/oZ4l5EIzCDQG3GOpb9xQHLijSIlN5V6164/udDa/O+h4/rtH4dNpDkYqlFqKW2nJnOIAb8YPl47yN0AFTtnbmLq3xP9FS7896+XT6J5krCtOgT+gQ9DyXH13A9PCAdTUlUnPmsBTFKJh0gL/EC8H3q/e4Hkj8LiJWeriyLXaQw2YEyhmzgZa1tAY91qcDxp+dD25l2iTwE8SdKRmOW3k39cJxU4/4yNJfhI94hKx56vmen7kiJh0QKyFdKd0UzK9gadeSb2Ye4JA90iPIzlS1My82mu8ZCOvg4pBv69D7LUO+eoDOfyebmA3X9IKROVGGiweGj4sM8R2V7t7FxVzZdm4z/YD//NIx7JH7q00US061M0C6Xic11fCyRwI0toLncOLQGUBZ/kwCOm0oe8N6+llvk0kNWnXJvEinDUp6BoNMZgopb31BCVoJE3BeN7jtXJyPji6tYrCm2hPrEXswy8terFySdOxnYQC7lljoXDNg7b+yjoI6SPj8Yh+mxusTlulJ2uYkL+OfcyadWD5Z8XoiX5BRh5r+/Ar1104w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB10914.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(52116002)(26005)(478600001)(2616005)(6506007)(6512007)(38350700005)(38100700002)(36756003)(86362001)(8676002)(4326008)(2906002)(54906003)(66556008)(4744005)(83380400001)(5660300002)(66476007)(66946007)(41300700001)(6916009)(8936002)(316002)(6486002)(21314003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0+A/jfH3I3Hl7IiWK3aQbR5LIDNPw0gitJWSaodwCDJomGRGR0mQFZoxCybu?=
- =?us-ascii?Q?Fyi1rKuiVsiwE6QF2xyZ0FWlyiIlIg67vxf8jQmSfkke4EXTr8oTfL1U78Xx?=
- =?us-ascii?Q?iVG3zMw96icFUK1bIUsIEF8Ca/ewaaHrMW0bJPZ12dfKSre9xzSuz4FNgQK/?=
- =?us-ascii?Q?HV/yqHlNCDJ/BPoplbjUw3CNQT1xzdsSafn0mAY7mM+eT8GXwjiPp9oa6t1M?=
- =?us-ascii?Q?xGHltnu7WqLmAjw4oWD2Mf62FbEnztxgEGFtV8jid7hbj/w7b9xXc337OfS8?=
- =?us-ascii?Q?3mv42s9kyKc3t7Ilwmpi+2oaGmehPPjdphclATll8xNIRInf/h2fjiq8HxH1?=
- =?us-ascii?Q?wkqqu91cyuBKHeCByl7SYaTtR0hd6DBDSxFwj+bNUnOMaiMswowLsJZV2e0Q?=
- =?us-ascii?Q?35sxdoybNTo4FpwDLpYLxhvEQI91u/hOB90weAR9ER3sNB3+azS2UP1rl0uB?=
- =?us-ascii?Q?8NyGql85wDNr7UacBjEindMbZgJPFb4XyqKIscLJLT1NF7LTsylPSZxdRbiV?=
- =?us-ascii?Q?vBc9JZFF/YpcWAZ2gGTUsJz7eu2xVI1rwlaMJJNqMbx/egMjs4FMxOrmXYqT?=
- =?us-ascii?Q?gCZO4dz/gunPyi1lAZJe4HPkGjMKj7jcpdcDkkkhybvOm8g43uj/ehqs8JeK?=
- =?us-ascii?Q?19L0x6cw0UdnR6vFjx0cOIlae27YxRFV02/kuwqgoVXkrJ2Qnde0wIKHGGDF?=
- =?us-ascii?Q?nO+I7Ql/lWgsn98BIhWmHcEGAZLmDtlhteQLehsrI/D3mXHo1pqcyu7IFNZY?=
- =?us-ascii?Q?cL/h5n1pZ/1Zu6JZhsrXR+k3kZqexTquh/EShR9Qb6rIWB3+SCfsWPpWMkN1?=
- =?us-ascii?Q?ajILT3egyJSF0OXTkIorvfdTSVn2zSRYxbu3oDRsvVDGj3Xx8dko6Mu1odLZ?=
- =?us-ascii?Q?0M+SdQJcWgDbvQMZ/E3+AaXnHM/eZHpfyJx7qcAnyKgk/mBEI9CCXsl1yeIB?=
- =?us-ascii?Q?WOZwFSl5GlGUyKiXfVaRNkd21xJNyl+ZEWKPF7P5ddjH0l3ZAcL/Li3BVugS?=
- =?us-ascii?Q?EdxbBYkawFmIYRbWK1Vouj9pbDdUtZrCYFM3tdAKM/nUeMhjVWB+eg5Sal+l?=
- =?us-ascii?Q?74592KvZwLxn2tV17QQnnQprIZFezrQLQlPEBR6nbD9JOPIECursDSYb1HOG?=
- =?us-ascii?Q?ORje4qox23rfE72iZHaCyyQeVk0CRaZftHsBMputgQorQtKH2iVluLt115Wo?=
- =?us-ascii?Q?IQMlDXwtxZ7cUmelnkai7N6GtkADPkHlTpBgbIT6ylFCp5dq+yZyFLirBfX+?=
- =?us-ascii?Q?mw9xJbWf66cpS82tNU0NcITJnLrKspDdALYz9k2o+nqHL3nVQTxpy95S6Fpn?=
- =?us-ascii?Q?XOD9BZHOSYK6Idz553NxY77kzoRsntz2SsdeLZwlXoPMyt+A9RQZ+7X/OJRQ?=
- =?us-ascii?Q?pUIEEzj+Fs8c41GL/S7dr1qevFznXgPhGSb8JXYiyKpTIHdhVqdhkmQ6+wt3?=
- =?us-ascii?Q?m0t81evSDKVYt7H68Jb13LyhDv8i2PEeyZTsNzFqe0ldIOfCa7mBhRJgH7d4?=
- =?us-ascii?Q?b4vBRm6YTj230GCWmWXqI8dDhxgZuo4Yla8jhQh4rul6jsmbeyzN3NSigSHQ?=
- =?us-ascii?Q?g/JEowWfW1FujHMTXuhLF/sKIvwqH10mhqfosaDNhz5tsIms5/qwNfIkTafK?=
- =?us-ascii?Q?dcxcNXL76iycA2qlU5dOgl8=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60ad8021-bd38-4a28-58bb-08dbeb0c920c
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB10914.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 03:39:02.6892
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iglFpBPvGNWQN5OdBhB0IKb6KSBhZ20YvBCzzNrMlYdWfMZ50FmwToWEl1dkgVXL/8CoYmO1xxp+gdqmzpfGv+9uRNOuuyjduuZeltL6GwWR0c07IEi8lv9dysF2irU1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB11224
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43359fc7-957a-4f48-a1d4-fffee238463a@sifive.com>
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 21, 2023 at 06:04:14PM -0600, Samuel Holland wrote:
+> Hi Charlie,
+> 
+> On 2023-11-21 4:50 PM, Charlie Jenkins wrote:
+> > Use the safe versions of list and hlist iteration to safely remove
+> > entries from the module relocation lists. To allow mutliple threads to
+> > load modules concurrently, move relocation list pointers onto the stack
+> > rather than using global variables.
+> > 
+> > Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
+> > Reported-by: Ron Economos <re@w6rz.net>
+> > Closes: https://lore.kernel.org/linux-riscv/444de86a-7e7c-4de7-5d1d-c1c40eefa4ba@w6rz.net
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> > Changes in v2:
+> > - Support linking modules concurrently across threads.
+> > - Link to v1: https://lore.kernel.org/r/20231120-module_linking_freeing-v1-1-fff81d7289fc@rivosinc.com
+> > ---
+> >  arch/riscv/kernel/module.c | 76 +++++++++++++++++++++++++++++++---------------
+> >  1 file changed, 51 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+> > index 56a8c78e9e21..f53e82b70dff 100644
+> > --- a/arch/riscv/kernel/module.c
+> > +++ b/arch/riscv/kernel/module.c
+> > @@ -40,14 +40,17 @@ struct relocation_handlers {
+> >  				  long buffer);
+> >  };
+> >  
+> > -unsigned int initialize_relocation_hashtable(unsigned int num_relocations);
+> > -void process_accumulated_relocations(struct module *me);
+> > +unsigned int
+> > +initialize_relocation_hashtable(unsigned int num_relocations,
+> > +				struct hlist_head **relocation_hashtable,
+> > +				struct list_head *used_buckets_list);
+> > +void process_accumulated_relocations(struct module *me,
+> > +				     struct hlist_head **relocation_hashtable,
+> > +				     struct list_head *used_buckets_list);
+> >  int add_relocation_to_accumulate(struct module *me, int type, void *location,
+> > -				 unsigned int hashtable_bits, Elf_Addr v);
+> > -
+> > -struct hlist_head *relocation_hashtable;
+> > -
+> > -struct list_head used_buckets_list;
+> 
+> This hunk conflicts with your other patch, which is still needed for the __le16
+> change. Since they are both fixes, do you intend to rebase and send them together?
 
-Hi Daniel
+I wasn't sure the best way of doing that. I will bring the __le16 changes into this series.
 
-> > But hmm... in your case, you need to setup 2ports, and use 2nd port
-> > is assumed approach.
-> > Why you don't setup full port ? Do you have some reason ??
-(snip)
-> Now, I want to write a DTS description where my DAI link uses
-> Component 0 (CPU) (with its DAI index 1) connected with Component 1
-> (codec) (with its DAI index 0).
+> 
+> > +				 unsigned int hashtable_bits, Elf_Addr v,
+> > +				struct hlist_head **relocation_hashtable,
+> > +				struct list_head *used_buckets_list);
+> 
+> minor: the indentation is off by one here.
+> 
+> >  
+> >  /*
+> >   * The auipc+jalr instruction pair can reach any PC-relative offset
+> > @@ -604,7 +607,9 @@ static const struct relocation_handlers reloc_handlers[] = {
+> >  	/* 192-255 nonstandard ABI extensions  */
+> >  };
+> >  
+> > -void process_accumulated_relocations(struct module *me)
+> > +void process_accumulated_relocations(struct module *me,
+> > +				     struct hlist_head **relocation_hashtable,
+> 
+> You only need the double pointer in initialize_relocation_hashtable(). If you
+> pass the single pointer here and in add_relocation_to_accumulate(), you can
+> avoid the extra dereference operations.
+> 
+> > +				     struct list_head *used_buckets_list)
+> >  {
+> >  	/*
+> >  	 * Only ADD/SUB/SET/ULEB128 should end up here.
+> > @@ -624,18 +629,25 @@ void process_accumulated_relocations(struct module *me)
+> >  	 *	- Each relocation entry for a location address
+> >  	 */
+> >  	struct used_bucket *bucket_iter;
+> > +	struct used_bucket *bucket_iter_tmp;
+> >  	struct relocation_head *rel_head_iter;
+> > +	struct hlist_node *rel_head_iter_tmp;
+> >  	struct relocation_entry *rel_entry_iter;
+> > +	struct relocation_entry *rel_entry_iter_tmp;
+> >  	int curr_type;
+> >  	void *location;
+> >  	long buffer;
+> >  
+> > -	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
+> > -		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
+> > +	list_for_each_entry_safe(bucket_iter, bucket_iter_tmp,
+> > +				 used_buckets_list, head) {
+> > +		hlist_for_each_entry_safe(rel_head_iter, rel_head_iter_tmp,
+> > +					  bucket_iter->bucket, node) {
+> >  			buffer = 0;
+> >  			location = rel_head_iter->location;
+> > -			list_for_each_entry(rel_entry_iter,
+> > -					    rel_head_iter->rel_entry, head) {
+> > +			list_for_each_entry_safe(rel_entry_iter,
+> > +						 rel_entry_iter_tmp,
+> > +						 rel_head_iter->rel_entry,
+> > +						 head) {
+> >  				curr_type = rel_entry_iter->type;
+> >  				reloc_handlers[curr_type].reloc_handler(
+> >  					me, &buffer, rel_entry_iter->value);
+> > @@ -648,11 +660,13 @@ void process_accumulated_relocations(struct module *me)
+> >  		kfree(bucket_iter);
+> >  	}
+> >  
+> > -	kfree(relocation_hashtable);
+> > +	kfree(*relocation_hashtable);
+> >  }
+> >  
+> >  int add_relocation_to_accumulate(struct module *me, int type, void *location,
+> > -				 unsigned int hashtable_bits, Elf_Addr v)
+> > +				 unsigned int hashtable_bits, Elf_Addr v,
+> > +				struct hlist_head **relocation_hashtable,
+> > +				struct list_head *used_buckets_list)
+> >  {
+> >  	struct relocation_entry *entry;
+> >  	struct relocation_head *rel_head;
+> > @@ -667,7 +681,7 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
+> >  
+> >  	hash = hash_min((uintptr_t)location, hashtable_bits);
+> >  
+> > -	current_head = &relocation_hashtable[hash];
+> > +	current_head = &((*relocation_hashtable)[hash]);
+> >  
+> >  	/* Find matching location (if any) */
+> >  	bool found = false;
+> > @@ -693,7 +707,7 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
+> >  				kmalloc(sizeof(struct used_bucket), GFP_KERNEL);
+> >  			INIT_LIST_HEAD(&bucket->head);
+> >  			bucket->bucket = current_head;
+> > -			list_add(&bucket->head, &used_buckets_list);
+> > +			list_add(&bucket->head, used_buckets_list);
+> >  		}
+> >  		hlist_add_head(&rel_head->node, current_head);
+> >  	}
+> > @@ -704,7 +718,10 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
+> >  	return 0;
+> >  }
+> >  
+> > -unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
+> > +unsigned int
+> > +initialize_relocation_hashtable(unsigned int num_relocations,
+> > +				struct hlist_head **relocation_hashtable,
+> > +				struct list_head *used_buckets_list)
+> >  {
+> >  	/* Can safely assume that bits is not greater than sizeof(long) */
+> >  	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
+> > @@ -720,12 +737,12 @@ unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
+> >  
+> >  	hashtable_size <<= should_double_size;
+> >  
+> > -	relocation_hashtable = kmalloc_array(hashtable_size,
+> > -					     sizeof(*relocation_hashtable),
+> > -					     GFP_KERNEL);
+> > -	__hash_init(relocation_hashtable, hashtable_size);
+> > +	*relocation_hashtable = kmalloc_array(hashtable_size,
+> > +					      sizeof(*relocation_hashtable),
+> > +					      GFP_KERNEL);
+> 
+> You need to check for allocation failure here and inside
+> add_relocation_to_accumulate(). Module loading under memory pressure is a
+> reasonably likely scenario.
+> 
+> > +	__hash_init(*relocation_hashtable, hashtable_size);
+> >  
+> > -	INIT_LIST_HEAD(&used_buckets_list);
+> > +	INIT_LIST_HEAD(used_buckets_list);
+> 
+> This is the only place used_buckets_list is used in this function. If you move
+> this line out to apply_relocate_add, you can drop the parameter.
+> 
+> Regards,
+> Samuel
+>
 
-Thank you for indicating your DTS.
+Thanks for the suggestions, I will send out another version.
 
-So in imx8m_dai case, it has total 3 DAIs, and you want to use reg = 1.
-In such case, your DTS need to have like below, if my understanding was
-correct.
+- Charlie
 
-	dsp: dsp@3b6e8000 {
-		ports {
-			     port@0 { reg = <0>;         endpoint { /* not used */ };  };
-			cpu: port@1 { reg = <1>; cpu_ep: endpoint { remote-endpoint = <xxx>; }; };
-			     port@2 { reg = <2>;         endpoint { /* not used */ };  };
-		};
-	};
-
-
-Thank you for your help !!
-
-Best regards
----
-Kuninori Morimoto
+> >  
+> >  	return hashtable_bits;
+> >  }
+> > @@ -742,7 +759,13 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  	Elf_Addr v;
+> >  	int res;
+> >  	unsigned int num_relocations = sechdrs[relsec].sh_size / sizeof(*rel);
+> > -	unsigned int hashtable_bits = initialize_relocation_hashtable(num_relocations);
+> > +	struct hlist_head *relocation_hashtable;
+> > +	struct list_head used_buckets_list;
+> > +	unsigned int hashtable_bits;
+> > +
+> > +	hashtable_bits = initialize_relocation_hashtable(num_relocations,
+> > +							 &relocation_hashtable,
+> > +							 &used_buckets_list);
+> >  
+> >  	pr_debug("Applying relocate section %u to %u\n", relsec,
+> >  	       sechdrs[relsec].sh_info);
+> > @@ -823,14 +846,17 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+> >  		}
+> >  
+> >  		if (reloc_handlers[type].accumulate_handler)
+> > -			res = add_relocation_to_accumulate(me, type, location, hashtable_bits, v);
+> > +			res = add_relocation_to_accumulate(
+> > +				me, type, location, hashtable_bits, v,
+> > +				&relocation_hashtable, &used_buckets_list);
+> >  		else
+> >  			res = handler(me, location, v);
+> >  		if (res)
+> >  			return res;
+> >  	}
+> >  
+> > -	process_accumulated_relocations(me);
+> > +	process_accumulated_relocations(me, &relocation_hashtable,
+> > +					&used_buckets_list);
+> >  
+> >  	return 0;
+> >  }
+> > 
+> > ---
+> > base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+> > change-id: 20231120-module_linking_freeing-2b5a3b255b5e
+> 
