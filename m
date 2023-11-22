@@ -2,113 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD7E7F5217
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294CA7F521A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjKVVL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:11:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S230377AbjKVVMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVVLy (ORCPT
+        with ESMTP id S232331AbjKVVMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:11:54 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4964098;
-        Wed, 22 Nov 2023 13:11:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700687506;
-        bh=2WqVTYX4xg0dPpQTyqGxEQaQgOPvNCCd94EcOLW6qYU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UPxfowbVxoX1lhpzrXB/1w6P1571jnN6frAW3QnR4L2XiRatXe/CZhq8GWpwfgct7
-         tUoTDCefyAysV8dm/w2PnVerq5KLGNH6AfsQ74CgnvMK0zJmc/UxFQGCnSxLqadL52
-         0eeQpo1FABVuQVrOT/skW7w+x5yfMgaFp2NGNjJos9IWqc55CxrLfS5QMXJgDOFmqU
-         Q9huzu/UcPAphT3z8su4RbNGDqL+u3LXUssQcchjzadiHLKVRyvODG+u7zMUhiai+a
-         pTNW9Eajgp6Kfj6O4vY+NtekKb79O7lVfcGUEQlJNcpTiQGac8QwEJxouxHvVBoq0v
-         6EFTC8WHaQyLg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SbDSx2Xfjz4wc0;
-        Thu, 23 Nov 2023 08:11:44 +1100 (AEDT)
-Date:   Thu, 23 Nov 2023 08:11:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: linux-next: manual merge of the kvm tree with the vfs-brauner
- tree
-Message-ID: <20231123081143.23c520f3@canb.auug.org.au>
-In-Reply-To: <20231122071040.GA4104@lst.de>
-References: <20231122125539.5a7df3a3@canb.auug.org.au>
-        <20231122071040.GA4104@lst.de>
+        Wed, 22 Nov 2023 16:12:10 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E821A4;
+        Wed, 22 Nov 2023 13:12:05 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso225062b3a.2;
+        Wed, 22 Nov 2023 13:12:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700687525; x=1701292325; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ndk4aGNdhF9GXKkpyyjsozTJ5amtXqJPp+cG2mKjtD0=;
+        b=VMN/NCn/0ASAQmZ66hu4oESJL0srvFqyTlN0Uzf4h/QE9KDJ14ibkDOxebGQDBkWe4
+         hzTSwiH8UTDvauJj5bIk4mEmxcGkF2eAXJglQCPFyE5yETJaV/jFigT3ZW9Dfgb+FY8h
+         RPRa6ZUjSpEZ007Cb7K8XcWpgh41vN7M6Ai6aq9fbnfjRJdv+phB0zTLpl7IFVbbid3A
+         B+iBWdf/vv9Ydfe/D6kWQJkpNmcpS1FStiGWo4NcsnPrSPNlTgYtuomKRVgdmX6fhjKg
+         mDONSLCe5wFPb89F3oDFROwkdMNqk8i5Tjt1Imb8ab6Zuc1su/nUQEgMGmbtEuDRx5BG
+         sjbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700687525; x=1701292325;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ndk4aGNdhF9GXKkpyyjsozTJ5amtXqJPp+cG2mKjtD0=;
+        b=JeJQ3VqkcpnGaCbvXw6Vl7bbQE0SYJzbEkILqXoR8OxZQBGxNnv6frIEMnwnmbLEPk
+         p9qnPOptTurKSEHtSQOpxlGVGOB22fpv1TeeVsoHD/pW7cv3XMkg9ObxF4EFhW4KRcps
+         rGlkzA6vVN/hFDFU//KYHHAGx17IWuATqkRFNcsccKlt+JRTOtgSj+OkOOLZ7op2zRn5
+         Betn7mZMwxzSQNS8Xp82YGa41WZBJKfucWv/wA/sPhGhiDA4SCkhpG+c+jHqslvaisjG
+         LNm3vwcSAOFfhh28FR2ZyVIXnKE/mPR9e7mpjNRDmQ3ASb5f7oIubDg4bvcmOKGNJZ4v
+         S1Rw==
+X-Gm-Message-State: AOJu0YzOgWEEJC+DERJKHSMA6Fmle4jOvorap+aXMZXnPehYaWJZf8CN
+        SsEZ/Ir+ZUfyjMnfhfstEQ==
+X-Google-Smtp-Source: AGHT+IHtVS6qiXCVuICpjIo9v1ArG+K49q8MxhuOD/We1+xNdIENUBBwie8jAWodVY5lm/jNcHZQ+w==
+X-Received: by 2002:a05:6a20:12cd:b0:189:3748:f060 with SMTP id v13-20020a056a2012cd00b001893748f060mr3765980pzg.26.1700687525147;
+        Wed, 22 Nov 2023 13:12:05 -0800 (PST)
+Received: from fedora.mshome.net ([75.167.214.230])
+        by smtp.gmail.com with ESMTPSA id j18-20020a635512000000b005bdbce6818esm132136pgb.30.2023.11.22.13.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 13:12:04 -0800 (PST)
+From:   Gregory Price <gourry.memverge@gmail.com>
+X-Google-Original-From: Gregory Price <gregory.price@memverge.com>
+To:     linux-mm@kvack.org
+Cc:     linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        arnd@arndb.de, tglx@linutronix.de, luto@kernel.org,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, mhocko@kernel.org, tj@kernel.org,
+        ying.huang@intel.com, Gregory Price <gregory.price@memverge.com>
+Subject: [RFC PATCH 00/11] mm/mempolicy: Make task->mempolicy externally modifiable via syscall and procfs
+Date:   Wed, 22 Nov 2023 16:11:49 -0500
+Message-Id: <20231122211200.31620-1-gregory.price@memverge.com>
+X-Mailer: git-send-email 2.39.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6rxvHngSrUiKK7f=V74ttjT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6rxvHngSrUiKK7f=V74ttjT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The patch set changes task->mempolicy to be modifiable by tasks other
+than just current.
 
-Hi Christoph,
+The ultimate goal is to make mempolicy more flexible and extensible,
+such as adding interleave weights (which may need to change at runtime
+due to hotplug events).  Making mempolicy externally modifiable allows
+for userland daemons to make runtime performance adjustments to running
+tasks without that software needing to be made numa-aware.
 
-On Wed, 22 Nov 2023 08:10:40 +0100 Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Nov 22, 2023 at 12:55:39PM +1100, Stephen Rothwell wrote:
-> > index 06142ff7f9ce,bf2965b01b35..000000000000
-> > --- a/include/linux/pagemap.h
-> > +++ b/include/linux/pagemap.h
-> > @@@ -203,9 -203,8 +203,10 @@@ enum mapping_flags=20
-> >   	/* writeback related tags are not used */
-> >   	AS_NO_WRITEBACK_TAGS =3D 5,
-> >   	AS_LARGE_FOLIO_SUPPORT =3D 6,
-> > - 	AS_RELEASE_ALWAYS,	/* Call ->release_folio(), even if no private dat=
-a */
-> > + 	AS_RELEASE_ALWAYS =3D 7,	/* Call ->release_folio(), even if no priva=
-te data */
-> > + 	AS_UNMOVABLE	=3D 8,	/* The mapping cannot be moved, ever */
-> >  +	AS_STABLE_WRITES,	/* must wait for writeback before modifying
-> >  +				   folio contents */
-> >   }; =20
->=20
-> Note that AS_STABLE_WRITES, is a fix for 6.7, so this will probably
-> end up getting reordered.  It might also be worth to remove all the
-> explicit number assignments here to make the merge conflict resolution
-> a bit easier in the future.
+This initial RFC involves 3 major updates the mempolicy.
 
-Thanks, I will reorder them from today (and drop the numbering on the
-added ones).
+1. Refactor modifying interfaces to accept a task as an argument,
+   and change existing callers to send `current` in to retain
+   the existing behavior.
 
---=20
-Cheers,
-Stephen Rothwell
+2. Change locking behaviors to ensure task->mpol is referenced
+   safely by acquiring the task_lock where required.  Since
+   allocators take the alloc lock (task lock), this successfully
+   prevents changes from being made during allocations.
 
---Sig_/6rxvHngSrUiKK7f=V74ttjT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+3. Add external interfaces which allow for a task mempolicy to be
+   modified by another task.  This is implemented in 4 syscalls
+   and a procfs interface:
+        sys_set_task_mempolicy
+        sys_get_task_mempolicy
+        sys_set_task_mempolicy_home_node
+        sys_task_mbind
+        /proc/[pid]/mempolicy
 
------BEGIN PGP SIGNATURE-----
+The new syscalls are the same as their current-task counterparts,
+except that they take a pid as an argument.  The exception is
+task_mbind, which required a new struct due to the number of args.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVebo8ACgkQAVBC80lX
-0Gz1FAf/avUN7bmmzBWD0S4b28tnWjeBBo0rLAaAN8VzXer4m9coY5CcHH0Otm5x
-i5tOw099nM2LDInurpEh78v4TBt8/0TW90Seezetdr3tiUs/NXMdoOlrKx4DUqeg
-89wD6lsU+EMNJ5mu5lVCWDzFdM7lshLA1hzvFEQUgGdUBzZt07XC7FQG5DgwofA4
-98kIjw+xEd8RZX6oko7aO3nWl9jV3diwQA774wKg/EZ5fbpEem1CaJnkPeCVaN+8
-hDcPG2kMdQhpsHUO8IS8RqMKpUojWHQyxw7qqD2O2quaZTNWM3K2gIBbUMpo6aeN
-dsBeXvBnsdfxtXKv3IKpZ8EBTcShcg==
-=CMIT
------END PGP SIGNATURE-----
+The /proc/pid/mempolicy re-uses the interface mpol_parse_str format
+to enable get/set of mempolicy via procsfs.
 
---Sig_/6rxvHngSrUiKK7f=V74ttjT--
+mpol_parse_str format:
+            <mode>[=<flags>][:<nodelist>]
+
+Example usage:
+
+echo "default" > /proc/pid/mempolicy
+echo "prefer=relative:0" > /proc/pid/mempolicy
+echo "interleave:0-3" > /proc/pid/mempolicy
+
+Changing the mempolicy does not induce memory migrations via the
+procfs interface (which is the exact same behavior as set_mempolicy).
+
+Signed-off-by: Gregory Price <gregory.price@memverge.com>
+
+Gregory Price (11):
+  mm/mempolicy: refactor do_set_mempolicy for code re-use
+  mm/mempolicy: swap cond reference counting logic in do_get_mempolicy
+  mm/mempolicy: refactor set_mempolicy stack to take a task argument
+  mm/mempolicy: modify get_mempolicy call stack to take a task argument
+  mm/mempolicy: modify set_mempolicy_home_node to take a task argument
+  mm/mempolicy: modify do_mbind to operate on task argument instead of
+    current
+  mm/mempolicy: add task mempolicy syscall variants
+  mm/mempolicy: export replace_mempolicy for use by procfs
+  mm/mempolicy: build mpol_parse_str unconditionally
+  mm/mempolicy: mpol_parse_str should ignore trailing characters in
+    nodelist
+  fs/proc: Add mempolicy attribute to allow read/write of task mempolicy
+
+ arch/x86/entry/syscalls/syscall_32.tbl |   4 +
+ arch/x86/entry/syscalls/syscall_64.tbl |   4 +
+ fs/proc/Makefile                       |   1 +
+ fs/proc/base.c                         |   1 +
+ fs/proc/internal.h                     |   1 +
+ fs/proc/mempolicy.c                    | 117 +++++++
+ include/linux/mempolicy.h              |  13 +-
+ include/linux/syscalls.h               |  14 +
+ include/uapi/asm-generic/unistd.h      |  10 +-
+ include/uapi/linux/mempolicy.h         |  10 +
+ mm/mempolicy.c                         | 432 +++++++++++++++++++------
+ 11 files changed, 502 insertions(+), 105 deletions(-)
+ create mode 100644 fs/proc/mempolicy.c
+
+-- 
+2.39.1
+
