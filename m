@@ -2,192 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03FA27F476C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D98147F4755
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343815AbjKVNM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S1344214AbjKVNEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343997AbjKVMzj (ORCPT
+        with ESMTP id S1343868AbjKVNEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 07:55:39 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2053.outbound.protection.outlook.com [40.107.223.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31533D7A;
-        Wed, 22 Nov 2023 04:55:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m+R6KrFTsec6eYZBP87jvW6+8mrY/S6W8DNC8UutDE1ewXXmPxR7NMt1Fl3p+M224NYQerOtHUKbV6Z2M3/VICxrnFlOTuA16X9B+QoyBVC6opqsnhDpnHndnde1iEh4HRK3dOPsQOtbdH+lu9erkAPYT3S0/0Fm2dMcRgR5UvM4h5ehUVVO1W4JOM6GxsXlOMmpW08/XfVxJzbxynemKEN5UaonGOKKMd8QaaUoMWkKQthjE1XQos1tbkBzE3zwYQ1CD23+YW7bqDKeUjo2VBql7ymtkwWWP7Cp5iAVcNa3KW1+e6pxbl5Uy3XBnpGucQDza0AQcYLzz0hXxBtPbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MmO4T8d7DZEX8iTwukvKw6VvBoyloUQuRlLhBuYaWek=;
- b=XRSbExyt9ydV9tSqKClew/ua5p9c9yBMOYmHpbqDvdGG06dpKRb64F9aPy0rphGwGq+4VUfgwis6TKz3k6KhYmxlax0EnvIg33EqSINpFFEWF+aA2Tm54rEVkpMr+QXNa4ThSuh/oOIzx92hG42jzpM1lC74XKSsS1dhnZmelOhZep/UXEx/5XJqrv5U+po7LzztSzouj8lvHj0HUTiGqxzyeQoGVNyZ7kynfmZ32tbismlfVFF2D6UOa+W0hjNDb5yc7VSH3Mtct/WhJBdFX7pcFsDfBbhwBLPI7VTolTLqQ+HLUqF+XNTq6WA+xtEGA8hC7iIExRfG/6Km++Vpqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MmO4T8d7DZEX8iTwukvKw6VvBoyloUQuRlLhBuYaWek=;
- b=Cwc4M1iym/zi4zAWjc75z1cvRpXl9mIO01cBLOn3D36uprJ2Mvxvd0pzV0j/VcYFyeVzyqbs30lZIDC9XfFSDz8tDD+YtorHMIHY1ETmZ4Wf7sAbGuzTggFvYPP8/T6rpyS81Zy9nFuUjH/Qm1dDhSe+SmyfCfx+i4OOuyFzv8pS5mPkGkIvJx21JTnygJcNkznmGSZPq97d5/xw6GCHdOKWzIEu8mKbB81CCoawC1Q//5TbLLBXc/r/8kZU0plzRnI8g6iwUFFrxl8EdhluUHbEn+bCpbvVyUJcB9XHLB6WlFI7ml0m0I4jZ1jICnKYU+e0Anh4eKn5T9YwTWIjEQ==
-Received: from BL0PR1501CA0027.namprd15.prod.outlook.com
- (2603:10b6:207:17::40) by MW4PR12MB6682.namprd12.prod.outlook.com
- (2603:10b6:303:1e3::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
- 2023 12:55:31 +0000
-Received: from MN1PEPF0000ECD4.namprd02.prod.outlook.com
- (2603:10b6:207:17:cafe::b7) by BL0PR1501CA0027.outlook.office365.com
- (2603:10b6:207:17::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.30 via Frontend
- Transport; Wed, 22 Nov 2023 12:55:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- MN1PEPF0000ECD4.mail.protection.outlook.com (10.167.242.132) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 12:55:31 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 22 Nov
- 2023 04:55:17 -0800
-Received: from [10.41.21.79] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 22 Nov
- 2023 04:55:13 -0800
-Message-ID: <7b4f8911-90ef-8419-78dc-c2bffe9b9a3f@nvidia.com>
-Date:   Wed, 22 Nov 2023 18:25:10 +0530
+        Wed, 22 Nov 2023 08:04:08 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F291810C;
+        Wed, 22 Nov 2023 05:04:01 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6C11B1595;
+        Wed, 22 Nov 2023 05:04:48 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.43.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45A273F7A6;
+        Wed, 22 Nov 2023 05:04:00 -0800 (PST)
+Date:   Wed, 22 Nov 2023 13:03:57 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Hector Martin <marcan@marcan.st>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Asahi Linux <asahi@lists.linux.dev>
+Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
+ v6.5
+Message-ID: <ZV38ParIEYWOjt6T@FVFF77S0Q05N>
+References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
+ <86pm03z0kw.wl-maz@kernel.org>
+ <86o7fnyvrq.wl-maz@kernel.org>
+ <ZVzPUjOiH6zpUlz5@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUB75DCL4+8YO62iPVsnxoeXGv5cLmT7eP2bHNs=xoMdg@mail.gmail.com>
+ <ZVzUr7TWEYPoZrWX@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fUWm7efu3xdUBbiifs_KNU1igwAxbXmum=V38SjHQHtXg@mail.gmail.com>
+ <ZVzXjz_0nYbmSGPQ@FVFF77S0Q05N.cambridge.arm.com>
+ <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch v6 1/2] ACPI: thermal: Add Thermal fast Sampling Period
- (_TFP) support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     <rui.zhang@intel.com>, <lenb@kernel.org>, <lpieralisi@kernel.org>,
-        <guohanjun@huawei.com>, <sudeep.holla@arm.com>,
-        <linux-acpi@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <treding@nvidia.com>,
-        <jonathanh@nvidia.com>, <bbasu@nvidia.com>, <sanjayc@nvidia.com>,
-        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
-        <jbrasen@nvidia.com>, "Sumit Gupta" <sumitg@nvidia.com>
-References: <20231109183322.28039-1-sumitg@nvidia.com>
- <20231109183322.28039-2-sumitg@nvidia.com>
- <CAJZ5v0jEXYP-V93XJ02cZ8UbMwKei2E27Sc0He0WnKvNXpUECg@mail.gmail.com>
-Content-Language: en-US
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <CAJZ5v0jEXYP-V93XJ02cZ8UbMwKei2E27Sc0He0WnKvNXpUECg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD4:EE_|MW4PR12MB6682:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1284d936-787c-4e02-9728-08dbeb5a4f86
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XndK1z4wpVWxhCVO50RS8J2dbL1dCQBU3W68mDm1KX0l7mIhr5QaXcmlrPDvdk6xjLKovb++lRDGwRNF8muQoDR4aMo0IkBLtEL/i795XHo3FdGDSoa8APnBwodGyrpvzpUE3V45dyAd3vLl0PsagjoJNZLrhr49srb3kaNIo7Hragzu9jluCjry/masf80bZONPClOQc1gM+ufmsMkSsU9ERty0KGr66SwFSpu+e11fIO7W1KurqQJwPtsRXd45US7PIDBApJYw2MyFaz7YvAmB53hEZudDvhP7zbyDcYhM2NWFq4oVUQmXRuD9DQmc+E6dPvi47CG71E6E8uAb4cs0UHuslmPEZwpNrrsSB2Fh5JYv8Iyg80Ge1HxhoRYSF3/aJLnIxGMago2zXzDt5J6GlALyqgUWkIJuRxwfUMHt6HlE/HpBalNDqVQf2GR2H4VrVF4S+vEGL4Fsg9ED8AFlwz+Ib4zLZrbAsw9H58zoRoBixsvCJCtDrPgFLQcBZ6N1HCCBkcQBNcj6goRyMTIMYSpfvoDxXbO0zWutSiRGsucz8w/Cst5Dmay2WnqAwP0feYNVdrLtpKF0LAdWdriQQHwBJOH8z5zrV6AmriMVYAZIbBUW5EiNhpxYO8y2ZiQMwzVrPKdWnW9Eem9JpBBIoUMIztnv9G8wuFYI2MEf4K/y4KZ6aiuCbfHqq/wIHOczki9PUSno9QKxxA3dcncktq3brKxJMeqAZ2ajIqltSF2p9b004QROYIN6mY0/4U7YrVMyzHnMLNgSqP45toSKaJR+eprzrklN+K3SI5SET6Vs5suDahJRa3F152Ac
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(39860400002)(396003)(230173577357003)(230922051799003)(230273577357003)(451199024)(82310400011)(1800799012)(64100799003)(186009)(36840700001)(46966006)(40470700004)(40460700003)(7416002)(2906002)(31696002)(86362001)(2616005)(478600001)(8676002)(16526019)(26005)(107886003)(53546011)(54906003)(16576012)(6916009)(316002)(4326008)(36756003)(70586007)(8936002)(70206006)(36860700001)(47076005)(82740400003)(426003)(336012)(7636003)(83380400001)(356005)(5660300002)(41300700001)(31686004)(40480700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 12:55:31.4986
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1284d936-787c-4e02-9728-08dbeb5a4f86
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD4.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6682
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAP-5=fWLGOCWv=wp2xsi4AVxfbS8KhkmtkMwOA4yVrz791=Z8Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/11/23 01:29, Rafael J. Wysocki wrote:
-> External email: Use caution opening links or attachments
+On Tue, Nov 21, 2023 at 08:38:45AM -0800, Ian Rogers wrote:
+> On Tue, Nov 21, 2023 at 8:15 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Tue, Nov 21, 2023 at 08:09:37AM -0800, Ian Rogers wrote:
+> > > On Tue, Nov 21, 2023 at 8:03 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Tue, Nov 21, 2023 at 07:46:57AM -0800, Ian Rogers wrote:
+> > > > > On Tue, Nov 21, 2023 at 7:40 AM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > >
+> > > > > > On Tue, Nov 21, 2023 at 03:24:25PM +0000, Marc Zyngier wrote:
+> > > > > > > On Tue, 21 Nov 2023 13:40:31 +0000,
+> > > > > > > Marc Zyngier <maz@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > [Adding key people on Cc]
+> > > > > > > >
+> > > > > > > > On Tue, 21 Nov 2023 12:08:48 +0000,
+> > > > > > > > Hector Martin <marcan@marcan.st> wrote:
+> > > > > > > > >
+> > > > > > > > > Perf broke on all Apple ARM64 systems (tested almost everything), and
+> > > > > > > > > according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+> > > > > > > >
+> > > > > > > > I can confirm that at least on 6.7-rc2, perf is pretty busted on any
+> > > > > > > > asymmetric ARM platform. It isn't clear what criteria is used to pick
+> > > > > > > > the PMU, but nothing works anymore.
+> > > > > > > >
+> > > > > > > > The saving grace in my case is that Debian still ships a 6.1 perftool
+> > > > > > > > package, but that's obviously not going to last.
+> > > > > > > >
+> > > > > > > > I'm happy to test potential fixes.
+> > > > > > >
+> > > > > > > At Mark's request, I've dumped a couple of perf (as of -rc2) runs with
+> > > > > > > -vvv.  And it is quite entertaining (this is taskset to an 'icestorm'
+> > > > > > > CPU):
+> > > > > >
+> > > > > > IIUC the tool is doing the wrong thing here and overriding explicit
+> > > > > > ${pmu}/${event}/ events with PERF_TYPE_HARDWARE events rather than events using
+> > > > > > that ${pmu}'s type and event namespace.
+> > > > > >
+> > > > > > Regardless of the *new* ABI that allows PERF_TYPE_HARDWARE events to be
+> > > > > > targetted to a specific PMU, it's semantically wrong to rewrite events like
+> > > > > > this since ${pmu}/${event}/ is not necessarily equivalent to a similarly-named
+> > > > > > PERF_COUNT_HW_${EVENT}.
+> > > > >
+> > > > > If you name a PMU and an event then the event should only be opened on
+> > > > > that PMU, 100% agree. There's a bunch of output, but when the legacy
+> > > > > cycles event is opened it appears to be because it was explicitly
+> > > > > requested.
+> > > >
+> > > > I think you've missed that the named PMU events are being erreously transformed
+> > > > into PERF_TYPE_HARDWARE events. Look at the -vvv output, e.g.
+> > > >
+> > > >   Opening: apple_firestorm_pmu/cycles/
+> > > >   ------------------------------------------------------------
+> > > >   perf_event_attr:
+> > > >     type                             0 (PERF_TYPE_HARDWARE)
+> > > >     size                             136
+> > > >     config                           0 (PERF_COUNT_HW_CPU_CYCLES)
+> > > >     sample_type                      IDENTIFIER
+> > > >     read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
+> > > >     disabled                         1
+> > > >     inherit                          1
+> > > >     enable_on_exec                   1
+> > > >     exclude_guest                    1
+> > > >   ------------------------------------------------------------
+> > > >   sys_perf_event_open: pid 1045843  cpu -1  group_fd -1  flags 0x8 = 4
+> > > >
+> > > > ... which should not be PERF_TYPE_HARDWARE && PERF_COUNT_HW_CPU_CYCLES.
+> > > >
+> > > > Marc said that he bisected the issue down to commit:
+> > > >
+> > > >   5ea8f2ccffb23983 ("perf parse-events: Support hardware events as terms")
+> > > >
+> > > > ... so it looks like something is going wrong when the events are being parsed,
+> > > > e.g. losing the HW PMU information?
+> > >
+> > > Ok, I think I'm getting confused by other things. This looks like the issue.
+> > >
+> > > I think it may be working as intended, but not how you intended :-) If
+> > > a core PMU is listed and then a legacy event, the legacy event should
+> > > be opened on the core PMU as a legacy event with the extended type
+> > > set. This is to allow things like legacy cache events to be opened on
+> > > a specified PMU. Legacy event names match with a higher priority than
+> > > those in sysfs or json as they are hard coded.
+> >
+> > That has never been the case previously, so this is user-visible breakage, and
+> > it prevents users from being able to do the right thing, so I think that's a
+> > broken design.
 > 
-> 
-> On Thu, Nov 9, 2023 at 7:34 PM Sumit Gupta <sumitg@nvidia.com> wrote:
->>
->> From: Jeff Brasen <jbrasen@nvidia.com>
->>
->> Add support of "Thermal fast Sampling Period (_TFP)" for Passive cooling.
->> As per [1], _TFP overrides the "Thermal Sampling Period (_TSP)" if both
->> are present in a Thermal zone.
->>
->> [1] ACPI Specification 6.4 - section 11.4.17. _TFP (Thermal fast Sampling
->>      Period)"
->>
->> Signed-off-by: Jeff Brasen <jbrasen@nvidia.com>
->> Co-developed-by: Sumit Gupta <sumitg@nvidia.com>
->> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
->> ---
->>   drivers/acpi/thermal.c | 12 +++++++++---
->>   1 file changed, 9 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
->> index f74d81abdbfc..3b75eb2260d7 100644
->> --- a/drivers/acpi/thermal.c
->> +++ b/drivers/acpi/thermal.c
->> @@ -90,7 +90,7 @@ struct acpi_thermal_passive {
->>          struct acpi_thermal_trip trip;
->>          unsigned long tc1;
->>          unsigned long tc2;
->> -       unsigned long tsp;
->> +       unsigned long delay;
->>   };
->>
->>   struct acpi_thermal_active {
->> @@ -404,11 +404,17 @@ static bool passive_trip_params_init(struct acpi_thermal *tz)
->>
->>          tz->trips.passive.tc2 = tmp;
->>
->> +       status = acpi_evaluate_integer(tz->device->handle, "_TFP", NULL, &tmp);
->> +       if (ACPI_SUCCESS(status)) {
->> +               tz->trips.passive.delay = tmp;
->> +               return true;
->> +       }
->> +
->>          status = acpi_evaluate_integer(tz->device->handle, "_TSP", NULL, &tmp);
->>          if (ACPI_FAILURE(status))
->>                  return false;
->>
->> -       tz->trips.passive.tsp = tmp;
->> +       tz->trips.passive.delay = tmp * 100;
->>
->>          return true;
->>   }
->> @@ -904,7 +910,7 @@ static int acpi_thermal_add(struct acpi_device *device)
->>
->>          acpi_trip = &tz->trips.passive.trip;
->>          if (acpi_thermal_trip_valid(acpi_trip)) {
->> -               passive_delay = tz->trips.passive.tsp * 100;
->> +               passive_delay = tz->trips.passive.delay;
->>
->>                  trip->type = THERMAL_TRIP_PASSIVE;
->>                  trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
->> --
-> 
-> So does the second patch in the series really depend on this one?
-> 
-> If not, I can apply it I think.
+> So the problem was caused by ARM and Intel doing two different things.
+> Intel did at least contribute to the perf tool in support for their
+> BIG.little/hybrid, so that's why the semantics match their approach.
 
-Yes, this patch can be applied independently. Thank you!
+I appreciate that, and I agree that from the Arm side we haven't been as
+engaged with userspace on this front (please understand I'm the messenger here,
+this is something I've repeatedly asked for within Arm).
 
-Best Regards,
-Sumit Gupta
+Regardless, I don't think that changes the substance of the bug, which is that
+we're converting named-pmu events into entirely different PERF_TYPE_HARDWARE
+events.
+
+I agree that expanding plain legacy event names to a set of PMU-tagetted legacy
+events makes sense (and even for Arm, that's the right thing to do, IMO). If
+I ask for 'cycles' and that gets expanded to multiple legacy cycles events that
+target specific CPU PMUs, that's good.
+
+The thing that doesn't make sense here is converting named-pmu events into
+egacy events. If I ask for 'apple_firestorm_pmu/cycles/', that should be the
+'cycles' event in the apple_firestorm_pmu's event namespace, and *shouldn't* be
+converted to a (potentially semantically different) PERF_TYPE_HARDWARE event,
+even if that's targetted towards the apple_firestorm_pmu. I think that should
+be true for *any* PMU, whether thats an arm/x86/whatever CPU PMU or a system
+PMU.
+
+> > > Presumably the expectation was that by advertising a cycles event, presumably
+> > > in sysfs, then this is what would be matched.
+
+Yes. That's how this has always worked prior to the changes Marc referenced.
+Note that this can *also* be expaned to events from json databases, but was
+*never* previously silently converted to a PERF_TYPE_HARDWARE event.
+
+Please note that the events in sysfs are *namespaced* to the PMU (specifically,
+when using that PMU's dynamic type); they are not necessarily the same as
+legacy events (though they may have similar or matching
+names in some cases), they may be semantically distinct from the legacy events
+even if the names match, and it is incorrect to conflate the two.
+
+> > I expect that if I ask for ${pmu}/${event}/, that PMU is used, and the event
+> > *in that PMU's namespace* is used. Overriding that breaks long-established
+> > practice and provides users with no recourse to get the behavioru they expect
+> > (and previosuly had).
+> 
+> On ARM but not Intel.
+
+As above, I don't think the CPU architecture matters here for the case that I'm
+saying is broken. I think that regardless of CPU architecture (or for any
+non-CPU PMU) it is semantically incorrect to convert a named-pmu event to a
+legacy event.
+
+> > I do think that (regardless of whther this was the sematnic you intended)
+> > silently overriding events with legacy events is a bug, and one we should fix.
+> > As I mentioned in another reply, just because the events have the same name
+> > does not mean that they are semantically the same, so we're liable to give
+> > people the wrong numbers anyhow.
+> >
+> > Can we fix this?
+> 
+> So I'd like to fix this, some things from various conversations:
+> 
+> 1) we lack testing. Our testing relies on the sysfs of the machine
+> being run on, which is better than nothing. I think ideally we'd have
+> a collection of zipped up sysfs directories and then we could have a
+> test that asserts on ARM you get the behavior you want.
+
+I agree we lack testing, and I'd be happy to help here going forwards, though I
+don't think this is a prerequisite for fixing this issue.
+
+> 2) for RISC-V they want to make the legacy event matching something in
+> user land to simplify the PMU driver.
+
+Ok; I see how this might be related, but it doesn't sound like a prerequisite
+for fixing this issue -- there are plenty of people in this thread who can
+test.
+
+> 3) I'd like to get rid of the PMU json interface. My idea is to
+> convert json events/metrics into sysfs style files, zip these up and
+> then link them into the perf binary. On Intel the json is 70% of the
+> binary (7MB out of 10MB) and we may get this down to 3MB with this
+> approach. The json lookup would need to incorporate the cpuid matching
+> that currently exists. When we look up an event I'd like the approach
+> to be like unionfs with a specified but configurable order. Users
+> could provide directories of their own events/metrics for various
+> PMUs, and then this approach could be used to help with (1).
+
+I can see how that might interact with whatever changes we make to fix this
+issue, but this seems like a future aspiration, and not a prerequisite for
+fixing the existing functional regression.
+
+> Those proposals are not something to add as a -rc fix, so what I think
+> you're asking for here is a "if ARM" fix somewhere in the event
+> parsing. That's of course possible but it will cause problems if you
+> did say:
+> 
+> perf stat -e arm_pmu/LLC-load-misses/ ...
+
+As above, I do not think this is an arm-specific issue, we're just the canary
+in the coalmine.
+
+Please note that:
+
+	perf stat -e arm_pmu/LLC-load-misses/ ...
+
+... would never have worked previously. No arm_pmu instances have a
+"LLC-load-misses" event in their event namespaces, and we don't have any
+userspace file mapping that event.
+
+That said, If I really wanted that legacy event, I'd have asked for it bare,
+e.g.
+
+	perf stat -e LLC-load-misses
+
+... and we're in agreement that it's sensible to expand this to multiple
+PERF_TYPE_HARDWARE events targeting the individual CPU PMUs.
+
+So I see no need to do anything to have magic for 'arm_pmu/LLC-load-misses/'.
+
+> as I doubt the PMU driver is advertising this legacy event in sysfs
+> and the "if ARM" logic would presumably be trying to disable legacy
+> events in the term list for the ARM PMU.
+> 
+> Given all of this, is anything actually broken and needing a fix for 6.7?
+
+There is absolutely a bug that needs to be fixed here (and needs to be
+backported to stable so that it gets picked up by distributions).
+
+Thanks,
+Mark.
