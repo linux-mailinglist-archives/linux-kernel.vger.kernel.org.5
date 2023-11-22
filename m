@@ -2,828 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6E87F4B8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC577F4B53
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235295AbjKVPts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S1344458AbjKVPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235340AbjKVPth (ORCPT
+        with ESMTP id S235284AbjKVPoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:49:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA5549D6
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 07:40:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63563C433C7;
-        Wed, 22 Nov 2023 15:40:39 +0000 (UTC)
-Message-ID: <9e6793e3-d824-4117-990d-924f8ad69d4e@xs4all.nl>
-Date:   Wed, 22 Nov 2023 16:40:37 +0100
+        Wed, 22 Nov 2023 10:44:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B44D44;
+        Wed, 22 Nov 2023 07:41:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700667701; x=1732203701;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/q6Q4PmrOVS1ASyyP+sVyD6k5JNQQUzIbpg4c4+ZHi4=;
+  b=HweryssW7NYnVVQPNRZa5py+TqSp6/CFpVSnQ2PRcrXxekQEgAqlwq0B
+   pHxRR/jfZXGPaMjcIQG04XZzMpYs3nr6SKYQjE03kjMU+vt7AWocxanA/
+   lgOmbnR1wB+ZLxId9ynnm50lZGx4jQt0DRCr9Uah87oWDDVKJ11/Mjryw
+   iLYwdzTRHIQoTcFSPfdb7Gs5EAdW9ntUjkD07WlVjrnPik7lt6tNg8p0X
+   m7UgRvbmOlCaPASO4tFA1NGD1kG/GHmOLji0kJJfxFmqDwTmPaXJ97hsL
+   mdz2RdePRsLPWEANUChPDoI77FdldGFuy0QtklRiqzpb4ttEvTfNAANQa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="5277543"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="5277543"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 07:41:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="1098459969"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="1098459969"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Nov 2023 07:41:40 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 22 Nov 2023 07:41:39 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 22 Nov 2023 07:41:39 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oftBAyZHrBir5i1l/wO9DHLIqjNHKbvEk7BIvEaj+s8Pyzz9TFIuxgLjnCToDnITYfwII8JLjxZGec5jau28w4xe4KTvg2OGrzh0Rknq2x9GNip3r9St32e/SRUghWHqXlmJ5lO1EgenNbt72RvslcJtwJw1WN7L8lFMWQLS4HySTv9TkdZ4hx5BEGHCQJ+Z33RReEu1psoo35LW06oFEN3H3Qfj2Zvox3ZhVGA1ikJVBHG0qJmuVrE4Vq0/Netkf6x+UIH1hFLc1Lgt8IAixNzfur0hB9wE78GAxK80I0Jv4cxAbPaPynHlB79YRr70zmVnYmOdM11W2bDk0eLycg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WaOwZQOa/geNQxcOJQo6Vdtr45GugC5Y4YuBFrSAPCw=;
+ b=B3S9ZtEw0sQ6r7bg31YvsKmnxa1yfYSinBMHyxe1emMZbIXNW3mofJW02nDxhg3li5WQz8JEBTGyshTVirdr5m9yrtA5RUZhYKuVAFyha7IxWXoq1xrnvxMF55Z1mW24Mh4+7mlfoKY/W6/0emV6y3kXxvbxWXuyGnCqYC6FcXQNNUR9aotr+d4UgjWAi6hH6X+RyyhrT0zV7qnsPQhSNi4InRVp7KrbeC3jIG50dKujEuLb1MUQMJ+/MPm3ufeQp9hCSN6d8j2I+Fhucw9gUD9USyZz6+MLT5yFX/ur8jNYnLM4w5CzAlrn4ohPQVXUfY1RdvEu4vLwb4lsrt/NNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by PH7PR11MB7074.namprd11.prod.outlook.com (2603:10b6:510:20d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Wed, 22 Nov
+ 2023 15:41:36 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
+ 15:41:36 +0000
+Message-ID: <55523a34-cd9b-4324-b012-cdea24c4b810@intel.com>
+Date:   Wed, 22 Nov 2023 08:41:32 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH v3] acpi: Fix ARM32 platforms compile issue introduced by
+ fw_table changes
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        <lenb@kernel.org>, <robert.moore@intel.com>,
+        <Jonathan.Cameron@huawei.com>, <dan.j.williams@intel.com>,
+        <guohanjun@huawei.com>, <arnd@arndb.de>,
+        <linux-acpi@vger.kernel.org>, <acpica-devel@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <cfsworks@gmail.com>
+References: <170066723324.2477261.2506149141979712937.stgit@djiang5-mobl3>
+ <CAJZ5v0giyyhZdkXW7AvZtZZHFNaFxrYKtdZkvthtuB_bXGqt1A@mail.gmail.com>
+Content-Language: en-US
+From:   Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <CAJZ5v0giyyhZdkXW7AvZtZZHFNaFxrYKtdZkvthtuB_bXGqt1A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR07CA0097.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::38) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v4 04/11] media: s5p-mfc: Add YV12 and I420 multiplanar
- format support
-Content-Language: en-US, nl
-To:     Aakarsh Jain <aakarsh.jain@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
-        mchehab@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        dillon.minfei@gmail.com, david.plowman@raspberrypi.com,
-        mark.rutland@arm.com, robh+dt@kernel.org, conor+dt@kernel.org,
-        linux-samsung-soc@vger.kernel.org, andi@etezian.org,
-        gost.dev@samsung.com, alim.akhtar@samsung.com,
-        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
-        ajaykumar.rs@samsung.com, linux-fsd@tesla.com,
-        Smitha T Murthy <smithatmurthy@gmail.com>
-References: <20231025102216.50480-1-aakarsh.jain@samsung.com>
- <CGME20231025102243epcas5p1cdd0eb385d2381943d6d194eec3a569d@epcas5p1.samsung.com>
- <20231025102216.50480-5-aakarsh.jain@samsung.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231025102216.50480-5-aakarsh.jain@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH7PR11MB7074:EE_
+X-MS-Office365-Filtering-Correlation-Id: e015263d-6ae5-4baf-0a84-08dbeb7182cc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HTUT08+pseAn3mYZohhaNP+lNjsU8dy747pK/yctpdgkzlpmfCcAtqJHU04UXVuLsr7kaxRHDjbaCrSGmRt4EEIzaZpRBY16vuj2bI9X346GXNIt89bPOPyK6mBD6egnCAp50YrJtCU6RzMTERCJzeT8nsU5l5uV5FQIftU8w22tRXBwtnpfeGuNvnBx804v2nryzWpNl31nfnVvlsC0fmbMOSN45zKup7kX6qtMQec/hBDVI5KRD4ZazVUjbwSsVe+QoEVIoUQaVPrI+fFm0MN5qoz2bvsuu+fYMeMv4tys2k+7rURBevIFS3b+yw7x6FKrXrIWtJBaI0mO4fdAWpkAqeaaMIWAYcP+3RZyv1WvyRXCYUqGQ8paMpyT5Ovha0OaN3JGxaKCQOFG/js9MFkcemd1T4QaDsOM7yrcNZP9T++Q5d0jYLby363JQopqjtwIerh3T9A+mFSV7/LMtvqf3EjtI+7Y4WZw70PeqI+Ja8SqsomyGxPszvcuxe6Bkl5dC3mhMnCH1zFN0s5zlpryoiz224S9OZwWxDjQZMokQpT+/0LGPhOnhTLJ9bJqH1KBGyps5GDBoQIJKeTJ7FMxBYEdl5qz7hHkwZBYCLejHFCn6FI9Ct22MjJelQvSaDtLzOG08/RkhILzpZtDrg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(396003)(136003)(39860400002)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(5660300002)(41300700001)(7416002)(2906002)(44832011)(966005)(6486002)(82960400001)(6512007)(26005)(6506007)(31696002)(36756003)(83380400001)(86362001)(53546011)(2616005)(8676002)(478600001)(6666004)(8936002)(4326008)(66946007)(66556008)(6916009)(31686004)(38100700002)(66476007)(316002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SFlmMFMzL00rMEdrYTBCOXUzUlYzYkhkZVRZd3VjRFdsYjYwOU5GWjhCVGE1?=
+ =?utf-8?B?TlNLWDZpNWR3cklPd3dYWWRTcU9NcmZ2SkdhK3JJaGZKNjNEQUVKWFd6REtp?=
+ =?utf-8?B?M3dJd2R5dmJReGpMbXpiN2RkWXFmaklvemNsOFlHMEVqWnN4dU5BU0JuM3VY?=
+ =?utf-8?B?TVowSVJ0a3ZTKzZFNktJWXJ6RU45WlRrOEY0WDd2VzRqbkk1eXNIeHo4WkVG?=
+ =?utf-8?B?M09KR0ozYmxuT3UrU1FhdS95ZGF4a0RlZWx4NERwR1lmM0dKbktFUm1PNDRY?=
+ =?utf-8?B?Y0FsOEpGbFdNMCsyU3lJYWk4Y3E0d1RzZyt6Y1o0N3RMT3FaUVpmNXhTOVFP?=
+ =?utf-8?B?czhHblhNVTJjNjJ3YUhWTVJGaFBZLzlNOXpBTG1oY3YzUzBPUU14amxuUkYx?=
+ =?utf-8?B?SDRDK3diVGQyaGltN0dCampidDNXSGJzOEpJdWNRaStINUc2dUJxNWhRZk9D?=
+ =?utf-8?B?V0tHbG9pMm1vMTN6UlRFd2IzQ1ZjRzE3ZGM0ZlRWTFRLNVFjS2VMdElSY1Ux?=
+ =?utf-8?B?YkswM2pQNlNoSXh5aUVTQy85eVVOZExaWnhMME9EQ3Z4d3ZERWNwU0ttakY5?=
+ =?utf-8?B?OVN5VUJRTENDVkFKbnM4T054Mmw2dFo0SXlaSGdKRkwxcnJvcXlnR09QRGpY?=
+ =?utf-8?B?Z0l5dUtnNUV6M2ZXampGV3RSUFkrNW1YWFlRRERadXV0YTh1RHlEVDVpNHJN?=
+ =?utf-8?B?RlZ6VW13WlYwa1Ixem9IZ05CdkJxOWVBQTA1LzRWZnlVY3YyQnpNQ253UmZz?=
+ =?utf-8?B?UXhPM2dsWkZjNU43UUFQYm5nTlRPK0p4WEVPaDNYNHQweThmTk5acmRua3A5?=
+ =?utf-8?B?NkEzNjdpakdQdkM4azJRT2xyWmk4eCtwczRLRStzb1o3QjBObkxQYlpnT0JS?=
+ =?utf-8?B?bHVaSTRrK2RreFFpY0k2OEFhazZWTHhpYUVVRzltYlF0KzJqZEJLbUVocTNs?=
+ =?utf-8?B?VGF5RHJadXl1ckVpNEtiQmcxaDZZeU4wS1RaaHdOUXBMbkpwcmtQRlFEVytl?=
+ =?utf-8?B?OWdrR0ZUOStJR1NoSGMrb1lRVVpSZXJheWpSc1l5NXRyRzVYcDZFMEh1SzJz?=
+ =?utf-8?B?TGdNNFBLVTBDcUExaG9lVjhCS1JyWi9wdFVjOEp1ZWxJaGlWd1NNVVEyaFlm?=
+ =?utf-8?B?NDE1dXcxN1VZT2lURnRmUDdKVDlxcVRTbU9lSEROOHBOZ0ZPWCt6ejFaVmlX?=
+ =?utf-8?B?b21jaWR5MzBSZkllS1A0S1VTUTFpc0lMWloyMDZDeDh0KytsUjBERTZMNTlj?=
+ =?utf-8?B?T2F0eFRxaGx1R1lBMlpLRGM5MFN5bUVKY0tqMEpPUk1Gemo1VnVuaDA1R1dC?=
+ =?utf-8?B?NElZUmd5bDNHWS9wOFh3c1lJNDlIa0huZnE4aU12ZC8xMWVsUHFyVWRYTXl4?=
+ =?utf-8?B?OFQ0c1RxY2FxWFlUVFJvTjc2SVN2ZWpLby84SXkxNmRwUEZsMmMvaEhMRWRC?=
+ =?utf-8?B?eXoxcEF2RGhJeUloV282aS9TeHlFakd5aFdwYmQ2WnpreFlJMXcyN0FyUWow?=
+ =?utf-8?B?dXhoWnFCNStwb1Fxc3huK2RZVFN6ZkJFdXFDakQvbzU1U1VQaFlmTXZsNVZa?=
+ =?utf-8?B?aVpWeWJXQy9qd2p4U05XYVYyczJzbnh6dTdtTndWSnJJMWVEdURvMW45bHNN?=
+ =?utf-8?B?Y0tOL0tJOXNQLzVLeUR3MTBKdUo5QitzVU0ySUY1K2M5K2haUXZzVUJRUzBu?=
+ =?utf-8?B?T0kzdk9nS2FXS1Zud2hwYWRWZ21oMks4anpaeGlLMUpBVWpJdXVxU2JYQ1lZ?=
+ =?utf-8?B?dGNReWd2NlVTK2hld1pSS2V1b2JZcFIxSFJwT0RxeVRZb2FENHhoaHcxdlNl?=
+ =?utf-8?B?Mm43cm9pYXI3TU9QdzI4cTN1QXRGN3BpV3FCWVRSVDNBQUJnaFhBaUQ1MXdD?=
+ =?utf-8?B?dHpsbTNCaCtWczJ3dE1HQnpncWd4bHlFOFFaZEU5TVZDUjBCdGFJZXJtTVB4?=
+ =?utf-8?B?eE1KRWVBWTFyWTl3NVBsUE0yb3JiY1dHNVNtOU41ZG80aUhjaS94TGtJTnZr?=
+ =?utf-8?B?aEJkVEgzR3YxS0MwVDBITDhxSGEyYzN0R2s4S2hROThlYmwvSHpLK1F3TnlJ?=
+ =?utf-8?B?RS9DeVhEZGhGTVhoNkZ4Qzc1SHJ0TUJuUk40YkFYbUVsajhnS3BtVTN5SFpZ?=
+ =?utf-8?Q?wrSbd/YE9G8xket9J5pLS61jE?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e015263d-6ae5-4baf-0a84-08dbeb7182cc
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 15:41:36.2703
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q9xZyp0PeO/12OzMIgrTboXCaEifGLP1JWFwBF6IuQMYsy52+CH3AVK3Lk27fIvUJzUn51ES3mBUd3YIU8/tmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7074
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 12:22, Aakarsh Jain wrote:
-> YV12 and I420 format (3-plane) support is added. Stride information is
-> added to all formats and planes since it is necessary for YV12/I420
-> which are different from width.
+
+
+On 11/22/23 08:37, Rafael J. Wysocki wrote:
+> On Wed, Nov 22, 2023 at 4:34 PM Dave Jiang <dave.jiang@intel.com> wrote:
+>>
+>> Linus reported that:
+>> After commit a103f46633fd the kernel stopped compiling for
+>> several ARM32 platforms that I am building with a bare metal
+>> compiler. Bare metal compilers (arm-none-eabi-) don't
+>> define __linux__.
+>>
+>> This is because the header <acpi/platform/acenv.h> is now
+>> in the include path for <linux/irq.h>:
+>>
+>>   CC      arch/arm/kernel/irq.o
+>>   CC      kernel/sysctl.o
+>>   CC      crypto/api.o
+>> In file included from ../include/acpi/acpi.h:22,
+>>                  from ../include/linux/fw_table.h:29,
+>>                  from ../include/linux/acpi.h:18,
+>>                  from ../include/linux/irqchip.h:14,
+>>                  from ../arch/arm/kernel/irq.c:25:
+>> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+>>   218 | #error Unknown target environment
+>>       |  ^~~~~
+>>
+>> The issue is caused by the introducing of splitting out the ACPI code to
+>> support the new generic fw_table code.
+>>
+>> Rafael suggested [1] moving the fw_table.h include in linux/acpi.h to below
+>> the linux/mutex.h. Remove the two includes in fw_table.h. Replace
+>> linux/fw_table.h include in fw_table.c with linux/acpi.h.
+>>
+>> Link: https://lore.kernel.org/linux-acpi/CAJZ5v0idWdJq3JSqQWLG5q+b+b=zkEdWR55rGYEoxh7R6N8kFQ@mail.gmail.com/
+>> Fixes: a103f46633fd ("acpi: Move common tables helper functions to common lib")
+>> Closes: https://lore.kernel.org/linux-acpi/20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org/
+>> Reported-by: Linus Walleij <linus.walleij@linaro.org>
+>> Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> Tested-by: Linus Walleij <linus.walleij@linaro.org>
+>> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+>> ---
+>> v3:
+>> - Drop fw_table.h in fw_table.c since acpi.h already included. (Rafael)
 > 
-> Cc: linux-fsd@tesla.com
-> Signed-off-by: Smitha T Murthy <smithatmurthy@gmail.com>
-> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
-> ---
->  .../platform/samsung/s5p-mfc/regs-mfc-v12.h   |   2 +
->  .../platform/samsung/s5p-mfc/regs-mfc-v7.h    |   1 +
->  .../platform/samsung/s5p-mfc/regs-mfc-v8.h    |   3 +
->  .../platform/samsung/s5p-mfc/s5p_mfc_common.h |   4 +
->  .../platform/samsung/s5p-mfc/s5p_mfc_dec.c    |  45 ++++-
->  .../platform/samsung/s5p-mfc/s5p_mfc_enc.c    |  86 +++++++--
->  .../platform/samsung/s5p-mfc/s5p_mfc_opr.h    |   6 +-
->  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c |  12 +-
->  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c | 168 +++++++++++++++---
->  9 files changed, 281 insertions(+), 46 deletions(-)
+> Do you want me to apply this, or do you prefer to route it in a different way?
+
+Please apply it. Thank you!
+
 > 
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
-> index 6c68a45082d0..70464f47c1f9 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
-> @@ -26,6 +26,8 @@
->  #define MFC_VERSION_V12			0xC0
->  #define MFC_NUM_PORTS_V12		1
->  #define S5P_FIMV_CODEC_VP9_ENC		27
-> +#define MFC_CHROMA_PAD_BYTES_V12        256
-> +#define S5P_FIMV_D_ALIGN_PLANE_SIZE_V12 256
->  
->  /* Encoder buffer size for MFCv12 */
->  #define ENC_V120_BASE_SIZE(x, y) \
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v7.h b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v7.h
-> index 4a7adfdaa359..50f9bf0603c1 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v7.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v7.h
-> @@ -24,6 +24,7 @@
->  
->  #define S5P_FIMV_E_ENCODED_SOURCE_FIRST_ADDR_V7		0xfa70
->  #define S5P_FIMV_E_ENCODED_SOURCE_SECOND_ADDR_V7	0xfa74
-> +#define S5P_FIMV_E_ENCODED_SOURCE_THIRD_ADDR_V7		0xfa78
->  
->  #define S5P_FIMV_E_VP8_OPTIONS_V7			0xfdb0
->  #define S5P_FIMV_E_VP8_FILTER_OPTIONS_V7		0xfdb4
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v8.h b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v8.h
-> index 162e3c7e920f..0ef9eb2dff22 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v8.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/regs-mfc-v8.h
-> @@ -17,13 +17,16 @@
->  #define S5P_FIMV_D_MIN_SCRATCH_BUFFER_SIZE_V8	0xf108
->  #define S5P_FIMV_D_FIRST_PLANE_DPB_SIZE_V8	0xf144
->  #define S5P_FIMV_D_SECOND_PLANE_DPB_SIZE_V8	0xf148
-> +#define S5P_FIMV_D_THIRD_PLANE_DPB_SIZE_V8	0xf14C
->  #define S5P_FIMV_D_MV_BUFFER_SIZE_V8		0xf150
->  
->  #define S5P_FIMV_D_FIRST_PLANE_DPB_STRIDE_SIZE_V8	0xf138
->  #define S5P_FIMV_D_SECOND_PLANE_DPB_STRIDE_SIZE_V8	0xf13c
-> +#define S5P_FIMV_D_THIRD_PLANE_DPB_STRIDE_SIZE_V8	0xf140
->  
->  #define S5P_FIMV_D_FIRST_PLANE_DPB_V8		0xf160
->  #define S5P_FIMV_D_SECOND_PLANE_DPB_V8		0xf260
-> +#define S5P_FIMV_D_THIRD_PLANE_DPB_V8		0xf360
->  #define S5P_FIMV_D_MV_BUFFER_V8			0xf460
->  
->  #define S5P_FIMV_D_NUM_MV_V8			0xf134
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> index dd2e9f7704ab..9a39cccfe002 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> @@ -56,6 +56,7 @@
->  #define MFC_NO_INSTANCE_SET	-1
->  #define MFC_ENC_CAP_PLANE_COUNT	1
->  #define MFC_ENC_OUT_PLANE_COUNT	2
-> +#define VB2_MAX_PLANE_COUNT	3
->  #define STUFF_BYTE		4
->  #define MFC_MAX_CTRLS		128
->  
-> @@ -181,6 +182,7 @@ struct s5p_mfc_buf {
->  		struct {
->  			size_t luma;
->  			size_t chroma;
-> +			size_t chroma_1;
->  		} raw;
->  		size_t stream;
->  	} cookie;
-> @@ -657,6 +659,7 @@ struct s5p_mfc_ctx {
->  
->  	int luma_size;
->  	int chroma_size;
-> +	int chroma_size_1;
->  	int mv_size;
->  
->  	unsigned long consumed_stream;
-> @@ -722,6 +725,7 @@ struct s5p_mfc_ctx {
->  	size_t scratch_buf_size;
->  	int is_10bit;
->  	int is_422;
-> +	int stride[VB2_MAX_PLANE_COUNT];
->  };
->  
->  /*
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> index e219cbcd86d5..317f796fffa1 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_dec.c
-> @@ -56,6 +56,20 @@ static struct s5p_mfc_fmt formats[] = {
->  		.num_planes	= 2,
->  		.versions	= MFC_V6PLUS_BITS,
->  	},
-> +	{
-> +		.fourcc         = V4L2_PIX_FMT_YUV420M,
-> +		.codec_mode     = S5P_MFC_CODEC_NONE,
-> +		.type           = MFC_FMT_RAW,
-> +		.num_planes     = 3,
-> +		.versions       = MFC_V12_BIT,
-> +	},
-> +	{
-> +		.fourcc         = V4L2_PIX_FMT_YVU420M,
-> +		.codec_mode     = S5P_MFC_CODEC_NONE,
-> +		.type           = MFC_FMT_RAW,
-> +		.num_planes     = 3,
-> +		.versions       = MFC_V12_BIT
-> +	},
->  	{
->  		.fourcc		= V4L2_PIX_FMT_H264,
->  		.codec_mode	= S5P_MFC_CODEC_H264_DEC,
-> @@ -359,10 +373,15 @@ static int vidioc_g_fmt(struct file *file, void *priv, struct v4l2_format *f)
->  		/* Set pixelformat to the format in which MFC
->  		   outputs the decoded frame */
->  		pix_mp->pixelformat = ctx->dst_fmt->fourcc;
-> -		pix_mp->plane_fmt[0].bytesperline = ctx->buf_width;
-> +		pix_mp->plane_fmt[0].bytesperline = ctx->stride[0];
->  		pix_mp->plane_fmt[0].sizeimage = ctx->luma_size;
-> -		pix_mp->plane_fmt[1].bytesperline = ctx->buf_width;
-> +		pix_mp->plane_fmt[1].bytesperline = ctx->stride[1];
->  		pix_mp->plane_fmt[1].sizeimage = ctx->chroma_size;
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			pix_mp->plane_fmt[2].bytesperline = ctx->stride[2];
-> +			pix_mp->plane_fmt[2].sizeimage = ctx->chroma_size_1;
-> +		}
->  	} else if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
->  		/* This is run on OUTPUT
->  		   The buffer contains compressed image
-> @@ -937,6 +956,9 @@ static int s5p_mfc_queue_setup(struct vb2_queue *vq,
->  		   vq->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
->  		/* Output plane count is 2 - one for Y and one for CbCr */
->  		*plane_count = 2;
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-
-These misalignments produce a lot of checkpatch warnings.
-
-Make sure you run your patch series through 'checkpatch.pl --strict'!
-
-Regards,
-
-	Hans
-
-> +			*plane_count = 3;
->  		/* Setup buffer count */
->  		if (*buf_count < ctx->pb_count)
->  			*buf_count = ctx->pb_count;
-> @@ -955,12 +977,17 @@ static int s5p_mfc_queue_setup(struct vb2_queue *vq,
->  	    vq->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
->  		psize[0] = ctx->luma_size;
->  		psize[1] = ctx->chroma_size;
-> -
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			psize[2] = ctx->chroma_size_1;
->  		if (IS_MFCV6_PLUS(dev))
->  			alloc_devs[0] = ctx->dev->mem_dev[BANK_L_CTX];
->  		else
->  			alloc_devs[0] = ctx->dev->mem_dev[BANK_R_CTX];
->  		alloc_devs[1] = ctx->dev->mem_dev[BANK_L_CTX];
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			alloc_devs[2] = ctx->dev->mem_dev[BANK_L_CTX];
->  	} else if (vq->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE &&
->  		   ctx->state == MFCINST_INIT) {
->  		psize[0] = ctx->dec_src_buf_size;
-> @@ -994,12 +1021,24 @@ static int s5p_mfc_buf_init(struct vb2_buffer *vb)
->  			mfc_err("Plane buffer (CAPTURE) is too small\n");
->  			return -EINVAL;
->  		}
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			if (vb2_plane_size(vb, 2) < ctx->chroma_size_1) {
-> +				mfc_err("Plane buffer (CAPTURE) is too small\n");
-> +				return -EINVAL;
-> +			}
-> +		}
->  		i = vb->index;
->  		ctx->dst_bufs[i].b = vbuf;
->  		ctx->dst_bufs[i].cookie.raw.luma =
->  					vb2_dma_contig_plane_dma_addr(vb, 0);
->  		ctx->dst_bufs[i].cookie.raw.chroma =
->  					vb2_dma_contig_plane_dma_addr(vb, 1);
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			ctx->dst_bufs[i].cookie.raw.chroma_1 =
-> +					vb2_dma_contig_plane_dma_addr(vb, 2);
-> +		}
->  		ctx->dst_bufs_cnt++;
->  	} else if (vq->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
->  		if (IS_ERR_OR_NULL(ERR_PTR(
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> index e4d6e7c117b5..0eec04eb3ef3 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
-> @@ -59,6 +59,20 @@ static struct s5p_mfc_fmt formats[] = {
->  		.num_planes	= 2,
->  		.versions	= MFC_V6PLUS_BITS,
->  	},
-> +	{
-> +		.fourcc         = V4L2_PIX_FMT_YUV420M,
-> +		.codec_mode     = S5P_MFC_CODEC_NONE,
-> +		.type           = MFC_FMT_RAW,
-> +		.num_planes     = 3,
-> +		.versions       = MFC_V12_BIT,
-> +	},
-> +	{
-> +		.fourcc         = V4L2_PIX_FMT_YVU420M,
-> +		.codec_mode     = S5P_MFC_CODEC_NONE,
-> +		.type           = MFC_FMT_RAW,
-> +		.num_planes     = 3,
-> +		.versions       = MFC_V12_BIT,
-> +	},
->  	{
->  		.fourcc		= V4L2_PIX_FMT_H264,
->  		.codec_mode	= S5P_MFC_CODEC_H264_ENC,
-> @@ -1193,14 +1207,20 @@ static int enc_pre_frame_start(struct s5p_mfc_ctx *ctx)
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	struct s5p_mfc_buf *dst_mb;
->  	struct s5p_mfc_buf *src_mb;
-> -	unsigned long src_y_addr, src_c_addr, dst_addr;
-> +	unsigned long src_y_addr, src_c_addr, src_c_1_addr, dst_addr;
->  	unsigned int dst_size;
->  
->  	src_mb = list_entry(ctx->src_queue.next, struct s5p_mfc_buf, list);
->  	src_y_addr = vb2_dma_contig_plane_dma_addr(&src_mb->b->vb2_buf, 0);
->  	src_c_addr = vb2_dma_contig_plane_dma_addr(&src_mb->b->vb2_buf, 1);
-> +	if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +			ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +		src_c_1_addr =
-> +			vb2_dma_contig_plane_dma_addr(&src_mb->b->vb2_buf, 2);
-> +	else
-> +		src_c_1_addr = 0;
->  	s5p_mfc_hw_call(dev->mfc_ops, set_enc_frame_buffer, ctx,
-> -							src_y_addr, src_c_addr);
-> +					src_y_addr, src_c_addr, src_c_1_addr);
->  
->  	dst_mb = list_entry(ctx->dst_queue.next, struct s5p_mfc_buf, list);
->  	dst_addr = vb2_dma_contig_plane_dma_addr(&dst_mb->b->vb2_buf, 0);
-> @@ -1215,8 +1235,8 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
->  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	struct s5p_mfc_buf *mb_entry;
-> -	unsigned long enc_y_addr = 0, enc_c_addr = 0;
-> -	unsigned long mb_y_addr, mb_c_addr;
-> +	unsigned long enc_y_addr = 0, enc_c_addr = 0, enc_c_1_addr = 0;
-> +	unsigned long mb_y_addr, mb_c_addr, mb_c_1_addr;
->  	int slice_type;
->  	unsigned int strm_size;
->  	bool src_ready;
-> @@ -1229,14 +1249,21 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
->  		  mfc_read(dev, S5P_FIMV_ENC_SI_PIC_CNT));
->  	if (slice_type >= 0) {
->  		s5p_mfc_hw_call(dev->mfc_ops, get_enc_frame_buffer, ctx,
-> -				&enc_y_addr, &enc_c_addr);
-> +				&enc_y_addr, &enc_c_addr, &enc_c_1_addr);
->  		list_for_each_entry(mb_entry, &ctx->src_queue, list) {
->  			mb_y_addr = vb2_dma_contig_plane_dma_addr(
->  					&mb_entry->b->vb2_buf, 0);
->  			mb_c_addr = vb2_dma_contig_plane_dma_addr(
->  					&mb_entry->b->vb2_buf, 1);
-> -			if ((enc_y_addr == mb_y_addr) &&
-> -						(enc_c_addr == mb_c_addr)) {
-> +			if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +				mb_c_1_addr = vb2_dma_contig_plane_dma_addr
-> +						(&mb_entry->b->vb2_buf, 2);
-> +			else
-> +				mb_c_1_addr = 0;
-> +			if ((enc_y_addr == mb_y_addr)
-> +					&& (enc_c_addr == mb_c_addr)
-> +					&& (enc_c_1_addr == mb_c_1_addr)) {
->  				list_del(&mb_entry->list);
->  				ctx->src_queue_cnt--;
->  				vb2_buffer_done(&mb_entry->b->vb2_buf,
-> @@ -1249,8 +1276,15 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
->  					&mb_entry->b->vb2_buf, 0);
->  			mb_c_addr = vb2_dma_contig_plane_dma_addr(
->  					&mb_entry->b->vb2_buf, 1);
-> -			if ((enc_y_addr == mb_y_addr) &&
-> -						(enc_c_addr == mb_c_addr)) {
-> +			if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +				mb_c_1_addr = vb2_dma_contig_plane_dma_addr(
-> +						&mb_entry->b->vb2_buf, 2);
-> +			else
-> +				mb_c_1_addr = 0;
-> +			if ((enc_y_addr == mb_y_addr)
-> +					&& (enc_c_addr == mb_c_addr)
-> +					&& (enc_c_1_addr == mb_c_1_addr)) {
->  				list_del(&mb_entry->list);
->  				ctx->ref_queue_cnt--;
->  				vb2_buffer_done(&mb_entry->b->vb2_buf,
-> @@ -1381,10 +1415,15 @@ static int vidioc_g_fmt(struct file *file, void *priv, struct v4l2_format *f)
->  		pix_fmt_mp->pixelformat = ctx->src_fmt->fourcc;
->  		pix_fmt_mp->num_planes = ctx->src_fmt->num_planes;
->  
-> -		pix_fmt_mp->plane_fmt[0].bytesperline = ctx->buf_width;
-> +		pix_fmt_mp->plane_fmt[0].bytesperline = ctx->stride[0];
->  		pix_fmt_mp->plane_fmt[0].sizeimage = ctx->luma_size;
-> -		pix_fmt_mp->plane_fmt[1].bytesperline = ctx->buf_width;
-> +		pix_fmt_mp->plane_fmt[1].bytesperline = ctx->stride[1];
->  		pix_fmt_mp->plane_fmt[1].sizeimage = ctx->chroma_size;
-> +		if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			pix_fmt_mp->plane_fmt[2].bytesperline = ctx->stride[2];
-> +			pix_fmt_mp->plane_fmt[2].sizeimage = ctx->chroma_size_1;
-> +		}
->  	} else {
->  		mfc_err("invalid buf type\n");
->  		return -EINVAL;
-> @@ -1468,9 +1507,14 @@ static int vidioc_s_fmt(struct file *file, void *priv, struct v4l2_format *f)
->  
->  		s5p_mfc_hw_call(dev->mfc_ops, enc_calc_src_size, ctx);
->  		pix_fmt_mp->plane_fmt[0].sizeimage = ctx->luma_size;
-> -		pix_fmt_mp->plane_fmt[0].bytesperline = ctx->buf_width;
-> +		pix_fmt_mp->plane_fmt[0].bytesperline = ctx->stride[0];
->  		pix_fmt_mp->plane_fmt[1].sizeimage = ctx->chroma_size;
-> -		pix_fmt_mp->plane_fmt[1].bytesperline = ctx->buf_width;
-> +		pix_fmt_mp->plane_fmt[1].bytesperline = ctx->stride[1];
-> +		if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			pix_fmt_mp->plane_fmt[2].bytesperline = ctx->stride[2];
-> +			pix_fmt_mp->plane_fmt[2].sizeimage = ctx->chroma_size_1;
-> +		}
->  
->  		ctx->src_bufs_cnt = 0;
->  		ctx->output_state = QUEUE_FREE;
-> @@ -2414,10 +2458,16 @@ static int s5p_mfc_queue_setup(struct vb2_queue *vq,
->  
->  		psize[0] = ctx->luma_size;
->  		psize[1] = ctx->chroma_size;
-> +		if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			psize[2] = ctx->chroma_size_1;
->  
->  		if (IS_MFCV6_PLUS(dev)) {
->  			alloc_devs[0] = ctx->dev->mem_dev[BANK_L_CTX];
->  			alloc_devs[1] = ctx->dev->mem_dev[BANK_L_CTX];
-> +			if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +				alloc_devs[2] = ctx->dev->mem_dev[BANK_L_CTX];
->  		} else {
->  			alloc_devs[0] = ctx->dev->mem_dev[BANK_R_CTX];
->  			alloc_devs[1] = ctx->dev->mem_dev[BANK_R_CTX];
-> @@ -2456,6 +2506,10 @@ static int s5p_mfc_buf_init(struct vb2_buffer *vb)
->  					vb2_dma_contig_plane_dma_addr(vb, 0);
->  		ctx->src_bufs[i].cookie.raw.chroma =
->  					vb2_dma_contig_plane_dma_addr(vb, 1);
-> +		if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			ctx->src_bufs[i].cookie.raw.chroma_1 =
-> +					vb2_dma_contig_plane_dma_addr(vb, 2);
->  		ctx->src_bufs_cnt++;
->  	} else {
->  		mfc_err("invalid queue type: %d\n", vq->type);
-> @@ -2493,6 +2547,12 @@ static int s5p_mfc_buf_prepare(struct vb2_buffer *vb)
->  			mfc_err("plane size is too small for output\n");
->  			return -EINVAL;
->  		}
-> +		if ((ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +		     ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M) &&
-> +		    (vb2_plane_size(vb, 2) < ctx->chroma_size_1)) {
-> +			mfc_err("plane size is too small for output\n");
-> +			return -EINVAL;
-> +		}
->  	} else {
->  		mfc_err("invalid queue type: %d\n", vq->type);
->  		return -EINVAL;
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr.h b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr.h
-> index 87ac56756a16..7c5e851c8191 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr.h
-> @@ -293,9 +293,11 @@ struct s5p_mfc_hw_ops {
->  	int (*set_enc_stream_buffer)(struct s5p_mfc_ctx *ctx,
->  			unsigned long addr, unsigned int size);
->  	void (*set_enc_frame_buffer)(struct s5p_mfc_ctx *ctx,
-> -			unsigned long y_addr, unsigned long c_addr);
-> +			unsigned long y_addr, unsigned long c_addr,
-> +			unsigned long c_1_addr);
->  	void (*get_enc_frame_buffer)(struct s5p_mfc_ctx *ctx,
-> -			unsigned long *y_addr, unsigned long *c_addr);
-> +			unsigned long *y_addr, unsigned long *c_addr,
-> +			unsigned long *c_1_addr);
->  	void (*try_run)(struct s5p_mfc_dev *dev);
->  	void (*clear_int_flags)(struct s5p_mfc_dev *dev);
->  	int (*get_dspl_y_adr)(struct s5p_mfc_dev *dev);
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> index 28a06dc343fd..fcfaf125a5a1 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c
-> @@ -516,7 +516,8 @@ static int s5p_mfc_set_enc_stream_buffer_v5(struct s5p_mfc_ctx *ctx,
->  }
->  
->  static void s5p_mfc_set_enc_frame_buffer_v5(struct s5p_mfc_ctx *ctx,
-> -		unsigned long y_addr, unsigned long c_addr)
-> +		unsigned long y_addr, unsigned long c_addr,
-> +		unsigned long c_1_addr)
->  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  
-> @@ -525,7 +526,8 @@ static void s5p_mfc_set_enc_frame_buffer_v5(struct s5p_mfc_ctx *ctx,
->  }
->  
->  static void s5p_mfc_get_enc_frame_buffer_v5(struct s5p_mfc_ctx *ctx,
-> -		unsigned long *y_addr, unsigned long *c_addr)
-> +		unsigned long *y_addr, unsigned long *c_addr,
-> +		unsigned long *c_1_addr)
->  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  
-> @@ -1210,7 +1212,7 @@ static int s5p_mfc_run_enc_frame(struct s5p_mfc_ctx *ctx)
->  	if (list_empty(&ctx->src_queue)) {
->  		/* send null frame */
->  		s5p_mfc_set_enc_frame_buffer_v5(ctx, dev->dma_base[BANK_R_CTX],
-> -						dev->dma_base[BANK_R_CTX]);
-> +						dev->dma_base[BANK_R_CTX], 0);
->  		src_mb = NULL;
->  	} else {
->  		src_mb = list_entry(ctx->src_queue.next, struct s5p_mfc_buf,
-> @@ -1220,7 +1222,7 @@ static int s5p_mfc_run_enc_frame(struct s5p_mfc_ctx *ctx)
->  			/* send null frame */
->  			s5p_mfc_set_enc_frame_buffer_v5(ctx,
->  						dev->dma_base[BANK_R_CTX],
-> -						dev->dma_base[BANK_R_CTX]);
-> +						dev->dma_base[BANK_R_CTX], 0);
->  			ctx->state = MFCINST_FINISHING;
->  		} else {
->  			src_y_addr = vb2_dma_contig_plane_dma_addr(
-> @@ -1228,7 +1230,7 @@ static int s5p_mfc_run_enc_frame(struct s5p_mfc_ctx *ctx)
->  			src_c_addr = vb2_dma_contig_plane_dma_addr(
->  					&src_mb->b->vb2_buf, 1);
->  			s5p_mfc_set_enc_frame_buffer_v5(ctx, src_y_addr,
-> -								src_c_addr);
-> +								src_c_addr, 0);
->  			if (src_mb->flags & MFC_BUF_FLAG_EOS)
->  				ctx->state = MFCINST_FINISHING;
->  		}
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> index fb3f0718821d..e579c765e902 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> @@ -494,16 +494,43 @@ static void s5p_mfc_dec_calc_dpb_size_v6(struct s5p_mfc_ctx *ctx)
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	ctx->buf_width = ALIGN(ctx->img_width, S5P_FIMV_NV12MT_HALIGN_V6);
->  	ctx->buf_height = ALIGN(ctx->img_height, S5P_FIMV_NV12MT_VALIGN_V6);
-> +	ctx->chroma_size_1 = 0;
->  	mfc_debug(2, "SEQ Done: Movie dimensions %dx%d,\n"
->  			"buffer dimensions: %dx%d\n", ctx->img_width,
->  			ctx->img_height, ctx->buf_width, ctx->buf_height);
->  
-> -	ctx->luma_size = calc_plane(ctx->img_width, ctx->img_height);
-> -	ctx->chroma_size = calc_plane(ctx->img_width, (ctx->img_height >> 1));
-> +	switch (ctx->dst_fmt->fourcc) {
-> +	case V4L2_PIX_FMT_NV12M:
-> +	case V4L2_PIX_FMT_NV21M:
-> +		ctx->stride[0] = ALIGN(ctx->img_width,
-> +					S5P_FIMV_NV12MT_HALIGN_V6);
-> +		ctx->stride[1] = ALIGN(ctx->img_width,
-> +					S5P_FIMV_NV12MT_HALIGN_V6);
-> +		ctx->luma_size = calc_plane(ctx->stride[0], ctx->img_height);
-> +		ctx->chroma_size = calc_plane(ctx->stride[1],
-> +					(ctx->img_height / 2));
-> +		break;
-> +	case V4L2_PIX_FMT_YUV420M:
-> +	case V4L2_PIX_FMT_YVU420M:
-> +		ctx->stride[0] = ALIGN(ctx->img_width,
-> +					S5P_FIMV_NV12MT_HALIGN_V6);
-> +		ctx->stride[1] = ALIGN(ctx->img_width / 2,
-> +					S5P_FIMV_NV12MT_HALIGN_V6);
-> +		ctx->stride[2] = ALIGN(ctx->img_width / 2,
-> +					S5P_FIMV_NV12MT_HALIGN_V6);
-> +		ctx->luma_size = calc_plane(ctx->stride[0], ctx->img_height);
-> +		ctx->chroma_size = calc_plane(ctx->stride[1],
-> +					(ctx->img_height / 2));
-> +		ctx->chroma_size_1 = calc_plane(ctx->stride[2],
-> +					(ctx->img_height / 2));
-> +		break;
-> +	}
-> +
->  	if (IS_MFCV8_PLUS(ctx->dev)) {
->  		/* MFCv8 needs additional 64 bytes for luma,chroma dpb*/
->  		ctx->luma_size += S5P_FIMV_D_ALIGN_PLANE_SIZE_V8;
->  		ctx->chroma_size += S5P_FIMV_D_ALIGN_PLANE_SIZE_V8;
-> +		ctx->chroma_size_1 += S5P_FIMV_D_ALIGN_PLANE_SIZE_V8;
->  	}
->  
->  	if (ctx->codec_mode == S5P_MFC_CODEC_H264_DEC ||
-> @@ -534,15 +561,53 @@ static void s5p_mfc_enc_calc_src_size_v6(struct s5p_mfc_ctx *ctx)
->  	mb_width = MB_WIDTH(ctx->img_width);
->  	mb_height = MB_HEIGHT(ctx->img_height);
->  
-> -	ctx->buf_width = ALIGN(ctx->img_width, S5P_FIMV_NV12M_HALIGN_V6);
-> -	ctx->luma_size = ALIGN((mb_width * mb_height) * 256, 256);
-> -	ctx->chroma_size = ALIGN((mb_width * mb_height) * 128, 256);
-> -
-> -	/* MFCv7 needs pad bytes for Luma and Chroma */
-> -	if (IS_MFCV7_PLUS(ctx->dev)) {
-> +	if (IS_MFCV12(ctx->dev)) {
-> +		switch (ctx->src_fmt->fourcc) {
-> +		case V4L2_PIX_FMT_NV12M:
-> +		case V4L2_PIX_FMT_NV21M:
-> +			ctx->stride[0] = ALIGN(ctx->img_width,
-> +						S5P_FIMV_NV12M_HALIGN_V6);
-> +			ctx->stride[1] = ALIGN(ctx->img_width,
-> +						S5P_FIMV_NV12M_HALIGN_V6);
-> +			ctx->luma_size = ctx->stride[0] *
-> +						ALIGN(ctx->img_height, 16);
-> +			ctx->chroma_size =  ctx->stride[0] *
-> +						ALIGN(ctx->img_height / 2, 16);
-> +			break;
-> +		case V4L2_PIX_FMT_YUV420M:
-> +		case V4L2_PIX_FMT_YVU420M:
-> +			ctx->stride[0] = ALIGN(ctx->img_width,
-> +						S5P_FIMV_NV12M_HALIGN_V6);
-> +			ctx->stride[1] = ALIGN(ctx->img_width / 2,
-> +						S5P_FIMV_NV12M_HALIGN_V6);
-> +			ctx->stride[2] = ALIGN(ctx->img_width / 2,
-> +						S5P_FIMV_NV12M_HALIGN_V6);
-> +			ctx->luma_size = ctx->stride[0] *
-> +						ALIGN(ctx->img_height, 16);
-> +			ctx->chroma_size =  ctx->stride[1] *
-> +						ALIGN(ctx->img_height / 2, 16);
-> +			ctx->chroma_size_1 =  ctx->stride[2] *
-> +						ALIGN(ctx->img_height / 2, 16);
-> +			break;
-> +		}
->  		ctx->luma_size += MFC_LUMA_PAD_BYTES_V7;
-> -		ctx->chroma_size += MFC_CHROMA_PAD_BYTES_V7;
-> +		ctx->chroma_size += MFC_CHROMA_PAD_BYTES_V12;
-> +		ctx->chroma_size_1 += MFC_CHROMA_PAD_BYTES_V12;
-> +	} else {
-> +		ctx->buf_width = ALIGN(ctx->img_width,
-> +					S5P_FIMV_NV12M_HALIGN_V6);
-> +		ctx->stride[0] = ctx->buf_width;
-> +		ctx->stride[1] = ctx->buf_width;
-> +		ctx->luma_size = ALIGN((mb_width * mb_height) * 256, 256);
-> +		ctx->chroma_size = ALIGN((mb_width * mb_height) * 128, 256);
-> +		ctx->chroma_size_1 = 0;
-> +		/* MFCv7 needs pad bytes for Luma and Chroma */
-> +		if (IS_MFCV7_PLUS(ctx->dev)) {
-> +			ctx->luma_size += MFC_LUMA_PAD_BYTES_V7;
-> +			ctx->chroma_size += MFC_LUMA_PAD_BYTES_V7;
-> +		}
->  	}
-> +
->  }
->  
->  /* Set registers for decoding stream buffer */
-> @@ -588,15 +653,21 @@ static int s5p_mfc_set_dec_frame_buffer_v6(struct s5p_mfc_ctx *ctx)
->  	writel(ctx->total_dpb_count, mfc_regs->d_num_dpb);
->  	writel(ctx->luma_size, mfc_regs->d_first_plane_dpb_size);
->  	writel(ctx->chroma_size, mfc_regs->d_second_plane_dpb_size);
-> -
-> +	if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +			ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +		writel(ctx->chroma_size_1, mfc_regs->d_third_plane_dpb_size);
->  	writel(buf_addr1, mfc_regs->d_scratch_buffer_addr);
->  	writel(ctx->scratch_buf_size, mfc_regs->d_scratch_buffer_size);
->  
->  	if (IS_MFCV8_PLUS(dev)) {
-> -		writel(ctx->img_width,
-> +		writel(ctx->stride[0],
->  			mfc_regs->d_first_plane_dpb_stride_size);
-> -		writel(ctx->img_width,
-> +		writel(ctx->stride[1],
->  			mfc_regs->d_second_plane_dpb_stride_size);
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			writel(ctx->stride[2],
-> +				mfc_regs->d_third_plane_dpb_stride_size);
->  	}
->  
->  	buf_addr1 += ctx->scratch_buf_size;
-> @@ -625,6 +696,13 @@ static int s5p_mfc_set_dec_frame_buffer_v6(struct s5p_mfc_ctx *ctx)
->  					ctx->dst_bufs[i].cookie.raw.chroma);
->  		writel(ctx->dst_bufs[i].cookie.raw.chroma,
->  				mfc_regs->d_second_plane_dpb + i * 4);
-> +		if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +			mfc_debug(2, "\tChroma_1 %d: %zx\n", i,
-> +					ctx->dst_bufs[i].cookie.raw.chroma_1);
-> +			writel(ctx->dst_bufs[i].cookie.raw.chroma_1,
-> +					mfc_regs->d_third_plane_dpb + i * 4);
-> +		}
->  	}
->  	if (ctx->codec_mode == S5P_MFC_CODEC_H264_DEC ||
->  			ctx->codec_mode == S5P_MFC_CODEC_H264_MVC_DEC ||
-> @@ -683,20 +761,24 @@ static int s5p_mfc_set_enc_stream_buffer_v6(struct s5p_mfc_ctx *ctx,
->  }
->  
->  static void s5p_mfc_set_enc_frame_buffer_v6(struct s5p_mfc_ctx *ctx,
-> -		unsigned long y_addr, unsigned long c_addr)
-> +		unsigned long y_addr, unsigned long c_addr,
-> +		unsigned long c_1_addr)
->  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
->  
->  	writel(y_addr, mfc_regs->e_source_first_plane_addr);
->  	writel(c_addr, mfc_regs->e_source_second_plane_addr);
-> +	writel(c_1_addr, mfc_regs->e_source_third_plane_addr);
->  
->  	mfc_debug(2, "enc src y buf addr: 0x%08lx\n", y_addr);
->  	mfc_debug(2, "enc src c buf addr: 0x%08lx\n", c_addr);
-> +	mfc_debug(2, "enc src cr buf addr: 0x%08lx\n", c_1_addr);
->  }
->  
->  static void s5p_mfc_get_enc_frame_buffer_v6(struct s5p_mfc_ctx *ctx,
-> -		unsigned long *y_addr, unsigned long *c_addr)
-> +		unsigned long *y_addr, unsigned long *c_addr,
-> +		unsigned long *c_1_addr)
->  {
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	const struct s5p_mfc_regs *mfc_regs = dev->mfc_regs;
-> @@ -704,12 +786,17 @@ static void s5p_mfc_get_enc_frame_buffer_v6(struct s5p_mfc_ctx *ctx,
->  
->  	*y_addr = readl(mfc_regs->e_encoded_source_first_plane_addr);
->  	*c_addr = readl(mfc_regs->e_encoded_source_second_plane_addr);
-> +	if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +			ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +		*c_1_addr = readl(mfc_regs->e_encoded_source_third_plane_addr);
-> +	else
-> +		*c_1_addr = 0;
->  
->  	enc_recon_y_addr = readl(mfc_regs->e_recon_luma_dpb_addr);
->  	enc_recon_c_addr = readl(mfc_regs->e_recon_chroma_dpb_addr);
->  
->  	mfc_debug(2, "recon y addr: 0x%08lx y_addr: 0x%08lx\n", enc_recon_y_addr, *y_addr);
-> -	mfc_debug(2, "recon c addr: 0x%08lx\n", enc_recon_c_addr);
-> +	mfc_debug(2, "recon c addr: 0x%08lx c_addr: 0x%08lx\n", enc_recon_c_addr, *c_addr);
->  }
->  
->  /* Set encoding ref & codec buffer */
-> @@ -886,6 +973,20 @@ static int s5p_mfc_set_enc_params(struct s5p_mfc_ctx *ctx)
->  		writel(reg, mfc_regs->e_enc_options);
->  		/* 0: NV12(CbCr), 1: NV21(CrCb) */
->  		writel(0x0, mfc_regs->pixel_format);
-> +	} else if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M) {
-> +		/* 0: Linear, 1: 2D tiled*/
-> +		reg = readl(mfc_regs->e_enc_options);
-> +		reg &= ~(0x1 << 7);
-> +		writel(reg, mfc_regs->e_enc_options);
-> +		/* 2: YV12(CrCb), 3: I420(CrCb) */
-> +		writel(0x2, mfc_regs->pixel_format);
-> +	} else if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M) {
-> +		/* 0: Linear, 1: 2D tiled*/
-> +		reg = readl(mfc_regs->e_enc_options);
-> +		reg &= ~(0x1 << 7);
-> +		writel(reg, mfc_regs->e_enc_options);
-> +		/* 2: YV12(CrCb), 3: I420(CrCb) */
-> +		writel(0x3, mfc_regs->pixel_format);
->  	}
->  
->  	/* memory structure recon. frame */
-> @@ -1696,8 +1797,12 @@ static int s5p_mfc_init_decode_v6(struct s5p_mfc_ctx *ctx)
->  	else
->  		writel(reg, mfc_regs->d_dec_options);
->  
-> -	/* 0: NV12(CbCr), 1: NV21(CrCb) */
-> -	if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_NV21M)
-> +	/* 0: NV12(CbCr), 1: NV21(CrCb), 2: YV12(CrCb), 3: I420(CbCr) */
-> +	if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YUV420M)
-> +		writel(0x3, mfc_regs->pixel_format);
-> +	else if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +		writel(0x2, mfc_regs->pixel_format);
-> +	else if (ctx->dst_fmt->fourcc == V4L2_PIX_FMT_NV21M)
->  		writel(0x1, mfc_regs->pixel_format);
->  	else
->  		writel(0x0, mfc_regs->pixel_format);
-> @@ -1781,8 +1886,12 @@ static int s5p_mfc_init_encode_v6(struct s5p_mfc_ctx *ctx)
->  
->  	/* Set stride lengths for v7 & above */
->  	if (IS_MFCV7_PLUS(dev)) {
-> -		writel(ctx->img_width, mfc_regs->e_source_first_plane_stride);
-> -		writel(ctx->img_width, mfc_regs->e_source_second_plane_stride);
-> +		writel(ctx->stride[0], mfc_regs->e_source_first_plane_stride);
-> +		writel(ctx->stride[1], mfc_regs->e_source_second_plane_stride);
-> +		if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +			writel(ctx->stride[2],
-> +					mfc_regs->e_source_third_plane_stride);
->  	}
->  
->  	writel(ctx->inst_no, mfc_regs->instance_id);
-> @@ -1891,7 +2000,7 @@ static inline int s5p_mfc_run_enc_frame(struct s5p_mfc_ctx *ctx)
->  	struct s5p_mfc_dev *dev = ctx->dev;
->  	struct s5p_mfc_buf *dst_mb;
->  	struct s5p_mfc_buf *src_mb;
-> -	unsigned long src_y_addr, src_c_addr, dst_addr;
-> +	unsigned long src_y_addr, src_c_addr, src_c_1_addr, dst_addr;
->  	/*
->  	unsigned int src_y_size, src_c_size;
->  	*/
-> @@ -1909,22 +2018,29 @@ static inline int s5p_mfc_run_enc_frame(struct s5p_mfc_ctx *ctx)
->  
->  	if (list_empty(&ctx->src_queue)) {
->  		/* send null frame */
-> -		s5p_mfc_set_enc_frame_buffer_v6(ctx, 0, 0);
-> +		s5p_mfc_set_enc_frame_buffer_v6(ctx, 0, 0, 0);
->  		src_mb = NULL;
->  	} else {
->  		src_mb = list_entry(ctx->src_queue.next, struct s5p_mfc_buf, list);
->  		src_mb->flags |= MFC_BUF_FLAG_USED;
->  		if (src_mb->b->vb2_buf.planes[0].bytesused == 0) {
-> -			s5p_mfc_set_enc_frame_buffer_v6(ctx, 0, 0);
-> +			s5p_mfc_set_enc_frame_buffer_v6(ctx, 0, 0, 0);
->  			ctx->state = MFCINST_FINISHING;
->  		} else {
->  			src_y_addr = vb2_dma_contig_plane_dma_addr(&src_mb->b->vb2_buf, 0);
->  			src_c_addr = vb2_dma_contig_plane_dma_addr(&src_mb->b->vb2_buf, 1);
-> +			if (ctx->src_fmt->fourcc == V4L2_PIX_FMT_YUV420M ||
-> +				ctx->src_fmt->fourcc == V4L2_PIX_FMT_YVU420M)
-> +				src_c_1_addr = vb2_dma_contig_plane_dma_addr
-> +						(&src_mb->b->vb2_buf, 2);
-> +			else
-> +				src_c_1_addr = 0;
->  
->  			mfc_debug(2, "enc src y addr: 0x%08lx\n", src_y_addr);
->  			mfc_debug(2, "enc src c addr: 0x%08lx\n", src_c_addr);
->  
-> -			s5p_mfc_set_enc_frame_buffer_v6(ctx, src_y_addr, src_c_addr);
-> +			s5p_mfc_set_enc_frame_buffer_v6(ctx, src_y_addr,
-> +						src_c_addr, src_c_1_addr);
->  			if (src_mb->flags & MFC_BUF_FLAG_EOS)
->  				ctx->state = MFCINST_FINISHING;
->  		}
-> @@ -2450,6 +2566,8 @@ const struct s5p_mfc_regs *s5p_mfc_init_regs_v6_plus(struct s5p_mfc_dev *dev)
->  			S5P_FIMV_E_ENCODED_SOURCE_FIRST_ADDR_V7);
->  	R(e_encoded_source_second_plane_addr,
->  			S5P_FIMV_E_ENCODED_SOURCE_SECOND_ADDR_V7);
-> +	R(e_encoded_source_third_plane_addr,
-> +			S5P_FIMV_E_ENCODED_SOURCE_THIRD_ADDR_V7);
->  	R(e_vp8_options, S5P_FIMV_E_VP8_OPTIONS_V7);
->  
->  	if (!IS_MFCV8_PLUS(dev))
-> @@ -2464,16 +2582,20 @@ const struct s5p_mfc_regs *s5p_mfc_init_regs_v6_plus(struct s5p_mfc_dev *dev)
->  	R(d_cpb_buffer_offset, S5P_FIMV_D_CPB_BUFFER_OFFSET_V8);
->  	R(d_first_plane_dpb_size, S5P_FIMV_D_FIRST_PLANE_DPB_SIZE_V8);
->  	R(d_second_plane_dpb_size, S5P_FIMV_D_SECOND_PLANE_DPB_SIZE_V8);
-> +	R(d_third_plane_dpb_size, S5P_FIMV_D_THIRD_PLANE_DPB_SIZE_V8);
->  	R(d_scratch_buffer_addr, S5P_FIMV_D_SCRATCH_BUFFER_ADDR_V8);
->  	R(d_scratch_buffer_size, S5P_FIMV_D_SCRATCH_BUFFER_SIZE_V8);
->  	R(d_first_plane_dpb_stride_size,
->  			S5P_FIMV_D_FIRST_PLANE_DPB_STRIDE_SIZE_V8);
->  	R(d_second_plane_dpb_stride_size,
->  			S5P_FIMV_D_SECOND_PLANE_DPB_STRIDE_SIZE_V8);
-> +	R(d_third_plane_dpb_stride_size,
-> +			S5P_FIMV_D_THIRD_PLANE_DPB_STRIDE_SIZE_V8);
->  	R(d_mv_buffer_size, S5P_FIMV_D_MV_BUFFER_SIZE_V8);
->  	R(d_num_mv, S5P_FIMV_D_NUM_MV_V8);
->  	R(d_first_plane_dpb, S5P_FIMV_D_FIRST_PLANE_DPB_V8);
->  	R(d_second_plane_dpb, S5P_FIMV_D_SECOND_PLANE_DPB_V8);
-> +	R(d_third_plane_dpb, S5P_FIMV_D_THIRD_PLANE_DPB_V8);
->  	R(d_mv_buffer, S5P_FIMV_D_MV_BUFFER_V8);
->  	R(d_init_buffer_options, S5P_FIMV_D_INIT_BUFFER_OPTIONS_V8);
->  	R(d_available_dpb_flag_lower, S5P_FIMV_D_AVAILABLE_DPB_FLAG_LOWER_V8);
-
+> In the latter case, please feel free to add
+> 
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> to it.
+> 
+>> v2:
+>> - Remove linux/acpi.h include as well in fw_table.h. (Sam)
+>> ---
+>>  include/linux/acpi.h     |   22 +++++++++++-----------
+>>  include/linux/fw_table.h |    3 ---
+>>  lib/fw_table.c           |    2 +-
+>>  3 files changed, 12 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+>> index 54189e0e5f41..4db54e928b36 100644
+>> --- a/include/linux/acpi.h
+>> +++ b/include/linux/acpi.h
+>> @@ -15,7 +15,6 @@
+>>  #include <linux/mod_devicetable.h>
+>>  #include <linux/property.h>
+>>  #include <linux/uuid.h>
+>> -#include <linux/fw_table.h>
+>>
+>>  struct irq_domain;
+>>  struct irq_domain_ops;
+>> @@ -25,22 +24,13 @@ struct irq_domain_ops;
+>>  #endif
+>>  #include <acpi/acpi.h>
+>>
+>> -#ifdef CONFIG_ACPI_TABLE_LIB
+>> -#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
+>> -#define __init_or_acpilib
+>> -#define __initdata_or_acpilib
+>> -#else
+>> -#define EXPORT_SYMBOL_ACPI_LIB(x)
+>> -#define __init_or_acpilib __init
+>> -#define __initdata_or_acpilib __initdata
+>> -#endif
+>> -
+>>  #ifdef CONFIG_ACPI
+>>
+>>  #include <linux/list.h>
+>>  #include <linux/dynamic_debug.h>
+>>  #include <linux/module.h>
+>>  #include <linux/mutex.h>
+>> +#include <linux/fw_table.h>
+>>
+>>  #include <acpi/acpi_bus.h>
+>>  #include <acpi/acpi_drivers.h>
+>> @@ -48,6 +38,16 @@ struct irq_domain_ops;
+>>  #include <acpi/acpi_io.h>
+>>  #include <asm/acpi.h>
+>>
+>> +#ifdef CONFIG_ACPI_TABLE_LIB
+>> +#define EXPORT_SYMBOL_ACPI_LIB(x) EXPORT_SYMBOL_NS_GPL(x, ACPI)
+>> +#define __init_or_acpilib
+>> +#define __initdata_or_acpilib
+>> +#else
+>> +#define EXPORT_SYMBOL_ACPI_LIB(x)
+>> +#define __init_or_acpilib __init
+>> +#define __initdata_or_acpilib __initdata
+>> +#endif
+>> +
+>>  static inline acpi_handle acpi_device_handle(struct acpi_device *adev)
+>>  {
+>>         return adev ? adev->handle : NULL;
+>> diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
+>> index ff8fa58d5818..ca49947f0a77 100644
+>> --- a/include/linux/fw_table.h
+>> +++ b/include/linux/fw_table.h
+>> @@ -25,9 +25,6 @@ struct acpi_subtable_proc {
+>>         int count;
+>>  };
+>>
+>> -#include <linux/acpi.h>
+>> -#include <acpi/acpi.h>
+>> -
+>>  union acpi_subtable_headers {
+>>         struct acpi_subtable_header common;
+>>         struct acpi_hmat_structure hmat;
+>> diff --git a/lib/fw_table.c b/lib/fw_table.c
+>> index b51f30a28e47..294df54e33b6 100644
+>> --- a/lib/fw_table.c
+>> +++ b/lib/fw_table.c
+>> @@ -7,7 +7,7 @@
+>>   *  Copyright (C) 2023 Intel Corp.
+>>   */
+>>  #include <linux/errno.h>
+>> -#include <linux/fw_table.h>
+>> +#include <linux/acpi.h>
+>>  #include <linux/init.h>
+>>  #include <linux/kernel.h>
+>>  #include <linux/string.h>
+>>
+>>
+>>
