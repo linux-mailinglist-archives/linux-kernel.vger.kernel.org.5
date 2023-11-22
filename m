@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70157F3AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3FB7F3AF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbjKVBAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S234997AbjKVBBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjKVBAP (ORCPT
+        with ESMTP id S234986AbjKVBBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:00:15 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B573E199
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:00:11 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40859dee28cso33205225e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1700614810; x=1701219610; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7z/Ncze8VsxsQV1/X1aHBHLUuutXLztntTa5pi1dYLs=;
-        b=RC2EL6F5X7lwgIY/nWSO438Mq/MuoWSvG6hDsB4jeubmsjh4fM/yY06uxFOdlikVvE
-         KpRNYqiKHceHvxhtaLC1xJRqb7TBmLY4abEeya0s3Ai9p8bBrONPAVeNS8YfxTbiU2Jc
-         Y1vvAAusBYtBs5ouYrqezB6mpgQjSYnoYlsfm956OIp37qOAecbUrt0SdwPQSBBBQttG
-         dFCf8AKNWkueGRvS0Ip1+AnSNsf+hk9D4utd0fbSFEoD+KoHdSLBJZLdAX36yHfd8cCh
-         iKC19BYsULHSd3j3JkXayYdsho046FC0drigacJn/VYEaDqyjQlrHukDHhwIq86RgK/Z
-         4guw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700614810; x=1701219610;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7z/Ncze8VsxsQV1/X1aHBHLUuutXLztntTa5pi1dYLs=;
-        b=k3cc0w4yg9U9Eu26UJxo+REwkNm2YusB9wTkeOWi12M8iZREk7F+W/1XK7dngm78sB
-         7I8L2Qje9rwN8wtKxPL9jVGCcU/BCtTwlY/h/Dfem6or59OXT9JWcVwj60aipLNlgtIw
-         w/X9ETmWJMy7DFLWV2OSiCIutCIDrk52vdmGVy6zORa3ecwq0EgbMR/Q5FyuQuTjPSQY
-         lQFMLOMI+13eVi4ofHXtFhx6Vlo89oWI5OGjNSEvNSQLtkE53G8vdLsQi7e4AUVQGO6V
-         PhShNUhFlcj6uRzRB3ylgBN5Y2kIcs1uL5ZQ963QE1ZYU8Z8Ftgi9ncoKYTsgkBGF15V
-         JY4g==
-X-Gm-Message-State: AOJu0YygP6k4LlIYS8A7Ss8yuL8zu9YiIr6qzOS1jQ03PaAIP+9SDXtu
-        LXYlw+TJWbHzfsIqq3qUM3wl3g==
-X-Google-Smtp-Source: AGHT+IGWfqttaUh7V6lCiHLkEQqnJfYw1U5++qE0LNe7r9fT0KxEwUqIRkLzKCuyF/8jxNnoVwJbzw==
-X-Received: by 2002:a5d:56c4:0:b0:32d:9a8f:6245 with SMTP id m4-20020a5d56c4000000b0032d9a8f6245mr341419wrw.68.1700614810074;
-        Tue, 21 Nov 2023 17:00:10 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id l26-20020a05600c1d1a00b004067e905f44sm377388wms.9.2023.11.21.17.00.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 17:00:09 -0800 (PST)
-Message-ID: <85e84d97-af6d-47e7-b188-0ee000c4ee8c@arista.com>
-Date:   Wed, 22 Nov 2023 01:00:03 +0000
+        Tue, 21 Nov 2023 20:01:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08A21BB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:01:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700614888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=/FxUcstQgrYUJ8g8gi/zeZbuKlDUSNBAqxK37Zwps/0=;
+        b=AEECtXnCUx9VJxW5ha1CNUVnAL7uscs7IO1g5DrpmJFnOmZwV1G8C4fV0b+4e6UE/kA8iv
+        vuNBnrWm/UFhT2Ztge+96Ik+i9njSHr9UMjW5FgJPXHuIn3mBCloy6W1bxBgO3ftNnQTmP
+        lwDfLMleQC36h3XkVe4UsMnNm29nUfc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-582-Q127aqWFMH-YmbjCsyPiZA-1; Tue, 21 Nov 2023 20:01:25 -0500
+X-MC-Unique: Q127aqWFMH-YmbjCsyPiZA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1395C185A780;
+        Wed, 22 Nov 2023 01:01:25 +0000 (UTC)
+Received: from localhost (unknown [10.22.8.167])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 308831121306;
+        Wed, 22 Nov 2023 01:01:24 +0000 (UTC)
+Date:   Tue, 21 Nov 2023 22:01:23 -0300
+From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        stable-rt <stable-rt@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <daniel.wagner@suse.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Jeff Brady <jeffreyjbrady@gmail.com>,
+        Luis Goncalves <lgoncalv@redhat.com>
+Subject: [ANNOUNCE] 5.10.201-rt98
+Message-ID: <ZV1S4yDcPKwj5_N1@uudg.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] net/tcp: Reset TCP-AO cached keys on listen() syscall
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-References: <20231121020111.1143180-1-dima@arista.com>
- <20231121020111.1143180-5-dima@arista.com>
- <CANn89i+xvBQY5HLXNkjW0o9R4SX1hqRisJnr54ZqwuOpEJdHeA@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89i+xvBQY5HLXNkjW0o9R4SX1hqRisJnr54ZqwuOpEJdHeA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/21/23 08:18, Eric Dumazet wrote:
-> On Tue, Nov 21, 2023 at 3:01 AM Dmitry Safonov <dima@arista.com> wrote:
->>
->> TCP_LISTEN sockets are not connected to any peer, so having
->> current_key/rnext_key doesn't make sense.
->>
->> The userspace may falter over this issue by setting current or rnext
->> TCP-AO key before listen() syscall. setsockopt(TCP_AO_DEL_KEY) doesn't
->> allow removing a key that is in use (in accordance to RFC 5925), so
->> it might be inconvenient to have keys that can be destroyed only with
->> listener socket.
-> 
-> I think this is the wrong way to solve this issue. listen() should not
-> mess with anything else than socket state.
-> 
->>
->> Fixes: 4954f17ddefc ("net/tcp: Introduce TCP_AO setsockopt()s")
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
-[..]
->> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
->> index fb81de10d332..a08d1266344f 100644
->> --- a/net/ipv4/af_inet.c
->> +++ b/net/ipv4/af_inet.c
->> @@ -200,6 +200,7 @@ int __inet_listen_sk(struct sock *sk, int backlog)
->>          * we can only allow the backlog to be adjusted.
->>          */
->>         if (old_state != TCP_LISTEN) {
->> +               tcp_ao_listen(sk);
-> 
-> Ouch...
-> 
-> Please add your hook in tcp_disconnect() instead of this layering violation.
-> 
-> I think you missed the fact that applications can call listen(fd,
-> backlog) multiple times,
-> if they need to dynamically adjust backlog.
+Hello RT-list!
 
-Hmm, unsure, I've probably failed at describing the issue or failing to
-understand your reply :-)
+I'm pleased to announce the 5.10.201-rt98 stable release.
 
-Let me try again:
-1. sk = socket(AF_*, SOCK_STREAM, IPPROTO_TCP)
-2. setsockopt(sk, TCP_AO_ADD_KEY, ...) - adding a key to use later
-3. setsockopt(sk, IPPROTO_TCP, TCP_AO_INFO, set_current=1) - could be
-   done straight on adding a key at (2), but for an example, explicitely
-4.a. connect(sk, peer) - all as expected, the current key will be the
-     one that is used for SYN (and ending ACK if the peer doesn't
-     request to switch)
-4.b  listen(sk, ...) - userspace shoots itself in foot: the current_key
-     has no usage on TCP_LISTEN, so it just "hangs" as a pointer until
-     the socket gets destroyed.
+This release is just an update to the new stable 5.10.201
+version and no RT changes have been made.
 
-An alternative fix would be to make setsockopt(TCP_AO_DEL_KEY) remove a
-key even if it's current_key on TCP_LISTEN, re-setting that to NULL.
+You can get this release via the git tree at:
 
-Now as I described, somewhat feeling like the alternative fix sounds
-better. Will proceed with that for v2.
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
 
-Thanks,
-             Dmitry
+  branch: v5.10-rt
+  Head SHA1: 3a93f0a0d49dd0db4c6876ca9a7369350e64320e
+
+Or to build 5.10.201-rt98 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.201.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.201-rt98.patch.xz
+
+Signing key fingerprint:
+
+  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Luis
 
