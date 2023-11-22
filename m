@@ -2,106 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CA77F3E53
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DAE7F3E64
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 07:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbjKVGsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 01:48:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
+        id S232593AbjKVGw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 01:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbjKVGsT (ORCPT
+        with ESMTP id S229931AbjKVGw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 01:48:19 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9449C110
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:48:13 -0800 (PST)
-X-UUID: 48b669095d8046bcaaaf4f95e7db4b1d-20231122
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:b32ff27c-8ab5-4f81-ae02-b0bb2d52caf9,IP:5,U
-        RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-4
-X-CID-INFO: VERSION:1.1.32,REQID:b32ff27c-8ab5-4f81-ae02-b0bb2d52caf9,IP:5,URL
-        :0,TC:0,Content:-25,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-4
-X-CID-META: VersionHash:5f78ec9,CLOUDID:7afd5760-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:231122144800C0XZ0ADZ,BulkQuantity:0,Recheck:0,SF:42|74|66|38|24|17|1
-        9|102,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,
-        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 48b669095d8046bcaaaf4f95e7db4b1d-20231122
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 635458510; Wed, 22 Nov 2023 14:47:57 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     linux@armlinux.org.uk, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        arnd@arndb.de, angus.chen@jaguarmicro.com,
-        u.kleine-koenig@pengutronix.de
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kunwu.chan@hotmail.com, Kunwu Chan <chentao@kylinos.cn>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>
-Subject: [PATCH v2] ARM: imx: Check return value of devm_kasprintf in imx_mmdc_perf_init
-Date:   Wed, 22 Nov 2023 14:46:36 +0800
-Message-Id: <20231122064636.7268-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Wed, 22 Nov 2023 01:52:56 -0500
+Received: from mail-108-mta152.mxroute.com (mail-108-mta152.mxroute.com [136.175.108.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F881AA
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 22:52:50 -0800 (PST)
+Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
+ (Authenticated sender: mN4UYu2MZsgR)
+ by mail-108-mta152.mxroute.com (ZoneMTA) with ESMTPSA id 18bf5cd7b19000190b.002
+ for <linux-kernel@vger.kernel.org>
+ (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+ Wed, 22 Nov 2023 06:52:46 +0000
+X-Zone-Loop: 2f166679aaef94e8dcc9a33d71af4f0b95f18c5e77ce
+X-Originating-IP: [136.175.111.2]
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kelvie.ca;
+        s=x; h=Content-Transfer-Encoding:Content-Type:Cc:To:Subject:Message-ID:Date:
+        From:In-Reply-To:References:MIME-Version:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=QfrsEiNiDvgOHqYQ6HeW1TuewuwattdZa/64hKuNSYg=; b=g59WxPJOvbYMAlOnH2lNEavL0L
+        rpgqZLJChp9ZYW1rFpk4PqPO9oawZKbvlWr2xwILPTUy0OTM1cmc6/IkKCQO697UI8PwZafyo3EQ7
+        3x65ulcIxBc3lw2xGaPs3JE4V7QjAdhj0tM4ayaX/TbW2pupDYb7zkJA9yQw7wCGuE/zxf9QLep//
+        3tyuJnfCDeJLGZc3WZT5P012jD3AN6rjrmzOvARSfx8+oJWJi3dDCdS2zXR2B3ofn8AX+oYJlyjN+
+        UimljwkyfYHWRcLbjzyffWBOSSbYsSqWr8UAG+s5urfdIzoFebDLHbHD/wd5+xNyk/EAq8tbiSlyp
+        uEa1biNA==;
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6b1d1099a84so6066129b3a.1;
+        Tue, 21 Nov 2023 22:52:45 -0800 (PST)
+X-Gm-Message-State: AOJu0YwDOptQtwhilgpDMqURbQrKviT2ESo3HiHwEU9GIece9wdR1NWT
+        ke18NJ+t9jOf4euByBrRc4KZCvb5DSDOcnEOQqg=
+X-Google-Smtp-Source: AGHT+IG+koEkX5ZF3q/yCEz5nlwSSt/P6D1AYVNMSttJf3wGncmvkqPTRcwXVi3Fx4veG0d9n3GznYuniitZ7alXzQg=
+X-Received: by 2002:a05:6a20:2694:b0:18b:f77:7bbc with SMTP id
+ h20-20020a056a20269400b0018b0f777bbcmr1006135pze.62.1700635964093; Tue, 21
+ Nov 2023 22:52:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231114022503.6310-1-kelvie@kelvie.ca> <a66a805c-3e1f-4b9a-a38e-aca84b8678a6@infradead.org>
+ <CAHC9VhR6mr0XRrq=Apy00HD3tdgpKi4RyMr8f5kdx2sjA0sfig@mail.gmail.com>
+ <CAK2bC5rN_P7WP_E57wJjz+7icVjrwS0e6fqg_5uNaPhy3YR2dQ@mail.gmail.com> <CAHC9VhQeQcEKFKWi2pvGE-DhkaccqBn9Yf_+r7JbZ2UPN+z3-g@mail.gmail.com>
+In-Reply-To: <CAHC9VhQeQcEKFKWi2pvGE-DhkaccqBn9Yf_+r7JbZ2UPN+z3-g@mail.gmail.com>
+From:   Kelvie Wong <kelvie@kelvie.ca>
+Date:   Tue, 21 Nov 2023 22:52:32 -0800
+X-Gmail-Original-Message-ID: <CAK2bC5p94wfyzixC_bg5PMAJjM5J0vyBVt1ChN6vz53+_HRRwQ@mail.gmail.com>
+Message-ID: <CAK2bC5p94wfyzixC_bg5PMAJjM5J0vyBVt1ChN6vz53+_HRRwQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] Add a lockdown_hibernate parameter
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Authenticated-Id: kelvie@kelvie.ca
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+On Tue, 21 Nov 2023 at 20:53, Paul Moore <paul@paul-moore.com> wrote:
+> On Mon, Nov 20, 2023 at 10:07=E2=80=AFPM Kelvie Wong <kelvie@kelvie.ca> w=
+rote:
+> > On Mon, 20 Nov 2023 at 13:12, Paul Moore <paul@paul-moore.com> wrote:
+> > > On Mon, Nov 13, 2023 at 11:01=E2=80=AFPM Randy Dunlap <rdunlap@infrad=
+ead.org> wrote:
+> > > >
+> > > > [add security & dhowells]
+> > > >
+> > > > On 11/13/23 18:23, Kelvie Wong wrote:
+> > > > > This allows the user to tell the kernel that they know better (na=
+mely,
+> > > > > they secured their swap properly), and that it can enable hiberna=
+tion.
+> > > > >
+> > > > > I've been using this for about a year now, as it doesn't seem lik=
+e
+> > > > > proper secure hibernation was going to be implemented back then, =
+and
+> > > > > it's now been a year since I've been building my own kernels with=
+ this
+> > > > > patch, so getting this upstreamed would save some CO2 from me bui=
+lding
+> > > > > my own kernels every upgrade.
+> > > > >
+> > > > > Some other not-me users have also tested the patch:
+> > > > >
+> > > > > https://community.frame.work/t/guide-fedora-36-hibernation-with-e=
+nabled-secure-boot-and-full-disk-encryption-fde-decrypting-over-tpm2/25474/=
+17
+> > > > >
+> > > > > Signed-off-by: Kelvie Wong <kelvie@kelvie.ca>
+> > >
+> > > I would feel a lot better about this if there was a way to verify tha=
+t
+> > > the swap was protected as opposed to leaving that as a note in a doc
+> > > that the majority of users will never see, read, or understand.
+> >
+> I've got to warn you that I have an allergic reaction to arguments
+> that start with "the right solution is really hard, so let's pick the
+> easier, worse solution." ;)
+>
+> I guess I'm still not sold on this idea, I'm sorry.
 
-Release the id allocated in 'mmdc_pmu_init' when 'devm_kasprintf'
-return NULL
+Not a problem, thanks for looking.
 
-Suggested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Fixes: e76bdfd7403a ("ARM: imx: Added perf functionality to mmdc driver")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
-v2: Add new label to release the id allocated in 'mmdc_pmu_init'
----
- arch/arm/mach-imx/mmdc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+I do hope that hibernate on lockdown is one day properly supported though. =
+I'd
+imagine that lockdown will eventually be the default for most distros, and =
+it'd
+be a real shame to have to sacrifice hibernate for it (which is, in my opin=
+ion,
+indispensable for laptop use).
 
-diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-index 2157493b78a9..df69af932375 100644
---- a/arch/arm/mach-imx/mmdc.c
-+++ b/arch/arm/mach-imx/mmdc.c
-@@ -501,6 +501,10 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
- 
- 	name = devm_kasprintf(&pdev->dev,
- 				GFP_KERNEL, "mmdc%d", ret);
-+	if (!name) {
-+		ret = -ENOMEM;
-+		goto pmu_release_id;
-+	}
- 
- 	pmu_mmdc->mmdc_ipg_clk = mmdc_ipg_clk;
- 	pmu_mmdc->devtype_data = (struct fsl_mmdc_devtype_data *)of_id->data;
-@@ -523,9 +527,10 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
- 
- pmu_register_err:
- 	pr_warn("MMDC Perf PMU failed (%d), disabled\n", ret);
--	ida_simple_remove(&mmdc_ida, pmu_mmdc->id);
- 	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
- 	hrtimer_cancel(&pmu_mmdc->hrtimer);
-+pmu_release_id:
-+	ida_simple_remove(&mmdc_ida, pmu_mmdc->id);
- pmu_free:
- 	kfree(pmu_mmdc);
- 	return ret;
--- 
-2.34.1
 
+Cheers,
+--=20
+Kelvie
