@@ -2,123 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A3B7F477B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633B97F4788
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:18:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343975AbjKVNQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S1343993AbjKVNR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:17:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343896AbjKVNQJ (ORCPT
+        with ESMTP id S1343981AbjKVNRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:16:09 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975559A;
-        Wed, 22 Nov 2023 05:16:05 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMDFwqr020234;
-        Wed, 22 Nov 2023 13:15:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=RNBN553dc8xNcTidBn/TwkLF8236TAGauQzFSf93F3k=;
- b=mRoyoUVLhlR92I9l0ANxNNG86pSqLbCzOZTKlMsTErqIQWurPBraaGAbuhwAHojAfb8p
- 5GH5rF4E6PFSVBcbkCPCmMlD0ecFXsH3+4Jq5ORCWp9ILlzb7YdhbuV4W90R49y+KCVP
- maFT5gUpYVajbvoXJKIuORo4y7Wq/dE7kYdPNAgBKmFGaUTQ6bifz6r9DwGN4iBBZZ1E
- ntpk9K8t0WR6RWigT04U07Ick0RRLJcz3tdHOWVdBLpPUvW1lotC0vlMe1UlaZrv3GTM
- 5wEyQOKJi+kwD1M8Qp+iSjt0++Qsem9Z6KYF8WV6+ebV50oLqHiQe9330sewm5Wsylfl gw== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uhbsp97mj-1
+        Wed, 22 Nov 2023 08:17:55 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33B9199;
+        Wed, 22 Nov 2023 05:17:51 -0800 (PST)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AM8fMaL011963;
+        Wed, 22 Nov 2023 14:17:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=fZ6GXyH9BtvRyRHrxIXBbPXxpTXF//vxZ1bNd11Jjrs=; b=VR
+        DaNnfkAFtenUrC8uAdgX4V/yDHed02d35k9J9nvlWXtUMRCBV/n6L60JHyraUMON
+        tYpLdcEIJX9UOpq4ynMa5UY503pdfMbWul9LR4qB6L37zk63J7VpbJOonvJnoodw
+        iNAf9NV3GGx8ph3sRPcwoz5tuuohZtLu50AVl5Jwvm4JgPmF8Nz5jrZgnbTg1qtp
+        CenAoS78jW8iBYXHp7mTajKwr2uOmeLCzPFbkeynI70lI4w6imuAqjAextMYG+Vp
+        x4mzA0CUwlTpn5OLBwFVwaroqOfq/WSPTQ4VPWz3OG+K13wVblH7iIazvolRCizd
+        G7CD1HXa2UYVOSkAsfAQ==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uen1pdd8p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Nov 2023 13:15:58 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AMDFvqD003410
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Nov 2023 13:15:57 GMT
-Received: from [10.206.101.41] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
- 2023 05:15:52 -0800
-Message-ID: <7a38602f-cc23-35b0-49ab-643ee1285b77@quicinc.com>
-Date:   Wed, 22 Nov 2023 18:45:49 +0530
+        Wed, 22 Nov 2023 14:17:29 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9F52810003E;
+        Wed, 22 Nov 2023 14:17:28 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8AD57229A85;
+        Wed, 22 Nov 2023 14:17:28 +0100 (CET)
+Received: from [10.201.21.240] (10.201.21.240) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 22 Nov
+ 2023 14:17:27 +0100
+Message-ID: <0750a835-65d9-4de3-be73-3e40554d4fa2@foss.st.com>
+Date:   Wed, 22 Nov 2023 14:17:26 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/3] media: venus: core: Set up secure memory ranges
- for SC7280
-Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] dt-bindings: stm32: add clocks and reset binding
+ for stm32mp25 platform
+To:     Rob Herring <robh@kernel.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20231002-sc7280-venus-pas-v2-0-bd2408891317@fairphone.com>
- <20231002-sc7280-venus-pas-v2-1-bd2408891317@fairphone.com>
-From:   Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <20231002-sc7280-venus-pas-v2-1-bd2408891317@fairphone.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MIc4t_oNq0weaWRgel3qG1x2FCatfBJ9
-X-Proofpoint-GUID: MIc4t_oNq0weaWRgel3qG1x2FCatfBJ9
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231116154952.1206705-1-gabriel.fernandez@foss.st.com>
+ <20231116154952.1206705-4-gabriel.fernandez@foss.st.com>
+ <20231119152354.GA216405-robh@kernel.org>
+Content-Language: en-US
+From:   Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+In-Reply-To: <20231119152354.GA216405-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.201.21.240]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-22_08,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- phishscore=0 bulkscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311220093
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ definitions=2023-11-22_09,2023-11-22_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/2023 7:50 PM, Luca Weiss wrote:
-> Not all SC7280 devices ship with ChromeOS firmware. Other devices need
-> PAS for image authentication. That requires the predefined virtual
-> address ranges to be passed via scm calls. Define them to enable Venus
-> on non-CrOS SC7280 devices.
-> 
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->  drivers/media/platform/qcom/venus/core.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 054b8e74ba4f..5c6baa0f4d45 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -881,6 +881,10 @@ static const struct venus_resources sc7280_res = {
->  	.vmem_size = 0,
->  	.vmem_addr = 0,
->  	.dma_mask = 0xe0000000 - 1,
-> +	.cp_start = 0,
-> +	.cp_size = 0x25800000,
-> +	.cp_nonpixel_start = 0x1000000,
-> +	.cp_nonpixel_size = 0x24800000,
->  	.fwname = "qcom/vpu-2.0/venus.mbn",
->  };
->  
-Reviewed-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+Hi Rob, thanks for your review
+
+
+On 11/19/23 16:23, Rob Herring wrote:
+> On Thu, Nov 16, 2023 at 04:49:50PM +0100, gabriel.fernandez@foss.st.com wrote:
+>> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>>
+>> Adds clock and reset binding entries for STM32MP25 SoC family
+>>
+>> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> ---
+>>   .../bindings/clock/st,stm32mp25-rcc.yaml      |  72 +++
+>>   include/dt-bindings/clock/st,stm32mp25-rcc.h  | 492 ++++++++++++++++++
+>>   include/dt-bindings/reset/st,stm32mp25-rcc.h  | 165 ++++++
+>>   3 files changed, 729 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>>   create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
+>>   create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> new file mode 100644
+>> index 000000000000..1bdcfacd62d5
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> @@ -0,0 +1,72 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/clock/st,stm32mp25-rcc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: STM32MP25 Reset Clock Controller
+>> +
+>> +maintainers:
+>> +  - Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> +
+>> +description: |
+>> +  The RCC hardware block is both a reset and a clock controller.
+>> +  RCC makes also power management (resume/supend).
+>> +
+>> +  See also::
+>> +    include/dt-bindings/clock/st,stm32mp25-rcc.h
+>> +    include/dt-bindings/reset/st,stm32mp25-rcc.h
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - st,stm32mp25-rcc
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  '#clock-cells':
+>> +    const: 1
+>> +
+>> +  '#reset-cells':
+>> +    const: 1
+>> +
+>> +  clocks:
+>> +    description: Specifies oscillators.
+>> +    maxItems: 5
+>> +
+>> +  clock-names:
+>> +    items:
+>> +      - const: hse
+>> +      - const: hsi
+>> +      - const: msi
+>> +      - const: lse
+>> +      - const: lsi
+> No idea what these TLAs are... Define them in clocks:
+>
+> clocks:
+>    items:
+>      - description: what hse is
+>      - ...
+>
+ok  i will send a v3
+
+
+Best Regards
+
+Gabriel
+
