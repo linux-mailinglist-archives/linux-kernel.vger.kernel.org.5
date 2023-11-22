@@ -2,154 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7D67F480F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547C97F4812
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343993AbjKVNpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S1344102AbjKVNpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:45:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343568AbjKVNpE (ORCPT
+        with ESMTP id S1343568AbjKVNpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:45:04 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B2DD54;
-        Wed, 22 Nov 2023 05:44:58 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A59D71BF206;
-        Wed, 22 Nov 2023 13:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700660697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HYGwltdt7UObW6m6TQ25cKM4YubrRmxjcFZzyasRZoE=;
-        b=Azq5OYesRze4Ajgq1X2y6Rlqfe3W2ZoOlUQoeG1wJLotR/9VVFNBphuxj42UDzVKdrXQjy
-        9J56sFXmNMc9wrx+YEcpbHSJiQgwOUd8F4JQNU7O4bHRX+dVDUdasgfDd9O0H7T3M1b3Dn
-        K1a5pXmttrk+jp6YLCwnw22xH011ECFtj7Ah0XLyEp0smrxan4YDdibKh58B9zfFOhGCXO
-        mJAfGFHLGMD0V+oBvkyldD3GciM/GRX5qSWa+eoCX3B8ffXDl6QKceKhcXUbQ1DqzfyrED
-        kt7Va5FGV08YXUCT1hF6KvShuTAQac8lU1ANUKXuTvN78G8FPCeCM3bZmnN5Ng==
-Date:   Wed, 22 Nov 2023 14:44:53 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231122144453.5eb0382f@kmaincent-XPS-13-7390>
-In-Reply-To: <20231121094354.635ee8cd@kernel.org>
-References: <20231120105255.cgbart5amkg4efaz@skbuf>
-        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
-        <20231120120601.ondrhbkqpnaozl2q@skbuf>
-        <20231120144929.3375317e@kmaincent-XPS-13-7390>
-        <20231120142316.d2emoaqeej2pg4s3@skbuf>
-        <20231120093723.4d88fb2a@kernel.org>
-        <20231120190023.ymog4yb2hcydhmua@skbuf>
-        <20231120115839.74ee5492@kernel.org>
-        <20231120211759.j5uvijsrgt2jqtwx@skbuf>
-        <20231120133737.70dde657@kernel.org>
-        <20231120220549.cvsz2ni3wj7mcukh@skbuf>
-        <20231121183114.727fb6d7@kmaincent-XPS-13-7390>
-        <20231121094354.635ee8cd@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 22 Nov 2023 08:45:47 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF110CE;
+        Wed, 22 Nov 2023 05:45:44 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00a9c6f283so373262466b.0;
+        Wed, 22 Nov 2023 05:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700660742; x=1701265542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=md1yJyViVJIk7bLbArcNZW7/RCjayNMC8N02jDNysO4=;
+        b=ch4GalIXl3dk5A3Nde7K6ha0vSoqXiq8GlivBm64yEA5gkYwvhjHSmYSSrrUWBZQxN
+         KWVIy0xl6mWTGPM1pBUGt9NXa6awo4YXdN2HCpScrWKHHxO9uEBqipL/ogEsfg3kEdNV
+         mS+FhXnhEFbjfUgzbtlX0LRjfG4Lkv1DogZXJzMprC3KluT9fU0IEMhP+751iNwakl8l
+         hBNuqErYdlpNf/v2kL85oEYWNWPPH0+Kb7pyjcslX/YkrcLwSV+i8LNnwECEC/JSHQDk
+         t2SCE3UcceXuDAEI5+Gb5tOZ4iook7FON725REWvgMJQ5wHQPQZog4pw78Q/loR/6ukn
+         hFLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700660742; x=1701265542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=md1yJyViVJIk7bLbArcNZW7/RCjayNMC8N02jDNysO4=;
+        b=DUD465gjirqgF2mAOfWEzd/WvNDInuBelu37aSPzVCyu6giOGO63LDGkX5qhYHyYnr
+         6gigR2Kag/kYDsAFYywolB/s98uvv1pNMVdO9sUu0+GbAtnf/JqaO52iZZqsiS0hDiJ0
+         7gVPwn4VFP+09g0BuF2tiveBS7X7RqipMUoTVv/6lqozKpudlmUy4ucmHinA0OLLGQw8
+         aAl4Fro8AbsEAFpg0FTHmFa93yqAZdKMOTC8u0kCeoKcPSYxPyN32XaMBDQi6BEs+tW6
+         ekt4KYYQGtlo4eUPq0ReKy8GGbfWOb0NAb6HzwlrBsZ1umH5Kc6ZK31Tt3utPpP0BFu1
+         qvXA==
+X-Gm-Message-State: AOJu0Yz5Nbk9/lLaPCDekrwERYwWhcMhlteHUy9088QdIN30wDpoXnE6
+        ISCvM3T5F85gFH+MtH+UhPV3xGaT1CxMFIgMe28=
+X-Google-Smtp-Source: AGHT+IEDJD80sNR88v2ZEvEEO8EO3ir1FQB2gTnGz7Y36msid1xY1pR45oM0Od6H7q9Cr5vTAN6bxG6Disb78sSlYj4=
+X-Received: by 2002:a17:906:4e93:b0:9fc:ae47:5f0d with SMTP id
+ v19-20020a1709064e9300b009fcae475f0dmr1464027eju.71.1700660742134; Wed, 22
+ Nov 2023 05:45:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
+ <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info> <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
+ <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
+In-Reply-To: <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 22 Nov 2023 14:45:30 +0100
+Message-ID: <CAKXUXMzo4cOW3p-XhODanMy5Lig7zHqnqbYJ5aXNvbeYLwfrrQ@mail.gmail.com>
+Subject: Re: [regression] microcode files missing in initramfs imgages from
+ dracut (was Re: [PATCH] x86: Clean up remaining references to CONFIG_MICROCODE_AMD)
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
+        hpa@zytor.com, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 09:43:54 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+On Wed, Nov 22, 2023 at 10:15=E2=80=AFAM Linux regression tracking (Thorste=
+n
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 12.11.23 19:10, Borislav Petkov wrote:
+> > On Sun, Nov 12, 2023 at 04:03:32PM +0100, Linux regression tracking (Th=
+orsten Leemhuis) wrote:
+> >> That's because dracut until the recent commit
+> >> https://github.com/dracutdevs/dracut/commit/6c80408c8644a0add1907b0593=
+eb83f90d6247b1
+> >> looked for CONFIG_MICROCODE_AMD and CONFIG_MICROCODE_INTEL in the conf=
+ig
+> >> file to decide what to include or not.
+> >
+> > They've been told a bunch of times already that grepping .config for
+> > specific symbols is not how one should check whether one should add
+> > microcode blobs to the initrd or not because Kconfig symbols are not an
+> > ABI.
+>
+> Maybe, but you know how Linus sees things like this: what's considered
+> an ABI/API or not is nearly[1] irrelevant - if a change breaks something
+> that used to work then it needs to be fixed.
+>
+> [1] unless you fiddle with things obviously internal; not sure if this
+> case would qualify for him, but somehow I doubt it -- but I might be
+> wrong there.
+>
 
-> On Tue, 21 Nov 2023 18:31:14 +0100 K=C3=B6ry Maincent wrote:
-> > - Expand struct hwtstamp_config with a phc_index member for the
-> > SIOCG/SHWTSTAMP commands.
-> >   To keep backward compatibility if phc_index is not set in the
-> > hwtstamp_config data from userspace use the default hwtstamp (the defau=
-lt
-> > being selected as done in my patch series).
-> >   Is this possible, would it breaks things? =20
->=20
-> I'd skip this bit, and focus on the ETHTOOL_TSINFO. Keep the ioctl as
-> "legacy" and do all the extensions in ethtool. TSINFO_GET can serve
-> as GET, to avoid adding 3rd command for the same thing. TSINFO_SET
-> would be new (as you indicate below).
+Thorsten, I think you are wrong here in this case. We are talking
+about the kernel build configuration options and their names and these
+are certainly not stable and never have been.
 
-You say this patch series should simply add TSINFO_SET command to set the
-current phc_index?
+Some indication to show that the rate of change we are generally
+talking about without anyone considering this stable ABI/API:
 
-It won't solve your requirement of having simultaneous hwtimestamp and
-enabling/disabling them through rx_filter and tx_types.
-You want to do this in another patch series alongside a new SIOCG/SHWTSTAMP=
-_2
-ABI?
+You can run "find . -name Kconfig* | xargs grep -h -E '^(menu)config '
+| sort | uniq" on each kernel release. Then diff those lists of
+configs with increasing kernel config versions.
 
-> > - In netlink part, send one netlink tsinfo skb for each phc_index. =20
->=20
-> phc_index and netdev combination. A DO command can only generate one
-> answer (or rather, it should generate only one answer, there are few
-> hard rules in netlink). So we need to move that functionality to DUMP.
-> We can filter the DUMP based on user-provided ifindex and/or phc_index.
+If this would be stable, then only config options should appear and
+little should disappear, but that is not the case. And if something
+disappears, it should relate to a driver/feature that was removed, but
+that is also not always the case.
 
-Currently, the dumpit function is assigned to ethnl_default_dumpit. Wouldn't
-the behavior change of the dumpit callback break the ABI?
+Here are some quick numbers:
+
+v6.0 to v6.1: 43 removals
+v6.1 to v6.2: 40 removals
+v6.2 to v6.3: 350 removals
+v6.3 to v6.4: 86 removals
+v6.4 to v6.5: 73 removals
+v6.5 to v6.6: 61 removals
+
+* Removals can also be potentially a renaming.
+
+So, these config names are certainly not stable ABI/API. We can
+investigate a bit deeper on which changes are due to driver removals,
+which due to config removal but making a feature default and which are
+simply a config renaming, but in the past, hardly any kernel developer
+has considered this interface to be a special stable ABI/API.
+
+Further, to my knowledge looking at kernel discussions and the
+repository, there are currently no tools out there that would assist
+in updating a kernel build configuration from one version to the next.
+
+So, we are talking about roughly more than 50 removals to kernel
+config options every release, and now there was this one special case
+in one release, where a tool incorrectly relies on this one config
+option to be stable. That is not a regression of a stable ABI/API,
+that is a misuse of an internal non-stable ABI/API.
 
 
-> > Could be done in a later patch series:
-> > - Expand netlink TSINFO with ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_QUALIFIE=
-R.
-> >   Describing this struct:
-> > enum ethtool_hwstamp_provider_qualifier {
-> >  	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_PRECISE,
-> >  	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_APPROX,
-> > };=20
-> >=20
-> >   Set the desired qualifier through TSINFO_SET or through SIOCSHWTSTAMP=
- by
-> >   expanding again the struct hwtstamp_config.
-
-Just wondering to have a insight of future support, in the case of several
-provider qualifier and the SIOCG/SHWTSTAMP_2 layout containing the phc_inde=
-x.
-Will we be able to talk to the two providers qualifiers simultaneously or i=
-s it
-not possible. To know if the SIOCG/SHWTSTAMP_2 layout would contain the
-description of the qualifier provider.
-If I understand well your mail in the thread it will be the case right?
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Lukas
