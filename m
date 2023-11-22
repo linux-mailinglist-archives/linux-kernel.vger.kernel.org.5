@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1257F3B3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3087F3B37
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbjKVBZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56824 "EHLO
+        id S234999AbjKVBZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 20:25:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234922AbjKVBZf (ORCPT
+        with ESMTP id S229464AbjKVBZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:25:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D351A3;
-        Tue, 21 Nov 2023 17:25:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700616331; x=1732152331;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t8oT6RUsi73gqqA7YznCIrpliumT0ylzF6sXsPx7xLk=;
-  b=gb0fzyw1SpfYez0a5WJQtg2x6KTxCkaUiE9YLB5IhJ/jsq8M1r8Lql4s
-   cV7X1sY24EoxBtKnQbT1L0mNlNYq7FoxR1R3P4LN4EULb5DI5XNtLis4A
-   l5c17LBfhtcNhlorL6JmhRhRL57HAVcd2NOw5CSRfu59kBSxM/0Mugmbz
-   gXIzIcner2p8k+zgtqAt3LOxuWekVGTzPOKk8TbsHu6r+bMGY2Z0cv+in
-   URnmWn38M0aVaQNEMj7p9t2iRau2b5ALFwCsCmSy5P94qw7cnrlQK8nLN
-   pkNUN55bwmHYjObvRXlo6QzQesBxHRi4Au8RlJ35E3a0wbdO0V3fsehv0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="382354354"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="382354354"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 17:25:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="766827289"
-X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
-   d="scan'208";a="766827289"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 Nov 2023 17:25:27 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r5bzH-0008UM-0y;
-        Wed, 22 Nov 2023 01:25:24 +0000
+        Tue, 21 Nov 2023 20:25:05 -0500
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2040.outbound.protection.outlook.com [40.92.107.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D97691;
+        Tue, 21 Nov 2023 17:25:01 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M52MVz1xCaFzwQTmWVCvFYyNWg14a9JON5a29X69f36DnAoY0EUI2s0hmI+7jXqi4ucOFny5+iy3efzs1VLnRkkhntb4R/XGhdtsTaxvd2oPMS1WBUnoBzRUQv/gFRuuVHE3p8v79yKf7rUNsEa6VplIoJmIiOGHM5P5YhnAMBbsvbywatd70GkLK+Lbjn4zbm2jhYsFv/Md5B2HeFic3S9MaHmoyVlv94s8QyDyMx/6IuDKv/aHQ587iIYkmHzHEgJjrinKfsQ5G8W92jvPS1lk0JWfZJ7ark4UShN1yMfnrku6TMm/FoWzQ+KJLg3EFx2akX/JBDIGVdv8c8VuHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B4nagn7wz/9YH++vhzfM+ICRMfPQv8SJawrhaEoQTsI=;
+ b=TqzIi5fDPn3UYMfjMONqEy3DKZGYjnWDmmysK1fvT8hnmefapcLYMKcAuozV3pcvdhJQbk6vm8T+1M9W/DRuUrVVjqvYHtN0QddbNhkOXiQ58M/kDy0mk74b5uhUyh0j2v+gmPaYD4go0MQLeTVS0ZSMs7tNuXCYV2GnGnugaJo2S4p7RMkDlew4CinQ6d6XMTTSv712qdwZofeXvQ3/HKGchrCIG9TkrntpFiLlOvy1NK/gQ9PgwRU7kHqaRTIGfOQcJdpwWsY8Nllabok1WCmgJrNONu55TMjD7Pgf4nOyF8pRPmKYMhFWFjYSLRAgErOntypoCA8HTaydAkQf8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B4nagn7wz/9YH++vhzfM+ICRMfPQv8SJawrhaEoQTsI=;
+ b=Mn6HXyd2qSVj8JLjGEyIjHQbdghNJEeRtUFk4TcMaP/sP1T5ztr8MgYig+bSa+Z29UC+/0MRIsaCaDFKQ8ILRo8u4UT6fIPMlYl/fCb9mC3fuvg5mmwTJjd/NJuwc/t+S31ByG3qkrshyQpibA2apLPrkrIB4DQ7x3n5m904OifVV5hJDi6pNDkGy2SJMJfR3sYS5dlVm4DVq5+JLCBT7GK2V2G6KJt3jU1gNUsTicpbCJ2yavRRHcOi2PqJTdBtWsDbBuZQ6FeSvIoITN77eEUBOpQi1TMqmk8Gwyu2kA/YG+lM3Xxe+ob7QDNnf+z2SzGrgxFQStR5wy4ZI60Ojw==
+Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:41::14) by TY2PR0101MB3632.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:8003::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 01:24:57 +0000
+Received: from KL1PR01MB3809.apcprd01.prod.exchangelabs.com
+ ([fe80::907f:e0c0:d442:e14f]) by KL1PR01MB3809.apcprd01.prod.exchangelabs.com
+ ([fe80::907f:e0c0:d442:e14f%3]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
+ 01:24:56 +0000
+From:   Ken Lin <ken_lin5@hotmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     groeck@chromium.org, Benson Leung <bleung@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Reka Norman <rekanorman@chromium.org>,
+        Stefan Adolfsson <sadolfsson@chromium.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Zoey Wu <zoey_wu@wistron.corp-partner.google.com>,
+        chrome-platform@lists.linux.dev, linux-media@vger.kernel.org
+Subject: [PATCH] media: platform: cros-ec: Add Dexi to the match table
 Date:   Wed, 22 Nov 2023 09:24:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sanath S <Sanath.S@amd.com>, andreas.noever@gmail.com,
-        michael.jamet@intel.com, mika.westerberg@linux.intel.com,
-        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Sanath S <Sanath.S@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        stable@vger.kernel.org
-Subject: Re: [Patch] thunderbolt: Add quirk to reset downstream port
-Message-ID: <202311220931.2IqiKNXr-lkp@intel.com>
-References: <20231121174701.3922587-1-Sanath.S@amd.com>
+Message-ID: <KL1PR01MB38096A17A4F89721CC3DA073AEBAA@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [tHznemHqqNXdxnt8FUH0WB/VJfdl1mG6]
+X-ClientProxiedBy: SG2PR06CA0246.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::30) To KL1PR01MB3809.apcprd01.prod.exchangelabs.com
+ (2603:1096:820:41::14)
+X-Microsoft-Original-Message-ID: <20231122092333.1.I02f6efa3023c0bcb437ee3b7ebaa2910a89ab0e9@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121174701.3922587-1-Sanath.S@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: KL1PR01MB3809:EE_|TY2PR0101MB3632:EE_
+X-MS-Office365-Filtering-Correlation-Id: f3f52483-6c78-4438-d792-08dbeaf9d583
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VJJ2g01ij4Rouzu8nbABsc0AqUuyO8BMcFVOAwFBRBuBUIErEdf8YrmRpedI49wnTzWMaPea0FehLntPs59BWUH1Qdmy5r8NOQXzA21R8Gx+2XtjFRYvm+NbXiBoWww+ic32MQFqiX8Bt8hte9KKVlHDzwGkYyPkBlvPtQwUZw9QWWMnpfFIb95zivUyiSLZ/fYv+TPUDYjS8bDF3LktA36iJO9v6oYqp7l199ZNwxopoTPxHrecFlM9NXNkqyPYvW563VGg1qPguK5adPjZyaAvu7oOsy55paeR80On40x4n7MnBNH1DVDIGB7KpG2jbohLk182vaud02A9xFy+/phLzAEeJIQWqV7Wsovg1jwOb/5DSOCUryZlYgB2NUiVNetl7lpVnJ2e36cfBS4yyE3oWCGeWgrLQndwWz1d4dFGm6FH3BpASlcALTQ06A0jklsojehK0wijkX1bwsRXotroMb+13fehJ5MWOKseCS9Ok+IMh+2JhihLW2+jwx7n3lRI8bXZGk2qDUwlmcvN5KekNlgjidfrOom39apK9LQuaRP8VnaDuRjNrwFGFbQ9
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qjS21Lt24kQOJ5bNrh5gbSjqm0bxk7SzRacrq2t4k0fb7YpoYbND6NZExw5D?=
+ =?us-ascii?Q?Z4+sMgMgchSAsWWmdP3bjS9C/w8lk8p2wCdJnd3WMwqAWjFD8ibFa2cQBKGS?=
+ =?us-ascii?Q?eMz4VLDZHjWNgu5CY2yQl2TxlOWrh7ENgATzrF6GNVOedEbAWS3ovMnLy6mG?=
+ =?us-ascii?Q?bmguNdxQAKC31sdnaarUmUFBhcFzSSNyUUlHThIQrQTReE9MYdyh3rQYrLkA?=
+ =?us-ascii?Q?9YE6BknLrRYqTR6Sd7CLaDKp/hqWRvCGjrKzf6tXA64KBRIDyN/H0iL6dR7a?=
+ =?us-ascii?Q?UbenKgyCcZQumOzEri7eBnV40NJqJ4DT2Vjo+fhJdgRl51j+EwbdZdfsa8Ja?=
+ =?us-ascii?Q?5nDRj+VgD0Nty6FxSGgEJ0kZIgZJHk8m3uLbB4kifdSgJTPMMVUO3Up+cEpn?=
+ =?us-ascii?Q?FQxTcl29YCv3fmUZfa1WOBZSQyePkCO+PFWjHvYasY0Eo4fumK/6nIxpelW0?=
+ =?us-ascii?Q?cXDLvvQtCdbhrbhGmKbEtqOBeRZkk/TU5kyZpsnSdd5nB1mQvJWRT8ox0nNa?=
+ =?us-ascii?Q?30YzCGH1mH3zdevlEb54+8XbwxvdakI8kTy9n9aURDoWxCyp9A50M7470l5d?=
+ =?us-ascii?Q?bigSqFlif9sUXBLVaKWiUALDoeDjdG4Bav7xD/WVhQOQrvHRYHmckxr5teIU?=
+ =?us-ascii?Q?DRGvEeptA0uyZhsPJQwIhZFlGSes7aXpjLBUaa3tbdKeo3ScPFkg0Ksqdf8Z?=
+ =?us-ascii?Q?H8PG9NBx8w7H2i7tSaEf5xvX32Y9l9siKZ2f77bOOsVJrBpBzNib0lK5wSX4?=
+ =?us-ascii?Q?dn3aBmyPEolHyAoOMmnWpyDXMHBIQOV13MMe+saWwVmR7KISIfZ1eV9YqdMe?=
+ =?us-ascii?Q?rMG/cstyOsuZhlK5aJFIluiAiQ+Idm4FapgvW2fi7pNUcOd8FuItFnqhdWvF?=
+ =?us-ascii?Q?O2PjfY7v3NOqCwXbd2fqDP3UrGXzOLqD676OC/PAHtxogKDRqCeNShI8A6Pj?=
+ =?us-ascii?Q?It43DzP1KGib0OjwTHdLXCv9dkSsbTKuWOEnzv5GTqFIz2xO0nXXNoaWtvUH?=
+ =?us-ascii?Q?efxjpkuXtTvv64bz9/5XHqPN7GMwPSUEls7/R1PS4gEYLtJijhpe3pEedgxQ?=
+ =?us-ascii?Q?xBEHPeLXor6rguHzT7jddhbeMBbdVqkaSR/+0sOnh4IaCqtLj5qQhyagYjHe?=
+ =?us-ascii?Q?7o8HJnD69ndMpErwejEsdlxNMwFvcQDJczDatDKLNScGl7Kp+E/Q3W2is/tH?=
+ =?us-ascii?Q?W4gxDnb/KrqbH1GwKAaSC5w0GFlEKEibICtP+Q=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-d8e84.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3f52483-6c78-4438-d792-08dbeaf9d583
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR01MB3809.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 01:24:56.7937
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR0101MB3632
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sanath,
+The Google Dexi device uses the same approach as the Google Brask
+which enables the HDMI CEC via the cros-ec-cec driver.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Ken Lin <ken_lin5@hotmail.com>
+---
 
-[auto build test WARNING on westeri-thunderbolt/next]
-[also build test WARNING on linus/master v6.7-rc2 next-20231121]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+ drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sanath-S/thunderbolt-Add-quirk-to-reset-downstream-port/20231122-014913
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
-patch link:    https://lore.kernel.org/r/20231121174701.3922587-1-Sanath.S%40amd.com
-patch subject: [Patch] thunderbolt: Add quirk to reset downstream port
-config: x86_64-buildonly-randconfig-003-20231122 (https://download.01.org/0day-ci/archive/20231122/202311220931.2IqiKNXr-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231122/202311220931.2IqiKNXr-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311220931.2IqiKNXr-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/thunderbolt/switch.c:1556:2: warning: variable 'ret' is used uninitialized whenever 'for' loop exits because its condition is false [-Wsometimes-uninitialized]
-           tb_switch_for_each_port(sw, port) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/thunderbolt/tb.h:821:7: note: expanded from macro 'tb_switch_for_each_port'
-                (p) <= &(sw)->ports[(sw)->config.max_port_number]; (p)++)
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/thunderbolt/switch.c:1564:9: note: uninitialized use occurs here
-           return ret;
-                  ^~~
-   drivers/thunderbolt/switch.c:1556:2: note: remove the condition if it is always true
-           tb_switch_for_each_port(sw, port) {
-           ^
-   drivers/thunderbolt/tb.h:821:7: note: expanded from macro 'tb_switch_for_each_port'
-                (p) <= &(sw)->ports[(sw)->config.max_port_number]; (p)++)
-                ^
-   drivers/thunderbolt/switch.c:1554:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
-
-
-vim +1556 drivers/thunderbolt/switch.c
-
-  1549	
-  1550	static int tb_switch_reset_downstream_port(struct tb_switch *sw)
-  1551	{
-  1552		struct tb_port *port;
-  1553		uint32_t val = 0;
-  1554		int ret;
-  1555	
-> 1556		tb_switch_for_each_port(sw, port) {
-  1557			if (port->config.type == TB_TYPE_PORT) {
-  1558				val = val | PORT_CS_19_DPR;
-  1559				ret = tb_port_write(port, &val, TB_CFG_PORT,
-  1560						port->cap_usb4 + PORT_CS_19, 1);
-  1561				break;
-  1562			}
-  1563		}
-  1564		return ret;
-  1565	}
-  1566	
-
+diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+index 42dde3f0dbde..52ec0ba4b339 100644
+--- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
++++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+@@ -324,6 +324,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
+ 	{ "Google", "Boxy", "0000:00:02.0", port_d_conns },
+ 	/* Google Taranza */
+ 	{ "Google", "Taranza", "0000:00:02.0", port_db_conns },
++	/* Google Dexi */
++	{ "Google", "Dexi", "0000:00:02.0", port_db_conns },
+ };
+ 
+ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
