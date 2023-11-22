@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A737F3C27
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0627F3C28
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbjKVDGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
+        id S1343561AbjKVDGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235046AbjKVDGc (ORCPT
+        with ESMTP id S1343551AbjKVDGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:06:32 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3668090
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:29 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cbb71c3020so298311b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:29 -0800 (PST)
+        Tue, 21 Nov 2023 22:06:34 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F7EF4
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:30 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cbc8199a2aso659631b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1700622388; x=1701227188; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1700622390; x=1701227190; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/Qgh5NSWFVqrYvvpg0jEH3io2ggLKyOiM/1ZRjzAMrY=;
-        b=ZnGd2bienBrsgJzHIARTLV63gA01T2BPAnyy0zfPONzpQ9yBcN3D0Fc6xEoQ7Jb1eO
-         td06ieXqvF9z6PJRsw3kSOsNqxwBj2l0/lGSa46DuawC37Fezdzkd0REuQ2stDzL2Uke
-         mBfJvsja/yv+DO48RgxNLD3GikvDSnB9G71JgytbD8kFiiVzM5TXX3baFZLeDCybuDpl
-         /zsUj9+CAaClQtrLSHqRcUTAIDFjMEqpzk93Op409njwcB4Fa6JO5W3uO6zp42MlZxjC
-         w0QDygkf2aIXSKj6ovQq3oQcbdGGh9hFvFpVkpU2uRsK6ydgA7Kjam/YGAp6PV10tZ4f
-         cXMQ==
+        bh=oBSDlJJdl9cJTZEKARyFff2b3kLrE8gro26mzSoUMfg=;
+        b=kKAPHuA5bShBI1m2kdLOwPZWo8rdZdMqdWYrYnxgC8FodR0uho+MtADydgTUEbiBuN
+         8mnXYcbNH53F4H69ufumyBCjhq/Un3bEB/7P901+gV595tFRhk9NMn31GuUIMMdxBH50
+         SB1jAK05uJxHWDdSIGlB2pD00GD1/Gx+W9S3+9QWa1SxPHgBtjjSbhoez7j19sDuqlZT
+         e6q8RuL5mo6z29SGBsLAvzhEDJjqKRjLcr/y/HVvdNQUiiJ/e47Mf0Sp962coyiGqhje
+         RCtJBuaCF5R3BPbMQ6uPXJ4QrqlGjb5LT6DiOAkzu1yWzochUKd6aeBykAqp1P80eclp
+         c5jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700622388; x=1701227188;
+        d=1e100.net; s=20230601; t=1700622390; x=1701227190;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/Qgh5NSWFVqrYvvpg0jEH3io2ggLKyOiM/1ZRjzAMrY=;
-        b=OebeqoICPTn+7pvpwfTkn+3xKdZVqVoCLRXV2kJUEpo+c10OLkJHR0qLk61IYq+be5
-         2aHNlD0m/9hqpa0mzw1Gny+e1unXLLtmk8HhXEztSBdWzezAl2+QMRJ7BSiGPTKhQOBk
-         8G9//wkVGzHF20ueGEgyougYliY1d2Hi4lymbh7Nxra/zK2XBv9PyaWnJqi6n7O1cUwu
-         ZmIucDG4tj+YXOilz2IPsxHWuF8XLGhRb8KNl/ZWVtmtLnWJEG1gZolRqu7GATVUf/td
-         n8cGbMx8XQHH6QfrsxPshrSpb1tlrbylLHlwu7g+SwD41xarJVOxFjvgvp6++OTow/9z
-         p2kw==
-X-Gm-Message-State: AOJu0Yzm/qSnStki2fNwC1d4pYAoTgBNw5r3aFz0r6S2KHgrbiI6xEgv
-        n0kckUC/QRYQLxGdkciHepwtOA==
-X-Google-Smtp-Source: AGHT+IERIccwRaRQ+wlnx1zMjy0fsc3cDGpf4RjMA9LPr92p23dqVKDgXQEo3A0Wn14b3XN9NyJnpA==
-X-Received: by 2002:a05:6a20:7da0:b0:17a:4871:63fd with SMTP id v32-20020a056a207da000b0017a487163fdmr1833586pzj.0.1700622388655;
-        Tue, 21 Nov 2023 19:06:28 -0800 (PST)
+        bh=oBSDlJJdl9cJTZEKARyFff2b3kLrE8gro26mzSoUMfg=;
+        b=NYhogTze78FWoglGmIm6ZyCHgANciqaGsxM08/9kDtV533G7bOzUbTzup1gF9WdKyM
+         EASbL4JP5gN6SRsp2Xr7OeuVOut1ugRvOsO8wTHcb6AwLYbVotXOtbY/oxr8rV4bDJVC
+         pvij6diNLdbC5adxwOpL23U4nT9ud1tuYFuUOJ9ZwBlsKSjrK9aXBWBzg2xTlLc3cNtP
+         g+yTT0cuS3S4zCfFfKAduvWWsu9qnV9jFIvLK1//t5D5eXhYSFVSXYrDYoVsgNite4PI
+         jJ46EYlagLLZeLp3GG+SmC5PPzVYt2r28M9ONE3gpUTxqwMpvia4iO0GwG9SDPR0OQ6n
+         bYRQ==
+X-Gm-Message-State: AOJu0YyDwxbASTVR9dEyCCspeQJjUWP4kGr6S41//QuWmHMJU8qfsF5g
+        FL6PKbhh2kNVi7ToD5qZL1/+ug==
+X-Google-Smtp-Source: AGHT+IGAWRMig9MTM8HwbUunWOHJsJ/tdXoUczvav4ujcqkNnMcjGyNXeyS3D3MD4r1LtBjigmKHkw==
+X-Received: by 2002:a05:6a00:98e:b0:6cb:cdd0:76f7 with SMTP id u14-20020a056a00098e00b006cbcdd076f7mr417804pfg.21.1700622390174;
+        Tue, 21 Nov 2023 19:06:30 -0800 (PST)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id s2-20020aa78282000000b006a77343b0ccsm8614917pfm.89.2023.11.21.19.06.27
+        by smtp.gmail.com with ESMTPSA id s2-20020aa78282000000b006a77343b0ccsm8614917pfm.89.2023.11.21.19.06.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 19:06:28 -0800 (PST)
+        Tue, 21 Nov 2023 19:06:29 -0800 (PST)
 From:   Samuel Holland <samuel.holland@sifive.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Harry Wentland <harry.wentland@amd.com>,
@@ -63,13 +63,14 @@ Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Pan Xinhui <Xinhui.Pan@amd.com>,
         Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
         Samuel Holland <samuel.holland@sifive.com>
-Subject: [PATCH 2/3] riscv: Factor out riscv-march-y to a separate Makefile
-Date:   Tue, 21 Nov 2023 19:05:14 -0800
-Message-ID: <20231122030621.3759313-3-samuel.holland@sifive.com>
+Subject: [PATCH 3/3] drm/amd/display: Support DRM_AMD_DC_FP on RISC-V
+Date:   Tue, 21 Nov 2023 19:05:15 -0800
+Message-ID: <20231122030621.3759313-4-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122030621.3759313-1-samuel.holland@sifive.com>
 References: <20231122030621.3759313-1-samuel.holland@sifive.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -81,69 +82,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since it is not possible to incrementally add/remove extensions from the
-compiler's ISA string by appending arguments, any code that wants to
-modify the ISA string must recreate the whole thing. To support this,
-factor out the logic for generating the -march argument so it can be
-reused where needed.
+RISC-V uses kernel_fpu_begin()/kernel_fpu_end() like several other
+architectures. Enabling hardware FP requires overriding the ISA string
+for the relevant compilation units.
 
 Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 ---
 
- arch/riscv/Makefile     | 12 +-----------
- arch/riscv/Makefile.isa | 15 +++++++++++++++
- 2 files changed, 16 insertions(+), 11 deletions(-)
- create mode 100644 arch/riscv/Makefile.isa
+ drivers/gpu/drm/amd/display/Kconfig            | 5 ++++-
+ drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c | 6 ++++--
+ drivers/gpu/drm/amd/display/dc/dml/Makefile    | 6 ++++++
+ drivers/gpu/drm/amd/display/dc/dml2/Makefile   | 6 ++++++
+ 4 files changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index a74be78678eb..c738eafe67a0 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -58,22 +58,12 @@ ifeq ($(CONFIG_SHADOW_CALL_STACK),y)
- 	KBUILD_LDFLAGS += --no-relax-gp
+diff --git a/drivers/gpu/drm/amd/display/Kconfig b/drivers/gpu/drm/amd/display/Kconfig
+index 901d1961b739..49b33b2f6701 100644
+--- a/drivers/gpu/drm/amd/display/Kconfig
++++ b/drivers/gpu/drm/amd/display/Kconfig
+@@ -8,7 +8,10 @@ config DRM_AMD_DC
+ 	depends on BROKEN || !CC_IS_CLANG || ARM64 || RISCV || SPARC64 || X86_64
+ 	select SND_HDA_COMPONENT if SND_HDA_CORE
+ 	# !CC_IS_CLANG: https://github.com/ClangBuiltLinux/linux/issues/1752
+-	select DRM_AMD_DC_FP if (X86 || LOONGARCH || (PPC64 && ALTIVEC) || (ARM64 && KERNEL_MODE_NEON && !CC_IS_CLANG))
++	select DRM_AMD_DC_FP if ARM64 && KERNEL_MODE_NEON && !CC_IS_CLANG
++	select DRM_AMD_DC_FP if PPC64 && ALTIVEC
++	select DRM_AMD_DC_FP if RISCV && FPU
++	select DRM_AMD_DC_FP if LOONGARCH || X86
+ 	help
+ 	  Choose this option if you want to use the new display engine
+ 	  support for AMDGPU. This adds required support for Vega and
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+index 4ae4720535a5..834dca0396f1 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+@@ -35,6 +35,8 @@
+ #include <asm/neon.h>
+ #elif defined(CONFIG_LOONGARCH)
+ #include <asm/fpu.h>
++#elif defined(CONFIG_RISCV)
++#include <asm/switch_to.h>
+ #endif
+ 
+ /**
+@@ -89,7 +91,7 @@ void dc_fpu_begin(const char *function_name, const int line)
+ 	depth = __this_cpu_inc_return(fpu_recursion_depth);
+ 
+ 	if (depth == 1) {
+-#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
++#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
+ 		kernel_fpu_begin();
+ #elif defined(CONFIG_PPC64)
+ 		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+@@ -122,7 +124,7 @@ void dc_fpu_end(const char *function_name, const int line)
+ 
+ 	depth = __this_cpu_dec_return(fpu_recursion_depth);
+ 	if (depth == 0) {
+-#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
++#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH) || defined(CONFIG_RISCV)
+ 		kernel_fpu_end();
+ #elif defined(CONFIG_PPC64)
+ 		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+index ea7d60f9a9b4..5c8f840ef323 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+@@ -43,6 +43,12 @@ dml_ccflags := -mfpu=64
+ dml_rcflags := -msoft-float
  endif
  
--# ISA string setting
--riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
--riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
--riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
--riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
--riscv-march-$(CONFIG_RISCV_ISA_V)	:= $(riscv-march-y)v
--
- ifdef CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC
- KBUILD_CFLAGS += -Wa,-misa-spec=2.2
- KBUILD_AFLAGS += -Wa,-misa-spec=2.2
--else
--riscv-march-$(CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI) := $(riscv-march-y)_zicsr_zifencei
- endif
- 
--# Check if the toolchain supports Zihintpause extension
--riscv-march-$(CONFIG_TOOLCHAIN_HAS_ZIHINTPAUSE) := $(riscv-march-y)_zihintpause
++ifdef CONFIG_RISCV
 +include $(srctree)/arch/riscv/Makefile.isa
- 
- # Remove F,D,V from isa string for all. Keep extensions between "fd" and "v" by
- # matching non-v and non-multi-letter extensions out with the filter ([^v_]*)
-diff --git a/arch/riscv/Makefile.isa b/arch/riscv/Makefile.isa
-new file mode 100644
-index 000000000000..e10c77e26fe6
---- /dev/null
-+++ b/arch/riscv/Makefile.isa
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+# ISA string setting
-+riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
-+riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
-+riscv-march-$(CONFIG_FPU)		:= $(riscv-march-y)fd
-+riscv-march-$(CONFIG_RISCV_ISA_C)	:= $(riscv-march-y)c
-+riscv-march-$(CONFIG_RISCV_ISA_V)	:= $(riscv-march-y)v
-+
-+ifndef CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC
-+riscv-march-$(CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI) := $(riscv-march-y)_zicsr_zifencei
++# Remove V from the ISA string, like in arch/riscv/Makefile, but keep F and D.
++dml_ccflags := -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)([^v_]*)v?/\1\2/')
 +endif
 +
-+# Check if the toolchain supports Zihintpause extension
-+riscv-march-$(CONFIG_TOOLCHAIN_HAS_ZIHINTPAUSE) := $(riscv-march-y)_zihintpause
+ ifdef CONFIG_CC_IS_GCC
+ ifneq ($(call gcc-min-version, 70100),y)
+ IS_OLD_GCC = 1
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+index acff3449b8d7..15ad6e3a2173 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+@@ -42,6 +42,12 @@ dml2_ccflags := -mfpu=64
+ dml2_rcflags := -msoft-float
+ endif
+ 
++ifdef CONFIG_RISCV
++include $(srctree)/arch/riscv/Makefile.isa
++# Remove V from the ISA string, like in arch/riscv/Makefile, but keep F and D.
++dml2_ccflags := -march=$(shell echo $(riscv-march-y) | sed -E 's/(rv32ima|rv64ima)([^v_]*)v?/\1\2/')
++endif
++
+ ifdef CONFIG_CC_IS_GCC
+ ifeq ($(call cc-ifversion, -lt, 0701, y), y)
+ IS_OLD_GCC = 1
 -- 
 2.42.0
 
