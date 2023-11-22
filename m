@@ -2,63 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395127F3D3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD07B7F3D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 06:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbjKVFX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 00:23:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        id S229934AbjKVFZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 00:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjKVFX6 (ORCPT
+        with ESMTP id S229513AbjKVFZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 00:23:58 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BAE100
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
-        ; s=ds202310; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=O7R/oNOWEkQVZq50KChO78EnSJtQuKAwQyLJGruuOS8=; b=fWVIumMXoiQ8l6MKYPNXKIpmYj
-        N9GlUgVOkpyXkTcjwvktzhnrorbEwj57gNGIJqYRkqUogGx7h0uf/LOGEyB/hMgfmzeOsQoQaN3wH
-        8x3IEP134KIMLVq8+0tfi6c2nFxgomlFvdK9apewjk1wg7ZAS5CbZOKwDOHYyoH21F+Rhp2rdHxDC
-        POIS22Q8Z+DdoBAGk6myipPkNBNNJzyuzVngs9G0tSU40n0sC54xCgE9d83DbwJ5G6Fg/+9KBKChx
-        Aza1wvRdVrIokGkABP4TozgdWKy3UCA2djD8+fAXpjV7FZQCpXawng74GGNY9SoNC7GwzuNIePcuT
-        fia2fzRA==;
-Received: from [84.215.119.50] (port=54178 helo=[192.168.0.2])
-        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <Ywe_C4rlyn@su-phil.net>)
-        id 1r5fiK-006loo-JP
-        for linux-kernel@vger.kernel.org;
-        Wed, 22 Nov 2023 06:23:52 +0100
-Message-ID: <d3991b6e-5fb7-4d20-b08e-5f3c4cc72acf@su-phil.net>
-Date:   Wed, 22 Nov 2023 06:23:52 +0100
+        Wed, 22 Nov 2023 00:25:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E1CCB
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 21:25:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5069AC43391;
+        Wed, 22 Nov 2023 05:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700630751;
+        bh=wmWxPUOd6qlcwcRUdP9zuOVzyu62ETC1UMPH8fike0s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=srHVmV7fUud/rEPkwYZ3Cf5j0ftTgJLhUI7Bo8HYn9HEAes9nqIimFw0PB86lodKU
+         T1ZNMaIbN3euB6D0xE4fwIy6xpxe4lQ4VhtDNaClDULPbIAEsQ8ElQsUqc/6pczdKo
+         yhUl3o346DRC6NoHNKUFTDvjkq+3ODvzulKTlnJBHirP+OeOAMOvuqrdqc76q1J7QD
+         wo0rO4lvF3kc/l9eEdZtO5TMRctWyVlE49mL1a1a/gY8ba+WSuDcD7jayvwiKDt5ww
+         bxRRkRq/1jfo2UzWDhQZc/U/UdcJEFp4zmS7H7BSQGjqzFXTfOqsdelZCW5/y7mQi8
+         x+sqkgbKWrkLQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-507be298d2aso8333707e87.1;
+        Tue, 21 Nov 2023 21:25:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YwwWtFd96QHzKD7yRRBIxrUUhq+6i8J0fHpX1UtCkJXzffg6H6o
+        2/roU9C3j6XToRjtIag0MYRwq1+PGb4D6gsez4c=
+X-Google-Smtp-Source: AGHT+IHCMVEXjnRbdnaoZRHF4v+WDOV92AxJZtPtfrW5rxC0f/SkxPzWTYT9Yga0zajW7oMblajVNdE6RRo1Nyf4qs8=
+X-Received: by 2002:a05:6512:4014:b0:503:258f:fd1b with SMTP id
+ br20-20020a056512401400b00503258ffd1bmr1128073lfb.18.1700630749453; Tue, 21
+ Nov 2023 21:25:49 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Ywe_C4rlyn@su-phil.net>
-Subject: LeX, the ultimate derivative of Open Source (was fair pay, Lab X, low
- jitter)
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+ <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+ <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com> <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+ <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+In-Reply-To: <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 21 Nov 2023 21:25:37 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
+Message-ID: <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Yuri Benditovich <yuri.benditovich@daynix.com>,
+        Andrew Melnychenko <andrew@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lab X may be a bit too stringent.
+On Mon, Nov 20, 2023 at 12:05=E2=80=AFAM Akihiko Odaki <akihiko.odaki@dayni=
+x.com> wrote:
+>
+> On 2023/11/20 6:02, Song Liu wrote:
+[...]
+> >> In contrast, our intended use case is more like a normal application.
+> >> So, for example, a user may download a container and run QEMU (includi=
+ng
+> >> the BPF program) installed in the container. As such, it is nice if th=
+e
+> >> ABI is stable across kernel releases, but it is not guaranteed for
+> >> kfuncs. Such a use case is already covered with the eBPF steering
+> >> program so I want to maintain it if possible.
+> >
+> > TBH, I don't think stability should be a concern for kfuncs used by QEM=
+U.
+> > Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
+> > bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
+> > be supported.
+>
+> Documentation/bpf/kfuncs.rst still says:
+>  > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
+>  > of the strict stability restrictions associated with kernel <-> user
+>  > UAPIs.
+>
+> Is it possible to change the statement like as follows:
+> "Most kfuncs provide a kernel <-> kernel API, and thus are not bound by
+> any of the strict stability restrictions associated with kernel <-> user
+> UAPIs. kfuncs that have same stability restrictions associated with
+> UAPIs are exceptional, and must be carefully reviewed by subsystem (and
+> BPF?) maintainers as any other UAPIs are."
 
-So a final tweak on that. LeX. Designed according to Le, which actually 
-IS Ala in our alphabet.
+I am afraid this is against the intention to not guarantee UAPI-level stabi=
+lity
+for kfuncs.
 
-The Light Be With You,
-Ywe Cærlyn.
-su-phil.net
+Thanks,
+Song
