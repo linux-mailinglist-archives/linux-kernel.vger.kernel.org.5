@@ -2,326 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B45847F4902
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF7B7F4970
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 15:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbjKVOda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 09:33:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
+        id S235189AbjKVOxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 09:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbjKVOd1 (ORCPT
+        with ESMTP id S232069AbjKVOxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 09:33:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47BED6C
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:33:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700663600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=shPFiNnieBfc+nA1jRG7H+c1jqVnxbi/cSpxWrKoPIY=;
-        b=M/II50x+i9VfzwQTqiR0aN9PNXO8hTqTkni2IzW2s20wcZdZ6NF7siQKfEZsAbWqfOPPE1
-        MmxqKsdVKsZ7hKsTH7ej3vnjpjj4VL7Z/I+VL+e/L+65ANLaCg1bgk2lbAg2wXVYxVIkkF
-        bgAYxqI/7mF4F0fBZ/VGamkFkUpQyWQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-638-cPW8qKA6OYGIRJmtOCx-Nw-1; Wed, 22 Nov 2023 09:33:18 -0500
-X-MC-Unique: cPW8qKA6OYGIRJmtOCx-Nw-1
-Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-41e172143c3so18645331cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:33:15 -0800 (PST)
+        Wed, 22 Nov 2023 09:53:02 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11D1D44
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:52:55 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4079ed65582so31923725e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 06:52:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700664774; x=1701269574; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=YU9HkHadrfyg4mO0a1y/iuf4m6/K/aPcwo6FIp9aTrU=;
+        b=LNjeQbO6XEpJnv0URVmk9gRaK3f7VNpo/VshEOhyWsqiMpbiukhaxKHwv5o+lZDCIj
+         /HzX3U2GCpX1haHUSv/M1CByFH7A28VreU1jBuvsn1g7ICAniS6u0NQnKg6+Yno0POHG
+         aKaDNHorv7HZ27A8k9Pnco11QBVs52hqzHhBiM6mx3yugVDXPGgr+zUrvi/0l0CUZhTn
+         2BS1nuTT/p5Gv9WkhEJBKeFTyuDw8nZLytChsMQ+Vb+ayUXbPsXrDBXVLII+RBNG3q0R
+         VRkjXy2sDf+oS3BS+g8EHS5mJRK+a6bMxFSxtmcalLdpib8CObn0chZP/EUwGJd0sFSg
+         SirQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700663595; x=1701268395;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=shPFiNnieBfc+nA1jRG7H+c1jqVnxbi/cSpxWrKoPIY=;
-        b=nh3ThuFykczIgjLG4YXR0DhDNgtMyPVXxvsHHRXKgQZeo6Lj1KPkRI2fpeS6XT7n51
-         FtvArDqeRCNK4c97/OCU/SHqzDpUG1zql3oq3TNv3HSSO1EKLG41tgMz8y55yYjCrTZ/
-         1hpDNZszPfnpqpFJHrWLyHY/MASewwh6Her51Jx+PZbzU9NKDNUrPMVTAdjO0adxFwqr
-         baBPYGe+lWBOE8q4/wncpu3Eds/aHpYApnwoAaCGreSgf4IwtFPLNvDOVH0DCP5YwXiq
-         LCtWKhacwxagbptxaKlRvq5Qu17AotKz16yP5h7h8yisArKINDk5X+3pc6AVSPo0U58z
-         bNgQ==
-X-Gm-Message-State: AOJu0Ywkm7TjicY3VqzKCo/Ng+ooMXKW7tIyDmWS6vKPkoZKpNuFhZPV
-        9aVFn4M/k6lds9g8OlRuL4cTvC8F8ou3xyf7gc4tZvszjLIuYkFmVwR+njvolMLCFxDQLy7YYvM
-        txIX2kzVYa+6DxQNNMMsI03Sn+TqHnjg=
-X-Received: by 2002:a05:622a:400c:b0:423:83a1:7bbf with SMTP id cf12-20020a05622a400c00b0042383a17bbfmr1127399qtb.28.1700663594743;
-        Wed, 22 Nov 2023 06:33:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFV9BlytQs81yJF+crBKuitlDdNCMdUFK9qjRxbV/xMqx4YvOghdpr9UcA3xpf4yEHJXbAFSg==
-X-Received: by 2002:a05:622a:400c:b0:423:83a1:7bbf with SMTP id cf12-20020a05622a400c00b0042383a17bbfmr1127366qtb.28.1700663594488;
-        Wed, 22 Nov 2023 06:33:14 -0800 (PST)
-Received: from klayman.redhat.com (net-2-34-24-178.cust.vodafonedsl.it. [2.34.24.178])
-        by smtp.gmail.com with ESMTPSA id v7-20020ac87487000000b0041950c7f6d8sm4430101qtq.60.2023.11.22.06.33.12
+        d=1e100.net; s=20230601; t=1700664774; x=1701269574;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YU9HkHadrfyg4mO0a1y/iuf4m6/K/aPcwo6FIp9aTrU=;
+        b=oeli4aMtxcpJ3wCGMZhdVYBDEN/YqL2wiLSY+M4ZJtdWMtxEPBRjbzOG9xEtiH1md8
+         OBvyMXhNzUyuGQT0gHVCtG9+SlfiL3fFLOZLSGalMU0fbHfV3/c+Rv6/kaltq4jyWHEx
+         VpfwMUnoX5Ieku6d1ZvpXU4hq3vaWP4Ghl808N5FgZHyV12hB4LYZKQP8S5cujzrnUGB
+         uVr5kTiTIIjtkzUrETq601aHf7OSiNPda2JyDwGL9dE2apKGvkTkcflSqfn88nKxw6TP
+         Bv0OX6L7rsdCEucg1bc5VNID+Kt772ApklRAIHJ3B1hO1Ai04pLHgiORYeIKFw7Gj0Ti
+         LCNA==
+X-Gm-Message-State: AOJu0YyO6xzgK9vrS9F0c8byWUppc/K2kdh3ki+hQefeGGbnOzDZpHR1
+        McUgGg2hrZCUHpEpPQsD7NOPjw==
+X-Google-Smtp-Source: AGHT+IHx6cb/GfkvDHyM6YwX74rQfXlRrRm6+GoJfSrfbdtc0H2GN2fNm9xMYK5e6rHT+aM/JJHyLQ==
+X-Received: by 2002:a05:600c:5492:b0:40b:3369:d797 with SMTP id iv18-20020a05600c549200b0040b3369d797mr1244407wmb.21.1700664773964;
+        Wed, 22 Nov 2023 06:52:53 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:d0a1:9a3c:4f4b:fa20])
+        by smtp.gmail.com with ESMTPSA id r5-20020a05600c320500b0040a4cc876e0sm2406529wmp.40.2023.11.22.06.52.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 06:33:14 -0800 (PST)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Marco Pagani <marpagan@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org
-Subject: [RFC PATCH 2/2] fpga: set owner of fpga_manager_ops for existing low-level modules
-Date:   Wed, 22 Nov 2023 15:32:52 +0100
-Message-ID: <20231122143252.181680-3-marpagan@redhat.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231122143252.181680-1-marpagan@redhat.com>
-References: <20231122143252.181680-1-marpagan@redhat.com>
+        Wed, 22 Nov 2023 06:52:53 -0800 (PST)
+References: <20231117125919.1696980-1-jbrunet@baylibre.com>
+ <20231117125919.1696980-3-jbrunet@baylibre.com>
+ <170040994064.269288.960284011884896046.robh@kernel.org>
+ <4608012c-059f-4d6a-914b-e85ad0c32ff0@linaro.org>
+ <1j5y1wg3sb.fsf@starbuckisacylon.baylibre.com>
+ <2e7a65da-5c1d-4dd4-ac69-7559a53afdf3@linaro.org>
+ <1j1qckg21u.fsf@starbuckisacylon.baylibre.com>
+ <94e69281-93e1-41cd-9cf5-81cbbc15572c@linaro.org>
+User-agent: mu4e 1.10.7; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, neil.armstrong@linaro.org,
+        Rob Herring <robh@kernel.org>,
+        JunYi Zhao <junyi.zhao@amlogic.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v2 2/6] dt-bindings: pwm: amlogic: add new compatible
+ for meson8 pwm type
+Date:   Wed, 22 Nov 2023 15:34:41 +0100
+In-reply-to: <94e69281-93e1-41cd-9cf5-81cbbc15572c@linaro.org>
+Message-ID: <1jwmu9et6j.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch tentatively set the owner field of fpga_manager_ops to
-THIS_MODULE for existing fpga manager low-level control modules.
 
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
----
- drivers/fpga/altera-cvp.c             | 1 +
- drivers/fpga/altera-pr-ip-core.c      | 1 +
- drivers/fpga/altera-ps-spi.c          | 1 +
- drivers/fpga/dfl-fme-mgr.c            | 1 +
- drivers/fpga/ice40-spi.c              | 1 +
- drivers/fpga/lattice-sysconfig.c      | 1 +
- drivers/fpga/machxo2-spi.c            | 1 +
- drivers/fpga/microchip-spi.c          | 1 +
- drivers/fpga/socfpga-a10.c            | 1 +
- drivers/fpga/socfpga.c                | 1 +
- drivers/fpga/stratix10-soc.c          | 1 +
- drivers/fpga/tests/fpga-mgr-test.c    | 1 +
- drivers/fpga/tests/fpga-region-test.c | 1 +
- drivers/fpga/ts73xx-fpga.c            | 1 +
- drivers/fpga/versal-fpga.c            | 1 +
- drivers/fpga/xilinx-spi.c             | 1 +
- drivers/fpga/zynq-fpga.c              | 1 +
- drivers/fpga/zynqmp-fpga.c            | 1 +
- 18 files changed, 18 insertions(+)
+On Wed 22 Nov 2023 at 09:37, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera-cvp.c
-index 4ffb9da537d8..aeb913547dd8 100644
---- a/drivers/fpga/altera-cvp.c
-+++ b/drivers/fpga/altera-cvp.c
-@@ -520,6 +520,7 @@ static const struct fpga_manager_ops altera_cvp_ops = {
- 	.write_init	= altera_cvp_write_init,
- 	.write		= altera_cvp_write,
- 	.write_complete	= altera_cvp_write_complete,
-+	.owner		= THIS_MODULE,
- };
- 
- static const struct cvp_priv cvp_priv_v1 = {
-diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera-pr-ip-core.c
-index df8671af4a92..354221c609e6 100644
---- a/drivers/fpga/altera-pr-ip-core.c
-+++ b/drivers/fpga/altera-pr-ip-core.c
-@@ -171,6 +171,7 @@ static const struct fpga_manager_ops alt_pr_ops = {
- 	.write_init = alt_pr_fpga_write_init,
- 	.write = alt_pr_fpga_write,
- 	.write_complete = alt_pr_fpga_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- int alt_pr_register(struct device *dev, void __iomem *reg_base)
-diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera-ps-spi.c
-index 740980e7cef8..3be05796a6fc 100644
---- a/drivers/fpga/altera-ps-spi.c
-+++ b/drivers/fpga/altera-ps-spi.c
-@@ -228,6 +228,7 @@ static const struct fpga_manager_ops altera_ps_ops = {
- 	.write_init = altera_ps_write_init,
- 	.write = altera_ps_write,
- 	.write_complete = altera_ps_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int altera_ps_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
-index ab228d8837a0..740ce82e3ac9 100644
---- a/drivers/fpga/dfl-fme-mgr.c
-+++ b/drivers/fpga/dfl-fme-mgr.c
-@@ -264,6 +264,7 @@ static const struct fpga_manager_ops fme_mgr_ops = {
- 	.write = fme_mgr_write,
- 	.write_complete = fme_mgr_write_complete,
- 	.status = fme_mgr_status,
-+	.owner = THIS_MODULE,
- };
- 
- static void fme_mgr_get_compat_id(void __iomem *fme_pr,
-diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/ice40-spi.c
-index 7cbb3558b844..97afa6dc5d76 100644
---- a/drivers/fpga/ice40-spi.c
-+++ b/drivers/fpga/ice40-spi.c
-@@ -130,6 +130,7 @@ static const struct fpga_manager_ops ice40_fpga_ops = {
- 	.write_init = ice40_fpga_ops_write_init,
- 	.write = ice40_fpga_ops_write,
- 	.write_complete = ice40_fpga_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int ice40_fpga_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/lattice-sysconfig.c b/drivers/fpga/lattice-sysconfig.c
-index ba51a60f672f..1393cdd11e49 100644
---- a/drivers/fpga/lattice-sysconfig.c
-+++ b/drivers/fpga/lattice-sysconfig.c
-@@ -348,6 +348,7 @@ static const struct fpga_manager_ops sysconfig_fpga_mgr_ops = {
- 	.write_init = sysconfig_ops_write_init,
- 	.write = sysconfig_ops_write,
- 	.write_complete = sysconfig_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- int sysconfig_probe(struct sysconfig_priv *priv)
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 905607992a12..46193a47f863 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -358,6 +358,7 @@ static const struct fpga_manager_ops machxo2_ops = {
- 	.write_init = machxo2_write_init,
- 	.write = machxo2_write,
- 	.write_complete = machxo2_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int machxo2_spi_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/microchip-spi.c b/drivers/fpga/microchip-spi.c
-index 2a82c726d6e5..023ccdf2d5da 100644
---- a/drivers/fpga/microchip-spi.c
-+++ b/drivers/fpga/microchip-spi.c
-@@ -362,6 +362,7 @@ static const struct fpga_manager_ops mpf_ops = {
- 	.write_init = mpf_ops_write_init,
- 	.write = mpf_ops_write,
- 	.write_complete = mpf_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int mpf_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/socfpga-a10.c b/drivers/fpga/socfpga-a10.c
-index cc4861e345c9..a8ab74b30006 100644
---- a/drivers/fpga/socfpga-a10.c
-+++ b/drivers/fpga/socfpga-a10.c
-@@ -463,6 +463,7 @@ static const struct fpga_manager_ops socfpga_a10_fpga_mgr_ops = {
- 	.write_init = socfpga_a10_fpga_write_init,
- 	.write = socfpga_a10_fpga_write,
- 	.write_complete = socfpga_a10_fpga_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int socfpga_a10_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/socfpga.c b/drivers/fpga/socfpga.c
-index 723ea0ad3f09..87f3f4a367d0 100644
---- a/drivers/fpga/socfpga.c
-+++ b/drivers/fpga/socfpga.c
-@@ -538,6 +538,7 @@ static const struct fpga_manager_ops socfpga_fpga_ops = {
- 	.write_init = socfpga_fpga_ops_configure_init,
- 	.write = socfpga_fpga_ops_configure_write,
- 	.write_complete = socfpga_fpga_ops_configure_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int socfpga_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index cacb9cc5757e..63a5a2fe4911 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -393,6 +393,7 @@ static const struct fpga_manager_ops s10_ops = {
- 	.write_init = s10_ops_write_init,
- 	.write = s10_ops_write,
- 	.write_complete = s10_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int s10_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/tests/fpga-mgr-test.c b/drivers/fpga/tests/fpga-mgr-test.c
-index 6acec55b60ce..4c2a3e98f8ad 100644
---- a/drivers/fpga/tests/fpga-mgr-test.c
-+++ b/drivers/fpga/tests/fpga-mgr-test.c
-@@ -187,6 +187,7 @@ static const struct fpga_manager_ops fake_mgr_ops = {
- 	.write = op_write,
- 	.write_sg = op_write_sg,
- 	.write_complete = op_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static void fpga_mgr_test_get(struct kunit *test)
-diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
-index baab07e3fc59..2705c1b33d09 100644
---- a/drivers/fpga/tests/fpga-region-test.c
-+++ b/drivers/fpga/tests/fpga-region-test.c
-@@ -52,6 +52,7 @@ static int op_write(struct fpga_manager *mgr, const char *buf, size_t count)
-  */
- static const struct fpga_manager_ops fake_mgr_ops = {
- 	.write = op_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int op_enable_set(struct fpga_bridge *bridge, bool enable)
-diff --git a/drivers/fpga/ts73xx-fpga.c b/drivers/fpga/ts73xx-fpga.c
-index 4e1d2a4d3df4..20b8db0d150a 100644
---- a/drivers/fpga/ts73xx-fpga.c
-+++ b/drivers/fpga/ts73xx-fpga.c
-@@ -96,6 +96,7 @@ static const struct fpga_manager_ops ts73xx_fpga_ops = {
- 	.write_init	= ts73xx_fpga_write_init,
- 	.write		= ts73xx_fpga_write,
- 	.write_complete	= ts73xx_fpga_write_complete,
-+	.owner		= THIS_MODULE,
- };
- 
- static int ts73xx_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/versal-fpga.c b/drivers/fpga/versal-fpga.c
-index 3710e8f01be2..02fd8ed36ff0 100644
---- a/drivers/fpga/versal-fpga.c
-+++ b/drivers/fpga/versal-fpga.c
-@@ -40,6 +40,7 @@ static int versal_fpga_ops_write(struct fpga_manager *mgr,
- static const struct fpga_manager_ops versal_fpga_ops = {
- 	.write_init = versal_fpga_ops_write_init,
- 	.write = versal_fpga_ops_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int versal_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/xilinx-spi.c b/drivers/fpga/xilinx-spi.c
-index e1a227e7ff2a..d58cf0ccbd41 100644
---- a/drivers/fpga/xilinx-spi.c
-+++ b/drivers/fpga/xilinx-spi.c
-@@ -218,6 +218,7 @@ static const struct fpga_manager_ops xilinx_spi_ops = {
- 	.write_init = xilinx_spi_write_init,
- 	.write = xilinx_spi_write,
- 	.write_complete = xilinx_spi_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int xilinx_spi_probe(struct spi_device *spi)
-diff --git a/drivers/fpga/zynq-fpga.c b/drivers/fpga/zynq-fpga.c
-index 96611d424a10..241e1fe48a13 100644
---- a/drivers/fpga/zynq-fpga.c
-+++ b/drivers/fpga/zynq-fpga.c
-@@ -548,6 +548,7 @@ static const struct fpga_manager_ops zynq_fpga_ops = {
- 	.write_init = zynq_fpga_ops_write_init,
- 	.write_sg = zynq_fpga_ops_write,
- 	.write_complete = zynq_fpga_ops_write_complete,
-+	.owner = THIS_MODULE,
- };
- 
- static int zynq_fpga_probe(struct platform_device *pdev)
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index f3434e2c487b..2f66400d2330 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -101,6 +101,7 @@ static const struct fpga_manager_ops zynqmp_fpga_ops = {
- 	.state = zynqmp_fpga_ops_state,
- 	.write_init = zynqmp_fpga_ops_write_init,
- 	.write = zynqmp_fpga_ops_write,
-+	.owner = THIS_MODULE,
- };
- 
- static int zynqmp_fpga_probe(struct platform_device *pdev)
--- 
-2.42.0
+> On 20/11/2023 11:04, Jerome Brunet wrote:
+>>>>>>>    .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 36 +++++++++++++++++--
+>>>>>>>    1 file changed, 34 insertions(+), 2 deletions(-)
+>>>>>>>
+>>>>>> Reviewed-by: Rob Herring <robh@kernel.org>
+>>>>>>
+>>>>>
+>>>>> I'm puzzled, isn't it recommended to have a per-soc compatible now ?
+>
+> Yes, it is.
+>
+>>>> I have specifically addressed this matter in the description,
+>>>> haven't I ? What good would it do in this case ?
+>
+> There is nothing about compatible naming in commit msg.
+
+Krzysztof, the whole commit desciption is explanation about why a new
+compatible is introduced. I don't understand this comment.
+
+>
+>>>
+>>> Yes you did but I was asked for the last year+ that all new compatible
+>>> should be soc specific (while imprecise, in our care soc family should be ok),
+>>> with a possible semi-generic callback with an IP version or a first soc
+>>> implementing the IP.
+>>>
+>>>> Plus the definition of a SoC is very vague. One could argue that
+>>>> the content of the list bellow are vaguely defined families. Should we
+>>>> add meson8b, gxl, gxm, sm1 ? ... or even the actual SoC reference ?
+>>>> This list gets huge for no reason.
+>>>
+>>> I think in our case soc family is reasonable since they share same silicon
+>>> design.
+>>>
+>>>> We know all existing PWM of this type are the same. We have been using
+>>>> them for years. It is not a new support we know nothing about.
+>>>>
+>>>>>
+>>>>> I thought something like:
+>>>>> - items:
+>>>>>      - enum:
+>>>>>          - amlogic,gxbb-pwm
+>>>>>          - amlogic,axg-pwm
+>>>>>          - amlogic,g12a-pwm
+>>>>>      - const: amlogic,pwm-v1
+>>>> I'm not sure I understand what you are suggesting here.
+>>>> Adding a "amlogic,pwm-v1" for the obsolete compatible ? No amlogic DT
+>>>> has that and I'm working to remove this type, so I don't get the point.
+>>>>
+>>>>>
+>>>>> should be preferred instead of a single amlogic,meson8-pwm-v2 ?
+>>>> This is named after the first SoC supporting the type.
+>>>> Naming it amlogic,pwm-v2 would feel weird with the s4 coming after.
+>>>> Plus the doc specifically advise against this type of names.
+>>>
+>>> The -v2 refers to a pure software/dt implementation versioning and not
+>>> an HW version, so I'm puzzled and I requires DT maintainers advice here.
+>>>
+>>> Yes meson8b is the first "known" platform, even if I'm pretty sure meson6 has
+>
+> Yes, this should be SoC-based compatible, unless you have clear
+> versioning scheme by SoC/IP block vendor. You named it not a HW version,
+> which kind of answers to the "unless" case - that's not hardware version.
+>
+
+This is specifically the point of the comment in commit description.
+We know all the PWMs compatible are the same HW (version) as one found
+in the meson8b.
+
+It is certain that adding more compatible, listing all the SoC, will be
+useless. I can do it if you insist.
+
+>> 
+>> This is not my point. I picked this name because I have to pick a
+>> specific device based one. Not because it is actually the first or
+>> not. I don't see a problem with meson6 being compatible with
+>> meson8-pwm-v2, if that ever comes along.
+>
+> No, the point is not to use "v2". Use SoC compatibles.
+
+It is a SoC compatible. The second one.
+
+The first one, as explained in the description was describing the driver
+more that the HW.
+
+Changing the way clock are passed from DT to the driver would be break
+user of the old compatible. So a new compatible is introduced. I believe
+this is recommended way to introduce incompatible binding changes.
+
+v2 here denote a new interface version, nothing to do with HW
+versioning. I happy to pick something else to denote this.
+
+>
+>> 
+>> I think the binding here satisfy the rule that it should be specific,
+>> and the intent that goes with it:
+>> 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/writing-bindings.rst?h=v6.7-rc2#n42
+>> 
+>>> the same pwm architecture, this is why "amlogic,pwm-v1" as fallback seems more
+>>> reasonable and s4 and later pwm could use the "amlogic,pwm-v2"
+>>> fallback.
+>> 
+>> That is not how understand this:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/writing-bindings.rst?h=v6.7-rc2#n82
+>> 
+>
+> Again, where the "v2" is defined? Where is any document explaining the
+> mapping between version blocks and SoC parts? Why do you list here only
+> major version? Blocks almost always have also minor (e.g. v2.0).
+
+Again, v2 does has nothing to do with the HW. Never wrote it was.
+The HW remains the same.
+
+
+>
+> Best regards,
+> Krzysztof
 
