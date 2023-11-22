@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCC17F3F39
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E08347F3F3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 08:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbjKVHu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 02:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        id S230113AbjKVHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 02:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229931AbjKVHux (ORCPT
+        with ESMTP id S230046AbjKVHwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 02:50:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D42110;
-        Tue, 21 Nov 2023 23:50:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700639449; x=1732175449;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=rnM1XrjEopEa5PyFu+BAEV7mf+8XNMj46MO9QuiExjg=;
-  b=YDcxlJpViwwqZZvOWIYh+eTnK5bUN9UXCBtTHlHqMuEFH0XXOI4haqD9
-   wovkr0/swYXRLbKK4mKefv7fCOe4/IiexTevv1b9um106bqhJnyCYXSkB
-   zlAa27PXq7BbIH76yfAi0bodn/COZAK1noko/thBdzjUKwVt2E+YhNojT
-   98DLDXwoTVwYtzth79jLHH8Xr0sRo291s4niQoWPNB9vo8gCUqB/urO9O
-   tV1WmSJxzGb2qduND3Eh1Yr1r1bKGx6rGD7UaiZTgineaU4+APHdc8NNb
-   +69GNe8pwYtRA8EZcWmBpBpUDx4CnTEjTslLxpt/ekFFuCipxo/0hAEGY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="382400676"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="382400676"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 23:50:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098317199"
-X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
-   d="scan'208";a="1098317199"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 23:50:45 -0800
-Message-ID: <9f322fd0-2c9e-4f34-9705-8e94224c68fd@linux.intel.com>
-Date:   Wed, 22 Nov 2023 15:50:43 +0800
+        Wed, 22 Nov 2023 02:52:41 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C56210E;
+        Tue, 21 Nov 2023 23:52:34 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AM7eWqH015195;
+        Wed, 22 Nov 2023 08:52:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=fPjoVWK
+        AOHk+Zx85zrTcGB3/yrl3T4i+z4waWY9BkaY=; b=TrsM7SfFoMO0rFWCIBrD63K
+        jtBb3YpN0SSqZ/F+4iCghP43GF2K0xmuMsoWrLOkLRbXbFRnFceWVIXaWC04REXw
+        HDb/iHn7cRS+AGyqvdQeX7qsxBFy4b+q30rtTv/H1evej2EIQNOkSw7OJLGCYpcm
+        QtkZPZABNJhI8RRuKtq80nrG7PxIq0I9rj+UW7taTUtcFvCPtf5deLEE3IfT0Tft
+        ZJCMd8wsTAB1zcGCSggtNJHoGTKNskQjU8Q02uMpWKUfOvgmOkdjqE5MPVuW3zno
+        ziJb6GhnEqQwethHVyT7nntKpc1JNDO6E9+iypmIdLb+KUxcK+tB77AdNcdUagg=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uf7q5hpbc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 08:52:23 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4B30810002A;
+        Wed, 22 Nov 2023 08:52:22 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 426E62128AF;
+        Wed, 22 Nov 2023 08:52:22 +0100 (CET)
+Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 22 Nov
+ 2023 08:52:22 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Rob Herring <robh@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 0/3] media: i2c: gc2145: GC2145 sensor support
+Date:   Wed, 22 Nov 2023 08:51:46 +0100
+Message-ID: <20231122075154.789431-1-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 14/16] KVM: x86/tdp_mmu: TDX: Implement merge pages
- into a large page
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <db6681db72a7667c06687923232277ddde2d9949.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <db6681db72a7667c06687923232277ddde2d9949.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_06,2023-11-21_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,169 +76,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This serie adds support for the GalaxyCore GC2145 sensor.
+Initialization is based on scripts provided by GalaxyCore,
+allowing 3 fixed configurations supported for the time being.
 
+Minimum controls have been added in order to allow it to
+be successfully used with libcamera and dcmipp driver (under
+review) on STM32MP13 platform.
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Implement merge_private_stp callback.
+The sensor also supports Bayer formats which will be added
+later on.
 
-Not just merge_private_stp, but also unzap_private_spte.
+v5: - serie rebased on top of master branch of tree sailus/media_tree.git
+      in order to use v4l2_subdev_state_* functions
 
-Also, for the shortlog, should it be "KVM: VMX" instead of "KVM: 
-x86/tdp_mmu"?
+v4: - bindings: add link-frequencies & correct description
+    - driver: add link-frequency ctrl and fix pixelrate
+      and check for link-frequency dt properties
+    - driver: correct wording / email / add datasheet link
 
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/tdx.c       | 72 ++++++++++++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/tdx_arch.h  |  1 +
->   arch/x86/kvm/vmx/tdx_errno.h |  2 +
->   arch/x86/kvm/vmx/tdx_ops.h   |  6 +++
->   4 files changed, 81 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 91eca578a7da..df53a971ff21 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1684,6 +1684,49 @@ static int tdx_sept_split_private_spt(struct kvm *kvm, gfn_t gfn,
->   	return 0;
->   }
->   
-> +static int tdx_sept_merge_private_spt(struct kvm *kvm, gfn_t gfn,
-> +				      enum pg_level level, void *private_spt)
-> +{
-> +	int tdx_level = pg_level_to_tdx_sept_level(level);
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	struct tdx_module_args out;
-> +	gpa_t gpa = gfn_to_gpa(gfn) & KVM_HPAGE_MASK(level);
-> +	u64 err;
-> +
-> +	/* See comment in tdx_sept_set_private_spte() */
-> +	err = tdh_mem_page_promote(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
-> +	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
-> +		return -EAGAIN;
-> +	if (unlikely(err == (TDX_EPT_INVALID_PROMOTE_CONDITIONS |
-> +			     TDX_OPERAND_ID_RCX)))
-> +		/*
-> +		 * Some pages are accepted, some pending.  Need to wait for TD
-> +		 * to accept all pages.  Tell it the caller.
-> +		 */
-> +		return -EAGAIN;
-> +	if (KVM_BUG_ON(err, kvm)) {
-> +		pr_tdx_error(TDH_MEM_PAGE_PROMOTE, err, &out);
-> +		return -EIO;
-> +	}
-> +	WARN_ON_ONCE(out.rcx != __pa(private_spt));
-> +
-> +	/*
-> +	 * TDH.MEM.PAGE.PROMOTE frees the Secure-EPT page for the lower level.
-Is it better to use "unlink" instead of "free" to avoid confusion?
+v3: - fix copyright year
+    - add more gc2145_ func or variable prefixes
+    - removal of colorspace within struct gc2145_format
+    - use 1X16 formats since driver is supporting CSI-2 interface only
+    - use msleep instead of usleep_range
+    - add pm_runtime_ last_busy & autosuspend handling
+    - only start streaming AFTER applying ctrls
+    - correct RGB565 format to generate _LE instead of _BE
+    - perform pm_runtime configuration prior to v4l2_async_register_subdev_sensor
+    - remove frame_interval handling and expose HBLANK/VBLANK ctrls
+      instead
 
-> +	 * Flush cache for reuse.
-> +	 */
-> +	do {
-> +		err = tdh_phymem_page_wbinvd(set_hkid_to_hpa(__pa(private_spt),
-> +							     to_kvm_tdx(kvm)->hkid));
-> +	} while (unlikely(err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX)));
-> +	if (WARN_ON_ONCE(err)) {
-> +		pr_tdx_error(TDH_PHYMEM_PAGE_WBINVD, err, NULL);
-> +		return -EIO;
-> +	}
-> +
-> +	tdx_clear_page(__pa(private_spt), PAGE_SIZE);
-> +	return 0;
-> +}
-> +
->   static int tdx_sept_zap_private_spte(struct kvm *kvm, gfn_t gfn,
->   				      enum pg_level level)
->   {
-> @@ -1758,6 +1801,33 @@ static void tdx_track(struct kvm *kvm)
->   
->   }
->   
-> +static int tdx_sept_unzap_private_spte(struct kvm *kvm, gfn_t gfn,
-> +				       enum pg_level level)
-> +{
-> +	int tdx_level = pg_level_to_tdx_sept_level(level);
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	gpa_t gpa = gfn_to_gpa(gfn) & KVM_HPAGE_MASK(level);
-> +	struct tdx_module_args out;
-> +	u64 err;
-> +
-> +	do {
-> +		err = tdh_mem_range_unblock(kvm_tdx->tdr_pa, gpa, tdx_level, &out);
-> +
-> +		/*
-> +		 * tdh_mem_range_block() is accompanied with tdx_track() via kvm
-> +		 * remote tlb flush.  Wait for the caller of
-> +		 * tdh_mem_range_block() to complete TDX track.
-> +		 */
-> +	} while (err == (TDX_TLB_TRACKING_NOT_DONE | TDX_OPERAND_ID_SEPT));
-> +	if (unlikely(err == TDX_ERROR_SEPT_BUSY))
-> +		return -EAGAIN;
-> +	if (KVM_BUG_ON(err, kvm)) {
-> +		pr_tdx_error(TDH_MEM_RANGE_UNBLOCK, err, &out);
-> +		return -EIO;
-> +	}
-> +	return 0;
-> +}
-> +
->   static int tdx_sept_free_private_spt(struct kvm *kvm, gfn_t gfn,
->   				     enum pg_level level, void *private_spt)
->   {
-> @@ -3204,9 +3274,11 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
->   	x86_ops->link_private_spt = tdx_sept_link_private_spt;
->   	x86_ops->free_private_spt = tdx_sept_free_private_spt;
->   	x86_ops->split_private_spt = tdx_sept_split_private_spt;
-> +	x86_ops->merge_private_spt = tdx_sept_merge_private_spt;
->   	x86_ops->set_private_spte = tdx_sept_set_private_spte;
->   	x86_ops->remove_private_spte = tdx_sept_remove_private_spte;
->   	x86_ops->zap_private_spte = tdx_sept_zap_private_spte;
-> +	x86_ops->unzap_private_spte = tdx_sept_unzap_private_spte;
->   
->   	return 0;
->   
-> diff --git a/arch/x86/kvm/vmx/tdx_arch.h b/arch/x86/kvm/vmx/tdx_arch.h
-> index cab6a74446a0..fb7e54953a85 100644
-> --- a/arch/x86/kvm/vmx/tdx_arch.h
-> +++ b/arch/x86/kvm/vmx/tdx_arch.h
-> @@ -29,6 +29,7 @@
->   #define TDH_MNG_KEY_FREEID		20
->   #define TDH_MNG_INIT			21
->   #define TDH_VP_INIT			22
-> +#define TDH_MEM_PAGE_PROMOTE		23
->   #define TDH_MEM_SEPT_RD			25
->   #define TDH_VP_RD			26
->   #define TDH_MNG_KEY_RECLAIMID		27
-> diff --git a/arch/x86/kvm/vmx/tdx_errno.h b/arch/x86/kvm/vmx/tdx_errno.h
-> index bb093e292fef..940d6de332eb 100644
-> --- a/arch/x86/kvm/vmx/tdx_errno.h
-> +++ b/arch/x86/kvm/vmx/tdx_errno.h
-> @@ -23,6 +23,8 @@
->   #define TDX_FLUSHVP_NOT_DONE			0x8000082400000000ULL
->   #define TDX_EPT_WALK_FAILED			0xC0000B0000000000ULL
->   #define TDX_EPT_ENTRY_NOT_FREE			0xC0000B0200000000ULL
-> +#define TDX_TLB_TRACKING_NOT_DONE		0xC0000B0800000000ULL
-> +#define TDX_EPT_INVALID_PROMOTE_CONDITIONS	0xC0000B0900000000ULL
->   #define TDX_EPT_ENTRY_STATE_INCORRECT		0xC0000B0D00000000ULL
->   
->   /*
-> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
-> index 38ab0ab1509c..774fee3b2d46 100644
-> --- a/arch/x86/kvm/vmx/tdx_ops.h
-> +++ b/arch/x86/kvm/vmx/tdx_ops.h
-> @@ -190,6 +190,12 @@ static inline u64 tdh_mem_page_demote(hpa_t tdr, gpa_t gpa, int level, hpa_t pag
->   	return tdx_seamcall_sept(TDH_MEM_PAGE_DEMOTE, gpa | level, tdr, page, 0, out);
->   }
->   
-> +static inline u64 tdh_mem_page_promote(hpa_t tdr, gpa_t gpa, int level,
-> +				       struct tdx_module_args *out)
-> +{
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_PROMOTE, gpa | level, tdr, 0, 0, out);
-> +}
-> +
->   static inline u64 tdh_mr_extend(hpa_t tdr, gpa_t gpa,
->   				struct tdx_module_args *out)
->   {
+v2: - split vendor-prefixes update into a separate commit
+    - correction into dt-bindings (description, const i2c address,
+      lowcase of supplies, node naming
+    - correct KConfig (avoid VIDEO_V4L2_SUBDEV_API, V4L2_FWNODE and add
+      V4L2_CCI_I2C)
+    - usage of v4l2-cci framework for accessing to device registers
+    - correction in power-on / power-off sequences and update
+      usleep_range delay
+    - detail MIPI configuration and stop register access to stop
+      streaming
+    - removal of SYSTEM_SLEEP_PM_OPS (and streaming variable)
+    - various small fixes, typo, oneline functions
+    - removal of useless HBLANK control considereing that RAW isn't
+      supported for the time being
+    - removal of RAW parts
+    - usage of dev_err_probe
+
+Alain Volmat (3):
+  dt-bindings: vendor-prefixes: Add prefix for GalaxyCore Inc.
+  dt-bindings: media: i2c: add galaxycore,gc2145 dt-bindings
+  media: i2c: gc2145: Galaxy Core GC2145 sensor support
+
+ .../bindings/media/i2c/galaxycore,gc2145.yaml |  113 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    8 +
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc2145.c                    | 1446 +++++++++++++++++
+ 6 files changed, 1580 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+ create mode 100644 drivers/media/i2c/gc2145.c
+
+-- 
+2.25.1
 
