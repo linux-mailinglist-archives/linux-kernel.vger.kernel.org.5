@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 571747F42A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C437F42AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343771AbjKVJsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
+        id S1343719AbjKVJsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235122AbjKVJrf (ORCPT
+        with ESMTP id S1343718AbjKVJrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:47:35 -0500
+        Wed, 22 Nov 2023 04:47:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECC81737
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:46:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A99AC43391;
-        Wed, 22 Nov 2023 09:46:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A5710F3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:46:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495C6C433C8;
+        Wed, 22 Nov 2023 09:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700646391;
-        bh=I+uVw8aipGa+8Ns9k+b3dq26kNHNXYgyRv4lZpoE8Nc=;
+        s=k20201202; t=1700646401;
+        bh=eI3VK56kyhvq7JOnBJXgl6j+EIFmz1Cd350CxZrMcNA=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=fUa44Bi64x8jXoE/MvI8BIoiZzNypKXZeeiprmYPWGJR3lX5FGydI1vtuAYWadks7
-         UasgH5m/KtJQsDRJFu9SVTzRRZ09vZBslyb0Ho2ASTSMbx7DP6p+CS8+ianT5KLmas
-         tJXDc07OIjutHkKJCdOQ9rbHFcS+M1Xk9x0/2ZDaXRW8l9gWOsMXGxNr64kYyyP2wN
-         wkARHPE4CLrm5Ok5GqnIBpxAl47axEAxsh9fxCbSQqsYrNum0vfC6FHddFrleyQ0jj
-         1fispSHLot6aPOIBz5WXtqFTgm3jtICwL5ybtt6OQ3R735RlkVitJiiQ8Rd9rwhnj7
-         yf08/Sy6l7Hug==
+        b=p3JwdAwl1IwDl1cRu279YeAAcZ/jDDNBFvD6epk9Cj3NAtBjknB4UKuxychR75RtB
+         FhjbV32JXVmGGIo7RvOYvZI21X1Va108tpxqaoXhAlxRto69QxeD4jrYLKfxzRH+xS
+         fS4SsKyIPwP7gr6HZsK/zCT+FGosjhk9bH6qPcKXRN5/Gg8IcmfmTi+fnplKR0d3NB
+         d4XtyugCFtLBNbW2QMhR75JadHd3ITyQBaQ4BS9ZMhBgxqaRG6GWK5XglKVU3qBEyH
+         51/2dg7wqDRYv0qDxXDHavJlTBhDl1MK0iQvFuQaTnqc0cUJPWw7BCj4c2ii5isa1m
+         5uI1oYMi+XrMQ==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Wed, 22 Nov 2023 09:42:38 +0000
-Subject: [PATCH v7 28/39] kselftest/arm64: Verify the GCS hwcap
+Date:   Wed, 22 Nov 2023 09:42:39 +0000
+Subject: [PATCH v7 29/39] kselftest/arm64: Add GCS as a detected feature in
+ the signal tests
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-arm64-gcs-v7-28-201c483bd775@kernel.org>
+Message-Id: <20231122-arm64-gcs-v7-29-201c483bd775@kernel.org>
 References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
 In-Reply-To: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -65,15 +66,15 @@ Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
         linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1190; i=broonie@kernel.org;
- h=from:subject:message-id; bh=I+uVw8aipGa+8Ns9k+b3dq26kNHNXYgyRv4lZpoE8Nc=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlXc0MyzVIJO4Kid9gCsCQr45ifThlTEHkARV/j
- UTsXVxwqbuJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZV3NDAAKCRAk1otyXVSH
- 0PTmCACERewHlO0lUDAx7VBob22qNqbBIi4nI0finRcfRAMHGdVUVIxWAqs+6UQtEQWTanwoxxh
- RHNYkE5AnkhBIVqgo9rPkkciwxmqsPMafm9s1H0t/nysi4FdiMxIMpg6pQt0D3ydQ1Psg/yCml7
- nbLsDLWDnrT2PZBbwMSZdbxpf6TLjfDdFnf2PqTp7lJXdovzdfaZM83h4amYvIT+snl3MZDg+DE
- yO8Tc24qt+aAP5Fbjm4kLsSFx2poUdmSadKGczZTZxfOnsCSNiQjkj2FshEGptZPCYDyN1vmU0z
- I1pxYkitO980tsJqitFcBPPgoo+CvzMYooor7SZAL9CXXBHj
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1828; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=eI3VK56kyhvq7JOnBJXgl6j+EIFmz1Cd350CxZrMcNA=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlXc0MpoaH+B7so44Op51dKDPnZ+HR/liFSB4lO
+ rxQeP/wL7iJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZV3NDAAKCRAk1otyXVSH
+ 0OPrB/0bYwxvcTBgjII2I1FWsRdgrDk0RAdSe1MhLGxQngmZhESoEneo2Hq5C+22QiDRyqPOBWG
+ NBhs+DcJn2N8QakBKktW1j2hZa/f2Fq4KvqQXWzEzaozqttPg3+lRVUc/+5XW2a+SMylEt1YziP
+ D2jfrKJj4dayCnvjh7KLRR9I6EXK8+UH3eNDRgBoO3xugNgtV822vuRQkc43QiV5uAvpfJ3I5ZM
+ ddSrXmzHk2QU0QffGhU8k1hfn4I2IqmpsZW99HiDapofjAKTjk9jUeKd4kbu3X+PH/DOibREYO3
+ VHJNr+Al5/4t9DoAy8UzphVB0ymspKLRJlwLJbX6p/eOOAfu
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -86,51 +87,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add coverage of the GCS hwcap to the hwcap selftest, using a read of
-GCSPR_EL0 to generate SIGILL without having to worry about enabling GCS.
+In preparation for testing GCS related signal handling add it as a feature
+we check for in the signal handling support code.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- tools/testing/selftests/arm64/abi/hwcap.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ tools/testing/selftests/arm64/signal/test_signals.h       | 2 ++
+ tools/testing/selftests/arm64/signal/test_signals_utils.c | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/arm64/abi/hwcap.c b/tools/testing/selftests/arm64/abi/hwcap.c
-index 1189e77c8152..bc9e3250a9df 100644
---- a/tools/testing/selftests/arm64/abi/hwcap.c
-+++ b/tools/testing/selftests/arm64/abi/hwcap.c
-@@ -63,6 +63,17 @@ static void fp_sigill(void)
- 	asm volatile("fmov s0, #1");
- }
+diff --git a/tools/testing/selftests/arm64/signal/test_signals.h b/tools/testing/selftests/arm64/signal/test_signals.h
+index 1e6273d81575..7ada43688c02 100644
+--- a/tools/testing/selftests/arm64/signal/test_signals.h
++++ b/tools/testing/selftests/arm64/signal/test_signals.h
+@@ -35,6 +35,7 @@ enum {
+ 	FSME_BIT,
+ 	FSME_FA64_BIT,
+ 	FSME2_BIT,
++	FGCS_BIT,
+ 	FMAX_END
+ };
  
-+static void gcs_sigill(void)
-+{
-+	unsigned long *gcspr;
-+
-+	asm volatile(
-+		"mrs	%0, S3_3_C2_C5_1"
-+	: "=r" (gcspr)
-+	:
-+	: "cc");
-+}
-+
- static void ilrcpc_sigill(void)
- {
- 	/* LDAPUR W0, [SP, #8] */
-@@ -360,6 +371,14 @@ static const struct hwcap_data {
- 		.cpuinfo = "fp",
- 		.sigill_fn = fp_sigill,
- 	},
-+	{
-+		.name = "GCS",
-+		.at_hwcap = AT_HWCAP2,
-+		.hwcap_bit = HWCAP2_GCS,
-+		.cpuinfo = "gcs",
-+		.sigill_fn = gcs_sigill,
-+		.sigill_reliable = true,
-+	},
- 	{
- 		.name = "JSCVT",
- 		.at_hwcap = AT_HWCAP,
+@@ -43,6 +44,7 @@ enum {
+ #define FEAT_SME		(1UL << FSME_BIT)
+ #define FEAT_SME_FA64		(1UL << FSME_FA64_BIT)
+ #define FEAT_SME2		(1UL << FSME2_BIT)
++#define FEAT_GCS		(1UL << FGCS_BIT)
+ 
+ /*
+  * A descriptor used to describe and configure a test case.
+diff --git a/tools/testing/selftests/arm64/signal/test_signals_utils.c b/tools/testing/selftests/arm64/signal/test_signals_utils.c
+index 0dc948db3a4a..89ef95c1af0e 100644
+--- a/tools/testing/selftests/arm64/signal/test_signals_utils.c
++++ b/tools/testing/selftests/arm64/signal/test_signals_utils.c
+@@ -30,6 +30,7 @@ static char const *const feats_names[FMAX_END] = {
+ 	" SME ",
+ 	" FA64 ",
+ 	" SME2 ",
++	" GCS ",
+ };
+ 
+ #define MAX_FEATS_SZ	128
+@@ -329,6 +330,8 @@ int test_init(struct tdescr *td)
+ 			td->feats_supported |= FEAT_SME_FA64;
+ 		if (getauxval(AT_HWCAP2) & HWCAP2_SME2)
+ 			td->feats_supported |= FEAT_SME2;
++		if (getauxval(AT_HWCAP2) & HWCAP2_GCS)
++			td->feats_supported |= FEAT_GCS;
+ 		if (feats_ok(td)) {
+ 			if (td->feats_required & td->feats_supported)
+ 				fprintf(stderr,
 
 -- 
 2.39.2
