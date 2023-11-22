@@ -2,274 +2,601 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD6A7F40AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 215997F40AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbjKVI5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        id S231190AbjKVI5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjKVI5k (ORCPT
+        with ESMTP id S229477AbjKVI53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:57:40 -0500
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2055.outbound.protection.outlook.com [40.107.101.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C57D9E;
-        Wed, 22 Nov 2023 00:57:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dm3mdAmFcGkTc+swHp6EDuzJQYjt8UOYTqhNQ+3n5fXTOqjW8fxqL/vLYTzoNaNuhC7Jd1gohHcBih0EzqkUHh6ezPoRXSsEXI1Z+ZF++GQaZOPslO1yqstlvElb81er0whPiBHqkL7fsWqXO0NgEhGH+rTN7Yj7mJSc0UP6PhL97apetehCUpg4nkw9gIHettVf68zVGZZq5XDGsYKCVgLDToBrk5PIKA2v0jpnCrIPynx2RSdG03z9SsahIWjaRzfPkoo1e+vg6y+UwzzskS962dEQeF4gNq+z2/jk7u79AS0Eztsnu0ffNYoCuPZPqjrNng0zByxlCJKA4M2W+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YYrpxRvg4FWGVlybxyXoe3jDe/613HXdKseNyXgGr0Q=;
- b=SkDgW1mYNnYrjeuUPYJvYck3kzaQXfN65Z1kcyGaOIZx98R0kdUTOBj4P2PtMFiE83ZOg4kag3vIS0xbhs07y4tAuDa5A7Xk8hYJ6MhJv+jghmocd0RloclhUgkh+DM5BnlrOW9TehqIWGexs78+xIjbCAxWR5DH8AkLFuS1nBLfSoQTFufL0LZ4OMR1AL6fSN9tZRSPb4QiHskxK901BnxYAIiaqXSl6sLO+8rCQWlZHCPRPBvAaXoJj/AxE97nGA6dt67hIwAygUj6gck7zRvjHKkCmeW5pfWDh3M5YeGMkpmD1TPmZASmY5YqrEZfmpddJvpQArBUX1DDvmaXuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YYrpxRvg4FWGVlybxyXoe3jDe/613HXdKseNyXgGr0Q=;
- b=MveFqlWRZRZZgyWqynCT7LxdEjTA7BwzQR+u93e+kTgA9aKVOrAkQhs0nmGU48EYtStO/K/r1exurxipgM7WyFxiJAcqpGji7xEp/4JtK95D60X+ezIsKJQ8aTgorhqMRQn5Vf/XeAWU0+6RMTRuX6fER9jprc8edrpSyGh9btg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com (2603:10b6:a03:a5::28)
- by DM6PR12MB4233.namprd12.prod.outlook.com (2603:10b6:5:210::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
- 2023 08:57:34 +0000
-Received: from BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::39a2:42da:ea20:3349]) by BYAPR12MB4758.namprd12.prod.outlook.com
- ([fe80::39a2:42da:ea20:3349%5]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
- 08:57:34 +0000
-Message-ID: <808270d3-2274-4fb7-a397-38538503b67c@amd.com>
-Date:   Wed, 22 Nov 2023 09:57:11 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Dragan Simic <dsimic@manjaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        wens@kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
- <6b288a2e-d147-4bd3-b1d4-daf56295d939@gmail.com>
- <01f9ce3b-e6e5-4b05-bf7f-0b3a5f74910a@linaro.org>
- <CAGb2v64Vf5dDwq=KTrxwc=+w+0KUD2KVPMjmHg68Y_yukES5dQ@mail.gmail.com>
- <7232a48b-b9ad-44b5-ae6a-d12dad70b3c4@linaro.org>
- <58a9caacc1226c7c3a2bdfe73ef1791f@manjaro.org>
- <cc4c789c-b595-41eb-b543-9e03549c6e61@amd.com>
- <CAMuHMdWm-gRPHeHyuX3_eR+9chJEw3iiZwCNBnoiRPHzoMAs6w@mail.gmail.com>
-From:   Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <CAMuHMdWm-gRPHeHyuX3_eR+9chJEw3iiZwCNBnoiRPHzoMAs6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR0102CA0086.eurprd01.prod.exchangelabs.com
- (2603:10a6:803:15::27) To BYAPR12MB4758.namprd12.prod.outlook.com
- (2603:10b6:a03:a5::28)
+        Wed, 22 Nov 2023 03:57:29 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE31E7;
+        Wed, 22 Nov 2023 00:57:19 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5409bc907edso9099920a12.0;
+        Wed, 22 Nov 2023 00:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700643438; x=1701248238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C4+Hh52SJ6UM0fg2CWw+oXwIGc8T8xwY8POoGEeIXKg=;
+        b=D8RkjC3lBbSD2ebAA+PjIe0ctK3IXhMzAUXR9LHUMQbbUIabF6HIKQTRA3QQJuF398
+         STipy0+IsLihVAtowLEAx7ubmGbe+WYNawo1kZ5p1+wUtYJJNoFQL5+MvsQwI6tmEGj9
+         rCCBzODeE/Xa1LFEgMRwJTia216yq+CIPd9SmHZV5ep9lhdeeLWnWZQK9frE2HoD+oRc
+         E6WQbhQUo7ti+s5jfechcNW7QjcX3MDHLEgvL5e7RTv0Ega+gPkRclPi040NCrs4R1RZ
+         T2ADMiditGkR1FXz4JT7rqE8d4cd2Hc7S71640Xy/hp+yvGvBhbL4Wh/8NNsQMCigKnt
+         /TKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700643438; x=1701248238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C4+Hh52SJ6UM0fg2CWw+oXwIGc8T8xwY8POoGEeIXKg=;
+        b=S9FWAGDMwX+W5DeooxC/NxbTlwceme+GXtZoVZOWGNzU0O6WA8tdSJDYkOmw8AwCzD
+         26VWenksoWOO9eHRLfeBAtSbYBA6NiPlrvbD0JO+I8g7zgJNIsyTGyFsjE20CEocfwJX
+         1dxgtXf8juCXf8tGWVDkFQGGYpt+5lXylVm697Pn7Bdm2YktFI9ckHvcm+etYHRnUNSA
+         ofZzu2t/nXhwBvE/WDby+4Q3+dcNNsUIOTd00vyQGSpx0uyRTp07DBOQZUvpydn/vYP0
+         UbCOMkSJKgFC8BVGOeOpXZvx70Ij6akZD48fB+KvXsOaFvyVEZcvePwKahGQgw1J4Ueq
+         +Yzw==
+X-Gm-Message-State: AOJu0Yw1n0aGraZJwToNSZJ4l1uyeIKzPjPlNbIHUQnfwEpqKHa279r1
+        Tc771yS4ZaTg3tQgnHiep/c=
+X-Google-Smtp-Source: AGHT+IESEqFYaiMbIBcJTK+Ub6r3g66yS3rJEllkpIMFv8smdgbITWp+hVoQJ7vj0Q3khr8F94pj8w==
+X-Received: by 2002:a05:6402:2c1:b0:530:7ceb:33c with SMTP id b1-20020a05640202c100b005307ceb033cmr1282725edx.4.1700643437237;
+        Wed, 22 Nov 2023 00:57:17 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-142-131.cust.vodafonedsl.it. [2.39.142.131])
+        by smtp.gmail.com with ESMTPSA id j25-20020aa7de99000000b00543b2d6f88asm5742516edv.15.2023.11.22.00.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 00:57:16 -0800 (PST)
+Date:   Wed, 22 Nov 2023 09:57:14 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     martin.hecht@avnet.eu, michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com, laurent.pinchart@ideasonboard.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v13 3/3] media: i2c: Add support for alvium camera
+Message-ID: <ZV3CaqNVlnB5O1A0@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231106082102.368937-1-tomm.merciai@gmail.com>
+ <20231106082102.368937-4-tomm.merciai@gmail.com>
+ <ZUynbIgak0mu7ff_@kekkonen.localdomain>
+ <ZVXNX3G9ntWeqBur@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <ZVXxzVzXfNiJPQqh@kekkonen.localdomain>
+ <ZVyPySW32I0WgepA@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <ZV2wPAmRqCbPMYrf@kekkonen.localdomain>
+ <ZV29hSWiQuM/fSZD@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+ <ZV2_8qUCTYz0C2Ny@kekkonen.localdomain>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4758:EE_|DM6PR12MB4233:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3923fbf-308f-4120-b8f7-08dbeb39113f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VCaq5Or9NfojIy8esvM4+pLdiwnS7XFOCPIq9L637W8p6m1sLanuMIVjDoC5eeg1NcYTzXEmmyzRHIl3Mj1ppwXky/1iF+RPBbB/LVZ4gApn6kjns9XnyiAydSyX5z1J76kgDsrY9Y0CTIZT9Ace47dIn+HNqgmKZAk2Alwq7K0nNWcrSqBYwQtbFwYheqVzzRrKzfDkJzf9scWrjgOa25XSsYbHoC61gHx16BBwITRIaUYqmpTn92/z2D59KcjnGDZ8oX/v+q1ucOXg54+dYmKi/N5phsNahv1E4SQKlkIbmAzzBURS6kvY4yJHzMwmn/yF7tEXZG3oS6MFmhap2hdZwb+yTuCLOLm/EUOkKNp2uMIomOA6Y8vA94HWPI4G7WNBt5qIMoKXRpErnoabLbIdabEOH1u+Qfv3fySJbLYcDDfO9Jx9058bNl++PWpVw6w12bTXehZYRbVQtvwF7HoWI0M4ASslBR/8HlgrXzuKt81un6pRXMaXG+guLq3xluQJU6BUb9tbNdNL3vFI5jSLhEleLqZIyq9Gzp4/40sHMvvQfkys2NGuNvdRkeUyJzPRQEbVun/sFGlvfyz21jhnFdJ1YrjLcRM68sA0ECOhIQL/spsJk5SRlaUasPNiDL1V7TN5tqSWErkvgcLeUA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4758.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(136003)(346002)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(31686004)(2616005)(26005)(6512007)(36756003)(31696002)(86362001)(38100700002)(83380400001)(7416002)(66574015)(5660300002)(44832011)(2906002)(4001150100001)(6666004)(478600001)(53546011)(6506007)(54906003)(4326008)(8676002)(316002)(6916009)(41300700001)(8936002)(66476007)(6486002)(66946007)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3NJblhCUTBrZytDSlhiOUtSYXNLMldnTGJ6Rk42K1pWY0ZQV0UxN1hHWWFq?=
- =?utf-8?B?d3VQbXNrRG5UOEN3Mis2MXRpbUZZOTQwZ1RYM1plNmRjd3RUU1J0NEJwbTJp?=
- =?utf-8?B?Y082TVhWbkczRkM5UzlUOWxQaXBLaDdHaDNLb0R4TDlmZ0lLa2VyYmN3VkM5?=
- =?utf-8?B?YVVIYXF4US9JRE83M1E0MkU3TnV1K2haU1JCSXF2QjcyMkZxa3lzQkVuSHdx?=
- =?utf-8?B?emY1LzFjS3VIaTNWdndSTjJXeUZ5UnpWNkhzSjlxVnh6akJ3bWVQajIrUzZu?=
- =?utf-8?B?UGFENnJLZW9KcTBHK0owTDBxam5DYXlBMnh6TGYwZGk1aDJCNUpOek5CNVNC?=
- =?utf-8?B?R082WUVyZUtkR3ZjRTU2Mit0TFhvWHJ2Rlg0eUJOSmkwZlJXbnhKS3N0TTdE?=
- =?utf-8?B?cWs2SThnVm9ZVDlmaVpOMW9lN3l6R1VnTnZMMXhJZzkzM2lMQ28zd0w0VnUy?=
- =?utf-8?B?OCsyYUdNam5STC9UZVl2cWZBQ2hnRHVyRVl2SW1EajFzRHZVdjN4NjZpa0VL?=
- =?utf-8?B?R3pvVGU2REU0WXZ4MFZyRGhLRkg1OE55R3VVa3FmaW1pRjJldTBoK2g4QytX?=
- =?utf-8?B?MVlpT3pEeHQvV05uTXJJS0RnbWdabmFrSVMzRlJFdVUzV0tzN1U2S1NWei9Q?=
- =?utf-8?B?QTV0UWhFeFFYVVVsZldCL29BMDQ0aVpQdFVxekpoUUs2QUYwMTRWc0I3d2tJ?=
- =?utf-8?B?ZzVuRjU3VHBXSWh5TnNwdzA1elJNd1NldjZrUXpmWXdWdnpoOUtkNHZHTUor?=
- =?utf-8?B?NmxmdXhnY1NtSkZUODRBQkJqRGt2VzJWVkdoUmZpN2xLeCs5eDdsUlF3bDMr?=
- =?utf-8?B?dnhZU05SNXZtMlRkRnVpMUlCd2NIeTdMSHMzNXdKRkxUaTYvK1V3b2tQSjR6?=
- =?utf-8?B?N3doUU9xcUpMelVJcnpoQ1E1YkFaUnJoblJQU1JPVkpsNTRoNWx6Z1h1UzVU?=
- =?utf-8?B?ak82UVIwMkUvZGd5MFVwVnRjbEdyYjJkVnEvMkNZZzFRMk5nUlBkY1B6Z2Vi?=
- =?utf-8?B?WWovTUJzdUxOZlNnbU1JSVcwdTh5RTRzNjFJbWxtcTlsaEk2eTIxT3I1UE1v?=
- =?utf-8?B?NXQ0WGRVaXg3ZTVHNGY2akJ4aUllUFB0dGY4Z1VreVpRQnkzSWJnZysxaHFk?=
- =?utf-8?B?MXQ5U0VNQ3dSZG16ME5kbHV5SEozTFpxbmxCNEh3ckJzZFBBY3VNZFJhTTZp?=
- =?utf-8?B?V2I4NHRWMXRRS095VlJXZXdZYjhKUFp2K1BERXA1NHRqUlY0QTJHL2tZNlBr?=
- =?utf-8?B?dXl2UThFUEZ1bDQ2SFhKQU4xOHBsUUlHclpKdGRET3R0cTBaNHN5ZUI5UHgy?=
- =?utf-8?B?U25XYkk2M1VKOEJUb1BpT05IdWc0NzVxcVFKNWt5bXM2L3duMnlTMDlWR1U1?=
- =?utf-8?B?TUtUdFlkZ09tVGtsbytDWWtSUDY2TGVFZXpvVGcwSFY4VGZCUjY0akxvWUE3?=
- =?utf-8?B?SVI5MzRRL1h5NjlVWFZtWTFGZzYzZ2tCSUZmZERYWHFHMGVWMEQzV3RPQzhE?=
- =?utf-8?B?ZGE0Vy9PdktQbGxOTlpFVXB5WVNaWFBQWHcwd25KWTRJQmp0MDFoQnZ6NEZV?=
- =?utf-8?B?d1NwYzhPRVVEci9FTkwrcDUzbmNwenJOYy9hQ2E2VHFINTBBcSs4Vm1kQ2dK?=
- =?utf-8?B?SHV4WmpwY2VnYitxUVNWZ3lxejZyYU8rMlYzWTBRc1puYitqMnRTL1NiMThT?=
- =?utf-8?B?eUFpb2JoditKOFRXWWJiM0JkcThqaTdWV1pKMzFCUUcwY2orUW9TWXFLNDRU?=
- =?utf-8?B?cE9QYmZTNTdzME15TG9rYmJnTnJ6NlhxcCt0cFFmbnZqZmFFL1pZZ2pCbnNL?=
- =?utf-8?B?cTVCd0M0VkVlanVFMVlNTi82U1RNTVp1NVhLdnNSTWNPS29PS1pCNGVUalpH?=
- =?utf-8?B?L0ZZM0hWb0dleWNKaHp0UitYL09lZVVFR3B2bzcwNEd6Wjk3RG5mRTJ4dkRB?=
- =?utf-8?B?bWREelhMcTlvQlovOWlNQ3h4aFZlVlhWQTF4Q3V6ZEIvNWtOOXIvWnZJMWky?=
- =?utf-8?B?c2J5em93WnBuTFlzM2dYcC9Od2JvZi9hRDFHc3lxSXROZnMrdi95eXJPdVVV?=
- =?utf-8?B?bDlwOE1DcUFJOWM2ZUZOS3V4bVhkYzRvWWE3RkExMG5sbG1HaDhackhWWDdu?=
- =?utf-8?Q?uPHLGzJRy2d6by8g0Ksp0I0HW?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3923fbf-308f-4120-b8f7-08dbeb39113f
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4758.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 08:57:34.0946
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qJNdU2UEOry2Hs0E6YjI5zdbghJ6DO0xMd9KG354WuY3D0zNF8ri2hOKc8RoWEIT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4233
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV2_8qUCTYz0C2Ny@kekkonen.localdomain>
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi Sakary,
+Thanks for your quick reply :)
 
-On 11/22/23 09:53, Geert Uytterhoeven wrote:
-> Hi Michal,
+On Wed, Nov 22, 2023 at 08:46:42AM +0000, Sakari Ailus wrote:
+> Hi Tommaso,
 > 
-> On Wed, Nov 22, 2023 at 9:50 AM Michal Simek <michal.simek@amd.com> wrote:
->> On 11/22/23 09:29, Dragan Simic wrote:
->>> On 2023-11-22 09:21, Krzysztof Kozlowski wrote:
->>>> On 22/11/2023 09:09, Chen-Yu Tsai wrote:
->>>>> On Wed, Nov 22, 2023 at 4:05 PM Krzysztof Kozlowski
->>>>> <krzysztof.kozlowski@linaro.org> wrote:
->>>>>>
->>>>>> On 21/11/2023 14:50, Rafał Miłecki wrote:
->>>>>>>> +Order of Properties in Device Node
->>>>>>>> +----------------------------------
->>>>>>>> +
->>>>>>>> +Following order of properties in device nodes is preferred:
->>>>>>>> +
->>>>>>>> +1. compatible
->>>>>>>> +2. reg
->>>>>>>> +3. ranges
->>>>>>>> +4. Standard/common properties (defined by common bindings, e.g. without
->>>>>>>> +   vendor-prefixes)
->>>>>>>> +5. Vendor-specific properties
->>>>>>>> +6. status (if applicable)
->>>>>>>> +7. Child nodes, where each node is preceded with a blank line
->>>>>>>> +
->>>>>>>> +The "status" property is by default "okay", thus it can be omitted.
->>>>>>>
->>>>>>> I think it would really help to include position of #address-cells and
->>>>>>> #size-cells here. In some files I saw them above "compatible" that seems
->>>>>>> unintuitive. Some prefer putting them at end which I think makes sense
->>>>>>> as they affect children nodes.
->>>>>>>
->>>>>>> Whatever you choose it'd be just nice to have things consistent.
->>>>>>
->>>>>> This is a standard/common property, thus it goes to (4) above.
->>>>>
->>>>> It's probably a mix, but AFAIK a lot of the device trees in tree have
->>>>> #*-cells after "status". In some cases they are added in the board
->>>>> .dts files, not the chip/module .dtsi files.
->>>>
->>>> Existing DTS is not a good example :)
->>>>
->>>>>
->>>>> +1 that it makes sense at the end as they affect child nodes.
->>>>
->>>> I still insist that status must be the last, because:
->>>> 1. Many SoC nodes have address/size cells but do not have any children
->>>> (I2C, SPI), so we put useless information at the end.
->>>> 2. Status should be the final information to say whether the node is
->>>> ready or is not. I read the node, check properties and then look at the end:
->>>> a. Lack of status means it is ready.
->>>> b. status=disabled means device still needs board resources/customization
->>>
->>> I agree with the "status" belonging to the very end, because it's both logical
->>> and much more readable.  Also, "status" is expected to be modified in the
->>> dependent DT files, which makes it kind of volatile and even more deserving to
->>> be placed last.
->>
->> I am just curious if having status property at the end won't affect
->> execution/boot up time. Not sure how it is done in Linux but in U-Boot at least
->> (we want to have DTs in sync between Linux and U-Boot) of_find_property is
->> pretty much big loop over all properties. And status property defined at the end
->> means going over all of them to find it out to if device is present.
->> Not sure if Linux works in the same way but at least of_get_property is done in
->> the same way.
+> On Wed, Nov 22, 2023 at 09:36:21AM +0100, Tommaso Merciai wrote:
+> > > > > > > > +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
+> > > > > > > > +{
+> > > > > > > > +	struct device *dev = &alvium->i2c_client->dev;
+> > > > > > > > +	struct alvium_bcrm_vers *v;
+> > > > > > > > +	u64 val;
+> > > > > > > > +	int ret;
+> > > > > > > > +
+> > > > > > > > +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
+> > > > > > > > +	if (ret)
+> > > > > > > > +		return ret;
+> > > > > > > > +
+> > > > > > > > +	v = (struct alvium_bcrm_vers *) &val;
+> > > > > > > 
+> > > > > > > No space before "&" in type cast, please. The same elsewhere.
+> > > > > > > 
+> > > > > > > As you cast a single value to a struct, I think the struct field values
+> > > > > > > will be swapped on BE systems. You'll need to convert each value
+> > > > > > > separately. Same for struct alvium_fw_vers below.
+> > > > > > 
+> > > > > > What about:
+> > > > > > 
+> > > > > >  v->minor = le16_to_cpu(v->minor);
+> > > > > >  v->major = le16_to_cpu(v->major);
+> > > > > > 
+> > > > > > here. I posted this solution in some previous v :)
+> > > > > 
+> > > > > You shouldn't assign it to a field marked little endian. Instead, use
+> > > > > le16_to_cpu() when you access the data below.
+> > > > > 
+> > > > > If you want to access the struct in the driver without using the conversion
+> > > > > macros, you should read the data one field at a time (and use u16 instead
+> > > > > of __le16 type for the fields).
+> > > > 
+> > > > It's fine with your suggestion thanks.
+> > > > I'm moving to use the following to prints those values:
+> > > > 
+> > > > 	v = (struct alvium_bcrm_vers *)&val;
+> > > > 
+> > > > 	dev_info(dev, "bcrm version: %u.%u\n",
+> > > > 		 le16_to_cpu(v->minor), le16_to_cpu(v->major));
+> > > > 
+> > > > thanks for the hint.
+> > > 
+> > > Sorry, I forgot alvium_read(), via cci_read(), already does endianness
+> > > conversion here, from big endian to CPU endianness. Is there a need to do
+> > > further conversion here? Noting that le16_to_cpu() does nothing on little
+> > > endian systems, is it necessary here?
+> > > 
+> > > The options here are either changing the struct fields to CPU endianness
+> > > and reading them individually or accessing the register as a single 32-bit
+> > > value.
+> > > 
+> > > I'd do the former, it's easier to access them that way in the driver.
+> > > 
+> > > The same applies to BCRM version below.
+> > > 
+> > > struct alvium_bcrm_vers {
+> > > 	u16 minor;
+> > > 	u16 major;
+> > > };
+> > 
+> > Understood, thanks.
+> > 
+> > Then to resume just compared to v13 I just need to
+> > revert the alvium_bcrm_vers/alvium_fw_vers struct
+> > to:
+> > 
+> > struct alvium_bcrm_vers {
+> > 	u16 minor;
+> > 	u16 major;
+> > };
+> > 
+> > struct alvium_fw_vers {
+> > 	u8 special;
+> > 	u8 major;
+> > 	u16 minor;
+> > 	u16 patch;
+> > };
 > 
-> As the default is "okay", you have to loop over all properties anyway.
+> Yes, and accessing the registers one field at a time.
 
-No doubt if you don't define status property that you need to loop over all of 
-them. We normally describe the whole SOC with pretty much all IPs status = 
-disabled and then in board file we are changing it to okay based on what it is 
-actually wired out.
-It means on our systems all nodes have status properties. If you have it at 
-first you don't need to go over all.
+I'm doing that into dev_info or I'm wrong?
 
-Thanks,
-Michal
+	v = (struct alvium_bcrm_vers *)&val;
+
+	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
+
+same for:
+
+	fw_v = (struct alvium_fw_vers *)&val;
+
+	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
+		 fw_v->minor, fw_v->patch);
+
+Sorry but I want be sure to be aligned with you :)
+
+Thanks & Regards,
+Tommaso
+
+> 
+> > > > > > > > +static int alvium_init_cfg(struct v4l2_subdev *sd,
+> > > > > > > > +			   struct v4l2_subdev_state *state)
+> > > > > > > > +{
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +	struct alvium_mode *mode = &alvium->mode;
+> > > > > > > > +	struct v4l2_subdev_format sd_fmt = {
+> > > > > > > > +		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > > > > > > > +		.format = alvium_csi2_default_fmt,
+> > > > > > > > +	};
+> > > > > > > > +	struct v4l2_subdev_crop sd_crop = {
+> > > > > > > > +		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > > > > > > > +		.rect = {
+> > > > > > > > +			.left = mode->crop.left,
+> > > > > > > > +			.top = mode->crop.top,
+> > > > > > > > +			.width = mode->crop.width,
+> > > > > > > > +			.height = mode->crop.height,
+> > > > > > > > +		},
+> > > > > > > > +	};
+> > > > > > > > +
+> > > > > > > > +	*v4l2_subdev_get_pad_crop(sd, state, 0) = sd_crop.rect;
+> > > > > > > > +	*v4l2_subdev_get_pad_format(sd, state, 0) = sd_fmt.format;
+> > > > > > > 
+> > > > > > > Shouldn't the format have same width and height as crop? What about the
+> > > > > > > mbus code?
+> > > > 
+> > > > Can you clarify to me this comment pls :)
+> > > 
+> > > The purpose of the init_cfg operation is to initialise the sub-device
+> > > state, including format and crop rectangle (if applicable). The width and
+> > > height fields of the format are not initialised above, leaving them zeros.
+> > 
+> > Mmmmm.
+> > Why zeros?
+> > 
+> > .format = alvium_csi2_default_fmt
+> > 
+> > where:
+> > 
+> > static const struct v4l2_mbus_framefmt alvium_csi2_default_fmt = {
+> > 	.code = MEDIA_BUS_FMT_UYVY8_1X16,
+> > 	.width = 640,
+> > 	.height = 480,
+> > 	.colorspace = V4L2_COLORSPACE_SRGB,
+> > 	.ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(V4L2_COLORSPACE_SRGB),
+> > 	.quantization = V4L2_QUANTIZATION_FULL_RANGE,
+> > 	.xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(V4L2_COLORSPACE_SRGB),
+> > 	.field = V4L2_FIELD_NONE,
+> > };
+> 
+> Ah, I missed this one. I think this part should be fine then.
+> 
+> > > That doesn't seem to be a valid configuration, given that the crop
+> > > rectangle is initiliased with different values.
+> > 
+> > Why different values?
+> > crop is initialized into subdev_init
+> > 
+> > static int alvium_subdev_init(struct alvium_dev *alvium)
+> > {
+> > 	struct i2c_client *client = alvium->i2c_client;
+> > 	struct device *dev = &alvium->i2c_client->dev;
+> > 	struct v4l2_subdev *sd = &alvium->sd;
+> > 	int ret;
+> > 
+> > 	/* Setup initial frame interval*/
+> > 	alvium->frame_interval.numerator = 1;
+> > 	alvium->frame_interval.denominator = ALVIUM_DEFAULT_FR_HZ;
+> > 	alvium->fr = ALVIUM_DEFAULT_FR_HZ;
+> > 
+> > 	/* Setup the initial mode */
+> > 	alvium->mode.fmt = alvium_csi2_default_fmt;
+> > 	alvium->mode.width = alvium_csi2_default_fmt.width;
+> > 	alvium->mode.height = alvium_csi2_default_fmt.height;
+> > 	alvium->mode.crop.left = alvium->min_offx;
+> > 	alvium->mode.crop.top = alvium->min_offy;
+> > 	alvium->mode.crop.width = alvium_csi2_default_fmt.width;
+> > 	alvium->mode.crop.height = alvium_csi2_default_fmt.height;
+> > ...
+> > 
+> > Then:
+> > 
+> > static int alvium_init_cfg(struct v4l2_subdev *sd,
+> > 			   struct v4l2_subdev_state *state)
+> > {
+> > 	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > 	struct alvium_mode *mode = &alvium->mode;
+> > 	struct v4l2_subdev_format sd_fmt = {
+> > 		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > 		.format = alvium_csi2_default_fmt,
+> > 	};
+> > 	struct v4l2_subdev_crop sd_crop = {
+> > 		.which = V4L2_SUBDEV_FORMAT_TRY,
+> > 		.rect = {
+> > 			.left = mode->crop.left,
+> > 			.top = mode->crop.top,
+> > 			.width = mode->crop.width,
+> > 			.height = mode->crop.height,
+> > 		},
+> > 	};
+> > ...
+> > 
+> > Seems that crop and format are using the same init values
+> > or I'm wrong?
+> > Mmm.. maybe I'm missing something?
+> > 
+> > Let me know
+> > 
+> > > 
+> > > > 
+> > > > > > > 
+> > > > > > > > +
+> > > > > > > > +	return 0;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > > +static int alvium_set_fmt(struct v4l2_subdev *sd,
+> > > > > > > > +			  struct v4l2_subdev_state *sd_state,
+> > > > > > > > +			  struct v4l2_subdev_format *format)
+> > > > > > > > +{
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +	const struct alvium_pixfmt *alvium_csi2_fmt;
+> > > > > > > > +	struct v4l2_mbus_framefmt *fmt;
+> > > > > > > > +	struct v4l2_rect *crop;
+> > > > > > > > +
+> > > > > > > > +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
+> > > > > > > > +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> > > > > > > > +
+> > > > > > > > +	fmt->width = clamp(format->format.width, alvium->img_min_width,
+> > > > > > > > +			   alvium->img_max_width);
+> > > > > > > > +	fmt->height = clamp(format->format.height, alvium->img_min_height,
+> > > > > > > > +			    alvium->img_max_height);
+> > > > > > > > +
+> > > > > > > > +	/* Adjust left and top to prevent roll over sensor area */
+> > > > > > > > +	crop->left = clamp((u32)crop->left, (u32)0,
+> > > > > > > > +			   (alvium->img_max_width - fmt->width));
+> > > > > > > > +	crop->top = clamp((u32)crop->top, (u32)0,
+> > > > > > > > +			  (alvium->img_max_height - fmt->height));
+> > > > > > > > +
+> > > > > > > > +	/* Set also the crop width and height when set a new fmt */
+> > > > > > > > +	crop->width = fmt->width;
+> > > > > > > > +	crop->height = fmt->height;
+> > > > > > > > +
+> > > > > > > > +	alvium_csi2_fmt = alvium_code_to_pixfmt(alvium, format->format.code);
+> > > > > > > > +	fmt->code = alvium_csi2_fmt->code;
+> > > > > > > > +
+> > > > > > > > +	*fmt = format->format;
+> > > > > > > > +
+> > > > > > > > +	return 0;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > > +static int alvium_set_selection(struct v4l2_subdev *sd,
+> > > > > > > > +				struct v4l2_subdev_state *sd_state,
+> > > > > > > > +				struct v4l2_subdev_selection *sel)
+> > > > > > > > +{
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +	struct v4l2_mbus_framefmt *fmt;
+> > > > > > > > +	struct v4l2_rect *crop;
+> > > > > > > > +
+> > > > > > > > +	crop = v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> > > > > > > > +	fmt = v4l2_subdev_get_pad_format(sd, sd_state, 0);
+> > > > > > > > +
+> > > > > > > > +	/*
+> > > > > > > > +	 * Alvium can only shift the origin of the img
+> > > > > > > > +	 * then we accept only value with the same value of the actual fmt
+> > > > > > > > +	 */
+> > > > > > > > +	if (sel->r.width != fmt->width)
+> > > > > > > > +		sel->r.width = fmt->width;
+> > > > > > > > +
+> > > > > > > > +	if (sel->r.height != fmt->height)
+> > > > > > > > +		sel->r.height = fmt->height;
+> > > > > > > > +
+> > > > > > > > +	if (sel->target != V4L2_SEL_TGT_CROP)
+> > > > > > > > +		return -EINVAL;
+> > > > > > > 
+> > > > > > > This should be the first thing to test.
+> > > > > > 
+> > > > > > Oks
+> > > > > > 
+> > > > > > > 
+> > > > > > > > +
+> > > > > > > > +	/* alvium don't accept negative crop left/top */
+> > > > > > > > +	crop->left = clamp((u32)max(0, sel->r.left), alvium->min_offx,
+> > > > > > > > +			   alvium->img_max_width - sel->r.width);
+> > > > > > > > +	crop->top = clamp((u32)max(0, sel->r.top), alvium->min_offy,
+> > > > > > > > +			  alvium->img_max_height - sel->r.height);
+> > > > > > > > +
+> > > > > > > > +	sel->r = *crop;
+> > > > > > > > +
+> > > > > > > > +	return 0;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > > +static int alvium_get_selection(struct v4l2_subdev *sd,
+> > > > > > > > +				struct v4l2_subdev_state *sd_state,
+> > > > > > > > +				struct v4l2_subdev_selection *sel)
+> > > > > > > > +{
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +
+> > > > > > > > +	switch (sel->target) {
+> > > > > > > > +	/* Current cropping area */
+> > > > > > > > +	case V4L2_SEL_TGT_CROP:
+> > > > > > > > +		sel->r = *v4l2_subdev_get_pad_crop(sd, sd_state, 0);
+> > > > > > > > +		break;
+> > > > > > > > +	/* Cropping bounds */
+> > > > > > > > +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> > > > > > > > +		sel->r.top = 0;
+> > > > > > > > +		sel->r.left = 0;
+> > > > > > > > +		sel->r.width = alvium->img_max_width;
+> > > > > > > > +		sel->r.height = alvium->img_max_height;
+> > > > > > > > +		break;
+> > > > > > > > +	/* Default cropping area */
+> > > > > > > > +	case V4L2_SEL_TGT_CROP_BOUNDS:
+> > > > > > > > +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> > > > > > > > +		sel->r.top = alvium->min_offy;
+> > > > > > > > +		sel->r.left = alvium->min_offx;
+> > > > > > > > +		sel->r.width = alvium->img_max_width;
+> > > > > > > > +		sel->r.height = alvium->img_max_height;
+> > > > > > > > +		break;
+> > > > > > > > +	default:
+> > > > > > > > +		return -EINVAL;
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > > +	return 0;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > > +static int alvium_g_volatile_ctrl(struct v4l2_ctrl *ctrl)
+> > > > > > > > +{
+> > > > > > > > +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +	int val;
+> > > > > > > > +
+> > > > > > > > +	switch (ctrl->id) {
+> > > > > > > > +	case V4L2_CID_GAIN:
+> > > > > > > > +		val = alvium_get_gain(alvium);
+> > > > > > > > +		if (val < 0)
+> > > > > > > > +			return val;
+> > > > > > > > +		alvium->ctrls.gain->val = val;
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_EXPOSURE:
+> > > > > > > > +		val = alvium_get_exposure(alvium);
+> > > > > > > > +		if (val < 0)
+> > > > > > > > +			return val;
+> > > > > > > > +		alvium->ctrls.exposure->val = val;
+> > > > > > > > +		break;
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > > +	return 0;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > > +static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
+> > > > > > > > +{
+> > > > > > > > +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> > > > > > > > +	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > > > > > > > +	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
+> > > > > > > > +	int ret;
+> > > > > > > > +
+> > > > > > > > +	/*
+> > > > > > > > +	 * Applying V4L2 control value only happens
+> > > > > > > > +	 * when power is up for streaming
+> > > > > > > > +	 */
+> > > > > > > > +	if (!pm_runtime_get_if_in_use(&client->dev))
+> > > > > > > > +		return 0;
+> > > > > > > > +
+> > > > > > > > +	switch (ctrl->id) {
+> > > > > > > > +	case V4L2_CID_AUTOGAIN:
+> > > > > > > > +		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
+> > > > > > > 
+> > > > > > > 		ret = alvium_set_autogain(alvium, ctrl->val);
+> > > > > > > 
+> > > > > > 
+> > > > > > Pls check [1]
+> > > > > > 
+> > > > > > > Where do you set the manual gain value? What about the manual exposure
+> > > > > > > value? Both appear to be missing here.
+> > > > > > > 
+> > > > > > > How have you tested this?
+> > > > > > > 
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_EXPOSURE_AUTO:
+> > > > > > > > +		ret = alvium_set_ctrl_exposure(alvium, ctrl->val);
+> > > > > > > 
+> > > > > > > 		ret = alvium_set_autoexposure(alvium, ctrl->val);
+> > > > > > > 
+> > > > > > > You're still missing grabbing the manual controls when the corresponding
+> > > > > > > automatic control is enabled. I've commented on the same matter previously.
+> > > > > > 
+> > > > > > Same comment in [1]
+> > > > > > 
+> > > > > > > 
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_AUTO_WHITE_BALANCE:
+> > > > > > > > +		ret = alvium_set_ctrl_white_balance(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_HUE:
+> > > > > > > > +		ret = alvium_set_ctrl_hue(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_CONTRAST:
+> > > > > > > > +		ret = alvium_set_ctrl_contrast(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_SATURATION:
+> > > > > > > > +		ret = alvium_set_ctrl_saturation(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_GAMMA:
+> > > > > > > > +		ret = alvium_set_ctrl_gamma(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_SHARPNESS:
+> > > > > > > > +		ret = alvium_set_ctrl_sharpness(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_HFLIP:
+> > > > > > > > +		ret = alvium_set_ctrl_hflip(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	case V4L2_CID_VFLIP:
+> > > > > > > > +		ret = alvium_set_ctrl_vflip(alvium, ctrl->val);
+> > > > > > > > +		break;
+> > > > > > > > +	default:
+> > > > > > > > +		ret = -EINVAL;
+> > > > > > > > +		break;
+> > > > > > > > +	}
+> > > > > > > > +
+> > > > > > > > +	pm_runtime_put(&client->dev);
+> > > > > > > > +
+> > > > > > > > +	return ret;
+> > > > > > > > +}
+> > 
+> > Here I plan to switch to:
+> > 
+> > static int alvium_s_ctrl(struct v4l2_ctrl *ctrl)
+> > {
+> > 	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> > 	struct alvium_dev *alvium = sd_to_alvium(sd);
+> > 	struct i2c_client *client = v4l2_get_subdevdata(&alvium->sd);
+> > 	int ret;
+> > 
+> > 	/*
+> > 	 * Applying V4L2 control value only happens
+> > 	 * when power is up for streaming
+> > 	 */
+> > 	if (!pm_runtime_get_if_in_use(&client->dev))
+> > 		return 0;
+> > 
+> > 	switch (ctrl->id) {
+> > 	case V4L2_CID_GAIN:
+> > 		ret = alvium_set_ctrl_gain(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_AUTOGAIN:
+> > 		ret = alvium_set_ctrl_auto_gain(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_EXPOSURE:
+> > 		ret = alvium_set_ctrl_exposure(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_EXPOSURE_AUTO:
+> > 		ret = alvium_set_ctrl_auto_exposure(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_RED_BALANCE:
+> > 		ret = alvium_set_ctrl_red_balance_ratio(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_BLUE_BALANCE:
+> > 		ret = alvium_set_ctrl_blue_balance_ratio(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_AUTO_WHITE_BALANCE:
+> > 		ret = alvium_set_ctrl_awb(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_HUE:
+> > 		ret = alvium_set_ctrl_hue(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_CONTRAST:
+> > 		ret = alvium_set_ctrl_contrast(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_SATURATION:
+> > 		ret = alvium_set_ctrl_saturation(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_GAMMA:
+> > 		ret = alvium_set_ctrl_gamma(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_SHARPNESS:
+> > 		ret = alvium_set_ctrl_sharpness(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_HFLIP:
+> > 		ret = alvium_set_ctrl_hflip(alvium, ctrl->val);
+> > 		break;
+> > 	case V4L2_CID_VFLIP:
+> > 		ret = alvium_set_ctrl_vflip(alvium, ctrl->val);
+> > 		break;
+> > 	default:
+> > 		ret = -EINVAL;
+> > 		break;
+> > 	}
+> > 
+> > 	pm_runtime_put(&client->dev);
+> > 
+> > 	return ret;
+> > }
+> > 
+> > Like you suggested.
+> > I think is more clean/understandable.
+> > Thanks for your comment.
+> 
+> Ack.
+> 
+> -- 
+> Regards,
+> 
+> Sakari Ailus
