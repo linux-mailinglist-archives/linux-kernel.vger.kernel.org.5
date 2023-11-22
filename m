@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9613D7F3BC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A860B7F3BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343533AbjKVC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        id S229845AbjKVCgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235052AbjKVC2S (ORCPT
+        with ESMTP id S229464AbjKVCgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:28:18 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1CEE7
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:14 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c87663a873so69616947b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700620094; x=1701224894; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9IER+tn3y73SnSAMuBhvXywbHOoikax61O9o+LNCM00=;
-        b=bwb5hwGK+G0RyFqP8rWxyp5SQdIk0YoDhCFusnvQVU5bbhUZWqSQt2aNeZlleEwxbY
-         E5NVuJ6uRvaTgrJYsXpuXv9LPOXVXEKbyOxJGAH5UZhnPedBmY8Ui7FinCopZkp0/QT9
-         ZT0fGrQDamJcqiLg61QUB4bOw/ujQ43KOhvEAmRBtmKlH4ZUe0ASlJULnPFPSasFSKbY
-         J9SwGzs/pYCa4pSDxV8438XBvdsBhmJI8Al8VC5H+68w4x12bIjbj4VxwdoKOhCj2nKX
-         5bt+0b9r/TrwcTHcmIkY9Drs3x4J4bj7rCJeRGbODdysOmahVAyvPNaQ4dMTGIVwxZP4
-         Y2iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700620094; x=1701224894;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9IER+tn3y73SnSAMuBhvXywbHOoikax61O9o+LNCM00=;
-        b=YHDOxYYW75BalRM8tspEEQWsdDM3kGtjtqq0gvBufj8VPs0F68Df5AMiAO48bIDd4U
-         GgGq1DSbySLAI/5V6U7fWadEoiVK8QxYyBvfIhlK+C/pQycgwGLAFQ/mIEbuC5ERdK9y
-         9PdLTPGtJAfX7WrztQbO8s1bqBGLeXvE1ckZsqDd6q4iWqTbrURDL2iSOqoRSgrOGrf3
-         fc8cgGa2fO64yPyuUhLeSiyz7WoZb7TrOQJQqiXAAA7Is5uXA0zrS+6UYifK1u49dFwl
-         anqSziw1eOxI5Nv3Bqg3N+7bmW/YCCUZwn7XGRVNhV5T4nin3inzqndVkH6FkP3Jd1H/
-         tsrg==
-X-Gm-Message-State: AOJu0Yz+aAQXAbs627ODyKUjnR3syqujpLLNYYorTzImmaJEg2nMbnp+
-        80XsPH3I9Ygzr03QC56B1D5K5JKh8Fj7
-X-Google-Smtp-Source: AGHT+IEMWMjJj09uw4Nlu7T4ianRv1mF94E9duB9ORIltrxhzkgw2vuhjiSzHYsw5cFB71Lm1H+2io6r+y6B
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:c36:a8cf:912c:9142])
- (user=irogers job=sendgmr) by 2002:a81:4851:0:b0:5cb:f2cf:1572 with SMTP id
- v78-20020a814851000000b005cbf2cf1572mr22851ywa.1.1700620093802; Tue, 21 Nov
- 2023 18:28:13 -0800 (PST)
-Date:   Tue, 21 Nov 2023 18:28:05 -0800
-Message-Id: <20231122022805.511839-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v1] perf MANIFEST: Add gen-sysreg for ARM SPE
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 21 Nov 2023 21:36:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98242195;
+        Tue, 21 Nov 2023 18:36:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700620604; x=1732156604;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XpeZeMNRKx6fjfNcJza/391hB0gfEObFGgA1WhB5A6k=;
+  b=DaEkRuTSS80XQxpWLqayarWDCR1gJwvwKfQGR5aTwKLm01QDG3baPoID
+   CWZ5zyU77eT5/DnZMCsyyez9DtKAAq+YyUJCOxEo2iheaUFW0CNfQkaI2
+   iAnujYSmWlgs3dpJfpkQQbQLr6FSs+mI22BN0Aq9kYskNx2y2Ov8ho/kg
+   VUQnucWC1I6L/Bjg4tH6JB8xqa/0/twgpovdLMq/v9VBWhmUcGEustbv7
+   ky/jEk7JzJd4AjA4bFLzTbPI3B9Hx/tbagG5zR1+x42zBOSmcct9Ic2lK
+   r1SlTJvuWiMKuioZJVnEI19i1AsTJFusr1NlQKnq2H+mYEfTIQJ58LTTs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="394804919"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="394804919"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 18:36:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="8289961"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa002.fm.intel.com with ESMTP; 21 Nov 2023 18:36:38 -0800
+Message-ID: <f5b27724-7c86-4823-ae86-76c92a2760b4@linux.intel.com>
+Date:   Wed, 22 Nov 2023 10:32:18 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d stage-1
+ cache invalidation
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+References: <20231117131816.24359-1-yi.l.liu@intel.com>
+ <20231117131816.24359-2-yi.l.liu@intel.com>
+ <BN9PR11MB52761D7A88BB2F655355A7728CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231120230451.GD6083@nvidia.com>
+ <BN9PR11MB5276EF10FCE9C96F593696E18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231121121704.GE6083@nvidia.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231121121704.GE6083@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The necessary files for generating sysreg-defs.h need adding to the
-perf tool MANIFEST that lists the files for packaging the perf tool
-source code. Fix for the following:
+On 11/21/23 8:17 PM, Jason Gunthorpe wrote:
+> On Tue, Nov 21, 2023 at 02:54:15AM +0000, Tian, Kevin wrote:
+>>> From: Jason Gunthorpe <jgg@nvidia.com>
+>>> Sent: Tuesday, November 21, 2023 7:05 AM
+>>>
+>>> On Mon, Nov 20, 2023 at 08:26:31AM +0000, Tian, Kevin wrote:
+>>>>> From: Liu, Yi L <yi.l.liu@intel.com>
+>>>>> Sent: Friday, November 17, 2023 9:18 PM
+>>>>>
+>>>>> This adds the data structure for flushing iotlb for the nested domain
+>>>>> allocated with IOMMU_HWPT_DATA_VTD_S1 type.
+>>>>>
+>>>>> This only supports invalidating IOTLB, but no for device-TLB as device-TLB
+>>>>> invalidation will be covered automatically in the IOTLB invalidation if the
+>>>>> underlying IOMMU driver has enabled ATS for the affected device.
+>>>>
+>>>> "no for device-TLB" is misleading. Here just say that cache invalidation
+>>>> request applies to both IOTLB and device TLB (if ATS is enabled ...)
+>>>
+>>> I think we should forward the ATS invalidation from the guest too?
+>>> That is what ARM and AMD will have to do, can we keep them all
+>>> consistent?
+>>>
+>>> I understand Intel keeps track of enough stuff to know what the RIDs
+>>> are, but is it necessary to make it different?
+>>
+>> probably ask the other way. Now intel-iommu driver always flushes
+>> iotlb and device tlb together then is it necessary to separate them
+>> in uAPI for no good (except doubled syscalls)? :)
+> 
+> I wish I knew more about Intel CC design to be able to answer that :|
+> 
+> Doesn't the VM issue the ATC flush command regardless? How does it
+> know it has a working ATC but does not need to flush it?
+> 
 
-```
-$ make perf-tar-src-pkg
-$ tar xvf perf-6.7.0-rc2.tar
-$ cd perf-6.7.0-rc2
-$ make -C tools/perf
-...
-  PERF_VERSION = 6.7.rc2.gc2d5304e6c64
-make[3]: *** No rule to make target 'perf-6.7.0-rc2/arch/arm64/tools/gen-sysreg.awk', needed by 'perf-6.7.0-rc2/tools/arch/arm64/include/generated/asm/sysreg-defs.h'.  Stop.
-make[2]: *** [Makefile.perf:456: arm64-sysreg-defs] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [Makefile.perf:242: sub-make] Error 2
-make: *** [Makefile:70: all] Error 2
-make: Leaving directory 'perf-6.7.0-rc2/tools/perf'
-...
-```
+The Intel VT-d spec doesn't require the driver to flush iotlb and device
+tlb together. Therefore, the current approach of relying on caching mode
+to determine whether device TLB invalidation is necessary appears to be
+a performance optimization rather than an architectural requirement.
 
-Fixes: e2bdd172e665 ("perf build: Generate arm64's sysreg-defs.h and add to include path")
----
-Note: the breakage is in Linus' tree and perf-tools, not yet in perf-tools-next.
+The vIOMMU driver assumes that it is running within a VM guest when
+caching mode is enabled. This assumption leads to an omission of device
+TLB invalidation, relying on the hypervisor to perform a combined flush
+of the IOLB and device TLB.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/MANIFEST | 2 ++
- 1 file changed, 2 insertions(+)
+While this optimization aims to reduce VMEXIT overhead, it introduces
+potential issues:
 
-diff --git a/tools/perf/MANIFEST b/tools/perf/MANIFEST
-index 1da7f4b91b4f..dc42de1785ce 100644
---- a/tools/perf/MANIFEST
-+++ b/tools/perf/MANIFEST
-@@ -1,3 +1,5 @@
-+arch/arm64/tools/gen-sysreg.awk
-+arch/arm64/tools/sysreg
- tools/perf
- tools/arch
- tools/scripts
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+- When a Linux guest running on a hypervisor other than KVM/QEMU, the
+   assumption of combined IOLB and device TLB flushing by the hypervisor
+   may be incorrect, potentially leading to missed device TLB
+   invalidation.
 
+- The caching mode doesn't apply to first-stage translation. Therefore,
+   if the driver uses first-stage translation and still relies on caching
+   mode to determine device TLB invalidation, the optimization fails.
+
+A more reasonable optimization would be to allocate a bit in the iommu
+capability registers. The vIOMMU driver could then leverage this bit to
+determine whether it could eliminate a device invalidation request.
+
+Best regards,
+baolu
