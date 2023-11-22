@@ -2,240 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423F17F508A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECFD7F508F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344429AbjKVT0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 14:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
+        id S232374AbjKVTah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 14:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235173AbjKVT0l (ORCPT
+        with ESMTP id S231430AbjKVTag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 14:26:41 -0500
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2080.outbound.protection.outlook.com [40.107.95.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170581BD;
-        Wed, 22 Nov 2023 11:26:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fz4e9QYnjIR8kXhp9O8f9arvWg0dxoJv62g6bT5HgJCqs9Wy0H1jYq4Xg3TNPNOxwyxPYJSgI8Z5qK2vW8/pEAeb8rlrIhLrw2fi7qe6XgW4oE1PMU5psrDjy4UqffXuFs1yAHumlHb8BbaidakwRCrr8lEgeEKLMgOPs2GCElAE2op1G4acnIIFhcpQaNMi6L9N3uug3AW3le759D710ICN4pfdZqjJY4Oy+TWlOZyZK4ZuIbv/nJNLwCMCI5kSqRhR4cpv8ByJ+i7yWa0hD72RWWWjawK3bakdPUyECkZ9welGAojG0YFQ251Kiw8CDmUR0fPR2lJITm3FhhucCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x+POrHr8Ptzol7KDt+CLjOPxLwvrOnmwo/dWZrXzkNo=;
- b=CafXSpYDH8WAEg593x21IKXHtspZnvC7mHJX82nTW2P3KU9RSciDv64XC2WZzXNYL/li6me0MyTChzm7BB3EB+bqD103jhvn0NL9m6wPtm+TDISxQCEkidhmwAHyoZoNygXh04htWWcs19BWpKl32KFrDvAtgTgVgFSKQ7Jk9xOmxo+dufG4BNI/mgV3Y9RIGwb344H44Sl9jrroA8CPwamjOzPf9KYCjf9G1kl88uZdCL5gE6sxFY7Y1J6sjeF9KnRMMk5R7ZdO2shjdPob5gbup982bCDUeDhdCZl04bRcgbiTwkRiXS00s5VDmmVCdCKT9Kww+sGyrjcaAWlqpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x+POrHr8Ptzol7KDt+CLjOPxLwvrOnmwo/dWZrXzkNo=;
- b=oR3lbTYBjErMKekVDO4QCin/+CajjkcpN+9mHqRRne7bNTIeGhJHC0dZ1jrWYTQ4RO6FrNgUySNjUaBfjjcPNuo9Ew/EY/i/eTV8W/Ff+jdJVPrwYO55x6USfjf7abMaBWkol6azHwsr6CurXX8cihNy30XB+/N+spE4p2NhjtM=
-Received: from MW4PR04CA0213.namprd04.prod.outlook.com (2603:10b6:303:87::8)
- by IA1PR12MB6626.namprd12.prod.outlook.com (2603:10b6:208:3a2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
- 2023 19:26:29 +0000
-Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:303:87:cafe::6c) by MW4PR04CA0213.outlook.office365.com
- (2603:10b6:303:87::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18 via Frontend
- Transport; Wed, 22 Nov 2023 19:26:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.3 via Frontend Transport; Wed, 22 Nov 2023 19:26:28 +0000
-Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
- 2023 13:26:26 -0600
-From:   Brett Creeley <brett.creeley@amd.com>
-To:     <jgg@ziepe.ca>, <yishaih@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
-        <alex.williamson@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH v4 vfio 2/2] vfio/pds: Fix possible sleep while in atomic context
-Date:   Wed, 22 Nov 2023 11:25:32 -0800
-Message-ID: <20231122192532.25791-3-brett.creeley@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231122192532.25791-1-brett.creeley@amd.com>
-References: <20231122192532.25791-1-brett.creeley@amd.com>
+        Wed, 22 Nov 2023 14:30:36 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E742D18E;
+        Wed, 22 Nov 2023 11:30:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
+        Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=p1irU5/sMV7m/y1pOMYTaih3tLiq5FQfX+AGXmsO5cU=; b=VRmy3WrW8+pNBsWOfDxL2s3pUK
+        4ILG+s+rBsn3aSTA4U1blwa1fJXQ+ZpkggvOqaLfnADIYbA87Qo4cFraQgYStoZ/lRSxvQ56/ViFA
+        tCJ0VsCWD8U6HO/zCG6BoGOHVXXg7UfUZFLw1KHk1lOY6q38c1bk0bhWCJJCVxCocMYr/ZeVL9CvP
+        /hblKokHWEGibFcKO3nYnnYX4HTr3SYdR2YSu+lx46CO/muf7KYlc+2lEjIC+Vz0uTEWod/bUGBhm
+        g5JXG1aR/Z+kMTRenMZ29fJzTDZvhrnci4xFcCfnc+DvsmjoE74Ts5m8XPsCiiTBDtIgYaqbHw6CM
+        i1ZsnxGA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r5svc-001ksS-1G;
+        Wed, 22 Nov 2023 19:30:28 +0000
+Date:   Wed, 22 Nov 2023 19:30:28 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mo Zou <lostzoumo@gmail.com>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHES][CFT] rename deadlock fixes
+Message-ID: <20231122193028.GE38156@ZenIV>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|IA1PR12MB6626:EE_
-X-MS-Office365-Filtering-Correlation-Id: ecb28c72-0732-4691-f2f1-08dbeb90ed3a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MgxYT26qG6ehhX+LECMxBPAcDG6VDutkVFFQyKZ+hkKdfDacCmhPU3PeRKkOqk9xFIJ96g2IAoUXb2tGfmVS9V5fI2vH+w1zT36LbbanvRoxiLDrE9ZA1sZBt2hhCaY7oWJMSlowVymF/gMy8pMPwUhYjTscFEJR2nsrL5vG8L2bDF6FNgiyHBjcPCkk49vRmoAj0hkkfZgRWZPDIgBh3kB4z7JfdaSY9FSv2fgsLX31r8AgXZ1QHac7uHLcek/M125FTqnys2nBhw1sKZAzZA6zjZzrTU/jIxJYwvEorT/Ae58ilI+2dCU2FVgpBYBEZzqwBKRoco6Mv7VfMEfSj2dFE2k9FZ2eKRIe/5d+KeFPwhSZLOD/dK7Y08liyELaK0PKfzdm0TkBvAT+zJiNWOaHf3/zHDeLf+yyBWHK9TkNJXAAaute04489aJ1QG9BvAZ/DVhBk7DLfliBXleX9KY/tKQYgSMcifhOOQ/9MQf5UwOvowvjqNSAvsT5EtDX72WXHdBj4UbK60f/HKa7FIGBqGRq4ztV5UmCl1eMHcfLOY0Cn5Pt/17Ptbxfe4QveLOwcVyIuQSzYOvR0IG8lJLQvsaZhRJJMu2b++bjI44AI0dtn2FNFjnIr1/U34T1uN0hXDo46htHdBJD28qzaynuFXyV8bK2Iz0NK6VmlVdsbDiimDsW7Sdu7p+PGyIcCvd0ck2FHsw3w7QWFuzPZgwYI8g6U/N+ENRhku4WXsQ=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(136003)(346002)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(82310400011)(186009)(40470700004)(46966006)(36840700001)(2616005)(426003)(336012)(16526019)(1076003)(26005)(36860700001)(356005)(81166007)(36756003)(86362001)(82740400003)(83380400001)(40460700003)(47076005)(54906003)(316002)(4326008)(8676002)(8936002)(70586007)(70206006)(110136005)(41300700001)(44832011)(5660300002)(2906002)(6666004)(40480700001)(966005)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 19:26:28.9219
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecb28c72-0732-4691-f2f1-08dbeb90ed3a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FA.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6626
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver could possibly sleep while in atomic context resulting
-in the following call trace while CONFIG_DEBUG_ATOMIC_SLEEP=y is
-set:
+	Directory locking used to provide the following warranties:
+1.  Any read operations (lookup, readdir) are done with directory locked at
+least shared.
+2.  Any link creation or removal is done with directory locked exclusive.
+3.  Any link count changes are done with the object locked exclusive.
+4.  Any emptiness checks (for rmdir() or overwriting rename()) are done with
+the victim locked exclusive.
+5.  Any rename of a non-directory is done with the object locked exclusive
+(the last part is needed by nfsd).
 
-BUG: sleeping function called from invalid context at kernel/locking/mutex.c:283
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 2817, name: bash
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-Call Trace:
- <TASK>
- dump_stack_lvl+0x36/0x50
- __might_resched+0x123/0x170
- mutex_lock+0x1e/0x50
- pds_vfio_put_lm_file+0x1e/0xa0 [pds_vfio_pci]
- pds_vfio_put_save_file+0x19/0x30 [pds_vfio_pci]
- pds_vfio_state_mutex_unlock+0x2e/0x80 [pds_vfio_pci]
- pci_reset_function+0x4b/0x70
- reset_store+0x5b/0xa0
- kernfs_fop_write_iter+0x137/0x1d0
- vfs_write+0x2de/0x410
- ksys_write+0x5d/0xd0
- do_syscall_64+0x3b/0x90
- entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+	As far as directory contents is concerned, it very nearly amounted
+to "all reads are done with directory locked shared, all modifications
+- exclusive".  There had been one gap in that, though - rename() can change
+the parent of subdirectory and strictly speaking that does modify
+the contents - ".." entry might need to be altered to match the new parent.
+For almost all filesystems it posed no problem - location and representation
+of ".." entry is fs-dependent, but it tends to be unaffected by any other
+directory modifications.
 
-This can happen if pds_vfio_put_restore_file() and/or
-pds_vfio_put_save_file() grab the mutex_lock(&lm_file->lock)
-while the spin_lock(&pds_vfio->reset_lock) is held, which can
-happen during while calling pds_vfio_state_mutex_unlock().
+	However, in some cases it's not true - for example, a filesystem
+might have the contents of small directories kept directly in the
+inode, switched to separate allocation when enough entries are added.
+For such beasts we need an exclusion between modifying ".." and (at least)
+switchover from small to large directory format.
 
-Fix this by changing the reset_lock to reset_mutex so there are no such
-conerns. Also, make sure to destroy the reset_mutex in the driver specific
-VFIO device release function.
+	One solution would be an fs-private locking inside the method,
+another - having cross-directory ->rename() take the normal lock on
+directory being moved.
 
-This also fixes a spinlock bad magic BUG that was caused
-by not calling spinlock_init() on the reset_lock. Since, the lock is
-being changed to a mutex, make sure to call mutex_init() on it.
+	Or one could make vfs_rename() itself lock that directory instead,
+sparing the ->rename() instances all that headache.  That had been done in
+6.5; unfortunately, locking the moved subdirectory had been done in *all*
+cases, cross-directory or not.	And that turns out to be more than a bit
+of harmless overlocking - deadlock prevention relies upon the fact that
+we never lock two directories that are not descendents of each other
+without holding ->s_vfs_rename_mutex.  Kudos to Mo Zou for pointing to
+the holes in proof of correctness - that's what uncovered the problem...
 
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/kvm/1f9bc27b-3de9-4891-9687-ba2820c1b390@moroto.mountain/
-Fixes: bb500dbe2ac6 ("vfio/pds: Add VFIO live migration support")
-Signed-off-by: Brett Creeley <brett.creeley@amd.com>
-Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
----
- drivers/vfio/pci/pds/pci_drv.c  |  4 ++--
- drivers/vfio/pci/pds/vfio_dev.c | 14 ++++++++------
- drivers/vfio/pci/pds/vfio_dev.h |  2 +-
- 3 files changed, 11 insertions(+), 9 deletions(-)
+	We could revert to pre-6.5 locking scheme, but there's a less
+painful solution; the cause of problem is same-directory case and in those
+there's no reason for ->rename() to touch the ".." entry at all - the
+parent does not change, so the modification of ".." would be tautological.
 
-diff --git a/drivers/vfio/pci/pds/pci_drv.c b/drivers/vfio/pci/pds/pci_drv.c
-index ab4b5958e413..caffa1a2cf59 100644
---- a/drivers/vfio/pci/pds/pci_drv.c
-+++ b/drivers/vfio/pci/pds/pci_drv.c
-@@ -55,10 +55,10 @@ static void pds_vfio_recovery(struct pds_vfio_pci_device *pds_vfio)
- 	 * VFIO_DEVICE_STATE_RUNNING.
- 	 */
- 	if (deferred_reset_needed) {
--		spin_lock(&pds_vfio->reset_lock);
-+		mutex_lock(&pds_vfio->reset_mutex);
- 		pds_vfio->deferred_reset = true;
- 		pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_ERROR;
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
- 	}
- }
- 
-diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_dev.c
-index 8c9fb87b13e1..4c351c59d05a 100644
---- a/drivers/vfio/pci/pds/vfio_dev.c
-+++ b/drivers/vfio/pci/pds/vfio_dev.c
-@@ -29,7 +29,7 @@ struct pds_vfio_pci_device *pds_vfio_pci_drvdata(struct pci_dev *pdev)
- void pds_vfio_state_mutex_unlock(struct pds_vfio_pci_device *pds_vfio)
- {
- again:
--	spin_lock(&pds_vfio->reset_lock);
-+	mutex_lock(&pds_vfio->reset_mutex);
- 	if (pds_vfio->deferred_reset) {
- 		pds_vfio->deferred_reset = false;
- 		if (pds_vfio->state == VFIO_DEVICE_STATE_ERROR) {
-@@ -39,23 +39,23 @@ void pds_vfio_state_mutex_unlock(struct pds_vfio_pci_device *pds_vfio)
- 		}
- 		pds_vfio->state = pds_vfio->deferred_reset_state;
- 		pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_RUNNING;
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
- 		goto again;
- 	}
- 	mutex_unlock(&pds_vfio->state_mutex);
--	spin_unlock(&pds_vfio->reset_lock);
-+	mutex_unlock(&pds_vfio->reset_mutex);
- }
- 
- void pds_vfio_reset(struct pds_vfio_pci_device *pds_vfio)
- {
--	spin_lock(&pds_vfio->reset_lock);
-+	mutex_lock(&pds_vfio->reset_mutex);
- 	pds_vfio->deferred_reset = true;
- 	pds_vfio->deferred_reset_state = VFIO_DEVICE_STATE_RUNNING;
- 	if (!mutex_trylock(&pds_vfio->state_mutex)) {
--		spin_unlock(&pds_vfio->reset_lock);
-+		mutex_unlock(&pds_vfio->reset_mutex);
- 		return;
- 	}
--	spin_unlock(&pds_vfio->reset_lock);
-+	mutex_unlock(&pds_vfio->reset_mutex);
- 	pds_vfio_state_mutex_unlock(pds_vfio);
- }
- 
-@@ -156,6 +156,7 @@ static int pds_vfio_init_device(struct vfio_device *vdev)
- 	pds_vfio->vf_id = vf_id;
- 
- 	mutex_init(&pds_vfio->state_mutex);
-+	mutex_init(&pds_vfio->reset_mutex);
- 
- 	vdev->migration_flags = VFIO_MIGRATION_STOP_COPY | VFIO_MIGRATION_P2P;
- 	vdev->mig_ops = &pds_vfio_lm_ops;
-@@ -177,6 +178,7 @@ static void pds_vfio_release_device(struct vfio_device *vdev)
- 			     vfio_coredev.vdev);
- 
- 	mutex_destroy(&pds_vfio->state_mutex);
-+	mutex_destroy(&pds_vfio->reset_mutex);
- 	vfio_pci_core_release_dev(vdev);
- }
- 
-diff --git a/drivers/vfio/pci/pds/vfio_dev.h b/drivers/vfio/pci/pds/vfio_dev.h
-index b8f2d667608f..e7b01080a1ec 100644
---- a/drivers/vfio/pci/pds/vfio_dev.h
-+++ b/drivers/vfio/pci/pds/vfio_dev.h
-@@ -18,7 +18,7 @@ struct pds_vfio_pci_device {
- 	struct pds_vfio_dirty dirty;
- 	struct mutex state_mutex; /* protect migration state */
- 	enum vfio_device_mig_state state;
--	spinlock_t reset_lock; /* protect reset_done flow */
-+	struct mutex reset_mutex; /* protect reset_done flow */
- 	u8 deferred_reset;
- 	enum vfio_device_mig_state deferred_reset_state;
- 	struct notifier_block nb;
--- 
-2.17.1
+	Let's keep locking moved subdirectory in cross-directory move;
+that spares ->rename() instances the need to do home-grown exclusion.
+They need to be careful in one respect - if they do rely upon the exclusion
+between the change of ".." and other directory modifications, they should
+only touch ".." if the parent does get changed.  Exclusion is still provided
+by the caller for such (cross-directory) renames.
 
+	The series lives in 
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.rename;
+individual patches in followups.  It does surivive local beating, but
+it needs more - additional review and testing would be very welcome.
+
+	It starts with making sure that ->rename() instances are
+careful.  Then the locking rules for rename get changed, so that we don't
+lock moved subdirectory in same-directory case.  The proof of correctness
+gets updated^Wfixed - the current one had several holes.
+
+1/9..6/9) (me and Jan) don't do tautological ".." changes in instances.
+      reiserfs: Avoid touching renamed directory if parent does not change
+      ocfs2: Avoid touching renamed directory if parent does not change
+      udf_rename(): only access the child content on cross-directory rename
+      ext2: Avoid reading renamed directory if parent does not change
+      ext4: don't access the source subdirectory content on same-directory rename
+      f2fs: Avoid reading renamed directory if parent does not change
+
+7/9) rename(): fix the locking of subdirectories
+
+	We should never lock two subdirectories without having taken
+->s_vfs_rename_mutex; inode pointer order or not, the "order" proposed
+in 28eceeda130f "fs: Lock moved directories" is not transitive, with
+the usual consequences.
+
+	The rationale for locking renamed subdirectory in all cases was
+the possibility of race between rename modifying .. in a subdirectory to
+reflect the new parent and another thread modifying the same subdirectory.
+For a lot of filesystems that's not a problem, but for some it can lead
+to trouble (e.g. the case when short directory contents is kept in the
+inode, but creating a file in it might push it across the size limit
+and copy its contents into separate data block(s)).
+
+	However, we need that only in case when the parent does change -
+otherwise ->rename() doesn't need to do anything with .. entry in the
+first place.  Some instances are lazy and do a tautological update anyway,
+but it's really not hard to avoid.
+
+Amended locking rules for rename():
+	find the parent(s) of source and target
+	if source and target have the same parent
+		lock the common parent
+	else
+		lock ->s_vfs_rename_mutex
+		lock both parents, in ancestor-first order; if neither
+		is an ancestor of another, lock the parent of source
+		first.
+	find the source and target.
+	if source and target have the same parent
+		if operation is an overwriting rename of a subdirectory
+			lock the target subdirectory
+	else
+		if source is a subdirectory
+			lock the source
+		if target is a subdirectory
+			lock the target
+	lock non-directories involved, in inode pointer order if both
+	source and target are such.
+
+That way we are guaranteed that parents are locked (for obvious reasons),
+that any renamed non-directory is locked (nfsd relies upon that),
+that any victim is locked (emptiness check needs that, among other things)
+and subdirectory that changes parent is locked (needed to protect the update
+of .. entries).  We are also guaranteed that any operation locking more
+than one directory either takes ->s_vfs_rename_mutex or locks a parent
+followed by its child.
+
+8/9) kill lock_two_inodes()
+	Folded into the sole caller and simplified - it doesn't
+need to deal with the mix of directories and non-directories anymore.
+
+9/9) rename(): avoid a deadlock in the case of parents having no common ancestor
+
+... and fix the directory locking documentation and proof of correctness.
+Holding ->s_vfs_rename_mutex *almost* prevents ->d_parent changes; the
+case where we really don't want it is splicing the root of disconnected
+tree to somewhere.
+
+In other words, ->s_vfs_rename_mutex is sufficient to stabilize "X is an
+ancestor of Y" only if X and Y are already in the same tree.  Otherwise
+it can go from false to true, and one can construct a deadlock on that.
+
+Make lock_two_directories() report an error in such case and update the
+callers of lock_rename()/lock_rename_child() to handle such errors.
+The ones that could get an error, that is - e.g. debugfs_rename() is
+never asked to change the parent and shouldn't be using lock_rename()
+in the first place; that's a separate series, though.
