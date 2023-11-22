@@ -2,185 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2B17F3B6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 02:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4EB7F3BBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343495AbjKVBmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 20:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
+        id S1343527AbjKVCWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjKVBmW (ORCPT
+        with ESMTP id S229498AbjKVCWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 20:42:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E713810C
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 17:42:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 076F8C433C8;
-        Wed, 22 Nov 2023 01:42:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700617338;
-        bh=BNdihuo6rMnCzk1/H6PiwRe9wn5OD68XRMeNziQ7hKk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QvdIFPLM2XOIWcKAqJ/k3h+HTLKJW8KwrJsH1YD42WUtYML5oTfWjgYZcPZqhktiL
-         ObmedCPih8bwLUhsNhT7IswXr4Fi3AlH4ekgn5ym+RCQpj9W5CAxJxkRevjyowspz/
-         UgIBvI6egKKR6JWAUHeAKI09Zs4LeZ/R7SNXL1Qqxy38Fa2/18SzxWYHl082RI+fUq
-         SdiZelsghStv/d3IlXC40lRpsGVtOI+baigtMua9K2aTokV6OMkzfxM+TR0Y4NfBc7
-         LD3+QEnTT4w5zzmG0kciJ+1V688wsVUUFYhZvstXKPYpxNBp6MA7wPfj9iqp9BN0Sy
-         20wWeFKRPGiaA==
-Date:   Tue, 21 Nov 2023 17:42:16 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jerry Shih <jerry.shih@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH 07/12] RISC-V: crypto: add Zvkg accelerated GCM GHASH
- implementation
-Message-ID: <20231122014216.GI2172@sol.localdomain>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-8-jerry.shih@sifive.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025183644.8735-8-jerry.shih@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 21 Nov 2023 21:22:50 -0500
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D182A181
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:22:45 -0800 (PST)
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 478091A0F04;
+        Wed, 22 Nov 2023 03:22:44 +0100 (CET)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 0FB5A1A0D38;
+        Wed, 22 Nov 2023 03:22:44 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 76E58183AD45;
+        Wed, 22 Nov 2023 10:22:42 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_xcvr: Enable 2 * TX bit clock for spdif only case
+Date:   Wed, 22 Nov 2023 09:42:53 +0800
+Message-Id: <1700617373-6472-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 02:36:39AM +0800, Jerry Shih wrote:
-> +struct riscv64_ghash_context {
-> +	be128 key;
-> +};
-> +
-> +struct riscv64_ghash_desc_ctx {
-> +	be128 shash;
-> +	u8 buffer[GHASH_BLOCK_SIZE];
-> +	u32 bytes;
-> +};
+The bit 10 in TX_DPTH_CTRL register controls the TX clock rate.
+If this bit is set, TX datapath clock should be = 2* TX bit rate.
+If this bit is not set, TX datapath clock should be 10* TX bit rate.
 
-I recommend calling the first struct 'riscv64_ghash_tfm_ctx', and making the
-pointers to it be named 'tctx'.  That would more clearly distinguish it from the
-desc_ctx / dctx.
+As the spdif only case, we always use 2 * TX bit clock, so
+this bit need to be set.
 
-> +
-> +typedef void (*ghash_func)(be128 *Xi, const be128 *H, const u8 *inp,
-> +			   size_t len);
-> +
-> +static inline void ghash_blocks(const struct riscv64_ghash_context *ctx,
-> +				struct riscv64_ghash_desc_ctx *dctx,
-> +				const u8 *src, size_t srclen, ghash_func func)
-> +	if (crypto_simd_usable()) {
-> +		kernel_vector_begin();
-> +		func(&dctx->shash, &ctx->key, src, srclen);
-> +		kernel_vector_end();
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_xcvr.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-The indirection to ghash_func is unnecessary, since the only value is
-gcm_ghash_rv64i_zvkg.
+diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+index fa0a15263c66..77f8e2394bf9 100644
+--- a/sound/soc/fsl/fsl_xcvr.c
++++ b/sound/soc/fsl/fsl_xcvr.c
+@@ -414,6 +414,16 @@ static int fsl_xcvr_prepare(struct snd_pcm_substream *substream,
+ 
+ 	switch (xcvr->mode) {
+ 	case FSL_XCVR_MODE_SPDIF:
++		if (xcvr->soc_data->spdif_only && tx) {
++			ret = regmap_update_bits(xcvr->regmap, FSL_XCVR_TX_DPTH_CTRL_SET,
++						 FSL_XCVR_TX_DPTH_CTRL_BYPASS_FEM,
++						 FSL_XCVR_TX_DPTH_CTRL_BYPASS_FEM);
++			if (ret < 0) {
++				dev_err(dai->dev, "Failed to set bypass fem: %d\n", ret);
++				return ret;
++			}
++		}
++		fallthrough;
+ 	case FSL_XCVR_MODE_ARC:
+ 		if (tx) {
+ 			ret = fsl_xcvr_en_aud_pll(xcvr, fout);
+-- 
+2.34.1
 
-This also means that ghash_update() should be folded into ghash_update_zvkg(),
-and ghash_final() into ghash_final_zvkg().
-
-> +	} else {
-> +		while (srclen >= GHASH_BLOCK_SIZE) {
-> +			crypto_xor((u8 *)&dctx->shash, src, GHASH_BLOCK_SIZE);
-> +			gf128mul_lle(&dctx->shash, &ctx->key);
-> +			srclen -= GHASH_BLOCK_SIZE;
-> +			src += GHASH_BLOCK_SIZE;
-> +		}
-> +	}
-
-The assembly code uses the equivalent of the following do-while loop instead:
-
-        do {
-                srclen -= GHASH_BLOCK_SIZE;
-        } while (srclen);
-
-I.e., it assumes the length here is nonzero and a multiple of 16, which it is.
-
-To avoid confusion, I recommend making the C code use the same do-while loop.
-
-
->        const struct riscv64_ghash_context *ctx =
->               crypto_tfm_ctx(crypto_shash_tfm(desc->tfm));
-
-crypto_tfm_ctx(crypto_shash_tfm(tfm)) should be crypto_shash_ctx(tfm)
-
-> +static int ghash_final(struct shash_desc *desc, u8 *out, ghash_func func)
-> +{
-> +	const struct riscv64_ghash_context *ctx =
-> +		crypto_tfm_ctx(crypto_shash_tfm(desc->tfm));
-> +	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
-> +	int i;
-> +
-> +	if (dctx->bytes) {
-> +		for (i = dctx->bytes; i < GHASH_BLOCK_SIZE; i++)
-> +			dctx->buffer[i] = 0;
-> +
-> +		ghash_blocks(ctx, dctx, dctx->buffer, GHASH_BLOCK_SIZE, func);
-> +		dctx->bytes = 0;
-> +	}
-> +
-
-Setting dctx->bytes above is unnecessary.
-
-> +static int ghash_init(struct shash_desc *desc)
-> +{
-> +	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
-> +
-> +	*dctx = (struct riscv64_ghash_desc_ctx){};
-> +
-> +	return 0;
-> +}
-> +
-> +static int ghash_update_zvkg(struct shash_desc *desc, const u8 *src,
-> +			     unsigned int srclen)
-> +{
-> +	return ghash_update(desc, src, srclen, gcm_ghash_rv64i_zvkg);
-> +}
-> +
-> +static int ghash_final_zvkg(struct shash_desc *desc, u8 *out)
-> +{
-> +	return ghash_final(desc, out, gcm_ghash_rv64i_zvkg);
-> +}
-> +
-> +static int ghash_setkey(struct crypto_shash *tfm, const u8 *key,
-> +			unsigned int keylen)
-> +{
-> +	struct riscv64_ghash_context *ctx =
-> +		crypto_tfm_ctx(crypto_shash_tfm(tfm));
-> +
-> +	if (keylen != GHASH_BLOCK_SIZE)
-> +		return -EINVAL;
-> +
-> +	memcpy(&ctx->key, key, GHASH_BLOCK_SIZE);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct shash_alg riscv64_ghash_alg_zvkg = {
-> +	.digestsize = GHASH_DIGEST_SIZE,
-> +	.init = ghash_init,
-> +	.update = ghash_update_zvkg,
-> +	.final = ghash_final_zvkg,
-> +	.setkey = ghash_setkey,
-
-IMO it's helpful to order the shash functions as follows, both in their
-definitions and their fields in struct shash_alg:
-
-    setkey
-    init
-    update
-    final
-
-That matches the order in which they're called.
-
-- Eric
