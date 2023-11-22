@@ -2,215 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BA87F5184
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EFB7F5189
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 21:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjKVUX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 15:23:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34524 "EHLO
+        id S232477AbjKVUYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 15:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVUX5 (ORCPT
+        with ESMTP id S231429AbjKVUYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 15:23:57 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2056.outbound.protection.outlook.com [40.107.92.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD46A9A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:23:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z6doZHZ8ob3ZfgCyVEqyHUuM9bbUsVXf5ezWrEzjfxqFjAxQ9+updYA/9Fz7w/gftNSX/ARTieskU84uRC1al0sQWXFJh2Jivha2XLbcV1Z4GMPnIuJHLSRUYMWzhBw946Qs6jBaaVoDAsOLxcOh7K1+gNfLo0nBQ1nhgK/v5KTW90V9Ruf38C/OMlcrJfDdteHf53AUgFM6lXM9weorSD2f/+b0ehvzzREe+G90Bg4+MMZQA0mgD1wRpB6yGrEAINVgGNDhSw1pqDfPCjPgg2oPEUM7oQUToqyn2d7Pd5Gr3UAAV5PHEpyNyxKo6ZmH35E7IuuuuvSk8lxcoMWz9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=54ZKw50752GkVSBzzyp5bG+BSoVJEqpTjJNsVpM1JD8=;
- b=Or9JdXdv5abvZFPayC+opiznpb3/Zf9x6Rgb6802Q6hlrfsuQSOU/DF9XEy3KvNjGocUNgXcYuad+rE966qi3WVYW+GDJ49WtzUBY1PhXJ9Db9uHEhRR770ZmiZ+H38jvIVAF7ht57tBSqPYac4njCAD8fpjIi2G54W/izf+G0qfTpRwcOZEssspll9SBTuVwHBzP1K3bbfscHK8krwU1/+p3/fcFhqXdvSZF/fzyoE7oUxUxMBF8Skh0e1qcD1KsGbqfkxmLKYptdEnj7giQuS+jLJ6156pp/Tynqrads7YCTUrNY7JnSBAYqTdSn5I5dvYClPoqEGzWsuxPueyBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=54ZKw50752GkVSBzzyp5bG+BSoVJEqpTjJNsVpM1JD8=;
- b=2gRl15lb7ou8lhRYgq6WEkkUHjhGp/hEO/cp9xw56euaQuIMJabCuavzIhOeDM0yLBEHxjwBGApGy67j8Q0soygiHUPRYtwFHl4xx+6+zbn0MmvcJ57PcO6eR6Pzfx+mNlLcJLrZVAK1MLAV0ymWNzlYewMskOvYTjelfEgg3r8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- DM4PR12MB7694.namprd12.prod.outlook.com (2603:10b6:8:102::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.28; Wed, 22 Nov 2023 20:23:49 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5358:4ba6:417e:c368]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5358:4ba6:417e:c368%6]) with mapi id 15.20.7025.019; Wed, 22 Nov 2023
- 20:23:49 +0000
-Message-ID: <cc10f6b0-e26e-4021-85ca-33cb1e58e937@amd.com>
-Date:   Wed, 22 Nov 2023 15:23:46 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 0/4] drm: Add support for atomic async page-flip
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        intel-gfx@lists.freedesktop.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pekka Paalanen <ppaalanen@gmail.com>, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20231122161941.320564-1-andrealmeid@igalia.com>
-Content-Language: en-US
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20231122161941.320564-1-andrealmeid@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0154.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:8c::13) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+        Wed, 22 Nov 2023 15:24:34 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61B31BD
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:24:29 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c873cf9f74so2679761fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 12:24:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700684668; x=1701289468; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pa4PSx1bqwHUNtr2jOQTdwbCw2lGoLr2aW9SF4QV68E=;
+        b=trJZ9rCtBBkRyoW5ItepmGgU4L9zF4BIn6Jin5AdJegD6zRDhSheOjEmmOBTGnwvct
+         lbIB4p0pYlxttSLzDTBxw1YahC1CsTQok0XRB3mGcOKT60/z5Hjas28wV5fY6AOqoR5H
+         NYdwlwGyltCWdTn7ANOjAP3YCA8rwmpEBeAA6iHuyhKhYCcGigvhaP1Ws9nmVWk11iKB
+         UBF+tPS9moJRHWhpYaH54zSfk2vS9xlZw+v7qQSFKcZLsVCqheChyBndgv1dCFyDv4ew
+         ZSeV8pFFlghK2AnvOIsFm+GurSSeVe+Bi+3u59vXVjW9NsjUdcIsI52pXGR4sxU6J3kq
+         qjAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700684668; x=1701289468;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pa4PSx1bqwHUNtr2jOQTdwbCw2lGoLr2aW9SF4QV68E=;
+        b=LM2qeFzV3JRnAtxPFPrIgy/3MZtB6eU1S0MbOs7mwTNiUpnOHkAlfuk1Ha2IL5wrWc
+         6jfKaCyGTTRbJkCo9DdO7w5KavuWK5SA4ybMWT8x1E54loR2V/Lv0mofzyl7JJxJ3YJV
+         gEbHG2qSouktHBD2zEvomAi1fPTzdd4SVz/xraGp/+0gfyEI/SnAa2PZ0/8bzksTrul0
+         hW9Rx2t9WU2hS4wM/4gsSxH4+JW/4SAPGTzeJtTFkSO9SMBXb1zOj74GCciggoa0Mrax
+         gn4pN7tmgpZkyrGovBv5HZikkMYpVu9eVkjHzewfW9WDAFPq7pxwPrFJQ+gQtA+XI+98
+         n45A==
+X-Gm-Message-State: AOJu0YxckKF+OAR1H5oT1oM4u3dAmtc4HTvDLlL3yYMKge/9zILZt+xr
+        txTt7SAFFVENQj8NMPABbxMBBQ==
+X-Google-Smtp-Source: AGHT+IHCqJnqmqruquEzZmPUrGzbkNt3QnbrS5s9HB1QFQs8oQy4JStcei9zVZVifxLEVasGTNqeiw==
+X-Received: by 2002:a2e:920b:0:b0:2c5:23e3:ed11 with SMTP id k11-20020a2e920b000000b002c523e3ed11mr2713058ljg.30.1700684667938;
+        Wed, 22 Nov 2023 12:24:27 -0800 (PST)
+Received: from [172.30.204.74] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f27-20020a2eb5bb000000b002b9f03729e2sm42821ljn.36.2023.11.22.12.24.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Nov 2023 12:24:27 -0800 (PST)
+Message-ID: <f18b6552-bf8d-4826-969a-a0de60bd0ad3@linaro.org>
+Date:   Wed, 22 Nov 2023 21:24:24 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|DM4PR12MB7694:EE_
-X-MS-Office365-Filtering-Correlation-Id: 55b38246-191f-4aa6-6ac3-08dbeb98efc1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GeW5K0I+OTXiWcDMM5HsK+F70Xp6VtUBHw00YkvDt0vcp/f+oTkJc2PpVXBwDfF/7xvzspSTweXyn0XX6VvZsl6xnt5dsoP4I4K5TPCIePpfJWLYpnqJdZ6G2Dcs9VTDhYEALTi9TLg29cqS3WfjGbCarJGwHkcdFZ2QTyG8Mvz3rXToexldU/YsyxMIOfZFB/2hOTmbTjzmteYZPSCN51TKuZMyYiWS0kHd76A1MEmUJyfv3aDTsK8QQNYKFun4gbLBtDntYs3PaDkS085hT1R9BfAS+1zjj3Wnkprzbk2KBEqIkeGlxxT5n9nmzWAjjrjnGzB6wFvaKpqMPLsvV7Ka2W0q++kxRGDhPjmsN9zUqGetLuKD61dN+7iLi5i3zT0WccMxGSp0exhYPc5SbEliM+mFZDgSUqesTwG5XXTLJfFiSWUq3oQbyV4ubWRiZI7WH5p9As2Tfgfhk+BvSsunnYZusfEEibUWAvAXBuSoQP7OAJu42JfDCIPA9ZQfgdMw3AcEIJtPlkRl45cESxl67G0S2rY7TOCt3A4s6LJ2NH2N72cmRr/Rtomw9OCa1CV2YbQGnChj/Y6Lx6TQrNvZr0FuBq5XoCXgX+HAixkPWjld56kwMHXUNhfy9HuBMZWnmiJ3xQrZoQtkAgeGFuI7yHL4voiX++5tS8WRdLo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(366004)(376002)(136003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(66556008)(66476007)(316002)(54906003)(66946007)(6506007)(53546011)(6512007)(6666004)(36756003)(26005)(6486002)(966005)(31696002)(38100700002)(83380400001)(86362001)(478600001)(2616005)(7416002)(5660300002)(44832011)(31686004)(2906002)(41300700001)(8936002)(4326008)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZHBZM1pJc2t1d0psQ1pzcng5Z1JkSDFDSXhnNktvY01kM29MWjNXMEFVZm9D?=
- =?utf-8?B?OEI2WXhNUDlGNzFZSlJ3YjBnRkRKYWtjSVdGbUlVaVNOSVZPY2NCVklMN3Nq?=
- =?utf-8?B?SVNnejdLdkhrRGdvTDlrZWZvS2xialI4K1ZZd0xWcEtMK2htUGRQSWJLQmZ2?=
- =?utf-8?B?ZWVVS3diMGdzMGFoZHhtWlhuYndkOWx1NUZDMTZ4VjdmSlRWajRFL0NJSXFT?=
- =?utf-8?B?aXVOUXZxaHdxZDdhc2k2RHFYaDdZSlZhTS9ZNnFiU0ZvTVF2R0dwS2EveFg2?=
- =?utf-8?B?QU9Cclp1WE9pT1NIcytsVHQ2WXhoOGpGWnA2SXZNUjZtQ1BOUFVNNHhHMXZI?=
- =?utf-8?B?YkxBZUlQc0t1aVQ2VXl5YW9WbVJGZFFieldIMm9vb1Q0V2ZDZnIvNlhPQW9l?=
- =?utf-8?B?V0VTTkk4YWI3ZkJvK2U2b21XelBmODBhQmZEaXZmclB0TTBkNlczcW16Mk9I?=
- =?utf-8?B?NEg5ODZsUkxjdDZ1VTNpK2hVc01sanNZN1V3ZEdGc3haWE5FTFgySUw1RU1z?=
- =?utf-8?B?VzdIT2s2TE1lNlhOUTVrZ0VuTWZqbmk2WVZ0TmlVNy9lUHJFYVRoZWFRbURm?=
- =?utf-8?B?K1ViamliMkRlL05pajBVQlJJeTZqU0kxcFZjc1B0cE9DYnpNdG11VlhSWjB0?=
- =?utf-8?B?WFhwZkQzeDBnWFcxQ2VkRTFLZGV5VzRYb1VlV1V4aCtPZ2Z4Nk00S1c4SVZt?=
- =?utf-8?B?SmgzNmJqY05BSzNkQkxWUDBtYm1GcFFyeGx6YVVVQXY3c2VZMDVDSi9kSisz?=
- =?utf-8?B?MVhBNlZPdWFJR2RtVnhJTVk1eDExbk0xUW5qRmszUEE1SFIrdVl0aDNkdGNR?=
- =?utf-8?B?akNXTTRlUFRrbWg5dmwxcjZzOENyTUMvLzVwUDJaVWFIYjdCTnV3ZSs2YUZr?=
- =?utf-8?B?MDNaWXhkb3Z3Wm8vK0dOejFYY0tQYlBxYkVnYUEzeDlIaWl3dmg3WVVEZGxk?=
- =?utf-8?B?UDI3Vi96ZmpvOTNkQTc5OTlNWEcxOXV0bnNIYWpxQ1lwUUUzcy93S2wrU0Rw?=
- =?utf-8?B?dEl3b1U2b1RSc1gvOUN2T0syejVpQjRESGVCNDVYZW9kKzFZWTBua2FFdXpu?=
- =?utf-8?B?QWYwYU1DdmxEUHhnOVpHS2J2VnNweXVVNUNSMFNBRjZYWTFoby8xeForNk82?=
- =?utf-8?B?Z1c0VjhIcVhWbnV6UU0va0pheCtzQjRJeGEwYXNZNUZCNUdoWVFuNVJHNGlQ?=
- =?utf-8?B?c1IrcjJ1Zkd0QmI5NWV4aVR1UHNIa2hOY3VjcFo4TE9LUklsanMzUDZLdjZO?=
- =?utf-8?B?UUlsNFI0UU5ZTnc2RHp6SXNmZjlVMy9UKzhROC85bkw4UVRxbUdJSE5ITWRV?=
- =?utf-8?B?endHSXpGU3VHVXFxWGpMMmJXT2tTNlhKbGVabDgvOEFpQ2d3aUkrVUZod0Zs?=
- =?utf-8?B?MURFcnJGaVkwaGJzN0hYZ0lnTDNnUFdta0dKSzZNeENFR08yd1ZkanU0bUZi?=
- =?utf-8?B?N1o0SDJYYk54bk5pTk91ckFNME1QTzlkaXVtY0JPeDBpNnN3MjAxV01yVnNV?=
- =?utf-8?B?a0p5dENtTEY3clFqeVFQem0vR3BrYnh4Nzdsa2FjcmNsQTFDSlBQcnZqRG5Y?=
- =?utf-8?B?UVlHbEp0TGwxKzl4dzBwbVZXQ3QxYytwU1FhSjh4RlAzZ3BYVlorQWg2UFh6?=
- =?utf-8?B?bUN4WDZwOXd4cnU2dDV0ZGwxNDRON3c3bm94T0VjbitnT1BUcGh2U2JQTlRX?=
- =?utf-8?B?a3g3alpOUkovWmdOYjJXVUxQa1JuekhpZkhaUFpDS2JoaFQ2MzBKYlVZT2pT?=
- =?utf-8?B?ZDZkWjcza2t3WTBIUG5LTHhBcUtSTU54cTFCd3dvbWl3b24zMnV0RU5hUU12?=
- =?utf-8?B?Z2NiMjN4ajUwWWNlUkN0eHpxUlJnRkVrazJJbkJaV090S05CNGxva2lKOGNn?=
- =?utf-8?B?MHVBZDVuU1JSbXVJNWRxVEJjeEhyRlJEL3FRN3hSbytKTmQ4RjFhVUJ6Q0xv?=
- =?utf-8?B?K01nSldTSGFkLysrWGNRNlBXMjdvOGNlTXg5RHYwTVM2amVBVjJMMnp6VEFV?=
- =?utf-8?B?SlBLTytQNzNmRC92bFl3bUt4elRpYmQ1eHVjOVpUdmRJR0F0ajhBRllVRXVI?=
- =?utf-8?B?OFc4N01TYUYzcmlVd3lMRXk1SG5uWWNzYi9scHFwRVZCaWRZc2tsMll3RVBz?=
- =?utf-8?Q?VEGRGT5sxqCVr43h6vXloBEVD?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55b38246-191f-4aa6-6ac3-08dbeb98efc1
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 20:23:49.4549
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: baaOogdiW5v+XhAY25UGO6E8HG3ZcP4OWGL/wGICRPOiqRDCgWfaMPbkpzgUi58zrAZdFcCncfPYx8wV3zuflQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7694
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/9] net: mdio: ipq4019: configure CMN PLL clock for
+ ipq5332
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        robert.marko@sartura.hr
+Cc:     linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-5-quic_luoj@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231115032515.4249-5-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi André,
-On 11/22/23 11:19, André Almeida wrote:
-> Hi,
-> 
-> This work from me and Simon adds support for DRM_MODE_PAGE_FLIP_ASYNC through
-> the atomic API. This feature is already available via the legacy API. The use
-> case is to be able to present a new frame immediately (or as soon as
-> possible), even if after missing a vblank. This might result in tearing, but
-> it's useful when a high framerate is desired, such as for gaming.
-> 
-> Differently from earlier versions, this one refuses to flip if any prop changes
-> for async flips. The idea is that the fast path of immediate page flips doesn't
-> play well with modeset changes, so only the fb_id can be changed.
-> 
-> Tested with:
->   - Intel TigerLake-LP GT2
->   - AMD VanGogh
 
-Have you had a chance to test this with VRR enabled? Since, I suspect
-this series might break that feature.
 
+On 11/15/23 04:25, Luo Jie wrote:
+> The reference clock of CMN PLL block is selectable, the internal
+> 48MHZ is used by default.
 > 
-> Thanks,
-> 	André
+> The output clock of CMN PLL block is for providing the clock
+> source of ethernet device(such as qca8084), there are 1 X 25MHZ
+> and 3 x 50MHZ output clocks available.
 > 
-> - User-space patch: https://github.com/Plagman/gamescope/pull/595
-> - IGT tests: https://lore.kernel.org/all/20231110163811.24158-1-andrealmeid@igalia.com/
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+>   drivers/net/mdio/mdio-ipq4019.c | 81 ++++++++++++++++++++++++++++++++-
+>   1 file changed, 80 insertions(+), 1 deletion(-)
 > 
-> Changes from v8:
-> - Dropped atomic_async_page_flip_not_supported, giving that current design works
-> with any driver that support atomic and async at the same time.
-> - Dropped the patch that disabled atomic_async_page_flip_not_supported for AMD.
-> - Reordered commits
-> v8: https://lore.kernel.org/all/20231025005318.293690-1-andrealmeid@igalia.com/
-> 
-> Changes from v7:
-> - Only accept flips to primary planes. If a driver support flips in different
-> planes, support will be added  later.
-> v7: https://lore.kernel.org/dri-devel/20231017092837.32428-1-andrealmeid@igalia.com/
-> 
-> Changes from v6:
-> - Dropped the exception to allow MODE_ID changes (Simon)
-> - Clarify what happens when flipping with the same FB_ID (Pekka)
-> 
-> v6: https://lore.kernel.org/dri-devel/20230815185710.159779-1-andrealmeid@igalia.com/
-> 
-> Changes from v5:
-> - Add note in the docs that not every redundant attribute will result in no-op,
->    some might cause oversynchronization issues.
-> 
-> v5: https://lore.kernel.org/dri-devel/20230707224059.305474-1-andrealmeid@igalia.com/
-> 
-> Changes from v4:
->   - Documentation rewrote by Pekka Paalanen
-> 
-> v4: https://lore.kernel.org/dri-devel/20230701020917.143394-1-andrealmeid@igalia.com/
-> 
-> Changes from v3:
->   - Add new patch to reject prop changes
->   - Add a documentation clarifying the KMS atomic state set
-> 
-> v3: https://lore.kernel.org/dri-devel/20220929184307.258331-1-contact@emersion.fr/
-> 
-> André Almeida (1):
->    drm: Refuse to async flip with atomic prop changes
-> 
-> Pekka Paalanen (1):
->    drm/doc: Define KMS atomic state set
-> 
-> Simon Ser (2):
->    drm: allow DRM_MODE_PAGE_FLIP_ASYNC for atomic commits
->    drm: introduce DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
-> 
->   Documentation/gpu/drm-uapi.rst      | 47 ++++++++++++++++++
->   drivers/gpu/drm/drm_atomic_uapi.c   | 77 ++++++++++++++++++++++++++---
->   drivers/gpu/drm/drm_crtc_internal.h |  2 +-
->   drivers/gpu/drm/drm_ioctl.c         |  4 ++
->   drivers/gpu/drm/drm_mode_object.c   |  2 +-
->   include/uapi/drm/drm.h              | 10 +++-
->   include/uapi/drm/drm_mode.h         |  9 ++++
->   7 files changed, 142 insertions(+), 9 deletions(-)
-> 
--- 
-Hamza
+> diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
+> index 93ae4684de31..ca9cda98d1f8 100644
+> --- a/drivers/net/mdio/mdio-ipq4019.c
+> +++ b/drivers/net/mdio/mdio-ipq4019.c
+> @@ -43,6 +43,13 @@
+>   /* Maximum SOC PCS(uniphy) number on IPQ platform */
+>   #define ETH_LDO_RDY_CNT				3
+>   
+> +#define CMN_PLL_REFERENCE_CLOCK			0x784
+> +#define CMN_PLL_REFCLK_INDEX			GENMASK(3, 0)
+> +#define CMN_PLL_REFCLK_EXTERNAL			BIT(9)
+> +
+> +#define CMN_PLL_POWER_ON_AND_RESET		0x780
+> +#define CMN_ANA_EN_SW_RSTN			BIT(6)
+> +
+>   enum mdio_clk_id {
+>   	MDIO_CLK_MDIO_AHB,
+>   	MDIO_CLK_UNIPHY0_AHB,
+> @@ -54,6 +61,7 @@ enum mdio_clk_id {
+>   
+>   struct ipq4019_mdio_data {
+>   	void __iomem *membase;
+> +	void __iomem *cmn_membase;
+>   	void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
+>   	struct clk *clk[MDIO_CLK_CNT];
+>   	struct gpio_descs *reset_gpios;
+> @@ -227,12 +235,73 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
+>   	return 0;
+>   }
+>   
+> +/* For the CMN PLL block, the reference clock can be configured according to
+> + * the device tree property "cmn_ref_clk", the internal 48MHZ is used by default
+> + * on the ipq533 platform.
+> + *
+> + * The output clock of CMN PLL block is provided to the MDIO slave devices,
+> + * threre are 4 CMN PLL output clocks (1x25MHZ + 3x50MHZ) enabled by default.
+> + *
+> + * such as the output 50M clock for the qca8084 PHY.
+> + */
+> +static void ipq_cmn_clock_config(struct mii_bus *bus)
+> +{
+> +	u32 reg_val;
+> +	const char *cmn_ref_clk;
+> +	struct ipq4019_mdio_data *priv = bus->priv;
+> +
+> +	if (priv && priv->cmn_membase) {
+> +		reg_val = readl(priv->cmn_membase + CMN_PLL_REFERENCE_CLOCK);
+> +		reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL | CMN_PLL_REFCLK_INDEX);
+> +
+> +		/* Select reference clock source */
+> +		cmn_ref_clk = of_get_property(bus->parent->of_node, "cmn_ref_clk", NULL);
+> +		if (!cmn_ref_clk) {
+> +			/* Internal 48MHZ selected by default */
+> +			reg_val |= FIELD_PREP(CMN_PLL_REFCLK_INDEX, 7);
+> +		} else {
+> +			if (!strcmp(cmn_ref_clk, "external_25MHz"))
+As pointed out by others, such string properties won't go through
 
+Konrad
