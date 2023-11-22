@@ -2,69 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701397F3CA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670747F3CAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 05:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343640AbjKVDxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:53:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50294 "EHLO
+        id S1343608AbjKVEAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 23:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235057AbjKVDxR (ORCPT
+        with ESMTP id S229498AbjKVEAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:53:17 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114B01BB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:53:11 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6b709048d8eso5657183b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:53:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700625190; x=1701229990; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5wrkLx22tIx216Wpz1EvdCXBMKjcp6yxP+hh4ys4sAc=;
-        b=LCCLO0cTtd+5Q/BADcTL/qmfv6Ny8G0SSV+nEbiFXKn60fGAKmWyCLg3YibYfpV+pq
-         UEEzBze/xQ4DidlxPozC9euE51NDir19Fe8tYn7hgWT+id7KeB4e6Mkki8UNexwuqoqB
-         6b/k90S7uKf20HBy269rfc5JRbbHIWD8ptsr24/jOLjFjDxbNJhfNonEFfC/cFwuMUHq
-         G9wAA9e15l4AsPBVMsouhtT80F73R2VhPTE93/zb2OYe2uV/fJ5u7QjffL2fRAek/T65
-         zdhxoLd4SxDYzlJ6dnaHP67tDd6pz3XyRdKS4PtJDZ9Us+eN6T4+FyeuqQUl+j1F0C18
-         ubog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700625190; x=1701229990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5wrkLx22tIx216Wpz1EvdCXBMKjcp6yxP+hh4ys4sAc=;
-        b=mWa2h0z82h3RhtITIRD0SSoLtHlnVjL/T/Pll2SpbxAX9BkUn1tT2qW3DGfdbjtwvF
-         RsfJRczwC9ZycTH8wzCFvlwVMpxoIFk2fahUMR7xrNdCt0krnxnm2CwVjjW739r4OlPg
-         l04rnI3GXFbgKgABOhcnWC55JNN3kq8qzLsFeYAmV4m4a7hqQCjNO/W3oIFESxhBwyLQ
-         lgPDf6YvgPeeV0/67474ZuJZzvR/gLiOi6oUyw3F1r+/SbmaZeJsl+wMJPFjSG491BhZ
-         0d8lzkvCsUrseOSgI34yZOnIb84B6WzNeP/EqFP64PNxLx7MjSa0x99e4NQwLBAtHlwq
-         KA3w==
-X-Gm-Message-State: AOJu0YzbJWr9f9DrhRZSVyOv8GsVoWu9e4mIaFdYo46JkR68hZSOr7/X
-        jYOvfDsz5Gxp1PVB6SY/FNcZuQ==
-X-Google-Smtp-Source: AGHT+IFva+yTpA5FzpkpdLIpJ5EEWPMDsNiWm4Lq7NA7XjuAmdyqgQOWLDCDDTRO0tthS4Jfog7O8w==
-X-Received: by 2002:a05:6a20:7d89:b0:189:2e8f:d357 with SMTP id v9-20020a056a207d8900b001892e8fd357mr1344983pzj.49.1700625190553;
-        Tue, 21 Nov 2023 19:53:10 -0800 (PST)
-Received: from localhost.localdomain ([203.208.189.6])
-        by smtp.gmail.com with ESMTPSA id c3-20020a170902d48300b001c61bde04a7sm8569676plg.276.2023.11.21.19.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 19:53:10 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     dianders@chromium.org
-Cc:     akpm@linux-foundation.org, kernelfans@gmail.com,
-        lecopzer.chen@mediatek.com, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, lizhe.67@bytedance.com, pmladek@suse.com
-Subject: Re: [RFC] softlockup: serialized softlockup's log
-Date:   Wed, 22 Nov 2023 11:53:04 +0800
-Message-Id: <20231122035304.57483-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
-References: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
+        Tue, 21 Nov 2023 23:00:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3526B193;
+        Tue, 21 Nov 2023 20:00:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700625616; x=1732161616;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=745B+CrCLV2K6dIub8w7trjC97TD0nt6yHzafoJ4ge0=;
+  b=Rw7zyL5FL9q0yNzpmGQAT0LLsKCDK+P5OEHCq9ctcGEjurvx5x3wiSFr
+   W4IsGP+e0697ijF8t1oFdDmOITwyDPTW4TJw0W+tqdVcTA1zf93M/h/zx
+   AuSG6QmYhcUaJrhk+cuADyvbN8Fq9Cy+yZuviPIsRVh+YbhPWi8ygErOF
+   f/b1K1S7nK07vGwZw9xMzu0V4m0gYtXWCTrO39apHZ2tf7SN6IOJT6NJa
+   726IZvlvOt5B+X0DuGloZjym3uckPThJE6P1l5W3UvK76m9dnW4TxGAt0
+   qSSTkkhJowfCUM80XQZdJWRbMh6/LffrWby4GEYyprIuTseGEZUeYJCZ7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="371328000"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="371328000"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 20:00:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="716720498"
+X-IronPort-AV: E=Sophos;i="6.04,217,1695711600"; 
+   d="scan'208";a="716720498"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 21 Nov 2023 20:00:02 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 21 Nov 2023 20:00:02 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 21 Nov 2023 20:00:02 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 21 Nov 2023 20:00:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O1qvobF2nQl7D53zd4MR2wGYfoy32bB400XFZc+ORaAm7yzg74+pCDg534X0nML3yy6B5w68ydx/mQOHyaOVXmT8fbKQ13bzrXtGYp1aEG9Ihcw3cTxDVtNqv+WvjJaz4suibylWvdRtYKtKrWz6QyRZYkvGzUnhpytWyJulhhXN0eNs5vG1LKU0rkSzXYOw0W2K2tjlgrX9+E5hd40tkq5Hp9KdMg39pmb+eJQOcptKqBR6yQ692R39nHcZBM0lBkzITCBzpwPXHxZILbGGHg4y7jEThFKyjIpjJCIguXomBFOiMpCVNvstpVNoghmzAJgxs29lh55pX3NE3z2ZLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bkSe1g2X753DHwMYQuIPRaBzsB8mUrhPnn2ZnrOwF4Q=;
+ b=Kw/1YOrJzE1upvB5beN5gxJGlW6eDcvhXM6NGJ92WQyfg6rhvBzRWSFK6mJBBBQuYeZJL/VyI2tYP+34ZEFY46v0aLbE2K3lV4dy2jzL4QpXYqFjoQG6v/dxhDwpCuTFEEgsGk1OttciWlK6b6beVcuiptTAMYUbUjHB9qMPyC6FsgjROiSST++Ml2lN7b+ONyHYN0smtcG7D5NL32EtQvICG4MLRkewklsdQreD4NgNKCgQBQV7SNcPQUY3FuYBjBjFZIjltm4Q3DN+nODFgok65bhJjUDDm3RbRHAHLeQJnro4uKhxXQHsrXePybCgdCyMpOzXM+FmApd6n0CLRw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA0PR11MB7838.namprd11.prod.outlook.com (2603:10b6:208:402::12)
+ by MW4PR11MB7079.namprd11.prod.outlook.com (2603:10b6:303:22b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.26; Wed, 22 Nov
+ 2023 03:59:53 +0000
+Received: from IA0PR11MB7838.namprd11.prod.outlook.com
+ ([fe80::cbb6:48f6:d69d:f657]) by IA0PR11MB7838.namprd11.prod.outlook.com
+ ([fe80::cbb6:48f6:d69d:f657%5]) with mapi id 15.20.7002.028; Wed, 22 Nov 2023
+ 03:59:53 +0000
+Message-ID: <e8400a3f-6ee8-4251-89ec-7d54b7f03365@intel.com>
+Date:   Wed, 22 Nov 2023 11:59:39 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/7] Add SIOV virtual device support
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <nicolinc@nvidia.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        "Chittim, Madhu" <madhu.chittim@intel.com>,
+        <jacob.e.keller@intel.com>
+References: <20231009085123.463179-1-yi.l.liu@intel.com>
+ <20231009132115.GA3952@nvidia.com>
+From:   "Cao, Yahui" <yahui.cao@intel.com>
+In-Reply-To: <20231009132115.GA3952@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI2PR01CA0016.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::20) To IA0PR11MB7838.namprd11.prod.outlook.com
+ (2603:10b6:208:402::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA0PR11MB7838:EE_|MW4PR11MB7079:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4087d307-1a28-4cfc-a749-08dbeb0f7af2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PNvDEIBQrcptl4yCES0KQHUv7rUnQkDMKI9VHAm3kk2anZq/KXpHtPOWlyTTq5UU5c0TXcBsPQVV85J3kMjh5942/mx+Tw+eV8l3Kpwdrmf9b7kuIpx1sVuCfj5afgX1gjolxN+WfattuzhEsux2x4NUehO+t8FAWNlzwQHiJr6134qk1jM0fGHweNerjRePiy4BpZ9gsllILyjF4LYnmUhvDMorusHZWf0cs8MTIWfyAUad1ekRQVDM4rJ7SStD+/NlTTxS/1qve3I9/VyeEAG9eEYYsTYeu0YgOb4oz9ClQfqC/zjxdtUeHUUvdK5fksvCi6LJ1qh+TvWuIX4hDnsPp1iSxAZFd1swTAtveCleuHWovT/kIx2WChvzyjEF5aO3iJPfT/BVcY9TfvVyjaa5ve3+bNyuDql+KfPcM40YdBc1fj5C3HHQVCSbCOzoYDA1IUcMJAhvgTqXJBU92ETZPqHM1mAv/65dzVLi2TY+pTbKXEa6EU7eWkKaCNT07DnWBDMg1Ose8eLX/AB2C21zsrQ/t1hAKB3V5flahX+UpPEWXeXFofLbTdOJBtuh1GiEUXG8uqxM7dshusSg7z0ntcblN9em0H7AiqjvWfcHdD28AwbDaiK4aYevDyMYwADLLa2C1ZumPYaHz8knTw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7838.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(376002)(346002)(136003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(82960400001)(31696002)(86362001)(31686004)(83380400001)(66946007)(6636002)(6486002)(110136005)(6506007)(316002)(66476007)(36756003)(6666004)(66556008)(53546011)(2906002)(7416002)(26005)(6512007)(2616005)(8936002)(478600001)(4744005)(41300700001)(5660300002)(8676002)(4326008)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YUJBb29tT2ZFWjdKNk1XUVk0cXlsUk9sLzdEM0c5NitoQ2tsY2dMa2h1ZDNs?=
+ =?utf-8?B?Vi8rSGRKcFRlRlNuWHk4UmszVGJVdVRkeVNUUWhnb2t6WFZNaUZqaStRY2Z0?=
+ =?utf-8?B?cVdqdjZRK2pZeHVDMnJrLzhBMGtpeVF0TmJpN0EzTXpQTndlQkpWKzl1YjY5?=
+ =?utf-8?B?bFRXQjJJUUN5aklKQ3RMUGdhdjZ2VkpPeTl4UEpHcVJES0R4NzMrbUdrN0Nu?=
+ =?utf-8?B?VmFQajQvVzFDejNjNFJEKzl5alpmNGNxd0dDVGY2TElSbFBtemJwY2dLTVIv?=
+ =?utf-8?B?WCtHZWludUlDUXBRcHdHK1JPbjNTTkMxalhxbjBUVnc1REIzTDVuZWd0S3l3?=
+ =?utf-8?B?MXVpVU1nK05pZWVEaVRaTFNvd29mUXpNWHJaWGd6QytKUWQvd1JHTDhkTFFL?=
+ =?utf-8?B?alNkYjVxeWhUc2dFV0JaNjFlRERYOXYvTlBwOWQrUTJIYnpqaDRoY2lJMU84?=
+ =?utf-8?B?N0NnMnNhU2kxalpWQW4yTldBeUJ1dzVibGVPQnJhOGNkYk1YZkdFaERLaHg2?=
+ =?utf-8?B?NXU0RllwT2VkOWpqNFZKZ3NmcEVBNnR6K0VhdlF6Q3I1dnRIbDVXRTBlTVRZ?=
+ =?utf-8?B?Y1dWVjVkQ09ZOG81KzNHR1VrTnJhelJoVlEwZ3liQUx6cVNpVXdwQm1ML0xz?=
+ =?utf-8?B?bm9MVnZXeVdmNUtPTFZhalM3S1RLTjEwT3czbmJHeVM5Mmo2K2gvM0N1aFor?=
+ =?utf-8?B?eHlKRGVETXJUNGlLR0lsU0JiSjRWMmUvMU8zeUV1KzFXc3ZKNHZKcUF2SzdZ?=
+ =?utf-8?B?cXY5Q2hzL1JoVFlmNEFqcnRsU3ZvSjRkYzBoWFJyTUdFNEZ2bHFidXdNODRr?=
+ =?utf-8?B?R05wTEFObXJ5Vmh6Y2swK2pSejlXSWdVOVJsT3IreSs3a0x3T3JLYjFpYSt2?=
+ =?utf-8?B?YWI4aXJEK2RINEVLeGRoOWFXWGQraDQrbCt3VFU1Q1VHWDFIc0pVOXl5dTl6?=
+ =?utf-8?B?ZnY5MGhJMXc0MDMrZHpKMFhzOXZSSGRMUHNPdkJrb2ZtOXF0ckVsRTRXemlH?=
+ =?utf-8?B?YjU2TGJZWCtzd1d6UGZISFhNRElKcnpnM0JhbHhmTTY5UlBSTzFTZFRHanQz?=
+ =?utf-8?B?MW5JcFhjZXhGdDRJc0c4eVJjWloxR3hyR0VsZ08zS3o1Qi90T1I3ZFdRNzd0?=
+ =?utf-8?B?K21hbzAxRzB3YnBjbWhmSW50eVZFY3ljMVc1alVaYzhNeXRvODY4d0dSUUZj?=
+ =?utf-8?B?dlY2OUdscFdEd0EyZDUyK2pSWHRrcW1CMEJWeGFrdXIrM2swY2ZXZ29YZ1J4?=
+ =?utf-8?B?a2paSER2RHdMNXl6dFc2Y1MyRVR6MWpMMzdjOVF2Q3ZVNVVwdEJRZ3ZZQjEx?=
+ =?utf-8?B?aHZ3dXZEd0tRNjZaRGViZVVTNmJwNnQrMm4vVjVUR3VxeHU2U25sNEZ3WXVJ?=
+ =?utf-8?B?Mkx5cnRnSjJyZ3hvOUtRd1FYT0Q2cUJnN2lGOHlKTlB0MVY5NEtFK25xUzRi?=
+ =?utf-8?B?NmhPZ1ZJZzRYd01wQVRsS3JGZUpyeklycTdYS2NZYThmbWY0OEN2WllHZEE1?=
+ =?utf-8?B?ZUQySENJZmE3YkwvVTVEaDc1Qk9JSzZHNlNBbWhTbVhEYjg1YWtKYmc4SG9i?=
+ =?utf-8?B?WmRXME1qZ050VnArNDNSQ3pkRS9TWWNVTUdlM1hwWVN3UzhjTDJ5MUxZalRI?=
+ =?utf-8?B?UzlwMHhOc2F0MWxVVGZ2TWJ0NXdiRnUyTytZZHR0b0hFVjVCRFZNNXhWOGpy?=
+ =?utf-8?B?Um5YV0FvOU1UWTNQNU1hamwxZnFCUlRIRXMyOGxQczZxSHhBSzdLWG1HM090?=
+ =?utf-8?B?Kzd5QUpFQ3NPUlV4U2NIU081NEVkWkh6L1dDeS9rWG05MDdoQm5sQ0Q1ZXg2?=
+ =?utf-8?B?UVpzSDlORUh6dXkycHBDMzdDakJtdDBpMTVUNlZlbEtPSGlCd3J1SnN6dmND?=
+ =?utf-8?B?VnlDcGdZaC95dGRNcTREOEdLTEVzeitDNFc3NnVZTDFtc3lPRy9MZmk4Q1Ev?=
+ =?utf-8?B?MFpRSnVtaDJURzIwd1NOWnFBYktqemc5ckNsS05Qaks1citMdi9ycFF1RCto?=
+ =?utf-8?B?QmkrRTdEaXJBaVpyZkpmMDFRazRMelVtczJpcyszZVI3cjJWcGRRQ25EOUNC?=
+ =?utf-8?B?aWRaNXdySzNKc0FPN1RvblNpYWRXUDhCamc1bEUvdGVHRU1TNVRGZjNzRHJC?=
+ =?utf-8?Q?AFibeFy+zI0fwa9xAZX6kKl4S?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4087d307-1a28-4cfc-a749-08dbeb0f7af2
+X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7838.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 03:59:52.8670
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z9uU3UkjsXMnesfQoFbj3/1DyZODHON+4+KI8eB6rAAmjHT/slWIsjzLLhBECxVe1W3iKs7GghnnCflwV25bAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7079
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,68 +167,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 13:45:21 <dianders@chromium.org> wrote:
->>
->> From: Li Zhe <lizhe.67@bytedance.com>
->>
->> If multiple CPUs trigger softlockup at the same time, the softlockup's
->> logs will appear staggeredly in dmesg, which will affect the viewing of
->> the logs for developer. Since the code path for outputting softlockup logs
->> is not a kernel hotspot and the performance requirements for the code
->> are not strict, locks are used to serialize the softlockup log output
->> to improve the readability of the logs.
->>
->> Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
->> ---
->>  kernel/watchdog.c | 3 +++
->>  1 file changed, 3 insertions(+)
->
->This seems reasonable to me. It might be interesting to talk about in
->your commit message how this interacts with the various options. From
->code inspection, I believe:
 
-Thanks for your advice. I will send a V2 patch to optimize my commit
-message.
 
->* If `softlockup_all_cpu_backtrace` then this is a no-op since other
->CPUs will be prevented from running the printing code while one is
->already printing.
+On 10/9/2023 9:21 PM, Jason Gunthorpe wrote:
+> On Mon, Oct 09, 2023 at 01:51:16AM -0700, Yi Liu wrote:
+>> Intel SIOV allows creating virtual devices of which the vRID is
+>> represented by a pasid of a physical device. It is called as SIOV
+>> virtual device in this series. Such devices can be bound to an iommufd
+>> as physical device does and then later be attached to an IOAS/hwpt
+>> using that pasid. Such PASIDs are called as default pasid.
+> 
+> I would want to see the idxd implementation too..
+> 
+> Jason
 
-Yes your are right. If `softlockup_all_cpu_backtrace` is set, interleaving
-problem is gone. And we don't need to worry about interleaving problem
-in function trigger_allbutcpu_cpu_backtrace() because it has already
-serialized the logs.
+Hey Jason,
 
->* I'm not 100% sure what happens if `softlockup_panic` is set and I
->haven't sat down to test this myself. Will one CPUs panic message
->interleave the other CPUs traces. I guess in the end both CPUs will
->call panic()? Maybe you could experiment and describe the behavior in
->your commit message?
+         ice(E810 NIC) driver implementation for SIOV virtual device is 
+also working in progress. We are working closely with Kevin and Yi on 
+the patchset.
 
-I did experiments and checked the implementation of the panic function.
-I have not reproduced interleaving problem with this patch. The panic
-function internally serializes the panic's logs by using variable
-'panic_cpu'. Besides, function panic() will stop other cpu before outputing
-logs, so I think the interleaving problem between softlockup logs from
-cpu A and the panic logs from softlockup cpu B does not exist.
+         We'll send out the ice patch for SIOV as lan driver user 
+example once it is available. (There is some format issue in the last 
+email, re-send again and sorry for any inconvenience)
 
->> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
->> index 5cd6d4e26915..8324ac194d0a 100644
->> --- a/kernel/watchdog.c
->> +++ b/kernel/watchdog.c
->> @@ -448,6 +448,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->>         struct pt_regs *regs = get_irq_regs();
->>         int duration;
->>         int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
->> +       static DEFINE_SPINLOCK(watchdog_timer_lock);
->
->I'd be tempted to define this outside the scope of this function. I
->need to dig more, but I'm pretty sure I've seen cases where a soft
->lockup could trigger while I was trying to print traces for a
->hardlockup, so it might be useful to grab the same spinlock in both
->places...
-
-I've tried several times, but unfortunately I haven't been able to
-reproduce the problem you mentioned. My concern is that if the lock
-is shared, there will be potential deadlock issues because hardlockup
-exploits nmi.
+Thanks.
+Yahui.
