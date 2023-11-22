@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F717F4DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815977F4DEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbjKVRLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 12:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
+        id S234008AbjKVRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 12:11:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKVRLm (ORCPT
+        with ESMTP id S229806AbjKVRLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 12:11:42 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B871B5;
-        Wed, 22 Nov 2023 09:11:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=kxp/djjLC0Lw510VoCfRhRGSsD7Q8L/T6M4GAU7G0KI=; b=oMN6zoRjxFSEdgndPqgumoztyZ
-        FT0q49I6WX1MeJHViyYdKyK74chUDYr98xtin2diFhAtYR0FvNp62kHN5Wpe3YrYLeusmTecaKh61
-        59cPGWCNC9YIG5WlO+HgyeRgVqBNo4CWQeSIt6zIarTKpqsDoGk8iINd19zoAT7KEu4c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r5ql3-000tZx-6y; Wed, 22 Nov 2023 18:11:25 +0100
-Date:   Wed, 22 Nov 2023 18:11:25 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 9/9] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <cde6c19f-01ba-4f6c-9e73-00e4789fb69c@lunn.ch>
-References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
- <20231116-feature_poe-v1-9-be48044bf249@bootlin.com>
- <45694d77-bcf8-4377-9aa0-046796de8d74@lunn.ch>
- <20231122174828.7625d7f4@kmaincent-XPS-13-7390>
+        Wed, 22 Nov 2023 12:11:54 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CD1319D;
+        Wed, 22 Nov 2023 09:11:50 -0800 (PST)
+Received: from [192.168.2.39] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5E58D20B74C0;
+        Wed, 22 Nov 2023 09:11:46 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5E58D20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1700673109;
+        bh=82lcUJlL98A5MVMgBDFSuG4FKjH249seXl3nkPglk2w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=P4bMW36WSyjVhutiRQovnLEVVmELocIpw4v3akjDZQutjjOqxIHjo6FjIQkThDAIc
+         0wy+XjLgCEyw7ABf38OwAmbZuWWC33ceD1kGMnHU3oJb/Jhn9+QVdAf+P0heVPBm8z
+         a/Wf1f4tIQ2WQ4/zxddgATZhCjp/h9AWJWEJdtic=
+Message-ID: <9a39a9b4-b58d-4b7c-83f7-460372070f81@linux.microsoft.com>
+Date:   Wed, 22 Nov 2023 18:11:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122174828.7625d7f4@kmaincent-XPS-13-7390>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/mm: Check cc_vendor when printing memory encryption
+ info
+Content-Language: en-US
+To:     kirill.shutemov@linux.intel.com
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Kelley <mhklinux@outlook.com>,
+        Dexuan Cui <decui@microsoft.com>, linux-hyperv@vger.kernel.org,
+        stefan.bader@canonical.com, tim.gardner@canonical.com,
+        roxana.nicolescu@canonical.com, cascardo@canonical.com,
+        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        sashal@kernel.org
+References: <1699546489-4606-1-git-send-email-jpiotrowski@linux.microsoft.com>
+ <16ea75a9-8c94-4665-ae04-32d08aa4ebb2@intel.com>
+ <58abbc79-64d4-41f9-9fd2-1de7826fbbf6@linux.microsoft.com>
+ <ee9de366-6027-495a-98d9-b8b0cd866bf2@intel.com>
+ <df95817a-4859-443a-9ac2-b09f102aff30@linux.microsoft.com>
+ <20231110120601.3mbemh6djdazyzgb@box.shutemov.name>
+ <6feecf9e-10cb-441f-97a4-65c98e130f7a@linux.microsoft.com>
+ <20231110124626.ifq3hqaiqvgpnign@box>
+ <5a80bfd8-7092-4a85-93a6-189a16725642@linux.microsoft.com>
+ <20231110185716.tyhfjim4cnxxboe4@box.shutemov.name>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20231110185716.tyhfjim4cnxxboe4@box.shutemov.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Is the firmware in Motorola SREC format? I thought the kernel had a
-> > helper for that, but a quick search did not find it. So maybe i'm
-> > remembering wrongly. But it seems silly for every driver to implement
-> > an SREC parser.
+On 10/11/2023 19:57, kirill.shutemov@linux.intel.com wrote:
+> On Fri, Nov 10, 2023 at 02:42:31PM +0100, Jeremi Piotrowski wrote:
+>> On 10/11/2023 13:46, kirill.shutemov@linux.intel.com wrote:
+>>> On Fri, Nov 10, 2023 at 01:27:08PM +0100, Jeremi Piotrowski wrote:
+>>>>> Maybe just remove incorrect info and that's it?
+>>>>>
+>>>>
+>>>> I disagree, other users and I find the print very useful to see which coco
+>>>> platform the kernel is running on and which confidential computing features
+>>>> the kernel detected. I'm willing to fix the code to report correct info.
+>>>
+>>> For TDX, we already have "tdx: Guest detected" in dmesg. sme_early_init()
+>>> can do something similar.
+>>>
+>>
+>> That doesn't cover TDX guests with TD partitioning on Hyper-V.
 > 
-> Oh, I didn't know this format.
+> I am sure Hyper-V can report what mode it runs.
+> 
 
-Its often used in small deeply embedded systems. Microcontrollers,
-rather than something which can run Linux.
+You're right, it could. In that case I would move the AMD print and keep only
+"Memory Encryption is active" here.
 
-> The firmware seems indeed to match this format
-> specification.
-> I found two reference of this Firmware format in the kernel:
-> https://elixir.bootlin.com/linux/v6.5.7/source/sound/soc/codecs/zl38060.c#L178
-> https://elixir.bootlin.com/linux/v6.5.7/source/drivers/staging/wlan-ng/prism2fw.c
+Lets see whether we find agreement on my new submission first.
 
-Ah, all inside a header file. Probably why i missed it. But ihex is
-not SREC. ihex came from Intel. SREC from Motorola.
-
-So i would follow the basic flow in include/linux/ihex.h, add an
-include/linux/srec.h but adapt it for SREC.
-
-	Andrew
+Thanks,
+Jeremi
