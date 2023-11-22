@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163E47F4E52
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE9E7F4E53
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 18:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344117AbjKVRYs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 12:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344109AbjKVRYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344092AbjKVRYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 22 Nov 2023 12:24:45 -0500
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB3483;
-        Wed, 22 Nov 2023 09:24:41 -0800 (PST)
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5c239897895so2518272a12.2;
-        Wed, 22 Nov 2023 09:24:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700673881; x=1701278681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mKbC8s4IlnELPuS9rnCyIQ9xG0e09amttwp/cHghswQ=;
-        b=fxa6eO+QdMbjIBrQL3EEN+FRM/BkIXLZvDs0eBu0r4oBiKCN3f0HTHZz3Zb/oNTNNN
-         TiPntVszK6nlo5DIdJyn0UjzzS5fHFWNma+tH1jcynMdfU/QH9sybHNKEk73E8FdYTDu
-         piS82no0X/GJMvi3V7TxP2NYkRhX1irLeVdknhRnWy68OBZHz7blq041dQEFjOYpa/bp
-         hLm/z5iZGfchVVuSgLfkF9QYTjH+sKPEuTQSUwyoM19xA6R7KbyNE48JC6GDZih3buBz
-         HUdqy67nd83L7bUj9wRV6QdiGBZVixTvqWS270o+s6c4CaMSWfNVJDpxfYPSkiYegD0s
-         MUOA==
-X-Gm-Message-State: AOJu0Yw9CDOaTQM/isLvEg5I5eXk32AmaQPpZvB0dt588CACpUuvFSZ0
-        26nC9oHs/jlGvz0ZKk3HRIkGuGHRsgJJZqciBGg=
-X-Google-Smtp-Source: AGHT+IH2AdMpsfKZKttBW5WYkolV8QcPT+iP6etg+hWfFsNaod1qAG4rhj+szwmmc3WWwIDLlTQ94d+eS8+aX4ITmwM=
-X-Received: by 2002:a17:90b:1e53:b0:280:2422:d2b4 with SMTP id
- pi19-20020a17090b1e5300b002802422d2b4mr3011155pjb.22.1700673881209; Wed, 22
- Nov 2023 09:24:41 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344060AbjKVRYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Nov 2023 12:24:43 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CF111F;
+        Wed, 22 Nov 2023 09:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5tYxnOuPUqzNOKLt2AL3c7hUpep0PfnAkdrgsn/M+9U=; b=jGhJ4bWOHwut3GxjAU7FUeCXmS
+        l/3VIZSM2aRJ1QAod/QYaU44u0WV4uVnRAJkoimLZBod9Rr0sUnOQbz8aS4sHIjxkTVwws+UUVrl8
+        o8IoZ1FqMLpL+QCErGBfCq0cl1nWH5fkeFhH1CGbLioB7wzsI2pRGbJhktjpkM/vTVZB1jDsTZOP0
+        USx5SPcAITZ39g7E9E0T98F1141qRB2atBjr3HJf3xgf3k61ugn/5YV5qRK+TOdu9qyesJMXT4xjo
+        fQqJqvtGfJu06TpHaBg67xRmj6/a57SEphLt5eRMXJOAIjfOJgQokV4ss0X2204oIieKbkMSacwhx
+        eahQJgAQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46456)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r5qxk-0000X7-2x;
+        Wed, 22 Nov 2023 17:24:32 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r5qxl-0005Mp-U8; Wed, 22 Nov 2023 17:24:33 +0000
+Date:   Wed, 22 Nov 2023 17:24:33 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [net-next PATCH] net: phy: aquantia: drop wrong endianness
+ conversion for addr and CRC
+Message-ID: <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
+References: <20231122170813.1222-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20231122022805.511839-1-irogers@google.com> <ZV40tp7uiaTk-Qp1@linux.dev>
-In-Reply-To: <ZV40tp7uiaTk-Qp1@linux.dev>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 22 Nov 2023 09:24:30 -0800
-Message-ID: <CAM9d7ci8J_3+Hv+tHPBLx3SOXiPsGyxpYNHxZU==qR544f9hVw@mail.gmail.com>
-Subject: Re: [PATCH v1] perf MANIFEST: Add gen-sysreg for ARM SPE
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122170813.1222-1-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+On Wed, Nov 22, 2023 at 06:08:13PM +0100, Christian Marangi wrote:
+> On further testing on BE target with kernel test robot, it was notice
+> that the endianness conversion for addr and CRC in fw_load_memory was
+> wrong and actually not needed. Values in define doesn't get converted
+> and are passed as is and hardcoded values are already in what the PHY
+> require, that is LE.
+> 
+> Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
+> _swab32 instead, the word is taked from firmware and is always LE, the
 
-On Wed, Nov 22, 2023 at 9:05 AM Oliver Upton <oliver.upton@linux.dev> wrote:
->
-> Hi Ian,
->
-> On Tue, Nov 21, 2023 at 06:28:05PM -0800, Ian Rogers wrote:
-> > The necessary files for generating sysreg-defs.h need adding to the
-> > perf tool MANIFEST that lists the files for packaging the perf tool
-> > source code. Fix for the following:
-> >
-> > ```
-> > $ make perf-tar-src-pkg
-> > $ tar xvf perf-6.7.0-rc2.tar
-> > $ cd perf-6.7.0-rc2
-> > $ make -C tools/perf
-> > ...
-> >   PERF_VERSION = 6.7.rc2.gc2d5304e6c64
-> > make[3]: *** No rule to make target 'perf-6.7.0-rc2/arch/arm64/tools/gen-sysreg.awk', needed by 'perf-6.7.0-rc2/tools/arch/arm64/include/generated/asm/sysreg-defs.h'.  Stop.
-> > make[2]: *** [Makefile.perf:456: arm64-sysreg-defs] Error 2
-> > make[2]: *** Waiting for unfinished jobs....
-> > make[1]: *** [Makefile.perf:242: sub-make] Error 2
-> > make: *** [Makefile:70: all] Error 2
-> > make: Leaving directory 'perf-6.7.0-rc2/tools/perf'
-> > ...
-> > ```
-> >
-> > Fixes: e2bdd172e665 ("perf build: Generate arm64's sysreg-defs.h and add to include path")
-> > ---
-> > Note: the breakage is in Linus' tree and perf-tools, not yet in perf-tools-next.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> I had sent out fixes for both of your comments [*], no preference as to
-> which gets applied. So, FWIW:
->
-> Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+                               taken
 
-Thanks, I think I can pick up your patches as they came before.
-Namhyung
+> mailbox will emit a BE CRC hence the word needs to be always swapped and
+> the endianness of the host needs to be ignored.
 
->
-> [*] https://lore.kernel.org/linux-perf-users/20231121192956.919380-1-oliver.upton@linux.dev/
+I'm not convinced. If the firmware is a bytestream (as most "files" are)
+then for val = get_unaligned((u32 *)ptr), where ptr is an array of u8:
+
+ptr[0]	ptr[1]	ptr[2]	ptr[3]	val on LE	val on BE
+0x01	0x02	0x03	0x04	0x04030201	0x01020304
+
+So, endianness matters here, and I think as Jakub already suggested, you
+need to use get_unaligned_le32().
+
+> diff --git a/drivers/net/phy/aquantia/aquantia_firmware.c b/drivers/net/phy/aquantia/aquantia_firmware.c
+> index c5f292b1c4c8..bd093633d0cf 100644
+> --- a/drivers/net/phy/aquantia/aquantia_firmware.c
+> +++ b/drivers/net/phy/aquantia/aquantia_firmware.c
+> @@ -93,9 +93,9 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+>  	u16 crc = 0, up_crc;
+>  	size_t pos;
+>  
+> -	/* PHY expect addr in LE */
+> -	addr = (__force u32)cpu_to_le32(addr);
+> -
+> +	/* PHY expect addr in LE. Hardcoded addr in defines are
+> +	 * already in this format.
+> +	 */
+>  	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+>  		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+>  		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+> @@ -128,7 +128,7 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+>  		 * We convert word to big-endian as PHY is BE and mailbox will
+>  		 * return a BE CRC.
+>  		 */
+> -		word = (__force u32)cpu_to_be32(word);
+> +		word = __swab32(word);
+>  		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
+
+Again, I think you need to be careful with the endianness here again.
+From what I understand here, it seems the CRC needs to be generated by
+looking at the byte at ptr[3] first, then ptr[2], ptr[1] and finally
+ptr[0] ?
+
+If that is the case, the problem is using __swab32() on LE will do the
+job for you, but on BE machines, it will be wrong.
+
+I would make this explicit:
+
+		u8 crc_data[4];
+
+		...
+
+		/* CRC is calculated using BE order */
+		crc_data[0] = word >> 24;
+		crc_data[1] = word >> 16;
+		crc_data[2] = word >> 8;
+		crc_data[3] = word;
+
+		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
+
+which will be (a) completely unambiguous, and (b) completely
+independent of the host endianness.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
