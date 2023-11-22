@@ -2,55 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DB87F417F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E997C7F4182
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbjKVJWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:22:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
+        id S235122AbjKVJXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:23:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbjKVJWu (ORCPT
+        with ESMTP id S230184AbjKVJXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:22:50 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BBE6FF4;
-        Wed, 22 Nov 2023 01:22:45 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 42BE01595;
-        Wed, 22 Nov 2023 01:23:32 -0800 (PST)
-Received: from arm.com (e121798.cambridge.arm.com [10.1.197.44])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C2073F73F;
-        Wed, 22 Nov 2023 01:22:41 -0800 (PST)
-Date:   Wed, 22 Nov 2023 09:22:38 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     Peter Collingbourne <pcc@google.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, steven.price@arm.com,
-        anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
-        david@redhat.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 20/27] mm: hugepage: Handle huge page fault on
- access
-Message-ID: <ZV3IXlxKcyOphMgb@arm.com>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-21-alexandru.elisei@arm.com>
- <CAMn1gO7_UG-T9Vf_7oVOhLD1DFVPc1ceSxdJFsFqkem_vCopog@mail.gmail.com>
+        Wed, 22 Nov 2023 04:23:21 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1E79E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:23:17 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c878e228b4so46355851fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:23:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700644995; x=1701249795; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rhC1asTv/RX7QF9kMol6kJpFTRWUtwkcm7USZ02jYEQ=;
+        b=hMFYIX/pMxKBRELz+4Cz7CHnF0Epx2S3JLcDnvr2tEYlI25mVOp4prfsvLcbPtYiNE
+         MsSk6UeLp0J3g/BGxt8a1JiYoP+6WrBrR+n3XAwVZZSfezfRq6ekVAeStYcmCIaFBeLA
+         kMGRxSodQTGeQJ9o4fy/6M+Cvil+azj8006kr/6GB+KpYAqgc/byxiY0Wk6Y66+zRU4Q
+         0k8kDtoaGUWhTkRd6iY3KVtTRoC/lCFmWM+4qWaHb7HiNrH8UYg6dwKqGhB4V6ve4Ege
+         01anrwtlc07Ggr5FqnoWDpOxFFU37FcRzYbi3H2FGw/xVLgZzW+OPp1CqQlYTSwHM22m
+         hY2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700644995; x=1701249795;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rhC1asTv/RX7QF9kMol6kJpFTRWUtwkcm7USZ02jYEQ=;
+        b=op+xpvFriW7UsEAK7pslOPL3SwYB8MXfRk9bImIY+xAiYN3tA6gc0itu76xwKlqor8
+         b5sIhfPAZGfsD5u1o+R+lCf4kBE9yYtNLp6tpov3lHwiRZls0cHpbsXQVGRKmECF2r48
+         1YC8h8IKbGsH4O0YSnfPQE8AcZdhfY0ucCMQmmO8n316ERv2ILMB9NGUfwhlj827hBP9
+         KIsvvVn2eLUJMUmmdFtdN+6JK7BVUzxZwBEEt604Ulc+MBV+Y/C1Fh3I+1imTijXWbx6
+         rvRMUNCG33tRBjmoRA56ZmRsrmEXOXlPbxXPwWQb+6n7mYiuAlWfruD+XAi/R/coXGs9
+         FIew==
+X-Gm-Message-State: AOJu0YyRFpfxj36PITVhjxWex0V9zFxJAobGRo0Jhi8wgTHudqzEib/f
+        ugrsRBCRni9ssor+P7zMtiYajQ==
+X-Google-Smtp-Source: AGHT+IFC9A4xkbgVPJSLpWSTZPDF0VLLciqEZwb/ASpE58NNXzwVw56OuwAKDW2H2DK7/NKV8m71bQ==
+X-Received: by 2002:a05:651c:50c:b0:2c5:19ab:7270 with SMTP id o12-20020a05651c050c00b002c519ab7270mr1295603ljp.35.1700644995201;
+        Wed, 22 Nov 2023 01:23:15 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id u9-20020a05600c19c900b0040a4751efaasm1518204wmq.17.2023.11.22.01.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 01:23:14 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Wed, 22 Nov 2023 04:23:11 -0500
+To:     oe-kbuild@lists.linux.dev, SEO HOYOUNG <hy50.seo@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        kwangwon.min@samsung.com, kwmad.kim@samsung.com,
+        sh425.lee@samsung.com, sc.suh@samsung.com,
+        quic_nguyenb@quicinc.com, cpgs@samsung.com, grant.jung@samsung.com,
+        junwoo80.lee@samsung.com
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        SEO HOYOUNG <hy50.seo@samsung.com>
+Subject: Re: [PATCH v3] scsi: ufs: core: fix racing issue during
+ ufshcd_mcq_abort
+Message-ID: <5cd4171c-d992-4e3c-96c7-91bb0ae9feb6@suswa.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMn1gO7_UG-T9Vf_7oVOhLD1DFVPc1ceSxdJFsFqkem_vCopog@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231121071128.7743-1-hy50.seo@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,217 +79,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+Hi SEO,
 
-On Tue, Nov 21, 2023 at 05:28:49PM -0800, Peter Collingbourne wrote:
-> On Sun, Nov 19, 2023 at 8:59 AM Alexandru Elisei
-> <alexandru.elisei@arm.com> wrote:
-> >
-> > Handle PAGE_FAULT_ON_ACCESS faults for huge pages in a similar way to
-> > regular pages.
-> >
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >  arch/arm64/include/asm/mte_tag_storage.h |  1 +
-> >  arch/arm64/include/asm/pgtable.h         |  7 ++
-> >  arch/arm64/mm/fault.c                    | 81 ++++++++++++++++++++++++
-> >  include/linux/huge_mm.h                  |  2 +
-> >  include/linux/pgtable.h                  |  5 ++
-> >  mm/huge_memory.c                         |  4 +-
-> >  mm/memory.c                              |  3 +
-> >  7 files changed, 101 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/include/asm/mte_tag_storage.h
-> > index c70ced60a0cd..b97406d369ce 100644
-> > --- a/arch/arm64/include/asm/mte_tag_storage.h
-> > +++ b/arch/arm64/include/asm/mte_tag_storage.h
-> > @@ -35,6 +35,7 @@ void free_tag_storage(struct page *page, int order);
-> >  bool page_tag_storage_reserved(struct page *page);
-> >
-> >  vm_fault_t handle_page_missing_tag_storage(struct vm_fault *vmf);
-> > +vm_fault_t handle_huge_page_missing_tag_storage(struct vm_fault *vmf);
-> >  #else
-> >  static inline bool tag_storage_enabled(void)
-> >  {
-> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> > index 8cc135f1c112..1704411c096d 100644
-> > --- a/arch/arm64/include/asm/pgtable.h
-> > +++ b/arch/arm64/include/asm/pgtable.h
-> > @@ -477,6 +477,13 @@ static inline vm_fault_t arch_do_page_fault_on_access(struct vm_fault *vmf)
-> >                 return handle_page_missing_tag_storage(vmf);
-> >         return VM_FAULT_SIGBUS;
-> >  }
-> > +
-> > +static inline vm_fault_t arch_do_huge_page_fault_on_access(struct vm_fault *vmf)
-> > +{
-> > +       if (tag_storage_enabled())
-> > +               return handle_huge_page_missing_tag_storage(vmf);
-> > +       return VM_FAULT_SIGBUS;
-> > +}
-> >  #endif /* CONFIG_ARCH_HAS_FAULT_ON_ACCESS */
-> >
-> >  #define pmd_present_invalid(pmd)     (!!(pmd_val(pmd) & PMD_PRESENT_INVALID))
-> > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > index f5fa583acf18..6730a0812a24 100644
-> > --- a/arch/arm64/mm/fault.c
-> > +++ b/arch/arm64/mm/fault.c
-> > @@ -1041,6 +1041,87 @@ vm_fault_t handle_page_missing_tag_storage(struct vm_fault *vmf)
-> >
-> >         return 0;
-> >
-> > +out_retry:
-> > +       put_page(page);
-> > +       if (vmf->flags & FAULT_FLAG_VMA_LOCK)
-> > +               vma_end_read(vma);
-> > +       if (fault_flag_allow_retry_first(vmf->flags)) {
-> > +               err = VM_FAULT_RETRY;
-> > +       } else {
-> > +               /* Replay the fault. */
-> > +               err = 0;
-> > +       }
-> > +       return err;
-> > +}
-> > +
-> > +vm_fault_t handle_huge_page_missing_tag_storage(struct vm_fault *vmf)
-> > +{
-> > +       unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
-> > +       struct vm_area_struct *vma = vmf->vma;
-> > +       pmd_t old_pmd, new_pmd;
-> > +       bool writable = false;
-> > +       struct page *page;
-> > +       vm_fault_t err;
-> > +       int ret;
-> > +
-> > +       vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
-> > +       if (unlikely(!pmd_same(vmf->orig_pmd, *vmf->pmd))) {
-> > +               spin_unlock(vmf->ptl);
-> > +               return 0;
-> > +       }
-> > +
-> > +       old_pmd = vmf->orig_pmd;
-> > +       new_pmd = pmd_modify(old_pmd, vma->vm_page_prot);
-> > +
-> > +       /*
-> > +        * Detect now whether the PMD could be writable; this information
-> > +        * is only valid while holding the PT lock.
-> > +        */
-> > +       writable = pmd_write(new_pmd);
-> > +       if (!writable && vma_wants_manual_pte_write_upgrade(vma) &&
-> > +           can_change_pmd_writable(vma, vmf->address, new_pmd))
-> > +               writable = true;
-> > +
-> > +       page = vm_normal_page_pmd(vma, haddr, new_pmd);
-> > +       if (!page)
-> > +               goto out_map;
-> > +
-> > +       if (!(vma->vm_flags & VM_MTE))
-> > +               goto out_map;
-> > +
-> > +       get_page(page);
-> > +       vma_set_access_pid_bit(vma);
-> > +
-> > +       spin_unlock(vmf->ptl);
-> > +       writable = false;
-> > +
-> > +       if (unlikely(is_migrate_isolate_page(page)))
-> > +               goto out_retry;
-> > +
-> > +       ret = reserve_tag_storage(page, HPAGE_PMD_ORDER, GFP_HIGHUSER_MOVABLE);
-> > +       if (ret)
-> > +               goto out_retry;
-> > +
-> > +       put_page(page);
-> > +
-> > +       vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
-> > +       if (unlikely(!pmd_same(old_pmd, *vmf->pmd))) {
-> > +               spin_unlock(vmf->ptl);
-> > +               return 0;
-> > +       }
-> > +
-> > +out_map:
-> > +       /* Restore the PMD */
-> > +       new_pmd = pmd_modify(old_pmd, vma->vm_page_prot);
-> > +       new_pmd = pmd_mkyoung(new_pmd);
-> > +       if (writable)
-> > +               new_pmd = pmd_mkwrite(new_pmd, vma);
-> > +       set_pmd_at(vma->vm_mm, haddr, vmf->pmd, new_pmd);
-> > +       update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
-> > +       spin_unlock(vmf->ptl);
-> > +
-> > +       return 0;
-> > +
-> >  out_retry:
-> >         put_page(page);
-> >         if (vmf->flags & FAULT_FLAG_VMA_LOCK)
-> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> > index fa0350b0812a..bb84291f9231 100644
-> > --- a/include/linux/huge_mm.h
-> > +++ b/include/linux/huge_mm.h
-> > @@ -36,6 +36,8 @@ bool move_huge_pmd(struct vm_area_struct *vma, unsigned long old_addr,
-> >  int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> >                     pmd_t *pmd, unsigned long addr, pgprot_t newprot,
-> >                     unsigned long cp_flags);
-> > +bool can_change_pmd_writable(struct vm_area_struct *vma, unsigned long addr,
-> > +                            pmd_t pmd);
-> >
-> >  vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write);
-> >  vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write);
-> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > index e2c761dd6c41..de45f475bf8d 100644
-> > --- a/include/linux/pgtable.h
-> > +++ b/include/linux/pgtable.h
-> > @@ -1473,6 +1473,11 @@ static inline vm_fault_t arch_do_page_fault_on_access(struct vm_fault *vmf)
-> >  {
-> >         return VM_FAULT_SIGBUS;
-> >  }
-> > +
-> > +static inline vm_fault_t arch_do_huge_page_fault_on_access(struct vm_fault *vmf)
-> > +{
-> > +       return VM_FAULT_SIGBUS;
-> > +}
-> >  #endif
-> >
-> >  #endif /* CONFIG_MMU */
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 9beead961a65..d1402b43ea39 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -1406,8 +1406,8 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf)
-> >         return VM_FAULT_FALLBACK;
-> >  }
-> >
-> > -static inline bool can_change_pmd_writable(struct vm_area_struct *vma,
-> > -                                          unsigned long addr, pmd_t pmd)
-> > +inline bool can_change_pmd_writable(struct vm_area_struct *vma,
-> 
-> Remove inline keyword here.
+kernel test robot noticed the following build warnings:
 
-Indeed, as it does nothing now that the function is not static.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Alex
+url:    https://github.com/intel-lab-lkp/linux/commits/SEO-HOYOUNG/scsi-ufs-core-fix-racing-issue-during-ufshcd_mcq_abort/20231121-151923
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git for-next
+patch link:    https://lore.kernel.org/r/20231121071128.7743-1-hy50.seo%40samsung.com
+patch subject: [PATCH v3] scsi: ufs: core: fix racing issue during ufshcd_mcq_abort
+config: powerpc-randconfig-r071-20231122 (https://download.01.org/0day-ci/archive/20231122/202311220618.OnEhSic6-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231122/202311220618.OnEhSic6-lkp@intel.com/reproduce)
 
-> 
-> Peter
-> 
-> > +                                   unsigned long addr, pmd_t pmd)
-> >  {
-> >         struct page *page;
-> >
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index a04a971200b9..46b926625503 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -5168,6 +5168,9 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
-> >                         return 0;
-> >                 }
-> >                 if (pmd_trans_huge(vmf.orig_pmd) || pmd_devmap(vmf.orig_pmd)) {
-> > +                       if (fault_on_access_pmd(vmf.orig_pmd) && vma_is_accessible(vma))
-> > +                               return arch_do_huge_page_fault_on_access(&vmf);
-> > +
-> >                         if (pmd_protnone(vmf.orig_pmd) && vma_is_accessible(vma))
-> >                                 return do_huge_pmd_numa_page(&vmf);
-> >
-> > --
-> > 2.42.1
-> >
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311220618.OnEhSic6-lkp@intel.com/
+
+smatch warnings:
+drivers/ufs/core/ufs-mcq.c:515 ufshcd_mcq_sq_cleanup() warn: variable dereferenced before check 'cmd' (see line 511)
+
+vim +/cmd +515 drivers/ufs/core/ufs-mcq.c
+
+8d7290348992f2 Bao D. Nguyen   2023-05-29  498  int ufshcd_mcq_sq_cleanup(struct ufs_hba *hba, int task_tag)
+8d7290348992f2 Bao D. Nguyen   2023-05-29  499  {
+8d7290348992f2 Bao D. Nguyen   2023-05-29  500  	struct ufshcd_lrb *lrbp = &hba->lrb[task_tag];
+8d7290348992f2 Bao D. Nguyen   2023-05-29  501  	struct scsi_cmnd *cmd = lrbp->cmd;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  502  	struct ufs_hw_queue *hwq;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  503  	void __iomem *reg, *opr_sqd_base;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  504  	u32 nexus, id, val;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  505  	int err;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  506  
+aa9d5d0015a8b7 Po-Wen Kao      2023-06-12  507  	if (hba->quirks & UFSHCD_QUIRK_MCQ_BROKEN_RTC)
+aa9d5d0015a8b7 Po-Wen Kao      2023-06-12  508  		return -ETIMEDOUT;
+aa9d5d0015a8b7 Po-Wen Kao      2023-06-12  509  
+5363c9d813101c SEO HOYOUNG     2023-11-21  510  	if (!ufshcd_cmd_inflight(cmd) ||
+5363c9d813101c SEO HOYOUNG     2023-11-21 @511  	    test_bit(SCMD_STATE_COMPLETE, &cmd->state))
+                                                                                          ^^^^^^^^^^^
+The patch adds a new unchecked dereference
+
+5363c9d813101c SEO HOYOUNG     2023-11-21  512  		return 0;
+5363c9d813101c SEO HOYOUNG     2023-11-21  513  
+8d7290348992f2 Bao D. Nguyen   2023-05-29  514  	if (task_tag != hba->nutrs - UFSHCD_NUM_RESERVED) {
+8d7290348992f2 Bao D. Nguyen   2023-05-29 @515  		if (!cmd)
+                                                                     ^^^
+But the old code assumed "cmd" could be NULL
+
+8d7290348992f2 Bao D. Nguyen   2023-05-29  516  			return -EINVAL;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  517  		hwq = ufshcd_mcq_req_to_hwq(hba, scsi_cmd_to_rq(cmd));
+8d7290348992f2 Bao D. Nguyen   2023-05-29  518  	} else {
+8d7290348992f2 Bao D. Nguyen   2023-05-29  519  		hwq = hba->dev_cmd_queue;
+8d7290348992f2 Bao D. Nguyen   2023-05-29  520  	}
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
