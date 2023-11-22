@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1BA7F3C4D
+	by mail.lfdr.de (Postfix) with ESMTP id 89AAC7F3C4E
 	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 04:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343565AbjKVDRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 22:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S1343575AbjKVDTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 22:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjKVDRd (ORCPT
+        with ESMTP id S1343569AbjKVDTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 22:17:33 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C7B197
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:17:29 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-4629eb39d67so258433137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 19:17:29 -0800 (PST)
+        Tue, 21 Nov 2023 22:19:44 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBB7197;
+        Tue, 21 Nov 2023 19:19:37 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b83ed78a91so78214b6e.1;
+        Tue, 21 Nov 2023 19:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700623049; x=1701227849; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700623176; x=1701227976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+cifHwiL86k/hSfKeSdI4QL5cIbDxkzf2iHBxnZU0xs=;
-        b=ZLKszmwU6QBw1hqdNLfa5MjWBHJkGu0KsUUApsy2DKm5SfoQFttU2s5bMtSSRK0YZL
-         J8wyABDzig04J2436Wj1JNbBv8SAsMxk0E9Wls/G9EECUnk9iJW5k6AR6mCITv50qGkU
-         7ra3JoRKKjMYH0hxBhJ7RIdRxMPhsO4tQ3+AS/VoqDK44XFJNHhxnAoQ7g0rInIml1hy
-         xuzhXZi7jY3IvwQ/NUFa3Ydftz5FFLyih1urmTJ5szDQjF5l0O7vyk1l+tgAt8p4uCNl
-         kYIEYENSLCY0wKpqp/DsvVV6DN2y4J6VihdaxrYvnm8Kyb0TgoOQyhMct1wEnN9egkO+
-         Acag==
+        bh=oZthJMGfCS+t++KAyM3OFBV+JciPWTD6mKsYdbXbAj8=;
+        b=BIM+tqe+Wxqs42wSfA7ywUs6ZEc0+TQlmGxao0aQHca4GRMSj3THVI4YkAug/iOsOx
+         ROFu51zWs6k1chmLZ2CFW+ANkWEOrdFx05VrTRy0UAS7hwoXrab6gTT7tCSEqhMgqtEW
+         khW97gqFX1nLz8D3LG9GsT/4gyp2tAQzj6K3hRk6r2+ZqyDPs0fEQKvFe1k+MBy2OpoH
+         6q7bBS9QNIoWrEi6sZ3RawkHJy92ttsNgZsStYKAmvOhmZg7HEvlr4imDz0xvz0wZ4Fd
+         M410LfAxBS/zmiLYeh9swVPIhdN6P3Vw2S9g6Dn7PPat6KCbugzNv3mUbTe3Gyt70TV3
+         J4Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700623049; x=1701227849;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700623176; x=1701227976;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+cifHwiL86k/hSfKeSdI4QL5cIbDxkzf2iHBxnZU0xs=;
-        b=QP098iJxz/x2w6cUzUI8/gFQoApEzFZFgiWAugY5aqUQRYAtgG67BrCgEun+Qc48OU
-         5GzhnXq5PurDrQXQaB0L5e6t9tV1faCeEK5z0Sx6trJorg8ZMdS7LTI7OsxSSxfwh+yd
-         VqfEhqvHTjL1J39oYCRBODlHSyFcejrzP+9OxevTqJFgHqxvGULc0DhmRjTc9vbLkOqq
-         xRF4/37zEPg2QmSYzIbBb4WW6UXCnsIxZZN6DEVolvOB8EDlqU+nddg4yGF0UhBTnxi1
-         Vm+wLVwPlWMzC/km5rMDnxho626YY7EyXV3ARYWeiiVojTfL2Cm3vqUX4vpW7FJc8ng2
-         Wm/A==
-X-Gm-Message-State: AOJu0YxsC94TwymfnFcs1bqvDKHz7rtRTIL+4fdvidbtyQLoc0TRFQ2s
-        PvppWoS4xfTANw8DwbvKyMcRgHRnWAIYM1QEaao=
-X-Google-Smtp-Source: AGHT+IHwWKCYdU4EOP3jw3UxRFra14RalBM3o+CJ2ZW9N4I1zCof+WHTL8F6RhxLhxOG7+1rGmy9X48PL2wxhdfnPcc=
-X-Received: by 2002:a05:6102:47:b0:462:7c78:ba53 with SMTP id
- k7-20020a056102004700b004627c78ba53mr1343955vsp.16.1700623048669; Tue, 21 Nov
- 2023 19:17:28 -0800 (PST)
+        bh=oZthJMGfCS+t++KAyM3OFBV+JciPWTD6mKsYdbXbAj8=;
+        b=QaTp3Ufg1EAPidiOdz9BiO/XUIdr+kP4+je6r47/1nYexSEoWj6aRU+u8avZMbKW6D
+         0bmZB2mQbgIFQZbu53JUxvzkYz6IbBjdx7Ao9w0LrTA3tSkSuYsVbKGUOa0B7APv2QIP
+         BDjaLM8TU+7dpah9ljrPGejGEGolOKx9HuU7B89hEs5uOO2lpUFcofWnzo9C5N5Ss8V5
+         70Osecz3VQ+B7w82DMHUDPYxC4CNVXS28t1+U4pL3OW/u/6UgAd+wbBZ/wCd/fbb2iLB
+         UTwi+du8WTFF6AVXlXInLwfhNsAtcoq4rWwAdRRNG0zfcy8oQkc+AC67BtJT9FQNl+C9
+         CHnA==
+X-Gm-Message-State: AOJu0Yw1rVzlI/2BkxEPEFk5jsTDiJb9k9rXdAi1fbS7BLhH2yWpGCzI
+        quTYTUW16UNKoXEO/MPKZ3k=
+X-Google-Smtp-Source: AGHT+IFYA4hSz8EVLgGy8ah/AjEueYvSMrt7OkUBu+2WIlUWZtV2nDcCj+xOUaoOP/53CCOC9UCIYg==
+X-Received: by 2002:a05:6808:b05:b0:3b5:9583:dc80 with SMTP id s5-20020a0568080b0500b003b59583dc80mr1360282oij.30.1700623176140;
+        Tue, 21 Nov 2023 19:19:36 -0800 (PST)
+Received: from localhost.localdomain ([156.240.117.4])
+        by smtp.gmail.com with ESMTPSA id g11-20020a056a00078b00b006cbb51b9974sm3516185pfu.173.2023.11.21.19.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 19:19:35 -0800 (PST)
+From:   Yusong Gao <a869920004@gmail.com>
+To:     jarkko@kernel.org
+Cc:     a869920004@gmail.com, davem@davemloft.net, dhowells@redhat.com,
+        dimitri.ledkov@canonical.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, juergh@proton.me,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lists@sapience.com,
+        zohar@linux.ibm.com
+Subject: [PATCH v3] sign-file: Fix incorrect return values check
+Date:   Wed, 22 Nov 2023 03:19:22 +0000
+Message-Id: <20231122031922.40983-1-a869920004@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <89f0dbe3a390dd2d49b09c0ff75a142aa44793fd.camel@kernel.org>
+References: <89f0dbe3a390dd2d49b09c0ff75a142aa44793fd.camel@kernel.org>
 MIME-Version: 1.0
-References: <cover.1700502145.git.andreyknvl@google.com> <5cef104d9b842899489b4054fe8d1339a71acee0.1700502145.git.andreyknvl@google.com>
-In-Reply-To: <5cef104d9b842899489b4054fe8d1339a71acee0.1700502145.git.andreyknvl@google.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Wed, 22 Nov 2023 12:17:17 +0900
-Message-ID: <CAB=+i9Q95W+w=-KC5vexJuqVi60JJ1P8e-_chegiXOUjB7C3DA@mail.gmail.com>
-Subject: [BISECTED] Boot hangs when SLUB_DEBUG_ON=y
-To:     andrey.konovalov@linux.dev
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,84 +76,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 1:08=E2=80=AFPM <andrey.konovalov@linux.dev> wrote:
->
-> From: Andrey Konovalov <andreyknvl@google.com>
->
-> Evict alloc/free stack traces from the stack depot for Generic KASAN
-> once they are evicted from the quaratine.
->
-> For auxiliary stack traces, evict the oldest stack trace once a new one
-> is saved (KASAN only keeps references to the last two).
->
-> Also evict all saved stack traces on krealloc.
->
-> To avoid double-evicting and mis-evicting stack traces (in case KASAN's
-> metadata was corrupted), reset KASAN's per-object metadata that stores
-> stack depot handles when the object is initialized and when it's evicted
-> from the quarantine.
->
-> Note that stack_depot_put is no-op if the handle is 0.
->
-> Reviewed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-
-I observed boot hangs on a few SLUB configurations.
-
-Having other users of stackdepot might be the cause. After passing
-'slub_debug=3D-' which disables SLUB debugging, it boots fine.
-
-compiler version: gcc-11
-config: https://download.kerneltesting.org/builds/2023-11-21-f121f2/.config
-bisect log: https://download.kerneltesting.org/builds/2023-11-21-f121f2/bis=
-ect.log.txt
-
-[dmesg]
-(gdb) lx-dmesg
-[    0.000000] Linux version 6.7.0-rc1-00136-g0e8b630f3053
-(hyeyoo@localhost.localdomain) (gcc (GCC) 11.3.1 20221121 (R3[
-0.000000] Command line: console=3DttyS0 root=3D/dev/sda1 nokaslr
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-6.7.0-rc1-00136-g0e8b630f3053 #22
-[    0.000000] RIP: 0010:setup_arch+0x500/0x2250
-[    0.000000] Code: c6 09 08 00 48 89 c5 48 85 c0 0f 84 58 13 00 00
-48 c1 e8 03 48 83 05 be 97 66 00 01 80 3c 18 00 0f3[    0.000000] RSP:
-0000:ffffffff86007e00 EFLAGS: 00010046 ORIG_RAX: 0000000000000009
-[    0.000000] RAX: 1fffffffffe40088 RBX: dffffc0000000000 RCX: 1ffffffff11=
-ed630
-[    0.000000] RDX: 0000000000000000 RSI: feec4698e8103000 RDI: ffffffff88f=
-6b180
-[    0.000000] RBP: ffffffffff200444 R08: 8000000000000163 R09: 1ffffffff11=
-ed628
-[    0.000000] R10: ffffffff88f7a150 R11: 0000000000000000 R12: 00000000000=
-00010
-[    0.000000] R13: ffffffffff200450 R14: feec4698e8102444 R15: feec4698e81=
-02444
-[    0.000000] FS:  0000000000000000(0000) GS:ffffffff88d5b000(0000)
-knlGS:0000000000000000
-[    0.000000] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.000000] CR2: ffffffffff200444 CR3: 0000000008f0e000 CR4: 00000000000=
-000b0
-[    0.000000] Call Trace:
-[    0.000000]  <TASK>
-[    0.000000]  ? show_regs+0x87/0xa0
-[    0.000000]  ? early_fixup_exception+0x130/0x310
-[    0.000000]  ? do_early_exception+0x23/0x90
-[    0.000000]  ? early_idt_handler_common+0x2f/0x40
-[    0.000000]  ? setup_arch+0x500/0x2250
-[    0.000000]  ? __pfx_setup_arch+0x10/0x10
-[    0.000000]  ? vprintk_default+0x20/0x30
-[    0.000000]  ? vprintk+0x4c/0x80
-[    0.000000]  ? _printk+0xba/0xf0
-[    0.000000]  ? __pfx__printk+0x10/0x10
-[    0.000000]  ? init_cgroup_root+0x10f/0x2f0
---Type <RET> for more, q to quit, c to continue without paging--
-[    0.000000]  ? cgroup_init_early+0x1e4/0x440
-[    0.000000]  ? start_kernel+0xae/0x790
-[    0.000000]  ? x86_64_start_reservations+0x28/0x50
-[    0.000000]  ? x86_64_start_kernel+0x10e/0x130
-[    0.000000]  ? secondary_startup_64_no_verify+0x178/0x17b
-[    0.000000]  </TASK>
-
---
-Hyeonggon
+On Wed, Nov 22, 2023 at 4:54 AM Jarkko Sakkinen <jarkko@kernel.org>=0D
+wrote:=0D
+>=0D
+> On Tue, 2023-11-21 at 03:40 +0000, Yusong Gao wrote:=0D
+> > There are some wrong return values check in sign-file when call=0D
+> > OpenSSL=0D
+> > API. The ERR() check cond is wrong because of the program only check=0D
+> > the=0D
+> > return value is < 0 instead of <=3D 0. For example:=0D
+> > 1. CMS_final() return 1 for success or 0 for failure.=0D
+> > 2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.=0D
+> > 3. i2d_TYPEbio() return 1 for success and 0 for failure.=0D
+> > 4. BIO_free() return 1 for success and 0 for failure.=0D
+> >=0D
+> > Link: https://www.openssl.org/docs/manmaster/man3/=0D
+> > Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing=0D
+> > with a raw signature")=0D
+> >=0D
+>=0D
+> No empty line here.=0D
+>=0D
+> > Signed-off-by: Yusong Gao <a869920004@gmail.com>=0D
+> > ---=0D
+> > V1, V2: Clarify the description of git message.=0D
+> > ---=0D
+> >  scripts/sign-file.c | 12 ++++++------=0D
+> >  1 file changed, 6 insertions(+), 6 deletions(-)=0D
+> >=0D
+> > diff --git a/scripts/sign-file.c b/scripts/sign-file.c=0D
+> > index 598ef5465f82..dcebbcd6bebd 100644=0D
+> > --- a/scripts/sign-file.c=0D
+> > +++ b/scripts/sign-file.c=0D
+> > @@ -322,7 +322,7 @@ int main(int argc, char **argv)=0D
+> >                                    CMS_NOSMIMECAP | use_keyid |=0D
+> >                                    use_signed_attrs),=0D
+> >                   "CMS_add1_signer");=0D
+> > -             ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS |=0D
+> > CMS_BINARY) < 0,=0D
+> > +             ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS |=0D
+> > CMS_BINARY) <=3D 0,=0D
+> >                   "CMS_final");=0D
+> >  =0D
+> >  #else=0D
+> > @@ -341,10 +341,10 @@ int main(int argc, char **argv)=0D
+> >                       b =3D BIO_new_file(sig_file_name, "wb");=0D
+> >                       ERR(!b, "%s", sig_file_name);=0D
+> >  #ifndef USE_PKCS7=0D
+> > -                     ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,=0D
+> > +                     ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) <=3D=0D
+> > 0,=0D
+> >                           "%s", sig_file_name);=0D
+> >  #else=0D
+> > -                     ERR(i2d_PKCS7_bio(b, pkcs7) < 0,=0D
+> > +                     ERR(i2d_PKCS7_bio(b, pkcs7) <=3D 0,=0D
+> >                           "%s", sig_file_name);=0D
+> >  #endif=0D
+> >                       BIO_free(b);=0D
+> > @@ -374,9 +374,9 @@ int main(int argc, char **argv)=0D
+> >  =0D
+> >       if (!raw_sig) {=0D
+> >  #ifndef USE_PKCS7=0D
+> > -             ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s",=0D
+> > dest_name);=0D
+> > +             ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) <=3D 0, "%s",=0D
+> > dest_name);=0D
+> >  #else=0D
+> > -             ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);=0D
+> > +             ERR(i2d_PKCS7_bio(bd, pkcs7) <=3D 0, "%s", dest_name);=0D
+> >  #endif=0D
+> >       } else {=0D
+> >               BIO *b;=0D
+> > @@ -396,7 +396,7 @@ int main(int argc, char **argv)=0D
+> >       ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s",=0D
+> > dest_name);=0D
+> >       ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) <=0D
+> > 0, "%s", dest_name);=0D
+> >  =0D
+> > -     ERR(BIO_free(bd) < 0, "%s", dest_name);=0D
+> > +     ERR(BIO_free(bd) <=3D 0, "%s", dest_name);=0D
+> >  =0D
+> >       /* Finally, if we're signing in place, replace the original.=0D
+> > */=0D
+> >       if (replace_orig)=0D
+>=0D
+>=0D
+> BR, Jarkko=0D
+=0D
+Thanks.=0D
+=0D
+BR, Yusong Gao=0D
