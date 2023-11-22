@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBB77F41D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6007F41D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjKVJmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:42:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        id S235129AbjKVJmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjKVJmI (ORCPT
+        with ESMTP id S229995AbjKVJmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 22 Nov 2023 04:42:08 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF41EDD;
-        Wed, 22 Nov 2023 01:42:04 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6c33ab26dddso5706276b3a.0;
-        Wed, 22 Nov 2023 01:42:04 -0800 (PST)
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED4683;
+        Wed, 22 Nov 2023 01:42:03 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-35b2144232bso4760405ab.3;
+        Wed, 22 Nov 2023 01:42:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700646124; x=1701250924; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700646123; x=1701250923; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SV/osW0R7bVpYMTd62PKwIsgqxKMwJ1fiVW5wV1ilHs=;
-        b=M3Uyz9ijIcr34VP8bulaJ7VLXGAM1M6/S53I1o5CHy2xUvKlRX61g2o/qD2bTycNuW
-         RgE4dvJRaPRMA24R6in47NyI+lb3M9bk+Y4dKUJCdhcslnFBzKu7HyfAVyGVSo5KL/s7
-         rEdZE8JBivCrcTv3pCdjEHFbCMsAbQcT2wAtwDC2qdW20PmmXcS2Uq18/AQQ7smrz3Vr
-         0ZwEyC4+7WeQClsHERgZM3vDF25C3Oa35o7zMB0JCxpSwV1FBK7ToFSrY9g1fAndWTs/
-         sx3Iqec9FTUNShjYZCCtYVz+el2XCdpGjQMqJJSh0v3ujA2mZpG2r8sxOc5YQLAyZGUK
-         v/5A==
+        bh=/TSVuHRUoWzjdRXUhlp3V8hbN4FBeW4gTj/Ub1P0syU=;
+        b=SzZI1vuvtzke0G6rG7VWEgmeELYUkXXireeLQergaJffGK/KpkDqVgK3Ra5w/Mloqq
+         AFMKaKIirhLTIL1TRWPeZIp7jOtU29dHfh5KXvrN78aO6I0OzH5U8FqKxI8W3hLFPw2i
+         uweThaPlsW/v4vKC6ffQw7euPwuyZZHc1NpUNEnbbN1+5bXTXS+G6HjlW2vbecqbliKK
+         CtKYYrtjo9WVbh07rnacFYOcJV1SIpgcB2os6rSkf42Fzj3C3Of323bqcejNpZBNJ0iA
+         fva8sUlHU7hCODKRlkT9+92fyYeCQf7QMZaNO+lny+gp3dgZqdT7sh+kH8we5KNS4/W2
+         kA9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700646124; x=1701250924;
+        d=1e100.net; s=20230601; t=1700646123; x=1701250923;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SV/osW0R7bVpYMTd62PKwIsgqxKMwJ1fiVW5wV1ilHs=;
-        b=eJ9hduTtwiTLTDkLcDFrPHKrSW0s+JfSgJjMk0v71B8q9ZAM4g7dsi8Brqjh6VAajc
-         5XCMR28pLGqU8rY1V1dlaVHRGMHw79Xg++ITu7Pgk/CnFA9M1z6r0+AOoNTwuwJqpiZT
-         nSbayIcIk1OWanvs5IwYTEsBicjNeDpvb9rt7WqaoAp+NXYMdcUH5/DMo35ISpCIyLlb
-         GldH4Gx2g7ObhfUrAZgPVpcuIX4d5Lm0OerqDen0meXrJEr+u01pRsrxSg3Me3TOtRlp
-         /qaW45nSzPb3xF4qby32ak1oVyZu72FhJf4ZL5+9/qom1thkkDuBjiF/HI4mWHNJS1sm
-         5JeQ==
-X-Gm-Message-State: AOJu0Yy0+W0c+W4tjDalQV2K5D0YAW3+Xp3ZwKsxE/qVXyt9P0rNDl1l
-        dyV+Mpyf1Zn/rutx9DgPE5g=
-X-Google-Smtp-Source: AGHT+IFzf3ahprBjT8RgnY9ilotsSVvN6c0RYl7tlZ7ISOBudnHGIt779Lq+6/qdV5RVMMvH2vuzGA==
-X-Received: by 2002:a05:6a21:338d:b0:187:c082:3e35 with SMTP id yy13-20020a056a21338d00b00187c0823e35mr1917336pzb.14.1700646124312;
-        Wed, 22 Nov 2023 01:42:04 -0800 (PST)
+        bh=/TSVuHRUoWzjdRXUhlp3V8hbN4FBeW4gTj/Ub1P0syU=;
+        b=WM7KHur5Hn7SRlN7aApaIxSO2Okht8n6UyBqT1xPK69T1nJw22n5Uy2/2bvs46+K9z
+         vn+byDAJvYpcE8EzohZQ2gyrGtP/WZHP6oGmST/sk2WvDGPaVkAdD9SJIPQSR8shdUFo
+         zSLhTV5k4p543mLB4kbRbsJ2q57LwOTq5P7Jfdwwrx0CnY1jnXf47BU8ecJ7o9cPUBkB
+         /e+k8gbFS7ipceRkqrn3AqZJ0J80N7wZS3waSqztrlhc/w0E+eoNPM8+R9qUT5zf8sYH
+         N7hvXoy6VinfDl0SltIEckotbGiLcVdMLbhkBv7bzO2vY8qAkUhKdBfeF9QmUYM3aW/d
+         QUnw==
+X-Gm-Message-State: AOJu0Yw9qQ1u26b1VNXhghB/Gyw1aF9guiTdixbz2UnymdAXdJK2ejEZ
+        GpJLu9OnUZ81rhMhWtrAa7c=
+X-Google-Smtp-Source: AGHT+IHUJ6C7ZhFk0PAdOH0FdpHDlKK8MnJuZg0xki+Wbbl3rjLNasi3Y1JHC37QlISKcXKhtcwNsA==
+X-Received: by 2002:a05:6e02:1a2d:b0:35a:f02f:8df3 with SMTP id g13-20020a056e021a2d00b0035af02f8df3mr1908868ile.21.1700646122924;
+        Wed, 22 Nov 2023 01:42:02 -0800 (PST)
 Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id c10-20020a631c4a000000b005b82611378bsm9144852pgm.52.2023.11.22.01.42.02
+        by smtp.gmail.com with ESMTPSA id e11-20020a056a001a8b00b006cb955dc54csm5299950pfv.58.2023.11.22.01.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 01:42:03 -0800 (PST)
+        Wed, 22 Nov 2023 01:42:02 -0800 (PST)
 Received: by archie.me (Postfix, from userid 1000)
-        id 7F5CA10210555; Wed, 22 Nov 2023 16:42:00 +0700 (WIB)
+        id 97A8010210556; Wed, 22 Nov 2023 16:42:00 +0700 (WIB)
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
 To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Staging Drivers <linux-staging@lists.linux.dev>,
@@ -62,66 +62,68 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bruno Moreira-Guedes <codeagain@codeagain.dev>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Martyn Welch <martyn.welch@collabora.com>
-Subject: [PATCH 1/2] MAINTAINERS: Update Martyn Welch's address
-Date:   Wed, 22 Nov 2023 16:41:55 +0700
-Message-ID: <20231122094156.30642-2-bagasdotme@gmail.com>
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: [PATCH 2/2] MAINTAINERS: Move Manohar Vanga to CREDITS
+Date:   Wed, 22 Nov 2023 16:41:56 +0700
+Message-ID: <20231122094156.30642-3-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231122094156.30642-1-bagasdotme@gmail.com>
 References: <20231122094156.30642-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1650; i=bagasdotme@gmail.com; h=from:subject; bh=v5yUaK/fxsxugJsKLcf76rnii+QRaf0Iwcy7KBtjsIQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKmxpx8L/f3/7fy0JeL3Ch/eDRTgnbDttfJtIY7/JzPcS 2VU2LzmdZSyMIhxMciKKbJMSuRrOr3LSORC+1pHmDmsTCBDGLg4BWAinL4Mf+WO9N+7KXs90Z5X VHr+pozMXfemas7ifzTLUUKJ7eKtphMM/5MDjnbN/sq15BGXCXdSUtaWP61RO0XcbxiqHpZOaRB O5wMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1247; i=bagasdotme@gmail.com; h=from:subject; bh=3NK9tFw+8nXcmJg2+lJAfw1zj337GJBvGpQPkzucrrU=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKmxpx8nOr5JnMsVPC+7oeXi3pyUZxpTFj7YdIOzcel6u 1zVjzl8HaUsDGJcDLJiiiyTEvmaTu8yErnQvtYRZg4rE8gQBi5OAZjI3iBGhs2K4ZL53OlVDFt9 uGKV+Wx2sqzP5FyxrHdj2jqDx58FWhkZWpcpm88p8FGYu4M5K7DdsCdk0upsPyN9dqe4szcLKv9 yAwA=
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-He is now active on the mailing lists using his Collabora
-(@collabora.com) address. Reflect it in MAINTAINERS and also
-add address mapping for him.
+His last email on LKML was from early January 2014 [1] and he has not
+reviewed patches since he changed his address to personal gmail
+one.
 
-Cc: Martyn Welch <martyn.welch@collabora.com>
+Move him to CREDITS.
+
+[1]: https://lore.kernel.org/all/CAEktxaFL=3cmU4vZS2akiAR2vG-3d+9HwTZvBvf5JXuThHoOKg@mail.gmail.com/
+
 Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
 ---
-Martyn, if you still had like to maintain VME subsystem, please let us know.
+ CREDITS     | 4 ++++
+ MAINTAINERS | 1 -
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
- .mailmap    | 1 +
- MAINTAINERS | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/.mailmap b/.mailmap
-index 43031441b2d922..1df03996c73bdf 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -368,6 +368,7 @@ Mark Yao <markyao0591@gmail.com> <mark.yao@rock-chips.com>
- Martin Kepplinger <martink@posteo.de> <martin.kepplinger@ginzinger.com>
- Martin Kepplinger <martink@posteo.de> <martin.kepplinger@puri.sm>
- Martin Kepplinger <martink@posteo.de> <martin.kepplinger@theobroma-systems.com>
-+Martyn Welch <martyn.welch@collabora.com> <martyn.welch@collabora.co.uk> <martyn@welchs.me.uk>
- Martyna Szapar-Mudlaw <martyna.szapar-mudlaw@linux.intel.com> <martyna.szapar-mudlaw@intel.com>
- Mathieu Othacehe <m.othacehe@gmail.com>
- Mat Martineau <martineau@kernel.org> <mathew.j.martineau@linux.intel.com>
+diff --git a/CREDITS b/CREDITS
+index f33a33fd237170..c337a91aed5836 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -4127,6 +4127,10 @@ D: Minix V2 file-system
+ D: Misc fixes
+ S: The Netherlands
+ 
++N: Manohar Vanga
++E: manohar.vanga@gmail.com
++D: VME staging drivers maintainer
++
+ N: Lars Wirzenius
+ E: liw@iki.fi
+ D: Linux System Administrator's Guide, author, former maintainer
 diff --git a/MAINTAINERS b/MAINTAINERS
-index ea790149af7951..a02aa52fabe14b 100644
+index a02aa52fabe14b..179ec6a1d1c8b8 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -23234,7 +23234,7 @@ F:	include/linux/vmalloc.h
- F:	mm/vmalloc.c
+@@ -23235,7 +23235,6 @@ F:	mm/vmalloc.c
  
  VME SUBSYSTEM
--M:	Martyn Welch <martyn@welchs.me.uk>
-+M:	Martyn Welch <martyn.welch@collabora.com>
- M:	Manohar Vanga <manohar.vanga@gmail.com>
+ M:	Martyn Welch <martyn.welch@collabora.com>
+-M:	Manohar Vanga <manohar.vanga@gmail.com>
  M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  L:	linux-kernel@vger.kernel.org
+ S:	Odd fixes
 -- 
 An old man doll... just what I always wanted! - Clara
 
