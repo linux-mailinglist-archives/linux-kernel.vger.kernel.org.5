@@ -2,84 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 142087F3FD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EE77F400C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 09:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbjKVIN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 03:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S235073AbjKVIY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 03:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjKVIN1 (ORCPT
+        with ESMTP id S231239AbjKVIY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 03:13:27 -0500
-Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70072D62;
-        Wed, 22 Nov 2023 00:13:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap5-20230908; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/fB6eIZmKADlx9vmc7Mv1MvPBKVxtn07LHNUeWpfWWc=; b=E3cta5dn9d1WrfPbb+Hndx4N1r
-        nuU3JUcFGuqHkH8JNDR24YWXdgVr1S+yBiAHby0aAZTFmf4sK4Ff2LBoYOMTA3bDFppkoDl3QXNfs
-        fMwLRV/DWzIrNgH8QiZDB7HtbKpVY51x57a16n8VBEVnUGYnRjp8MxhfkuyT4uJhYlSjTg20lsqVN
-        5MIiTYbdK0IiC6qM8GuqzbiDo03cWqAPQsEtnH1XwtlV263zrmT46K63aH1tir/oE9EsmbhsWtiRO
-        QQYiRmk7sT53vZ+WDIUWLHxwpVgRPci35xkJWFQsnH9a06wbHNn9AVVACLX9DC38fC+D6HYH2+2t8
-        /gIhQ6/Q==;
-Received: from [167.98.27.226] (helo=rainbowdash)
-        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1r5iMH-004AEH-TG; Wed, 22 Nov 2023 08:13:18 +0000
-Received: from ben by rainbowdash with local (Exim 4.97)
-        (envelope-from <ben@rainbowdash>)
-        id 1r5iMH-00000000boe-42Oz;
-        Wed, 22 Nov 2023 08:13:17 +0000
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        Ben Dooks <ben.dooks@codethink.co.uk>
-Subject: [PATCH] bpf: declare bpf_sk_storage_get_cg_sock_proto
-Date:   Wed, 22 Nov 2023 08:13:17 +0000
-Message-Id: <20231122081317.145355-1-ben.dooks@codethink.co.uk>
-X-Mailer: git-send-email 2.37.2.352.g3c44437643
+        Wed, 22 Nov 2023 03:24:58 -0500
+X-Greylist: delayed 578 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 00:24:53 PST
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6ED9A;
+        Wed, 22 Nov 2023 00:24:53 -0800 (PST)
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1700640909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=344eE/zF04wdsbwUUyPMJHUHm7b7bgjWnD7hX0tAWOs=;
+        b=y00lX2yoRuI5GcAvxxLqMeutqSIajRKfUc1DiFHsAu/omK2D9ON8PZh/mrwmVkn0jV1O9v
+        8ku/Cr+kckgScDhXDY3WIJ1QbFDku3no72CtSv6go/hhUlnWJjQ+VcqEX3vLBdlanMvLGZ
+        otWOZmmQraYaw+F3aqp0AA4yW8eOoWxjHLpZJpemedJ5Yc/Fp77ed4lCr+PYRBtczCKOS+
+        rNj7Vw5OLhUbtwb1x4V051jPcs6xFo+IQkX/ddwUFvV/E+6lpihXxvmFwqv36Brgqhk8ga
+        Ujq6mLpzvHwYNEpk/6MvJaQkf284cPLivRDsjI1xcRG10WsnjlMZNWhuk3OKbg==
+Date:   Wed, 22 Nov 2023 09:15:08 +0100
+From:   Dragan Simic <dsimic@manjaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] docs: dt-bindings: add DTS Coding Style document
+In-Reply-To: <26b5fd29-fcd0-4c68-8bfe-a73a660fb2c9@linaro.org>
+References: <20231120084044.23838-1-krzysztof.kozlowski@linaro.org>
+ <19358871-009d-4498-9c13-90d5338b1e9f@amd.com>
+ <76fa8f61-fe31-4040-a38d-cc05be3f4f17@linaro.org>
+ <6c80a285-27fc-4d61-9eef-af4744a9decc@amd.com>
+ <cc57dcf1-3c32-426e-920c-6f0741027797@linaro.org>
+ <CAMuHMdVGyXizPw9Rggj8fQeNdbx3udRcsHFhz_sqYZzjN1CnZQ@mail.gmail.com>
+ <26b5fd29-fcd0-4c68-8bfe-a73a660fb2c9@linaro.org>
+Message-ID: <be7b6656e2c8064ebf1f1e6a301aa83b@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-Sender: srv_ts003@codethink.com
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bpf_sk_storage_get_cg_sock_proto struct is exported from
-net/core/bpf_sk_storage.c but is not decalred in any header
-file. Fix the following sparse warning by adding it to the
-include/net/bpf_sk_storage.h header:
+On 2023-11-22 09:01, Krzysztof Kozlowski wrote:
+> On 21/11/2023 17:04, Geert Uytterhoeven wrote:
+>> Hi Krzysztof,
+>> 
+>> On Tue, Nov 21, 2023 at 1:36 PM Krzysztof Kozlowski
+>> <krzysztof.kozlowski@linaro.org> wrote:
+>>> On 21/11/2023 12:55, Michal Simek wrote:
+>>>>>> device-tree specification v0.4. Chapter 2.2.1/Table 2.1 is 
+>>>>>> describing much more
+>>>>>> valid characters for node names.
+>>>>>> It means above description is not accurate or DT spec should be 
+>>>>>> updated.
+>>>>> 
+>>>>> Spec allows way to much. dtc doesn't.
+>>>>> One thing is the spec, second
+>>>>> thing is coding style.
+>>>> 
+>>>>  From my point of view spec is primary source of truth. If spec is 
+>>>> saying name
+>>>> can use upper case then I can use it. If upper case is not
+>>>> recommended/deprecated because of whatever reason spec should be 
+>>>> updated to
+>>>> reflect it.
+>>>> I know that DTC is reporting other issues but isn't it the right way 
+>>>> to reflect
+>>>> it back to the spec?
+>>> 
+>>> Then why aren't you putting Linux Coding Style into C spec? I do not 
+>>> see
+>>> any relation between specification of the language and the coding 
+>>> style
+>>> chosen for given project.
+>>> 
+>>> Zephyr can go with upper-case. Why it should be disallowed by the 
+>>> spec?
+>> 
+>> I thought there was only One DT to bind them all?
+>> IMHO it would be better to align DT usage of Zephyr and Linux (and
+>> anything else).
+> 
+> I actually don't know what Zephyr decides, but used it as example that
+> it might want different coding style. Just like C standard allows to
+> have all variables (including local ones) upper-case, we do not have
+> such coding style. And no one proposes to update C spec to match Linux
+> coding style. :)
 
-net/core/bpf_sk_storage.c:334:29: warning: symbol 'bpf_sk_storage_get_cg_sock_proto' was not declared. Should it be static
+I also agree about the need to differentiate the coding styles from the 
+underlying specifications.  Also, as we know, the C language is the 
+unifying factor between various projects, but with wildly differing 
+coding styles.  Expecting all those projects to have their C coding 
+styles aligned wouldn't be reasonable, if you agree.
 
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
----
- include/net/bpf_sk_storage.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-index 2926f1f00d65..043155810822 100644
---- a/include/net/bpf_sk_storage.h
-+++ b/include/net/bpf_sk_storage.h
-@@ -22,6 +22,7 @@ extern const struct bpf_func_proto bpf_sk_storage_get_proto;
- extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
- extern const struct bpf_func_proto bpf_sk_storage_get_tracing_proto;
- extern const struct bpf_func_proto bpf_sk_storage_delete_tracing_proto;
-+extern const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto;
- 
- struct bpf_local_storage_elem;
- struct bpf_sk_storage_diag;
--- 
-2.37.2.352.g3c44437643
-
+BTW, having this document as part of the kernel documentation will be 
+great, and it's in fact quite overdue, if you agree.  Huge thanks to 
+everyone working on it!
