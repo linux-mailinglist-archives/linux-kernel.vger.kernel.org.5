@@ -2,243 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB707F3BC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9613D7F3BC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 03:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343531AbjKVC2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 21:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S1343533AbjKVC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 21:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjKVC2K (ORCPT
+        with ESMTP id S235052AbjKVC2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 21:28:10 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B25D181
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:07 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5bdfbd69bd5so293979a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:07 -0800 (PST)
+        Tue, 21 Nov 2023 21:28:18 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1CEE7
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:14 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c87663a873so69616947b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 18:28:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700620086; x=1701224886; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfTZswEnYt7aHpTJOx6kD98hPK28QoQ/YumgrlaBkC0=;
-        b=OXfctwb/OBD7DmyLLb/FWMN2y5kt0CnWvyEREsI2qkUvMWxN+qt9ruicGSjJZzQ73n
-         vi+bimiFrsEmX/Hy7TSOWbJSTGEiUXPl9HgKh4f26Skj233R+8vmB64mb9E5U6LIOKh0
-         gfVZPcGVqMk+s+jRML0Q65O4YqRBb0JrBJ1/NlUy7jdXdSNfdmRdU30IcujQcW1QFgDi
-         FT1jjM3QqofizLQfWo0W81ZZmt07cU7eOiqXdID3F+vWCneEkyyIqnBN6R6bLanBYRRY
-         SSeFzCM9lmVHHir6fV/cnCWp6kUvPAfjYQf5LGL1eGKzZXP+MlyHs5r2c97L/gwuhGYE
-         xykw==
+        d=google.com; s=20230601; t=1700620094; x=1701224894; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9IER+tn3y73SnSAMuBhvXywbHOoikax61O9o+LNCM00=;
+        b=bwb5hwGK+G0RyFqP8rWxyp5SQdIk0YoDhCFusnvQVU5bbhUZWqSQt2aNeZlleEwxbY
+         E5NVuJ6uRvaTgrJYsXpuXv9LPOXVXEKbyOxJGAH5UZhnPedBmY8Ui7FinCopZkp0/QT9
+         ZT0fGrQDamJcqiLg61QUB4bOw/ujQ43KOhvEAmRBtmKlH4ZUe0ASlJULnPFPSasFSKbY
+         J9SwGzs/pYCa4pSDxV8438XBvdsBhmJI8Al8VC5H+68w4x12bIjbj4VxwdoKOhCj2nKX
+         5bt+0b9r/TrwcTHcmIkY9Drs3x4J4bj7rCJeRGbODdysOmahVAyvPNaQ4dMTGIVwxZP4
+         Y2iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700620086; x=1701224886;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kfTZswEnYt7aHpTJOx6kD98hPK28QoQ/YumgrlaBkC0=;
-        b=C8sf1b1fSp53io0IdDDEa72F9fxg8mWcA8osq96wHZFM/3fiv18T3wMXBh+yqNdGR5
-         Vn12pYI3iW0uqRra8Y1bvXqQYegPhav7zEBweG8Epp3MFeSeQ5MU/D81rhjLhlSzoGX6
-         vTmQ5K4SsoH/OSD+EcQF/OUbInQRfY167Myw06uudl9ZPcnbBV+UW9vk1BOlQ2rySAkp
-         +xKy4VCgveU6OEA/REgTXYm8hjwBfn99M25OQAlNWU/UhiT1iFtpEihp1e2MaPfrBHv9
-         8KYeSbEorxQuOzF9Jw/JznzJuHzVMwBcbJQ17kI46oRHi4gioHGdxHSg3wuy6w2ezIse
-         rsnw==
-X-Gm-Message-State: AOJu0YyVYiGB4lQ0+xVsgyEb4kmBqPMn0Ss/O3VSR9UDkeIBQKtcKw6S
-        yq+yayns8ALamZqpOiZp4jkhSYib0FPEOY5Mx+w=
-X-Google-Smtp-Source: AGHT+IHAMQ+tOeNRO2k3sRkUVDLcsPWJuo4/OHgwq3ka2J+5TxYjwdPReGcf9/rYE3eK82vEcdhwoQgJh8lBrOuobi0=
-X-Received: by 2002:a17:90a:fe90:b0:280:4a23:3c84 with SMTP id
- co16-20020a17090afe9000b002804a233c84mr6491607pjb.22.1700620086495; Tue, 21
- Nov 2023 18:28:06 -0800 (PST)
-MIME-Version: 1.0
-References: <VI1P193MB0752C0ADCF4F90AE8368C0B399BBA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-In-Reply-To: <VI1P193MB0752C0ADCF4F90AE8368C0B399BBA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 22 Nov 2023 03:27:55 +0100
-Message-ID: <CA+fCnZfBM=UU0AyArERNMxBMeaPvbV-e6uyQDpwgqA5c6_f_DQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan: Improve free meta storage in Generic KASAN
-To:     Juntong Deng <juntong.deng@outlook.com>
-Cc:     ryabinin.a.a@gmail.com, glider@google.com, dvyukov@google.com,
-        vincenzo.frascino@arm.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
+        d=1e100.net; s=20230601; t=1700620094; x=1701224894;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9IER+tn3y73SnSAMuBhvXywbHOoikax61O9o+LNCM00=;
+        b=YHDOxYYW75BalRM8tspEEQWsdDM3kGtjtqq0gvBufj8VPs0F68Df5AMiAO48bIDd4U
+         GgGq1DSbySLAI/5V6U7fWadEoiVK8QxYyBvfIhlK+C/pQycgwGLAFQ/mIEbuC5ERdK9y
+         9PdLTPGtJAfX7WrztQbO8s1bqBGLeXvE1ckZsqDd6q4iWqTbrURDL2iSOqoRSgrOGrf3
+         fc8cgGa2fO64yPyuUhLeSiyz7WoZb7TrOQJQqiXAAA7Is5uXA0zrS+6UYifK1u49dFwl
+         anqSziw1eOxI5Nv3Bqg3N+7bmW/YCCUZwn7XGRVNhV5T4nin3inzqndVkH6FkP3Jd1H/
+         tsrg==
+X-Gm-Message-State: AOJu0Yz+aAQXAbs627ODyKUjnR3syqujpLLNYYorTzImmaJEg2nMbnp+
+        80XsPH3I9Ygzr03QC56B1D5K5JKh8Fj7
+X-Google-Smtp-Source: AGHT+IEMWMjJj09uw4Nlu7T4ianRv1mF94E9duB9ORIltrxhzkgw2vuhjiSzHYsw5cFB71Lm1H+2io6r+y6B
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:c36:a8cf:912c:9142])
+ (user=irogers job=sendgmr) by 2002:a81:4851:0:b0:5cb:f2cf:1572 with SMTP id
+ v78-20020a814851000000b005cbf2cf1572mr22851ywa.1.1700620093802; Tue, 21 Nov
+ 2023 18:28:13 -0800 (PST)
+Date:   Tue, 21 Nov 2023 18:28:05 -0800
+Message-Id: <20231122022805.511839-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Subject: [PATCH v1] perf MANIFEST: Add gen-sysreg for ARM SPE
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 10:42=E2=80=AFPM Juntong Deng <juntong.deng@outlook=
-.com> wrote:
->
-> Currently free meta can only be stored in object if the object is
-> not smaller than free meta.
->
-> After the improvement, even when the object is smaller than free meta,
-> it is still possible to store part of the free meta in the object,
-> reducing the increased size of the redzone.
->
-> Example:
->
-> free meta size: 16 bytes
-> alloc meta size: 16 bytes
-> object size: 8 bytes
-> optimal redzone size (object_size <=3D 64): 16 bytes
->
-> Before improvement:
-> actual redzone size =3D alloc meta size + free meta size =3D 32 bytes
->
-> After improvement:
-> actual redzone size =3D alloc meta size + (free meta size - object size)
->                     =3D 24 bytes
->
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+The necessary files for generating sysreg-defs.h need adding to the
+perf tool MANIFEST that lists the files for packaging the perf tool
+source code. Fix for the following:
 
-I think this change as is does not work well with slub_debug.
+```
+$ make perf-tar-src-pkg
+$ tar xvf perf-6.7.0-rc2.tar
+$ cd perf-6.7.0-rc2
+$ make -C tools/perf
+...
+  PERF_VERSION = 6.7.rc2.gc2d5304e6c64
+make[3]: *** No rule to make target 'perf-6.7.0-rc2/arch/arm64/tools/gen-sysreg.awk', needed by 'perf-6.7.0-rc2/tools/arch/arm64/include/generated/asm/sysreg-defs.h'.  Stop.
+make[2]: *** [Makefile.perf:456: arm64-sysreg-defs] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [Makefile.perf:242: sub-make] Error 2
+make: *** [Makefile:70: all] Error 2
+make: Leaving directory 'perf-6.7.0-rc2/tools/perf'
+...
+```
 
-slub_debug puts its metadata (redzone, tracks, and orig_size) right
-after the object (see calculate_sizes and the comment before
-check_pad_bytes). With the current code, KASAN's free meta either fits
-within the object or is placed after the slub_debug metadata and
-everything works well. With this change, KASAN's free meta tail goes
-right past object_size, overlaps with the slub_debug metadata, and
-thus can corrupt it.
+Fixes: e2bdd172e665 ("perf build: Generate arm64's sysreg-defs.h and add to include path")
+---
+Note: the breakage is in Linus' tree and perf-tools, not yet in perf-tools-next.
 
-Thus, to make this patch work properly, we need to carefully think
-about all metadatas layout and teach slub_debug that KASAN's free meta
-can go past object_size. Possibly, adjusting s->inuse by the size of
-KASAN's metas (along with moving kasan_cache_create and fixing up
-set_orig_size) would be enough. But I'm not familiar with the
-slub_debug code enough to be sure.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/MANIFEST | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If you decide to proceed with improving this change, I've left some
-comments for the current code below.
+diff --git a/tools/perf/MANIFEST b/tools/perf/MANIFEST
+index 1da7f4b91b4f..dc42de1785ce 100644
+--- a/tools/perf/MANIFEST
++++ b/tools/perf/MANIFEST
+@@ -1,3 +1,5 @@
++arch/arm64/tools/gen-sysreg.awk
++arch/arm64/tools/sysreg
+ tools/perf
+ tools/arch
+ tools/scripts
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
 
-Thank you!
-
-> ---
-> V1 -> V2: Make kasan_metadata_size() adapt to the improved
-> free meta storage
->
->  mm/kasan/generic.c | 50 +++++++++++++++++++++++++++++++---------------
->  1 file changed, 34 insertions(+), 16 deletions(-)
->
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index 4d837ab83f08..802c738738d7 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -361,6 +361,8 @@ void kasan_cache_create(struct kmem_cache *cache, uns=
-igned int *size,
->  {
->         unsigned int ok_size;
->         unsigned int optimal_size;
-> +       unsigned int rem_free_meta_size;
-> +       unsigned int orig_alloc_meta_offset;
->
->         if (!kasan_requires_meta())
->                 return;
-> @@ -394,6 +396,9 @@ void kasan_cache_create(struct kmem_cache *cache, uns=
-igned int *size,
->                 /* Continue, since free meta might still fit. */
->         }
->
-> +       ok_size =3D *size;
-> +       orig_alloc_meta_offset =3D cache->kasan_info.alloc_meta_offset;
-> +
->         /*
->          * Add free meta into redzone when it's not possible to store
->          * it in the object. This is the case when:
-> @@ -401,21 +406,26 @@ void kasan_cache_create(struct kmem_cache *cache, u=
-nsigned int *size,
->          *    be touched after it was freed, or
->          * 2. Object has a constructor, which means it's expected to
->          *    retain its content until the next allocation, or
-
-Please drop "or" on the line above.
-
-> -        * 3. Object is too small.
->          * Otherwise cache->kasan_info.free_meta_offset =3D 0 is implied.
-> +        * Even if the object is smaller than free meta, it is still
-> +        * possible to store part of the free meta in the object.
->          */
-> -       if ((cache->flags & SLAB_TYPESAFE_BY_RCU) || cache->ctor ||
-> -           cache->object_size < sizeof(struct kasan_free_meta)) {
-> -               ok_size =3D *size;
-> -
-> +       if ((cache->flags & SLAB_TYPESAFE_BY_RCU) || cache->ctor) {
->                 cache->kasan_info.free_meta_offset =3D *size;
->                 *size +=3D sizeof(struct kasan_free_meta);
-> +       } else if (cache->object_size < sizeof(struct kasan_free_meta)) {
-> +               rem_free_meta_size =3D sizeof(struct kasan_free_meta) -
-> +                                                               cache->ob=
-ject_size;
-> +               *size +=3D rem_free_meta_size;
-> +               if (cache->kasan_info.alloc_meta_offset !=3D 0)
-> +                       cache->kasan_info.alloc_meta_offset +=3D rem_free=
-_meta_size;
-> +       }
->
-> -               /* If free meta doesn't fit, don't add it. */
-> -               if (*size > KMALLOC_MAX_SIZE) {
-> -                       cache->kasan_info.free_meta_offset =3D KASAN_NO_F=
-REE_META;
-> -                       *size =3D ok_size;
-> -               }
-> +       /* If free meta doesn't fit, don't add it. */
-> +       if (*size > KMALLOC_MAX_SIZE) {
-> +               cache->kasan_info.free_meta_offset =3D KASAN_NO_FREE_META=
-;
-> +               cache->kasan_info.alloc_meta_offset =3D orig_alloc_meta_o=
-ffset;
-> +               *size =3D ok_size;
->         }
->
->         /* Calculate size with optimal redzone. */
-> @@ -464,12 +474,20 @@ size_t kasan_metadata_size(struct kmem_cache *cache=
-, bool in_object)
->         if (in_object)
->                 return (info->free_meta_offset ?
->                         0 : sizeof(struct kasan_free_meta));
-
-This needs to be changed as well to something like min(cache->object,
-sizeof(struct kasan_free_meta)). However, with the slub_debug
-conflicts I mentioned above, we might need to change this to something
-else.
-
-
-
-> -       else
-> -               return (info->alloc_meta_offset ?
-> -                       sizeof(struct kasan_alloc_meta) : 0) +
-> -                       ((info->free_meta_offset &&
-> -                       info->free_meta_offset !=3D KASAN_NO_FREE_META) ?
-> -                       sizeof(struct kasan_free_meta) : 0);
-> +       else {
-> +               size_t alloc_meta_size =3D info->alloc_meta_offset ?
-> +                                                               sizeof(st=
-ruct kasan_alloc_meta) : 0;
-> +               size_t free_meta_size =3D 0;
-> +
-> +               if (info->free_meta_offset !=3D KASAN_NO_FREE_META) {
-> +                       if (info->free_meta_offset)
-> +                               free_meta_size =3D sizeof(struct kasan_fr=
-ee_meta);
-> +                       else if (cache->object_size < sizeof(struct kasan=
-_free_meta))
-> +                               free_meta_size =3D sizeof(struct kasan_fr=
-ee_meta) -
-> +                                                                       c=
-ache->object_size;
-> +               }
-> +               return alloc_meta_size + free_meta_size;
-> +       }
->  }
->
->  static void __kasan_record_aux_stack(void *addr, bool can_alloc)
-> --
-> 2.39.2
