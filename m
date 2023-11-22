@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D885A7F40BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB677F417A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 10:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbjKVJAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 04:00:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38220 "EHLO
+        id S235067AbjKVJWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 04:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235008AbjKVJAt (ORCPT
+        with ESMTP id S229631AbjKVJWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 04:00:49 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1F0BC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 01:00:43 -0800 (PST)
-X-UUID: 0f1fd2d019e44d1bad0c33f66457bf12-20231122
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:41be7148-6f9a-4034-96b3-d81abd902688,IP:10,
-        URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-        TION:release,TS:15
-X-CID-INFO: VERSION:1.1.32,REQID:41be7148-6f9a-4034-96b3-d81abd902688,IP:10,UR
-        L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:15
-X-CID-META: VersionHash:5f78ec9,CLOUDID:6bbdae95-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:23112217003121VE4392,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
-X-UUID: 0f1fd2d019e44d1bad0c33f66457bf12-20231122
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.171)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1086186215; Wed, 22 Nov 2023 17:00:29 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu
-Cc:     kunwu.chan@hotmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] powerpc/mm: Fix null-pointer dereference in pgtable_cache_add
-Date:   Wed, 22 Nov 2023 17:00:26 +0800
-Message-Id: <20231122090026.11728-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Wed, 22 Nov 2023 04:22:23 -0500
+X-Greylist: delayed 1845 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Nov 2023 01:22:19 PST
+Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846509D;
+        Wed, 22 Nov 2023 01:22:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=JRXouuJfULJtmERrHhVMLHylo3BRns26iZLKV3W5G40=; b=pLVyAniQcBnvn7qvivjxA4sSYV
+        /YYTATgl7fm7Tqt7TlQdsYOpxszP+cME/agLlQTffNWR8DCW4nhUrXNOnQOfhEL9C61g2NWtgb+3G
+        kPEyIq7WNIpW9S+1YNwFBMntL5o6VeAXyhAOCbUI8f+Uo3/3IfuJGr8nDqHiJLELAqciS76quEAi8
+        7RkaetF0MDOzhjl7dE3jsvWk4WyI2R3O8bBriuzWJa3brqN/NTAuTSIPyZ248t8tjtQYgxA12Y6zE
+        J/Itz6u0Kp1PA8n+ai+8P5ICNFFI9kiKhvMO9kR30OwnC/WYrXst2Ya/zz7oZ+jzTQLYnPyi77q1Q
+        3hahTfBg==;
+Received: from [167.98.27.226] (helo=rainbowdash)
+        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1r5ix5-003hg5-ES; Wed, 22 Nov 2023 08:51:20 +0000
+Received: from ben by rainbowdash with local (Exim 4.97)
+        (envelope-from <ben@rainbowdash>)
+        id 1r5ix6-00000000kDE-03Uz;
+        Wed, 22 Nov 2023 08:51:20 +0000
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+To:     linux-watchdog@vger.kernel.org
+Cc:     linux@roeck-us.net, wim@linux-watchdog.org,
+        samin.guo@starfivetech.com, xingyu.wu@starfivetech.com,
+        linux-kernel@vger.kernel.org, Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: [PATCH] watchdog: starfive: add lock annotations to fix context imbalances
+Date:   Wed, 22 Nov 2023 08:51:18 +0000
+Message-Id: <20231122085118.177589-1-ben.dooks@codethink.co.uk>
+X-Mailer: git-send-email 2.37.2.352.g3c44437643
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Sender: srv_ts003@codethink.com
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure. Ensure the allocation was successful
-by checking the pointer validity.
+Add the necessary __acquires() and __releases() to the functions
+that take and release the wdt lock to avoid the following sparse
+warnings:
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+drivers/watchdog/starfive-wdt.c:204:13: warning: context imbalance in 'starfive_wdt_unlock' - wrong count at exit
+drivers/watchdog/starfive-wdt.c:212:9: warning: context imbalance in 'starfive_wdt_lock' - unexpected unlock
+
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
 ---
- arch/powerpc/mm/init-common.c | 2 ++
+ drivers/watchdog/starfive-wdt.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/mm/init-common.c b/arch/powerpc/mm/init-common.c
-index 119ef491f797..0884fc601c46 100644
---- a/arch/powerpc/mm/init-common.c
-+++ b/arch/powerpc/mm/init-common.c
-@@ -139,6 +139,8 @@ void pgtable_cache_add(unsigned int shift)
+diff --git a/drivers/watchdog/starfive-wdt.c b/drivers/watchdog/starfive-wdt.c
+index 5f501b41faf9..49b38ecc092d 100644
+--- a/drivers/watchdog/starfive-wdt.c
++++ b/drivers/watchdog/starfive-wdt.c
+@@ -202,12 +202,14 @@ static u32 starfive_wdt_ticks_to_sec(struct starfive_wdt *wdt, u32 ticks)
  
- 	align = max_t(unsigned long, align, minalign);
- 	name = kasprintf(GFP_KERNEL, "pgtable-2^%d", shift);
-+	if (!name)
-+		return;
- 	new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
- 	if (!new)
- 		panic("Could not allocate pgtable cache for order %d", shift);
+ /* Write unlock-key to unlock. Write other value to lock. */
+ static void starfive_wdt_unlock(struct starfive_wdt *wdt)
++	__acquires(&wdt->lock)
+ {
+ 	spin_lock(&wdt->lock);
+ 	writel(wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
+ }
+ 
+ static void starfive_wdt_lock(struct starfive_wdt *wdt)
++	__releases(&wdt->lock)
+ {
+ 	writel(~wdt->variant->unlock_key, wdt->base + wdt->variant->unlock);
+ 	spin_unlock(&wdt->lock);
 -- 
-2.34.1
+2.37.2.352.g3c44437643
 
