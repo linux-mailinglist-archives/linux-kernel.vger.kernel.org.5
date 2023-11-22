@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B2C7F50A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCD57F50CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344427AbjKVTfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 14:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S1344631AbjKVThY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 14:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343867AbjKVTfL (ORCPT
+        with ESMTP id S1344538AbjKVThL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 14:35:11 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8D718E
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:35:06 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso1813581fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:35:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700681705; x=1701286505; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hDmhoQHGOOALyVImUqGT+R0vogulb4Mds0pYOKaTAe0=;
-        b=bikKc5lUw/LI4QjmZk3K8Ctg2TFU52ankJhgr1UMIKOabQI2HObJDHpG3mZ43Xojs3
-         seWBM8H6/qPnGdHKJnH0OOAR89kqtNuyCWMeA/230v+4LJ0/BHvwZ28a7RVpikbNrTFo
-         KzlhF1fhqaBOVsC3vdhaj9UOLerLBbpO7of4nAu+/WsBBytkPk5Hb0eHYUZEHC833hTa
-         ryr3sTSHxKe0d6WLdR4mn3m51C6IKe6iqj7vnYYE5HXK9fyrUxuVZ1e/2S2KW42VWp8h
-         7oQ/EGNKAlAZ2aY8pCvBRzHyNbnHt1VpzUp47OqYqtjHmI9SJJKbHN1n3TfE+CApa/Si
-         lNUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700681705; x=1701286505;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hDmhoQHGOOALyVImUqGT+R0vogulb4Mds0pYOKaTAe0=;
-        b=vp/Z+2UN9H23QKPxGnlfoLil4LubtUrP3WFH/eZO9hR4GD+9G5LCk4C3XnMW+zsCXI
-         9mc07KpDehCZqh2xI9MZXfnCyeGSuk0kfq+uYipSW4RqMoQthBa651v+MdshpbCcAb3b
-         OTW44kBBDCDs7ZAAzmpDTwMT4g1DBeFNQpBi88jEaUE1Piyz5kIh5GP6jhVln09xjiYs
-         c2BtinO+Xny51sUCd70/K3EUfdHXbAm1O9hIT/0IV9ST7xrUOsMyNwW1ssVTF76x3Ehc
-         v8Rb4gOiaXeLFtiaTE45IKYlREG/bTvSgzf+syxuNLa6cF74mFSeO/7yRQt75tuq4XaH
-         Y+SA==
-X-Gm-Message-State: AOJu0YwnreWz8Yd/yG6wctlV7WeLb2BjkFkTw5mwIzD307YHyvTFoHu+
-        dCICdaQM4E/DQ+0odYuqmffGlw==
-X-Google-Smtp-Source: AGHT+IE6aS0LAuHAvH9t9v/SYT2pY0NL/sN0lO5YQ5D7kje63sItMPR3QHt65q3O5k6KurxZCAhxWA==
-X-Received: by 2002:a2e:920b:0:b0:2c5:23e3:ed11 with SMTP id k11-20020a2e920b000000b002c523e3ed11mr2640611ljg.30.1700681704688;
-        Wed, 22 Nov 2023 11:35:04 -0800 (PST)
-Received: from [172.30.204.74] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id f6-20020a2e9186000000b002c505a6a398sm29408ljg.89.2023.11.22.11.35.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 11:35:03 -0800 (PST)
-Message-ID: <6e399854-40a2-412b-8c41-4f9e6b17e38b@linaro.org>
-Date:   Wed, 22 Nov 2023 20:35:02 +0100
+        Wed, 22 Nov 2023 14:37:11 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2048.outbound.protection.outlook.com [40.107.243.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50475D53;
+        Wed, 22 Nov 2023 11:37:03 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gFKyYYJuxGrkN7SqlQWMI/+F4dkHrWor4fd96GzcIm45c4kwEtZRmX6g6OEsmPoZZSCHi/rllgEoLfoTPsba4Qt3pLvZhZiUmG5aSrDt2oYnv5g8OlkAfXQnXb/2TJq85CEVUmPCzpOqI4S8289+IkrjxKgj3l7wF7Y2Cz8AhvVuEcoCYIz87LtGQPgE6WiUezU9xIfnWnCbgKX3EPZRpm5KhmSv+77lbd7nIOfHoRS3GZOKIIcqZ2eH/DT5pDJMsWF8NVi+w06DLGHdv12gY/w9bzhQArmHqlC1FB3ce+ixNfkiwlo8PNALm8NLJz2IVRtID72AMxGMWbMs/mjnAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kmF0om9zYBwVM59etenXl2X+XseBqdAxdMopiVpHAnw=;
+ b=NeVn/HOSnP52h/+p/8whZyX8EuHo0tgONduzoPLRqHQmz+Yn4a2gjgbFwmj+l6o0IXbzO6dzCZ3CawF73gqQyf3ZcYQQXIcwkNEoeFGX6nJ9ayEi1ZK2r2OvZ/mjByA/inlJwuRucxPAlJjxVHiRcfK6sptO4DOc9ZTMabcuN5BoDn2f60WBxmooIKk6/koBR2fePh4HlQvhwCAhN65UOnwW+qrOBzRb+7Ro3J8d6C3Fj2ikJR3oc4ytd7GI3sLYSa29s4YSVdaEIC+d1rc3UUyI0IP+SQpb3K+U8N++MKCuxJ3pZZkjHY8ElLPysi6uLR46owbXeD0E7L+fhKgp+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kmF0om9zYBwVM59etenXl2X+XseBqdAxdMopiVpHAnw=;
+ b=kJk93R2pSsS/Mr8wJFoiOcmgS2KBNqnnS+x4gDG51f9T/AxkRpqB+Tq1QqVVbSfI1LepHtLu4FKkIQQi6otRRfd1SWjQg9awZ14pKept8fJRBUJjBQcOxkteTGr6jas8JL8rBlOIaoqvb9fMw6k6Pu94+/PK1llrFE6nE52Z3OA=
+Received: from BY5PR16CA0011.namprd16.prod.outlook.com (2603:10b6:a03:1a0::24)
+ by SA0PR12MB4351.namprd12.prod.outlook.com (2603:10b6:806:71::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18; Wed, 22 Nov
+ 2023 19:37:00 +0000
+Received: from MWH0EPF000989EC.namprd02.prod.outlook.com
+ (2603:10b6:a03:1a0:cafe::84) by BY5PR16CA0011.outlook.office365.com
+ (2603:10b6:a03:1a0::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.18 via Frontend
+ Transport; Wed, 22 Nov 2023 19:37:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MWH0EPF000989EC.mail.protection.outlook.com (10.167.241.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.12 via Frontend Transport; Wed, 22 Nov 2023 19:37:00 +0000
+Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 22 Nov
+ 2023 13:36:54 -0600
+From:   Brett Creeley <brett.creeley@amd.com>
+To:     <jgg@ziepe.ca>, <yishaih@nvidia.com>, <liulongfang@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+        <alex.williamson@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <shannon.nelson@amd.com>, <brett.creeley@amd.com>
+Subject: [PATCH vfio 0/2] hisi_acc_vfio_pci: locking updates
+Date:   Wed, 22 Nov 2023 11:36:32 -0800
+Message-ID: <20231122193634.27250-1-brett.creeley@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/16] dt-bindings: arm: qcom: add SM8550 AIM300
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        tglx@linutronix.de
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-2-quic_tengfan@quicinc.com>
- <519b89a2-550e-44a2-bff0-a6a86c50d073@linaro.org>
- <54b68923-f670-482b-b4a2-ff5f5c867a91@linaro.org>
- <7bf18b1e-463d-4030-99cd-4fcf2126fda2@quicinc.com>
- <4eb76d38-93b5-424b-adce-3cc296fa03fb@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <4eb76d38-93b5-424b-adce-3cc296fa03fb@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EC:EE_|SA0PR12MB4351:EE_
+X-MS-Office365-Filtering-Correlation-Id: a9226c59-114c-4272-2f0b-08dbeb92656e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BQT96WrgB69m2zaLkxGYthRON0lt/xLVeblZoqxN0tChSCUM0h+OEycgshKRk/dd5bZO6K45ykRpUIyrFzD8i5a2bdX6Yx+e6Ok8Eb/LA0XuDkeMEr+FNKQJgom5SS1AMXMk0aOKThUeNbbnx+5+IblJfqTniVY9XLLrs5R/q1joCqYzUuOKuHfNeg3D6Ooe57vliqiQ4IAJ3uAIZ3XPoerngmU5rA5IFshukizypiStyu1wbV3aDDh+y3Xw6ujJSkH1SK6yxqYT+TMYaQfD31GILLZ3Gp9Qk9K+5VWWviVwACFRaW9X8CJtIbNhqIySgtFifhKun9DVumk8+d8xrDaApKaBKTm7/JIiGYYej5w59F4qkgthzWGCj6p3e5r+I3PtrSljeDXXiirAoks5MQNTYs/X/cbE1fNCdBsWvtZZ2+WprRvN8lOnznMFNnZ3sD7xY0ophloeQcBQuGpKPX135YlVVB3l9ZeOatqt7BkhoBzElZSdGMOuQh5n23LBl34Hw+U6KeocqotHmarLqklLeP6ZJJLas2dBdT7zDmLudCvlHABmg0qfl2IuJDBZJiA3wainEQCX4ErKgcfv5K8K0SwzAe/tg2RMcjCSFgQbR0inp+GJ/v/mDKTCjdDyN+w3z2Ujjy+60kyh77998T7xiVMViflnTAD7uTXCfET9kuFoPtDZ6r8UWL9Gbkorv9ZWx5nI5P/Eokb7/UbTNprp9dX7MmLnDxvNsTnZt7xlKR1rg8z9KD95eV4vJm8TApX6fNKUZLFiXP3mIw3B9w==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(39860400002)(396003)(136003)(230922051799003)(451199024)(186009)(64100799003)(82310400011)(1800799012)(46966006)(36840700001)(40470700004)(40460700003)(1076003)(16526019)(36860700001)(336012)(26005)(83380400001)(2616005)(6666004)(8676002)(47076005)(4326008)(8936002)(41300700001)(2906002)(44832011)(4744005)(5660300002)(15650500001)(966005)(478600001)(316002)(426003)(54906003)(110136005)(70206006)(70586007)(86362001)(82740400003)(36756003)(81166007)(356005)(40480700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 19:37:00.0810
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9226c59-114c-4272-2f0b-08dbeb92656e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EC.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4351
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The vfio/pds series for locking updates/fixes in the following link
+made some changes that can also be done for other vendor's vfio
+drivers. Specifically, changing the reset lock from a spinlock to mutex
+and also calling mutex_destroy() in the vfio device release callback.
 
+https://lore.kernel.org/kvm/20231122192532.25791-1-brett.creeley@amd.com/
 
-On 11/21/23 08:18, Krzysztof Kozlowski wrote:
-> On 21/11/2023 01:30, Tengfei Fan wrote:
->>
->>
->> 在 11/20/2023 4:53 PM, Krzysztof Kozlowski 写道:
->>> On 17/11/2023 11:22, Krzysztof Kozlowski wrote:
->>>> On 17/11/2023 11:18, Tengfei Fan wrote:
->>>>> Add board compatible for SM8550 AIM300.
->>>>
->>>> Subject, commit msg and compatible tell basically the same... and none
->>>> of them tell me what is AIM300.
->>>
->>> Due to lack of explanation it is difficult to judge what's this. However
->>> based on pieces of information I got, it looks like it is not a board,
->>> so it is not suitable to be DTS, but DTSI. You still need a board...
->>>
->>> Best regards,
->>> Krzysztof
->>>
->>
->> Hi Krzysztof,
->> AIM (Artificial Intelligence Module). This hardware platform can be used
->> to develop AI related software based on Qualcomm chipset. I also will
->> update this message to patch commit message.
-> 
-> Does "Module" means it is physical module?
-Moreover, does it have anything specific that makes it different from
-a MTP/QRD/regular 8550 SoM?
-In general, you can develop AI software on any computer, there are no
-runtime checks for "AI" presence in the naming ;)
+So, this series makes these changes in order to remain separate from
+the vfio/pds series linked above.
 
-Or is it perhaps like QRB5165N [1], a base soc with what seems to
-be a fat AI accelerator connected to it?
+Note, that I don't have the required hardware to test on this vendor's
+hardware, so help would be appreciated.
 
-Konrad
+Brett Creeley (2):
+  hisi_acc_vfio_pci: Change reset_lock to mutex_lock
+  hisi_acc_vfio_pci: Destroy the [state|reset]_mutex on release
 
-[1] https://www.thundercomm.com/product/qualcomm-robotics-rb6-development-kit/#specifications
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 25 +++++++++++++------
+ .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  3 +--
+ 2 files changed, 19 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
+
