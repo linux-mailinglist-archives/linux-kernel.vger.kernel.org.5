@@ -2,128 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E647C7F5211
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064237F5280
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 22:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbjKVVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 16:09:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S1343646AbjKVVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 16:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjKVVJF (ORCPT
+        with ESMTP id S231535AbjKVVWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 16:09:05 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F10D1A4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:09:01 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9fffa4c4f43so24387566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:09:01 -0800 (PST)
+        Wed, 22 Nov 2023 16:22:15 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A680101;
+        Wed, 22 Nov 2023 13:22:10 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso1185725e9.3;
+        Wed, 22 Nov 2023 13:22:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700687339; x=1701292139; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DjZ3A9RnpMc/0GPOf8DzrpfaMDka4vJ8RxujHh4ePRw=;
-        b=TyL8aRoSG8W7XCbwEkgeGlsgn+vGank7QpQhJ5G48NdXyNih9MMcRA91/5NySZ3aCU
-         ZEKXp/p+5UqVZCAS99U+93rWr2AUxe3FEu7R52AgXJ90GGAAQ8l7ZPTHDtS/u5eje6JD
-         ZMjwHuwJI+xxgVUvknlTs+KDvQBcfAgXAIj40=
+        d=gmail.com; s=20230601; t=1700688129; x=1701292929; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=08+Ie0dqV25MoF956/ME1tRmF8esam1I+2PyZxe5M6U=;
+        b=ldaQOuwXdap2awxFs6E338fh4OUN5ESBToEh1WLjz4wkNuCenOKIyZBIwdRgP4xAfW
+         i20Sw8x1nQf5XXFPpSnpWMOEDROnwYXZpHbX9PFJndDZv/cNHnhFA5TBoYrD3bU/6HiW
+         rwyUQ+oocsM6ZEHPjj0ndpc1IpfDZMd2CWsEsB5qxopVz/qViPoOtxhxUDT0XqRU4WRX
+         /ZUEsVjacQm+Ivlhp/eQE1ulT5uajsnGMoF2oI0mZIKmX5VmlurwO9DdmhZ/d2C8O5/R
+         nABhiKYDezM2kgdi+ZM9WCOamIgJxfFPDhnKFp2rj4wedHNP4g8yI4NVks8PazCRiGmf
+         vNiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700687339; x=1701292139;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DjZ3A9RnpMc/0GPOf8DzrpfaMDka4vJ8RxujHh4ePRw=;
-        b=PdGuG1YCPUXkG88sco7zKvWoasIcSTyyaqgZlEvSDwkzBAlnwLvyfSLqdy+0TEXWmd
-         g0I6HvLvOw+sAeREPcvQKYktqnkeEkclN4Be54YHGcim8oN65SNIchjNIgFLgOKAug7Y
-         4JP/oLZpvG2QjZcV2FAHXj1vcRP+MIEmA7kn9BYWwHjyeB+UKaIKUau+VA009RjQzrM9
-         WaHkVXmQzg+hPmPwD391o5b6jDE4mHde1MAlJqzwxC8NdWnNifqdv/Fu3KTIBcK59rOy
-         +eeJJS985dM4BWcMHBx9luaN3ro6ji3ew7WweqUUQNtEt06B/GypZFXP9JdfxNPS7ovy
-         w+ug==
-X-Gm-Message-State: AOJu0YwvcFJrbIrnvm0ImMqxT+YARL7z+xg/zigfow5XDWcS335FZZOB
-        wMlA6f3EbkIWTodei/mqT6MLIy5i+obc/wuL75iPRlHH
-X-Google-Smtp-Source: AGHT+IHt8IuB/xYA6vUIxi17WgUp6M03hfI65AHIOjAsoD3V9UXubxe9DyD34IFRT+UNCq2m1hZp8A==
-X-Received: by 2002:a17:907:371:b0:a02:9700:bf53 with SMTP id rs17-20020a170907037100b00a029700bf53mr2402562ejb.46.1700687339642;
-        Wed, 22 Nov 2023 13:08:59 -0800 (PST)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170906328d00b009a193a5acffsm211903ejw.121.2023.11.22.13.08.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 13:08:59 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5488bf9e193so279956a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 13:08:58 -0800 (PST)
-X-Received: by 2002:aa7:d050:0:b0:53e:1825:be81 with SMTP id
- n16-20020aa7d050000000b0053e1825be81mr2626539edo.21.1700687338666; Wed, 22
- Nov 2023 13:08:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700688129; x=1701292929;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=08+Ie0dqV25MoF956/ME1tRmF8esam1I+2PyZxe5M6U=;
+        b=DKYWvzlUdMSOgcEdCuD81EhMSML5JskxdyKmwAicr29OyI5TLQE/cmnxG4omR/C5dY
+         4pnABwLA0yPR8yVNvEJiIH60i9uAkg1b1yc0FhfbSkbSreMVfxUCwGI2hCk9lWfRPv/v
+         sQ/9KqewYPwn5NTVqEUWaJF5HkQFNee8U5p2Ll4Jz7ruDmZVlY2nms+bKrIiFEB7asOz
+         pcylOwv7nSQuDjcfkuQBfx/D2DvMmB4uTa0rONch68azyQxi883L+9ZWNXJ2DXcQd1Q1
+         FLwe/5LWCgidWz32IskPusInWyWaviSJIQ4dkWf1yiplZtVCCpowsCxOmmEOTY2uOk3X
+         vJmg==
+X-Gm-Message-State: AOJu0Yx0UtL+PinO16OsaajYAw/ft/RCA7j3B/EZ0yfgZtgTMlpN8v4T
+        BzPP7jK+3y2y6fG8fBEm1kE=
+X-Google-Smtp-Source: AGHT+IHH2PF2PFJlr/swMotqXlA/cM9/0OJO4DJ5jXChRxnwx9MhPU4lyFIrejfmhajvrIPij48wDA==
+X-Received: by 2002:a05:600c:a002:b0:408:4120:bad2 with SMTP id jg2-20020a05600ca00200b004084120bad2mr2870622wmb.9.1700688128348;
+        Wed, 22 Nov 2023 13:22:08 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id o21-20020a05600c4fd500b003fc16ee2864sm522874wmq.48.2023.11.22.13.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 13:22:08 -0800 (PST)
+Message-ID: <655e7100.050a0220.e85ad.24f4@mx.google.com>
+X-Google-Original-Message-ID: <ZV5uIiqSR1CFN2IN@Ansuel-xps.>
+Date:   Wed, 22 Nov 2023 22:09:54 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [net-next PATCH] net: phy: aquantia: drop wrong endianness
+ conversion for addr and CRC
+References: <20231122170813.1222-1-ansuelsmth@gmail.com>
+ <ZV45UY6nYZ/WAHpG@shell.armlinux.org.uk>
+ <655e4025.df0a0220.50550.3d70@mx.google.com>
+ <ZV5OPr5ee2x/yMCQ@shell.armlinux.org.uk>
+ <655e5ca8.5d0a0220.119f1.0f01@mx.google.com>
+ <ZV5jrF6+e3ClCmX6@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20230825141226.13566-1-lukas.bulwahn@gmail.com>
- <c67bd324-cec0-4fe4-b3b1-fc1d1e4f2967@leemhuis.info> <20231112181036.GBZVEVHIIj/Oos1cx4@fat_crate.local>
- <0e9cbe6f-ac6c-47f2-b663-a22568799eca@leemhuis.info> <20231122115826.GAZV3s4krKXI002KQ0@fat_crate.local>
- <e1ca042c-de1d-4fe3-ad69-51d147b1fe0b@leemhuis.info> <20231122155758.GEZV4lBgtZyzsP5Z4V@fat_crate.local>
- <CAHk-=wiV+NM+jLKbSj_Ej9RaXpu4akWV03G_wXyTSHZhArq1tg@mail.gmail.com> <20231122205135.GGZV5p157mBi6RYUNs@fat_crate.local>
-In-Reply-To: <20231122205135.GGZV5p157mBi6RYUNs@fat_crate.local>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Nov 2023 13:08:41 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh03jMZRAxHFTkv0h9dZ6TmiqukzcHd4RTx7ijia_prsg@mail.gmail.com>
-Message-ID: <CAHk-=wh03jMZRAxHFTkv0h9dZ6TmiqukzcHd4RTx7ijia_prsg@mail.gmail.com>
-Subject: Re: [regression] microcode files missing in initramfs imgages from
- dracut (was Re: [PATCH] x86: Clean up remaining references to CONFIG_MICROCODE_AMD)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        lukas.bulwahn@gmail.com, dave.hansen@linux.intel.com,
-        hpa@zytor.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV5jrF6+e3ClCmX6@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Nov 2023 at 12:51, Borislav Petkov <bp@alien8.de> wrote:
+On Wed, Nov 22, 2023 at 08:25:16PM +0000, Russell King (Oracle) wrote:
+> On Wed, Nov 22, 2023 at 08:55:17PM +0100, Christian Marangi wrote:
+> > On Wed, Nov 22, 2023 at 06:53:50PM +0000, Russell King (Oracle) wrote:
+> > > On Wed, Nov 22, 2023 at 06:53:39PM +0100, Christian Marangi wrote:
+> > > > On Wed, Nov 22, 2023 at 05:24:33PM +0000, Russell King (Oracle) wrote:
+> > > > > On Wed, Nov 22, 2023 at 06:08:13PM +0100, Christian Marangi wrote:
+> > > > > > On further testing on BE target with kernel test robot, it was notice
+> > > > > > that the endianness conversion for addr and CRC in fw_load_memory was
+> > > > > > wrong and actually not needed. Values in define doesn't get converted
+> > > > > > and are passed as is and hardcoded values are already in what the PHY
+> > > > > > require, that is LE.
+> > > > > > 
+> > > > > > Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
+> > > > > > _swab32 instead, the word is taked from firmware and is always LE, the
+> > > > > 
+> > > > >                                taken
+> > > > > 
+> > > > > > mailbox will emit a BE CRC hence the word needs to be always swapped and
+> > > > > > the endianness of the host needs to be ignored.
+> > > > > 
+> > > > > I'm not convinced. If the firmware is a bytestream (as most "files" are)
+> > > > > then for val = get_unaligned((u32 *)ptr), where ptr is an array of u8:
+> > > > > 
+> > > > > ptr[0]	ptr[1]	ptr[2]	ptr[3]	val on LE	val on BE
+> > > > > 0x01	0x02	0x03	0x04	0x04030201	0x01020304
+> > > > > 
+> > > > > So, endianness matters here, and I think as Jakub already suggested, you
+> > > > > need to use get_unaligned_le32().
+> > > > >
+> > > > 
+> > > > So they DO get converted to the HOST endian on reading the firmware from
+> > > > an nvmem cell or a filesystem?
+> > > 
+> > > I don't like "converted". It's *not* a conversion. It's a fundamental
+> > > property of accessing memory using different sizes of access.
+> > > 
+> > > As I attempted to explain above, if you have a file, and byte 0
+> > > contains 0xAA, byte 1 of the file contains 0xBB, byte 2 contains
+> > > 0xCC, and byte 3 contains 0xDD, then if you read that file byte by
+> > > byte, you will get 0xAA, then 0xBB, then 0xCC and then 0xDD.
+> > > 
+> > > If you map that file into memory, e.g. in userspace, using mmap(),
+> > > or allocating memory and reading four bytes into memory, and access
+> > > it using bytes, then at offset 0, you will find 0xAA, offset 1 will
+> > > be 0xBB, etc.
+> > > 
+> > > The problems with endianness start when you move away from byte
+> > > access.
+> > > 
+> > > If you use 16-bit accessors, then, a little endian machine is defined
+> > > that a 16-bit load from memory will result in the first byte being put
+> > > into the LSB of the 16-bit value, and the second byte will be put into
+> > > the MSB of the 16-bit value. So that would be 0xBBAA. However, on a big
+> > > endian machine, a 16-bit load will result in the first byte being put
+> > > into the MSB of the 16-bit value, and the second byte will be put into
+> > > the LSB of that value - meaning the 16-bit value will be 0xAABB.
+> > > 
+> > > The second 16-bit value uses the next two bytes, and the order at which
+> > > these two bytes are placed into the 16-bit value reflects the same as
+> > > the first two bytes. So LE will be 0xDDCC and BE would be 0xCCDD.
+> > > 
+> > > The same "swapping" happens with 32-bit, but of course instead of just
+> > > two bytes, it covers four bytes. On LE, a 32-bit access will give
+> > > 0xDDCCBBAA. On BE, that will be 0xAABBCCDD.
+> > > 
+> > > Again, this is not to do with any kind of "conversion" happening in
+> > > software. It's a property of how the memory subsystem inside the CPU
+> > > works.
+> > > 
+> > > > Again this is really dumping raw data from the read file directly to the
+> > > > mailbox. Unless phy_write does some conversion internally, but in that
+> > > > case how does it know what endian is the PHY internally?
+> > > 
+> > > phy_write() does *no* conversion. The MDIO bus defines that a 16-bit
+> > > register value will be transferred, and the MDIO bus specifies that
+> > > bit 15 will be sent first, followed by subsequent bits down to bit 0.
+> > > 
+> > > The access to the hardware to make this happen is required to ensure
+> > > that the value passed to phy_write() and read using phy_read() will
+> > > reflect this. So, if one does this:
+> > > 
+> > > 	val = phy_read(phydev, 0);
+> > > 
+> > > 	for (i = 15; i >= 0; i--)
+> > > 		printk("%u", !!(val & BIT(i)));
+> > > 
+> > > 	printk("\n");
+> > > 
+> > > This will give you the stream of bits in the _order_ that they appeared
+> > > on the MDIO bus when phy_read() accessed. Doing the same with a value
+> > > to be written will produce the bits in the same value that they will
+> > > be placed on the MDIO bus.
+> > > 
+> > > So, this means that if the BMCR contains 0x1234 in the PHY, phy_read()
+> > > will return 0x1234. Passing 0x1234 into phy_write() will write 0x1234
+> > > in that register. The host endian is entirely irrelevant here.
+> > >
+> > 
+> > Thanks a lot for the clarification. And sorry for misusing the word
+> > conversion.
+> > 
+> > > > > I would make this explicit:
+> > > > > 
+> > > > > 		u8 crc_data[4];
+> > > > > 
+> > > > > 		...
+> > > > > 
+> > > > > 		/* CRC is calculated using BE order */
+> > > > > 		crc_data[0] = word >> 24;
+> > > > > 		crc_data[1] = word >> 16;
+> > > > > 		crc_data[2] = word >> 8;
+> > > > > 		crc_data[3] = word;
+> > > > > 
+> > > > > 		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
+> > > > > 
+> > > > > which will be (a) completely unambiguous, and (b) completely
+> > > > > independent of the host endianness.
+> > > > 
+> > > > But isn't this exactly what is done with ___constant_swab32 ?
+> > > > __swab32 should not change if the HOST is BE or LE.
+> > > 
+> > > Let try again to make this clear. If one has this code:
+> > > 
+> > > 		u32 word = 0x01020304;
+> > > 		u8 *ptr;
+> > > 		int i;
+> > > 
+> > > 		ptr = (u8 *)&word;
+> > > 
+> > > 		for (i = 0; i < 4; i++)
+> > > 			printk(" %02x", ptr[i]);
+> > > 		printk("\n");
+> > > 
+> > > Then, on a:
+> > > - LE machine, this will print " 04 03 02 01"
+> > > - BE machine, this will print " 01 02 03 04"
+> > > 
+> > > Now, if you look at the definition of crc_ccitt_false(), it is
+> > > defined to do:
+> > > 
+> > >         while (len--)
+> > >                 crc = crc_ccitt_false_byte(crc, *buffer++);
+> > > 
+> > > So, on a LE machine, this will feed the above bytes in the order of
+> > > 0x04, 0x03, 0x02, 0x01 in a LE machine, and 0x01, 0x02, 0x03, 0x04
+> > > on a BE machine.
+> > > 
+> > 
+> > So it's really a problem of setting u8 in word and the order they are
+> > read in the system.
+> 
+> Correct.
+> 
+> > The first get_unaligned has to be changed to get_unaligned_le32 based on
+> > how the data are treated from passing from an u8 to u32.
+> 
+> Yes.
+> 
+> I'm going to use the term "bytestream", abbreviated to just stream, to
+> represent the firmware that you are going to upload, because that's
+> essentially what all files are.
+> 
+>  the first byte of the stream to appear in bits 7:0 of
+>    VEND1_GLOBAL_MAILBOX_INTERFACE6
+> 
+>  the second byte of the stream to appear in bits 15:8 of
+>    VEND1_GLOBAL_MAILBOX_INTERFACE6
+> 
+>  the third byte of the stream to appear in bits 7:0 of
+>    VEND1_GLOBAL_MAILBOX_INTERFACE5
+> 
+>  the forth byte of the stream to appear in bits 15:8 of
+>    VEND1_GLOBAL_MAILBOX_INTERFACE5
+> 
+> and this to repeat over subsequent groups of four bytes in the stream.
+> 
+> This will be achieved by reading the stream using 32-bit little endian
+> accesses using get_unaligned_le32(), and then as you are already doing,
+> splitting them up into two 16-bit quantities.
+> 
+> > For LE this doesn't matter but for BE they needs to be swapped as this
+> > is what mailbox expect.
+> 
+> Correct.
+> 
+> > For CRC. Would something like this work?
+> > 
+> > Define u8 crc_data[4];
+> > 
+> > *crc_data = (__force u32)cpu_to_be32(word);
+> 
+> That won't do what you want, it will only write the first byte.
 >
-> My only worry here is that we're making a precedent and basically saying
-> that it is ok for tools to grep .config to figure out what is supported
-> by the kernel. And then other tools might follow.
 
-Yes, I agree that it's not optimal, but I would hate to have some odd
-"let's add another ELF note" churn too, for (presumably) increasingly
-obscure reasons.
+Right I'm stupid...
 
-It looks like dracut has been doing this forever, and in fact back in
-2015 apparently had the exact same issue (that never made it to kernel
-developers, or at least not to me), when the kernel
-CONFIG_MICROCODE_xyz_EARLY config went away, and became just
-CONFIG_MICROCODE_xyz.
+Just an example, the correct way would have been...
 
-The whole "check kernel config" in dracut seems to go back to 2014, so
-it's been that way for almost a decade by now.
+u8 crc_data[4];
+u32 *crc_word;
+u32 word;
 
-Honestly, I think the right approach may be to just remove the check
-again from dracut entirely - the intent seems to be to make the initrd
-smaller when people don't support microcode updates, but does that
-ever actually *happen*?
+crc_word = (u32 *)crc_data;
+*crc_word = (__force u32)cpu_to_be32(word);
 
-There are dracut command lines, like "--early-microcode" and
-"--no-early-microcode", so people who really want to save space could
-just force it that way. Doing the CONFIG_xyz check seems broken.
+crc = crc_ccitt_false(crc, crc_data, sizeof(word));
 
-But that's for the dracut people to worry about.
+> > crc = crc_ccitt_false(crc, crc_data, sizeof(word));
+> 
+> The point of explicitly assigning each byte is to ensure that it's
+> obvious that we'll get the right result. If we try to write a 32-bit
+> value, then we're getting right back into the "how does _this_ CPU
+> map a 32-bit value to indivudual bytes" endianness problem.
+> 
+> The advantage of writing it out as bytes into a u8 array is that from
+> a code readability point of view, it's all laid out in plain sight
+> exactly which part of the 32-bit value ends up where and the order in
+> which the crc function is going to read those bytes - and it is
+> independent of whatever the endianess of the host architecture.
+> 
 
-I guess we on the kernel side could help with "make install" etc, but
-we've (intentionally) tried to insulate us from distros having
-distro-specific installkernel scripts, so we don't really haev a good
-way to pass information down to the installkernel side.
+It's just that I would really love to have a way to skip the shift
+maddness. If the code above is correct really don't know what is
+better... probably yours... just I don't like those shift.
 
-It *would* make sense if we just had some actual arguments we might
-pass down. Right now we just do
+I wonder... can't I reuse get_unaligned_be32((const u32 *)(data + pos));
+???
 
-        exec "${file}" "${KERNELRELEASE}" "${KBUILD_IMAGE}" System.map
-"${INSTALL_PATH}"
+> > Using u8 array should keep the correct order no matter the endian and
+> > cpu_to_be32 should correctly swap the word if needed. (in a BE HOST data
+> > should already be in the right order and in LE has to be swapped right?)
+> 
+> If you are absolutely certain that each group of four bytes in the
+> source bytestream need to be provided to the CRC function in the
+> reverse order to which they appear in the file.
+> 
 
-so basically the only argument we pass down is that INSTALL_PATH
-(which is just "/boot" by default).
-
-            Linus
+-- 
+	Ansuel
