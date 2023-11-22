@@ -2,208 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27767F4444
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDAB7F4449
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 11:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343752AbjKVKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 05:46:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
+        id S1343501AbjKVKtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 05:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235103AbjKVKqa (ORCPT
+        with ESMTP id S229714AbjKVKtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 05:46:30 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49784198;
-        Wed, 22 Nov 2023 02:46:21 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E266360006;
-        Wed, 22 Nov 2023 10:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700649980;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wsLp5fNBZJG71eNfXxaG4gNoXfOWnqSgaEfLQGOpsAc=;
-        b=p3kX9wa7/tIpef5pLKlwC0v7uuLxigBoxCHcCocVKJbwnNnYmdVta1zjtahXDNpH5JwEa0
-        IbhMKmgT/20IyKNZZrTttEPhDmjjKjzOo/WrzehtlJsXyr+6B3kIiwQfbuMUXsJMPEq494
-        NEa54Gs0SxZWB1htKRCC2SlDXimQ0XpPlrik887YAEr5yP4W3fi8rN2zaZ5n2ciEW+11Af
-        vNqXerTqkB/LbdGhjTbYnhF0E5wMfjcz+7In3bA9vmOzc9IOLUlID1Ish3AM4wgMDZXprH
-        GN+46dEC/0GtdiQdB0kYCEZjuSou1yYkAZ3zmGt/szQXZudKCU8lZG6JB1K8Qg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 22 Nov 2023 11:46:14 +0100
-Message-Id: <CX5A3OSPKM1Q.1CPN17KI0PD7A@tleb-bootlin-xps13-01>
-Subject: Re: [PATCH v2 1/7] dt-bindings: usb: ti,j721e-usb: add ti,j7200-usb
- compatible
-Cc:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
-        "Conor Dooley" <conor.dooley@microchip.com>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Roger Quadros" <rogerq@kernel.org>,
-        "Peter Chen" <peter.chen@kernel.org>,
-        "Pawel Laszczak" <pawell@cadence.com>,
-        "Nishanth Menon" <nm@ti.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tero Kristo" <kristo@kernel.org>
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20231120-j7200-usb-suspend-v2-0-038c7e4a3df4@bootlin.com>
- <20231120-j7200-usb-suspend-v2-1-038c7e4a3df4@bootlin.com>
- <6f0da181-717c-4b14-ba3f-d287efe4105b@linaro.org>
- <CX4NADEZZEO1.3TXPVNOONKBCF@tleb-bootlin-xps13-01>
- <d0cc33d4-2b1a-43cd-8cd9-6b58d6c71c85@linaro.org>
-In-Reply-To: <d0cc33d4-2b1a-43cd-8cd9-6b58d6c71c85@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 22 Nov 2023 05:49:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC09B2;
+        Wed, 22 Nov 2023 02:49:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700650159; x=1732186159;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=0rSQb2urA603nTz22RYSdrYHdTMQYrctow0hPn/0OOA=;
+  b=SU+VH6pcsmCjjVbSHHCYd0qHi2cX7ciqeVkTfVCbWzgMZR3Ke8ouBwgi
+   Fek8YASuu/TtiWdgXWn30gD9+5553J0sHnkFHH867hWH9SL5+AjidbGwK
+   uRsvqDn26q4/h4WTVkhU4gyodf71OTHJJ/xz+mXgU3gJa0lbuJ9i9PpNQ
+   rXv83MydiMZ/33fSq8Dmb0+UUESTh5FPfiLJ/2VearIKekgHz0qK9Wi6l
+   mkWC7qFrRD8mOruv6rzu3YM4b8xpsFWrtTsWFrIUH595kOWtSbXFxP0Eh
+   +afCZc/kJYhFEOKTWTLVwNVIn2Atzsawi8k9gcl10zm1H2gtwGD01PEt+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="458526033"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="458526033"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 02:49:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10901"; a="1098353877"
+X-IronPort-AV: E=Sophos;i="6.04,218,1695711600"; 
+   d="scan'208";a="1098353877"
+Received: from johannes-ivm.ger.corp.intel.com ([10.249.47.139])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 02:49:15 -0800
+Date:   Wed, 22 Nov 2023 12:49:13 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     David Thompson <davthompson@nvidia.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        vadimp@nvidia.com, platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, kblaiech@nvidia.com
+Subject: Re: [PATCH v2] mlxbf-bootctl: correctly identify secure boot with
+ development keys
+In-Reply-To: <20231121161216.3803-1-davthompson@nvidia.com>
+Message-ID: <1967c625-6d63-badd-6b2c-fe7267bfeb@linux.intel.com>
+References: <20231121161216.3803-1-davthompson@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 21 Nov 2023, David Thompson wrote:
 
-On Tue Nov 21, 2023 at 6:11 PM CET, Krzysztof Kozlowski wrote:
-> On 21/11/2023 17:53, Th=C3=A9o Lebrun wrote:
-> > On Mon Nov 20, 2023 at 6:32 PM CET, Krzysztof Kozlowski wrote:
-> >> On 20/11/2023 18:06, Th=C3=A9o Lebrun wrote:
-> >>> On this platform, the controller & its wrapper are reset on resume. T=
-his
-> >>> makes it have a different behavior from other platforms.
-> >>>
-> >>> We allow using the new compatible with a fallback onto the original
-> >>> ti,j721e-usb compatible. We therefore allow using an older kernel wit=
-h
-> >>
-> >> Where is fallback ti,j721e-usb used? Please point me to the code.
-> >=20
-> > No fallback is implemented in code. Using a kernel that doesn't have
-> > this patch series but a more recent devicetree: DT has both
-> > devicetrees & the kernel will know which driver to use.
->
-> I meant your bindings. You said - with fallback to ti,j721e-usb. I do
-> not see it. To me the commit description is not accurate.
+> The secure boot state of the BlueField SoC is represented by two bits:
+>                 0 = production state
+>                 1 = secure boot enabled
+>                 2 = non-secure (secure boot disabled)
+>                 3 = RMA state
+> There is also a single bit to indicate whether production keys or
+> development keys are being used when secure boot is enabled.
 
-I see your point, I'll remove that aspect.
+Thanks for the extra details but there are more bits that come into play 
+here and you mention anything about them. More about this below with the 
+relevant code.
 
-> > That is opposed to having only compatible =3D "ti,j7200-usb". If using =
-an
-> > old kernel, it would not know what driver to match it to.
-> >=20
-> > [...]
-> >=20
-> >>> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> >>> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> >>> @@ -12,11 +12,15 @@ maintainers:
-> >>>  properties:
-> >>>    compatible:
-> >>>      oneOf:
-> >>> +      - const: ti,j7200-usb
-> >>>        - const: ti,j721e-usb
-> >>>        - const: ti,am64-usb
-> >>>        - items:
-> >>>            - const: ti,j721e-usb
-> >>>            - const: ti,am64-usb
-> >>> +      - items:
-> >>> +          - const: ti,j721e-usb
-> >>
-> >> This makes little sense. It's already on the list. Twice! Don't add it
-> >> third time.
-> >>
-> >> I am sorry, but this binding makes no sense. I mean, existing binding
-> >> makes no sense, but your change is not making it anyhow better.
-> >=20
-> > The goal of the DT schema pre-patch was to allow all three:
-> >=20
-> >    compatible =3D "ti,j721e-usb";
-> >    compatible =3D "ti,am64-usb";
-> >    compatible =3D "ti,j721e-usb", "ti,am64-usb";
->
-> Which does not make sense.
->
-> How ti,j721e-usb can be and cannot be compatible with am64 in the same ti=
-me?
+> The current logic in "lifecycle_state_show()" does not handle the case
+> where the SoC is configured for secure boot and is using development
+> keys.
 
-The code tells us that there is no difference between ti,j721e-usb &
-ti,am64-usb. And the commit adding the of_device_id entry agrees, see
-4f30b9d2315f (usb: cdns3: Add support for TI's AM64 SoC, 2021-01-19).
-Here is the entire patch because it is so small:
+This still doesn't state why the current state is a problem. That is, why
+"GA Secured" is a problem.
 
-   diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
-   index 90e246601537..eccb1c766bba 100644
-   --- a/drivers/usb/cdns3/cdns3-ti.c
-   +++ b/drivers/usb/cdns3/cdns3-ti.c
-   @@ -214,6 +214,7 @@ static int cdns_ti_remove(struct platform_device *pd=
-ev)
+> This patch updates the logic in "lifecycle_state_show()" to
+> support this combination and properly report this state.
+> 
+> Fixes: 79e29cb8fbc5c ("platform/mellanox: Add bootctl driver for Mellanox BlueField Soc")
+> Reviewed-by: Khalil Blaiech <kblaiech@nvidia.com>
+> Signed-off-by: David Thompson <davthompson@nvidia.com>
+> ---
+> v1->v2
+> a) commit message was expanded and re-worded for clarity
+> b) replaced use of hardcoded 0x10 with BIT(4) for MLXBF_BOOTCTL_SB_DEV_MASK
+> ---
+>  drivers/platform/mellanox/mlxbf-bootctl.c | 24 +++++++++++++++++------
+>  1 file changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-bootctl.c b/drivers/platform/mellanox/mlxbf-bootctl.c
+> index 1ac7dab22c63..13c62a97a6f7 100644
+> --- a/drivers/platform/mellanox/mlxbf-bootctl.c
+> +++ b/drivers/platform/mellanox/mlxbf-bootctl.c
+> @@ -20,6 +20,7 @@
+>  
+>  #define MLXBF_BOOTCTL_SB_SECURE_MASK		0x03
+>  #define MLXBF_BOOTCTL_SB_TEST_MASK		0x0c
+> +#define MLXBF_BOOTCTL_SB_DEV_MASK		BIT(4)
 
-    static const struct of_device_id cdns_ti_of_match[] =3D {
-      { .compatible =3D "ti,j721e-usb", },
-   +  { .compatible =3D "ti,am64-usb", },
-      {},
-    };
-    MODULE_DEVICE_TABLE(of, cdns_ti_of_match);
+You only covered MLXBF_BOOTCTL_SB_SECURE_MASK and 
+MLXBF_BOOTCTL_SB_DEV_MASK in your description above, is that correct?
 
-> > I've followed the same scheme & added both of those:
-> >=20
-> >    compatible =3D "ti,j7200-usb";
-> >    compatible =3D "ti,j7200-usb", "ti,j721e-usb";
-> >=20
-> > I messed up the ordering in the added 'items' options, but the logic
-> > seems right to me. And dtbs_check agrees. Am I missing something?
->
-> Logic is wrong. Device either is or is not compatible with something. At
-> least usually. We have some exceptions like SMMU for Adreno. Is this the
-> case? Why the device is and is not compatible with some other variant?
+>  #define MLXBF_SB_KEY_NUM			4
+>  
+> @@ -40,11 +41,18 @@ static struct mlxbf_bootctl_name boot_names[] = {
+>  	{ MLXBF_BOOTCTL_NONE, "none" },
+>  };
+>  
+> +enum {
+> +	MLXBF_BOOTCTL_SB_LIFECYCLE_PRODUCTION = 0,
+> +	MLXBF_BOOTCTL_SB_LIFECYCLE_GA_SECURE = 1,
+> +	MLXBF_BOOTCTL_SB_LIFECYCLE_GA_NON_SECURE = 2,
+> +	MLXBF_BOOTCTL_SB_LIFECYCLE_RMA = 3
+> +};
+> +
+>  static const char * const mlxbf_bootctl_lifecycle_states[] = {
+> -	[0] = "Production",
+> -	[1] = "GA Secured",
+> -	[2] = "GA Non-Secured",
+> -	[3] = "RMA",
+> +	[MLXBF_BOOTCTL_SB_LIFECYCLE_PRODUCTION] = "Production",
+> +	[MLXBF_BOOTCTL_SB_LIFECYCLE_GA_SECURE] = "GA Secured",
+> +	[MLXBF_BOOTCTL_SB_LIFECYCLE_GA_NON_SECURE] = "GA Non-Secured",
+> +	[MLXBF_BOOTCTL_SB_LIFECYCLE_RMA] = "RMA",
+>  };
+>  
+>  /* Log header format. */
+> @@ -254,8 +262,9 @@ static ssize_t lifecycle_state_show(struct device *dev,
+>  	if (lc_state < 0)
+>  		return lc_state;
+>  
+> -	lc_state &=
+> -		MLXBF_BOOTCTL_SB_TEST_MASK | MLXBF_BOOTCTL_SB_SECURE_MASK;
+> +	lc_state &= (MLXBF_BOOTCTL_SB_TEST_MASK |
+> +		     MLXBF_BOOTCTL_SB_SECURE_MASK |
+> +		     MLXBF_BOOTCTL_SB_DEV_MASK);
+>  
+> @@ -266,6 +275,9 @@ static ssize_t lifecycle_state_show(struct device *dev,
 
-My understanding is this: j721e & am64 are strictly equivalent. On our
-j7200 we know we reset on resume. I see three ways forward:
+I'm quoting some extra code not fully visible in the contexts:
 
- - properties:
-     compatible:
-       oneOf:
-         - const: ti,j7200-usb
-         - const: ti,j721e-usb
-         - const: ti,am64-usb
+        /*
+         * If the test bits are set, we specify that the current state may be
+         * due to using the test bits.
+         */
+        if (lc_state & MLXBF_BOOTCTL_SB_TEST_MASK) {
+                lc_state &= MLXBF_BOOTCTL_SB_SECURE_MASK;
 
-   We keep both ti,j721e-usb & ti,am64-usb separate even though they are
-   compatible. It makes for simpler changes & it avoids touching
-   devicetrees.
+Here what is output also depends on MLXBF_BOOTCTL_SB_TEST_MASK, right?
+And those bits even takes precedence over the code you're adding into 
+else if branch. So your description in commit message seems quite 
+inadequate to me.
 
- - properties:
-   compatible:
-     oneOf:
-       - const: ti,j7200-usb
-       - const: ti,j721e-usb
+Note that you've also added an out-of-bound accesses here since only 
+MLXBF_BOOTCTL_SB_SECURE_MASK gets cleared from lc_state:
 
-   AM64 is a duplicate of J721E. Remove it and update upstream
-   devicetrees.
+>  
+>  		return sprintf(buf, "%s(test)\n",
+>  			       mlxbf_bootctl_lifecycle_states[lc_state]);
+> +	} else if ((lc_state & MLXBF_BOOTCTL_SB_SECURE_MASK) == MLXBF_BOOTCTL_SB_LIFECYCLE_GA_SECURE
+> +		   && (lc_state & MLXBF_BOOTCTL_SB_DEV_MASK)) {
+> +		return sprintf(buf, "Secured (development)\n");
+>  	}
+>  
+>  	return sprintf(buf, "%s\n", mlxbf_bootctl_lifecycle_states[lc_state]);
 
- - properties:
-   compatible:
-     oneOf:
-       - const: ti,j7200-usb
-       - items:
-           - const: ti,j721e-usb
-           - const: ti,am64-usb
+Here's another potential out-of-bound access if the holes in the above if 
+logic aligns.
 
-   J721E & AM64 are compatible, express that & update devicetrees.
+-- 
+ i.
 
-Option one is simpler & doesn't change devicetrees so I'd lean in that
-direction. What's your opinion?
-
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
