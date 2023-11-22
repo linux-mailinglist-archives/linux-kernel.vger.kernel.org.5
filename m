@@ -2,172 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0DA7F479D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EC77F47A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 14:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343856AbjKVNVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 08:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
+        id S1344119AbjKVNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 08:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbjKVNVO (ORCPT
+        with ESMTP id S1344081AbjKVNWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 08:21:14 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3602810C;
-        Wed, 22 Nov 2023 05:21:08 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5c206572eedso3927008a12.0;
-        Wed, 22 Nov 2023 05:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700659267; x=1701264067; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8KuAtq2wuwd7uRsWWYBZ0mULd3F8IzS2XEFfePOf2ZA=;
-        b=iqnMr9O5eVF1I2OBbzzZQB3o8C2yqjNcIX86HXScm39WdL3nJa7KgKQJuY1YEvJ9JM
-         nlMm+0CyV7UmXiKKdFQ0JI1dUkvDMuMLJf0J3WuMiiC287v4PjTk/4GFfJc6+nmgukPp
-         ssOVNxY2xmQhL1hAeR2r1HhXOQNg266gNcXo0yibmsm5y545585iQ5qaHnYmjRCM2s1O
-         BM852pTUWrpVsF/H8wDb98JUpHxB4+JL5e6AXz/qeDGJ5y7aUBxnDar3AGi0MENrKGX2
-         AeZG/g1gN2MF5RRHNvm+6XPF9PWQ73Qt6prAs1KfeNAw4oSQqkMHgp8B01LR6t2kCDSg
-         sd8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700659267; x=1701264067;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8KuAtq2wuwd7uRsWWYBZ0mULd3F8IzS2XEFfePOf2ZA=;
-        b=gE6s2qrxQfgpRoARGE3m3VVZLI2xQJ6H6tu7KoUy6AUiD/ktmYC4Z/Ng8yP1R0Wia3
-         7c+G7YV4TgAPIKdBHljFVGmXWWMegWzLBcLJyYYCTbRUx9JAY6zrf5Uy6kKbH8x5B06K
-         UDb5iL2W1p6MyXGKmzcmqbh1535g1USfN1j/dT/U3k+F2MgS117MCmEIuxi4OiX2t32A
-         vLNf4oS8ZgewwxDEOjdHqYWUJxBUbN0S0cWLCvjUSH3C+bWLIp2A1eVvEU0KmQ6Ojp1s
-         STflksjIP6YFbxuBhFWgAmxdJQhKQyv6TldNG0+L9PkUdXCuo9A6EKD/DHmAqNHN2W3/
-         NsGQ==
-X-Gm-Message-State: AOJu0YyH/0tGWrUAdVwgWOfU8YKMKcnxja/Go5/EoQY+LoMHXL80zkRd
-        jACcYBLuQicwGO2luI6MF/E=
-X-Google-Smtp-Source: AGHT+IHMJmWJO62QizpKqXBJpkRvDmAKFCnqM9s6SVoAVqZ+23esDzGNsZhTZ+8ts5QHY0nOg2jcBQ==
-X-Received: by 2002:a05:6a21:3288:b0:186:736f:7798 with SMTP id yt8-20020a056a21328800b00186736f7798mr2447858pzb.11.1700659267413;
-        Wed, 22 Nov 2023 05:21:07 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id w14-20020aa7858e000000b006cbb71186f7sm4008491pfn.29.2023.11.22.05.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 05:21:06 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 1EB3210207134; Wed, 22 Nov 2023 20:21:04 +0700 (WIB)
-Date:   Wed, 22 Nov 2023 20:21:03 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Arnas <arnasz616@gmail.com>
-Subject: Re: Fwd: [Regression] S3 Sleep Mode failures since Linux 6.x on Dell
- Inspiron 15 5593
-Message-ID: <ZV4AP1GY3fHAxmtx@archie.me>
-References: <585dcc9e-7e72-473a-98ec-4f06018d542f@gmail.com>
+        Wed, 22 Nov 2023 08:22:47 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C8C1A8;
+        Wed, 22 Nov 2023 05:22:40 -0800 (PST)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AMD1JP9025028;
+        Wed, 22 Nov 2023 14:22:26 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=+8et82r
+        Zp9iBNT80Xn81VQ4KpX7W59VuOEHler+hGgY=; b=hkvQ1PSjvn0BQLyVXHo8g/p
+        02LFgdp43zO9tJ74nQwyeDnKp9312KKEc0dUZqOUkAf6RPE5sbizl3OWK/ByLehb
+        KhwFMaGTEQFDkFI+B3qYqljTned/UevanF1UP+DMYuXqnPFQ2Ae6aHF137ITZN11
+        kPnttt0Hk1U2jlHF7FfV/lh12Z9UxlJbJQS8OjEZlz8SkSIApd07h5oztos6h9W/
+        WFfrKDgAuhWlGO04p+mKSoIxwok1eU/PTkp520o29TeGZzOSaCOqWtBDqry2KXxu
+        Tw/gdaTaCcBPQBglM7zYEqYRdsmj1FBM8UWc0Ks8DQ/KC3fiZhRILELcIkEFM4w=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uen1pf3m2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Nov 2023 14:22:26 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 390E410004B;
+        Wed, 22 Nov 2023 14:22:26 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2E5EB22A6C3;
+        Wed, 22 Nov 2023 14:22:26 +0100 (CET)
+Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 22 Nov
+ 2023 14:22:25 +0100
+From:   <gabriel.fernandez@foss.st.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/5] Introduce STM32MP257 clock driver
+Date:   Wed, 22 Nov 2023 14:21:51 +0100
+Message-ID: <20231122132156.158103-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LKCzLPBSKEZk9tIu"
-Content-Disposition: inline
-In-Reply-To: <585dcc9e-7e72-473a-98ec-4f06018d542f@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.240]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_09,2023-11-22_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
---LKCzLPBSKEZk9tIu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch-set introduces clock driver for STM32MP257 based on Arm Cortex-35.
+It creates also a menuconfig for all STM32MP clock drivers.
+The STM32MP1 and STM32MP13 are now in same stm32 directory
 
-On Tue, Sep 26, 2023 at 07:25:48AM +0700, Bagas Sanjaya wrote:
-> Hi,
->=20
-> I notice a regression report on Bugzilla [1]. Quoting from it:
->=20
-> > I'm having some weird issues with sleep mode on any 6.x Linux kernel ve=
-rsion - it's a toss-up when I close the lid as to whether it will sleep pro=
-perly or not - when it fails, the screen will lock, but it will not actuall=
-y enter S3 sleep - it just blanks the screen, but the laptop stays on (and =
-fan does too).
-> >=20
-> > Opening the lid after a failed sleep attempt turns on the screen instan=
-taneously, and it doesn't even need to reconnect to WiFi - this doesn't hap=
-pen when actually resuming from sleep, it takes a couple seconds for the sc=
-reen to come on, and it then needs to reconnect the network.
-> >=20
-> > Following the failed attempt to enter sleep mode (closing the lid), the=
- following entries appear in the system log -
-> >=20
-> > arkiron kernel: ACPI Error: Thread 3233415168 cannot release Mutex [ECM=
-X] acquired by thread 3268191936 (20221020/exmutex-378)
-> > arkiron kernel: ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 du=
-e to previous error (AE_AML_NOT_OWNER) (20221020/psparse-529)
-> > arkiron kernel: Non-boot CPUs are not disabled
-> >=20
-> > Now, the "Non-boot CPUs are not disabled" line stands out the most to m=
-e here, because successful sleep attempts won't have this line in the log.
-> >=20
-> > After the failed attempt above to sleep, I now close the lid again, and=
- it seemingly goes to sleep successfully. After checking the log following =
-this, I find two new error lines in the log -
-> >=20
-> > arkiron kernel: ACPI Error: Thread 3233415168 cannot release Mutex [ECM=
-X] acquired by thread 3268191936 (20221020/exmutex-378)
-> > arkiron kernel: ACPI Error: Aborting method \_SB.PCI0.LPCB.ECDV._Q66 du=
-e to previous error (AE_AML_NOT_OWNER) (20221020/psparse-529)
-> >=20
-> > Note that this time the CPU line is missing, as expected for a successf=
-ul sleep attempt.
-> >=20
-> > This happens on both latest stable Linux kernel 6.5 as well as the late=
-st Linux LTS 6.1 kernel. The last kernel that this didn't happen on was Lin=
-ux LTS 5.15 (any version), which is what I was running up until the Linux L=
-TS 6.1 upgrade. At that point I tried switching back to mainline (6.5) to s=
-ee if it would fix sleep issues, but it didn't help. Downgrading to Linux L=
-TS 5.15 did fix the sleep issues and the laptop seems to sleep reliably now=
-=2E Running LTS 5.15.131-1 without issue as I am making this report.
-> >=20
-> > I'm on a Dell Inspiron 15 5593 using BIOS ver 1.27.0 (latest as of now)=
-, running Arch Linux x86_64
->=20
-> See Bugzilla for the full thread.
->=20
-> Anyway, I'm adding it to regzbot:
->=20
-> #regzbot introduced: v5.15..v6.1 https://bugzilla.kernel.org/show_bug.cgi=
-?id=3D217950
->=20
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217950
->=20
+v3:
+  - fix remark from Rob Herring in YAML documentation
+v2:
+  - rework reset binding (use ID witch start from 0)
+  - rework reset driver to manage STM32MP13 / STM32MP15 / STM32MP25
+  - rework YAML documentation
 
-Hi Thorsten and all,
+Gabriel Fernandez (5):
+  clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+  clk: stm32mp1: use stm32mp13 reset driver
+  dt-bindings: stm32: add clocks and reset binding for stm32mp25
+    platform
+  clk: stm32: introduce clocks for STM32MP257 platform
+  arm64: dts: st: add rcc support in stm32mp251
 
-It seems like the BZ reporter is really busy with his college life; IOW
-he can only bisect in the winter break [1]. Should I mark this regression
-as inconclusive for now?
+ .../bindings/clock/st,stm32mp25-rcc.yaml      |   76 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |   59 +-
+ drivers/clk/Kconfig                           |   11 +-
+ drivers/clk/Makefile                          |    1 -
+ drivers/clk/stm32/Kconfig                     |   36 +
+ drivers/clk/stm32/Makefile                    |    2 +
+ drivers/clk/stm32/clk-stm32-core.c            |    5 +-
+ drivers/clk/stm32/clk-stm32-core.h            |    5 +-
+ drivers/clk/{ => stm32}/clk-stm32mp1.c        |  127 +-
+ drivers/clk/stm32/clk-stm32mp13.c             |    9 +-
+ drivers/clk/stm32/clk-stm32mp25.c             | 1125 ++++
+ drivers/clk/stm32/reset-stm32.c               |   76 +-
+ drivers/clk/stm32/reset-stm32.h               |   15 +-
+ drivers/clk/stm32/stm32mp25_rcc.h             | 4977 +++++++++++++++++
+ include/dt-bindings/clock/st,stm32mp25-rcc.h  |  492 ++
+ include/dt-bindings/reset/st,stm32mp25-rcc.h  |  165 +
+ 16 files changed, 7000 insertions(+), 181 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+ create mode 100644 drivers/clk/stm32/Kconfig
+ rename drivers/clk/{ => stm32}/clk-stm32mp1.c (95%)
+ create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
+ create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
+ create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
+ create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
 
-Thanks.
+-- 
+2.25.1
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217950#c5
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---LKCzLPBSKEZk9tIu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZV4APwAKCRD2uYlJVVFO
-o2AAAQDTwCOQWHhQjO5u0rqiRHxr5UzfJelTwcYdlfrqvbmiUgD/Zsh+FP3jNO3S
-gRMaJaeLR5+9J9TbWbtkSOkrGF4AUAw=
-=vXvH
------END PGP SIGNATURE-----
-
---LKCzLPBSKEZk9tIu--
