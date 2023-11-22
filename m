@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1B87F5382
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702447F538E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 23:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbjKVWlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 17:41:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        id S1343979AbjKVWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 17:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjKVWlO (ORCPT
+        with ESMTP id S235163AbjKVWoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 17:41:14 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8070612A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 14:41:10 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CF1CD6602F39;
-        Wed, 22 Nov 2023 22:41:07 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700692869;
-        bh=YLlCSf+NzrZNydyhBp3MPNZ8G11GHErGKOTZJ/5sNTo=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=QBrdsNMTMonJCrJHGiT37mW1eIW+Qf/tKsEL71pMVOtdkrALk92oZ3AcNnUF0S6HG
-         dJRMJzXNzT7cAV1Hrz4mTTqKNnRnQvgEfO83o5W9qj47FkWf3joxqxsoyiUyBPQZxp
-         Am2KPFZ0OU+YcWhtXofm8EU9SBcUnM6HwCS6UNlGJBYX9lBFX/LqhuJm6C2NTlWtvc
-         h5lctqxjtBd27m4tjywS09u+UaRPFQFdyzOnLTmnRC6DWVI95Z2nRzSnIlZSK1f3HI
-         MBIseQ7VHz8idIqu9xpr4hDgBMV2+JvCgEJmI6vqux7NmuPn0vY5tU3V+DJ5LwHXGg
-         bauxjH8z3J7UQ==
-Message-ID: <88b34086-894e-9697-37ca-2492b15e3b83@collabora.com>
-Date:   Thu, 23 Nov 2023 01:41:05 +0300
+        Wed, 22 Nov 2023 17:44:09 -0500
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0375D46;
+        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-35b144ba935so928135ab.1;
+        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700693044; x=1701297844;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XZkFDdPjcBcVfp1fm2YjqN5xwGDpseg/uIenoFVR2Lw=;
+        b=PqJ8J//CYG7OqrfMHlaU80SyQR0Ibc0VReS3lhg6YruHvxGbYjhtslfwuJZ91OAAW7
+         c38ggd9RIP86rzR88t3Af2fb5ZRMqqvlqJggvgED0NgXfxdT1nwPyyikmsA66B7KGdA5
+         RkqIwX12PkQSoQdIZeaBtbt346srNmwxeZJ1wW8nupgU4FzkkBoRvu4rTteofLhBPvoS
+         FGzM6umGue8oiA9wOP1bz7Xk91spfJIQ5bi1lD6jzCOQiMxRa0L6OIQtCvWt+dLgAI5C
+         ly2yp/WdbQnquea3M3/jt4ekbGuQrCbOurcJOin5yWMMeXnT2qkiKPb6DHeo48KvxSuk
+         Z7sA==
+X-Gm-Message-State: AOJu0Yw+7VuXlEsDdluAbsUWQFR9Yu+80ufpj+uq2anLvPELUqnkSaXj
+        MdQFwa5Ol38garo4EItHDw==
+X-Google-Smtp-Source: AGHT+IF6fTuuPgt0NRPsUDTeD8Nz/gX1NLKQZPb1BbfDD8amxSiKaZQV+46egIs8xYOWZBv4J5wfrw==
+X-Received: by 2002:a05:6e02:1044:b0:35a:a534:916a with SMTP id p4-20020a056e02104400b0035aa534916amr2886625ilj.6.1700693044054;
+        Wed, 22 Nov 2023 14:44:04 -0800 (PST)
+Received: from herring.priv ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id be5-20020a056e02304500b00357f979d56csm182648ilb.12.2023.11.22.14.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Nov 2023 14:44:03 -0800 (PST)
+Received: (nullmailer pid 2808775 invoked by uid 1000);
+        Wed, 22 Nov 2023 22:44:01 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: reset: qcom: drop unneeded quotes
+Date:   Wed, 22 Nov 2023 15:43:52 -0700
+Message-ID: <20231122224352.2808435-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v18 24/26] drm/virtio: Attach shmem BOs dynamically
-Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-25-dmitry.osipenko@collabora.com>
- <20231113105745.7543e8dd@collabora.com>
- <fe7188d5-d70c-0f4a-7998-99f2efcffdb6@collabora.com>
-In-Reply-To: <fe7188d5-d70c-0f4a-7998-99f2efcffdb6@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 01:37, Dmitry Osipenko wrote:
-> On 11/13/23 12:57, Boris Brezillon wrote:
->> On Mon, 30 Oct 2023 02:02:03 +0300
->> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>
->>> Prepare for addition of memory shrinker support by attaching shmem pages
->>> to host dynamically on first use. Previously the attachment vq command
->>> wasn't fenced and there was no vq kick made in the BO creation code path,
->>> hence the attachment already was happening dynamically, but implicitly.
->>> Making attachment explicitly dynamic will allow to simplify and reuse more
->>> code when shrinker will be added. The virtio_gpu_object_shmem_init() now
->>> works under the held reservation lock, which will be important to have for
->>> shrinker to avoid moving pages while they are in active use by the driver.
->> Ah, this commit might actually help getting rid of the workaround
->> introduced in "drm/shmem-helper: Add common memory shrinker".
-> 
-> Not really. The virtio_gpu_free_object() is unchanged, it's only
-> allocation that is being deferred and it's only done for a one BO type
-> (virtio-gpu has multiple BO types).
+Drop unneeded quotes over simple string values to fix a soon to be
+enabled yamllint warning:
 
-s/allocation/attachment/
+  [error] string value is redundantly quoted with any quotes (quoted-strings)
 
-Pages are still allocated by virtio_gpu_object_create().
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/reset/qcom,aoss-reset.yaml     | 10 +++++-----
+ .../devicetree/bindings/reset/qcom,pdc-global.yaml     |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml b/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
+index d92e2b3cc83f..24beb712b56d 100644
+--- a/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
++++ b/Documentation/devicetree/bindings/reset/qcom,aoss-reset.yaml
+@@ -18,17 +18,17 @@ properties:
+     oneOf:
+       - description: on SC7180 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sc7180-aoss-cc"
+-          - const: "qcom,sdm845-aoss-cc"
++          - const: qcom,sc7180-aoss-cc
++          - const: qcom,sdm845-aoss-cc
+ 
+       - description: on SC7280 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sc7280-aoss-cc"
+-          - const: "qcom,sdm845-aoss-cc"
++          - const: qcom,sc7280-aoss-cc
++          - const: qcom,sdm845-aoss-cc
+ 
+       - description: on SDM845 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sdm845-aoss-cc"
++          - const: qcom,sdm845-aoss-cc
+ 
+   reg:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
+index ca5d79332189..f514363aa474 100644
+--- a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
++++ b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
+@@ -18,16 +18,16 @@ properties:
+     oneOf:
+       - description: on SC7180 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sc7180-pdc-global"
+-          - const: "qcom,sdm845-pdc-global"
++          - const: qcom,sc7180-pdc-global
++          - const: qcom,sdm845-pdc-global
+ 
+       - description: on SC7280 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sc7280-pdc-global"
++          - const: qcom,sc7280-pdc-global
+ 
+       - description: on SDM845 SoCs the following compatibles must be specified
+         items:
+-          - const: "qcom,sdm845-pdc-global"
++          - const: qcom,sdm845-pdc-global
+ 
+   reg:
+     maxItems: 1
 -- 
-Best regards,
-Dmitry
+2.42.0
 
