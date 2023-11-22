@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F797F4B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F267F4B21
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 16:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344393AbjKVPiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Nov 2023 10:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
+        id S1344640AbjKVPio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 10:38:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344498AbjKVPh6 (ORCPT
+        with ESMTP id S1344546AbjKVPiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 10:37:58 -0500
+        Wed, 22 Nov 2023 10:38:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D8F3842;
-        Wed, 22 Nov 2023 07:35:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A989C433CC;
-        Wed, 22 Nov 2023 15:35:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215FE1BE;
+        Wed, 22 Nov 2023 07:35:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E03C433CB;
+        Wed, 22 Nov 2023 15:35:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700667352;
-        bh=wy23UtIXrthgj2eEEYgrBaW36bslAFzoQLlkGnSsD+A=;
+        s=k20201202; t=1700667356;
+        bh=xw+kXe/3vX+t/DUPTYnxIcFZgJ9gJsbbL8FRwBeJtMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AlT2Sb5qadUUsNXXF6i3wA7QdvERdZ0b532Tl2g2Z1wo78frdU5w6tJzUOE/dxVpp
-         E7GF9jLYwy2f/+AgSPEHFFPzgc3OjvlrgAl+H28U2UrV5BZhk4ugWhnxSlyP4xVj5n
-         LQtcTGTAGgwgmJBzU0ga8vgX88sqY/lWYIC4M57+0djFvewBbtTHxBXT1H+LouVIb6
-         8FumhQsXmMoYDzqR0mSykXbYcMMqj5KxUAY5kyMY4pnXV9aU9npb/e6b/zWZc9jEGY
-         MXBdQCgq+VGGf6fw9WJ6gJDRs5tB28IhyBQREi8lBOiYkGTo8tAzAGolUeE29l/FyZ
-         r2CMmQ8ZKN6ow==
+        b=D0dfSqpSby4ouYkG/sbTx8Utr+1m5zfPbtBoQtgEEaCKZHHX0emUDKO5gokB6ezGp
+         MU28JfCV8sT/94WoxcTY48Y0XC3C+Z36wnWHBVge2LjA9AlkyMrvawtVQCtZEVAwAa
+         +QMezaE+SSAxP0BNX3MZyspblAXroT+AYglkriEczxr9rgK2iHuMG426U3Q+myjuM2
+         rHSUeacA8OmAS4Ly0v5m5u6oW7ylzl0d7MOu6I7ga0+Uc3R6Ke3odlU9bXom9lTIA8
+         EomWiGn/bxLTEhrHNowZv/O0e747S4gkkCEqBxQweiawwEEajR5Bp96Qtnx0b9dNq6
+         gbhYd7dYRpSuQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jan Bottorff <janb@os.amperecomputing.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        andi.shyti@kernel.org, linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/7] i2c: designware: Fix corrupted memory seen in the ISR
-Date:   Wed, 22 Nov 2023 10:35:30 -0500
-Message-ID: <20231122153541.853179-2-sashal@kernel.org>
+Cc:     Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>, fw@strlen.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kuniyu@amazon.com, justinstitt@google.com,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 3/7] netfilter: ipset: fix race condition between swap/destroy and kernel side add/del/test
+Date:   Wed, 22 Nov 2023 10:35:31 -0500
+Message-ID: <20231122153541.853179-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231122153541.853179-1-sashal@kernel.org>
 References: <20231122153541.853179-1-sashal@kernel.org>
@@ -55,106 +57,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Bottorff <janb@os.amperecomputing.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 
-[ Upstream commit f726eaa787e9f9bc858c902d18a09af6bcbfcdaf ]
+[ Upstream commit 28628fa952fefc7f2072ce6e8016968cc452b1ba ]
 
-When running on a many core ARM64 server, errors were
-happening in the ISR that looked like corrupted memory. These
-corruptions would fix themselves if small delays were inserted
-in the ISR. Errors reported by the driver included "i2c_designware
-APMC0D0F:00: i2c_dw_xfer_msg: invalid target address" and
-"i2c_designware APMC0D0F:00:controller timed out" during
-in-band IPMI SSIF stress tests.
+Linkui Xiao reported that there's a race condition when ipset swap and destroy is
+called, which can lead to crash in add/del/test element operations. Swap then
+destroy are usual operations to replace a set with another one in a production
+system. The issue can in some cases be reproduced with the script:
 
-The problem was determined to be memory writes in the driver were not
-becoming visible to all cores when execution rapidly shifted between
-cores, like when a register write immediately triggers an ISR.
-Processors with weak memory ordering, like ARM64, make no
-guarantees about the order normal memory writes become globally
-visible, unless barrier instructions are used to control ordering.
+ipset create hash_ip1 hash:net family inet hashsize 1024 maxelem 1048576
+ipset add hash_ip1 172.20.0.0/16
+ipset add hash_ip1 192.168.0.0/16
+iptables -A INPUT -m set --match-set hash_ip1 src -j ACCEPT
+while [ 1 ]
+do
+	# ... Ongoing traffic...
+        ipset create hash_ip2 hash:net family inet hashsize 1024 maxelem 1048576
+        ipset add hash_ip2 172.20.0.0/16
+        ipset swap hash_ip1 hash_ip2
+        ipset destroy hash_ip2
+        sleep 0.05
+done
 
-To solve this, regmap accessor functions configured by this driver
-were changed to use non-relaxed forms of the low-level register
-access functions, which include a barrier on platforms that require
-it. This assures memory writes before a controller register access are
-visible to all cores. The community concluded defaulting to correct
-operation outweighed defaulting to the small performance gains from
-using relaxed access functions. Being a low speed device added weight to
-this choice of default register access behavior.
+In the race case the possible order of the operations are
 
-Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+	CPU0			CPU1
+	ip_set_test
+				ipset swap hash_ip1 hash_ip2
+				ipset destroy hash_ip2
+	hash_net_kadt
+
+Swap replaces hash_ip1 with hash_ip2 and then destroy removes hash_ip2 which
+is the original hash_ip1. ip_set_test was called on hash_ip1 and because destroy
+removed it, hash_net_kadt crashes.
+
+The fix is to force ip_set_swap() to wait for all readers to finish accessing the
+old set pointers by calling synchronize_rcu().
+
+The first version of the patch was written by Linkui Xiao <xiaolinkui@kylinos.cn>.
+
+v2: synchronize_rcu() is moved into ip_set_swap() in order not to burden
+    ip_set_destroy() unnecessarily when all sets are destroyed.
+v3: Florian Westphal pointed out that all netfilter hooks run with rcu_read_lock() held
+    and em_ipset.c wraps the entire ip_set_test() in rcu read lock/unlock pair.
+    So there's no need to extend the rcu read locked area in ipset itself.
+
+Closes: https://lore.kernel.org/all/69e7963b-e7f8-3ad0-210-7b86eebf7f78@netfilter.org/
+Reported by: Linkui Xiao <xiaolinkui@kylinos.cn>
+Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-designware-common.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ net/netfilter/ipset/ip_set_core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index 682fffaab2b40..c9f7783ac7cb1 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -63,7 +63,7 @@ static int dw_reg_read(void *context, unsigned int reg, unsigned int *val)
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index 26613e3731d02..24f81826ed4a5 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -61,6 +61,8 @@ MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_IPSET);
+ 	ip_set_dereference((inst)->ip_set_list)[id]
+ #define ip_set_ref_netlink(inst,id)	\
+ 	rcu_dereference_raw((inst)->ip_set_list)[id]
++#define ip_set_dereference_nfnl(p)	\
++	rcu_dereference_check(p, lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET))
+ 
+ /* The set types are implemented in modules and registered set types
+  * can be found in ip_set_type_list. Adding/deleting types is
+@@ -708,15 +710,10 @@ __ip_set_put_netlink(struct ip_set *set)
+ static struct ip_set *
+ ip_set_rcu_get(struct net *net, ip_set_id_t index)
  {
- 	struct dw_i2c_dev *dev = context;
+-	struct ip_set *set;
+ 	struct ip_set_net *inst = ip_set_pernet(net);
  
--	*val = readl_relaxed(dev->base + reg);
-+	*val = readl(dev->base + reg);
+-	rcu_read_lock();
+-	/* ip_set_list itself needs to be protected */
+-	set = rcu_dereference(inst->ip_set_list)[index];
+-	rcu_read_unlock();
+-
+-	return set;
++	/* ip_set_list and the set pointer need to be protected */
++	return ip_set_dereference_nfnl(inst->ip_set_list)[index];
+ }
  
+ static inline void
+@@ -1407,6 +1404,9 @@ static int ip_set_swap(struct net *net, struct sock *ctnl, struct sk_buff *skb,
+ 	ip_set(inst, to_id) = from;
+ 	write_unlock_bh(&ip_set_ref_lock);
+ 
++	/* Make sure all readers of the old set pointers are completed. */
++	synchronize_rcu();
++
  	return 0;
  }
-@@ -72,7 +72,7 @@ static int dw_reg_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct dw_i2c_dev *dev = context;
  
--	writel_relaxed(val, dev->base + reg);
-+	writel(val, dev->base + reg);
- 
- 	return 0;
- }
-@@ -81,7 +81,7 @@ static int dw_reg_read_swab(void *context, unsigned int reg, unsigned int *val)
- {
- 	struct dw_i2c_dev *dev = context;
- 
--	*val = swab32(readl_relaxed(dev->base + reg));
-+	*val = swab32(readl(dev->base + reg));
- 
- 	return 0;
- }
-@@ -90,7 +90,7 @@ static int dw_reg_write_swab(void *context, unsigned int reg, unsigned int val)
- {
- 	struct dw_i2c_dev *dev = context;
- 
--	writel_relaxed(swab32(val), dev->base + reg);
-+	writel(swab32(val), dev->base + reg);
- 
- 	return 0;
- }
-@@ -99,8 +99,8 @@ static int dw_reg_read_word(void *context, unsigned int reg, unsigned int *val)
- {
- 	struct dw_i2c_dev *dev = context;
- 
--	*val = readw_relaxed(dev->base + reg) |
--		(readw_relaxed(dev->base + reg + 2) << 16);
-+	*val = readw(dev->base + reg) |
-+		(readw(dev->base + reg + 2) << 16);
- 
- 	return 0;
- }
-@@ -109,8 +109,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
- {
- 	struct dw_i2c_dev *dev = context;
- 
--	writew_relaxed(val, dev->base + reg);
--	writew_relaxed(val >> 16, dev->base + reg + 2);
-+	writew(val, dev->base + reg);
-+	writew(val >> 16, dev->base + reg + 2);
- 
- 	return 0;
- }
 -- 
 2.42.0
 
