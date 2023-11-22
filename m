@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CD77F50E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176EF7F50EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 20:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbjKVTun convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Nov 2023 14:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40560 "EHLO
+        id S231470AbjKVTyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Nov 2023 14:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231354AbjKVTui (ORCPT
+        with ESMTP id S230225AbjKVTyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Nov 2023 14:50:38 -0500
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57BAD45;
-        Wed, 22 Nov 2023 11:50:32 -0800 (PST)
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1f92cc9b2c5so14869fac.1;
-        Wed, 22 Nov 2023 11:50:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700682632; x=1701287432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i13eRCRuzIPfY/WqVtCzJrgnUD1kwRhCgNmFzwsG9Jo=;
-        b=EqltRsny2ys42NR3GpDjB9nf0+/MKL5xt1jwvyQTripRBwwoq/el64XZHTuI3EkTOh
-         Sq89DPpyEk5doe9QtrlBqq9ng7uP0FbOeczUSJUEl3GQ+hY2Hli56od2tp+FvV/eui+V
-         KlF2evsl4vVsr/DWnbN/ShzmWeYUCzCKTJegFWXLmO77CjTuROhXu94R4R0up2ASKLrO
-         P/uGOLgFAmjsBD20X61CcwHFonmEftqQBEWkzkdysak4UXMlfh2sOY8RahngmSIu8ccQ
-         L6Ch5ZA2NYmffzsxWHfvMwiXZE8BENfhdiYA8UgsSpLYXpam/Z7JQkpcoAzvuOV/Yp2f
-         9Y4Q==
-X-Gm-Message-State: AOJu0YwV/sj+DKzWw5DpNUIxqoDu1mTpYMzSd8cYUNHanvgvPsyHaWst
-        v7bnqo4EpylSwc6rzu1lY+VnLpaSNRA5IgLWCgI=
-X-Google-Smtp-Source: AGHT+IFV368Lp2Xym8iwW46WxUk4gVpMUQnMSqrXsaUEikzxvKwKLNfIfCbnEeFUmmaywR6UDqe1cP5ID4UG0kr2Ovg=
-X-Received: by 2002:a05:6870:2401:b0:1f9:5d11:cc7a with SMTP id
- n1-20020a056870240100b001f95d11cc7amr4006681oap.3.1700682631827; Wed, 22 Nov
- 2023 11:50:31 -0800 (PST)
+        Wed, 22 Nov 2023 14:54:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257FF18E
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Nov 2023 11:54:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 786A1C433C7;
+        Wed, 22 Nov 2023 19:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700682856;
+        bh=zRXHgQP88VauegiSbHXFvskpTZuZ3/Jyf1lcUiA8WAw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mrNG99+mNALbVJhcW1vZYsOwvFPrCrTvA/jh7hRpd+LcpAjrWl05+dsKNccSbPsQl
+         CLw7RDjB0YX0WiVhHbqf4bY9sED1Rdv/BrMc8ZrGKZ5/BLGHHvd20AZO2c0TAHDJ8/
+         UIEsJBiFfOmx7vSiQzWUEMb1af9hnvTsLwmFPMzoJZVyDpEAz00YfkUslW/9lK6sx+
+         w1utbiS0AeRY7ZD+z8iRjs28Gdo/91ZkODeVDhByD7rdvYxm4uzW1S1FJxUq9i27h1
+         GY17Su7N4FztAwiZgXMRDkO+eDd7QrVLu3b9aC4GNwIsYnFVZUOWHLbkaF/UDnTO2G
+         8WLRqznC+zHrw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 71AA640094; Wed, 22 Nov 2023 16:54:13 -0300 (-03)
+Date:   Wed, 22 Nov 2023 16:54:13 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-trace-devel@vger.kernel.org, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH 18/52] perf report: Add 'type' sort key
+Message-ID: <ZV5cZe8dxv/GzdGa@kernel.org>
+References: <20231110000012.3538610-1-namhyung@kernel.org>
+ <20231110000012.3538610-19-namhyung@kernel.org>
+ <ZVzvFen/214ylf32@kernel.org>
+ <CAM9d7cijprv2fOM_jwYbrV0jbhno2ZQDCT3SExG=Ot=b2mANmw@mail.gmail.com>
 MIME-Version: 1.0
-References: <430a1271-a45c-4f5a-90c7-a62703ac7cf4@ancud.ru>
- <CAJZ5v0gHgfscDCGo3P5JVn73uUTBkpfCqRJV3QcOnFt8FP7FhQ@mail.gmail.com>
- <CAJZ5v0jGSSevWuBKFK0z+bQ2QB9+GT=ofnY=MF=53N-r7QEhSw@mail.gmail.com> <cf813067-9b73-4eca-8c0a-668fc68ca6b0@ancud.ru>
-In-Reply-To: <cf813067-9b73-4eca-8c0a-668fc68ca6b0@ancud.ru>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 22 Nov 2023 20:50:20 +0100
-Message-ID: <CAJZ5v0gmRgcT=FsaAcE_dP92JnC3vEY-NF630caK3p03dLw43g@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: LPIT: fix u32 multiplication overflow
-To:     Nikita Kiryushin <kiryushin@ancud.ru>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cijprv2fOM_jwYbrV0jbhno2ZQDCT3SExG=Ot=b2mANmw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 8:41 PM Nikita Kiryushin <kiryushin@ancud.ru> wrote:
+Em Wed, Nov 22, 2023 at 10:49:13AM -0800, Namhyung Kim escreveu:
+> On Tue, Nov 21, 2023 at 9:55 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > ⬢[acme@toolbox perf-tools-next]$ perf report -s type
+> > perf: Segmentation fault
+> > -------- backtrace --------
+> > perf[0x69f743]
+> > /lib64/libc.so.6(+0x3dbb0)[0x7f89b4778bb0]
+> > perf[0x505af6]
+<SNIP>
+> > perf[0x504f01]
+> > /lib64/libc.so.6(+0x27b8a)[0x7f89b4762b8a]
+> > /lib64/libc.so.6(__libc_start_main+0x8b)[0x7f89b4762c4b]
+> > perf[0x40ed65]
+> > ⬢[acme@toolbox perf-tools-next]$
 >
-> My reasoning was around something like:
->
-> 1) tsc_khz is declared as unsigned int tsc_khz;
->
-> 2) tsc_khz * 1000 would overflow, if the result is larger, than an
-> unsigned int could hold;
->
-> 3) given tsc_khz * 1000 > UINT_MAX is bad, tsc_khz > UINT_MAX / 1000 is bad;
->
-> 4) if UINT_MAX is 4294967295, than tsc_khz > 4294967.295 is bad, for
-> example 4294968 would lead to overflow;
->
-> 5) 4294968 kHz is 4294.968 MHz, which seems realistically high to me.
->
-> For me, tsc: Refined TSC clocksource calibration: 3393.624 MHz
->
-> (seems like, it is derived from the same value,
->
-> pr_info("Refined TSC clocksource calibration: %lu.%03lu MHz\n",
->          (unsigned long)tsc_khz / 1000,
->          (unsigned long)tsc_khz % 1000);
->
-> )
+> Right, the 'type' sort key was added here but unfortunately
+> it's not ready for prime time yet.  It also needs the next patch
+> 19/52 ("perf report: Support data type profiling") to fully enable
+> the feature.  Do you think it's better to squash into here?
 
-OK, fair enough.
+I haven't checked if squashing would be a good idea, but if you think
+its the right granularity, then do it, as long as we can test features
+in various ways as they are getting added, as I did, using a random
+perf.data file.
 
-> Not sure about the math above, but it seemed reasonable enough to me to
-> switch to overflow-resilient arithmetic here.
+- Arnaldo
