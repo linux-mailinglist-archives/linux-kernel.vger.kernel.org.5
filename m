@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4F57F3A9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 01:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24727F3AA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Nov 2023 01:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234718AbjKVAM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Nov 2023 19:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        id S234704AbjKVATL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Nov 2023 19:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjKVAM1 (ORCPT
+        with ESMTP id S229480AbjKVATJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Nov 2023 19:12:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78F89F
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:12:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C29CC433C7;
-        Wed, 22 Nov 2023 00:12:18 +0000 (UTC)
-Date:   Tue, 21 Nov 2023 19:12:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for
- PREEMPT_RCU=n
-Message-ID: <20231121191232.630222d3@gandalf.local.home>
-In-Reply-To: <0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop>
-References: <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
-        <87lear4wj6.fsf@oracle.com>
-        <46a4c47a-ba1c-4776-a6f8-6c2146cbdd0d@paulmck-laptop>
-        <31d50051-e42c-4ef2-a1ac-e45370c3752e@paulmck-laptop>
-        <d10b6243-41b1-44a0-ba95-0cedc7f6856e@paulmck-laptop>
-        <20231121203049.GN8262@noisy.programming.kicks-ass.net>
-        <1cdbb0f6-9078-4023-bf37-8d826ca0c711@paulmck-laptop>
-        <20231121163834.571abb52@gandalf.local.home>
-        <4605b4f4-8a2b-4653-b684-9c696c36ebd0@paulmck-laptop>
-        <20231121175209.1d7ec202@gandalf.local.home>
-        <0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 21 Nov 2023 19:19:09 -0500
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00BA9D
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:19:06 -0800 (PST)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28513eccb01so325643a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Nov 2023 16:19:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700612346; x=1701217146;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UN0RV/dxSvp2k4Odllrd9UgohuWC+yGLlZdD/8NYF0s=;
+        b=ZFpLkqv8HgQjj3Ti73MQRgUCtBzafWarDwfJohwns23V45Y8Ur1cZzbt2m3AXk2DgR
+         TfJ7eovO/pooY8i6NvVcA7vmVKh/u5NGERPd5MDMqcP6FBDID/Z2Gle6WNetKxb/++NS
+         c1IPBd8LjP6yPysfsOVxPu8iMMX5tOcdkmMYkkBADKw9Tlen2kiUx9RxeJmloOL9yk+T
+         Xatx4Cf9izz7/kfEOY67n1J+5tvc+fcUHPCzv414Ja/sD4X2+ggrypmRlP8loY7Dz5R1
+         eNgnT+FpfuK589qo+Uj3AaEby/HzP/nA/1GyZUzTCBOBRJozaPjpp7+95rZgMmtRcHum
+         Bbqw==
+X-Gm-Message-State: AOJu0YygYPpZNewAY0kSr3tZvc78/ZhF761aKRQjK1vJObWIk/Pt3zvd
+        Hr5CLOih7zfEbKBHFPOwe/2gO1AqEJjyG6XDDub37Mux3UAdAhs=
+X-Google-Smtp-Source: AGHT+IErALHmhDrZc0GXaStJgR3taS880cBEEjDs+wk31ph41r8k5pNOpZwSaAD2aNCFfzO4swaW3prmselEPvvGpmhZOhSSPZiT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:90a:6545:b0:27d:1bd8:de69 with SMTP id
+ f5-20020a17090a654500b0027d1bd8de69mr267238pjs.1.1700612346262; Tue, 21 Nov
+ 2023 16:19:06 -0800 (PST)
+Date:   Tue, 21 Nov 2023 16:19:06 -0800
+In-Reply-To: <0000000000004b6de5060ab1545b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ccbc6c060ab2aa42@google.com>
+Subject: Re: [syzbot] [syzbot] [bpf?] [trace?] WARNING in format_decode (3)
+From:   syzbot <syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Nov 2023 16:01:24 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-> 
-> > I stand by that being in the else statement. It looks like that would keep
-> > the previous work flow.  
-> 
-> Ah, because PREEMPT_NEED_RESCHED is zero when we need to reschedule,
-> so that when __preempt_count_dec_and_test() returns false, we might
-> still be in an RCU quiescent state in the case where there was no need
-> to reschedule.  Good point!
-> 
-> In which case...
-> 
-> #define preempt_enable() \
-> do { \
-> 	barrier(); \
-> 	if (unlikely(preempt_count_dec_and_test())) \
-> 		__preempt_schedule(); \
-> 	else if (!sched_feat(FORCE_PREEMPT) && \
-> 		 (preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK | HARDIRQ_MASK | NMI_MASK) == PREEMPT_OFFSET) && \
-> 		 !irqs_disabled()) \
-> ) \
-> 			rcu_all_qs(); \
-> } while (0)
-> 
-> Keeping rcu_all_qs() pretty much as is.  Or some or all of the "else if"
-> condition could be pushed down into rcu_all_qs(), depending on whether
-> Peter's objection was call-site object code size, execution path length,
-> or both.  ;-)
-> 
-> If the objection is both call-site object code size and execution path
-> length, then maybe all but the preempt_count() check should be pushed
-> into rcu_all_qs().
-> 
-> Was that what you had in mind, or am I missing your point?
+***
 
-Yes, that is what I had in mind.
+Subject: [syzbot] [bpf?] [trace?] WARNING in format_decode (3)
+Author: eadavis@qq.com
 
-Should we also keep the !IS_ENABLED(CONFIG_PREEMPT_RCU) check, which makes
-the entire thing optimized out when PREEMPT_RCU is enabled?
+please test unsupported %? in format string
 
--- Steve
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git 76df934c6d5f
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index c9fdcc5cdce1..78258a822a5c 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -845,6 +845,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ {
+ 	struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+ 
++	if (!skb->len)
++		return -EINVAL;
++
+ 	if (!__skb)
+ 		return 0;
+ 
+
